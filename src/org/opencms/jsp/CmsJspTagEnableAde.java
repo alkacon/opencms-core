@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagEnableAde.java,v $
- * Date   : $Date: 2010/04/21 14:13:46 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2010/04/21 15:43:31 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -75,7 +75,7 @@ import org.apache.commons.logging.Log;
 /**
  * Implementation of the <code>&lt;enable-ade/&gt;</code> tag.<p>
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.27 $ 
  * 
  * @since 7.6 
  */
@@ -86,12 +86,16 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
     /** Macro name constants. */
     protected enum Macro {
 
+        /** Macro name constant for the ade gallery dialog mode. */
+        ade,
         /** Macro name constant for the current container page URI. */
         currentContainerPage,
         /** Macro name constant for the current locale. */
         currentLocale,
         /** Macro name constant for the current URI. */
         currentUri,
+        /** Macro name constant for the gallery dialog mode. */
+        galleryDialogmode,
         /** Macro name constant for the editor's URI . */
         editorUri,
         /** Macro name constant for the gallery javascript URI. */
@@ -190,7 +194,7 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
             // don't display advanced direct edit buttons if a temporary file is displayed
             return;
         }
-
+        context.getRequest().setAttribute(Macro.galleryDialogmode.name(), Macro.ade.name());
         // TODO: remove old ADE functions
         CmsJspTagInclude.includeTagAction(context, INCLUDE_JSP_URI, null, false, null, null, req, context.getResponse());
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/Attic/I_CmsGalleryProviderConstants.java,v $
- * Date   : $Date: 2010/04/19 06:39:10 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/21 15:43:31 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,7 @@ package org.opencms.ade.galleries.shared;
  * 
  * @author Polina Smagina 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  * 
@@ -96,6 +96,9 @@ public interface I_CmsGalleryProviderConstants {
 
         //        /** The path to the editor plugin script. */
         //        integrator,
+
+        /** The gallery tab id. */
+        gallerytabid,
 
         /** The current locale. */
         locale,

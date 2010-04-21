@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsGalleryDialog.java,v $
- * Date   : $Date: 2010/04/13 09:11:43 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/21 15:43:31 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.ade.galleries.client.ui;
 import org.opencms.ade.galleries.client.CmsGalleriesVfs;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle.I_CmsGalleryDialogCss;
+import org.opencms.ade.galleries.client.util.CmsGalleryProvider;
 import org.opencms.ade.galleries.shared.CmsCategoriesListInfoBean;
 import org.opencms.ade.galleries.shared.CmsGalleriesListInfoBean;
 import org.opencms.ade.galleries.shared.CmsGalleryInfoBean;
@@ -50,6 +51,7 @@ import org.opencms.gwt.client.ui.CmsTabbedPanel.CmsTabLayout;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.util.CmsPair;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -71,7 +73,7 @@ import com.google.gwt.user.client.ui.Label;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.
  */
@@ -79,6 +81,41 @@ public class CmsGalleryDialog extends Composite implements BeforeSelectionHandle
 
     /** The css bundle used for this widget. */
     private static final I_CmsGalleryDialogCss DIALOG_CSS = I_CmsLayoutBundle.INSTANCE.galleryDialogCss();
+
+    /** The RPC action to get the initial gallery info object. */
+    CmsRpcAction<CmsGalleryInfoBean> m_initialAction = new CmsRpcAction<CmsGalleryInfoBean>() {
+
+        /**
+        * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+        */
+        @Override
+        public void execute() {
+
+            // initial search obj
+            CmsGallerySearchObject searchObj = new CmsGallerySearchObject();
+            searchObj.init();
+
+            // set tabs config
+            String[] tabs = CmsStringUtil.splitAsArray(CmsGalleryProvider.get().getTabs(), ",");
+            final ArrayList<String> tabsConfig = new ArrayList<String>();
+            for (int i = 0; tabs.length > i; i++) {
+                tabsConfig.add(tabs[i]);
+            }
+
+            String dialogMode = CmsGalleryProvider.get().getDialogMode();
+
+            getGalleryService().getInitialSettings(tabsConfig, searchObj, dialogMode, this);
+        }
+
+        /**
+        * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+        */
+        @Override
+        public void onResponse(CmsGalleryInfoBean infoBean) {
+
+            initTabs(infoBean);
+        }
+    };
 
     /** The RPC search action for the gallery dialog. */
     CmsRpcAction<CmsGalleryInfoBean> m_search = new CmsRpcAction<CmsGalleryInfoBean>() {
@@ -112,6 +149,22 @@ public class CmsGalleryDialog extends Composite implements BeforeSelectionHandle
 
     /** The tabbed panel. */
     private CmsTabbedPanel m_tabbedPanel;
+
+    /**
+     * The default constructor for the gallery dialog.<p> 
+     */
+    public CmsGalleryDialog() {
+
+        CmsGalleriesVfs.initCss();
+        m_tabbedPanel = new CmsTabbedPanel(CmsTabLayout.standard, false);
+
+        // All composites must call initWidget() in their constructors.
+        initWidget(m_tabbedPanel);
+
+        m_tabbedPanel.addBeforeSelectionHandler(this);
+        m_tabbedPanel.addSelectionHandler(this);
+
+    }
 
     /**
      * The constructor of the gallery dialog.<p>
@@ -154,7 +207,7 @@ public class CmsGalleryDialog extends Composite implements BeforeSelectionHandle
         }
         m_tabbedPanel.addWithLeftMargin(buildResultsTabPanel(), Messages.get().key(Messages.GUI_TAB_TITLE_RESULTS_0));
         // TODO: select the tab from the configuration
-        m_tabbedPanel.selectTab(2);
+        m_tabbedPanel.selectTab(m_infoBean.getGalleryTabIdIndex());
 
         m_tabbedPanel.addBeforeSelectionHandler(this);
         m_tabbedPanel.addSelectionHandler(this);
@@ -172,12 +225,58 @@ public class CmsGalleryDialog extends Composite implements BeforeSelectionHandle
     }
 
     /**
+     * Executes the RPC call to get the initial gallery setting and fill gallery with content.<p>
+     */
+    public void init() {
+
+        m_initialAction.execute();
+    }
+
+    /**
+     * Fill the tabs with the content provided from the info bean. <p>
+     * 
+     * @param infoBean the bean with the tab content
+     */
+    public void initTabs(CmsGalleryInfoBean infoBean) {
+
+        m_infoBean = infoBean;
+
+        ArrayList<String> tabs = infoBean.getDialogInfo().getTabs();
+
+        if (tabs.contains(I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_types.name())) {
+            CmsTabInnerPanel tabContent = buildTypesTabPanel(infoBean.getDialogInfo().getTypes());
+            m_tabbedPanel.add(tabContent, Messages.get().key(Messages.GUI_TAB_TITLE_TYPES_0));
+
+        }
+
+        if (tabs.contains(I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_galleries.name())) {
+            CmsTabInnerPanel tabContent = buildGalleriesTabPanel(infoBean.getDialogInfo().getGalleries());
+            m_tabbedPanel.add(tabContent, Messages.get().key(Messages.GUI_TAB_TITLE_GALLERIES_0));
+
+        }
+
+        if (tabs.contains(I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_categories.name())) {
+            CmsTabInnerPanel tabContent = buildCategoriesTabPanel(infoBean.getDialogInfo().getCategories());
+            m_tabbedPanel.add(tabContent, Messages.get().key(Messages.GUI_TAB_TITLE_CATEGORIES_0));
+
+        }
+        if (tabs.contains(I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_search.name())) {
+            m_tabbedPanel.add(new Label("Hallo"), Messages.get().key(Messages.GUI_TAB_TITLE_SEARCH_0));
+        }
+        if (tabs.contains(I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_sitemap.name())) {
+            // implement  
+        }
+        // add left margin to the result button
+        m_tabbedPanel.addWithLeftMargin(buildResultsTabPanel(), Messages.get().key(Messages.GUI_TAB_TITLE_RESULTS_0));
+        m_tabbedPanel.selectTab(m_infoBean.getGalleryTabIdIndex());
+    }
+
+    /**
      * @see com.google.gwt.event.logical.shared.BeforeSelectionHandler#onBeforeSelection(com.google.gwt.event.logical.shared.BeforeSelectionEvent)
      */
     public void onBeforeSelection(BeforeSelectionEvent<Integer> event) {
 
-        // implement
-        //int clickedId = event.getItem();
+        // implement        
     }
 
     /**
@@ -277,7 +376,38 @@ public class CmsGalleryDialog extends Composite implements BeforeSelectionHandle
         } else {
             return preparedSearchObj;
         }
+    }
 
+    /**
+     * Updates the list of the results after the search.<p>
+     * 
+     * @param infoBean the gallery info bean containing the new results
+     */
+    /* default */void updateResultTab(CmsGalleryInfoBean infoBean) {
+
+        // TODO: provide a convinient way to get the tab id 
+        int tabIndex = getInfoBean().getDialogInfo().getTabs().size();
+        CmsTabInnerPanel tabPanel = (CmsTabInnerPanel)m_tabbedPanel.getWidget(tabIndex);
+        //update the search params
+        tabPanel.clearParams();
+        tabPanel.showParams(getInfoBean());
+        tabPanel.updateListSize();
+        // update the result list
+        tabPanel.clearList();
+        ArrayList<CmsResultsListInfoBean> list = infoBean.getSearchObject().getResults();
+        getInfoBean().getSearchObject().setResults(infoBean.getSearchObject().getResults());
+        getInfoBean().getSearchObject().setResultCount(infoBean.getSearchObject().getResultCount());
+        getInfoBean().getSearchObject().setSortOrder(infoBean.getSearchObject().getSortOrder());
+        getInfoBean().getSearchObject().setPage(infoBean.getSearchObject().getPage());
+        for (CmsResultsListInfoBean resultItem : list) {
+            CmsListItemWidget resultItemWidget = new CmsListItemWidget(resultItem);
+            Image icon = new Image(resultItem.getIconResource());
+            icon.setStyleName(DIALOG_CSS.listIcon());
+            resultItemWidget.setIcon(icon);
+            CmsResultListItem listItem = new CmsResultListItem(getInfoBean(), resultItemWidget);
+            listItem.setId(resultItem.getId());
+            tabPanel.addWidgetToList(listItem);
+        }
     }
 
     /**
@@ -401,37 +531,5 @@ public class CmsGalleryDialog extends Composite implements BeforeSelectionHandle
             tabInner.addWidgetToList(listItem);
         }
         return tabInner;
-    }
-
-    /**
-     * Updates the list of the results after the search.<p>
-     * 
-     * @param infoBean the gallery info bean containing the new results
-     */
-    /* default */void updateResultTab(CmsGalleryInfoBean infoBean) {
-
-        // TODO: provide a convinient way to get the tab id 
-        int tabIndex = getInfoBean().getDialogInfo().getTabs().size();
-        CmsTabInnerPanel tabPanel = (CmsTabInnerPanel)m_tabbedPanel.getWidget(tabIndex);
-        //update the search params
-        tabPanel.clearParams();
-        tabPanel.showParams(getInfoBean());
-        tabPanel.updateListSize();
-        // update the result list
-        tabPanel.clearList();
-        ArrayList<CmsResultsListInfoBean> list = infoBean.getSearchObject().getResults();
-        getInfoBean().getSearchObject().setResults(infoBean.getSearchObject().getResults());
-        getInfoBean().getSearchObject().setResultCount(infoBean.getSearchObject().getResultCount());
-        getInfoBean().getSearchObject().setSortOrder(infoBean.getSearchObject().getSortOrder());
-        getInfoBean().getSearchObject().setPage(infoBean.getSearchObject().getPage());
-        for (CmsResultsListInfoBean resultItem : list) {
-            CmsListItemWidget resultItemWidget = new CmsListItemWidget(resultItem);
-            Image icon = new Image(resultItem.getIconResource());
-            icon.setStyleName(DIALOG_CSS.listIcon());
-            resultItemWidget.setIcon(icon);
-            CmsResultListItem listItem = new CmsResultListItem(getInfoBean(), resultItemWidget);
-            listItem.setId(resultItem.getId());
-            tabPanel.addWidgetToList(listItem);
-        }
     }
 }

@@ -6,4 +6,5 @@
 	<source path="shared" />
 	<entry-point
 		class="org.opencms.ade.galleries.client.CmsGalleriesVfs"></entry-point>
+	<set-configuration-property name="CssResource.style" value="pretty" /> 
 </module>

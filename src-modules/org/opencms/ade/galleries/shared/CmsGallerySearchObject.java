@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/Attic/CmsGallerySearchObject.java,v $
- * Date   : $Date: 2010/03/30 14:08:36 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/21 15:43:31 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,9 @@
 
 package org.opencms.ade.galleries.shared;
 
+import org.opencms.ade.galleries.client.util.CmsGalleryProvider;
+import org.opencms.util.CmsStringUtil;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,7 +47,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  */
@@ -87,6 +90,9 @@ public class CmsGallerySearchObject implements IsSerializable {
     /** The list of the resource types ids (resource type name). */
     private List<String> m_types = new ArrayList<String>();
 
+    /** The default tab id to use when the gallery is opened. */
+    public static final int DEFAULT_TAB_ID = 0;
+
     /**
      * Empty default constructor. <p>
      */
@@ -113,6 +119,35 @@ public class CmsGallerySearchObject implements IsSerializable {
         setSortOrder(searchObj.getSortOrder());
         setTabId(searchObj.getTabId());
         setPage(searchObj.getPage());
+    }
+
+    /**
+     * Initialize the search object using data from gallery core dict.<p>
+     * 
+     */
+    public void init() {
+
+        // if gallery is selected write the gallery path to the gallery list
+        ArrayList<String> galleries = new ArrayList<String>();
+        String galleryTabId = CmsGalleryProvider.get().getGalleryTabId();
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(CmsGalleryProvider.get().getGalleryPath())) {
+            galleries.add(CmsGalleryProvider.get().getGalleryPath());
+            galleryTabId = I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_results.name();
+        }
+
+        setGalleries(galleries);
+        setTabId(galleryTabId);
+
+        // TODO: the types should be set
+        setTypes(new ArrayList<String>());
+        setCategories(new ArrayList<String>());
+        setQuery("");
+        // TODO: set locale
+        setLocale("");
+        // TODO: set the default values
+        setMachesPerPage(getMachesPerPage());
+        setSortOrder(getSortOrder());
+        setPage(getPage());
     }
 
     /**

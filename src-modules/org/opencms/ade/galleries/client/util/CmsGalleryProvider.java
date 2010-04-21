@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/util/Attic/CmsGalleryProvider.java,v $
- * Date   : $Date: 2010/03/19 10:11:54 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/21 15:43:31 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import com.google.gwt.i18n.client.Dictionary;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  * 
@@ -54,26 +54,20 @@ public final class CmsGalleryProvider implements I_CmsGalleryProviderConstants {
     /** Internal instance. */
     private static CmsGalleryProvider INSTANCE;
 
+    /** The dialogmode of the gallery dialog (view, widget, ade, editor, property). */
+    private String m_dialogMode;
+
     /** The gallery path to the selected gallery. */
     private String m_galleryPath;
+
+    /** The gallery tab id to be selected when gallery is opened. */
+    private String m_galleryTabId;
 
     /** The configured tabs as comma separated string. */
     private String m_tabs;
 
     /** The available resource types as comma separated string. */
     private String m_types;
-
-    //TODO: add gallery relevant members
-
-    /**
-     * Returns the resource types.<p>
-     *
-     * @return the types
-     */
-    public String getTypes() {
-
-        return m_types;
-    }
 
     /**
      * Prevent instantiation.<p> 
@@ -83,11 +77,17 @@ public final class CmsGalleryProvider implements I_CmsGalleryProviderConstants {
         Dictionary dict = Dictionary.getDictionary(DICT_NAME.replace('.', '_'));
         // gallery path
         m_galleryPath = dict.get(ReqParam.gallerypath.name());
+        // gallery path
+        m_galleryTabId = dict.get(ReqParam.gallerytabid.name());
         // configured tabs
         m_tabs = dict.get(ReqParam.tabs.name());
         // available resource types
         m_types = dict.get(ReqParam.types.name());
+        // dialog mode
+        m_dialogMode = dict.get(ReqParam.dialogmode.name());
     }
+
+    //TODO: add gallery relevant members
 
     /**
      * Returns the client message instance.<p>
@@ -103,6 +103,16 @@ public final class CmsGalleryProvider implements I_CmsGalleryProviderConstants {
     }
 
     /**
+     * Returns the dialogMode.<p>
+     *
+     * @return the dialogMode
+     */
+    public String getDialogMode() {
+
+        return m_dialogMode;
+    }
+
+    /**
      * Returns the path to the gallery to display.<p>
      *
      * @return the galleryPath
@@ -113,6 +123,16 @@ public final class CmsGalleryProvider implements I_CmsGalleryProviderConstants {
     }
 
     /**
+     * Returns the galleryTabId.<p>
+     *
+     * @return the galleryTabId
+     */
+    public String getGalleryTabId() {
+
+        return m_galleryTabId;
+    }
+
+    /**
      * Returns the tabs configuration.<p>
      *
      * @return the tabs
@@ -120,5 +140,15 @@ public final class CmsGalleryProvider implements I_CmsGalleryProviderConstants {
     public String getTabs() {
 
         return m_tabs;
+    }
+
+    /**
+     * Returns the resource types.<p>
+     *
+     * @return the types
+     */
+    public String getTypes() {
+
+        return m_types;
     }
 }

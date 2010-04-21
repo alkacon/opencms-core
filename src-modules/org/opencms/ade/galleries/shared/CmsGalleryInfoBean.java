@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/Attic/CmsGalleryInfoBean.java,v $
- * Date   : $Date: 2010/03/30 14:08:36 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/21 15:43:31 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  */
@@ -52,6 +52,22 @@ public class CmsGalleryInfoBean implements IsSerializable {
 
     /** The search beans contains the currents search criteria. */
     private CmsGallerySearchObject m_searchObject;
+
+    /**
+     * Returns the int value of id.<p> 
+     * 
+     * @return tab id
+     */
+    public int getGalleryTabIdIndex() {
+
+        if (I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_results.name().equals(m_searchObject.getTabId())) {
+            return m_dialogInfo.getTabs().size();
+        } else if (m_dialogInfo.getTabs().indexOf(m_searchObject.getTabId()) > -1) {
+            return m_dialogInfo.getTabs().indexOf(m_searchObject.getTabId());
+        } else {
+            return CmsGallerySearchObject.DEFAULT_TAB_ID;
+        }
+    }
 
     /**
      * Returns the dialog info.<p>

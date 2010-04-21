@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/Attic/CmsGalleryProvider.java,v $
- * Date   : $Date: 2010/04/12 14:00:39 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/21 15:43:31 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,7 @@ import org.opencms.gwt.I_CmsCoreProvider;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
 import org.opencms.main.CmsLog;
+import org.opencms.util.CmsStringUtil;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -46,13 +47,76 @@ import org.apache.commons.logging.Log;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  * 
  * @see org.opencms.ade.galleries.client.util.CmsGalleryProvider
  */
 public final class CmsGalleryProvider implements I_CmsGalleryProviderConstants, I_CmsCoreProvider {
+
+    /** Configuration values. */
+    public enum GalleryConfiguration {
+
+        /** Tabs configuration as default. */
+        TABS_DEFAULT(I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_types.name()
+            + ","
+            + I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_galleries.name()
+            + ","
+            + I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_categories.name()
+            + ","
+            + I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_search.name()),
+
+        /** Tabs configuration for the vfs dialogmode. */
+        TABS_VIEW(I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_galleries.name()
+            + ","
+            + I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_categories.name()
+            + ","
+            + I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_search.name()),
+
+        /** Tabs configuration for the ade dialogmode. */
+        TABS_ADE(I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_types.name()
+            + ","
+            + I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_galleries.name()
+            + ","
+            + I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_categories.name()
+            + ","
+            + I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_search.name()),
+
+        /** Tabs configuration for the sitemap dialogmode. */
+        TABS_SITEMAP(I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_galleries.name()
+            + ","
+            + I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_categories.name()
+            + ","
+            + I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_search.name()
+            + ","
+            + I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_sitemap.name()),
+
+        /** The default tab id when gallery is opened. */
+        TAB_ID_DEFAULT(I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_galleries.name()),
+
+        /** The tab id when gallery is opened in ade dialogmode. */
+        TAB_ID_ADE(I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_types.name());
+
+        /** Property name. */
+        private String m_name;
+
+        /** Constructor.<p> */
+        private GalleryConfiguration(String name) {
+
+            m_name = name;
+        }
+
+        /** 
+         * Returns the name.<p>
+         * 
+         * @return the name
+         */
+        public String getName() {
+
+            return m_name;
+        }
+    }
 
     /** Internal instance. */
     private static CmsGalleryProvider INSTANCE;
@@ -106,24 +170,80 @@ public final class CmsGalleryProvider implements I_CmsGalleryProviderConstants, 
     /**
      * @see org.opencms.gwt.I_CmsCoreProvider#getData(javax.servlet.http.HttpServletRequest)
      */
+    // TODO: which parameter should be set from request? which can be set here?
     public JSONObject getData(HttpServletRequest request) {
 
         JSONObject keys = new JSONObject();
-        try {
-            keys.put(ReqParam.gallerypath.name(), getGalleryPath(request));
-            keys.put(ReqParam.tabs.name(), getTabsConfig(request));
-            keys.put(ReqParam.types.name(), getTypes(request));
-        } catch (Throwable e) {
-            LOG.error(e.getLocalizedMessage(), e);
+        // view, widget or editor dialogmode
+        String dialogMode = getDialogMode(request);
+        if (GalleryMode.view.name().equals(dialogMode)
+            || GalleryMode.widget.name().equals(dialogMode)
+            || GalleryMode.editor.name().equals(dialogMode)) {
+
             try {
-                keys.put("error", e.getLocalizedMessage());
-            } catch (JSONException e1) {
-                // ignore, should never happen
-                LOG.error(e1.getLocalizedMessage(), e1);
+                keys.put(ReqParam.dialogmode.name(), getDialogMode(request));
+                keys.put(ReqParam.gallerypath.name(), getGalleryPath(request));
+                keys.put(ReqParam.gallerytabid.name(), GalleryConfiguration.TAB_ID_DEFAULT.getName());
+                keys.put(ReqParam.tabs.name(), GalleryConfiguration.TABS_DEFAULT.getName());
+                keys.put(ReqParam.types.name(), getTypes(request));
+            } catch (Throwable e) {
+                LOG.error(e.getLocalizedMessage(), e);
+                try {
+                    keys.put("error", e.getLocalizedMessage());
+                } catch (JSONException e1) {
+                    // ignore, should never happen
+                    LOG.error(e1.getLocalizedMessage(), e1);
+                }
+            }
+        } else if (GalleryMode.ade.name().equals(dialogMode)) {
+            try {
+
+                keys.put(ReqParam.dialogmode.name(), getDialogMode(request));
+                keys.put(ReqParam.gallerypath.name(), "");
+                keys.put(ReqParam.gallerytabid.name(), GalleryConfiguration.TABS_ADE.getName());
+                keys.put(ReqParam.tabs.name(), GalleryConfiguration.TABS_ADE.getName());
+                // TODO: where do the types set for ade mode?
+                keys.put(ReqParam.types.name(), "");
+
+            } catch (Throwable e) {
+                LOG.error(e.getLocalizedMessage(), e);
+                try {
+                    keys.put("error", e.getLocalizedMessage());
+                } catch (JSONException e1) {
+                    // ignore, should never happen
+                    LOG.error(e1.getLocalizedMessage(), e1);
+                }
             }
         }
         return keys;
     }
+
+    /**
+     * Returns the available resource types for this gallery dialog.<p>
+     * 
+     * @param request the current request to get the the parameter
+     * 
+     * @return the comma separated resource types
+     */
+    private String getDialogMode(HttpServletRequest request) {
+
+        return (CmsStringUtil.isNotEmptyOrWhitespaceOnly(request.getParameter(ReqParam.dialogmode.name()))
+        ? request.getParameter(ReqParam.dialogmode.name())
+        : (String)request.getAttribute(ReqParam.dialogmode.name()));
+
+    }
+
+    //    /**
+    //     * Returns the tabs configuration for the gallery dialog.<p>
+    //     * 
+    //     * @param request the current request to get the the parameter
+    //     * 
+    //     * @return the configuration string with tabs to display
+    //     */
+    //    private String getTabsConfig(HttpServletRequest request) {
+    //
+    //        return request.getParameter(ReqParam.tabs.name());
+    //    }
 
     /**
      * Returns the path to the gallery to open.<p>
@@ -137,17 +257,17 @@ public final class CmsGalleryProvider implements I_CmsGalleryProviderConstants, 
         return request.getParameter(ReqParam.gallerypath.name());
     }
 
-    /**
-     * Returns the tabs configuration for the gallery dialog.<p>
-     * 
-     * @param request the current request to get the the parameter
-     * 
-     * @return the configuration string with tabs to display
-     */
-    private String getTabsConfig(HttpServletRequest request) {
-
-        return request.getParameter(ReqParam.tabs.name());
-    }
+    //    /**
+    //     * Returns the tab id to be selected when gallery is opened.<p>
+    //     * 
+    //     * @param request the current request to get the the parameter
+    //     * 
+    //     * @return the tab id
+    //     */
+    //    private String getGalleryTabId(HttpServletRequest request) {
+    //
+    //        return request.getParameter(ReqParam.gallerytabid.name());
+    //    }
 
     /**
      * Returns the available resource types for this gallery dialog.<p>
