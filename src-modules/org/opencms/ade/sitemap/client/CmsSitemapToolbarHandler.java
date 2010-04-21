@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapToolbarHandler.java,v $
- * Date   : $Date: 2010/04/19 11:48:12 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/21 07:40:21 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,8 @@
 package org.opencms.ade.sitemap.client;
 
 import org.opencms.ade.publish.client.CmsPublishDialog;
+import org.opencms.gwt.client.ui.CmsConfirmDialog;
+import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
 import org.opencms.gwt.client.util.CmsDomUtil;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -45,7 +47,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  * 
@@ -54,7 +56,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
 public class CmsSitemapToolbarHandler implements ClickHandler {
 
     /** The controller. */
-    private CmsSitemapController m_controller;
+    protected CmsSitemapController m_controller;
 
     /** The toolbar itself. */
     private CmsSitemapToolbar m_toolbar;
@@ -87,8 +89,6 @@ public class CmsSitemapToolbarHandler implements ClickHandler {
 
         if (event.getSource().equals(m_toolbar.getSaveButton())) {
             m_controller.commit();
-        } else if (event.getSource().equals(m_toolbar.getSubsitemapButton())) {
-            // TODO: create subsitemap
         } else if (event.getSource().equals(m_toolbar.getAddButton())) {
             // TODO: add
         } else if (event.getSource().equals(m_toolbar.getClipboardButton())) {
@@ -106,8 +106,33 @@ public class CmsSitemapToolbarHandler implements ClickHandler {
                     getToolbar().getPublishButton().setDown(false);
                 }
             });
+        } else if (event.getSource().equals(m_toolbar.getUndoButton())) {
+            m_controller.undo();
+        } else if (event.getSource().equals(m_toolbar.getRedoButton())) {
+            m_controller.redo();
         } else if (event.getSource().equals(m_toolbar.getResetButton())) {
-            // TODO: reset
+            CmsConfirmDialog dialog = new CmsConfirmDialog(org.opencms.gwt.client.Messages.get().key(
+                org.opencms.gwt.client.Messages.GUI_DIALOG_RESET_TITLE_0), org.opencms.gwt.client.Messages.get().key(
+                org.opencms.gwt.client.Messages.GUI_DIALOG_RESET_TEXT_0));
+            dialog.setHandler(new I_CmsConfirmDialogHandler() {
+
+                /**
+                 * @see org.opencms.gwt.client.ui.I_CmsCloseDialogHandler#onClose()
+                 */
+                public void onClose() {
+
+                    // do nothing
+                }
+
+                /**
+                 * @see org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler#onOk()
+                 */
+                public void onOk() {
+
+                    m_controller.reset();
+                }
+            });
+            dialog.center();
         }
     }
 

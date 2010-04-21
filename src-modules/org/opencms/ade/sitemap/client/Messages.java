@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/Messages.java,v $
- * Date   : $Date: 2010/04/19 11:48:12 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/04/21 07:40:21 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.client.i18n.CmsMessages;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 8.0.0
  */
@@ -54,6 +54,24 @@ public final class Messages {
     public static final String GUI_EDITOR_TITLE_0 = "GUI_EDITOR_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_HOVERBAR_DELETE_0 = "GUI_HOVERBAR_DELETE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HOVERBAR_EDIT_0 = "GUI_HOVERBAR_EDIT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HOVERBAR_GOTO_0 = "GUI_HOVERBAR_GOTO_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HOVERBAR_MOVE_0 = "GUI_HOVERBAR_MOVE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HOVERBAR_NEW_0 = "GUI_HOVERBAR_NEW_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HOVERBAR_SUBSITEMAP_0 = "GUI_HOVERBAR_SUBSITEMAP_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_LOADING_0 = "GUI_LOADING_0";
 
     /** Message constant for key in the resource bundle. */
@@ -63,7 +81,10 @@ public final class Messages {
     public static final String GUI_SITEMAP_0 = "GUI_SITEMAP_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_TOOLBAR_SUBSITEMAP_0 = "GUI_TOOLBAR_SUBSITEMAP_0";
+    public static final String GUI_TOOLBAR_REDO_0 = "GUI_TOOLBAR_REDO_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TOOLBAR_UNDO_0 = "GUI_TOOLBAR_UNDO_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_VFS_PATH_0 = "GUI_VFS_PATH_0";

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapView.java,v $
- * Date   : $Date: 2010/04/20 08:27:48 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/04/21 07:40:21 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,8 +32,8 @@
 package org.opencms.ade.sitemap.client;
 
 import org.opencms.ade.sitemap.client.ui.CmsPage;
+import org.opencms.ade.sitemap.client.ui.css.I_CmsImageBundle;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsLayoutBundle;
-import org.opencms.ade.sitemap.client.ui.css.I_CmsToolbarButtonLayoutBundle;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.file.CmsResource;
@@ -56,11 +56,14 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
  */
 public class CmsSitemapView extends A_CmsEntryPoint {
+
+    /** The sitemap controller. */
+    protected CmsSitemapController m_controller;
 
     /** The display tree. */
     protected CmsLazyTree<CmsSitemapTreeItem> m_tree;
@@ -76,15 +79,17 @@ public class CmsSitemapView extends A_CmsEntryPoint {
         // init
         I_CmsLayoutBundle.INSTANCE.rootCss().ensureInjected();
         I_CmsLayoutBundle.INSTANCE.pageCss().ensureInjected();
-        I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().ensureInjected();
+        I_CmsImageBundle.INSTANCE.buttonCss().ensureInjected();
 
         RootPanel.getBodyElement().addClassName(I_CmsLayoutBundle.INSTANCE.rootCss().root());
 
+        // controller
+        m_controller = new CmsSitemapController(this);
+
         // toolbar
-        final CmsSitemapController controller = new CmsSitemapController(this);
-        CmsSitemapToolbarHandler handler = new CmsSitemapToolbarHandler(controller);
+        CmsSitemapToolbarHandler handler = new CmsSitemapToolbarHandler(m_controller);
         CmsSitemapToolbar toolbar = new CmsSitemapToolbar(handler);
-        controller.setToolbar(toolbar);
+        m_controller.setToolbar(toolbar);
         RootPanel.get().add(toolbar);
         RootPanel.get().add(new CmsToolbarPlaceHolder());
 
@@ -123,7 +128,7 @@ public class CmsSitemapView extends A_CmsEntryPoint {
             public void onResponse(CmsClientSitemapEntry root) {
 
                 page.remove(loadingLabel);
-                controller.setRoot(root);
+                m_controller.setRoot(root);
 
                 m_tree = new CmsLazyTree<CmsSitemapTreeItem>(new A_CmsDeepLazyOpenHandler<CmsSitemapTreeItem>() {
 
@@ -132,14 +137,14 @@ public class CmsSitemapView extends A_CmsEntryPoint {
                      */
                     public void load(final CmsSitemapTreeItem target) {
 
-                        getChildren(controller, target);
+                        getChildren(target);
                     }
 
                 });
-                CmsSitemapTreeItem rootItem = new CmsSitemapTreeItem(root);
+                CmsSitemapTreeItem rootItem = new CmsSitemapTreeItem(root, m_controller);
                 m_tree.addItem(rootItem);
                 page.add(m_tree);
-                getChildren(controller, rootItem);
+                getChildren(rootItem);
                 rootItem.setOpen(true);
                 stop();
             }
@@ -173,7 +178,7 @@ public class CmsSitemapView extends A_CmsEntryPoint {
                 break;
             case NEW:
                 CmsTreeItem newParent = getTreeItem(CmsResource.getParentFolder(newEntry.getSitePath()));
-                newParent.addChild(new CmsSitemapTreeItem(newEntry));
+                newParent.addChild(new CmsSitemapTreeItem(newEntry, m_controller));
                 break;
             default:
         }
@@ -182,10 +187,9 @@ public class CmsSitemapView extends A_CmsEntryPoint {
     /**
      * Returns the children entries of the given node.<p>
      * 
-     * @param controller the controller
      * @param target the item to get the children for
      */
-    protected void getChildren(final CmsSitemapController controller, final CmsSitemapTreeItem target) {
+    protected void getChildren(final CmsSitemapTreeItem target) {
 
         CmsRpcAction<List<CmsClientSitemapEntry>> getChildrenAction = new CmsRpcAction<List<CmsClientSitemapEntry>>() {
 
@@ -196,7 +200,7 @@ public class CmsSitemapView extends A_CmsEntryPoint {
             public void execute() {
 
                 // Make the call to the sitemap service
-                CmsSitemapProvider.getService().getChildren(target.getSitePath(), this);
+                CmsSitemapProvider.getService().getChildren(target.getHandler().getEntry().getSitePath(), this);
             }
 
             /**
@@ -206,12 +210,11 @@ public class CmsSitemapView extends A_CmsEntryPoint {
             public void onResponse(List<CmsClientSitemapEntry> result) {
 
                 target.clearChildren();
-                controller.addData(target.getSitePath(), result);
+                m_controller.addData(target.getHandler().getEntry().getSitePath(), result);
                 for (CmsClientSitemapEntry entry : result) {
-                    target.addChild(entry);
+                    target.addChild(new CmsSitemapTreeItem(entry, m_controller));
                 }
                 target.onFinishLoading();
-                // target.setOpen(init);
             }
         };
         getChildrenAction.execute();

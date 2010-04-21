@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapToolbar.java,v $
- * Date   : $Date: 2010/04/19 11:48:12 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/21 07:40:21 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,7 @@
 
 package org.opencms.ade.sitemap.client;
 
-import org.opencms.ade.sitemap.client.ui.css.I_CmsToolbarButtonLayoutBundle;
+import org.opencms.ade.sitemap.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.CmsToolbar;
 import org.opencms.gwt.client.ui.CmsToolbarButton;
 
@@ -40,7 +40,7 @@ import org.opencms.gwt.client.ui.CmsToolbarButton;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  */
@@ -58,14 +58,17 @@ public class CmsSitemapToolbar extends CmsToolbar {
     /** The publish button. */
     private CmsToolbarButton m_publishButton;
 
+    /** The redo button. */
+    private CmsToolbarButton m_redoButton;
+
     /** The reset button. */
     private CmsToolbarButton m_resetButton;
 
     /** The save button. */
     private CmsToolbarButton m_saveButton;
 
-    /** The subsitemap button. */
-    private CmsToolbarButton m_subsitemapButton;
+    /** The undo button. */
+    private CmsToolbarButton m_undoButton;
 
     /**
      * Constructor.<p>
@@ -82,12 +85,22 @@ public class CmsSitemapToolbar extends CmsToolbar {
         m_saveButton.addClickHandler(handler);
         addLeft(m_saveButton);
 
-        m_subsitemapButton = new CmsToolbarButton(
-            I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarSubsitemap(),
-            Messages.get().key(Messages.GUI_TOOLBAR_SUBSITEMAP_0));
-        m_subsitemapButton.setEnabled(isEditable);
-        m_subsitemapButton.addClickHandler(handler);
-        addLeft(m_subsitemapButton);
+        m_undoButton = new CmsToolbarButton(I_CmsImageBundle.INSTANCE.buttonCss().toolbarUndo(), Messages.get().key(
+            Messages.GUI_TOOLBAR_UNDO_0));
+        m_undoButton.setEnabled(false);
+        m_undoButton.addClickHandler(handler);
+        addLeft(m_undoButton);
+
+        m_redoButton = new CmsToolbarButton(I_CmsImageBundle.INSTANCE.buttonCss().toolbarRedo(), Messages.get().key(
+            Messages.GUI_TOOLBAR_REDO_0));
+        m_redoButton.setEnabled(false);
+        m_redoButton.addClickHandler(handler);
+        addLeft(m_redoButton);
+
+        m_resetButton = new CmsToolbarButton(CmsToolbarButton.ButtonData.RESET);
+        m_resetButton.setEnabled(false);
+        m_resetButton.addClickHandler(handler);
+        addLeft(m_resetButton);
 
         m_addButton = new CmsToolbarButton(CmsToolbarButton.ButtonData.ADD);
         m_addButton.setEnabled(isEditable);
@@ -107,11 +120,6 @@ public class CmsSitemapToolbar extends CmsToolbar {
         m_publishButton = new CmsToolbarButton(CmsToolbarButton.ButtonData.PUBLISH);
         m_publishButton.addClickHandler(handler);
         addRight(m_publishButton);
-
-        m_resetButton = new CmsToolbarButton(CmsToolbarButton.ButtonData.RESET);
-        m_resetButton.setEnabled(false);
-        m_resetButton.addClickHandler(handler);
-        addRight(m_resetButton);
     }
 
     /**
@@ -155,6 +163,16 @@ public class CmsSitemapToolbar extends CmsToolbar {
     }
 
     /**
+     * Returns the redo Button.<p>
+     *
+     * @return the redo Button
+     */
+    public CmsToolbarButton getRedoButton() {
+
+        return m_redoButton;
+    }
+
+    /**
      * Returns the reset Button.<p>
      *
      * @return the reset Button
@@ -175,12 +193,12 @@ public class CmsSitemapToolbar extends CmsToolbar {
     }
 
     /**
-     * Returns the subsitemap Button.<p>
+     * Returns the undo Button.<p>
      *
-     * @return the subsitemap Button
+     * @return the undo Button
      */
-    public CmsToolbarButton getSubsitemapButton() {
+    public CmsToolbarButton getUndoButton() {
 
-        return m_subsitemapButton;
+        return m_undoButton;
     }
 }

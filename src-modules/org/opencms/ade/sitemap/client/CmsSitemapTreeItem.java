@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapTreeItem.java,v $
- * Date   : $Date: 2010/04/19 11:48:12 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/04/21 07:40:21 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,18 +31,13 @@
 
 package org.opencms.ade.sitemap.client;
 
+import org.opencms.ade.sitemap.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
-import org.opencms.gwt.client.CmsCoreProvider;
-import org.opencms.gwt.client.ui.CmsImageButton;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
-import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem;
 import org.opencms.gwt.shared.CmsListInfoBean;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Image;
 
 /**
@@ -50,7 +45,7 @@ import com.google.gwt.user.client.ui.Image;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 8.0.0
  * 
@@ -59,19 +54,31 @@ import com.google.gwt.user.client.ui.Image;
  */
 public class CmsSitemapTreeItem extends CmsLazyTreeItem {
 
-    /** The whole site path. */
-    private String m_sitePath;
+    /** The handler. */
+    private CmsSitemapHoverbarHandler m_handler;
 
     /**
      * Default constructor.<p>
      * 
      * @param entry the sitemap entry to use
+     * @param controller the controller
      */
-    public CmsSitemapTreeItem(CmsClientSitemapEntry entry) {
+    public CmsSitemapTreeItem(CmsClientSitemapEntry entry, CmsSitemapController controller) {
 
         super(createWidget(entry));
         setId(entry.getName());
-        m_sitePath = entry.getSitePath();
+        m_handler = new CmsSitemapHoverbarHandler(entry, controller);
+        if (!CmsSitemapProvider.get().isEditable()) {
+            return;
+        }
+        // buttons
+        CmsListItemWidget itemWidget = (CmsListItemWidget)getWidget(0);
+        CmsSitemapHoverbar hoverbar = new CmsSitemapHoverbar(m_handler);
+        itemWidget.addButton(hoverbar.getGotoButton());
+        itemWidget.addButton(hoverbar.getDeleteButton());
+        itemWidget.addButton(hoverbar.getEditButton());
+        itemWidget.addButton(hoverbar.getNewButton());
+        itemWidget.addButton(hoverbar.getMoveButton());
     }
 
     /**
@@ -83,51 +90,26 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
      */
     private static CmsListItemWidget createWidget(CmsClientSitemapEntry entry) {
 
-        final String sitePath = entry.getSitePath();
-
         CmsListInfoBean infoBean = new CmsListInfoBean();
         infoBean.setTitle(entry.getTitle());
-        infoBean.setSubTitle(sitePath);
+        infoBean.setSubTitle(entry.getSitePath());
         infoBean.addAdditionalInfo(Messages.get().key(Messages.GUI_NAME_0), entry.getName());
         infoBean.addAdditionalInfo(Messages.get().key(Messages.GUI_VFS_PATH_0), entry.getVfsPath());
         CmsListItemWidget itemWidget = new CmsListItemWidget(infoBean);
         Image icon = new Image(I_CmsImageBundle.INSTANCE.magnifierIconActive());
         icon.addStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
         itemWidget.setIcon(icon);
-        CmsImageButton linkIcon = new CmsImageButton(I_CmsImageBundle.INSTANCE.style().magnifierIcon(), false);
-        linkIcon.setTitle("Go to page");
-        linkIcon.addClickHandler(new ClickHandler() {
-
-            /**
-             * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
-             */
-            public void onClick(ClickEvent event) {
-
-                Window.Location.replace(CmsCoreProvider.get().link(sitePath));
-            }
-        });
-        itemWidget.addButton(linkIcon);
         return itemWidget;
     }
 
     /**
-     * Adds a child for the given entry.<p>
-     * 
-     * @param entry the child entry to add
-     */
-    public void addChild(CmsClientSitemapEntry entry) {
-
-        addChild(new CmsSitemapTreeItem(entry));
-    }
-
-    /**
-     * Returns the site path.<p>
+     * Returns the handler.<p>
      *
-     * @return the site path
+     * @return the handler
      */
-    public String getSitePath() {
+    public CmsSitemapHoverbarHandler getHandler() {
 
-        return m_sitePath;
+        return m_handler;
     }
 
     /**
@@ -141,5 +123,6 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
         widget.setTitleLabel(entry.getTitle());
         widget.setAdditionalInfoLabel(0, entry.getName());
         widget.setAdditionalInfoLabel(1, entry.getVfsPath());
+        m_handler.setEntry(entry);
     }
 }
