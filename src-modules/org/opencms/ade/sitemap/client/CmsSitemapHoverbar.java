@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapHoverbar.java,v $
- * Date   : $Date: 2010/04/21 07:40:21 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/21 14:29:20 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import org.opencms.gwt.client.ui.CmsToolbar;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  */
@@ -89,13 +89,14 @@ public class CmsSitemapHoverbar extends CmsToolbar {
         m_deleteButton.setTitle(Messages.get().key(Messages.GUI_HOVERBAR_DELETE_0));
         m_deleteButton.addClickHandler(handler);
 
-        m_gotoButton = new CmsImageButton(I_CmsImageBundle.INSTANCE.buttonCss().hoverbarGoto(), false);
-        m_gotoButton.setTitle(Messages.get().key(Messages.GUI_HOVERBAR_GOTO_0));
-        m_gotoButton.addClickHandler(handler);
-
         m_subsitemapButton = new CmsImageButton(I_CmsImageBundle.INSTANCE.buttonCss().hoverbarSubsitemap(), false);
         m_subsitemapButton.setTitle(Messages.get().key(Messages.GUI_HOVERBAR_SUBSITEMAP_0));
         m_subsitemapButton.addClickHandler(handler);
+
+        // TODO: this should be a link so it can be opened in a new window or tab by the user
+        m_gotoButton = new CmsImageButton(I_CmsImageBundle.INSTANCE.buttonCss().hoverbarGoto(), false);
+        m_gotoButton.setTitle(Messages.get().key(Messages.GUI_HOVERBAR_GOTO_0));
+        m_gotoButton.addClickHandler(handler);
     }
 
     /**

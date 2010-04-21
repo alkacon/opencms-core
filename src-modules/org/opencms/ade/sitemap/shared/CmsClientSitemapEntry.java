@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsClientSitemapEntry.java,v $
- * Date   : $Date: 2010/04/19 11:48:12 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/04/21 14:29:20 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,9 +31,10 @@
 
 package org.opencms.ade.sitemap.shared;
 
-import org.opencms.file.CmsResource;
 import org.opencms.util.CmsUUID;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
@@ -43,17 +44,23 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
 public class CmsClientSitemapEntry implements IsSerializable {
+
+    /** The children. */
+    private List<CmsClientSitemapEntry> m_children;
 
     /** The entry id. */
     private CmsUUID m_id;
 
     /** The entry name. */
     private String m_name;
+
+    /** The relative position between siblings. */
+    private int m_position;
 
     /** The property map. */
     private Map<String, String> m_properties;
@@ -68,9 +75,28 @@ public class CmsClientSitemapEntry implements IsSerializable {
     private String m_vfsPath;
 
     /**
-     * Creates a copy of the current entry.<p>
+     * Constructor.<p>
+     */
+    public CmsClientSitemapEntry() {
+
+        m_children = new ArrayList<CmsClientSitemapEntry>();
+    }
+
+    /**
+     * Adds the given entry to the children.<p>
      * 
-     * @return a copy of the current entry
+     * @param entry the entry to add
+     */
+    public void addChild(CmsClientSitemapEntry entry) {
+
+        entry.setPosition(m_children.size());
+        m_children.add(entry);
+    }
+
+    /**
+     * Creates a copy without children of the current entry.<p>
+     * 
+     * @return a copy without children of the current entry
      */
     public CmsClientSitemapEntry cloneEntry() {
 
@@ -81,7 +107,18 @@ public class CmsClientSitemapEntry implements IsSerializable {
         entry.setSitePath(getSitePath());
         entry.setTitle(getTitle());
         entry.setVfsPath(getVfsPath());
+        entry.setPosition(getPosition());
         return entry;
+    }
+
+    /**
+     * Returns the children.<p>
+     *
+     * @return the children
+     */
+    public List<CmsClientSitemapEntry> getChildren() {
+
+        return m_children;
     }
 
     /**
@@ -95,17 +132,6 @@ public class CmsClientSitemapEntry implements IsSerializable {
     }
 
     /**
-     * Returns the inherited properties.<p>
-     * 
-     * @return the inherited properties
-     */
-    public Map<String, String> getInheritedProperties() {
-
-        // TODO: inherited properties?
-        return m_properties;
-    }
-
-    /**
      * Returns the name.<p>
      *
      * @return the name
@@ -116,13 +142,22 @@ public class CmsClientSitemapEntry implements IsSerializable {
     }
 
     /**
+     * Returns the position.<p>
+     *
+     * @return the position
+     */
+    public int getPosition() {
+
+        return m_position;
+    }
+
+    /**
      * Returns the configured properties.<p>
      * 
      * @return the configured properties
      */
     public Map<String, String> getProperties() {
 
-        // TODO: inherited properties?
         return m_properties;
     }
 
@@ -157,6 +192,42 @@ public class CmsClientSitemapEntry implements IsSerializable {
     }
 
     /**
+     * Inserts the given entry at the given position.<p>
+     * 
+     * @param entry the entry to insert
+     * @param position the position
+     */
+    public void insertChild(CmsClientSitemapEntry entry, int position) {
+
+        m_children.add(position, entry);
+        updatePositions(position);
+    }
+
+    /**
+     * Removes the child at the given position.<p>
+     * 
+     * @param position the index of the child to remove
+     * 
+     * @return the removed child
+     */
+    public CmsClientSitemapEntry removeChild(int position) {
+
+        CmsClientSitemapEntry removed = m_children.remove(position);
+        updatePositions(position);
+        return removed;
+    }
+
+    /**
+     * Sets the children.<p>
+     *
+     * @param children the children to set
+     */
+    public void setChildren(List<CmsClientSitemapEntry> children) {
+
+        m_children = children;
+    }
+
+    /**
      * Sets the id.<p>
      *
      * @param id the id to set
@@ -177,13 +248,22 @@ public class CmsClientSitemapEntry implements IsSerializable {
     }
 
     /**
+     * Sets the position.<p>
+     *
+     * @param position the position to set
+     */
+    public void setPosition(int position) {
+
+        m_position = position;
+    }
+
+    /**
      * Sets the properties.<p>
      *
      * @param properties the properties to set
      */
     public void setProperties(Map<String, String> properties) {
 
-        // TODO: inherited properties?
         m_properties = properties;
     }
 
@@ -195,7 +275,6 @@ public class CmsClientSitemapEntry implements IsSerializable {
     public void setSitePath(String sitePath) {
 
         m_sitePath = sitePath;
-        m_name = CmsResource.getName(m_sitePath);
     }
 
     /**
@@ -216,5 +295,17 @@ public class CmsClientSitemapEntry implements IsSerializable {
     public void setVfsPath(String path) {
 
         m_vfsPath = path;
+    }
+
+    /**
+     * Updates all the children positions starting from the given position.<p>
+     * 
+     * @param position the position to start with
+     */
+    private void updatePositions(int position) {
+
+        for (int i = position; i < m_children.size(); i++) {
+            m_children.get(i).setPosition(i);
+        }
     }
 }

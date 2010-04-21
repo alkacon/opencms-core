@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/rpc/Attic/I_CmsSitemapService.java,v $
- * Date   : $Date: 2010/04/20 08:26:38 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/04/21 14:29:20 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,7 @@
 
 package org.opencms.ade.sitemap.shared.rpc;
 
-import org.opencms.ade.sitemap.shared.CmsClientSitemapChange;
+import org.opencms.ade.sitemap.shared.I_CmsSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.gwt.shared.rpc.CmsRpcException;
 
@@ -45,7 +45,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
  * 
@@ -91,15 +91,15 @@ public interface I_CmsSitemapService extends RemoteService {
     CmsClientSitemapEntry getEntry(String root) throws CmsRpcException;
 
     /**
-     * Returns the root sitemap entry for the given sitemap.<p>
+     * Returns the root sitemap entries for the given sitemap.<p>
      * 
      * @param sitemapUri the site relative path
      *  
-     * @return the sitemap entry
+     * @return root sitemap entries
      * 
      * @throws CmsRpcException if something goes wrong 
      */
-    CmsClientSitemapEntry getRoot(String sitemapUri) throws CmsRpcException;
+    List<CmsClientSitemapEntry> getRoots(String sitemapUri) throws CmsRpcException;
 
     /**
      * Merges the given super sitemap with the sub-sitemap at the given path.<p>
@@ -119,5 +119,5 @@ public interface I_CmsSitemapService extends RemoteService {
      * 
      * @throws CmsRpcException if something goes wrong 
      */
-    void save(String sitemapUri, List<CmsClientSitemapChange> changes) throws CmsRpcException;
+    void save(String sitemapUri, List<I_CmsSitemapChange> changes) throws CmsRpcException;
 }

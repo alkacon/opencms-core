@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapTreeItem.java,v $
- * Date   : $Date: 2010/04/21 07:40:21 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/04/21 14:29:20 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import com.google.gwt.user.client.ui.Image;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 8.0.0
  * 
@@ -103,26 +103,26 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
     }
 
     /**
-     * Returns the handler.<p>
+     * Returns the underlying sitemap entry.<p>
      *
-     * @return the handler
+     * @return the underlying sitemap entry
      */
-    public CmsSitemapHoverbarHandler getHandler() {
+    public CmsClientSitemapEntry getEntry() {
 
-        return m_handler;
+        return m_handler.getEntry();
     }
 
     /**
-     * Refresh the displayed data from the given sitemap entry.<p>
+     * Refreshes the displayed data from the given sitemap entry.<p>
      * 
-     * @param entry the sitemap entry to display
+     * @param entry the sitemap entry to update
      */
-    public void setEntry(CmsClientSitemapEntry entry) {
+    public void updateEntry(CmsClientSitemapEntry entry) {
 
         CmsListItemWidget widget = (CmsListItemWidget)getWidget();
         widget.setTitleLabel(entry.getTitle());
         widget.setAdditionalInfoLabel(0, entry.getName());
         widget.setAdditionalInfoLabel(1, entry.getVfsPath());
-        m_handler.setEntry(entry);
+        m_handler.updateEntry(entry);
     }
 }

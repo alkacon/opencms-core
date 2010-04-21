@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/rpc/Attic/I_CmsSitemapServiceAsync.java,v $
- * Date   : $Date: 2010/04/19 11:48:12 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/21 14:29:20 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,7 @@
 
 package org.opencms.ade.sitemap.shared.rpc;
 
-import org.opencms.ade.sitemap.shared.CmsClientSitemapChange;
+import org.opencms.ade.sitemap.shared.I_CmsSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 
 import java.util.List;
@@ -43,7 +43,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  * 
@@ -79,12 +79,12 @@ public interface I_CmsSitemapServiceAsync {
     void getEntry(String root, AsyncCallback<CmsClientSitemapEntry> callback);
 
     /**
-     * Returns the root sitemap entry for the given sitemap.<p>
+     * Returns the root sitemap entries for the given sitemap.<p>
      * 
      * @param sitemapUri the site relative path
      * @param callback the async callback
      */
-    void getRoot(String sitemapUri, AsyncCallback<CmsClientSitemapEntry> callback);
+    void getRoots(String sitemapUri, AsyncCallback<List<CmsClientSitemapEntry>> callback);
 
     /**
      * Merges the given super sitemap with the sub-sitemap at the given path.<p>
@@ -102,5 +102,5 @@ public interface I_CmsSitemapServiceAsync {
      * @param changes the changes to save
      * @param callback the async callback
      */
-    void save(String sitemapUri, List<CmsClientSitemapChange> changes, AsyncCallback<Void> callback);
+    void save(String sitemapUri, List<I_CmsSitemapChange> changes, AsyncCallback<Void> callback);
 }
