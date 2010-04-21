@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsContainerDragHandler.java,v $
- * Date   : $Date: 2010/04/16 13:54:15 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/04/21 14:13:45 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,7 +65,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 8.0.0
  */
@@ -274,10 +274,11 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElementEx
         this.getDragElement().getDragParent().getElement().removeClassName(
             I_CmsLayoutBundle.INSTANCE.dragdropCss().currentTarget());
         m_currentTarget.getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().currentTarget());
-        // if the element is dragged into a target that is not the initial parent target,
+        // if the element is dragged into a target that is not the initial parent target and not the tool-bar menu drop-zone,
         // show the overlay on the initial place-holder and place it at the start position
         // otherwise remove the overlay
-        if (m_targetInfos.get(m_currentTarget) != m_startInfo) {
+        if ((m_targetInfos.get(m_currentTarget) != m_startInfo)
+            && (m_targetInfos.get(m_currentTarget) != m_dropZoneInfo)) {
             m_startInfo.getPlaceholder().addStyleName(I_CmsLayoutBundle.INSTANCE.dragdropCss().overlayShow());
             I_CmsDragTarget orgTarget = m_dragElement.getDragParent();
             orgTarget.insert(m_current.getPlaceholder(), orgTarget.getWidgetIndex((Widget)m_dragElement));
@@ -360,6 +361,7 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElementEx
             dragParent.add((Widget)m_dragElement);
             CmsContainerpageDataProvider.get().getContainerpageUtil().getClipboard().hideMenu();
             Document.get().getBody().addClassName(CmsToolbarButton.ButtonData.MOVE.getIconClass());
+            DOM.setCapture(m_dragElement.getElement());
         } else {
             m_dragFromMenu = false;
             m_placeholder = createPlaceholder(m_dragElement);

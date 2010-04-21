@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsToolbarResetButton.java,v $
- * Date   : $Date: 2010/04/08 06:01:24 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/21 14:13:46 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,13 +35,14 @@ import org.opencms.ade.containerpage.client.draganddrop.CmsDragContainerElement;
 import org.opencms.gwt.client.ui.CmsToolbarButton;
 
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.user.client.Window;
 
 /**
  * The reset button holding all related methods.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -60,7 +61,7 @@ public class CmsToolbarResetButton extends A_CmsContainerpageToolbarButton {
      */
     public boolean hasPermissions(CmsDragContainerElement element) {
 
-        // TODO: Auto-generated method stub
+        // no element action available
         return false;
     }
 
@@ -69,7 +70,7 @@ public class CmsToolbarResetButton extends A_CmsContainerpageToolbarButton {
      */
     public void init() {
 
-        // TODO: Auto-generated method stub
+        // nothing to do here
 
     }
 
@@ -78,7 +79,7 @@ public class CmsToolbarResetButton extends A_CmsContainerpageToolbarButton {
      */
     public void onElementClick(ClickEvent event, CmsDragContainerElement element) {
 
-        // TODO: Auto-generated method stub
+        // no element action available
 
     }
 
@@ -87,7 +88,8 @@ public class CmsToolbarResetButton extends A_CmsContainerpageToolbarButton {
      */
     public void onToolbarActivate() {
 
-        // TODO: Auto-generated method stub
+        // TODO: let the user confirm this action
+        Window.Location.reload();
 
     }
 
@@ -96,7 +98,7 @@ public class CmsToolbarResetButton extends A_CmsContainerpageToolbarButton {
      */
     public void onToolbarDeactivate() {
 
-        // TODO: Auto-generated method stub
+        // nothing to do here
 
     }
 

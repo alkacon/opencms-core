@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsDraggableListItemWidget.java,v $
- * Date   : $Date: 2010/04/16 13:54:15 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/21 14:13:46 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -104,6 +104,8 @@ public class CmsDraggableListItemWidget extends CmsListItemWidget implements I_C
         m_dragEnabled = draggable;
         if (draggable) {
             m_moveHandle = new CmsImageButton(I_CmsImageBundle.INSTANCE.style().moveIcon(), false);
+            // always show button
+            m_moveHandle.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
             addButton(m_moveHandle);
         }
     }

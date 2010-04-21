@@ -5,7 +5,7 @@
 
 .menuContent{
 	width: 650px;
-	padding: 5px 0px;
+	padding: 0px;
 }
 
 .showDropzone .clipboardTabs{
@@ -14,6 +14,30 @@
 .clipboardTabs{
 	height: 400px;
 }
+
+.clipboardTabs > div{
+	border: none;	
+}
+
+.clipboardTabPanel{
+	margin:10px 8px 8px;
+}
+
+.clipboardList{
+	overflow: auto;
+	min-height: 38px;
+	border: 1px solid #aaaaaa;
+}
+
+/** hiding buttons in clip-board menu while dragging **/
+.dragStarted .clipboardList .cmsState {
+	display: none;
+}
+
+.menuContent.showDropzone{
+	padding: 5px 0px;	
+}
+
 .showDropzone .clipboardDropzone{
 	display: block;
 }
@@ -26,8 +50,12 @@
 	background: #ffffff;
 	height: 90px;
 	position: relative;
-	
 }
+
+.clipboardDropzone > div, .clipboardList > div  {
+	margin: 2px;
+}
+
 
 .optionBar{
 	position: absolute;

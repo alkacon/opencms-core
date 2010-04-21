@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContainer.java,v $
- * Date   : $Date: 2010/04/20 13:04:04 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2010/04/21 14:13:46 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 7.6 
  */
@@ -342,7 +342,7 @@ public class CmsJspTagContainer extends TagSupport {
                 for (CmsContainerElementBean subelement : subContainer.getElements()) {
                     CmsResource subelementRes = cms.readResource(subelement.getElementId());
                     String subelementUri = cms.getSitePath(subelementRes);
-
+                    // TODO: check if any additional info is necessary for container-page editor
                     String subelementFormatter = OpenCms.getResourceManager().getResourceType(subelementRes).getFormatterForContainerType(
                         cms,
                         subelementRes,
@@ -424,14 +424,10 @@ public class CmsJspTagContainer extends TagSupport {
         }
         jsonContainer.put(JsonContainer.elements.name(), jsonElements);
         // the container meta data is added to the javascript window object by the following tag, used within the container-page editor 
-        String gwtContainerData = "<script  type=\"text/javascript\">if ("
-            + KEY_CONTAINER_DATA
-            + "!=null)  "
-            + KEY_CONTAINER_DATA
-            + ".push("
-            + jsonContainer.toString()
-            + ");</script>";
-        return gwtContainerData;
+        StringBuffer gwtContainerData = new StringBuffer("<script  type=\"text/javascript\">if (").append(
+            KEY_CONTAINER_DATA).append("!=null)  ").append(KEY_CONTAINER_DATA).append(".push(").append(
+            jsonContainer.toString()).append(");</script>");
+        return gwtContainerData.toString();
         /* new StringBuffer("<div class='cms-ade-cnt-data ").append(jsonContainer.toString()).append("' ></div>").append(
             gwtContainerData).toString(); */
     }

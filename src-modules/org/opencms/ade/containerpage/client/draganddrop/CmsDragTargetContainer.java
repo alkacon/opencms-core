@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsDragTargetContainer.java,v $
- * Date   : $Date: 2010/04/16 13:54:15 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/04/21 14:13:45 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -321,7 +321,6 @@ public class CmsDragTargetContainer implements I_CmsDragTargetContainer {
         int left = 0;
         int height = 0;
         int width = 0;
-
         Iterator<Widget> it = iterator();
         while (it.hasNext()) {
             Widget w = it.next();

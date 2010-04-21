@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsToolbarClipboardMenu.java,v $
- * Date   : $Date: 2010/04/14 14:33:47 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/04/21 14:13:46 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.ade.containerpage.client.ui;
 import org.opencms.ade.containerpage.client.CmsContainerpageDataProvider;
 import org.opencms.ade.containerpage.client.draganddrop.CmsContainerDragHandler;
 import org.opencms.ade.containerpage.client.draganddrop.CmsDragContainerElement;
+import org.opencms.ade.containerpage.client.draganddrop.CmsDragMenuElement;
 import org.opencms.ade.containerpage.client.draganddrop.CmsDragTargetMenu;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
@@ -50,7 +51,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -66,10 +67,10 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu {
     private CmsDragTargetMenu m_dropzone;
 
     /** The favorite list widget. */
-    private FlowPanel m_favorites;
+    private CmsFavoriteTab m_favorites;
 
     /** The recent list widget. */
-    private FlowPanel m_recent;
+    private CmsRecentTab m_recent;
 
     /** The favorite and recent list tabs. */
     private CmsTabbedPanel m_tabs;
@@ -85,8 +86,8 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu {
         m_content = new FlowPanel();
         m_content.setStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().menuContent());
         m_tabs = new CmsTabbedPanel();
-        m_favorites = new FlowPanel();
-        m_recent = new FlowPanel();
+        m_favorites = new CmsFavoriteTab();
+        m_recent = new CmsRecentTab();
 
         // TODO: add localization
         m_tabs.add(m_favorites, "Favorites");
@@ -111,13 +112,9 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu {
      */
     public void addToFavorites(CmsContainerElement element) {
 
-        CmsDraggableListItemWidget listItem = new CmsDraggableListItemWidget(new CmsListInfoBean(
-            element.getTitle(),
-            element.getFile(),
-            null), true);
-        listItem.setClientId(element.getClientId());
+        CmsDragMenuElement listItem = new CmsDragMenuElement(element);
         CmsContainerDragHandler.get().registerMouseHandler(listItem);
-        m_favorites.add(listItem);
+        m_favorites.addListItem(listItem);
     }
 
     /**
@@ -133,7 +130,7 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu {
             null), true);
         listItem.setClientId(element.getClientId());
         CmsContainerDragHandler.get().registerMouseHandler(listItem);
-        m_recent.add(listItem);
+        m_recent.addListItem(listItem);
     }
 
     /**
@@ -141,7 +138,7 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu {
      */
     public void clearFavorites() {
 
-        m_favorites.clear();
+        m_favorites.clearList();
     }
 
     /**
@@ -149,7 +146,7 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu {
      */
     public void clearRecent() {
 
-        m_recent.clear();
+        m_recent.clearList();
     }
 
     /**

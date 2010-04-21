@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagEnableAde.java,v $
- * Date   : $Date: 2010/04/20 13:04:05 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2010/04/21 14:13:46 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -75,7 +75,7 @@ import org.apache.commons.logging.Log;
 /**
  * Implementation of the <code>&lt;enable-ade/&gt;</code> tag.<p>
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 7.6 
  */
@@ -212,6 +212,8 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
      * @return the ade include HTML to insert in the page beginning
      */
     public static String getAdeIncludes(CmsObject cms, ServletRequest req) {
+
+        // TODO: remove this function later on
 
         // check if the selected include file is available in the cache
         CmsMemoryObjectCache cache = CmsMemoryObjectCache.getInstance();

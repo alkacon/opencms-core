@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/draganddrop/Attic/A_CmsDragHandler.java,v $
- * Date   : $Date: 2010/04/16 13:54:15 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/04/21 14:13:46 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -436,7 +436,7 @@ implements I_CmsDragHandler<E, T> {
                 m_scrollTimer = null;
             }
             if ((direction != null) && (m_scrollTimer == null)) {
-                m_scrollTimer = new CmsScrollTimer(RootPanel.getBodyElement(), 10, direction);
+                m_scrollTimer = new CmsScrollTimer(RootPanel.getBodyElement(), 20, direction);
                 m_scrollTimer.scheduleRepeating(10);
             }
 

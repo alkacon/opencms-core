@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageDataProvider.java,v $
- * Date   : $Date: 2010/04/19 06:39:10 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/04/21 14:13:45 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.ade.containerpage.client;
 import org.opencms.ade.containerpage.client.draganddrop.CmsDragContainerElement;
 import org.opencms.ade.containerpage.client.draganddrop.CmsDragTargetContainer;
 import org.opencms.ade.containerpage.client.ui.I_CmsContainerpageToolbarButton;
+import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService;
 import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageServiceAsync;
@@ -50,16 +51,18 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JsArray;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Data provider for the container-page editor. All data concerning the container-page is requested and maintained by this provider.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -264,6 +267,9 @@ public final class CmsContainerpageDataProvider {
     /** The container element data. All requested elements will be cached here.*/
     /*DEFAULT*/Map<String, CmsContainerElement> m_elements;
 
+    /** Flag if the container-page has changed. */
+    /*DEFAULT*/boolean m_pageChanged;
+
     /** The container-page RPC service. */
     private I_CmsContainerpageServiceAsync m_containerpageService;
 
@@ -272,9 +278,6 @@ public final class CmsContainerpageDataProvider {
 
     /** The container data. */
     private Map<String, CmsContainerJso> m_containers;
-
-    /** Flag if the container-page has changed. */
-    private boolean m_pageChanged;
 
     /** The drag targets within this page. */
     private Map<String, CmsDragTargetContainer> m_targetContainers;
@@ -522,6 +525,33 @@ public final class CmsContainerpageDataProvider {
     }
 
     /**
+     * Returns the current containers and their elements.<p>
+     * 
+     * @return the list of containers
+     */
+    public List<CmsContainer> getPageContent() {
+
+        List<CmsContainer> containers = new ArrayList<CmsContainer>();
+        Iterator<Entry<String, CmsDragTargetContainer>> it = m_targetContainers.entrySet().iterator();
+        while (it.hasNext()) {
+            Entry<String, CmsDragTargetContainer> entry = it.next();
+            List<String> elementIds = new ArrayList<String>();
+            Iterator<Widget> elIt = entry.getValue().iterator();
+            while (elIt.hasNext()) {
+                try {
+                    CmsDragContainerElement element = (CmsDragContainerElement)elIt.next();
+                    elementIds.add(element.getClientId());
+                } catch (ClassCastException e) {
+                    // no proper container element, skip it (this should never happen!)
+                    CmsDebugLog.getInstance().printLine("WARNING: there is an inappropriate element within a container");
+                }
+            }
+            containers.add(new CmsContainer(entry.getKey(), m_containers.get(entry.getKey()).getType(), -1, elementIds));
+        }
+        return containers;
+    }
+
+    /**
      * Returns if the page has changed.<p>
      * 
      * @return <code>true</code> if the page has changed
@@ -653,6 +683,72 @@ public final class CmsContainerpageDataProvider {
             dragParent.insert(replacer, dragParent.getWidgetIndex(dragElement));
             dragElement.removeFromParent();
         }
+    }
+
+    /**
+     * Saves the current state of the container-page.<p>
+     */
+    public void saveContainerpage() {
+
+        if (m_pageChanged) {
+            CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
+
+                /**
+                 * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+                 */
+                @Override
+                public void execute() {
+
+                    getContainerpageService().saveContainerpage(getCurrentUri(), getPageContent(), this);
+
+                }
+
+                /**
+                 * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+                 */
+                @Override
+                protected void onResponse(Void result) {
+
+                    CmsDebugLog.getInstance().printLine("Page saved");
+                    m_pageChanged = false;
+
+                }
+            };
+            action.execute();
+        }
+
+    }
+
+    /**
+     * Saves the favorite list.<p>
+     * 
+     * @param clientIds the client id's of the list's elements
+     */
+    public void saveFavoriteList(final List<String> clientIds) {
+
+        CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+             */
+            @Override
+            public void execute() {
+
+                getContainerpageService().saveFavoriteList(clientIds, this);
+
+            }
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+             */
+            @Override
+            protected void onResponse(Void result) {
+
+                CmsDebugLog.getInstance().printLine("Favorite list saved");
+
+            }
+        };
+        action.execute();
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsContainerpageService.java,v $
- * Date   : $Date: 2010/04/15 13:53:28 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/04/21 14:13:45 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,19 +31,26 @@
 
 package org.opencms.ade.containerpage;
 
+import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.gwt.CmsGwtService;
 import org.opencms.gwt.shared.rpc.CmsRpcException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.containerpage.CmsADESessionCache;
+import org.opencms.xml.containerpage.CmsContainerBean;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
+import org.opencms.xml.containerpage.CmsContainerPageBean;
 import org.opencms.xml.containerpage.CmsSubContainerBean;
+import org.opencms.xml.containerpage.CmsXmlContainerPage;
+import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
 import org.opencms.xml.containerpage.CmsXmlSubContainer;
 import org.opencms.xml.containerpage.CmsXmlSubContainerFactory;
 
@@ -62,7 +69,7 @@ import java.util.Set;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -156,6 +163,62 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             log(e.getLocalizedMessage(), e);
             throw new CmsRpcException(e.getLocalizedMessage());
         }
+    }
+
+    /**
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#saveContainerpage(java.lang.String, java.util.List)
+     */
+    public void saveContainerpage(String containerpageUri, List<CmsContainer> containers) throws CmsRpcException {
+
+        CmsObject cms = getCmsObject();
+
+        Iterator<CmsContainer> it = containers.iterator();
+
+        CmsADESessionCache cache = getSessionCache();
+        List<CmsContainerBean> containerBeans = new ArrayList<CmsContainerBean>();
+        while (it.hasNext()) {
+            CmsContainer container = it.next();
+            List<CmsContainerElementBean> elements = new ArrayList<CmsContainerElementBean>();
+            Iterator<String> elIt = container.getElements().iterator();
+            while (elIt.hasNext()) {
+                try {
+                    String clientId = elIt.next();
+                    CmsContainerElementBean element = cache.getCacheContainerElement(clientId);
+
+                    //TODO: check whether it is necessary to read the resource and the formatter again 
+
+                    // make sure resource is readable, 
+                    CmsResource resource = cms.readResource(element.getElementId());
+
+                    // check if there is a valid formatter
+                    I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(resource);
+                    String formatterUri = resType.getFormatterForContainerType(cms, resource, container.getType());
+                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(formatterUri)) {
+                        CmsResource formatter = cms.readResource(formatterUri);
+                        elements.add(new CmsContainerElementBean(
+                            element.getElementId(),
+                            formatter.getStructureId(),
+                            element.getProperties()));
+                    }
+                } catch (Exception e) {
+                    log(e.getLocalizedMessage(), e);
+                }
+            }
+            containerBeans.add(new CmsContainerBean(container.getName(), container.getType(), -1, elements));
+        }
+
+        CmsContainerPageBean page = new CmsContainerPageBean(cms.getRequestContext().getLocale(), containerBeans);
+
+        try {
+            cms.lockResourceTemporary(containerpageUri);
+            CmsXmlContainerPage xmlCnt = CmsXmlContainerPageFactory.unmarshal(cms, cms.readFile(containerpageUri));
+            xmlCnt.save(cms, page);
+            cms.unlockResource(containerpageUri);
+        } catch (CmsException e) {
+            log(e.getLocalizedMessage(), e);
+            throw new CmsRpcException(e.getLocalizedMessage());
+        }
+
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2010/04/14 06:45:01 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/04/21 14:13:45 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import com.google.gwt.resources.client.CssResource;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -55,6 +55,18 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsIm
          * @return the CSS class name
          */
         String clipboardDropzone();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String clipboardList();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String clipboardTabPanel();
 
         /** Access method.<p>
          * 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/shared/Attic/CmsContainerElement.java,v $
- * Date   : $Date: 2010/03/26 13:13:11 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/21 14:13:46 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,12 +41,13 @@ import java.util.Map;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
 public class CmsContainerElement implements Serializable {
 
+    /** The serial version id. */
     private static final long serialVersionUID = 53971824834674417L;
 
     /** The element client id. */

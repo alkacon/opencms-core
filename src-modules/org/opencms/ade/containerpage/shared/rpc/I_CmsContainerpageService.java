@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/shared/rpc/Attic/I_CmsContainerpageService.java,v $
- * Date   : $Date: 2010/04/13 14:27:44 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/21 14:13:46 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.ade.containerpage.shared.rpc;
 
+import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.gwt.shared.rpc.CmsRpcException;
 
@@ -48,7 +49,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -116,6 +117,16 @@ public interface I_CmsContainerpageService extends RemoteService {
      */
     LinkedHashMap<String, CmsContainerElement> getRecentList(String containerpageUri, Set<String> containerTypes)
     throws CmsRpcException;
+
+    /**
+     * Saves the container-page.<p>
+     * 
+     * @param containerpageUri the current URI
+     * @param containers the container-page's containers
+     * 
+     * @throws CmsRpcException if something goes wrong processing the request
+     */
+    void saveContainerpage(String containerpageUri, List<CmsContainer> containers) throws CmsRpcException;
 
     /**
      * Saves the favorite list.<p>

@@ -35,7 +35,7 @@
         vertical-align: middle;
     }
     .cmsMinWidth{
-        width: 6em;
+        min-width: 6em;
         overflow: visible !important;
     }
 } @else {
