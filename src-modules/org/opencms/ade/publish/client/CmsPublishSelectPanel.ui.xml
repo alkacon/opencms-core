@@ -18,7 +18,7 @@
 		</g:FlowPanel>
 		<g:Label ui:field="m_noResources"  styleName="{res.publishCss.noResources}"/>
 		<g:ScrollPanel ui:field="m_scrollPanel" styleName="{res.publishCss.scrollPanel}" addStyleNames="{main.generalCss.cornerAll}">
-			<g:FlowPanel ui:field="m_groupPanel" styleName="{res.publishCss.groupPanel}"></g:FlowPanel>
+			<g:FlowPanel ui:field="m_groupPanelContainer" styleName="{res.publishCss.groupPanel}"></g:FlowPanel>
 		</g:ScrollPanel>
 		<g:FlowPanel ui:field="m_checkboxPanel" styleName="{res.publishCss.checkboxes}">
 			<g:FlowPanel>

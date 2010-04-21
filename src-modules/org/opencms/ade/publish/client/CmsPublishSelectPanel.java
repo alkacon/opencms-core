@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishSelectPanel.java,v $
- * Date   : $Date: 2010/04/15 10:07:53 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/04/21 13:03:31 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,9 @@ import org.opencms.gwt.client.ui.CmsTextButton;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
+import org.opencms.gwt.client.util.CmsListSplitter;
 import org.opencms.gwt.client.util.CmsPair;
+import org.opencms.gwt.client.util.CmsScrollToBottomHandler;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
@@ -73,7 +75,7 @@ import com.google.gwt.user.client.ui.Widget;
  *  
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -86,6 +88,12 @@ public class CmsPublishSelectPanel extends Composite {
 
     /** The CSS bundle used for this widget. */
     private static final I_CmsPublishCss CSS = I_CmsPublishLayoutBundle.INSTANCE.publishCss();
+
+    /**
+     * When dynamically adding groups on scrolling, the number of groups should be calculated such that the total sum of resources
+     * in the groups is the smallest number greater or equal to this constant.<p> 
+     */
+    private static final int MIN_BATCH_SIZE = 20;
 
     /** The UiBinder instance used for this widget. */
     private static final I_CmsPublishSelectPanelUiBinder UI_BINDER = GWT.create(I_CmsPublishSelectPanelUiBinder.class);
@@ -108,7 +116,7 @@ public class CmsPublishSelectPanel extends Composite {
 
     /** The panel containing the publish groups. */
     @UiField
-    protected Panel m_groupPanel;
+    protected Panel m_groupPanelContainer;
 
     /** The label which is displayed when there are no resources to publish. */
     @UiField
@@ -169,7 +177,10 @@ public class CmsPublishSelectPanel extends Composite {
     protected Panel m_topBar;
 
     /** The list of group panels for each publish list group. */
-    private List<CmsPublishGroupPanel> m_groups = new ArrayList<CmsPublishGroupPanel>();
+    private List<CmsPublishGroupPanel> m_groupPanels = new ArrayList<CmsPublishGroupPanel>();
+
+    /** The list splitter which gets the next set of groups when the user scrolls down. */
+    private CmsListSplitter<CmsPublishGroupPanel> m_splitter;
 
     /**
      * Creates a new instance.<p>
@@ -281,6 +292,7 @@ public class CmsPublishSelectPanel extends Composite {
         m_siblingsLabel.addStyleName(CSS.clear());
         m_selectLabel.setText(Messages.get().key(Messages.GUI_PUBLISH_TOP_PANEL_LEFT_LABEL_0));
         m_selectorLabel.setText(Messages.get().key(Messages.GUI_PUBLISH_TOP_PANEL_RIGHT_LABEL_0));
+        addScrollHandler();
     }
 
     /**
@@ -313,7 +325,7 @@ public class CmsPublishSelectPanel extends Composite {
     public Set<CmsUUID> getResourcesToPublish() {
 
         Set<CmsUUID> result = new HashSet<CmsUUID>();
-        for (CmsPublishGroupPanel groupPanel : m_groups) {
+        for (CmsPublishGroupPanel groupPanel : m_groupPanels) {
             result.addAll(groupPanel.getResourcesToPublish());
         }
         return result;
@@ -327,7 +339,7 @@ public class CmsPublishSelectPanel extends Composite {
     public Set<CmsUUID> getResourcesToRemove() {
 
         Set<CmsUUID> result = new HashSet<CmsUUID>();
-        for (CmsPublishGroupPanel groupPanel : m_groups) {
+        for (CmsPublishGroupPanel groupPanel : m_groupPanels) {
             result.addAll(groupPanel.getResourcesToRemove());
         }
         return result;
@@ -340,7 +352,7 @@ public class CmsPublishSelectPanel extends Composite {
      */
     public void setAllCheckboxes(boolean checked) {
 
-        for (CmsPublishGroupPanel groupPanel : m_groups) {
+        for (CmsPublishGroupPanel groupPanel : m_groupPanels) {
             groupPanel.setAllSelected(checked);
         }
     }
@@ -354,8 +366,8 @@ public class CmsPublishSelectPanel extends Composite {
 
         m_problemsPanel.clear();
         m_problemsPanel.setVisible(false);
-        m_groups.clear();
-        m_groupPanel.clear();
+        m_groupPanels.clear();
+        m_groupPanelContainer.clear();
         m_publishButton.setEnabled(false);
 
         int numGroups = groups.size();
@@ -364,19 +376,34 @@ public class CmsPublishSelectPanel extends Composite {
             return;
         }
 
-        // TODO: display only the first page and use on-the-fly paging
         int numProblems = 0;
         for (CmsPublishGroup group : groups) {
             String header = group.getName();
             List<CmsPublishResource> resourceBeans = group.getResources();
             CmsPublishGroupPanel groupPanel = new CmsPublishGroupPanel(header, resourceBeans);
             numProblems += groupPanel.countProblems();
-            m_groups.add(groupPanel);
-            m_groupPanel.add(groupPanel);
+            m_groupPanels.add(groupPanel);
         }
+        m_splitter = new CmsListSplitter<CmsPublishGroupPanel>(m_groupPanels, MIN_BATCH_SIZE);
+
+        // display the first batch of groups 
+        addMoreGroups();
+
         // TODO: enable the publish button only if there is something selected to publish
         m_publishButton.setEnabled(true);
         showProblemCount(numProblems);
+    }
+
+    /**
+     * Adds more groups if there are still undisplayed groups left.<p>
+     */
+    protected void addMoreGroups() {
+
+        if ((m_splitter != null) && m_splitter.hasMore()) {
+            for (CmsPublishGroupPanel groupPanel : m_splitter.getMore()) {
+                m_groupPanelContainer.add(groupPanel);
+            }
+        }
     }
 
     /**
@@ -399,6 +426,25 @@ public class CmsPublishSelectPanel extends Composite {
     protected void onClickPublish(ClickEvent e) {
 
         m_publishDialog.onRequestPublish();
+    }
+
+    /**
+     * Adds the scroll handler to the scroll panel which makes more groups visible when the user 
+     * scrolls to the bottom.<p>
+     */
+    private void addScrollHandler() {
+
+        m_scrollPanel.addScrollHandler(new CmsScrollToBottomHandler(new Runnable() {
+
+            /**
+             * @see java.lang.Runnable#run()
+             */
+            public void run() {
+
+                addMoreGroups();
+            }
+        }));
+
     }
 
     /**

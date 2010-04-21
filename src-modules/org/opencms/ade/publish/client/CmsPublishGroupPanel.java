@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishGroupPanel.java,v $
- * Date   : $Date: 2010/04/15 10:07:53 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/04/21 13:03:31 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,6 +42,7 @@ import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsListItemWidgetCss;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
 import org.opencms.gwt.client.util.CmsStyleVariable;
+import org.opencms.gwt.client.util.I_CmsHasSize;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsUUID;
 
@@ -61,11 +62,11 @@ import com.google.gwt.user.client.ui.Panel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
-public class CmsPublishGroupPanel extends Composite {
+public class CmsPublishGroupPanel extends Composite implements I_CmsHasSize {
 
     /** The CSS bundle used for this widget. */
     protected static final I_CmsPublishCss CSS = I_CmsPublishLayoutBundle.INSTANCE.publishCss();
@@ -88,6 +89,9 @@ public class CmsPublishGroupPanel extends Composite {
     /** The button for deselecting all resources in the group. */
     private CmsTextButton m_selectNone;
 
+    /** The number of resources in this group. */
+    private int m_size;
+
     /**
      * Constructs a new instance.<p>
      * 
@@ -109,6 +113,8 @@ public class CmsPublishGroupPanel extends Composite {
         FlowPanel clear = new FlowPanel();
         clear.setStyleName(CSS.clear());
         m_header.add(clear);
+
+        m_size = group.size();
 
     }
 
@@ -196,6 +202,14 @@ public class CmsPublishGroupPanel extends Composite {
             itemController.addIdToRemove(result);
         }
         return result;
+    }
+
+    /**
+     * @see org.opencms.gwt.client.util.I_CmsHasSize#getSize()
+     */
+    public int getSize() {
+
+        return m_size;
     }
 
     /**
