@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsToolbarClipboardMenu.java,v $
- * Date   : $Date: 2010/04/21 14:13:46 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/04/21 15:05:19 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.ade.containerpage.client.ui;
 
 import org.opencms.ade.containerpage.client.CmsContainerpageDataProvider;
+import org.opencms.ade.containerpage.client.Messages;
 import org.opencms.ade.containerpage.client.draganddrop.CmsContainerDragHandler;
 import org.opencms.ade.containerpage.client.draganddrop.CmsDragContainerElement;
 import org.opencms.ade.containerpage.client.draganddrop.CmsDragMenuElement;
@@ -51,7 +52,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -82,16 +83,14 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu {
 
         super(CmsToolbarButton.ButtonData.CLIPBOARD, BUTTON_NAME, true);
 
-        //TODO: replace the following with the real menu content
         m_content = new FlowPanel();
         m_content.setStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().menuContent());
         m_tabs = new CmsTabbedPanel();
         m_favorites = new CmsFavoriteTab();
         m_recent = new CmsRecentTab();
 
-        // TODO: add localization
-        m_tabs.add(m_favorites, "Favorites");
-        m_tabs.add(m_recent, "Recent");
+        m_tabs.add(m_favorites, Messages.get().key(Messages.FAVORITE_TAB_TITLE_0));
+        m_tabs.add(m_recent, Messages.get().key(Messages.RECENT_TAB_TITLE_0));
         SimplePanel tabsContainer = new SimplePanel();
         tabsContainer.addStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().clipboardTabs());
         tabsContainer.add(m_tabs);

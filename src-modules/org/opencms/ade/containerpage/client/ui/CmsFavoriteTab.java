@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsFavoriteTab.java,v $
- * Date   : $Date: 2010/04/21 14:13:46 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/21 15:05:19 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.ade.containerpage.client.ui;
 
 import org.opencms.ade.containerpage.client.CmsContainerpageDataProvider;
+import org.opencms.ade.containerpage.client.Messages;
 import org.opencms.ade.containerpage.client.draganddrop.CmsContainerDragHandler;
 import org.opencms.ade.containerpage.client.draganddrop.CmsDragMenuElement;
 import org.opencms.ade.containerpage.client.draganddrop.CmsDragTargetMenu;
@@ -56,7 +57,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -101,6 +102,12 @@ public class CmsFavoriteTab extends Composite {
 
         initWidget(uiBinder.createAndBindUi(this));
         m_buttonEditingPanel.setVisible(false);
+        m_editButton.setUpFace(Messages.get().key(Messages.EDIT_FAVORITES_BUTTON_TEXT_0), null);
+        m_editButton.setTitle(Messages.get().key(Messages.EDIT_FAVORITES_BUTTON_TEXT_0));
+        m_saveButton.setUpFace(Messages.get().key(Messages.SAVE_BUTTON_TEXT_0), null);
+        m_saveButton.setTitle(Messages.get().key(Messages.SAVE_BUTTON_TEXT_0));
+        m_cancelButton.setUpFace(Messages.get().key(Messages.CANCEL_BUTTON_TEXT_0), null);
+        m_cancelButton.setTitle(Messages.get().key(Messages.CANCEL_BUTTON_TEXT_0));
     }
 
     /**
