@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItemWidget.java,v $
- * Date   : $Date: 2010/04/19 11:45:01 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2010/04/21 07:37:29 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Tobias Herrmann
  * @author Michael Moossen
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 8.0.0
  */
@@ -195,14 +195,25 @@ public class CmsListItemWidget extends Composite {
     }
 
     /**
-     * Sets the additional info value label at the given position.<p>
+     * Returns the button at the given position.<p>
      * 
-     * @param index the additional info index
-     * @param label the new value to set
+     * @param index the button index
+     * 
+     * @return the button at the given position
      */
-    public void setAdditionalInfoLabel(int index, String label) {
+    public Widget getButton(int index) {
 
-        ((AdditionalInfoItem)m_additionalInfo.getWidget(index)).getValueElem().setText(label);
+        return m_buttonPanel.getWidget(index);
+    }
+
+    /**
+     * Returns the number of buttons.<p>
+     * 
+     * @return the number of buttons
+     */
+    public int getCountButtons() {
+
+        return m_buttonPanel.getWidgetCount();
     }
 
     /**
@@ -213,6 +224,17 @@ public class CmsListItemWidget extends Composite {
     public void removeButton(Widget w) {
 
         m_buttonPanel.remove(w);
+    }
+
+    /**
+     * Sets the additional info value label at the given position.<p>
+     * 
+     * @param index the additional info index
+     * @param label the new value to set
+     */
+    public void setAdditionalInfoLabel(int index, String label) {
+
+        ((AdditionalInfoItem)m_additionalInfo.getWidget(index)).getValueElem().setText(label);
     }
 
     /**
