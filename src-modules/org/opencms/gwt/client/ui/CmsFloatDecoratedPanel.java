@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsFloatDecoratedPanel.java,v $
- * Date   : $Date: 2010/04/13 09:17:18 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/04/21 07:36:50 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,6 @@ import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -55,7 +54,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
@@ -68,10 +67,10 @@ public class CmsFloatDecoratedPanel extends Composite {
     private FlowPanel m_floatBox = new FlowPanel();
 
     /** The panel containing both the main and float panel. */
-    private Panel m_panel = new FlowPanel();
+    private FlowPanel m_panel = new FlowPanel();
 
     /** The main panel. */
-    private Panel m_primary = new FlowPanel();
+    private FlowPanel m_primary = new FlowPanel();
 
     /**
      * Creates a new instance of the widget.
@@ -119,6 +118,18 @@ public class CmsFloatDecoratedPanel extends Composite {
     public void addToFrontOfFloat(Widget widget) {
 
         m_floatBox.insert(widget, 0);
+    }
+
+    /**
+     * Returns the widget at the given position.<p>
+     * 
+     * @param index the position
+     * 
+     * @return  the widget at the given position
+     */
+    public Widget getWidget(int index) {
+
+        return m_primary.getWidget(index);
     }
 
     /**
