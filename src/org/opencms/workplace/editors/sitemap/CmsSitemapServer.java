@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/sitemap/Attic/CmsSitemapServer.java,v $
- * Date   : $Date: 2010/03/01 10:21:47 $
- * Version: $Revision: 1.52 $
+ * Date   : $Date: 2010/04/22 14:11:53 $
+ * Version: $Revision: 1.53 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -85,7 +85,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.52 $
+ * @version $Revision: 1.53 $
  * 
  * @since 7.6
  */
@@ -235,9 +235,6 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
     /** Path constant. */
     public static final String PATH_DEFAULT_FORMATTER = "/system/workplace/editors/sitemap/default-formatter.jsp";
 
-    /** Template image property name. */
-    public static final String PROPERTY_TEMPLATE_IMAGE = "ade.image";
-
     /** User additional info key constant. */
     protected static final String ADDINFO_SITEMAP_FAVORITE_LIST = "SITEMAP_FAVORITE_LIST";
 
@@ -293,7 +290,10 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
 
         CmsProperty titleProp = cms.readPropertyObject(template, CmsPropertyDefinition.PROPERTY_TITLE, false);
         CmsProperty descProp = cms.readPropertyObject(template, CmsPropertyDefinition.PROPERTY_DESCRIPTION, false);
-        CmsProperty imageProp = cms.readPropertyObject(template, PROPERTY_TEMPLATE_IMAGE, false);
+        CmsProperty imageProp = cms.readPropertyObject(
+            template,
+            CmsPropertyDefinition.PROPERTY_ADE_TEMPLATE_IMAGE,
+            false);
         JSONObject jTemp = new JSONObject();
         jTemp.put(JsonTemplate.sitepath.name(), cms.getSitePath(template));
         jTemp.put(JsonTemplate.title.name(), titleProp.getValue());
