@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/Attic/CmsGalleryService.java,v $
- * Date   : $Date: 2010/04/22 14:09:06 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/04/22 14:32:12 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.gwt.CmsGwtService;
-import org.opencms.gwt.shared.rpc.CmsRpcException;
+import org.opencms.gwt.CmsRpcException;
 import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
@@ -80,7 +80,7 @@ import java.util.Map.Entry;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
  * 

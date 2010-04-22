@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/rpc/Attic/I_CmsCoreService.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/gwt/CmsRpcException.java,v $
  * Date   : $Date: 2010/04/22 14:32:12 $
- * Version: $Revision: 1.3 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,48 +29,39 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.gwt.shared.rpc;
+package org.opencms.gwt;
 
-import org.opencms.gwt.CmsRpcException;
-
-import com.google.gwt.user.client.rpc.RemoteService;
-import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
- * Provides general core services.<p>
+ * RPC Exception.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.1 $ 
  * 
  * @since 8.0.0
- * 
- * @see org.opencms.gwt.CmsCoreService
- * @see org.opencms.gwt.shared.rpc.I_CmsCoreService
- * @see org.opencms.gwt.shared.rpc.I_CmsCoreServiceAsync
  */
-@RemoteServiceRelativePath("org.opencms.gwt.CmsCoreService.gwt")
-public interface I_CmsCoreService extends RemoteService {
+public class CmsRpcException extends Exception implements IsSerializable {
+
+    /** Serialization uid. */
+    private static final long serialVersionUID = 7582056307629544840L;
 
     /**
-     * Locks the given sitemap.<p>
-     * 
-     * @param uri the sitemap URI 
-     * 
-     * @return <code>null</code> if successful, an error message if not 
-     * 
-     * @throws CmsRpcException if something goes wrong 
+     * Default constructor.<p>
      */
-    String lock(String uri) throws CmsRpcException;
+    public CmsRpcException() {
+
+        // empty
+    }
 
     /**
-     * Unlocks the given sitemap.<p>
+     * Default constructor.<p>
      * 
-     * @param uri the sitemap URI 
-     * 
-     * @return <code>null</code> if successful, an error message if not 
-     * 
-     * @throws CmsRpcException if something goes wrong 
+     * @param message the error message 
      */
-    String unlock(String uri) throws CmsRpcException;
+    public CmsRpcException(String message) {
+
+        super(message);
+    }
 }

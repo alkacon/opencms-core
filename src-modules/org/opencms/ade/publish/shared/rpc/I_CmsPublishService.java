@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/shared/rpc/Attic/I_CmsPublishService.java,v $
- * Date   : $Date: 2010/04/13 09:17:28 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/04/22 14:32:12 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,7 @@ import org.opencms.ade.publish.shared.CmsPublishData;
 import org.opencms.ade.publish.shared.CmsPublishGroup;
 import org.opencms.ade.publish.shared.CmsPublishOptions;
 import org.opencms.ade.publish.shared.CmsPublishResource;
-import org.opencms.gwt.shared.rpc.CmsRpcException;
+import org.opencms.gwt.CmsRpcException;
 import org.opencms.util.CmsUUID;
 
 import java.util.List;
@@ -49,7 +49,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */

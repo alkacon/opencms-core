@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/shared/rpc/Attic/I_CmsContainerpageService.java,v $
- * Date   : $Date: 2010/04/21 14:13:46 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/04/22 14:32:12 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,7 +33,7 @@ package org.opencms.ade.containerpage.shared.rpc;
 
 import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
-import org.opencms.gwt.shared.rpc.CmsRpcException;
+import org.opencms.gwt.CmsRpcException;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -49,7 +49,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */

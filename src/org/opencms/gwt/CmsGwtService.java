@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/gwt/CmsGwtService.java,v $
- * Date   : $Date: 2010/04/22 14:09:06 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/04/22 14:32:12 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,7 +33,6 @@ package org.opencms.gwt;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
-import org.opencms.gwt.shared.rpc.CmsRpcException;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -42,7 +41,6 @@ import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.util.CmsCollectionsGenericWrapper;
-import org.opencms.xml.sitemap.Messages;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -66,7 +64,7 @@ import com.google.gwt.user.server.rpc.SerializationPolicyLoader;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
  */
@@ -353,7 +351,6 @@ public class CmsGwtService extends RemoteServiceServlet implements I_CmsEventLis
     private void uncacheResource(CmsResource resource) {
 
         if (resource == null) {
-            LOG.warn(Messages.get().container(Messages.LOG_WARN_UNCACHE_NULL_0));
             return;
         }
         if ((m_serializationPolicyPath != null) && resource.getRootPath().equals(m_serializationPolicyPath)) {

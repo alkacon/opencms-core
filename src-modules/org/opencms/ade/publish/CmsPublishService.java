@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/Attic/CmsPublishService.java,v $
- * Date   : $Date: 2010/04/22 14:09:06 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/04/22 14:32:12 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.gwt.CmsGwtService;
-import org.opencms.gwt.shared.rpc.CmsRpcException;
+import org.opencms.gwt.CmsRpcException;
 import org.opencms.main.CmsException;
 import org.opencms.util.CmsUUID;
 
@@ -53,7 +53,7 @@ import java.util.List;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  * 

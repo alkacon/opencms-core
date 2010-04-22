@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsContainerpageService.java,v $
- * Date   : $Date: 2010/04/22 14:09:06 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/04/22 14:32:12 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.gwt.CmsGwtService;
-import org.opencms.gwt.shared.rpc.CmsRpcException;
+import org.opencms.gwt.CmsRpcException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.OpenCms;
@@ -69,7 +69,7 @@ import java.util.Set;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
