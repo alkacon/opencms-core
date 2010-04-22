@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapToolbarHandler.java,v $
- * Date   : $Date: 2010/04/22 08:18:40 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/22 09:23:34 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,16 +35,12 @@ import org.opencms.ade.publish.client.CmsPublishDialog;
 import org.opencms.gwt.client.ui.CmsConfirmDialog;
 import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
 
-import com.google.gwt.event.logical.shared.CloseEvent;
-import com.google.gwt.event.logical.shared.CloseHandler;
-import com.google.gwt.user.client.ui.PopupPanel;
-
 /**
  * Sitemap toolbar handler.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  * 
@@ -55,17 +51,13 @@ public class CmsSitemapToolbarHandler {
     /** The controller. */
     protected CmsSitemapController m_controller;
 
-    /** The toolbar. */
-    protected CmsSitemapToolbar m_toolbar;
-
     /**
      * Constructor.<p>
+     * 
      * @param controller the controller
-     * @param toolbar the toolbar
      */
-    public CmsSitemapToolbarHandler(CmsSitemapController controller, CmsSitemapToolbar toolbar) {
+    public CmsSitemapToolbarHandler(CmsSitemapController controller) {
 
-        m_toolbar = toolbar;
         m_controller = controller;
     }
 
@@ -90,16 +82,7 @@ public class CmsSitemapToolbarHandler {
      */
     public void onPublish() {
 
-        CmsPublishDialog.showPublishDialog(new CloseHandler<PopupPanel>() {
-
-            /**
-             * @see com.google.gwt.event.logical.shared.CloseHandler#onClose(com.google.gwt.event.logical.shared.CloseEvent)
-             */
-            public void onClose(CloseEvent<PopupPanel> event2) {
-
-                m_toolbar.getPublishButton().setDown(false);
-            }
-        });
+        CmsPublishDialog.showPublishDialog();
     }
 
     /**

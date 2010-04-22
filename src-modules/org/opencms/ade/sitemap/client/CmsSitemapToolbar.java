@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapToolbar.java,v $
- * Date   : $Date: 2010/04/22 08:18:40 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/22 09:23:34 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  */
@@ -131,24 +131,31 @@ public class CmsSitemapToolbar extends CmsToolbar {
 
                 if (event.getSource().equals(getSaveButton())) {
                     CmsDomUtil.ensureMouseOut(getSaveButton().getElement());
+                    getSaveButton().setDown(false);
                     handler.onSave();
                 } else if (event.getSource().equals(getAddButton())) {
                     CmsDomUtil.ensureMouseOut(getAddButton().getElement());
+                    getAddButton().setDown(false);
                     handler.onAdd();
                 } else if (event.getSource().equals(getClipboardButton())) {
                     CmsDomUtil.ensureMouseOut(getClipboardButton().getElement());
+                    getClipboardButton().setDown(false);
                     handler.onClipboard();
                 } else if (event.getSource().equals(getPublishButton())) {
                     CmsDomUtil.ensureMouseOut(getPublishButton().getElement());
+                    getPublishButton().setDown(false);
                     handler.onPublish();
                 } else if (event.getSource().equals(getUndoButton())) {
                     CmsDomUtil.ensureMouseOut(getUndoButton().getElement());
+                    getUndoButton().setDown(false);
                     handler.onUndo();
                 } else if (event.getSource().equals(getRedoButton())) {
                     CmsDomUtil.ensureMouseOut(getRedoButton().getElement());
+                    getRedoButton().setDown(false);
                     handler.onRedo();
                 } else if (event.getSource().equals(getResetButton())) {
                     CmsDomUtil.ensureMouseOut(getResetButton().getElement());
+                    getResetButton().setDown(false);
                     handler.onReset();
                 }
             }
