@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsCoreService.java,v $
- * Date   : $Date: 2010/04/15 08:11:16 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/22 14:09:06 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,17 +35,14 @@ import org.opencms.file.CmsObject;
 import org.opencms.gwt.shared.rpc.CmsRpcException;
 import org.opencms.gwt.shared.rpc.I_CmsCoreService;
 import org.opencms.main.CmsException;
-import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-
-import org.apache.commons.logging.Log;
 
 /**
  * Provides general core services.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  * 
@@ -58,9 +55,6 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     /** Serialization uid. */
     private static final long serialVersionUID = 5915848952948986278L;
 
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsCoreService.class);
-
     /**
      * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#lock(java.lang.String)
      */
@@ -72,8 +66,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         } catch (CmsException e) {
             return e.getLocalizedMessage(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms));
         } catch (Throwable e) {
-            LOG.error(e.getLocalizedMessage(), e);
-            throw new CmsRpcException(e.getLocalizedMessage());
+            error(e);
         }
         return null;
     }
@@ -89,8 +82,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         } catch (CmsException e) {
             return e.getLocalizedMessage(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms));
         } catch (Throwable e) {
-            LOG.error(e.getLocalizedMessage(), e);
-            throw new CmsRpcException(e.getLocalizedMessage());
+            error(e);
         }
         return null;
     }

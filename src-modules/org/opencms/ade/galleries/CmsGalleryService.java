@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/Attic/CmsGalleryService.java,v $
- * Date   : $Date: 2010/04/12 14:00:39 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/22 14:09:06 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,10 +51,8 @@ import org.opencms.gwt.shared.rpc.CmsRpcException;
 import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
-import org.opencms.loader.CmsLoaderException;
 import org.opencms.loader.CmsResourceManager;
 import org.opencms.main.CmsException;
-import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsCategory;
 import org.opencms.relations.CmsCategoryService;
@@ -77,14 +75,12 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.Map.Entry;
 
-import org.apache.commons.logging.Log;
-
 /**
  * Handles all RPC services related to the gallery dialog.<p>
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  * 
@@ -200,9 +196,6 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     /** The advanced gallery index name. */
     public static final String ADVANCED_GALLERY_INDEX = "ADE Gallery Index";
 
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsGalleryService.class);
-
     /** Serialization uid. */
     private static final long serialVersionUID = 1673026761080584889L;
 
@@ -226,12 +219,10 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         CmsGalleryInfoBean gInfoBean = new CmsGalleryInfoBean();
         try {
             gInfoBean.setDialogInfo(buildSearchParamsLists(tabs));
-            return gInfoBean;
         } catch (Throwable e) {
-            // should never happen
-            LOG.error(e.getLocalizedMessage(), e);
-            throw new CmsRpcException(e.getLocalizedMessage());
+            error(e);
         }
+        return gInfoBean;
     }
 
     /** 
@@ -242,12 +233,10 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         CmsGalleryInfoBean gInfoBean = new CmsGalleryInfoBean();
         try {
             gInfoBean.setSearchObject(buildInitialSearch(searchObj));
-            return gInfoBean;
         } catch (Throwable e) {
-            // should never happen
-            LOG.error(e.getLocalizedMessage(), e);
-            throw new CmsRpcException(e.getLocalizedMessage());
+            error(e);
         }
+        return gInfoBean;
     }
 
     /**
@@ -263,13 +252,10 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             gInfoBean.setDialogInfo(buildSearchParamsLists(tabs));
             gInfoBean.setSearchObject(buildInitialSearch(searchObj));
             gInfoBean.setDialogMode(dialogMode);
-            return gInfoBean;
         } catch (Throwable e) {
-            // should never happen
-            LOG.error(e.getLocalizedMessage(), e);
-            throw new CmsRpcException(e.getLocalizedMessage());
+            error(e);
         }
-
+        return gInfoBean;
     }
 
     /**
@@ -280,12 +266,10 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         CmsGalleryInfoBean gInfoBean = new CmsGalleryInfoBean();
         try {
             gInfoBean.setSearchObject(search(searchObj));
-            return gInfoBean;
         } catch (Throwable e) {
-            // should never happen
-            LOG.error(e.getLocalizedMessage(), e);
-            throw new CmsRpcException(e.getLocalizedMessage());
+            error(e);
         }
+        return gInfoBean;
     }
 
     /**
@@ -340,9 +324,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 map.put(cat.getPath(), bean);
             } catch (Exception e) {
                 // TODO: Improve error handling
-                if (LOG.isErrorEnabled()) {
-                    LOG.error(e.getLocalizedMessage(), e);
-                }
+                logError(e);
             }
         }
         return map;
@@ -386,9 +368,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                         "");
                 } catch (CmsException e) {
                     // error reading title property
-                    if (LOG.isErrorEnabled()) {
-                        LOG.error(e.getLocalizedMessage(), e);
-                    }
+                    logError(e);
                 }
                 // 1: sitepath as gallery id 
                 bean.setId(sitePath);
@@ -446,7 +426,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             return searchObj;
         } catch (Exception e) {
             // TODO: improve error handling
-            LOG.error(e.getLocalizedMessage(), e);
+            logError(e);
         }
         return searchObj;
     }
@@ -575,9 +555,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 list.add(bean);
             } catch (Exception e) {
                 // TODO: Improve error handling
-                if (LOG.isErrorEnabled()) {
-                    LOG.error(e.getLocalizedMessage(), e);
-                }
+                logError(e);
             }
         }
         return list;
@@ -644,7 +622,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             resource = getCmsObject().readResource(resourceName);
             locale = getCmsObject().readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_LOCALE, true);
         } catch (CmsException e) {
-            LOG.warn(e.getLocalizedMessage(), e);
+            logError(e);
         }
         CmsGallerySearchObject searchObj = new CmsGallerySearchObject(initialSearchObj);
         if (resource == null) {
@@ -755,7 +733,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(galleryTypeId));
         } catch (CmsException e) {
             // error reading resources with filter
-            LOG.error(e.getLocalizedMessage(), e);
+            logError(e);
         }
 
         // if the current site is NOT the root site - add all other galleries from the system path
@@ -768,7 +746,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                     CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(galleryTypeId));
             } catch (CmsException e) {
                 // error reading resources with filter
-                LOG.error(e.getLocalizedMessage(), e);
+                logError(e);
             }
 
             if ((systemGalleries != null) && (systemGalleries.size() > 0)) {
@@ -808,7 +786,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 m_resourceTypeNames = new JSONArray(typesArray);
             } catch (JSONException e) {
                 // TODO: improve error handling
-                LOG.error(e.getLocalizedMessage(), e);
+                logError(e);
             }
             if ((m_resourceTypeNames == null) || (m_resourceTypeNames.length() == 0)) {
                 // using all available types if typeNames is null or empty
@@ -921,7 +899,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             categories = catService.readCategoriesForRepositories(getCmsObject(), "", true, repositories);
         } catch (CmsException e) {
             // error reading categories
-            LOG.error(e.getLocalizedMessage(), e);
+            logError(e);
         }
         return categories;
     }
@@ -942,16 +920,9 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         for (int i = 0; i < types.length(); i++) {
             try {
                 result.add(getResourceManager().getResourceType(types.getString(i)));
-            } catch (CmsLoaderException e) {
+            } catch (Exception e) {
                 // TODO: Improve error handling
-                if (LOG.isErrorEnabled()) {
-                    LOG.error(e.getLocalizedMessage(), e);
-                }
-            } catch (JSONException e) {
-                // TODO: Improve error handling
-                if (LOG.isErrorEnabled()) {
-                    LOG.error(e.getLocalizedMessage(), e);
-                }
+                logError(e);
             }
         }
         return result;

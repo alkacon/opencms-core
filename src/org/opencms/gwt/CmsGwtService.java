@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/gwt/CmsGwtService.java,v $
- * Date   : $Date: 2010/04/14 14:20:57 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/22 14:09:06 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.gwt;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.gwt.shared.rpc.CmsRpcException;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -65,7 +66,7 @@ import com.google.gwt.user.server.rpc.SerializationPolicyLoader;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  */
@@ -157,6 +158,19 @@ public class CmsGwtService extends RemoteServiceServlet implements I_CmsEventLis
     }
 
     /**
+     * Logs and re-throws the given exception for RPC responses.<p>
+     * 
+     * @param t the exception
+     * 
+     * @throws CmsRpcException the converted exception 
+     */
+    public void error(Throwable t) throws CmsRpcException {
+
+        logError(t);
+        throw new CmsRpcException(t.getLocalizedMessage());
+    }
+
+    /**
      * Returns the current cms context.<p>
      *
      * @return the current cms context
@@ -210,6 +224,16 @@ public class CmsGwtService extends RemoteServiceServlet implements I_CmsEventLis
         super.log(message, t);
         // also log to opencms.log
         LOG.info(message, t);
+    }
+
+    /**
+     * Logs the given exception.<p>
+     * 
+     * @param t the exception to log
+     */
+    public void logError(Throwable t) {
+
+        LOG.error(t.getLocalizedMessage(), t);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/Attic/CmsPublishService.java,v $
- * Date   : $Date: 2010/04/13 13:59:20 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/04/22 14:09:06 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,31 +43,25 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.gwt.CmsGwtService;
 import org.opencms.gwt.shared.rpc.CmsRpcException;
 import org.opencms.main.CmsException;
-import org.opencms.main.CmsLog;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.commons.logging.Log;
 
 /**
  * The implementation of the publish service.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  * 
  */
 public class CmsPublishService extends CmsGwtService implements I_CmsPublishService {
 
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsPublishService.class);
-
     /** The version id for serialization. */
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 3852074177607037076L;
 
     /** Session attribute name constant. */
     private static final String SESSION_ATTR_ADE_PUB_OPTS_CACHE = "__OCMS_ADE_PUB_OPTS_CACHE__";
@@ -77,13 +71,14 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
      */
     public CmsPublishData getInitData() throws CmsRpcException {
 
+        CmsPublishData result = null;
         try {
             CmsPublishOptions options = getCachedOptions();
-            return new CmsPublishData(options, getProjects(), getPublishGroups(options));
+            result = new CmsPublishData(options, getProjects(), getPublishGroups(options));
         } catch (Throwable e) {
-            LOG.error(e.getLocalizedMessage(), e);
-            throw new CmsRpcException(CmsException.getStackTraceAsString(e));
+            error(e);
         }
+        return result;
     }
 
     /**
@@ -91,12 +86,13 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
      */
     public List<CmsProjectBean> getProjects() throws CmsRpcException {
 
+        List<CmsProjectBean> result = null;
         try {
-            return new CmsPublish(getCmsObject()).getManageableProjects();
+            result = new CmsPublish(getCmsObject()).getManageableProjects();
         } catch (Throwable e) {
-            LOG.error(e.getLocalizedMessage(), e);
-            throw new CmsRpcException(CmsException.getStackTraceAsString(e));
+            error(e);
         }
+        return result;
     }
 
     /**
@@ -104,14 +100,15 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
      */
     public List<CmsPublishGroup> getPublishGroups(CmsPublishOptions options) throws CmsRpcException {
 
+        List<CmsPublishGroup> results = null;
         try {
             CmsPublish pub = new CmsPublish(getCmsObject(), options);
             setCachedOptions(options);
-            return pub.getPublishGroups();
+            results = pub.getPublishGroups();
         } catch (Throwable e) {
-            LOG.error(e.getLocalizedMessage(), e);
-            throw new CmsRpcException(CmsException.getStackTraceAsString(e));
+            error(e);
         }
+        return results;
     }
 
     /**
@@ -119,12 +116,13 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
      */
     public CmsPublishOptions getPublishOptions() throws CmsRpcException {
 
+        CmsPublishOptions result = null;
         try {
-            return getCachedOptions();
+            result = getCachedOptions();
         } catch (Throwable e) {
-            LOG.error(e.getLocalizedMessage(), e);
-            throw new CmsRpcException(CmsException.getStackTraceAsString(e));
+            error(e);
         }
+        return result;
     }
 
     /**
@@ -134,20 +132,20 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
     public List<CmsPublishResource> publishResources(List<CmsUUID> toPublish, List<CmsUUID> toRemove, boolean force)
     throws CmsRpcException {
 
+        List<CmsPublishResource> brokenLinkBeans = null;
         try {
             CmsObject cms = getCmsObject();
             CmsPublish pub = new CmsPublish(cms, getCachedOptions());
             List<CmsResource> publishResources = idsToResources(cms, toPublish);
-            List<CmsPublishResource> brokenLinkBeans = pub.getBrokenResources(publishResources);
+            brokenLinkBeans = pub.getBrokenResources(publishResources);
             if (brokenLinkBeans.size() == 0) {
                 pub.publishResources(publishResources);
                 pub.removeResourcesFromPublishList(toRemove);
             }
-            return brokenLinkBeans;
         } catch (Throwable e) {
-            LOG.error(e.getLocalizedMessage(), e);
-            throw new CmsRpcException(CmsException.getStackTraceAsString(e));
+            error(e);
         }
+        return brokenLinkBeans;
     }
 
     /**
@@ -184,7 +182,7 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
                 result.add(resource);
             } catch (CmsException e) {
                 // should never happen
-                LOG.error(e.getLocalizedMessage(), e);
+                logError(e);
             }
         }
         return result;

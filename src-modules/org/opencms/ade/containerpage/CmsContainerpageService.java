@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsContainerpageService.java,v $
- * Date   : $Date: 2010/04/21 14:13:45 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/04/22 14:09:06 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,7 +69,7 @@ import java.util.Set;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -94,24 +94,26 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             }
             list.add(0, element);
             OpenCms.getADEManager().saveFavoriteList(getCmsObject(), list);
-        } catch (Exception e) {
-            log(e.getLocalizedMessage(), e);
-            throw new CmsRpcException(e.getLocalizedMessage());
+        } catch (Throwable e) {
+            error(e);
         }
-
     }
 
     /**
      * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#addToRecentList(java.lang.String)
      */
-    public void addToRecentList(String clientId) {
+    public void addToRecentList(String clientId) throws CmsRpcException {
 
-        CmsContainerElementBean element = getCachedElement(clientId);
-        List<CmsContainerElementBean> list = getSessionCache().getRecentList();
-        if (list.contains(element)) {
-            list.remove(list.indexOf(element));
+        try {
+            CmsContainerElementBean element = getCachedElement(clientId);
+            List<CmsContainerElementBean> list = getSessionCache().getRecentList();
+            if (list.contains(element)) {
+                list.remove(list.indexOf(element));
+            }
+            list.add(0, element);
+        } catch (Throwable e) {
+            error(e);
         }
-        list.add(0, element);
     }
 
     /**
@@ -123,13 +125,13 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         Collection<String> clientIds,
         Set<String> containerTypes) throws CmsRpcException {
 
+        Map<String, CmsContainerElement> result = null;
         try {
-            return getElements(clientIds, containerpageUri, containerTypes);
-        } catch (Exception e) {
-            log(e.getLocalizedMessage(), e);
-            throw new CmsRpcException(e.getLocalizedMessage());
+            result = getElements(clientIds, containerpageUri, containerTypes);
+        } catch (Throwable e) {
+            error(e);
         }
-
+        return result;
     }
 
     /**
@@ -139,16 +141,16 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         String containerpageUri,
         Set<String> containerTypes) throws CmsRpcException {
 
+        LinkedHashMap<String, CmsContainerElement> result = null;
         try {
-            return getListElementsData(
+            result = getListElementsData(
                 OpenCms.getADEManager().getFavoriteList(getCmsObject()),
                 containerpageUri,
                 containerTypes);
-        } catch (Exception e) {
-            log(e.getLocalizedMessage(), e);
-            throw new CmsRpcException(e.getLocalizedMessage());
+        } catch (Throwable e) {
+            error(e);
         }
-
+        return result;
     }
 
     /**
@@ -157,12 +159,13 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     public LinkedHashMap<String, CmsContainerElement> getRecentList(String containerpageUri, Set<String> containerTypes)
     throws CmsRpcException {
 
+        LinkedHashMap<String, CmsContainerElement> result = null;
         try {
-            return getListElementsData(getSessionCache().getRecentList(), containerpageUri, containerTypes);
-        } catch (Exception e) {
-            log(e.getLocalizedMessage(), e);
-            throw new CmsRpcException(e.getLocalizedMessage());
+            result = getListElementsData(getSessionCache().getRecentList(), containerpageUri, containerTypes);
+        } catch (Throwable e) {
+            error(e);
         }
+        return result;
     }
 
     /**
@@ -171,54 +174,51 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     public void saveContainerpage(String containerpageUri, List<CmsContainer> containers) throws CmsRpcException {
 
         CmsObject cms = getCmsObject();
-
-        Iterator<CmsContainer> it = containers.iterator();
-
-        CmsADESessionCache cache = getSessionCache();
-        List<CmsContainerBean> containerBeans = new ArrayList<CmsContainerBean>();
-        while (it.hasNext()) {
-            CmsContainer container = it.next();
-            List<CmsContainerElementBean> elements = new ArrayList<CmsContainerElementBean>();
-            Iterator<String> elIt = container.getElements().iterator();
-            while (elIt.hasNext()) {
-                try {
-                    String clientId = elIt.next();
-                    CmsContainerElementBean element = cache.getCacheContainerElement(clientId);
-
-                    //TODO: check whether it is necessary to read the resource and the formatter again 
-
-                    // make sure resource is readable, 
-                    CmsResource resource = cms.readResource(element.getElementId());
-
-                    // check if there is a valid formatter
-                    I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(resource);
-                    String formatterUri = resType.getFormatterForContainerType(cms, resource, container.getType());
-                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(formatterUri)) {
-                        CmsResource formatter = cms.readResource(formatterUri);
-                        elements.add(new CmsContainerElementBean(
-                            element.getElementId(),
-                            formatter.getStructureId(),
-                            element.getProperties()));
-                    }
-                } catch (Exception e) {
-                    log(e.getLocalizedMessage(), e);
-                }
-            }
-            containerBeans.add(new CmsContainerBean(container.getName(), container.getType(), -1, elements));
-        }
-
-        CmsContainerPageBean page = new CmsContainerPageBean(cms.getRequestContext().getLocale(), containerBeans);
-
         try {
+            Iterator<CmsContainer> it = containers.iterator();
+
+            CmsADESessionCache cache = getSessionCache();
+            List<CmsContainerBean> containerBeans = new ArrayList<CmsContainerBean>();
+            while (it.hasNext()) {
+                CmsContainer container = it.next();
+                List<CmsContainerElementBean> elements = new ArrayList<CmsContainerElementBean>();
+                Iterator<String> elIt = container.getElements().iterator();
+                while (elIt.hasNext()) {
+                    try {
+                        String clientId = elIt.next();
+                        CmsContainerElementBean element = cache.getCacheContainerElement(clientId);
+
+                        //TODO: check whether it is necessary to read the resource and the formatter again 
+
+                        // make sure resource is readable, 
+                        CmsResource resource = cms.readResource(element.getElementId());
+
+                        // check if there is a valid formatter
+                        I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(resource);
+                        String formatterUri = resType.getFormatterForContainerType(cms, resource, container.getType());
+                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(formatterUri)) {
+                            CmsResource formatter = cms.readResource(formatterUri);
+                            elements.add(new CmsContainerElementBean(
+                                element.getElementId(),
+                                formatter.getStructureId(),
+                                element.getProperties()));
+                        }
+                    } catch (Exception e) {
+                        log(e.getLocalizedMessage(), e);
+                    }
+                }
+                containerBeans.add(new CmsContainerBean(container.getName(), container.getType(), -1, elements));
+            }
+
+            CmsContainerPageBean page = new CmsContainerPageBean(cms.getRequestContext().getLocale(), containerBeans);
+
             cms.lockResourceTemporary(containerpageUri);
             CmsXmlContainerPage xmlCnt = CmsXmlContainerPageFactory.unmarshal(cms, cms.readFile(containerpageUri));
             xmlCnt.save(cms, page);
             cms.unlockResource(containerpageUri);
-        } catch (CmsException e) {
-            log(e.getLocalizedMessage(), e);
-            throw new CmsRpcException(e.getLocalizedMessage());
+        } catch (Throwable e) {
+            error(e);
         }
-
     }
 
     /**
@@ -228,20 +228,21 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
         try {
             OpenCms.getADEManager().saveFavoriteList(getCmsObject(), getCachedElements(clientIds));
-        } catch (CmsException e) {
-            log(e.getLocalizedMessage(), e);
-            throw new CmsRpcException(e.getLocalizedMessage());
+        } catch (Throwable e) {
+            error(e);
         }
-
     }
 
     /**
      * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#saveRecentList(java.util.List)
      */
-    public void saveRecentList(List<String> clientIds) {
+    public void saveRecentList(List<String> clientIds) throws CmsRpcException {
 
-        getSessionCache().setCacheRecentList(getCachedElements(clientIds));
-
+        try {
+            getSessionCache().setCacheRecentList(getCachedElements(clientIds));
+        } catch (Throwable e) {
+            error(e);
+        }
     }
 
     /**
