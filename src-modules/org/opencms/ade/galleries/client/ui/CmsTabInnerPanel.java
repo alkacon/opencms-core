@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsTabInnerPanel.java,v $
- * Date   : $Date: 2010/04/19 11:47:45 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/04/22 07:17:18 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,6 @@
 
 package org.opencms.ade.galleries.client.ui;
 
-import org.opencms.ade.galleries.client.CmsGalleriesVfs;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.shared.CmsCategoriesListInfoBean;
 import org.opencms.ade.galleries.shared.CmsGalleriesListInfoBean;
@@ -65,7 +64,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.
  */
@@ -282,7 +281,6 @@ public class CmsTabInnerPanel extends Composite {
      */
     protected void init() {
 
-        CmsGalleriesVfs.initCss();
         uiBinder.createAndBindUi(this);
         initWidget(uiBinder.createAndBindUi(this));
     }

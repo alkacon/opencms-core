@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsGalleryDialog.java,v $
- * Date   : $Date: 2010/04/21 15:43:31 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/22 07:16:41 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,6 @@
 
 package org.opencms.ade.galleries.client.ui;
 
-import org.opencms.ade.galleries.client.CmsGalleriesVfs;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle.I_CmsGalleryDialogCss;
 import org.opencms.ade.galleries.client.util.CmsGalleryProvider;
@@ -73,7 +72,7 @@ import com.google.gwt.user.client.ui.Label;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.
  */
@@ -155,7 +154,7 @@ public class CmsGalleryDialog extends Composite implements BeforeSelectionHandle
      */
     public CmsGalleryDialog() {
 
-        CmsGalleriesVfs.initCss();
+        initCss();
         m_tabbedPanel = new CmsTabbedPanel(CmsTabLayout.standard, false);
 
         // All composites must call initWidget() in their constructors.
@@ -173,7 +172,7 @@ public class CmsGalleryDialog extends Composite implements BeforeSelectionHandle
      */
     public CmsGalleryDialog(CmsGalleryInfoBean infoBean) {
 
-        CmsGalleriesVfs.initCss();
+        initCss();
         m_infoBean = infoBean;
         m_tabbedPanel = new CmsTabbedPanel(CmsTabLayout.standard, false);
 
@@ -230,6 +229,16 @@ public class CmsGalleryDialog extends Composite implements BeforeSelectionHandle
     public void init() {
 
         m_initialAction.execute();
+    }
+
+    /**
+     * Ensures all style sheets are loaded.<p>
+     */
+    public static void initCss() {
+
+        I_CmsLayoutBundle.INSTANCE.galleryDialogCss().ensureInjected();
+        I_CmsLayoutBundle.INSTANCE.listTreeCss().ensureInjected();
+        org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle.INSTANCE.galleryDialogCss().ensureInjected();
     }
 
     /**

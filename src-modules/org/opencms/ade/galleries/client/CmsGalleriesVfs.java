@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleriesVfs.java,v $
- * Date   : $Date: 2010/04/21 15:43:31 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/04/22 07:16:41 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,21 +44,11 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 8.0.0
  */
 public class CmsGalleriesVfs extends A_CmsEntryPoint {
-
-    /**
-     * Ensures all style sheets are loaded.<p>
-     */
-    public static void initCss() {
-
-        I_CmsLayoutBundle.INSTANCE.galleryDialogCss().ensureInjected();
-        I_CmsLayoutBundle.INSTANCE.listTreeCss().ensureInjected();
-        org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle.INSTANCE.galleryDialogCss().ensureInjected();
-    }
 
     /**
      * @see org.opencms.gwt.client.A_CmsEntryPoint#onModuleLoad()
@@ -67,7 +57,6 @@ public class CmsGalleriesVfs extends A_CmsEntryPoint {
     public void onModuleLoad() {
 
         super.onModuleLoad();
-        initCss();
         final CmsFlowPanel html = new CmsFlowPanel(CmsDomUtil.Tag.div.name());
         html.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().galleryDialogSize());
         RootPanel.getBodyElement().addClassName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().galleriesDialog());
