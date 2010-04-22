@@ -113,103 +113,67 @@
 
 @sprite .optionBar .cmsState-up-hovering .toolbarRemove, .optionBar .cmsState-down-hovering .toolbarRemove, .optionBar .cmsState-down .toolbarRemove{
     gwt-image: "deleteIconActive";
-    display: inline-block;
-    vertical-align: middle;
 }
 @sprite .optionBar .cmsState-up .toolbarRemove{
     gwt-image: "deleteIconInactive";
-    display: inline-block;
-    vertical-align: middle;
 }
 
 @sprite .optionBar .cmsState-up-disabled .toolbarRemove, .optionBar .cmsState-down-disabled .toolbarRemove{
     gwt-image: "deleteIconDeactivated";
-    display: inline-block;
-    vertical-align: middle;
 }
 
 @sprite .optionBar .cmsState-up-hovering .toolbarEdit, .optionBar .cmsState-down-hovering .toolbarEdit, .optionBar .cmsState-down .toolbarEdit{
     gwt-image: "editorIconActive";
-    display: inline-block;
-    vertical-align: middle;
 }
 @sprite .optionBar .cmsState-up .toolbarEdit{
     gwt-image: "editorIconInactive";
-    display: inline-block;
-    vertical-align: middle;
 }
 
 @sprite .optionBar .cmsState-up-disabled .toolbarEdit, .optionBar .cmsState-down-disabled .toolbarEdit{
     gwt-image: "editorIconDeactivated";
-    display: inline-block;
-    vertical-align: middle;
 }
 
 @sprite .optionBar .cmsState-up-hovering .toolbarMove, .optionBar .cmsState-down-hovering .toolbarMove, .optionBar .cmsState-down .toolbarMove{
     gwt-image: "moveIconActive";
-    display: inline-block;
-    vertical-align: middle;
 }
 @sprite .optionBar .cmsState-up .toolbarMove{
     gwt-image: "moveIconInactive";
-    display: inline-block;
-    vertical-align: middle;
 }
 
 @sprite .optionBar .cmsState-up-disabled .toolbarMove, .optionBar .cmsState-down-disabled .toolbarMove{
     gwt-image: "moveIconDeactivated";
-    display: inline-block;
-    vertical-align: middle;
 }
 
 @sprite .optionBar .cmsState-up-hovering .toolbarNew, .optionBar .cmsState-down-hovering .toolbarNew, .optionBar .cmsState-down .toolbarNew{
     gwt-image: "newIconActive";
-    display: inline-block;
-    vertical-align: middle;
 }
 @sprite .optionBar .cmsState-up .toolbarNew{
     gwt-image: "newIconInactive";
-    display: inline-block;
-    vertical-align: middle;
 }
 
 @sprite .optionBar .cmsState-up-disabled .toolbarNew, .optionBar .cmsState-down-disabled .toolbarNew{
     gwt-image: "newIconDeactivated";
-    display: inline-block;
-    vertical-align: middle;
 }
 
 @sprite .optionBar .cmsState-up-hovering .toolbarProperties, .optionBar .cmsState-down-hovering .toolbarProperties, .optionBar .cmsState-down .toolbarProperties{
     gwt-image: "propertyIconActive";
-    display: inline-block;
-    vertical-align: middle;
 }
 @sprite .optionBar .cmsState-up .toolbarProperties{
     gwt-image: "propertyIconInactive";
-    display: inline-block;
-    vertical-align: middle;
 }
 
 @sprite .optionBar .cmsState-up-disabled .toolbarProperties, .optionBar .cmsState-down-disabled .toolbarProperties{
     gwt-image: "propertyIconDeactivated";
-    display: inline-block;
-    vertical-align: middle;
 }
 
 
 @sprite .optionBar .cmsState-up-hovering .toolbarSelection, .optionBar .cmsState-down-hovering .toolbarSelection, .optionBar .cmsState-down .toolbarSelection{
     gwt-image: "selectionIconActive";
-    display: inline-block;
-    vertical-align: middle;
 }
 @sprite .optionBar .cmsState-up .toolbarSelection{
     gwt-image: "selectionIconInactive";
-    display: inline-block;
-    vertical-align: middle;
 }
 
 @sprite .optionBar .cmsState-up-disabled .toolbarSelection, .optionBar .cmsState-down-disabled .toolbarSelection{
     gwt-image: "selectionIconDeactivated";
-    display: inline-block;
-    vertical-align: middle;
 }

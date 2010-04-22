@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/ui/css/Attic/button.css,v $
- * Date   : $Date: 2010/04/21 07:39:53 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/22 06:48:53 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,7 +34,7 @@
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -42,110 +42,62 @@
 
 @sprite .cmsState-up-hovering .hoverbarDelete, .cmsState-down-hovering .hoverbarDelete, .cmsState-down .hoverbarDelete{
     gwt-image: "hoverbarDelete";
-    display: inline-block;
-    vertical-align: middle;
 }
 @sprite .cmsState-up .hoverbarDelete, .cmsState-up-disabled .hoverbarDelete, .cmsState-down-disabled .hoverbarDelete{
     gwt-image: "hoverbarDeleteDisabled";
-    display: inline-block;
-    vertical-align: middle;
 }
 
 @sprite .cmsState-up-hovering .hoverbarEdit, .cmsState-down-hovering .hoverbarEdit, .cmsState-down .hoverbarEdit{
     gwt-image: "hoverbarEdit";
-    display: inline-block;
-    vertical-align: middle;
 }
 @sprite .cmsState-up .hoverbarEdit, .cmsState-up-disabled .hoverbarEdit, .cmsState-down-disabled .hoverbarEdit{
     gwt-image: "hoverbarEditDisabled";
-    display: inline-block;
-    vertical-align: middle;
 }
 
 @sprite .cmsState-up-hovering .hoverbarGoto, .cmsState-down-hovering .hoverbarGoto, .cmsState-down .hoverbarGoto{
     gwt-image: "hoverbarGoto";
-    display: inline-block;
-    vertical-align: middle;
 }
 @sprite .cmsState-up .hoverbarGoto, .cmsState-up-disabled .hoverbarGoto, .cmsState-down-disabled .hoverbarGoto{
     gwt-image: "hoverbarGotoDisabled";
-    display: inline-block;
-    vertical-align: middle;
 }
 
 @sprite .cmsState-up-hovering .hoverbarMove, .cmsState-down-hovering .hoverbarMove, .cmsState-down .hoverbarMove{
     gwt-image: "hoverbarMove";
-    display: inline-block;
-    vertical-align: middle;
 }
 @sprite .cmsState-up .hoverbarMove, .cmsState-up-disabled .hoverbarMove, .cmsState-down-disabled .hoverbarMove{
     gwt-image: "hoverbarMoveDisabled";
-    display: inline-block;
-    vertical-align: middle;
 }
 
 @sprite .cmsState-up-hovering .hoverbarNew, .cmsState-down-hovering .hoverbarNew, .cmsState-down .hoverbarNew{
     gwt-image: "hoverbarNew";
-    display: inline-block;
-    vertical-align: middle;
 }
 @sprite .cmsState-up .hoverbarNew, .cmsState-up-disabled .hoverbarNew, .cmsState-down-disabled .hoverbarNew{
     gwt-image: "hoverbarNewDisabled";
-    display: inline-block;
-    vertical-align: middle;
 }
 
 @sprite .cmsState-up-hovering .hoverbarSubsitemap, .cmsState-down-hovering .hoverbarSubsitemap, .cmsState-down .hoverbarSubsitemap{
     gwt-image: "hoverbarSubsitemap";
-    display: inline-block;
-    vertical-align: middle;
 }
 @sprite .cmsState-up .hoverbarSubsitemap, .cmsState-up-disabled .hoverbarSubsitemap, .cmsState-down-disabled .hoverbarSubsitemap{
     gwt-image: "hoverbarSubsitemapDisabled";
-    display: inline-block;
-    vertical-align: middle;
 }
 
 @sprite .cmsState-up-disabled .toolbarUndo, .cmsState-down-disabled .toolbarUndo{
 	gwt-image: "toolbarUndoDisabled";
-	display: inline-block;
-    vertical-align: middle;
-    cursor: pointer;
-    margin-top: 1px;
 }
 @sprite .cmsState-up .toolbarUndo{
 	gwt-image: "toolbarUndoDisabled";
-	display: inline-block;
-    vertical-align: middle;
-    cursor: pointer;
-    margin-top: 1px;
 }
 @sprite .cmsState-up-hovering .toolbarUndo, .cmsState-down-hovering .toolbarUndo, .cmsState-down .toolbarUndo{
     gwt-image: "toolbarUndo";
-    display: inline-block;
-    vertical-align: middle;
-    cursor: pointer;
-    margin-top: 1px;
 }
 
 @sprite .cmsState-up-disabled .toolbarRedo, .cmsState-down-disabled .toolbarRedo{
 	gwt-image: "toolbarRedoDisabled";
-	display: inline-block;
-    vertical-align: middle;
-    cursor: pointer;
-    margin-top: 1px;
 }
 @sprite .cmsState-up .toolbarRedo{
 	gwt-image: "toolbarRedoDisabled";
-	display: inline-block;
-    vertical-align: middle;
-    cursor: pointer;
-    margin-top: 1px;
 }
 @sprite .cmsState-up-hovering .toolbarRedo, .cmsState-down-hovering .toolbarRedo, .cmsState-down .toolbarRedo{
     gwt-image: "toolbarRedo";
-    display: inline-block;
-    vertical-align: middle;
-    cursor: pointer;
-    margin-top: 1px;
 }
