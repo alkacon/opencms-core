@@ -11,7 +11,8 @@
 .criteriaList {
 	border:1px solid #999999;
 	height:405px;
-	
+	overflow: auto;
+	position: relative;
 }
 
 .tabPanel {
