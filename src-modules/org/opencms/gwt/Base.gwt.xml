@@ -2,6 +2,7 @@
 <!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.0.2//EN" "http://google-web-toolkit.googlecode.com/svn/tags/2.0.2/distro-source/core/src/gwt-module.dtd">
 <module>
 	<inherits name="com.google.gwt.user.User" />
+	<inherits name="com.google.gwt.user.RemoteServiceObfuscateTypeNames" />
 	
 	<replace-with class="org.opencms.gwt.client.util.impl.DocumentStyleImpl">
         <when-type-assignable class="org.opencms.gwt.client.util.impl.DocumentStyleImpl"/>
