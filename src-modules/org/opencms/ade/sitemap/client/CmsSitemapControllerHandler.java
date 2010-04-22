@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapControllerHandler.java,v $
- * Date   : $Date: 2010/04/22 09:22:37 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/22 14:32:07 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.ade.sitemap.client;
 
+import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsSitemapChangeDelete;
 import org.opencms.ade.sitemap.shared.CmsSitemapChangeEdit;
 import org.opencms.ade.sitemap.shared.CmsSitemapChangeMove;
@@ -41,12 +42,15 @@ import org.opencms.gwt.client.ui.tree.CmsLazyTree;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
 import org.opencms.util.CmsStringUtil;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Sitemap controller handler.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  * 
@@ -128,6 +132,44 @@ public class CmsSitemapControllerHandler {
     public void onFirstUndo() {
 
         m_toolbar.getRedoButton().setEnabled(true);
+    }
+
+    /**
+     * Will be triggered when an entry gets its children.<p>
+     * 
+     * @param entry the entry that got its children
+     */
+    public void onGetChildren(CmsClientSitemapEntry entry) {
+
+        CmsTreeItem target = getTreeItem(entry.getSitePath());
+        target.clearChildren();
+        for (CmsClientSitemapEntry child : entry.getChildren()) {
+            target.addChild(m_factory.create(child));
+        }
+        ((CmsSitemapTreeItem)target).onFinishLoading();
+    }
+
+    /**
+     * Will be triggered once the controller is initialized.<p>
+     * 
+     * @param roots the sitemap root entries
+     */
+    public void onInit(List<CmsClientSitemapEntry> roots) {
+
+        List<CmsSitemapTreeItem> items = new ArrayList<CmsSitemapTreeItem>();
+        for (CmsClientSitemapEntry root : roots) {
+            CmsSitemapTreeItem rootItem = m_factory.create(root);
+            rootItem.clearChildren();
+            for (CmsClientSitemapEntry entry : root.getChildren()) {
+                rootItem.addChild(m_factory.create(entry));
+            }
+            rootItem.onFinishLoading();
+            rootItem.setOpen(true);
+            items.add(rootItem);
+        }
+        for (CmsSitemapTreeItem item : items) {
+            m_tree.addItem(item);
+        }
     }
 
     /**

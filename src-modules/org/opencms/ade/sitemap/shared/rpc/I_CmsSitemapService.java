@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/rpc/Attic/I_CmsSitemapService.java,v $
- * Date   : $Date: 2010/04/21 14:29:20 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/04/22 14:32:08 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,9 +31,10 @@
 
 package org.opencms.ade.sitemap.shared.rpc;
 
-import org.opencms.ade.sitemap.shared.I_CmsSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
-import org.opencms.gwt.shared.rpc.CmsRpcException;
+import org.opencms.ade.sitemap.shared.CmsSitemapData;
+import org.opencms.ade.sitemap.shared.I_CmsSitemapChange;
+import org.opencms.gwt.CmsRpcException;
 
 import java.util.List;
 
@@ -45,7 +46,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 8.0.0
  * 
@@ -89,6 +90,17 @@ public interface I_CmsSitemapService extends RemoteService {
      * @throws CmsRpcException if something goes wrong 
      */
     CmsClientSitemapEntry getEntry(String root) throws CmsRpcException;
+
+    /**
+     * Returns the initialization data for the given sitemap.<p>
+     * 
+     * @param sitemapUri the site relative path
+     *  
+     * @return the initialization data
+     * 
+     * @throws CmsRpcException if something goes wrong 
+     */
+    CmsSitemapData getInitData(String sitemapUri) throws CmsRpcException;
 
     /**
      * Returns the root sitemap entries for the given sitemap.<p>

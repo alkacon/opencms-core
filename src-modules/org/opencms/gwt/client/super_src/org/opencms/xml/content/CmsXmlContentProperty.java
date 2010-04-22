@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentProperty.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/super_src/org/opencms/xml/content/Attic/CmsXmlContentProperty.java,v $
  * Date   : $Date: 2010/04/22 14:32:08 $
- * Version: $Revision: 1.10 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import java.io.Serializable;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.1 $
  * 
  * @since 7.9.2
  */
@@ -122,6 +122,14 @@ public class CmsXmlContentProperty implements Cloneable, Serializable {
 
     /**
      * Public constructor.<p>
+     */ 
+    public CmsXmlContentProperty() {
+    
+        // empty
+    }
+    
+    /**
+     * Public constructor.<p>
      * 
      * @param propertyName the property name
      * @param propertyType the property type (string|uri)
@@ -163,7 +171,6 @@ public class CmsXmlContentProperty implements Cloneable, Serializable {
      * 
      * @see java.lang.Object#clone()
      */
-    @Override
     public CmsXmlContentProperty clone() {
 
         return new CmsXmlContentProperty(

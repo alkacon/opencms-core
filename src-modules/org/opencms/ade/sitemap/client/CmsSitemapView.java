@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapView.java,v $
- * Date   : $Date: 2010/04/22 09:23:34 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/04/22 14:32:07 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,17 +34,13 @@ package org.opencms.ade.sitemap.client;
 import org.opencms.ade.sitemap.client.ui.CmsPage;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsImageBundle;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsLayoutBundle;
-import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.gwt.client.A_CmsEntryPoint;
-import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsHeader;
 import org.opencms.gwt.client.ui.CmsToolbarPlaceHolder;
 import org.opencms.gwt.client.ui.tree.A_CmsDeepLazyOpenHandler;
 import org.opencms.gwt.client.ui.tree.CmsLazyTree;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 
@@ -53,7 +49,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 8.0.0
  */
@@ -84,7 +80,7 @@ public class CmsSitemapView extends A_CmsEntryPoint {
                  */
                 public void load(final CmsSitemapTreeItem target) {
 
-                    getChildren(target, factory);
+                    controller.getChildren(target.getEntry());
                 }
             });
         final CmsSitemapToolbar toolbar = new CmsSitemapToolbar();
@@ -109,84 +105,18 @@ public class CmsSitemapView extends A_CmsEntryPoint {
         final Label loadingLabel = new Label(Messages.get().key(Messages.GUI_LOADING_0));
         page.add(loadingLabel);
 
-        CmsRpcAction<List<CmsClientSitemapEntry>> getRootsAction = new CmsRpcAction<List<CmsClientSitemapEntry>>() {
+        // start
+        controller.initialize(new Command() {
 
             /**
-            * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
-            */
-            @Override
+             * @see com.google.gwt.user.client.Command#execute()
+             */
             public void execute() {
 
-                // Make the call to the sitemap service
-                start(500);
-                CmsSitemapProvider.getService().getRoots(CmsSitemapProvider.get().getUri(), this);
-            }
-
-            /**
-            * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
-            */
-            @Override
-            public void onResponse(List<CmsClientSitemapEntry> roots) {
-
-                page.remove(loadingLabel);
-                controller.setRoots(roots);
-
-                List<CmsSitemapTreeItem> items = new ArrayList<CmsSitemapTreeItem>();
-                for (CmsClientSitemapEntry root : roots) {
-                    CmsSitemapTreeItem rootItem = factory.create(root);
-                    rootItem.clearChildren();
-                    for (CmsClientSitemapEntry entry : root.getChildren()) {
-                        rootItem.addChild(factory.create(entry));
-                    }
-                    rootItem.onFinishLoading();
-                    rootItem.setOpen(true);
-                    items.add(rootItem);
-                }
                 // paint
+                page.remove(loadingLabel);
                 page.add(tree);
-                for (CmsSitemapTreeItem item : items) {
-                    tree.addItem(item);
-                }
-                stop();
             }
-        };
-        getRootsAction.execute();
-    }
-
-    /**
-     * Returns the children entries of the given node.<p>
-     * 
-     * @param target the item to get the children for
-     * @param factory the sitemap tree item factory
-     */
-    protected void getChildren(final CmsSitemapTreeItem target, final CmsSitemapTreeItemFactory factory) {
-
-        CmsRpcAction<List<CmsClientSitemapEntry>> getChildrenAction = new CmsRpcAction<List<CmsClientSitemapEntry>>() {
-
-            /**
-            * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
-            */
-            @Override
-            public void execute() {
-
-                // Make the call to the sitemap service
-                CmsSitemapProvider.getService().getChildren(target.getEntry().getSitePath(), this);
-            }
-
-            /**
-            * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
-            */
-            @Override
-            public void onResponse(List<CmsClientSitemapEntry> result) {
-
-                target.clearChildren();
-                for (CmsClientSitemapEntry entry : result) {
-                    target.addChild(factory.create(entry));
-                }
-                target.getEntry().setChildren(result);
-                target.onFinishLoading();
-            }
-        };
-        getChildrenAction.execute();
+        });
     }
 }

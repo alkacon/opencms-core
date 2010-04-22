@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsSitemapService.java,v $
- * Date   : $Date: 2010/04/21 14:29:20 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/04/22 14:32:08 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,15 +32,23 @@
 package org.opencms.ade.sitemap;
 
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
+import org.opencms.ade.sitemap.shared.CmsSitemapData;
+import org.opencms.ade.sitemap.shared.CmsSitemapTemplate;
 import org.opencms.ade.sitemap.shared.I_CmsSitemapChange;
 import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.gwt.CmsGwtService;
-import org.opencms.gwt.shared.rpc.CmsRpcException;
+import org.opencms.gwt.CmsRpcException;
 import org.opencms.main.CmsException;
-import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.CmsWorkplace;
+import org.opencms.xml.content.CmsXmlContentPropertyHelper;
 import org.opencms.xml.sitemap.CmsSitemapEntry;
 import org.opencms.xml.sitemap.CmsXmlSitemap;
 import org.opencms.xml.sitemap.CmsXmlSitemapFactory;
@@ -49,15 +57,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-
-import org.apache.commons.logging.Log;
+import java.util.Map;
 
 /**
  * Handles all RPC services related to the sitemap.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 8.0.0
  * 
@@ -67,11 +74,11 @@ import org.apache.commons.logging.Log;
  */
 public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapService {
 
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsSitemapService.class);
-
     /** Serialization uid. */
     private static final long serialVersionUID = -7136544324371767330L;
+
+    /** Session attribute name constant. */
+    private static final String SESSION_ATTR_ADE_SITEMAP_RECENT_LIST_CACHE = "__OCMS_ADE_SITEMAP_RECENT_LIST_CACHE__";
 
     /**
      * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#createSubsitemap(java.lang.String, java.lang.String)
@@ -91,21 +98,42 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
      */
     public List<CmsClientSitemapEntry> getChildren(String root) throws CmsRpcException {
 
+        List<CmsClientSitemapEntry> children = null;
         try {
             CmsSitemapEntry entry = OpenCms.getSitemapManager().getEntryForUri(getCmsObject(), root);
             List<CmsSitemapEntry> subEntries = entry.getSubEntries();
             int size = subEntries.size();
-            List<CmsClientSitemapEntry> children = new ArrayList<CmsClientSitemapEntry>(size);
+            children = new ArrayList<CmsClientSitemapEntry>(size);
             for (int i = 0; i < size; i++) {
                 CmsSitemapEntry child = subEntries.get(i);
                 children.add(toClientEntry(child, i));
             }
             return children;
         } catch (Throwable e) {
-            // should never happen
-            LOG.error(e.getLocalizedMessage(), e);
-            throw new CmsRpcException(e.getLocalizedMessage());
+            error(e);
         }
+        return children;
+    }
+
+    /**
+     * Returns the default template for the given sitemap.<p>
+     * 
+     * @param sitemapUri the sitemap URI
+     * 
+     * @return the default template
+     * 
+     * @throws CmsRpcException if something goes wrong
+     */
+    public CmsSitemapTemplate getDefaultTemplate(String sitemapUri) throws CmsRpcException {
+
+        CmsSitemapTemplate result = null;
+        CmsObject cms = getCmsObject();
+        try {
+            result = getTemplateBean(cms, OpenCms.getSitemapManager().getDefaultTemplate(cms, sitemapUri, getRequest()));
+        } catch (Throwable e) {
+            error(e);
+        }
+        return result;
     }
 
     /**
@@ -113,12 +141,41 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
      */
     public CmsClientSitemapEntry getEntry(String root) throws CmsRpcException {
 
+        CmsClientSitemapEntry result = null;
         try {
-            return toClientEntry(OpenCms.getSitemapManager().getEntryForUri(getCmsObject(), root), -1);
+            result = toClientEntry(OpenCms.getSitemapManager().getEntryForUri(getCmsObject(), root), -1);
         } catch (Throwable e) {
-            // should never happen
-            LOG.error(e.getLocalizedMessage(), e);
-            throw new CmsRpcException(e.getLocalizedMessage());
+            error(e);
+        }
+        return result;
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#getInitData(java.lang.String)
+     */
+    public CmsSitemapData getInitData(String sitemapUri) throws CmsRpcException {
+
+        CmsSitemapData result = null;
+        CmsObject cms = getCmsObject();
+        try {
+            CmsResource sitemap = cms.readResource(sitemapUri);
+            result = new CmsSitemapData(
+                getDefaultTemplate(sitemapUri),
+                getTemplates(),
+                CmsXmlContentPropertyHelper.getPropertyInfo(cms, sitemap),
+                getCachedRecentList());
+        } catch (Throwable e) {
+            error(e);
+        }
+        return result;
+    }
+
+    public void exit(List<CmsClientSitemapEntry> recentList) throws CmsRpcException {
+
+        try {
+
+        } catch (Throwable e) {
+            error(e);
         }
     }
 
@@ -127,13 +184,15 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
      */
     public List<CmsClientSitemapEntry> getRoots(String sitemapUri) throws CmsRpcException {
 
+        CmsObject cms = getCmsObject();
+        List<CmsClientSitemapEntry> roots = null;
         try {
-            CmsObject cms = getCmsObject();
-            CmsXmlSitemap xml = CmsXmlSitemapFactory.unmarshal(cms, cms.readResource(sitemapUri));
+            // TODO: what's about historical requests?
+            CmsResource sitemap = cms.readResource(sitemapUri);
+            CmsXmlSitemap xml = CmsXmlSitemapFactory.unmarshal(cms, sitemap);
             String sitePath = cms.getRequestContext().removeSiteRoot(
                 xml.getSitemap(cms, Locale.ENGLISH).getEntryPoint());
             boolean isSubsitemap = false;
-            List<CmsClientSitemapEntry> roots = null;
             if (isSubsitemap) {
                 roots = getChildren(sitePath);
             } else {
@@ -149,12 +208,52 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
             for (CmsClientSitemapEntry root : roots) {
                 root.setChildren(getChildren(root.getSitePath()));
             }
-            return roots;
         } catch (Throwable e) {
-            // should never happen
-            LOG.error(e.getLocalizedMessage(), e);
-            throw new CmsRpcException(e.getLocalizedMessage());
+            error(e);
         }
+        return roots;
+    }
+
+    /**
+     * Returns the available templates.<p>
+     * 
+     * @return the available templates
+     * 
+     * @throws CmsRpcException if something goes wrong
+     */
+    public Map<String, CmsSitemapTemplate> getTemplates() throws CmsRpcException {
+
+        Map<String, CmsSitemapTemplate> result = new HashMap<String, CmsSitemapTemplate>();
+        CmsObject cms = getCmsObject();
+        try {
+            // find current site templates
+            int templateId = OpenCms.getResourceManager().getResourceType(
+                CmsResourceTypeJsp.getContainerPageTemplateTypeName()).getTypeId();
+            List<CmsResource> templates = cms.readResources(
+                "/",
+                CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(templateId),
+                true);
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(cms.getRequestContext().getSiteRoot())) {
+                // if not in the root site, also add template under /system/
+                templates.addAll(cms.readResources(
+                    CmsWorkplace.VFS_PATH_SYSTEM,
+                    CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(templateId),
+                    true));
+            }
+            // convert resources to template beans
+            for (CmsResource template : templates) {
+                try {
+                    CmsSitemapTemplate templateBean = getTemplateBean(cms, template);
+                    result.put(templateBean.getSitePath(), templateBean);
+                } catch (CmsException e) {
+                    // should never happen
+                    log(e.getLocalizedMessage(), e);
+                }
+            }
+        } catch (Throwable e) {
+            error(e);
+        }
+        return result;
     }
 
     /**
@@ -174,6 +273,59 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
     }
 
     /**
+     * Saves the given recent list to the session.<p>
+     * 
+     * @param recentList the recent list to save
+     */
+    private void setRecentList(List<CmsClientSitemapEntry> recentList) {
+
+        getRequest().getSession().setAttribute(SESSION_ATTR_ADE_SITEMAP_RECENT_LIST_CACHE, recentList);
+    }
+
+    /**
+     * Returns the cached recent list, creating it if it doesn't already exist.<p>
+     * 
+     * @return the cached recent list
+     */
+    @SuppressWarnings("unchecked")
+    private List<CmsClientSitemapEntry> getCachedRecentList() {
+
+        List<CmsClientSitemapEntry> cache = (List<CmsClientSitemapEntry>)getRequest().getSession().getAttribute(
+            SESSION_ATTR_ADE_SITEMAP_RECENT_LIST_CACHE);
+        if (cache == null) {
+            cache = new ArrayList<CmsClientSitemapEntry>();
+            getRequest().getSession().setAttribute(SESSION_ATTR_ADE_SITEMAP_RECENT_LIST_CACHE, cache);
+        }
+        return cache;
+
+    }
+
+    /**
+     * Returns a bean representing the given template resource.<p>
+     * 
+     * @param cms the cms context to use for VFS operations
+     * @param resource the template resource
+     * 
+     * @return bean representing the given template resource
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    private CmsSitemapTemplate getTemplateBean(CmsObject cms, CmsResource resource) throws CmsException {
+
+        CmsProperty titleProp = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_TITLE, false);
+        CmsProperty descProp = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_DESCRIPTION, false);
+        CmsProperty imageProp = cms.readPropertyObject(
+            resource,
+            CmsPropertyDefinition.PROPERTY_ADE_TEMPLATE_IMAGE,
+            false);
+        return new CmsSitemapTemplate(
+            cms.getSitePath(resource),
+            titleProp.getValue(),
+            descProp.getValue(),
+            imageProp.getValue());
+    }
+
+    /**
      * Converts a site entry bean into a JSON object.<p>
      * 
      * @param entry the entry to convert
@@ -183,7 +335,7 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
      * 
      * @throws CmsException should never happen 
      */
-    protected CmsClientSitemapEntry toClientEntry(CmsSitemapEntry entry, int position) throws CmsException {
+    private CmsClientSitemapEntry toClientEntry(CmsSitemapEntry entry, int position) throws CmsException {
 
         CmsClientSitemapEntry clientEntry = new CmsClientSitemapEntry();
         clientEntry.setId(entry.getId());

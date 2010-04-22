@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapHoverbarHandler.java,v $
- * Date   : $Date: 2010/04/22 08:18:40 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/22 14:32:07 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,9 +33,12 @@ package org.opencms.ade.sitemap.client;
 
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsConfirmDialog;
 import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
 
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 
 /**
@@ -43,7 +46,7 @@ import com.google.gwt.user.client.Window;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  * 
@@ -114,8 +117,16 @@ public class CmsSitemapHoverbarHandler {
      */
     public void onEdit() {
 
-        // todo: edit
+        executeWhenReady(new Command() {
 
+            /**
+             * @see com.google.gwt.user.client.Command#execute()
+             */
+            public void execute() {
+
+                // TODO: show edit dialog
+            }
+        });
     }
 
     /**
@@ -139,7 +150,16 @@ public class CmsSitemapHoverbarHandler {
      */
     public void onNew() {
 
-        // TODO: move
+        executeWhenReady(new Command() {
+
+            /**
+             * @see com.google.gwt.user.client.Command#execute()
+             */
+            public void execute() {
+
+                // TODO: show new dialog
+            }
+        });
     }
 
     /**
@@ -163,5 +183,37 @@ public class CmsSitemapHoverbarHandler {
         m_entry.setVfsPath(entry.getVfsPath());
         m_entry.setProperties(entry.getProperties());
         m_entry.setPosition(entry.getPosition());
+    }
+
+    private void executeWhenReady(final Command command) {
+
+        // check if ready
+        CmsRpcAction<?> rpcAction = m_controller.getInitAction();
+        if (rpcAction != null) {
+            // not ready yet, show overlay
+            rpcAction.start(0);
+            Timer t = new Timer() {
+
+                /**
+                 * @see com.google.gwt.user.client.Timer#run()
+                 */
+                @Override
+                public void run() {
+
+                    if (m_controller.getInitAction() != null) {
+                        // still not ready
+                        return;
+                    }
+                    // finally ready
+                    cancel();
+                    command.execute();
+                }
+            };
+            // check every 200ms again
+            t.scheduleRepeating(200);
+        } else {
+            // ready
+            command.execute();
+        }
     }
 }

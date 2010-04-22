@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/rpc/Attic/I_CmsSitemapServiceAsync.java,v $
- * Date   : $Date: 2010/04/21 14:29:20 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/04/22 14:32:08 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,8 +31,9 @@
 
 package org.opencms.ade.sitemap.shared.rpc;
 
-import org.opencms.ade.sitemap.shared.I_CmsSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
+import org.opencms.ade.sitemap.shared.CmsSitemapData;
+import org.opencms.ade.sitemap.shared.I_CmsSitemapChange;
 
 import java.util.List;
 
@@ -43,7 +44,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
  * 
@@ -77,6 +78,14 @@ public interface I_CmsSitemapServiceAsync {
      * @param callback the async callback
      */
     void getEntry(String root, AsyncCallback<CmsClientSitemapEntry> callback);
+
+    /**
+     * Returns the initialization data for the given sitemap.<p>
+     * 
+     * @param sitemapUri the site relative path
+     * @param callback the async callback
+     */
+    void getInitData(String sitemapUri, AsyncCallback<CmsSitemapData> callback);
 
     /**
      * Returns the root sitemap entries for the given sitemap.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentPropertyHelper.java,v $
- * Date   : $Date: 2010/02/16 16:26:50 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/22 14:32:08 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import org.dom4j.Element;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 7.9.2
  */
@@ -119,6 +119,51 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
     }
 
     /**
+     * Returns the property information for the given resource (type) AND the current user.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param resource the resource
+     * 
+     * @return the property information
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public static Map<String, CmsXmlContentProperty> getPropertyInfo(CmsObject cms, CmsResource resource)
+    throws CmsException {
+
+        Map<String, CmsXmlContentProperty> result = new HashMap<String, CmsXmlContentProperty>();
+
+        I_CmsXmlContentHandler contentHandler = CmsXmlContentDefinition.getContentHandlerForResource(cms, resource);
+
+        CmsMacroResolver resolver = new CmsMacroResolver();
+        resolver.setCmsObject(cms);
+        CmsUserSettings settings = new CmsUserSettings(cms.getRequestContext().currentUser());
+        CmsMessages messages = contentHandler.getMessages(settings.getLocale());
+        resolver.setMessages(messages);
+        resolver.setKeepEmptyMacros(true);
+
+        Map<String, CmsXmlContentProperty> propertiesConf = contentHandler.getProperties();
+        for (Map.Entry<String, CmsXmlContentProperty> entry : propertiesConf.entrySet()) {
+            String propertyName = entry.getKey();
+            CmsXmlContentProperty property = entry.getValue();
+            CmsXmlContentProperty newProperty = new CmsXmlContentProperty(
+                propertyName,
+                property.getPropertyType(),
+                property.getWidget(),
+                resolver.resolveMacros(property.getWidgetConfiguration()),
+                property.getRuleRegex(),
+                property.getRuleType(),
+                property.getDefault(),
+                resolver.resolveMacros(property.getNiceName()),
+                resolver.resolveMacros(property.getDescription()),
+                resolver.resolveMacros(property.getError()));
+
+            result.put(propertyName, newProperty);
+        }
+        return result;
+    }
+
+    /**
      * Returns the property information for the given resource (type) as a JSON object.<p>
      * 
      * @param cms the current CMS context 
@@ -132,6 +177,7 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
     public static JSONObject getPropertyInfoJSON(CmsObject cms, CmsResource resource)
     throws CmsException, JSONException {
 
+        // TODO: delete when no longer needed
         JSONObject jsonProperties = new JSONObject();
 
         I_CmsXmlContentHandler contentHandler = CmsXmlContentDefinition.getContentHandlerForResource(cms, resource);

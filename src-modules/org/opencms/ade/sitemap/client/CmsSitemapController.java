@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2010/04/22 09:22:37 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/04/22 14:32:07 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,17 +36,21 @@ import org.opencms.ade.sitemap.shared.CmsSitemapChangeDelete;
 import org.opencms.ade.sitemap.shared.CmsSitemapChangeEdit;
 import org.opencms.ade.sitemap.shared.CmsSitemapChangeMove;
 import org.opencms.ade.sitemap.shared.CmsSitemapChangeNew;
+import org.opencms.ade.sitemap.shared.CmsSitemapData;
+import org.opencms.ade.sitemap.shared.CmsSitemapTemplate;
 import org.opencms.ade.sitemap.shared.I_CmsSitemapChange;
 import org.opencms.file.CmsResource;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 
 /**
@@ -54,7 +58,7 @@ import com.google.gwt.user.client.Window;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 8.0.0
  */
@@ -66,8 +70,17 @@ public class CmsSitemapController {
     /** The handler. */
     protected CmsSitemapControllerHandler m_handler;
 
+    /** Async loading of data needed only when editing. */
+    protected CmsRpcAction<CmsSitemapData> m_initAction;
+
+    /** The properties. */
+    protected Map<String, CmsXmlContentProperty> m_properties;
+
     /** The current available sitemap data. */
-    private CmsClientSitemapEntry m_sitemap;
+    protected CmsClientSitemapEntry m_sitemap;
+
+    /** The available templates. */
+    protected Map<String, CmsSitemapTemplate> m_templates;
 
     /** The list of undone changes. */
     private List<I_CmsSitemapChange> m_undone;
@@ -79,6 +92,32 @@ public class CmsSitemapController {
 
         m_changes = new ArrayList<I_CmsSitemapChange>();
         m_undone = new ArrayList<I_CmsSitemapChange>();
+
+        // async loading of data needed only when editing 
+        m_initAction = new CmsRpcAction<CmsSitemapData>() {
+
+            /**
+            * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+            */
+            @Override
+            public void execute() {
+
+                // Make the call to the sitemap service
+                CmsSitemapProvider.getService().getInitData(CmsSitemapProvider.get().getUri(), this);
+            }
+
+            /**
+            * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+            */
+            @Override
+            public void onResponse(CmsSitemapData data) {
+
+                m_properties = data.getProperties();
+                m_templates = data.getTemplates();
+                stop();
+                m_initAction = null;
+            }
+        };
     }
 
     /**
@@ -172,6 +211,103 @@ public class CmsSitemapController {
     }
 
     /**
+     * Retrieves the children entries of the given node from the server.<p>
+     * 
+     * @param target the sitemap entry to get the children for
+     */
+    public void getChildren(final CmsClientSitemapEntry target) {
+
+        CmsRpcAction<List<CmsClientSitemapEntry>> getChildrenAction = new CmsRpcAction<List<CmsClientSitemapEntry>>() {
+
+            /**
+            * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+            */
+            @Override
+            public void execute() {
+
+                // Make the call to the sitemap service
+                CmsSitemapProvider.getService().getChildren(target.getSitePath(), this);
+            }
+
+            /**
+            * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+            */
+            @Override
+            public void onResponse(List<CmsClientSitemapEntry> result) {
+
+                target.setChildren(result);
+                m_handler.onGetChildren(target);
+            }
+        };
+        getChildrenAction.execute();
+    }
+
+    /**
+     * Checks if the needed data for edition/creation of sitemap entries is already available.<p>
+     * 
+     * @return <code>null</code> if data available
+     */
+    public CmsRpcAction<CmsSitemapData> getInitAction() {
+
+        return m_initAction;
+    }
+
+    /**
+     * Returns the properties.<p>
+     *
+     * @return the properties
+     */
+    public Map<String, CmsXmlContentProperty> getProperties() {
+
+        return m_properties;
+    }
+
+    /**
+     * Initializes the controller.<p>
+     * 
+     * @param command the command to execute after initialization
+     */
+    public void initialize(final Command command) {
+
+        CmsRpcAction<List<CmsClientSitemapEntry>> getRootsAction = new CmsRpcAction<List<CmsClientSitemapEntry>>() {
+
+            /**
+            * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+            */
+            @Override
+            public void execute() {
+
+                // Make the call to the sitemap service
+                start(500);
+                CmsSitemapProvider.getService().getRoots(CmsSitemapProvider.get().getUri(), this);
+            }
+
+            /**
+            * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+            */
+            @Override
+            public void onResponse(List<CmsClientSitemapEntry> roots) {
+
+                m_sitemap = new CmsClientSitemapEntry();
+                if (roots.isEmpty()) {
+                    return;
+                }
+                m_sitemap.setSitePath(CmsResource.getParentFolder(roots.get(0).getSitePath()));
+                m_sitemap.setChildren(roots);
+                m_handler.onInit(roots);
+                command.execute();
+                stop();
+            }
+        };
+        getRootsAction.execute();
+
+        if (CmsSitemapProvider.get().isEditable()) {
+            // async loading of data needed only when editing 
+            m_initAction.execute();
+        }
+    }
+
+    /**
      * Checks if any change made.<p>
      * 
      * @return <code>true</code> if there is at least a change to commit
@@ -238,21 +374,6 @@ public class CmsSitemapController {
     public void setHandler(CmsSitemapControllerHandler handler) {
 
         m_handler = handler;
-    }
-
-    /**
-     * Sets the root of the current sitemap.<p>
-     * 
-     * @param roots the root of the current sitemap
-     */
-    public void setRoots(List<CmsClientSitemapEntry> roots) {
-
-        m_sitemap = new CmsClientSitemapEntry();
-        if (roots.isEmpty()) {
-            return;
-        }
-        m_sitemap.setSitePath(CmsResource.getParentFolder(roots.get(0).getSitePath()));
-        m_sitemap.setChildren(roots);
     }
 
     /**
