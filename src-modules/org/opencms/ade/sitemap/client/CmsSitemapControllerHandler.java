@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapControllerHandler.java,v $
- * Date   : $Date: 2010/04/22 08:18:40 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/22 09:22:37 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import org.opencms.util.CmsStringUtil;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  * 
@@ -54,14 +54,14 @@ import org.opencms.util.CmsStringUtil;
  */
 public class CmsSitemapControllerHandler {
 
+    /** The tree item factory. */
+    private CmsSitemapTreeItemFactory m_factory;
+
     /** The sitemap toolbar. */
     private CmsSitemapToolbar m_toolbar;
 
     /** The displayed sitemap tree. */
     private CmsLazyTree<CmsSitemapTreeItem> m_tree;
-
-    /** The tree item factory. */
-    private CmsSitemapTreeItemFactory m_factory;
 
     /**
      * Constructor.<p>
@@ -86,8 +86,6 @@ public class CmsSitemapControllerHandler {
      * @param change the specific change
      */
     public void onChange(I_CmsSitemapChange change) {
-
-        m_toolbar.getRedoButton().setEnabled(false);
 
         if (change instanceof CmsSitemapChangeDelete) {
             CmsSitemapChangeDelete changeDelete = (CmsSitemapChangeDelete)change;
@@ -114,6 +112,14 @@ public class CmsSitemapControllerHandler {
                 newParent.addChild(newChild);
             }
         }
+    }
+
+    /**
+     * Will be triggered when the undo list is cleared.<p> 
+     */
+    public void onClearUndo() {
+
+        m_toolbar.getRedoButton().setEnabled(false);
     }
 
     /**
