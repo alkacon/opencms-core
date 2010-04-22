@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishGroupPanel.java,v $
- * Date   : $Date: 2010/04/21 13:03:31 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/04/22 14:32:40 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import com.google.gwt.user.client.ui.Panel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -71,14 +71,23 @@ public class CmsPublishGroupPanel extends Composite implements I_CmsHasSize {
     /** The CSS bundle used for this widget. */
     protected static final I_CmsPublishCss CSS = I_CmsPublishLayoutBundle.INSTANCE.publishCss();
 
+    /** The handler which is called when the publish item selection changes. */
+    protected I_CmsPublishSelectionChangeHandler m_selectionChangeHandler;
+
     /** The group header (containing the label and add/remove buttons). */
     private CmsListItem m_header = new CmsListItem();
 
-    /** The number of resources with problems in the current group. */
+    /** Resources which don't have any problems. */
+    private ArrayList<CmsTreeItem> m_noProblemItems = new ArrayList<CmsTreeItem>();
+
+    /** The number of resources with problems in this group.<p> */
     private int m_numProblems;
 
     /** The root panel of this widget. */
-    private Panel m_panel = new CmsList();
+    private Panel m_panel = new CmsList<CmsTreeItem>();
+
+    /** Flag which indicates whether we're in 'only show resources with problems' mode. */
+    private boolean m_problemMode;
 
     /** The button for selecting all resources in the group. */
     private CmsTextButton m_selectAll;
@@ -97,8 +106,12 @@ public class CmsPublishGroupPanel extends Composite implements I_CmsHasSize {
      * 
      * @param title the title of the group
      * @param group the list of resource beans for the group
+     * @param selectionChangeHandler the handler for selection changes for publish resources 
      */
-    public CmsPublishGroupPanel(String title, List<CmsPublishResource> group) {
+    public CmsPublishGroupPanel(
+        String title,
+        List<CmsPublishResource> group,
+        I_CmsPublishSelectionChangeHandler selectionChangeHandler) {
 
         initWidget(m_panel);
         m_panel.add(m_header);
@@ -106,6 +119,11 @@ public class CmsPublishGroupPanel extends Composite implements I_CmsHasSize {
             addResource(resourceBean, false);
         }
         initSelectButtons();
+
+        if (m_numProblems == m_size) {
+            m_selectAll.setEnabled(false);
+            m_selectNone.setEnabled(false);
+        }
         Label label = new Label(title);
         label.addStyleName(CSS.groupHeader());
         m_header.add(label);
@@ -113,8 +131,7 @@ public class CmsPublishGroupPanel extends Composite implements I_CmsHasSize {
         FlowPanel clear = new FlowPanel();
         clear.setStyleName(CSS.clear());
         m_header.add(clear);
-
-        m_size = group.size();
+        m_selectionChangeHandler = selectionChangeHandler;
 
     }
 
@@ -209,7 +226,7 @@ public class CmsPublishGroupPanel extends Composite implements I_CmsHasSize {
      */
     public int getSize() {
 
-        return m_size;
+        return m_problemMode ? m_numProblems : m_size;
     }
 
     /**
@@ -225,6 +242,21 @@ public class CmsPublishGroupPanel extends Composite implements I_CmsHasSize {
     }
 
     /**
+     * Enables or disables the 'only show resources with problems' mode.<p>
+     * 
+     * @param enabled
+     */
+    public void setProblemMode(boolean enabled) {
+
+        m_problemMode = enabled;
+        setNoProblemItemsVisible(!enabled);
+        if (m_numProblems == 0) {
+            // if no items in the group are problem items, hide or show the whole group 
+            setVisible(!enabled);
+        }
+    }
+
+    /**
      * Adds a resource bean to this group.<p>
      * 
      * @param resourceBean the resource bean which should be added
@@ -236,11 +268,16 @@ public class CmsPublishGroupPanel extends Composite implements I_CmsHasSize {
         m_panel.add(row);
         if (resourceBean.getInfo() != null) {
             m_numProblems += 1;
+        } else {
+            m_noProblemItems.add(row);
         }
+        // we don't count related resources.
+        m_size += 1;
 
         for (CmsPublishResource related : resourceBean.getRelated()) {
             row.addChild(buildItem(related));
         }
+
     }
 
     /**
@@ -252,14 +289,27 @@ public class CmsPublishGroupPanel extends Composite implements I_CmsHasSize {
      */
     private CmsTreeItem buildItem(CmsPublishResource resourceBean) {
 
+        ClickHandler checkboxHandler = new ClickHandler() {
+
+            /**
+             * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
+             */
+            public void onClick(ClickEvent event) {
+
+                m_selectionChangeHandler.onChangePublishSelection();
+            }
+
+        };
+
         CmsListItemWidget itemWidget = createListItemWidget(resourceBean);
         final CmsStyleVariable styleVar = new CmsStyleVariable(itemWidget);
         styleVar.setValue(CSS.itemToKeep());
 
         final CmsCheckBox checkbox = new CmsCheckBox();
+        checkbox.addClickHandler(checkboxHandler);
         final boolean hasProblem = (resourceBean.getInfo() != null);
         if (hasProblem) {
-            // can't select resource with problems 
+            // can't select resource with problems
             checkbox.setChecked(false);
             checkbox.setEnabled(false);
         }
@@ -287,6 +337,8 @@ public class CmsPublishGroupPanel extends Composite implements I_CmsHasSize {
                 remover.setTitle(remove
                 ? Messages.get().key(Messages.GUI_PUBLISH_UNREMOVE_BUTTON_0)
                 : Messages.get().key(Messages.GUI_PUBLISH_REMOVE_BUTTON_0));
+
+                m_selectionChangeHandler.onChangePublishSelection();
             }
         });
         itemWidget.addButtonToFront(remover);
@@ -300,7 +352,6 @@ public class CmsPublishGroupPanel extends Composite implements I_CmsHasSize {
      */
     private void initSelectButtons() {
 
-        // TODO: disable/hide these buttons if there is nothing that can be selected (all resources have problems)
         m_selectAll = new CmsTextButton(
             Messages.get().key(Messages.GUI_PUBLISH_TOP_PANEL_ALL_BUTTON_0),
             I_CmsInputLayoutBundle.INSTANCE.inputCss().checkBoxImageChecked(),
@@ -314,6 +365,7 @@ public class CmsPublishGroupPanel extends Composite implements I_CmsHasSize {
             public void onClick(ClickEvent event) {
 
                 setAllSelected(true);
+                m_selectionChangeHandler.onChangePublishSelection();
             }
         });
 
@@ -330,6 +382,7 @@ public class CmsPublishGroupPanel extends Composite implements I_CmsHasSize {
             public void onClick(ClickEvent event) {
 
                 setAllSelected(false);
+                m_selectionChangeHandler.onChangePublishSelection();
             }
         });
 
@@ -339,4 +392,17 @@ public class CmsPublishGroupPanel extends Composite implements I_CmsHasSize {
         selectButtons.setStyleName(CSS.selectButtons());
         m_header.add(selectButtons);
     }
+
+    /**
+     * Shows or hides the resources which have no problems.<p>
+     * 
+     * @param visible if true, thre resources are shown, else hidden
+     */
+    private void setNoProblemItemsVisible(boolean visible) {
+
+        for (CmsTreeItem item : m_noProblemItems) {
+            item.setVisible(visible);
+        }
+    }
+
 }

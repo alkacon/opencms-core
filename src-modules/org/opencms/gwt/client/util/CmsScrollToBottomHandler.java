@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsScrollToBottomHandler.java,v $
- * Date   : $Date: 2010/04/21 13:03:31 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/22 14:32:40 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -51,12 +51,23 @@ public class CmsScrollToBottomHandler implements ScrollHandler {
      * If the lower edge of the content being scrolled is at most this many pixels below the lower
      * edge of the scrolling viewport, the action is triggered.
      */
-    public static final int SCROLL_THRESHOLD = 30;
+    public static final int DEFAULT_SCROLL_THRESHOLD = 30;
 
     /** 
      * The action which is triggered when the user scrolls to the bottom.<p>
      */
     private Runnable m_callback;
+
+    /**
+     * An internal flag that, if false, prevents the scroll action from being executed.<p>
+     */
+    private boolean m_enabled = true;
+
+    /**
+     * If the lower edge of the content being scrolled is at most this many pixels below the lower
+     * edge of the scrolling viewport, the action is triggered.
+     */
+    private int m_scrollThreshold = DEFAULT_SCROLL_THRESHOLD;
 
     /**
      * Constructs a new scroll handler.<p>
@@ -69,19 +80,41 @@ public class CmsScrollToBottomHandler implements ScrollHandler {
     }
 
     /**
+     * Constructs a new scroll handler with a custom scroll threshold.
+     * 
+     * The scroll threshold is the distance from the bottom edge of the scrolled content
+     * such that when the distance from the bottom edge of the scroll viewport to the bottom
+     * edge of the scrolled content becomes lower than the distance, the scroll action is triggered.
+     * 
+     * @param callback the action which should be executed when the user scrolls to the bottom.
+     * @param scrollThreshold the scroll threshold
+     */
+    public CmsScrollToBottomHandler(Runnable callback, int scrollThreshold) {
+
+        m_callback = callback;
+        m_scrollThreshold = scrollThreshold;
+    }
+
+    /**
      * @see com.google.gwt.event.dom.client.ScrollHandler#onScroll(com.google.gwt.event.dom.client.ScrollEvent)
      */
     public void onScroll(ScrollEvent event) {
 
+        if (!m_enabled) {
+            return;
+        }
         ScrollPanel scrollPanel = (ScrollPanel)event.getSource();
-
         int scrollPos = scrollPanel.getScrollPosition();
         Widget child = scrollPanel.getWidget();
         int childHeight = child.getOffsetHeight();
         int ownHeight = scrollPanel.getOffsetHeight();
-        boolean isBottom = scrollPos + ownHeight >= childHeight - SCROLL_THRESHOLD;
+        boolean isBottom = scrollPos + ownHeight >= childHeight - m_scrollThreshold;
         if (isBottom) {
             m_callback.run();
+            m_enabled = false;
+            scrollPanel.setScrollPosition(scrollPos);
+            m_enabled = true;
+
         }
     }
 }

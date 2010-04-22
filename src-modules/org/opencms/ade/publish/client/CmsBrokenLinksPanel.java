@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsBrokenLinksPanel.java,v $
- * Date   : $Date: 2010/04/15 10:06:54 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/04/22 14:32:40 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -85,7 +85,7 @@ public class CmsBrokenLinksPanel extends Composite {
 
     /** The list containing the resource widgets representing broken links. */
     @UiField
-    protected CmsList m_list;
+    protected CmsList<CmsTreeItem> m_list;
 
     /** The button which causes a "forced publish". */
     @UiField

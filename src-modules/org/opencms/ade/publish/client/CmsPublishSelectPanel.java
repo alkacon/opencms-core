@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishSelectPanel.java,v $
- * Date   : $Date: 2010/04/21 13:03:31 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/04/22 14:32:40 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ import org.opencms.ade.publish.shared.CmsProjectBean;
 import org.opencms.ade.publish.shared.CmsPublishGroup;
 import org.opencms.ade.publish.shared.CmsPublishOptions;
 import org.opencms.ade.publish.shared.CmsPublishResource;
+import org.opencms.gwt.client.i18n.CmsMessages;
 import org.opencms.gwt.client.ui.CmsButton;
 import org.opencms.gwt.client.ui.CmsTextButton;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
@@ -75,11 +76,11 @@ import com.google.gwt.user.client.ui.Widget;
  *  
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
-public class CmsPublishSelectPanel extends Composite {
+public class CmsPublishSelectPanel extends Composite implements I_CmsPublishSelectionChangeHandler {
 
     /** The UiBinder interface for this widget. */
     protected interface I_CmsPublishSelectPanelUiBinder extends UiBinder<Widget, CmsPublishSelectPanel> {
@@ -95,6 +96,9 @@ public class CmsPublishSelectPanel extends Composite {
      */
     private static final int MIN_BATCH_SIZE = 20;
 
+    /** The scroll threshold for the list of problem resources. */
+    private static final int SCROLL_THRESHOLD = 100;
+
     /** The UiBinder instance used for this widget. */
     private static final I_CmsPublishSelectPanelUiBinder UI_BINDER = GWT.create(I_CmsPublishSelectPanelUiBinder.class);
 
@@ -105,6 +109,10 @@ public class CmsPublishSelectPanel extends Composite {
     /** The panel with checkboxes. */
     @UiField
     protected Panel m_checkboxPanel;
+
+    /** The checkbox for the "show problems only" mode. */
+    @UiField
+    protected CmsCheckBox m_checkboxProblems;
 
     /** The checkbox for including related resources. */
     @UiField
@@ -121,6 +129,10 @@ public class CmsPublishSelectPanel extends Composite {
     /** The label which is displayed when there are no resources to publish. */
     @UiField
     protected Label m_noResources;
+
+    /** The label next to the 'only show resources with problems' checkbox. */
+    @UiField
+    protected InlineLabel m_problemsLabel;
 
     /** The panel which shows a message telling the user the number of problems. */
     @UiField
@@ -199,8 +211,10 @@ public class CmsPublishSelectPanel extends Composite {
         initWidget(UI_BINDER.createAndBindUi(this));
 
         List<CmsPair<String, String>> items = new ArrayList<CmsPair<String, String>>();
-        items.add(new CmsPair<String, String>(CmsUUID.getNullUUID().toString(), Messages.get().key(
-            Messages.GUI_PUBLISH_DIALOG_MY_CHANGES_0)));
+        CmsMessages messages = Messages.get();
+        items.add(new CmsPair<String, String>(
+            CmsUUID.getNullUUID().toString(),
+            messages.key(Messages.GUI_PUBLISH_DIALOG_MY_CHANGES_0)));
         for (CmsProjectBean project : projects) {
             items.add(new CmsPair<String, String>(project.getId().toString(), project.getName()));
         }
@@ -248,22 +262,35 @@ public class CmsPublishSelectPanel extends Composite {
 
         });
 
-        m_publishButton.setUpFace(Messages.get().key(Messages.GUI_PUBLISH_DIALOG_PUBLISH_0), null);
+        m_checkboxProblems.addClickHandler(new ClickHandler() {
+
+            /**
+             * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
+             */
+            public void onClick(ClickEvent e) {
+
+                setProblemMode(m_checkboxProblems.isChecked());
+
+            }
+
+        });
+
+        m_publishButton.setUpFace(messages.key(Messages.GUI_PUBLISH_DIALOG_PUBLISH_0), null);
         m_publishButton.useMinWidth(true);
-        m_cancelButton.setUpFace(Messages.get().key(Messages.GUI_PUBLISH_DIALOG_CANCEL_BUTTON_0), null);
+        m_cancelButton.setUpFace(messages.key(Messages.GUI_PUBLISH_DIALOG_CANCEL_BUTTON_0), null);
         m_cancelButton.useMinWidth(true);
 
         m_selectAll.setUpFace(
-            Messages.get().key(Messages.GUI_PUBLISH_TOP_PANEL_ALL_BUTTON_0),
+            messages.key(Messages.GUI_PUBLISH_TOP_PANEL_ALL_BUTTON_0),
             I_CmsInputLayoutBundle.INSTANCE.inputCss().checkBoxImageChecked());
         m_selectAll.useMinWidth(true);
 
         m_selectNone.setUpFace(
-            Messages.get().key(Messages.GUI_PUBLISH_TOP_PANEL_NONE_BUTTON_0),
+            messages.key(Messages.GUI_PUBLISH_TOP_PANEL_NONE_BUTTON_0),
             I_CmsInputLayoutBundle.INSTANCE.inputCss().checkBoxImageUnchecked());
         m_selectNone.useMinWidth(true);
 
-        m_noResources.setText(Messages.get().key(Messages.GUI_PUBLISH_DIALOG_NO_RES_0));
+        m_noResources.setText(messages.key(Messages.GUI_PUBLISH_DIALOG_NO_RES_0));
         m_selectAll.addClickHandler(new ClickHandler() {
 
             /**
@@ -272,6 +299,7 @@ public class CmsPublishSelectPanel extends Composite {
             public void onClick(ClickEvent e) {
 
                 setAllCheckboxes(true);
+                onChangePublishSelection();
             }
         });
 
@@ -283,15 +311,18 @@ public class CmsPublishSelectPanel extends Composite {
             public void onClick(ClickEvent e) {
 
                 setAllCheckboxes(false);
+                onChangePublishSelection();
             }
         });
 
-        m_siblingsLabel.setText(" " + Messages.get().key(Messages.GUI_PUBLISH_CHECKBOXES_SIBLINGS_0));
-        m_relatedLabel.setText(" " + Messages.get().key(Messages.GUI_PUBLISH_CHECKBOXES_REL_RES_0));
+        m_siblingsLabel.setText(" " + messages.key(Messages.GUI_PUBLISH_CHECKBOXES_SIBLINGS_0));
+        m_relatedLabel.setText(" " + messages.key(Messages.GUI_PUBLISH_CHECKBOXES_REL_RES_0));
         m_relatedLabel.addStyleName(CSS.clear());
         m_siblingsLabel.addStyleName(CSS.clear());
-        m_selectLabel.setText(Messages.get().key(Messages.GUI_PUBLISH_TOP_PANEL_LEFT_LABEL_0));
-        m_selectorLabel.setText(Messages.get().key(Messages.GUI_PUBLISH_TOP_PANEL_RIGHT_LABEL_0));
+        m_problemsLabel.setText(messages.key(Messages.GUI_PUBLISH_CHECKBOXES_PROBLEMS_0));
+        m_problemsLabel.addStyleName(CSS.clear());
+        m_selectLabel.setText(messages.key(Messages.GUI_PUBLISH_TOP_PANEL_LEFT_LABEL_0));
+        m_selectorLabel.setText(messages.key(Messages.GUI_PUBLISH_TOP_PANEL_RIGHT_LABEL_0));
         addScrollHandler();
     }
 
@@ -346,6 +377,16 @@ public class CmsPublishSelectPanel extends Composite {
     }
 
     /**
+     * @see org.opencms.ade.publish.client.I_CmsPublishSelectionChangeHandler#onChangePublishSelection()
+     */
+    public void onChangePublishSelection() {
+
+        boolean enablePublishButton = (getResourcesToRemove().size() != 0) || (getResourcesToPublish().size() != 0);
+        m_publishButton.setEnabled(enablePublishButton);
+
+    }
+
+    /**
      * Sets the state of all publish checkboxes in this widget to a given value.<p>
      * 
      * @param checked the new value for all the publish checkboxes
@@ -380,18 +421,14 @@ public class CmsPublishSelectPanel extends Composite {
         for (CmsPublishGroup group : groups) {
             String header = group.getName();
             List<CmsPublishResource> resourceBeans = group.getResources();
-            CmsPublishGroupPanel groupPanel = new CmsPublishGroupPanel(header, resourceBeans);
+            CmsPublishGroupPanel groupPanel = new CmsPublishGroupPanel(header, resourceBeans, this);
             numProblems += groupPanel.countProblems();
             m_groupPanels.add(groupPanel);
         }
-        m_splitter = new CmsListSplitter<CmsPublishGroupPanel>(m_groupPanels, MIN_BATCH_SIZE);
-
-        // display the first batch of groups 
-        addMoreGroups();
-
-        // TODO: enable the publish button only if there is something selected to publish
+        resetGroups();
         m_publishButton.setEnabled(true);
         showProblemCount(numProblems);
+        onChangePublishSelection();
     }
 
     /**
@@ -429,6 +466,19 @@ public class CmsPublishSelectPanel extends Composite {
     }
 
     /**
+     * Enables or disables the "only show resources with problems" mode.<p>
+     * 
+     * @param enabled if true, enable the mode, else disable it
+     */
+    protected void setProblemMode(boolean enabled) {
+
+        for (CmsPublishGroupPanel groupPanel : m_groupPanels) {
+            groupPanel.setProblemMode(enabled);
+        }
+        resetGroups();
+    }
+
+    /**
      * Adds the scroll handler to the scroll panel which makes more groups visible when the user 
      * scrolls to the bottom.<p>
      */
@@ -443,8 +493,21 @@ public class CmsPublishSelectPanel extends Composite {
 
                 addMoreGroups();
             }
-        }));
+        }, SCROLL_THRESHOLD));
 
+    }
+
+    /**
+     * Resets the publish group view.<p>
+     * 
+     * This method is called when the 'only show resources with problems' mode is toggled.
+     */
+    private void resetGroups() {
+
+        m_groupPanelContainer.clear();
+        m_splitter = new CmsListSplitter<CmsPublishGroupPanel>(m_groupPanels, MIN_BATCH_SIZE);
+        addMoreGroups();
+        m_scrollPanel.setScrollPosition(0);
     }
 
     /**
