@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapView.java,v $
- * Date   : $Date: 2010/04/21 14:29:20 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/04/22 08:18:40 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,20 +35,12 @@ import org.opencms.ade.sitemap.client.ui.CmsPage;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsImageBundle;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
-import org.opencms.ade.sitemap.shared.CmsSitemapChangeDelete;
-import org.opencms.ade.sitemap.shared.CmsSitemapChangeEdit;
-import org.opencms.ade.sitemap.shared.CmsSitemapChangeMove;
-import org.opencms.ade.sitemap.shared.CmsSitemapChangeNew;
-import org.opencms.ade.sitemap.shared.I_CmsSitemapChange;
-import org.opencms.file.CmsResource;
 import org.opencms.gwt.client.A_CmsEntryPoint;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsHeader;
 import org.opencms.gwt.client.ui.CmsToolbarPlaceHolder;
 import org.opencms.gwt.client.ui.tree.A_CmsDeepLazyOpenHandler;
 import org.opencms.gwt.client.ui.tree.CmsLazyTree;
-import org.opencms.gwt.client.ui.tree.CmsTreeItem;
-import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,17 +53,11 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 8.0.0
  */
 public class CmsSitemapView extends A_CmsEntryPoint {
-
-    /** The sitemap controller. */
-    protected CmsSitemapController m_controller;
-
-    /** The display tree. */
-    protected CmsLazyTree<CmsSitemapTreeItem> m_tree;
 
     /**
      * @see com.google.gwt.core.client.EntryPoint#onModuleLoad()
@@ -79,86 +65,32 @@ public class CmsSitemapView extends A_CmsEntryPoint {
     @Override
     public void onModuleLoad() {
 
-        super.onModuleLoad();
-
         // init
+        super.onModuleLoad();
         I_CmsLayoutBundle.INSTANCE.rootCss().ensureInjected();
         I_CmsLayoutBundle.INSTANCE.pageCss().ensureInjected();
         I_CmsImageBundle.INSTANCE.buttonCss().ensureInjected();
 
         RootPanel.getBodyElement().addClassName(I_CmsLayoutBundle.INSTANCE.rootCss().root());
 
-        // controller
-        m_controller = new CmsSitemapController();
-        m_controller.setHandler(new I_CmsSitemapControllerHandler() {
+        // controller & tree-item-factory & tool-bar
+        final CmsSitemapController controller = new CmsSitemapController();
+        final CmsSitemapTreeItemFactory factory = new CmsSitemapTreeItemFactory(controller);
+        final CmsLazyTree<CmsSitemapTreeItem> tree = new CmsLazyTree<CmsSitemapTreeItem>(
+            new A_CmsDeepLazyOpenHandler<CmsSitemapTreeItem>() {
 
-            /**
-             * @see org.opencms.ade.sitemap.client.I_CmsSitemapControllerHandler#onChange(org.opencms.ade.sitemap.shared.I_CmsSitemapChange)
-             */
-            public void onChange(I_CmsSitemapChange change) {
+                /**
+                 * @see org.opencms.gwt.client.ui.tree.I_CmsLazyOpenHandler#load(org.opencms.gwt.client.ui.tree.CmsLazyTreeItem)
+                 */
+                public void load(final CmsSitemapTreeItem target) {
 
-                if (change instanceof CmsSitemapChangeDelete) {
-                    CmsSitemapChangeDelete changeDelete = (CmsSitemapChangeDelete)change;
-                    CmsTreeItem deleteParent = getTreeItem(CmsResource.getParentFolder(changeDelete.getEntry().getSitePath()));
-                    deleteParent.removeChild(changeDelete.getEntry().getName());
-                } else if (change instanceof CmsSitemapChangeEdit) {
-                    CmsSitemapChangeEdit changeEdit = (CmsSitemapChangeEdit)change;
-                    CmsSitemapTreeItem editEntry = (CmsSitemapTreeItem)getTreeItem(changeEdit.getOldEntry().getSitePath());
-                    editEntry.updateEntry(changeEdit.getNewEntry());
-                } else if (change instanceof CmsSitemapChangeMove) {
-                    CmsSitemapChangeMove changeMove = (CmsSitemapChangeMove)change;
-                    CmsTreeItem sourceParent = getTreeItem(CmsResource.getParentFolder(changeMove.getSourcePath()));
-                    CmsTreeItem moved = sourceParent.getChild(changeMove.getSourcePosition());
-                    sourceParent.removeChild(changeMove.getSourcePosition());
-                    CmsTreeItem destParent = getTreeItem(CmsResource.getParentFolder(changeMove.getDestinationPath()));
-                    destParent.insertChild(moved, changeMove.getDestinationPosition());
-                } else if (change instanceof CmsSitemapChangeNew) {
-                    CmsSitemapChangeNew changeNew = (CmsSitemapChangeNew)change;
-                    CmsTreeItem newParent = getTreeItem(CmsResource.getParentFolder(changeNew.getEntry().getSitePath()));
-                    CmsSitemapTreeItem newChild = new CmsSitemapTreeItem(changeNew.getEntry(), m_controller);
-                    if (changeNew.getEntry().getPosition() != -1) {
-                        newParent.insertChild(newChild, changeNew.getEntry().getPosition());
-                    } else {
-                        newParent.addChild(newChild);
-                    }
+                    getChildren(target, factory);
                 }
-            }
+            });
+        final CmsSitemapToolbar toolbar = new CmsSitemapToolbar();
+        controller.setHandler(new CmsSitemapControllerHandler(toolbar, tree, factory));
+        toolbar.setHandler(new CmsSitemapToolbarHandler(controller, toolbar));
 
-            /**
-             * Returns the tree entry with the given path.<p>
-             * 
-             * @param path the path to look for
-             * 
-             * @return the tree entry with the given path, or <code>null</code> if not found
-             */
-            private CmsTreeItem getTreeItem(String path) {
-
-                String[] names = CmsStringUtil.splitAsArray(path, "/");
-                CmsTreeItem result = null;
-                for (String name : names) {
-                    if (CmsStringUtil.isEmptyOrWhitespaceOnly(name)) {
-                        // in case of leading slash
-                        continue;
-                    }
-                    if (result != null) {
-                        result = result.getChild(name);
-                    } else {
-                        // match the root node
-                        result = m_tree.getItem(name);
-                    }
-                    if (result == null) {
-                        // not found
-                        break;
-                    }
-                }
-                return result;
-            }
-        });
-
-        // toolbar
-        CmsSitemapToolbarHandler handler = new CmsSitemapToolbarHandler(m_controller);
-        CmsSitemapToolbar toolbar = new CmsSitemapToolbar(handler);
-        m_controller.setToolbar(toolbar);
         RootPanel.get().add(toolbar);
         RootPanel.get().add(new CmsToolbarPlaceHolder());
 
@@ -197,33 +129,23 @@ public class CmsSitemapView extends A_CmsEntryPoint {
             public void onResponse(List<CmsClientSitemapEntry> roots) {
 
                 page.remove(loadingLabel);
-                m_controller.setRoots(roots);
+                controller.setRoots(roots);
 
                 List<CmsSitemapTreeItem> items = new ArrayList<CmsSitemapTreeItem>();
                 for (CmsClientSitemapEntry root : roots) {
-                    CmsSitemapTreeItem rootItem = new CmsSitemapTreeItem(root, m_controller);
+                    CmsSitemapTreeItem rootItem = factory.create(root);
                     rootItem.clearChildren();
                     for (CmsClientSitemapEntry entry : root.getChildren()) {
-                        rootItem.addChild(new CmsSitemapTreeItem(entry, m_controller));
+                        rootItem.addChild(factory.create(entry));
                     }
                     rootItem.onFinishLoading();
                     rootItem.setOpen(true);
                     items.add(rootItem);
                 }
                 // paint
-                m_tree = new CmsLazyTree<CmsSitemapTreeItem>(new A_CmsDeepLazyOpenHandler<CmsSitemapTreeItem>() {
-
-                    /**
-                     * @see org.opencms.gwt.client.ui.tree.I_CmsLazyOpenHandler#load(org.opencms.gwt.client.ui.tree.CmsLazyTreeItem)
-                     */
-                    public void load(final CmsSitemapTreeItem target) {
-
-                        getChildren(target);
-                    }
-                });
-                page.add(m_tree);
+                page.add(tree);
                 for (CmsSitemapTreeItem item : items) {
-                    m_tree.addItem(item);
+                    tree.addItem(item);
                 }
                 stop();
             }
@@ -235,8 +157,9 @@ public class CmsSitemapView extends A_CmsEntryPoint {
      * Returns the children entries of the given node.<p>
      * 
      * @param target the item to get the children for
+     * @param factory the sitemap tree item factory
      */
-    protected void getChildren(final CmsSitemapTreeItem target) {
+    protected void getChildren(final CmsSitemapTreeItem target, final CmsSitemapTreeItemFactory factory) {
 
         CmsRpcAction<List<CmsClientSitemapEntry>> getChildrenAction = new CmsRpcAction<List<CmsClientSitemapEntry>>() {
 
@@ -258,7 +181,7 @@ public class CmsSitemapView extends A_CmsEntryPoint {
 
                 target.clearChildren();
                 for (CmsClientSitemapEntry entry : result) {
-                    target.addChild(new CmsSitemapTreeItem(entry, m_controller));
+                    target.addChild(factory.create(entry));
                 }
                 target.getEntry().setChildren(result);
                 target.onFinishLoading();

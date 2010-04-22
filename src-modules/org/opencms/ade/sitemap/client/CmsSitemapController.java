@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2010/04/21 14:29:20 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/22 08:18:40 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,22 +54,20 @@ import com.google.gwt.user.client.Window;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  */
 public class CmsSitemapController {
 
     /** The list of changes. */
-    private List<I_CmsSitemapChange> m_changes;
+    protected List<I_CmsSitemapChange> m_changes;
+
+    /** The handler. */
+    protected CmsSitemapControllerHandler m_handler;
 
     /** The current available sitemap data. */
-    private CmsClientSitemapEntry m_data;
-
-    private I_CmsSitemapControllerHandler m_handler;
-
-    /** The toolbar. */
-    private CmsSitemapToolbar m_toolbar;
+    private CmsClientSitemapEntry m_sitemap;
 
     /** The list of undone changes. */
     private List<I_CmsSitemapChange> m_undone;
@@ -97,7 +95,7 @@ public class CmsSitemapController {
             @Override
             public void execute() {
 
-                CmsSitemapProvider.getService().save(CmsSitemapProvider.get().getUri(), getChanges(), this);
+                CmsSitemapProvider.getService().save(CmsSitemapProvider.get().getUri(), m_changes, this);
             }
 
             /**
@@ -174,26 +172,6 @@ public class CmsSitemapController {
     }
 
     /**
-     * Returns the changes.<p>
-     *
-     * @return the changes
-     */
-    public List<I_CmsSitemapChange> getChanges() {
-
-        return m_changes;
-    }
-
-    /**
-     * Returns the toolbar.<p>
-     *
-     * @return the toolbar
-     */
-    public CmsSitemapToolbar getToolbar() {
-
-        return m_toolbar;
-    }
-
-    /**
      * Checks if any change made.<p>
      * 
      * @return <code>true</code> if there is at least a change to commit
@@ -234,7 +212,7 @@ public class CmsSitemapController {
 
         // state
         if (m_undone.isEmpty()) {
-            getToolbar().getRedoButton().setEnabled(false);
+            m_handler.onLastRedo();
         }
     }
 
@@ -245,6 +223,10 @@ public class CmsSitemapController {
 
         m_changes.clear();
         m_undone.clear();
+
+        // state
+        m_handler.onReset();
+
         internalReset(true);
     }
 
@@ -253,7 +235,7 @@ public class CmsSitemapController {
      * 
      * @param handler the handler to set
      */
-    public void setHandler(I_CmsSitemapControllerHandler handler) {
+    public void setHandler(CmsSitemapControllerHandler handler) {
 
         m_handler = handler;
     }
@@ -265,22 +247,12 @@ public class CmsSitemapController {
      */
     public void setRoots(List<CmsClientSitemapEntry> roots) {
 
-        m_data = new CmsClientSitemapEntry();
+        m_sitemap = new CmsClientSitemapEntry();
         if (roots.isEmpty()) {
             return;
         }
-        m_data.setSitePath(CmsResource.getParentFolder(roots.get(0).getSitePath()));
-        m_data.setChildren(roots);
-    }
-
-    /**
-     * Sets the toolbar.<p>
-     * 
-     * @param toolbar the toolbar
-     */
-    public void setToolbar(CmsSitemapToolbar toolbar) {
-
-        m_toolbar = toolbar;
+        m_sitemap.setSitePath(CmsResource.getParentFolder(roots.get(0).getSitePath()));
+        m_sitemap.setChildren(roots);
     }
 
     /**
@@ -294,7 +266,7 @@ public class CmsSitemapController {
 
         // pre-state
         if (m_undone.isEmpty()) {
-            getToolbar().getRedoButton().setEnabled(true);
+            m_handler.onFirstUndo();
         }
 
         // undo
@@ -307,6 +279,7 @@ public class CmsSitemapController {
 
         // post-state
         if (!isDirty()) {
+            m_handler.onLastUndo();
             internalReset(false);
         }
     }
@@ -330,7 +303,6 @@ public class CmsSitemapController {
         if (!redo) {
             // after a new change no changes can be redone
             m_undone.clear();
-            m_toolbar.getRedoButton().setEnabled(false);
         }
 
         // add it
@@ -374,12 +346,12 @@ public class CmsSitemapController {
      */
     private CmsClientSitemapEntry getEntry(String entryPath) {
 
-        if (!entryPath.startsWith(m_data.getSitePath())) {
+        if (!entryPath.startsWith(m_sitemap.getSitePath())) {
             return null;
         }
-        String path = entryPath.substring(m_data.getSitePath().length());
+        String path = entryPath.substring(m_sitemap.getSitePath().length());
         String[] names = CmsStringUtil.splitAsArray(path, "/");
-        CmsClientSitemapEntry result = m_data;
+        CmsClientSitemapEntry result = m_sitemap;
         for (String name : names) {
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(name)) {
                 // in case of leading slash
@@ -398,7 +370,7 @@ public class CmsSitemapController {
                 break;
             }
         }
-        if (result == m_data) {
+        if (result == m_sitemap) {
             result = null;
         }
         return result;
@@ -410,11 +382,6 @@ public class CmsSitemapController {
      * @param reload if to reload after unlocking
      */
     private void internalReset(final boolean reload) {
-
-        // state
-        getToolbar().getSaveButton().setEnabled(false);
-        getToolbar().getResetButton().setEnabled(false);
-        getToolbar().getUndoButton().setEnabled(false);
 
         // unlock
         CmsRpcAction<String> unlockAction = new CmsRpcAction<String>() {
@@ -479,9 +446,7 @@ public class CmsSitemapController {
             public void onResponse(String result) {
 
                 // state
-                getToolbar().getSaveButton().setEnabled(true);
-                getToolbar().getResetButton().setEnabled(true);
-                getToolbar().getUndoButton().setEnabled(true);
+                m_handler.onStartEdit();
 
                 stop();
                 if (result == null) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapHoverbar.java,v $
- * Date   : $Date: 2010/04/21 14:29:20 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/22 08:18:40 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,13 +34,20 @@ package org.opencms.ade.sitemap.client;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.CmsImageButton;
 import org.opencms.gwt.client.ui.CmsToolbar;
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.util.CmsDomUtil;
+
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.RootPanel;
 
 /**
- * Sitemap toolbar.<p>
+ * Sitemap tree item hover-bar.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  */
@@ -69,34 +76,73 @@ public class CmsSitemapHoverbar extends CmsToolbar {
      * 
      * @param handler the handler
      */
-    public CmsSitemapHoverbar(CmsSitemapHoverbarHandler handler) {
+    public CmsSitemapHoverbar(final CmsSitemapHoverbarHandler handler) {
 
-        handler.setHoverbar(this);
+        ClickHandler clickHandler = new ClickHandler() {
+
+            /**
+             * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
+             */
+            public void onClick(ClickEvent event) {
+
+                if (event.getSource().equals(getMoveButton())) {
+                    handler.onMove();
+                } else if (event.getSource().equals(getNewButton())) {
+                    handler.onNew();
+                } else if (event.getSource().equals(getDeleteButton())) {
+                    cancelHover(getDeleteButton().getElement());
+                    CmsDomUtil.ensureMouseOut(getDeleteButton().getElement());
+                    handler.onDelete();
+                } else if (event.getSource().equals(getEditButton())) {
+                    handler.onEdit();
+                } else if (event.getSource().equals(getSubsitemapButton())) {
+                    handler.onSubsitemap();
+                } else if (event.getSource().equals(getGotoButton())) {
+                    handler.onGoto();
+                }
+            }
+
+            /**
+             * Cancels the hover effect from the given element.<p>
+             * 
+             * @param element the element to cancel the hover effect for
+             */
+            private void cancelHover(Element element) {
+
+                while (element.equals(RootPanel.getBodyElement())
+                    || !CmsDomUtil.hasClass(I_CmsLayoutBundle.INSTANCE.stateCss().cmsHovering(), element)) {
+                    element = element.getParentElement();
+                }
+                if (!element.equals(RootPanel.getBodyElement())) {
+                    element.removeClassName(I_CmsLayoutBundle.INSTANCE.stateCss().cmsHovering());
+                }
+            }
+        };
 
         m_moveButton = new CmsImageButton(I_CmsImageBundle.INSTANCE.buttonCss().hoverbarMove(), false);
         m_moveButton.setTitle(Messages.get().key(Messages.GUI_HOVERBAR_MOVE_0));
-        m_moveButton.addClickHandler(handler);
+        m_moveButton.addClickHandler(clickHandler);
 
         m_newButton = new CmsImageButton(I_CmsImageBundle.INSTANCE.buttonCss().hoverbarNew(), false);
         m_newButton.setTitle(Messages.get().key(Messages.GUI_HOVERBAR_NEW_0));
-        m_newButton.addClickHandler(handler);
+        m_newButton.addClickHandler(clickHandler);
 
         m_editButton = new CmsImageButton(I_CmsImageBundle.INSTANCE.buttonCss().hoverbarEdit(), false);
         m_editButton.setTitle(Messages.get().key(Messages.GUI_HOVERBAR_EDIT_0));
-        m_editButton.addClickHandler(handler);
+        m_editButton.addClickHandler(clickHandler);
 
         m_deleteButton = new CmsImageButton(I_CmsImageBundle.INSTANCE.buttonCss().hoverbarDelete(), false);
         m_deleteButton.setTitle(Messages.get().key(Messages.GUI_HOVERBAR_DELETE_0));
-        m_deleteButton.addClickHandler(handler);
+        m_deleteButton.addClickHandler(clickHandler);
 
         m_subsitemapButton = new CmsImageButton(I_CmsImageBundle.INSTANCE.buttonCss().hoverbarSubsitemap(), false);
         m_subsitemapButton.setTitle(Messages.get().key(Messages.GUI_HOVERBAR_SUBSITEMAP_0));
-        m_subsitemapButton.addClickHandler(handler);
+        m_subsitemapButton.addClickHandler(clickHandler);
 
         // TODO: this should be a link so it can be opened in a new window or tab by the user
         m_gotoButton = new CmsImageButton(I_CmsImageBundle.INSTANCE.buttonCss().hoverbarGoto(), false);
         m_gotoButton.setTitle(Messages.get().key(Messages.GUI_HOVERBAR_GOTO_0));
-        m_gotoButton.addClickHandler(handler);
+        m_gotoButton.addClickHandler(clickHandler);
     }
 
     /**

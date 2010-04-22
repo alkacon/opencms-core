@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapTreeItem.java,v $
- * Date   : $Date: 2010/04/21 14:29:20 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/04/22 08:18:40 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,21 +31,16 @@
 
 package org.opencms.ade.sitemap.client;
 
-import org.opencms.ade.sitemap.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem;
-import org.opencms.gwt.shared.CmsListInfoBean;
-
-import com.google.gwt.user.client.ui.Image;
 
 /**
  * Sitemap entry tree item implementation.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 8.0.0
  * 
@@ -60,46 +55,13 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
     /**
      * Default constructor.<p>
      * 
-     * @param entry the sitemap entry to use
-     * @param controller the controller
+     * @param widget the widget to use
+     * @param handler the handler
      */
-    public CmsSitemapTreeItem(CmsClientSitemapEntry entry, CmsSitemapController controller) {
+    public CmsSitemapTreeItem(CmsListItemWidget widget, CmsSitemapHoverbarHandler handler) {
 
-        super(createWidget(entry));
-        setId(entry.getName());
-        m_handler = new CmsSitemapHoverbarHandler(entry, controller);
-        if (!CmsSitemapProvider.get().isEditable()) {
-            return;
-        }
-        // buttons
-        CmsListItemWidget itemWidget = (CmsListItemWidget)getWidget(0);
-        CmsSitemapHoverbar hoverbar = new CmsSitemapHoverbar(m_handler);
-        itemWidget.addButton(hoverbar.getGotoButton());
-        itemWidget.addButton(hoverbar.getDeleteButton());
-        itemWidget.addButton(hoverbar.getEditButton());
-        itemWidget.addButton(hoverbar.getNewButton());
-        itemWidget.addButton(hoverbar.getMoveButton());
-    }
-
-    /**
-     * Creates the item widget for the given entry.<p>
-     * 
-     * @param entry the sitemap entry to create the widget for
-     *  
-     * @return the widget for the given entry
-     */
-    private static CmsListItemWidget createWidget(CmsClientSitemapEntry entry) {
-
-        CmsListInfoBean infoBean = new CmsListInfoBean();
-        infoBean.setTitle(entry.getTitle());
-        infoBean.setSubTitle(entry.getSitePath());
-        infoBean.addAdditionalInfo(Messages.get().key(Messages.GUI_NAME_0), entry.getName());
-        infoBean.addAdditionalInfo(Messages.get().key(Messages.GUI_VFS_PATH_0), entry.getVfsPath());
-        CmsListItemWidget itemWidget = new CmsListItemWidget(infoBean);
-        Image icon = new Image(I_CmsImageBundle.INSTANCE.magnifierIconActive());
-        icon.addStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
-        itemWidget.setIcon(icon);
-        return itemWidget;
+        super(widget);
+        m_handler = handler;
     }
 
     /**

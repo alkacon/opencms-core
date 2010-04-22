@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapToolbarHandler.java,v $
- * Date   : $Date: 2010/04/21 07:40:21 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/22 08:18:40 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,10 +34,7 @@ package org.opencms.ade.sitemap.client;
 import org.opencms.ade.publish.client.CmsPublishDialog;
 import org.opencms.gwt.client.ui.CmsConfirmDialog;
 import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
-import org.opencms.gwt.client.util.CmsDomUtil;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.ui.PopupPanel;
@@ -47,102 +44,114 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  * 
  * @see org.opencms.ade.sitemap.client.CmsSitemapToolbar
  */
-public class CmsSitemapToolbarHandler implements ClickHandler {
+public class CmsSitemapToolbarHandler {
 
     /** The controller. */
     protected CmsSitemapController m_controller;
 
-    /** The toolbar itself. */
-    private CmsSitemapToolbar m_toolbar;
+    /** The toolbar. */
+    protected CmsSitemapToolbar m_toolbar;
 
     /**
      * Constructor.<p>
-     * 
      * @param controller the controller
+     * @param toolbar the toolbar
      */
-    public CmsSitemapToolbarHandler(CmsSitemapController controller) {
+    public CmsSitemapToolbarHandler(CmsSitemapController controller, CmsSitemapToolbar toolbar) {
 
-        super();
+        m_toolbar = toolbar;
         m_controller = controller;
     }
 
     /**
-     * Returns the toolbar.<p>
-     *
-     * @return the toolbar
+     * Will be triggered when the user click on the add button.<p>
      */
-    public CmsSitemapToolbar getToolbar() {
+    public void onAdd() {
 
-        return m_toolbar;
+        // TODO: add
     }
 
     /**
-     * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
+     * Will be triggered when the user click on the clipboard button.<p>
      */
-    public void onClick(ClickEvent event) {
+    public void onClipboard() {
 
-        if (event.getSource().equals(m_toolbar.getSaveButton())) {
-            m_controller.commit();
-        } else if (event.getSource().equals(m_toolbar.getAddButton())) {
-            // TODO: add
-        } else if (event.getSource().equals(m_toolbar.getClipboardButton())) {
-            // TODO: clipboard
-        } else if (event.getSource().equals(m_toolbar.getPublishButton())) {
-            // triggering a mouse-out event, as it won't be fired once the dialog has opened (the dialog will capture all events)
-            CmsDomUtil.ensureMouseOut(m_toolbar.getPublishButton().getElement());
-            CmsPublishDialog.showPublishDialog(new CloseHandler<PopupPanel>() {
-
-                /**
-                 * @see com.google.gwt.event.logical.shared.CloseHandler#onClose(com.google.gwt.event.logical.shared.CloseEvent)
-                 */
-                public void onClose(CloseEvent<PopupPanel> event2) {
-
-                    getToolbar().getPublishButton().setDown(false);
-                }
-            });
-        } else if (event.getSource().equals(m_toolbar.getUndoButton())) {
-            m_controller.undo();
-        } else if (event.getSource().equals(m_toolbar.getRedoButton())) {
-            m_controller.redo();
-        } else if (event.getSource().equals(m_toolbar.getResetButton())) {
-            CmsConfirmDialog dialog = new CmsConfirmDialog(org.opencms.gwt.client.Messages.get().key(
-                org.opencms.gwt.client.Messages.GUI_DIALOG_RESET_TITLE_0), org.opencms.gwt.client.Messages.get().key(
-                org.opencms.gwt.client.Messages.GUI_DIALOG_RESET_TEXT_0));
-            dialog.setHandler(new I_CmsConfirmDialogHandler() {
-
-                /**
-                 * @see org.opencms.gwt.client.ui.I_CmsCloseDialogHandler#onClose()
-                 */
-                public void onClose() {
-
-                    // do nothing
-                }
-
-                /**
-                 * @see org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler#onOk()
-                 */
-                public void onOk() {
-
-                    m_controller.reset();
-                }
-            });
-            dialog.center();
-        }
+        // TODO: clipboard
     }
 
     /**
-     * Sets the toolbar.<p>
-     *
-     * @param toolbar the toolbar to set
+     * Will be triggered when the user click on the publish button.<p>
      */
-    public void setToolbar(CmsSitemapToolbar toolbar) {
+    public void onPublish() {
 
-        m_toolbar = toolbar;
+        CmsPublishDialog.showPublishDialog(new CloseHandler<PopupPanel>() {
+
+            /**
+             * @see com.google.gwt.event.logical.shared.CloseHandler#onClose(com.google.gwt.event.logical.shared.CloseEvent)
+             */
+            public void onClose(CloseEvent<PopupPanel> event2) {
+
+                m_toolbar.getPublishButton().setDown(false);
+            }
+        });
+    }
+
+    /**
+     * Will be triggered when the user click on the redo button.<p>
+     */
+    public void onRedo() {
+
+        m_controller.redo();
+    }
+
+    /**
+     * Will be triggered when the user click on the reset button.<p>
+     */
+    public void onReset() {
+
+        CmsConfirmDialog dialog = new CmsConfirmDialog(org.opencms.gwt.client.Messages.get().key(
+            org.opencms.gwt.client.Messages.GUI_DIALOG_RESET_TITLE_0), org.opencms.gwt.client.Messages.get().key(
+            org.opencms.gwt.client.Messages.GUI_DIALOG_RESET_TEXT_0));
+        dialog.setHandler(new I_CmsConfirmDialogHandler() {
+
+            /**
+             * @see org.opencms.gwt.client.ui.I_CmsCloseDialogHandler#onClose()
+             */
+            public void onClose() {
+
+                // do nothing
+            }
+
+            /**
+             * @see org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler#onOk()
+             */
+            public void onOk() {
+
+                m_controller.reset();
+            }
+        });
+        dialog.center();
+    }
+
+    /**
+     * Will be triggered when the user click on the save button.<p>
+     */
+    public void onSave() {
+
+        m_controller.commit();
+    }
+
+    /**
+     * Will be triggered when the user click on the undo button.<p>
+     */
+    public void onUndo() {
+
+        m_controller.undo();
     }
 }

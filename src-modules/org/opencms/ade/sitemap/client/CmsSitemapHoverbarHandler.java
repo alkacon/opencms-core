@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapHoverbarHandler.java,v $
- * Date   : $Date: 2010/04/21 14:29:20 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/22 08:18:40 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,36 +35,27 @@ import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.CmsConfirmDialog;
 import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
-import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
-import org.opencms.gwt.client.util.CmsDomUtil;
 
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * Sitemap hover-bar handler.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  * 
  * @see org.opencms.ade.sitemap.client.CmsSitemapToolbar
  */
-public class CmsSitemapHoverbarHandler implements ClickHandler {
+public class CmsSitemapHoverbarHandler {
 
     /** The controller. */
     protected CmsSitemapController m_controller;
 
     /** The sitemap entry. */
     private CmsClientSitemapEntry m_entry;
-
-    /** The hover-bar itself. */
-    private CmsSitemapHoverbar m_hoverbar;
 
     /**
      * Constructor.<p>
@@ -89,67 +80,74 @@ public class CmsSitemapHoverbarHandler implements ClickHandler {
     }
 
     /**
-     * Returns the hover-bar.<p>
-     *
-     * @return the hover-bar
+     * Triggered when the user click on the delete hover button.<p>
      */
-    public CmsSitemapHoverbar getHoverbar() {
+    public void onDelete() {
 
-        return m_hoverbar;
+        // TODO: check if the current entry has children and show the dialog only if so
+        CmsConfirmDialog dialog = new CmsConfirmDialog(
+            Messages.get().key(Messages.GUI_DIALOG_DELETE_TITLE_0),
+            Messages.get().key(Messages.GUI_DIALOG_DELETE_TEXT_0));
+        dialog.setHandler(new I_CmsConfirmDialogHandler() {
+
+            /**
+             * @see org.opencms.gwt.client.ui.I_CmsCloseDialogHandler#onClose()
+             */
+            public void onClose() {
+
+                // do nothing
+            }
+
+            /**
+             * @see org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler#onOk()
+             */
+            public void onOk() {
+
+                m_controller.delete(getEntry());
+            }
+        });
+        dialog.center();
     }
 
     /**
-     * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
+     * Triggered when the user click on the edit hover button.<p>
      */
-    public void onClick(ClickEvent event) {
+    public void onEdit() {
 
-        if (event.getSource().equals(m_hoverbar.getMoveButton())) {
-            // TODO: move
-        } else if (event.getSource().equals(m_hoverbar.getNewButton())) {
-            // TODO: new
-        } else if (event.getSource().equals(m_hoverbar.getDeleteButton())) {
-            cancelHover(m_hoverbar.getDeleteButton().getElement());
-            CmsDomUtil.ensureMouseOut(m_hoverbar.getDeleteButton().getElement());
-            // TODO: check if the current entry has children and show the dialog only if so
-            CmsConfirmDialog dialog = new CmsConfirmDialog(
-                Messages.get().key(Messages.GUI_DIALOG_DELETE_TITLE_0),
-                Messages.get().key(Messages.GUI_DIALOG_DELETE_TEXT_0));
-            dialog.setHandler(new I_CmsConfirmDialogHandler() {
+        // todo: edit
 
-                /**
-                 * @see org.opencms.gwt.client.ui.I_CmsCloseDialogHandler#onClose()
-                 */
-                public void onClose() {
-
-                    // do nothing
-                }
-
-                /**
-                 * @see org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler#onOk()
-                 */
-                public void onOk() {
-
-                    m_controller.delete(getEntry());
-                }
-            });
-            dialog.center();
-        } else if (event.getSource().equals(m_hoverbar.getEditButton())) {
-            // TODO: edit
-        } else if (event.getSource().equals(m_hoverbar.getSubsitemapButton())) {
-            // TODO: create subsitemap
-        } else if (event.getSource().equals(m_hoverbar.getGotoButton())) {
-            Window.Location.replace(CmsCoreProvider.get().link(m_entry.getSitePath()));
-        }
     }
 
     /**
-     * Sets the hover-bar.<p>
-     *
-     * @param hoverbar the hover-bar to set
+     * Triggered when the user click on the go-to hover button.<p>
      */
-    public void setHoverbar(CmsSitemapHoverbar hoverbar) {
+    public void onGoto() {
 
-        m_hoverbar = hoverbar;
+        Window.Location.replace(CmsCoreProvider.get().link(m_entry.getSitePath()));
+    }
+
+    /**
+     * Triggered when the user click on the move hover button.<p>
+     */
+    public void onMove() {
+
+        // TODO: move
+    }
+
+    /**
+     * Triggered when the user click on the new hover button.<p>
+     */
+    public void onNew() {
+
+        // TODO: move
+    }
+
+    /**
+     * Triggered when the user click on the sub-sitemap hover button.<p>
+     */
+    public void onSubsitemap() {
+
+        // TODO: subsitemap
     }
 
     /**
@@ -165,21 +163,5 @@ public class CmsSitemapHoverbarHandler implements ClickHandler {
         m_entry.setVfsPath(entry.getVfsPath());
         m_entry.setProperties(entry.getProperties());
         m_entry.setPosition(entry.getPosition());
-    }
-
-    /**
-     * Cancels the hover effect from the given element.<p>
-     * 
-     * @param element the element to cancel the hover effect for
-     */
-    private void cancelHover(Element element) {
-
-        while (element.equals(RootPanel.getBodyElement())
-            || !CmsDomUtil.hasClass(I_CmsLayoutBundle.INSTANCE.stateCss().cmsHovering(), element)) {
-            element = element.getParentElement();
-        }
-        if (!element.equals(RootPanel.getBodyElement())) {
-            element.removeClassName(I_CmsLayoutBundle.INSTANCE.stateCss().cmsHovering());
-        }
     }
 }
