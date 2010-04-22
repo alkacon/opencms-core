@@ -9,4 +9,5 @@
 	background-color: #E1E1E1;
 	font-family: value("constantsCss.fontFamily");
 	position: relative;
+	margin: 0;
 }
