@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsTabInnerPanel.java,v $
- * Date   : $Date: 2010/04/22 07:17:18 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/04/23 08:02:03 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,30 +32,45 @@
 package org.opencms.ade.galleries.client.ui;
 
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle.I_CmsGalleryDialogCss;
 import org.opencms.ade.galleries.shared.CmsCategoriesListInfoBean;
 import org.opencms.ade.galleries.shared.CmsGalleriesListInfoBean;
 import org.opencms.ade.galleries.shared.CmsGalleryInfoBean;
+import org.opencms.ade.galleries.shared.CmsResultsListInfoBean;
 import org.opencms.ade.galleries.shared.CmsTypesListInfoBean;
+import org.opencms.gwt.client.draganddrop.I_CmsDragElement;
+import org.opencms.gwt.client.draganddrop.I_CmsDragHandler;
+import org.opencms.gwt.client.draganddrop.I_CmsDragTarget;
+import org.opencms.gwt.client.ui.CmsDraggableListItemWidget;
 import org.opencms.gwt.client.ui.CmsFloatDecoratedPanel;
 import org.opencms.gwt.client.ui.CmsFlowPanel;
 import org.opencms.gwt.client.ui.CmsImageButton;
 import org.opencms.gwt.client.ui.CmsList;
+import org.opencms.gwt.client.ui.CmsListItem;
+import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsImageButton.Icon;
+import org.opencms.gwt.client.ui.input.CmsCheckBox;
+import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.util.CmsClientStringUtil;
 import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.gwt.client.util.CmsPair;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -64,11 +79,11 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.
  */
-public class CmsTabInnerPanel extends Composite {
+public class CmsTabInnerPanel extends Composite implements ClickHandler {
 
     /**
      * @see com.google.gwt.uibinder.client.UiBinder
@@ -76,6 +91,9 @@ public class CmsTabInnerPanel extends Composite {
     /* default */interface I_CmsTabInnerPanelUiBinder extends UiBinder<Widget, CmsTabInnerPanel> {
         // GWT interface, nothing to do here
     }
+
+    /** The css bundle used for this widget. */
+    private static final I_CmsGalleryDialogCss DIALOG_CSS = I_CmsLayoutBundle.INSTANCE.galleryDialogCss();
 
     /** The ui-binder instance for this class. */
     private static I_CmsTabInnerPanelUiBinder uiBinder = GWT.create(I_CmsTabInnerPanelUiBinder.class);
@@ -92,10 +110,6 @@ public class CmsTabInnerPanel extends Composite {
     @UiField
     protected CmsFlowPanel m_list;
 
-    /** The scrollable list panel. */
-    @UiField
-    protected CmsList m_scrollList;
-
     /** The option panel. */
     @UiField
     protected Panel m_options;
@@ -104,26 +118,46 @@ public class CmsTabInnerPanel extends Composite {
     @UiField
     protected Panel m_params;
 
+    /** The scrollable list panel. */
+    @UiField
+    protected CmsList<CmsListItem> m_scrollList;
+
     /** The option panel. */
     @UiField
     protected HTMLPanel m_tab;
-
-    //    /** The full text search parameter panel. */
-    //    @UiField
-    //    protected Panel m_text;
 
     /** The types parameter panel panel. */
     @UiField
     protected Panel m_types;
 
-    /**
-     * The default constructor.<p>
-     */
-    public CmsTabInnerPanel() {
+    //TODO: comment
+    private CmsImageButton m_closeCategoriesBtn;
 
+    private CmsImageButton m_closeGalleriesBtn;
+
+    private CmsImageButton m_closeSearchBtn;
+
+    private CmsImageButton m_closeTypesBtn;
+
+    /** The reference to the drag handler for the list elements. */
+    private I_CmsDragHandler<I_CmsDragElement, I_CmsDragTarget> m_dragHandler;
+
+    /**
+     * The default constructor with drag handler.<p>
+     * 
+     * @param handler the reference to drag handler
+     */
+    public CmsTabInnerPanel(I_CmsDragHandler<I_CmsDragElement, I_CmsDragTarget> handler) {
+
+        m_dragHandler = handler;
         init();
     }
 
+    //    /** The full text search parameter panel. */
+    //    @UiField
+    //    protected Panel m_text;
+
+    //TODO: change idetifier to private
     /**
      * Add a list item widget to the list panel.<p>
      * 
@@ -134,6 +168,7 @@ public class CmsTabInnerPanel extends Composite {
         m_scrollList.add(listItem);
     }
 
+    // TODO: change identifier to private
     /**
      * Add a widget to the option panel.<p>
      * 
@@ -166,6 +201,119 @@ public class CmsTabInnerPanel extends Composite {
     }
 
     /**
+     * Fill the content of the categories tab panel.<p>
+     * 
+     * @param infoBean the gallery info bean containing the current search parameters
+     */
+    public void fillCategoriesTabPanel(CmsGalleryInfoBean infoBean) {
+
+        // TODO: replace the dummy select box
+        ArrayList<CmsPair<String, String>> pairs = new ArrayList<CmsPair<String, String>>();
+        pairs.add(new CmsPair<String, String>("test1", "value1"));
+        pairs.add(new CmsPair<String, String>("test2", "value2"));
+        CmsSelectBox selectBox = new CmsSelectBox(pairs);
+        // TODO: use the common way to set the width of the select box
+        selectBox.setWidth("100px");
+        addWidgetToOptions(selectBox);
+        for (Map.Entry<String, CmsCategoriesListInfoBean> categoryItem : infoBean.getDialogInfo().getCategories().entrySet()) {
+            CmsListItemWidget listItemWidget = new CmsListItemWidget(categoryItem.getValue());
+            Image icon = new Image(categoryItem.getValue().getIconResource());
+            icon.setStyleName(DIALOG_CSS.listIcon());
+            listItemWidget.setIcon(icon);
+            CmsCategoryListItem listItem = new CmsCategoryListItem(infoBean, new CmsCheckBox(), listItemWidget);
+            listItem.setId(categoryItem.getKey());
+            addWidgetToList(listItem);
+        }
+    }
+
+    /**
+     * Fill the content of the galleries tab panel.<p>
+     * 
+     * @param infoBean the gallery info bean containing the current search parameters
+     */
+    public void fillGalleriesTabPanel(CmsGalleryInfoBean infoBean) {
+
+        // TODO: replace the dummy select box
+        ArrayList<CmsPair<String, String>> pairs = new ArrayList<CmsPair<String, String>>();
+        pairs.add(new CmsPair<String, String>("test1", "value1"));
+        pairs.add(new CmsPair<String, String>("test2", "value2"));
+        CmsSelectBox selectBox = new CmsSelectBox(pairs);
+        // TODO: use the common way to set the width of the select box
+        selectBox.setWidth("100px");
+        addWidgetToOptions(selectBox);
+        for (Map.Entry<String, CmsGalleriesListInfoBean> galleryItem : infoBean.getDialogInfo().getGalleries().entrySet()) {
+            CmsListItemWidget listItemWidget = new CmsListItemWidget(galleryItem.getValue());
+            Image icon = new Image(galleryItem.getValue().getIconResource());
+            icon.setStyleName(DIALOG_CSS.listIcon());
+            listItemWidget.setIcon(icon);
+            CmsGalleryListItem listItem = new CmsGalleryListItem(infoBean, new CmsCheckBox(), listItemWidget);
+            listItem.setId(galleryItem.getKey());
+            addWidgetToList(listItem);
+        }
+    }
+
+    /**
+     * Fill the content of the types tab panel.<p>
+     * 
+     * The result list is empty.
+     */
+    public void fillResultsTabPanel() {
+
+        // TODO: replace the dummy select box
+        ArrayList<CmsPair<String, String>> pairs = new ArrayList<CmsPair<String, String>>();
+        pairs.add(new CmsPair<String, String>("test1", "value1"));
+        pairs.add(new CmsPair<String, String>("test2", "value2"));
+        CmsSelectBox selectBox = new CmsSelectBox(pairs);
+        // TODO: use the common way to set the width of the select box
+        selectBox.setWidth("100px");
+        addWidgetToOptions(selectBox);
+    }
+
+    /**
+     * Fill the content of the types tab panel.<p>
+     * 
+     * @param infoBean the gallery info bean containing the current search parameters
+     */
+    public void fillTypesTabPanel(CmsGalleryInfoBean infoBean) {
+
+        // TODO: replace the dummy select box
+        ArrayList<CmsPair<String, String>> pairs = new ArrayList<CmsPair<String, String>>();
+        pairs.add(new CmsPair<String, String>("test1", "value1"));
+        pairs.add(new CmsPair<String, String>("test2", "value2"));
+        CmsSelectBox selectBox = new CmsSelectBox(pairs);
+        // TODO: use the common way to set the width of the select box
+        selectBox.setWidth("100px");
+        addWidgetToOptions(selectBox);
+        for (Map.Entry<String, CmsTypesListInfoBean> typeItem : infoBean.getDialogInfo().getTypes().entrySet()) {
+            CmsListItemWidget listItemWidget = new CmsListItemWidget(typeItem.getValue());
+            Image icon = new Image(typeItem.getValue().getIconResource());
+            icon.setStyleName(DIALOG_CSS.listIcon());
+            listItemWidget.setIcon(icon);
+            CmsTypeListItem listItem = new CmsTypeListItem(infoBean, new CmsCheckBox(), listItemWidget);
+            listItem.setId(typeItem.getKey());
+            addWidgetToList(listItem);
+        }
+    }
+
+    /**
+     * Callback to handle click events on the close button of the selected parameters.<p>
+     * 
+     * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
+     */
+    public void onClick(ClickEvent event) {
+
+        if (event.getSource() == m_closeTypesBtn) {
+            removeParams(m_types);
+        } else if (event.getSource() == m_closeGalleriesBtn) {
+            removeParams(m_galleries);
+        } else if (event.getSource() == m_closeCategoriesBtn) {
+            removeParams(m_categories);
+        }
+        // TODO: add search params panel
+
+    }
+
+    /**
      * Displays the selected search parameters above the result list.<p>
      * 
      * @param infoBean the gallery info bean containing the current search parameters
@@ -174,7 +322,6 @@ public class CmsTabInnerPanel extends Composite {
 
         if (infoBean.getSearchObject().isNotEmpty()) {
             m_params.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().marginBottom());
-            //m_params.getElement().getStyle().setMarginBottom(5, Unit.PX);
             // selected types
             CmsFloatDecoratedPanel typesParams;
             // only show params, if any selected
@@ -187,8 +334,9 @@ public class CmsTabInnerPanel extends Composite {
                 m_types.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().showParams());
                 m_types.add(typesParams);
                 typesParams.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().paramsText());
-                CmsImageButton button = new CmsImageButton(Icon.close, false);
-                m_types.add(button);
+                m_closeTypesBtn = new CmsImageButton(Icon.close, false);
+                m_types.add(m_closeTypesBtn);
+                m_closeTypesBtn.addClickHandler(this);
 
                 // otherwise remove border
             } else {
@@ -205,8 +353,9 @@ public class CmsTabInnerPanel extends Composite {
                 m_galleries.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().showParams());
                 m_galleries.add(galleriesParams);
                 galleriesParams.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().paramsText());
-                CmsImageButton button = new CmsImageButton(Icon.close, false);
-                m_galleries.add(button);
+                m_closeGalleriesBtn = new CmsImageButton(Icon.close, false);
+                m_closeGalleriesBtn.addClickHandler(this);
+                m_galleries.add(m_closeGalleriesBtn);
                 // otherwise remove border
             } else {
                 m_galleries.removeStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().showParams());
@@ -222,8 +371,9 @@ public class CmsTabInnerPanel extends Composite {
                 m_categories.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().showParams());
                 m_categories.add(categoriesParams);
                 categoriesParams.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().paramsText());
-                CmsImageButton button = new CmsImageButton(Icon.close, false);
-                m_categories.add(button);
+                m_closeCategoriesBtn = new CmsImageButton(Icon.close, false);
+                m_closeCategoriesBtn.addClickHandler(this);
+                m_categories.add(m_closeCategoriesBtn);
                 // otherwise remove border
             } else {
                 m_categories.removeStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().showParams());
@@ -237,6 +387,16 @@ public class CmsTabInnerPanel extends Composite {
             m_galleries.removeStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().showParams());
             m_categories.removeStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().showParams());
         }
+    }
+
+    /**
+     * Updates the layout for all list items in this list.<p>
+     * 
+     * @see org.opencms.gwt.client.ui.CmsList#updateLayout()
+     */
+    public void updateListLayout() {
+
+        m_scrollList.updateLayout();
     }
 
     /**
@@ -267,13 +427,40 @@ public class CmsTabInnerPanel extends Composite {
     }
 
     /**
-     * Updates the layout for all list items in this list.<p>
+     * Update the content of the result tab.<p>
      * 
-     * @see org.opencms.gwt.client.ui.CmsList#updateLayout()
+     * @param infoBean the gallery info bean containing the current search parameters
      */
-    public void updateListLayout() {
+    public void updateResultTab(CmsGalleryInfoBean infoBean) {
 
-        m_scrollList.updateLayout();
+        //update the search params
+        clearParams();
+        showParams(infoBean);
+        updateListSize();
+        // update the result list
+        clearList();
+        ArrayList<CmsResultsListInfoBean> list = infoBean.getSearchObject().getResults();
+        infoBean.getSearchObject().setResults(infoBean.getSearchObject().getResults());
+        infoBean.getSearchObject().setResultCount(infoBean.getSearchObject().getResultCount());
+        infoBean.getSearchObject().setSortOrder(infoBean.getSearchObject().getSortOrder());
+        infoBean.getSearchObject().setPage(infoBean.getSearchObject().getPage());
+        for (CmsResultsListInfoBean resultItem : list) {
+            CmsDraggableListItemWidget resultItemWidget;
+            if (m_dragHandler != null) {
+                resultItemWidget = new CmsDraggableListItemWidget(resultItem, true);
+                resultItemWidget.setClientId(resultItem.getClientId());
+                m_dragHandler.registerMouseHandler(resultItemWidget);
+            } else {
+                resultItemWidget = new CmsDraggableListItemWidget(resultItem, false);
+            }
+
+            Image icon = new Image(resultItem.getIconResource());
+            icon.setStyleName(DIALOG_CSS.listIcon());
+            resultItemWidget.setIcon(icon);
+            CmsResultListItem listItem = new CmsResultListItem(infoBean, resultItemWidget);
+            listItem.setId(resultItem.getId());
+            addWidgetToList(listItem);
+        }
     }
 
     /**
@@ -283,6 +470,8 @@ public class CmsTabInnerPanel extends Composite {
 
         uiBinder.createAndBindUi(this);
         initWidget(uiBinder.createAndBindUi(this));
+
+        CmsGalleryDialog.initCss();
     }
 
     /**
@@ -377,8 +566,6 @@ public class CmsTabInnerPanel extends Composite {
         LinkedHashMap<String, CmsTypesListInfoBean> types) {
 
         CmsFloatDecoratedPanel typesPanel = new CmsFloatDecoratedPanel();
-        //        CmsImageButton button = new CmsImageButton(ICON.cancel, true);
-        //        typesPanel.addToFloat(button);
         String panelText = "";
         if (selectedTypes.size() == 1) {
             panelText += CmsDomUtil.enclose(CmsDomUtil.Tag.b, Messages.get().key(Messages.GUI_PARAMS_LABEL_TYPE_0));
@@ -405,5 +592,16 @@ public class CmsTabInnerPanel extends Composite {
         typesPanel.add(test);
 
         return typesPanel;
+    }
+
+    /**
+     * Deletes the html content of the panel and removes the style.<p>
+     * 
+     * @param panel the panel to be cleared
+     */
+    private void removeParams(Panel panel) {
+
+        panel.clear();
+        panel.removeStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().showParams());
     }
 }

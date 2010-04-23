@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/Attic/CmsGalleryService.java,v $
- * Date   : $Date: 2010/04/22 14:32:12 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/04/23 08:02:03 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -80,7 +80,7 @@ import java.util.Map.Entry;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 8.0.0
  * 
@@ -541,6 +541,8 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 bean.setResourceType(sResult.getResourceType());
                 // 4: icon path
                 bean.setIconResource(iconPath);
+                // 5: structured id
+                bean.setClientId(sResult.getStructureId());
                 // TODO: set following infos if required: date last modified, description, structured id
 
                 // set nice resource type name as subtitle

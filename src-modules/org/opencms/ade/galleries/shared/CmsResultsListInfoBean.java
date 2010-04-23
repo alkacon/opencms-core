@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/Attic/CmsResultsListInfoBean.java,v $
- * Date   : $Date: 2010/03/30 14:08:36 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/23 08:02:03 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,20 +43,23 @@ import java.util.Map;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
 public class CmsResultsListInfoBean extends CmsListInfoBean implements I_CmsItemId {
 
+    /** The structured id of the resource. */
+    private String m_clientId;
+
     /** The path to the resource type icon. */
     private String m_iconResource;
 
-    /** The resource type name. */
-    private String m_resourceType;
-
     /** The resource path as a unique resource id. */
     private String m_resourcePath;
+
+    /** The resource type name. */
+    private String m_resourceType;
 
     /**
      * The empty default constructor.<p>
@@ -79,13 +82,13 @@ public class CmsResultsListInfoBean extends CmsListInfoBean implements I_CmsItem
     }
 
     /**
-     * Sets the resource type icon.<p>
+     * Returns the structured id.<p>
      *
-     * @param icon the icon to set
+     * @return the structured id
      */
-    public void setIconResource(String icon) {
+    public String getClientId() {
 
-        m_iconResource = icon;
+        return m_clientId;
     }
 
     /**
@@ -109,6 +112,36 @@ public class CmsResultsListInfoBean extends CmsListInfoBean implements I_CmsItem
     }
 
     /**
+     * Returns the resource type name.<p>
+     *
+     * @return the resource type name
+     */
+    public String getResourceType() {
+
+        return m_resourceType;
+    }
+
+    /**
+     * Sets the structured id.<p>
+     *
+     * @param clientId the structured id to set
+     */
+    public void setClientId(String clientId) {
+
+        m_clientId = clientId;
+    }
+
+    /**
+     * Sets the resource type icon.<p>
+     *
+     * @param icon the icon to set
+     */
+    public void setIconResource(String icon) {
+
+        m_iconResource = icon;
+    }
+
+    /**
      * Sets the the resource path as a unique id.<p>
      * 
      * @param id the resource path
@@ -128,15 +161,5 @@ public class CmsResultsListInfoBean extends CmsListInfoBean implements I_CmsItem
     public void setResourceType(String resourceType) {
 
         m_resourceType = resourceType;
-    }
-
-    /**
-     * Returns the resource type name.<p>
-     *
-     * @return the resource type name
-     */
-    public String getResourceType() {
-
-        return m_resourceType;
     }
 }
