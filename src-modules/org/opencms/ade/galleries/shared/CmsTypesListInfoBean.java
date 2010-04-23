@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/Attic/CmsTypesListInfoBean.java,v $
- * Date   : $Date: 2010/03/30 14:08:36 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/23 10:08:25 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import java.util.Map;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -61,6 +61,8 @@ public class CmsTypesListInfoBean extends CmsListInfoBean implements I_CmsItemId
 
     /** An array of gallery type names associated with this content type. */
     private ArrayList<String> m_galleryTypeNames;
+
+    // TODO: add a member required for drag functionality
 
     /**
      * Returns the resource type icon.<p>

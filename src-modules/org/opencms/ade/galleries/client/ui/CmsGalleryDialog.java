@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsGalleryDialog.java,v $
- * Date   : $Date: 2010/04/23 08:02:03 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/04/23 10:08:25 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import com.google.gwt.user.client.ui.Label;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.
  */
@@ -176,22 +176,25 @@ public class CmsGalleryDialog extends Composite implements BeforeSelectionHandle
         ArrayList<String> tabs = infoBean.getDialogInfo().getTabs();
 
         if (tabs.contains(I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_types.name())) {
-            CmsTabInnerPanel tabContent = new CmsTabInnerPanel(m_dragHandler);
-            tabContent.fillTypesTabPanel(infoBean);
+            // CmsTabInnerPanel tabContent = new CmsTabInnerPanel(m_dragHandler);
+            //tabContent.fillTypesTabPanel(infoBean);
+            CmsTabTypesPanel tabContent = new CmsTabTypesPanel(infoBean, m_dragHandler);
             m_tabbedPanel.add(tabContent, Messages.get().key(Messages.GUI_TAB_TITLE_TYPES_0));
 
         }
 
         if (tabs.contains(I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_galleries.name())) {
-            CmsTabInnerPanel tabContent = new CmsTabInnerPanel(m_dragHandler);
-            tabContent.fillGalleriesTabPanel(infoBean);
+            //CmsTabInnerPanel tabContent = new CmsTabInnerPanel(m_dragHandler);
+            //tabContent.fillGalleriesTabPanel(infoBean);
+            CmsTabGalleriesPanel tabContent = new CmsTabGalleriesPanel(infoBean);
             m_tabbedPanel.add(tabContent, Messages.get().key(Messages.GUI_TAB_TITLE_GALLERIES_0));
 
         }
 
         if (tabs.contains(I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_categories.name())) {
-            CmsTabInnerPanel tabContent = new CmsTabInnerPanel(m_dragHandler);
-            tabContent.fillCategoriesTabPanel(infoBean);
+            //CmsTabInnerPanel tabContent = new CmsTabInnerPanel(m_dragHandler);
+            //tabContent.fillCategoriesTabPanel(infoBean);
+            CmsTabCategoriesPanel tabContent = new CmsTabCategoriesPanel(infoBean);
             m_tabbedPanel.add(tabContent, Messages.get().key(Messages.GUI_TAB_TITLE_CATEGORIES_0));
 
         }
@@ -203,8 +206,9 @@ public class CmsGalleryDialog extends Composite implements BeforeSelectionHandle
             // implement  
         }
         // add left margin to the result button
-        CmsTabInnerPanel resultTab = new CmsTabInnerPanel(m_dragHandler);
-        resultTab.fillResultsTabPanel();
+        //CmsTabInnerPanel resultTab = new CmsTabInnerPanel(m_dragHandler);
+        //resultTab.fillResultsTabPanel();
+        CmsTabInnerPanel resultTab = new CmsTabResultsPanel(m_dragHandler);
         m_tabbedPanel.addWithLeftMargin(resultTab, Messages.get().key(Messages.GUI_TAB_TITLE_RESULTS_0));
         m_tabbedPanel.selectTab(m_infoBean.getGalleryTabIdIndex());
 
@@ -254,22 +258,25 @@ public class CmsGalleryDialog extends Composite implements BeforeSelectionHandle
         ArrayList<String> tabs = infoBean.getDialogInfo().getTabs();
 
         if (tabs.contains(I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_types.name())) {
-            CmsTabInnerPanel tabContent = new CmsTabInnerPanel(m_dragHandler);
-            tabContent.fillTypesTabPanel(infoBean);
+            //CmsTabInnerPanel tabContent = new CmsTabInnerPanel(m_dragHandler);
+            //tabContent.fillTypesTabPanel(infoBean);
+            CmsTabTypesPanel tabContent = new CmsTabTypesPanel(infoBean, m_dragHandler);
             m_tabbedPanel.add(tabContent, Messages.get().key(Messages.GUI_TAB_TITLE_TYPES_0));
 
         }
 
         if (tabs.contains(I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_galleries.name())) {
-            CmsTabInnerPanel tabContent = new CmsTabInnerPanel(m_dragHandler);
-            tabContent.fillGalleriesTabPanel(infoBean);
+            //CmsTabInnerPanel tabContent = new CmsTabInnerPanel(m_dragHandler);
+            //tabContent.fillGalleriesTabPanel(infoBean);
+            CmsTabGalleriesPanel tabContent = new CmsTabGalleriesPanel(infoBean);
             m_tabbedPanel.add(tabContent, Messages.get().key(Messages.GUI_TAB_TITLE_GALLERIES_0));
 
         }
 
         if (tabs.contains(I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_categories.name())) {
-            CmsTabInnerPanel tabContent = new CmsTabInnerPanel(m_dragHandler);
-            tabContent.fillCategoriesTabPanel(infoBean);
+            //CmsTabInnerPanel tabContent = new CmsTabInnerPanel(m_dragHandler);
+            //tabContent.fillCategoriesTabPanel(infoBean);
+            CmsTabCategoriesPanel tabContent = new CmsTabCategoriesPanel(infoBean);
             m_tabbedPanel.add(tabContent, Messages.get().key(Messages.GUI_TAB_TITLE_CATEGORIES_0));
 
         }
@@ -281,8 +288,9 @@ public class CmsGalleryDialog extends Composite implements BeforeSelectionHandle
             // implement  
         }
         // add left margin to the result button
-        CmsTabInnerPanel resultTab = new CmsTabInnerPanel(m_dragHandler);
-        resultTab.fillResultsTabPanel();
+        //CmsTabInnerPanel resultTab = new CmsTabInnerPanel(m_dragHandler);
+        //resultTab.fillResultsTabPanel();
+        CmsTabResultsPanel resultTab = new CmsTabResultsPanel(m_dragHandler);
         m_tabbedPanel.addWithLeftMargin(resultTab, Messages.get().key(Messages.GUI_TAB_TITLE_RESULTS_0));
         m_tabbedPanel.selectTab(m_infoBean.getGalleryTabIdIndex());
     }
@@ -427,7 +435,7 @@ public class CmsGalleryDialog extends Composite implements BeforeSelectionHandle
 
         // TODO: provide a convinient way to get the tab id 
         int tabIndex = getInfoBean().getDialogInfo().getTabs().size();
-        CmsTabInnerPanel tabPanel = (CmsTabInnerPanel)m_tabbedPanel.getWidget(tabIndex);
+        CmsTabResultsPanel tabPanel = (CmsTabResultsPanel)m_tabbedPanel.getWidget(tabIndex);
         tabPanel.updateResultTab(getInfoBean());
     }
 }
