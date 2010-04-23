@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/impl/Attic/DocumentStyleImplIE.java,v $
- * Date   : $Date: 2010/04/01 09:25:51 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/23 09:08:13 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import com.google.gwt.dom.client.Element;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -110,6 +110,6 @@ public class DocumentStyleImplIE extends DocumentStyleImpl {
         return getWH()+"px";
         }
 
-        return getComputed(elem, name);
+        return ""+getComputed(elem, name);
     }-*/;
 }

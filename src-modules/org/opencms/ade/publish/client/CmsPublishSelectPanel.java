@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishSelectPanel.java,v $
- * Date   : $Date: 2010/04/22 14:32:40 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/04/23 09:08:12 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -76,7 +76,7 @@ import com.google.gwt.user.client.ui.Widget;
  *  
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.0
  */
@@ -324,6 +324,7 @@ public class CmsPublishSelectPanel extends Composite implements I_CmsPublishSele
         m_selectLabel.setText(messages.key(Messages.GUI_PUBLISH_TOP_PANEL_LEFT_LABEL_0));
         m_selectorLabel.setText(messages.key(Messages.GUI_PUBLISH_TOP_PANEL_RIGHT_LABEL_0));
         addScrollHandler();
+
     }
 
     /**
@@ -406,6 +407,7 @@ public class CmsPublishSelectPanel extends Composite implements I_CmsPublishSele
     public void setGroups(List<CmsPublishGroup> groups) {
 
         m_problemsPanel.clear();
+        m_checkboxProblems.setChecked(false);
         m_problemsPanel.setVisible(false);
         m_groupPanels.clear();
         m_groupPanelContainer.clear();
@@ -416,14 +418,13 @@ public class CmsPublishSelectPanel extends Composite implements I_CmsPublishSele
         if (numGroups == 0) {
             return;
         }
-
         int numProblems = 0;
         for (CmsPublishGroup group : groups) {
             String header = group.getName();
             List<CmsPublishResource> resourceBeans = group.getResources();
             CmsPublishGroupPanel groupPanel = new CmsPublishGroupPanel(header, resourceBeans, this);
-            numProblems += groupPanel.countProblems();
             m_groupPanels.add(groupPanel);
+            numProblems += groupPanel.countProblems();
         }
         resetGroups();
         m_publishButton.setEnabled(true);

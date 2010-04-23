@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/I_CmsPublishCss.java,v $
- * Date   : $Date: 2010/04/14 10:43:16 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/23 09:08:13 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import com.google.gwt.resources.client.CssResource;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -121,6 +121,13 @@ public interface I_CmsPublishCss extends CssResource {
      * @return the CSS class name
      */
     String problemPanel();
+
+    /** 
+     * Access method.<p>
+     * 
+     * @return the CSS class name
+     */
+    String publishDialog();
 
     /** 
      * Access method.<p>
@@ -226,4 +233,5 @@ public interface I_CmsPublishCss extends CssResource {
      * @return the CSS class name
      */
     String warning();
+
 }

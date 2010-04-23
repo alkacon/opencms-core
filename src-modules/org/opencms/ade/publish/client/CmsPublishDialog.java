@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishDialog.java,v $
- * Date   : $Date: 2010/04/15 10:07:38 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/04/23 09:08:13 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  * 
@@ -147,6 +147,9 @@ public class CmsPublishDialog extends CmsPopupDialog {
     /** The project map used by showPublishDialog. */
     public static Map<String, String> m_staticProjects;
 
+    /** The CSS bundle used for this widget. */
+    private static final I_CmsPublishCss CSS = I_CmsPublishLayoutBundle.INSTANCE.publishCss();
+
     /** The index of the "broken links" panel. */
     private static final int PANEL_BROKEN_LINKS = 1;
 
@@ -182,6 +185,8 @@ public class CmsPublishDialog extends CmsPopupDialog {
         m_panel.add(m_publishSelectPanel);
         m_panel.add(m_brokenLinksPanel);
         setPanel(PANEL_SELECT);
+
+        addStyleName(CSS.publishDialog());
     }
 
     /**

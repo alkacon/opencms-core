@@ -137,7 +137,13 @@
 		display: inline-block;
 	}
 }
+
 .noState {}
+
+.publishDialog, .publishDialog > * {
+ /* this fixes the 'content vanishes while dragging' problem in IE */	
+zoom: 1;
+}
 
 
 
