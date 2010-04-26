@@ -1,7 +1,8 @@
 @external html-face, cmsState, cmsState-up, cmsState-up-hovering, cmsState-up-disabled, cmsState-down, cmsState-down-hovering, cmsState-down-disabled;
 
 .cmsState{}
-.cmsState-down-disabled{}
+.cmsState.cmsState-down-disabled{ cursor: auto; }
+.cmsState.cmsState-up-disabled{ cursor: auto; }
 .cmsHovering{}
 
 .cmsTextButton,.cmsImageButton { 
