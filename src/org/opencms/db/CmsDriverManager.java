@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2010/04/26 07:10:08 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2010/04/26 07:54:46 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -3243,8 +3243,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
                             // skip if not enough permissions
                         }
                     }
-
-                    if (publishList.isPublishSubResources()) {
+                    boolean shouldPublishDeletedSubResources = publishList.isUserPublishList()
+                        && directPublishResource.getState().isDeleted();
+                    if (publishList.isPublishSubResources() || shouldPublishDeletedSubResources) {
                         int flags = CmsDriverManager.READMODE_INCLUDE_TREE | CmsDriverManager.READMODE_EXCLUDE_STATE;
                         if (!directPublishResource.getState().isDeleted()) {
                             // fix for org.opencms.file.TestPublishIssues#testPublishFolderWithDeletedFileFromOtherProject

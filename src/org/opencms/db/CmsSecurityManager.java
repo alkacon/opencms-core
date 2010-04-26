@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2010/04/20 13:44:57 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/04/26 07:54:46 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -453,18 +453,22 @@ public final class CmsSecurityManager {
                     // check each parent folder only once
                     CmsResource parent = readResource(dbc, parentFolder, CmsResourceFilter.ALL);
                     if (parent.getState().isDeleted()) {
-                        // parent folder is deleted - direct publish not allowed
-                        resourceIssues.addException(new CmsVfsException(Messages.get().container(
-                            Messages.ERR_DIRECT_PUBLISH_PARENT_DELETED_2,
-                            dbc.getRequestContext().removeSiteRoot(res.getRootPath()),
-                            parentFolder)));
+                        if (!(publishList.isUserPublishList() && publishList.getDeletedFolderList().contains(parent))) {
+                            // parent folder is deleted - direct publish not allowed
+                            resourceIssues.addException(new CmsVfsException(Messages.get().container(
+                                Messages.ERR_DIRECT_PUBLISH_PARENT_DELETED_2,
+                                dbc.getRequestContext().removeSiteRoot(res.getRootPath()),
+                                parentFolder)));
+                        }
                     }
                     if (parent.getState().isNew()) {
-                        // parent folder is new - direct publish not allowed
-                        resourceIssues.addException(new CmsVfsException(Messages.get().container(
-                            Messages.ERR_DIRECT_PUBLISH_PARENT_NEW_2,
-                            dbc.removeSiteRoot(res.getRootPath()),
-                            parentFolder)));
+                        if (!(publishList.isUserPublishList() && publishList.getFolderList().contains(parent))) {
+                            // parent folder is new - direct publish not allowed
+                            resourceIssues.addException(new CmsVfsException(Messages.get().container(
+                                Messages.ERR_DIRECT_PUBLISH_PARENT_NEW_2,
+                                dbc.removeSiteRoot(res.getRootPath()),
+                                parentFolder)));
+                        }
                     }
                     // add checked parent folder to prevent duplicate checks
                     parentFolders.add(parentFolder);

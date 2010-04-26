@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsPublishList.java,v $
- * Date   : $Date: 2009/11/23 15:20:40 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/04/26 07:54:46 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,7 +69,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 6.0.0
  * 
@@ -112,6 +112,9 @@ public class CmsPublishList implements Externalizable {
 
     /** The list of new/changed folder resource UUIDs to be published for later retrieval.<p> */
     private List<CmsUUID> m_folderUUIDs;
+
+    /** Indicates whether this is a user publish list. */
+    private boolean m_isUserPublishList;
 
     /** Flag to indicate if the list needs to be revived. */
     private boolean m_needsRevive;
@@ -352,6 +355,16 @@ public class CmsPublishList implements Externalizable {
     }
 
     /**
+     * Returns true if this is a user publish list.<p>
+     * 
+     * @return true if this is a user publish list 
+     */
+    public boolean isUserPublishList() {
+
+        return m_isUserPublishList;
+    }
+
+    /**
      * @see java.io.Externalizable#readExternal(java.io.ObjectInput)
      */
     public void readExternal(ObjectInput in) throws IOException {
@@ -400,6 +413,16 @@ public class CmsPublishList implements Externalizable {
             }
             m_needsRevive = false;
         }
+    }
+
+    /**
+     * Sets the 'user publish list' flag on this publish list.<p>
+     * 
+     * @param isUserPublishList if true, the list is marked as a user publish list
+     */
+    public void setUserPublishList(boolean isUserPublishList) {
+
+        m_isUserPublishList = isUserPublishList;
     }
 
     /**
