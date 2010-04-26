@@ -15,6 +15,10 @@
 	outline: none;
 }
 
+.listTreeItemHandler > img {
+	background-position: center;
+}
+
 @if user.agent ie6 {
 	.listTreeItemHandler {
 		display: inline;
