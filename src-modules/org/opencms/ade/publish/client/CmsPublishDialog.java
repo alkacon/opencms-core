@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishDialog.java,v $
- * Date   : $Date: 2010/04/26 10:02:40 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/04/26 12:36:45 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.0
  * 
@@ -160,7 +160,9 @@ public class CmsPublishDialog extends CmsPopupDialog {
     protected CmsPublishSelectPanel m_publishSelectPanel;
 
     /** The panel for showing the links that would be broken by publishing. */
-    private CmsBrokenLinksPanel m_brokenLinksPanel = new CmsBrokenLinksPanel(this);
+    private CmsBrokenLinksPanel m_brokenLinksPanel = new CmsBrokenLinksPanel(
+        this,
+        CmsPublishProvider.get().isAdminUser());
 
     /** The root panel of this dialog which contains both the selection panel and the panel for displaying broken links. */
     private DeckPanel m_panel = new DeckPanel();

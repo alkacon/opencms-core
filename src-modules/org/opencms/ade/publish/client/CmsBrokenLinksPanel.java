@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsBrokenLinksPanel.java,v $
- * Date   : $Date: 2010/04/22 14:32:40 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/04/26 12:36:45 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -91,6 +91,9 @@ public class CmsBrokenLinksPanel extends Composite {
     @UiField
     protected CmsTextButton m_publishButton;
 
+    /** If true, the publish button will be displayed even if there are broken links. */
+    private boolean m_allowPublish;
+
     /** The publish dialog containing this widget. */
     private CmsPublishDialog m_publishDialog;
 
@@ -98,8 +101,9 @@ public class CmsBrokenLinksPanel extends Composite {
      * Creates a new instance.<p>
      * 
      * @param publishDialog the publish dialog to which this broken links panel belongs.
+     * @param allowPublish if true, the button for publishing will appear even if there are broken links
      */
-    public CmsBrokenLinksPanel(CmsPublishDialog publishDialog) {
+    public CmsBrokenLinksPanel(CmsPublishDialog publishDialog, boolean allowPublish) {
 
         initWidget(UI_BINDER.createAndBindUi(this));
         prepareButton(m_publishButton, Messages.get().key(Messages.GUI_PUBLISH_DIALOG_PUBLISH_0));
@@ -107,6 +111,10 @@ public class CmsBrokenLinksPanel extends Composite {
         prepareButton(m_backButton, Messages.get().key(Messages.GUI_PUBLISH_DIALOG_BACK_0));
         m_label.setText(Messages.get().key(Messages.GUI_PUBLISH_DIALOG_BROKEN_LINKS_0));
         m_publishDialog = publishDialog;
+        m_allowPublish = allowPublish;
+        // We remove the publish button so that it only appears in the dialog
+        // when it's in the list returned by getButtons()
+        m_publishButton.removeFromParent();
 
     }
 
@@ -140,7 +148,9 @@ public class CmsBrokenLinksPanel extends Composite {
         List<CmsButton> result = new ArrayList<CmsButton>();
         result.add(m_backButton);
         result.add(m_cancelButton);
-        result.add(m_publishButton);
+        if (m_allowPublish) {
+            result.add(m_publishButton);
+        }
         return result;
     }
 
