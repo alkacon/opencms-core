@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapEntry.java,v $
- * Date   : $Date: 2010/02/18 09:47:39 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/04/26 09:54:16 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 7.6 
  */
@@ -67,6 +67,9 @@ public class CmsSitemapEntry {
 
     /** The original uri, without content ID. */
     private String m_originalUri;
+
+    /** The position. */
+    private int m_position;
 
     /** The configured properties. */
     private final Map<String, String> m_properties;
@@ -193,6 +196,16 @@ public class CmsSitemapEntry {
     public String getOriginalUri() {
 
         return m_originalUri;
+    }
+
+    /**
+     * Returns the position.<p>
+     *
+     * @return the position
+     */
+    public int getPosition() {
+
+        return m_position;
     }
 
     /**
@@ -363,6 +376,7 @@ public class CmsSitemapEntry {
         // set the position
         m_properties.put(CmsPropertyDefinition.PROPERTY_NAVPOS, String.valueOf(position));
         m_inheritedProperties.put(CmsPropertyDefinition.PROPERTY_NAVPOS, String.valueOf(position));
+        m_position = position;
     }
 
     /**
