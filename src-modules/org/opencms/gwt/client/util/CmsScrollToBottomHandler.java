@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsScrollToBottomHandler.java,v $
- * Date   : $Date: 2010/04/22 14:32:40 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/26 08:38:16 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,8 @@
 
 package org.opencms.gwt.client.util;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.ScrollEvent;
 import com.google.gwt.event.dom.client.ScrollHandler;
 import com.google.gwt.user.client.ui.ScrollPanel;
@@ -41,7 +43,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -53,15 +55,15 @@ public class CmsScrollToBottomHandler implements ScrollHandler {
      */
     public static final int DEFAULT_SCROLL_THRESHOLD = 30;
 
+    /**
+     * An internal flag that, if false, prevents the scroll action from being executed.<p>
+     */
+    protected boolean m_enabled = true;
+
     /** 
      * The action which is triggered when the user scrolls to the bottom.<p>
      */
     private Runnable m_callback;
-
-    /**
-     * An internal flag that, if false, prevents the scroll action from being executed.<p>
-     */
-    private boolean m_enabled = true;
 
     /**
      * If the lower edge of the content being scrolled is at most this many pixels below the lower
@@ -103,8 +105,8 @@ public class CmsScrollToBottomHandler implements ScrollHandler {
         if (!m_enabled) {
             return;
         }
-        ScrollPanel scrollPanel = (ScrollPanel)event.getSource();
-        int scrollPos = scrollPanel.getScrollPosition();
+        final ScrollPanel scrollPanel = (ScrollPanel)event.getSource();
+        final int scrollPos = scrollPanel.getScrollPosition();
         Widget child = scrollPanel.getWidget();
         int childHeight = child.getOffsetHeight();
         int ownHeight = scrollPanel.getOffsetHeight();
@@ -113,8 +115,14 @@ public class CmsScrollToBottomHandler implements ScrollHandler {
             m_callback.run();
             m_enabled = false;
             scrollPanel.setScrollPosition(scrollPos);
-            m_enabled = true;
+            Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 
+                public void execute() {
+
+                    scrollPanel.setScrollPosition(scrollPos);
+                    m_enabled = true;
+                }
+            });
         }
     }
 }
