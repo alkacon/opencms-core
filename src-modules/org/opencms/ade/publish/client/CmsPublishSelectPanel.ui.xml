@@ -33,9 +33,6 @@
 				<cmsi:CmsCheckBox ui:field="m_checkboxProblems"></cmsi:CmsCheckBox>
 				<g:InlineLabel styleName="{res.publishCss.text}" addStyleNames="{main.generalCss.textMedium}" ui:field="m_problemsLabel"></g:InlineLabel>
 			</g:FlowPanel>
-			
-			
-			
 		</g:FlowPanel>
 		<g:FlowPanel ui:field="m_problemsPanel" styleName="{res.publishCss.problemPanel}" />
 		<cms:CmsTextButton ui:field="m_publishButton"  buttonStyle="cmsButtonMedium"></cms:CmsTextButton>
