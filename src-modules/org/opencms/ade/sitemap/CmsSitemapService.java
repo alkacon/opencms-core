@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsSitemapService.java,v $
- * Date   : $Date: 2010/04/22 14:32:08 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/04/26 09:53:44 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 8.0.0
  * 
@@ -94,21 +94,27 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
     }
 
     /**
+     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#exit(java.util.List)
+     */
+    public void exit(List<CmsClientSitemapEntry> recentList) throws CmsRpcException {
+
+        try {
+            if (recentList != null) {
+                setRecentList(recentList);
+            }
+        } catch (Throwable e) {
+            error(e);
+        }
+    }
+
+    /**
      * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#getChildren(java.lang.String)
      */
     public List<CmsClientSitemapEntry> getChildren(String root) throws CmsRpcException {
 
         List<CmsClientSitemapEntry> children = null;
         try {
-            CmsSitemapEntry entry = OpenCms.getSitemapManager().getEntryForUri(getCmsObject(), root);
-            List<CmsSitemapEntry> subEntries = entry.getSubEntries();
-            int size = subEntries.size();
-            children = new ArrayList<CmsClientSitemapEntry>(size);
-            for (int i = 0; i < size; i++) {
-                CmsSitemapEntry child = subEntries.get(i);
-                children.add(toClientEntry(child, i));
-            }
-            return children;
+            children = getChildren(root, 1);
         } catch (Throwable e) {
             error(e);
         }
@@ -143,7 +149,7 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
 
         CmsClientSitemapEntry result = null;
         try {
-            result = toClientEntry(OpenCms.getSitemapManager().getEntryForUri(getCmsObject(), root), -1);
+            result = toClientEntry(OpenCms.getSitemapManager().getEntryForUri(getCmsObject(), root));
         } catch (Throwable e) {
             error(e);
         }
@@ -168,15 +174,6 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
             error(e);
         }
         return result;
-    }
-
-    public void exit(List<CmsClientSitemapEntry> recentList) throws CmsRpcException {
-
-        try {
-
-        } catch (Throwable e) {
-            error(e);
-        }
     }
 
     /**
@@ -206,7 +203,7 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
                 roots.add(entry);
             }
             for (CmsClientSitemapEntry root : roots) {
-                root.setChildren(getChildren(root.getSitePath()));
+                root.setChildren(getChildren(root.getSitePath(), 2));
             }
         } catch (Throwable e) {
             error(e);
@@ -273,16 +270,6 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
     }
 
     /**
-     * Saves the given recent list to the session.<p>
-     * 
-     * @param recentList the recent list to save
-     */
-    private void setRecentList(List<CmsClientSitemapEntry> recentList) {
-
-        getRequest().getSession().setAttribute(SESSION_ATTR_ADE_SITEMAP_RECENT_LIST_CACHE, recentList);
-    }
-
-    /**
      * Returns the cached recent list, creating it if it doesn't already exist.<p>
      * 
      * @return the cached recent list
@@ -298,6 +285,33 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
         }
         return cache;
 
+    }
+
+    /**
+     * Returns the sitemap children for the given path with all descendants up to the given level, ie. 
+     * <dl><dt>levels=1</dt><dd>only children</dd><dt>levels=2</dt><dd>children and great children</dd></dl>
+     * and so on.<p>
+     * 
+     * @param root the site relative root
+     * @param levels the levels to recurse
+     *  
+     * @return the sitemap children
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    private List<CmsClientSitemapEntry> getChildren(String root, int levels) throws CmsException {
+
+        CmsSitemapEntry entry = OpenCms.getSitemapManager().getEntryForUri(getCmsObject(), root);
+        List<CmsSitemapEntry> subEntries = entry.getSubEntries();
+        List<CmsClientSitemapEntry> children = new ArrayList<CmsClientSitemapEntry>(subEntries.size());
+        for (CmsSitemapEntry subEntry : subEntries) {
+            CmsClientSitemapEntry child = toClientEntry(subEntry);
+            children.add(child);
+            if (levels > 1) {
+                child.setChildren(getChildren(child.getSitePath(), levels - 1));
+            }
+        }
+        return children;
     }
 
     /**
@@ -326,16 +340,25 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
     }
 
     /**
+     * Saves the given recent list to the session.<p>
+     * 
+     * @param recentList the recent list to save
+     */
+    private void setRecentList(List<CmsClientSitemapEntry> recentList) {
+
+        getRequest().getSession().setAttribute(SESSION_ATTR_ADE_SITEMAP_RECENT_LIST_CACHE, recentList);
+    }
+
+    /**
      * Converts a site entry bean into a JSON object.<p>
      * 
      * @param entry the entry to convert
-     * @param position the relative position between its siblings
      * 
      * @return the JSON representation, can be <code>null</code> in case of not enough permissions
      * 
      * @throws CmsException should never happen 
      */
-    private CmsClientSitemapEntry toClientEntry(CmsSitemapEntry entry, int position) throws CmsException {
+    private CmsClientSitemapEntry toClientEntry(CmsSitemapEntry entry) throws CmsException {
 
         CmsClientSitemapEntry clientEntry = new CmsClientSitemapEntry();
         clientEntry.setId(entry.getId());
@@ -348,7 +371,7 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
         clientEntry.setVfsPath(vfsPath);
         clientEntry.setProperties(new HashMap<String, String>(entry.getProperties()));
         clientEntry.setSitePath(entry.getSitePath(getCmsObject()));
-        clientEntry.setPosition(position);
+        clientEntry.setPosition(entry.getPosition());
         return clientEntry;
     }
 }

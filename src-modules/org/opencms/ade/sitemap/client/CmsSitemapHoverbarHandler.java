@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapHoverbarHandler.java,v $
- * Date   : $Date: 2010/04/22 14:32:07 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/04/26 09:53:44 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,6 @@
 
 package org.opencms.ade.sitemap.client;
 
-import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsConfirmDialog;
@@ -46,7 +45,7 @@ import com.google.gwt.user.client.Window;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
  * 
@@ -57,35 +56,22 @@ public class CmsSitemapHoverbarHandler {
     /** The controller. */
     protected CmsSitemapController m_controller;
 
-    /** The sitemap entry. */
-    private CmsClientSitemapEntry m_entry;
-
     /**
      * Constructor.<p>
      * 
-     * @param entry the sitemap entry
      * @param controller the controller
      */
-    public CmsSitemapHoverbarHandler(CmsClientSitemapEntry entry, CmsSitemapController controller) {
+    public CmsSitemapHoverbarHandler(CmsSitemapController controller) {
 
-        m_entry = entry;
         m_controller = controller;
     }
 
     /**
-     * Returns the sitemap entry.<p>
-     *
-     * @return the sitemap entry
-     */
-    public CmsClientSitemapEntry getEntry() {
-
-        return m_entry;
-    }
-
-    /**
      * Triggered when the user click on the delete hover button.<p>
+     * 
+     * @param sitePath the current sitemap entry's site path
      */
-    public void onDelete() {
+    public void onDelete(final String sitePath) {
 
         // TODO: check if the current entry has children and show the dialog only if so
         CmsConfirmDialog dialog = new CmsConfirmDialog(
@@ -106,7 +92,7 @@ public class CmsSitemapHoverbarHandler {
              */
             public void onOk() {
 
-                m_controller.delete(getEntry());
+                m_controller.delete(sitePath);
             }
         });
         dialog.center();
@@ -114,8 +100,10 @@ public class CmsSitemapHoverbarHandler {
 
     /**
      * Triggered when the user click on the edit hover button.<p>
+     * 
+     * @param sitePath the current sitemap entry's site path
      */
-    public void onEdit() {
+    public void onEdit(String sitePath) {
 
         executeWhenReady(new Command() {
 
@@ -131,24 +119,30 @@ public class CmsSitemapHoverbarHandler {
 
     /**
      * Triggered when the user click on the go-to hover button.<p>
+     * 
+     * @param sitePath the current sitemap entry's site path
      */
-    public void onGoto() {
+    public void onGoto(final String sitePath) {
 
-        Window.Location.replace(CmsCoreProvider.get().link(m_entry.getSitePath()));
+        Window.Location.replace(CmsCoreProvider.get().link(sitePath));
     }
 
     /**
      * Triggered when the user click on the move hover button.<p>
+     * 
+     * @param sitePath the current sitemap entry's site path
      */
-    public void onMove() {
+    public void onMove(String sitePath) {
 
         // TODO: move
     }
 
     /**
      * Triggered when the user click on the new hover button.<p>
+     * 
+     * @param sitePath the current sitemap entry's site path
      */
-    public void onNew() {
+    public void onNew(String sitePath) {
 
         executeWhenReady(new Command() {
 
@@ -164,25 +158,12 @@ public class CmsSitemapHoverbarHandler {
 
     /**
      * Triggered when the user click on the sub-sitemap hover button.<p>
+     * 
+     * @param sitePath the current sitemap entry's site path
      */
-    public void onSubsitemap() {
+    public void onSubsitemap(String sitePath) {
 
         // TODO: subsitemap
-    }
-
-    /**
-     * Updates the sitemap entry.<p>
-     *
-     * @param entry the sitemap entry to update
-     */
-    public void updateEntry(CmsClientSitemapEntry entry) {
-
-        m_entry.setName(entry.getName());
-        m_entry.setSitePath(entry.getSitePath());
-        m_entry.setTitle(entry.getTitle());
-        m_entry.setVfsPath(entry.getVfsPath());
-        m_entry.setProperties(entry.getProperties());
-        m_entry.setPosition(entry.getPosition());
     }
 
     private void executeWhenReady(final Command command) {

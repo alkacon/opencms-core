@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/rpc/Attic/I_CmsSitemapService.java,v $
- * Date   : $Date: 2010/04/22 14:32:08 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/04/26 09:53:44 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 8.0.0
  * 
@@ -68,6 +68,15 @@ public interface I_CmsSitemapService extends RemoteService {
      * @throws CmsRpcException if something goes wrong 
      */
     String createSubsitemap(String sitemapUri, String path) throws CmsRpcException;
+
+    /**
+     * Executed when leaving the page.<p>
+     * 
+     * @param recentList the modified recent list, or <code>null</code> if it has not been modified
+     * 
+     * @throws CmsRpcException if something goes wrong 
+     */
+    void exit(List<CmsClientSitemapEntry> recentList) throws CmsRpcException;
 
     /**
      * Returns the sitemap children for the given path.<p>

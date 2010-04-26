@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapView.java,v $
- * Date   : $Date: 2010/04/22 14:32:07 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/04/26 09:53:44 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 8.0.0
  */
@@ -80,7 +80,7 @@ public class CmsSitemapView extends A_CmsEntryPoint {
                  */
                 public void load(final CmsSitemapTreeItem target) {
 
-                    controller.getChildren(target.getEntry());
+                    controller.getChildren(target.getSitePath());
                 }
             });
         final CmsSitemapToolbar toolbar = new CmsSitemapToolbar();
@@ -105,7 +105,7 @@ public class CmsSitemapView extends A_CmsEntryPoint {
         final Label loadingLabel = new Label(Messages.get().key(Messages.GUI_LOADING_0));
         page.add(loadingLabel);
 
-        // start
+        // starting rendering
         controller.initialize(new Command() {
 
             /**

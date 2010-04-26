@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapControllerHandler.java,v $
- * Date   : $Date: 2010/04/22 14:32:07 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/26 09:53:44 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  * 
@@ -160,8 +160,14 @@ public class CmsSitemapControllerHandler {
         for (CmsClientSitemapEntry root : roots) {
             CmsSitemapTreeItem rootItem = m_factory.create(root);
             rootItem.clearChildren();
-            for (CmsClientSitemapEntry entry : root.getChildren()) {
-                rootItem.addChild(m_factory.create(entry));
+            for (CmsClientSitemapEntry child : root.getChildren()) {
+                CmsSitemapTreeItem childItem = m_factory.create(child);
+                rootItem.addChild(childItem);
+                childItem.clearChildren();
+                for (CmsClientSitemapEntry grandchild : child.getChildren()) {
+                    childItem.addChild(m_factory.create(grandchild));
+                }
+                childItem.onFinishLoading();
             }
             rootItem.onFinishLoading();
             rootItem.setOpen(true);

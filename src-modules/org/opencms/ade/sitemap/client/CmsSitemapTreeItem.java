@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapTreeItem.java,v $
- * Date   : $Date: 2010/04/22 08:18:40 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/04/26 09:53:44 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,12 +35,14 @@ import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem;
 
+import com.google.gwt.user.client.DOM;
+
 /**
  * Sitemap entry tree item implementation.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 8.0.0
  * 
@@ -49,29 +51,33 @@ import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem;
  */
 public class CmsSitemapTreeItem extends CmsLazyTreeItem {
 
-    /** The handler. */
-    private CmsSitemapHoverbarHandler m_handler;
+    /** Attribute name constant. */
+    public static final String ATTR_SITEPATH = "__sitePath";
+
+    /** The current site path. */
+    private String m_sitePath;
 
     /**
      * Default constructor.<p>
      * 
      * @param widget the widget to use
-     * @param handler the handler
+     * @param sitePath the site path
      */
-    public CmsSitemapTreeItem(CmsListItemWidget widget, CmsSitemapHoverbarHandler handler) {
+    public CmsSitemapTreeItem(CmsListItemWidget widget, String sitePath) {
 
         super(widget);
-        m_handler = handler;
+        m_sitePath = sitePath;
+        DOM.setElementAttribute(widget.getContentPanel().getElement(), ATTR_SITEPATH, sitePath);
     }
 
     /**
-     * Returns the underlying sitemap entry.<p>
+     * Returns the site path.<p>
      *
-     * @return the underlying sitemap entry
+     * @return the site path
      */
-    public CmsClientSitemapEntry getEntry() {
+    public String getSitePath() {
 
-        return m_handler.getEntry();
+        return m_sitePath;
     }
 
     /**
@@ -85,6 +91,5 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
         widget.setTitleLabel(entry.getTitle());
         widget.setAdditionalInfoLabel(0, entry.getName());
         widget.setAdditionalInfoLabel(1, entry.getVfsPath());
-        m_handler.updateEntry(entry);
     }
 }

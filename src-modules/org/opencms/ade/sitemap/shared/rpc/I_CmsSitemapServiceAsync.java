@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/rpc/Attic/I_CmsSitemapServiceAsync.java,v $
- * Date   : $Date: 2010/04/22 14:32:08 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/04/26 09:53:44 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 8.0.0
  * 
@@ -62,6 +62,14 @@ public interface I_CmsSitemapServiceAsync {
      * @param callback the async callback
      */
     void createSubsitemap(String sitemapUri, String path, AsyncCallback<String> callback);
+
+    /**
+     * Executed when leaving the page.<p>
+     * 
+     * @param recentList the modified recent list, or <code>null</code> if it has not been modified
+     * @param callback the async callback
+     */
+    void exit(List<CmsClientSitemapEntry> recentList, AsyncCallback<Void> callback);
 
     /**
      * Returns the sitemap children for the given path.<p>

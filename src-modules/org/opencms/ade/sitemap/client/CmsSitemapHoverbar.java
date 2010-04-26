@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapHoverbar.java,v $
- * Date   : $Date: 2010/04/26 06:10:49 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/04/26 09:53:44 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,25 +32,29 @@
 package org.opencms.ade.sitemap.client;
 
 import org.opencms.ade.sitemap.client.ui.css.I_CmsImageBundle;
+import org.opencms.gwt.client.ui.A_CmsHoverHandler;
 import org.opencms.gwt.client.ui.CmsImageButton;
-import org.opencms.gwt.client.ui.CmsToolbar;
+import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsDomUtil;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.MouseOutEvent;
+import com.google.gwt.event.dom.client.MouseOverEvent;
+import com.google.gwt.user.client.ui.FlowPanel;
 
 /**
  * Sitemap tree item hover-bar.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
  */
-public class CmsSitemapHoverbar extends CmsToolbar {
+public class CmsSitemapHoverbar extends FlowPanel {
 
     /** The delete button. */
     private CmsImageButton m_deleteButton;
@@ -77,6 +81,7 @@ public class CmsSitemapHoverbar extends CmsToolbar {
      */
     public CmsSitemapHoverbar(final CmsSitemapHoverbarHandler handler) {
 
+        setStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().buttonPanel());
         ClickHandler clickHandler = new ClickHandler() {
 
             /**
@@ -84,61 +89,69 @@ public class CmsSitemapHoverbar extends CmsToolbar {
              */
             public void onClick(ClickEvent event) {
 
+                String sitePath = getSitePath();
+                deattach();
                 if (event.getSource().equals(getMoveButton())) {
-                    handler.onMove();
+                    handler.onMove(sitePath);
                 } else if (event.getSource().equals(getNewButton())) {
-                    handler.onNew();
+                    handler.onNew(sitePath);
                 } else if (event.getSource().equals(getDeleteButton())) {
-                    cancelHover(getDeleteButton().getElement());
                     CmsDomUtil.ensureMouseOut(getDeleteButton().getElement());
-                    handler.onDelete();
+                    handler.onDelete(sitePath);
                 } else if (event.getSource().equals(getEditButton())) {
-                    handler.onEdit();
+                    handler.onEdit(sitePath);
                 } else if (event.getSource().equals(getSubsitemapButton())) {
-                    handler.onSubsitemap();
+                    handler.onSubsitemap(sitePath);
                 } else if (event.getSource().equals(getGotoButton())) {
-                    handler.onGoto();
+                    handler.onGoto(sitePath);
                 }
             }
 
             /**
-             * Cancels the hover effect from the given element.<p>
+             * Returns the site path of the hovered item.<p>
              * 
-             * @param element the element to cancel the hover effect for
+             * @return the site path of the hovered item
              */
-            private void cancelHover(Element element) {
+            private String getSitePath() {
 
-                element = CmsDomUtil.getAncestor(element, I_CmsLayoutBundle.INSTANCE.stateCss().cmsHovering());
-                if (element != null) {
-                    element.removeClassName(I_CmsLayoutBundle.INSTANCE.stateCss().cmsHovering());
-                }
+                Element anscestor = CmsDomUtil.getAncestor(
+                    getElement(),
+                    I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().itemContent());
+                return anscestor.getAttribute(CmsSitemapTreeItem.ATTR_SITEPATH);
             }
         };
-
-        m_moveButton = new CmsImageButton(I_CmsImageBundle.INSTANCE.buttonCss().hoverbarMove(), false);
-        m_moveButton.setTitle(Messages.get().key(Messages.GUI_HOVERBAR_MOVE_0));
-        m_moveButton.addClickHandler(clickHandler);
-
-        m_newButton = new CmsImageButton(I_CmsImageBundle.INSTANCE.buttonCss().hoverbarNew(), false);
-        m_newButton.setTitle(Messages.get().key(Messages.GUI_HOVERBAR_NEW_0));
-        m_newButton.addClickHandler(clickHandler);
-
-        m_editButton = new CmsImageButton(I_CmsImageBundle.INSTANCE.buttonCss().hoverbarEdit(), false);
-        m_editButton.setTitle(Messages.get().key(Messages.GUI_HOVERBAR_EDIT_0));
-        m_editButton.addClickHandler(clickHandler);
-
-        m_deleteButton = new CmsImageButton(I_CmsImageBundle.INSTANCE.buttonCss().hoverbarDelete(), false);
-        m_deleteButton.setTitle(Messages.get().key(Messages.GUI_HOVERBAR_DELETE_0));
-        m_deleteButton.addClickHandler(clickHandler);
-
-        m_subsitemapButton = new CmsImageButton(I_CmsImageBundle.INSTANCE.buttonCss().hoverbarSubsitemap(), false);
-        m_subsitemapButton.setTitle(Messages.get().key(Messages.GUI_HOVERBAR_SUBSITEMAP_0));
-        m_subsitemapButton.addClickHandler(clickHandler);
 
         // TODO: this should be a link so it can be opened in a new window or tab by the user
         m_gotoButton = new CmsImageButton(I_CmsImageBundle.INSTANCE.buttonCss().hoverbarGoto(), false);
         m_gotoButton.setTitle(Messages.get().key(Messages.GUI_HOVERBAR_GOTO_0));
         m_gotoButton.addClickHandler(clickHandler);
+        add(m_gotoButton);
+
+        m_subsitemapButton = new CmsImageButton(I_CmsImageBundle.INSTANCE.buttonCss().hoverbarSubsitemap(), false);
+        m_subsitemapButton.setTitle(Messages.get().key(Messages.GUI_HOVERBAR_SUBSITEMAP_0));
+        m_subsitemapButton.addClickHandler(clickHandler);
+        add(m_subsitemapButton);
+
+        m_deleteButton = new CmsImageButton(I_CmsImageBundle.INSTANCE.buttonCss().hoverbarDelete(), false);
+        m_deleteButton.setTitle(Messages.get().key(Messages.GUI_HOVERBAR_DELETE_0));
+        m_deleteButton.addClickHandler(clickHandler);
+        add(m_deleteButton);
+
+        m_editButton = new CmsImageButton(I_CmsImageBundle.INSTANCE.buttonCss().hoverbarEdit(), false);
+        m_editButton.setTitle(Messages.get().key(Messages.GUI_HOVERBAR_EDIT_0));
+        m_editButton.addClickHandler(clickHandler);
+        add(m_editButton);
+
+        m_newButton = new CmsImageButton(I_CmsImageBundle.INSTANCE.buttonCss().hoverbarNew(), false);
+        m_newButton.setTitle(Messages.get().key(Messages.GUI_HOVERBAR_NEW_0));
+        m_newButton.addClickHandler(clickHandler);
+        add(m_newButton);
+
+        m_moveButton = new CmsImageButton(I_CmsImageBundle.INSTANCE.buttonCss().hoverbarMove(), false);
+        m_moveButton.setTitle(Messages.get().key(Messages.GUI_HOVERBAR_MOVE_0));
+        m_moveButton.addClickHandler(clickHandler);
+        add(m_moveButton);
+
     }
 
     /**
@@ -201,4 +214,46 @@ public class CmsSitemapHoverbar extends CmsToolbar {
         return m_subsitemapButton;
     }
 
+    /**
+     * Installs this hoverbar for the given item widget.<p>
+     * 
+     * @param itemWidget the item widget to hover
+     */
+    public void installOn(final CmsListItemWidget itemWidget) {
+
+        A_CmsHoverHandler handler = new A_CmsHoverHandler() {
+
+            /**
+             * @see org.opencms.gwt.client.ui.A_CmsHoverHandler#onHoverIn(com.google.gwt.event.dom.client.MouseOverEvent)
+             */
+            @SuppressWarnings("synthetic-access")
+            @Override
+            protected void onHoverIn(MouseOverEvent event) {
+
+                itemWidget.getContentPanel().getElement().appendChild(getElement());
+                onAttach();
+            }
+
+            /**
+             * @see org.opencms.gwt.client.ui.A_CmsHoverHandler#onHoverOut(com.google.gwt.event.dom.client.MouseOutEvent)
+             */
+            @Override
+            protected void onHoverOut(MouseOutEvent event) {
+
+                deattach();
+            }
+
+        };
+        itemWidget.addMouseOutHandler(handler);
+        itemWidget.addMouseOverHandler(handler);
+    }
+
+    /**
+     * Deattaches the hoverbar.<p>
+     */
+    protected void deattach() {
+
+        getElement().removeFromParent();
+        onDetach();
+    }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2010/04/22 14:32:07 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/04/26 09:53:44 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import com.google.gwt.user.client.Window;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 8.0.0
  */
@@ -174,11 +174,12 @@ public class CmsSitemapController {
     /**
      * Deletes the given entry and all its descendants.<p>
      * 
-     * @param entry the entry to delete
+     * @param sitePath the site path of the entry to delete
      */
-    public void delete(CmsClientSitemapEntry entry) {
+    public void delete(String sitePath) {
 
-        assert (getEntry(entry.getSitePath()) != null);
+        CmsClientSitemapEntry entry = getEntry(sitePath);
+        assert (entry != null);
         addChange(new CmsSitemapChangeDelete(entry), false);
     }
 
@@ -213,9 +214,9 @@ public class CmsSitemapController {
     /**
      * Retrieves the children entries of the given node from the server.<p>
      * 
-     * @param target the sitemap entry to get the children for
+     * @param sitePath the site pat of the sitemap entry to get the children for
      */
-    public void getChildren(final CmsClientSitemapEntry target) {
+    public void getChildren(final String sitePath) {
 
         CmsRpcAction<List<CmsClientSitemapEntry>> getChildrenAction = new CmsRpcAction<List<CmsClientSitemapEntry>>() {
 
@@ -226,7 +227,7 @@ public class CmsSitemapController {
             public void execute() {
 
                 // Make the call to the sitemap service
-                CmsSitemapProvider.getService().getChildren(target.getSitePath(), this);
+                CmsSitemapProvider.getService().getChildren(sitePath, this);
             }
 
             /**
@@ -235,6 +236,7 @@ public class CmsSitemapController {
             @Override
             public void onResponse(List<CmsClientSitemapEntry> result) {
 
+                CmsClientSitemapEntry target = getEntry(sitePath);
                 target.setChildren(result);
                 m_handler.onGetChildren(target);
             }
@@ -409,45 +411,13 @@ public class CmsSitemapController {
     }
 
     /**
-     * Adds a change to the queue.<p>
-     * 
-     * @param oldEntry the old entry
-     * @param newEntry the new entry
-     * @param changeType the change type
-     * @param position the new position between its siblings, only used when moving
-     * @param redo if redoing a change
-     */
-    private void addChange(I_CmsSitemapChange change, boolean redo) {
-
-        // state
-        if (!isDirty()) {
-            startEdit();
-        }
-
-        if (!redo) {
-            // after a new change no changes can be redone
-            m_undone.clear();
-            m_handler.onClearUndo();
-        }
-
-        // add it
-        m_changes.add(change);
-
-        // update data
-        update(change);
-
-        // refresh view
-        m_handler.onChange(change);
-    }
-
-    /**
      * Returns the tree entry with the given path.<p>
      * 
      * @param entryPath the path to look for
      * 
      * @return the tree entry with the given path, or <code>null</code> if not found
      */
-    private CmsClientSitemapEntry getEntry(String entryPath) {
+    protected CmsClientSitemapEntry getEntry(String entryPath) {
 
         if (!entryPath.startsWith(m_sitemap.getSitePath())) {
             return null;
@@ -477,6 +447,38 @@ public class CmsSitemapController {
             result = null;
         }
         return result;
+    }
+
+    /**
+     * Adds a change to the queue.<p>
+     * 
+     * @param oldEntry the old entry
+     * @param newEntry the new entry
+     * @param changeType the change type
+     * @param position the new position between its siblings, only used when moving
+     * @param redo if redoing a change
+     */
+    private void addChange(I_CmsSitemapChange change, boolean redo) {
+
+        // state
+        if (!isDirty()) {
+            startEdit();
+        }
+
+        if (!redo) {
+            // after a new change no changes can be redone
+            m_undone.clear();
+            m_handler.onClearUndo();
+        }
+
+        // add it
+        m_changes.add(change);
+
+        // update data
+        update(change);
+
+        // refresh view
+        m_handler.onChange(change);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapTreeItemFactory.java,v $
- * Date   : $Date: 2010/04/22 08:18:40 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/26 09:53:44 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,7 +35,6 @@ import org.opencms.ade.sitemap.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
-import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem;
 import org.opencms.gwt.shared.CmsListInfoBean;
 
 import com.google.gwt.user.client.ui.Image;
@@ -45,16 +44,19 @@ import com.google.gwt.user.client.ui.Image;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  * 
  * @see org.opencms.ade.sitemap.client.CmsSitemapTreeItem
  */
-public class CmsSitemapTreeItemFactory extends CmsLazyTreeItem {
+public class CmsSitemapTreeItemFactory {
 
     /** The controller. */
     private CmsSitemapController m_controller;
+
+    /** The hover bar. */
+    protected CmsSitemapHoverbar m_hoverbar;
 
     /**
      * Factory method.<p>
@@ -74,21 +76,15 @@ public class CmsSitemapTreeItemFactory extends CmsLazyTreeItem {
         Image icon = new Image(I_CmsImageBundle.INSTANCE.magnifierIconActive());
         icon.addStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
         itemWidget.setIcon(icon);
-        CmsSitemapHoverbarHandler handler = null;
-        if (!CmsSitemapProvider.get().isEditable()) {
-            handler = new CmsSitemapHoverbarHandler(entry, null);
-        } else {
-            handler = new CmsSitemapHoverbarHandler(entry, m_controller);
-        }
-        CmsSitemapHoverbar hoverbar = new CmsSitemapHoverbar(handler);
-        itemWidget.addButton(hoverbar.getGotoButton());
-        itemWidget.addButton(hoverbar.getDeleteButton());
-        itemWidget.addButton(hoverbar.getEditButton());
-        itemWidget.addButton(hoverbar.getNewButton());
-        itemWidget.addButton(hoverbar.getMoveButton());
-
-        CmsSitemapTreeItem treeItem = new CmsSitemapTreeItem(itemWidget, handler);
+        CmsSitemapTreeItem treeItem = new CmsSitemapTreeItem(itemWidget, entry.getSitePath());
         treeItem.setId(entry.getName());
+        if (CmsSitemapProvider.get().isEditable()) {
+            if (m_hoverbar == null) {
+                CmsSitemapHoverbarHandler handler = new CmsSitemapHoverbarHandler(m_controller);
+                m_hoverbar = new CmsSitemapHoverbar(handler);
+            }
+            m_hoverbar.installOn(itemWidget);
+        }
         return treeItem;
     }
 
