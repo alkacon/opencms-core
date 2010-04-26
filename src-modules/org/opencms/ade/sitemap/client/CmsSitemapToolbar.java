@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapToolbar.java,v $
- * Date   : $Date: 2010/04/22 09:23:34 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/04/26 13:41:15 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.ade.sitemap.client;
 
 import org.opencms.ade.sitemap.client.ui.css.I_CmsImageBundle;
+import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.gwt.client.ui.CmsToolbar;
 import org.opencms.gwt.client.ui.CmsToolbarButton;
 import org.opencms.gwt.client.util.CmsDomUtil;
@@ -44,7 +45,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
  */
@@ -113,6 +114,13 @@ public class CmsSitemapToolbar extends CmsToolbar {
 
         m_publishButton = new CmsToolbarButton(CmsToolbarButton.ButtonData.PUBLISH);
         addRight(m_publishButton);
+
+        if (!isEditable) {
+            CmsAlertDialog dialog = new CmsAlertDialog(
+                Messages.get().key(Messages.GUI_DIALOG_NO_EDIT_TITLE_0),
+                Messages.get().key(Messages.GUI_DIALOG_NO_EDIT_TEXT_1, CmsSitemapProvider.get().getNoEditReason()));
+            dialog.center();
+        }
     }
 
     /**
