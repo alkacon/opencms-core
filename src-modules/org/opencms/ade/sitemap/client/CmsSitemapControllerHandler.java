@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapControllerHandler.java,v $
- * Date   : $Date: 2010/04/26 09:53:44 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/04/26 13:42:48 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,21 +36,19 @@ import org.opencms.ade.sitemap.shared.CmsSitemapChangeDelete;
 import org.opencms.ade.sitemap.shared.CmsSitemapChangeEdit;
 import org.opencms.ade.sitemap.shared.CmsSitemapChangeMove;
 import org.opencms.ade.sitemap.shared.CmsSitemapChangeNew;
+import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.ade.sitemap.shared.I_CmsSitemapChange;
 import org.opencms.file.CmsResource;
 import org.opencms.gwt.client.ui.tree.CmsLazyTree;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
 import org.opencms.util.CmsStringUtil;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Sitemap controller handler.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
  * 
@@ -127,6 +125,16 @@ public class CmsSitemapControllerHandler {
     }
 
     /**
+     * Will be triggered when the edit data is available.<p>
+     * 
+     * @param data the data 
+     */
+    public void onEditDataAvailable(CmsSitemapData data) {
+
+        // TODO: generate recent list & co        
+    }
+
+    /**
      * Will be triggered when starting to undo.<p>
      */
     public void onFirstUndo() {
@@ -152,30 +160,24 @@ public class CmsSitemapControllerHandler {
     /**
      * Will be triggered once the controller is initialized.<p>
      * 
-     * @param roots the sitemap root entries
+     * @param root the sitemap root entry
      */
-    public void onInit(List<CmsClientSitemapEntry> roots) {
+    public void onInit(CmsClientSitemapEntry root) {
 
-        List<CmsSitemapTreeItem> items = new ArrayList<CmsSitemapTreeItem>();
-        for (CmsClientSitemapEntry root : roots) {
-            CmsSitemapTreeItem rootItem = m_factory.create(root);
-            rootItem.clearChildren();
-            for (CmsClientSitemapEntry child : root.getChildren()) {
-                CmsSitemapTreeItem childItem = m_factory.create(child);
-                rootItem.addChild(childItem);
-                childItem.clearChildren();
-                for (CmsClientSitemapEntry grandchild : child.getChildren()) {
-                    childItem.addChild(m_factory.create(grandchild));
-                }
-                childItem.onFinishLoading();
+        CmsSitemapTreeItem rootItem = m_factory.create(root);
+        rootItem.clearChildren();
+        for (CmsClientSitemapEntry child : root.getChildren()) {
+            CmsSitemapTreeItem childItem = m_factory.create(child);
+            rootItem.addChild(childItem);
+            childItem.clearChildren();
+            for (CmsClientSitemapEntry grandchild : child.getChildren()) {
+                childItem.addChild(m_factory.create(grandchild));
             }
-            rootItem.onFinishLoading();
-            rootItem.setOpen(true);
-            items.add(rootItem);
+            childItem.onFinishLoading();
         }
-        for (CmsSitemapTreeItem item : items) {
-            m_tree.addItem(item);
-        }
+        rootItem.onFinishLoading();
+        rootItem.setOpen(true);
+        m_tree.addItem(rootItem);
     }
 
     /**

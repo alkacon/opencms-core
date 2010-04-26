@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/rpc/Attic/I_CmsSitemapService.java,v $
- * Date   : $Date: 2010/04/26 09:53:44 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/04/26 13:42:48 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 8.0.0
  * 
@@ -112,15 +112,15 @@ public interface I_CmsSitemapService extends RemoteService {
     CmsSitemapData getInitData(String sitemapUri) throws CmsRpcException;
 
     /**
-     * Returns the root sitemap entries for the given sitemap.<p>
+     * Returns the root sitemap entry for the given sitemap.<p>
      * 
      * @param sitemapUri the site relative path
      *  
-     * @return root sitemap entries
+     * @return root sitemap entry
      * 
      * @throws CmsRpcException if something goes wrong 
      */
-    List<CmsClientSitemapEntry> getRoots(String sitemapUri) throws CmsRpcException;
+    CmsClientSitemapEntry getRoot(String sitemapUri) throws CmsRpcException;
 
     /**
      * Merges the given super sitemap with the sub-sitemap at the given path.<p>

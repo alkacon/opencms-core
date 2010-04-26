@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsSitemapService.java,v $
- * Date   : $Date: 2010/04/26 09:53:44 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/04/26 13:42:48 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 8.0.0
  * 
@@ -177,38 +177,29 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
     }
 
     /**
-     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#getRoots(java.lang.String)
+     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#getRoot(java.lang.String)
      */
-    public List<CmsClientSitemapEntry> getRoots(String sitemapUri) throws CmsRpcException {
+    public CmsClientSitemapEntry getRoot(String sitemapUri) throws CmsRpcException {
 
         CmsObject cms = getCmsObject();
-        List<CmsClientSitemapEntry> roots = null;
+        CmsClientSitemapEntry root = null;
         try {
             // TODO: what's about historical requests?
             CmsResource sitemap = cms.readResource(sitemapUri);
             CmsXmlSitemap xml = CmsXmlSitemapFactory.unmarshal(cms, sitemap);
             String sitePath = cms.getRequestContext().removeSiteRoot(
                 xml.getSitemap(cms, Locale.ENGLISH).getEntryPoint());
-            boolean isSubsitemap = false;
-            if (isSubsitemap) {
-                roots = getChildren(sitePath);
-            } else {
-                roots = new ArrayList<CmsClientSitemapEntry>();
-                CmsClientSitemapEntry entry = getEntry(sitePath);
-                String name = CmsResource.getName(sitePath);
-                if (name.endsWith("/")) {
-                    name = name.substring(0, name.length() - 1);
-                }
-                entry.setName(name);
-                roots.add(entry);
+            root = getEntry(sitePath);
+            String name = CmsResource.getName(sitePath);
+            if (name.endsWith("/")) {
+                name = name.substring(0, name.length() - 1);
             }
-            for (CmsClientSitemapEntry root : roots) {
-                root.setChildren(getChildren(root.getSitePath(), 2));
-            }
+            root.setName(name);
+            root.setChildren(getChildren(root.getSitePath(), 2));
         } catch (Throwable e) {
             error(e);
         }
-        return roots;
+        return root;
     }
 
     /**

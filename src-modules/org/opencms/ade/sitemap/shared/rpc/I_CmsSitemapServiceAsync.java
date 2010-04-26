@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/rpc/Attic/I_CmsSitemapServiceAsync.java,v $
- * Date   : $Date: 2010/04/26 09:53:44 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/04/26 13:42:48 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 8.0.0
  * 
@@ -96,12 +96,12 @@ public interface I_CmsSitemapServiceAsync {
     void getInitData(String sitemapUri, AsyncCallback<CmsSitemapData> callback);
 
     /**
-     * Returns the root sitemap entries for the given sitemap.<p>
+     * Returns the root sitemap entry for the given sitemap.<p>
      * 
      * @param sitemapUri the site relative path
      * @param callback the async callback
      */
-    void getRoots(String sitemapUri, AsyncCallback<List<CmsClientSitemapEntry>> callback);
+    void getRoot(String sitemapUri, AsyncCallback<CmsClientSitemapEntry> callback);
 
     /**
      * Merges the given super sitemap with the sub-sitemap at the given path.<p>
