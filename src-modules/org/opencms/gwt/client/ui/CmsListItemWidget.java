@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItemWidget.java,v $
- * Date   : $Date: 2010/04/21 07:37:29 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2010/04/26 09:51:15 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,6 +43,13 @@ import java.util.Map.Entry;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.HasMouseOutHandlers;
+import com.google.gwt.event.dom.client.HasMouseOverHandlers;
+import com.google.gwt.event.dom.client.MouseOutEvent;
+import com.google.gwt.event.dom.client.MouseOutHandler;
+import com.google.gwt.event.dom.client.MouseOverEvent;
+import com.google.gwt.event.dom.client.MouseOverHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
@@ -57,11 +64,11 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Tobias Herrmann
  * @author Michael Moossen
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 8.0.0
  */
-public class CmsListItemWidget extends Composite {
+public class CmsListItemWidget extends Composite implements HasMouseOutHandlers, HasMouseOverHandlers {
 
     /** Additional info item HTML. */
     protected static class AdditionalInfoItem extends CmsSimplePanel {
@@ -145,6 +152,10 @@ public class CmsListItemWidget extends Composite {
     @UiField
     protected FlowPanel m_buttonPanel;
 
+    /** Panel to hold the content.*/
+    @UiField
+    protected CmsSimplePanel m_contentPanel;
+
     /** The DIV showing the list icon. */
     @UiField
     protected SimplePanel m_iconPanel;
@@ -195,6 +206,23 @@ public class CmsListItemWidget extends Composite {
     }
 
     /**
+     * @see com.google.gwt.event.dom.client.HasMouseOutHandlers#addMouseOutHandler(com.google.gwt.event.dom.client.MouseOutHandler)
+     */
+    public HandlerRegistration addMouseOutHandler(MouseOutHandler handler) {
+
+        return addDomHandler(handler, MouseOutEvent.getType());
+
+    }
+
+    /**
+     * @see com.google.gwt.event.dom.client.HasMouseOverHandlers#addMouseOverHandler(com.google.gwt.event.dom.client.MouseOverHandler)
+     */
+    public HandlerRegistration addMouseOverHandler(MouseOverHandler handler) {
+
+        return addDomHandler(handler, MouseOverEvent.getType());
+    }
+
+    /**
      * Returns the button at the given position.<p>
      * 
      * @param index the button index
@@ -204,6 +232,16 @@ public class CmsListItemWidget extends Composite {
     public Widget getButton(int index) {
 
         return m_buttonPanel.getWidget(index);
+    }
+
+    /**
+     * Returns the content panel.<p>
+     *
+     * @return the content panel
+     */
+    public CmsSimplePanel getContentPanel() {
+
+        return m_contentPanel;
     }
 
     /**
