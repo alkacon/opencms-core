@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/Attic/CmsPublish.java,v $
- * Date   : $Date: 2010/04/15 06:36:46 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/04/26 07:58:52 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -201,7 +201,8 @@ public class CmsPublish {
             publishList = OpenCms.getPublishManager().getPublishListAll(
                 m_cms,
                 pubResources,
-                m_options.isIncludeSiblings());
+                m_options.isIncludeSiblings(),
+                true);
         } catch (CmsException e) {
             // should never happen
             LOG.error(e.getLocalizedMessage(), e);
@@ -445,7 +446,8 @@ public class CmsPublish {
         CmsPublishList publishList = OpenCms.getPublishManager().getPublishListAll(
             m_cms,
             resources,
-            m_options.isIncludeSiblings());
+            m_options.isIncludeSiblings(),
+            true);
         OpenCms.getPublishManager().publishProject(m_cms, report, publishList);
     }
 
