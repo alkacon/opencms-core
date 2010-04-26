@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsDomUtil.java,v $
- * Date   : $Date: 2010/04/19 11:47:45 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2010/04/26 06:10:49 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import com.google.gwt.user.client.DOM;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 8.0.0
  */
@@ -253,6 +253,9 @@ public final class CmsDomUtil {
         },
 
         /** HTML Tag. */
+        a,
+
+        /** HTML Tag. */
         b,
 
         /** HTML Tag. */
@@ -380,6 +383,67 @@ public final class CmsDomUtil {
 
         NativeEvent nativeEvent = Document.get().createMouseOutEvent(0, 0, 0, 0, 0, false, false, false, false, 0, null);
         element.dispatchEvent(nativeEvent);
+    }
+
+    /**
+     * Returns the given element or it's closest ancestor with the given tag name.
+     * Returns <code>null</code> if no appropriate element was found.<p>
+     * 
+     * @param element the element
+     * @param tag the tag name
+     * 
+     * @return the matching element
+     */
+    public static Element getAncestor(Element element, Tag tag) {
+
+        if (element.getTagName().equalsIgnoreCase(tag.name())) {
+            return element;
+        }
+        if (element.getTagName().equalsIgnoreCase(Tag.body.name())) {
+            return null;
+        }
+        return getAncestor(element.getParentElement(), tag);
+    }
+
+    /**
+     * Returns the given element or it's closest ancestor with the given tag and class.
+     * Returns <code>null</code> if no appropriate element was found.<p>
+     * 
+     * @param element the element
+     * @param tag the tag name
+     * @param className the class name
+     * 
+     * @return the matching element
+     */
+    public static Element getAncestor(Element element, Tag tag, String className) {
+
+        if (element.getTagName().equalsIgnoreCase(tag.name()) && hasClass(className, element)) {
+            return element;
+        }
+        if (element.getTagName().equalsIgnoreCase(Tag.body.name())) {
+            return null;
+        }
+        return getAncestor(element.getParentElement(), tag, className);
+    }
+
+    /**
+     * Returns the given element or it's closest ancestor with the given class.
+     * Returns <code>null</code> if no appropriate element was found.<p>
+     * 
+     * @param element the element
+     * @param className the class name
+     * 
+     * @return the matching element
+     */
+    public static Element getAncestor(Element element, String className) {
+
+        if (hasClass(className, element)) {
+            return element;
+        }
+        if (element.getTagName().equalsIgnoreCase(Tag.body.name())) {
+            return null;
+        }
+        return getAncestor(element.getParentElement(), className);
     }
 
     /**

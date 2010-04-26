@@ -36,6 +36,7 @@
     gwt-image: "backgroundDefault"; 
     background-position: 50% 50%; 
     height: auto; 
+    white-space: nowrap;
 }
 .popupButtonPanel{
     margin-top: 5px;

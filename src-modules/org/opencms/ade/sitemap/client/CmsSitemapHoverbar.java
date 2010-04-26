@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapHoverbar.java,v $
- * Date   : $Date: 2010/04/22 08:18:40 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/26 06:10:49 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,14 +40,13 @@ import org.opencms.gwt.client.util.CmsDomUtil;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * Sitemap tree item hover-bar.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  */
@@ -109,11 +108,8 @@ public class CmsSitemapHoverbar extends CmsToolbar {
              */
             private void cancelHover(Element element) {
 
-                while (element.equals(RootPanel.getBodyElement())
-                    || !CmsDomUtil.hasClass(I_CmsLayoutBundle.INSTANCE.stateCss().cmsHovering(), element)) {
-                    element = element.getParentElement();
-                }
-                if (!element.equals(RootPanel.getBodyElement())) {
+                element = CmsDomUtil.getAncestor(element, I_CmsLayoutBundle.INSTANCE.stateCss().cmsHovering());
+                if (element != null) {
                     element.removeClassName(I_CmsLayoutBundle.INSTANCE.stateCss().cmsHovering());
                 }
             }

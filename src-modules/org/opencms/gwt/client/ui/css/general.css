@@ -17,14 +17,7 @@
 	font-family: value("constantsCss.fontFamily");
 	font-size: value("constantsCss.fontSizeBig");
 }
-
-
-
 .cmsState-up, .cmsState-up-hovering, .cmsState-up-disabled, .cmsState-down, .cmsState-down-hovering, .cmsState-down-disabled, .cmsHovering{};
-
-.cornerTop {
-	white-space: nowrap;
-}
 
 /** browser specific styles **/
 @if user.agent gecko1_8 gecko{
