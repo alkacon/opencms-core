@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishGroupPanel.java,v $
- * Date   : $Date: 2010/04/22 14:32:40 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/04/26 15:08:18 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import com.google.gwt.user.client.ui.Panel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -148,7 +148,12 @@ public class CmsPublishGroupPanel extends Composite implements I_CmsHasSize {
         info.setTitle(getTitle(resourceBean));
         info.setSubTitle(resourceBean.getName());
         String stateLabel = Messages.get().key(Messages.GUI_PUBLISH_RESOURCE_STATE_0);
-        info.addAdditionalInfo(stateLabel, CmsPublishUtil.getStateName(resourceBean.getState()));
+        String stateName = CmsPublishUtil.getStateName(resourceBean.getState());
+        // this can be null for the source resources of broken relations in the 'broken links' 
+        // panel since these resources don't have to be new or deleted or changed
+        if (stateName != null) {
+            info.addAdditionalInfo(stateLabel, stateName);
+        }
         info.setValueStyle(stateLabel, CmsPublishUtil.getStateStyle(resourceBean.getState()));
 
         CmsListItemWidget itemWidget = new CmsListItemWidget(info);

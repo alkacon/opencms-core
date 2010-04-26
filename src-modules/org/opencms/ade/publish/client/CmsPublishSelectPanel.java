@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishSelectPanel.java,v $
- * Date   : $Date: 2010/04/23 09:08:12 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/04/26 15:08:18 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,7 @@ import org.opencms.ade.publish.shared.CmsPublishGroup;
 import org.opencms.ade.publish.shared.CmsPublishOptions;
 import org.opencms.ade.publish.shared.CmsPublishResource;
 import org.opencms.gwt.client.i18n.CmsMessages;
+import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.gwt.client.ui.CmsButton;
 import org.opencms.gwt.client.ui.CmsTextButton;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
@@ -47,8 +48,10 @@ import org.opencms.gwt.client.util.CmsScrollToBottomHandler;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.google.gwt.core.client.GWT;
@@ -76,7 +79,7 @@ import com.google.gwt.user.client.ui.Widget;
  *  
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 8.0.0
  */
@@ -190,6 +193,12 @@ public class CmsPublishSelectPanel extends Composite implements I_CmsPublishSele
 
     /** The list of group panels for each publish list group. */
     private List<CmsPublishGroupPanel> m_groupPanels = new ArrayList<CmsPublishGroupPanel>();
+    
+    /** The publish list resources indexed by UUID. */
+    private Map<CmsUUID, CmsPublishResource> m_publishResources;
+    
+    /** The publish list resources indexed by path. */
+    private Map<String, CmsPublishResource> m_publishResourcesByPath;
 
     /** The list splitter which gets the next set of groups when the user scrolls down. */
     private CmsListSplitter<CmsPublishGroupPanel> m_splitter;
@@ -327,8 +336,70 @@ public class CmsPublishSelectPanel extends Composite implements I_CmsPublishSele
 
     }
 
+    /** 
+     * Calculates the path of the parent directory of a resource path.<p>
+     * 
+     * @param path the resource path
+     * 
+     * @return the parent directory path 
+     */
+    private static String getParentPath(String path) {
+
+        // remove possible slash before end of string
+        path = path.replaceFirst("/$", "");
+        // remove everything after the slash before that 
+        path = path.replaceFirst("/[^/]+$", "/");
+        return path;
+    }
+
+    /** 
+     * Check for problems with new/deleted folders in the publish selection.<p>
+     * 
+     * @param resourceIds the ids of the resources selected for publishing 
+     * @return true if there are problems with nested 
+     */
+    public boolean checkForProblems(Set<CmsUUID> resourceIds) {
+
+        List<CmsPublishResource> pubResources = new ArrayList<CmsPublishResource>();
+        Set<CmsUUID> publishIds = getResourcesToPublish();
+        for (CmsUUID publishId : publishIds) {
+            pubResources.add(m_publishResources.get(publishId));
+        }
+        for (CmsPublishResource pubResource : pubResources) {
+            String parentPath = getParentPath(pubResource.getName());
+            CmsPublishResource parent = m_publishResourcesByPath.get(parentPath);
+            if (parent != null) {
+                boolean parentIsNew = parent.getState().equals("N");
+                boolean parentIsDeleted = parent.getState().equals("D");
+                if (parentIsNew || parentIsDeleted) {
+                    if (!resourceIds.contains(parent.getId())) {
+                        String title = Messages.get().key(Messages.ERR_CANT_PUBLISH_RESOURCE_TITLE_0);
+                        String message = null;
+                        if (parentIsNew) {
+                            message = Messages.get().key(
+                                Messages.ERR_PUBLISH_CANT_PUBLISH_NEW_RESOURCE_2,
+                                pubResource.getName(),
+                                parent.getName());
+                        }
+                        if (parentIsDeleted) {
+                            message = Messages.get().key(
+                                Messages.ERR_PUBLISH_CANT_PUBLISH_DELETED_RESOURCE_2,
+                                pubResource.getName(),
+                                parent.getName());
+                        }
+                        CmsAlertDialog alert = new CmsAlertDialog(title, message);
+                        alert.center();
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
     /**
      * Returns the buttons of this panel which should be shown as the buttons of the publish dialog.<p>
+     * 
      * @return a list of buttons
      */
     public List<CmsButton> getButtons() {
@@ -419,12 +490,18 @@ public class CmsPublishSelectPanel extends Composite implements I_CmsPublishSele
             return;
         }
         int numProblems = 0;
+        m_publishResources = new HashMap<CmsUUID, CmsPublishResource>();
+        m_publishResourcesByPath = new HashMap<String, CmsPublishResource>();
         for (CmsPublishGroup group : groups) {
             String header = group.getName();
             List<CmsPublishResource> resourceBeans = group.getResources();
             CmsPublishGroupPanel groupPanel = new CmsPublishGroupPanel(header, resourceBeans, this);
             m_groupPanels.add(groupPanel);
             numProblems += groupPanel.countProblems();
+            for (CmsPublishResource pubResource : group.getResources()) {
+                m_publishResources.put(pubResource.getId(), pubResource);
+                m_publishResourcesByPath.put(pubResource.getName(), pubResource);
+            }
         }
         resetGroups();
         m_publishButton.setEnabled(true);
@@ -463,7 +540,9 @@ public class CmsPublishSelectPanel extends Composite implements I_CmsPublishSele
     @UiHandler("m_publishButton")
     protected void onClickPublish(ClickEvent e) {
 
-        m_publishDialog.onRequestPublish();
+        if (!checkForProblems(getResourcesToPublish())) {
+            m_publishDialog.onRequestPublish();
+        }
     }
 
     /**

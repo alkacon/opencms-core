@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/Messages.java,v $
- * Date   : $Date: 2010/04/22 14:32:40 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/26 15:08:18 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,11 +38,20 @@ import org.opencms.gwt.client.i18n.CmsMessages;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
 public final class Messages {
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_CANT_PUBLISH_RESOURCE_TITLE_0 = "ERR_CANT_PUBLISH_RESOURCE_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_PUBLISH_CANT_PUBLISH_DELETED_RESOURCE_2 = "ERR_PUBLISH_CANT_PUBLISH_DELETED_RESOURCE_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_PUBLISH_CANT_PUBLISH_NEW_RESOURCE_2 = "ERR_PUBLISH_CANT_PUBLISH_NEW_RESOURCE_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NO_TITLE_0 = "GUI_NO_TITLE_0";

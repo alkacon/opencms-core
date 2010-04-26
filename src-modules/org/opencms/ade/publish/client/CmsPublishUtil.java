@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishUtil.java,v $
- * Date   : $Date: 2010/04/13 09:17:18 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/26 15:08:18 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,7 @@ package org.opencms.ade.publish.client;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -75,7 +75,7 @@ public final class CmsPublishUtil {
                 result = Messages.get().key(Messages.GUI_PUBLISH_RESOURCE_STATE_CHANGED_0);
                 break;
             default:
-                result = "???";
+                result = null;
                 break;
         }
         return result;
