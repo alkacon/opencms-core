@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapProvider.java,v $
- * Date   : $Date: 2010/04/19 11:48:12 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/26 13:39:53 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import com.google.gwt.core.client.JavaScriptObject;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  * 
@@ -139,6 +139,15 @@ public final class CmsSitemapProvider extends JavaScriptObject implements I_CmsS
      */
     public native String getUri() /*-{
         return this[@org.opencms.ade.sitemap.shared.I_CmsSitemapProviderConstants::KEY_URI_SITEMAP];
+    }-*/;
+
+    /**
+     * Returns the parent sitemap uri.<p>
+     *
+     * @return the parent sitemap uri
+     */
+    public native String getParent() /*-{
+        return this[@org.opencms.ade.sitemap.shared.I_CmsSitemapProviderConstants::KEY_URI_PARENT];
     }-*/;
 
     /**

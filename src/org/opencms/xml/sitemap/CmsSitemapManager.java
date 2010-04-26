@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2010/03/10 13:10:26 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2010/04/26 13:41:49 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -76,7 +76,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.34 $
+ * @version $Revision: 1.35 $
  * 
  * @since 7.9.2
  */
@@ -412,17 +412,16 @@ public class CmsSitemapManager extends CmsVfsCache {
      * or <code>null</code> if the given sitemap is a root sitemap.<p>
      * 
      * @param cms the current CMS context
-     * @param xmlSitemap the sitemap to get the parent sitemap for
+     * @param sitemap the sitemap resource to get the parent sitemap for
      * 
      * @return the parent sitemap
      * 
      * @throws CmsException if something goes wrong
      */
-    public CmsXmlSitemap getParentSitemap(CmsObject cms, CmsXmlSitemap xmlSitemap) throws CmsException {
+    public CmsResource getParentSitemap(CmsObject cms, CmsResource sitemap) throws CmsException {
 
-        CmsXmlSitemap superSitemap = null;
         CmsRelationFilter filter = CmsRelationFilter.SOURCES.filterType(CmsRelationType.XML_WEAK);
-        for (CmsRelation relation : cms.getRelationsForResource(xmlSitemap.getFile(), filter)) {
+        for (CmsRelation relation : cms.getRelationsForResource(sitemap, filter)) {
             if (CmsResource.isTemporaryFileName(relation.getSourcePath())) {
                 // temp file
                 continue;
@@ -437,10 +436,9 @@ public class CmsSitemapManager extends CmsVfsCache {
                 continue;
             }
             // found
-            superSitemap = CmsXmlSitemapFactory.unmarshal(cms, source);
-            break;
+            return source;
         }
-        return superSitemap;
+        return null;
     }
 
     /**

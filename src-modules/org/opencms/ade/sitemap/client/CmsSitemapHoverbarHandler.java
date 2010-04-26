@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapHoverbarHandler.java,v $
- * Date   : $Date: 2010/04/26 09:53:44 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/04/26 13:39:53 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,8 +31,8 @@
 
 package org.opencms.ade.sitemap.client;
 
+import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.gwt.client.CmsCoreProvider;
-import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsConfirmDialog;
 import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
 
@@ -45,7 +45,7 @@ import com.google.gwt.user.client.Window;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 8.0.0
  * 
@@ -67,7 +67,7 @@ public class CmsSitemapHoverbarHandler {
     }
 
     /**
-     * Triggered when the user click on the delete hover button.<p>
+     * Triggered when the user clicks on the delete hover button.<p>
      * 
      * @param sitePath the current sitemap entry's site path
      */
@@ -99,7 +99,7 @@ public class CmsSitemapHoverbarHandler {
     }
 
     /**
-     * Triggered when the user click on the edit hover button.<p>
+     * Triggered when the user clicks on the edit hover button.<p>
      * 
      * @param sitePath the current sitemap entry's site path
      */
@@ -118,7 +118,7 @@ public class CmsSitemapHoverbarHandler {
     }
 
     /**
-     * Triggered when the user click on the go-to hover button.<p>
+     * Triggered when the user clicks on the go-to hover button.<p>
      * 
      * @param sitePath the current sitemap entry's site path
      */
@@ -128,7 +128,7 @@ public class CmsSitemapHoverbarHandler {
     }
 
     /**
-     * Triggered when the user click on the move hover button.<p>
+     * Triggered when the user clicks on the move hover button.<p>
      * 
      * @param sitePath the current sitemap entry's site path
      */
@@ -138,7 +138,7 @@ public class CmsSitemapHoverbarHandler {
     }
 
     /**
-     * Triggered when the user click on the new hover button.<p>
+     * Triggered when the user clicks on the new hover button.<p>
      * 
      * @param sitePath the current sitemap entry's site path
      */
@@ -157,7 +157,17 @@ public class CmsSitemapHoverbarHandler {
     }
 
     /**
-     * Triggered when the user click on the sub-sitemap hover button.<p>
+     * Triggered when the user clicks on the parent sitemap hover button.<p>
+     * 
+     * @param sitePath the current sitemap entry's site path
+     */
+    public void onParent(final String sitePath) {
+
+        Window.Location.replace(CmsCoreProvider.get().link(CmsSitemapProvider.get().getParent()));
+    }
+
+    /**
+     * Triggered when the user clicks on the sub-sitemap hover button.<p>
      * 
      * @param sitePath the current sitemap entry's site path
      */
@@ -166,13 +176,16 @@ public class CmsSitemapHoverbarHandler {
         // TODO: subsitemap
     }
 
+    /**
+     * Waits until the data is available.<p>
+     * 
+     * @param command the command to execute
+     */
     private void executeWhenReady(final Command command) {
 
         // check if ready
-        CmsRpcAction<?> rpcAction = m_controller.getInitAction();
-        if (rpcAction != null) {
-            // not ready yet, show overlay
-            rpcAction.start(0);
+        CmsSitemapData data = m_controller.getEditData();
+        if (data == null) {
             Timer t = new Timer() {
 
                 /**
@@ -181,7 +194,7 @@ public class CmsSitemapHoverbarHandler {
                 @Override
                 public void run() {
 
-                    if (m_controller.getInitAction() != null) {
+                    if (m_controller.getEditData() == null) {
                         // still not ready
                         return;
                     }

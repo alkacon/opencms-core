@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/I_CmsSitemapProviderConstants.java,v $
- * Date   : $Date: 2010/04/19 06:39:10 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/26 13:41:36 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,7 @@ package org.opencms.ade.sitemap.shared;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  * 
@@ -59,4 +59,7 @@ public interface I_CmsSitemapProviderConstants {
 
     /** The current sitemap URI, ie. <code>/a/b/c.xml</code>. */
     String KEY_URI_SITEMAP = "sitemap";
+
+    /** The parent sitemap URI, ie. <code>/a/b/d.xml</code>. */
+    String KEY_URI_PARENT = "parent";
 }

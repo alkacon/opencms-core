@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/Messages.java,v $
- * Date   : $Date: 2010/04/21 14:29:20 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/04/26 13:39:53 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.client.i18n.CmsMessages;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 8.0.0
  */
@@ -57,6 +57,12 @@ public final class Messages {
     public static final String GUI_DIALOG_DELETE_TITLE_0 = "GUI_DIALOG_DELETE_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIALOG_NO_EDIT_TEXT_1 = "GUI_DIALOG_NO_EDIT_TEXT_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIALOG_NO_EDIT_TITLE_0 = "GUI_DIALOG_NO_EDIT_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITOR_TITLE_0 = "GUI_EDITOR_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
@@ -73,6 +79,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_HOVERBAR_NEW_0 = "GUI_HOVERBAR_NEW_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HOVERBAR_PARENT_0 = "GUI_HOVERBAR_PARENT_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_HOVERBAR_SUBSITEMAP_0 = "GUI_HOVERBAR_SUBSITEMAP_0";

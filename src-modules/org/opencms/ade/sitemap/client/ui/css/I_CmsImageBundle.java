@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/ui/css/Attic/I_CmsImageBundle.java,v $
- * Date   : $Date: 2010/04/21 07:39:53 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/26 13:39:53 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import com.google.gwt.resources.client.ImageResource;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -84,6 +84,13 @@ public interface I_CmsImageBundle extends ClientBundle {
          * @return the CSS class name
          */
         String hoverbarNew();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String hoverbarParent();
 
         /** 
          * Access method.<p>
@@ -197,6 +204,22 @@ public interface I_CmsImageBundle extends ClientBundle {
      */
     @Source("images/new_disabled.png")
     ImageResource hoverbarNewDisabled();
+
+    /** 
+     * Access method.<p>
+     * 
+     * @return an image resource
+     */
+    @Source("images/parent.png")
+    ImageResource hoverbarParent();
+
+    /** 
+     * Access method.<p>
+     * 
+     * @return an image resource
+     */
+    @Source("images/parent_disabled.png")
+    ImageResource hoverbarParentDisabled();
 
     /** 
      * Access method.<p>
