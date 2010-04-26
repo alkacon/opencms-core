@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsHTMLHoverPanel.java,v $
- * Date   : $Date: 2010/04/07 14:46:20 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/26 09:51:29 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import com.google.gwt.user.client.ui.HTMLPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -59,10 +59,7 @@ public class CmsHTMLHoverPanel extends HTMLPanel implements HasMouseOutHandlers,
     public CmsHTMLHoverPanel(String html) {
 
         super(html);
-        CmsHoverHandler handler = new CmsHoverHandler(this);
-        addMouseOutHandler(handler);
-        addMouseOverHandler(handler);
-
+        setHandler();
     }
 
     /**
@@ -74,9 +71,7 @@ public class CmsHTMLHoverPanel extends HTMLPanel implements HasMouseOutHandlers,
     public CmsHTMLHoverPanel(String tag, String html) {
 
         super(tag, html);
-        CmsHoverHandler handler = new CmsHoverHandler(this);
-        addMouseOutHandler(handler);
-        addMouseOverHandler(handler);
+        setHandler();
     }
 
     /**
@@ -94,5 +89,15 @@ public class CmsHTMLHoverPanel extends HTMLPanel implements HasMouseOutHandlers,
     public HandlerRegistration addMouseOverHandler(MouseOverHandler handler) {
 
         return addDomHandler(handler, MouseOverEvent.getType());
+    }
+
+    /**
+     * Sets the hover handler.<p>
+     */
+    private void setHandler() {
+
+        A_CmsHoverHandler handler = new CmsClassHoverHandler(getElement());
+        addMouseOutHandler(handler);
+        addMouseOverHandler(handler);
     }
 }

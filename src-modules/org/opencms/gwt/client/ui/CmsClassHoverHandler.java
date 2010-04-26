@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsHoverHandler.java,v $
- * Date   : $Date: 2010/04/07 14:46:20 $
- * Version: $Revision: 1.2 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsClassHoverHandler.java,v $
+ * Date   : $Date: 2010/04/26 09:51:29 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,12 +33,9 @@ package org.opencms.gwt.client.ui;
 
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.MouseOutEvent;
-import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
-import com.google.gwt.event.dom.client.MouseOverHandler;
-import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Event handler to toggle the {@link org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsStateCss#cmsHovering()} class on mouse out/over.<p>
@@ -46,61 +43,40 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Tobias Herrmann
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  */
-public class CmsHoverHandler implements MouseOutHandler, MouseOverHandler {
+public class CmsClassHoverHandler extends A_CmsHoverHandler {
 
-    /** The owner widget. */
-    protected Widget m_owner;
-
-    /** Timer to achieve the hover intent effect. */
-    protected Timer m_timer;
+    /** The owner element. */
+    protected Element m_owner;
 
     /**
      * Constructor.<p>
      * 
-     * @param owner the owner widget
+     * @param owner the owner element
      */
-    CmsHoverHandler(Widget owner) {
+    public CmsClassHoverHandler(Element owner) {
 
         m_owner = owner;
     }
 
     /**
-     * @see com.google.gwt.event.dom.client.MouseOutHandler#onMouseOut(com.google.gwt.event.dom.client.MouseOutEvent)
+     * @see org.opencms.gwt.client.ui.A_CmsHoverHandler#onHoverIn(com.google.gwt.event.dom.client.MouseOverEvent)
      */
-    public void onMouseOut(MouseOutEvent event) {
+    @Override
+    protected void onHoverIn(MouseOverEvent event) {
 
-        if (m_timer != null) {
-            m_timer.cancel();
-            m_timer = null;
-        } else {
-            m_owner.removeStyleName(I_CmsLayoutBundle.INSTANCE.stateCss().cmsHovering());
-        }
+        m_owner.addClassName(I_CmsLayoutBundle.INSTANCE.stateCss().cmsHovering());
     }
 
     /**
-     * @see com.google.gwt.event.dom.client.MouseOverHandler#onMouseOver(com.google.gwt.event.dom.client.MouseOverEvent)
+     * @see org.opencms.gwt.client.ui.A_CmsHoverHandler#onHoverOut(com.google.gwt.event.dom.client.MouseOutEvent)
      */
-    public void onMouseOver(MouseOverEvent event) {
+    @Override
+    protected void onHoverOut(MouseOutEvent event) {
 
-        if (m_timer != null) {
-            return;
-        }
-        m_timer = new Timer() {
-
-            /**
-             * @see com.google.gwt.user.client.Timer#run()
-             */
-            @Override
-            public void run() {
-
-                m_owner.addStyleName(I_CmsLayoutBundle.INSTANCE.stateCss().cmsHovering());
-                m_timer = null;
-            }
-        };
-        m_timer.schedule(200);
+        m_owner.removeClassName(I_CmsLayoutBundle.INSTANCE.stateCss().cmsHovering());
     }
 }
