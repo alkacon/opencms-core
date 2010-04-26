@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishDialog.java,v $
- * Date   : $Date: 2010/04/23 09:08:13 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/04/26 10:02:40 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  * 
@@ -287,13 +287,11 @@ public class CmsPublishDialog extends CmsPopupDialog {
      */
     public void onReceiveStatus(List<CmsPublishResource> brokenResources) {
 
-        if (m_panel.getVisibleWidget() == PANEL_SELECT) {
-            if (brokenResources.isEmpty()) {
-                hide();
-            } else {
-                m_brokenLinksPanel.setEntries(brokenResources);
-                setPanel(PANEL_BROKEN_LINKS);
-            }
+        if (brokenResources.isEmpty()) {
+            hide();
+        } else {
+            m_brokenLinksPanel.setEntries(brokenResources);
+            setPanel(PANEL_BROKEN_LINKS);
         }
     }
 

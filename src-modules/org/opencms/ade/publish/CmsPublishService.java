@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/Attic/CmsPublishService.java,v $
- * Date   : $Date: 2010/04/22 14:32:12 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/04/26 10:02:40 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import java.util.List;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  * 
@@ -137,7 +137,7 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
             CmsObject cms = getCmsObject();
             CmsPublish pub = new CmsPublish(cms, getCachedOptions());
             List<CmsResource> publishResources = idsToResources(cms, toPublish);
-            brokenLinkBeans = pub.getBrokenResources(publishResources);
+            brokenLinkBeans = force ? new ArrayList<CmsPublishResource>() : pub.getBrokenResources(publishResources);
             if (brokenLinkBeans.size() == 0) {
                 pub.publishResources(publishResources);
                 pub.removeResourcesFromPublishList(toRemove);
