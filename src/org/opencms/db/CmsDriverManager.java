@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2010/04/20 13:44:57 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2010/04/26 07:10:08 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -2951,7 +2951,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                         dbc,
                         currentResource.getStructureId(),
                         CmsLogEntryType.RESOURCE_DELETED,
-                        new String[] {currentResource.getRootPath()}), false);
+                        new String[] {currentResource.getRootPath()}), true);
                 }
             }
         }
@@ -4979,7 +4979,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     /**
      * Adds the given log entry to the current user's log.<p>
      * 
-     * This opration works only on memory, to get the log entries actually 
+     * This operation works only on memory, to get the log entries actually 
      * written to DB you have to call the {@link #updateLog(CmsDbContext)} method.<p>
      * 
      * @param dbc the current database context
@@ -9483,16 +9483,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
-     * Returns the history driver.<p>
-     * 
-     * @return the history driver
-     */
-    private I_CmsHistoryDriver getHistoryDriver() {
-
-        return m_historyDriver;
-    }
-
-    /**
      * Returns the project driver.<p>
      *
      * @return the project driver
@@ -9591,16 +9581,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
     private I_CmsUserDriver getUserDriver() {
 
         return m_userDriver;
-    }
-
-    /**
-     * Returns the VFS driver.<p>
-     * 
-     * @return the VFS driver
-     */
-    private I_CmsVfsDriver getVfsDriver() {
-
-        return m_vfsDriver;
     }
 
     /**
