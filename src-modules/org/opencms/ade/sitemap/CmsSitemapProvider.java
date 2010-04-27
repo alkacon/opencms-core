@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsSitemapProvider.java,v $
- * Date   : $Date: 2010/04/26 13:39:53 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/04/27 12:43:24 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 8.0.0
  * 
@@ -128,9 +128,12 @@ public final class CmsSitemapProvider implements I_CmsSitemapProviderConstants, 
             keys.put(KEY_URI_SITEMAP, sitemapUri);
             keys.put(KEY_TYPE_CNTPAGE, OpenCms.getResourceManager().getResourceType(
                 CmsResourceTypeXmlContainerPage.getStaticTypeName()).getTypeId());
-            keys.put(KEY_URI_PARENT, cms.getSitePath(OpenCms.getSitemapManager().getParentSitemap(
+            CmsResource parentSitemap = OpenCms.getSitemapManager().getParentSitemap(
                 cms,
-                CmsHistoryResourceHandler.getResourceWithHistory(cms, sitemapUri))));
+                CmsHistoryResourceHandler.getResourceWithHistory(cms, sitemapUri));
+            if (parentSitemap != null) {
+                keys.put(KEY_URI_PARENT, cms.getSitePath(parentSitemap));
+            }
         } catch (Throwable e) {
             LOG.error(e.getLocalizedMessage(), e);
             try {
