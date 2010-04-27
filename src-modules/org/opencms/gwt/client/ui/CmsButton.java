@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsButton.java,v $
- * Date   : $Date: 2010/04/15 13:53:28 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/04/27 06:46:45 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,11 +45,13 @@ import com.google.gwt.user.client.ui.PushButton;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
 public class CmsButton extends PushButton {
+
+    private String m_title;
 
     /**
      * The constructor.<p>
@@ -58,6 +60,25 @@ public class CmsButton extends PushButton {
 
         super();
         setStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsState());
+    }
+
+    /**
+     * Disables the button and changes the button title attribute to the disabled reason.<p>
+     *   
+     * @param disabledReason the disabled reason
+     */
+    public void disable(String disabledReason) {
+
+        setEnabled(false);
+        super.setTitle(disabledReason);
+    }
+
+    /**
+     * Enables the button, switching the button title attribute from the disabled reason to the original title.<p>
+     */
+    public void enable() {
+
+        super.setTitle(m_title);
     }
 
     /**
@@ -109,6 +130,16 @@ public class CmsButton extends PushButton {
     }
 
     /**
+     * @see com.google.gwt.user.client.ui.UIObject#setTitle(java.lang.String)
+     */
+    @Override
+    public void setTitle(String title) {
+
+        super.setTitle(title);
+        m_title = title;
+    }
+
+    /**
      * Sets the button to an absolute position.<p>
      * 
      * @param top CSS top value
@@ -120,7 +151,6 @@ public class CmsButton extends PushButton {
         style.setPosition(Position.ABSOLUTE);
         style.setTop(top, Unit.PX);
         style.setLeft(left, Unit.PX);
-
     }
 
     /**
