@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/Attic/CmsPublish.java,v $
- * Date   : $Date: 2010/04/26 07:58:52 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/04/27 10:04:25 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -612,7 +612,7 @@ public class CmsPublish {
                     // get and iterate over all related resources
                     for (CmsRelation relation : m_cms.getRelationsForResource(
                         resource,
-                        CmsRelationFilter.TARGETS.filterStrong().filterIncludeChildren())) {
+                        CmsRelationFilter.TARGETS.filterStrong())) {
 
                         CmsResource target = null;
                         try {
@@ -669,7 +669,7 @@ public class CmsPublish {
             // get and iterate over all related resources
             for (CmsRelation relation : m_cms.getRelationsForResource(
                 resource,
-                CmsRelationFilter.TARGETS.filterStrong().filterIncludeChildren())) {
+                CmsRelationFilter.TARGETS.filterStrong())) {
 
                 CmsResource target = null;
                 try {
@@ -859,7 +859,7 @@ public class CmsPublish {
             resUtil.getFullPath(),
             resUtil.getTitle(),
             CmsWorkplace.getResourceUri(resUtil.getIconPathExplorer()),
-            "" + resUtil.getStateAbbreviation(),
+            resource.getState(),
             removable,
             info,
             related);

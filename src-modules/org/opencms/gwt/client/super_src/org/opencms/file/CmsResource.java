@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/super_src/org/opencms/file/Attic/CmsResource.java,v $
- * Date   : $Date: 2010/04/19 11:46:00 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/27 10:04:24 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.file;
 
+import org.opencms.db.CmsResourceState;
 import org.opencms.util.CmsStringUtil;
 
 /**
@@ -38,11 +39,36 @@ import org.opencms.util.CmsStringUtil;
  *
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0 
  */
 public class CmsResource {
+
+    /** Indicates if a resource has been changed in the offline version when compared to the online version. */
+    public static final CmsResourceState STATE_CHANGED = CmsResourceState.STATE_CHANGED;
+
+    /** Indicates if a resource has been deleted in the offline version when compared to the online version. */
+    public static final CmsResourceState STATE_DELETED = CmsResourceState.STATE_DELETED;
+
+    /**
+     * Special state value that indicates the current state must be kept on a resource,
+     * this value must never be written to the database.
+     */
+    public static final CmsResourceState STATE_KEEP = CmsResourceState.STATE_KEEP;
+
+    /** Indicates if a resource is new in the offline version when compared to the online version. */
+    public static final CmsResourceState STATE_NEW = CmsResourceState.STATE_NEW;
+
+    /** Indicates if a resource is unchanged in the offline version when compared to the online version. */
+    public static final CmsResourceState STATE_UNCHANGED = CmsResourceState.STATE_UNCHANGED;
+
+    /** 
+     * Prefix for temporary files in the VFS. 
+     * 
+     * @see #isTemporaryFileName(String)  
+     */
+    public static final String TEMP_FILE_PREFIX = "~";
 
     /**
      * Returns the folder path of the resource with the given name.<p>
@@ -182,13 +208,6 @@ public class CmsResource {
 
         return CmsStringUtil.isNotEmpty(resource) && (resource.charAt(resource.length() - 1) == '/');
     }
-
-    /** 
-     * Prefix for temporary files in the VFS. 
-     * 
-     * @see #isTemporaryFileName(String)  
-     */
-    public static final String TEMP_FILE_PREFIX = "~";
 
     /**
      * Returns <code>true</code> if the given resource path points to a temporary file name.<p>

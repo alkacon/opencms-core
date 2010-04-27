@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/shared/Attic/CmsPublishResource.java,v $
- * Date   : $Date: 2010/04/12 10:24:47 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/27 10:04:25 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.ade.publish.shared;
 
+import org.opencms.db.CmsResourceState;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
@@ -43,7 +44,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 7.6 
  */
@@ -68,7 +69,7 @@ public class CmsPublishResource implements IsSerializable {
     private boolean m_removable;
 
     /** The resource state.*/
-    private String m_state;
+    private CmsResourceState m_state;
 
     /** The resource title.*/
     private String m_title;
@@ -90,7 +91,7 @@ public class CmsPublishResource implements IsSerializable {
         String name,
         String title,
         String icon,
-        String state,
+        CmsResourceState state,
         boolean removable,
         CmsPublishResourceInfo info,
         List<CmsPublishResource> related) {
@@ -171,7 +172,7 @@ public class CmsPublishResource implements IsSerializable {
      *
      * @return the state
      */
-    public String getState() {
+    public CmsResourceState getState() {
 
         return m_state;
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishUtil.java,v $
- * Date   : $Date: 2010/04/26 15:08:18 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/04/27 10:04:25 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,7 @@ package org.opencms.ade.publish.client;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -60,11 +60,11 @@ public final class CmsPublishUtil {
      * 
      * @return the human-readable name of the code 
      */
-    public static String getStateName(String code) {
+    public static String getStateName(char code) {
 
         String result;
 
-        switch (code.charAt(0)) {
+        switch (code) {
             case 'N':
                 result = Messages.get().key(Messages.GUI_PUBLISH_RESOURCE_STATE_NEW_0);
                 break;
@@ -88,11 +88,11 @@ public final class CmsPublishUtil {
      * 
      * @return the style name for the resource's state
      */
-    public static String getStateStyle(String code) {
+    public static String getStateStyle(char code) {
 
         String result = CSS.noState();
 
-        switch (code.charAt(0)) {
+        switch (code) {
             case 'N':
                 result = CSS.stateNew();
                 break;

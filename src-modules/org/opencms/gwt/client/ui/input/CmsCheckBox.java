@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsCheckBox.java,v $
- * Date   : $Date: 2010/04/13 09:17:19 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/04/27 10:04:25 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,6 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ToggleButton;
 
 /**
  * This class represents a labelled checkbox which is not represented as an INPUT element in 
@@ -54,7 +53,7 @@ import com.google.gwt.user.client.ui.ToggleButton;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 8.0.0
  */
@@ -67,7 +66,7 @@ public class CmsCheckBox extends Composite implements HasClickHandlers, I_CmsFor
     private static final I_CmsInputImageBundle IMAGES = I_CmsInputImageBundle.INSTANCE;
 
     /** Toggle button which actually displays the checkbox. */
-    private final ToggleButton m_button = new ToggleButton();
+    private final CmsToggleButton m_button = new CmsToggleButton();
 
     /** The error display for this widget. */
     private final CmsErrorWidget m_error = new CmsErrorWidget();
@@ -127,6 +126,14 @@ public class CmsCheckBox extends Composite implements HasClickHandlers, I_CmsFor
     public HandlerRegistration addClickHandler(ClickHandler handler) {
 
         return m_button.addClickHandler(handler);
+    }
+
+    /**
+     * Simulates a click by the user programatically.<p>
+     */
+    public void click() {
+
+        m_button.onClick();
     }
 
     /**
