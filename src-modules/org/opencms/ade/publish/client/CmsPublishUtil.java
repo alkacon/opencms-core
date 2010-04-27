@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishUtil.java,v $
- * Date   : $Date: 2010/04/27 10:04:25 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/04/27 13:13:31 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,12 +31,14 @@
 
 package org.opencms.ade.publish.client;
 
+import org.opencms.db.CmsResourceState;
+
 /**
  * Utility class for the publish dialog.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -56,56 +58,38 @@ public final class CmsPublishUtil {
     /**
      * Returns the human-readable name of a resource state.<p>
      * 
-     * @param code the state code 
+     * @param state the resource state 
      * 
      * @return the human-readable name of the code 
      */
-    public static String getStateName(char code) {
+    public static String getStateName(CmsResourceState state) {
 
-        String result;
-
-        switch (code) {
-            case 'N':
-                result = Messages.get().key(Messages.GUI_PUBLISH_RESOURCE_STATE_NEW_0);
-                break;
-            case 'D':
-                result = Messages.get().key(Messages.GUI_PUBLISH_RESOURCE_STATE_DELETED_0);
-                break;
-            case 'C':
-                result = Messages.get().key(Messages.GUI_PUBLISH_RESOURCE_STATE_CHANGED_0);
-                break;
-            default:
-                result = null;
-                break;
+        if (state.equals(CmsResourceState.STATE_NEW)) {
+            return Messages.get().key(Messages.GUI_PUBLISH_RESOURCE_STATE_NEW_0);
+        } else if (state.equals(CmsResourceState.STATE_DELETED)) {
+            return Messages.get().key(Messages.GUI_PUBLISH_RESOURCE_STATE_DELETED_0);
+        } else if (state.equals(CmsResourceState.STATE_CHANGED)) {
+            return Messages.get().key(Messages.GUI_PUBLISH_RESOURCE_STATE_CHANGED_0);
         }
-        return result;
+        return "";
     }
 
     /**
      * Returns the text style for a given resource state.<p>
      * 
-     * @param code the code of the resource state 
+     * @param state the resource state 
      * 
      * @return the style name for the resource's state
      */
-    public static String getStateStyle(char code) {
+    public static String getStateStyle(CmsResourceState state) {
 
-        String result = CSS.noState();
-
-        switch (code) {
-            case 'N':
-                result = CSS.stateNew();
-                break;
-            case 'D':
-                result = CSS.stateDeleted();
-                break;
-            case 'C':
-                result = CSS.stateChanged();
-                break;
-            default:
-                break;
+        if (state.equals(CmsResourceState.STATE_NEW)) {
+            return CSS.stateNew();
+        } else if (state.equals(CmsResourceState.STATE_DELETED)) {
+            return CSS.stateDeleted();
+        } else if (state.equals(CmsResourceState.STATE_CHANGED)) {
+            return CSS.stateChanged();
         }
-        return result;
+        return CSS.noState();
     }
-
 }
