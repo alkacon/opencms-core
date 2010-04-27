@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageEditor.java,v $
- * Date   : $Date: 2010/04/27 13:56:00 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/04/27 14:40:50 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.ade.containerpage.client;
 
 import org.opencms.ade.containerpage.client.draganddrop.CmsContainerDragHandler;
+import org.opencms.ade.containerpage.client.ui.CmsContentEditorDialog;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarClipboardMenu;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarEditButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarGalleryMenu;
@@ -65,7 +66,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -184,6 +185,7 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         CmsContainerpageController controller = new CmsContainerpageController();
         CmsContainerpageHandler containerpageHandler = new CmsContainerpageHandler(controller, this);
         CmsContainerDragHandler dragHandler = new CmsContainerDragHandler(controller, this);
+        CmsContentEditorDialog.init(containerpageHandler);
 
         ClickHandler clickHandler = new ClickHandler() {
 

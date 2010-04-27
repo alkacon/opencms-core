@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageHandler.java,v $
- * Date   : $Date: 2010/04/27 13:56:00 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/27 14:40:49 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -228,6 +228,16 @@ public class CmsContainerpageHandler {
         } else {
             CmsDebugLog.getInstance().printLine(element.getNoEditReason());
         }
+    }
+
+    /**
+     * Reloads the content for the given element and all related elements.<p>
+     * 
+     * @param elementId the element id
+     */
+    public void reloadElement(String elementId) {
+
+        m_controller.reloadElement(elementId);
     }
 
     /**

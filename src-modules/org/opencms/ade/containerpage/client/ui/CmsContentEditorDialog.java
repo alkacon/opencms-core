@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsContentEditorDialog.java,v $
- * Date   : $Date: 2010/04/27 13:56:00 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/04/27 14:40:50 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,7 @@
 
 package org.opencms.ade.containerpage.client.ui;
 
-import org.opencms.ade.containerpage.client.CmsContainerpageController;
+import org.opencms.ade.containerpage.client.CmsContainerpageHandler;
 import org.opencms.ade.containerpage.client.Messages;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.containerpage.client.util.CmsContainerpageProvider;
@@ -47,7 +47,7 @@ import com.google.gwt.dom.client.Style.Unit;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -69,15 +69,32 @@ public final class CmsContentEditorDialog {
     /** The currently edited element's site-path. */
     private String m_currentSitePath;
 
+    /** The container-page handler. */
+    private CmsContainerpageHandler m_handler;
+
     /** The popup instance. */
     private CmsPopup m_dialog;
 
     /**
      * Hiding constructor.<p>
+     * 
+     * @param handler the container-page handler
      */
-    private CmsContentEditorDialog() {
+    private CmsContentEditorDialog(CmsContainerpageHandler handler) {
 
-        // nothing to do
+        m_handler = handler;
+    }
+
+    /**
+     * Initializes the dialog.<p>
+     * 
+     * @param handler the container-page handler
+     */
+    public static void init(CmsContainerpageHandler handler) {
+
+        if (INSTANCE == null) {
+            INSTANCE = new CmsContentEditorDialog(handler);
+        }
     }
 
     /**
@@ -87,9 +104,6 @@ public final class CmsContentEditorDialog {
      */
     public static CmsContentEditorDialog get() {
 
-        if (INSTANCE == null) {
-            INSTANCE = new CmsContentEditorDialog();
-        }
         return INSTANCE;
     }
 
@@ -137,7 +151,7 @@ public final class CmsContentEditorDialog {
         if (m_dialog != null) {
             m_dialog.hide();
             m_dialog = null;
-            CmsContainerpageController.get().reloadElement(m_currentElementId);
+            m_handler.reloadElement(m_currentElementId);
             m_currentElementId = null;
             m_currentSitePath = null;
         }
