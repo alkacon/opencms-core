@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsElementUtil.java,v $
- * Date   : $Date: 2010/03/26 13:13:11 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/27 13:08:46 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,7 +72,7 @@ import javax.servlet.http.HttpServletResponse;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -147,13 +147,14 @@ public class CmsElementUtil {
             element.setSitePath(m_cms.getSitePath(elementRes));
             m_req.setAttribute(CmsADEManager.ATTR_CURRENT_ELEMENT, element);
 
+            String encoding = m_res.getCharacterEncoding();
             return (new String(loaderFacade.getLoader().dump(
                 m_cms,
                 loaderRes,
                 null,
                 m_cms.getRequestContext().getLocale(),
                 m_req,
-                m_res), m_res.getCharacterEncoding())).trim();
+                m_res), encoding)).trim();
         } finally {
             m_cms.getRequestContext().setUri(oldUri);
         }
