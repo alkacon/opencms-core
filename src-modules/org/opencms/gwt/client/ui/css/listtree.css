@@ -16,7 +16,7 @@
 }
 
 .listTreeItemHandler > img {
-	background-position: center;
+	background-position: center !important;
 }
 
 @if user.agent ie6 {
