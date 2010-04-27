@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsToolbar.java,v $
- * Date   : $Date: 2010/04/20 08:55:41 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/04/27 09:00:01 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,10 +47,9 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
- * 
  */
 public class CmsToolbar extends Composite {
 
@@ -64,13 +63,17 @@ public class CmsToolbar extends Composite {
     /** The ui-binder instance for this class. */
     private static I_CmsToolbarUiBinder uiBinder = GWT.create(I_CmsToolbarUiBinder.class);
 
-    /** DIV to hold left-side buttons associated with the tool-bar. */
+    /** Holds left-side buttons associated with the tool-bar. */
     @UiField
     protected FlowPanel m_buttonPanelLeft;
 
-    /** DIV to hold right-side buttons associated with the tool-bar. */
+    /** Holds right-side buttons associated with the tool-bar. */
     @UiField
     protected FlowPanel m_buttonPanelRight;
+
+    /** The main panel. */
+    @UiField
+    protected CmsSimplePanel m_panel;
 
     /**
      * Constructor.<p>
@@ -78,6 +81,7 @@ public class CmsToolbar extends Composite {
     public CmsToolbar() {
 
         initWidget(uiBinder.createAndBindUi(this));
+        m_panel.add(CmsNotification.get().getWidget());
     }
 
     /**
@@ -119,5 +123,4 @@ public class CmsToolbar extends Composite {
         }
         return all;
     }
-
 }

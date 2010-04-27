@@ -1,0 +1,6 @@
+.container { text-align: center; margin-top: 4px; }
+.message { font-weight: bold; padding: 2px 10px; word-spacing: nowrap; }
+.error { background-color: red; color: #021324; }
+.normal { background-color: #FFF1A8; color: #021324; }
+.warning { background-color: yellow; color: #021324; }
+

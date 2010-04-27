@@ -4,8 +4,8 @@
 	xmlns:cms="urn:import:org.opencms.gwt.client.ui">
 	<ui:with field="images" type="org.opencms.gwt.client.ui.css.I_CmsImageBundle" />
 	<ui:with field="resources" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
-	<g:HTMLPanel styleName="{resources.toolbarCss.toolbar}">
-		<div class="{resources.toolbarCss.toolbarBackground}">
+	<cms:CmsSimplePanel styleName="{resources.toolbarCss.toolbar}">
+		<cms:CmsSimplePanel ui:field="m_panel" styleName="{resources.toolbarCss.toolbarBackground}">
 			<g:HorizontalPanel styleName="{resources.toolbarCss.toolbarContent}" >
 				<g:cell horizontalAlignment="ALIGN_LEFT" verticalAlignment="ALIGN_MIDDLE">
 					<g:FlowPanel ui:field="m_buttonPanelLeft" styleName="{resources.toolbarCss.toolbarButtonsLeft}"></g:FlowPanel>
@@ -14,6 +14,6 @@
 					<g:FlowPanel ui:field="m_buttonPanelRight" styleName="{resources.toolbarCss.toolbarButtonsRight}"></g:FlowPanel>
 				</g:cell>
 			</g:HorizontalPanel>
-		</div>
-	</g:HTMLPanel>
+		</cms:CmsSimplePanel>
+	</cms:CmsSimplePanel>
 </ui:UiBinder> 

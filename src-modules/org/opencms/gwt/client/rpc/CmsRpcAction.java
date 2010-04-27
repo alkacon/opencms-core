@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/rpc/Attic/CmsRpcAction.java,v $
- * Date   : $Date: 2010/04/19 11:47:45 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/04/27 09:00:01 $
+ * Version: $Revision: 1.10 $
  * 
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,14 +33,13 @@ package org.opencms.gwt.client.rpc;
 
 import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.CmsConfirmDialog;
-import org.opencms.gwt.client.ui.CmsPopupDialog;
+import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
-import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.ui.CmsNotification.Type;
 import org.opencms.gwt.client.util.CmsClientStringUtil;
 
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Label;
 
 /**
  * Consistently manages RPCs errors and 'loading' state.<p>
@@ -49,14 +48,11 @@ import com.google.gwt.user.client.ui.Label;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 8.0
  */
 public abstract class CmsRpcAction<T> implements AsyncCallback<T> {
-
-    /** Nice overlay showing the 'loading' message. */
-    private CmsPopupDialog m_loadingDialog;
 
     /** The timer to control the display of the 'loading' state, if the action takes too long. */
     private Timer m_timer;
@@ -169,38 +165,7 @@ public abstract class CmsRpcAction<T> implements AsyncCallback<T> {
             m_timer.cancel();
             m_timer = null;
         }
-        hide();
-    }
-
-    /**
-     * Creates a new dialog with the given title and text.<p>
-     * 
-     * @param title the dialog title
-     * @param text the dialog text
-     * 
-     * @return a new dialog, already visible
-     */
-    protected CmsPopupDialog getDialog(String title, String text) {
-
-        CmsPopupDialog dialog = new CmsPopupDialog(title, new Label(text));
-        dialog.getContent().addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupMainContent());
-        dialog.setGlassEnabled(true);
-        dialog.setAutoHideEnabled(true);
-        dialog.setModal(true);
-        dialog.center();
-        return dialog;
-    }
-
-    /**
-     * Hides the 'loading message'.<p>
-     */
-    protected void hide() {
-
-        if ((m_loadingDialog == null) || !m_loadingDialog.isVisible()) {
-            return;
-        }
-        // remove nice overlay
-        m_loadingDialog.hide();
+        CmsNotification.get().hide();
     }
 
     /**
@@ -217,16 +182,6 @@ public abstract class CmsRpcAction<T> implements AsyncCallback<T> {
      */
     protected void show() {
 
-        if ((m_loadingDialog != null) && m_loadingDialog.isVisible()) {
-            return;
-        }
-        // show nice overlay
-        if (m_loadingDialog == null) {
-            m_loadingDialog = getDialog(Messages.get().key(Messages.GUI_LOADING_0), Messages.get().key(
-                Messages.GUI_PLEASE_WAIT_0));
-            m_loadingDialog.setAutoHideEnabled(false);
-        } else {
-            m_loadingDialog.show();
-        }
+        CmsNotification.get().send(Type.NORMAL, Messages.get().key(Messages.GUI_LOADING_0));
     }
 }
