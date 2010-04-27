@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsContainerpageService.java,v $
- * Date   : $Date: 2010/04/22 14:32:12 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/04/27 13:09:10 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -69,7 +68,7 @@ import java.util.Set;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
@@ -137,11 +136,10 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     /**
      * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#getFavoriteList(java.lang.String, java.util.Set)
      */
-    public LinkedHashMap<String, CmsContainerElement> getFavoriteList(
-        String containerpageUri,
-        Set<String> containerTypes) throws CmsRpcException {
+    public List<CmsContainerElement> getFavoriteList(String containerpageUri, Set<String> containerTypes)
+    throws CmsRpcException {
 
-        LinkedHashMap<String, CmsContainerElement> result = null;
+        List<CmsContainerElement> result = null;
         try {
             result = getListElementsData(
                 OpenCms.getADEManager().getFavoriteList(getCmsObject()),
@@ -156,10 +154,10 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     /**
      * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#getRecentList(java.lang.String, java.util.Set)
      */
-    public LinkedHashMap<String, CmsContainerElement> getRecentList(String containerpageUri, Set<String> containerTypes)
+    public List<CmsContainerElement> getRecentList(String containerpageUri, Set<String> containerTypes)
     throws CmsRpcException {
 
-        LinkedHashMap<String, CmsContainerElement> result = null;
+        List<CmsContainerElement> result = null;
         try {
             result = getListElementsData(getSessionCache().getRecentList(), containerpageUri, containerTypes);
         } catch (Throwable e) {
@@ -360,20 +358,19 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
      * 
      * @throws CmsException if something really bad happens
      */
-    private LinkedHashMap<String, CmsContainerElement> getListElementsData(
+    private List<CmsContainerElement> getListElementsData(
         List<CmsContainerElementBean> listElements,
         String containerpageUri,
         Set<String> containerTypes) throws CmsException {
 
         CmsObject cms = getCmsObject();
         CmsElementUtil elemUtil = new CmsElementUtil(cms, containerpageUri, getRequest(), getResponse());
-        LinkedHashMap<String, CmsContainerElement> result = new LinkedHashMap<String, CmsContainerElement>();
-
+        List<CmsContainerElement> result = new ArrayList<CmsContainerElement>();
         for (CmsContainerElementBean element : listElements) {
             // checking if resource exists
             if (cms.existsResource(element.getElementId(), CmsResourceFilter.ONLY_VISIBLE_NO_DELETED)) {
                 CmsContainerElement elementData = elemUtil.getElementData(element, containerTypes);
-                result.put(element.getClientId(), elementData);
+                result.add(elementData);
                 if (elementData.isSubContainer()) {
                     // this is a sub-container 
 
@@ -388,18 +385,12 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
                     // adding all sub-items to the elements data
                     for (CmsContainerElementBean subElement : subContainer.getElements()) {
-
-                        String subId = subElement.getClientId();
-
                         CmsContainerElement subItemData = elemUtil.getElementData(subElement, containerTypes);
-
-                        result.put(subId, subItemData);
-
+                        result.add(subItemData);
                     }
                 }
             }
         }
-
         return result;
     }
 

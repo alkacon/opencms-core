@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsContainerpageProvider.java,v $
- * Date   : $Date: 2010/04/21 15:43:31 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/04/27 13:09:10 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -119,6 +119,7 @@ public final class CmsContainerpageProvider implements I_CmsContainerpageProvide
         StringBuffer sb = new StringBuffer();
         sb.append(org.opencms.gwt.CmsCoreProvider.get().export(request));
         sb.append(org.opencms.ade.publish.CmsPublishProvider.get().export(request));
+        sb.append(org.opencms.ade.galleries.CmsGalleryProvider.get().export(request));
         sb.append(export(request));
         return sb.toString();
     }
@@ -128,8 +129,6 @@ public final class CmsContainerpageProvider implements I_CmsContainerpageProvide
      */
     public JSONObject getData(HttpServletRequest request) {
 
-        //request.getSession().setAttribute(, gallerySearchObject)
-        //request.getSession().getAttribute(, )
         CmsObject cms = CmsFlexController.getCmsObject(request);
         JSONObject keys = new JSONObject();
         try {
