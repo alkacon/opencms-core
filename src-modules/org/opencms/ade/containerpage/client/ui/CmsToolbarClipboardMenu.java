@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsToolbarClipboardMenu.java,v $
- * Date   : $Date: 2010/04/21 15:05:19 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/04/27 13:56:00 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,35 +31,33 @@
 
 package org.opencms.ade.containerpage.client.ui;
 
-import org.opencms.ade.containerpage.client.CmsContainerpageDataProvider;
+import org.opencms.ade.containerpage.client.CmsContainerpageHandler;
 import org.opencms.ade.containerpage.client.Messages;
-import org.opencms.ade.containerpage.client.draganddrop.CmsContainerDragHandler;
-import org.opencms.ade.containerpage.client.draganddrop.CmsDragContainerElement;
 import org.opencms.ade.containerpage.client.draganddrop.CmsDragMenuElement;
 import org.opencms.ade.containerpage.client.draganddrop.CmsDragTargetMenu;
+import org.opencms.ade.containerpage.client.draganddrop.CmsMenuDragHandler;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
-import org.opencms.ade.containerpage.shared.CmsContainerElement;
-import org.opencms.gwt.client.ui.CmsDraggableListItemWidget;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
 import org.opencms.gwt.client.ui.CmsToolbarButton;
-import org.opencms.gwt.shared.CmsListInfoBean;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * The clip-board tool-bar menu.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
 public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu {
-
-    /** The button name. */
-    public static final String BUTTON_NAME = "clipboard";
 
     /** The main content widget. */
     private FlowPanel m_content;
@@ -70,6 +68,9 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu {
     /** The favorite list widget. */
     private CmsFavoriteTab m_favorites;
 
+    /** The menu drag handler. */
+    private CmsMenuDragHandler m_menuDragHandler;
+
     /** The recent list widget. */
     private CmsRecentTab m_recent;
 
@@ -78,21 +79,23 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu {
 
     /**
      * Constructor.<p>
+     * 
+     * @param handler the container-page handler
      */
-    public CmsToolbarClipboardMenu() {
+    public CmsToolbarClipboardMenu(CmsContainerpageHandler handler) {
 
-        super(CmsToolbarButton.ButtonData.CLIPBOARD, BUTTON_NAME, true);
+        super(CmsToolbarButton.ButtonData.CLIPBOARD, handler);
 
         m_content = new FlowPanel();
         m_content.setStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().menuContent());
         m_tabs = new CmsTabbedPanel();
-        m_favorites = new CmsFavoriteTab();
+        m_favorites = new CmsFavoriteTab(this);
         m_recent = new CmsRecentTab();
 
-        m_tabs.add(m_favorites, Messages.get().key(Messages.FAVORITE_TAB_TITLE_0));
-        m_tabs.add(m_recent, Messages.get().key(Messages.RECENT_TAB_TITLE_0));
+        m_tabs.add(m_favorites, Messages.get().key(Messages.GUI_TAB_FAVORITES_TITLE_0));
+        m_tabs.add(m_recent, Messages.get().key(Messages.GUI_TAB_RECENT_TITLE_0));
         SimplePanel tabsContainer = new SimplePanel();
-        tabsContainer.addStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().clipboardTabs());
+        tabsContainer.addStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().menuTabContainer());
         tabsContainer.add(m_tabs);
         m_content.add(tabsContainer);
 
@@ -100,6 +103,7 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu {
         m_dropzone.setStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().clipboardDropzone());
 
         m_content.add(m_dropzone);
+        m_menuDragHandler = new CmsMenuDragHandler();
 
         setMenuWidget(m_content);
     }
@@ -107,28 +111,20 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu {
     /**
      * Adds an element to the favorite list widget.<p>
      * 
-     * @param element the element data
+     * @param listItem the item widget
      */
-    public void addToFavorites(CmsContainerElement element) {
+    public void addToFavorites(CmsDragMenuElement listItem) {
 
-        CmsDragMenuElement listItem = new CmsDragMenuElement(element);
-        CmsContainerDragHandler.get().registerMouseHandler(listItem);
         m_favorites.addListItem(listItem);
     }
 
     /**
      * Adds an element to the recent list widget.<p>
      * 
-     * @param element the element data
+     * @param listItem the item widget
      */
-    public void addToRecent(CmsContainerElement element) {
+    public void addToRecent(CmsDragMenuElement listItem) {
 
-        CmsDraggableListItemWidget listItem = new CmsDraggableListItemWidget(new CmsListInfoBean(
-            element.getTitle(),
-            element.getFile(),
-            null), true);
-        listItem.setClientId(element.getClientId());
-        CmsContainerDragHandler.get().registerMouseHandler(listItem);
         m_recent.addListItem(listItem);
     }
 
@@ -149,6 +145,23 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu {
     }
 
     /**
+     * Enables the favorite list editing.<p>
+     */
+    public void enableFavoritesEdit() {
+
+        Iterator<Widget> it = m_favorites.iterator();
+        while (it.hasNext()) {
+            CmsDragMenuElement element = (CmsDragMenuElement)it.next();
+            element.showDeleteButton();
+
+            // disabling the container-page drag and enabling the menu drag
+            element.removeAllMouseHandlers();
+            element.setDragParent(m_favorites.getListTarget());
+            m_menuDragHandler.registerMouseHandler(element);
+        }
+    }
+
+    /**
      * Returns the tool-bar drop-zone.<p>
      *
      * @return the drop-zone
@@ -156,15 +169,6 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu {
     public CmsDragTargetMenu getDropzone() {
 
         return m_dropzone;
-    }
-
-    /**
-     * @see org.opencms.ade.containerpage.client.ui.I_CmsContainerpageToolbarButton#hasPermissions(org.opencms.ade.containerpage.client.draganddrop.CmsDragContainerElement)
-     */
-    public boolean hasPermissions(CmsDragContainerElement element) {
-
-        // no element option available
-        return false;
     }
 
     /**
@@ -177,30 +181,47 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu {
     }
 
     /**
-     * @see org.opencms.ade.containerpage.client.ui.I_CmsContainerpageToolbarButton#init()
-     */
-    public void init() {
-
-        // nothing to do here
-
-    }
-
-    /**
-     * @see org.opencms.ade.containerpage.client.ui.I_CmsContainerpageToolbarButton#onToolbarActivate()
+     * @see org.opencms.ade.containerpage.client.ui.I_CmsToolbarButton#onToolbarActivate()
      */
     public void onToolbarActivate() {
 
-        CmsContainerpageDataProvider.get().loadFavorites();
-        CmsContainerpageDataProvider.get().loadRecent();
+        getHandler().loadFavorites();
+        getHandler().loadRecent();
     }
 
     /**
-     * @see org.opencms.ade.containerpage.client.ui.I_CmsContainerpageToolbarButton#onToolbarDeactivate()
+     * @see org.opencms.ade.containerpage.client.ui.I_CmsToolbarButton#onToolbarDeactivate()
      */
     public void onToolbarDeactivate() {
 
         // nothing to do here
+    }
 
+    /**
+     * Reloads the favorite list.<p>
+     */
+    public void reloadFavorites() {
+
+        getHandler().loadFavorites();
+    }
+
+    /**
+     * Saves the favorite list.<p>
+     */
+    public void saveFavorites() {
+
+        List<String> clientIds = new ArrayList<String>();
+        Iterator<Widget> it = m_favorites.iterator();
+        while (it.hasNext()) {
+            CmsDragMenuElement element = (CmsDragMenuElement)it.next();
+            element.hideDeleteButton();
+            clientIds.add(element.getClientId());
+
+            // disabling the menu drag and re-enabling the container-page drag
+            element.removeAllMouseHandlers();
+            getHandler().enableDragHandler(element);
+        }
+        getHandler().saveFavoriteList(clientIds);
     }
 
     /**

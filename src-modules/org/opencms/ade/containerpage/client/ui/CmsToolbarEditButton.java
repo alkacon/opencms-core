@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsToolbarEditButton.java,v $
- * Date   : $Date: 2010/04/19 11:47:45 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/04/27 13:56:00 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,9 +31,9 @@
 
 package org.opencms.ade.containerpage.client.ui;
 
+import org.opencms.ade.containerpage.client.CmsContainerpageHandler;
 import org.opencms.ade.containerpage.client.draganddrop.CmsDragContainerElement;
 import org.opencms.gwt.client.ui.CmsToolbarButton;
-import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.util.CmsStringUtil;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -43,78 +43,40 @@ import com.google.gwt.event.dom.client.ClickEvent;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
-public class CmsToolbarEditButton extends A_CmsContainerpageToolbarButton {
+public class CmsToolbarEditButton extends A_CmsToolbarOptionButton {
 
     /**
      * Constructor.<p>
+     * 
+     * @param handler the container-page handler
      */
-    public CmsToolbarEditButton() {
+    public CmsToolbarEditButton(CmsContainerpageHandler handler) {
 
-        super(CmsToolbarButton.ButtonData.EDIT, "edit", true, true);
+        super(CmsToolbarButton.ButtonData.EDIT, handler);
     }
 
     /**
-     * @see org.opencms.ade.containerpage.client.ui.I_CmsContainerpageToolbarButton#hasPermissions(org.opencms.ade.containerpage.client.draganddrop.CmsDragContainerElement)
+     * @see org.opencms.ade.containerpage.client.ui.A_CmsToolbarOptionButton#hasPermissions(org.opencms.ade.containerpage.client.draganddrop.CmsDragContainerElement)
      */
+    @Override
     public boolean hasPermissions(CmsDragContainerElement element) {
 
         return CmsStringUtil.isEmptyOrWhitespaceOnly(element.getNoEditReason());
     }
 
     /**
-     * @see org.opencms.ade.containerpage.client.ui.I_CmsContainerpageToolbarButton#init()
+     * @see org.opencms.ade.containerpage.client.ui.A_CmsToolbarOptionButton#onElementClick(com.google.gwt.event.dom.client.ClickEvent, org.opencms.ade.containerpage.client.draganddrop.CmsDragContainerElement)
      */
-    public void init() {
-
-        // TODO: Auto-generated method stub
-
-    }
-
-    /**
-     * @see org.opencms.ade.containerpage.client.ui.I_CmsContainerpageToolbarButton#onElementClick(com.google.gwt.event.dom.client.ClickEvent, org.opencms.ade.containerpage.client.draganddrop.CmsDragContainerElement)
-     */
+    @Override
     public void onElementClick(ClickEvent event, CmsDragContainerElement element) {
 
-        openEditorForElement(element);
+        getHandler().openEditorForElement(element);
         event.stopPropagation();
         event.preventDefault();
 
     }
-
-    /**
-     * @see org.opencms.ade.containerpage.client.ui.I_CmsContainerpageToolbarButton#onToolbarActivate()
-     */
-    public void onToolbarActivate() {
-
-        showSingleElementOption(true);
-
-    }
-
-    /**
-     * @see org.opencms.ade.containerpage.client.ui.I_CmsContainerpageToolbarButton#onToolbarDeactivate()
-     */
-    public void onToolbarDeactivate() {
-
-        showSingleElementOption(false);
-
-    }
-
-    /**
-     * Opens the edit dialog for the specified element.<p>
-     * 
-     * @param element the element to edit
-     */
-    public void openEditorForElement(CmsDragContainerElement element) {
-
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(element.getNoEditReason())) {
-            CmsContentEditorDialog.get().openEditDialog(element.getClientId(), element.getSitePath());
-        } else {
-            CmsDebugLog.getInstance().printLine(element.getNoEditReason());
-        }
-    }
-
 }

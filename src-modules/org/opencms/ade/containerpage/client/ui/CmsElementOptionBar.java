@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsElementOptionBar.java,v $
- * Date   : $Date: 2010/04/12 13:29:06 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/27 13:56:00 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,11 +34,6 @@ package org.opencms.ade.containerpage.client.ui;
 import org.opencms.ade.containerpage.client.draganddrop.CmsDragContainerElement;
 import org.opencms.gwt.client.ui.CmsHoverPanel;
 
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.google.gwt.user.client.ui.Composite;
 
 /**
@@ -46,7 +41,7 @@ import com.google.gwt.user.client.ui.Composite;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -54,9 +49,6 @@ public class CmsElementOptionBar extends Composite {
 
     /** The CSS class to be assigned to each option-bar. */
     private static String CSS_CLASS = org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle.INSTANCE.containerpageCss().optionBar();
-
-    /** The option buttons. */
-    private Map<String, CmsElementOptionButton> m_options;
 
     /** The panel. */
     private CmsHoverPanel m_panel;
@@ -67,8 +59,6 @@ public class CmsElementOptionBar extends Composite {
     public CmsElementOptionBar() {
 
         m_panel = new CmsHoverPanel();
-
-        m_options = new LinkedHashMap<String, CmsElementOptionButton>();
         initWidget(m_panel);
         this.setStyleName(CSS_CLASS);
     }
@@ -83,20 +73,15 @@ public class CmsElementOptionBar extends Composite {
      */
     public static CmsElementOptionBar createOptionBarForElement(
         CmsDragContainerElement element,
-        List<I_CmsContainerpageToolbarButton> buttons) {
+        A_CmsToolbarOptionButton... buttons) {
 
         CmsElementOptionBar optionBar = new CmsElementOptionBar();
         if (buttons != null) {
-            Iterator<I_CmsContainerpageToolbarButton> it = buttons.iterator();
-            while (it.hasNext()) {
-                I_CmsContainerpageToolbarButton button = it.next();
-                if (button.hasElementFunctions()) {
-                    CmsElementOptionButton option = button.createOptionForElement(element);
-                    optionBar.add(option);
-                }
+            for (int i = 0; i < buttons.length; i++) {
+                CmsElementOptionButton option = buttons[i].createOptionForElement(element);
+                optionBar.add(option);
             }
         }
-
         return optionBar;
     }
 
@@ -107,91 +92,14 @@ public class CmsElementOptionBar extends Composite {
      */
     public void add(CmsElementOptionButton w) {
 
-        m_options.put(w.getToolbarButton().getName(), w);
         m_panel.add(w);
-
     }
 
     /**
-     * Clears the bar.<p>
-     */
+    * Clears the bar.<p>
+    */
     public void clear() {
 
-        m_options.clear();
         m_panel.clear();
-
     }
-
-    /**
-     * Returns the option button with the give index.<p>
-     * 
-     * @param index the index
-     * 
-     * @return the button
-     */
-    public CmsElementOptionButton getOption(int index) {
-
-        return (CmsElementOptionButton)m_panel.getWidget(index);
-    }
-
-    /**
-     * Returns the number of buttons contained.<p>
-     * 
-     * @return the button count
-     */
-    public int getOptionCount() {
-
-        return m_panel.getWidgetCount();
-    }
-
-    /**
-     * Gets the index of the specified button.<p>
-     * 
-     * @param child the button
-     * 
-     * @return the index
-     */
-    public int getOptionIndex(CmsElementOptionButton child) {
-
-        // TODO: Auto-generated method stub
-        return m_panel.getWidgetIndex(child);
-    }
-
-    /**
-     * Returns an button iterator.<p>
-     * 
-     * @return the iterator
-     */
-    public Iterator<CmsElementOptionButton> iterator() {
-
-        // TODO: Auto-generated method stub
-        return m_options.values().iterator();
-    }
-
-    /**
-     * Removes the given button from the panel.<p>
-     * 
-     * @param w the button to remove
-     * 
-     * @return true if the button was present
-     */
-    public boolean remove(CmsElementOptionButton w) {
-
-        m_options.remove(w.getToolbarButton().getName());
-        return m_panel.remove(w);
-    }
-
-    /**
-     * Removes the button with the given index.<p>
-     * 
-     * @param index the index of the button to remove
-     * 
-     * @return false if there was no button with the given index
-     */
-    public boolean remove(int index) {
-
-        m_options.remove(((CmsElementOptionButton)m_panel.getWidget(index)).getToolbarButton().getName());
-        return m_panel.remove(index);
-    }
-
 }

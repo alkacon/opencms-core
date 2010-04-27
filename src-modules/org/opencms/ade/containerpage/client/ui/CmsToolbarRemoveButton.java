@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsToolbarRemoveButton.java,v $
- * Date   : $Date: 2010/04/13 14:28:27 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/04/27 13:56:00 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,7 @@
 
 package org.opencms.ade.containerpage.client.ui;
 
-import org.opencms.ade.containerpage.client.CmsContainerpageDataProvider;
+import org.opencms.ade.containerpage.client.CmsContainerpageHandler;
 import org.opencms.ade.containerpage.client.draganddrop.CmsDragContainerElement;
 import org.opencms.gwt.client.ui.CmsToolbarButton;
 
@@ -42,23 +42,26 @@ import com.google.gwt.event.dom.client.ClickEvent;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
-public class CmsToolbarRemoveButton extends A_CmsContainerpageToolbarButton {
+public class CmsToolbarRemoveButton extends A_CmsToolbarOptionButton {
 
     /**
      * Constructor.<p>
+     * 
+     * @param handler the container-page handler
      */
-    public CmsToolbarRemoveButton() {
+    public CmsToolbarRemoveButton(CmsContainerpageHandler handler) {
 
-        super(CmsToolbarButton.ButtonData.REMOVE, "remove", true, true);
+        super(CmsToolbarButton.ButtonData.REMOVE, handler);
     }
 
     /**
-     * @see org.opencms.ade.containerpage.client.ui.I_CmsContainerpageToolbarButton#hasPermissions(org.opencms.ade.containerpage.client.draganddrop.CmsDragContainerElement)
+     * @see org.opencms.ade.containerpage.client.ui.A_CmsToolbarOptionButton#hasPermissions(org.opencms.ade.containerpage.client.draganddrop.CmsDragContainerElement)
      */
+    @Override
     public boolean hasPermissions(CmsDragContainerElement element) {
 
         // TODO: get permissions from element
@@ -66,39 +69,11 @@ public class CmsToolbarRemoveButton extends A_CmsContainerpageToolbarButton {
     }
 
     /**
-     * @see org.opencms.ade.containerpage.client.ui.I_CmsContainerpageToolbarButton#init()
+     * @see org.opencms.ade.containerpage.client.ui.A_CmsToolbarOptionButton#onElementClick(com.google.gwt.event.dom.client.ClickEvent, org.opencms.ade.containerpage.client.draganddrop.CmsDragContainerElement)
      */
-    public void init() {
-
-        // do nothing
-
-    }
-
-    /**
-     * @see org.opencms.ade.containerpage.client.ui.I_CmsContainerpageToolbarButton#onElementClick(com.google.gwt.event.dom.client.ClickEvent, org.opencms.ade.containerpage.client.draganddrop.CmsDragContainerElement)
-     */
+    @Override
     public void onElementClick(ClickEvent event, CmsDragContainerElement element) {
 
-        CmsContainerpageDataProvider.get().removeElement(element);
-
+        getHandler().removeElement(element);
     }
-
-    /**
-     * @see org.opencms.ade.containerpage.client.ui.I_CmsContainerpageToolbarButton#onToolbarActivate()
-     */
-    public void onToolbarActivate() {
-
-        showSingleElementOption(true);
-
-    }
-
-    /**
-     * @see org.opencms.ade.containerpage.client.ui.I_CmsContainerpageToolbarButton#onToolbarDeactivate()
-     */
-    public void onToolbarDeactivate() {
-
-        showSingleElementOption(false);
-
-    }
-
 }

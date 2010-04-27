@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsElementOptionButton.java,v $
- * Date   : $Date: 2010/04/06 09:49:44 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/27 13:56:00 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.gwt.client.ui.CmsImageButton;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -49,7 +49,7 @@ public class CmsElementOptionButton extends CmsImageButton {
     private CmsDragContainerElement m_dragElement;
 
     /** The associated tool-bar button. */
-    private I_CmsContainerpageToolbarButton m_toolbarButton;
+    private A_CmsToolbarOptionButton m_toolbarButton;
 
     /**
      * Constructor.<p>
@@ -57,7 +57,7 @@ public class CmsElementOptionButton extends CmsImageButton {
      * @param toolbarButton the tool-bar button associated with this button, providing all necessary information
      * @param element the element to create this button for
      */
-    public CmsElementOptionButton(I_CmsContainerpageToolbarButton toolbarButton, CmsDragContainerElement element) {
+    public CmsElementOptionButton(A_CmsToolbarOptionButton toolbarButton, CmsDragContainerElement element) {
 
         super(toolbarButton.getIconClass(), false);
         this.setTitle(toolbarButton.getTitle());
@@ -81,7 +81,7 @@ public class CmsElementOptionButton extends CmsImageButton {
      * 
      * @return the associated tool-bar button
      */
-    public I_CmsContainerpageToolbarButton getToolbarButton() {
+    public A_CmsToolbarOptionButton getToolbarButton() {
 
         return m_toolbarButton;
     }

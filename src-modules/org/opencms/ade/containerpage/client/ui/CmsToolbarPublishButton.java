@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsToolbarPublishButton.java,v $
- * Date   : $Date: 2010/04/14 07:37:45 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/04/27 13:56:00 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,90 +31,47 @@
 
 package org.opencms.ade.containerpage.client.ui;
 
-import org.opencms.ade.containerpage.client.draganddrop.CmsDragContainerElement;
-import org.opencms.ade.publish.client.CmsPublishDialog;
+import org.opencms.ade.containerpage.client.CmsContainerpageHandler;
 import org.opencms.gwt.client.ui.CmsToolbarButton;
 import org.opencms.gwt.client.util.CmsDomUtil;
-
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.logical.shared.CloseEvent;
-import com.google.gwt.event.logical.shared.CloseHandler;
-import com.google.gwt.user.client.ui.PopupPanel;
 
 /**
  * The publish button holding all publish related methods.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
-public class CmsToolbarPublishButton extends A_CmsContainerpageToolbarButton {
+public class CmsToolbarPublishButton extends A_CmsToolbarButton {
 
     /**
      * Constructor.<p>
+     * 
+     * @param handler the container-page handler
      */
-    public CmsToolbarPublishButton() {
+    public CmsToolbarPublishButton(CmsContainerpageHandler handler) {
 
-        super(CmsToolbarButton.ButtonData.PUBLISH, "publish", false, true);
+        super(CmsToolbarButton.ButtonData.PUBLISH, handler);
     }
 
     /**
-     * @see org.opencms.ade.containerpage.client.ui.I_CmsContainerpageToolbarButton#hasPermissions(org.opencms.ade.containerpage.client.draganddrop.CmsDragContainerElement)
-     */
-    public boolean hasPermissions(CmsDragContainerElement element) {
-
-        // TODO: Auto-generated method stub
-        return false;
-    }
-
-    /**
-     * @see org.opencms.ade.containerpage.client.ui.I_CmsContainerpageToolbarButton#init()
-     */
-    public void init() {
-
-        // TODO: Auto-generated method stub
-
-    }
-
-    /**
-     * @see org.opencms.ade.containerpage.client.ui.I_CmsContainerpageToolbarButton#onElementClick(com.google.gwt.event.dom.client.ClickEvent, org.opencms.ade.containerpage.client.draganddrop.CmsDragContainerElement)
-     */
-    public void onElementClick(ClickEvent event, CmsDragContainerElement element) {
-
-        // TODO: Auto-generated method stub
-
-    }
-
-    /**
-     * @see org.opencms.ade.containerpage.client.ui.I_CmsContainerpageToolbarButton#onToolbarActivate()
+     * @see org.opencms.ade.containerpage.client.ui.I_CmsToolbarButton#onToolbarActivate()
      */
     public void onToolbarActivate() {
 
         // triggering a mouse-out event, as it won't be fired once the dialog has opened (the dialog will capture all events)
         CmsDomUtil.ensureMouseOut(getElement());
-        CmsPublishDialog.showPublishDialog(new CloseHandler<PopupPanel>() {
-
-            /**
-             * @see com.google.gwt.event.logical.shared.CloseHandler#onClose(com.google.gwt.event.logical.shared.CloseEvent)
-             */
-            public void onClose(CloseEvent<PopupPanel> event) {
-
-                setActive(false);
-
-            }
-        });
-
+        getHandler().showPublishDialog();
     }
 
     /**
-     * @see org.opencms.ade.containerpage.client.ui.I_CmsContainerpageToolbarButton#onToolbarDeactivate()
+     * @see org.opencms.ade.containerpage.client.ui.I_CmsToolbarButton#onToolbarDeactivate()
      */
     public void onToolbarDeactivate() {
 
-        // TODO: Auto-generated method stub
-
+        // nothing to do
     }
 
 }

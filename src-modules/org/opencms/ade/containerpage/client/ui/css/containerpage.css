@@ -8,14 +8,14 @@
 	padding: 0px;
 }
 
-.showDropzone .clipboardTabs{
+.showDropzone .menuTabContainer{
 	display: none;
 }
-.clipboardTabs{
-	height: 400px;
+.menuTabContainer{
+	height: 486px;
 }
 
-.clipboardTabs > div{
+.menuTabContainer > div{
 	border: none;	
 }
 

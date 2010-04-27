@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsToolbarSitemapButton.java,v $
- * Date   : $Date: 2010/04/21 14:13:46 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/27 13:56:00 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,77 +31,46 @@
 
 package org.opencms.ade.containerpage.client.ui;
 
-import org.opencms.ade.containerpage.client.draganddrop.CmsDragContainerElement;
-import org.opencms.ade.containerpage.client.util.CmsContainerpageProvider;
+import org.opencms.ade.containerpage.client.CmsContainerpageHandler;
 import org.opencms.gwt.client.ui.CmsToolbarButton;
-
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.user.client.Window;
+import org.opencms.gwt.client.util.CmsDomUtil;
 
 /**
  * The sitemap button holding all related methods.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
-public class CmsToolbarSitemapButton extends A_CmsContainerpageToolbarButton {
+public class CmsToolbarSitemapButton extends A_CmsToolbarButton {
 
     /**
      * Constructor.<p>
+     * 
+     * @param handler the container-page handler
      */
-    public CmsToolbarSitemapButton() {
+    public CmsToolbarSitemapButton(CmsContainerpageHandler handler) {
 
-        super(CmsToolbarButton.ButtonData.SITEMAP, "sitemap", false, false);
+        super(CmsToolbarButton.ButtonData.SITEMAP, handler);
     }
 
     /**
-     * @see org.opencms.ade.containerpage.client.ui.I_CmsContainerpageToolbarButton#hasPermissions(org.opencms.ade.containerpage.client.draganddrop.CmsDragContainerElement)
-     */
-    public boolean hasPermissions(CmsDragContainerElement element) {
-
-        // no element action available
-        return false;
-    }
-
-    /**
-     * @see org.opencms.ade.containerpage.client.ui.I_CmsContainerpageToolbarButton#init()
-     */
-    public void init() {
-
-        // nothing to do here
-
-    }
-
-    /**
-     * @see org.opencms.ade.containerpage.client.ui.I_CmsContainerpageToolbarButton#onElementClick(com.google.gwt.event.dom.client.ClickEvent, org.opencms.ade.containerpage.client.draganddrop.CmsDragContainerElement)
-     */
-    public void onElementClick(ClickEvent event, CmsDragContainerElement element) {
-
-        // no element action available
-
-    }
-
-    /**
-     * @see org.opencms.ade.containerpage.client.ui.I_CmsContainerpageToolbarButton#onToolbarActivate()
+     * @see org.opencms.ade.containerpage.client.ui.I_CmsToolbarButton#onToolbarActivate()
      */
     public void onToolbarActivate() {
 
-        // TODO: check whether page has changed
-
-        Window.Location.assign(CmsContainerpageProvider.get().getSitemapUri());
-
+        CmsDomUtil.ensureMouseOut(getElement());
+        getHandler().gototSitemap();
     }
 
     /**
-     * @see org.opencms.ade.containerpage.client.ui.I_CmsContainerpageToolbarButton#onToolbarDeactivate()
+     * @see org.opencms.ade.containerpage.client.ui.I_CmsToolbarButton#onToolbarDeactivate()
      */
     public void onToolbarDeactivate() {
 
         // nothing to do here
-
     }
 
 }

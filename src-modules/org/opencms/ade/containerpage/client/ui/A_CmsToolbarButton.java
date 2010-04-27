@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/A_CmsToolbarMenu.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/A_CmsToolbarButton.java,v $
  * Date   : $Date: 2010/04/27 13:56:00 $
- * Version: $Revision: 1.5 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,39 +32,44 @@
 package org.opencms.ade.containerpage.client.ui;
 
 import org.opencms.ade.containerpage.client.CmsContainerpageHandler;
-import org.opencms.gwt.client.ui.CmsMenuButton;
 import org.opencms.gwt.client.ui.CmsToolbarButton;
 
+import com.google.gwt.dom.client.Document;
+
 /**
- * Abstract button class implementing common methods of {@link org.opencms.ade.containerpage.client.ui.I_CmsToolbarButton} 
- * for all container-page tool-bar menu buttons.<p>
+ * Abstract button class implementing common methods of {@link org.opencms.ade.containerpage.client.ui.I_CmsToolbarButton} for container-page tool-bar buttons.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  */
-public abstract class A_CmsToolbarMenu extends CmsMenuButton implements I_CmsToolbarButton {
-
-    private CmsContainerpageHandler m_handler;
+public abstract class A_CmsToolbarButton extends CmsToolbarButton implements I_CmsToolbarButton {
 
     /** The CSS class responsible for displaying the proper icon. */
     private String m_iconClass;
 
+    private boolean m_isActive;
+
+    private CmsContainerpageHandler m_handler;
+
     /**
      * Constructor.<p>
      * 
-     * @param buttonData the tool-bar button data
+     * @param buttonData the button data to use
      * @param handler the container-page handler
      */
-    public A_CmsToolbarMenu(CmsToolbarButton.ButtonData buttonData, CmsContainerpageHandler handler) {
+    protected A_CmsToolbarButton(CmsToolbarButton.ButtonData buttonData, CmsContainerpageHandler handler) {
 
-        super(buttonData.getTitle(), buttonData.getIconClass());
+        super(buttonData);
         m_handler = handler;
-        setTitle(buttonData.getTitle());
         m_iconClass = buttonData.getIconClass();
     }
+
+    /**
+     * @see org.opencms.ade.containerpage.client.ui.I_CmsToolbarButton#createOptionForElement(org.opencms.ade.containerpage.client.draganddrop.CmsDragContainerElement)
+     */
 
     /**
      * @see org.opencms.ade.containerpage.client.ui.I_CmsToolbarButton#getIconClass()
@@ -79,7 +84,8 @@ public abstract class A_CmsToolbarMenu extends CmsMenuButton implements I_CmsToo
      */
     public boolean isActive() {
 
-        return isOpen();
+        return m_isActive;
+        //return isDown();
     }
 
     /**
@@ -92,11 +98,13 @@ public abstract class A_CmsToolbarMenu extends CmsMenuButton implements I_CmsToo
         if (!active) {
             m_handler.deactivateCurrentButton();
             m_handler.setActiveButton(this);
+            setDown(true);
             onToolbarActivate();
-            openMenu();
         } else {
             m_handler.deactivateCurrentButton();
+            m_handler.activateSelection();
         }
+
     }
 
     /**
@@ -104,13 +112,27 @@ public abstract class A_CmsToolbarMenu extends CmsMenuButton implements I_CmsToo
      */
     public void setActive(boolean active) {
 
+        m_isActive = active;
+        setDown(m_isActive);
+
         if (active) {
             onToolbarActivate();
-            openMenu();
-
         } else {
             onToolbarDeactivate();
-            closeMenu();
+        }
+    }
+
+    /**
+     * Toggle function. Shows of the element option buttons only the ones associated with this button.<p>
+     * 
+     * @param show <code>true</code> if to show the buttons
+     */
+    public void showSingleElementOption(boolean show) {
+
+        if (show) {
+            Document.get().getBody().addClassName(m_iconClass);
+        } else {
+            Document.get().getBody().removeClassName(m_iconClass);
         }
     }
 

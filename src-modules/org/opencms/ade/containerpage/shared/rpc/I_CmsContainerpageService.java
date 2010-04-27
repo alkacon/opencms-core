@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/shared/rpc/Attic/I_CmsContainerpageService.java,v $
- * Date   : $Date: 2010/04/22 14:32:12 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/04/27 13:56:00 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,6 @@ import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.gwt.CmsRpcException;
 
 import java.util.Collection;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -49,7 +48,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -102,7 +101,7 @@ public interface I_CmsContainerpageService extends RemoteService {
      * 
      * @throws CmsRpcException if something goes wrong processing the request
      */
-    LinkedHashMap<String, CmsContainerElement> getFavoriteList(String containerpageUri, Set<String> containerTypes)
+    List<CmsContainerElement> getFavoriteList(String containerpageUri, Set<String> containerTypes)
     throws CmsRpcException;
 
     /**
@@ -115,8 +114,7 @@ public interface I_CmsContainerpageService extends RemoteService {
      * 
      * @throws CmsRpcException if something goes wrong processing the request
      */
-    LinkedHashMap<String, CmsContainerElement> getRecentList(String containerpageUri, Set<String> containerTypes)
-    throws CmsRpcException;
+    List<CmsContainerElement> getRecentList(String containerpageUri, Set<String> containerTypes) throws CmsRpcException;
 
     /**
      * Saves the container-page.<p>

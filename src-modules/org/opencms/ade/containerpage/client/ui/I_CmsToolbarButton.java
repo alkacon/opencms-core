@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/I_CmsContainerpageToolbarButton.java,v $
- * Date   : $Date: 2010/04/06 09:49:44 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/I_CmsToolbarButton.java,v $
+ * Date   : $Date: 2010/04/27 13:56:00 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -31,9 +31,6 @@
 
 package org.opencms.ade.containerpage.client.ui;
 
-import org.opencms.ade.containerpage.client.draganddrop.CmsDragContainerElement;
-
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 
 /**
@@ -45,18 +42,7 @@ import com.google.gwt.event.dom.client.HasClickHandlers;
  * 
  * @since 8.0.0
  */
-public interface I_CmsContainerpageToolbarButton extends HasClickHandlers {
-
-    /**
-     * Creates an element options button associated with this button and assigns the click-handler.<p>
-     * 
-     * @param element the element to create the button for
-     * 
-     * @return the created button
-     * 
-     * @throws UnsupportedOperationException if the button has no element functions and therefore no element option button
-     */
-    CmsElementOptionButton createOptionForElement(CmsDragContainerElement element) throws UnsupportedOperationException;
+public interface I_CmsToolbarButton extends HasClickHandlers {
 
     /**
      * The icon CSS class of this button.<p>
@@ -66,40 +52,11 @@ public interface I_CmsContainerpageToolbarButton extends HasClickHandlers {
     String getIconClass();
 
     /**
-     * Returns the button name.<p>
-     * 
-     * @return the button name
-     */
-    String getName();
-
-    /**
-     * Returns the localised button title. Will show in tool-tip.<p> 
+     * Returns the localized button title. Will show in tool-tip.<p> 
      * 
      * @return the button title
      */
     String getTitle();
-
-    /**
-     * Returns if there are element functions (like edit, move, delete, etc) available for this button.<p>
-     * 
-     * @return <code>true</code> if there element functions
-     */
-    boolean hasElementFunctions();
-
-    /**
-     * Determines if the user has permissions to use the element function on the given element 
-     * (if there are permissions to edit, delete etc.).<p>. 
-     * 
-     * @param element the element to check
-     * 
-     * @return <code>true</code> if the user has permissions
-     */
-    boolean hasPermissions(CmsDragContainerElement element);
-
-    /**
-     * Initialises the button.<p>
-     */
-    void init();
 
     /**
      * Returns whether this button is active (pushed, not disabled).<p>
@@ -109,12 +66,9 @@ public interface I_CmsContainerpageToolbarButton extends HasClickHandlers {
     boolean isActive();
 
     /**
-     * Method is executed when the element option button is clicked.<p>
-     * 
-     * @param event the mouse event (stop propagation if appropriate)
-     * @param element the element the option button is associated to
+     * Executed when the tool-bar button is clicked.<p>
      */
-    void onElementClick(ClickEvent event, CmsDragContainerElement element);
+    void onToolbarClick();
 
     /**
      * Method executed when the button is activated.<p>
@@ -133,11 +87,4 @@ public interface I_CmsContainerpageToolbarButton extends HasClickHandlers {
      * @param active <code>true</code> if active
      */
     void setActive(boolean active);
-
-    /**
-     * Returns if the button should be added to the left or the right side of the tool-bar.<p>
-     * 
-     * @return <code>true</code> if to show left
-     */
-    boolean showLeft();
 }

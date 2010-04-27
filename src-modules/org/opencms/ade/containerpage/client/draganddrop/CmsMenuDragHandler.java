@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsMenuDragHandler.java,v $
- * Date   : $Date: 2010/04/21 14:13:45 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/27 13:56:00 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,15 +50,12 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
 @SuppressWarnings("unchecked")
 public class CmsMenuDragHandler extends A_CmsDragHandler<CmsDragMenuElement, CmsDragTargetMenu> {
-
-    /** The handler instance. */
-    private static CmsMenuDragHandler INSTANCE;
 
     /** The provisional drag parent. */
     private CmsDragTargetMenu m_provisionalParent;
@@ -66,22 +63,9 @@ public class CmsMenuDragHandler extends A_CmsDragHandler<CmsDragMenuElement, Cms
     /**
      * Constructor.<p>
      */
-    protected CmsMenuDragHandler() {
+    public CmsMenuDragHandler() {
 
         // nothing to do here
-    }
-
-    /**
-     * Returns the drag handler instance.<p>
-     * 
-     * @return the drag handler instance
-     */
-    public static CmsMenuDragHandler get() {
-
-        if (INSTANCE == null) {
-            INSTANCE = new CmsMenuDragHandler();
-        }
-        return INSTANCE;
     }
 
     /**

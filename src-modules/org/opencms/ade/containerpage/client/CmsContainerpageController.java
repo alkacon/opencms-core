@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageDataProvider.java,v $
- * Date   : $Date: 2010/04/21 14:13:45 $
- * Version: $Revision: 1.7 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageController.java,v $
+ * Date   : $Date: 2010/04/27 13:56:00 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,7 +33,8 @@ package org.opencms.ade.containerpage.client;
 
 import org.opencms.ade.containerpage.client.draganddrop.CmsDragContainerElement;
 import org.opencms.ade.containerpage.client.draganddrop.CmsDragTargetContainer;
-import org.opencms.ade.containerpage.client.ui.I_CmsContainerpageToolbarButton;
+import org.opencms.ade.containerpage.client.ui.CmsLeavePageDialog;
+import org.opencms.ade.containerpage.client.ui.I_CmsToolbarButton;
 import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService;
@@ -41,13 +42,14 @@ import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageServiceAsync;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.util.CmsDebugLog;
+import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -55,6 +57,16 @@ import java.util.Map.Entry;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JsArray;
+import com.google.gwt.dom.client.AnchorElement;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.EventTarget;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.Event.NativePreviewEvent;
+import com.google.gwt.user.client.Event.NativePreviewHandler;
+import com.google.gwt.user.client.Window.ClosingEvent;
+import com.google.gwt.user.client.Window.ClosingHandler;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -62,11 +74,11 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  */
-public final class CmsContainerpageDataProvider {
+public final class CmsContainerpageController {
 
     /**
      * A RPC action implementation used to request the data for container-page elements.<p>
@@ -113,7 +125,7 @@ public final class CmsContainerpageDataProvider {
                 m_callback.execute(result);
             } else {
                 getContainerpageService().getElementsData(
-                    CmsContainerpageDataProvider.getCurrentUri(),
+                    CmsContainerpageController.getCurrentUri(),
                     null,
                     m_clientIds,
                     m_containerTypes,
@@ -166,7 +178,7 @@ public final class CmsContainerpageDataProvider {
         public void execute() {
 
             getContainerpageService().getElementsData(
-                CmsContainerpageDataProvider.getCurrentUri(),
+                CmsContainerpageController.getCurrentUri(),
                 null,
                 m_clientIds,
                 m_containerTypes,
@@ -234,7 +246,7 @@ public final class CmsContainerpageDataProvider {
                 List<String> clientIds = new ArrayList<String>();
                 clientIds.add(m_clientId);
                 getContainerpageService().getElementsData(
-                    CmsContainerpageDataProvider.getCurrentUri(),
+                    CmsContainerpageController.getCurrentUri(),
                     null,
                     clientIds,
                     m_containerTypes,
@@ -259,7 +271,10 @@ public final class CmsContainerpageDataProvider {
     }
 
     /** Instance of the data provider. */
-    private static CmsContainerpageDataProvider INSTANCE;
+    private static CmsContainerpageController INSTANCE;
+
+    /** Closing handler registration. */
+    /*DEFAULT*/HandlerRegistration m_closingRegistration;
 
     /** The container types within this page. */
     /*DEFAULT*/Set<String> m_containerTypes;
@@ -279,26 +294,19 @@ public final class CmsContainerpageDataProvider {
     /** The container data. */
     private Map<String, CmsContainerJso> m_containers;
 
+    /** The container-page handler. */
+    // TODO: evaluate if it is necessary to keep this reference
+    private CmsContainerpageHandler m_handler;
+
     /** The drag targets within this page. */
     private Map<String, CmsDragTargetContainer> m_targetContainers;
 
     /**
-     * Hidden constructor.<p>
+     * Constructor.<p>
      */
-    private CmsContainerpageDataProvider(List<I_CmsContainerpageToolbarButton> toolbarButtons) {
+    public CmsContainerpageController() {
 
-        m_elements = new HashMap<String, CmsContainerElement>();
-        m_containerTypes = new HashSet<String>();
-        m_containers = new HashMap<String, CmsContainerJso>();
-        m_containerpageUtil = new CmsContainerpageUtil(toolbarButtons);
-
-        JsArray<CmsContainerJso> containers = CmsContainerJso.getContainers();
-        for (int i = 0; i < containers.length(); i++) {
-            CmsContainerJso container = containers.get(i);
-            m_containerTypes.add(container.getType());
-            m_containers.put(container.getName(), container);
-        }
-        m_targetContainers = m_containerpageUtil.consumeContainers(m_containers);
+        // nothing to do here
     }
 
     /**
@@ -306,7 +314,7 @@ public final class CmsContainerpageDataProvider {
      * 
      * @return the data provider
      */
-    public static CmsContainerpageDataProvider get() {
+    public static CmsContainerpageController get() {
 
         if (INSTANCE == null) {
             CmsDebugLog.getInstance().printLine("WARNING: The data provider has not been initialized!");
@@ -332,10 +340,10 @@ public final class CmsContainerpageDataProvider {
      *  
      * @param toolbarButtons the tool-bar buttons of the container-page editor
      */
-    public static void init(List<I_CmsContainerpageToolbarButton> toolbarButtons) {
+    public static void init(List<I_CmsToolbarButton> toolbarButtons) {
 
         if (INSTANCE == null) {
-            INSTANCE = new CmsContainerpageDataProvider(toolbarButtons);
+            INSTANCE = new CmsContainerpageController();
         }
     }
 
@@ -562,11 +570,60 @@ public final class CmsContainerpageDataProvider {
     }
 
     /**
-     * Loads the favorite list and adds the elements to the favorite list widget of the tool-bar menu.<p>
+     * Initializes the controller.<p>
+     * 
+     * @param handler the container-page handler
+     * @param containerpageUtil the container-page utility
      */
-    public void loadFavorites() {
+    public void init(CmsContainerpageHandler handler, CmsContainerpageUtil containerpageUtil) {
 
-        CmsRpcAction<LinkedHashMap<String, CmsContainerElement>> action = new CmsRpcAction<LinkedHashMap<String, CmsContainerElement>>() {
+        m_containerpageUtil = containerpageUtil;
+        m_handler = handler;
+
+        m_elements = new HashMap<String, CmsContainerElement>();
+        m_containerTypes = new HashSet<String>();
+        m_containers = new HashMap<String, CmsContainerJso>();
+
+        JsArray<CmsContainerJso> containers = CmsContainerJso.getContainers();
+        for (int i = 0; i < containers.length(); i++) {
+            CmsContainerJso container = containers.get(i);
+            m_containerTypes.add(container.getType());
+            m_containers.put(container.getName(), container);
+        }
+        m_targetContainers = m_containerpageUtil.consumeContainers(m_containers);
+
+        Event.addNativePreviewHandler(new NativePreviewHandler() {
+
+            public void onPreviewNativeEvent(NativePreviewEvent event) {
+
+                previewNativeEvent(event);
+            }
+        });
+    }
+
+    /**
+     * Method to leave the page without saving.<p>
+     * 
+     * @param targetUri the new URI to call
+     */
+    public void leaveUnsaved(String targetUri) {
+
+        m_pageChanged = false;
+        if (m_closingRegistration != null) {
+            m_closingRegistration.removeHandler();
+        }
+        CmsDebugLog.getInstance().printLine(targetUri);
+        Window.Location.assign(targetUri);
+    }
+
+    /**
+     * Loads the favorite list and adds the elements to the favorite list widget of the tool-bar menu.<p>
+     * 
+     * @param callback the call-back to execute with the result data 
+     */
+    public void loadFavorites(final I_CmsSimpleCallback<List<CmsContainerElement>> callback) {
+
+        CmsRpcAction<List<CmsContainerElement>> action = new CmsRpcAction<List<CmsContainerElement>>() {
 
             /**
              * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
@@ -575,23 +632,15 @@ public final class CmsContainerpageDataProvider {
             public void execute() {
 
                 getContainerpageService().getFavoriteList(getCurrentUri(), m_containerTypes, this);
-
             }
 
             /**
              * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
              */
             @Override
-            protected void onResponse(LinkedHashMap<String, CmsContainerElement> result) {
+            protected void onResponse(List<CmsContainerElement> result) {
 
-                getContainerpageUtil().getClipboard().clearFavorites();
-                if (result != null) {
-                    Iterator<CmsContainerElement> it = result.values().iterator();
-                    while (it.hasNext()) {
-                        getContainerpageUtil().getClipboard().addToFavorites(it.next());
-                    }
-                }
-
+                callback.execute(result);
             }
         };
         action.execute();
@@ -599,10 +648,12 @@ public final class CmsContainerpageDataProvider {
 
     /**
      * Loads the recent list and adds the elements to the recent list widget of the tool-bar menu.<p>
+     * 
+     * @param callback the call-back to execute with the result data
      */
-    public void loadRecent() {
+    public void loadRecent(final I_CmsSimpleCallback<List<CmsContainerElement>> callback) {
 
-        CmsRpcAction<LinkedHashMap<String, CmsContainerElement>> action = new CmsRpcAction<LinkedHashMap<String, CmsContainerElement>>() {
+        CmsRpcAction<List<CmsContainerElement>> action = new CmsRpcAction<List<CmsContainerElement>>() {
 
             /**
              * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
@@ -611,23 +662,15 @@ public final class CmsContainerpageDataProvider {
             public void execute() {
 
                 getContainerpageService().getRecentList(getCurrentUri(), m_containerTypes, this);
-
             }
 
             /**
              * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
              */
             @Override
-            protected void onResponse(LinkedHashMap<String, CmsContainerElement> result) {
+            protected void onResponse(List<CmsContainerElement> result) {
 
-                getContainerpageUtil().getClipboard().clearRecent();
-                if (result != null) {
-                    Iterator<CmsContainerElement> it = result.values().iterator();
-                    while (it.hasNext()) {
-                        getContainerpageUtil().getClipboard().addToRecent(it.next());
-                    }
-                }
-
+                callback.execute(result);
             }
         };
         action.execute();
@@ -686,6 +729,56 @@ public final class CmsContainerpageDataProvider {
     }
 
     /**
+     * Resets the container-page.<p>
+     */
+    public void resetPage() {
+
+        m_pageChanged = false;
+        if (m_closingRegistration != null) {
+            m_closingRegistration.removeHandler();
+        }
+        Window.Location.reload();
+    }
+
+    /**
+     * Method to save and leave the page.<p>
+     * 
+     * @param targetUri the new URI to call
+     */
+    public void saveAndLeave(final String targetUri) {
+
+        if (m_pageChanged) {
+            CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
+
+                /**
+                 * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+                 */
+                @Override
+                public void execute() {
+
+                    getContainerpageService().saveContainerpage(getCurrentUri(), getPageContent(), this);
+
+                }
+
+                /**
+                 * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+                 */
+                @Override
+                protected void onResponse(Void result) {
+
+                    m_pageChanged = false;
+                    if (m_closingRegistration != null) {
+                        m_closingRegistration.removeHandler();
+                    }
+                    Window.Location.assign(targetUri);
+
+                }
+            };
+            action.execute();
+        }
+    }
+
+    /**
      * Saves the current state of the container-page.<p>
      */
     public void saveContainerpage() {
@@ -711,6 +804,9 @@ public final class CmsContainerpageDataProvider {
 
                     CmsDebugLog.getInstance().printLine("Page saved");
                     m_pageChanged = false;
+                    if (m_closingRegistration != null) {
+                        m_closingRegistration.removeHandler();
+                    }
 
                 }
             };
@@ -756,8 +852,33 @@ public final class CmsContainerpageDataProvider {
      */
     public void setPageChanged() {
 
-        CmsDebugLog.getInstance().printLine("PAGE CHANGED");
-        m_pageChanged = true;
+        if (!m_pageChanged) {
+            m_closingRegistration = Window.addWindowClosingHandler(new ClosingHandler() {
+
+                /**
+                 * @see com.google.gwt.user.client.Window.ClosingHandler#onWindowClosing(com.google.gwt.user.client.Window.ClosingEvent)
+                 */
+                public void onWindowClosing(ClosingEvent event) {
+
+                    if (m_pageChanged) {
+                        boolean savePage = Window.confirm("Do you want to save the page before leaving?");
+                        if (savePage) {
+                            saveContainerpage();
+                            //                        while (m_pageChanged) {
+                            //                            try {
+                            //                                Thread.sleep(100);
+                            //                            } catch (InterruptedException e) {
+                            //                                CmsDebugLog.getInstance().printLine(e.getMessage());
+                            //                            }
+                            //                        }
+                        }
+                    }
+
+                }
+            });
+            CmsDebugLog.getInstance().printLine("PAGE CHANGED");
+            m_pageChanged = true;
+        }
     }
 
     /** 
@@ -768,6 +889,47 @@ public final class CmsContainerpageDataProvider {
     /*DEFAULT*/void addElements(Map<String, CmsContainerElement> elements) {
 
         m_elements.putAll(elements);
+    }
+
+    /**
+     * Previews events. Shows the leaving page dialog, if the page has changed and an anchor has been clicked.<p>
+     * 
+     * @param event the native event
+     */
+    void previewNativeEvent(NativePreviewEvent event) {
+
+        Event nativeEvent = Event.as(event.getNativeEvent());
+        if (m_pageChanged) {
+            if ((nativeEvent.getTypeInt() == Event.ONCLICK)) {
+                CmsDebugLog.getInstance().printLine("Previewing event");
+
+                EventTarget target = nativeEvent.getEventTarget();
+                if (Element.is(target)) {
+                    Element element = Element.as(target);
+                    CmsDebugLog.getInstance().printLine("Checking element");
+                    element = CmsDomUtil.getAncestor(element, CmsDomUtil.Tag.a);
+                    if (element != null) {
+                        AnchorElement anc = AnchorElement.as(element);
+                        final String uri = anc.getHref();
+                        if (CmsStringUtil.isEmptyOrWhitespaceOnly(uri)) {
+                            return;
+                        }
+                        nativeEvent.preventDefault();
+                        nativeEvent.stopPropagation();
+                        CmsLeavePageDialog dialog = new CmsLeavePageDialog(uri, this, null);
+                        CmsDebugLog.getInstance().printLine("Event canceled ++");
+                        dialog.center();
+                    }
+                }
+            }
+        }
+        if ((event.getTypeInt() == Event.ONKEYPRESS) && (nativeEvent.getKeyCode() == 116)) {
+            nativeEvent.preventDefault();
+            nativeEvent.stopPropagation();
+            CmsLeavePageDialog dialog = new CmsLeavePageDialog(Window.Location.getHref(), this, null);
+            dialog.center();
+            CmsDebugLog.getInstance().printLine("Reload canceled");
+        }
     }
 
     /**

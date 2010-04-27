@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/draganddrop/Attic/I_CmsDragHandler.java,v $
- * Date   : $Date: 2010/03/26 09:14:40 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/27 13:56:00 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import com.google.gwt.event.shared.EventHandler;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -90,7 +90,7 @@ extends MouseDownHandler, MouseUpHandler, MouseMoveHandler, MouseOverHandler, Mo
      * 
      * @param element the draggable element
      */
-    void registerMouseHandler(E element);
+    void registerMouseHandler(I_CmsDragElement element);
 
     /**
      * Sets the possible drag targets.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/shared/rpc/Attic/I_CmsContainerpageServiceAsync.java,v $
- * Date   : $Date: 2010/04/21 14:13:46 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/04/27 13:56:00 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,7 +35,6 @@ import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 
 import java.util.Collection;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -47,7 +46,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -95,7 +94,7 @@ public interface I_CmsContainerpageServiceAsync {
     void getFavoriteList(
         String containerpageUri,
         Set<String> containerTypes,
-        AsyncCallback<LinkedHashMap<String, CmsContainerElement>> callback);
+        AsyncCallback<List<CmsContainerElement>> callback);
 
     /**
      * Requests the container element data of the recent list.<p>
@@ -107,7 +106,7 @@ public interface I_CmsContainerpageServiceAsync {
     void getRecentList(
         String containerpageUri,
         Set<String> containerTypes,
-        AsyncCallback<LinkedHashMap<String, CmsContainerElement>> callback);
+        AsyncCallback<List<CmsContainerElement>> callback);
 
     /**
      * Saves the container-page.<p>

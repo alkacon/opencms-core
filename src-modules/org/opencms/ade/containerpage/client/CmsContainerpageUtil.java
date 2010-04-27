@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageUtil.java,v $
- * Date   : $Date: 2010/04/13 14:27:44 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/27 13:56:00 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,13 +33,15 @@ package org.opencms.ade.containerpage.client;
 
 import org.opencms.ade.containerpage.client.draganddrop.CmsContainerDragHandler;
 import org.opencms.ade.containerpage.client.draganddrop.CmsDragContainerElement;
+import org.opencms.ade.containerpage.client.draganddrop.CmsDragMenuElement;
 import org.opencms.ade.containerpage.client.draganddrop.CmsDragTargetContainer;
+import org.opencms.ade.containerpage.client.ui.A_CmsToolbarOptionButton;
 import org.opencms.ade.containerpage.client.ui.CmsElementOptionBar;
-import org.opencms.ade.containerpage.client.ui.CmsToolbarClipboardMenu;
-import org.opencms.ade.containerpage.client.ui.I_CmsContainerpageToolbarButton;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.I_CmsContainerpageProviderConstants;
+import org.opencms.gwt.client.draganddrop.I_CmsDragElement;
 import org.opencms.gwt.client.draganddrop.I_CmsDragTarget;
+import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 
 import java.util.ArrayList;
@@ -56,56 +58,28 @@ import com.google.gwt.user.client.Element;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
 public class CmsContainerpageUtil {
 
-    /** List of buttons of the tool-bar. */
-    private List<I_CmsContainerpageToolbarButton> m_toolbarButtons;
+    /** The container-page drag and drop handler. */
+    private CmsContainerDragHandler m_dragHandler;
 
-    private CmsToolbarClipboardMenu m_clipboard;
+    /** List of buttons of the tool-bar. */
+    private A_CmsToolbarOptionButton[] m_optionButtons;
 
     /**
      * Constructor.<p>
      * 
-     * @param toolbarButtons the tool-bar buttons of the container-page editor
+     * @param dragHandler the container-page drag and drop handler
+     * @param optionButtons the tool-bar option buttons
      */
-    public CmsContainerpageUtil(List<I_CmsContainerpageToolbarButton> toolbarButtons) {
+    public CmsContainerpageUtil(CmsContainerDragHandler dragHandler, A_CmsToolbarOptionButton... optionButtons) {
 
-        m_toolbarButtons = toolbarButtons;
-        Iterator<I_CmsContainerpageToolbarButton> it = m_toolbarButtons.iterator();
-        while (it.hasNext()) {
-            I_CmsContainerpageToolbarButton button = it.next();
-            if (button.getName().equals(CmsToolbarClipboardMenu.BUTTON_NAME)) {
-                m_clipboard = (CmsToolbarClipboardMenu)button;
-                break;
-            }
-
-        }
-    }
-
-    /**
-     * The method will create {@link CmsDragTargetContainer} object for all given containers
-     * by converting the associated DOM elements. The contained elements will be transformed into {@link CmsDragContainerElement}.<p>
-     * 
-     * @param containers the container data
-     * 
-     * @return the drag target containers
-     */
-    public Map<String, CmsDragTargetContainer> consumeContainers(Map<String, CmsContainerJso> containers) {
-
-        Map<String, CmsDragTargetContainer> result = new HashMap<String, CmsDragTargetContainer>();
-        Iterator<CmsContainerJso> it = containers.values().iterator();
-        while (it.hasNext()) {
-            CmsContainerJso container = it.next();
-            CmsDragTargetContainer dragContainer = new CmsDragTargetContainer(container);
-            consumeContainerElements(dragContainer);
-            result.put(container.getName(), dragContainer);
-        }
-
-        return result;
+        m_dragHandler = dragHandler;
+        m_optionButtons = optionButtons;
     }
 
     /**
@@ -142,34 +116,26 @@ public class CmsContainerpageUtil {
     }
 
     /**
-     * Creates an drag container element.<p>
+     * The method will create {@link CmsDragTargetContainer} object for all given containers
+     * by converting the associated DOM elements. The contained elements will be transformed into {@link CmsDragContainerElement}.<p>
      * 
-     * @param element the DOM element
-     * @param dragParent the drag parent
-     * @param clientId the client id
-     * @param sitePath the element site-path
-     * @param noEditReason the no edit reason
+     * @param containers the container data
      * 
-     * @return the draggable element
+     * @return the drag target containers
      */
-    public CmsDragContainerElement createElement(
-        com.google.gwt.user.client.Element element,
-        I_CmsDragTarget dragParent,
-        String clientId,
-        String sitePath,
-        String noEditReason) {
+    public Map<String, CmsDragTargetContainer> consumeContainers(Map<String, CmsContainerJso> containers) {
 
-        CmsDragContainerElement dragElement = new CmsDragContainerElement(
-            element,
-            dragParent,
-            clientId,
-            sitePath,
-            noEditReason);
-        CmsContainerDragHandler.get().registerMouseHandler(dragElement);
-        CmsElementOptionBar optionBar = CmsElementOptionBar.createOptionBarForElement(dragElement, m_toolbarButtons);
-        dragElement.setElementOptionBar(optionBar);
+        Map<String, CmsDragTargetContainer> result = new HashMap<String, CmsDragTargetContainer>();
+        Iterator<CmsContainerJso> it = containers.values().iterator();
+        while (it.hasNext()) {
+            CmsContainerJso container = it.next();
+            CmsDragTargetContainer dragContainer = new CmsDragTargetContainer(container);
+            consumeContainerElements(dragContainer);
+            CmsDebugLog.getInstance().printLine("Concumed children.");
+            result.put(container.getName(), dragContainer);
+        }
 
-        return dragElement;
+        return result;
     }
 
     /**
@@ -198,13 +164,60 @@ public class CmsContainerpageUtil {
     }
 
     /**
-     * Returns the clipboard.<p>
-     *
-     * @return the clipboard
+     * Creates a draggable list item widget.<p>
+     * 
+     * @param containerElement the element data
+     * @param dragParent the drag parent, may be null
+     * 
+     * @return the list item widget
      */
-    public CmsToolbarClipboardMenu getClipboard() {
+    public CmsDragMenuElement createListItem(CmsContainerElement containerElement, I_CmsDragTarget dragParent) {
 
-        return m_clipboard;
+        CmsDragMenuElement menuItem = new CmsDragMenuElement(containerElement);
+        menuItem.setDragParent(dragParent);
+        enableDragHandler(menuItem);
+        return menuItem;
+    }
+
+    /**
+     * Enables container-page drag and drop for the given element.<p>
+     * 
+     * @param element the element
+     */
+    public void enableDragHandler(I_CmsDragElement element) {
+
+        m_dragHandler.registerMouseHandler(element);
+    }
+
+    /**
+     * Creates an drag container element.<p>
+     * 
+     * @param element the DOM element
+     * @param dragParent the drag parent
+     * @param clientId the client id
+     * @param sitePath the element site-path
+     * @param noEditReason the no edit reason
+     * 
+     * @return the draggable element
+     */
+    private CmsDragContainerElement createElement(
+        com.google.gwt.user.client.Element element,
+        I_CmsDragTarget dragParent,
+        String clientId,
+        String sitePath,
+        String noEditReason) {
+
+        CmsDragContainerElement dragElement = new CmsDragContainerElement(
+            element,
+            dragParent,
+            clientId,
+            sitePath,
+            noEditReason);
+        enableDragHandler(dragElement);
+        CmsElementOptionBar optionBar = CmsElementOptionBar.createOptionBarForElement(dragElement, m_optionButtons);
+        dragElement.setElementOptionBar(optionBar);
+
+        return dragElement;
     }
 
 }

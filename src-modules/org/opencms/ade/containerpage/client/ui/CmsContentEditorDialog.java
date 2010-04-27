@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsContentEditorDialog.java,v $
- * Date   : $Date: 2010/04/19 06:39:10 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/27 13:56:00 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,7 @@
 
 package org.opencms.ade.containerpage.client.ui;
 
-import org.opencms.ade.containerpage.client.CmsContainerpageDataProvider;
+import org.opencms.ade.containerpage.client.CmsContainerpageController;
 import org.opencms.ade.containerpage.client.Messages;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.containerpage.client.util.CmsContainerpageProvider;
@@ -47,7 +47,7 @@ import com.google.gwt.dom.client.Style.Unit;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -117,7 +117,7 @@ public final class CmsContentEditorDialog {
 
         m_currentElementId = elementId;
         m_currentSitePath = sitePath;
-        m_dialog = new CmsPopup(Messages.get().key(Messages.CONTENT_EDITOR_DIALOG_TITLE_0));
+        m_dialog = new CmsPopup(Messages.get().key(Messages.GUI_DIALOG_CONTENTEDITOR_TITLE_0));
         m_dialog.addStyleName(I_CmsLayoutBundle.INSTANCE.contentEditorCss().contentEditor());
         m_dialog.setSize(800, 600, Unit.PX);
 
@@ -137,7 +137,7 @@ public final class CmsContentEditorDialog {
         if (m_dialog != null) {
             m_dialog.hide();
             m_dialog = null;
-            CmsContainerpageDataProvider.get().reloadElement(m_currentElementId);
+            CmsContainerpageController.get().reloadElement(m_currentElementId);
             m_currentElementId = null;
             m_currentSitePath = null;
         }
