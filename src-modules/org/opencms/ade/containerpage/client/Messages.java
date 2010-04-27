@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/Messages.java,v $
- * Date   : $Date: 2010/04/21 15:05:19 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/27 13:07:51 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,29 +38,47 @@ import org.opencms.gwt.client.i18n.CmsMessages;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
 public final class Messages {
 
     /** Message constant for key in the resource bundle. */
-    public static final String CANCEL_BUTTON_TEXT_0 = "CANCEL_BUTTON_TEXT_0";
+    public static final String GUI_BUTTON_CANCEL_TEXT_0 = "GUI_BUTTON_CANCEL_TEXT_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String CONTENT_EDITOR_DIALOG_TITLE_0 = "CONTENT_EDITOR_DIALOG_TITLE_0";
+    public static final String GUI_BUTTON_EDITFAVORITES_TEXT_0 = "GUI_BUTTON_EDITFAVORITES_TEXT_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String EDIT_FAVORITES_BUTTON_TEXT_0 = "EDIT_FAVORITES_BUTTON_TEXT_0";
+    public static final String GUI_BUTTON_LEAVEPAGE_TEXT_0 = "GUI_BUTTON_LEAVEPAGE_TEXT_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String FAVORITE_TAB_TITLE_0 = "FAVORITE_TAB_TITLE_0";
+    public static final String GUI_BUTTON_RESET_TEXT_0 = "GUI_BUTTON_RESET_TEXT_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String RECENT_TAB_TITLE_0 = "RECENT_TAB_TITLE_0";
+    public static final String GUI_BUTTON_SAVE_TEXT_0 = "GUI_BUTTON_SAVE_TEXT_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String SAVE_BUTTON_TEXT_0 = "SAVE_BUTTON_TEXT_0";
+    public static final String GUI_DIALOG_CONTENTEDITOR_TITLE_0 = "GUI_DIALOG_CONTENTEDITOR_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIALOG_PAGE_NOT_SAVED_0 = "GUI_DIALOG_PAGE_NOT_SAVED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIALOG_PAGE_NOT_SAVED_TITLE_0 = "GUI_DIALOG_PAGE_NOT_SAVED_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIALOG_PAGE_RESET_0 = "GUI_DIALOG_PAGE_RESET_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIALOG_PAGE_RESET_TITLE_0 = "GUI_DIALOG_PAGE_RESET_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TAB_FAVORITES_TITLE_0 = "GUI_TAB_FAVORITES_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TAB_RECENT_TITLE_0 = "GUI_TAB_RECENT_TITLE_0";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.ade.containerpage.clientmessages";
