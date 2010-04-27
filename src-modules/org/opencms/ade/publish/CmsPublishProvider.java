@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/Attic/CmsPublishProvider.java,v $
- * Date   : $Date: 2010/04/26 12:36:45 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/04/27 07:07:19 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,13 +34,13 @@ package org.opencms.ade.publish;
 import org.opencms.ade.publish.shared.I_CmsPublishProviderConstants;
 import org.opencms.ade.sitemap.CmsSitemapProvider;
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsUser;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.I_CmsCoreProvider;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsRole;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -85,6 +85,19 @@ public final class CmsPublishProvider implements I_CmsCoreProvider, I_CmsPublish
     }
 
     /**
+     * Checks whether the current user can publish resources even if it would break relations.<p>
+     * 
+     * @param cms the CmsObject for which the user should be checked
+     * 
+     * @return true if the user can publish resources even if it breaks relations 
+     */
+    public boolean canPublishBrokenRelations(CmsObject cms) {
+
+        return OpenCms.getWorkplaceManager().getDefaultUserSettings().isAllowBrokenRelations()
+            || OpenCms.getRoleManager().hasRole(cms, CmsRole.VFS_MANAGER);
+    }
+
+    /**
      * @see org.opencms.gwt.I_CmsCoreProvider#export(javax.servlet.http.HttpServletRequest)
      */
     public String export(HttpServletRequest request) {
@@ -114,7 +127,7 @@ public final class CmsPublishProvider implements I_CmsCoreProvider, I_CmsPublish
         CmsObject cms = CmsFlexController.getCmsObject(request);
         JSONObject data = new JSONObject();
         try {
-            data.put(KEY_IS_ADMIN_USER, isAdminUser(cms));
+            data.put(KEY_CAN_PUBLISH_BROKEN_RELATIONS, canPublishBrokenRelations(cms));
         } catch (Throwable e) {
             LOG.error(e.getLocalizedMessage(), e);
             try {
@@ -125,17 +138,5 @@ public final class CmsPublishProvider implements I_CmsCoreProvider, I_CmsPublish
             }
         }
         return data;
-    }
-
-    /**
-     * Checks whether the user for a CmsObject is the Admin user.<p>
-     * 
-     * @param cms the CmsObject for which the user should be checked
-     * @return true if the user is the Admin user
-     */
-    public boolean isAdminUser(CmsObject cms) {
-
-        CmsUser user = cms.getRequestContext().currentUser();
-        return OpenCms.getDefaultUsers().isUserAdmin(user.getName());
     }
 }

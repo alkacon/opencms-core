@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishProvider.java,v $
- * Date   : $Date: 2010/04/26 12:36:45 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/04/27 07:07:19 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import com.google.gwt.core.client.JavaScriptObject;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -114,11 +114,11 @@ public final class CmsPublishProvider extends JavaScriptObject implements I_CmsP
     }-*/;
 
     /**
-     * Returns true if the current user is the admin user.<p>
+     * Returns true if the current user can publish resources even if it leads to broken relations.<p>
      *
-     * @return true if the user the admin user
+     * @return true if the user can publish resources if it leads to broken relations 
      */
-    public native boolean isAdminUser() /*-{
-        return this[@org.opencms.ade.publish.shared.I_CmsPublishProviderConstants::KEY_IS_ADMIN_USER];
+    public native boolean canPublishBrokenRelations() /*-{
+        return this[@org.opencms.ade.publish.shared.I_CmsPublishProviderConstants::KEY_CAN_PUBLISH_BROKEN_RELATIONS];
     }-*/;
 }

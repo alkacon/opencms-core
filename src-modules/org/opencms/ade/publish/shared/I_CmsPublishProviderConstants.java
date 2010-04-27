@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/shared/Attic/I_CmsPublishProviderConstants.java,v $
- * Date   : $Date: 2010/04/26 12:36:45 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/27 07:07:19 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,7 @@ package org.opencms.ade.publish.shared;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -46,6 +46,6 @@ public interface I_CmsPublishProviderConstants {
     String DICT_NAME = "org.opencms.ade.publish.core";
 
     /** Key for the isAdmin flag which indicates whether the current user is the administrator. */
-    String KEY_IS_ADMIN_USER = "isAdminUser";
+    String KEY_CAN_PUBLISH_BROKEN_RELATIONS = "canPublishBrokenRelations";
 
 }

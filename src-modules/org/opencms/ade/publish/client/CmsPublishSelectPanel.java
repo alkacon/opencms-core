@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishSelectPanel.java,v $
- * Date   : $Date: 2010/04/26 15:08:18 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/04/27 07:07:19 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ import org.opencms.ade.publish.shared.CmsProjectBean;
 import org.opencms.ade.publish.shared.CmsPublishGroup;
 import org.opencms.ade.publish.shared.CmsPublishOptions;
 import org.opencms.ade.publish.shared.CmsPublishResource;
+import org.opencms.file.CmsResource;
 import org.opencms.gwt.client.i18n.CmsMessages;
 import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.gwt.client.ui.CmsButton;
@@ -79,7 +80,7 @@ import com.google.gwt.user.client.ui.Widget;
  *  
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 8.0.0
  */
@@ -193,10 +194,10 @@ public class CmsPublishSelectPanel extends Composite implements I_CmsPublishSele
 
     /** The list of group panels for each publish list group. */
     private List<CmsPublishGroupPanel> m_groupPanels = new ArrayList<CmsPublishGroupPanel>();
-    
+
     /** The publish list resources indexed by UUID. */
     private Map<CmsUUID, CmsPublishResource> m_publishResources;
-    
+
     /** The publish list resources indexed by path. */
     private Map<String, CmsPublishResource> m_publishResourcesByPath;
 
@@ -337,22 +338,6 @@ public class CmsPublishSelectPanel extends Composite implements I_CmsPublishSele
     }
 
     /** 
-     * Calculates the path of the parent directory of a resource path.<p>
-     * 
-     * @param path the resource path
-     * 
-     * @return the parent directory path 
-     */
-    private static String getParentPath(String path) {
-
-        // remove possible slash before end of string
-        path = path.replaceFirst("/$", "");
-        // remove everything after the slash before that 
-        path = path.replaceFirst("/[^/]+$", "/");
-        return path;
-    }
-
-    /** 
      * Check for problems with new/deleted folders in the publish selection.<p>
      * 
      * @param resourceIds the ids of the resources selected for publishing 
@@ -366,7 +351,7 @@ public class CmsPublishSelectPanel extends Composite implements I_CmsPublishSele
             pubResources.add(m_publishResources.get(publishId));
         }
         for (CmsPublishResource pubResource : pubResources) {
-            String parentPath = getParentPath(pubResource.getName());
+            String parentPath = CmsResource.getParentFolder(pubResource.getName());
             CmsPublishResource parent = m_publishResourcesByPath.get(parentPath);
             if (parent != null) {
                 boolean parentIsNew = parent.getState().equals("N");
