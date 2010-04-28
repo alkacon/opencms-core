@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2010/04/19 15:19:35 $
- * Version: $Revision: 1.291 $
+ * Date   : $Date: 2010/04/28 15:55:53 $
+ * Version: $Revision: 1.292 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -90,7 +90,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.291 $
+ * @version $Revision: 1.292 $
  * 
  * @since 6.0.0 
  */
@@ -2454,10 +2454,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             Iterator itProjects = projectDriver.readProjects(dbc, deletedResourceRootPath).iterator();
             while (itProjects.hasNext()) {
                 CmsProject project = (CmsProject)itProjects.next();
-                projectDriver.deleteProjectResource(
-                    dbc,
-                    project.getUuid(),
-                    deletedResourceRootPath);
+                projectDriver.deleteProjectResource(dbc, project.getUuid(), deletedResourceRootPath);
             }
         }
     }
@@ -2571,7 +2568,11 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         // copy offline to online relations
         CmsUUID dbcProjectId = dbc.getProjectId();
         dbc.setProjectId(CmsUUID.getNullUUID());
-        Iterator itRelations = vfsDriver.readRelations(dbc, projectId, offlineResource, CmsRelationFilter.TARGETS).iterator();
+        Iterator itRelations = m_driverManager.getVfsDriver(dbc).readRelations(
+            dbc,
+            projectId,
+            offlineResource,
+            CmsRelationFilter.TARGETS).iterator();
         dbc.setProjectId(dbcProjectId);
         while (itRelations.hasNext()) {
             vfsDriver.createRelation(dbc, onlineProject.getUuid(), (CmsRelation)itRelations.next());

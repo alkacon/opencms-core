@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2010/04/08 16:04:20 $
- * Version: $Revision: 1.126 $
+ * Date   : $Date: 2010/04/28 15:55:53 $
+ * Version: $Revision: 1.127 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import java.util.Map;
  * @author Thomas Weckert  
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.126 $
+ * @version $Revision: 1.127 $
  * 
  * @since 6.0.0 
  */
@@ -720,6 +720,7 @@ public interface I_CmsVfsDriver {
 
     /**
      * Updates the relations on the online project copying the relations from the offline project.<p>
+     * TODO: add offlineProject parameter
      * 
      * @param dbc the current database context
      * @param onlineProject the online project
