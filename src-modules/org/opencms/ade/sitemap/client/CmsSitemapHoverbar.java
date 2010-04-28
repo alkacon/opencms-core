@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapHoverbar.java,v $
- * Date   : $Date: 2010/04/26 13:44:44 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/04/28 12:09:32 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 8.0.0
  */
@@ -241,12 +241,12 @@ public class CmsSitemapHoverbar extends FlowPanel {
 
                 itemWidget.getContentPanel().getElement().appendChild(getElement());
                 if (controller.isRoot(getSitePath())) {
-                    getDeleteButton().setEnabled(false);
-                    getMoveButton().setEnabled(false);
-                    getSubsitemapButton().setEnabled(false);
+                    getDeleteButton().disable(Messages.get().key(Messages.GUI_DISABLED_ROOT_ITEM_0));
+                    getMoveButton().disable(Messages.get().key(Messages.GUI_DISABLED_ROOT_ITEM_0));
+                    getSubsitemapButton().disable(Messages.get().key(Messages.GUI_DISABLED_ROOT_ITEM_0));
                     if (CmsSitemapProvider.get().getParent() != null) {
                         getParentSitemapButton().setVisible(true);
-                        getEditButton().setEnabled(false);
+                        getEditButton().disable(Messages.get().key(Messages.GUI_DISABLED_PARENT_SITEMAP_0));
                     }
                 }
                 onAttach();
@@ -271,10 +271,10 @@ public class CmsSitemapHoverbar extends FlowPanel {
      */
     protected void deattach() {
 
-        getDeleteButton().setEnabled(true);
-        getMoveButton().setEnabled(true);
-        getSubsitemapButton().setEnabled(true);
-        getEditButton().setEnabled(true);
+        getDeleteButton().enable();
+        getMoveButton().enable();
+        getSubsitemapButton().enable();
+        getEditButton().enable();
         getParentSitemapButton().setVisible(false);
         getElement().removeFromParent();
         onDetach();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/Messages.java,v $
- * Date   : $Date: 2010/04/26 13:39:53 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/04/28 12:09:32 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,17 +38,11 @@ import org.opencms.gwt.client.i18n.CmsMessages;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 8.0.0
  */
 public final class Messages {
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_LOCK_2 = "ERR_LOCK_2";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_UNLOCK_2 = "ERR_UNLOCK_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DIALOG_DELETE_TEXT_0 = "GUI_DIALOG_DELETE_TEXT_0";
@@ -57,10 +51,22 @@ public final class Messages {
     public static final String GUI_DIALOG_DELETE_TITLE_0 = "GUI_DIALOG_DELETE_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_DIALOG_NO_EDIT_TEXT_1 = "GUI_DIALOG_NO_EDIT_TEXT_1";
+    public static final String GUI_DISABLED_PARENT_SITEMAP_0 = "GUI_DISABLED_PARENT_SITEMAP_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_DIALOG_NO_EDIT_TITLE_0 = "GUI_DIALOG_NO_EDIT_TITLE_0";
+    public static final String GUI_DISABLED_REDO_0 = "GUI_DISABLED_REDO_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DISABLED_RESET_0 = "GUI_DISABLED_RESET_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DISABLED_ROOT_ITEM_0 = "GUI_DISABLED_ROOT_ITEM_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DISABLED_SAVE_0 = "GUI_DISABLED_SAVE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DISABLED_UNDO_0 = "GUI_DISABLED_UNDO_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITOR_TITLE_0 = "GUI_EDITOR_TITLE_0";
@@ -90,7 +96,13 @@ public final class Messages {
     public static final String GUI_LOADING_0 = "GUI_LOADING_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCK_NOTIFICATION_2 = "GUI_LOCK_NOTIFICATION_2";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_NAME_0 = "GUI_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_NO_EDIT_NOTIFICATION_1 = "GUI_NO_EDIT_NOTIFICATION_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SITEMAP_0 = "GUI_SITEMAP_0";
@@ -100,6 +112,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TOOLBAR_UNDO_0 = "GUI_TOOLBAR_UNDO_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UNLOCK_NOTIFICATION_2 = "GUI_UNLOCK_NOTIFICATION_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_VFS_PATH_0 = "GUI_VFS_PATH_0";

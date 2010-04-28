@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapControllerHandler.java,v $
- * Date   : $Date: 2010/04/26 13:42:48 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/04/28 12:09:32 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import org.opencms.util.CmsStringUtil;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 8.0.0
  * 
@@ -121,7 +121,7 @@ public class CmsSitemapControllerHandler {
      */
     public void onClearUndo() {
 
-        m_toolbar.getRedoButton().setEnabled(false);
+        m_toolbar.getRedoButton().disable(Messages.get().key(Messages.GUI_DISABLED_REDO_0));
     }
 
     /**
@@ -139,7 +139,7 @@ public class CmsSitemapControllerHandler {
      */
     public void onFirstUndo() {
 
-        m_toolbar.getRedoButton().setEnabled(true);
+        m_toolbar.getRedoButton().enable();
     }
 
     /**
@@ -185,7 +185,7 @@ public class CmsSitemapControllerHandler {
      */
     public void onLastRedo() {
 
-        m_toolbar.getRedoButton().setEnabled(false);
+        m_toolbar.getRedoButton().disable(Messages.get().key(Messages.GUI_DISABLED_REDO_0));
     }
 
     /**
@@ -193,9 +193,9 @@ public class CmsSitemapControllerHandler {
      */
     public void onLastUndo() {
 
-        m_toolbar.getSaveButton().setEnabled(false);
-        m_toolbar.getResetButton().setEnabled(false);
-        m_toolbar.getUndoButton().setEnabled(false);
+        m_toolbar.getSaveButton().disable(Messages.get().key(Messages.GUI_DISABLED_SAVE_0));
+        m_toolbar.getResetButton().disable(Messages.get().key(Messages.GUI_DISABLED_RESET_0));
+        m_toolbar.getUndoButton().disable(Messages.get().key(Messages.GUI_DISABLED_UNDO_0));
     }
 
     /**
@@ -203,9 +203,9 @@ public class CmsSitemapControllerHandler {
      */
     public void onReset() {
 
-        m_toolbar.getSaveButton().setEnabled(false);
-        m_toolbar.getResetButton().setEnabled(false);
-        m_toolbar.getUndoButton().setEnabled(false);
+        m_toolbar.getSaveButton().disable(Messages.get().key(Messages.GUI_DISABLED_SAVE_0));
+        m_toolbar.getResetButton().disable(Messages.get().key(Messages.GUI_DISABLED_RESET_0));
+        m_toolbar.getUndoButton().disable(Messages.get().key(Messages.GUI_DISABLED_UNDO_0));
     }
 
     /**
@@ -213,9 +213,9 @@ public class CmsSitemapControllerHandler {
      */
     public void onStartEdit() {
 
-        m_toolbar.getSaveButton().setEnabled(true);
-        m_toolbar.getResetButton().setEnabled(true);
-        m_toolbar.getUndoButton().setEnabled(true);
+        m_toolbar.getSaveButton().enable();
+        m_toolbar.getResetButton().enable();
+        m_toolbar.getUndoButton().enable();
     }
 
     /**
