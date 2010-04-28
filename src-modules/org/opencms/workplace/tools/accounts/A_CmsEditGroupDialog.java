@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsEditGroupDialog.java,v $
- * Date   : $Date: 2009/06/04 14:33:40 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/04/28 07:10:59 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -252,7 +252,7 @@ public abstract class A_CmsEditGroupDialog extends CmsWidgetDialog {
      */
     public void setName(String name) {
 
-        m_group.setName(name);
+        m_group.setName(getParamOufqn() + name);
     }
 
     /**
