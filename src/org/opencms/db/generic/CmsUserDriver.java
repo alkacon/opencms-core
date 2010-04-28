@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2010/04/20 13:44:57 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/04/28 15:25:27 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -102,7 +102,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 6.0.0 
  */
@@ -1019,7 +1019,11 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
         // then, we copy the access control entries from the offline project into the online project
         CmsUUID dbcProjectId = dbc.getProjectId();
-        dbc.setProjectId(CmsUUID.getNullUUID());
+        if ((dbcProjectId != null) && !dbc.getProjectId().isNullUUID()) {
+            dbc.setProjectId(offlineProject.getUuid());
+        } else {
+            dbc.setProjectId(CmsUUID.getNullUUID());
+        }
         List<CmsAccessControlEntry> aces = m_driverManager.getUserDriver(dbc).readAccessControlEntries(
             dbc,
             offlineProject,
