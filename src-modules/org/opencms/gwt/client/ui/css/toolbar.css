@@ -1,5 +1,3 @@
-@def toolbarHeight 35px;
-
 @if user.agent ie6 {
 	/** ie6/7 will always show a scroll-bar, so there is no need to force it **/
 	.toolbarShow{}
@@ -32,7 +30,7 @@
 	overflow: visible;
 	border-top:medium none;
 	font-weight:normal;
-	height: toolbarHeight;
+	height: value("constantsCss.toolbarHeight");
 	position:absolute;
 	width:100%;
 	border-bottom:1px solid #999999;

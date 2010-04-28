@@ -2,7 +2,7 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder" 
 			xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	<ui:with field="style" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
-	<g:HTMLPanel ui:field="m_container" styleName="{style.notificationCss.container}" >
+	<g:HTMLPanel styleName="{style.notificationCss.container}" >
 		<span ui:field="m_message" class="{style.notificationCss.message} {style.generalCss.cornerBottom}"></span>
 	</g:HTMLPanel>
 </ui:UiBinder> 
