@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsToolbarButton.java,v $
- * Date   : $Date: 2010/04/15 13:53:28 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/04/28 05:53:54 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import com.google.gwt.user.client.ui.ToggleButton;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -142,6 +142,9 @@ public class CmsToolbarButton extends ToggleButton {
         }
     }
 
+    /** The title. */
+    private String m_title;
+
     /**
      * Constructor.<p>
      * 
@@ -166,6 +169,36 @@ public class CmsToolbarButton extends ToggleButton {
         addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
         setTitle(title);
         String upFaceHtml = "<div class='" + iconClass + "'></div>";
-        this.getUpFace().setHTML(upFaceHtml);
+        getUpFace().setHTML(upFaceHtml);
+    }
+
+    /**
+     * Disables the button and changes the button title attribute to the disabled reason.<p>
+     *   
+     * @param disabledReason the disabled reason
+     */
+    public void disable(String disabledReason) {
+
+        setEnabled(false);
+        super.setTitle(disabledReason);
+    }
+
+    /**
+     * Enables the button, switching the button title attribute from the disabled reason to the original title.<p>
+     */
+    public void enable() {
+
+        setEnabled(true);
+        super.setTitle(m_title);
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.UIObject#setTitle(java.lang.String)
+     */
+    @Override
+    public void setTitle(String title) {
+
+        super.setTitle(title);
+        m_title = title;
     }
 }
