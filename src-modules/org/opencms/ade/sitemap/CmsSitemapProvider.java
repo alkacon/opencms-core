@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsSitemapProvider.java,v $
- * Date   : $Date: 2010/04/27 12:43:24 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/04/28 12:07:55 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,6 @@ import org.opencms.file.history.CmsHistoryResourceHandler;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.I_CmsCoreProvider;
-import org.opencms.i18n.CmsEncoder;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
 import org.opencms.main.CmsException;
@@ -55,7 +54,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 8.0.0
  * 
@@ -159,7 +158,7 @@ public final class CmsSitemapProvider implements I_CmsSitemapProviderConstants, 
     private String getNoEditReason(CmsObject cms, HttpServletRequest request) throws CmsException {
 
         CmsResourceUtil resUtil = new CmsResourceUtil(cms, getResource(cms, request));
-        return CmsEncoder.escapeHtml(resUtil.getNoEditReason(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms)));
+        return resUtil.getNoEditReason(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms));
     }
 
     /**
