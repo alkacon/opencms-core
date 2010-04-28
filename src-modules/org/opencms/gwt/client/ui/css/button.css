@@ -58,10 +58,12 @@
 
 .cmsTextButton.cmsButtonBig{
     padding: 2px 4px;
+    line-height: 16px;
 }
 
 .cmsTextButton.cmsButtonSmall{
     padding: 2px 2px;
+    line-height: 12px;
 }
 
 .cmsButtonMedium{}

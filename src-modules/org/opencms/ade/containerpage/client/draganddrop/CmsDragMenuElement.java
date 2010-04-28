@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsDragMenuElement.java,v $
- * Date   : $Date: 2010/04/21 14:13:46 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/28 13:27:28 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,7 +33,7 @@ package org.opencms.ade.containerpage.client.draganddrop;
 
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.gwt.client.ui.CmsDraggableListItemWidget;
-import org.opencms.gwt.client.ui.CmsImageButton;
+import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.shared.CmsListInfoBean;
 
@@ -45,14 +45,14 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
 public class CmsDragMenuElement extends CmsDraggableListItemWidget {
 
     /** The element delete button. */
-    private CmsImageButton m_deleteButton;
+    private CmsPushButton m_deleteButton;
 
     /**
      * Constructor.<p>
@@ -63,7 +63,9 @@ public class CmsDragMenuElement extends CmsDraggableListItemWidget {
 
         super(new CmsListInfoBean(element.getTitle(), element.getFile(), null), true);
         setClientId(element.getClientId());
-        m_deleteButton = new CmsImageButton(I_CmsImageBundle.INSTANCE.style().deleteIcon(), false);
+        m_deleteButton = new CmsPushButton();
+        m_deleteButton.setImageClass(I_CmsImageBundle.INSTANCE.style().deleteIcon());
+        m_deleteButton.setShowBorder(false);
         m_deleteButton.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
         m_deleteButton.addClickHandler(new ClickHandler() {
 
