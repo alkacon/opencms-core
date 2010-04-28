@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItemWidget.java,v $
- * Date   : $Date: 2010/04/26 09:51:15 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2010/04/28 08:37:52 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Tobias Herrmann
  * @author Michael Moossen
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 8.0.0
  */
@@ -72,6 +72,12 @@ public class CmsListItemWidget extends Composite implements HasMouseOutHandlers,
 
     /** Additional info item HTML. */
     protected static class AdditionalInfoItem extends CmsSimplePanel {
+
+        /** Text metrics key. */
+        private static final String TM_ADDITIONAL_INFO_ITEM_TITLE = "AdditionalInfoItemTitle";
+
+        /** Text metrics key. */
+        private static final String TM_ADDITIONAL_INFO_ITEM_VALUE = "AdditionalInfoItemValue";
 
         /** The title element. */
         private CmsLabel m_titleElem;
@@ -92,11 +98,13 @@ public class CmsListItemWidget extends Composite implements HasMouseOutHandlers,
             I_CmsListItemWidgetCss style = I_CmsLayoutBundle.INSTANCE.listItemWidgetCss();
             // create title
             m_titleElem = new CmsLabel(title + ":");
+            m_titleElem.setTextMetricsKey(TM_ADDITIONAL_INFO_ITEM_TITLE);
             m_titleElem.addStyleName(style.itemAdditionalTitle());
             m_titleElem.setTruncate(false);
             add(m_titleElem);
             // create value
             m_valueElem = new CmsLabel(value);
+            m_valueElem.setTextMetricsKey(TM_ADDITIONAL_INFO_ITEM_VALUE);
             if ((value == null) || (value.trim().length() == 0)) {
                 m_valueElem.setHTML(CmsDomUtil.Entity.nbsp.html());
             }
@@ -138,6 +146,12 @@ public class CmsListItemWidget extends Composite implements HasMouseOutHandlers,
 
     /** The CSS class to set the additional info open. */
     protected static final String OPENCLASS = I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().open();
+
+    /** Text metrics key. */
+    private static final String TM_LIST_ITEM_WIDGET_SUBTITLE = "ListItemWidgetSubtitle";
+
+    /** Text metrics key. */
+    private static final String TM_LIST_ITEM_WIDGET_TITLE = "ListItemWidgetTitle";
 
     /** The ui-binder instance for this class. */
     private static I_CmsListItemWidgetUiBinder uiBinder = GWT.create(I_CmsListItemWidgetUiBinder.class);
@@ -315,7 +329,10 @@ public class CmsListItemWidget extends Composite implements HasMouseOutHandlers,
         CmsHTMLHoverPanel itemContent = uiBinder.createAndBindUi(this);
         initWidget(itemContent);
         m_title.setText(infoBean.getTitle());
+        m_title.setTextMetricsKey(TM_LIST_ITEM_WIDGET_TITLE);
+
         m_subtitle.setText(infoBean.getSubTitle());
+        m_subtitle.setTextMetricsKey(TM_LIST_ITEM_WIDGET_SUBTITLE);
         if ((infoBean.getAdditionalInfo() != null) && (infoBean.getAdditionalInfo().size() > 0)) {
             m_openClose = new CmsImageButton(CmsImageButton.Icon.triangle_1_e, CmsImageButton.Icon.triangle_1_s, false);
             m_titleRow.insert(m_openClose, 0);

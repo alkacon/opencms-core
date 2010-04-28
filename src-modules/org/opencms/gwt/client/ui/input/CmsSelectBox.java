@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsSelectBox.java,v $
- * Date   : $Date: 2010/04/15 13:53:28 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2010/04/28 08:37:52 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -75,7 +75,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 8.0.0
  * 
@@ -94,6 +94,9 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
      */
     private class CmsSelectCell extends CmsLabel {
 
+        /** Text metrics key. */
+        private static final String TM_SELECT_CELL = "SelectCell";
+
         /** The text of the select option. */
         String m_text;
 
@@ -109,6 +112,7 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
         public CmsSelectCell(String value, String text) {
 
             super();
+            setTextMetricsKey(TM_SELECT_CELL);
             final CmsSelectCell self = this;
             m_value = value;
             m_text = text;
@@ -154,6 +158,9 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
 
     /** The layout bundle. */
     protected static final I_CmsInputCss CSS = I_CmsInputLayoutBundle.INSTANCE.inputCss();
+
+    /** Text metrics key. */
+    private static final String TM_SELECT_BOX_OPENER = "SelectBoxOpener";
 
     /** The UiBinder instance used for this widget. */
     private static I_CmsSelectBoxUiBinder uiBinder = GWT.create(I_CmsSelectBoxUiBinder.class);
@@ -209,6 +216,7 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
         m_panel = uiBinder.createAndBindUi(this);
         initWidget(m_panel);
         m_openerLabel.addStyleName(CSS.selectBoxOpener());
+        m_openerLabel.setTextMetricsKey(TM_SELECT_BOX_OPENER);
         m_selectBoxState = new CmsStyleVariable(m_opener/*, m_selector*/);
         m_selectBoxState.setValue(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
         //    m_selectBoxState.setValue(CSS.selectBoxClosed());

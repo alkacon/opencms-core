@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsTextMetrics.java,v $
- * Date   : $Date: 2010/04/01 13:45:57 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/04/28 08:37:52 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,8 +31,8 @@
 
 package org.opencms.gwt.client.util;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
@@ -47,9 +47,8 @@ import com.google.gwt.user.client.ui.RootPanel;
  * Normal usage would be:
  * <pre>
  * for(Element e: elements) {
- *   CmsTextMetrics tm = CmsTextMetrics.get();
- *   // bind to match font size, etc.
- *   tm.bind(e);
+ *   CmsTextMetrics tm = CmsTextMetrics.get(e, "TextMetricsKey");
+ *   
  *   // measure text 
  *   if (r.getWidth(text) > 500) {
  *      // do something
@@ -63,7 +62,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
  */
@@ -90,74 +89,53 @@ public final class CmsTextMetrics {
         CmsDomUtil.Style.wordWrap,
         CmsDomUtil.Style.padding};
 
-    /** The count of used instances. */
-    private static int m_count;
-
-    /** The instance pool. */
-    private static List<CmsTextMetrics> m_instances = new ArrayList<CmsTextMetrics>();
+    /** The map containing the instances. */
+    private static Map<String, CmsTextMetrics> m_instances = new HashMap<String, CmsTextMetrics>();
 
     /** The playground. */
     private Element m_elem;
 
-    /**
-     * Prevent instantiation.<p> 
-     */
-    private CmsTextMetrics() {
+    /** The text metrics key. */
+    private String m_key;
 
-        // empty
+    /**
+     * Internal constructor for creating a text metrics object with a given key.<p>
+     * 
+     * @param key the key identifying the text metrics.
+     */
+    private CmsTextMetrics(String key) {
+
+        m_key = key;
     }
 
     /**
-     * Returns the singleton instance.<p>
+     * Gets the text metrics object for a given DOM element and key.<p>
      * 
-     * @return the text metrics instance
-     */
-    public static CmsTextMetrics get() {
-
-        m_count++;
-        if (m_instances.size() < m_count) {
-            m_instances.add(new CmsTextMetrics());
-        }
-        return m_instances.get(m_count - 1);
-    }
-
-    /**
-     * Binds this text metrics instance to an element from which to copy existing
-     * CSS styles that can affect the size of the rendered text.<p>
+     * If the key is null, or the method has been never called with the same key 
+     * before, a new text metrics object will be created, with its style taken from
+     * the element parameter. Otherwise, the text metrics object for the given key will
+     * be returned, and the element parameter will be ignored. 
      * 
-     * @param element the element
+     * @param element the element from which to take the style
+     * @param key the text metrics key
+     *  
+     * @return a text metrics object
      */
-    public void bind(Element element) {
+    public static CmsTextMetrics get(Element element, String key) {
 
-        bind(element, ATTRIBUTES);
-    }
-
-    /**
-     * Binds this text metrics instance to an element from which to copy existing
-     * CSS styles that can affect the size of the rendered text.<p>
-     * 
-     * @param element the element
-     * @param attributes the attributes to bind
-     */
-    public void bind(Element element, CmsDomUtil.Style... attributes) {
-
-        if (m_elem == null) {
-            // create playground
-            m_elem = DOM.createDiv();
-            Style style = m_elem.getStyle();
-            style.setVisibility(Style.Visibility.HIDDEN);
-            style.setPosition(Style.Position.ABSOLUTE);
-            style.setLeft(-5000, Style.Unit.PX);
-            style.setTop(-5000, Style.Unit.PX);
+        CmsTextMetrics instance = null;
+        if (key == null) {
+            instance = new CmsTextMetrics(key);
+            instance.bind(element);
+        } else {
+            instance = m_instances.get(key);
+            if (instance == null) {
+                instance = new CmsTextMetrics(key);
+                instance.bind(element);
+                m_instances.put(key, instance);
+            }
         }
-        // copy all relevant CSS properties
-        Style style = m_elem.getStyle();
-        for (CmsDomUtil.Style attr : attributes) {
-            String attrName = attr.toString();
-            style.setProperty(attrName, CmsDomUtil.getCurrentStyle(element, attr));
-        }
-        // append playground
-        RootPanel.getBodyElement().appendChild(m_elem);
+        return instance;
     }
 
     /**
@@ -190,9 +168,12 @@ public final class CmsTextMetrics {
      */
     public void release() {
 
-        m_elem.removeFromParent();
-        m_elem = null;
-        m_count--;
+        if (m_key == null) {
+            m_elem.removeFromParent();
+            m_elem = null;
+        }
+        // if we have a key, we do nothing so that the instance can be reused later
+
     }
 
     /**
@@ -205,5 +186,44 @@ public final class CmsTextMetrics {
     public void setFixedWidth(int width) {
 
         m_elem.getStyle().setWidth(width, Style.Unit.PX);
+    }
+
+    /**
+     * Binds this text metrics instance to an element from which to copy existing
+     * CSS styles that can affect the size of the rendered text.<p>
+     * 
+     * @param element the element
+     */
+    protected void bind(Element element) {
+
+        bind(element, ATTRIBUTES);
+    }
+
+    /**
+     * Binds this text metrics instance to an element from which to copy existing
+     * CSS styles that can affect the size of the rendered text.<p>
+     * 
+     * @param element the element
+     * @param attributes the attributes to bind
+     */
+    protected void bind(Element element, CmsDomUtil.Style... attributes) {
+
+        if (m_elem == null) {
+            // create playground
+            m_elem = DOM.createDiv();
+            Style style = m_elem.getStyle();
+            style.setVisibility(Style.Visibility.HIDDEN);
+            style.setPosition(Style.Position.ABSOLUTE);
+            style.setLeft(-5000, Style.Unit.PX);
+            style.setTop(-5000, Style.Unit.PX);
+        }
+        // copy all relevant CSS properties
+        Style style = m_elem.getStyle();
+        for (CmsDomUtil.Style attr : attributes) {
+            String attrName = attr.toString();
+            style.setProperty(attrName, CmsDomUtil.getCurrentStyle(element, attr));
+        }
+        // append playground
+        RootPanel.getBodyElement().appendChild(m_elem);
     }
 }

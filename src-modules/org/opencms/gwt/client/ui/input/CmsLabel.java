@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsLabel.java,v $
- * Date   : $Date: 2010/04/19 11:47:45 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/28 08:37:52 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -92,6 +92,9 @@ implements HasHorizontalAlignment, HasText, HasHTML, HasClickHandlers, HasAllMou
 
     /** Current horizontal alignment. */
     private HorizontalAlignmentConstant m_horzAlign;
+
+    /** The key for identifying the text metrics to use. */
+    private String m_textMetricsKey;
 
     /** Indicates if text truncation is desired, used mainly for performance reasons. */
     private boolean m_truncate;
@@ -127,10 +130,14 @@ implements HasHorizontalAlignment, HasText, HasHTML, HasClickHandlers, HasAllMou
     }
 
     /**
-     * Truncates long text and sets the original text to the title attribute.<p> 
-     * @param element 
+     * Truncates long text and sets the original text to the title attribute.<p>
+     *  
+     * @param element the element which should be fixed
+     * @param textMetricsKey the key identifying the text metrics to use  
      */
-    protected static void fixElement(Element element) {
+    protected static void fixElement(Element element, String textMetricsKey) {
+
+        CmsDebugLog log = CmsDebugLog.getInstance();
 
         if (getWidthChecked(element)) {
             return;
@@ -138,8 +145,7 @@ implements HasHorizontalAlignment, HasText, HasHTML, HasClickHandlers, HasAllMou
         setWidthChecked(element, true);
 
         // measure the actual text width
-        CmsTextMetrics tm = CmsTextMetrics.get();
-        tm.bind(element);
+        CmsTextMetrics tm = CmsTextMetrics.get(element, textMetricsKey);
         String text = element.getInnerText();
         int textWidth = tm.getWidth(text);
         tm.release();
@@ -151,7 +157,6 @@ implements HasHorizontalAlignment, HasText, HasHTML, HasClickHandlers, HasAllMou
             return;
         }
 
-        CmsDebugLog log = CmsDebugLog.getInstance();
         log.printLine("fixElement: ");
         log.printLine("text: " + text);
         log.printLine("elemWidth: " + elementWidth);
@@ -187,8 +192,9 @@ implements HasHorizontalAlignment, HasText, HasHTML, HasClickHandlers, HasAllMou
      * Fixes the text as soon as the possible.<p> 
      * 
      * @param element the element to fix
+     * @param textMetricsKey the key identifying the text metrics to use 
      */
-    protected static void fixNow(final Element element) {
+    protected static void fixNow(final Element element, final String textMetricsKey) {
 
         Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 
@@ -197,7 +203,7 @@ implements HasHorizontalAlignment, HasText, HasHTML, HasClickHandlers, HasAllMou
              */
             public void execute() {
 
-                fixElement(element);
+                fixElement(element, textMetricsKey);
             }
         });
     }
@@ -206,8 +212,9 @@ implements HasHorizontalAlignment, HasText, HasHTML, HasClickHandlers, HasAllMou
      * Schedule the width measure of the given element.<p>
      * 
      * @param element the element to measure
+     * @param textMetricsKey the key identifying the text metrics to use 
      */
-    protected static void scheduleUpdate(Element element) {
+    protected static void scheduleUpdate(Element element, final String textMetricsKey) {
 
         if (m_timer == null) {
             m_elements = new ArrayList<Element>();
@@ -227,9 +234,9 @@ implements HasHorizontalAlignment, HasText, HasHTML, HasClickHandlers, HasAllMou
                     m_elements = null;
                     for (Element elem : elements) {
                         if (CmsDomUtil.getCurrentStyleInt(elem, CmsDomUtil.Style.width) > 0) {
-                            fixNow(elem);
+                            fixNow(elem, textMetricsKey);
                         } else {
-                            scheduleUpdate(elem);
+                            scheduleUpdate(elem, textMetricsKey);
                         }
                     }
                 }
@@ -244,6 +251,8 @@ implements HasHorizontalAlignment, HasText, HasHTML, HasClickHandlers, HasAllMou
      * Gets the width checked value.<p>
      * 
      * @param element the element to get it for
+     * 
+     * @return true if the width of the element has already been checked
      */
     private static boolean getWidthChecked(Element element) {
 
@@ -397,6 +406,16 @@ implements HasHorizontalAlignment, HasText, HasHTML, HasClickHandlers, HasAllMou
     }
 
     /**
+     * Sets the text metrics key for this label.<p>
+     * 
+     * @param textMetricsKey the key identifying the text metrics to be used
+     */
+    public void setTextMetricsKey(String textMetricsKey) {
+
+        m_textMetricsKey = textMetricsKey;
+    }
+
+    /**
      * Sets the truncation flag.<p>
      *
      * @param truncate the truncation flag to set
@@ -422,9 +441,10 @@ implements HasHorizontalAlignment, HasText, HasHTML, HasClickHandlers, HasAllMou
             return;
         }
         if (CmsDomUtil.getCurrentStyleInt(element, CmsDomUtil.Style.width) > 0) {
-            fixNow(element);
+            fixNow(element, m_textMetricsKey);
+            return;
         }
-        scheduleUpdate(element);
+        scheduleUpdate(element, m_textMetricsKey);
     }
 
     /**
