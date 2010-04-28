@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/A_CmsToolbarMenu.java,v $
- * Date   : $Date: 2010/04/27 13:56:00 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/04/28 13:03:39 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,7 +33,7 @@ package org.opencms.ade.containerpage.client.ui;
 
 import org.opencms.ade.containerpage.client.CmsContainerpageHandler;
 import org.opencms.gwt.client.ui.CmsMenuButton;
-import org.opencms.gwt.client.ui.CmsToolbarButton;
+import org.opencms.gwt.client.ui.I_CmsButton;
 
 /**
  * Abstract button class implementing common methods of {@link org.opencms.ade.containerpage.client.ui.I_CmsToolbarButton} 
@@ -41,7 +41,7 @@ import org.opencms.gwt.client.ui.CmsToolbarButton;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -58,7 +58,7 @@ public abstract class A_CmsToolbarMenu extends CmsMenuButton implements I_CmsToo
      * @param buttonData the tool-bar button data
      * @param handler the container-page handler
      */
-    public A_CmsToolbarMenu(CmsToolbarButton.ButtonData buttonData, CmsContainerpageHandler handler) {
+    public A_CmsToolbarMenu(I_CmsButton.ButtonData buttonData, CmsContainerpageHandler handler) {
 
         super(buttonData.getTitle(), buttonData.getIconClass());
         m_handler = handler;

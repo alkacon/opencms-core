@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsLeavePageDialog.java,v $
- * Date   : $Date: 2010/04/27 13:56:00 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/28 13:03:39 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,7 +35,8 @@ import org.opencms.ade.containerpage.client.CmsContainerpageController;
 import org.opencms.ade.containerpage.client.CmsContainerpageHandler;
 import org.opencms.ade.containerpage.client.Messages;
 import org.opencms.gwt.client.ui.CmsPopupDialog;
-import org.opencms.gwt.client.ui.CmsTextButton;
+import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.util.CmsDebugLog;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -47,20 +48,20 @@ import com.google.gwt.user.client.ui.Label;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
 public class CmsLeavePageDialog extends CmsPopupDialog {
 
     /** The save button. */
-    CmsTextButton m_saveButton;
+    CmsPushButton m_saveButton;
 
     /** The cancel button. */
-    CmsTextButton m_cancelButton;
+    CmsPushButton m_cancelButton;
 
     /** The leave button. */
-    CmsTextButton m_leaveButton;
+    CmsPushButton m_leaveButton;
 
     /**
      * Constructor. Taking the URI the user tried to open.<p>
@@ -80,11 +81,11 @@ public class CmsLeavePageDialog extends CmsPopupDialog {
         setContent(content);
         this.setText(Messages.get().key(Messages.GUI_DIALOG_PAGE_NOT_SAVED_TITLE_0));
         this.setGlassEnabled(true);
-        m_saveButton = new CmsTextButton(
-            Messages.get().key(Messages.GUI_BUTTON_SAVE_TEXT_0),
-            null,
-            CmsTextButton.ButtonStyle.cmsButtonSmall);
-        m_saveButton.useMinWidth(true);
+        m_saveButton = new CmsPushButton();
+        m_saveButton.setTitle(Messages.get().key(Messages.GUI_BUTTON_SAVE_TEXT_0));
+        m_saveButton.setText(Messages.get().key(Messages.GUI_BUTTON_SAVE_TEXT_0));
+        m_saveButton.setSize(I_CmsButton.Size.small);
+        m_saveButton.setUseMinWidth(true);
         m_saveButton.addClickHandler(new ClickHandler() {
 
             /**
@@ -97,11 +98,11 @@ public class CmsLeavePageDialog extends CmsPopupDialog {
 
             }
         });
-        m_cancelButton = new CmsTextButton(
-            Messages.get().key(Messages.GUI_BUTTON_CANCEL_TEXT_0),
-            null,
-            CmsTextButton.ButtonStyle.cmsButtonSmall);
-        m_cancelButton.useMinWidth(true);
+        m_cancelButton = new CmsPushButton();
+        m_cancelButton.setTitle(Messages.get().key(Messages.GUI_BUTTON_CANCEL_TEXT_0));
+        m_cancelButton.setText(Messages.get().key(Messages.GUI_BUTTON_CANCEL_TEXT_0));
+        m_cancelButton.setSize(I_CmsButton.Size.small);
+        m_cancelButton.setUseMinWidth(true);
         m_cancelButton.addClickHandler(new ClickHandler() {
 
             /**
@@ -117,11 +118,11 @@ public class CmsLeavePageDialog extends CmsPopupDialog {
                 }
             }
         });
-        m_leaveButton = new CmsTextButton(
-            Messages.get().key(Messages.GUI_BUTTON_LEAVEPAGE_TEXT_0),
-            null,
-            CmsTextButton.ButtonStyle.cmsButtonSmall);
-        m_leaveButton.useMinWidth(true);
+        m_leaveButton = new CmsPushButton();
+        m_leaveButton.setTitle(Messages.get().key(Messages.GUI_BUTTON_LEAVEPAGE_TEXT_0));
+        m_leaveButton.setText(Messages.get().key(Messages.GUI_BUTTON_LEAVEPAGE_TEXT_0));
+        m_leaveButton.setSize(I_CmsButton.Size.small);
+        m_leaveButton.setUseMinWidth(true);
         m_leaveButton.addClickHandler(new ClickHandler() {
 
             /**

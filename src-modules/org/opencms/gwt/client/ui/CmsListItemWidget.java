@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItemWidget.java,v $
- * Date   : $Date: 2010/04/28 08:37:52 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2010/04/28 13:03:39 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Tobias Herrmann
  * @author Michael Moossen
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 8.0.0
  */
@@ -175,7 +175,7 @@ public class CmsListItemWidget extends Composite implements HasMouseOutHandlers,
     protected SimplePanel m_iconPanel;
 
     /** The open-close button for the additional info. */
-    protected CmsImageButton m_openClose;
+    protected CmsPushButton m_openClose;
 
     /** Sub title label. */
     @UiField
@@ -334,7 +334,8 @@ public class CmsListItemWidget extends Composite implements HasMouseOutHandlers,
         m_subtitle.setText(infoBean.getSubTitle());
         m_subtitle.setTextMetricsKey(TM_LIST_ITEM_WIDGET_SUBTITLE);
         if ((infoBean.getAdditionalInfo() != null) && (infoBean.getAdditionalInfo().size() > 0)) {
-            m_openClose = new CmsImageButton(CmsImageButton.Icon.triangle_1_e, CmsImageButton.Icon.triangle_1_s, false);
+            m_openClose = new CmsPushButton(I_CmsButton.UiIcon.triangle_1_e, I_CmsButton.UiIcon.triangle_1_s);
+            m_openClose.setShowBorder(false);
             m_titleRow.insert(m_openClose, 0);
             m_openClose.addClickHandler(new ClickHandler() {
 

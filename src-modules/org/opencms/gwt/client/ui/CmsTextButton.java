@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsTextButton.java,v $
- * Date   : $Date: 2010/04/15 13:53:28 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/04/28 13:03:39 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,13 +39,16 @@ import com.google.gwt.uibinder.client.UiConstructor;
 /**
  * Provides a text button.<p>
  * 
+ * DEPRECATED: Use CmsPushButton instead.<p>
+ * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
-public class CmsTextButton extends CmsButton {
+@Deprecated
+public class CmsTextButton extends CmsPushButton {
 
     /** CSS style variants. */
     public static enum ButtonStyle {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/A_CmsToolbarButton.java,v $
- * Date   : $Date: 2010/04/27 13:56:00 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/28 13:03:39 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,7 +32,8 @@
 package org.opencms.ade.containerpage.client.ui;
 
 import org.opencms.ade.containerpage.client.CmsContainerpageHandler;
-import org.opencms.gwt.client.ui.CmsToolbarButton;
+import org.opencms.gwt.client.ui.CmsToggleButton;
+import org.opencms.gwt.client.ui.I_CmsButton;
 
 import com.google.gwt.dom.client.Document;
 
@@ -41,11 +42,11 @@ import com.google.gwt.dom.client.Document;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
-public abstract class A_CmsToolbarButton extends CmsToolbarButton implements I_CmsToolbarButton {
+public abstract class A_CmsToolbarButton extends CmsToggleButton implements I_CmsToolbarButton {
 
     /** The CSS class responsible for displaying the proper icon. */
     private String m_iconClass;
@@ -60,7 +61,7 @@ public abstract class A_CmsToolbarButton extends CmsToolbarButton implements I_C
      * @param buttonData the button data to use
      * @param handler the container-page handler
      */
-    protected A_CmsToolbarButton(CmsToolbarButton.ButtonData buttonData, CmsContainerpageHandler handler) {
+    protected A_CmsToolbarButton(I_CmsButton.ButtonData buttonData, CmsContainerpageHandler handler) {
 
         super(buttonData);
         m_handler = handler;

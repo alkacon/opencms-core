@@ -13,8 +13,8 @@
 		</g:FlowPanel>
 		<g:FlowPanel ui:field="m_topBar" styleName="{res.publishCss.topBar}">
 			<g:InlineLabel ui:field = "m_selectLabel" />
-		    <cms:CmsTextButton ui:field="m_selectAll"  buttonStyle="cmsButtonMedium"/>
-		    <cms:CmsTextButton ui:field="m_selectNone"  buttonStyle="cmsButtonMedium"/>
+		    <cms:CmsPushButton ui:field="m_selectAll"/>
+		    <cms:CmsPushButton ui:field="m_selectNone"/>
 		</g:FlowPanel>
 		<g:Label ui:field="m_noResources"  styleName="{res.publishCss.noResources}"/>
 		<g:ScrollPanel ui:field="m_scrollPanel" styleName="{res.publishCss.scrollPanel}" addStyleNames="{main.generalCss.cornerAll}">
@@ -35,7 +35,7 @@
 			</g:FlowPanel>
 		</g:FlowPanel>
 		<g:FlowPanel ui:field="m_problemsPanel" styleName="{res.publishCss.problemPanel}" />
-		<cms:CmsTextButton ui:field="m_publishButton"  buttonStyle="cmsButtonMedium"></cms:CmsTextButton>
-		<cms:CmsTextButton ui:field="m_cancelButton"  buttonStyle="cmsButtonMedium"></cms:CmsTextButton> 
+		<cms:CmsPushButton ui:field="m_publishButton"></cms:CmsPushButton>
+		<cms:CmsPushButton ui:field="m_cancelButton"></cms:CmsPushButton> 
 	</g:FlowPanel>
 </ui:UiBinder> 

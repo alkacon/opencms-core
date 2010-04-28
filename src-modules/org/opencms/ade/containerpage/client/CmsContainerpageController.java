@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageController.java,v $
- * Date   : $Date: 2010/04/27 13:56:00 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/28 13:04:02 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -922,13 +922,13 @@ public final class CmsContainerpageController {
                     }
                 }
             }
-        }
-        if ((event.getTypeInt() == Event.ONKEYPRESS) && (nativeEvent.getKeyCode() == 116)) {
-            nativeEvent.preventDefault();
-            nativeEvent.stopPropagation();
-            CmsLeavePageDialog dialog = new CmsLeavePageDialog(Window.Location.getHref(), this, null);
-            dialog.center();
-            CmsDebugLog.getInstance().printLine("Reload canceled");
+            if ((event.getTypeInt() == Event.ONKEYPRESS) && (nativeEvent.getKeyCode() == 116)) {
+                nativeEvent.preventDefault();
+                nativeEvent.stopPropagation();
+                CmsLeavePageDialog dialog = new CmsLeavePageDialog(Window.Location.getHref(), this, null);
+                dialog.center();
+                CmsDebugLog.getInstance().printLine("Reload canceled");
+            }
         }
     }
 

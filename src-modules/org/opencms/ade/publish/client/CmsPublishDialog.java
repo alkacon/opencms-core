@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishDialog.java,v $
- * Date   : $Date: 2010/04/27 07:07:19 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/04/28 13:03:39 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,7 +37,7 @@ import org.opencms.ade.publish.shared.CmsPublishGroup;
 import org.opencms.ade.publish.shared.CmsPublishOptions;
 import org.opencms.ade.publish.shared.CmsPublishResource;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
-import org.opencms.gwt.client.ui.CmsButton;
+import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsPopupDialog;
 import org.opencms.util.CmsUUID;
 
@@ -58,7 +58,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 8.0.0
  * 
@@ -323,11 +323,11 @@ public class CmsPublishDialog extends CmsPopupDialog {
         m_panel.showWidget(panelId);
         removeAllButtons();
         if (panelId == PANEL_SELECT) {
-            for (CmsButton button : m_publishSelectPanel.getButtons()) {
+            for (CmsPushButton button : m_publishSelectPanel.getButtons()) {
                 addButton(button);
             }
         } else if (panelId == PANEL_BROKEN_LINKS) {
-            for (CmsButton button : m_brokenLinksPanel.getButtons()) {
+            for (CmsPushButton button : m_brokenLinksPanel.getButtons()) {
                 addButton(button);
             }
         }

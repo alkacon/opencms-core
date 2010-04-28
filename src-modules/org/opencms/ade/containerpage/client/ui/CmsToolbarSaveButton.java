@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsToolbarSaveButton.java,v $
- * Date   : $Date: 2010/04/27 13:56:00 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/28 13:03:39 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,14 +32,14 @@
 package org.opencms.ade.containerpage.client.ui;
 
 import org.opencms.ade.containerpage.client.CmsContainerpageHandler;
-import org.opencms.gwt.client.ui.CmsToolbarButton;
+import org.opencms.gwt.client.ui.I_CmsButton;
 
 /**
  * The save button holding all related methods.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -52,7 +52,7 @@ public class CmsToolbarSaveButton extends A_CmsToolbarButton {
      */
     public CmsToolbarSaveButton(CmsContainerpageHandler handler) {
 
-        super(CmsToolbarButton.ButtonData.SAVE, handler);
+        super(I_CmsButton.ButtonData.SAVE, handler);
     }
 
     /**

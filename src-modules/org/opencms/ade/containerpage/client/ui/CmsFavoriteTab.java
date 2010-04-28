@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsFavoriteTab.java,v $
- * Date   : $Date: 2010/04/27 13:56:00 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/28 13:03:39 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,7 +34,7 @@ package org.opencms.ade.containerpage.client.ui;
 import org.opencms.ade.containerpage.client.Messages;
 import org.opencms.ade.containerpage.client.draganddrop.CmsDragMenuElement;
 import org.opencms.ade.containerpage.client.draganddrop.CmsDragTargetMenu;
-import org.opencms.gwt.client.ui.CmsButton;
+import org.opencms.gwt.client.ui.CmsPushButton;
 
 import java.util.Iterator;
 
@@ -52,7 +52,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -79,11 +79,11 @@ public class CmsFavoriteTab extends Composite {
 
     /** The cancel edit button. */
     @UiField
-    /*DEFAULT*/CmsButton m_cancelButton;
+    /*DEFAULT*/CmsPushButton m_cancelButton;
 
     /** The edit button. */
     @UiField
-    /*DEFAULT*/CmsButton m_editButton;
+    /*DEFAULT*/CmsPushButton m_editButton;
 
     /** The list panel holding the favorite elements. */
     @UiField
@@ -91,7 +91,7 @@ public class CmsFavoriteTab extends Composite {
 
     /** The save favorites button. */
     @UiField
-    /*DEFAULT*/CmsButton m_saveButton;
+    /*DEFAULT*/CmsPushButton m_saveButton;
 
     /**
      * Constructor.<p>
@@ -103,11 +103,11 @@ public class CmsFavoriteTab extends Composite {
         initWidget(uiBinder.createAndBindUi(this));
         m_clipboard = clipboard;
         m_buttonEditingPanel.setVisible(false);
-        m_editButton.setUpFace(Messages.get().key(Messages.GUI_BUTTON_EDITFAVORITES_TEXT_0), null);
+        m_editButton.setText(Messages.get().key(Messages.GUI_BUTTON_EDITFAVORITES_TEXT_0));
         m_editButton.setTitle(Messages.get().key(Messages.GUI_BUTTON_EDITFAVORITES_TEXT_0));
-        m_saveButton.setUpFace(Messages.get().key(Messages.GUI_BUTTON_SAVE_TEXT_0), null);
+        m_saveButton.setText(Messages.get().key(Messages.GUI_BUTTON_SAVE_TEXT_0));
         m_saveButton.setTitle(Messages.get().key(Messages.GUI_BUTTON_SAVE_TEXT_0));
-        m_cancelButton.setUpFace(Messages.get().key(Messages.GUI_BUTTON_CANCEL_TEXT_0), null);
+        m_cancelButton.setText(Messages.get().key(Messages.GUI_BUTTON_CANCEL_TEXT_0));
         m_cancelButton.setTitle(Messages.get().key(Messages.GUI_BUTTON_CANCEL_TEXT_0));
     }
 

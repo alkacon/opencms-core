@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsDraggableListItemWidget.java,v $
- * Date   : $Date: 2010/04/21 14:13:46 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/28 13:03:39 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,14 +63,13 @@ import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.dom.client.MouseWheelEvent;
 import com.google.gwt.event.dom.client.MouseWheelHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * A draggable list item widget.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -89,7 +88,7 @@ public class CmsDraggableListItemWidget extends CmsListItemWidget implements I_C
     private List<HandlerRegistration> m_handlerRegistrations;
 
     /** The move handle widget. */
-    private Widget m_moveHandle;
+    private CmsPushButton m_moveHandle;
 
     /**
      * Constructor.<p>
@@ -103,7 +102,9 @@ public class CmsDraggableListItemWidget extends CmsListItemWidget implements I_C
         m_handlerRegistrations = new ArrayList<HandlerRegistration>();
         m_dragEnabled = draggable;
         if (draggable) {
-            m_moveHandle = new CmsImageButton(I_CmsImageBundle.INSTANCE.style().moveIcon(), false);
+            m_moveHandle = new CmsPushButton();
+            m_moveHandle.setImageClass(I_CmsImageBundle.INSTANCE.style().moveIcon());
+            m_moveHandle.setShowBorder(false);
             // always show button
             m_moveHandle.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
             addButton(m_moveHandle);
@@ -143,6 +144,7 @@ public class CmsDraggableListItemWidget extends CmsListItemWidget implements I_C
     /**
      * @see com.google.gwt.event.dom.client.HasMouseOutHandlers#addMouseOutHandler(com.google.gwt.event.dom.client.MouseOutHandler)
      */
+    @Override
     public HandlerRegistration addMouseOutHandler(MouseOutHandler handler) {
 
         HandlerRegistration reg = addDomHandler(handler, MouseOutEvent.getType());
@@ -153,6 +155,7 @@ public class CmsDraggableListItemWidget extends CmsListItemWidget implements I_C
     /**
      * @see com.google.gwt.event.dom.client.HasMouseOverHandlers#addMouseOverHandler(com.google.gwt.event.dom.client.MouseOverHandler)
      */
+    @Override
     public HandlerRegistration addMouseOverHandler(MouseOverHandler handler) {
 
         HandlerRegistration reg = addDomHandler(handler, MouseOverEvent.getType());

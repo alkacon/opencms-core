@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsToolbarClipboardMenu.java,v $
- * Date   : $Date: 2010/04/27 13:56:00 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/04/28 13:03:39 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.ade.containerpage.client.draganddrop.CmsDragTargetMenu;
 import org.opencms.ade.containerpage.client.draganddrop.CmsMenuDragHandler;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
-import org.opencms.gwt.client.ui.CmsToolbarButton;
+import org.opencms.gwt.client.ui.I_CmsButton;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -53,7 +53,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.0
  */
@@ -84,7 +84,7 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu {
      */
     public CmsToolbarClipboardMenu(CmsContainerpageHandler handler) {
 
-        super(CmsToolbarButton.ButtonData.CLIPBOARD, handler);
+        super(I_CmsButton.ButtonData.CLIPBOARD, handler);
 
         m_content = new FlowPanel();
         m_content.setStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().menuContent());

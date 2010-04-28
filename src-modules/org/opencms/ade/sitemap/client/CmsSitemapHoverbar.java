@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapHoverbar.java,v $
- * Date   : $Date: 2010/04/28 12:09:32 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/04/28 13:03:39 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,8 +33,8 @@ package org.opencms.ade.sitemap.client;
 
 import org.opencms.ade.sitemap.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.A_CmsHoverHandler;
-import org.opencms.gwt.client.ui.CmsImageButton;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
+import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsDomUtil;
 
@@ -50,32 +50,32 @@ import com.google.gwt.user.client.ui.FlowPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 8.0.0
  */
 public class CmsSitemapHoverbar extends FlowPanel {
 
     /** The delete button. */
-    private CmsImageButton m_deleteButton;
+    private CmsPushButton m_deleteButton;
 
     /** The edit button. */
-    private CmsImageButton m_editButton;
+    private CmsPushButton m_editButton;
 
     /** The go-to button. */
-    private CmsImageButton m_gotoButton;
+    private CmsPushButton m_gotoButton;
 
     /** The move button. */
-    private CmsImageButton m_moveButton;
+    private CmsPushButton m_moveButton;
 
     /** The new button. */
-    private CmsImageButton m_newButton;
+    private CmsPushButton m_newButton;
 
     /** The subsitemap button. */
-    private CmsImageButton m_subsitemapButton;
+    private CmsPushButton m_subsitemapButton;
 
     /** The parent sitemap button. */
-    private CmsImageButton m_parentSitemapButton;
+    private CmsPushButton m_parentSitemapButton;
 
     /**
      * Constructor.<p>
@@ -114,38 +114,52 @@ public class CmsSitemapHoverbar extends FlowPanel {
         };
 
         // TODO: this should be a link so it can be opened in a new window or tab by the user
-        m_gotoButton = new CmsImageButton(I_CmsImageBundle.INSTANCE.buttonCss().hoverbarGoto(), false);
+        m_gotoButton = new CmsPushButton();
+        m_gotoButton.setImageClass(I_CmsImageBundle.INSTANCE.buttonCss().hoverbarGoto());
+        m_gotoButton.setShowBorder(false);
         m_gotoButton.setTitle(Messages.get().key(Messages.GUI_HOVERBAR_GOTO_0));
         m_gotoButton.addClickHandler(clickHandler);
         add(m_gotoButton);
 
-        m_subsitemapButton = new CmsImageButton(I_CmsImageBundle.INSTANCE.buttonCss().hoverbarSubsitemap(), false);
+        m_subsitemapButton = new CmsPushButton();
+        m_subsitemapButton.setImageClass(I_CmsImageBundle.INSTANCE.buttonCss().hoverbarSubsitemap());
+        m_subsitemapButton.setShowBorder(false);
         m_subsitemapButton.setTitle(Messages.get().key(Messages.GUI_HOVERBAR_SUBSITEMAP_0));
         m_subsitemapButton.addClickHandler(clickHandler);
         add(m_subsitemapButton);
 
-        m_deleteButton = new CmsImageButton(I_CmsImageBundle.INSTANCE.buttonCss().hoverbarDelete(), false);
+        m_deleteButton = new CmsPushButton();
+        m_deleteButton.setImageClass(I_CmsImageBundle.INSTANCE.buttonCss().hoverbarDelete());
+        m_deleteButton.setShowBorder(false);
         m_deleteButton.setTitle(Messages.get().key(Messages.GUI_HOVERBAR_DELETE_0));
         m_deleteButton.addClickHandler(clickHandler);
         add(m_deleteButton);
 
-        m_editButton = new CmsImageButton(I_CmsImageBundle.INSTANCE.buttonCss().hoverbarEdit(), false);
+        m_editButton = new CmsPushButton();
+        m_editButton.setImageClass(I_CmsImageBundle.INSTANCE.buttonCss().hoverbarEdit());
+        m_editButton.setShowBorder(false);
         m_editButton.setTitle(Messages.get().key(Messages.GUI_HOVERBAR_EDIT_0));
         m_editButton.addClickHandler(clickHandler);
         add(m_editButton);
 
-        m_newButton = new CmsImageButton(I_CmsImageBundle.INSTANCE.buttonCss().hoverbarNew(), false);
+        m_newButton = new CmsPushButton();
+        m_newButton.setImageClass(I_CmsImageBundle.INSTANCE.buttonCss().hoverbarNew());
+        m_newButton.setShowBorder(false);
         m_newButton.setTitle(Messages.get().key(Messages.GUI_HOVERBAR_NEW_0));
         m_newButton.addClickHandler(clickHandler);
         add(m_newButton);
 
-        m_moveButton = new CmsImageButton(I_CmsImageBundle.INSTANCE.buttonCss().hoverbarMove(), false);
+        m_moveButton = new CmsPushButton();
+        m_moveButton.setImageClass(I_CmsImageBundle.INSTANCE.buttonCss().hoverbarMove());
+        m_moveButton.setShowBorder(false);
         m_moveButton.setTitle(Messages.get().key(Messages.GUI_HOVERBAR_MOVE_0));
         m_moveButton.addClickHandler(clickHandler);
         add(m_moveButton);
 
         // TODO: this should be a link so it can be opened in a new window or tab by the user
-        m_parentSitemapButton = new CmsImageButton(I_CmsImageBundle.INSTANCE.buttonCss().hoverbarParent(), false);
+        m_parentSitemapButton = new CmsPushButton();
+        m_parentSitemapButton.setImageClass(I_CmsImageBundle.INSTANCE.buttonCss().hoverbarParent());
+        m_parentSitemapButton.setShowBorder(false);
         m_parentSitemapButton.setTitle(Messages.get().key(Messages.GUI_HOVERBAR_PARENT_0));
         m_parentSitemapButton.addClickHandler(clickHandler);
         m_parentSitemapButton.setVisible(false);
@@ -157,7 +171,7 @@ public class CmsSitemapHoverbar extends FlowPanel {
      *
      * @return the delete Button
      */
-    public CmsImageButton getDeleteButton() {
+    public CmsPushButton getDeleteButton() {
 
         return m_deleteButton;
     }
@@ -167,7 +181,7 @@ public class CmsSitemapHoverbar extends FlowPanel {
      *
      * @return the edit Button
      */
-    public CmsImageButton getEditButton() {
+    public CmsPushButton getEditButton() {
 
         return m_editButton;
     }
@@ -177,7 +191,7 @@ public class CmsSitemapHoverbar extends FlowPanel {
      *
      * @return the goto Button
      */
-    public CmsImageButton getGotoButton() {
+    public CmsPushButton getGotoButton() {
 
         return m_gotoButton;
     }
@@ -187,7 +201,7 @@ public class CmsSitemapHoverbar extends FlowPanel {
      *
      * @return the move Button
      */
-    public CmsImageButton getMoveButton() {
+    public CmsPushButton getMoveButton() {
 
         return m_moveButton;
     }
@@ -197,7 +211,7 @@ public class CmsSitemapHoverbar extends FlowPanel {
      *
      * @return the new Button
      */
-    public CmsImageButton getNewButton() {
+    public CmsPushButton getNewButton() {
 
         return m_newButton;
     }
@@ -207,7 +221,7 @@ public class CmsSitemapHoverbar extends FlowPanel {
      *
      * @return the subsitemap Button
      */
-    public CmsImageButton getSubsitemapButton() {
+    public CmsPushButton getSubsitemapButton() {
 
         return m_subsitemapButton;
     }
@@ -217,7 +231,7 @@ public class CmsSitemapHoverbar extends FlowPanel {
      *
      * @return the parent sitemap Button
      */
-    public CmsImageButton getParentSitemapButton() {
+    public CmsPushButton getParentSitemapButton() {
 
         return m_parentSitemapButton;
     }

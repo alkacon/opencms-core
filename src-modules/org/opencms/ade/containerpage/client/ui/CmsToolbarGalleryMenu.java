@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsToolbarGalleryMenu.java,v $
- * Date   : $Date: 2010/04/27 13:56:00 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/28 13:03:39 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,7 +35,7 @@ import org.opencms.ade.containerpage.client.CmsContainerpageHandler;
 import org.opencms.ade.containerpage.client.draganddrop.CmsContainerDragHandler;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.client.ui.CmsGalleryDialog;
-import org.opencms.gwt.client.ui.CmsToolbarButton;
+import org.opencms.gwt.client.ui.I_CmsButton;
 
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -45,7 +45,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -66,7 +66,7 @@ public class CmsToolbarGalleryMenu extends A_CmsToolbarMenu {
      */
     public CmsToolbarGalleryMenu(CmsContainerpageHandler handler, CmsContainerDragHandler dragHandler) {
 
-        super(CmsToolbarButton.ButtonData.ADD, handler);
+        super(I_CmsButton.ButtonData.ADD, handler);
         m_content = new FlowPanel();
         m_content.setStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().menuContent());
         m_gallery = new CmsGalleryDialog(dragHandler);
@@ -83,7 +83,7 @@ public class CmsToolbarGalleryMenu extends A_CmsToolbarMenu {
     public void onToolbarActivate() {
 
         if (!m_initialized) {
-            m_gallery.init();
+            //      m_gallery.init();
             m_initialized = true;
         }
     }

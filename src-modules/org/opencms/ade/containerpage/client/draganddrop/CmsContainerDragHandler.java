@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsContainerDragHandler.java,v $
- * Date   : $Date: 2010/04/27 13:56:00 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2010/04/28 13:03:40 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import org.opencms.gwt.client.draganddrop.I_CmsDragElementExt;
 import org.opencms.gwt.client.draganddrop.I_CmsDragTarget;
 import org.opencms.gwt.client.draganddrop.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.CmsDraggableListItemWidget;
-import org.opencms.gwt.client.ui.CmsToolbarButton;
+import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 
@@ -65,7 +65,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 8.0.0
  */
@@ -355,7 +355,7 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElementEx
             m_placeholder = new SimplePanel();
             dragParent.add((Widget)m_dragElement);
             m_editor.getClipboard().hideMenu();
-            Document.get().getBody().addClassName(CmsToolbarButton.ButtonData.MOVE.getIconClass());
+            Document.get().getBody().addClassName(I_CmsButton.ButtonData.MOVE.getIconClass());
             DOM.setCapture(m_dragElement.getElement());
         } else {
             m_dragFromMenu = false;
@@ -477,7 +477,7 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElementEx
         if (m_dragFromMenu) {
             m_editor.getClipboard().setActive(false);
             ((Widget)m_dragElement.getDragParent()).removeFromParent();
-            Document.get().getBody().removeClassName(CmsToolbarButton.ButtonData.MOVE.getIconClass());
+            Document.get().getBody().removeClassName(I_CmsButton.ButtonData.MOVE.getIconClass());
         }
         m_targetInfos = null;
         m_current = null;

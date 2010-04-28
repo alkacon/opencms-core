@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsMenuButton.java,v $
- * Date   : $Date: 2010/04/27 08:58:32 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/04/28 13:03:39 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 8.0.0
  */
@@ -105,7 +105,7 @@ public class CmsMenuButton extends Composite implements I_CmsHasToggleHandlers, 
 
     /** The menu button. */
     @UiField
-    CmsTextButton m_button;
+    CmsPushButton m_button;
 
     /** The menu content. */
     CmsMenuContent m_content;
@@ -134,17 +134,8 @@ public class CmsMenuButton extends Composite implements I_CmsHasToggleHandlers, 
     public CmsMenuButton(String buttonText, String imageClass) {
 
         this();
-        m_button.setUpFace(buttonText, imageClass);
-
-        // using default click and close handler
-        //        m_button.addClickHandler(new ClickHandler() {
-        //
-        //            public void onClick(ClickEvent event) {
-        //
-        //                toggleMenu();
-        //            }
-        //        });
-
+        m_button.setText(buttonText);
+        m_button.setImageClass(imageClass);
     }
 
     /**
@@ -175,6 +166,8 @@ public class CmsMenuButton extends Composite implements I_CmsHasToggleHandlers, 
             }
 
         });
+
+        m_content.setPreviewingAllNativeEvents(true);
 
     }
 

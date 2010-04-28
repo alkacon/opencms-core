@@ -14,8 +14,8 @@
 		</g:ScrollPanel> 
 		<g:FlowPanel styleName="{res.publishCss.spacer}" />
 		<!-- The buttons aren't actually displayed here, we just declare them in this file to simplify the code -->
-		<cms:CmsTextButton ui:field="m_cancelButton" buttonStyle="cmsButtonMedium"></cms:CmsTextButton>
-		<cms:CmsTextButton ui:field="m_publishButton" buttonStyle="cmsButtonMedium"></cms:CmsTextButton>
-		<cms:CmsTextButton ui:field="m_backButton" buttonStyle="cmsButtonMedium"></cms:CmsTextButton>
+		<cms:CmsPushButton ui:field="m_cancelButton"></cms:CmsPushButton>
+		<cms:CmsPushButton ui:field="m_publishButton"></cms:CmsPushButton>
+		<cms:CmsPushButton ui:field="m_backButton"></cms:CmsPushButton>
 	</g:FlowPanel>
 </ui:UiBinder>

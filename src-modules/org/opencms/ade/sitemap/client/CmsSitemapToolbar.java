@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapToolbar.java,v $
- * Date   : $Date: 2010/04/28 12:09:13 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/04/28 13:03:39 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,7 +34,8 @@ package org.opencms.ade.sitemap.client;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.CmsToolbar;
-import org.opencms.gwt.client.ui.CmsToolbarButton;
+import org.opencms.gwt.client.ui.CmsToggleButton;
+import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.CmsNotification.Mode;
 import org.opencms.gwt.client.ui.CmsNotification.Type;
 import org.opencms.gwt.client.util.CmsDomUtil;
@@ -47,32 +48,32 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 8.0.0
  */
 public class CmsSitemapToolbar extends CmsToolbar {
 
     /** The add button. */
-    private CmsToolbarButton m_addButton;
+    private CmsToggleButton m_addButton;
 
     /** The clipboard button. */
-    private CmsToolbarButton m_clipboardButton;
+    private CmsToggleButton m_clipboardButton;
 
     /** The publish button. */
-    private CmsToolbarButton m_publishButton;
+    private CmsToggleButton m_publishButton;
 
     /** The redo button. */
-    private CmsToolbarButton m_redoButton;
+    private CmsToggleButton m_redoButton;
 
     /** The reset button. */
-    private CmsToolbarButton m_resetButton;
+    private CmsToggleButton m_resetButton;
 
     /** The save button. */
-    private CmsToolbarButton m_saveButton;
+    private CmsToggleButton m_saveButton;
 
     /** The undo button. */
-    private CmsToolbarButton m_undoButton;
+    private CmsToggleButton m_undoButton;
 
     /**
      * Constructor.<p>
@@ -81,37 +82,39 @@ public class CmsSitemapToolbar extends CmsToolbar {
 
         boolean isEditable = CmsSitemapProvider.get().isEditable();
 
-        m_saveButton = new CmsToolbarButton(CmsToolbarButton.ButtonData.SAVE);
+        m_saveButton = new CmsToggleButton(I_CmsButton.ButtonData.SAVE);
         m_saveButton.disable(Messages.get().key(Messages.GUI_DISABLED_SAVE_0));
         addLeft(m_saveButton);
 
-        m_undoButton = new CmsToolbarButton(I_CmsImageBundle.INSTANCE.buttonCss().toolbarUndo(), Messages.get().key(
-            Messages.GUI_TOOLBAR_UNDO_0));
+        m_undoButton = new CmsToggleButton();
+        m_undoButton.setImageClass(I_CmsImageBundle.INSTANCE.buttonCss().toolbarUndo());
+        m_undoButton.setTitle(Messages.get().key(Messages.GUI_TOOLBAR_UNDO_0));
         m_undoButton.disable(Messages.get().key(Messages.GUI_DISABLED_UNDO_0));
         addLeft(m_undoButton);
 
-        m_redoButton = new CmsToolbarButton(I_CmsImageBundle.INSTANCE.buttonCss().toolbarRedo(), Messages.get().key(
-            Messages.GUI_TOOLBAR_REDO_0));
+        m_redoButton = new CmsToggleButton();
+        m_redoButton.setImageClass(I_CmsImageBundle.INSTANCE.buttonCss().toolbarRedo());
+        m_redoButton.setTitle(Messages.get().key(Messages.GUI_TOOLBAR_REDO_0));
         m_redoButton.disable(Messages.get().key(Messages.GUI_DISABLED_REDO_0));
         addLeft(m_redoButton);
 
-        m_resetButton = new CmsToolbarButton(CmsToolbarButton.ButtonData.RESET);
+        m_resetButton = new CmsToggleButton(I_CmsButton.ButtonData.RESET);
         m_resetButton.disable(Messages.get().key(Messages.GUI_DISABLED_RESET_0));
         addLeft(m_resetButton);
 
-        m_addButton = new CmsToolbarButton(CmsToolbarButton.ButtonData.ADD);
+        m_addButton = new CmsToggleButton(I_CmsButton.ButtonData.ADD);
         if (!isEditable) {
             m_addButton.disable(CmsSitemapProvider.get().getNoEditReason());
         }
         addLeft(m_addButton);
 
-        m_clipboardButton = new CmsToolbarButton(CmsToolbarButton.ButtonData.CLIPBOARD);
+        m_clipboardButton = new CmsToggleButton(I_CmsButton.ButtonData.CLIPBOARD);
         if (!isEditable) {
             m_clipboardButton.disable(CmsSitemapProvider.get().getNoEditReason());
         }
         addLeft(m_clipboardButton);
 
-        m_publishButton = new CmsToolbarButton(CmsToolbarButton.ButtonData.PUBLISH);
+        m_publishButton = new CmsToggleButton(I_CmsButton.ButtonData.PUBLISH);
         addRight(m_publishButton);
 
         if (!isEditable) {
@@ -177,7 +180,7 @@ public class CmsSitemapToolbar extends CmsToolbar {
      *
      * @return the add Button
      */
-    public CmsToolbarButton getAddButton() {
+    public CmsToggleButton getAddButton() {
 
         return m_addButton;
     }
@@ -187,7 +190,7 @@ public class CmsSitemapToolbar extends CmsToolbar {
      *
      * @return the clipboard Button
      */
-    public CmsToolbarButton getClipboardButton() {
+    public CmsToggleButton getClipboardButton() {
 
         return m_clipboardButton;
     }
@@ -197,7 +200,7 @@ public class CmsSitemapToolbar extends CmsToolbar {
      *
      * @return the publish Button
      */
-    public CmsToolbarButton getPublishButton() {
+    public CmsToggleButton getPublishButton() {
 
         return m_publishButton;
     }
@@ -207,7 +210,7 @@ public class CmsSitemapToolbar extends CmsToolbar {
      *
      * @return the redo Button
      */
-    public CmsToolbarButton getRedoButton() {
+    public CmsToggleButton getRedoButton() {
 
         return m_redoButton;
     }
@@ -217,7 +220,7 @@ public class CmsSitemapToolbar extends CmsToolbar {
      *
      * @return the reset Button
      */
-    public CmsToolbarButton getResetButton() {
+    public CmsToggleButton getResetButton() {
 
         return m_resetButton;
     }
@@ -227,7 +230,7 @@ public class CmsSitemapToolbar extends CmsToolbar {
      *
      * @return the save Button
      */
-    public CmsToolbarButton getSaveButton() {
+    public CmsToggleButton getSaveButton() {
 
         return m_saveButton;
     }
@@ -237,7 +240,7 @@ public class CmsSitemapToolbar extends CmsToolbar {
      *
      * @return the undo Button
      */
-    public CmsToolbarButton getUndoButton() {
+    public CmsToggleButton getUndoButton() {
 
         return m_undoButton;
     }

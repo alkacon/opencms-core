@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsElementOptionButton.java,v $
- * Date   : $Date: 2010/04/27 13:56:00 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/28 13:03:39 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,18 +32,18 @@
 package org.opencms.ade.containerpage.client.ui;
 
 import org.opencms.ade.containerpage.client.draganddrop.CmsDragContainerElement;
-import org.opencms.gwt.client.ui.CmsImageButton;
+import org.opencms.gwt.client.ui.CmsPushButton;
 
 /**
  * An optional container element button.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
-public class CmsElementOptionButton extends CmsImageButton {
+public class CmsElementOptionButton extends CmsPushButton {
 
     /** The associated container element. */
     private CmsDragContainerElement m_dragElement;
@@ -59,9 +59,11 @@ public class CmsElementOptionButton extends CmsImageButton {
      */
     public CmsElementOptionButton(A_CmsToolbarOptionButton toolbarButton, CmsDragContainerElement element) {
 
-        super(toolbarButton.getIconClass(), false);
-        this.setTitle(toolbarButton.getTitle());
-        this.addStyleName(toolbarButton.getIconClass());
+        super();
+        setImageClass(toolbarButton.getIconClass());
+        setShowBorder(false);
+        setTitle(toolbarButton.getTitle());
+        addStyleName(toolbarButton.getIconClass());
         m_toolbarButton = toolbarButton;
         m_dragElement = element;
     }

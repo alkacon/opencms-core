@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsImageButton.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/I_CmsButton.java,v $
  * Date   : $Date: 2010/04/28 13:03:39 $
- * Version: $Revision: 1.8 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,26 +31,156 @@
 
 package org.opencms.gwt.client.ui;
 
+import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.ui.css.I_CmsToolbarButtonLayoutBundle;
 
 /**
- * Button holding only an image or icon.<p>
- * 
- * DEPRECATED: Use CmsPushButton instead.<p>
- * 
- * @author Tobias Herrmann
- * 
- * @version $Revision: 1.8 $
- * 
- * @since 8.0.0
+ * Interface to hold button related enumerations. To be used with {@link org.opencms.gwt.client.ui.CmsPushButton}
+ * and {@link org.opencms.gwt.client.ui.CmsToggleButton}.<p>
  */
-@Deprecated
-public class CmsImageButton extends CmsPushButton {
+public interface I_CmsButton {
+
+    /** CSS style variants. */
+    public static enum Size {
+
+        /** Big button style. */
+        big(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsButtonBig()
+            + " "
+            + I_CmsLayoutBundle.INSTANCE.generalCss().textBig()),
+
+        /** Medium button style. */
+        medium(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsButtonMedium()
+            + " "
+            + I_CmsLayoutBundle.INSTANCE.generalCss().textMedium()),
+
+        /** Small button style. */
+        small(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsButtonSmall()
+            + " "
+            + I_CmsLayoutBundle.INSTANCE.generalCss().textSmall());
+
+        /** The CSS class name. */
+        private String m_cssClassName;
+
+        /**
+         * Constructor.<p>
+         * 
+         * @param cssClassName the CSS class name
+         */
+        Size(String cssClassName) {
+
+            m_cssClassName = cssClassName;
+        }
+
+        /**
+         * Returns the CSS class name of this style.<p>
+         * 
+         * @return the CSS class name
+         */
+        String getCssClassName() {
+
+            return m_cssClassName;
+        }
+    }
+
+    /** Available button icons. */
+    public enum ButtonData {
+
+        /** Toolbar button. */
+        ADD(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarAdd(), Messages.get().key(
+            Messages.GUI_TOOLBAR_ADD_0)),
+
+        /** Toolbar button. */
+        CLIPBOARD(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarClipboard(), Messages.get().key(
+            Messages.GUI_TOOLBAR_CLIPBOARD_0)),
+
+        /** Toolbar button. */
+        EDIT(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarEdit(), Messages.get().key(
+            Messages.GUI_TOOLBAR_EDIT_0)),
+
+        /** Toolbar button. */
+        EXIT(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarExit(), Messages.get().key(
+            Messages.GUI_TOOLBAR_EXIT_0)),
+
+        /** Toolbar button. */
+        MOVE(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarMove(), Messages.get().key(
+            Messages.GUI_TOOLBAR_MOVE_0)),
+
+        /** Toolbar button. */
+        NEW(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarNew(), Messages.get().key(
+            Messages.GUI_TOOLBAR_NEW_0)),
+
+        /** Toolbar button. */
+        PROPERTIES(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarProperties(), Messages.get().key(
+            Messages.GUI_TOOLBAR_PROPERTIES_0)),
+
+        /** Toolbar button. */
+        PUBLISH(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarPublish(), Messages.get().key(
+            Messages.GUI_TOOLBAR_PUBLISH_0)),
+
+        /** Toolbar button. */
+        REMOVE(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarRemove(), Messages.get().key(
+            Messages.GUI_TOOLBAR_REMOVE_0)),
+
+        /** Toolbar button. */
+        RESET(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarReset(), Messages.get().key(
+            Messages.GUI_TOOLBAR_RESET_0)),
+
+        /** Toolbar button. */
+        SAVE(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarSave(), Messages.get().key(
+            Messages.GUI_TOOLBAR_SAVE_0)),
+
+        /** Toolbar button. */
+        SELECTION(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarSelection(), Messages.get().key(
+            Messages.GUI_TOOLBAR_SELECTION_0)),
+
+        /** Toolbar button. */
+        SITEMAP(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarSitemap(), Messages.get().key(
+            Messages.GUI_TOOLBAR_SITEMAP_0));
+
+        /** The icon class name. */
+        private String m_iconClass;
+
+        /** The title. */
+        private String m_title;
+
+        /**
+         * Constructor.<p>
+         * 
+         * @param iconClass the icon class name
+         * @param title the title
+         */
+        private ButtonData(String iconClass, String title) {
+
+            m_iconClass = iconClass;
+            m_title = title;
+        }
+
+        /**
+         * Returns the CSS class name.<p>
+         * 
+         * @return the CSS class name
+         */
+        public String getIconClass() {
+
+            return m_iconClass;
+        }
+
+        /**
+         * Returns the title.<p>
+         * 
+         * @return the title
+         */
+        public String getTitle() {
+
+            return m_title;
+        }
+    }
 
     /**
      *  Enumeration of available icons.<p>
      */
-    public static enum Icon {
+    public static enum UiIcon {
         /**  Icon name. */
         alert,
         /**  Icon name. */
@@ -399,62 +529,4 @@ public class CmsImageButton extends CmsPushButton {
         zoomout;
     }
 
-    /**
-     * Constructor takes the icon and if to show border and background.<p> 
-     * 
-     * @param upIcon up-face icon
-     * @param hasBorder set <code>true</code> to show border and background
-     */
-    public CmsImageButton(Icon upIcon, boolean hasBorder) {
-
-        this(I_CmsLayoutBundle.INSTANCE.iconsCss().uiIcon() + " " + upIcon.name(), hasBorder);
-    }
-
-    /**
-     * Constructor takes the icons and if to show border and background.<p> 
-     * 
-     * @param upIcon up-face icon
-     * @param downIcon down-face icon
-     * @param hasBorder set <code>true</code> to show border and background
-     */
-    public CmsImageButton(Icon upIcon, Icon downIcon, boolean hasBorder) {
-
-        this(
-            I_CmsLayoutBundle.INSTANCE.iconsCss().uiIcon() + " " + upIcon.name(),
-            I_CmsLayoutBundle.INSTANCE.iconsCss().uiIcon() + " " + downIcon.name(),
-            hasBorder);
-    }
-
-    /**
-     * Constructor takes the CSS class of an image sprite and if to show border and background.<p> 
-     * 
-     * @param upImageClass up-face image sprite CSS class
-     * @param hasBorder set <code>true</code> to show border and background
-     */
-    public CmsImageButton(String upImageClass, boolean hasBorder) {
-
-        super();
-        if (hasBorder) {
-            addStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsImageButton());
-            addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
-        } else {
-            addStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsImageButtonTransparent());
-        }
-        String upFaceHtml = "<div class='" + upImageClass + "'></div>";
-        getUpFace().setHTML(upFaceHtml);
-    }
-
-    /**
-     * Constructor takes the CSS classes of image sprite and if to show border and background.<p> 
-     * 
-     * @param upImageClass up-face image sprite CSS class
-     * @param downImageClass down-face image sprite CSS class
-     * @param hasBorder set <code>true</code> to show border and background
-     */
-    public CmsImageButton(String upImageClass, String downImageClass, boolean hasBorder) {
-
-        this(upImageClass, hasBorder);
-        String downFaceHtml = "<div class='" + downImageClass + "'></div>";
-        getDownFace().setHTML(downFaceHtml);
-    }
 }

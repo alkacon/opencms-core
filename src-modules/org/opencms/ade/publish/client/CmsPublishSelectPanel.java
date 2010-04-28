@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishSelectPanel.java,v $
- * Date   : $Date: 2010/04/27 10:04:24 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2010/04/28 13:03:40 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,8 +38,7 @@ import org.opencms.ade.publish.shared.CmsPublishResource;
 import org.opencms.file.CmsResource;
 import org.opencms.gwt.client.i18n.CmsMessages;
 import org.opencms.gwt.client.ui.CmsAlertDialog;
-import org.opencms.gwt.client.ui.CmsButton;
-import org.opencms.gwt.client.ui.CmsTextButton;
+import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
@@ -81,7 +80,7 @@ import com.google.gwt.user.client.ui.Widget;
  *  
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 8.0.0
  */
@@ -109,7 +108,7 @@ public class CmsPublishSelectPanel extends Composite implements I_CmsPublishSele
 
     /** The button for escaping from the publish dialog. */
     @UiField
-    protected CmsTextButton m_cancelButton;
+    protected CmsPushButton m_cancelButton;
 
     /** The panel with checkboxes. */
     @UiField
@@ -149,7 +148,7 @@ public class CmsPublishSelectPanel extends Composite implements I_CmsPublishSele
 
     /** The button for publishing. */
     @UiField
-    protected CmsTextButton m_publishButton;
+    protected CmsPushButton m_publishButton;
 
     /** The publish dialog which contains this panel. */
     protected CmsPublishDialog m_publishDialog;
@@ -167,7 +166,7 @@ public class CmsPublishSelectPanel extends Composite implements I_CmsPublishSele
 
     /** The button for selecting all resources for publishing. */
     @UiField
-    protected CmsTextButton m_selectAll;
+    protected CmsPushButton m_selectAll;
 
     /** The label in front of the "select all/none" buttons. */
     @UiField
@@ -175,7 +174,7 @@ public class CmsPublishSelectPanel extends Composite implements I_CmsPublishSele
 
     /** The button for de-selecting all resources for publishing. */
     @UiField
-    protected CmsTextButton m_selectNone;
+    protected CmsPushButton m_selectNone;
 
     /** The label shown in front of the project selector. */
     @UiField
@@ -286,20 +285,18 @@ public class CmsPublishSelectPanel extends Composite implements I_CmsPublishSele
 
         });
 
-        m_publishButton.setUpFace(messages.key(Messages.GUI_PUBLISH_DIALOG_PUBLISH_0), null);
-        m_publishButton.useMinWidth(true);
-        m_cancelButton.setUpFace(messages.key(Messages.GUI_PUBLISH_DIALOG_CANCEL_BUTTON_0), null);
-        m_cancelButton.useMinWidth(true);
+        m_publishButton.setText(messages.key(Messages.GUI_PUBLISH_DIALOG_PUBLISH_0));
+        m_publishButton.setUseMinWidth(true);
+        m_cancelButton.setText(messages.key(Messages.GUI_PUBLISH_DIALOG_CANCEL_BUTTON_0));
+        m_cancelButton.setUseMinWidth(true);
 
-        m_selectAll.setUpFace(
-            messages.key(Messages.GUI_PUBLISH_TOP_PANEL_ALL_BUTTON_0),
-            I_CmsInputLayoutBundle.INSTANCE.inputCss().checkBoxImageChecked());
-        m_selectAll.useMinWidth(true);
+        m_selectAll.setText(messages.key(Messages.GUI_PUBLISH_TOP_PANEL_ALL_BUTTON_0));
+        m_selectAll.setImageClass(I_CmsInputLayoutBundle.INSTANCE.inputCss().checkBoxImageChecked());
+        m_selectAll.setUseMinWidth(true);
 
-        m_selectNone.setUpFace(
-            messages.key(Messages.GUI_PUBLISH_TOP_PANEL_NONE_BUTTON_0),
-            I_CmsInputLayoutBundle.INSTANCE.inputCss().checkBoxImageUnchecked());
-        m_selectNone.useMinWidth(true);
+        m_selectNone.setText(messages.key(Messages.GUI_PUBLISH_TOP_PANEL_NONE_BUTTON_0));
+        m_selectNone.setImageClass(I_CmsInputLayoutBundle.INSTANCE.inputCss().checkBoxImageUnchecked());
+        m_selectNone.setUseMinWidth(true);
 
         m_noResources.setText(messages.key(Messages.GUI_PUBLISH_DIALOG_NO_RES_0));
         m_selectAll.addClickHandler(new ClickHandler() {
@@ -414,9 +411,9 @@ public class CmsPublishSelectPanel extends Composite implements I_CmsPublishSele
      * 
      * @return a list of buttons
      */
-    public List<CmsButton> getButtons() {
+    public List<CmsPushButton> getButtons() {
 
-        List<CmsButton> result = new ArrayList<CmsButton>();
+        List<CmsPushButton> result = new ArrayList<CmsPushButton>();
         result.add(m_cancelButton);
         result.add(m_publishButton);
         return result;

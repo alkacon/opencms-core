@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageEditor.java,v $
- * Date   : $Date: 2010/04/27 14:40:50 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/04/28 13:04:02 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import org.opencms.ade.containerpage.client.ui.CmsToolbarSitemapButton;
 import org.opencms.ade.containerpage.client.ui.I_CmsToolbarButton;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.A_CmsEntryPoint;
-import org.opencms.gwt.client.ui.CmsImageButton;
+import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsToolbar;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.util.CmsDomUtil;
@@ -66,7 +66,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
@@ -203,7 +203,8 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         m_toolbar = new CmsToolbar();
         RootPanel.get().add(m_toolbar);
         showToolbar(false);
-        CmsImageButton toggleToolbarButton = new CmsImageButton(I_CmsImageBundle.INSTANCE.style().opencmsLogo(), true);
+        CmsPushButton toggleToolbarButton = new CmsPushButton();
+        toggleToolbarButton.setImageClass(I_CmsImageBundle.INSTANCE.style().opencmsLogo());
         RootPanel.get().add(toggleToolbarButton);
         toggleToolbarButton.addClickHandler(new ClickHandler() {
 

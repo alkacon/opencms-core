@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsBrokenLinksPanel.java,v $
- * Date   : $Date: 2010/04/26 12:36:45 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/04/28 13:03:40 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,10 +32,9 @@
 package org.opencms.ade.publish.client;
 
 import org.opencms.ade.publish.shared.CmsPublishResource;
-import org.opencms.gwt.client.ui.CmsButton;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
-import org.opencms.gwt.client.ui.CmsTextButton;
+import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
 
 import java.util.ArrayList;
@@ -57,7 +56,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -73,11 +72,11 @@ public class CmsBrokenLinksPanel extends Composite {
 
     /** The button which makes the publish dialog go back to the "resource selection" state. */
     @UiField
-    protected CmsTextButton m_backButton;
+    protected CmsPushButton m_backButton;
 
     /** The button which cancels the publish dialog. */
     @UiField
-    protected CmsTextButton m_cancelButton;
+    protected CmsPushButton m_cancelButton;
 
     /** The text shown above the resource panel. */
     @UiField
@@ -89,7 +88,7 @@ public class CmsBrokenLinksPanel extends Composite {
 
     /** The button which causes a "forced publish". */
     @UiField
-    protected CmsTextButton m_publishButton;
+    protected CmsPushButton m_publishButton;
 
     /** If true, the publish button will be displayed even if there are broken links. */
     private boolean m_allowPublish;
@@ -143,9 +142,9 @@ public class CmsBrokenLinksPanel extends Composite {
      * 
      * @return a list of buttons
      */
-    public List<CmsButton> getButtons() {
+    public List<CmsPushButton> getButtons() {
 
-        List<CmsButton> result = new ArrayList<CmsButton>();
+        List<CmsPushButton> result = new ArrayList<CmsPushButton>();
         result.add(m_backButton);
         result.add(m_cancelButton);
         if (m_allowPublish) {
@@ -206,9 +205,9 @@ public class CmsBrokenLinksPanel extends Composite {
      * @param button the button
      * @param text the text to put on the button
      */
-    private void prepareButton(CmsTextButton button, String text) {
+    private void prepareButton(CmsPushButton button, String text) {
 
         button.setText(text);
-        button.useMinWidth(true);
+        button.setUseMinWidth(true);
     }
 }

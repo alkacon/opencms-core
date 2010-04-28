@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsConfirmDialog.java,v $
- * Date   : $Date: 2010/04/28 06:04:06 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/04/28 13:03:39 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
@@ -54,7 +54,7 @@ public class CmsConfirmDialog extends CmsAlertDialog {
     private I_CmsConfirmDialogHandler m_handler;
 
     /** The 'Ok' button. */
-    private CmsTextButton m_okButton;
+    private CmsPushButton m_okButton;
 
     /** 
      * Constructor.<p>
@@ -73,8 +73,9 @@ public class CmsConfirmDialog extends CmsAlertDialog {
     public CmsConfirmDialog(String title, String content) {
 
         super(title, content, Messages.get().key(Messages.GUI_CANCEL_0), null);
-        m_okButton = new CmsTextButton(Messages.get().key(Messages.GUI_OK_0), null);
-        m_okButton.useMinWidth(true);
+        m_okButton = new CmsPushButton();
+        m_okButton.setText(Messages.get().key(Messages.GUI_OK_0));
+        m_okButton.setUseMinWidth(true);
         m_okButton.addClickHandler(new ClickHandler() {
 
             /**
@@ -143,7 +144,7 @@ public class CmsConfirmDialog extends CmsAlertDialog {
      * 
      * @return the 'OK' button
      */
-    protected CmsTextButton getOkButton() {
+    protected CmsPushButton getOkButton() {
 
         return m_okButton;
     }

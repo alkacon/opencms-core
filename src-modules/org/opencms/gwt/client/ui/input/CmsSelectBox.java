@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsSelectBox.java,v $
- * Date   : $Date: 2010/04/28 08:37:52 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2010/04/28 13:03:40 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,8 @@
 
 package org.opencms.gwt.client.ui.input;
 
-import org.opencms.gwt.client.ui.CmsImageButton;
+import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.css.I_CmsInputCss;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
@@ -75,7 +76,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 8.0.0
  * 
@@ -173,7 +174,7 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
     protected final HandlerManager m_handlerManager = new HandlerManager(this);
 
     /** The open-close button. */
-    protected CmsImageButton m_openClose;
+    protected CmsPushButton m_openClose;
 
     /** The opener widget. */
     @UiField
@@ -222,7 +223,8 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
         //    m_selectBoxState.setValue(CSS.selectBoxClosed());
 
         m_opener.addStyleName(CSS.selectBoxSelected());
-        m_openClose = new CmsImageButton(CmsImageButton.Icon.triangle_1_e, CmsImageButton.Icon.triangle_1_s, false);
+        m_openClose = new CmsPushButton(I_CmsButton.UiIcon.triangle_1_e, I_CmsButton.UiIcon.triangle_1_s);
+        m_openClose.setShowBorder(false);
         m_openClose.addStyleName(CSS.selectIcon());
         m_panel.add(m_openClose);
         m_openClose.addClickHandler(new ClickHandler() {

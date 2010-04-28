@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishGroupPanel.java,v $
- * Date   : $Date: 2010/04/27 13:13:31 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/04/28 13:03:40 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,7 +35,8 @@ import org.opencms.ade.publish.shared.CmsPublishResource;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
-import org.opencms.gwt.client.ui.CmsTextButton;
+import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsListItemWidgetCss;
@@ -62,7 +63,7 @@ import com.google.gwt.user.client.ui.Panel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 8.0.0
  */
@@ -90,13 +91,13 @@ public class CmsPublishGroupPanel extends Composite implements I_CmsHasSize {
     private boolean m_problemMode;
 
     /** The button for selecting all resources in the group. */
-    private CmsTextButton m_selectAll;
+    private CmsPushButton m_selectAll;
 
     /** The list of item selection controllers for this group. */
     private List<CmsPublishItemSelectionController> m_selectionControllers = new ArrayList<CmsPublishItemSelectionController>();
 
     /** The button for deselecting all resources in the group. */
-    private CmsTextButton m_selectNone;
+    private CmsPushButton m_selectNone;
 
     /** The number of resources in this group. */
     private int m_size;
@@ -357,11 +358,11 @@ public class CmsPublishGroupPanel extends Composite implements I_CmsHasSize {
      */
     private void initSelectButtons() {
 
-        m_selectAll = new CmsTextButton(
-            Messages.get().key(Messages.GUI_PUBLISH_TOP_PANEL_ALL_BUTTON_0),
-            I_CmsInputLayoutBundle.INSTANCE.inputCss().checkBoxImageChecked(),
-            CmsTextButton.ButtonStyle.cmsButtonSmall);
-        m_selectAll.useMinWidth(true);
+        m_selectAll = new CmsPushButton();
+        m_selectAll.setText(Messages.get().key(Messages.GUI_PUBLISH_TOP_PANEL_ALL_BUTTON_0));
+        m_selectAll.setImageClass(I_CmsInputLayoutBundle.INSTANCE.inputCss().checkBoxImageChecked());
+        m_selectAll.setSize(I_CmsButton.Size.small);
+        m_selectAll.setUseMinWidth(true);
         m_selectAll.addClickHandler(new ClickHandler() {
 
             /**
@@ -374,11 +375,11 @@ public class CmsPublishGroupPanel extends Composite implements I_CmsHasSize {
             }
         });
 
-        m_selectNone = new CmsTextButton(
-            Messages.get().key(Messages.GUI_PUBLISH_TOP_PANEL_NONE_BUTTON_0),
-            I_CmsInputLayoutBundle.INSTANCE.inputCss().checkBoxImageUnchecked(),
-            CmsTextButton.ButtonStyle.cmsButtonSmall);
-        m_selectNone.useMinWidth(true);
+        m_selectNone = new CmsPushButton();
+        m_selectNone.setText(Messages.get().key(Messages.GUI_PUBLISH_TOP_PANEL_NONE_BUTTON_0));
+        m_selectNone.setImageClass(I_CmsInputLayoutBundle.INSTANCE.inputCss().checkBoxImageUnchecked());
+        m_selectNone.setSize(I_CmsButton.Size.small);
+        m_selectNone.setUseMinWidth(true);
         m_selectNone.addClickHandler(new ClickHandler() {
 
             /**

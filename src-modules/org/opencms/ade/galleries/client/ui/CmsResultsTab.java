@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsResultsTab.java,v $
- * Date   : $Date: 2010/04/28 10:25:47 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/28 13:03:40 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,8 +44,8 @@ import org.opencms.gwt.client.draganddrop.I_CmsDragHandler;
 import org.opencms.gwt.client.draganddrop.I_CmsDragTarget;
 import org.opencms.gwt.client.ui.CmsDraggableListItemWidget;
 import org.opencms.gwt.client.ui.CmsFloatDecoratedPanel;
-import org.opencms.gwt.client.ui.CmsImageButton;
-import org.opencms.gwt.client.ui.CmsImageButton.Icon;
+import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.util.CmsClientStringUtil;
 import org.opencms.gwt.client.util.CmsDomUtil;
@@ -71,23 +71,23 @@ import com.google.gwt.user.client.ui.Image;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.
  */
 public class CmsResultsTab extends A_CmsTab implements ClickHandler {
 
     /** Button to remove the selected categories. */
-    private CmsImageButton m_closeCategoriesBtn;
+    private CmsPushButton m_closeCategoriesBtn;
 
     /** Button to remove the selected galleries. */
-    private CmsImageButton m_closeGalleriesBtn;
+    private CmsPushButton m_closeGalleriesBtn;
 
     /** Button to remove the full text search. */
     //private CmsImageButton m_closeSearchBtn;
 
     /** Button to remove the selected types. */
-    private CmsImageButton m_closeTypesBtn;
+    private CmsPushButton m_closeTypesBtn;
 
     /** The reference to the drag handler for the list elements. */
     private I_CmsDragHandler<? extends I_CmsDragElement, ? extends I_CmsDragTarget> m_dragHandler;
@@ -255,7 +255,9 @@ public class CmsResultsTab extends A_CmsTab implements ClickHandler {
                 m_types.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().showParams());
                 m_types.add(typesParams);
                 typesParams.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().paramsText());
-                m_closeTypesBtn = new CmsImageButton(Icon.close, false);
+                m_closeTypesBtn = new CmsPushButton();
+                m_closeTypesBtn.setUiIcon(I_CmsButton.UiIcon.close);
+                m_closeTypesBtn.setShowBorder(false);
                 m_closeTypesBtn.addClickHandler(this);
                 m_types.add(m_closeTypesBtn);
 
@@ -272,7 +274,9 @@ public class CmsResultsTab extends A_CmsTab implements ClickHandler {
                 m_galleries.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().showParams());
                 m_galleries.add(galleriesParams);
                 galleriesParams.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().paramsText());
-                m_closeGalleriesBtn = new CmsImageButton(Icon.close, false);
+                m_closeGalleriesBtn = new CmsPushButton();
+                m_closeGalleriesBtn.setUiIcon(I_CmsButton.UiIcon.close);
+                m_closeGalleriesBtn.setShowBorder(false);
                 m_closeGalleriesBtn.addClickHandler(this);
                 m_galleries.add(m_closeGalleriesBtn);
                 // otherwise remove border
@@ -288,7 +292,9 @@ public class CmsResultsTab extends A_CmsTab implements ClickHandler {
                 m_categories.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().showParams());
                 m_categories.add(categoriesParams);
                 categoriesParams.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().paramsText());
-                m_closeCategoriesBtn = new CmsImageButton(Icon.close, false);
+                m_closeCategoriesBtn = new CmsPushButton();
+                m_closeCategoriesBtn.setUiIcon(I_CmsButton.UiIcon.close);
+                m_closeCategoriesBtn.setShowBorder(false);
                 m_closeCategoriesBtn.addClickHandler(this);
                 m_categories.add(m_closeCategoriesBtn);
                 // otherwise remove border

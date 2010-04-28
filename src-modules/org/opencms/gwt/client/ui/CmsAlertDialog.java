@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsAlertDialog.java,v $
- * Date   : $Date: 2010/04/21 14:28:46 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/28 13:03:39 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,14 +42,14 @@ import com.google.gwt.user.client.ui.HTML;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
 public class CmsAlertDialog extends CmsPopupDialog {
 
     /** The 'close' button. */
-    private CmsTextButton m_closeButton;
+    private CmsPushButton m_closeButton;
 
     /** The content text. */
     private HTML m_content;
@@ -102,8 +102,10 @@ public class CmsAlertDialog extends CmsPopupDialog {
         super.setAutoHideEnabled(false);
         super.setModal(true);
         setGlassEnabled(true);
-        m_closeButton = new CmsTextButton(buttonText, buttonIconClass);
-        m_closeButton.useMinWidth(true);
+        m_closeButton = new CmsPushButton();
+        m_closeButton.setText(buttonText);
+        m_closeButton.setImageClass(buttonIconClass);
+        m_closeButton.setUseMinWidth(true);
         m_closeButton.addClickHandler(new ClickHandler() {
 
             /**
@@ -239,7 +241,7 @@ public class CmsAlertDialog extends CmsPopupDialog {
      * 
      * @return the button
      */
-    protected CmsTextButton getCloseButton() {
+    protected CmsPushButton getCloseButton() {
 
         return m_closeButton;
     }
