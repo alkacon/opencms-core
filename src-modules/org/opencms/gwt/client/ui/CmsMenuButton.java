@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsMenuButton.java,v $
- * Date   : $Date: 2010/04/28 13:03:39 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/04/28 13:36:40 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 8.0.0
  */
@@ -144,6 +144,7 @@ public class CmsMenuButton extends Composite implements I_CmsHasToggleHandlers, 
     private CmsMenuButton() {
 
         initWidget(uiBinder.createAndBindUi(this));
+        m_button.setSize(I_CmsButton.Size.big);
         m_content = new CmsMenuContent();
 
         // important, so a click on the button won't trigger the auto-close 

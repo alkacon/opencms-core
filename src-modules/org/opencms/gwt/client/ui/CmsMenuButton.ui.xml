@@ -38,6 +38,6 @@
 	<ui:with field="main" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
 	<g:HTMLPanel styleName="{m_style.menu}">
 		<div ui:field="m_menuConnect" class="{m_style.connect} {m_style.hidden} {main.generalCss.cornerTop}"></div>
-		<cms:CmsTextButton ui:field="m_button" buttonStyle="cmsButtonBig" addStyleNames="{m_style.button}"></cms:CmsTextButton>
+		<cms:CmsPushButton ui:field="m_button" addStyleNames="{m_style.button}"></cms:CmsPushButton>
 	</g:HTMLPanel>
 </ui:UiBinder> 
