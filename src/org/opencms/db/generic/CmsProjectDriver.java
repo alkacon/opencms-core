@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2010/04/19 15:19:35 $
- * Version: $Revision: 1.260 $
+ * Date   : $Date: 2010/04/28 14:10:04 $
+ * Version: $Revision: 1.261 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -99,7 +99,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.260 $
+ * @version $Revision: 1.261 $
  * 
  * @since 6.0.0 
  */
@@ -1063,9 +1063,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             CmsUUID projectId = dbc.getProjectId();
             boolean dbcHasProjectId = (projectId != null) && !projectId.isNullUUID();
             CmsUUID projectIdForReading = (!dbcHasProjectId ? offlineProject.getUuid() : CmsProject.ONLINE_PROJECT_ID);
-            if (!dbcHasProjectId) {
-                dbc.setProjectId(offlineProject.getUuid());
-            }
+            dbc.setProjectId(offlineProject.getUuid());
             byte[] offlineContent = m_driverManager.getVfsDriver(dbc).readContent(
                 dbc,
                 projectIdForReading,
