@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsConfirmDialog.java,v $
- * Date   : $Date: 2010/04/21 14:29:45 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/04/28 06:04:06 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.gwt.client.ui;
 
 import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.rpc.CmsLog;
+import org.opencms.gwt.client.ui.CmsNotification.Type;
 import org.opencms.gwt.client.util.CmsClientStringUtil;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -43,7 +44,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -86,10 +87,9 @@ public class CmsConfirmDialog extends CmsAlertDialog {
                     try {
                         getHandler().onOk();
                     } catch (Throwable t) {
-                        // TODO: show error to user
-                        CmsLog.log(CmsClientStringUtil.getMessage(t)
-                            + "\n"
-                            + CmsClientStringUtil.getStackTrace(t, "\n"));
+                        String message = CmsClientStringUtil.getMessage(t);
+                        CmsNotification.get().send(Type.WARNING, message);
+                        CmsLog.log(message + "\n" + CmsClientStringUtil.getStackTrace(t, "\n"));
                     }
                 }
                 hide();
