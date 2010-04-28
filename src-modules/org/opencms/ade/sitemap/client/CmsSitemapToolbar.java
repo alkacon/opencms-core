@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapToolbar.java,v $
- * Date   : $Date: 2010/04/26 13:41:15 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/04/28 12:09:13 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,9 +32,11 @@
 package org.opencms.ade.sitemap.client;
 
 import org.opencms.ade.sitemap.client.ui.css.I_CmsImageBundle;
-import org.opencms.gwt.client.ui.CmsAlertDialog;
+import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.CmsToolbar;
 import org.opencms.gwt.client.ui.CmsToolbarButton;
+import org.opencms.gwt.client.ui.CmsNotification.Mode;
+import org.opencms.gwt.client.ui.CmsNotification.Type;
 import org.opencms.gwt.client.util.CmsDomUtil;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -45,7 +47,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 8.0.0
  */
@@ -56,9 +58,6 @@ public class CmsSitemapToolbar extends CmsToolbar {
 
     /** The clipboard button. */
     private CmsToolbarButton m_clipboardButton;
-
-    /** The new button. */
-    private CmsToolbarButton m_newButton;
 
     /** The publish button. */
     private CmsToolbarButton m_publishButton;
@@ -83,43 +82,43 @@ public class CmsSitemapToolbar extends CmsToolbar {
         boolean isEditable = CmsSitemapProvider.get().isEditable();
 
         m_saveButton = new CmsToolbarButton(CmsToolbarButton.ButtonData.SAVE);
-        m_saveButton.setEnabled(false);
+        m_saveButton.disable(Messages.get().key(Messages.GUI_DISABLED_SAVE_0));
         addLeft(m_saveButton);
 
         m_undoButton = new CmsToolbarButton(I_CmsImageBundle.INSTANCE.buttonCss().toolbarUndo(), Messages.get().key(
             Messages.GUI_TOOLBAR_UNDO_0));
-        m_undoButton.setEnabled(false);
+        m_undoButton.disable(Messages.get().key(Messages.GUI_DISABLED_UNDO_0));
         addLeft(m_undoButton);
 
         m_redoButton = new CmsToolbarButton(I_CmsImageBundle.INSTANCE.buttonCss().toolbarRedo(), Messages.get().key(
             Messages.GUI_TOOLBAR_REDO_0));
-        m_redoButton.setEnabled(false);
+        m_redoButton.disable(Messages.get().key(Messages.GUI_DISABLED_REDO_0));
         addLeft(m_redoButton);
 
         m_resetButton = new CmsToolbarButton(CmsToolbarButton.ButtonData.RESET);
-        m_resetButton.setEnabled(false);
+        m_resetButton.disable(Messages.get().key(Messages.GUI_DISABLED_RESET_0));
         addLeft(m_resetButton);
 
         m_addButton = new CmsToolbarButton(CmsToolbarButton.ButtonData.ADD);
-        m_addButton.setEnabled(isEditable);
+        if (!isEditable) {
+            m_addButton.disable(CmsSitemapProvider.get().getNoEditReason());
+        }
         addLeft(m_addButton);
 
-        m_newButton = new CmsToolbarButton(CmsToolbarButton.ButtonData.NEW);
-        m_newButton.setEnabled(isEditable);
-        addLeft(m_newButton);
-
         m_clipboardButton = new CmsToolbarButton(CmsToolbarButton.ButtonData.CLIPBOARD);
-        m_clipboardButton.setEnabled(isEditable);
+        if (!isEditable) {
+            m_clipboardButton.disable(CmsSitemapProvider.get().getNoEditReason());
+        }
         addLeft(m_clipboardButton);
 
         m_publishButton = new CmsToolbarButton(CmsToolbarButton.ButtonData.PUBLISH);
         addRight(m_publishButton);
 
         if (!isEditable) {
-            CmsAlertDialog dialog = new CmsAlertDialog(
-                Messages.get().key(Messages.GUI_DIALOG_NO_EDIT_TITLE_0),
-                Messages.get().key(Messages.GUI_DIALOG_NO_EDIT_TEXT_1, CmsSitemapProvider.get().getNoEditReason()));
-            dialog.center();
+            CmsNotification.get().setMode(Mode.FIXED);
+            CmsNotification.get().send(
+                Type.WARNING,
+                Messages.get().key(Messages.GUI_NO_EDIT_NOTIFICATION_1, CmsSitemapProvider.get().getNoEditReason()));
         }
     }
 
@@ -138,15 +137,12 @@ public class CmsSitemapToolbar extends CmsToolbar {
             public void onClick(ClickEvent event) {
 
                 if (event.getSource().equals(getSaveButton())) {
-                    CmsDomUtil.ensureMouseOut(getSaveButton().getElement());
                     getSaveButton().setDown(false);
                     handler.onSave();
                 } else if (event.getSource().equals(getAddButton())) {
-                    CmsDomUtil.ensureMouseOut(getAddButton().getElement());
                     getAddButton().setDown(false);
                     handler.onAdd();
                 } else if (event.getSource().equals(getClipboardButton())) {
-                    CmsDomUtil.ensureMouseOut(getClipboardButton().getElement());
                     getClipboardButton().setDown(false);
                     handler.onClipboard();
                 } else if (event.getSource().equals(getPublishButton())) {
@@ -154,11 +150,9 @@ public class CmsSitemapToolbar extends CmsToolbar {
                     getPublishButton().setDown(false);
                     handler.onPublish();
                 } else if (event.getSource().equals(getUndoButton())) {
-                    CmsDomUtil.ensureMouseOut(getUndoButton().getElement());
                     getUndoButton().setDown(false);
                     handler.onUndo();
                 } else if (event.getSource().equals(getRedoButton())) {
-                    CmsDomUtil.ensureMouseOut(getRedoButton().getElement());
                     getRedoButton().setDown(false);
                     handler.onRedo();
                 } else if (event.getSource().equals(getResetButton())) {
@@ -174,7 +168,6 @@ public class CmsSitemapToolbar extends CmsToolbar {
         m_redoButton.addClickHandler(clickHandler);
         m_resetButton.addClickHandler(clickHandler);
         m_addButton.addClickHandler(clickHandler);
-        m_newButton.addClickHandler(clickHandler);
         m_clipboardButton.addClickHandler(clickHandler);
         m_publishButton.addClickHandler(clickHandler);
     }
@@ -197,16 +190,6 @@ public class CmsSitemapToolbar extends CmsToolbar {
     public CmsToolbarButton getClipboardButton() {
 
         return m_clipboardButton;
-    }
-
-    /**
-     * Returns the new Button.<p>
-     *
-     * @return the new Button
-     */
-    public CmsToolbarButton getNewButton() {
-
-        return m_newButton;
     }
 
     /**

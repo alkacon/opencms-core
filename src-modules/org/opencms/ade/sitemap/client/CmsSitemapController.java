@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2010/04/26 13:42:48 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/04/28 12:09:13 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,8 @@ import org.opencms.ade.sitemap.shared.I_CmsSitemapChange;
 import org.opencms.file.CmsResource;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
-import org.opencms.gwt.client.ui.CmsAlertDialog;
+import org.opencms.gwt.client.ui.CmsNotification;
+import org.opencms.gwt.client.ui.CmsNotification.Type;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
@@ -56,7 +57,7 @@ import com.google.gwt.user.client.Window;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 8.0.0
  */
@@ -64,6 +65,9 @@ public class CmsSitemapController {
 
     /** The list of changes. */
     protected List<I_CmsSitemapChange> m_changes;
+
+    /** The edition data. */
+    protected CmsSitemapData m_editData;
 
     /** The handler. */
     protected CmsSitemapControllerHandler m_handler;
@@ -75,7 +79,7 @@ public class CmsSitemapController {
     protected CmsClientSitemapEntry m_sitemap;
 
     /** The list of undone changes. */
-    private List<I_CmsSitemapChange> m_undone;
+    protected List<I_CmsSitemapChange> m_undone;
 
     /**
      * Constructor.<p>
@@ -113,23 +117,6 @@ public class CmsSitemapController {
     }
 
     /**
-     * Returns the edit data.<p>
-     *
-     * @return the edit data
-     */
-    public CmsSitemapData getEditData() {
-
-        if (m_initAction != null) {
-            // not ready yet, show overlay
-            m_initAction.start(0);
-        }
-        return m_editData;
-    }
-
-    /** The edition data. */
-    protected CmsSitemapData m_editData;
-
-    /**
      * Commits the changes.<p>
      */
     public void commit() {
@@ -152,15 +139,13 @@ public class CmsSitemapController {
             @Override
             public void onResponse(Void result) {
 
-                if (result == null) {
-                    // ok
-                    return;
-                }
-                // error
-                String title = org.opencms.gwt.client.Messages.get().key(org.opencms.gwt.client.Messages.GUI_ERROR_0);
-                String text = Messages.get().key(Messages.ERR_LOCK_2, CmsSitemapProvider.get().getUri(), result);
+                m_changes.clear();
+                m_undone.clear();
 
-                new CmsAlertDialog(title, text).center();
+                // state
+                m_handler.onReset();
+
+                internalReset(false);
             }
         };
         saveAction.execute();
@@ -251,6 +236,20 @@ public class CmsSitemapController {
             }
         };
         getChildrenAction.execute();
+    }
+
+    /**
+     * Returns the edit data.<p>
+     *
+     * @return the edit data
+     */
+    public CmsSitemapData getEditData() {
+
+        if (m_initAction != null) {
+            // not ready yet, show overlay
+            m_initAction.start(0);
+        }
+        return m_editData;
     }
 
     /**
@@ -443,43 +442,11 @@ public class CmsSitemapController {
     }
 
     /**
-     * Adds a change to the queue.<p>
-     * 
-     * @param oldEntry the old entry
-     * @param newEntry the new entry
-     * @param changeType the change type
-     * @param position the new position between its siblings, only used when moving
-     * @param redo if redoing a change
-     */
-    private void addChange(I_CmsSitemapChange change, boolean redo) {
-
-        // state
-        if (!isDirty()) {
-            startEdit();
-        }
-
-        if (!redo) {
-            // after a new change no changes can be redone
-            m_undone.clear();
-            m_handler.onClearUndo();
-        }
-
-        // add it
-        m_changes.add(change);
-
-        // update data
-        update(change);
-
-        // refresh view
-        m_handler.onChange(change);
-    }
-
-    /**
      * Discards all changes, even unlocking the sitemap resource.<p>
      * 
      * @param reload if to reload after unlocking
      */
-    private void internalReset(final boolean reload) {
+    protected void internalReset(final boolean reload) {
 
         // unlock
         CmsRpcAction<String> unlockAction = new CmsRpcAction<String>() {
@@ -509,14 +476,47 @@ public class CmsSitemapController {
                     }
                     return;
                 }
-                // error
-                String title = org.opencms.gwt.client.Messages.get().key(org.opencms.gwt.client.Messages.GUI_ERROR_0);
-                String text = Messages.get().key(Messages.ERR_UNLOCK_2, CmsSitemapProvider.get().getUri(), result);
-
-                new CmsAlertDialog(title, text).center();
+                // unable to unlock
+                String text = Messages.get().key(
+                    Messages.GUI_UNLOCK_NOTIFICATION_2,
+                    CmsSitemapProvider.get().getUri(),
+                    result);
+                CmsNotification.get().send(Type.WARNING, text);
             }
         };
         unlockAction.execute();
+    }
+
+    /**
+     * Adds a change to the queue.<p>
+     * 
+     * @param oldEntry the old entry
+     * @param newEntry the new entry
+     * @param changeType the change type
+     * @param position the new position between its siblings, only used when moving
+     * @param redo if redoing a change
+     */
+    private void addChange(I_CmsSitemapChange change, boolean redo) {
+
+        // state
+        if (!isDirty()) {
+            startEdit();
+        }
+
+        if (!redo) {
+            // after a new change no changes can be redone
+            m_undone.clear();
+            m_handler.onClearUndo();
+        }
+
+        // add it
+        m_changes.add(change);
+
+        // update data
+        update(change);
+
+        // refresh view
+        m_handler.onChange(change);
     }
 
     /**
@@ -551,11 +551,12 @@ public class CmsSitemapController {
                     // ok
                     return;
                 }
-                // error
-                String title = org.opencms.gwt.client.Messages.get().key(org.opencms.gwt.client.Messages.GUI_ERROR_0);
-                String text = Messages.get().key(Messages.ERR_LOCK_2, CmsSitemapProvider.get().getUri(), result);
-
-                new CmsAlertDialog(title, text).center();
+                // unable to lock
+                String text = Messages.get().key(
+                    Messages.GUI_LOCK_NOTIFICATION_2,
+                    CmsSitemapProvider.get().getUri(),
+                    result);
+                CmsNotification.get().send(Type.WARNING, text);
             }
         };
         lockAction.execute();
