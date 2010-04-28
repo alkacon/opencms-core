@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/Attic/CmsGalleryDialogBean.java,v $
- * Date   : $Date: 2010/03/30 14:08:36 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/28 10:25:47 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,10 +42,11 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  */
+//TODO: rename in CmsGalleryDialogData
 public class CmsGalleryDialogBean implements IsSerializable {
 
     /** The categories to display in the list of available categories. */

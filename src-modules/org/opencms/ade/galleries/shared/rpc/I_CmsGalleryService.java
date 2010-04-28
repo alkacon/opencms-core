@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/rpc/Attic/I_CmsGalleryService.java,v $
- * Date   : $Date: 2010/04/22 14:32:12 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/28 10:25:47 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  * 
@@ -102,6 +102,6 @@ public interface I_CmsGalleryService extends RemoteService {
      * @return the search object containing search results
      * @throws CmsRpcException is something goes wrong
      */
-    CmsGalleryInfoBean getSearch(CmsGallerySearchObject searchObj) throws CmsRpcException;
+    CmsGallerySearchObject getSearch(CmsGallerySearchObject searchObj) throws CmsRpcException;
 
 }

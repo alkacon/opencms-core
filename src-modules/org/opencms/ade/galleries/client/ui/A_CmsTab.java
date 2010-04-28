@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsTabInnerPanel.java,v $
- * Date   : $Date: 2010/04/23 10:08:25 $
- * Version: $Revision: 1.8 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/A_CmsTab.java,v $
+ * Date   : $Date: 2010/04/28 10:25:47 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,8 +38,6 @@ import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItem;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
@@ -47,21 +45,22 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 
+//TODO: This class should replace CmsTabInnerPanel
 /**
  * Provides a widget for the content of a tab.<p>
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.
  */
-public class CmsTabInnerPanel extends Composite implements ClickHandler {
+public abstract class A_CmsTab extends Composite {
 
     /**
      * @see com.google.gwt.uibinder.client.UiBinder
      */
-    /* default */interface I_CmsTabInnerPanelUiBinder extends UiBinder<Widget, CmsTabInnerPanel> {
+    /* default */interface I_CmsTab extends UiBinder<Widget, A_CmsTab> {
         // GWT interface, nothing to do here
     }
 
@@ -69,7 +68,7 @@ public class CmsTabInnerPanel extends Composite implements ClickHandler {
     protected static final I_CmsGalleryDialogCss DIALOG_CSS = I_CmsLayoutBundle.INSTANCE.galleryDialogCss();
 
     /** The ui-binder instance for this class. */
-    private static I_CmsTabInnerPanelUiBinder uiBinder = GWT.create(I_CmsTabInnerPanelUiBinder.class);
+    private static I_CmsTab uiBinder = GWT.create(I_CmsTab.class);
 
     /** The categories parameter panel. */
     @UiField
@@ -107,11 +106,12 @@ public class CmsTabInnerPanel extends Composite implements ClickHandler {
      * The default constructor with drag handler.<p>
      * 
      */
-    public CmsTabInnerPanel() {
+    public A_CmsTab() {
 
         init();
     }
 
+    // TODO: add the search parameter display button
     //    /** The full text search parameter panel. */
     //    @UiField
     //    protected Panel m_text;
@@ -158,17 +158,6 @@ public class CmsTabInnerPanel extends Composite implements ClickHandler {
     }
 
     /**
-     * Callback to handle click events on the close button of the selected parameters.<p>
-     * 
-     * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
-     */
-    public void onClick(ClickEvent event) {
-
-        //  nothing to do
-
-    }
-
-    /**
      * Updates the layout for all list items in this list.<p>
      * 
      * @see org.opencms.gwt.client.ui.CmsList#updateLayout()
@@ -188,4 +177,9 @@ public class CmsTabInnerPanel extends Composite implements ClickHandler {
 
         CmsGalleryDialog.initCss();
     }
+
+    /**
+     * Will be triggered when a tab is selected.<p>
+     */
+    public abstract void onSelection();
 }

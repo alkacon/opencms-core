@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/Attic/CmsGalleryService.java,v $
- * Date   : $Date: 2010/04/23 08:02:03 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/04/28 10:25:47 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -80,7 +80,7 @@ import java.util.Map.Entry;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 8.0.0
  * 
@@ -261,15 +261,15 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     /**
      * @see org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService#getSearch(CmsGallerySearchObject)
      */
-    public CmsGalleryInfoBean getSearch(CmsGallerySearchObject searchObj) throws CmsRpcException {
+    public CmsGallerySearchObject getSearch(CmsGallerySearchObject searchObj) throws CmsRpcException {
 
-        CmsGalleryInfoBean gInfoBean = new CmsGalleryInfoBean();
+        CmsGallerySearchObject gSearchObj = new CmsGallerySearchObject();
         try {
-            gInfoBean.setSearchObject(search(searchObj));
+            gSearchObj = search(searchObj);
         } catch (Throwable e) {
             error(e);
         }
-        return gInfoBean;
+        return gSearchObj;
     }
 
     /**

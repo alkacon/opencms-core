@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsTabbedPanel.java,v $
- * Date   : $Date: 2010/04/15 13:53:28 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/04/28 10:25:47 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,14 +53,16 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * As layout options two height for the tabbar are provided: 32px("standard") and 25px("small").
  * 
+ * @param <E> the tab widget type
+ * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  * 
  */
-public class CmsTabbedPanel extends Composite {
+public class CmsTabbedPanel<E extends Widget> extends Composite {
 
     /** The TabLayoutPanel widget. */
     private TabLayoutPanel m_tabPanel;
@@ -157,7 +159,7 @@ public class CmsTabbedPanel extends Composite {
      * @param tabContent the widget to add as a tab 
      * @param tabName the name of the tab to display in the tabbar
      */
-    public void add(Widget tabContent, String tabName) {
+    public void add(E tabContent, String tabName) {
 
         m_tabPanel.add(tabContent, tabName);
 
@@ -169,7 +171,7 @@ public class CmsTabbedPanel extends Composite {
      * @param tabContent the widget to add as a tab 
      * @param tabName the name of the tab to display in the tabbar
      */
-    public void addWithLeftMargin(Widget tabContent, String tabName) {
+    public void addWithLeftMargin(E tabContent, String tabName) {
 
         m_tabPanel.add(tabContent, tabName);
 
@@ -194,7 +196,7 @@ public class CmsTabbedPanel extends Composite {
      * @param tabName the text to be shown on its tab
      * @param beforeIndex  the index before which it will be inserted
      */
-    public void insert(Widget tabContent, String tabName, int beforeIndex) {
+    public void insert(E tabContent, String tabName, int beforeIndex) {
 
         m_tabPanel.insert(tabContent, tabName, beforeIndex);
     }
@@ -232,9 +234,10 @@ public class CmsTabbedPanel extends Composite {
      * @param tabIndex the child widget's index
      * @return the child widget
      */
-    public Widget getWidget(int tabIndex) {
+    @SuppressWarnings("unchecked")
+    public E getWidget(int tabIndex) {
 
-        return m_tabPanel.getWidget(tabIndex);
+        return (E)m_tabPanel.getWidget(tabIndex);
     }
 
     /**

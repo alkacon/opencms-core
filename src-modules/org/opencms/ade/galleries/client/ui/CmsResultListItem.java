@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsResultListItem.java,v $
- * Date   : $Date: 2010/03/30 14:08:37 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/28 10:25:47 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,26 +31,21 @@
 
 package org.opencms.ade.galleries.client.ui;
 
-import org.opencms.ade.galleries.shared.CmsGalleryInfoBean;
 import org.opencms.ade.galleries.shared.I_CmsItemId;
 import org.opencms.gwt.client.ui.CmsSimpleListItem;
-import org.opencms.gwt.client.ui.input.CmsCheckBox;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * Provides the specific list item for the result list.<p>
+ * Provides the specific list item for the results list.<p>
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.
  */
-public class CmsResultListItem extends CmsSimpleListItem implements ClickHandler, I_CmsItemId {
+public class CmsResultListItem extends CmsSimpleListItem implements I_CmsItemId {
 
     /** The resource path to identify the specific resource. */
     private String m_resourcePath;
@@ -58,37 +53,15 @@ public class CmsResultListItem extends CmsSimpleListItem implements ClickHandler
     /** The resource type name of the resource. */
     private String m_resourceType;
 
-    /** The reference to the gallery info bean. */
-    private CmsGalleryInfoBean m_infoBean;
-
     /**
      * The list item constructor.
      * 
      * @param infoBean the reference to the gallery info bean 
      * @param content the content of the category list item
      */
-    public CmsResultListItem(CmsGalleryInfoBean infoBean, Widget... content) {
+    public CmsResultListItem(Widget... content) {
 
         super(content);
-        for (Widget i : content) {
-            if (i instanceof CmsCheckBox) {
-                ((CmsCheckBox)i).addClickHandler(this);
-            }
-        }
-        setInfoBean(infoBean);
-    }
-
-    /**
-     * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
-     */
-    public void onClick(ClickEvent event) {
-
-        Object sender = event.getSource();
-        // TODO: improve the instance test 
-        // if check box is selected
-        if (sender instanceof ToggleButton) {
-            // open the preview
-        }
     }
 
     /**
@@ -130,25 +103,5 @@ public class CmsResultListItem extends CmsSimpleListItem implements ClickHandler
     public String getResourceType() {
 
         return m_resourceType;
-    }
-
-    /**
-     * Sets the gallery info bean.<p>
-     *
-     * @param infoBean the gallery info bean
-     */
-    public void setInfoBean(CmsGalleryInfoBean infoBean) {
-
-        m_infoBean = infoBean;
-    }
-
-    /**
-     * Returns the gallery info bean.<p>
-     *
-     * @return the infoBean
-     */
-    public CmsGalleryInfoBean getInfoBean() {
-
-        return m_infoBean;
     }
 }

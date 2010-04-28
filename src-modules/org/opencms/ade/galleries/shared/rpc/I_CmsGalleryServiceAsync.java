@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/rpc/Attic/I_CmsGalleryServiceAsync.java,v $
- * Date   : $Date: 2010/03/30 14:08:37 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/28 10:25:47 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  * 
@@ -93,5 +93,5 @@ public interface I_CmsGalleryServiceAsync {
      * @param searchObj the current search object
      * @param callback the async callback
      */
-    void getSearch(CmsGallerySearchObject searchObj, AsyncCallback<CmsGalleryInfoBean> callback);
+    void getSearch(CmsGallerySearchObject searchObj, AsyncCallback<CmsGallerySearchObject> callback);
 }

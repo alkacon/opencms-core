@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsTypeListItem.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsSearchTab.java,v $
  * Date   : $Date: 2010/04/28 10:25:47 $
- * Version: $Revision: 1.2 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,53 +31,33 @@
 
 package org.opencms.ade.galleries.client.ui;
 
-import org.opencms.ade.galleries.shared.I_CmsItemId;
-import org.opencms.gwt.client.ui.CmsSimpleListItem;
-
-import com.google.gwt.user.client.ui.Widget;
-
 /**
- * Provides the specific list item for the resources types list.<p>
+ * Provides the widget for the full text search tab.<p>
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.
  */
-public class CmsTypeListItem extends CmsSimpleListItem implements I_CmsItemId {
-
-    /** The resource type name to identify the specific resource type. */
-    private String m_resourceTypeId;
+public class CmsSearchTab extends A_CmsTab {
 
     /**
-     * The list item constructor.
-     * 
-     * @param content the content of the category list item
+     * Constructor.<p>
      */
-    public CmsTypeListItem(Widget... content) {
+    public CmsSearchTab() {
 
-        super(content);
+        super();
     }
 
     /**
-     * Returns the resource type name as the unique id for the resource type.<p>
+     * Will be triggered when the tab is selected.<p>
      * 
-     * @see org.opencms.ade.galleries.shared.I_CmsItemId#getId()
+     * @see org.opencms.ade.galleries.client.ui.A_CmsTab#onSelection()
      */
-    public String getId() {
+    @Override
+    public void onSelection() {
 
-        return m_resourceTypeId;
-    }
-
-    /**
-     * Sets the resource type name as a unique id for this resource type.<p>
-     * 
-     * @see org.opencms.ade.galleries.shared.I_CmsItemId#setId(java.lang.String)
-     */
-    public void setId(String id) {
-
-        m_resourceTypeId = id;
-
+        // implement
     }
 }

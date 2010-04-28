@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleriesVfs.java,v $
- * Date   : $Date: 2010/04/22 07:16:41 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/04/28 10:25:46 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,9 @@ import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.A_CmsEntryPoint;
 import org.opencms.gwt.client.ui.CmsFlowPanel;
 import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.util.CmsStringUtil;
+
+import java.util.ArrayList;
 
 import com.google.gwt.user.client.ui.RootPanel;
 
@@ -44,7 +47,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 8.0.0
  */
@@ -63,8 +66,19 @@ public class CmsGalleriesVfs extends A_CmsEntryPoint {
         RootPanel.get().add(html);
 
         // add a gallery dialog to html
+        //        CmsGalleryDialogAlt galleryDialog = new CmsGalleryDialogAlt();
+        //        html.add(galleryDialog);
+        //        galleryDialog.init();
+
+        CmsGalleryController controller = new CmsGalleryController();
         CmsGalleryDialog galleryDialog = new CmsGalleryDialog();
         html.add(galleryDialog);
-        galleryDialog.init();
+        String[] tabs = CmsStringUtil.splitAsArray(CmsGalleryProvider.get().getTabs(), ",");
+        ArrayList<String> tabsConfig = new ArrayList<String>();
+        for (String i : tabs) {
+            tabsConfig.add(i);
+        }
+        galleryDialog.fillTabs(tabsConfig, controller);
+        controller.setHandler(new CmsGalleryControllerHandler(galleryDialog));
     }
 }

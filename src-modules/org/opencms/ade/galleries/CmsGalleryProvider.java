@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/Attic/CmsGalleryProvider.java,v $
- * Date   : $Date: 2010/04/21 15:43:31 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/04/28 10:25:47 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,11 +47,11 @@ import org.apache.commons.logging.Log;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
  * 
- * @see org.opencms.ade.galleries.client.util.CmsGalleryProvider
+ * @see org.opencms.ade.galleries.client.CmsGalleryProvider
  */
 public final class CmsGalleryProvider implements I_CmsGalleryProviderConstants, I_CmsCoreProvider {
 
@@ -233,18 +233,6 @@ public final class CmsGalleryProvider implements I_CmsGalleryProviderConstants, 
 
     }
 
-    //    /**
-    //     * Returns the tabs configuration for the gallery dialog.<p>
-    //     * 
-    //     * @param request the current request to get the the parameter
-    //     * 
-    //     * @return the configuration string with tabs to display
-    //     */
-    //    private String getTabsConfig(HttpServletRequest request) {
-    //
-    //        return request.getParameter(ReqParam.tabs.name());
-    //    }
-
     /**
      * Returns the path to the gallery to open.<p>
      * 
@@ -256,18 +244,6 @@ public final class CmsGalleryProvider implements I_CmsGalleryProviderConstants, 
 
         return request.getParameter(ReqParam.gallerypath.name());
     }
-
-    //    /**
-    //     * Returns the tab id to be selected when gallery is opened.<p>
-    //     * 
-    //     * @param request the current request to get the the parameter
-    //     * 
-    //     * @return the tab id
-    //     */
-    //    private String getGalleryTabId(HttpServletRequest request) {
-    //
-    //        return request.getParameter(ReqParam.gallerytabid.name());
-    //    }
 
     /**
      * Returns the available resource types for this gallery dialog.<p>
