@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2010/04/08 15:28:09 $
- * Version: $Revision: 1.1178 $
+ * Date   : $Date: 2010/04/28 07:46:14 $
+ * Version: $Revision: 1.1179 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -23,6 +23,7 @@ OpenCms x.x.x - Month Day, Year
 - Added new CmsShell command to import resources with a third parameter to set if keep permissions
 ! External Links (pointers) now support handling of request parameters (loader parameter in opencms-vfs.xml)
 * Keep browser based authentication text when rewriting the opencms-system.xml
+* Fixed issue with broken dialog when trying to edit a group that is part of an organizational unit
 
 OpenCms 7.5.2 - January 20, 2010
 - Added additional MIME types
