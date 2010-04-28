@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagEnableAde.java,v $
- * Date   : $Date: 2010/04/28 07:18:09 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2010/04/28 07:19:00 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
 /**
  * Implementation of the <code>&lt;enable-ade/&gt;</code> tag.<p>
  * 
- * @version $Revision: 1.29 $ 
+ * @version $Revision: 1.30 $ 
  * 
  * @since 7.6 
  */
@@ -92,7 +92,6 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
         }
         context.getRequest().setAttribute(ATTR_GALLERY_DIALOG_MODE, ATTR_GALLERY_DIALOG_MODE_VALUE);
         CmsJspTagInclude.includeTagAction(context, INCLUDE_JSP_URI, null, false, null, null, req, context.getResponse());
-
     }
 
     /**
@@ -126,14 +125,5 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
     public int doStartTag() {
 
         return EVAL_BODY_INCLUDE;
-    }
-
-    /**
-     * Releases any resources we may have (or inherit).<p>
-     */
-    @Override
-    public void release() {
-
-        super.release();
     }
 }
