@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/gwt/CmsGwtService.java,v $
- * Date   : $Date: 2010/04/22 14:32:12 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/04/28 06:01:08 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,6 +50,9 @@ import java.net.URL;
 import java.text.ParseException;
 import java.util.List;
 
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -64,7 +67,7 @@ import com.google.gwt.user.server.rpc.SerializationPolicyLoader;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 8.0.0
  */
@@ -232,6 +235,16 @@ public class CmsGwtService extends RemoteServiceServlet implements I_CmsEventLis
     public void logError(Throwable t) {
 
         LOG.error(t.getLocalizedMessage(), t);
+    }
+
+    /**
+     * @see javax.servlet.http.HttpServlet#service(javax.servlet.ServletRequest, javax.servlet.ServletResponse)
+     */
+    @Override
+    public void service(ServletRequest arg0, ServletResponse arg1) throws ServletException, IOException {
+
+        arg1.setCharacterEncoding(arg0.getCharacterEncoding());
+        super.service(arg0, arg1);
     }
 
     /**
