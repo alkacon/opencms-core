@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleryController.java,v $
- * Date   : $Date: 2010/04/29 07:37:51 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/29 08:14:29 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import com.google.gwt.core.client.GWT;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  */
@@ -121,7 +121,7 @@ public class CmsGalleryController {
 
                 m_dialogBean = infoBean.getDialogInfo();
                 m_searchObject = infoBean.getSearchObject();
-                m_handler.onInitialSearch(m_searchObject, m_dialogBean, getGalleryTabIdIndex());
+                m_handler.onInitialSearch(m_searchObject, m_dialogBean, getGalleryTabIdIndex(), isOpenInResults());
             }
         };
         initialAction.execute();
@@ -212,6 +212,19 @@ public class CmsGalleryController {
         } else {
             return CmsGallerySearchObject.DEFAULT_TAB_ID;
         }
+    }
+
+    /**
+     * Checks if the gallery is first opened in results tab.<p> 
+     * 
+     * @return true if gallery is first opened in results tab, false otherwise
+     */
+    public boolean isOpenInResults() {
+
+        if (I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_results.name().equals(m_searchObject.getTabId())) {
+            return true;
+        }
+        return false;
     }
 
     /**

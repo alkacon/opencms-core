@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsGalleryDialog.java,v $
- * Date   : $Date: 2010/04/29 07:37:51 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/04/29 08:14:29 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import com.google.gwt.user.client.ui.Composite;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.
  */
@@ -251,6 +251,7 @@ public class CmsGalleryDialog extends Composite implements BeforeSelectionHandle
         } else if (tabWidget instanceof CmsCategoriesTab) {
             tabWidget.onSelection();
         } else if ((tabWidget instanceof CmsResultsTab) && m_isInitialSearch) {
+            // no search here
             m_isInitialSearch = false;
         } else if ((tabWidget instanceof CmsResultsTab) && !m_isInitialSearch) {
             tabWidget.onSelection();

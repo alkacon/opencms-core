@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleryControllerHandler.java,v $
- * Date   : $Date: 2010/04/29 07:37:51 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/29 08:14:29 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import java.util.ArrayList;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
 
@@ -120,15 +120,20 @@ public class CmsGalleryControllerHandler {
      * @param searchObj the current search object
      * @param dialogBean the current dialog data bean
      * @param tabIdIndex the tab id to be selected on opening
+     * @param isOpenInResults flag to indicate if gallery is opened in results tab
      */
-    public void onInitialSearch(CmsGallerySearchObject searchObj, CmsGalleryDialogBean dialogBean, int tabIdIndex) {
+    public void onInitialSearch(
+        CmsGallerySearchObject searchObj,
+        CmsGalleryDialogBean dialogBean,
+        int tabIdIndex,
+        boolean isOpenInResults) {
 
         m_galleryDialog.getResultsTab().fillContent(searchObj, dialogBean);
         m_galleryDialog.getGalleriesTab().fillContent(dialogBean);
         m_galleryDialog.getTypesTab().fillContent(dialogBean);
         m_galleryDialog.getCategoriesTab().fillContent(dialogBean);
 
-        m_galleryDialog.selectTab(tabIdIndex, true);
+        m_galleryDialog.selectTab(tabIdIndex, isOpenInResults);
     }
 
     /**
