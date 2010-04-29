@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2010/04/28 12:10:07 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2010/04/29 07:13:40 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import com.google.gwt.resources.client.ImageResource.RepeatStyle;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * 
  * @since 8.0.0
  */
@@ -609,47 +609,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
         String listTreeItemOpen();
     }
 
-    /** 
-     * Styles for the notification widget.<p>
-     */
-    interface I_CmsNotificationCss extends CssResource {
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String container();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String error();
-
-        /**
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String message();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String normal();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String warning();
-    }
-
     /** Page CSS. */
     interface I_CmsPageCss extends CssResource {
 
@@ -799,6 +758,41 @@ public interface I_CmsLayoutBundle extends ClientBundle {
 
     /** Toolbar CSS. */
     interface I_CmsToolbarCss extends CssResource {
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String notificationContainer();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String notificationError();
+
+        /**
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String notificationMessage();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String notificationNormal();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String notificationWarning();
 
         /** 
          * Access method.<p>
@@ -1064,14 +1058,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      */
     @Source("listtree.css")
     I_CmsListTreeCss listTreeCss();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the notification CSS
-     */
-    @Source("notification.css")
-    I_CmsNotificationCss notificationCss();
 
     /**
 

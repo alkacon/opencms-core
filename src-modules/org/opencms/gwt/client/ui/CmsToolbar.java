@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsToolbar.java,v $
- * Date   : $Date: 2010/04/28 12:10:07 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/04/29 07:13:40 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -71,17 +71,12 @@ public class CmsToolbar extends Composite {
     @UiField
     protected FlowPanel m_buttonPanelRight;
 
-    /** The main panel. */
-    @UiField
-    protected FlowPanel m_panel;
-
     /**
      * Constructor.<p>
      */
     public CmsToolbar() {
 
         initWidget(uiBinder.createAndBindUi(this));
-        m_panel.insert(CmsNotification.get().getWidget(), 0);
     }
 
     /**
