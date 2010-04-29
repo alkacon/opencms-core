@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsGalleriesTab.java,v $
- * Date   : $Date: 2010/04/28 10:25:47 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/29 07:37:52 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import com.google.gwt.user.client.ui.Image;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.
  */
@@ -66,11 +66,11 @@ public class CmsGalleriesTab extends A_CmsTab {
      */
     private class CheckboxHandler implements ClickHandler {
 
-        /** The gallery path as id for the selected gallery. */
-        private String m_galleryPath;
-
         /** The reference to the checkbox. */
         private CmsCheckBox m_checkBox;
+
+        /** The gallery path as id for the selected gallery. */
+        private String m_galleryPath;
 
         // TODO: remove the reference to the checkbox when the event source is clicked checkBox and not the toogleButton
         /**
@@ -111,37 +111,6 @@ public class CmsGalleriesTab extends A_CmsTab {
     }
 
     /**
-     * Will be triggered when a tab is selected.<p>
-     * @see org.opencms.ade.galleries.client.ui.A_CmsTab#onSelection()
-     */
-    @Override
-    public void onSelection() {
-
-        m_tabHandler.onSelection();
-
-    }
-
-    /**
-     * Sets the tab handler.<p>
-     *
-     * @param tabHandler the tab handler to set
-     */
-    public void setTabHandler(CmsGalleriesTabHandler tabHandler) {
-
-        m_tabHandler = tabHandler;
-    }
-
-    /**
-     * Returns the tab handler.<p>
-     *
-     * @return the tab handler
-     */
-    public CmsGalleriesTabHandler getTabHandler() {
-
-        return m_tabHandler;
-    }
-
-    /**
      * Fill the content of the galleries tab panel.<p>
      * 
      * @param dialogBean the gallery dialog data bean containing the current search parameters
@@ -166,6 +135,50 @@ public class CmsGalleriesTab extends A_CmsTab {
             CmsGalleryListItem listItem = new CmsGalleryListItem(checkBox, listItemWidget);
             listItem.setId(galleryItem.getKey());
             addWidgetToList(listItem);
+        }
+    }
+
+    /**
+     * Returns the tab handler.<p>
+     *
+     * @return the tab handler
+     */
+    public CmsGalleriesTabHandler getTabHandler() {
+
+        return m_tabHandler;
+    }
+
+    /**
+     * Will be triggered when a tab is selected.<p>
+     * @see org.opencms.ade.galleries.client.ui.A_CmsTab#onSelection()
+     */
+    @Override
+    public void onSelection() {
+
+        m_tabHandler.onSelection();
+
+    }
+
+    /**
+     * Sets the tab handler.<p>
+     *
+     * @param tabHandler the tab handler to set
+     */
+    public void setTabHandler(CmsGalleriesTabHandler tabHandler) {
+
+        m_tabHandler = tabHandler;
+    }
+
+    /**
+    * Deselect the galleries  in the galleries list.<p>
+    * 
+    * @param galleries the galleries to deselect
+    */
+    public void uncheckGalleries(ArrayList<String> galleries) {
+
+        for (String gallery : galleries) {
+            CmsGalleryListItem item = (CmsGalleryListItem)m_scrollList.getItem(gallery);
+            item.getCheckbox().setChecked(false);
         }
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleryController.java,v $
- * Date   : $Date: 2010/04/28 10:25:46 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/29 07:37:51 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import com.google.gwt.core.client.GWT;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  */
@@ -99,6 +99,7 @@ public class CmsGalleryController {
 
         m_dialogMode = CmsGalleryProvider.get().getDialogMode();
 
+        // TODO: move a n extra initialoze method
         /** The RPC action to get the initial gallery info object. */
         CmsRpcAction<CmsGalleryInfoBean> initialAction = new CmsRpcAction<CmsGalleryInfoBean>() {
 
@@ -124,6 +125,93 @@ public class CmsGalleryController {
             }
         };
         initialAction.execute();
+    }
+
+    /**
+     * Add category to search object.<p>
+     * 
+     * @param categoryPath the id of the category to add
+     */
+    public void addCategory(String categoryPath) {
+
+        if (!m_searchObject.getCategories().contains(categoryPath)) {
+            m_searchObject.getCategories().add(categoryPath);
+        }
+    }
+
+    /**
+     * Add gallery to search object.<p>
+     * 
+     * @param galleryPath the id of the gallery to add
+     */
+    public void addGallery(String galleryPath) {
+
+        if (!m_searchObject.getGalleries().contains(galleryPath)) {
+            m_searchObject.getGalleries().add(galleryPath);
+        }
+    }
+
+    /**
+     * Add type to search object.<p>
+     * 
+     * @param resourceType the id(name?) of the resource type to add
+     */
+    //TODO: is resource type id or name used?
+    public void addType(String resourceType) {
+
+        if (!m_searchObject.getTypes().contains(resourceType)) {
+            m_searchObject.getTypes().add(resourceType);
+        }
+    }
+
+    /**
+     * Removes all selected categories from the search object.<p>
+     */
+    public void clearCategories() {
+
+        ArrayList<String> selectedCategories = m_searchObject.getCategories();
+        m_handler.onClearCategories(selectedCategories);
+        m_searchObject.getCategories().clear();
+        updateResultsTab();
+    }
+
+    /**
+     * Removes all selected galleries from the search object.<p>
+     */
+    public void clearGalleries() {
+
+        ArrayList<String> selectedGalleries = m_searchObject.getGalleries();
+        m_handler.onClearGalleries(selectedGalleries);
+        m_searchObject.getGalleries().clear();
+        updateResultsTab();
+    }
+
+    /**
+     * Removes all selected types from the search object.<p>
+     */
+    public void clearTypes() {
+
+        //TODO: change the type of getTypes to ArrayList<String>
+        ArrayList<String> selectedTypes = (ArrayList<String>)m_searchObject.getTypes();
+        m_handler.onClearTypes(selectedTypes);
+        m_searchObject.getTypes().clear();
+        updateResultsTab();
+    }
+
+    /**
+     * Returns the int value of the tab id.<p> 
+     * 
+     * @return tab id
+     */
+    public int getGalleryTabIdIndex() {
+
+        if (I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_results.name().equals(m_searchObject.getTabId())) {
+            return m_dialogBean.getTabs().size();
+        } else if (m_dialogBean.getTabs().indexOf(m_searchObject.getTabId()) > -1) {
+            return m_dialogBean.getTabs().indexOf(m_searchObject.getTabId());
+        } else {
+            return CmsGallerySearchObject.DEFAULT_TAB_ID;
+        }
     }
 
     /**
@@ -163,19 +251,13 @@ public class CmsGalleryController {
     }
 
     /**
-     * Returns the int value of the tab id.<p> 
+     * Sets the controller handler for gallery dialog.<p>
      * 
-     * @return tab id
+     * @param handler the handler to set
      */
-    public int getGalleryTabIdIndex() {
+    public void setHandler(CmsGalleryControllerHandler handler) {
 
-        if (I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_results.name().equals(m_searchObject.getTabId())) {
-            return m_dialogBean.getTabs().size();
-        } else if (m_dialogBean.getTabs().indexOf(m_searchObject.getTabId()) > -1) {
-            return m_dialogBean.getTabs().indexOf(m_searchObject.getTabId());
-        } else {
-            return CmsGallerySearchObject.DEFAULT_TAB_ID;
-        }
+        m_handler = handler;
     }
 
     /**
@@ -237,53 +319,6 @@ public class CmsGalleryController {
     public void updatesTypesTab() {
 
         m_handler.onTypesTabSelection();
-    }
-
-    /**
-     * Add category to search object.<p>
-     * 
-     * @param categoryPath the id of the category to add
-     */
-    public void addCategory(String categoryPath) {
-
-        if (!m_searchObject.getCategories().contains(categoryPath)) {
-            m_searchObject.getCategories().add(categoryPath);
-        }
-    }
-
-    /**
-     * Add gallery to search object.<p>
-     * 
-     * @param galleryPath the id of the gallery to add
-     */
-    public void addGallery(String galleryPath) {
-
-        if (!m_searchObject.getGalleries().contains(galleryPath)) {
-            m_searchObject.getGalleries().add(galleryPath);
-        }
-    }
-
-    /**
-     * Add type to search object.<p>
-     * 
-     * @param resourceType the id(name?) of the resource type to add
-     */
-    //TODO: is resource type id or name used?
-    public void addType(String resourceType) {
-
-        if (!m_searchObject.getTypes().contains(resourceType)) {
-            m_searchObject.getTypes().add(resourceType);
-        }
-    }
-
-    /**
-     * Sets the controller handler for gallery dialog.<p>
-     * 
-     * @param handler the handler to set
-     */
-    public void setHandler(CmsGalleryControllerHandler handler) {
-
-        m_handler = handler;
     }
 
     /**

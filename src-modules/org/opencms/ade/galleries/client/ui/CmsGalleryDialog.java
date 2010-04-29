@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsGalleryDialog.java,v $
- * Date   : $Date: 2010/04/28 10:25:47 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/04/29 07:37:51 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import com.google.gwt.user.client.ui.Composite;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.
  */
@@ -66,11 +66,11 @@ public class CmsGalleryDialog extends Composite implements BeforeSelectionHandle
     /** The reference to the drag handler. */
     private I_CmsDragHandler<? extends I_CmsDragElement, ? extends I_CmsDragTarget> m_dragHandler;
 
-    /** The tabbed panel. */
-    private CmsTabbedPanel<A_CmsTab> m_tabbedPanel;
-
     /** The flag for the initails search. */
     private boolean m_isInitialSearch;
+
+    /** The tabbed panel. */
+    private CmsTabbedPanel<A_CmsTab> m_tabbedPanel;
 
     /**
      * The default constructor for the gallery dialog.<p> 

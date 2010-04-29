@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsCategoriesTab.java,v $
- * Date   : $Date: 2010/04/28 10:25:47 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/29 07:37:51 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import com.google.gwt.user.client.ui.Image;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.
  */
@@ -112,28 +112,6 @@ public class CmsCategoriesTab extends A_CmsTab {
     }
 
     /**
-     * Will be triggered when a tab is selected.<p>
-     * 
-     * @see org.opencms.ade.galleries.client.ui.A_CmsTab#onSelection()
-     */
-    @Override
-    public void onSelection() {
-
-        m_tabHandler.onSelection();
-
-    }
-
-    /**
-     * Sets the tab handler.<p>
-     *
-     * @param tabHandler the tab handler to set
-     */
-    public void setTabHandler(CmsCategoriesTabHandler tabHandler) {
-
-        m_tabHandler = tabHandler;
-    }
-
-    /**
      * Fill the content of the categories tab panel.<p>
      * 
      * @param dialogBean the gallery dialog data bean containing the available categories
@@ -158,6 +136,41 @@ public class CmsCategoriesTab extends A_CmsTab {
             CmsCategoryListItem listItem = new CmsCategoryListItem(checkBox, listItemWidget);
             listItem.setId(categoryItem.getKey());
             addWidgetToList(listItem);
+        }
+    }
+
+    /**
+     * Will be triggered when a tab is selected.<p>
+     * 
+     * @see org.opencms.ade.galleries.client.ui.A_CmsTab#onSelection()
+     */
+    @Override
+    public void onSelection() {
+
+        m_tabHandler.onSelection();
+
+    }
+
+    /**
+     * Sets the tab handler.<p>
+     *
+     * @param tabHandler the tab handler to set
+     */
+    public void setTabHandler(CmsCategoriesTabHandler tabHandler) {
+
+        m_tabHandler = tabHandler;
+    }
+
+    /**
+     * Deselect the categories  in the category list.<p>
+     * 
+     * @param categories the categories to deselect
+     */
+    public void uncheckCategories(ArrayList<String> categories) {
+
+        for (String category : categories) {
+            CmsCategoryListItem item = (CmsCategoryListItem)m_scrollList.getItem(category);
+            item.getCheckbox().setChecked(false);
         }
     }
 }

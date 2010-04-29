@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsResultsTab.java,v $
- * Date   : $Date: 2010/04/28 13:03:40 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/29 07:37:51 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,7 +71,7 @@ import com.google.gwt.user.client.ui.Image;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.
  */
@@ -104,37 +104,6 @@ public class CmsResultsTab extends A_CmsTab implements ClickHandler {
 
         super();
         m_dragHandler = handler;
-    }
-
-    /**
-     * Returns the tabHandler.<p>
-     *
-     * @return the tabHandler
-     */
-    public CmsResultsTabHandler getTabHandler() {
-
-        return m_tabHandler;
-    }
-
-    /**
-     * Returns the tab handler.<p>
-     *
-     * @param handler the tab handler
-     */
-    public void setHandler(CmsResultsTabHandler handler) {
-
-        m_tabHandler = handler;
-    }
-
-    /**
-     * Will be triggered when the tab is selected.<p>
-     *
-     * @see org.opencms.ade.galleries.client.ui.A_CmsTab#onSelection()
-     */
-    @Override
-    public void onSelection() {
-
-        m_tabHandler.onSelection();
     }
 
     /**
@@ -176,6 +145,82 @@ public class CmsResultsTab extends A_CmsTab implements ClickHandler {
     }
 
     /**
+     * Returns the tabHandler.<p>
+     *
+     * @return the tabHandler
+     */
+    public CmsResultsTabHandler getTabHandler() {
+
+        return m_tabHandler;
+    }
+
+    /**
+     * Callback to handle click events on the close button of the selected parameters.<p>
+     * 
+     * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
+     */
+    public void onClick(ClickEvent event) {
+
+        if (event.getSource() == m_closeTypesBtn) {
+            m_tabHandler.onRemoveTypes();
+        } else if (event.getSource() == m_closeGalleriesBtn) {
+            m_tabHandler.onRemoveGalleries();
+        } else if (event.getSource() == m_closeCategoriesBtn) {
+            m_tabHandler.onRemoveCategories();
+        }
+        // TODO: add search params panel
+
+    }
+
+    /**
+     * Will be triggered when the tab is selected.<p>
+     *
+     * @see org.opencms.ade.galleries.client.ui.A_CmsTab#onSelection()
+     */
+    @Override
+    public void onSelection() {
+
+        m_tabHandler.onSelection();
+    }
+
+    /**
+     * Removes the categories parameter display button.<p>
+     */
+    public void removeCategories() {
+
+        m_categories.clear();
+        m_categories.removeStyleName(org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle.INSTANCE.galleryDialogCss().showParams());
+    }
+
+    /**
+     * Removes the galleries parameter display button.<p>
+     */
+    public void removeGalleries() {
+
+        m_galleries.clear();
+        m_galleries.removeStyleName(org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle.INSTANCE.galleryDialogCss().showParams());
+    }
+
+    /**
+     * Removes the types parameter display button.<p>
+     */
+    public void removeTypes() {
+
+        m_types.clear();
+        m_types.removeStyleName(org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle.INSTANCE.galleryDialogCss().showParams());
+    }
+
+    /**
+     * Returns the tab handler.<p>
+     *
+     * @param handler the tab handler
+     */
+    public void setHandler(CmsResultsTabHandler handler) {
+
+        m_tabHandler = handler;
+    }
+
+    /**
      * Updates the content of the results tab.<p>
      * 
      * @param searchObj the current search object containing search results
@@ -206,109 +251,6 @@ public class CmsResultsTab extends A_CmsTab implements ClickHandler {
             CmsResultListItem listItem = new CmsResultListItem(resultItemWidget);
             listItem.setId(resultItem.getId());
             addWidgetToList(listItem);
-        }
-    }
-
-    /**
-     * Updates the height (with border) of the params 'div' panel.<p>    
-     */
-    private void updateListSize() {
-
-        int tabHeight = m_tab.getElement().getClientHeight();
-
-        int marginValueParams = 0;
-        String marginBottomPrams = CmsDomUtil.getCurrentStyle(m_params.getElement(), CmsDomUtil.Style.marginBottom);
-        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(marginBottomPrams)) {
-            marginValueParams = CmsClientStringUtil.parseInt(marginBottomPrams);
-        }
-        int paramsHeight = m_params.getOffsetHeight() + marginValueParams;
-
-        int marginValueOptions = 0;
-        String marginBottomOptions = CmsDomUtil.getCurrentStyle(m_params.getElement(), CmsDomUtil.Style.marginBottom);
-        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(marginBottomOptions)) {
-            marginValueOptions = CmsClientStringUtil.parseInt(marginBottomOptions);
-        }
-        int optionsHeight = m_options.getOffsetHeight() + marginValueOptions;
-
-        // 3 is some offset, because of the list border
-        int newListSize = tabHeight - paramsHeight - optionsHeight - 4;
-
-        m_list.getElement().getStyle().setHeight(newListSize, Unit.PX);
-    }
-
-    /**
-     * Displays the selected search parameters above the result list.<p>
-     * 
-     * @param infoBean the gallery info bean containing the current search parameters
-     */
-    private void showParams(CmsGallerySearchObject searchObj, CmsGalleryDialogBean dialogBean) {
-
-        if (searchObj.isNotEmpty()) {
-            m_params.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().marginBottom());
-            // selected types
-            CmsFloatDecoratedPanel typesParams;
-            // only show params, if any selected
-            if (searchObj.getTypes().size() > 0) {
-
-                typesParams = getTypesParamsPanel(searchObj.getTypes(), dialogBean.getTypes());
-                typesParams.getElement().getStyle().setDisplay(Display.INLINE);
-                m_types.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().showParams());
-                m_types.add(typesParams);
-                typesParams.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().paramsText());
-                m_closeTypesBtn = new CmsPushButton();
-                m_closeTypesBtn.setUiIcon(I_CmsButton.UiIcon.close);
-                m_closeTypesBtn.setShowBorder(false);
-                m_closeTypesBtn.addClickHandler(this);
-                m_types.add(m_closeTypesBtn);
-
-                // otherwise remove border
-            } else {
-                m_types.removeStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().showParams());
-            }
-
-            // selected galleries
-            HTMLPanel galleriesParams;
-            // only show params, if any selected
-            if (searchObj.getGalleries().size() > 0) {
-                galleriesParams = getGallerisParamsPanel(searchObj.getGalleries(), dialogBean.getGalleries());
-                m_galleries.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().showParams());
-                m_galleries.add(galleriesParams);
-                galleriesParams.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().paramsText());
-                m_closeGalleriesBtn = new CmsPushButton();
-                m_closeGalleriesBtn.setUiIcon(I_CmsButton.UiIcon.close);
-                m_closeGalleriesBtn.setShowBorder(false);
-                m_closeGalleriesBtn.addClickHandler(this);
-                m_galleries.add(m_closeGalleriesBtn);
-                // otherwise remove border
-            } else {
-                m_galleries.removeStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().showParams());
-            }
-
-            // selected categories
-            CmsFloatDecoratedPanel categoriesParams;
-            // only show params, if any selected
-            if (searchObj.getCategories().size() > 0) {
-                categoriesParams = getCategoriesParamsPanel(searchObj.getCategories(), dialogBean.getCategories());
-                m_categories.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().showParams());
-                m_categories.add(categoriesParams);
-                categoriesParams.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().paramsText());
-                m_closeCategoriesBtn = new CmsPushButton();
-                m_closeCategoriesBtn.setUiIcon(I_CmsButton.UiIcon.close);
-                m_closeCategoriesBtn.setShowBorder(false);
-                m_closeCategoriesBtn.addClickHandler(this);
-                m_categories.add(m_closeCategoriesBtn);
-                // otherwise remove border
-            } else {
-                m_categories.removeStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().showParams());
-            }
-
-            // TODO: full text search
-        } else {
-            // remove margin and border
-            m_params.removeStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().marginBottom());
-            m_types.removeStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().showParams());
-            m_galleries.removeStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().showParams());
-            m_categories.removeStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().showParams());
         }
     }
 
@@ -433,11 +375,102 @@ public class CmsResultsTab extends A_CmsTab implements ClickHandler {
     }
 
     /**
-     * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
+     * Displays the selected search parameters above the result list.<p>
+     * 
+     * @param infoBean the gallery info bean containing the current search parameters
      */
-    public void onClick(ClickEvent event) {
+    private void showParams(CmsGallerySearchObject searchObj, CmsGalleryDialogBean dialogBean) {
 
-        // Implement
-        // TODO: use to remove the selected search parameter
+        if (searchObj.isNotEmpty()) {
+            m_params.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().marginBottom());
+            // selected types
+            CmsFloatDecoratedPanel typesParams;
+            // only show params, if any selected
+            if (searchObj.getTypes().size() > 0) {
+
+                typesParams = getTypesParamsPanel(searchObj.getTypes(), dialogBean.getTypes());
+                typesParams.getElement().getStyle().setDisplay(Display.INLINE);
+                m_types.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().showParams());
+                m_types.add(typesParams);
+                typesParams.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().paramsText());
+                m_closeTypesBtn = new CmsPushButton(I_CmsButton.UiIcon.close);
+                m_closeTypesBtn.setShowBorder(false);
+                m_types.add(m_closeTypesBtn);
+                m_closeTypesBtn.addClickHandler(this);
+
+                // otherwise remove border
+            } else {
+                m_types.removeStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().showParams());
+            }
+
+            // selected galleries
+            HTMLPanel galleriesParams;
+            // only show params, if any selected
+            if (searchObj.getGalleries().size() > 0) {
+                galleriesParams = getGallerisParamsPanel(searchObj.getGalleries(), dialogBean.getGalleries());
+                m_galleries.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().showParams());
+                m_galleries.add(galleriesParams);
+                galleriesParams.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().paramsText());
+                m_closeGalleriesBtn = new CmsPushButton(I_CmsButton.UiIcon.close);
+                m_closeGalleriesBtn.setShowBorder(false);
+                m_closeGalleriesBtn.addClickHandler(this);
+                m_galleries.add(m_closeGalleriesBtn);
+                // otherwise remove border
+            } else {
+                m_galleries.removeStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().showParams());
+            }
+
+            // selected categories
+            CmsFloatDecoratedPanel categoriesParams;
+            // only show params, if any selected
+            if (searchObj.getCategories().size() > 0) {
+                categoriesParams = getCategoriesParamsPanel(searchObj.getCategories(), dialogBean.getCategories());
+                m_categories.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().showParams());
+                m_categories.add(categoriesParams);
+                categoriesParams.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().paramsText());
+                m_closeCategoriesBtn = new CmsPushButton(I_CmsButton.UiIcon.close);
+                m_closeCategoriesBtn.setShowBorder(false);
+                m_closeCategoriesBtn.addClickHandler(this);
+                m_categories.add(m_closeCategoriesBtn);
+                // otherwise remove border
+            } else {
+                m_categories.removeStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().showParams());
+            }
+
+            // TODO: full text search
+        } else {
+            // remove margin and border
+            m_params.removeStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().marginBottom());
+            m_types.removeStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().showParams());
+            m_galleries.removeStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().showParams());
+            m_categories.removeStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().showParams());
+        }
+    }
+
+    /**
+     * Updates the height (with border) of the params 'div' panel.<p>    
+     */
+    private void updateListSize() {
+
+        int tabHeight = m_tab.getElement().getClientHeight();
+
+        int marginValueParams = 0;
+        String marginBottomPrams = CmsDomUtil.getCurrentStyle(m_params.getElement(), CmsDomUtil.Style.marginBottom);
+        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(marginBottomPrams)) {
+            marginValueParams = CmsClientStringUtil.parseInt(marginBottomPrams);
+        }
+        int paramsHeight = m_params.getOffsetHeight() + marginValueParams;
+
+        int marginValueOptions = 0;
+        String marginBottomOptions = CmsDomUtil.getCurrentStyle(m_params.getElement(), CmsDomUtil.Style.marginBottom);
+        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(marginBottomOptions)) {
+            marginValueOptions = CmsClientStringUtil.parseInt(marginBottomOptions);
+        }
+        int optionsHeight = m_options.getOffsetHeight() + marginValueOptions;
+
+        // 3 is some offset, because of the list border
+        int newListSize = tabHeight - paramsHeight - optionsHeight - 4;
+
+        m_list.getElement().getStyle().setHeight(newListSize, Unit.PX);
     }
 }

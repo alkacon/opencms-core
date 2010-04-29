@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsTypeListItem.java,v $
- * Date   : $Date: 2010/04/28 10:25:47 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/29 07:37:51 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,8 +31,8 @@
 
 package org.opencms.ade.galleries.client.ui;
 
-import org.opencms.ade.galleries.shared.I_CmsItemId;
 import org.opencms.gwt.client.ui.CmsSimpleListItem;
+import org.opencms.gwt.client.ui.input.CmsCheckBox;
 
 import com.google.gwt.user.client.ui.Widget;
 
@@ -41,14 +41,14 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.
  */
-public class CmsTypeListItem extends CmsSimpleListItem implements I_CmsItemId {
+public class CmsTypeListItem extends CmsSimpleListItem {
 
-    /** The resource type name to identify the specific resource type. */
-    private String m_resourceTypeId;
+    /** The reference to the list item checkbox. */
+    private CmsCheckBox m_checkbox;
 
     /**
      * The list item constructor.
@@ -58,26 +58,19 @@ public class CmsTypeListItem extends CmsSimpleListItem implements I_CmsItemId {
     public CmsTypeListItem(Widget... content) {
 
         super(content);
+        for (Widget i : content) {
+            if (i instanceof CmsCheckBox) {
+                m_checkbox = (CmsCheckBox)i;
+            }
+        }
     }
 
     /**
-     * Returns the resource type name as the unique id for the resource type.<p>
-     * 
-     * @see org.opencms.ade.galleries.shared.I_CmsItemId#getId()
+     * Returns the reference to the list checkbox.<p>
+     * @return the checkbox
      */
-    public String getId() {
+    public CmsCheckBox getCheckbox() {
 
-        return m_resourceTypeId;
-    }
-
-    /**
-     * Sets the resource type name as a unique id for this resource type.<p>
-     * 
-     * @see org.opencms.ade.galleries.shared.I_CmsItemId#setId(java.lang.String)
-     */
-    public void setId(String id) {
-
-        m_resourceTypeId = id;
-
+        return m_checkbox;
     }
 }

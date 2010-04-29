@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsTypesTab.java,v $
- * Date   : $Date: 2010/04/28 10:25:47 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/29 07:37:51 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import com.google.gwt.user.client.ui.Image;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.
  */
@@ -69,11 +69,11 @@ public class CmsTypesTab extends A_CmsTab {
      */
     private class CheckboxHandler implements ClickHandler {
 
-        /** The resource type (name/id?) as id for the selected type. */
-        private String m_resourceType;
-
         /** The reference to the checkbox. */
         private CmsCheckBox m_checkBox;
+
+        /** The resource type (name/id?) as id for the selected type. */
+        private String m_resourceType;
 
         // TODO: remove when the event source is clicked checkBox and not the toogleButton
         /**
@@ -103,11 +103,11 @@ public class CmsTypesTab extends A_CmsTab {
         }
     }
 
-    /** The reference to the drag handler for the list elements. */
-    private I_CmsDragHandler<? extends I_CmsDragElement, ? extends I_CmsDragTarget> m_dragHandler;
-
     /** The reference to the handler of this tab. */
     protected CmsTypesTabHandler m_tabHandler;
+
+    /** The reference to the drag handler for the list elements. */
+    private I_CmsDragHandler<? extends I_CmsDragElement, ? extends I_CmsDragTarget> m_dragHandler;
 
     /**
      * Constructor with the drag handler.<p>
@@ -118,37 +118,6 @@ public class CmsTypesTab extends A_CmsTab {
 
         super();
         m_dragHandler = handler;
-    }
-
-    /**
-     * Returns the tabHandler.<p>
-     *
-     * @return the tabHandler
-     */
-    public CmsTypesTabHandler getTabHandler() {
-
-        return m_tabHandler;
-    }
-
-    /**
-     * Returns the tab handler.<p>
-     *
-     * @param handler the tab handler
-     */
-    public void setTabHandler(CmsTypesTabHandler handler) {
-
-        m_tabHandler = handler;
-    }
-
-    /**
-     * Will be triggered when the tab is selected.<p>
-     *
-     * @see org.opencms.ade.galleries.client.ui.A_CmsTab#onSelection()
-     */
-    @Override
-    public void onSelection() {
-
-        m_tabHandler.onSelection();
     }
 
     /**
@@ -178,6 +147,50 @@ public class CmsTypesTab extends A_CmsTab {
             CmsTypeListItem listItem = new CmsTypeListItem(checkBox, listItemWidget);
             listItem.setId(typeItem.getKey());
             addWidgetToList(listItem);
+        }
+    }
+
+    /**
+     * Returns the tabHandler.<p>
+     *
+     * @return the tabHandler
+     */
+    public CmsTypesTabHandler getTabHandler() {
+
+        return m_tabHandler;
+    }
+
+    /**
+     * Will be triggered when the tab is selected.<p>
+     *
+     * @see org.opencms.ade.galleries.client.ui.A_CmsTab#onSelection()
+     */
+    @Override
+    public void onSelection() {
+
+        m_tabHandler.onSelection();
+    }
+
+    /**
+     * Returns the tab handler.<p>
+     *
+     * @param handler the tab handler
+     */
+    public void setTabHandler(CmsTypesTabHandler handler) {
+
+        m_tabHandler = handler;
+    }
+
+    /**
+     * Deselect the types  in the types list.<p>
+     * 
+     * @param types the categories to deselect
+     */
+    public void uncheckTypes(ArrayList<String> types) {
+
+        for (String type : types) {
+            CmsTypeListItem item = (CmsTypeListItem)m_scrollList.getItem(type);
+            item.getCheckbox().setChecked(false);
         }
     }
 }

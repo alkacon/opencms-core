@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsResultsTabHandler.java,v $
- * Date   : $Date: 2010/04/28 10:25:46 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/29 07:37:51 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ package org.opencms.ade.galleries.client;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  */
@@ -53,6 +53,30 @@ public class CmsResultsTabHandler extends A_CmsTabHandler {
     public CmsResultsTabHandler(CmsGalleryController controller) {
 
         super(controller);
+    }
+
+    /**
+     * Will be triggered when categories parameter are removed.<p>
+     */
+    public void onRemoveCategories() {
+
+        m_controller.clearCategories();
+    }
+
+    /**
+     * Will be triggered when galleries parameter are removed.<p>
+     */
+    public void onRemoveGalleries() {
+
+        m_controller.clearGalleries();
+    }
+
+    /**
+     * Will be triggered when types parameter are removed.<p>
+     */
+    public void onRemoveTypes() {
+
+        m_controller.clearTypes();
     }
 
     /**
