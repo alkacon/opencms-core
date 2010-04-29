@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/Attic/A_CmsEntryPoint.java,v $
- * Date   : $Date: 2010/04/29 07:13:40 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/04/29 09:31:56 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,7 +33,6 @@ package org.opencms.gwt.client;
 
 import org.opencms.gwt.client.rpc.CmsLog;
 import org.opencms.gwt.client.ui.CmsNotification;
-import org.opencms.gwt.client.ui.CmsNotification.Type;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
@@ -48,7 +47,7 @@ import com.google.gwt.core.client.GWT;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 8.0.0
  * 
@@ -111,7 +110,7 @@ public abstract class A_CmsEntryPoint implements EntryPoint {
             public void onUncaughtException(Throwable t) {
 
                 String message = CmsClientStringUtil.getMessage(t);
-                CmsNotification.get().send(Type.WARNING, message);
+                CmsNotification.get().send(CmsNotification.Type.WARNING, message);
                 CmsLog.log(message + "\n" + CmsClientStringUtil.getStackTrace(t, "\n"));
             }
         });

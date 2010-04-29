@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsToolbarNotificationWidget.java,v $
- * Date   : $Date: 2010/04/29 07:13:40 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/29 09:31:56 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -91,6 +91,9 @@ public class CmsToolbarNotificationWidget extends Composite implements I_CmsNoti
     /** The timer to remove the last notification. */
     private Timer m_timer;
 
+    /** The current type. */
+    private Type m_type;
+
     /**
      * Constructor.<p>
      */
@@ -114,16 +117,38 @@ public class CmsToolbarNotificationWidget extends Composite implements I_CmsNoti
      */
     public void show(Mode mode, Type type, String message) {
 
-        if (!canBeReplacedBy(mode, type)) {
-            return;
+        final Type oldType = m_type;
+        boolean needsRestoration = false;
+        if (mode != null) {
+            if ((m_mode != null) && m_mode.equals(Mode.STICKY)) {
+                // sticky notification can only replaced by higher level sticky notifications
+                needsRestoration = mode.equals(Mode.NORMAL);
+                needsRestoration |= ((mode.equals(Mode.STICKY) && !canBeReplacedBy(type)));
+            }
+            // remove last notification if still shown
+            hide(true);
         }
 
-        // remove last notification if still shown
-        hide(true);
+        // keep state
+        m_type = type;
+        final String stickyMessage;
+        if (mode == null) {
+            // restoring case
+            stickyMessage = null;
+        } else if (!needsRestoration) {
+            // normal case
+            m_mode = mode;
+            stickyMessage = null;
+        } else {
+            // needs restoration
+            stickyMessage = m_message.getInnerHTML();
+        }
 
-        getElement().addClassName(classForType(type));
+        // set the new notification message
         m_message.setInnerHTML(message);
-        m_mode = mode;
+
+        // set the right class
+        getElement().addClassName(classForType(type));
 
         // hide content and display 
         getElement().getStyle().setVisibility(Visibility.HIDDEN);
@@ -143,7 +168,7 @@ public class CmsToolbarNotificationWidget extends Composite implements I_CmsNoti
             }
         });
 
-        if (mode != Mode.FIXED) {
+        if ((mode != null) && ((mode != Mode.STICKY) || needsRestoration)) {
             // create timer to hide the notification
             m_timer = new Timer() {
 
@@ -154,6 +179,9 @@ public class CmsToolbarNotificationWidget extends Composite implements I_CmsNoti
                 public void run() {
 
                     hide();
+                    if (stickyMessage != null) {
+                        show(null, oldType, stickyMessage);
+                    }
                 }
             };
             m_timer.schedule(3000);
@@ -243,37 +271,24 @@ public class CmsToolbarNotificationWidget extends Composite implements I_CmsNoti
     /**
      * Checks if this widget can be replaced in the given mode by the given type.<p>
      * 
-     * @param mode the mode
      * @param type the type
      * 
      * @return <code>true</code> if it can be replaced
      */
-    private boolean canBeReplacedBy(Mode mode, Type type) {
+    private boolean canBeReplacedBy(Type type) {
 
-        if (mode == Mode.FIXED) {
-            // do not overwrite a higher or equal level notification
-            Element element = getElement();
-            switch (type) {
-                case ERROR:
-                    if (CmsDomUtil.hasClass(classForType(Type.ERROR), element)) {
-                        return false;
-                    }
-                    break;
-                case NORMAL:
-                    if (CmsDomUtil.hasClass(classForType(Type.ERROR), element)
-                        || CmsDomUtil.hasClass(classForType(Type.WARNING), element)
-                        || CmsDomUtil.hasClass(classForType(Type.NORMAL), element)) {
-                        return false;
-                    }
-                    break;
-                case WARNING:
-                    if (CmsDomUtil.hasClass(classForType(Type.ERROR), element)
-                        || CmsDomUtil.hasClass(classForType(Type.WARNING), element)) {
-                        return false;
-                    }
-                    break;
-                default:
-            }
+        if (m_type == null) {
+            return true;
+        }
+        // do not overwrite a higher or equal level notification
+        switch (type) {
+            case ERROR:
+                return !m_type.equals(Type.ERROR);
+            case NORMAL:
+                return false;
+            case WARNING:
+                return m_type.equals(Type.NORMAL);
+            default:
         }
         return true;
     }
@@ -370,9 +385,10 @@ public class CmsToolbarNotificationWidget extends Composite implements I_CmsNoti
             m_timer.cancel();
             m_timer = null;
         }
-        if ((m_mode == Mode.FIXED) && !force) {
+        if ((m_mode == Mode.STICKY) && !force) {
             return;
         }
+        m_type = null;
         if (m_animation != null) {
             m_animation.cancel();
         }

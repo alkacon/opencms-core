@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2010/04/28 12:09:13 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/04/29 09:31:56 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,6 @@ import org.opencms.file.CmsResource;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsNotification;
-import org.opencms.gwt.client.ui.CmsNotification.Type;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
@@ -57,7 +56,7 @@ import com.google.gwt.user.client.Window;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 8.0.0
  */
@@ -481,7 +480,7 @@ public class CmsSitemapController {
                     Messages.GUI_UNLOCK_NOTIFICATION_2,
                     CmsSitemapProvider.get().getUri(),
                     result);
-                CmsNotification.get().send(Type.WARNING, text);
+                CmsNotification.get().send(CmsNotification.Type.WARNING, text);
             }
         };
         unlockAction.execute();
@@ -556,7 +555,7 @@ public class CmsSitemapController {
                     Messages.GUI_LOCK_NOTIFICATION_2,
                     CmsSitemapProvider.get().getUri(),
                     result);
-                CmsNotification.get().send(Type.WARNING, text);
+                CmsNotification.get().send(CmsNotification.Type.WARNING, text);
             }
         };
         lockAction.execute();

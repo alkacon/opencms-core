@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsNotification.java,v $
- * Date   : $Date: 2010/04/29 07:13:40 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/29 09:31:56 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import com.google.gwt.animation.client.Animation;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -51,10 +51,10 @@ public final class CmsNotification {
      */
     public static enum Mode {
 
-        /** Error Notification, wont be removed and can only be replaced by higher level notifications. */
-        FIXED,
+        /** Sticky mode. */
+        STICKY,
 
-        /** Normal Notification mode, will be removed after a while or replaced with next message. */
+        /** Normal mode. */
         NORMAL;
     }
 
@@ -118,9 +118,6 @@ public final class CmsNotification {
     /** The singleton instance. */
     private static CmsNotification INSTANCE;
 
-    /** The current mode. */
-    private Mode m_mode;
-
     /** The widget. */
     private I_CmsNotificationWidget m_widget;
 
@@ -174,23 +171,20 @@ public final class CmsNotification {
     public void send(Type type, final String message) {
 
         if (m_widget != null) {
-            m_widget.show(m_mode, type, message);
+            m_widget.show(Mode.NORMAL, type, message);
         }
     }
 
     /**
-     * Sets the current mode.<p>
+     * Sends a new sticky notification.<p>
      * 
-     * @param mode the mode to use
+     * @param type the notification type
+     * @param message the message
      */
-    public void setMode(Mode mode) {
+    public void sendSticky(Type type, final String message) {
 
-        if (mode == Mode.FIXED) {
-            hide();
-        }
-        m_mode = mode;
-        if (mode == Mode.NORMAL) {
-            hide();
+        if (m_widget != null) {
+            m_widget.show(Mode.STICKY, type, message);
         }
     }
 

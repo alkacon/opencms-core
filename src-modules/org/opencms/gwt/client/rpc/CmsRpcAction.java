@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/rpc/Attic/CmsRpcAction.java,v $
- * Date   : $Date: 2010/04/27 09:00:01 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/04/29 09:31:56 $
+ * Version: $Revision: 1.11 $
  * 
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,7 +35,6 @@ import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.CmsConfirmDialog;
 import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
-import org.opencms.gwt.client.ui.CmsNotification.Type;
 import org.opencms.gwt.client.util.CmsClientStringUtil;
 
 import com.google.gwt.user.client.Timer;
@@ -48,7 +47,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 8.0
  */
@@ -182,6 +181,6 @@ public abstract class CmsRpcAction<T> implements AsyncCallback<T> {
      */
     protected void show() {
 
-        CmsNotification.get().send(Type.NORMAL, Messages.get().key(Messages.GUI_LOADING_0));
+        CmsNotification.get().send(CmsNotification.Type.NORMAL, Messages.get().key(Messages.GUI_LOADING_0));
     }
 }

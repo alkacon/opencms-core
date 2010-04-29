@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapToolbar.java,v $
- * Date   : $Date: 2010/04/29 07:13:40 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/04/29 09:31:56 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,8 +36,6 @@ import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.CmsToggleButton;
 import org.opencms.gwt.client.ui.CmsToolbar;
 import org.opencms.gwt.client.ui.I_CmsButton;
-import org.opencms.gwt.client.ui.CmsNotification.Mode;
-import org.opencms.gwt.client.ui.CmsNotification.Type;
 import org.opencms.gwt.client.util.CmsDomUtil;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -48,7 +46,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 8.0.0
  */
@@ -118,9 +116,8 @@ public class CmsSitemapToolbar extends CmsToolbar {
         addRight(m_publishButton);
 
         if (!isEditable) {
-            CmsNotification.get().setMode(Mode.FIXED);
-            CmsNotification.get().send(
-                Type.WARNING,
+            CmsNotification.get().sendSticky(
+                CmsNotification.Type.WARNING,
                 Messages.get().key(Messages.GUI_NO_EDIT_NOTIFICATION_1, CmsSitemapProvider.get().getNoEditReason()));
         }
     }
