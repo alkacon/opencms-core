@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2010/04/29 09:31:56 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/04/29 14:18:25 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import com.google.gwt.user.client.Window;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 8.0.0
  */
@@ -587,7 +587,11 @@ public class CmsSitemapController {
         } else if (change instanceof CmsSitemapChangeNew) {
             CmsSitemapChangeNew changeNew = (CmsSitemapChangeNew)change;
             CmsClientSitemapEntry newParent = getEntry(CmsResource.getParentFolder(changeNew.getEntry().getSitePath()));
-            newParent.addChild(changeNew.getEntry());
+            if (changeNew.getEntry().getPosition() < 0) {
+                newParent.addChild(changeNew.getEntry());
+            } else {
+                newParent.insertChild(changeNew.getEntry(), changeNew.getEntry().getPosition());
+            }
         }
     }
 }
