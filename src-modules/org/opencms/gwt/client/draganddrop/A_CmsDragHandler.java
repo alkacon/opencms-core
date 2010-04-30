@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/draganddrop/Attic/A_CmsDragHandler.java,v $
- * Date   : $Date: 2010/04/27 13:56:00 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/04/30 07:04:20 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,11 @@
 
 package org.opencms.gwt.client.draganddrop;
 
+import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.gwt.client.util.CmsMoveAnimation;
 import org.opencms.gwt.client.util.CmsScrollTimer;
+import org.opencms.gwt.client.util.I_CmsSimpleCallback;
+import org.opencms.gwt.client.util.CmsDomUtil.Style;
 
 import java.util.Iterator;
 import java.util.List;
@@ -61,7 +65,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -104,6 +108,9 @@ implements I_CmsDragHandler<E, T> {
 
     /** Current scroll direction. */
     protected CmsScrollTimer.Direction m_scrollDirection;
+
+    /** Animation enabled flag. */
+    protected boolean m_animationEnabled;
 
     /**
      * @see org.opencms.gwt.client.draganddrop.I_CmsDragHandler#addDragTarget(org.opencms.gwt.client.draganddrop.I_CmsDragTarget)
@@ -250,13 +257,18 @@ implements I_CmsDragHandler<E, T> {
             DOM.releaseCapture(m_dragElement.getElement());
             event.preventDefault();
             event.stopPropagation();
-            restoreElementAfterDrag();
-            Document.get().getBody().removeClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragStarted());
-            m_dragElement.onDragStop(this);
-            m_dragElement = null;
-            m_placeholder = null;
-            m_targets = null;
-            m_currentTarget = null;
+            if (m_animationEnabled) {
+                animateClear();
+            } else {
+                clearDrag();
+            }
+            //            restoreElementAfterDrag();
+            //            Document.get().getBody().removeClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragStarted());
+            //            m_dragElement.onDragStop(this);
+            //            m_dragElement = null;
+            //            m_placeholder = null;
+            //            m_targets = null;
+            //            m_currentTarget = null;
         }
 
     }
@@ -448,5 +460,61 @@ implements I_CmsDragHandler<E, T> {
      * Method executed when the widget order within the current target has been changed.<p> 
      */
     protected abstract void targetSortChangeAction();
+
+    /**
+     * Restores the dragged element from dragging and clears all references used within the current drag process.<p>
+     */
+    protected void clearDrag() {
+
+        restoreElementAfterDrag();
+        Document.get().getBody().removeClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragStarted());
+        m_dragElement.onDragStop(this);
+        m_dragElement = null;
+        m_placeholder = null;
+        m_targets = null;
+        m_currentTarget = null;
+    }
+
+    /**
+     * Clears the drag process with a move animation of the drag element to the place-holder position.<p>
+     */
+    protected void animateClear() {
+
+        I_CmsSimpleCallback<Void> callback = new I_CmsSimpleCallback<Void>() {
+
+            /**
+             * Call-back method.<p>
+             * 
+             * @param arg void
+             */
+            public void execute(Void arg) {
+
+                clearDrag();
+            }
+
+            /**
+             * @see org.opencms.gwt.client.util.I_CmsSimpleCallback#onError(java.lang.String)
+             */
+            public void onError(String message) {
+
+                // nothing to do
+
+            }
+        };
+        int endTop = DOM.getAbsoluteTop(m_placeholder.getElement())
+            - DOM.getAbsoluteTop(m_dragElement.getDragParent().getElement());
+        int endLeft = DOM.getAbsoluteLeft(m_placeholder.getElement())
+            - DOM.getAbsoluteLeft(m_dragElement.getDragParent().getElement());
+        int startTop = CmsDomUtil.getCurrentStyleInt(m_dragElement.getElement(), Style.top);
+        int startLeft = CmsDomUtil.getCurrentStyleInt(m_dragElement.getElement(), Style.left);
+        CmsMoveAnimation ani = new CmsMoveAnimation(
+            m_dragElement.getElement(),
+            startTop,
+            startLeft,
+            endTop,
+            endLeft,
+            callback);
+        ani.run(300);
+    }
 
 }

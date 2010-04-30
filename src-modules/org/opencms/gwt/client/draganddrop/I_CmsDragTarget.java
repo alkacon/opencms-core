@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/draganddrop/Attic/I_CmsDragTarget.java,v $
- * Date   : $Date: 2010/03/26 09:14:40 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/30 07:04:20 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -63,6 +63,24 @@ public interface I_CmsDragTarget extends HasWidgets, IndexedPanel, InsertPanel {
      * @return the element position data
      */
     CmsPositionBean getPositionInfo();
+
+    /**
+     * Inserts a child widget at the specified position before the specified
+     * index. Setting a position of <code>(-1, -1)</code> will cause the child
+     * widget to be positioned statically. If the widget is already a child of
+     * this panel, it will be moved to the specified index.
+     * 
+     * @param w the child widget to be inserted
+     * @param left the widget's left position
+     * @param top the widget's top position
+     * @param beforeIndex the index before which it will be inserted
+     * 
+     * @throws IndexOutOfBoundsException if <code>beforeIndex</code> is out of
+     *           range
+     *
+     * @see com.google.gwt.user.client.ui.AbsolutePanel#insert(Widget, int, int, int)
+     */
+    void insert(Widget w, int left, int top, int beforeIndex);
 
     /**
      * Method called by the drag handler when an element is dragged into the drag target.<p>

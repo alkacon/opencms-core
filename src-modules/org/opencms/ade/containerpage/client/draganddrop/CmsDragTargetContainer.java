@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsDragTargetContainer.java,v $
- * Date   : $Date: 2010/04/21 14:13:45 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/04/30 07:04:20 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -220,6 +220,14 @@ public class CmsDragTargetContainer implements I_CmsDragTargetContainer {
     }
 
     /**
+     * @see org.opencms.gwt.client.draganddrop.I_CmsDragTarget#insert(com.google.gwt.user.client.ui.Widget, int, int, int)
+     */
+    public void insert(Widget w, int left, int top, int beforeIndex) {
+
+        m_root.insert(w, left, top, beforeIndex);
+    }
+
+    /**
      * @see com.google.gwt.user.client.ui.HasWidgets#iterator()
      */
     public Iterator<Widget> iterator() {
@@ -232,9 +240,7 @@ public class CmsDragTargetContainer implements I_CmsDragTargetContainer {
      */
     public void onDragEnter(I_CmsDragHandler<?, ?> handler) {
 
-        m_root.getElement().getStyle().setBorderColor(CmsDomUtil.Color.red.name());
-        //add(handler.getDragElement().getCurrentPlaceholder());
-
+        // nothing to do
     }
 
     /**
@@ -250,8 +256,7 @@ public class CmsDragTargetContainer implements I_CmsDragTargetContainer {
      */
     public void onDragLeave(I_CmsDragHandler<?, ?> handler) {
 
-        m_root.getElement().getStyle().clearBorderColor();
-
+        // nothing to do
     }
 
     /**
@@ -259,8 +264,7 @@ public class CmsDragTargetContainer implements I_CmsDragTargetContainer {
      */
     public void onDrop(I_CmsDragHandler<?, ?> handler) {
 
-        getElement().getStyle().clearBorderColor();
-
+        // nothing to do
     }
 
     /**
