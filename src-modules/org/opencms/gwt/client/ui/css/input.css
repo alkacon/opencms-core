@@ -94,10 +94,15 @@
     width: 12px;
 }
 
-.radioButtonGroup *, .multiCheckBox *, .selectBoxRoot *, .selectBoxSelector *, .textBoxPanel *{
+.radioButtonGroup *, .multiCheckBox *, .textBoxPanel * {
 	font-size: inherit;
 	font-family: inherit;
 	color: value("constants.color");
+}
+
+.selectBoxRoot *, .selectBoxSelector * {
+	font-family: value("constantsCss.fontFamily");
+	font-size: value("constantsCss.fontSize");
 }
 
 .error {
@@ -154,15 +159,20 @@
 
 @if user.agent ie6 {
 	.inlineBlock {
-		display: inline;
+		display: inline !important;
 	}
 } @else {
 	.inlineBlock {
-		display: inline-block;
+		display: inline-block !important;
 	}
 }	
 
 .labelTruncated {
 	overflow: hidden;
 	white-space: nowrap;
+}
+
+
+.alignBottom {
+	vertical-align: bottom;
 }

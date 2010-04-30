@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsInputCss.java,v $
- * Date   : $Date: 2010/04/15 13:53:28 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/04/30 09:35:10 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,11 +38,18 @@ import com.google.gwt.resources.client.CssResource;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 8.0.0
  */
 public interface I_CmsInputCss extends CssResource {
+
+    /** 
+     * Css class reader.<p>
+     * 
+     * @return the css class
+     */
+    String alignBottom();
 
     /** 
      * Css class reader.<p>
@@ -163,6 +170,13 @@ public interface I_CmsInputCss extends CssResource {
      */
     String selectorPopup();
 
+    /**
+     * Css class reader.<p>
+     * 
+     * @return the css class
+     */
+    // String textAreaWidget();
+
     /** 
      * Css class reader.<p>
      * 
@@ -176,13 +190,6 @@ public interface I_CmsInputCss extends CssResource {
      * @return the css class
      */
     String textAreaContainer();
-
-    /**
-     * Css class reader.<p>
-     * 
-     * @return the css class
-     */
-    // String textAreaWidget();
 
     /**
      * Css class reader. <p>

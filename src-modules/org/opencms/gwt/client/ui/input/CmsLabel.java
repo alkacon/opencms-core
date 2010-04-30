@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsLabel.java,v $
- * Date   : $Date: 2010/04/28 08:37:52 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/04/30 09:35:10 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.gwt.client.ui.input;
 
+import org.opencms.gwt.client.ui.css.I_CmsInputCss;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
@@ -74,12 +75,15 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
 public class CmsLabel extends Widget
 implements HasHorizontalAlignment, HasText, HasHTML, HasClickHandlers, HasAllMouseHandlers {
+
+    /** The CSS bundle instance used for this widget.<p> */
+    protected static final I_CmsInputCss CSS = I_CmsInputLayoutBundle.INSTANCE.inputCss();
 
     /** List of elements to measure. */
     protected static ArrayList<Element> m_elements;
@@ -105,6 +109,8 @@ implements HasHorizontalAlignment, HasText, HasHTML, HasClickHandlers, HasAllMou
     public CmsLabel() {
 
         this(Document.get().createDivElement());
+        fixInline();
+
     }
 
     /**
@@ -116,6 +122,7 @@ implements HasHorizontalAlignment, HasText, HasHTML, HasClickHandlers, HasAllMou
 
         m_truncate = true;
         setElement(element);
+        fixInline();
     }
 
     /**
@@ -151,6 +158,7 @@ implements HasHorizontalAlignment, HasText, HasHTML, HasClickHandlers, HasAllMou
         tm.release();
 
         // the current element width
+
         int elementWidth = CmsDomUtil.getCurrentStyleInt(element, CmsDomUtil.Style.width);
         if (elementWidth >= textWidth) {
             element.getStyle().setVisibility(Style.Visibility.VISIBLE);
@@ -455,5 +463,26 @@ implements HasHorizontalAlignment, HasText, HasHTML, HasClickHandlers, HasAllMou
 
         super.onLoad();
         widthCheck();
+    }
+
+    /**
+     * Helper method for changing the label's CSS display property from inline to inline-block (if possible).<p>
+     * 
+     * This avoids some display problems, e.g. in Chrome.
+     */
+    private void fixInline() {
+
+        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
+            public void execute() {
+                Element element = getElement();
+                String display = CmsDomUtil.getCurrentStyle(element, CmsDomUtil.Style.display);
+                if (display.equalsIgnoreCase("inline")) {
+                    element.addClassName(CSS.inlineBlock());
+                    element.addClassName(CSS.alignBottom());
+                }
+            }
+        });
+
     }
 }
