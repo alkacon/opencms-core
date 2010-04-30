@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/shared/rpc/Attic/I_CmsContainerpageServiceAsync.java,v $
- * Date   : $Date: 2010/04/27 13:56:00 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/04/30 08:58:46 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
@@ -46,7 +47,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -132,4 +133,18 @@ public interface I_CmsContainerpageServiceAsync {
      * @param callback the call-back executed on response
      */
     void saveRecentList(List<String> clientIds, AsyncCallback<Void> callback);
+
+    /**
+     * Generates request builder to make a synchronized RPC call saving the container-page.<p>
+     * 
+     * @param containerpageUri the current URI
+     * @param containers the container-page's containers
+     * @param callback the call-back executed on response
+     * 
+     * @return the request builder for this RPC call
+     */
+    RequestBuilder syncSaveContainerpage(
+        String containerpageUri,
+        List<CmsContainer> containers,
+        AsyncCallback<Void> callback);
 }

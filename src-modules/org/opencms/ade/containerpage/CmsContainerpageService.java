@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsContainerpageService.java,v $
- * Date   : $Date: 2010/04/27 13:09:10 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/04/30 08:58:46 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,7 +68,7 @@ import java.util.Set;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.0
  */
@@ -410,6 +410,14 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             }
         }
         return m_sessionCache;
+    }
+
+    /**
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#syncSaveContainerpage(java.lang.String, java.util.List)
+     */
+    public void syncSaveContainerpage(String containerpageUri, List<CmsContainer> containers) throws CmsRpcException {
+
+        saveContainerpage(containerpageUri, containers);
     }
 
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageController.java,v $
- * Date   : $Date: 2010/04/28 13:04:02 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/30 08:58:46 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,6 +41,7 @@ import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService;
 import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageServiceAsync;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
+import org.opencms.gwt.client.rpc.I_CmsHasSync;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
@@ -61,6 +62,8 @@ import com.google.gwt.dom.client.AnchorElement;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.http.client.RequestBuilder;
+import com.google.gwt.http.client.RequestException;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
@@ -74,7 +77,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -295,7 +298,6 @@ public final class CmsContainerpageController {
     private Map<String, CmsContainerJso> m_containers;
 
     /** The container-page handler. */
-    // TODO: evaluate if it is necessary to keep this reference
     private CmsContainerpageHandler m_handler;
 
     /** The drag targets within this page. */
@@ -812,7 +814,51 @@ public final class CmsContainerpageController {
             };
             action.execute();
         }
+    }
 
+    /**
+     * Saves the container-page in a synchronized RPC call.<p>
+     */
+    protected void syncSaveContainerpage() {
+
+        if (m_pageChanged) {
+            CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
+
+                /**
+                 * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+                 */
+                @Override
+                public void execute() {
+
+                    RequestBuilder builder = getContainerpageService().syncSaveContainerpage(
+                        getCurrentUri(),
+                        getPageContent(),
+                        this);
+                    ((I_CmsHasSync)builder).setSync(true);
+                    try {
+                        builder.send();
+                    } catch (RequestException e) {
+                        onFailure(e);
+                    }
+
+                }
+
+                /**
+                 * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+                 */
+                @Override
+                protected void onResponse(Void result) {
+
+                    CmsDebugLog.getInstance().printLine("Page saved");
+                    m_pageChanged = false;
+                    if (m_closingRegistration != null) {
+                        m_closingRegistration.removeHandler();
+                    }
+
+                }
+            };
+            action.execute();
+        }
     }
 
     /**
@@ -863,14 +909,7 @@ public final class CmsContainerpageController {
                     if (m_pageChanged) {
                         boolean savePage = Window.confirm("Do you want to save the page before leaving?");
                         if (savePage) {
-                            saveContainerpage();
-                            //                        while (m_pageChanged) {
-                            //                            try {
-                            //                                Thread.sleep(100);
-                            //                            } catch (InterruptedException e) {
-                            //                                CmsDebugLog.getInstance().printLine(e.getMessage());
-                            //                            }
-                            //                        }
+                            syncSaveContainerpage();
                         }
                     }
 
@@ -962,5 +1001,15 @@ public final class CmsContainerpageController {
             }
         }
         return result;
+    }
+
+    /**
+     * Returns the container-page handler.<p>
+     *
+     * @return the container-page handler
+     */
+    public CmsContainerpageHandler getHandler() {
+
+        return m_handler;
     }
 }
