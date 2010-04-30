@@ -13,9 +13,9 @@
 	color: value("constantsCss.color");
 }
 
-.itemContainer *{
-	font-size: inherit;
-	font-family: inherit;
+.itemContainer * {
+	font-family: value("constantsCss.fontFamily");
+	font-size: value("constantsCss.fontSize");
 }
 
 @sprite .itemContent{
