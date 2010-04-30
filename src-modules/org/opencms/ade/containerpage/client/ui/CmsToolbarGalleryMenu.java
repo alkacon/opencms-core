@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsToolbarGalleryMenu.java,v $
- * Date   : $Date: 2010/04/28 13:03:39 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/30 09:00:18 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.ade.containerpage.client.ui;
 import org.opencms.ade.containerpage.client.CmsContainerpageHandler;
 import org.opencms.ade.containerpage.client.draganddrop.CmsContainerDragHandler;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.ade.galleries.client.CmsGalleryFactory;
 import org.opencms.ade.galleries.client.ui.CmsGalleryDialog;
 import org.opencms.gwt.client.ui.I_CmsButton;
 
@@ -45,7 +46,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -58,6 +59,8 @@ public class CmsToolbarGalleryMenu extends A_CmsToolbarMenu {
 
     private boolean m_initialized;
 
+    private CmsContainerDragHandler m_dragHandler;
+
     /**
      * Constructor.<p>
      * 
@@ -67,13 +70,10 @@ public class CmsToolbarGalleryMenu extends A_CmsToolbarMenu {
     public CmsToolbarGalleryMenu(CmsContainerpageHandler handler, CmsContainerDragHandler dragHandler) {
 
         super(I_CmsButton.ButtonData.ADD, handler);
+        m_dragHandler = dragHandler;
         m_content = new FlowPanel();
         m_content.setStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().menuContent());
-        m_gallery = new CmsGalleryDialog(dragHandler);
-        SimplePanel tabsContainer = new SimplePanel();
-        tabsContainer.addStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().menuTabContainer());
-        tabsContainer.add(m_gallery);
-        m_content.add(tabsContainer);
+
         setMenuWidget(m_content);
     }
 
@@ -83,7 +83,11 @@ public class CmsToolbarGalleryMenu extends A_CmsToolbarMenu {
     public void onToolbarActivate() {
 
         if (!m_initialized) {
-            //      m_gallery.init();
+            m_gallery = CmsGalleryFactory.createDialog(m_dragHandler);
+            SimplePanel tabsContainer = new SimplePanel();
+            tabsContainer.addStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().menuTabContainer());
+            tabsContainer.add(m_gallery);
+            m_content.add(tabsContainer);
             m_initialized = true;
         }
     }

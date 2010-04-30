@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsToolbarClipboardMenu.java,v $
- * Date   : $Date: 2010/04/28 13:03:39 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/04/30 09:00:18 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 8.0.0
  */
@@ -75,7 +75,7 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu {
     private CmsRecentTab m_recent;
 
     /** The favorite and recent list tabs. */
-    private CmsTabbedPanel m_tabs;
+    private CmsTabbedPanel<Widget> m_tabs;
 
     /**
      * Constructor.<p>
@@ -88,7 +88,7 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu {
 
         m_content = new FlowPanel();
         m_content.setStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().menuContent());
-        m_tabs = new CmsTabbedPanel();
+        m_tabs = new CmsTabbedPanel<Widget>();
         m_favorites = new CmsFavoriteTab(this);
         m_recent = new CmsRecentTab();
 
@@ -169,15 +169,6 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu {
     public CmsDragTargetMenu getDropzone() {
 
         return m_dropzone;
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.CmsMenuButton#hideMenu()
-     */
-    @Override
-    public void hideMenu() {
-
-        super.hideMenu();
     }
 
     /**

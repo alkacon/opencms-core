@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsContentEditorDialog.java,v $
- * Date   : $Date: 2010/04/27 14:40:50 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/04/30 09:00:18 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,13 +41,14 @@ import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.util.CmsDebugLog;
 
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.user.client.Window;
 
 /**
  * Class to handle the content editor dialog.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -133,8 +134,12 @@ public final class CmsContentEditorDialog {
         m_currentSitePath = sitePath;
         m_dialog = new CmsPopup(Messages.get().key(Messages.GUI_DIALOG_CONTENTEDITOR_TITLE_0));
         m_dialog.addStyleName(I_CmsLayoutBundle.INSTANCE.contentEditorCss().contentEditor());
-        m_dialog.setSize(800, 600, Unit.PX);
 
+        int height = Window.getClientHeight() - 20;
+        int width = Window.getClientWidth();
+        width = (width < 1350) ? width - 50 : 1300;
+        m_dialog.setSize(width, height, Unit.PX);
+        m_dialog.setGlassEnabled(true);
         CmsIFrame editorFrame = new CmsIFrame(EDITOR_IFRAME_NAME, getEditorUrl(m_currentSitePath));
 
         m_dialog.add(editorFrame);
