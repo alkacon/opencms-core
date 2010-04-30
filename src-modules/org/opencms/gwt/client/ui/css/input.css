@@ -101,8 +101,8 @@
 }
 
 .selectBoxRoot *, .selectBoxSelector * {
-	font-family: value("constantsCss.fontFamily");
-	font-size: value("constantsCss.fontSize");
+	font-family: value("constants.fontFamily");
+	font-size: value("constants.fontSize");
 }
 
 .error {
