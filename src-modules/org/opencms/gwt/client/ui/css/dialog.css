@@ -3,6 +3,18 @@
     z-index: 20000;
 }
 
+.dragOverlay{
+	display: none;
+}
+.popup.dragging .dragOverlay{
+	display: block;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	height: 100%;
+	width: 100%;
+	z-index: 10;
+}
 .popup .popupContent{
     margin: 3px;
     position: relative;

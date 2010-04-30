@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsPopup.java,v $
- * Date   : $Date: 2010/04/20 05:53:26 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/04/30 06:57:26 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,8 @@ import java.util.Iterator;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.MouseDownEvent;
+import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -54,7 +56,7 @@ import com.google.gwt.user.client.ui.PopupPanel.PositionCallback;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
@@ -86,6 +88,9 @@ public class CmsPopup {
                 + I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
             setGlassStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupOverlay());
             ((UIObject)getCaption()).getElement().addClassName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerTop());
+            Element dragOverlay = DOM.createDiv();
+            dragOverlay.setClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().dragOverlay());
+            getElement().insertFirst(dragOverlay);
             Element shadowDiv = DOM.createDiv();
             shadowDiv.setClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupShadow()
                 + " "
@@ -196,6 +201,26 @@ public class CmsPopup {
         public boolean remove(Widget w) {
 
             return m_main.remove(w);
+        }
+
+        /**
+         * @see com.google.gwt.user.client.ui.DialogBox#beginDragging(com.google.gwt.event.dom.client.MouseDownEvent)
+         */
+        @Override
+        protected void beginDragging(MouseDownEvent event) {
+
+            super.beginDragging(event);
+            addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().dragging());
+        }
+
+        /**
+         * @see com.google.gwt.user.client.ui.DialogBox#endDragging(com.google.gwt.event.dom.client.MouseUpEvent)
+         */
+        @Override
+        protected void endDragging(MouseUpEvent event) {
+
+            super.endDragging(event);
+            removeStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().dragging());
         }
 
         /**
