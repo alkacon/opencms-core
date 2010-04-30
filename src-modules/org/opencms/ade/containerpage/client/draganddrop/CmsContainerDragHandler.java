@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsContainerDragHandler.java,v $
- * Date   : $Date: 2010/04/30 07:04:20 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2010/04/30 08:59:04 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -67,7 +67,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 8.0.0
  */
@@ -354,8 +354,7 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElementEx
             CmsDragTargetMenu dragParent = new CmsDragTargetMenu();
             dragParent.setWidth(m_dragElement.getElement().getOffsetWidth() + "px");
             dragParent.getElement().getStyle().setPosition(Position.ABSOLUTE);
-            dragParent.getElement().getStyle().setTop(0, Unit.PX);
-            dragParent.getElement().getStyle().setLeft(0, Unit.PX);
+
             RootPanel.get().add(dragParent);
             m_currentTarget = dragParent;
             m_dragElement = createDragClone(m_dragElement.getElement(), dragParent, m_dragElement.getClientId());
@@ -366,8 +365,12 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElementEx
 
             if (m_editor.getClipboard().isActive()) {
                 m_editor.getClipboard().hideMenu();
+                dragParent.getElement().getStyle().setTop(m_editor.getClipboard().getAbsoluteTop(), Unit.PX);
+                dragParent.getElement().getStyle().setLeft(m_editor.getClipboard().getAbsoluteLeft(), Unit.PX);
             } else {
                 m_editor.getAdd().hideMenu();
+                dragParent.getElement().getStyle().setTop(m_editor.getAdd().getAbsoluteTop(), Unit.PX);
+                dragParent.getElement().getStyle().setLeft(m_editor.getAdd().getAbsoluteLeft(), Unit.PX);
             }
             Document.get().getBody().addClassName(I_CmsButton.ButtonData.MOVE.getIconClass());
             DOM.setCapture(m_dragElement.getElement());
@@ -376,7 +379,6 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElementEx
             m_placeholder = createPlaceholder(m_dragElement);
         }
         m_targetInfos = new HashMap<I_CmsDragTargetContainer, DragInfo>();
-        //  m_placeholder = createPlaceholder(m_dragElement);
         m_startInfo = new DragInfo(m_dragElement, m_placeholder, m_cursorOffsetLeft, m_cursorOffsetTop);
         m_current = m_startInfo;
         m_targetInfos.put(m_currentTarget, m_current);

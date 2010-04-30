@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsMenuDragHandler.java,v $
- * Date   : $Date: 2010/04/27 13:56:00 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/30 08:59:04 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -65,7 +65,8 @@ public class CmsMenuDragHandler extends A_CmsDragHandler<CmsDragMenuElement, Cms
      */
     public CmsMenuDragHandler() {
 
-        // nothing to do here
+        super();
+        m_animationEnabled = true;
     }
 
     /**
@@ -90,8 +91,7 @@ public class CmsMenuDragHandler extends A_CmsDragHandler<CmsDragMenuElement, Cms
     @Override
     protected void elementCancelAction() {
 
-        m_dragElement.getDragParent().insert(m_dragElement, m_dragElement.getDragParent().getWidgetIndex(m_placeholder));
-
+        // nothing to do here
     }
 
     /**
@@ -100,8 +100,7 @@ public class CmsMenuDragHandler extends A_CmsDragHandler<CmsDragMenuElement, Cms
     @Override
     protected void elementDropAction() {
 
-        m_currentTarget.insert(m_dragElement, m_currentTarget.getWidgetIndex(m_placeholder));
-
+        // nothing to do here
     }
 
     /**
@@ -111,7 +110,6 @@ public class CmsMenuDragHandler extends A_CmsDragHandler<CmsDragMenuElement, Cms
     protected void elementEnterTargetAction() {
 
         // nothing to do here
-
     }
 
     /**
@@ -121,7 +119,6 @@ public class CmsMenuDragHandler extends A_CmsDragHandler<CmsDragMenuElement, Cms
     protected void elementLeaveTargetAction() {
 
         // nothing to do here
-
     }
 
     /**
@@ -133,8 +130,9 @@ public class CmsMenuDragHandler extends A_CmsDragHandler<CmsDragMenuElement, Cms
         m_provisionalParent = new CmsDragTargetMenu();
         m_provisionalParent.setWidth(m_dragElement.getElement().getOffsetWidth() + "px");
         m_provisionalParent.getElement().getStyle().setPosition(Position.ABSOLUTE);
-        m_provisionalParent.getElement().getStyle().setTop(0, Unit.PX);
-        m_provisionalParent.getElement().getStyle().setLeft(0, Unit.PX);
+        Element listEl = m_dragElement.getParent().getElement();
+        m_provisionalParent.getElement().getStyle().setTop(listEl.getAbsoluteTop(), Unit.PX);
+        m_provisionalParent.getElement().getStyle().setLeft(listEl.getAbsoluteLeft(), Unit.PX);
         m_provisionalParent.getElement().getStyle().setZIndex(99999);
         RootPanel.get().add(m_provisionalParent);
         m_targets = new ArrayList<CmsDragTargetMenu>();
@@ -152,6 +150,7 @@ public class CmsMenuDragHandler extends A_CmsDragHandler<CmsDragMenuElement, Cms
     @Override
     protected void restoreElementAfterDrag() {
 
+        m_dragElement.getDragParent().insert(m_dragElement, m_dragElement.getDragParent().getWidgetIndex(m_placeholder));
         m_placeholder.removeFromParent();
         m_dragElement.clearDrag();
         m_provisionalParent.removeFromParent();
@@ -165,7 +164,6 @@ public class CmsMenuDragHandler extends A_CmsDragHandler<CmsDragMenuElement, Cms
     protected void targetSortChangeAction() {
 
         // nothing to do here
-
     }
 
     /**
@@ -188,5 +186,4 @@ public class CmsMenuDragHandler extends A_CmsDragHandler<CmsDragMenuElement, Cms
 
         return result;
     }
-
 }
