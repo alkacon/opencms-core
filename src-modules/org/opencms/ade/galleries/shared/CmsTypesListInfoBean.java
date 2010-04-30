@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/Attic/CmsTypesListInfoBean.java,v $
- * Date   : $Date: 2010/04/23 10:08:25 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/30 10:17:38 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,11 +44,14 @@ import java.util.Map;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
-public class CmsTypesListInfoBean extends CmsListInfoBean implements I_CmsItemId {
+public class CmsTypesListInfoBean extends CmsListInfoBean implements I_CmsItemId, Comparable<CmsTypesListInfoBean> {
+
+    /** An array of gallery type names associated with this content type. */
+    private ArrayList<String> m_galleryTypeNames;
 
     /** The path to the resource type icon. */
     private String m_iconResource;
@@ -56,33 +59,7 @@ public class CmsTypesListInfoBean extends CmsListInfoBean implements I_CmsItemId
     /** The resource type name as a unique id. */
     private String m_resourceTypeName;
 
-    /** The nice name of the resource type name. */
-    private String m_niceTypeName;
-
-    /** An array of gallery type names associated with this content type. */
-    private ArrayList<String> m_galleryTypeNames;
-
     // TODO: add a member required for drag functionality
-
-    /**
-     * Returns the resource type icon.<p>
-     *
-     * @return the iconResource the icon for the resource type
-     */
-    public String getIconResource() {
-
-        return m_iconResource;
-    }
-
-    /**
-     * Sets the resource type icon.<p>
-     *
-     * @param iconResource the resource type icon to set
-     */
-    public void setIconResource(String iconResource) {
-
-        m_iconResource = iconResource;
-    }
 
     /**
      * The empty default constructor.<p>
@@ -97,11 +74,41 @@ public class CmsTypesListInfoBean extends CmsListInfoBean implements I_CmsItemId
      * 
      * @param title the nice resource type name
      * @param subtitle the description 
-     * @param additionalInfo the sdditional info if given
+     * @param additionalInfo the additional info if given
      */
     public CmsTypesListInfoBean(String title, String subtitle, Map<String, String> additionalInfo) {
 
         super(title, subtitle, additionalInfo);
+    }
+
+    /**
+     * Default compareTo method uses object title (nice resource type name).<p>
+     *  
+     * @see java.lang.Comparable#compareTo(java.lang.Object)
+     */
+    public int compareTo(CmsTypesListInfoBean o) {
+
+        return getTitle().compareTo(o.getTitle());
+    }
+
+    /**
+     * Returns the list with the gallery types names associated with this resource type.<p>
+     *
+     * @return the gallery type names
+     */
+    public ArrayList<String> getGalleryTypeNames() {
+
+        return m_galleryTypeNames;
+    }
+
+    /**
+     * Returns the resource type icon.<p>
+     *
+     * @return the iconResource the icon for the resource type
+     */
+    public String getIconResource() {
+
+        return m_iconResource;
     }
 
     /**
@@ -115,36 +122,6 @@ public class CmsTypesListInfoBean extends CmsListInfoBean implements I_CmsItemId
     }
 
     /**
-     * Sets the resource type as a unique id.<p>
-     * 
-     * @see org.opencms.ade.galleries.shared.I_CmsItemId#setId(java.lang.String)
-     */
-    public void setId(String id) {
-
-        m_resourceTypeName = id;
-    }
-
-    /**
-     * Sets the nice type name of the resource.<p>
-     *
-     * @param typeName the nice type name to set
-     */
-    public void setTypeNiceName(String typeName) {
-
-        m_niceTypeName = typeName;
-    }
-
-    /**
-     * Returns the nice type name of the resource.<p>
-     *
-     * @return the nice type name
-     */
-    public String getTypeNiceName() {
-
-        return m_niceTypeName;
-    }
-
-    /**
      * Sets the list with the gallery types names associated with this resource type.<p>
      *
      * @param galleryNames the list with gallery type names to set
@@ -155,12 +132,22 @@ public class CmsTypesListInfoBean extends CmsListInfoBean implements I_CmsItemId
     }
 
     /**
-     * Returns the list with the gallery types names associated with this resource type.<p>
+     * Sets the resource type icon.<p>
      *
-     * @return the gallery type names
+     * @param iconResource the resource type icon to set
      */
-    public ArrayList<String> getGalleryTypeNames() {
+    public void setIconResource(String iconResource) {
 
-        return m_galleryTypeNames;
+        m_iconResource = iconResource;
+    }
+
+    /**
+     * Sets the resource type as a unique id.<p>
+     * 
+     * @see org.opencms.ade.galleries.shared.I_CmsItemId#setId(java.lang.String)
+     */
+    public void setId(String id) {
+
+        m_resourceTypeName = id;
     }
 }

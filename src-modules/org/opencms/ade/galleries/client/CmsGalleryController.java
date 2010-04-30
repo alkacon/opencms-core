@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleryController.java,v $
- * Date   : $Date: 2010/04/29 08:14:29 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/30 10:17:38 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ import org.opencms.ade.galleries.shared.CmsGalleriesListInfoBean;
 import org.opencms.ade.galleries.shared.CmsGalleryDialogBean;
 import org.opencms.ade.galleries.shared.CmsGalleryInfoBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchObject;
+import org.opencms.ade.galleries.shared.CmsTypesListInfoBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService;
 import org.opencms.ade.galleries.shared.rpc.I_CmsGalleryServiceAsync;
@@ -43,7 +44,6 @@ import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Map.Entry;
 
 import com.google.gwt.core.client.GWT;
 
@@ -55,7 +55,7 @@ import com.google.gwt.core.client.GWT;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  */
@@ -81,7 +81,7 @@ public class CmsGalleryController {
      * 
      * 
      */
-    // TODO: macht es sinn hier schon onGetInitialSearch aufzurufen?
+    // TODO: macht es sinn hier schon onGetInitialSearch aufzurufen?, nein eigenen initialize method schreiben!!!
     public CmsGalleryController() {
 
         // get initial search for gallery
@@ -99,7 +99,7 @@ public class CmsGalleryController {
 
         m_dialogMode = CmsGalleryProvider.get().getDialogMode();
 
-        // TODO: move a n extra initialoze method
+        // TODO: move to an extra initialize method
         /** The RPC action to get the initial gallery info object. */
         CmsRpcAction<CmsGalleryInfoBean> initialAction = new CmsRpcAction<CmsGalleryInfoBean>() {
 
@@ -191,7 +191,6 @@ public class CmsGalleryController {
      */
     public void clearTypes() {
 
-        //TODO: change the type of getTypes to ArrayList<String>
         ArrayList<String> selectedTypes = (ArrayList<String>)m_searchObject.getTypes();
         m_handler.onClearTypes(selectedTypes);
         m_searchObject.getTypes().clear();
@@ -274,6 +273,28 @@ public class CmsGalleryController {
     }
 
     /**
+     * Sorts the galleries according to given parameters and updates the list.<p>
+     * 
+     * @param sortParams the sort parameters
+     */
+    public void sortGalleries(String sortParams) {
+
+        m_dialogBean.sortGalleries(sortParams);
+        m_handler.onUpdateGalleries(m_dialogBean.getGalleries());
+    }
+
+    /**
+     * Sorts the types according to given parameters and updates the list.<p>
+     * 
+     * @param sortParams the sort parameters
+     */
+    public void sortTypes(String sortParams) {
+
+        m_dialogBean.sortTypes(sortParams);
+        m_handler.onUpdateTypes(m_dialogBean.getTypes());
+    }
+
+    /**
      * Updates the content of the categories tab.<p>
      */
     public void updateCategoriesTab() {
@@ -319,7 +340,7 @@ public class CmsGalleryController {
                 m_searchObject.setSortOrder(searchObj.getSortOrder());
                 m_searchObject.setPage(searchObj.getPage());
 
-                m_handler.onResultTabSelection(m_searchObject, m_dialogBean);
+                m_handler.onResultTabSelection(m_searchObject);
             }
 
         };
@@ -369,14 +390,14 @@ public class CmsGalleryController {
                 if (m_dialogMode.equals(I_CmsGalleryProviderConstants.GalleryMode.widget)
                     || m_dialogMode.equals(I_CmsGalleryProviderConstants.GalleryMode.editor)) {
                     ArrayList<String> availableGalleries = new ArrayList<String>();
-                    for (String galleryPath : m_dialogBean.getGalleries().keySet()) {
-                        availableGalleries.add(galleryPath);
+                    for (CmsGalleriesListInfoBean galleryPath : m_dialogBean.getGalleries()) {
+                        availableGalleries.add(galleryPath.getId());
                     }
                     preparedSearchObj.setGalleries(availableGalleries);
                 }
                 ArrayList<String> availableTypes = new ArrayList<String>();
-                for (String type : m_dialogBean.getTypes().keySet()) {
-                    availableTypes.add(type);
+                for (CmsTypesListInfoBean type : m_dialogBean.getTypes()) {
+                    availableTypes.add(type.getId());
                 }
                 preparedSearchObj.setTypes(availableTypes);
                 // at least one gallery is selected 
@@ -384,15 +405,15 @@ public class CmsGalleryController {
 
                 // get the resource types associated with the selected galleries
                 HashSet<String> contentTypes = new HashSet<String>();
-                for (Entry<String, CmsGalleriesListInfoBean> gallery : m_dialogBean.getGalleries().entrySet()) {
-                    if (searchObj.getGalleries().contains(gallery.getKey())) {
-                        contentTypes.addAll(gallery.getValue().getContentTypes());
+                for (CmsGalleriesListInfoBean gallery : m_dialogBean.getGalleries()) {
+                    if (searchObj.getGalleries().contains(gallery.getId())) {
+                        contentTypes.addAll(gallery.getContentTypes());
                     }
                 }
                 // available types
                 ArrayList<String> availableTypes = new ArrayList<String>();
-                for (String type : m_dialogBean.getTypes().keySet()) {
-                    availableTypes.add(type);
+                for (CmsTypesListInfoBean type : m_dialogBean.getTypes()) {
+                    availableTypes.add(type.getId());
                 }
                 // check if the associated type is also an available type
                 ArrayList<String> checkedTypes = new ArrayList<String>();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/Attic/CmsGalleryDialogBean.java,v $
- * Date   : $Date: 2010/04/28 10:25:47 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/30 10:17:38 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,8 +31,12 @@
 
 package org.opencms.ade.galleries.shared;
 
+import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
+import org.opencms.gwt.shared.CmsListInfoBean;
+
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.TreeMap;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
@@ -42,18 +46,102 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  */
 //TODO: rename in CmsGalleryDialogData
 public class CmsGalleryDialogBean implements IsSerializable {
 
+    /**
+     * Provides ascending sorting according to the object id.<p>
+     * 
+     * Applicable for all CmsListInfoBeans implementing I_CmsItemId.
+     */
+    protected class CmsSortIdAsc implements Comparator<I_CmsItemId> {
+
+        /**
+         * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+         */
+        public int compare(I_CmsItemId o1, I_CmsItemId o2) {
+
+            return o1.getId().compareTo(o2.getId());
+        }
+    }
+
+    /**
+     * Provides descending sorting according to the object id.<p>
+     * 
+     * Applicable for all CmsListInfoBeans implementing I_CmsItemId.
+     */
+    protected class CmsSortIdDesc implements Comparator<I_CmsItemId> {
+
+        /**
+         * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+         */
+        public int compare(I_CmsItemId o1, I_CmsItemId o2) {
+
+            return o2.getId().compareTo(o1.getId());
+        }
+    }
+
+    /**
+     * Provides descending sorting according to the object title.<p>
+     * 
+     * Applicable for all CmsListInfoBeans.
+     */
+    protected class CmsSortTitleDesc implements Comparator<CmsListInfoBean> {
+
+        /**
+         * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+         */
+        public int compare(CmsListInfoBean o1, CmsListInfoBean o2) {
+
+            return o2.getTitle().compareTo(o1.getTitle());
+        }
+    }
+
+    /**
+     * Provides ascending sorting according to the galleries resource type.<p>
+     * 
+     * Galleries specific comparator.<p>
+     */
+    protected class CmsSortTypeAsc implements Comparator<CmsGalleriesListInfoBean> {
+
+        /**
+         * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+         */
+        public int compare(CmsGalleriesListInfoBean o1, CmsGalleriesListInfoBean o2) {
+
+            return o1.getGalleryTypeName().compareTo(o2.getGalleryTypeName());
+        }
+    }
+
+    /**
+     * Provides descending sorting according to the galleries resource type.<p>
+     * 
+     * Galleries specific comparator.<p>
+     */
+    protected class CmsSortTypeDesc implements Comparator<CmsGalleriesListInfoBean> {
+
+        /**
+         * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+         */
+        public int compare(CmsGalleriesListInfoBean o1, CmsGalleriesListInfoBean o2) {
+
+            return o2.getGalleryTypeName().compareTo(o1.getGalleryTypeName());
+        }
+    }
+
+    //TODO: add sitemap data, add vfs tree data, add container page data, resource locales if required
+
     /** The categories to display in the list of available categories. */
-    private LinkedHashMap<String, CmsCategoriesListInfoBean> m_categories;
+    //TODO: remove replaced by list   private LinkedHashMap<String, CmsCategoriesListInfoBean> m_categories;
+    private ArrayList<CmsCategoriesListInfoBean> m_categories;
 
     /** The galleries to display in the list with available galleries. */
-    private LinkedHashMap<String, CmsGalleriesListInfoBean> m_galleries;
+    //TODO: remove replaced by private LinkedHashMap<String, CmsGalleriesListInfoBean> m_galleries; 
+    private ArrayList<CmsGalleriesListInfoBean> m_galleries;
 
     /** The available workplace locales. */
     private TreeMap<String, String> m_locales;
@@ -62,16 +150,15 @@ public class CmsGalleryDialogBean implements IsSerializable {
     private ArrayList<String> m_tabs;
 
     /** The types to display in the list of available categories. */
-    private LinkedHashMap<String, CmsTypesListInfoBean> m_types;
-
-    //TODO: add sitemap data, add vfs tree data, add container page data, resource locales if required
+    //TODO: remove replaced by private private LinkedHashMap<String, CmsTypesListInfoBean> m_types;
+    private ArrayList<CmsTypesListInfoBean> m_types;
 
     /**
      * Returns the categories map.<p>
      *
      * @return the categories
      */
-    public LinkedHashMap<String, CmsCategoriesListInfoBean> getCategories() {
+    public ArrayList<CmsCategoriesListInfoBean> getCategories() {
 
         return m_categories;
     }
@@ -81,7 +168,7 @@ public class CmsGalleryDialogBean implements IsSerializable {
      *
      * @return the galleries
      */
-    public LinkedHashMap<String, CmsGalleriesListInfoBean> getGalleries() {
+    public ArrayList<CmsGalleriesListInfoBean> getGalleries() {
 
         return m_galleries;
     }
@@ -111,7 +198,7 @@ public class CmsGalleryDialogBean implements IsSerializable {
      *
      * @return the types
      */
-    public LinkedHashMap<String, CmsTypesListInfoBean> getTypes() {
+    public ArrayList<CmsTypesListInfoBean> getTypes() {
 
         return m_types;
     }
@@ -121,7 +208,7 @@ public class CmsGalleryDialogBean implements IsSerializable {
      *
      * @param categories the categories to set
      */
-    public void setCategories(LinkedHashMap<String, CmsCategoriesListInfoBean> categories) {
+    public void setCategories(ArrayList<CmsCategoriesListInfoBean> categories) {
 
         m_categories = categories;
     }
@@ -131,7 +218,7 @@ public class CmsGalleryDialogBean implements IsSerializable {
      *
      * @param galleries the galleries to set
      */
-    public void setGalleries(LinkedHashMap<String, CmsGalleriesListInfoBean> galleries) {
+    public void setGalleries(ArrayList<CmsGalleriesListInfoBean> galleries) {
 
         m_galleries = galleries;
     }
@@ -161,8 +248,44 @@ public class CmsGalleryDialogBean implements IsSerializable {
      *
      * @param types the types to set
      */
-    public void setTypes(LinkedHashMap<String, CmsTypesListInfoBean> types) {
+    public void setTypes(ArrayList<CmsTypesListInfoBean> types) {
 
         m_types = types;
+    }
+
+    /**
+     * Sorts the gallery list.<p>
+     * 
+     * @param sortParams the sort parameters
+     */
+    public void sortGalleries(String sortParams) {
+
+        if (SortParams.title_asc.name().equals(sortParams)) {
+            Collections.sort(m_galleries);
+        } else if (SortParams.title_desc.name().equals(sortParams)) {
+            Collections.sort(m_galleries, new CmsSortTitleDesc());
+        } else if (SortParams.type_asc.name().equals(sortParams)) {
+            Collections.sort(m_galleries, new CmsSortTypeAsc());
+        } else if (SortParams.type_desc.name().equals(sortParams)) {
+            Collections.sort(m_galleries, new CmsSortTypeDesc());
+        } else if (SortParams.path_asc.name().equals(sortParams)) {
+            Collections.sort(m_galleries, new CmsSortIdAsc());
+        } else if (SortParams.path_desc.name().equals(sortParams)) {
+            Collections.sort(m_galleries, new CmsSortIdDesc());
+        }
+    }
+
+    /**
+     * Sorts the types list.<p>
+     * 
+     * @param sortParams the sort parameters
+     */
+    public void sortTypes(String sortParams) {
+
+        if (SortParams.title_asc.name().equals(sortParams)) {
+            Collections.sort(m_types);
+        } else if (SortParams.title_desc.name().equals(sortParams)) {
+            Collections.sort(m_types, new CmsSortTitleDesc());
+        }
     }
 }

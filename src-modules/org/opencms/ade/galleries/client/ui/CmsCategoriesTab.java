@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsCategoriesTab.java,v $
- * Date   : $Date: 2010/04/29 07:37:51 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/30 10:17:38 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,16 +34,22 @@ package org.opencms.ade.galleries.client.ui;
 import org.opencms.ade.galleries.client.CmsCategoriesTabHandler;
 import org.opencms.ade.galleries.shared.CmsCategoriesListInfoBean;
 import org.opencms.ade.galleries.shared.CmsGalleryDialogBean;
+import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
+import org.opencms.gwt.client.ui.CmsFloatDecoratedPanel;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
+import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsPair;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Image;
 
 /**
@@ -53,11 +59,11 @@ import com.google.gwt.user.client.ui.Image;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.
  */
-public class CmsCategoriesTab extends A_CmsTab {
+public class CmsCategoriesTab extends A_CmsTab implements ValueChangeHandler<String> {
 
     /** 
      * Extended ClickHandler class to use with checkboxes in the category list.<p>
@@ -103,6 +109,9 @@ public class CmsCategoriesTab extends A_CmsTab {
     /** The reference to the handler of this tab. */
     protected CmsCategoriesTabHandler m_tabHandler;
 
+    /** The select box to change the sort order. */
+    private CmsSelectBox m_sortSelectBox;
+
     /**
      * Constructor.<p>
      */
@@ -118,25 +127,62 @@ public class CmsCategoriesTab extends A_CmsTab {
      */
     public void fillContent(CmsGalleryDialogBean dialogBean) {
 
-        // TODO: replace the dummy select box
-        ArrayList<CmsPair<String, String>> pairs = new ArrayList<CmsPair<String, String>>();
-        pairs.add(new CmsPair<String, String>("test1", "value1"));
-        pairs.add(new CmsPair<String, String>("test2", "value2"));
-        CmsSelectBox selectBox = new CmsSelectBox(pairs);
+        ArrayList<CmsPair<String, String>> sortList = getSortList();
+        m_sortSelectBox = new CmsSelectBox(sortList);
+        m_sortSelectBox.addValueChangeHandler(this);
         // TODO: use the common way to set the width of the select box
-        selectBox.setWidth("100px");
-        addWidgetToOptions(selectBox);
-        for (Map.Entry<String, CmsCategoriesListInfoBean> categoryItem : dialogBean.getCategories().entrySet()) {
-            CmsListItemWidget listItemWidget = new CmsListItemWidget(categoryItem.getValue());
-            Image icon = new Image(categoryItem.getValue().getIconResource());
+        m_sortSelectBox.setWidth("200px");
+        addWidgetToOptions(m_sortSelectBox);
+        for (CmsCategoriesListInfoBean categoryItem : dialogBean.getCategories()) {
+            CmsListItemWidget listItemWidget = new CmsListItemWidget(categoryItem);
+            Image icon = new Image(categoryItem.getIconResource());
             icon.setStyleName(DIALOG_CSS.listIcon());
             listItemWidget.setIcon(icon);
             CmsCheckBox checkBox = new CmsCheckBox();
-            checkBox.addClickHandler(new CheckboxHandler(categoryItem.getValue().getId(), checkBox));
+            checkBox.addClickHandler(new CheckboxHandler(categoryItem.getId(), checkBox));
             CmsCategoryListItem listItem = new CmsCategoryListItem(checkBox, listItemWidget);
-            listItem.setId(categoryItem.getKey());
+            listItem.setId(categoryItem.getId());
+            listItem.setItemTitle(categoryItem.getTitle());
+            listItem.setSubTitle(categoryItem.getSubTitle());
             addWidgetToList(listItem);
         }
+    }
+
+    /**
+     * Returns the panel with the content of the categories search parameter.<p>
+     *  
+     * @param selectedCategories the list of selected categories by the user
+     * @return the panel showing the selected categories
+     */
+    public CmsFloatDecoratedPanel getCategoriesParamsPanel(ArrayList<String> selectedCategories) {
+
+        CmsFloatDecoratedPanel categoriesPanel = new CmsFloatDecoratedPanel();
+        String panelText = "";
+        if (selectedCategories.size() == 1) {
+            panelText = panelText.concat("<b>").concat(Messages.get().key(Messages.GUI_PARAMS_LABEL_CATEGORY_0)).concat(
+                "</b> ");
+            CmsCategoryListItem categoryItem = (CmsCategoryListItem)m_scrollList.getItem(selectedCategories.get(0));
+            String title = categoryItem.getItemTitle();
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
+                title = categoryItem.getSubTitle();
+            }
+            panelText = panelText.concat(" ").concat(title);
+        } else {
+            panelText = panelText.concat("<b>").concat(Messages.get().key(Messages.GUI_PARAMS_LABEL_CATEGORIES_0)).concat(
+                "</b> ");
+            for (String categoryPath : selectedCategories) {
+
+                CmsCategoryListItem categoryItem = (CmsCategoryListItem)m_scrollList.getItem(categoryPath);
+                String title = categoryItem.getItemTitle();
+                if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
+                    title = categoryItem.getSubTitle();
+                }
+                panelText = panelText.concat(" ").concat(title);
+            }
+        }
+        categoriesPanel.add(new HTMLPanel(CmsDomUtil.Tag.div.name(), panelText));
+
+        return categoriesPanel;
     }
 
     /**
@@ -149,6 +195,17 @@ public class CmsCategoriesTab extends A_CmsTab {
 
         m_tabHandler.onSelection();
 
+    }
+
+    /**
+     * @see com.google.gwt.event.logical.shared.ValueChangeHandler#onValueChange(com.google.gwt.event.logical.shared.ValueChangeEvent)
+     */
+    public void onValueChange(ValueChangeEvent<String> event) {
+
+        if (event.getSource() == m_sortSelectBox) {
+            // TODO: implement
+            event.getValue();
+        }
     }
 
     /**
@@ -172,5 +229,23 @@ public class CmsCategoriesTab extends A_CmsTab {
             CmsCategoryListItem item = (CmsCategoryListItem)m_scrollList.getItem(category);
             item.getCheckbox().setChecked(false);
         }
+    }
+
+    /**
+     * Returns a list with sort values for this tab.<p>
+     * 
+     * @return list of sort order value/text pairs
+     */
+    private ArrayList<CmsPair<String, String>> getSortList() {
+
+        ArrayList<CmsPair<String, String>> list = new ArrayList<CmsPair<String, String>>();
+        list.add(new CmsPair<String, String>(SortParams.tree.name(), Messages.get().key(
+            Messages.GUI_SORT_LABEL_HIERARCHIC_0)));
+        list.add(new CmsPair<String, String>(SortParams.title_asc.name(), Messages.get().key(
+            Messages.GUI_SORT_LABEL_TITLE_ASC_0)));
+        list.add(new CmsPair<String, String>(SortParams.title_desc.name(), Messages.get().key(
+            Messages.GUI_SORT_LABEL_TITLE_DECS_0)));
+
+        return list;
     }
 }

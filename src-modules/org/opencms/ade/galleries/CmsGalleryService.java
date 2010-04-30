@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/Attic/CmsGalleryService.java,v $
- * Date   : $Date: 2010/04/28 10:25:47 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/04/30 10:17:38 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,7 +68,6 @@ import org.opencms.xml.sitemap.CmsSitemapEntry;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -80,7 +79,7 @@ import java.util.Map.Entry;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 8.0.0
  * 
@@ -280,11 +279,11 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
      * @param categories the categories
      * @return the map with categories
      */
-    private LinkedHashMap<String, CmsCategoriesListInfoBean> buildCategoriesList(List<CmsCategory> categories) {
+    private ArrayList<CmsCategoriesListInfoBean> buildCategoriesList(List<CmsCategory> categories) {
 
-        LinkedHashMap<String, CmsCategoriesListInfoBean> map = new LinkedHashMap<String, CmsCategoriesListInfoBean>();
+        ArrayList<CmsCategoriesListInfoBean> list = new ArrayList<CmsCategoriesListInfoBean>();
         if ((categories == null) || (categories.size() == 0)) {
-            return map;
+            return list;
         }
         // the next lines sort the categories according to their path 
         Map<String, CmsCategory> sorted = new TreeMap<String, CmsCategory>();
@@ -321,13 +320,13 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 String iconPath = CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES
                     + OpenCms.getWorkplaceManager().getExplorerTypeSetting(CmsResourceTypeFolder.RESOURCE_TYPE_NAME).getIcon());
                 bean.setIconResource(iconPath);
-                map.put(cat.getPath(), bean);
+                list.add(bean);
             } catch (Exception e) {
                 // TODO: Improve error handling
                 logError(e);
             }
         }
-        return map;
+        return list;
     }
 
     /**
@@ -338,12 +337,11 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
      * @param galleryTypes the galleries
      * @return the map with gallery info beans
      */
-    private LinkedHashMap<String, CmsGalleriesListInfoBean> buildGalleriesList(
-        Map<String, CmsGalleryTypeInfo> galleryTypes) {
+    private ArrayList<CmsGalleriesListInfoBean> buildGalleriesList(Map<String, CmsGalleryTypeInfo> galleryTypes) {
 
-        LinkedHashMap<String, CmsGalleriesListInfoBean> map = new LinkedHashMap<String, CmsGalleriesListInfoBean>();
+        ArrayList<CmsGalleriesListInfoBean> list = new ArrayList<CmsGalleriesListInfoBean>();
         if (galleryTypes == null) {
-            return map;
+            return list;
         }
         Iterator<Entry<String, CmsGalleryTypeInfo>> iGalleryTypes = galleryTypes.entrySet().iterator();
         while (iGalleryTypes.hasNext()) {
@@ -389,10 +387,10 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 // TODO:: active flag
                 //jsonObj.put(ItemKey.gallerytypeid.toString(), tInfo.getResourceType().getTypeId());
 
-                map.put(sitePath, bean);
+                list.add(bean);
             }
         }
-        return map;
+        return list;
     }
 
     /**
@@ -464,12 +462,12 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         Map<String, CmsGalleryTypeInfo> galleryTypes = readGalleryTypes(getResourceTypes());
         // collect galleries
         if (tabs.contains(I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_galleries.name())) {
-            LinkedHashMap<String, CmsGalleriesListInfoBean> galleries = buildGalleriesList(galleryTypes);
+            ArrayList<CmsGalleriesListInfoBean> galleries = buildGalleriesList(galleryTypes);
             bean.setGalleries(galleries);
         }
         // collect types
         if (tabs.contains(I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_types.name())) {
-            LinkedHashMap<String, CmsTypesListInfoBean> types = buildTypesList(getResourceTypes());
+            ArrayList<CmsTypesListInfoBean> types = buildTypesList(getResourceTypes());
             bean.setTypes(types);
         }
         // collect categories
@@ -479,7 +477,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             while (iGalleryTypes.hasNext()) {
                 galleryFolders.addAll(iGalleryTypes.next().getValue().getGalleries());
             }
-            LinkedHashMap<String, CmsCategoriesListInfoBean> categories = buildCategoriesList(readCategories(galleryFolders));
+            ArrayList<CmsCategoriesListInfoBean> categories = buildCategoriesList(readCategories(galleryFolders));
             bean.setCategories(categories);
         }
         // collect sitemap data
@@ -572,11 +570,11 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
      * 
      * @return the map containing the available resource types
      */
-    private LinkedHashMap<String, CmsTypesListInfoBean> buildTypesList(List<I_CmsResourceType> types) {
+    private ArrayList<CmsTypesListInfoBean> buildTypesList(List<I_CmsResourceType> types) {
 
-        LinkedHashMap<String, CmsTypesListInfoBean> map = new LinkedHashMap<String, CmsTypesListInfoBean>();
+        ArrayList<CmsTypesListInfoBean> list = new ArrayList<CmsTypesListInfoBean>();
         if (types == null) {
-            return map;
+            return list;
         }
         Iterator<I_CmsResourceType> it = types.iterator();
         while (it.hasNext()) {
@@ -584,9 +582,9 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             CmsTypesListInfoBean bean = new CmsTypesListInfoBean();
             // 1: unique id
             bean.setId(type.getTypeName());
-            // 2: type nice name
+            // 2: type nice name            
             Locale wpLocale = getWorkplaceLocale();
-            bean.setTypeNiceName(CmsWorkplaceMessages.getResourceTypeDescription(wpLocale, type.getTypeName()));
+            // TODO: remove:  bean.setTypeNiceName(CmsWorkplaceMessages.getResourceTypeDescription(wpLocale, type.getTypeName()));
             // 3: type title and subtitle
             bean.setTitle(CmsWorkplaceMessages.getResourceTypeName(wpLocale, type.getTypeName()));
             bean.setSubTitle(CmsWorkplaceMessages.getResourceTypeDescription(wpLocale, type.getTypeName()));
@@ -602,10 +600,10 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 galleryNames.add(galleryType.getTypeName());
             }
             bean.setGalleryTypeNames(galleryNames);
-            map.put(type.getTypeName(), bean);
+            list.add(bean);
 
         }
-        return map;
+        return list;
     }
 
     /**

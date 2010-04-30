@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/Attic/CmsGalleriesListInfoBean.java,v $
- * Date   : $Date: 2010/03/30 14:08:36 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/30 10:17:38 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,20 +44,21 @@ import java.util.Map;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
-public class CmsGalleriesListInfoBean extends CmsListInfoBean implements I_CmsItemId {
-
-    /** The path to the gallery icon. */
-    private String m_iconResource;
+public class CmsGalleriesListInfoBean extends CmsListInfoBean
+implements I_CmsItemId, Comparable<CmsGalleriesListInfoBean> {
 
     /** A list with content types corresponding to this gallery type. */
     private ArrayList<String> m_contentTypes;
 
     /** The gallery type name. */
     private String m_galleryTypeName;
+
+    /** The path to the gallery icon. */
+    private String m_iconResource;
 
     /**
      * The empty default constructor.<p>
@@ -80,33 +81,13 @@ public class CmsGalleriesListInfoBean extends CmsListInfoBean implements I_CmsIt
     }
 
     /**
-     * Sets the gallery icon.<p>
-     *
-     * @param icon the icon to set
+     * Default compareTo method uses title to compare the galleries.<p>
+     * 
+     * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
-    public void setIconResource(String icon) {
+    public int compareTo(CmsGalleriesListInfoBean o) {
 
-        m_iconResource = icon;
-    }
-
-    /**
-     * Returns the gallery icon.<p>
-     *
-     * @return the icon
-     */
-    public String getIconResource() {
-
-        return m_iconResource;
-    }
-
-    /**
-     * Sets the content types which can be used within this gallery type.<p>
-     *
-     * @param contentTypes the contentTypes to set
-     */
-    public void setContentTypes(ArrayList<String> contentTypes) {
-
-        m_contentTypes = contentTypes;
+        return getTitle().compareTo(o.getTitle());
     }
 
     /**
@@ -120,6 +101,26 @@ public class CmsGalleriesListInfoBean extends CmsListInfoBean implements I_CmsIt
     }
 
     /**
+     * Returns the gallery type name.<p>
+     *
+     * @return the gallery type name
+     */
+    public String getGalleryTypeName() {
+
+        return m_galleryTypeName;
+    }
+
+    /**
+     * Returns the gallery icon.<p>
+     *
+     * @return the icon
+     */
+    public String getIconResource() {
+
+        return m_iconResource;
+    }
+
+    /**
      * Returns the gallery path as a unique id.<p>
      * 
      * @see org.opencms.ade.galleries.shared.I_CmsItemId#getId()
@@ -130,13 +131,13 @@ public class CmsGalleriesListInfoBean extends CmsListInfoBean implements I_CmsIt
     }
 
     /**
-     * Sets the gallery path as a unique id.<p>
-     *         
-     * @see org.opencms.ade.galleries.shared.I_CmsItemId#setId(java.lang.String)
+     * Sets the content types which can be used within this gallery type.<p>
+     *
+     * @param contentTypes the contentTypes to set
      */
-    public void setId(String id) {
+    public void setContentTypes(ArrayList<String> contentTypes) {
 
-        setSubTitle(id);
+        m_contentTypes = contentTypes;
     }
 
     /**
@@ -150,13 +151,22 @@ public class CmsGalleriesListInfoBean extends CmsListInfoBean implements I_CmsIt
     }
 
     /**
-     * Returns the gallery type name.<p>
+     * Sets the gallery icon.<p>
      *
-     * @return the gallery type name
+     * @param icon the icon to set
      */
-    public String getGalleryTypeName() {
+    public void setIconResource(String icon) {
 
-        return m_galleryTypeName;
+        m_iconResource = icon;
     }
 
+    /**
+     * Sets the gallery path as a unique id.<p>
+     *         
+     * @see org.opencms.ade.galleries.shared.I_CmsItemId#setId(java.lang.String)
+     */
+    public void setId(String id) {
+
+        setSubTitle(id);
+    }
 }

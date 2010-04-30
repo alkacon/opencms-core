@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleryControllerHandler.java,v $
- * Date   : $Date: 2010/04/29 08:14:29 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/30 10:17:38 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,8 +32,10 @@
 package org.opencms.ade.galleries.client;
 
 import org.opencms.ade.galleries.client.ui.CmsGalleryDialog;
+import org.opencms.ade.galleries.shared.CmsGalleriesListInfoBean;
 import org.opencms.ade.galleries.shared.CmsGalleryDialogBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchObject;
+import org.opencms.ade.galleries.shared.CmsTypesListInfoBean;
 
 import java.util.ArrayList;
 
@@ -44,7 +46,7 @@ import java.util.ArrayList;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
 
@@ -128,24 +130,30 @@ public class CmsGalleryControllerHandler {
         int tabIdIndex,
         boolean isOpenInResults) {
 
-        m_galleryDialog.getResultsTab().fillContent(searchObj, dialogBean);
         m_galleryDialog.getGalleriesTab().fillContent(dialogBean);
         m_galleryDialog.getTypesTab().fillContent(dialogBean);
         m_galleryDialog.getCategoriesTab().fillContent(dialogBean);
+        m_galleryDialog.getResultsTab().fillContent(
+            searchObj,
+            m_galleryDialog.getTypesTab().getTypesParamsPanel(searchObj.getTypes()),
+            m_galleryDialog.getGalleriesTab().getGallerisParamsPanel(searchObj.getGalleries()),
+            m_galleryDialog.getCategoriesTab().getCategoriesParamsPanel(searchObj.getCategories()));
 
         m_galleryDialog.selectTab(tabIdIndex, isOpenInResults);
     }
 
     /**
      * Will be triggered when the results tab is selected.<p>
-
+     *
      * @param searchObj the current search object 
-     * @param dialogBean the current gallery dialog data bean
-     * 
      */
-    public void onResultTabSelection(CmsGallerySearchObject searchObj, CmsGalleryDialogBean dialogBean) {
+    public void onResultTabSelection(CmsGallerySearchObject searchObj) {
 
-        m_galleryDialog.getResultsTab().updateContent(searchObj, dialogBean);
+        m_galleryDialog.getResultsTab().updateContent(
+            searchObj,
+            m_galleryDialog.getTypesTab().getTypesParamsPanel(searchObj.getTypes()),
+            m_galleryDialog.getGalleriesTab().getGallerisParamsPanel(searchObj.getGalleries()),
+            m_galleryDialog.getCategoriesTab().getCategoriesParamsPanel(searchObj.getCategories()));
     }
 
     /**
@@ -154,5 +162,25 @@ public class CmsGalleryControllerHandler {
     public void onTypesTabSelection() {
 
         m_galleryDialog.getTypesTab().updateListLayout();
+    }
+
+    /**
+     * Will be triggered when the sort parameters of the galleries list are changed.<p>
+     *  
+     * @param galleries the updated galleries list
+     */
+    public void onUpdateGalleries(ArrayList<CmsGalleriesListInfoBean> galleries) {
+
+        m_galleryDialog.getGalleriesTab().updateGalleries(galleries);
+    }
+
+    /**
+     * Will be triggered when the sort parameters of the types list are changed.<p>
+     *  
+     * @param types the updated types list
+     */
+    public void onUpdateTypes(ArrayList<CmsTypesListInfoBean> types) {
+
+        m_galleryDialog.getTypesTab().updateTypes(types);
     }
 }

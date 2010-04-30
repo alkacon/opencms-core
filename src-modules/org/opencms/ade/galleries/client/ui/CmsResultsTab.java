@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsResultsTab.java,v $
- * Date   : $Date: 2010/04/29 07:37:51 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/30 10:17:38 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,12 +33,9 @@ package org.opencms.ade.galleries.client.ui;
 
 import org.opencms.ade.galleries.client.CmsResultsTabHandler;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
-import org.opencms.ade.galleries.shared.CmsCategoriesListInfoBean;
-import org.opencms.ade.galleries.shared.CmsGalleriesListInfoBean;
-import org.opencms.ade.galleries.shared.CmsGalleryDialogBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchObject;
 import org.opencms.ade.galleries.shared.CmsResultsListInfoBean;
-import org.opencms.ade.galleries.shared.CmsTypesListInfoBean;
+import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
 import org.opencms.gwt.client.draganddrop.I_CmsDragElement;
 import org.opencms.gwt.client.draganddrop.I_CmsDragHandler;
 import org.opencms.gwt.client.draganddrop.I_CmsDragTarget;
@@ -53,13 +50,13 @@ import org.opencms.gwt.client.util.CmsPair;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
 
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Image;
 
@@ -71,11 +68,11 @@ import com.google.gwt.user.client.ui.Image;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.
  */
-public class CmsResultsTab extends A_CmsTab implements ClickHandler {
+public class CmsResultsTab extends A_CmsTab implements ClickHandler, ValueChangeHandler<String> {
 
     /** Button to remove the selected categories. */
     private CmsPushButton m_closeCategoriesBtn;
@@ -91,6 +88,9 @@ public class CmsResultsTab extends A_CmsTab implements ClickHandler {
 
     /** The reference to the drag handler for the list elements. */
     private I_CmsDragHandler<? extends I_CmsDragElement, ? extends I_CmsDragTarget> m_dragHandler;
+
+    /** The select box to change the sort order. */
+    private CmsSelectBox m_sortSelectBox;
 
     /** The reference to the handler of this tab. */
     private CmsResultsTabHandler m_tabHandler;
@@ -110,19 +110,23 @@ public class CmsResultsTab extends A_CmsTab implements ClickHandler {
      * Fill the content of the results tab.<p>
      * 
      * @param searchObj the current search object containing search results
-     * @param dialogBean the dialog data bean
+     * @param typesParams the widget to display the selected types
+     * @param galleriesParams the widget to display the selected galleries 
+     * @param categoriesParams the widget to display the selected categories
      */
-    public void fillContent(CmsGallerySearchObject searchObj, CmsGalleryDialogBean dialogBean) {
+    public void fillContent(
+        CmsGallerySearchObject searchObj,
+        CmsFloatDecoratedPanel typesParams,
+        HTMLPanel galleriesParams,
+        CmsFloatDecoratedPanel categoriesParams) {
 
-        showParams(searchObj, dialogBean);
-        // TODO: replace the dummy select box
-        ArrayList<CmsPair<String, String>> pairs = new ArrayList<CmsPair<String, String>>();
-        pairs.add(new CmsPair<String, String>("test1", "value1"));
-        pairs.add(new CmsPair<String, String>("test2", "value2"));
-        CmsSelectBox selectBox = new CmsSelectBox(pairs);
+        showParams(searchObj, typesParams, galleriesParams, categoriesParams);
+        ArrayList<CmsPair<String, String>> sortList = getSortList();
+        m_sortSelectBox = new CmsSelectBox(sortList);
+        m_sortSelectBox.addValueChangeHandler(this);
         // TODO: use the common way to set the width of the select box
-        selectBox.setWidth("100px");
-        addWidgetToOptions(selectBox);
+        m_sortSelectBox.setWidth("200px");
+        addWidgetToOptions(m_sortSelectBox);
 
         ArrayList<CmsResultsListInfoBean> list = searchObj.getResults();
         for (CmsResultsListInfoBean resultItem : list) {
@@ -184,6 +188,17 @@ public class CmsResultsTab extends A_CmsTab implements ClickHandler {
     }
 
     /**
+     * @see com.google.gwt.event.logical.shared.ValueChangeHandler#onValueChange(com.google.gwt.event.logical.shared.ValueChangeEvent)
+     */
+    public void onValueChange(ValueChangeEvent<String> event) {
+
+        if (event.getSource() == m_sortSelectBox) {
+            // TODO: implement
+            event.getValue();
+        }
+    }
+
+    /**
      * Removes the categories parameter display button.<p>
      */
     public void removeCategories() {
@@ -224,13 +239,19 @@ public class CmsResultsTab extends A_CmsTab implements ClickHandler {
      * Updates the content of the results tab.<p>
      * 
      * @param searchObj the current search object containing search results
-     * @param dialogBean the dialog data bean
+     * @param typesParams the widget to display the selected types
+     * @param galleriesParams the widget to display the selected galleries 
+     * @param categoriesParams the widget to display the selected categories
      */
-    public void updateContent(CmsGallerySearchObject searchObj, CmsGalleryDialogBean dialogBean) {
+    public void updateContent(
+        CmsGallerySearchObject searchObj,
+        CmsFloatDecoratedPanel typesParams,
+        HTMLPanel galleriesParams,
+        CmsFloatDecoratedPanel categoriesParams) {
 
         //update the search params
         clearParams();
-        showParams(searchObj, dialogBean);
+        showParams(searchObj, typesParams, galleriesParams, categoriesParams);
         updateListSize();
         // update the result list
         clearList();
@@ -255,140 +276,52 @@ public class CmsResultsTab extends A_CmsTab implements ClickHandler {
     }
 
     /**
-     * Returns the panel with the content of the categories search parameter.<p>
-     *  
-     * @param selectedCategories the list of selected categories by the user
-     * @param categories the map with categories beans
-     * @return the panel showing the selected categories
+     * Returns a list with sort values for this tab.<p>
+     * 
+     * @return list of sort order value/text pairs
      */
-    private CmsFloatDecoratedPanel getCategoriesParamsPanel(
-        ArrayList<String> selectedCategories,
-        LinkedHashMap<String, CmsCategoriesListInfoBean> categories) {
+    private ArrayList<CmsPair<String, String>> getSortList() {
 
-        CmsFloatDecoratedPanel categoriesPanel = new CmsFloatDecoratedPanel();
-        String panelText = "";
-        if (selectedCategories.size() == 1) {
-            panelText = panelText.concat("<b>").concat(Messages.get().key(Messages.GUI_PARAMS_LABEL_CATEGORY_0)).concat(
-                "</b> ");
-            CmsCategoriesListInfoBean categoryBean = categories.get(selectedCategories.get(0));
-            String title = categoryBean.getTitle();
-            if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
-                title = categoryBean.getSubTitle();
-            }
-            panelText = panelText.concat(" ").concat(title);
-        } else {
-            panelText = panelText.concat("<b>").concat(Messages.get().key(Messages.GUI_PARAMS_LABEL_CATEGORIES_0)).concat(
-                "</b> ");
-            for (String categoryPath : selectedCategories) {
+        ArrayList<CmsPair<String, String>> list = new ArrayList<CmsPair<String, String>>();
+        list.add(new CmsPair<String, String>(SortParams.title_asc.name(), Messages.get().key(
+            Messages.GUI_SORT_LABEL_TITLE_ASC_0)));
+        list.add(new CmsPair<String, String>(SortParams.title_desc.name(), Messages.get().key(
+            Messages.GUI_SORT_LABEL_TITLE_DECS_0)));
+        list.add(new CmsPair<String, String>(SortParams.type_asc.name(), Messages.get().key(
+            Messages.GUI_SORT_LABEL_TYPE_ASC_0)));
+        list.add(new CmsPair<String, String>(SortParams.type_desc.name(), Messages.get().key(
+            Messages.GUI_SORT_LABEL_TYPE_DESC_0)));
+        list.add(new CmsPair<String, String>(SortParams.dateLastModified_asc.name(), Messages.get().key(
+            Messages.GUI_SORT_LABEL_DATELASTMODIFIED_ASC_0)));
+        list.add(new CmsPair<String, String>(SortParams.dateLastModified_desc.name(), Messages.get().key(
+            Messages.GUI_SORT_LABEL_DATELASTMODIFIED_DESC_0)));
+        list.add(new CmsPair<String, String>(SortParams.path_asc.name(), Messages.get().key(
+            Messages.GUI_SORT_LABEL_PATH_ASC_0)));
+        list.add(new CmsPair<String, String>(SortParams.path_desc.name(), Messages.get().key(
+            Messages.GUI_SORT_LABEL_PATH_DESC_0)));
 
-                CmsCategoriesListInfoBean categoryBean = categories.get(categoryPath);
-                String title = categoryBean.getTitle();
-                if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
-                    title = categoryBean.getSubTitle();
-                }
-                panelText = panelText.concat(" ").concat(title);
-            }
-        }
-        categoriesPanel.add(new HTMLPanel(CmsDomUtil.Tag.div.name(), panelText));
-
-        return categoriesPanel;
-    }
-
-    /**
-     * Returns the panel with the content of the galleries search parameter.<p>
-     *  
-     * @param selectedGalleries the list of selected galleries by the user
-     * @param galleries the map with galleries beans
-     * @return the panel showing the selected galleries
-     */
-    private HTMLPanel getGallerisParamsPanel(
-        ArrayList<String> selectedGalleries,
-        LinkedHashMap<String, CmsGalleriesListInfoBean> galleries) {
-
-        HTMLPanel galleriesPanel;
-        String panelText = "";
-        if (selectedGalleries.size() == 1) {
-            panelText = panelText.concat("<b>").concat(Messages.get().key(Messages.GUI_PARAMS_LABEL_GALLERY_0)).concat(
-                "</b>");
-            CmsGalleriesListInfoBean galleryBean = galleries.get(selectedGalleries.get(0));
-            String title = galleryBean.getTitle();
-            if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
-                title = galleryBean.getSubTitle();
-            }
-            panelText = panelText.concat(" ").concat(title);
-        } else {
-            panelText = panelText.concat("<b>").concat(Messages.get().key(Messages.GUI_PARAMS_LABEL_GALLERIES_0)).concat(
-                "</b>");
-            for (String galleryPath : selectedGalleries) {
-
-                CmsGalleriesListInfoBean galleryBean = galleries.get(galleryPath);
-                String title = galleryBean.getTitle();
-                if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
-                    title = galleryBean.getSubTitle();
-                }
-                panelText = panelText.concat(" ").concat(title);
-            }
-        }
-        galleriesPanel = new HTMLPanel(CmsDomUtil.Tag.div.name(), panelText);
-
-        return galleriesPanel;
-    }
-
-    /**
-     * Returns the panel with the content of the types search parameter.<p>
-     *  
-     * @param selectedTypes the list of selected resource types
-     * @param types the map with type beans
-     * @return the panel showing the selected types
-     */
-    private CmsFloatDecoratedPanel getTypesParamsPanel(
-        List<String> selectedTypes,
-        LinkedHashMap<String, CmsTypesListInfoBean> types) {
-
-        CmsFloatDecoratedPanel typesPanel = new CmsFloatDecoratedPanel();
-        String panelText = "";
-        if (selectedTypes.size() == 1) {
-            panelText += CmsDomUtil.enclose(CmsDomUtil.Tag.b, Messages.get().key(Messages.GUI_PARAMS_LABEL_TYPE_0));
-            CmsTypesListInfoBean galleryBean = types.get(selectedTypes.get(0));
-            String title = galleryBean.getTitle();
-            if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
-                title = galleryBean.getSubTitle();
-            }
-            panelText = panelText + " " + title;
-        } else {
-            panelText += CmsDomUtil.enclose(CmsDomUtil.Tag.b, Messages.get().key(Messages.GUI_PARAMS_LABEL_TYPES_0));
-            for (String galleryPath : selectedTypes) {
-
-                CmsTypesListInfoBean galleryBean = types.get(galleryPath);
-                String title = galleryBean.getTitle();
-                if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
-                    title = galleryBean.getSubTitle();
-                }
-                panelText = panelText + " " + title;
-            }
-        }
-        HTMLPanel test = new HTMLPanel(CmsDomUtil.Tag.div.name(), panelText);
-        test.getElement().getStyle().setDisplay(Display.INLINE_BLOCK);
-        typesPanel.add(test);
-
-        return typesPanel;
+        return list;
     }
 
     /**
      * Displays the selected search parameters above the result list.<p>
      * 
-     * @param infoBean the gallery info bean containing the current search parameters
+     * @param searchObj the current search object containing search results
+     * @param typesParams the widget to display the selected types
+     * @param galleriesParams the widget to display the selected galleries 
+     * @param categoriesParams the widget to display the selected categories
      */
-    private void showParams(CmsGallerySearchObject searchObj, CmsGalleryDialogBean dialogBean) {
+    private void showParams(
+        CmsGallerySearchObject searchObj,
+        CmsFloatDecoratedPanel typesParams,
+        HTMLPanel galleriesParams,
+        CmsFloatDecoratedPanel categoriesParams) {
 
         if (searchObj.isNotEmpty()) {
             m_params.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().marginBottom());
-            // selected types
-            CmsFloatDecoratedPanel typesParams;
+            // selected types           
             // only show params, if any selected
             if (searchObj.getTypes().size() > 0) {
-
-                typesParams = getTypesParamsPanel(searchObj.getTypes(), dialogBean.getTypes());
                 typesParams.getElement().getStyle().setDisplay(Display.INLINE);
                 m_types.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().showParams());
                 m_types.add(typesParams);
@@ -404,10 +337,8 @@ public class CmsResultsTab extends A_CmsTab implements ClickHandler {
             }
 
             // selected galleries
-            HTMLPanel galleriesParams;
             // only show params, if any selected
             if (searchObj.getGalleries().size() > 0) {
-                galleriesParams = getGallerisParamsPanel(searchObj.getGalleries(), dialogBean.getGalleries());
                 m_galleries.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().showParams());
                 m_galleries.add(galleriesParams);
                 galleriesParams.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().paramsText());
@@ -420,11 +351,9 @@ public class CmsResultsTab extends A_CmsTab implements ClickHandler {
                 m_galleries.removeStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().showParams());
             }
 
-            // selected categories
-            CmsFloatDecoratedPanel categoriesParams;
+            // selected categories        
             // only show params, if any selected
             if (searchObj.getCategories().size() > 0) {
-                categoriesParams = getCategoriesParamsPanel(searchObj.getCategories(), dialogBean.getCategories());
                 m_categories.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().showParams());
                 m_categories.add(categoriesParams);
                 categoriesParams.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().paramsText());

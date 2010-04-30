@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsGalleriesTab.java,v $
- * Date   : $Date: 2010/04/29 07:37:52 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/04/30 10:17:38 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,16 +34,21 @@ package org.opencms.ade.galleries.client.ui;
 import org.opencms.ade.galleries.client.CmsGalleriesTabHandler;
 import org.opencms.ade.galleries.shared.CmsGalleriesListInfoBean;
 import org.opencms.ade.galleries.shared.CmsGalleryDialogBean;
+import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
+import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsPair;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Image;
 
 /**
@@ -53,11 +58,11 @@ import com.google.gwt.user.client.ui.Image;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.
  */
-public class CmsGalleriesTab extends A_CmsTab {
+public class CmsGalleriesTab extends A_CmsTab implements ValueChangeHandler<String> {
 
     /** 
      * Extended ClickHandler class to use with checkboxes in the gallery list.<p>
@@ -102,6 +107,9 @@ public class CmsGalleriesTab extends A_CmsTab {
     /** The reference to the handler of this tab. */
     protected CmsGalleriesTabHandler m_tabHandler;
 
+    /** The select box to change the sort order. */
+    private CmsSelectBox m_sortSelectBox;
+
     /**
      * Constructor.<p>
      */
@@ -117,25 +125,65 @@ public class CmsGalleriesTab extends A_CmsTab {
      */
     public void fillContent(CmsGalleryDialogBean dialogBean) {
 
-        // TODO: replace the dummy select box
-        ArrayList<CmsPair<String, String>> pairs = new ArrayList<CmsPair<String, String>>();
-        pairs.add(new CmsPair<String, String>("test1", "value1"));
-        pairs.add(new CmsPair<String, String>("test2", "value2"));
-        CmsSelectBox selectBox = new CmsSelectBox(pairs);
+        ArrayList<CmsPair<String, String>> sortList = getSortList();
+        m_sortSelectBox = new CmsSelectBox(sortList);
+        m_sortSelectBox.addValueChangeHandler(this);
         // TODO: use the common way to set the width of the select box
-        selectBox.setWidth("100px");
-        addWidgetToOptions(selectBox);
-        for (Map.Entry<String, CmsGalleriesListInfoBean> galleryItem : dialogBean.getGalleries().entrySet()) {
-            CmsListItemWidget listItemWidget = new CmsListItemWidget(galleryItem.getValue());
-            Image icon = new Image(galleryItem.getValue().getIconResource());
+        m_sortSelectBox.setWidth("200px");
+        addWidgetToOptions(m_sortSelectBox);
+        for (CmsGalleriesListInfoBean galleryItem : dialogBean.getGalleries()) {
+            CmsListItemWidget listItemWidget = new CmsListItemWidget(galleryItem);
+            Image icon = new Image(galleryItem.getIconResource());
             icon.setStyleName(DIALOG_CSS.listIcon());
             listItemWidget.setIcon(icon);
             CmsCheckBox checkBox = new CmsCheckBox();
-            checkBox.addClickHandler(new CheckboxHandler(galleryItem.getValue().getId(), checkBox));
+            checkBox.addClickHandler(new CheckboxHandler(galleryItem.getId(), checkBox));
             CmsGalleryListItem listItem = new CmsGalleryListItem(checkBox, listItemWidget);
-            listItem.setId(galleryItem.getKey());
+            listItem.setId(galleryItem.getId());
+            listItem.setItemTitle(galleryItem.getTitle());
+            listItem.setSubTitle(galleryItem.getSubTitle());
             addWidgetToList(listItem);
         }
+    }
+
+    /**
+     * Returns the panel with the content of the galleries search parameter.<p>
+     *  
+     * @param selectedGalleries the list of selected galleries by the user
+     * @return the panel showing the selected galleries
+     */
+    public HTMLPanel getGallerisParamsPanel(ArrayList<String> selectedGalleries) {
+
+        //,LinkedHashMap<String, CmsGalleriesListInfoBean> galleries) 
+
+        HTMLPanel galleriesPanel;
+        String panelText = "";
+        if (selectedGalleries.size() == 1) {
+            panelText = panelText.concat("<b>").concat(Messages.get().key(Messages.GUI_PARAMS_LABEL_GALLERY_0)).concat(
+                "</b>");
+            //CmsGalleriesListInfoBean galleryBean = galleries.get(selectedGalleries.get(0));
+            CmsGalleryListItem galleryBean = (CmsGalleryListItem)m_scrollList.getItem(selectedGalleries.get(0));
+            String title = galleryBean.getItemTitle();
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
+                title = galleryBean.getSubTitle();
+            }
+            panelText = panelText.concat(" ").concat(title);
+        } else {
+            panelText = panelText.concat("<b>").concat(Messages.get().key(Messages.GUI_PARAMS_LABEL_GALLERIES_0)).concat(
+                "</b>");
+            for (String galleryPath : selectedGalleries) {
+
+                CmsGalleryListItem galleryBean = (CmsGalleryListItem)m_scrollList.getItem(galleryPath);
+                String title = galleryBean.getItemTitle();
+                if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
+                    title = galleryBean.getSubTitle();
+                }
+                panelText = panelText.concat(" ").concat(title);
+            }
+        }
+        galleriesPanel = new HTMLPanel(CmsDomUtil.Tag.div.name(), panelText);
+
+        return galleriesPanel;
     }
 
     /**
@@ -159,6 +207,16 @@ public class CmsGalleriesTab extends A_CmsTab {
 
     }
 
+    /** 
+     * @see com.google.gwt.event.logical.shared.ValueChangeHandler#onValueChange(com.google.gwt.event.logical.shared.ValueChangeEvent)
+     */
+    public void onValueChange(ValueChangeEvent<String> event) {
+
+        if (event.getSource() == m_sortSelectBox) {
+            m_tabHandler.onGalleriesSort(event.getValue());
+        }
+    }
+
     /**
      * Sets the tab handler.<p>
      *
@@ -180,5 +238,53 @@ public class CmsGalleriesTab extends A_CmsTab {
             CmsGalleryListItem item = (CmsGalleryListItem)m_scrollList.getItem(gallery);
             item.getCheckbox().setChecked(false);
         }
+    }
+
+    /**
+     * Update the galleries list.<p>
+     * 
+     * @param galleries the new gallery list
+     */
+    public void updateGalleries(ArrayList<CmsGalleriesListInfoBean> galleries) {
+
+        clearList();
+        for (CmsGalleriesListInfoBean galleryItem : galleries) {
+            CmsListItemWidget listItemWidget = new CmsListItemWidget(galleryItem);
+            Image icon = new Image(galleryItem.getIconResource());
+            icon.setStyleName(DIALOG_CSS.listIcon());
+            listItemWidget.setIcon(icon);
+            CmsCheckBox checkBox = new CmsCheckBox();
+            checkBox.addClickHandler(new CheckboxHandler(galleryItem.getId(), checkBox));
+            CmsGalleryListItem listItem = new CmsGalleryListItem(checkBox, listItemWidget);
+            listItem.setId(galleryItem.getId());
+            listItem.setItemTitle(galleryItem.getTitle());
+            listItem.setSubTitle(galleryItem.getSubTitle());
+            addWidgetToList(listItem);
+        }
+    }
+
+    /**
+     * Returns a list with sort values for this tab.<p>
+     * 
+     * @return list of sort order value/text pairs
+     */
+    private ArrayList<CmsPair<String, String>> getSortList() {
+
+        ArrayList<CmsPair<String, String>> list = new ArrayList<CmsPair<String, String>>();
+        //TODO: move constants to the I_CmsGalleryProviderConstants
+        list.add(new CmsPair<String, String>(SortParams.title_asc.name(), Messages.get().key(
+            Messages.GUI_SORT_LABEL_TITLE_ASC_0)));
+        list.add(new CmsPair<String, String>(SortParams.title_desc.name(), Messages.get().key(
+            Messages.GUI_SORT_LABEL_TITLE_DECS_0)));
+        list.add(new CmsPair<String, String>(SortParams.type_asc.name(), Messages.get().key(
+            Messages.GUI_SORT_LABEL_TYPE_ASC_0)));
+        list.add(new CmsPair<String, String>(SortParams.type_desc.name(), Messages.get().key(
+            Messages.GUI_SORT_LABEL_TYPE_DESC_0)));
+        list.add(new CmsPair<String, String>(SortParams.path_asc.name(), Messages.get().key(
+            Messages.GUI_SORT_LABEL_PATH_ASC_0)));
+        list.add(new CmsPair<String, String>(SortParams.path_desc.name(), Messages.get().key(
+            Messages.GUI_SORT_LABEL_PATH_DESC_0)));
+
+        return list;
     }
 }

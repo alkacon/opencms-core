@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsTypeListItem.java,v $
- * Date   : $Date: 2010/04/29 07:37:51 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/04/30 10:17:38 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.
  */
@@ -49,6 +49,12 @@ public class CmsTypeListItem extends CmsSimpleListItem {
 
     /** The reference to the list item checkbox. */
     private CmsCheckBox m_checkbox;
+
+    /** The title text. */
+    private String m_itemTitle;
+
+    /** The subtitle text. */
+    private String m_subTitle;
 
     /**
      * The list item constructor.
@@ -72,5 +78,45 @@ public class CmsTypeListItem extends CmsSimpleListItem {
     public CmsCheckBox getCheckbox() {
 
         return m_checkbox;
+    }
+
+    /**
+     * Returns the itemTitle.<p>
+     *
+     * @return the itemTitle
+     */
+    public String getItemTitle() {
+
+        return m_itemTitle;
+    }
+
+    /**
+     * Returns the subTitle.<p>
+     *
+     * @return the subTitle
+     */
+    public String getSubTitle() {
+
+        return m_subTitle;
+    }
+
+    /**
+     * Sets the itemTitle.<p>
+     *
+     * @param itemTitle the itemTitle to set
+     */
+    public void setItemTitle(String itemTitle) {
+
+        m_itemTitle = itemTitle;
+    }
+
+    /**
+     * Sets the subTitle.<p>
+     *
+     * @param subTitle the subTitle to set
+     */
+    public void setSubTitle(String subTitle) {
+
+        m_subTitle = subTitle;
     }
 }

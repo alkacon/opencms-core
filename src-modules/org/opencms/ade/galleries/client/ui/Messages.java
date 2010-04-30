@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/Messages.java,v $
- * Date   : $Date: 2010/03/30 14:08:36 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/04/30 10:17:38 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.client.i18n.CmsMessages;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  */
@@ -76,6 +76,33 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PARAMS_LABEL_CATEGORIES_0 = "GUI_PARAMS_LABEL_CATEGORIES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SORT_LABEL_TITLE_ASC_0 = "GUI_SORT_LABEL_TITLE_ASC_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SORT_LABEL_TITLE_DECS_0 = "GUI_SORT_LABEL_TITLE_DECS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SORT_LABEL_TYPE_ASC_0 = "GUI_SORT_LABEL_TYPE_ASC_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SORT_LABEL_TYPE_DESC_0 = "GUI_SORT_LABEL_TYPE_DESC_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SORT_LABEL_HIERARCHIC_0 = "GUI_SORT_LABEL_HIERARCHIC_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SORT_LABEL_DATELASTMODIFIED_ASC_0 = "GUI_SORT_LABEL_DATELASTMODIFIED_ASC_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SORT_LABEL_DATELASTMODIFIED_DESC_0 = "GUI_SORT_LABEL_DATELASTMODIFIED_DESC_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SORT_LABEL_PATH_ASC_0 = "GUI_SORT_LABEL_PATH_ASC_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SORT_LABEL_PATH_DESC_0 = "GUI_SORT_LABEL_PATH_DESC_0";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.ade.galleries.clientmessages";

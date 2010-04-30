@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/Attic/I_CmsGalleryProviderConstants.java,v $
- * Date   : $Date: 2010/04/28 10:25:47 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/04/30 10:17:38 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,7 @@ package org.opencms.ade.galleries.shared;
  * 
  * @author Polina Smagina 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
  * 
@@ -137,5 +137,36 @@ public interface I_CmsGalleryProviderConstants {
 
         /** The id for vfs-tree tab. */
         cms_tab_vfstree
+    }
+
+    /** Sorting parameters. */
+    public enum SortParams {
+
+        /** Date last modified ascending. */
+        dateLastModified_asc,
+
+        /** Date last modified descending. */
+        dateLastModified_desc,
+
+        /** Title descending sorting. */
+        title_desc,
+
+        /** Title ascending sorting. */
+        title_asc,
+
+        /** Resource type descending sorting. */
+        type_desc,
+
+        /** Resource type ascending sorting. */
+        type_asc,
+
+        /** Resource path ascending sorting. */
+        path_asc,
+
+        /** Resource path descending sorting.*/
+        path_desc,
+
+        /** Tree.*/
+        tree;
     }
 }
