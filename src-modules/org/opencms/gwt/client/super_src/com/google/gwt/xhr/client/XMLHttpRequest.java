@@ -13,7 +13,6 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-
 package com.google.gwt.xhr.client;
 
 import com.google.gwt.core.client.JavaScriptObject;
@@ -94,7 +93,6 @@ public class XMLHttpRequest extends JavaScriptObject {
     }-*/;
 
     protected XMLHttpRequest() {
-
     }
 
     /**
@@ -214,44 +212,9 @@ public class XMLHttpRequest extends JavaScriptObject {
      * @param password password to use in the URL
      * @see http://www.w3.org/TR/XMLHttpRequest/#open
      */
-    public final native void open(String httpMethod, String url, String user, String password) /*-{
+    public final native void open(String httpMethod, String url, String user, 
+        String password) /*-{
         this.open(httpMethod, url, true, user, password);
-    }-*/;
-
-    /**
-     * Opens an asynchronous connection.
-     * 
-     * @param httpMethod the HTTP method to use
-     * @param url the URL to be opened
-     * @see http://www.w3.org/TR/XMLHttpRequest/#open
-     */
-    public final native void openSync(String httpMethod, String url) /*-{
-        this.open(httpMethod, url, false);
-    }-*/;
-
-    /**
-     * Opens an asynchronous connection.
-     * 
-     * @param httpMethod the HTTP method to use
-     * @param url the URL to be opened
-     * @param user user to use in the URL
-     * @see http://www.w3.org/TR/XMLHttpRequest/#open
-     */
-    public final native void openSync(String httpMethod, String url, String user) /*-{
-        this.open(httpMethod, url, false, user);
-    }-*/;
-
-    /**
-     * Opens an asynchronous connection.
-     * 
-     * @param httpMethod the HTTP method to use
-     * @param url the URL to be opened
-     * @param user user to use in the URL
-     * @param password password to use in the URL
-     * @see http://www.w3.org/TR/XMLHttpRequest/#open
-     */
-    public final native void openSync(String httpMethod, String url, String user, String password) /*-{
-        this.open(httpMethod, url, false, user, password);
     }-*/;
 
     /**
@@ -260,7 +223,6 @@ public class XMLHttpRequest extends JavaScriptObject {
      * no-argument <code>send()</code> method is unavailable on Firefox.
      */
     public final void send() {
-
         send(null);
     }
 
@@ -306,5 +268,41 @@ public class XMLHttpRequest extends JavaScriptObject {
      */
     public final native void setRequestHeader(String header, String value) /*-{
         this.setRequestHeader(header, value);
+    }-*/;
+
+    /**
+     * Opens an asynchronous connection.
+     * 
+     * @param httpMethod the HTTP method to use
+     * @param url the URL to be opened
+     * @see http://www.w3.org/TR/XMLHttpRequest/#open
+     */
+    public final native void openSync(String httpMethod, String url) /*-{
+        this.open(httpMethod, url, false);
+    }-*/;
+
+    /**
+     * Opens an asynchronous connection.
+     * 
+     * @param httpMethod the HTTP method to use
+     * @param url the URL to be opened
+     * @param user user to use in the URL
+     * @see http://www.w3.org/TR/XMLHttpRequest/#open
+     */
+    public final native void openSync(String httpMethod, String url, String user) /*-{
+        this.open(httpMethod, url, false, user);
+    }-*/;
+
+    /**
+     * Opens an asynchronous connection.
+     * 
+     * @param httpMethod the HTTP method to use
+     * @param url the URL to be opened
+     * @param user user to use in the URL
+     * @param password password to use in the URL
+     * @see http://www.w3.org/TR/XMLHttpRequest/#open
+     */
+    public final native void openSync(String httpMethod, String url, String user, String password) /*-{
+        this.open(httpMethod, url, false, user, password);
     }-*/;
 }

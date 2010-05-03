@@ -3,32 +3,36 @@
 <module>
 	<inherits name="com.google.gwt.user.User" />
 	<inherits name="com.google.gwt.user.RemoteServiceObfuscateTypeNames" />
-	
+
 	<replace-with class="org.opencms.gwt.client.util.impl.DocumentStyleImpl">
-        <when-type-assignable class="org.opencms.gwt.client.util.impl.DocumentStyleImpl"/>
-    </replace-with>
+		<when-type-assignable class="org.opencms.gwt.client.util.impl.DocumentStyleImpl" />
+	</replace-with>
 
-    <replace-with class="org.opencms.gwt.client.util.impl.DocumentStyleImplIE">
-        <when-type-assignable class="org.opencms.gwt.client.util.impl.DocumentStyleImpl"/>
-        <any>
-        	<when-property-is name="user.agent" value="ie6"/>
-        	<when-property-is name="user.agent" value="ie8"/>
-        </any>
-    </replace-with>
-    
-    <replace-with class="org.opencms.gwt.client.util.impl.DOMImpl">
-        <when-type-assignable class="org.opencms.gwt.client.util.impl.DOMImpl"/>
-    </replace-with>
+	<replace-with class="org.opencms.gwt.client.util.impl.DocumentStyleImplIE">
+		<when-type-assignable class="org.opencms.gwt.client.util.impl.DocumentStyleImpl" />
+		<any>
+			<when-property-is name="user.agent" value="ie6" />
+			<when-property-is name="user.agent" value="ie8" />
+		</any>
+	</replace-with>
 
-    <replace-with class="org.opencms.gwt.client.util.impl.DOMImplIE">
-        <when-type-assignable class="org.opencms.gwt.client.util.impl.DOMImpl"/>
-        <any>
-        	<when-property-is name="user.agent" value="ie6"/>
-        	<when-property-is name="user.agent" value="ie8"/>
-        </any>
-    </replace-with>
-    
+	<replace-with class="org.opencms.gwt.client.util.impl.DOMImpl">
+		<when-type-assignable class="org.opencms.gwt.client.util.impl.DOMImpl" />
+	</replace-with>
+
+	<replace-with class="org.opencms.gwt.client.util.impl.DOMImplIE">
+		<when-type-assignable class="org.opencms.gwt.client.util.impl.DOMImpl" />
+		<any>
+			<when-property-is name="user.agent" value="ie6" />
+			<when-property-is name="user.agent" value="ie8" />
+		</any>
+	</replace-with>
+
 	<source path="client" />
 	<source path="shared" />
 	<super-source path="client/super_src/" />
+
+	<generate-with class="org.opencms.gwt.rebind.rpc.CmsRpcServiceGenerator">
+		<when-type-assignable class="com.google.gwt.user.client.rpc.RemoteService" />
+	</generate-with>
 </module>

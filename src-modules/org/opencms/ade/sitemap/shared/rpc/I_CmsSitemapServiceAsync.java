@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/rpc/Attic/I_CmsSitemapServiceAsync.java,v $
- * Date   : $Date: 2010/04/26 13:42:48 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/05/03 06:23:55 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,13 +38,14 @@ import org.opencms.ade.sitemap.shared.I_CmsSitemapChange;
 import java.util.List;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
 
 /**
  * Handles all RPC services related to the sitemap.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 8.0.0
  * 
@@ -69,6 +70,7 @@ public interface I_CmsSitemapServiceAsync {
      * @param recentList the modified recent list, or <code>null</code> if it has not been modified
      * @param callback the async callback
      */
+    @SynchronizedRpcRequest
     void exit(List<CmsClientSitemapEntry> recentList, AsyncCallback<Void> callback);
 
     /**

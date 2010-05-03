@@ -13,10 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-
 package com.google.gwt.http.client;
-
-import org.opencms.gwt.client.rpc.I_CmsHasSync;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,23 +32,19 @@ import com.google.gwt.xhr.client.XMLHttpRequest;
  * com/google/gwt/examples/http/InheritsExample.gwt.xml}
  * 
  */
-public class RequestBuilder implements I_CmsHasSync {
-
+public class RequestBuilder {
     /**
      * HTTP request method constants.
      */
     public static final class Method {
-
         private final String name;
 
         private Method(String name) {
-
             this.name = name;
         }
 
         @Override
         public String toString() {
-
             return name;
         }
     }
@@ -97,8 +90,6 @@ public class RequestBuilder implements I_CmsHasSync {
      */
     private final String httpMethod;
 
-    private boolean m_sync = false;
-
     /**
      * Password to use when opening a JavaScript XmlHttpRequest object.
      */
@@ -136,7 +127,6 @@ public class RequestBuilder implements I_CmsHasSync {
      * @throws NullPointerException if the httpMethod or the URL are null
      */
     public RequestBuilder(Method httpMethod, String url) {
-
         this((httpMethod == null) ? null : httpMethod.toString(), url);
     }
 
@@ -158,7 +148,6 @@ public class RequestBuilder implements I_CmsHasSync {
 
         this.httpMethod = httpMethod;
         this.url = url;
-        m_sync = false;
     }
 
     /**
@@ -167,7 +156,6 @@ public class RequestBuilder implements I_CmsHasSync {
      * was set.
      */
     public RequestCallback getCallback() {
-
         return callback;
     }
 
@@ -179,7 +167,6 @@ public class RequestBuilder implements I_CmsHasSync {
      * @param header the name of the header
      */
     public String getHeader(String header) {
-
         if (headers == null) {
             return null;
         }
@@ -190,7 +177,6 @@ public class RequestBuilder implements I_CmsHasSync {
      * Returns the HTTP method specified in the constructor.
      */
     public String getHTTPMethod() {
-
         return httpMethod;
     }
 
@@ -199,7 +185,6 @@ public class RequestBuilder implements I_CmsHasSync {
      * <code>null</code> if no password was set.
      */
     public String getPassword() {
-
         return password;
     }
 
@@ -208,7 +193,6 @@ public class RequestBuilder implements I_CmsHasSync {
      * or <code>null</code> if no requestData was set.
      */
     public String getRequestData() {
-
         return requestData;
     }
 
@@ -217,7 +201,6 @@ public class RequestBuilder implements I_CmsHasSync {
      * or <code>0</code> if no timeoutMillis was set.
      */
     public int getTimeoutMillis() {
-
         return timeoutMillis;
     }
 
@@ -225,7 +208,6 @@ public class RequestBuilder implements I_CmsHasSync {
      * Returns the HTTP URL specified in the constructor.
      */
     public String getUrl() {
-
         return url;
     }
 
@@ -234,18 +216,7 @@ public class RequestBuilder implements I_CmsHasSync {
      * <code>null</code> if no user was set.
      */
     public String getUser() {
-
         return user;
-    }
-
-    /**
-    * Returns the sync.<p>
-    *
-    * @return the sync
-    */
-    public boolean isSync() {
-
-        return m_sync;
     }
 
     /**
@@ -260,7 +231,6 @@ public class RequestBuilder implements I_CmsHasSync {
      * @throws NullPointerException if a request callback has not been set
      */
     public Request send() throws RequestException {
-
         StringValidator.throwIfNull("callback", callback);
         return doSend(requestData, callback);
     }
@@ -278,8 +248,8 @@ public class RequestBuilder implements I_CmsHasSync {
      * @return a {@link Request} object that can be used to track the request
      * @throws NullPointerException if <code>callback</code> <code>null</code>
      */
-    public Request sendRequest(String requestData, RequestCallback callback) throws RequestException {
-
+    public Request sendRequest(String requestData, RequestCallback callback) 
+        throws RequestException {
         StringValidator.throwIfNull("callback", callback);
         return doSend(requestData, callback);
     }
@@ -294,7 +264,6 @@ public class RequestBuilder implements I_CmsHasSync {
      * @throws NullPointerException if <code>callback</code> is <code>null</code>
      */
     public void setCallback(RequestCallback callback) {
-
         StringValidator.throwIfNull("callback", callback);
 
         this.callback = callback;
@@ -312,7 +281,6 @@ public class RequestBuilder implements I_CmsHasSync {
      * @throws IllegalArgumentException if header or value are the empty string
      */
     public void setHeader(String header, String value) {
-
         StringValidator.throwIfEmptyOrNull("header", header);
         StringValidator.throwIfEmptyOrNull("value", value);
 
@@ -333,7 +301,6 @@ public class RequestBuilder implements I_CmsHasSync {
      * @throws NullPointerException if the password is null
      */
     public void setPassword(String password) {
-
         StringValidator.throwIfEmptyOrNull("password", password);
 
         this.password = password;
@@ -346,18 +313,7 @@ public class RequestBuilder implements I_CmsHasSync {
      * @param requestData the data to send as part of the request
      */
     public void setRequestData(String requestData) {
-
         this.requestData = requestData;
-    }
-
-    /**
-    * Sets the sync.<p>
-    *
-    * @param sync the sync to set
-    */
-    public void setSync(boolean sync) {
-
-        m_sync = sync;
     }
 
     /**
@@ -376,7 +332,6 @@ public class RequestBuilder implements I_CmsHasSync {
      * @throws IllegalArgumentException if the timeout value is negative
      */
     public void setTimeoutMillis(int timeoutMillis) {
-
         if (timeoutMillis < 0) {
             throw new IllegalArgumentException("Timeouts cannot be negative");
         }
@@ -385,31 +340,30 @@ public class RequestBuilder implements I_CmsHasSync {
     }
 
     /**
-       * Sets the user name that will be used in the request URL.
-       * 
-       * @param user user name to use
-       * @throws IllegalArgumentException if the user is empty
-       * @throws NullPointerException if the user is null
-       */
+     * Sets the user name that will be used in the request URL.
+     * 
+     * @param user user name to use
+     * @throws IllegalArgumentException if the user is empty
+     * @throws NullPointerException if the user is null
+     */
     public void setUser(String user) {
-
         StringValidator.throwIfEmptyOrNull("user", user);
 
         this.user = user;
     }
 
     /**
-       * Sends an HTTP request based on the current builder configuration. If no
-       * request headers have been set, the header "Content-Type" will be used with
-       * a value of "text/plain; charset=utf-8".
-       * 
-       * @return a {@link Request} object that can be used to track the request
-       * @throws RequestException if the call fails to initiate
-       * @throws NullPointerException if request data has not been set
-       * @throws NullPointerException if a request callback has not been set
-       */
-    private Request doSend(String requestData, final RequestCallback callback) throws RequestException {
-
+     * Sends an HTTP request based on the current builder configuration. If no
+     * request headers have been set, the header "Content-Type" will be used with
+     * a value of "text/plain; charset=utf-8".
+     * 
+     * @return a {@link Request} object that can be used to track the request
+     * @throws RequestException if the call fails to initiate
+     * @throws NullPointerException if request data has not been set
+     * @throws NullPointerException if a request callback has not been set
+     */
+    private Request doSend(String requestData, final RequestCallback callback) 
+        throws RequestException {
         XMLHttpRequest xmlHttpRequest = XMLHttpRequest.create();
 
         try {
@@ -445,23 +399,23 @@ public class RequestBuilder implements I_CmsHasSync {
         if (!m_sync) {
             // Must set the onreadystatechange handler before calling send().
             xmlHttpRequest.setOnReadyStateChange(new ReadyStateChangeHandler() {
-    
+
                 public void onReadyStateChange(XMLHttpRequest xhr) {
-    
+
                     if (xhr.getReadyState() == XMLHttpRequest.DONE) {
                         xhr.clearOnReadyStateChange();
                         request.fireOnResponseReceived(callback);
                     }
                 }
             });
-        } 
-        
+        }
+
         try {
             xmlHttpRequest.send(requestData);
         } catch (JavaScriptException e) {
             throw new RequestException(e.getMessage());
         }
-        
+
         if (m_sync) {
             xmlHttpRequest.clearOnReadyStateChange();
             request.fireOnResponseReceived(callback);
@@ -471,11 +425,11 @@ public class RequestBuilder implements I_CmsHasSync {
     }
 
     /*
-       * Internal method that actually sets our cached headers on the underlying
-       * JavaScript XmlHttpRequest object. If there are no headers set, then we set
-       * the "Content-Type" to "text/plain; charset=utf-8". This is really lining us
-       * up for integration with RPC.
-       */
+     * Internal method that actually sets our cached headers on the underlying
+     * JavaScript XmlHttpRequest object. If there are no headers set, then we set
+     * the "Content-Type" to "text/plain; charset=utf-8". This is really lining us
+     * up for integration with RPC.
+     */
     private void setHeaders(XMLHttpRequest xmlHttpRequest) throws RequestException {
 
         if ((headers != null) && (headers.size() > 0)) {
@@ -489,5 +443,27 @@ public class RequestBuilder implements I_CmsHasSync {
         } else {
             xmlHttpRequest.setRequestHeader("Content-Type", "text/plain; charset=utf-8");
         }
+    }
+
+    private boolean m_sync = false;
+
+    /**
+     * Returns the sync.<p>
+     *
+     * @return the sync
+     */
+    public boolean isSync() {
+
+        return m_sync;
+    }
+
+    /**
+     * Sets the sync.<p>
+     *
+     * @param sync the sync to set
+     */
+    public void setSync(boolean sync) {
+
+        m_sync = sync;
     }
 }
