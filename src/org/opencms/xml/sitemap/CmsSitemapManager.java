@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2010/04/26 13:41:49 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2010/05/03 14:27:17 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -76,7 +76,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.35 $
+ * @version $Revision: 1.36 $
  * 
  * @since 7.9.2
  */
@@ -302,8 +302,7 @@ public class CmsSitemapManager extends CmsVfsCache {
         CmsProperty prop = cms.readPropertyObject(sitemapUri, CmsPropertyDefinition.PROPERTY_TEMPLATE, true);
         String templatePath = prop.getValue();
         try {
-            CmsResource resource = cms.readResource(templatePath);
-            return resource;
+            return cms.readResource(templatePath);
         } catch (CmsException e) {
             LOG.debug(e.getLocalizedMessage(), e);
             return null;
