@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/util/Attic/CmsContainerpageProvider.java,v $
- * Date   : $Date: 2010/04/12 15:00:37 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/05/03 07:53:47 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import com.google.gwt.core.client.JavaScriptObject;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -144,5 +144,14 @@ public final class CmsContainerpageProvider extends JavaScriptObject implements 
      */
     public native String getSitemapUri() /*-{
         return this[@org.opencms.ade.containerpage.shared.I_CmsContainerpageProviderConstants::KEY_SITEMAP_URI];
+    }-*/;
+
+    /**
+     * Returns the tool-bar visibility.<p>
+     * 
+     * @return <code>true</code> if the tool-bar is visible
+     */
+    public native boolean isToolbarVisible() /*-{
+        return this[@org.opencms.ade.containerpage.shared.I_CmsContainerpageProviderConstants::KEY_TOOLBAR_VISIBLE];
     }-*/;
 }

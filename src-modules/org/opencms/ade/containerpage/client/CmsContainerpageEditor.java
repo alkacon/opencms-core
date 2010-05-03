@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageEditor.java,v $
- * Date   : $Date: 2010/04/30 08:58:46 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/05/03 07:53:47 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,6 +46,7 @@ import org.opencms.ade.containerpage.client.ui.CmsToolbarSelectionButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarSitemapButton;
 import org.opencms.ade.containerpage.client.ui.I_CmsToolbarButton;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.ade.containerpage.client.util.CmsContainerpageProvider;
 import org.opencms.gwt.client.A_CmsEntryPoint;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsToolbar;
@@ -66,7 +67,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 8.0.0
  */
@@ -110,6 +111,16 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
 
     /** The tool-bar. */
     private CmsToolbar m_toolbar;
+
+    /**
+     * Returns the add gallery menu.<p>
+     *
+     * @return the add gallery menu
+     */
+    public CmsToolbarGalleryMenu getAdd() {
+
+        return m_add;
+    }
 
     /**
      * Returns the clip-board menu.<p>
@@ -183,7 +194,7 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         I_CmsLayoutBundle.INSTANCE.contentEditorCss().ensureInjected();
 
         CmsContainerpageController controller = new CmsContainerpageController();
-        CmsContainerpageHandler containerpageHandler = new CmsContainerpageHandler(controller, this);
+        final CmsContainerpageHandler containerpageHandler = new CmsContainerpageHandler(controller, this);
         CmsContainerDragHandler dragHandler = new CmsContainerDragHandler(controller, this);
         CmsContentEditorDialog.init(containerpageHandler);
 
@@ -201,8 +212,7 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
 
         m_bodyMarginTop = CmsDomUtil.getCurrentStyleInt(Document.get().getBody(), Style.marginTop);
         m_toolbar = new CmsToolbar();
-        RootPanel.get().add(m_toolbar);
-        showToolbar(false);
+
         CmsPushButton toggleToolbarButton = new CmsPushButton();
         toggleToolbarButton.setImageClass(I_CmsImageBundle.INSTANCE.style().opencmsLogo());
         RootPanel.get().add(toggleToolbarButton);
@@ -213,8 +223,7 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
              */
             public void onClick(ClickEvent event) {
 
-                showToolbar(!toolbarVisible());
-
+                containerpageHandler.toggleToolbar();
             }
 
         });
@@ -269,6 +278,15 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         m_reset.addClickHandler(clickHandler);
         m_toolbar.addRight(m_reset);
 
+        containerpageHandler.enableSaveReset(false);
+
+        RootPanel.get().add(m_toolbar);
+        if (CmsContainerpageProvider.get().isToolbarVisible()) {
+            containerpageHandler.activateSelection();
+        } else {
+            showToolbar(false);
+        }
+
         CmsContainerpageUtil containerpageUtil = new CmsContainerpageUtil(
             dragHandler,
             m_selection,
@@ -309,16 +327,6 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         return !CmsDomUtil.hasClass(
             org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarHide(),
             Document.get().getBody());
-    }
-
-    /**
-     * Returns the add gallery menu.<p>
-     *
-     * @return the add gallery menu
-     */
-    public CmsToolbarGalleryMenu getAdd() {
-
-        return m_add;
     }
 
 }

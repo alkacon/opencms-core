@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageController.java,v $
- * Date   : $Date: 2010/05/03 06:23:55 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/05/03 07:53:47 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -532,6 +532,16 @@ public final class CmsContainerpageController {
     }
 
     /**
+     * Returns the container-page handler.<p>
+     *
+     * @return the container-page handler
+     */
+    public CmsContainerpageHandler getHandler() {
+
+        return m_handler;
+    }
+
+    /**
      * Returns the current containers and their elements.<p>
      * 
      * @return the list of containers
@@ -607,10 +617,7 @@ public final class CmsContainerpageController {
      */
     public void leaveUnsaved(String targetUri) {
 
-        m_pageChanged = false;
-        if (m_closingRegistration != null) {
-            m_closingRegistration.removeHandler();
-        }
+        setPageChanged(false, true);
         CmsDebugLog.getInstance().printLine(targetUri);
         Window.Location.assign(targetUri);
     }
@@ -732,10 +739,7 @@ public final class CmsContainerpageController {
      */
     public void resetPage() {
 
-        m_pageChanged = false;
-        if (m_closingRegistration != null) {
-            m_closingRegistration.removeHandler();
-        }
+        setPageChanged(false, true);
         Window.Location.reload();
     }
 
@@ -746,7 +750,7 @@ public final class CmsContainerpageController {
      */
     public void saveAndLeave(final String targetUri) {
 
-        if (m_pageChanged) {
+        if (hasPageChanged()) {
             CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
 
                 /**
@@ -765,10 +769,7 @@ public final class CmsContainerpageController {
                 @Override
                 protected void onResponse(Void result) {
 
-                    m_pageChanged = false;
-                    if (m_closingRegistration != null) {
-                        m_closingRegistration.removeHandler();
-                    }
+                    setPageChanged(false, true);
                     Window.Location.assign(targetUri);
 
                 }
@@ -782,7 +783,7 @@ public final class CmsContainerpageController {
      */
     public void saveContainerpage() {
 
-        if (m_pageChanged) {
+        if (hasPageChanged()) {
             CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
 
                 /**
@@ -802,45 +803,7 @@ public final class CmsContainerpageController {
                 protected void onResponse(Void result) {
 
                     CmsDebugLog.getInstance().printLine("Page saved");
-                    m_pageChanged = false;
-                    if (m_closingRegistration != null) {
-                        m_closingRegistration.removeHandler();
-                    }
-
-                }
-            };
-            action.execute();
-        }
-    }
-
-    /**
-     * Saves the container-page in a synchronized RPC call.<p>
-     */
-    protected void syncSaveContainerpage() {
-
-        if (m_pageChanged) {
-            CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
-
-                /**
-                 * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
-                 */
-                @Override
-                public void execute() {
-
-                    getContainerpageService().syncSaveContainerpage(getCurrentUri(), getPageContent(), this);
-                }
-
-                /**
-                 * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
-                 */
-                @Override
-                protected void onResponse(Void result) {
-
-                    CmsDebugLog.getInstance().printLine("Page saved");
-                    m_pageChanged = false;
-                    if (m_closingRegistration != null) {
-                        m_closingRegistration.removeHandler();
-                    }
+                    setPageChanged(false, false);
 
                 }
             };
@@ -885,7 +848,84 @@ public final class CmsContainerpageController {
      */
     public void setPageChanged() {
 
-        if (!m_pageChanged) {
+        if (!hasPageChanged()) {
+            setPageChanged(true, false);
+        }
+    }
+
+    /**
+     * Writes the tool-bar visibility into the session cache.<p>
+     * 
+     * @param visible <code>true</code> if the tool-bar is visible
+     */
+    public void setToolbarVisible(final boolean visible) {
+
+        CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+             */
+            @Override
+            public void execute() {
+
+                getContainerpageService().setToolbarVisible(visible, this);
+
+            }
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+             */
+            @Override
+            protected void onResponse(Void result) {
+
+                CmsDebugLog.getInstance().printLine("Visibility set");
+
+            }
+        };
+        action.execute();
+    }
+
+    /**
+     * Locks the container-page.<p>
+     */
+    protected void lockContainerpage() {
+
+        CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+             */
+            @Override
+            public void execute() {
+
+                getContainerpageService().lockContainerpage(getCurrentUri(), this);
+
+            }
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+             */
+            @Override
+            protected void onResponse(Void result) {
+
+                CmsDebugLog.getInstance().printLine("Page locked");
+
+            }
+        };
+        action.execute();
+    }
+
+    /**
+     * Sets the page changed flag and initializes the window closing handler if necessary.<p>
+     * 
+     * @param changed if <code>true</code> the page has changed
+     * @param unlock if <code>true</code> the page will be unlocked for unchanged pages
+     */
+    protected void setPageChanged(boolean changed, boolean unlock) {
+
+        if (changed) {
+            m_pageChanged = changed;
+            lockContainerpage();
             m_closingRegistration = Window.addWindowClosingHandler(new ClosingHandler() {
 
                 /**
@@ -897,14 +937,88 @@ public final class CmsContainerpageController {
                         boolean savePage = Window.confirm("Do you want to save the page before leaving?");
                         if (savePage) {
                             syncSaveContainerpage();
+                        } else {
+                            unlockContainerpage();
                         }
                     }
 
                 }
             });
             CmsDebugLog.getInstance().printLine("PAGE CHANGED");
-            m_pageChanged = true;
+            m_handler.enableSaveReset(true);
+
+        } else {
+            m_pageChanged = changed;
+            m_handler.enableSaveReset(false);
+            if (unlock) {
+                unlockContainerpage();
+            }
+            if (m_closingRegistration != null) {
+                m_closingRegistration.removeHandler();
+                m_closingRegistration = null;
+            }
         }
+    }
+
+    /**
+     * Saves the container-page in a synchronized RPC call.<p>
+     */
+    protected void syncSaveContainerpage() {
+
+        if (hasPageChanged()) {
+            CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
+
+                /**
+                 * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+                 */
+                @Override
+                public void execute() {
+
+                    getContainerpageService().syncSaveContainerpage(getCurrentUri(), getPageContent(), this);
+                }
+
+                /**
+                 * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+                 */
+                @Override
+                protected void onResponse(Void result) {
+
+                    CmsDebugLog.getInstance().printLine("Page saved");
+                    setPageChanged(false, false);
+
+                }
+            };
+            action.execute();
+        }
+    }
+
+    /**
+     * Unlocks the container-page in a synchronized RPC call.<p>
+     */
+    protected void unlockContainerpage() {
+
+        CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+             */
+            @Override
+            public void execute() {
+
+                getContainerpageService().syncUnlockContainerpage(getCurrentUri(), this);
+            }
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+             */
+            @Override
+            protected void onResponse(Void result) {
+
+                CmsDebugLog.getInstance().printLine("Page unlocked");
+
+            }
+        };
+        action.execute();
     }
 
     /** 
@@ -925,7 +1039,7 @@ public final class CmsContainerpageController {
     void previewNativeEvent(NativePreviewEvent event) {
 
         Event nativeEvent = Event.as(event.getNativeEvent());
-        if (m_pageChanged) {
+        if (hasPageChanged()) {
             if ((nativeEvent.getTypeInt() == Event.ONCLICK)) {
                 CmsDebugLog.getInstance().printLine("Previewing event");
 
@@ -988,15 +1102,5 @@ public final class CmsContainerpageController {
             }
         }
         return result;
-    }
-
-    /**
-     * Returns the container-page handler.<p>
-     *
-     * @return the container-page handler
-     */
-    public CmsContainerpageHandler getHandler() {
-
-        return m_handler;
     }
 }

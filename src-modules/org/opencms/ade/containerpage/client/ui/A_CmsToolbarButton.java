@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/A_CmsToolbarButton.java,v $
- * Date   : $Date: 2010/04/28 13:03:39 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/05/03 07:53:47 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import com.google.gwt.dom.client.Document;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -94,18 +94,16 @@ public abstract class A_CmsToolbarButton extends CmsToggleButton implements I_Cm
      */
     public void onToolbarClick() {
 
-        boolean active = isActive();
+        boolean active = isDown();
 
-        if (!active) {
+        if (active) {
             m_handler.deactivateCurrentButton();
             m_handler.setActiveButton(this);
-            setDown(true);
             onToolbarActivate();
         } else {
             m_handler.deactivateCurrentButton();
             m_handler.activateSelection();
         }
-
     }
 
     /**
@@ -117,9 +115,12 @@ public abstract class A_CmsToolbarButton extends CmsToggleButton implements I_Cm
         setDown(m_isActive);
 
         if (active) {
+            m_handler.deactivateCurrentButton();
+            m_handler.setActiveButton(this);
             onToolbarActivate();
         } else {
             onToolbarDeactivate();
+            m_handler.setActiveButton(null);
         }
     }
 

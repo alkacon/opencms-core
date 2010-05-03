@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/shared/rpc/Attic/I_CmsContainerpageService.java,v $
- * Date   : $Date: 2010/04/30 08:58:46 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/05/03 07:53:47 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -117,6 +117,15 @@ public interface I_CmsContainerpageService extends RemoteService {
     List<CmsContainerElement> getRecentList(String containerpageUri, Set<String> containerTypes) throws CmsRpcException;
 
     /**
+     * Locks the given container-page.<p>
+     * 
+     * @param containerpageUri the container-page
+     * 
+     * @throws CmsRpcException if something goes wrong processing the request
+     */
+    void lockContainerpage(String containerpageUri) throws CmsRpcException;
+
+    /**
      * Saves the container-page.<p>
      * 
      * @param containerpageUri the current URI
@@ -145,6 +154,15 @@ public interface I_CmsContainerpageService extends RemoteService {
     void saveRecentList(List<String> clientIds) throws CmsRpcException;
 
     /**
+     * Writes the tool-bar visibility into the session cache.<p>
+     * 
+     * @param visible <code>true</code> if the tool-bar is visible
+     * 
+     * @throws CmsRpcException
+     */
+    void setToolbarVisible(boolean visible) throws CmsRpcException;
+
+    /**
      * Saves the container-page in a synchronized RPC call.<p>
      * 
      * @param containerpageUri the current URI
@@ -153,5 +171,14 @@ public interface I_CmsContainerpageService extends RemoteService {
      * @throws CmsRpcException if something goes wrong processing the request
      */
     void syncSaveContainerpage(String containerpageUri, List<CmsContainer> containers) throws CmsRpcException;
+
+    /**
+     * Unlocks the given container-page.<p>
+     * 
+     * @param containerpageUri the container-page
+     * 
+     * @throws CmsRpcException if something goes wrong processing the request
+     */
+    void syncUnlockContainerpage(String containerpageUri) throws CmsRpcException;
 
 }

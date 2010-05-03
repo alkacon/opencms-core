@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageHandler.java,v $
- * Date   : $Date: 2010/04/27 14:40:49 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/05/03 07:53:47 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -91,7 +91,7 @@ public class CmsContainerpageHandler {
      */
     public void activateSelection() {
 
-        //TODO: implement
+        m_editor.getSelection().setActive(true);
     }
 
     /**
@@ -134,6 +134,22 @@ public class CmsContainerpageHandler {
     public void enableDragHandler(I_CmsDragElement element) {
 
         m_controller.getContainerpageUtil().enableDragHandler(element);
+    }
+
+    /**
+     * Enables the save and reset button of the tool-bar.<p>
+     * 
+     * @param enable <code>true</code> to enable
+     */
+    public void enableSaveReset(boolean enable) {
+
+        if (enable) {
+            m_editor.getSave().enable();
+            m_editor.getReset().enable();
+        } else {
+            m_editor.getSave().disable("No changes");
+            m_editor.getReset().disable("No changes");
+        }
     }
 
     /**
@@ -332,4 +348,19 @@ public class CmsContainerpageHandler {
         });
     }
 
+    /**
+     * Toggles the tool-bars visibility.<p>
+     */
+    public void toggleToolbar() {
+
+        if (m_editor.toolbarVisible()) {
+            deactivateCurrentButton();
+            m_editor.showToolbar(false);
+            m_controller.setToolbarVisible(false);
+        } else {
+            activateSelection();
+            m_editor.showToolbar(true);
+            m_controller.setToolbarVisible(true);
+        }
+    }
 }

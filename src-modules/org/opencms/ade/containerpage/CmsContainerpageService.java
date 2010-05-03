@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsContainerpageService.java,v $
- * Date   : $Date: 2010/04/30 08:58:46 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/05/03 07:53:47 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,7 +68,7 @@ import java.util.Set;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 8.0.0
  */
@@ -167,6 +167,18 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#lockContainerpage(java.lang.String)
+     */
+    public void lockContainerpage(String containerpageUri) throws CmsRpcException {
+
+        try {
+            getCmsObject().lockResourceTemporary(containerpageUri);
+        } catch (Throwable e) {
+            error(e);
+        }
+    }
+
+    /**
      * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#saveContainerpage(java.lang.String, java.util.List)
      */
     public void saveContainerpage(String containerpageUri, List<CmsContainer> containers) throws CmsRpcException {
@@ -238,6 +250,38 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
         try {
             getSessionCache().setCacheRecentList(getCachedElements(clientIds));
+        } catch (Throwable e) {
+            error(e);
+        }
+    }
+
+    /**
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#setToolbarVisible(boolean)
+     */
+    public void setToolbarVisible(boolean visible) throws CmsRpcException {
+
+        try {
+            getSessionCache().setToolbarVisible(visible);
+        } catch (Throwable e) {
+            error(e);
+        }
+    }
+
+    /**
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#syncSaveContainerpage(java.lang.String, java.util.List)
+     */
+    public void syncSaveContainerpage(String containerpageUri, List<CmsContainer> containers) throws CmsRpcException {
+
+        saveContainerpage(containerpageUri, containers);
+    }
+
+    /**
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#syncUnlockContainerpage(java.lang.String)
+     */
+    public void syncUnlockContainerpage(String containerpageUri) throws CmsRpcException {
+
+        try {
+            getCmsObject().unlockResource(containerpageUri);
         } catch (Throwable e) {
             error(e);
         }
@@ -410,14 +454,6 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             }
         }
         return m_sessionCache;
-    }
-
-    /**
-     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#syncSaveContainerpage(java.lang.String, java.util.List)
-     */
-    public void syncSaveContainerpage(String containerpageUri, List<CmsContainer> containers) throws CmsRpcException {
-
-        saveContainerpage(containerpageUri, containers);
     }
 
 }

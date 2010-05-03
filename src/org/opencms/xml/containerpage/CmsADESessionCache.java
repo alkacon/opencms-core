@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADESessionCache.java,v $
- * Date   : $Date: 2010/04/14 07:34:28 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/05/03 07:53:47 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,14 +51,20 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 7.9.2
  */
 public final class CmsADESessionCache {
 
+    /** Session attribute name constant. */
+    public static final String SESSION_ATTR_ADE_CACHE = "__OCMS_ADE_CACHE__";
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsADESessionCache.class);
+
+    /** The container elements. */
+    private Map<String, CmsContainerElementBean> m_containerElements;
 
     /** The ADE recent list. */
     private List<CmsContainerElementBean> m_recentLists;
@@ -66,11 +72,8 @@ public final class CmsADESessionCache {
     /** The ADE search options. */
     private CmsSearchOptions m_searchOptions;
 
-    /** The container elements. */
-    private Map<String, CmsContainerElementBean> m_containerElements;
-
-    /** Session attribute name constant. */
-    public static final String SESSION_ATTR_ADE_CACHE = "__OCMS_ADE_CACHE__";
+    /** The tool-bar visibility flag. */
+    private boolean m_toolbarVisible;
 
     /**
      * Initializes the session cache.<p>
@@ -99,6 +102,18 @@ public final class CmsADESessionCache {
     }
 
     /**
+     * Returns the cached container element under the given key.<p>
+     * 
+     * @param key the cache key
+     * 
+     * @return  the cached container element or <code>null</code> if not found
+     */
+    public CmsContainerElementBean getCacheContainerElement(String key) {
+
+        return m_containerElements.get(key);
+    }
+
+    /**
      * Returns the cached recent list.<p>
      * 
      * @return the cached recent list
@@ -119,15 +134,24 @@ public final class CmsADESessionCache {
     }
 
     /**
-     * Returns the cached container element under the given key.<p>
+     * Returns the tool-bar visibility.<p>
+     *
+     * @return the tool-bar visibility
+     */
+    public boolean isToolbarVisible() {
+
+        return m_toolbarVisible;
+    }
+
+    /**
+     * Caches the given container element under the given key.<p>
      * 
      * @param key the cache key
-     * 
-     * @return  the cached container element or <code>null</code> if not found
+     * @param containerElement the object to cache
      */
-    public CmsContainerElementBean getCacheContainerElement(String key) {
+    public void setCacheContainerElement(String key, CmsContainerElementBean containerElement) {
 
-        return m_containerElements.get(key);
+        m_containerElements.put(key, containerElement);
     }
 
     /**
@@ -159,13 +183,12 @@ public final class CmsADESessionCache {
     }
 
     /**
-     * Caches the given container element under the given key.<p>
-     * 
-     * @param key the cache key
-     * @param containerElement the object to cache
+     * Sets the tool-bar visibility flag.<p>
+     *
+     * @param toolbarVisible the tool-bar visibility to set
      */
-    public void setCacheContainerElement(String key, CmsContainerElementBean containerElement) {
+    public void setToolbarVisible(boolean toolbarVisible) {
 
-        m_containerElements.put(key, containerElement);
+        m_toolbarVisible = toolbarVisible;
     }
 }

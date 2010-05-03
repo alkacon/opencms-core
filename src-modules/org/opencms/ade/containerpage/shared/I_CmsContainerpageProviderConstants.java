@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/shared/Attic/I_CmsContainerpageProviderConstants.java,v $
- * Date   : $Date: 2010/04/12 15:00:37 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/05/03 07:53:47 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,7 @@ package org.opencms.ade.containerpage.shared;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -50,6 +50,9 @@ public interface I_CmsContainerpageProviderConstants {
 
     /** Name of the used dictionary. */
     String DICT_NAME = "org.opencms.ade.containerpage.core";
+
+    /** Key for back-link URI. */
+    String KEY_BACKLINK_URI = "backlink_uri";
 
     /** Key for container data. This has to be identical with {@link org.opencms.jsp.CmsJspTagContainer#KEY_CONTAINER_DATA}. */
     String KEY_CONTAINER_DATA = "org_opencms_ade_containerpage_containers";
@@ -69,6 +72,6 @@ public interface I_CmsContainerpageProviderConstants {
     /** Key for the sitemap URI. */
     String KEY_SITEMAP_URI = "sitemap_uri";
 
-    /** Key for back-link URI. */
-    String KEY_BACKLINK_URI = "backlink_uri";
+    /** Key for tool-bar visibility. */
+    String KEY_TOOLBAR_VISIBLE = "toolbar_visible";
 }

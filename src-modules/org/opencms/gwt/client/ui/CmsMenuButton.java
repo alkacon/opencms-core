@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsMenuButton.java,v $
- * Date   : $Date: 2010/04/28 13:36:40 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/05/03 07:53:47 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,11 +57,11 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 8.0.0
  */
-public class CmsMenuButton extends Composite implements I_CmsHasToggleHandlers, HasClickHandlers {
+public class CmsMenuButton extends Composite implements HasClickHandlers {
 
     /**
      * @see com.google.gwt.uibinder.client.UiBinder
@@ -157,7 +157,7 @@ public class CmsMenuButton extends Composite implements I_CmsHasToggleHandlers, 
             public void onClose(CloseEvent<PopupPanel> event) {
 
                 if (event.isAutoClosed()) {
-                    setButtonUp();
+                    autoClose();
                     if (m_resizeRegistration != null) {
                         m_resizeRegistration.removeHandler();
                         m_resizeRegistration = null;
@@ -167,9 +167,6 @@ public class CmsMenuButton extends Composite implements I_CmsHasToggleHandlers, 
             }
 
         });
-
-        m_content.setPreviewingAllNativeEvents(true);
-
     }
 
     /**
@@ -178,14 +175,6 @@ public class CmsMenuButton extends Composite implements I_CmsHasToggleHandlers, 
     public HandlerRegistration addClickHandler(ClickHandler handler) {
 
         return addDomHandler(handler, ClickEvent.getType());
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.I_CmsHasToggleHandlers#addToggleHandler(org.opencms.gwt.client.ui.I_CmsToggleHandler)
-     */
-    public HandlerRegistration addToggleHandler(I_CmsToggleHandler handler) {
-
-        return addHandler(handler, CmsToggleEvent.getType());
     }
 
     /**
@@ -251,8 +240,6 @@ public class CmsMenuButton extends Composite implements I_CmsHasToggleHandlers, 
 
             }
         });
-        CmsToggleEvent.fire(this, true);
-
     }
 
     /**
@@ -265,16 +252,12 @@ public class CmsMenuButton extends Composite implements I_CmsHasToggleHandlers, 
         m_content.setWidget(widget);
     }
 
-    /** 
-     * Toggles the menu state.<p>
+    /**
+     * Called on auto close.<p>
      */
-    public void toggleMenu() {
+    protected void autoClose() {
 
-        if (!m_isOpen) {
-            openMenu();
-        } else {
-            closeMenu();
-        }
+        setButtonUp();
     }
 
     /**
@@ -293,12 +276,11 @@ public class CmsMenuButton extends Composite implements I_CmsHasToggleHandlers, 
     /**
      * Sets button to state up, hides menu fragments (not the content pop-up) and fires the toggle event.<p>
      */
-    void setButtonUp() {
+    private void setButtonUp() {
 
         m_isOpen = false;
         m_button.setDown(false);
         m_menuConnect.addClassName(m_style.hidden());
-        CmsToggleEvent.fire(this, false);
     }
 
 }

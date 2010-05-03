@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsToolbarSelectionButton.java,v $
- * Date   : $Date: 2010/04/28 13:03:39 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/05/03 07:53:47 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -85,12 +85,11 @@ public class CmsToolbarSelectionButton extends A_CmsToolbarOptionButton {
     @Override
     public void onToolbarClick() {
 
-        boolean active = isActive();
+        boolean active = isDown();
 
-        if (!active) {
+        if (active) {
             getHandler().deactivateCurrentButton();
             getHandler().setActiveButton(this);
-            setDown(true);
             onToolbarActivate();
         } else {
             getHandler().deactivateCurrentButton();

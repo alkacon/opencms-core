@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/A_CmsToolbarMenu.java,v $
- * Date   : $Date: 2010/04/30 09:00:18 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/05/03 07:53:47 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import org.opencms.gwt.client.ui.I_CmsButton;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -75,14 +75,6 @@ public abstract class A_CmsToolbarMenu extends CmsMenuButton implements I_CmsToo
     }
 
     /**
-     * @see org.opencms.ade.containerpage.client.ui.I_CmsToolbarButton#isActive()
-     */
-    public boolean isActive() {
-
-        return isOpen();
-    }
-
-    /**
      * @see org.opencms.gwt.client.ui.CmsMenuButton#hideMenu()
      */
     @Override
@@ -92,20 +84,22 @@ public abstract class A_CmsToolbarMenu extends CmsMenuButton implements I_CmsToo
     }
 
     /**
+     * @see org.opencms.ade.containerpage.client.ui.I_CmsToolbarButton#isActive()
+     */
+    public boolean isActive() {
+
+        return isOpen();
+    }
+
+    /**
      * @see org.opencms.ade.containerpage.client.ui.I_CmsToolbarButton#onToolbarClick()
      */
     public void onToolbarClick() {
 
         boolean active = isActive();
 
-        if (!active) {
-            m_handler.deactivateCurrentButton();
-            m_handler.setActiveButton(this);
-            onToolbarActivate();
-            openMenu();
-        } else {
-            m_handler.deactivateCurrentButton();
-        }
+        setActive(!active);
+
     }
 
     /**
@@ -114,13 +108,29 @@ public abstract class A_CmsToolbarMenu extends CmsMenuButton implements I_CmsToo
     public void setActive(boolean active) {
 
         if (active) {
+            m_handler.deactivateCurrentButton();
+            m_handler.setActiveButton(this);
             onToolbarActivate();
             openMenu();
 
         } else {
             onToolbarDeactivate();
             closeMenu();
+            m_handler.setActiveButton(null);
+            m_handler.activateSelection();
         }
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.CmsMenuButton#autoClose()
+     */
+    @Override
+    protected void autoClose() {
+
+        super.autoClose();
+        onToolbarDeactivate();
+        m_handler.setActiveButton(null);
+        m_handler.activateSelection();
     }
 
     /**

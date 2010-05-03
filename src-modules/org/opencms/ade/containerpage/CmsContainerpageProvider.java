@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsContainerpageProvider.java,v $
- * Date   : $Date: 2010/04/27 13:09:10 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/05/03 07:53:47 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,10 +47,10 @@ import org.opencms.main.OpenCms;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.explorer.CmsResourceUtil;
+import org.opencms.xml.containerpage.CmsADESessionCache;
 import org.opencms.xml.sitemap.CmsSitemapEntry;
 import org.opencms.xml.sitemap.CmsXmlSitemap;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
@@ -60,23 +60,26 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
 public final class CmsContainerpageProvider implements I_CmsContainerpageProviderConstants, I_CmsCoreProvider {
 
-    /** The xml-content editor URI. */
-    private static final String EDITOR_URI = "/system/workplace/editors/editor.jsp";
-
     /** The editor back-link URI. */
     private static final String BACKLINK_URI = "/system/modules/org.opencms.ade.containerpage/editor-backlink.html";
+
+    /** The xml-content editor URI. */
+    private static final String EDITOR_URI = "/system/workplace/editors/editor.jsp";
 
     /** Internal instance. */
     private static CmsContainerpageProvider INSTANCE;
 
     /** Static reference to the log. */
     private static final Log LOG = CmsLog.getLog(CmsSitemapProvider.class);
+
+    /** The session cache. */
+    private CmsADESessionCache m_sessionCache;
 
     /**
      * Hides the public constructor for this utility class.<p>
@@ -139,15 +142,7 @@ public final class CmsContainerpageProvider implements I_CmsContainerpageProvide
             keys.put(KEY_SITEMAP_URI, getSitemapUri(cms, request));
             keys.put(KEY_EDITOR_URI, EDITOR_URI);
             keys.put(KEY_BACKLINK_URI, BACKLINK_URI);
-            Cookie[] cookies = request.getCookies();
-            if (cookies != null) {
-                for (int i = 0; i < cookies.length; i++) {
-                    if (cookies[i].getName().equals("test")) {
-                        keys.put("cookie_value", cookies[i].getValue());
-                    }
-                }
-            }
-
+            keys.put(KEY_TOOLBAR_VISIBLE, isToolbarVisible(cms, request));
         } catch (Throwable e) {
             LOG.error(e.getLocalizedMessage(), e);
             try {
@@ -235,6 +230,24 @@ public final class CmsContainerpageProvider implements I_CmsContainerpageProvide
     }
 
     /**
+     * Returns the session cache.<p>
+     * 
+     * @return the session cache
+     */
+    private CmsADESessionCache getSessionCache(CmsObject cms, HttpServletRequest request) {
+
+        if (m_sessionCache == null) {
+            m_sessionCache = (CmsADESessionCache)request.getSession().getAttribute(
+                CmsADESessionCache.SESSION_ATTR_ADE_CACHE);
+            if (m_sessionCache == null) {
+                m_sessionCache = new CmsADESessionCache(cms);
+                request.getSession().setAttribute(CmsADESessionCache.SESSION_ATTR_ADE_CACHE, m_sessionCache);
+            }
+        }
+        return m_sessionCache;
+    }
+
+    /**
      * Returns the sitemap URI of this request.<p>
      * 
      * @param cms the current cms object
@@ -252,5 +265,20 @@ public final class CmsContainerpageProvider implements I_CmsContainerpageProvide
             sitemap = OpenCms.getSitemapManager().getSitemapForUri(cms, sitemapInfo.getSitePath(cms), false);
         }
         return (sitemap == null) ? "" : OpenCms.getLinkManager().substituteLink(cms, sitemap.getFile());
+    }
+
+    /**
+     * Returns the tool-bar visibility.<p>
+     * 
+     * @param cms the current cms object
+     * @param request the current request
+     * 
+     * @return <code>true</code> if the tool-bar is visible
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    private boolean isToolbarVisible(CmsObject cms, HttpServletRequest request) {
+
+        return getSessionCache(cms, request).isToolbarVisible();
     }
 }
