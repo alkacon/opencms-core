@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/rpc/Attic/I_CmsCoreServiceAsync.java,v $
- * Date   : $Date: 2010/04/15 08:11:16 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/05/03 10:48:41 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,11 @@
 
 package org.opencms.gwt.shared.rpc;
 
+import org.opencms.gwt.shared.CmsCategoryTreeEntry;
+import org.opencms.gwt.shared.CmsCoreData;
+
+import java.util.List;
+
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
@@ -38,7 +43,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  * 
@@ -49,6 +54,20 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public interface I_CmsCoreServiceAsync {
 
     /**
+     * Returns the categories for the given search parameters.<p>
+     * 
+     * @param fromCatPath the category path to start with, can be <code>null</code> or empty to use the root
+     * @param includeSubCats if to include all categories, or first level child categories only
+     * @param refVfsPaths the reference paths, can be <code>null</code> to only use the system repository
+     * @param callback the async callback
+     */
+    void getCategories(
+        String fromCatPath,
+        boolean includeSubCats,
+        List<String> refVfsPaths,
+        AsyncCallback<CmsCategoryTreeEntry> callback);
+
+    /**
      * Locks the given sitemap.<p>
      * 
      * @param uri the sitemap URI 
@@ -57,10 +76,17 @@ public interface I_CmsCoreServiceAsync {
     void lock(String uri, AsyncCallback<String> callback);
 
     /**
-    * Unlocks the given sitemap.<p>
-    * 
-    * @param uri the sitemap URI 
-    * @param callback the async callback
-    */
+     * Generates core data for prefetching in the host page.<p>
+     * 
+     * @param callback the async callback
+     */
+    void prefetch(AsyncCallback<CmsCoreData> callback);
+
+    /**
+     * Unlocks the given sitemap.<p>
+     * 
+     * @param uri the sitemap URI 
+     * @param callback the async callback
+     */
     void unlock(String uri, AsyncCallback<String> callback);
 }
