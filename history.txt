@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2010/04/08 14:57:49 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2010/05/03 12:28:28 $
+ * Version: $Revision: 1.27 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -21,6 +21,7 @@ Legend:
 
 OpenCms x.x.x - Month Day, Year
 * Keep browser based authentication text when rewriting the opencms-system.xml
+- Enhanced english and german dialog text when undo changes inclusive siblings which says that only the content changes are be undone
 
 OpenCms 7.9.2 - February 24th, 2010
 ! Added support for xsd:choice in XML content API and editor
