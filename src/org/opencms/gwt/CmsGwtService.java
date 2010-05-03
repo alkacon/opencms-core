@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/gwt/CmsGwtService.java,v $
- * Date   : $Date: 2010/04/28 06:01:08 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/05/03 10:47:32 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -67,7 +67,7 @@ import com.google.gwt.user.server.rpc.SerializationPolicyLoader;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 8.0.0
  */
@@ -258,6 +258,19 @@ public class CmsGwtService extends RemoteServiceServlet implements I_CmsEventLis
             m_perThreadCmsObject = new ThreadLocal<CmsObject>();
         }
         m_perThreadCmsObject.set(cms);
+    }
+
+    /**
+     * Sets the current request.<p>
+     * 
+     * @param request the request to set
+     */
+    public synchronized void setRequest(HttpServletRequest request) {
+
+        if (perThreadRequest == null) {
+            perThreadRequest = new ThreadLocal<HttpServletRequest>();
+        }
+        perThreadRequest.set(request);
     }
 
     /**
