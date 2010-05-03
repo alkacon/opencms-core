@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/draganddrop/Attic/A_CmsDragHandler.java,v $
- * Date   : $Date: 2010/04/30 07:04:20 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/05/03 07:54:08 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,12 +65,15 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
 public abstract class A_CmsDragHandler<E extends I_CmsDragElement, T extends I_CmsDragTarget>
 implements I_CmsDragHandler<E, T> {
+
+    /** Animation enabled flag. */
+    protected boolean m_animationEnabled;
 
     /** The current mouse event. */
     @SuppressWarnings("unchecked")
@@ -94,23 +97,20 @@ implements I_CmsDragHandler<E, T> {
     /** List of handler registrations. */
     protected List<HandlerRegistration> m_handlerRegistrations;
 
-    /** The place-holder widget. */
-    protected Widget m_placeholder;
-
-    /** The list of all registered targets. */
-    protected List<T> m_targets;
-
     /** Flag if automatic scrolling is enabled. */
     protected boolean m_isScrollEnabled;
 
-    /** Scroll timer. */
-    protected Timer m_scrollTimer;
+    /** The place-holder widget. */
+    protected Widget m_placeholder;
 
     /** Current scroll direction. */
     protected CmsScrollTimer.Direction m_scrollDirection;
 
-    /** Animation enabled flag. */
-    protected boolean m_animationEnabled;
+    /** Scroll timer. */
+    protected Timer m_scrollTimer;
+
+    /** The list of all registered targets. */
+    protected List<T> m_targets;
 
     /**
      * @see org.opencms.gwt.client.draganddrop.I_CmsDragHandler#addDragTarget(org.opencms.gwt.client.draganddrop.I_CmsDragTarget)
@@ -295,6 +295,48 @@ implements I_CmsDragHandler<E, T> {
     }
 
     /**
+     * Clears the drag process with a move animation of the drag element to the place-holder position.<p>
+     */
+    protected void animateClear() {
+
+        I_CmsSimpleCallback<Void> callback = new I_CmsSimpleCallback<Void>() {
+
+            /**
+             * Call-back method.<p>
+             * 
+             * @param arg void
+             */
+            public void execute(Void arg) {
+
+                clearDrag();
+            }
+
+            /**
+             * @see org.opencms.gwt.client.util.I_CmsSimpleCallback#onError(java.lang.String)
+             */
+            public void onError(String message) {
+
+                // nothing to do
+
+            }
+        };
+        int endTop = DOM.getAbsoluteTop(m_placeholder.getElement())
+            - DOM.getAbsoluteTop(m_dragElement.getDragParent().getElement());
+        int endLeft = DOM.getAbsoluteLeft(m_placeholder.getElement())
+            - DOM.getAbsoluteLeft(m_dragElement.getDragParent().getElement());
+        int startTop = CmsDomUtil.getCurrentStyleInt(m_dragElement.getElement(), Style.top);
+        int startLeft = CmsDomUtil.getCurrentStyleInt(m_dragElement.getElement(), Style.left);
+        CmsMoveAnimation ani = new CmsMoveAnimation(
+            m_dragElement.getElement(),
+            startTop,
+            startLeft,
+            endTop,
+            endLeft,
+            callback);
+        ani.run(300);
+    }
+
+    /**
      * Method will check all registered drag targets if the element is positioned over one of them. 
      * {@link I_CmsDragElement#onDragLeave(I_CmsDragHandler, I_CmsDragTarget)}, {@link I_CmsDragTarget#onDragLeave(I_CmsDragHandler)},
      * {@link I_CmsDragElement#onDragEnter(I_CmsDragHandler, I_CmsDragTarget)}, {@link I_CmsDragTarget#onDragEnter(I_CmsDragHandler)} and
@@ -346,6 +388,20 @@ implements I_CmsDragHandler<E, T> {
     }
 
     /**
+     * Restores the dragged element from dragging and clears all references used within the current drag process.<p>
+     */
+    protected void clearDrag() {
+
+        restoreElementAfterDrag();
+        Document.get().getBody().removeClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragStarted());
+        m_dragElement.onDragStop(this);
+        m_dragElement = null;
+        m_placeholder = null;
+        m_targets = null;
+        m_currentTarget = null;
+    }
+
+    /**
      * Method executed when the element is dropped outside any target.<p>
      */
     protected abstract void elementCancelAction();
@@ -388,6 +444,27 @@ implements I_CmsDragHandler<E, T> {
      * Important: Set the new drag parent property on the draggable element if necessary ({@link org.opencms.gwt.client.draganddrop.I_CmsDragElement#setDragParent})!<p>
      */
     protected abstract void restoreElementAfterDrag();
+
+    /**
+     * Handles automated scrolling.<p>
+     */
+    protected void scrollAction() {
+
+        if (m_isScrollEnabled) {
+
+            CmsScrollTimer.Direction direction = CmsScrollTimer.getScrollDirection(m_currentEvent, 100);
+            if ((m_scrollTimer != null) && (m_scrollDirection != direction)) {
+                m_scrollTimer.cancel();
+                m_scrollTimer = null;
+            }
+            if ((direction != null) && (m_scrollTimer == null)) {
+                m_scrollTimer = new CmsScrollTimer(RootPanel.getBodyElement(), 20, direction);
+                m_scrollTimer.scheduleRepeating(10);
+            }
+
+            m_scrollDirection = direction;
+        }
+    }
 
     /**
      * Sorts the elements inside a target depending on the mouse position.<p>
@@ -436,85 +513,8 @@ implements I_CmsDragHandler<E, T> {
     }
 
     /**
-     * Handles automated scrolling.<p>
-     */
-    protected void scrollAction() {
-
-        if (m_isScrollEnabled) {
-
-            CmsScrollTimer.Direction direction = CmsScrollTimer.getScrollDirection(m_currentEvent, 100);
-            if ((m_scrollTimer != null) && (m_scrollDirection != direction)) {
-                m_scrollTimer.cancel();
-                m_scrollTimer = null;
-            }
-            if ((direction != null) && (m_scrollTimer == null)) {
-                m_scrollTimer = new CmsScrollTimer(RootPanel.getBodyElement(), 20, direction);
-                m_scrollTimer.scheduleRepeating(10);
-            }
-
-            m_scrollDirection = direction;
-        }
-    }
-
-    /**
      * Method executed when the widget order within the current target has been changed.<p> 
      */
     protected abstract void targetSortChangeAction();
-
-    /**
-     * Restores the dragged element from dragging and clears all references used within the current drag process.<p>
-     */
-    protected void clearDrag() {
-
-        restoreElementAfterDrag();
-        Document.get().getBody().removeClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragStarted());
-        m_dragElement.onDragStop(this);
-        m_dragElement = null;
-        m_placeholder = null;
-        m_targets = null;
-        m_currentTarget = null;
-    }
-
-    /**
-     * Clears the drag process with a move animation of the drag element to the place-holder position.<p>
-     */
-    protected void animateClear() {
-
-        I_CmsSimpleCallback<Void> callback = new I_CmsSimpleCallback<Void>() {
-
-            /**
-             * Call-back method.<p>
-             * 
-             * @param arg void
-             */
-            public void execute(Void arg) {
-
-                clearDrag();
-            }
-
-            /**
-             * @see org.opencms.gwt.client.util.I_CmsSimpleCallback#onError(java.lang.String)
-             */
-            public void onError(String message) {
-
-                // nothing to do
-
-            }
-        };
-        int endTop = DOM.getAbsoluteTop(m_placeholder.getElement())
-            - DOM.getAbsoluteTop(m_dragElement.getDragParent().getElement());
-        int endLeft = DOM.getAbsoluteLeft(m_placeholder.getElement())
-            - DOM.getAbsoluteLeft(m_dragElement.getDragParent().getElement());
-        int startTop = CmsDomUtil.getCurrentStyleInt(m_dragElement.getElement(), Style.top);
-        int startLeft = CmsDomUtil.getCurrentStyleInt(m_dragElement.getElement(), Style.left);
-        CmsMoveAnimation ani = new CmsMoveAnimation(
-            m_dragElement.getElement(),
-            startTop,
-            startLeft,
-            endTop,
-            endLeft,
-            callback);
-        ani.run(300);
-    }
 
 }

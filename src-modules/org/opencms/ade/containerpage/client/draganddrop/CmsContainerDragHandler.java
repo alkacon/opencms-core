@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsContainerDragHandler.java,v $
- * Date   : $Date: 2010/04/30 08:59:04 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2010/05/03 07:54:08 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -67,7 +67,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 8.0.0
  */
@@ -148,6 +148,12 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElementEx
         }
     }
 
+    /** The container-page controller. */
+    protected CmsContainerpageController m_controller;
+
+    /** The container-page editor. */
+    protected CmsContainerpageEditor m_editor;
+
     /** The current element info. */
     private DragInfo m_current;
 
@@ -162,12 +168,6 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElementEx
 
     /** Map of element info's. */
     private Map<I_CmsDragTargetContainer, DragInfo> m_targetInfos;
-
-    /** The container-page controller. */
-    protected CmsContainerpageController m_controller;
-
-    /** The container-page editor. */
-    protected CmsContainerpageEditor m_editor;
 
     /**
      * Constructor.<p>
@@ -230,6 +230,65 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElementEx
     }
 
     /**
+     * Adds a target info to the target info's map.<p>
+     * 
+     * @param target the drag target
+     * @param info the drag info object
+     */
+    protected void addTargetInfo(I_CmsDragTargetContainer target, DragInfo info) {
+
+        m_targetInfos.put(target, info);
+    }
+
+    /**
+     * Creates a clone of element to be dragged around.<p>
+     * 
+     * @param element the element to clone
+     * @param dragParent the drag parent
+     * @param clientId the client id
+     * 
+     * @return the generated clone
+     */
+    protected CmsDragContainerElement createDragClone(
+        com.google.gwt.user.client.Element element,
+        I_CmsDragTarget dragParent,
+        String clientId) {
+
+        com.google.gwt.user.client.Element elementClone = DOM.createDiv();
+        elementClone.setInnerHTML(element.getInnerHTML());
+        elementClone.setClassName(element.getClassName());
+        CmsDragContainerElement dragElement = new CmsDragContainerElement(
+            elementClone,
+            dragParent,
+            clientId,
+            null,
+            null);
+        registerMouseHandler(dragElement);
+        return dragElement;
+    }
+
+    /**
+     * Creates a place-holder for the draggable element.<p>
+     * 
+     * @param element the element
+     * 
+     * @return the place-holder widget
+     */
+    protected Widget createPlaceholder(I_CmsDragElement element) {
+
+        Widget result = new HTML(element.getElement().getInnerHTML());
+        result.addStyleName(element.getElement().getClassName()
+            + " "
+            + I_CmsLayoutBundle.INSTANCE.dragdropCss().dragPlaceholder());
+
+        Element overlay = DOM.createDiv();
+        overlay.addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().placeholderOverlay());
+        result.getElement().appendChild(overlay);
+
+        return result;
+    }
+
+    /**
      * @see org.opencms.gwt.client.draganddrop.A_CmsDragHandler#elementCancelAction()
      */
     @Override
@@ -273,7 +332,7 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElementEx
             m_current.getPlaceholder().setVisible(false);
 
         }
-        getDragElement().getDragParent().getElement().removeClassName(
+        m_startInfo.getDraggable().getDragParent().getElement().removeClassName(
             I_CmsLayoutBundle.INSTANCE.dragdropCss().currentTarget());
         m_currentTarget.getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().currentTarget());
         // if the element is dragged into a target that is not the initial parent target and not the tool-bar menu drop-zone,
@@ -282,8 +341,8 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElementEx
         if ((m_targetInfos.get(m_currentTarget) != m_startInfo)
             && (m_targetInfos.get(m_currentTarget) != m_dropZoneInfo)) {
             m_startInfo.getPlaceholder().addStyleName(I_CmsLayoutBundle.INSTANCE.dragdropCss().overlayShow());
-            I_CmsDragTarget orgTarget = m_dragElement.getDragParent();
-            orgTarget.insert(m_current.getPlaceholder(), orgTarget.getWidgetIndex((Widget)m_dragElement));
+            I_CmsDragTarget orgTarget = m_startInfo.getDraggable().getDragParent();
+            orgTarget.insert(m_current.getPlaceholder(), orgTarget.getWidgetIndex((Widget)m_startInfo.getDraggable()));
         } else {
             m_startInfo.getPlaceholder().removeStyleName(I_CmsLayoutBundle.INSTANCE.dragdropCss().overlayShow());
         }
@@ -291,6 +350,7 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElementEx
         m_current = m_targetInfos.get(m_currentTarget);
         positionElement();
         m_placeholder = m_current.getPlaceholder();
+        m_dragElement = m_current.getDraggable();
         sortTarget();
         m_current.getDraggable().setVisible(true);
         m_current.getPlaceholder().setVisible(true);
@@ -305,22 +365,23 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElementEx
     @Override
     protected void elementLeaveTargetAction() {
 
-        if (m_currentTarget != m_dragElement.getDragParent()) {
+        if (m_currentTarget != m_startInfo.getDraggable().getDragParent()) {
             m_current.getDraggable().setVisible(false);
             m_current.getPlaceholder().setVisible(false);
 
             m_currentTarget.getElement().removeClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().currentTarget());
-            m_dragElement.getDragParent().getElement().addClassName(
+            m_startInfo.getDraggable().getDragParent().getElement().addClassName(
                 I_CmsLayoutBundle.INSTANCE.dragdropCss().currentTarget());
 
             m_current = m_startInfo;
             positionElement();
             m_placeholder = m_current.getPlaceholder();
+            m_dragElement = m_current.getDraggable();
             m_current.getDraggable().setVisible(true);
             m_placeholder.setVisible(true);
             m_placeholder.removeStyleName(I_CmsLayoutBundle.INSTANCE.dragdropCss().overlayShow());
         } else {
-            m_currentTarget.insert(m_placeholder, m_currentTarget.getWidgetIndex((Widget)m_dragElement));
+            m_currentTarget.insert(m_placeholder, m_currentTarget.getWidgetIndex((Widget)m_startInfo.getDraggable()));
         }
         updateHighlighting();
     }
@@ -340,6 +401,23 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElementEx
         DOM.setStyleAttribute(element, "left", left + "px");
         DOM.setStyleAttribute(element, "top", top + "px");
 
+    }
+
+    /**
+     * Adjust the style properties of the draggable element and inserts the place-holder into the target.<p>
+     * 
+     * @param elementInfo the drag info object
+     * @param target the drag target
+     * @param setHidden if <code>true</code> the element and it's place-holder will get hidden
+     */
+    protected void prepareElement(DragInfo elementInfo, I_CmsDragTargetContainer target, boolean setHidden) {
+
+        target.insert(elementInfo.getPlaceholder(), target.getWidgetIndex((Widget)elementInfo.getDraggable()));
+        elementInfo.getDraggable().prepareDrag();
+        if (setHidden) {
+            elementInfo.getPlaceholder().setVisible(false);
+            elementInfo.getDraggable().setVisible(false);
+        }
     }
 
     /**
@@ -493,7 +571,7 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElementEx
         if (m_dragFromMenu) {
             m_editor.getClipboard().setActive(false);
             m_editor.getAdd().setActive(false);
-            ((Widget)m_dragElement.getDragParent()).removeFromParent();
+            ((Widget)m_startInfo.getDraggable().getDragParent()).removeFromParent();
             Document.get().getBody().removeClassName(I_CmsButton.ButtonData.MOVE.getIconClass());
         }
         m_targetInfos = null;
@@ -520,83 +598,6 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElementEx
         Iterator<Entry<I_CmsDragTargetContainer, DragInfo>> it = m_targetInfos.entrySet().iterator();
         while (it.hasNext()) {
             it.next().getKey().refreshHighlighting();
-        }
-    }
-
-    /**
-     * Adds a target info to the target info's map.<p>
-     * 
-     * @param target the drag target
-     * @param info the drag info object
-     */
-    protected void addTargetInfo(I_CmsDragTargetContainer target, DragInfo info) {
-
-        m_targetInfos.put(target, info);
-
-    }
-
-    /**
-     * Creates a clone of element to be dragged around.<p>
-     * 
-     * @param element the element to clone
-     * @param dragParent the drag parent
-     * @param clientId the client id
-     * 
-     * @return the generated clone
-     */
-    protected CmsDragContainerElement createDragClone(
-        com.google.gwt.user.client.Element element,
-        I_CmsDragTarget dragParent,
-        String clientId) {
-
-        com.google.gwt.user.client.Element elementClone = DOM.createDiv();
-        elementClone.setInnerHTML(element.getInnerHTML());
-        elementClone.setClassName(element.getClassName());
-        CmsDragContainerElement dragElement = new CmsDragContainerElement(
-            elementClone,
-            dragParent,
-            clientId,
-            null,
-            null);
-        registerMouseHandler(dragElement);
-        return dragElement;
-    }
-
-    /**
-     * Creates a place-holder for the draggable element.<p>
-     * 
-     * @param element the element
-     * 
-     * @return the place-holder widget
-     */
-    protected Widget createPlaceholder(I_CmsDragElement element) {
-
-        Widget result = new HTML(element.getElement().getInnerHTML());
-        result.addStyleName(element.getElement().getClassName()
-            + " "
-            + I_CmsLayoutBundle.INSTANCE.dragdropCss().dragPlaceholder());
-
-        Element overlay = DOM.createDiv();
-        overlay.addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().placeholderOverlay());
-        result.getElement().appendChild(overlay);
-
-        return result;
-    }
-
-    /**
-     * Adjust the style properties of the draggable element and inserts the place-holder into the target.<p>
-     * 
-     * @param elementInfo the drag info object
-     * @param target the drag target
-     * @param setHidden if <code>true</code> the element and it's place-holder will get hidden
-     */
-    protected void prepareElement(DragInfo elementInfo, I_CmsDragTargetContainer target, boolean setHidden) {
-
-        target.insert(elementInfo.getPlaceholder(), target.getWidgetIndex((Widget)elementInfo.getDraggable()));
-        elementInfo.getDraggable().prepareDrag();
-        if (setHidden) {
-            elementInfo.getPlaceholder().setVisible(false);
-            elementInfo.getDraggable().setVisible(false);
         }
     }
 

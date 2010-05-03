@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsMenuDragHandler.java,v $
- * Date   : $Date: 2010/04/30 08:59:04 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/05/03 07:54:08 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -83,6 +83,27 @@ public class CmsMenuDragHandler extends A_CmsDragHandler<CmsDragMenuElement, Cms
     public CmsDragMenuElement getDragElement() {
 
         return m_dragElement;
+    }
+
+    /**
+     * Creates a place-holder for the draggable element.<p>
+     * 
+     * @param element the element
+     * 
+     * @return the place-holder widget
+     */
+    protected Widget createPlaceholder(I_CmsDragElement element) {
+
+        Widget result = new HTML(element.getElement().getInnerHTML());
+        result.addStyleName(element.getElement().getClassName()
+            + " "
+            + I_CmsLayoutBundle.INSTANCE.dragdropCss().dragPlaceholder());
+
+        Element overlay = DOM.createDiv();
+        overlay.addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().placeholderOverlay());
+        result.getElement().appendChild(overlay);
+
+        return result;
     }
 
     /**
@@ -164,26 +185,5 @@ public class CmsMenuDragHandler extends A_CmsDragHandler<CmsDragMenuElement, Cms
     protected void targetSortChangeAction() {
 
         // nothing to do here
-    }
-
-    /**
-     * Creates a place-holder for the draggable element.<p>
-     * 
-     * @param element the element
-     * 
-     * @return the place-holder widget
-     */
-    Widget createPlaceholder(I_CmsDragElement element) {
-
-        Widget result = new HTML(element.getElement().getInnerHTML());
-        result.addStyleName(element.getElement().getClassName()
-            + " "
-            + I_CmsLayoutBundle.INSTANCE.dragdropCss().dragPlaceholder());
-
-        Element overlay = DOM.createDiv();
-        overlay.addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().placeholderOverlay());
-        result.getElement().appendChild(overlay);
-
-        return result;
     }
 }
