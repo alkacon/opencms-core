@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/Attic/CmsGalleryActionElement.java,v $
- * Date   : $Date: 2010/04/21 15:43:31 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/05/03 14:33:05 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,13 +31,7 @@
 
 package org.opencms.ade.galleries;
 
-import org.opencms.gwt.CmsCoreProvider;
-import org.opencms.gwt.shared.I_CmsCoreProviderConstants;
-import org.opencms.i18n.CmsLocaleManager;
-import org.opencms.json.JSONObject;
-import org.opencms.jsp.CmsJspActionElement;
-
-import java.util.Locale;
+import org.opencms.gwt.CmsGwtActionElement;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -50,14 +44,11 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Polina Smagina 
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
-public class CmsGalleryActionElement extends CmsJspActionElement {
-
-    /** The current workplace locale. */
-    private Locale m_wpLocale;
+public class CmsGalleryActionElement extends CmsGwtActionElement {
 
     /**
      * Constructor.<p>
@@ -69,18 +60,17 @@ public class CmsGalleryActionElement extends CmsJspActionElement {
     public CmsGalleryActionElement(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         super(context, req, res);
-        JSONObject coreData = CmsCoreProvider.get().getData(getRequest());
-        m_wpLocale = CmsLocaleManager.getLocale(coreData.optString(I_CmsCoreProviderConstants.KEY_WP_LOCALE));
     }
 
     /**
      * Returns the needed server data for client-side usage.<p> 
      *
      * @return the needed server data for client-side usage
+     * 
+     * @throws Exception 
      */
-    public String getData() {
+    public String getData() throws Exception {
 
-        //return CmsGalleryProvider.get().export(getRequest());
         return CmsGalleryProvider.get().exportAll(getRequest());
     }
 
@@ -91,6 +81,6 @@ public class CmsGalleryActionElement extends CmsJspActionElement {
      */
     public String getTitle() {
 
-        return Messages.get().getBundle(m_wpLocale).key(Messages.GUI_GALLERIES_TITLE_0);
+        return Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_GALLERIES_TITLE_0);
     }
 }

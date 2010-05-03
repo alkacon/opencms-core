@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsSitemapService.java,v $
- * Date   : $Date: 2010/04/26 13:42:48 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/05/03 14:33:05 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,14 +41,17 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.history.CmsHistoryResourceHandler;
 import org.opencms.file.types.CmsResourceTypeJsp;
+import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
+import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.CmsGwtService;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
-import org.opencms.xml.content.CmsXmlContentPropertyHelper;
+import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.xml.sitemap.CmsSitemapEntry;
 import org.opencms.xml.sitemap.CmsXmlSitemap;
 import org.opencms.xml.sitemap.CmsXmlSitemapFactory;
@@ -59,12 +62,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * Handles all RPC services related to the sitemap.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 8.0.0
  * 
@@ -79,6 +84,21 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
 
     /** Session attribute name constant. */
     private static final String SESSION_ATTR_ADE_SITEMAP_RECENT_LIST_CACHE = "__OCMS_ADE_SITEMAP_RECENT_LIST_CACHE__";
+
+    /**
+     * Returns a new configured service instance.<p>
+     * 
+     * @param request the current request
+     * 
+     * @return a new service instance
+     */
+    public static CmsSitemapService newInstance(HttpServletRequest request) {
+
+        CmsSitemapService srv = new CmsSitemapService();
+        srv.setCms(CmsFlexController.getCmsObject(request));
+        srv.setRequest(request);
+        return srv;
+    }
 
     /**
      * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#createSubsitemap(java.lang.String, java.lang.String)
@@ -157,52 +177,6 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
     }
 
     /**
-     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#getInitData(java.lang.String)
-     */
-    public CmsSitemapData getInitData(String sitemapUri) throws CmsRpcException {
-
-        CmsSitemapData result = null;
-        CmsObject cms = getCmsObject();
-        try {
-            CmsResource sitemap = cms.readResource(sitemapUri);
-            result = new CmsSitemapData(
-                getDefaultTemplate(sitemapUri),
-                getTemplates(),
-                CmsXmlContentPropertyHelper.getPropertyInfo(cms, sitemap),
-                getCachedRecentList());
-        } catch (Throwable e) {
-            error(e);
-        }
-        return result;
-    }
-
-    /**
-     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#getRoot(java.lang.String)
-     */
-    public CmsClientSitemapEntry getRoot(String sitemapUri) throws CmsRpcException {
-
-        CmsObject cms = getCmsObject();
-        CmsClientSitemapEntry root = null;
-        try {
-            // TODO: what's about historical requests?
-            CmsResource sitemap = cms.readResource(sitemapUri);
-            CmsXmlSitemap xml = CmsXmlSitemapFactory.unmarshal(cms, sitemap);
-            String sitePath = cms.getRequestContext().removeSiteRoot(
-                xml.getSitemap(cms, Locale.ENGLISH).getEntryPoint());
-            root = getEntry(sitePath);
-            String name = CmsResource.getName(sitePath);
-            if (name.endsWith("/")) {
-                name = name.substring(0, name.length() - 1);
-            }
-            root.setName(name);
-            root.setChildren(getChildren(root.getSitePath(), 2));
-        } catch (Throwable e) {
-            error(e);
-        }
-        return root;
-    }
-
-    /**
      * Returns the available templates.<p>
      * 
      * @return the available templates
@@ -250,6 +224,28 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
     public void mergeSubsitemap(String sitemapUri, String path) {
 
         // TODO: 
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#prefetch(java.lang.String)
+     */
+    public CmsSitemapData prefetch(String sitemapUri) throws CmsRpcException {
+
+        CmsSitemapData result = null;
+        CmsObject cms = getCmsObject();
+        try {
+            CmsResource sitemap = cms.readResource(sitemapUri);
+            result = new CmsSitemapData(getDefaultTemplate(sitemapUri), getTemplates(), null, //CmsXmlContentPropertyHelper.getPropertyInfo(cms, sitemap),
+                getCachedRecentList(),
+                getNoEditReason(cms, getRequest()),
+                isDisplayToolbar(getRequest()),
+                OpenCms.getResourceManager().getResourceType(CmsResourceTypeXmlContainerPage.getStaticTypeName()).getTypeId(),
+                getParentSitemap(cms, sitemap),
+                getRoot(sitemap));
+        } catch (Throwable e) {
+            error(e);
+        }
+        return result;
     }
 
     /**
@@ -306,6 +302,87 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
     }
 
     /**
+     * Returns the reason why you are not allowed to edit the current resource.<p>
+     * 
+     * @param cms the current cms object
+     * @param request the current request to get the default locale from 
+     * 
+     * @return an empty string if editable, the reason if not
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    private String getNoEditReason(CmsObject cms, HttpServletRequest request) throws CmsException {
+
+        CmsResourceUtil resUtil = new CmsResourceUtil(cms, getResource(cms, request));
+        return resUtil.getNoEditReason(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms));
+    }
+
+    /**
+     * Returns the parent sitemap.<p>
+     * 
+     * @param cms the current cms context
+     * @param sitemap the sitemap resource
+     * 
+     * @return the parent sitemap path or <code>null</code>
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    private String getParentSitemap(CmsObject cms, CmsResource sitemap) throws CmsException {
+
+        CmsResource parentSitemapRes = OpenCms.getSitemapManager().getParentSitemap(cms, sitemap);
+        String parentSitemap = null;
+        if (parentSitemapRes != null) {
+            parentSitemap = cms.getSitePath(parentSitemapRes);
+        }
+        return parentSitemap;
+    }
+
+    /**
+     * Returns the current resource, taken into account historical requests.<p>
+     * 
+     * @param cms the current cms object
+     * @param request the current request to get the default locale from 
+     * 
+     * @return the current resource
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    private CmsResource getResource(CmsObject cms, HttpServletRequest request) throws CmsException {
+
+        CmsResource resource = (CmsResource)CmsHistoryResourceHandler.getHistoryResource(request);
+        if (resource == null) {
+            resource = cms.readResource(cms.getRequestContext().getUri());
+        }
+        return resource;
+    }
+
+    /**
+     * Returns the root sitemap entry for the given sitemap.<p>
+     * 
+     * @param sitemap the sitemap resource
+     *  
+     * @return root sitemap entry
+     * 
+     * @throws Exception if something goes wrong 
+     */
+    private CmsClientSitemapEntry getRoot(CmsResource sitemap) throws Exception {
+
+        CmsObject cms = getCmsObject();
+
+        // TODO: what's about historical requests?
+        CmsXmlSitemap xml = CmsXmlSitemapFactory.unmarshal(cms, sitemap);
+        String sitePath = cms.getRequestContext().removeSiteRoot(xml.getSitemap(cms, Locale.ENGLISH).getEntryPoint());
+        CmsClientSitemapEntry root = getEntry(sitePath);
+        String name = CmsResource.getName(sitePath);
+        if (name.endsWith("/")) {
+            name = name.substring(0, name.length() - 1);
+        }
+        root.setName(name);
+        root.setChildren(getChildren(root.getSitePath(), 2));
+        return root;
+    }
+
+    /**
      * Returns a bean representing the given template resource.<p>
      * 
      * @param cms the cms context to use for VFS operations
@@ -328,6 +405,24 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
             titleProp.getValue(),
             descProp.getValue(),
             imageProp.getValue());
+    }
+
+    /**
+     * Checks if the toolbar should be displayed.<p>
+     * 
+     * @param request the current request to get the default locale from 
+     * 
+     * @return <code>true</code> if the toolbar should be displayed
+     */
+    private boolean isDisplayToolbar(HttpServletRequest request) {
+
+        // display the toolbar by default
+        boolean displayToolbar = true;
+        if (CmsHistoryResourceHandler.isHistoryRequest(request)) {
+            // we do not want to display the toolbar in case of an historical request
+            displayToolbar = false;
+        }
+        return displayToolbar;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsSitemapActionElement.java,v $
- * Date   : $Date: 2010/04/12 14:00:39 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/05/03 14:33:05 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,14 +31,11 @@
 
 package org.opencms.ade.sitemap;
 
-import org.opencms.ade.sitemap.shared.I_CmsSitemapProviderConstants;
-import org.opencms.gwt.CmsCoreProvider;
-import org.opencms.gwt.shared.I_CmsCoreProviderConstants;
-import org.opencms.i18n.CmsLocaleManager;
-import org.opencms.json.JSONObject;
-import org.opencms.jsp.CmsJspActionElement;
-
-import java.util.Locale;
+import org.opencms.ade.publish.CmsPublishActionElement;
+import org.opencms.ade.sitemap.shared.CmsSitemapData;
+import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService;
+import org.opencms.gwt.CmsGwtActionElement;
+import org.opencms.gwt.CmsRpcException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -47,21 +44,18 @@ import javax.servlet.jsp.PageContext;
 /**
  * Sitemap action used to generate the sitemap editor.<p>
  * 
- * see jsp file <tt>/system/modules/org.opencms.ade.sitemap/sitemap.jsp</tt>.<p>
+ * See jsp file <tt>/system/modules/org.opencms.ade.sitemap/sitemap.jsp</tt>.<p>
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
-public class CmsSitemapActionElement extends CmsJspActionElement {
+public class CmsSitemapActionElement extends CmsGwtActionElement {
 
-    /** The current sitemap URI. */
-    private String m_uri;
-
-    /** The current workplace locale. */
-    private Locale m_wpLocale;
+    /** The current sitemap data. */
+    private CmsSitemapData m_sitemapData;
 
     /**
      * Constructor.<p>
@@ -73,10 +67,6 @@ public class CmsSitemapActionElement extends CmsJspActionElement {
     public CmsSitemapActionElement(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         super(context, req, res);
-        JSONObject coreData = CmsCoreProvider.get().getData(getRequest());
-        m_wpLocale = CmsLocaleManager.getLocale(coreData.optString(I_CmsCoreProviderConstants.KEY_WP_LOCALE));
-        JSONObject sitemapData = CmsSitemapProvider.get().getData(getRequest());
-        m_uri = sitemapData.optString(I_CmsSitemapProviderConstants.KEY_URI_SITEMAP);
     }
 
     /**
@@ -84,9 +74,45 @@ public class CmsSitemapActionElement extends CmsJspActionElement {
      *
      * @return the needed server data for client-side usage
      */
-    public String getData() {
+    public CmsSitemapData getSitemapData() {
 
-        return CmsSitemapProvider.get().exportAll(getRequest());
+        if (m_sitemapData == null) {
+            try {
+                m_sitemapData = CmsSitemapService.newInstance(getRequest()).prefetch(getCoreData().getUri());
+            } catch (CmsRpcException e) {
+                // ignore, should never happen, and it is already logged
+            }
+        }
+        return m_sitemapData;
+    }
+
+    /**
+     * @see org.opencms.gwt.CmsGwtActionElement#export()
+     */
+    @Override
+    public String export() throws Exception {
+
+        StringBuffer sb = new StringBuffer();
+        String prefetchedData = serialize(
+            I_CmsSitemapService.class.getMethod("prefetch", String.class),
+            getSitemapData());
+        sb.append(CmsSitemapData.DICT_NAME).append("='").append(prefetchedData).append("';");
+        sb.append(ClientMessages.get().export(getRequest()));
+        return sb.toString();
+    }
+
+    /**
+     * @see org.opencms.gwt.CmsGwtActionElement#exportAll()
+     */
+    @Override
+    public String exportAll() throws Exception {
+
+        StringBuffer sb = new StringBuffer();
+        sb.append(super.export());
+        sb.append(export());
+        sb.append(new CmsPublishActionElement(getJspContext(), getRequest(), getResponse()).export());
+        //        sb.append(new CmsGalleryActionElement(getJspContext(), getRequest(), getResponse()).export());
+        return sb.toString();
     }
 
     /**
@@ -96,6 +122,6 @@ public class CmsSitemapActionElement extends CmsJspActionElement {
      */
     public String getTitle() {
 
-        return Messages.get().getBundle(m_wpLocale).key(Messages.GUI_EDITOR_TITLE_1, m_uri);
+        return Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_EDITOR_TITLE_1, getCoreData().getUri());
     }
 }

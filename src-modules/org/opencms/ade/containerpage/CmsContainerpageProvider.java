@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsContainerpageProvider.java,v $
- * Date   : $Date: 2010/05/03 07:53:47 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/05/03 14:33:06 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,12 +32,13 @@
 package org.opencms.ade.containerpage;
 
 import org.opencms.ade.containerpage.shared.I_CmsContainerpageProviderConstants;
-import org.opencms.ade.sitemap.CmsSitemapProvider;
+import org.opencms.ade.publish.CmsPublishActionElement;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.flex.CmsFlexController;
+import org.opencms.gwt.CmsGwtActionElement;
 import org.opencms.gwt.I_CmsCoreProvider;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
@@ -60,7 +61,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -76,7 +77,7 @@ public final class CmsContainerpageProvider implements I_CmsContainerpageProvide
     private static CmsContainerpageProvider INSTANCE;
 
     /** Static reference to the log. */
-    private static final Log LOG = CmsLog.getLog(CmsSitemapProvider.class);
+    private static final Log LOG = CmsLog.getLog(CmsContainerpageProvider.class);
 
     /** The session cache. */
     private CmsADESessionCache m_sessionCache;
@@ -117,11 +118,11 @@ public final class CmsContainerpageProvider implements I_CmsContainerpageProvide
     /**
      * @see org.opencms.gwt.I_CmsCoreProvider#exportAll(javax.servlet.http.HttpServletRequest)
      */
-    public String exportAll(HttpServletRequest request) {
+    public String exportAll(HttpServletRequest request) throws Exception {
 
         StringBuffer sb = new StringBuffer();
-        sb.append(org.opencms.gwt.CmsCoreProvider.get().export(request));
-        sb.append(org.opencms.ade.publish.CmsPublishProvider.get().export(request));
+        sb.append(new CmsGwtActionElement(null, request, null).export());
+        sb.append(new CmsPublishActionElement(null, request, null).export());
         sb.append(org.opencms.ade.galleries.CmsGalleryProvider.get().export(request));
         sb.append(export(request));
         return sb.toString();

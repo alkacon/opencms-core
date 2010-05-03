@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/Attic/CmsPublishActionElement.java,v $
- * Date   : $Date: 2010/04/12 14:00:39 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/05/03 14:33:06 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,7 @@
 
 package org.opencms.ade.publish;
 
-import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.gwt.CmsGwtActionElement;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -40,11 +40,11 @@ import javax.servlet.jsp.PageContext;
 /**
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
-public class CmsPublishActionElement extends CmsJspActionElement {
+public class CmsPublishActionElement extends CmsGwtActionElement {
 
     /**
      * Constructor.<p>
@@ -59,12 +59,26 @@ public class CmsPublishActionElement extends CmsJspActionElement {
     }
 
     /**
-     * Returns the needed server data for client-side usage.<p> 
-     *
-     * @return the needed server data for client-side usage
+     * @see org.opencms.gwt.CmsGwtActionElement#export()
      */
-    public String getData() {
+    @Override
+    public String export() throws Exception {
 
-        return CmsPublishProvider.get().exportAll(getRequest());
+        StringBuffer sb = new StringBuffer();
+        sb.append(ClientMessages.get().export(getRequest()));
+        return sb.toString();
     }
+
+    /**
+     * @see org.opencms.gwt.CmsGwtActionElement#exportAll()
+     */
+    @Override
+    public String exportAll() throws Exception {
+
+        StringBuffer sb = new StringBuffer();
+        sb.append(super.export());
+        sb.append(export());
+        return sb.toString();
+    }
+
 }

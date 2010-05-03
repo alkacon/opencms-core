@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/Attic/CmsCoreProvider.java,v $
- * Date   : $Date: 2010/04/19 06:39:10 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/05/03 14:33:06 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,25 +31,27 @@
 
 package org.opencms.gwt.client;
 
-import org.opencms.gwt.shared.I_CmsCoreProviderConstants;
+import org.opencms.gwt.client.rpc.CmsLog;
+import org.opencms.gwt.shared.CmsCoreData;
 import org.opencms.gwt.shared.rpc.I_CmsCoreService;
 import org.opencms.gwt.shared.rpc.I_CmsCoreServiceAsync;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.user.client.rpc.SerializationException;
+import com.google.gwt.user.client.rpc.SerializationStreamFactory;
 
 /**
- * Client side implementation for {@link org.opencms.gwt.CmsCoreProvider}.<p>
+ * Client side core data provider.<p>
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  * 
- * @see org.opencms.gwt.CmsCoreProvider
+ * @see org.opencms.gwt.CmsGwtActionElement
  */
-public final class CmsCoreProvider extends JavaScriptObject implements I_CmsCoreProviderConstants {
+public final class CmsCoreProvider extends CmsCoreData {
 
     /** Path to the editor. */
     public static final String VFS_PATH_EDITOR = "/system/workplace/editors/editor.jsp";
@@ -68,7 +70,7 @@ public final class CmsCoreProvider extends JavaScriptObject implements I_CmsCore
      */
     protected CmsCoreProvider() {
 
-        // empty
+        super(deserialize());
     }
 
     /**
@@ -79,7 +81,7 @@ public final class CmsCoreProvider extends JavaScriptObject implements I_CmsCore
     public static CmsCoreProvider get() {
 
         if (INSTANCE == null) {
-            INSTANCE = init();
+            INSTANCE = new CmsCoreProvider();
         }
         return INSTANCE;
     }
@@ -98,22 +100,28 @@ public final class CmsCoreProvider extends JavaScriptObject implements I_CmsCore
     }
 
     /**
-     * Returns the json object name.<p>
+     * Deserializes the prefetched RPC data.<p>
      * 
-     * @return the json object name
+     * @return the prefetched RPC data
      */
-    // only used in native code
-    @SuppressWarnings("unused")
-    private static String getDictName() {
+    private static CmsCoreData deserialize() {
 
-        return DICT_NAME.replace('.', '_');
+        String data = getPrefetchedData();
+        SerializationStreamFactory streamFactory = (SerializationStreamFactory)getCoreService();
+        try {
+            return (CmsCoreData)streamFactory.createStreamReader(data).readObject();
+        } catch (SerializationException e) {
+            // should never happen
+            CmsLog.log(e.getLocalizedMessage());
+        }
+        return null;
     }
 
     /**
-     * Initializes the data from the host page.<p>
+     * Retrieves the prefetched data from the host page.<p>
      */
-    private static native CmsCoreProvider init() /*-{
-        return $wnd[@org.opencms.gwt.client.CmsCoreProvider::getDictName()()];
+    private static native String getPrefetchedData() /*-{
+        return $wnd[@org.opencms.gwt.shared.CmsCoreData::DICT_NAME];
     }-*/;
 
     /**
@@ -162,51 +170,6 @@ public final class CmsCoreProvider extends JavaScriptObject implements I_CmsCore
             return siteRoot;
         }
     }
-
-    /**
-     * Returns the current OpenCms context.<p>
-     *
-     * @return the current OpenCms context
-     */
-    public native String getContext() /*-{
-        return this[@org.opencms.gwt.shared.I_CmsCoreProviderConstants::KEY_CONTEXT];
-    }-*/;
-
-    /**
-     * Returns the current locale.<p>
-     *
-     * @return the current locale
-     */
-    public native String getLocale() /*-{
-        return this[@org.opencms.gwt.shared.I_CmsCoreProviderConstants::KEY_LOCALE];
-    }-*/;
-
-    /**
-     * Returns the current site root.<p>
-     *
-     * @return the current site root
-     */
-    public native String getSiteRoot() /*-{
-        return this[@org.opencms.gwt.shared.I_CmsCoreProviderConstants::KEY_SITE_ROOT];
-    }-*/;
-
-    /**
-     * Returns the current uri.<p>
-     *
-     * @return the current uri
-     */
-    public native String getUri() /*-{
-        return this[@org.opencms.gwt.shared.I_CmsCoreProviderConstants::KEY_URI];
-    }-*/;
-
-    /**
-     * Returns the current workplace locale.<p>
-     *
-     * @return the current workplace locale
-     */
-    public native String getWpLocale() /*-{
-        return this[@org.opencms.gwt.shared.I_CmsCoreProviderConstants::KEY_WP_LOCALE];
-    }-*/;
 
     /**
      * Returns an absolute link given a site path.<p>

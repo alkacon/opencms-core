@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishProvider.java,v $
- * Date   : $Date: 2010/04/27 07:07:19 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/05/03 14:33:05 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,29 +31,21 @@
 
 package org.opencms.ade.publish.client;
 
-import org.opencms.ade.publish.shared.I_CmsPublishProviderConstants;
 import org.opencms.ade.publish.shared.rpc.I_CmsPublishService;
 import org.opencms.ade.publish.shared.rpc.I_CmsPublishServiceAsync;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.JavaScriptObject;
 
 /**
  * The provider class for the publish module.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
-public final class CmsPublishProvider extends JavaScriptObject implements I_CmsPublishProviderConstants {
-
-    /** Path to system folder. */
-    public static final String VFS_PATH_SYSTEM = "/system/";
-
-    /** Internal instance. */
-    private static CmsPublishProvider INSTANCE;
+public final class CmsPublishProvider {
 
     /** The publish service instance. */
     private static I_CmsPublishServiceAsync SERVICE;
@@ -64,19 +56,6 @@ public final class CmsPublishProvider extends JavaScriptObject implements I_CmsP
     protected CmsPublishProvider() {
 
         // empty
-    }
-
-    /**
-     * Returns the client message instance.<p>
-     * 
-     * @return the client message instance
-     */
-    public static CmsPublishProvider get() {
-
-        if (INSTANCE == null) {
-            INSTANCE = init();
-        }
-        return INSTANCE;
     }
 
     /**
@@ -91,34 +70,4 @@ public final class CmsPublishProvider extends JavaScriptObject implements I_CmsP
         }
         return SERVICE;
     }
-
-    /**
-     * Returns the json object name.<p>
-     * 
-     * @return the json object name
-     */
-    // only used in native code
-    @SuppressWarnings("unused")
-    private static String getDictName() {
-
-        return DICT_NAME.replace('.', '_');
-    }
-
-    /**
-     * Initializes the data from the host page.<p>
-     * 
-     * @return the client publish provider instance 
-     */
-    private static native CmsPublishProvider init() /*-{
-        return $wnd[@org.opencms.ade.publish.client.CmsPublishProvider::getDictName()()];
-    }-*/;
-
-    /**
-     * Returns true if the current user can publish resources even if it leads to broken relations.<p>
-     *
-     * @return true if the user can publish resources if it leads to broken relations 
-     */
-    public native boolean canPublishBrokenRelations() /*-{
-        return this[@org.opencms.ade.publish.shared.I_CmsPublishProviderConstants::KEY_CAN_PUBLISH_BROKEN_RELATIONS];
-    }-*/;
 }

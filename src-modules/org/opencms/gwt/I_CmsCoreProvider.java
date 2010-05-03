@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/I_CmsCoreProvider.java,v $
- * Date   : $Date: 2010/04/19 06:39:10 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/05/03 14:33:05 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  * 
@@ -54,8 +54,10 @@ public interface I_CmsCoreProvider {
      * @param request the current request 
      * 
      * @return the JSON code
+     * 
+     * @throws Exception 
      */
-    String export(HttpServletRequest request);
+    String export(HttpServletRequest request) throws Exception;
 
     /**
      * Returns the JSON code for the provider with dependencies.<p>
@@ -63,8 +65,10 @@ public interface I_CmsCoreProvider {
      * @param request the current request 
      * 
      * @return the JSON code
+     * 
+     * @throws Exception 
      */
-    String exportAll(HttpServletRequest request);
+    String exportAll(HttpServletRequest request) throws Exception;
 
     /**
      * Returns the provided json data.<p>

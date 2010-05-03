@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsSitemapData.java,v $
- * Date   : $Date: 2010/04/22 14:32:08 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/05/03 14:33:05 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,24 +39,42 @@ import java.util.Map;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
- * Sitemap initialization data.<p>
+ * Sitemap initialization data bean for prefetching.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0
  */
 public class CmsSitemapData implements IsSerializable {
 
+    /** Name of the used js variable. */
+    public static final String DICT_NAME = "org_opencms_ade_sitemap";
+
+    /** The type of the container page resource. */
+    private int m_cntPageType;
+
     /** The default template. */
     private CmsSitemapTemplate m_defaultTemplate;
+
+    /** Flag to control the display of the toolbar. */
+    private boolean m_displayToolbar;
+
+    /** The reason why the current sitemap is not editable. */
+    private String m_noEditReason;
+
+    /** The path to the parent sitemap or <code>null</code>. */
+    private String m_parentSitemap;
 
     /** The sitemap properties. */
     private Map<String, CmsXmlContentProperty> m_properties;
 
     /** The recent list. */
     private List<CmsClientSitemapEntry> m_recentList;
+
+    /** The sitemap root. */
+    private CmsClientSitemapEntry m_root;
 
     /** The available templates. */
     private Map<String, CmsSitemapTemplate> m_templates;
@@ -70,23 +88,67 @@ public class CmsSitemapData implements IsSerializable {
     }
 
     /**
+     * Clone constructor.<p>
+     * 
+     * @param clone the instance to clone 
+     */
+    public CmsSitemapData(CmsSitemapData clone) {
+
+        this(
+            clone.getDefaultTemplate(),
+            clone.getTemplates(),
+            clone.getProperties(),
+            clone.getRecentList(),
+            clone.getNoEditReason(),
+            clone.isDisplayToolbar(),
+            clone.getCntPageType(),
+            clone.getParentSitemap(),
+            clone.getRoot());
+    }
+
+    /**
      * Constructor.<p>
      * 
      * @param defaultTemplate the default template
      * @param templates the available templates
      * @param properties the properties
      * @param recentList the recent list
+     * @param noEditReason the reason why the current sitemap is not editable
+     * @param displayToolbar the flag to control the display of the toolbar
+     * @param cntPageType the type of the container page resource
+     * @param parentSitemap the path to the parent sitemap or <code>null</code>
+     * @param root the sitemap root
      */
     public CmsSitemapData(
         CmsSitemapTemplate defaultTemplate,
         Map<String, CmsSitemapTemplate> templates,
         Map<String, CmsXmlContentProperty> properties,
-        List<CmsClientSitemapEntry> recentList) {
+        List<CmsClientSitemapEntry> recentList,
+        String noEditReason,
+        boolean displayToolbar,
+        int cntPageType,
+        String parentSitemap,
+        CmsClientSitemapEntry root) {
 
         m_defaultTemplate = defaultTemplate;
         m_templates = templates;
         m_properties = properties;
         m_recentList = recentList;
+        m_noEditReason = noEditReason;
+        m_displayToolbar = displayToolbar;
+        m_cntPageType = cntPageType;
+        m_parentSitemap = parentSitemap;
+        m_root = root;
+    }
+
+    /**
+     * Returns the type of the container page resource.<p>
+     *
+     * @return the type of the container page resource
+     */
+    public int getCntPageType() {
+
+        return m_cntPageType;
     }
 
     /**
@@ -97,6 +159,26 @@ public class CmsSitemapData implements IsSerializable {
     public CmsSitemapTemplate getDefaultTemplate() {
 
         return m_defaultTemplate;
+    }
+
+    /**
+     * Returns the reason why the current sitemap is not editable.<p>
+     *
+     * @return the reason why the current sitemap is not editable
+     */
+    public String getNoEditReason() {
+
+        return m_noEditReason;
+    }
+
+    /**
+     * Returns the path to the parent sitemap or <code>null</code>.<p>
+     *
+     * @return the path to the parent sitemap or <code>null</code>
+     */
+    public String getParentSitemap() {
+
+        return m_parentSitemap;
     }
 
     /**
@@ -120,6 +202,16 @@ public class CmsSitemapData implements IsSerializable {
     }
 
     /**
+     * Returns the sitemap root.<p>
+     *
+     * @return the sitemap root
+     */
+    public CmsClientSitemapEntry getRoot() {
+
+        return m_root;
+    }
+
+    /**
      * Returns the available templates.<p>
      *
      * @return the available templates
@@ -127,6 +219,16 @@ public class CmsSitemapData implements IsSerializable {
     public Map<String, CmsSitemapTemplate> getTemplates() {
 
         return m_templates;
+    }
+
+    /**
+     * Checks if to display the toolbar.<p>
+     *
+     * @return <code>true</code> if to display the toolbar
+     */
+    public boolean isDisplayToolbar() {
+
+        return m_displayToolbar;
     }
 
 }

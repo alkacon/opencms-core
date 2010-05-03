@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsContainerpageActionElement.java,v $
- * Date   : $Date: 2010/04/12 15:00:37 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/05/03 14:33:06 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -64,8 +64,10 @@ public class CmsContainerpageActionElement extends CmsJspActionElement {
      * Returns the needed server data for client-side usage.<p> 
      *
      * @return the needed server data for client-side usage
+     * 
+     * @throws Exception 
      */
-    public String getData() {
+    public String getData() throws Exception {
 
         return CmsContainerpageProvider.get().exportAll(getRequest());
     }

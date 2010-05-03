@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/shared/Attic/CmsPublishData.java,v $
- * Date   : $Date: 2010/04/13 09:17:28 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/05/03 14:33:06 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,11 +40,14 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0
  */
 public class CmsPublishData implements IsSerializable {
+
+    /** Flag to indicate if the current user can publish broken relations. */
+    private boolean m_canPublishBrokenRelations;
 
     /** The publish groups. */
     private List<CmsPublishGroup> m_groups;
@@ -61,12 +64,18 @@ public class CmsPublishData implements IsSerializable {
      * @param options the publish options 
      * @param projects the map of projects 
      * @param groups the publish groups
+     * @param canPublishBrokenRelations the flag to indicate if the current user can publish broken relations
      */
-    public CmsPublishData(CmsPublishOptions options, List<CmsProjectBean> projects, List<CmsPublishGroup> groups) {
+    public CmsPublishData(
+        CmsPublishOptions options,
+        List<CmsProjectBean> projects,
+        List<CmsPublishGroup> groups,
+        boolean canPublishBrokenRelations) {
 
         m_options = options;
         m_projects = projects;
         m_groups = groups;
+        m_canPublishBrokenRelations = canPublishBrokenRelations;
     }
 
     /**
@@ -105,5 +114,15 @@ public class CmsPublishData implements IsSerializable {
     public List<CmsProjectBean> getProjects() {
 
         return m_projects;
+    }
+
+    /**
+     * Checks if the current user can publish broken relations.<p>
+     *
+     * @return <code>true</code> if the current user can publish broken relations
+     */
+    public boolean isCanPublishBrokenRelations() {
+
+        return m_canPublishBrokenRelations;
     }
 }

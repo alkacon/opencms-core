@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishDialog.java,v $
- * Date   : $Date: 2010/04/28 13:03:39 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/05/03 14:33:05 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,14 +31,13 @@
 
 package org.opencms.ade.publish.client;
 
-import org.opencms.ade.publish.shared.CmsProjectBean;
 import org.opencms.ade.publish.shared.CmsPublishData;
 import org.opencms.ade.publish.shared.CmsPublishGroup;
 import org.opencms.ade.publish.shared.CmsPublishOptions;
 import org.opencms.ade.publish.shared.CmsPublishResource;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
-import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsPopupDialog;
+import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
@@ -58,7 +57,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 8.0.0
  * 
@@ -160,9 +159,7 @@ public class CmsPublishDialog extends CmsPopupDialog {
     protected CmsPublishSelectPanel m_publishSelectPanel;
 
     /** The panel for showing the links that would be broken by publishing. */
-    private CmsBrokenLinksPanel m_brokenLinksPanel = new CmsBrokenLinksPanel(
-        this,
-        CmsPublishProvider.get().canPublishBrokenRelations());
+    private CmsBrokenLinksPanel m_brokenLinksPanel;
 
     /** The root panel of this dialog which contains both the selection panel and the panel for displaying broken links. */
     private DeckPanel m_panel = new DeckPanel();
@@ -170,10 +167,9 @@ public class CmsPublishDialog extends CmsPopupDialog {
     /**
      * Constructs a new publish dialog.<p>
      * 
-     * @param projects the projects which should be selectable in the publish dialog
-     * @param options the initial publish list options to use 
+     * @param initData the initial data 
      */
-    public CmsPublishDialog(List<CmsProjectBean> projects, CmsPublishOptions options) {
+    public CmsPublishDialog(CmsPublishData initData) {
 
         super(Messages.get().key(Messages.GUI_PUBLISH_DIALOG_TITLE_0), new DeckPanel());
         initCss();
@@ -182,13 +178,15 @@ public class CmsPublishDialog extends CmsPopupDialog {
         setModal(true);
         setWidth("800px");
         m_panel = (DeckPanel)getContent();
-        m_publishSelectPanel = new CmsPublishSelectPanel(this, projects, options);
+        m_publishSelectPanel = new CmsPublishSelectPanel(this, initData.getProjects(), initData.getOptions());
+        m_brokenLinksPanel = new CmsBrokenLinksPanel(this, initData.isCanPublishBrokenRelations());
 
         m_panel.add(m_publishSelectPanel);
         m_panel.add(m_brokenLinksPanel);
         setPanel(PANEL_SELECT);
 
         addStyleName(CSS.publishDialog());
+        onReceivePublishList(initData.getGroups());
     }
 
     /**
@@ -224,8 +222,7 @@ public class CmsPublishDialog extends CmsPopupDialog {
             @Override
             protected void onResponse(final CmsPublishData result) {
 
-                CmsPublishDialog publishDialog = new CmsPublishDialog(result.getProjects(), result.getOptions());
-                publishDialog.onReceivePublishList(result.getGroups());
+                CmsPublishDialog publishDialog = new CmsPublishDialog(result);
                 if (handler != null) {
                     publishDialog.addCloseHandler(handler);
                 }

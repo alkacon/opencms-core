@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/rpc/Attic/I_CmsSitemapService.java,v $
- * Date   : $Date: 2010/04/26 13:42:48 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/05/03 14:33:06 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 8.0.0
  * 
@@ -101,28 +101,6 @@ public interface I_CmsSitemapService extends RemoteService {
     CmsClientSitemapEntry getEntry(String root) throws CmsRpcException;
 
     /**
-     * Returns the initialization data for the given sitemap.<p>
-     * 
-     * @param sitemapUri the site relative path
-     *  
-     * @return the initialization data
-     * 
-     * @throws CmsRpcException if something goes wrong 
-     */
-    CmsSitemapData getInitData(String sitemapUri) throws CmsRpcException;
-
-    /**
-     * Returns the root sitemap entry for the given sitemap.<p>
-     * 
-     * @param sitemapUri the site relative path
-     *  
-     * @return root sitemap entry
-     * 
-     * @throws CmsRpcException if something goes wrong 
-     */
-    CmsClientSitemapEntry getRoot(String sitemapUri) throws CmsRpcException;
-
-    /**
      * Merges the given super sitemap with the sub-sitemap at the given path.<p>
      * 
      * @param sitemapUri the super sitemap URI
@@ -131,6 +109,17 @@ public interface I_CmsSitemapService extends RemoteService {
      * @throws CmsRpcException if something goes wrong 
      */
     void mergeSubsitemap(String sitemapUri, String path) throws CmsRpcException;
+
+    /**
+     * Returns the initialization data for the given sitemap.<p>
+     * 
+     * @param sitemapUri the site relative path
+     *  
+     * @return the initialization data
+     * 
+     * @throws CmsRpcException if something goes wrong 
+     */
+    CmsSitemapData prefetch(String sitemapUri) throws CmsRpcException;
 
     /**
      * Saves the changes to the given sitemap.<p>

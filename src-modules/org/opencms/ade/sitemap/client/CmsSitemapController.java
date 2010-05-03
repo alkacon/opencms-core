@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2010/04/29 14:18:25 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/05/03 14:33:06 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 
 /**
@@ -56,7 +55,7 @@ import com.google.gwt.user.client.Window;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 8.0.0
  */
@@ -65,17 +64,11 @@ public class CmsSitemapController {
     /** The list of changes. */
     protected List<I_CmsSitemapChange> m_changes;
 
-    /** The edition data. */
-    protected CmsSitemapData m_editData;
+    /** The sitemap data. */
+    protected CmsSitemapData m_data;
 
     /** The handler. */
     protected CmsSitemapControllerHandler m_handler;
-
-    /** Async loading of data needed only when editing. */
-    protected CmsRpcAction<CmsSitemapData> m_initAction;
-
-    /** The current available sitemap data. */
-    protected CmsClientSitemapEntry m_sitemap;
 
     /** The list of undone changes. */
     protected List<I_CmsSitemapChange> m_undone;
@@ -87,32 +80,7 @@ public class CmsSitemapController {
 
         m_changes = new ArrayList<I_CmsSitemapChange>();
         m_undone = new ArrayList<I_CmsSitemapChange>();
-
-        // async loading of data needed only when editing 
-        m_initAction = new CmsRpcAction<CmsSitemapData>() {
-
-            /**
-            * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
-            */
-            @Override
-            public void execute() {
-
-                // Make the call to the sitemap service
-                CmsSitemapProvider.getService().getInitData(CmsSitemapProvider.get().getUri(), this);
-            }
-
-            /**
-            * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
-            */
-            @Override
-            public void onResponse(CmsSitemapData data) {
-
-                m_editData = data;
-                m_handler.onEditDataAvailable(data);
-                stop();
-                m_initAction = null;
-            }
-        };
+        m_data = CmsSitemapProvider.get();
     }
 
     /**
@@ -129,7 +97,7 @@ public class CmsSitemapController {
             @Override
             public void execute() {
 
-                CmsSitemapProvider.getService().save(CmsSitemapProvider.get().getUri(), m_changes, this);
+                CmsSitemapProvider.getService().save(CmsCoreProvider.get().getUri(), m_changes, this);
             }
 
             /**
@@ -242,53 +210,9 @@ public class CmsSitemapController {
      *
      * @return the edit data
      */
-    public CmsSitemapData getEditData() {
+    public CmsSitemapData getSitemapData() {
 
-        if (m_initAction != null) {
-            // not ready yet, show overlay
-            m_initAction.start(0);
-        }
-        return m_editData;
-    }
-
-    /**
-     * Initializes the controller.<p>
-     * 
-     * @param command the command to execute after initialization
-     */
-    public void initialize(final Command command) {
-
-        CmsRpcAction<CmsClientSitemapEntry> getRootsAction = new CmsRpcAction<CmsClientSitemapEntry>() {
-
-            /**
-            * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
-            */
-            @Override
-            public void execute() {
-
-                // Make the call to the sitemap service
-                start(500);
-                CmsSitemapProvider.getService().getRoot(CmsSitemapProvider.get().getUri(), this);
-            }
-
-            /**
-            * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
-            */
-            @Override
-            public void onResponse(CmsClientSitemapEntry root) {
-
-                m_sitemap = root;
-                m_handler.onInit(root);
-                command.execute();
-                stop();
-            }
-        };
-        getRootsAction.execute();
-
-        if (CmsSitemapProvider.get().isEditable()) {
-            // async loading of data needed only when editing 
-            m_initAction.execute();
-        }
+        return m_data;
     }
 
     /**
@@ -310,7 +234,7 @@ public class CmsSitemapController {
      */
     public boolean isRoot(String sitePath) {
 
-        return m_sitemap.getSitePath().equals(sitePath);
+        return m_data.getRoot().getSitePath().equals(sitePath);
     }
 
     /**
@@ -413,12 +337,13 @@ public class CmsSitemapController {
      */
     protected CmsClientSitemapEntry getEntry(String entryPath) {
 
-        if (!entryPath.startsWith(m_sitemap.getSitePath())) {
+        CmsClientSitemapEntry root = m_data.getRoot();
+        if (!entryPath.startsWith(root.getSitePath())) {
             return null;
         }
-        String path = entryPath.substring(m_sitemap.getSitePath().length());
+        String path = entryPath.substring(root.getSitePath().length());
         String[] names = CmsStringUtil.splitAsArray(path, "/");
-        CmsClientSitemapEntry result = m_sitemap;
+        CmsClientSitemapEntry result = root;
         for (String name : names) {
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(name)) {
                 // in case of leading slash
@@ -457,7 +382,7 @@ public class CmsSitemapController {
             public void execute() {
 
                 start(0);
-                CmsCoreProvider.getCoreService().unlock(CmsSitemapProvider.get().getUri(), this);
+                CmsCoreProvider.getCoreService().unlock(CmsCoreProvider.get().getUri(), this);
             }
 
             /**
@@ -478,7 +403,7 @@ public class CmsSitemapController {
                 // unable to unlock
                 String text = Messages.get().key(
                     Messages.GUI_UNLOCK_NOTIFICATION_2,
-                    CmsSitemapProvider.get().getUri(),
+                    CmsCoreProvider.get().getUri(),
                     result);
                 CmsNotification.get().send(CmsNotification.Type.WARNING, text);
             }
@@ -533,7 +458,7 @@ public class CmsSitemapController {
             public void execute() {
 
                 start(0);
-                CmsCoreProvider.getCoreService().lock(CmsSitemapProvider.get().getUri(), this);
+                CmsCoreProvider.getCoreService().lock(CmsCoreProvider.get().getUri(), this);
             }
 
             /**
@@ -553,7 +478,7 @@ public class CmsSitemapController {
                 // unable to lock
                 String text = Messages.get().key(
                     Messages.GUI_LOCK_NOTIFICATION_2,
-                    CmsSitemapProvider.get().getUri(),
+                    CmsCoreProvider.get().getUri(),
                     result);
                 CmsNotification.get().send(CmsNotification.Type.WARNING, text);
             }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsCoreService.java,v $
- * Date   : $Date: 2010/05/03 10:48:41 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/05/03 14:33:05 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.gwt;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.gwt.shared.CmsCoreData;
 import org.opencms.gwt.shared.rpc.I_CmsCoreService;
@@ -44,12 +45,14 @@ import org.opencms.relations.CmsCategoryService;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * Provides general core services.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 8.0.0
  * 
@@ -61,6 +64,21 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
 
     /** Serialization uid. */
     private static final long serialVersionUID = 5915848952948986278L;
+
+    /**
+     * Returns a new configured service instance.<p>
+     * 
+     * @param request the current request
+     * 
+     * @return a new service instance
+     */
+    public static CmsCoreService newInstance(HttpServletRequest request) {
+
+        CmsCoreService srv = new CmsCoreService();
+        srv.setCms(CmsFlexController.getCmsObject(request));
+        srv.setRequest(request);
+        return srv;
+    }
 
     /**
      * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#getCategories(java.lang.String, boolean, java.util.List)

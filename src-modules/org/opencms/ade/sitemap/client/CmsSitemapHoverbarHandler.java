@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapHoverbarHandler.java,v $
- * Date   : $Date: 2010/04/26 13:39:53 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/05/03 14:33:05 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,13 +31,10 @@
 
 package org.opencms.ade.sitemap.client;
 
-import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.CmsConfirmDialog;
 import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
 
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 
 /**
@@ -45,7 +42,7 @@ import com.google.gwt.user.client.Window;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 8.0.0
  * 
@@ -105,16 +102,7 @@ public class CmsSitemapHoverbarHandler {
      */
     public void onEdit(String sitePath) {
 
-        executeWhenReady(new Command() {
-
-            /**
-             * @see com.google.gwt.user.client.Command#execute()
-             */
-            public void execute() {
-
-                // TODO: show edit dialog
-            }
-        });
+        // TODO: show edit dialog
     }
 
     /**
@@ -144,16 +132,7 @@ public class CmsSitemapHoverbarHandler {
      */
     public void onNew(String sitePath) {
 
-        executeWhenReady(new Command() {
-
-            /**
-             * @see com.google.gwt.user.client.Command#execute()
-             */
-            public void execute() {
-
-                // TODO: show new dialog
-            }
-        });
+        // TODO: show new dialog
     }
 
     /**
@@ -163,7 +142,7 @@ public class CmsSitemapHoverbarHandler {
      */
     public void onParent(final String sitePath) {
 
-        Window.Location.replace(CmsCoreProvider.get().link(CmsSitemapProvider.get().getParent()));
+        Window.Location.replace(CmsCoreProvider.get().link(CmsSitemapProvider.get().getParentSitemap()));
     }
 
     /**
@@ -174,40 +153,5 @@ public class CmsSitemapHoverbarHandler {
     public void onSubsitemap(String sitePath) {
 
         // TODO: subsitemap
-    }
-
-    /**
-     * Waits until the data is available.<p>
-     * 
-     * @param command the command to execute
-     */
-    private void executeWhenReady(final Command command) {
-
-        // check if ready
-        CmsSitemapData data = m_controller.getEditData();
-        if (data == null) {
-            Timer t = new Timer() {
-
-                /**
-                 * @see com.google.gwt.user.client.Timer#run()
-                 */
-                @Override
-                public void run() {
-
-                    if (m_controller.getEditData() == null) {
-                        // still not ready
-                        return;
-                    }
-                    // finally ready
-                    cancel();
-                    command.execute();
-                }
-            };
-            // check every 200ms again
-            t.scheduleRepeating(200);
-        } else {
-            // ready
-            command.execute();
-        }
     }
 }

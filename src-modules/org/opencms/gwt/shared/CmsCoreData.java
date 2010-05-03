@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/Attic/CmsCoreData.java,v $
- * Date   : $Date: 2010/05/03 12:09:40 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/05/03 14:33:05 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,11 +38,14 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
 public class CmsCoreData implements IsSerializable {
+
+    /** Name of the used js variable. */
+    public static final String DICT_NAME = "org_opencms_gwt";
 
     /** The OpenCms context. */
     private String m_context;
@@ -65,6 +68,16 @@ public class CmsCoreData implements IsSerializable {
     public CmsCoreData() {
 
         // empty
+    }
+
+    /**
+     * Clone constructor.<p>
+     * 
+     * @param clone the instance to clone 
+     */
+    public CmsCoreData(CmsCoreData clone) {
+
+        this(clone.getContext(), clone.getSiteRoot(), clone.getLocale(), clone.getWpLocale(), clone.getUri());
     }
 
     /**

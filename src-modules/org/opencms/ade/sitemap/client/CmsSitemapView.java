@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapView.java,v $
- * Date   : $Date: 2010/04/26 09:53:44 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/05/03 14:33:05 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,13 +34,14 @@ package org.opencms.ade.sitemap.client;
 import org.opencms.ade.sitemap.client.ui.CmsPage;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsImageBundle;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.gwt.client.A_CmsEntryPoint;
+import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.CmsHeader;
 import org.opencms.gwt.client.ui.CmsToolbarPlaceHolder;
 import org.opencms.gwt.client.ui.tree.A_CmsDeepLazyOpenHandler;
 import org.opencms.gwt.client.ui.tree.CmsLazyTree;
 
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 
@@ -49,7 +50,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 8.0.0
  */
@@ -91,9 +92,7 @@ public class CmsSitemapView extends A_CmsEntryPoint {
         RootPanel.get().add(new CmsToolbarPlaceHolder());
 
         // title
-        CmsHeader title = new CmsHeader(
-            Messages.get().key(Messages.GUI_EDITOR_TITLE_0),
-            CmsSitemapProvider.get().getUri());
+        CmsHeader title = new CmsHeader(Messages.get().key(Messages.GUI_EDITOR_TITLE_0), CmsCoreProvider.get().getUri());
         title.addStyleName(I_CmsLayoutBundle.INSTANCE.rootCss().pageCenter());
         RootPanel.get().add(title);
 
@@ -106,17 +105,24 @@ public class CmsSitemapView extends A_CmsEntryPoint {
         page.add(loadingLabel);
 
         // starting rendering
-        controller.initialize(new Command() {
-
-            /**
-             * @see com.google.gwt.user.client.Command#execute()
-             */
-            public void execute() {
-
-                // paint
-                page.remove(loadingLabel);
-                page.add(tree);
+        CmsClientSitemapEntry root = controller.getSitemapData().getRoot();
+        CmsSitemapTreeItem rootItem = factory.create(root);
+        rootItem.clearChildren();
+        for (CmsClientSitemapEntry child : root.getChildren()) {
+            CmsSitemapTreeItem childItem = factory.create(child);
+            rootItem.addChild(childItem);
+            childItem.clearChildren();
+            for (CmsClientSitemapEntry grandchild : child.getChildren()) {
+                childItem.addChild(factory.create(grandchild));
             }
-        });
+            childItem.onFinishLoading();
+        }
+        rootItem.onFinishLoading();
+        rootItem.setOpen(true);
+        tree.addItem(rootItem);
+
+        // paint
+        page.remove(loadingLabel);
+        page.add(tree);
     }
 }

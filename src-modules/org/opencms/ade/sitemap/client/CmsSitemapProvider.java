@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapProvider.java,v $
- * Date   : $Date: 2010/04/26 13:39:53 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/05/03 14:33:05 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,26 +31,28 @@
 
 package org.opencms.ade.sitemap.client;
 
-import org.opencms.ade.sitemap.shared.I_CmsSitemapProviderConstants;
+import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService;
 import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapServiceAsync;
+import org.opencms.gwt.client.rpc.CmsLog;
 import org.opencms.util.CmsStringUtil;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.user.client.rpc.SerializationException;
+import com.google.gwt.user.client.rpc.SerializationStreamFactory;
 
 /**
- * Client side implementation for {@link org.opencms.ade.sitemap.CmsSitemapProvider}.<p>
+ * Client side sitemap data provider.<p>
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  * 
- * @see org.opencms.ade.sitemap.CmsSitemapProvider
+ * @see org.opencms.ade.sitemap.CmsSitemapActionElement
  */
-public final class CmsSitemapProvider extends JavaScriptObject implements I_CmsSitemapProviderConstants {
+public final class CmsSitemapProvider extends CmsSitemapData {
 
     /** Path to system folder. */
     public static final String VFS_PATH_SYSTEM = "/system/";
@@ -66,8 +68,33 @@ public final class CmsSitemapProvider extends JavaScriptObject implements I_CmsS
      */
     protected CmsSitemapProvider() {
 
-        // empty
+        super(deserialize());
     }
+
+    /**
+     * Deserializes the prefetched RPC data.<p>
+     * 
+     * @return the prefetched RPC data
+     */
+    private static CmsSitemapData deserialize() {
+
+        String data = getPrefetchedData();
+        SerializationStreamFactory streamFactory = (SerializationStreamFactory)getService();
+        try {
+            return (CmsSitemapData)streamFactory.createStreamReader(data).readObject();
+        } catch (SerializationException e) {
+            // should never happen
+            CmsLog.log(e.getLocalizedMessage());
+        }
+        return null;
+    }
+
+    /**
+     * Retrieves the prefetched data from the host page.<p>
+     */
+    private static native String getPrefetchedData() /*-{
+        return $wnd[@org.opencms.ade.sitemap.shared.CmsSitemapData::DICT_NAME];
+    }-*/;
 
     /**
      * Returns the client message instance.<p>
@@ -77,7 +104,7 @@ public final class CmsSitemapProvider extends JavaScriptObject implements I_CmsS
     public static CmsSitemapProvider get() {
 
         if (INSTANCE == null) {
-            INSTANCE = init();
+            INSTANCE = new CmsSitemapProvider();
         }
         return INSTANCE;
     }
@@ -96,61 +123,6 @@ public final class CmsSitemapProvider extends JavaScriptObject implements I_CmsS
     }
 
     /**
-     * Returns the json object name.<p>
-     * 
-     * @return the json object name
-     */
-    // only used in native code
-    @SuppressWarnings("unused")
-    private static String getDictName() {
-
-        return DICT_NAME.replace('.', '_');
-    }
-
-    /**
-     * Initializes the data from the host page.<p>
-     */
-    private static native CmsSitemapProvider init() /*-{
-        return $wnd[@org.opencms.ade.sitemap.client.CmsSitemapProvider::getDictName()()];
-    }-*/;
-
-    /**
-     * Returns the cntPageType.<p>
-     *
-     * @return the cntPageType
-     */
-    public native int getCntPageType() /*-{
-        return this[@org.opencms.ade.sitemap.shared.I_CmsSitemapProviderConstants::KEY_TYPE_CNTPAGE];
-    }-*/;
-
-    /**
-     * Returns the reason not to be able to edit the sitemap.<p>
-     *
-     * @return the reason not to be able to edit the sitemap
-     */
-    public native String getNoEditReason() /*-{
-        return this[@org.opencms.ade.sitemap.shared.I_CmsSitemapProviderConstants::KEY_EDIT];
-    }-*/;
-
-    /**
-     * Returns the current sitemap uri.<p>
-     *
-     * @return the current sitemap uri
-     */
-    public native String getUri() /*-{
-        return this[@org.opencms.ade.sitemap.shared.I_CmsSitemapProviderConstants::KEY_URI_SITEMAP];
-    }-*/;
-
-    /**
-     * Returns the parent sitemap uri.<p>
-     *
-     * @return the parent sitemap uri
-     */
-    public native String getParent() /*-{
-        return this[@org.opencms.ade.sitemap.shared.I_CmsSitemapProviderConstants::KEY_URI_PARENT];
-    }-*/;
-
-    /**
      * Checks if the current sitemap is editable.<p>
      *
      * @return <code>true</code> if the current sitemap is editable
@@ -159,13 +131,4 @@ public final class CmsSitemapProvider extends JavaScriptObject implements I_CmsS
 
         return CmsStringUtil.isEmptyOrWhitespaceOnly(getNoEditReason());
     }
-
-    /**
-     * Checks if the toolbar has to be displayed.<p>
-     *
-     * @return <code>true</code> if the toolbar has to be displayed
-     */
-    public native boolean showToolbar() /*-{
-        return this[@org.opencms.ade.sitemap.shared.I_CmsSitemapProviderConstants::KEY_TOOLBAR];
-    }-*/;
 }

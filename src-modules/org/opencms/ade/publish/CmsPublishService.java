@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/Attic/CmsPublishService.java,v $
- * Date   : $Date: 2010/04/26 10:02:40 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/05/03 14:33:06 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,6 +43,8 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.gwt.CmsGwtService;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
+import org.opencms.security.CmsRole;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
@@ -53,7 +55,7 @@ import java.util.List;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  * 
@@ -74,7 +76,11 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
         CmsPublishData result = null;
         try {
             CmsPublishOptions options = getCachedOptions();
-            result = new CmsPublishData(options, getProjects(), getPublishGroups(options));
+            result = new CmsPublishData(
+                options,
+                getProjects(),
+                getPublishGroups(options),
+                canPublishBrokenRelations(getCmsObject()));
         } catch (Throwable e) {
             error(e);
         }
@@ -146,6 +152,19 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
             error(e);
         }
         return brokenLinkBeans;
+    }
+
+    /**
+     * Checks whether the current user can publish resources even if it would break relations.<p>
+     * 
+     * @param cms the CmsObject for which the user should be checked
+     * 
+     * @return true if the user can publish resources even if it breaks relations 
+     */
+    private boolean canPublishBrokenRelations(CmsObject cms) {
+
+        return OpenCms.getWorkplaceManager().getDefaultUserSettings().isAllowBrokenRelations()
+            || OpenCms.getRoleManager().hasRole(cms, CmsRole.VFS_MANAGER);
     }
 
     /**
