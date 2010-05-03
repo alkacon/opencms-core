@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsCategory.java,v $
- * Date   : $Date: 2009/06/04 14:29:53 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/05/03 10:47:12 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,8 @@ import org.opencms.main.CmsException;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
+import java.io.Serializable;
+
 /**
  * Represents a category, that is just a folder.<p>
  * 
@@ -53,11 +55,14 @@ import org.opencms.util.CmsUUID;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.9.2
  */
-public class CmsCategory implements Comparable {
+public class CmsCategory implements Comparable<CmsCategory>, Serializable {
+
+    /** The serialization id. */
+    private static final long serialVersionUID = -6395887983124249138L;
 
     /** The category's base path. */
     private String m_basePath;
@@ -136,12 +141,8 @@ public class CmsCategory implements Comparable {
     /**
      * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
-    public int compareTo(Object that) {
+    public int compareTo(CmsCategory cat) {
 
-        if (!(that instanceof CmsCategory)) {
-            return -1;
-        }
-        CmsCategory cat = (CmsCategory)that;
         boolean thisGlobal = this.getBasePath().equals(CmsCategoryService.CENTRALIZED_REPOSITORY);
         boolean thatGlobal = cat.getBasePath().equals(CmsCategoryService.CENTRALIZED_REPOSITORY);
         if ((thisGlobal && thatGlobal) || (!thisGlobal && !thatGlobal)) {
@@ -153,6 +154,7 @@ public class CmsCategory implements Comparable {
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (!(obj instanceof CmsCategory)) {
@@ -246,6 +248,7 @@ public class CmsCategory implements Comparable {
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         return getPath().hashCode();
