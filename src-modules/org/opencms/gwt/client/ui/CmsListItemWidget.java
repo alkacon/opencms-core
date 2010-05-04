@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItemWidget.java,v $
- * Date   : $Date: 2010/04/28 13:03:39 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2010/05/04 13:17:13 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,7 +37,9 @@ import org.opencms.gwt.client.ui.input.CmsLabel;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map.Entry;
 
 import com.google.gwt.core.client.GWT;
@@ -64,7 +66,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Tobias Herrmann
  * @author Michael Moossen
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 8.0.0
  */
@@ -189,6 +191,9 @@ public class CmsListItemWidget extends Composite implements HasMouseOutHandlers,
     @UiField
     protected FlowPanel m_titleRow;
 
+    /** The event handler registrations. */
+    private List<HandlerRegistration> m_handlerRegistrations;
+
     /**
      * Constructor. Using a 'li'-tag as default root element.<p>
      * 
@@ -196,6 +201,7 @@ public class CmsListItemWidget extends Composite implements HasMouseOutHandlers,
      */
     public CmsListItemWidget(CmsListInfoBean infoBean) {
 
+        m_handlerRegistrations = new ArrayList<HandlerRegistration>();
         init(infoBean);
     }
 
@@ -224,7 +230,9 @@ public class CmsListItemWidget extends Composite implements HasMouseOutHandlers,
      */
     public HandlerRegistration addMouseOutHandler(MouseOutHandler handler) {
 
-        return addDomHandler(handler, MouseOutEvent.getType());
+        HandlerRegistration req = addDomHandler(handler, MouseOutEvent.getType());
+        m_handlerRegistrations.add(req);
+        return req;
 
     }
 
@@ -233,7 +241,9 @@ public class CmsListItemWidget extends Composite implements HasMouseOutHandlers,
      */
     public HandlerRegistration addMouseOverHandler(MouseOverHandler handler) {
 
-        return addDomHandler(handler, MouseOverEvent.getType());
+        HandlerRegistration req = addDomHandler(handler, MouseOverEvent.getType());
+        m_handlerRegistrations.add(req);
+        return req;
     }
 
     /**
@@ -276,6 +286,18 @@ public class CmsListItemWidget extends Composite implements HasMouseOutHandlers,
     public void removeButton(Widget w) {
 
         m_buttonPanel.remove(w);
+    }
+
+    /**
+     * Removes all registered mouse event handlers including the context menu handler.<p>
+     */
+    public void removeMouseHandlers() {
+
+        Iterator<HandlerRegistration> it = m_handlerRegistrations.iterator();
+        while (it.hasNext()) {
+            it.next().removeHandler();
+        }
+        m_handlerRegistrations.clear();
     }
 
     /**

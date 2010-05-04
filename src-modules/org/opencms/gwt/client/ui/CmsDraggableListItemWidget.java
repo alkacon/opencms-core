@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsDraggableListItemWidget.java,v $
- * Date   : $Date: 2010/04/28 13:03:39 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/05/04 13:17:13 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,7 +32,6 @@
 package org.opencms.gwt.client.ui;
 
 import org.opencms.gwt.client.draganddrop.I_CmsDragElementExt;
-import org.opencms.gwt.client.draganddrop.I_CmsDragHandler;
 import org.opencms.gwt.client.draganddrop.I_CmsDragTarget;
 import org.opencms.gwt.client.draganddrop.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
@@ -43,6 +42,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style;
@@ -69,7 +69,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -87,8 +87,21 @@ public class CmsDraggableListItemWidget extends CmsListItemWidget implements I_C
     /** The event handler registrations. */
     private List<HandlerRegistration> m_handlerRegistrations;
 
-    /** The move handle widget. */
-    private CmsPushButton m_moveHandle;
+    /** The move handle element. */
+    private Element m_moveHandle;
+
+    /**
+     * Constructor.<p>
+     * 
+     * Use {@link #setMoveHandle(Element)} to make it draggable
+     * 
+     * @param infoBean bean holding the item information
+     */
+    public CmsDraggableListItemWidget(CmsListInfoBean infoBean) {
+
+        super(infoBean);
+        m_handlerRegistrations = new ArrayList<HandlerRegistration>();
+    }
 
     /**
      * Constructor.<p>
@@ -98,17 +111,28 @@ public class CmsDraggableListItemWidget extends CmsListItemWidget implements I_C
      */
     public CmsDraggableListItemWidget(CmsListInfoBean infoBean, boolean draggable) {
 
-        super(infoBean);
-        m_handlerRegistrations = new ArrayList<HandlerRegistration>();
-        m_dragEnabled = draggable;
+        this(infoBean);
         if (draggable) {
-            m_moveHandle = new CmsPushButton();
-            m_moveHandle.setImageClass(I_CmsImageBundle.INSTANCE.style().moveIcon());
-            m_moveHandle.setShowBorder(false);
+            CmsPushButton moveHandle = new CmsPushButton();
+            moveHandle.setImageClass(I_CmsImageBundle.INSTANCE.style().moveIcon());
+            moveHandle.setShowBorder(false);
             // always show button
-            m_moveHandle.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
-            addButton(m_moveHandle);
+            moveHandle.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
+            addButton(moveHandle);
+            setMoveHandle(moveHandle.getElement());
         }
+    }
+
+    /**
+     * Constructor.<p>
+     * 
+     * @param infoBean bean holding the item information
+     * @param handle the handle element, <code>null</code> to disable dragging
+     */
+    public CmsDraggableListItemWidget(CmsListInfoBean infoBean, Element handle) {
+
+        this(infoBean);
+        setMoveHandle(handle);
     }
 
     /**
@@ -147,9 +171,10 @@ public class CmsDraggableListItemWidget extends CmsListItemWidget implements I_C
     @Override
     public HandlerRegistration addMouseOutHandler(MouseOutHandler handler) {
 
-        HandlerRegistration reg = addDomHandler(handler, MouseOutEvent.getType());
-        m_handlerRegistrations.add(reg);
-        return reg;
+        HandlerRegistration req = addDomHandler(handler, MouseOutEvent.getType());
+        m_handlerRegistrations.add(req);
+        return req;
+
     }
 
     /**
@@ -158,9 +183,9 @@ public class CmsDraggableListItemWidget extends CmsListItemWidget implements I_C
     @Override
     public HandlerRegistration addMouseOverHandler(MouseOverHandler handler) {
 
-        HandlerRegistration reg = addDomHandler(handler, MouseOverEvent.getType());
-        m_handlerRegistrations.add(reg);
-        return reg;
+        HandlerRegistration req = addDomHandler(handler, MouseOverEvent.getType());
+        m_handlerRegistrations.add(req);
+        return req;
     }
 
     /**
@@ -223,64 +248,10 @@ public class CmsDraggableListItemWidget extends CmsListItemWidget implements I_C
         if (m_dragEnabled && (m_moveHandle != null)) {
             EventTarget target = event.getEventTarget();
             if (com.google.gwt.dom.client.Element.is(target)) {
-                return m_moveHandle.getElement().isOrHasChild(com.google.gwt.dom.client.Element.as(target));
+                return m_moveHandle.isOrHasChild(com.google.gwt.dom.client.Element.as(target));
             }
         }
         return false;
-    }
-
-    /**
-     * @see org.opencms.gwt.client.draganddrop.I_CmsDragElement#onDragCancel(org.opencms.gwt.client.draganddrop.I_CmsDragHandler)
-     */
-    public void onDragCancel(I_CmsDragHandler<?, ?> handler) {
-
-        // override this if necessary
-
-    }
-
-    /**
-     * @see org.opencms.gwt.client.draganddrop.I_CmsDragElement#onDragEnter(org.opencms.gwt.client.draganddrop.I_CmsDragHandler, org.opencms.gwt.client.draganddrop.I_CmsDragTarget)
-     */
-    public void onDragEnter(I_CmsDragHandler<?, ?> handler, I_CmsDragTarget target) {
-
-        // override this if necessary
-
-    }
-
-    /**
-     * @see org.opencms.gwt.client.draganddrop.I_CmsDragElement#onDragLeave(org.opencms.gwt.client.draganddrop.I_CmsDragHandler, org.opencms.gwt.client.draganddrop.I_CmsDragTarget)
-     */
-    public void onDragLeave(I_CmsDragHandler<?, ?> handler, I_CmsDragTarget target) {
-
-        // override this if necessary
-
-    }
-
-    /**
-     * @see org.opencms.gwt.client.draganddrop.I_CmsDragElement#onDragStart(org.opencms.gwt.client.draganddrop.I_CmsDragHandler)
-     */
-    public void onDragStart(I_CmsDragHandler<?, ?> handler) {
-
-        // override this if necessary
-
-    }
-
-    /**
-     * @see org.opencms.gwt.client.draganddrop.I_CmsDragElement#onDragStop(org.opencms.gwt.client.draganddrop.I_CmsDragHandler)
-     */
-    public void onDragStop(I_CmsDragHandler<?, ?> handler) {
-
-        // override this if necessary
-
-    }
-
-    /**
-     * @see org.opencms.gwt.client.draganddrop.I_CmsDragElement#onDropTarget(org.opencms.gwt.client.draganddrop.I_CmsDragHandler, org.opencms.gwt.client.draganddrop.I_CmsDragTarget)
-     */
-    public void onDropTarget(I_CmsDragHandler<?, ?> handler, I_CmsDragTarget target) {
-
-        // override this if necessary
-
     }
 
     /**
@@ -296,13 +267,12 @@ public class CmsDraggableListItemWidget extends CmsListItemWidget implements I_C
         style.setZIndex(100);
         getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragging());
         getElement().addClassName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().shadow());
-
     }
 
     /**
-     * Removes all registered mouse event handlers including the context menu handler.<p>
+     * Removes all for drag and drop registered mouse event handlers.<p>
      */
-    public void removeAllMouseHandlers() {
+    public void removeDndMouseHandlers() {
 
         Iterator<HandlerRegistration> it = m_handlerRegistrations.iterator();
         while (it.hasNext()) {
@@ -327,7 +297,16 @@ public class CmsDraggableListItemWidget extends CmsListItemWidget implements I_C
     public void setDragParent(I_CmsDragTarget target) {
 
         m_dragParent = target;
-
     }
 
+    /**
+     * Sets the move handle.<p>
+     * 
+     * @param handle the move handle, or <code>null</code> to disable dragging
+     */
+    public void setMoveHandle(Element handle) {
+
+        m_dragEnabled = (handle != null);
+        m_moveHandle = handle;
+    }
 }
