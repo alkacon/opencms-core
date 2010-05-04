@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageUtil.java,v $
- * Date   : $Date: 2010/05/04 06:58:13 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/05/04 09:45:21 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,6 @@ import org.opencms.ade.containerpage.client.draganddrop.I_CmsDragTargetContainer
 import org.opencms.ade.containerpage.client.ui.A_CmsToolbarOptionButton;
 import org.opencms.ade.containerpage.client.ui.CmsElementOptionBar;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
-import org.opencms.ade.containerpage.shared.I_CmsContainerpageProviderConstants;
 import org.opencms.gwt.client.draganddrop.I_CmsDragElement;
 import org.opencms.gwt.client.draganddrop.I_CmsDragTarget;
 import org.opencms.gwt.client.util.CmsDomUtil;
@@ -59,11 +58,17 @@ import com.google.gwt.user.client.Element;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
 public class CmsContainerpageUtil {
+
+    /** HTML class used to identify container elements. Has to be identical with {@link org.opencms.jsp.CmsJspTagContainer#CLASS_CONTAINER_ELEMENTS}. */
+    public static final String CLASS_CONTAINER_ELEMENTS = "cms_ade_element";
+
+    /** HTML class used to identify sub container elements. Has to be identical with {@link org.opencms.jsp.CmsJspTagContainer#CLASS_SUB_CONTAINER_ELEMENTS}. */
+    public static final String CLASS_SUB_CONTAINER_ELEMENTS = "cms_ade_subcontainer";
 
     /** The container-page drag and drop handler. */
     private CmsContainerDragHandler m_dragHandler;
@@ -95,7 +100,7 @@ public class CmsContainerpageUtil {
         // to establish the internal widget hierarchy the elements need to be removed from the DOM and added as widgets to the root panel
         Element child = (Element)container.getElement().getFirstChildElement();
         while (child != null) {
-            if (CmsDomUtil.hasClass(I_CmsContainerpageProviderConstants.CLASS_CONTAINER_ELEMENTS, child)) {
+            if (CmsDomUtil.hasClass(CLASS_CONTAINER_ELEMENTS, child)) {
                 String clientId = child.getAttribute("title");
                 String sitePath = child.getAttribute("alt");
                 String noEditReason = child.getAttribute("rel");
@@ -103,7 +108,7 @@ public class CmsContainerpageUtil {
                 DOM.removeChild(child, elementRoot);
                 elements.add(createElement(elementRoot, container, clientId, sitePath, noEditReason));
                 DOM.removeChild(container.getElement(), child);
-            } else if (CmsDomUtil.hasClass(I_CmsContainerpageProviderConstants.CLASS_SUB_CONTAINER_ELEMENTS, child)) {
+            } else if (CmsDomUtil.hasClass(CLASS_SUB_CONTAINER_ELEMENTS, child)) {
                 String clientId = child.getAttribute("title");
                 String sitePath = child.getAttribute("alt");
                 String noEditReason = child.getAttribute("rel");
@@ -222,7 +227,7 @@ public class CmsContainerpageUtil {
         String containerType) throws Exception {
 
         com.google.gwt.user.client.Element element = DOM.createDiv();
-        element.addClassName(I_CmsContainerpageProviderConstants.CLASS_SUB_CONTAINER_ELEMENTS);
+        element.addClassName(CmsContainerpageUtil.CLASS_SUB_CONTAINER_ELEMENTS);
 
         CmsDragSubcontainer subContainer = createSubcontainer(
             element,

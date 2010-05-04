@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageController.java,v $
- * Date   : $Date: 2010/05/04 06:58:13 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/05/04 09:45:21 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,12 +35,14 @@ import org.opencms.ade.containerpage.client.draganddrop.CmsDragContainerElement;
 import org.opencms.ade.containerpage.client.draganddrop.CmsDragTargetContainer;
 import org.opencms.ade.containerpage.client.ui.CmsLeavePageDialog;
 import org.opencms.ade.containerpage.client.ui.I_CmsToolbarButton;
+import org.opencms.ade.containerpage.shared.CmsCntPageData;
 import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService;
 import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageServiceAsync;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
+import org.opencms.gwt.client.rpc.CmsRpcPrefetcher;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
@@ -74,7 +76,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -294,6 +296,9 @@ public final class CmsContainerpageController {
     /** The container data. */
     private Map<String, CmsContainerJso> m_containers;
 
+    /** prefetched data. */
+    private CmsCntPageData m_data;
+
     /** The container-page handler. */
     private CmsContainerpageHandler m_handler;
 
@@ -305,7 +310,9 @@ public final class CmsContainerpageController {
      */
     public CmsContainerpageController() {
 
-        // nothing to do here
+        m_data = (CmsCntPageData)CmsRpcPrefetcher.getSerializedObject(
+            getContainerpageService(),
+            CmsCntPageData.DICT_NAME);
     }
 
     /**
@@ -516,6 +523,16 @@ public final class CmsContainerpageController {
     public String getContainerType(String containerName) {
 
         return getContainer(containerName).getType();
+    }
+
+    /**
+     * Returns the prefetched data.<p>
+     *
+     * @return the prefetched data
+     */
+    public CmsCntPageData getData() {
+
+        return m_data;
     }
 
     /**
@@ -905,29 +922,12 @@ public final class CmsContainerpageController {
      */
     protected void lockContainerpage() {
 
-        CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
-
-            /**
-             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
-             */
-            @Override
-            public void execute() {
-
-                getContainerpageService().lockContainerpage(getCurrentUri(), this);
-
-            }
-
-            /**
-             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
-             */
-            @Override
-            protected void onResponse(Void result) {
-
-                CmsDebugLog.getInstance().printLine("Page locked");
-
-            }
-        };
-        action.execute();
+        if (CmsCoreProvider.get().lock(getCurrentUri())) {
+            CmsDebugLog.getInstance().printLine("Page locked");
+        } else {
+            // TODO: do something here
+            CmsDebugLog.getInstance().printLine("Page not locked");
+        }
     }
 
     /**
@@ -1012,28 +1012,11 @@ public final class CmsContainerpageController {
      */
     protected void unlockContainerpage() {
 
-        CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
-
-            /**
-             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
-             */
-            @Override
-            public void execute() {
-
-                getContainerpageService().syncUnlockContainerpage(getCurrentUri(), this);
-            }
-
-            /**
-             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
-             */
-            @Override
-            protected void onResponse(Void result) {
-
-                CmsDebugLog.getInstance().printLine("Page unlocked");
-
-            }
-        };
-        action.execute();
+        if (CmsCoreProvider.get().unlock(getCurrentUri())) {
+            CmsDebugLog.getInstance().printLine("Page unlocked");
+        } else {
+            // TODO: think if it is needed to do something here
+        }
     }
 
     /** 

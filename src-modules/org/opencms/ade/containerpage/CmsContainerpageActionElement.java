@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsContainerpageActionElement.java,v $
- * Date   : $Date: 2010/05/03 14:33:06 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/05/04 09:45:21 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,12 @@
 
 package org.opencms.ade.containerpage;
 
-import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.ade.containerpage.shared.CmsCntPageData;
+import org.opencms.ade.containerpage.shared.CmsContainer;
+import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService;
+import org.opencms.ade.publish.CmsPublishActionElement;
+import org.opencms.gwt.CmsGwtActionElement;
+import org.opencms.gwt.CmsRpcException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -42,11 +47,14 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
-public class CmsContainerpageActionElement extends CmsJspActionElement {
+public class CmsContainerpageActionElement extends CmsGwtActionElement {
+
+    /** The current container page data. */
+    private CmsCntPageData m_cntPageData;
 
     /**
      * Constructor.<p>
@@ -61,14 +69,47 @@ public class CmsContainerpageActionElement extends CmsJspActionElement {
     }
 
     /**
+     * @see org.opencms.gwt.CmsGwtActionElement#export()
+     */
+    @Override
+    public String export() throws Exception {
+
+        StringBuffer sb = new StringBuffer();
+        sb.append(ClientMessages.get().export(getRequest()));
+        String prefetchedData = serialize(I_CmsContainerpageService.class.getMethod("prefetch"), getCntPageData());
+        sb.append(CmsCntPageData.DICT_NAME).append("='").append(prefetchedData).append("';");
+        sb.append(CmsContainer.KEY_CONTAINER_DATA).append("= new Array();");
+        return sb.toString();
+    }
+
+    /**
+     * @see org.opencms.gwt.CmsGwtActionElement#exportAll()
+     */
+    @Override
+    public String exportAll() throws Exception {
+
+        StringBuffer sb = new StringBuffer();
+        sb.append(super.export());
+        sb.append(new CmsPublishActionElement(null, getRequest(), null).export());
+        sb.append(org.opencms.ade.galleries.CmsGalleryProvider.get().export(getRequest()));
+        sb.append(export());
+        return sb.toString();
+    }
+
+    /**
      * Returns the needed server data for client-side usage.<p> 
      *
      * @return the needed server data for client-side usage
-     * 
-     * @throws Exception 
      */
-    public String getData() throws Exception {
+    public CmsCntPageData getCntPageData() {
 
-        return CmsContainerpageProvider.get().exportAll(getRequest());
+        if (m_cntPageData == null) {
+            try {
+                m_cntPageData = CmsContainerpageService.newInstance(getRequest()).prefetch();
+            } catch (CmsRpcException e) {
+                // ignore, should never happen, and it is already logged
+            }
+        }
+        return m_cntPageData;
     }
 }

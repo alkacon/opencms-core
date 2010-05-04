@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/shared/rpc/Attic/I_CmsContainerpageService.java,v $
- * Date   : $Date: 2010/05/03 07:53:47 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/05/04 09:45:21 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.ade.containerpage.shared.rpc;
 
+import org.opencms.ade.containerpage.shared.CmsCntPageData;
 import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.gwt.CmsRpcException;
@@ -48,7 +49,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -117,13 +118,13 @@ public interface I_CmsContainerpageService extends RemoteService {
     List<CmsContainerElement> getRecentList(String containerpageUri, Set<String> containerTypes) throws CmsRpcException;
 
     /**
-     * Locks the given container-page.<p>
+     * Returns the initialization data.<p>
      * 
-     * @param containerpageUri the container-page
+     * @return the initialization data
      * 
-     * @throws CmsRpcException if something goes wrong processing the request
+     * @throws CmsRpcException if something goes wrong 
      */
-    void lockContainerpage(String containerpageUri) throws CmsRpcException;
+    CmsCntPageData prefetch() throws CmsRpcException;
 
     /**
      * Saves the container-page.<p>
@@ -171,14 +172,4 @@ public interface I_CmsContainerpageService extends RemoteService {
      * @throws CmsRpcException if something goes wrong processing the request
      */
     void syncSaveContainerpage(String containerpageUri, List<CmsContainer> containers) throws CmsRpcException;
-
-    /**
-     * Unlocks the given container-page.<p>
-     * 
-     * @param containerpageUri the container-page
-     * 
-     * @throws CmsRpcException if something goes wrong processing the request
-     */
-    void syncUnlockContainerpage(String containerpageUri) throws CmsRpcException;
-
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageHandler.java,v $
- * Date   : $Date: 2010/05/04 06:58:13 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/05/04 09:45:21 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,9 +36,7 @@ import org.opencms.ade.containerpage.client.draganddrop.CmsDragMenuElement;
 import org.opencms.ade.containerpage.client.ui.CmsContentEditorDialog;
 import org.opencms.ade.containerpage.client.ui.CmsLeavePageDialog;
 import org.opencms.ade.containerpage.client.ui.I_CmsToolbarButton;
-import org.opencms.ade.containerpage.client.util.CmsContainerpageProvider;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
-import org.opencms.ade.containerpage.shared.I_CmsContainerpageProviderConstants;
 import org.opencms.ade.publish.client.CmsPublishDialog;
 import org.opencms.gwt.client.draganddrop.I_CmsDragElement;
 import org.opencms.gwt.client.ui.CmsConfirmDialog;
@@ -60,7 +58,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -161,12 +159,12 @@ public class CmsContainerpageHandler {
 
         if (m_controller.hasPageChanged()) {
             CmsLeavePageDialog dialog = new CmsLeavePageDialog(
-                CmsContainerpageProvider.get().getSitemapUri(),
+                m_controller.getData().getSitemapUri(),
                 m_controller,
                 this);
             dialog.center();
         } else {
-            m_controller.leaveUnsaved(CmsContainerpageProvider.get().getSitemapUri());
+            m_controller.leaveUnsaved(m_controller.getData().getSitemapUri());
         }
     }
 
@@ -242,9 +240,7 @@ public class CmsContainerpageHandler {
     public void openEditorForElement(CmsDragContainerElement element) {
 
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(element.getNoEditReason())) {
-            if (CmsDomUtil.hasClass(
-                I_CmsContainerpageProviderConstants.CLASS_SUB_CONTAINER_ELEMENTS,
-                element.getElement())) {
+            if (CmsDomUtil.hasClass(CmsContainerpageUtil.CLASS_SUB_CONTAINER_ELEMENTS, element.getElement())) {
                 openSubcontainerEditor(element);
             } else {
                 CmsContentEditorDialog.get().openEditDialog(element.getClientId(), element.getSitePath());

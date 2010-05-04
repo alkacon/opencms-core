@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageEditor.java,v $
- * Date   : $Date: 2010/05/03 07:53:47 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/05/04 09:45:21 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,6 @@ import org.opencms.ade.containerpage.client.ui.CmsToolbarSelectionButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarSitemapButton;
 import org.opencms.ade.containerpage.client.ui.I_CmsToolbarButton;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
-import org.opencms.ade.containerpage.client.util.CmsContainerpageProvider;
 import org.opencms.gwt.client.A_CmsEntryPoint;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsToolbar;
@@ -67,7 +66,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 8.0.0
  */
@@ -196,7 +195,7 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         CmsContainerpageController controller = new CmsContainerpageController();
         final CmsContainerpageHandler containerpageHandler = new CmsContainerpageHandler(controller, this);
         CmsContainerDragHandler dragHandler = new CmsContainerDragHandler(controller, this);
-        CmsContentEditorDialog.init(containerpageHandler);
+        CmsContentEditorDialog.init(containerpageHandler, controller.getData());
 
         ClickHandler clickHandler = new ClickHandler() {
 
@@ -281,7 +280,7 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         containerpageHandler.enableSaveReset(false);
 
         RootPanel.get().add(m_toolbar);
-        if (CmsContainerpageProvider.get().isToolbarVisible()) {
+        if (controller.getData().isToolbarVisible()) {
             containerpageHandler.activateSelection();
         } else {
             showToolbar(false);

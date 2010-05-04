@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContainer.java,v $
- * Date   : $Date: 2010/05/04 06:52:47 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2010/05/04 09:45:21 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 7.6 
  */
@@ -165,7 +165,6 @@ public class CmsJspTagContainer extends TagSupport {
         ServletResponse res) throws CmsException, JspException, IOException {
 
         // TODO: remove old ADE functions
-
         CmsFlexController controller = CmsFlexController.getController(req);
         CmsObject cms = controller.getCmsObject();
 
@@ -432,12 +431,8 @@ public class CmsJspTagContainer extends TagSupport {
         }
         jsonContainer.put(JsonContainer.elements.name(), jsonElements);
         // the container meta data is added to the javascript window object by the following tag, used within the container-page editor 
-        StringBuffer gwtContainerData = new StringBuffer("<script  type=\"text/javascript\">if (").append(
-            KEY_CONTAINER_DATA).append("!=null)  ").append(KEY_CONTAINER_DATA).append(".push(").append(
-            jsonContainer.toString()).append(");</script>");
-        return gwtContainerData.toString();
-        /* new StringBuffer("<div class='cms-ade-cnt-data ").append(jsonContainer.toString()).append("' ></div>").append(
-            gwtContainerData).toString(); */
+        return new StringBuffer("<script>if (").append(KEY_CONTAINER_DATA).append("!=null) {").append(
+            KEY_CONTAINER_DATA).append(".push(").append(jsonContainer.toString()).append("); } </script>").toString();
     }
 
     /**

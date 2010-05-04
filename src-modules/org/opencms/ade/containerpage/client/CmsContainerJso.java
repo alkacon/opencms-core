@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerJso.java,v $
- * Date   : $Date: 2010/04/08 06:01:58 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/05/04 09:45:21 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import com.google.gwt.core.client.JsArray;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -108,7 +108,7 @@ public class CmsContainerJso extends JavaScriptObject implements I_CmsContainer 
      * @return the containers
      */
     public static final native JsArray<CmsContainerJso> getContainers() /*-{
-        return $wnd[@org.opencms.ade.containerpage.shared.I_CmsContainerpageProviderConstants::KEY_CONTAINER_DATA];
+        return $wnd[@org.opencms.ade.containerpage.shared.CmsContainer::KEY_CONTAINER_DATA];
     }-*/;
 
 }

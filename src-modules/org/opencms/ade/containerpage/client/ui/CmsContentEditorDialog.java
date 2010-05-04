@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsContentEditorDialog.java,v $
- * Date   : $Date: 2010/04/30 09:00:18 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/05/04 09:45:21 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,7 +34,7 @@ package org.opencms.ade.containerpage.client.ui;
 import org.opencms.ade.containerpage.client.CmsContainerpageHandler;
 import org.opencms.ade.containerpage.client.Messages;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
-import org.opencms.ade.containerpage.client.util.CmsContainerpageProvider;
+import org.opencms.ade.containerpage.shared.CmsCntPageData;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.CmsIFrame;
 import org.opencms.gwt.client.ui.CmsPopup;
@@ -48,7 +48,7 @@ import com.google.gwt.user.client.Window;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -70,32 +70,25 @@ public final class CmsContentEditorDialog {
     /** The currently edited element's site-path. */
     private String m_currentSitePath;
 
-    /** The container-page handler. */
-    private CmsContainerpageHandler m_handler;
+    /** the prefetched data. */
+    private CmsCntPageData m_data;
 
     /** The popup instance. */
     private CmsPopup m_dialog;
+
+    /** The container-page handler. */
+    private CmsContainerpageHandler m_handler;
 
     /**
      * Hiding constructor.<p>
      * 
      * @param handler the container-page handler
+     * @param data the prefetched data
      */
-    private CmsContentEditorDialog(CmsContainerpageHandler handler) {
+    private CmsContentEditorDialog(CmsContainerpageHandler handler, CmsCntPageData data) {
 
         m_handler = handler;
-    }
-
-    /**
-     * Initializes the dialog.<p>
-     * 
-     * @param handler the container-page handler
-     */
-    public static void init(CmsContainerpageHandler handler) {
-
-        if (INSTANCE == null) {
-            INSTANCE = new CmsContentEditorDialog(handler);
-        }
+        m_data = data;
     }
 
     /**
@@ -106,6 +99,19 @@ public final class CmsContentEditorDialog {
     public static CmsContentEditorDialog get() {
 
         return INSTANCE;
+    }
+
+    /**
+     * Initializes the dialog.<p>
+     * 
+     * @param handler the container-page handler
+     * @param data the prefetched data
+     */
+    public static void init(CmsContainerpageHandler handler, CmsCntPageData data) {
+
+        if (INSTANCE == null) {
+            INSTANCE = new CmsContentEditorDialog(handler, data);
+        }
     }
 
     /**
@@ -180,13 +186,13 @@ public final class CmsContentEditorDialog {
      */
     private String getEditorUrl(String sitePath) {
 
-        return CmsCoreProvider.get().link(CmsContainerpageProvider.get().getEditorUri())
+        return CmsCoreProvider.get().link(m_data.getEditorUri())
             + "?resource="
             + sitePath
             + "&amp;directedit=true&amp;elementlanguage="
             + CmsCoreProvider.get().getLocale()
             + "&amp;backlink="
-            + CmsContainerpageProvider.get().getBacklinkUri()
+            + m_data.getBacklinkUri()
             + "&amp;redirect=true";
     }
 }

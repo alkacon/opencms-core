@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsContainerpageService.java,v $
- * Date   : $Date: 2010/05/03 07:53:47 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/05/04 09:45:21 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,19 +31,26 @@
 
 package org.opencms.ade.containerpage;
 
+import org.opencms.ade.containerpage.shared.CmsCntPageData;
 import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.CmsGwtService;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.xml.containerpage.CmsADESessionCache;
 import org.opencms.xml.containerpage.CmsContainerBean;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
@@ -53,6 +60,8 @@ import org.opencms.xml.containerpage.CmsXmlContainerPage;
 import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
 import org.opencms.xml.containerpage.CmsXmlSubContainer;
 import org.opencms.xml.containerpage.CmsXmlSubContainerFactory;
+import org.opencms.xml.sitemap.CmsSitemapEntry;
+import org.opencms.xml.sitemap.CmsXmlSitemap;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -63,22 +72,44 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.logging.Log;
+
 /**
  * The RPC service used by the container-page editor.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 8.0.0
  */
 public class CmsContainerpageService extends CmsGwtService implements I_CmsContainerpageService {
+
+    /** Static reference to the log. */
+    private static final Log LOG = CmsLog.getLog(CmsContainerpageService.class);
 
     /** Serial version UID. */
     private static final long serialVersionUID = -6188370638303594280L;
 
     /** The session cache. */
     private CmsADESessionCache m_sessionCache;
+
+    /**
+     * Returns a new configured service instance.<p>
+     * 
+     * @param request the current request
+     * 
+     * @return a new service instance
+     */
+    public static CmsContainerpageService newInstance(HttpServletRequest request) {
+
+        CmsContainerpageService srv = new CmsContainerpageService();
+        srv.setCms(CmsFlexController.getCmsObject(request));
+        srv.setRequest(request);
+        return srv;
+    }
 
     /**
      * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#addToFavoriteList(java.lang.String)
@@ -167,15 +198,25 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
-     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#lockContainerpage(java.lang.String)
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#prefetch()
      */
-    public void lockContainerpage(String containerpageUri) throws CmsRpcException {
+    public CmsCntPageData prefetch() throws CmsRpcException {
 
+        CmsCntPageData data = null;
+        CmsObject cms = getCmsObject();
+        HttpServletRequest request = getRequest();
         try {
-            getCmsObject().lockResourceTemporary(containerpageUri);
+            CmsResource cntPage = getContainerpage(cms);
+            data = new CmsCntPageData(
+                cms.getSitePath(cntPage),
+                getNoEditReason(cms, cntPage),
+                CmsRequestUtil.encodeParams(request),
+                getSitemapUri(cms, request),
+                getSessionCache().isToolbarVisible());
         } catch (Throwable e) {
             error(e);
         }
+        return data;
     }
 
     /**
@@ -276,18 +317,6 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
-     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#syncUnlockContainerpage(java.lang.String)
-     */
-    public void syncUnlockContainerpage(String containerpageUri) throws CmsRpcException {
-
-        try {
-            getCmsObject().unlockResource(containerpageUri);
-        } catch (Throwable e) {
-            error(e);
-        }
-    }
-
-    /**
      * Reads the cached element-bean for the given client-side-id from cache.<p>
      * 
      * @param clientId the client-side-id
@@ -333,6 +362,37 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             }
         }
         return result;
+    }
+
+    /**
+     * Returns the requested container-page resource.<p>
+     * 
+     * @param cms the current cms object
+     * 
+     * @return the container-page resource
+     * 
+     * @throws CmsException if the resource could not be read for any reason
+     */
+    private CmsResource getContainerpage(CmsObject cms) throws CmsException {
+
+        String currentUri = cms.getRequestContext().getUri();
+        CmsResource containerPage = cms.readResource(currentUri);
+        if (!CmsResourceTypeXmlContainerPage.isContainerPage(containerPage)) {
+            // container page is used as template
+            String cntPagePath = cms.readPropertyObject(
+                containerPage,
+                CmsPropertyDefinition.PROPERTY_TEMPLATE_ELEMENTS,
+                true).getValue("");
+            try {
+                containerPage = cms.readResource(cntPagePath);
+            } catch (CmsException e) {
+                if (!LOG.isDebugEnabled()) {
+                    LOG.warn(e.getLocalizedMessage());
+                }
+                LOG.debug(e.getLocalizedMessage(), e);
+            }
+        }
+        return containerPage;
     }
 
     /**
@@ -439,6 +499,22 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
+     * Returns the no-edit reason for the given resource.<p>
+     * 
+     * @param cms the current cms object
+     * @param containerPage the resource
+     * 
+     * @return the no-edit reason, empty if editing is allowed
+     * 
+     * @throws CmsException is something goes wrong
+     */
+    private String getNoEditReason(CmsObject cms, CmsResource containerPage) throws CmsException {
+
+        return new CmsResourceUtil(cms, containerPage).getNoEditReason(OpenCms.getWorkplaceManager().getWorkplaceLocale(
+            cms));
+    }
+
+    /**
      * Returns the session cache.<p>
      * 
      * @return the session cache
@@ -456,4 +532,23 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         return m_sessionCache;
     }
 
+    /**
+     * Returns the sitemap URI of this request.<p>
+     * 
+     * @param cms the current cms object
+     * @param request the current request
+     * 
+     * @return the sitemap URI, empty if none available
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    private String getSitemapUri(CmsObject cms, HttpServletRequest request) throws CmsException {
+
+        CmsXmlSitemap sitemap = null;
+        CmsSitemapEntry sitemapInfo = OpenCms.getSitemapManager().getRuntimeInfo(request);
+        if (sitemapInfo != null) {
+            sitemap = OpenCms.getSitemapManager().getSitemapForUri(cms, sitemapInfo.getSitePath(cms), false);
+        }
+        return (sitemap == null) ? "" : OpenCms.getLinkManager().substituteLink(cms, sitemap.getFile());
+    }
 }
