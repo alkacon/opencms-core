@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/draganddrop/Attic/A_CmsDragHandler.java,v $
- * Date   : $Date: 2010/05/04 13:17:36 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/05/04 13:59:33 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -66,7 +66,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 8.0.0
  */
@@ -243,12 +243,6 @@ implements I_CmsDragHandler<E, T> {
         if (m_dragging && (event.getNativeButton() == NativeEvent.BUTTON_LEFT)) {
             m_dragging = false;
 
-            if (m_currentTarget != null) {
-                elementDropAction();
-                m_currentTarget = null;
-            } else {
-                elementCancelAction();
-            }
             DOM.releaseCapture(m_dragElement.getElement());
             event.preventDefault();
             event.stopPropagation();
@@ -369,6 +363,12 @@ implements I_CmsDragHandler<E, T> {
      */
     protected void clearDrag() {
 
+        if (m_currentTarget != null) {
+            elementDropAction();
+            m_currentTarget = null;
+        } else {
+            elementCancelAction();
+        }
         restoreElementAfterDrag();
         Document.get().getBody().removeClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragStarted());
         m_dragElement = null;
