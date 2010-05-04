@@ -6,8 +6,8 @@
   <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <title><%= jsp.getTitle() %></title>
-    <script type="text/javascript" language="javascript" src="<cms:link>/system/modules/org.opencms.ade.sitemap/resources/resources.nocache.js</cms:link>"></script>
-    <script><%= jsp.getData() %></script>
+    <script src="<cms:link>/system/modules/org.opencms.ade.sitemap/resources/resources.nocache.js</cms:link>"></script>
+    <script><%= jsp.exportAll() %></script>
   </head>
 
   <body>
