@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsSitemapService.java,v $
- * Date   : $Date: 2010/05/03 14:33:05 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/05/04 09:41:33 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,7 +69,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 8.0.0
  * 
@@ -251,9 +251,17 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
     /**
      * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#save(java.lang.String, List)
      */
-    public void save(String sitemapUri, List<I_CmsSitemapChange> changes) {
+    public void save(String sitemapUri, List<I_CmsSitemapChange> changes) throws CmsRpcException {
 
         // TODO:
+        CmsObject cms = getCmsObject();
+        try {
+
+            // and at the end unlock
+            cms.unlockResource(sitemapUri);
+        } catch (Throwable e) {
+            error(e);
+        }
     }
 
     /**
