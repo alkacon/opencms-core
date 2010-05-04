@@ -359,6 +359,10 @@
 						            <arg value="2" />
 						            <arg value="-logLevel" />
 						            <arg value="INFO" />
+						            <arg value="-gen" />
+						            <arg file="${opencms.output}/gwt/gen/" />
+						            <arg value="-extra" />
+						            <arg file="${opencms.output}/gwt/extra/" />
 						            <arg value="-war" />
 						            <arg file="${module.input.res}/system/modules/${module.name}" />
 						            <arg value="${module.gwt}" />
