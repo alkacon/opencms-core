@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContainer.java,v $
- * Date   : $Date: 2010/04/21 14:13:46 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2010/05/04 06:52:47 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 7.6 
  */
@@ -358,6 +358,11 @@ public class CmsJspTagContainer extends TagSupport {
                     }
                     subelement.setSitePath(subelementUri);
                     // execute the formatter jsp for the given element uri
+
+                    if (!isOnline) {
+                        // wrapping the elements with DIV containing initial element data. To be removed by the container-page editor
+                        pageContext.getOut().print(getElementWrapperTagStart(cms, subelementRes, subelement, false));
+                    }
                     CmsJspTagInclude.includeTagAction(
                         pageContext,
                         subelementFormatter,
@@ -367,6 +372,9 @@ public class CmsJspTagContainer extends TagSupport {
                         Collections.singletonMap(CmsADEManager.ATTR_CURRENT_ELEMENT, (Object)subelement),
                         req,
                         res);
+                    if (!isOnline) {
+                        pageContext.getOut().print(getElementWrapperTagEnd());
+                    }
                 }
                 if (!isOnline) {
                     pageContext.getOut().print(getElementWrapperTagEnd());
