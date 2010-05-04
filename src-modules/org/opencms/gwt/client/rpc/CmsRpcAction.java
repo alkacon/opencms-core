@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/rpc/Attic/CmsRpcAction.java,v $
- * Date   : $Date: 2010/04/29 09:31:56 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/05/04 09:41:17 $
+ * Version: $Revision: 1.12 $
  * 
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,11 +47,14 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 8.0
  */
 public abstract class CmsRpcAction<T> implements AsyncCallback<T> {
+
+    /** The result, used only for synchronized request. */
+    private T m_result;
 
     /** The timer to control the display of the 'loading' state, if the action takes too long. */
     private Timer m_timer;
@@ -62,6 +65,19 @@ public abstract class CmsRpcAction<T> implements AsyncCallback<T> {
      * Initializes client-server communication and will
      */
     public abstract void execute();
+
+    /**
+     * Executes a synchronized request.<p>
+     *
+     * @return the RPC result
+     * 
+     * @see #execute()
+     */
+    public T executeSync() {
+
+        execute();
+        return m_result;
+    }
 
     /**
      * Handle errors.<p>
@@ -82,44 +98,12 @@ public abstract class CmsRpcAction<T> implements AsyncCallback<T> {
     }
 
     /**
-     * Provides some feedback to the user in case of failure.<p>
-     * 
-     * @param ticket the generated ticket
-     * @param message the error message
-     */
-    protected void provideFeedback(String ticket, String message) {
-
-        String title = Messages.get().key(Messages.GUI_ERROR_0);
-        String text = Messages.get().key(Messages.GUI_TICKET_MESSAGE_2, message, ticket);
-
-        CmsConfirmDialog dialog = new CmsConfirmDialog(title, text);
-        dialog.center();
-        dialog.setHandler(new I_CmsConfirmDialogHandler() {
-
-            /**
-             * @see org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler#onOk()
-             */
-            public void onOk() {
-
-                execute();
-            }
-
-            /**
-             * @see org.opencms.gwt.client.ui.I_CmsCloseDialogHandler#onClose()
-             */
-            public void onClose() {
-
-                // do nothing
-            }
-        });
-    }
-
-    /**
      * @see com.google.gwt.user.client.rpc.AsyncCallback#onSuccess(java.lang.Object)
      */
     public void onSuccess(T value) {
 
         try {
+            m_result = value;
             onResponse(value);
         } catch (RuntimeException error) {
             onFailure(error);
@@ -175,6 +159,39 @@ public abstract class CmsRpcAction<T> implements AsyncCallback<T> {
      * @see AsyncCallback#onSuccess(Object)
      */
     protected abstract void onResponse(T result);
+
+    /**
+     * Provides some feedback to the user in case of failure.<p>
+     * 
+     * @param ticket the generated ticket
+     * @param message the error message
+     */
+    protected void provideFeedback(String ticket, String message) {
+
+        String title = Messages.get().key(Messages.GUI_ERROR_0);
+        String text = Messages.get().key(Messages.GUI_TICKET_MESSAGE_2, message, ticket);
+
+        CmsConfirmDialog dialog = new CmsConfirmDialog(title, text);
+        dialog.center();
+        dialog.setHandler(new I_CmsConfirmDialogHandler() {
+
+            /**
+             * @see org.opencms.gwt.client.ui.I_CmsCloseDialogHandler#onClose()
+             */
+            public void onClose() {
+
+                // do nothing
+            }
+
+            /**
+             * @see org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler#onOk()
+             */
+            public void onOk() {
+
+                execute();
+            }
+        });
+    }
 
     /**
      * Shows the 'loading message'.<p>
