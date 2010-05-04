@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/Attic/CmsCoreProvider.java,v $
- * Date   : $Date: 2010/05/03 14:33:06 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/05/04 06:54:53 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,21 +31,19 @@
 
 package org.opencms.gwt.client;
 
-import org.opencms.gwt.client.rpc.CmsLog;
+import org.opencms.gwt.client.rpc.CmsRpcPrefetcher;
 import org.opencms.gwt.shared.CmsCoreData;
 import org.opencms.gwt.shared.rpc.I_CmsCoreService;
 import org.opencms.gwt.shared.rpc.I_CmsCoreServiceAsync;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.rpc.SerializationException;
-import com.google.gwt.user.client.rpc.SerializationStreamFactory;
 
 /**
  * Client side core data provider.<p>
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  * 
@@ -70,7 +68,7 @@ public final class CmsCoreProvider extends CmsCoreData {
      */
     protected CmsCoreProvider() {
 
-        super(deserialize());
+        super((CmsCoreData)CmsRpcPrefetcher.getSerializedObject(getService(), DICT_NAME));
     }
 
     /**
@@ -91,38 +89,13 @@ public final class CmsCoreProvider extends CmsCoreData {
      * 
      * @return the core service instance
      */
-    public static I_CmsCoreServiceAsync getCoreService() {
+    public static I_CmsCoreServiceAsync getService() {
 
         if (SERVICE == null) {
             SERVICE = GWT.create(I_CmsCoreService.class);
         }
         return SERVICE;
     }
-
-    /**
-     * Deserializes the prefetched RPC data.<p>
-     * 
-     * @return the prefetched RPC data
-     */
-    private static CmsCoreData deserialize() {
-
-        String data = getPrefetchedData();
-        SerializationStreamFactory streamFactory = (SerializationStreamFactory)getCoreService();
-        try {
-            return (CmsCoreData)streamFactory.createStreamReader(data).readObject();
-        } catch (SerializationException e) {
-            // should never happen
-            CmsLog.log(e.getLocalizedMessage());
-        }
-        return null;
-    }
-
-    /**
-     * Retrieves the prefetched data from the host page.<p>
-     */
-    private static native String getPrefetchedData() /*-{
-        return $wnd[@org.opencms.gwt.shared.CmsCoreData::DICT_NAME];
-    }-*/;
 
     /**
      * Adds the current site root of this context to the given resource name.<p>
