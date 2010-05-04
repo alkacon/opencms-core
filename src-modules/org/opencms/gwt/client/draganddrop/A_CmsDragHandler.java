@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/draganddrop/Attic/A_CmsDragHandler.java,v $
- * Date   : $Date: 2010/05/04 13:59:33 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/05/04 14:41:03 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -66,7 +66,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 8.0.0
  */
@@ -166,30 +166,35 @@ implements I_CmsDragHandler<E, T> {
     @SuppressWarnings("unchecked")
     public void onMouseDown(MouseDownEvent event) {
 
-        // only act on left button down, ignore right click
-        if (event.getNativeButton() == NativeEvent.BUTTON_LEFT) {
-            try {
-                m_dragElement = (E)event.getSource();
-            } catch (Exception e) {
-                // TODO: add logging
-            }
-            if ((m_dragElement != null) && m_dragElement.isHandleEvent(event.getNativeEvent())) {
-                DOM.setCapture(m_dragElement.getElement());
-                m_dragging = true;
-                Document.get().getBody().addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragStarted());
-                m_currentEvent = event;
-                m_currentTarget = (T)m_dragElement.getDragParent();
-                m_cursorOffsetLeft = m_currentEvent.getRelativeX(m_dragElement.getElement());
-                m_cursorOffsetTop = m_currentEvent.getRelativeY(m_dragElement.getElement());
-
-                prepareElementForDrag();
-
-                positionElement();
-
-                event.preventDefault();
-                event.stopPropagation();
-            }
+        if (event.getNativeButton() != NativeEvent.BUTTON_LEFT) {
+            // only act on left button down, ignore right click
+            return;
         }
+        try {
+            m_dragElement = (E)event.getSource();
+        } catch (Exception e) {
+            // TODO: add logging
+        }
+        if ((m_dragElement == null) || !m_dragElement.isHandleEvent(event.getNativeEvent())) {
+            // drag element is not listening
+            return;
+        }
+
+        // let's drag
+        DOM.setCapture(m_dragElement.getElement());
+        m_dragging = true;
+        Document.get().getBody().addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragStarted());
+        m_currentEvent = event;
+        m_currentTarget = (T)m_dragElement.getDragParent();
+        m_cursorOffsetLeft = m_currentEvent.getRelativeX(m_dragElement.getElement());
+        m_cursorOffsetTop = m_currentEvent.getRelativeY(m_dragElement.getElement());
+
+        prepareElementForDrag();
+
+        positionElement();
+
+        event.preventDefault();
+        event.stopPropagation();
     }
 
     /**
@@ -333,24 +338,27 @@ implements I_CmsDragHandler<E, T> {
 
             // check if the mouse pointer is within the width of the target 
             int left = m_currentEvent.getRelativeX(element);
-            if ((left > 0) && (left < element.getOffsetWidth())) {
-
-                // check if the mouse pointer is within the height of the target 
-                int top = m_currentEvent.getRelativeY(element);
-                if ((top > 0) && (top < element.getOffsetHeight())) {
-                    if (target == m_currentTarget) {
-                        sortTarget();
-                    } else {
-                        if (m_currentTarget != null) {
-                            elementLeaveTargetAction();
-                        }
-                        m_currentTarget = target;
-                        elementEnterTargetAction();
-                        sortTarget();
-                    }
-                    return;
-                }
+            if ((left <= 0) || (left >= element.getOffsetWidth())) {
+                continue;
             }
+
+            // check if the mouse pointer is within the height of the target 
+            int top = m_currentEvent.getRelativeY(element);
+            if ((top <= 0) || (top >= element.getOffsetHeight())) {
+                continue;
+            }
+
+            if (target == m_currentTarget) {
+                sortTarget();
+            } else {
+                if (m_currentTarget != null) {
+                    elementLeaveTargetAction();
+                }
+                m_currentTarget = target;
+                elementEnterTargetAction();
+                sortTarget();
+            }
+            return;
         }
         if (m_currentTarget != null) {
             elementLeaveTargetAction();
@@ -452,39 +460,43 @@ implements I_CmsDragHandler<E, T> {
             Widget child = it.next();
             Element element = child.getElement();
 
-            // only take visible and not 'position:absolute' elements into account, also ignore the place-holder
             String positioning = element.getStyle().getPosition();
-            if (!(positioning.equals(Position.ABSOLUTE.getCssName()) || positioning.equals(Position.FIXED.getCssName()))
-                && child.isVisible()
-                && (m_placeholder != child)) {
+            if ((positioning.equals(Position.ABSOLUTE.getCssName()) || positioning.equals(Position.FIXED.getCssName()))
+                || !child.isVisible()
+                || (m_placeholder == child)) {
+                // only take visible and not 'position:absolute' elements into account, also ignore the place-holder
+                continue;
+            }
 
-                // check if the mouse pointer is within the width of the element 
-                int left = m_currentEvent.getRelativeX(element);
-                if ((left > 0) && (left < element.getOffsetWidth())) {
+            // check if the mouse pointer is within the width of the element 
+            int left = m_currentEvent.getRelativeX(element);
+            if ((left <= 0) || (left >= element.getOffsetWidth())) {
+                continue;
+            }
 
-                    // check if the mouse pointer is within the height of the element 
-                    int top = m_currentEvent.getRelativeY(element);
-                    int height = element.getOffsetHeight();
-                    if ((top > 0) && (top < height)) {
-                        int index = m_currentTarget.getWidgetIndex(child);
+            // check if the mouse pointer is within the height of the element 
+            int top = m_currentEvent.getRelativeY(element);
+            int height = element.getOffsetHeight();
+            if ((top <= 0) || (top >= height)) {
+                continue;
+            }
 
-                        // check if the mouse pointer is within the upper half of the element,
-                        // only act if the place-holder index has to be changed
-                        if (top < height / 2) {
-                            if (m_currentTarget.getWidgetIndex(m_placeholder) != index) {
-                                m_currentTarget.insert(m_placeholder, index);
-                                targetSortChangeAction();
-                            }
-                        } else {
-                            if (m_currentTarget.getWidgetIndex(m_placeholder) != index + 1) {
-                                m_currentTarget.insert(m_placeholder, index + 1);
-                                targetSortChangeAction();
-                            }
-                        }
-                        return;
-                    }
+            int index = m_currentTarget.getWidgetIndex(child);
+
+            // check if the mouse pointer is within the upper half of the element,
+            // only act if the place-holder index has to be changed
+            if (top < height / 2) {
+                if (m_currentTarget.getWidgetIndex(m_placeholder) != index) {
+                    m_currentTarget.insert(m_placeholder, index);
+                    targetSortChangeAction();
+                }
+            } else {
+                if (m_currentTarget.getWidgetIndex(m_placeholder) != index + 1) {
+                    m_currentTarget.insert(m_placeholder, index + 1);
+                    targetSortChangeAction();
                 }
             }
+            return;
         }
     }
 
