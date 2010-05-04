@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/Attic/CmsCoreProvider.java,v $
- * Date   : $Date: 2010/05/04 06:54:53 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/05/04 09:40:41 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,9 @@
 
 package org.opencms.gwt.client;
 
+import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.rpc.CmsRpcPrefetcher;
+import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.shared.CmsCoreData;
 import org.opencms.gwt.shared.rpc.I_CmsCoreService;
 import org.opencms.gwt.shared.rpc.I_CmsCoreServiceAsync;
@@ -43,7 +45,7 @@ import com.google.gwt.core.client.GWT;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  * 
@@ -157,6 +159,59 @@ public final class CmsCoreProvider extends CmsCoreData {
     }
 
     /**
+     * Locks the current resource.<p>
+     * 
+     * @return <code>true</code> if succeeded
+     * 
+     * @see #lock(String)
+     */
+    public boolean lock() {
+
+        return lock(getUri());
+    }
+
+    /**
+     * Locks the given resource with a temporary lock, synchronously.<p>
+     * 
+     * @param uri the resource URI
+     * 
+     * @return <code>true</code> if succeeded, if not a a warning is already shown to the user
+     */
+    public boolean lock(final String uri) {
+
+        // lock the sitemap
+        CmsRpcAction<String> lockAction = new CmsRpcAction<String>() {
+
+            /**
+            * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+            */
+            @Override
+            public void execute() {
+
+                start(200);
+                getService().lockTemp(uri, this);
+            }
+
+            /**
+            * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+            */
+            @Override
+            public void onResponse(String result) {
+
+                stop();
+                if (result == null) {
+                    // ok
+                    return;
+                }
+                // unable to lock
+                String text = Messages.get().key(Messages.GUI_LOCK_NOTIFICATION_2, uri, result);
+                CmsNotification.get().send(CmsNotification.Type.WARNING, text);
+            }
+        };
+        return lockAction.executeSync() == null;
+    }
+
+    /**
      * Removes the current site root prefix from the given root path,
      * that is adjusts the resource name for the current site root.<p> 
      * 
@@ -178,5 +233,58 @@ public final class CmsCoreProvider extends CmsCoreData {
             rootPath = rootPath.substring(siteRoot.length());
         }
         return rootPath;
+    }
+
+    /**
+     * Unlocks the current resource.<p>
+     * 
+     * @return <code>true</code> if succeeded
+     * 
+     * @see #unlock(String)
+     */
+    public boolean unlock() {
+
+        return unlock(getUri());
+    }
+
+    /**
+     * Unlocks the given resource, synchronously.<p>
+     * 
+     * @param uri the resource URI
+     * 
+     * @return <code>true</code> if succeeded, if not a a warning is already shown to the user
+     */
+    public boolean unlock(final String uri) {
+
+        // lock the sitemap
+        CmsRpcAction<String> unlockAction = new CmsRpcAction<String>() {
+
+            /**
+            * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+            */
+            @Override
+            public void execute() {
+
+                start(200);
+                getService().unlock(uri, this);
+            }
+
+            /**
+            * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+            */
+            @Override
+            public void onResponse(String result) {
+
+                stop();
+                if (result == null) {
+                    // ok
+                    return;
+                }
+                // unable to lock
+                String text = Messages.get().key(Messages.GUI_UNLOCK_NOTIFICATION_2, uri, result);
+                CmsNotification.get().send(CmsNotification.Type.WARNING, text);
+            }
+        };
+        return unlockAction.executeSync() == null;
     }
 }

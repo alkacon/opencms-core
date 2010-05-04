@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/rpc/Attic/I_CmsCoreService.java,v $
- * Date   : $Date: 2010/05/03 10:48:41 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/05/04 09:40:41 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
  * 
@@ -71,15 +71,26 @@ public interface I_CmsCoreService extends RemoteService {
     throws CmsRpcException;
 
     /**
-     * Locks the given sitemap.<p>
+     * Locks the given resource.<p>
      * 
-     * @param uri the sitemap URI 
+     * @param uri the resource URI 
      * 
      * @return <code>null</code> if successful, an error message if not 
      * 
      * @throws CmsRpcException if something goes wrong 
      */
     String lock(String uri) throws CmsRpcException;
+
+    /**
+     * Locks the given resource with a temporary lock.<p>
+     * 
+     * @param uri the resource URI 
+     * 
+     * @return <code>null</code> if successful, an error message if not 
+     * 
+     * @throws CmsRpcException if something goes wrong 
+     */
+    String lockTemp(String uri) throws CmsRpcException;
 
     /**
      * Generates core data for prefetching in the host page.<p>
@@ -91,9 +102,9 @@ public interface I_CmsCoreService extends RemoteService {
     CmsCoreData prefetch() throws CmsRpcException;
 
     /**
-     * Unlocks the given sitemap.<p>
+     * Unlocks the given resource.<p>
      * 
-     * @param uri the sitemap URI 
+     * @param uri the resource URI 
      * 
      * @return <code>null</code> if successful, an error message if not 
      * 

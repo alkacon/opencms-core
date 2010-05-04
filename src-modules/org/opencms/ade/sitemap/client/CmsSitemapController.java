@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2010/05/04 06:54:27 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/05/04 09:40:41 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,6 @@ import org.opencms.file.CmsResource;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.rpc.CmsRpcPrefetcher;
-import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
@@ -59,7 +58,7 @@ import com.google.gwt.user.client.Window;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 8.0.0
  */
@@ -118,8 +117,6 @@ public class CmsSitemapController {
 
                 // state
                 m_handler.onReset();
-
-                internalReset(false);
             }
         };
         saveAction.execute();
@@ -300,7 +297,8 @@ public class CmsSitemapController {
         // state
         m_handler.onReset();
 
-        internalReset(true);
+        CmsCoreProvider.get().unlock();
+        Window.Location.reload();
     }
 
     /**
@@ -341,7 +339,7 @@ public class CmsSitemapController {
         // post-state
         if (!isDirty()) {
             m_handler.onLastUndo();
-            internalReset(false);
+            CmsCoreProvider.get().unlock();
         }
     }
 
@@ -396,52 +394,6 @@ public class CmsSitemapController {
     }
 
     /**
-     * Discards all changes, even unlocking the sitemap resource.<p>
-     * 
-     * @param reload if to reload after unlocking
-     */
-    protected void internalReset(final boolean reload) {
-
-        // unlock
-        CmsRpcAction<String> unlockAction = new CmsRpcAction<String>() {
-
-            /**
-            * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
-            */
-            @Override
-            public void execute() {
-
-                start(0);
-                CmsCoreProvider.getService().unlock(CmsCoreProvider.get().getUri(), this);
-            }
-
-            /**
-            * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
-            */
-            @Override
-            public void onResponse(String result) {
-
-                stop();
-
-                if (result == null) {
-                    // ok
-                    if (reload) {
-                        Window.Location.reload();
-                    }
-                    return;
-                }
-                // unable to unlock
-                String text = Messages.get().key(
-                    Messages.GUI_UNLOCK_NOTIFICATION_2,
-                    CmsCoreProvider.get().getUri(),
-                    result);
-                CmsNotification.get().send(CmsNotification.Type.WARNING, text);
-            }
-        };
-        unlockAction.execute();
-    }
-
-    /**
      * Adds a change to the queue.<p>
      * 
      * @param oldEntry the old entry
@@ -454,7 +406,12 @@ public class CmsSitemapController {
 
         // state
         if (!isDirty()) {
-            startEdit();
+            if (CmsCoreProvider.get().lock()) {
+                m_handler.onStartEdit();
+            } else {
+                // could not lock
+                return;
+            }
         }
 
         if (!redo) {
@@ -471,49 +428,6 @@ public class CmsSitemapController {
 
         // refresh view
         m_handler.onChange(change);
-    }
-
-    /**
-     * Sets the state when start editing, even locking the sitemap resource.<p>
-     */
-    private void startEdit() {
-
-        // lock the sitemap
-        CmsRpcAction<String> lockAction = new CmsRpcAction<String>() {
-
-            /**
-            * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
-            */
-            @Override
-            public void execute() {
-
-                start(0);
-                CmsCoreProvider.getService().lock(CmsCoreProvider.get().getUri(), this);
-            }
-
-            /**
-            * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
-            */
-            @Override
-            public void onResponse(String result) {
-
-                // state
-                m_handler.onStartEdit();
-
-                stop();
-                if (result == null) {
-                    // ok
-                    return;
-                }
-                // unable to lock
-                String text = Messages.get().key(
-                    Messages.GUI_LOCK_NOTIFICATION_2,
-                    CmsCoreProvider.get().getUri(),
-                    result);
-                CmsNotification.get().send(CmsNotification.Type.WARNING, text);
-            }
-        };
-        lockAction.execute();
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/rpc/Attic/I_CmsCoreServiceAsync.java,v $
- * Date   : $Date: 2010/05/03 10:48:41 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/05/04 09:40:41 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,13 +37,14 @@ import org.opencms.gwt.shared.CmsCoreData;
 import java.util.List;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
 
 /**
  * Provides general core services.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  * 
@@ -68,12 +69,22 @@ public interface I_CmsCoreServiceAsync {
         AsyncCallback<CmsCategoryTreeEntry> callback);
 
     /**
-     * Locks the given sitemap.<p>
+     * Locks the given resource.<p>
      * 
-     * @param uri the sitemap URI 
+     * @param uri the resource URI 
      * @param callback the async callback
      */
+    @SynchronizedRpcRequest
     void lock(String uri, AsyncCallback<String> callback);
+
+    /**
+     * Locks the given resource with a temporary lock.<p>
+     * 
+     * @param uri the resource URI 
+     * @param callback the async callback
+     */
+    @SynchronizedRpcRequest
+    void lockTemp(String uri, AsyncCallback<String> callback);
 
     /**
      * Generates core data for prefetching in the host page.<p>
@@ -83,10 +94,11 @@ public interface I_CmsCoreServiceAsync {
     void prefetch(AsyncCallback<CmsCoreData> callback);
 
     /**
-     * Unlocks the given sitemap.<p>
+     * Unlocks the given resource.<p>
      * 
-     * @param uri the sitemap URI 
+     * @param uri the resource URI 
      * @param callback the async callback
      */
+    @SynchronizedRpcRequest
     void unlock(String uri, AsyncCallback<String> callback);
 }
