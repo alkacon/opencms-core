@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsDragSubcontainer.java,v $
- * Date   : $Date: 2010/05/04 13:17:36 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/05/04 14:40:41 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -72,14 +72,6 @@ public class CmsDragSubcontainer extends CmsDragContainerElement implements I_Cm
         String noEditReason) {
 
         super(element, parent, clientId, sitePath, noEditReason);
-    }
-
-    /**
-     * @see org.opencms.gwt.client.draganddrop.I_CmsDragTarget#getPositionInfo()
-     */
-    public CmsPositionBean getPositionInfo() {
-
-        return CmsPositionBean.generatePositionInfo(this);
     }
 
     /**

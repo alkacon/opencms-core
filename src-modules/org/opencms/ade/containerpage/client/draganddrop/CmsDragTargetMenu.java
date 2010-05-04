@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsDragTargetMenu.java,v $
- * Date   : $Date: 2010/05/04 13:17:36 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/05/04 14:40:41 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,8 +31,6 @@
 
 package org.opencms.ade.containerpage.client.draganddrop;
 
-import org.opencms.gwt.client.util.CmsPositionBean;
-
 import com.google.gwt.user.client.ui.AbsolutePanel;
 
 /**
@@ -40,7 +38,7 @@ import com.google.gwt.user.client.ui.AbsolutePanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -55,14 +53,6 @@ public class CmsDragTargetMenu extends AbsolutePanel implements I_CmsDragTargetC
 
         // overriding overflow hidden set by AbsolutePanel
         getElement().getStyle().clearOverflow();
-    }
-
-    /**
-     * @see org.opencms.gwt.client.draganddrop.I_CmsDragTarget#getPositionInfo()
-     */
-    public CmsPositionBean getPositionInfo() {
-
-        return CmsPositionBean.generatePositionInfo(this);
     }
 
     /**
