@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/draganddrop/Attic/A_CmsDragHandler.java,v $
- * Date   : $Date: 2010/05/03 07:54:08 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/05/04 11:21:47 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,6 +50,7 @@ import com.google.gwt.event.dom.client.MouseMoveEvent;
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseUpEvent;
+import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
@@ -65,7 +66,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.0
  */
@@ -76,8 +77,7 @@ implements I_CmsDragHandler<E, T> {
     protected boolean m_animationEnabled;
 
     /** The current mouse event. */
-    @SuppressWarnings("unchecked")
-    protected MouseEvent m_currentEvent;
+    protected MouseEvent<? extends EventHandler> m_currentEvent;
 
     /** The current drag target. */
     protected T m_currentTarget;
@@ -124,8 +124,7 @@ implements I_CmsDragHandler<E, T> {
     /**
      * @see org.opencms.gwt.client.draganddrop.I_CmsDragHandler#getCurrentMouseEvent()
      */
-    @SuppressWarnings("unchecked")
-    public MouseEvent getCurrentMouseEvent() {
+    public MouseEvent<? extends EventHandler> getCurrentMouseEvent() {
 
         return m_currentEvent;
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsContainerDragHandler.java,v $
- * Date   : $Date: 2010/05/04 06:58:13 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2010/05/04 11:21:47 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,11 +68,10 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @since 8.0.0
  */
-@SuppressWarnings("unchecked")
 public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElementExt, I_CmsDragTargetContainer> {
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/draganddrop/Attic/I_CmsDragHandler.java,v $
- * Date   : $Date: 2010/04/27 13:56:00 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/05/04 11:21:47 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import com.google.gwt.event.shared.EventHandler;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -69,7 +69,7 @@ extends MouseDownHandler, MouseUpHandler, MouseMoveHandler, MouseOverHandler, Mo
      * 
      * @return the mouse event
      */
-    MouseEvent<EventHandler> getCurrentMouseEvent();
+    MouseEvent<? extends EventHandler> getCurrentMouseEvent();
 
     /**
      * Returns the current target, the target the dragged element is currently over and the placeholder is shown in.<p>
