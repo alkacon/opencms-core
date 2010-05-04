@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2010/05/03 14:33:06 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/05/04 06:54:27 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,9 +38,12 @@ import org.opencms.ade.sitemap.shared.CmsSitemapChangeMove;
 import org.opencms.ade.sitemap.shared.CmsSitemapChangeNew;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.ade.sitemap.shared.I_CmsSitemapChange;
+import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService;
+import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapServiceAsync;
 import org.opencms.file.CmsResource;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
+import org.opencms.gwt.client.rpc.CmsRpcPrefetcher;
 import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.util.CmsStringUtil;
 
@@ -48,6 +51,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
 
 /**
@@ -55,7 +59,7 @@ import com.google.gwt.user.client.Window;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 8.0.0
  */
@@ -73,6 +77,9 @@ public class CmsSitemapController {
     /** The list of undone changes. */
     protected List<I_CmsSitemapChange> m_undone;
 
+    /** The sitemap service instance. */
+    private I_CmsSitemapServiceAsync m_service;
+
     /**
      * Constructor.<p>
      */
@@ -80,7 +87,7 @@ public class CmsSitemapController {
 
         m_changes = new ArrayList<I_CmsSitemapChange>();
         m_undone = new ArrayList<I_CmsSitemapChange>();
-        m_data = CmsSitemapProvider.get();
+        m_data = (CmsSitemapData)CmsRpcPrefetcher.getSerializedObject(getService(), CmsSitemapData.DICT_NAME);
     }
 
     /**
@@ -97,7 +104,7 @@ public class CmsSitemapController {
             @Override
             public void execute() {
 
-                CmsSitemapProvider.getService().save(CmsCoreProvider.get().getUri(), m_changes, this);
+                getService().save(CmsCoreProvider.get().getUri(), m_changes, this);
             }
 
             /**
@@ -188,7 +195,7 @@ public class CmsSitemapController {
             public void execute() {
 
                 // Make the call to the sitemap service
-                CmsSitemapProvider.getService().getChildren(sitePath, this);
+                getService().getChildren(sitePath, this);
             }
 
             /**
@@ -206,11 +213,11 @@ public class CmsSitemapController {
     }
 
     /**
-     * Returns the edit data.<p>
+     * Returns the sitemap data.<p>
      *
-     * @return the edit data
+     * @return the sitemap data
      */
-    public CmsSitemapData getSitemapData() {
+    public CmsSitemapData getData() {
 
         return m_data;
     }
@@ -223,6 +230,16 @@ public class CmsSitemapController {
     public boolean isDirty() {
 
         return !m_changes.isEmpty();
+    }
+
+    /**
+     * Checks if the current sitemap is editable.<p>
+     *
+     * @return <code>true</code> if the current sitemap is editable
+     */
+    public boolean isEditable() {
+
+        return CmsStringUtil.isEmptyOrWhitespaceOnly(m_data.getNoEditReason());
     }
 
     /**
@@ -366,6 +383,19 @@ public class CmsSitemapController {
     }
 
     /**
+     * Returns the sitemap service instance.<p>
+     * 
+     * @return the sitemap service instance
+     */
+    protected I_CmsSitemapServiceAsync getService() {
+
+        if (m_service == null) {
+            m_service = GWT.create(I_CmsSitemapService.class);
+        }
+        return m_service;
+    }
+
+    /**
      * Discards all changes, even unlocking the sitemap resource.<p>
      * 
      * @param reload if to reload after unlocking
@@ -382,7 +412,7 @@ public class CmsSitemapController {
             public void execute() {
 
                 start(0);
-                CmsCoreProvider.getCoreService().unlock(CmsCoreProvider.get().getUri(), this);
+                CmsCoreProvider.getService().unlock(CmsCoreProvider.get().getUri(), this);
             }
 
             /**
@@ -458,7 +488,7 @@ public class CmsSitemapController {
             public void execute() {
 
                 start(0);
-                CmsCoreProvider.getCoreService().lock(CmsCoreProvider.get().getUri(), this);
+                CmsCoreProvider.getService().lock(CmsCoreProvider.get().getUri(), this);
             }
 
             /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapToolbar.java,v $
- * Date   : $Date: 2010/04/29 09:31:56 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/05/04 06:54:27 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 8.0.0
  */
@@ -75,10 +75,10 @@ public class CmsSitemapToolbar extends CmsToolbar {
 
     /**
      * Constructor.<p>
+     * 
+     * @param controller the sitemap controller 
      */
-    public CmsSitemapToolbar() {
-
-        boolean isEditable = CmsSitemapProvider.get().isEditable();
+    public CmsSitemapToolbar(CmsSitemapController controller) {
 
         m_saveButton = new CmsToggleButton(I_CmsButton.ButtonData.SAVE);
         m_saveButton.disable(Messages.get().key(Messages.GUI_DISABLED_SAVE_0));
@@ -101,24 +101,24 @@ public class CmsSitemapToolbar extends CmsToolbar {
         addLeft(m_resetButton);
 
         m_addButton = new CmsToggleButton(I_CmsButton.ButtonData.ADD);
-        if (!isEditable) {
-            m_addButton.disable(CmsSitemapProvider.get().getNoEditReason());
+        if (!controller.isEditable()) {
+            m_addButton.disable(controller.getData().getNoEditReason());
         }
         addLeft(m_addButton);
 
         m_clipboardButton = new CmsToggleButton(I_CmsButton.ButtonData.CLIPBOARD);
-        if (!isEditable) {
-            m_clipboardButton.disable(CmsSitemapProvider.get().getNoEditReason());
+        if (!controller.isEditable()) {
+            m_clipboardButton.disable(controller.getData().getNoEditReason());
         }
         addLeft(m_clipboardButton);
 
         m_publishButton = new CmsToggleButton(I_CmsButton.ButtonData.PUBLISH);
         addRight(m_publishButton);
 
-        if (!isEditable) {
+        if (!controller.isEditable()) {
             CmsNotification.get().sendSticky(
                 CmsNotification.Type.WARNING,
-                Messages.get().key(Messages.GUI_NO_EDIT_NOTIFICATION_1, CmsSitemapProvider.get().getNoEditReason()));
+                Messages.get().key(Messages.GUI_NO_EDIT_NOTIFICATION_1, controller.getData().getNoEditReason()));
         }
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapTreeItemFactory.java,v $
- * Date   : $Date: 2010/04/26 13:42:48 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/05/04 06:54:27 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import com.google.gwt.user.client.ui.Image;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  * 
@@ -78,7 +78,7 @@ public class CmsSitemapTreeItemFactory {
         itemWidget.setIcon(icon);
         CmsSitemapTreeItem treeItem = new CmsSitemapTreeItem(itemWidget, entry.getSitePath());
         treeItem.setId(entry.getName());
-        if (CmsSitemapProvider.get().isEditable()) {
+        if (m_controller.isEditable()) {
             if (m_hoverbar == null) {
                 CmsSitemapHoverbarHandler handler = new CmsSitemapHoverbarHandler(m_controller);
                 m_hoverbar = new CmsSitemapHoverbar(handler);

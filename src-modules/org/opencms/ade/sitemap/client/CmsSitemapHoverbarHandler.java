@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapHoverbarHandler.java,v $
- * Date   : $Date: 2010/05/03 14:33:05 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/05/04 06:54:27 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import com.google.gwt.user.client.Window;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 8.0.0
  * 
@@ -142,7 +142,7 @@ public class CmsSitemapHoverbarHandler {
      */
     public void onParent(final String sitePath) {
 
-        Window.Location.replace(CmsCoreProvider.get().link(CmsSitemapProvider.get().getParentSitemap()));
+        Window.Location.replace(CmsCoreProvider.get().link(m_controller.getData().getParentSitemap()));
     }
 
     /**
