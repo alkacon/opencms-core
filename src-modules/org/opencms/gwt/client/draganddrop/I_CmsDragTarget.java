@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/draganddrop/Attic/I_CmsDragTarget.java,v $
- * Date   : $Date: 2010/05/04 13:17:36 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/05/04 13:40:56 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -81,15 +81,4 @@ public interface I_CmsDragTarget extends HasWidgets, IndexedPanel, InsertPanel {
      * @see com.google.gwt.user.client.ui.AbsolutePanel#insert(Widget, int, int, int)
      */
     void insert(Widget w, int left, int top, int beforeIndex);
-
-    /**
-     * Sets the position of the specified child widget.<p>
-     * 
-     * @see com.google.gwt.user.client.ui.AbsolutePanel#setWidgetPosition(Widget w, int left, int top)
-     * 
-     * @param w the widget to position
-     * @param left position left
-     * @param top position top
-     */
-    void setWidgetPosition(Widget w, int left, int top);
 }

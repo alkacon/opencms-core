@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsDragTargetContainer.java,v $
- * Date   : $Date: 2010/05/04 13:17:36 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/05/04 13:40:56 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 8.0.0
  */
@@ -270,14 +270,5 @@ public class CmsDragTargetContainer implements I_CmsDragTargetContainer {
         m_highlighting = null;
         getElement().removeClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragging());
         getElement().removeClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().clearFix());
-    }
-
-    /**
-     * @see org.opencms.gwt.client.draganddrop.I_CmsDragTarget#setWidgetPosition(com.google.gwt.user.client.ui.Widget, int, int)
-     */
-    public void setWidgetPosition(Widget w, int left, int top) {
-
-        m_root.setWidgetPosition(w, left, top);
-
     }
 }
