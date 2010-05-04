@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsDragTargetContainer.java,v $
- * Date   : $Date: 2010/05/04 06:58:13 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/05/04 13:17:36 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,7 +32,6 @@
 package org.opencms.ade.containerpage.client.draganddrop;
 
 import org.opencms.ade.containerpage.shared.I_CmsContainer;
-import org.opencms.gwt.client.draganddrop.I_CmsDragHandler;
 import org.opencms.gwt.client.draganddrop.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.CmsHighlightingBorder;
 import org.opencms.gwt.client.util.CmsDebugLog;
@@ -51,7 +50,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.0
  */
@@ -235,38 +234,6 @@ public class CmsDragTargetContainer implements I_CmsDragTargetContainer {
     public Iterator<Widget> iterator() {
 
         return m_root.iterator();
-    }
-
-    /**
-     * @see org.opencms.gwt.client.draganddrop.I_CmsDragTarget#onDragEnter(org.opencms.gwt.client.draganddrop.I_CmsDragHandler)
-     */
-    public void onDragEnter(I_CmsDragHandler<?, ?> handler) {
-
-        // nothing to do
-    }
-
-    /**
-     * @see org.opencms.gwt.client.draganddrop.I_CmsDragTarget#onDragInside(org.opencms.gwt.client.draganddrop.I_CmsDragHandler)
-     */
-    public void onDragInside(I_CmsDragHandler<?, ?> handler) {
-
-        // nothing to do
-    }
-
-    /**
-     * @see org.opencms.gwt.client.draganddrop.I_CmsDragTarget#onDragLeave(org.opencms.gwt.client.draganddrop.I_CmsDragHandler)
-     */
-    public void onDragLeave(I_CmsDragHandler<?, ?> handler) {
-
-        // nothing to do
-    }
-
-    /**
-     * @see org.opencms.gwt.client.draganddrop.I_CmsDragTarget#onDrop(org.opencms.gwt.client.draganddrop.I_CmsDragHandler)
-     */
-    public void onDrop(I_CmsDragHandler<?, ?> handler) {
-
-        // nothing to do
     }
 
     /**

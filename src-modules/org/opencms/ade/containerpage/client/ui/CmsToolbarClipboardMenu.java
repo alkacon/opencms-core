@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsToolbarClipboardMenu.java,v $
- * Date   : $Date: 2010/04/30 09:00:18 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/05/04 13:17:36 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 8.0.0
  */
@@ -155,7 +155,7 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu {
             element.showDeleteButton();
 
             // disabling the container-page drag and enabling the menu drag
-            element.removeAllMouseHandlers();
+            element.removeDndMouseHandlers();
             element.setDragParent(m_favorites.getListTarget());
             m_menuDragHandler.registerMouseHandler(element);
         }
@@ -209,7 +209,7 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu {
             clientIds.add(element.getClientId());
 
             // disabling the menu drag and re-enabling the container-page drag
-            element.removeAllMouseHandlers();
+            element.removeDndMouseHandlers();
             getHandler().enableDragHandler(element);
         }
         getHandler().saveFavoriteList(clientIds);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/draganddrop/Attic/I_CmsDragTarget.java,v $
- * Date   : $Date: 2010/04/30 07:04:20 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/05/04 13:17:36 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -81,34 +81,6 @@ public interface I_CmsDragTarget extends HasWidgets, IndexedPanel, InsertPanel {
      * @see com.google.gwt.user.client.ui.AbsolutePanel#insert(Widget, int, int, int)
      */
     void insert(Widget w, int left, int top, int beforeIndex);
-
-    /**
-     * Method called by the drag handler when an element is dragged into the drag target.<p>
-     * 
-     * @param handler the handler instance
-     */
-    void onDragEnter(I_CmsDragHandler<?, ?> handler);
-
-    /**
-     * Method called by the drag handler when an element is dragged inside the drag target.<p>
-     * 
-     * @param handler the handler instance
-     */
-    void onDragInside(I_CmsDragHandler<?, ?> handler);
-
-    /**
-     * Method called by the drag handler when an element is dragged out of the drag target.<p>
-     * 
-     * @param handler the handler instance
-     */
-    void onDragLeave(I_CmsDragHandler<?, ?> handler);
-
-    /**
-     * Method called by the drag handler when an element is dropped onto the drag target.<p>
-     * 
-     * @param handler the handler instance
-     */
-    void onDrop(I_CmsDragHandler<?, ?> handler);
 
     /**
      * Sets the position of the specified child widget.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsDragSubcontainer.java,v $
- * Date   : $Date: 2010/05/04 06:58:13 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/05/04 13:17:36 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,6 @@
 
 package org.opencms.ade.containerpage.client.draganddrop;
 
-import org.opencms.gwt.client.draganddrop.I_CmsDragHandler;
 import org.opencms.gwt.client.draganddrop.I_CmsDragTarget;
 import org.opencms.gwt.client.draganddrop.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.CmsHighlightingBorder;
@@ -47,7 +46,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -73,7 +72,6 @@ public class CmsDragSubcontainer extends CmsDragContainerElement implements I_Cm
         String noEditReason) {
 
         super(element, parent, clientId, sitePath, noEditReason);
-
     }
 
     /**
@@ -103,38 +101,6 @@ public class CmsDragSubcontainer extends CmsDragContainerElement implements I_Cm
             CmsPositionBean.getInnerDimensions(this),
             CmsHighlightingBorder.BorderColor.red);
         RootPanel.get().add(m_highlighting);
-    }
-
-    /**
-     * @see org.opencms.gwt.client.draganddrop.I_CmsDragTarget#onDragEnter(org.opencms.gwt.client.draganddrop.I_CmsDragHandler)
-     */
-    public void onDragEnter(I_CmsDragHandler<?, ?> handler) {
-
-        // nothing to do
-    }
-
-    /**
-     * @see org.opencms.gwt.client.draganddrop.I_CmsDragTarget#onDragInside(org.opencms.gwt.client.draganddrop.I_CmsDragHandler)
-     */
-    public void onDragInside(I_CmsDragHandler<?, ?> handler) {
-
-        // nothing to do
-    }
-
-    /**
-     * @see org.opencms.gwt.client.draganddrop.I_CmsDragTarget#onDragLeave(org.opencms.gwt.client.draganddrop.I_CmsDragHandler)
-     */
-    public void onDragLeave(I_CmsDragHandler<?, ?> handler) {
-
-        // nothing to do
-    }
-
-    /**
-     * @see org.opencms.gwt.client.draganddrop.I_CmsDragTarget#onDrop(org.opencms.gwt.client.draganddrop.I_CmsDragHandler)
-     */
-    public void onDrop(I_CmsDragHandler<?, ?> handler) {
-
-        // nothing to do
     }
 
     /**

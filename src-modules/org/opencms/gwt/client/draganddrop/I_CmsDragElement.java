@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/draganddrop/Attic/I_CmsDragElement.java,v $
- * Date   : $Date: 2010/03/26 09:14:40 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/05/04 13:17:36 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import com.google.gwt.user.client.Element;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -70,51 +70,6 @@ public interface I_CmsDragElement extends HasAllMouseHandlers, HasContextMenuHan
      * @return true if the event is triggered on the handle of the element
      */
     boolean isHandleEvent(NativeEvent event);
-
-    /**
-     * Method executed by the handler on drop outside any drag target.<p>
-     * 
-     * @param handler the handler instance
-     */
-    void onDragCancel(I_CmsDragHandler<?, ?> handler);
-
-    /** 
-     * Method executed by the drag handler when the element is dragged over a drag target.<p>
-     * 
-     * @param handler the handler instance
-     * @param target the current drag target
-     */
-    void onDragEnter(I_CmsDragHandler<?, ?> handler, I_CmsDragTarget target);
-
-    /** 
-     * Method executed by the drag handler when the element is dragged out of a drag container.<p>
-     * 
-     * @param handler the handler instance
-     * @param target the current drag target
-     */
-    void onDragLeave(I_CmsDragHandler<?, ?> handler, I_CmsDragTarget target);
-
-    /**
-     * Method executed when the drag process starts.<p>
-     * 
-     * @param handler the handler instance
-     */
-    void onDragStart(I_CmsDragHandler<?, ?> handler);
-
-    /**
-     * Method executed by the handler when the dragging is stopped. {@link I_CmsDragElement#onDropTarget} or {@link I_CmsDragElement#onDragCancel} have already been called earlier.<p> 
-     * 
-     * @param handler the handler instance
-     */
-    void onDragStop(I_CmsDragHandler<?, ?> handler);
-
-    /**
-     * Method executed when an element is dropped on a target.<p>
-     * 
-     * @param handler the handler instance
-     * @param target the current drag target
-     */
-    void onDropTarget(I_CmsDragHandler<?, ?> handler, I_CmsDragTarget target);
 
     /**
      * Registers a new drag parent.<p>

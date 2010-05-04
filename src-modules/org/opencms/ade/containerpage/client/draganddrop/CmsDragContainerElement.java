@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsDragContainerElement.java,v $
- * Date   : $Date: 2010/04/30 07:04:20 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/05/04 13:17:36 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,7 +33,6 @@ package org.opencms.ade.containerpage.client.draganddrop;
 
 import org.opencms.ade.containerpage.client.ui.CmsElementOptionBar;
 import org.opencms.gwt.client.draganddrop.I_CmsDragElementExt;
-import org.opencms.gwt.client.draganddrop.I_CmsDragHandler;
 import org.opencms.gwt.client.draganddrop.I_CmsDragTarget;
 import org.opencms.gwt.client.draganddrop.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.I_CmsButton;
@@ -65,7 +64,6 @@ import com.google.gwt.event.dom.client.MouseWheelHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.AbsolutePanel;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -73,16 +71,13 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
 public class CmsDragContainerElement extends AbsolutePanel implements I_CmsDragElementExt, HasClickHandlers {
 
     private static final String MOVE_HANDLE_CLASS = I_CmsButton.ButtonData.MOVE.getIconClass();
-
-    /** The current place holder element. */
-    protected Widget m_currentPlaceholder;
 
     /** The start offset left of the element to its parent. */
     protected int m_cursorOffsetLeft;
@@ -92,12 +87,6 @@ public class CmsDragContainerElement extends AbsolutePanel implements I_CmsDragE
 
     /** The drag handle widget. */
     protected Widget m_dragHandle;
-
-    /** The current place holder element. */
-    protected HTML m_placeholder;
-
-    /** The elements style. */
-    protected Style m_style;
 
     /** The elements client id. */
     private String m_clientId;
@@ -208,7 +197,8 @@ public class CmsDragContainerElement extends AbsolutePanel implements I_CmsDragE
      */
     public void clearDrag() {
 
-        Style style = getElement().getStyle();
+        Element element = getElement();
+        Style style = element.getStyle();
         style.clearPosition();
         style.clearWidth();
         style.clearTop();
@@ -216,12 +206,11 @@ public class CmsDragContainerElement extends AbsolutePanel implements I_CmsDragE
         style.clearZIndex();
         style.clearMargin();
         style.clearDisplay();
-        getElement().removeClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragElementBackground());
-        getElement().removeClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragElementBorder());
-        getElement().removeClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragging());
-        getElement().removeClassName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().shadow());
+        element.removeClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragElementBackground());
+        element.removeClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragElementBorder());
+        element.removeClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragging());
+        element.removeClassName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().shadow());
         getElementOptionBar().removeStyleName(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().cmsHovering());
-
     }
 
     /**
@@ -305,56 +294,6 @@ public class CmsDragContainerElement extends AbsolutePanel implements I_CmsDragE
     }
 
     /**
-     * @see org.opencms.gwt.client.draganddrop.I_CmsDragElement#onDragCancel(org.opencms.gwt.client.draganddrop.I_CmsDragHandler)
-     */
-    public void onDragCancel(I_CmsDragHandler<?, ?> handler) {
-
-        // nothing to do here, everything is done by the drag handler
-
-    }
-
-    /**
-     * @see org.opencms.gwt.client.draganddrop.I_CmsDragElement#onDragEnter(org.opencms.gwt.client.draganddrop.I_CmsDragHandler, org.opencms.gwt.client.draganddrop.I_CmsDragTarget)
-     */
-    public void onDragEnter(I_CmsDragHandler<?, ?> handler, I_CmsDragTarget target) {
-
-        // nothing to do here, everything is done by the drag handler
-    }
-
-    /**
-     * @see org.opencms.gwt.client.draganddrop.I_CmsDragElement#onDragLeave(org.opencms.gwt.client.draganddrop.I_CmsDragHandler, org.opencms.gwt.client.draganddrop.I_CmsDragTarget)
-     */
-    public void onDragLeave(I_CmsDragHandler<?, ?> handler, I_CmsDragTarget target) {
-
-        // nothing to do here, everything is done by the drag handler
-
-    }
-
-    /**
-     * @see org.opencms.gwt.client.draganddrop.I_CmsDragElement#onDragStart(org.opencms.gwt.client.draganddrop.I_CmsDragHandler)
-     */
-    public void onDragStart(I_CmsDragHandler<?, ?> handler) {
-
-        // nothing to do here, everything is done by the drag handler
-    }
-
-    /**
-     * @see org.opencms.gwt.client.draganddrop.I_CmsDragElement#onDragStop(org.opencms.gwt.client.draganddrop.I_CmsDragHandler)
-     */
-    public void onDragStop(I_CmsDragHandler<?, ?> handler) {
-
-        // nothing to do here, everything is done by the drag handler
-    }
-
-    /**
-     * @see org.opencms.gwt.client.draganddrop.I_CmsDragElement#onDropTarget(org.opencms.gwt.client.draganddrop.I_CmsDragHandler, org.opencms.gwt.client.draganddrop.I_CmsDragTarget)
-     */
-    public void onDropTarget(I_CmsDragHandler<?, ?> handler, I_CmsDragTarget target) {
-
-        // nothing to do here, everything is done by the drag handler
-    }
-
-    /**
      * @see org.opencms.gwt.client.draganddrop.I_CmsDragElementExt#prepareDrag()
      */
     public void prepareDrag() {
@@ -362,7 +301,6 @@ public class CmsDragContainerElement extends AbsolutePanel implements I_CmsDragE
         String width = CmsDomUtil.getCurrentStyle(getElement(), CmsDomUtil.Style.width);
         Style style = getElement().getStyle();
         style.setPosition(Position.ABSOLUTE);
-        //style.setPosition(Position.FIXED);
         style.setMargin(0, Unit.PX);
         style.setProperty(CmsDomUtil.Style.width.name(), width);
         style.setZIndex(100);
@@ -378,7 +316,6 @@ public class CmsDragContainerElement extends AbsolutePanel implements I_CmsDragE
         if (m_elementOptionBar != null) {
             m_elementOptionBar.addStyleName(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().cmsHovering());
         }
-
     }
 
     /**

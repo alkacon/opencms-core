@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/draganddrop/Attic/A_CmsDragHandler.java,v $
- * Date   : $Date: 2010/05/04 11:21:47 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/05/04 13:17:36 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -66,7 +66,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 8.0.0
  */
@@ -183,7 +183,6 @@ implements I_CmsDragHandler<E, T> {
                 m_cursorOffsetTop = m_currentEvent.getRelativeY(m_dragElement.getElement());
 
                 prepareElementForDrag();
-                m_dragElement.onDragStart(this);
 
                 positionElement();
 
@@ -246,12 +245,9 @@ implements I_CmsDragHandler<E, T> {
 
             if (m_currentTarget != null) {
                 elementDropAction();
-                m_dragElement.onDropTarget(this, m_currentTarget);
-                m_currentTarget.onDrop(this);
                 m_currentTarget = null;
             } else {
                 elementCancelAction();
-                m_dragElement.onDragCancel(this);
             }
             DOM.releaseCapture(m_dragElement.getElement());
             event.preventDefault();
@@ -261,13 +257,6 @@ implements I_CmsDragHandler<E, T> {
             } else {
                 clearDrag();
             }
-            //            restoreElementAfterDrag();
-            //            Document.get().getBody().removeClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragStarted());
-            //            m_dragElement.onDragStop(this);
-            //            m_dragElement = null;
-            //            m_placeholder = null;
-            //            m_targets = null;
-            //            m_currentTarget = null;
         }
 
     }
@@ -337,9 +326,6 @@ implements I_CmsDragHandler<E, T> {
 
     /**
      * Method will check all registered drag targets if the element is positioned over one of them. 
-     * {@link I_CmsDragElement#onDragLeave(I_CmsDragHandler, I_CmsDragTarget)}, {@link I_CmsDragTarget#onDragLeave(I_CmsDragHandler)},
-     * {@link I_CmsDragElement#onDragEnter(I_CmsDragHandler, I_CmsDragTarget)}, {@link I_CmsDragTarget#onDragEnter(I_CmsDragHandler)} and
-     * {@link I_CmsDragTarget#onDragInside(I_CmsDragHandler)} will be called accordingly.<p>
      */
     protected void checkTargets() {
 
@@ -360,19 +346,13 @@ implements I_CmsDragHandler<E, T> {
                 if ((top > 0) && (top < element.getOffsetHeight())) {
                     if (target == m_currentTarget) {
                         sortTarget();
-                        m_currentTarget.onDragInside(this);
                     } else {
                         if (m_currentTarget != null) {
                             elementLeaveTargetAction();
-                            m_dragElement.onDragLeave(this, m_currentTarget);
-                            m_currentTarget.onDragLeave(this);
                         }
                         m_currentTarget = target;
                         elementEnterTargetAction();
-                        m_dragElement.onDragEnter(this, m_currentTarget);
-                        m_currentTarget.onDragEnter(this);
                         sortTarget();
-
                     }
                     return;
                 }
@@ -380,8 +360,6 @@ implements I_CmsDragHandler<E, T> {
         }
         if (m_currentTarget != null) {
             elementLeaveTargetAction();
-            m_dragElement.onDragLeave(this, m_currentTarget);
-            m_currentTarget.onDragLeave(this);
             m_currentTarget = null;
         }
     }
@@ -393,7 +371,6 @@ implements I_CmsDragHandler<E, T> {
 
         restoreElementAfterDrag();
         Document.get().getBody().removeClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragStarted());
-        m_dragElement.onDragStop(this);
         m_dragElement = null;
         m_placeholder = null;
         m_targets = null;
