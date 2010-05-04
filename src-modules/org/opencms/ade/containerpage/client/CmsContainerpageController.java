@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageController.java,v $
- * Date   : $Date: 2010/05/03 07:53:47 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/05/04 06:58:13 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -423,6 +423,21 @@ public final class CmsContainerpageController {
             result.addAll(it.next().getAllDragElements());
         }
         return result;
+    }
+
+    /**
+     * Returns the data for the requested element, or <code>null</code> if the element has not been cached yet.<p>
+     * 
+     * @param clientId the element id
+     * 
+     * @return the element data
+     */
+    public CmsContainerElement getCachedElement(String clientId) {
+
+        if (m_elements.containsKey(clientId)) {
+            return m_elements.get(clientId);
+        }
+        return null;
     }
 
     /**

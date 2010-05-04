@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/Messages.java,v $
- * Date   : $Date: 2010/04/27 13:07:51 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/05/04 06:58:13 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.client.i18n.CmsMessages;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -54,7 +54,13 @@ public final class Messages {
     public static final String GUI_BUTTON_LEAVEPAGE_TEXT_0 = "GUI_BUTTON_LEAVEPAGE_TEXT_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_BUTTON_RESET_DISABLED_0 = "GUI_BUTTON_RESET_DISABLED_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_BUTTON_RESET_TEXT_0 = "GUI_BUTTON_RESET_TEXT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_BUTTON_SAVE_DISABLED_0 = "GUI_BUTTON_SAVE_DISABLED_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_BUTTON_SAVE_TEXT_0 = "GUI_BUTTON_SAVE_TEXT_0";

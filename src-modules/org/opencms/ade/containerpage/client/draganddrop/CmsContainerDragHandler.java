@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsContainerDragHandler.java,v $
- * Date   : $Date: 2010/05/03 07:54:08 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2010/05/04 06:58:13 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,6 +49,7 @@ import org.opencms.gwt.client.util.CmsDomUtil.Style;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -67,7 +68,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 8.0.0
  */
@@ -179,7 +180,7 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElementEx
 
         m_controller = controller;
         m_editor = editor;
-        m_isScrollEnabled = true;
+        m_isScrollEnabled = false;
         m_animationEnabled = true;
     }
 
@@ -498,6 +499,8 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElementEx
                         setDropZoneInfo(infoMenu);
                         getTargets().add(0, dropZone);
                     }
+                    CmsDebugLog.getInstance().printLine(
+                        "Loaded content for " + arg.getContents().size() + " container types");
                     Iterator<Entry<String, CmsDragTargetContainer>> it = m_controller.getContainerTargets().entrySet().iterator();
                     while (it.hasNext()) {
                         Entry<String, CmsDragTargetContainer> entry = it.next();
@@ -505,11 +508,30 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElementEx
                         if (arg.getContents().containsKey(containerType)
                             && (entry.getValue() != getDragElement().getDragParent())) {
                             try {
+                                CmsDragContainerElement dragElement;
+                                if (arg.isSubContainer()) {
+                                    CmsDebugLog.getInstance().printLine("Generating sub-container elements.");
+                                    List<CmsContainerElement> subElements = new ArrayList<CmsContainerElement>();
+                                    Iterator<String> itSub = arg.getSubItems().iterator();
+                                    while (itSub.hasNext()) {
+                                        CmsContainerElement element = m_controller.getCachedElement(itSub.next());
+                                        if (element != null) {
+                                            subElements.add(element);
+                                        }
+                                    }
+                                    dragElement = m_controller.getContainerpageUtil().createSubcontainerElement(
+                                        arg,
+                                        subElements,
+                                        entry.getValue(),
+                                        containerType);
+                                    CmsDebugLog.getInstance().printLine("Sub-container created.");
+                                } else {
+                                    dragElement = m_controller.getContainerpageUtil().createElement(
+                                        arg,
+                                        entry.getValue(),
+                                        containerType);
+                                }
 
-                                CmsDragContainerElement dragElement = m_controller.getContainerpageUtil().createElement(
-                                    arg,
-                                    entry.getValue(),
-                                    containerType);
                                 entry.getValue().add(dragElement);
                                 int offsetLeft = dragElement.getOffsetWidth() - 20;
                                 DragInfo info = new DragInfo(
@@ -522,6 +544,7 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElementEx
                                 addDragTarget(entry.getValue());
                                 entry.getValue().highlightContainer();
                             } catch (Exception e) {
+                                CmsDebugLog.getInstance().printLine(e.getMessage());
                                 continue;
                             }
 

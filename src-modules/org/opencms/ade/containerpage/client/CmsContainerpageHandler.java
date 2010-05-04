@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageHandler.java,v $
- * Date   : $Date: 2010/05/03 07:53:47 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/05/04 06:58:13 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,11 +38,13 @@ import org.opencms.ade.containerpage.client.ui.CmsLeavePageDialog;
 import org.opencms.ade.containerpage.client.ui.I_CmsToolbarButton;
 import org.opencms.ade.containerpage.client.util.CmsContainerpageProvider;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
+import org.opencms.ade.containerpage.shared.I_CmsContainerpageProviderConstants;
 import org.opencms.ade.publish.client.CmsPublishDialog;
 import org.opencms.gwt.client.draganddrop.I_CmsDragElement;
 import org.opencms.gwt.client.ui.CmsConfirmDialog;
 import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
 import org.opencms.gwt.client.util.CmsDebugLog;
+import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.util.CmsStringUtil;
 
@@ -58,7 +60,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -147,8 +149,8 @@ public class CmsContainerpageHandler {
             m_editor.getSave().enable();
             m_editor.getReset().enable();
         } else {
-            m_editor.getSave().disable("No changes");
-            m_editor.getReset().disable("No changes");
+            m_editor.getSave().disable(Messages.get().key(Messages.GUI_BUTTON_SAVE_DISABLED_0));
+            m_editor.getReset().disable(Messages.get().key(Messages.GUI_BUTTON_RESET_DISABLED_0));
         }
     }
 
@@ -240,7 +242,13 @@ public class CmsContainerpageHandler {
     public void openEditorForElement(CmsDragContainerElement element) {
 
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(element.getNoEditReason())) {
-            CmsContentEditorDialog.get().openEditDialog(element.getClientId(), element.getSitePath());
+            if (CmsDomUtil.hasClass(
+                I_CmsContainerpageProviderConstants.CLASS_SUB_CONTAINER_ELEMENTS,
+                element.getElement())) {
+                openSubcontainerEditor(element);
+            } else {
+                CmsContentEditorDialog.get().openEditDialog(element.getClientId(), element.getSitePath());
+            }
         } else {
             CmsDebugLog.getInstance().printLine(element.getNoEditReason());
         }
@@ -362,5 +370,17 @@ public class CmsContainerpageHandler {
             m_editor.showToolbar(true);
             m_controller.setToolbarVisible(true);
         }
+    }
+
+    /**
+     * Opens the sub-container element editor.<p>
+     * 
+     * @param subContainer the sub-container element
+     */
+    private void openSubcontainerEditor(CmsDragContainerElement subContainer) {
+
+        // TODO: implement
+
+        CmsDebugLog.getInstance().printLine("should open sub-container editor");
     }
 }

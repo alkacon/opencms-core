@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsDragTargetContainer.java,v $
- * Date   : $Date: 2010/04/30 07:04:20 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/05/04 06:58:13 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -52,7 +51,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
@@ -69,6 +68,7 @@ public class CmsDragTargetContainer implements I_CmsDragTargetContainer {
 
     private CmsDebugLog m_debug;
 
+    /** Highlighting border for this container. */
     private CmsHighlightingBorder m_highlighting;
 
     /** This container wrapped in a {@link com.google.gwt.user.client.ui.RootPanel}. */
@@ -205,7 +205,9 @@ public class CmsDragTargetContainer implements I_CmsDragTargetContainer {
                 CmsDomUtil.StyleValue.none.toString())) {
             getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().clearFix());
         }
-        m_highlighting = new CmsHighlightingBorder(getInnerDimensions(), CmsHighlightingBorder.BorderColor.red);
+        m_highlighting = new CmsHighlightingBorder(
+            CmsPositionBean.getInnerDimensions(m_root),
+            CmsHighlightingBorder.BorderColor.red);
         RootPanel.get().add(m_highlighting);
 
     }
@@ -272,7 +274,7 @@ public class CmsDragTargetContainer implements I_CmsDragTargetContainer {
      */
     public void refreshHighlighting() {
 
-        m_highlighting.setPosition(getInnerDimensions());
+        m_highlighting.setPosition(CmsPositionBean.getInnerDimensions(m_root));
 
     }
 
@@ -310,54 +312,5 @@ public class CmsDragTargetContainer implements I_CmsDragTargetContainer {
 
         m_root.setWidgetPosition(w, left, top);
 
-    }
-
-    /**
-     * Returns a position info representing the dimensions of all visible child elements (excluding elements with position:absolute).
-     * If the container has no visible elements, it's outer dimensions are returned.<p>
-     * 
-     * @return the position info
-     */
-    private CmsPositionBean getInnerDimensions() {
-
-        boolean first = true;
-        int top = 0;
-        int left = 0;
-        int height = 0;
-        int width = 0;
-        Iterator<Widget> it = iterator();
-        while (it.hasNext()) {
-            Widget w = it.next();
-            String positioning = w.getElement().getStyle().getPosition();
-            if (w.isVisible()
-                && !(positioning.equals(Position.ABSOLUTE.getCssName()) || positioning.equals(Position.FIXED.getCssName()))) {
-                if (first) {
-                    first = false;
-                    top = w.getAbsoluteTop();
-                    left = w.getAbsoluteLeft();
-                    height = w.getOffsetHeight();
-                    width = w.getOffsetWidth();
-                } else {
-                    int wTop = w.getAbsoluteTop();
-                    top = top < wTop ? top : wTop;
-                    int wLeft = w.getAbsoluteLeft();
-                    left = left < wLeft ? left : wLeft;
-                    int wHeight = w.getOffsetHeight();
-                    height = height > (wTop + wHeight - top) ? height : (wTop + wHeight - top);
-                    int wWidth = w.getOffsetWidth();
-                    width = width > (wLeft + wWidth - left) ? width : (wLeft + wWidth - left);
-                }
-            }
-        }
-        if (!first) {
-            CmsPositionBean result = new CmsPositionBean();
-            result.setHeight(height);
-            result.setWidth(width);
-            result.setTop(top);
-            result.setLeft(left);
-            return result;
-        } else {
-            return getPositionInfo();
-        }
     }
 }

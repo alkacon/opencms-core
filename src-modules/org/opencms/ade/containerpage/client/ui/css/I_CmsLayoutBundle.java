@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2010/04/27 13:56:00 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/05/04 06:58:13 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import com.google.gwt.resources.client.CssResource;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -72,6 +72,12 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsIm
          * 
          * @return the CSS class name
          */
+        String cms_ade_subcontainer();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
         String menuTabContainer();
 
         /** Access method.<p>
@@ -91,7 +97,6 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsIm
          * @return the CSS class name
          */
         String showDropzone();
-
     }
 
     /** The content editor dialog CSS. */
