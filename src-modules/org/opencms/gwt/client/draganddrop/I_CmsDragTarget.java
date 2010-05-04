@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/draganddrop/Attic/I_CmsDragTarget.java,v $
- * Date   : $Date: 2010/05/04 13:40:56 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/05/04 14:00:21 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,8 +31,6 @@
 
 package org.opencms.gwt.client.draganddrop;
 
-import org.opencms.gwt.client.util.CmsPositionBean;
-
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.IndexedPanel;
@@ -44,7 +42,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -56,13 +54,6 @@ public interface I_CmsDragTarget extends HasWidgets, IndexedPanel, InsertPanel {
      * @return the element
      */
     Element getElement();
-
-    /**
-     * Returns an position info bean.<p>
-     * 
-     * @return the element position data
-     */
-    CmsPositionBean getPositionInfo();
 
     /**
      * Inserts a child widget at the specified position before the specified
