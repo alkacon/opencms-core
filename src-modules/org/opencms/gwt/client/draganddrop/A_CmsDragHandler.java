@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/draganddrop/Attic/A_CmsDragHandler.java,v $
- * Date   : $Date: 2010/05/05 14:18:24 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2010/05/05 14:33:41 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -66,7 +66,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 8.0.0
  */
@@ -91,7 +91,7 @@ implements I_CmsDragHandler<E, T> {
     /**
      * Timer to schedule automated scrolling.<p>
      */
-    private class CmsScrollTimer extends Timer {
+    protected class CmsScrollTimer extends Timer {
 
         /** The current scroll direction. */
         private Direction m_direction;
@@ -135,6 +135,8 @@ implements I_CmsDragHandler<E, T> {
                 left = m_scrollParent.getScrollLeft();
             }
             Element element = m_dragElement.getElement();
+
+            boolean abort = false;
             switch (m_direction) {
                 case down:
                     top += m_scrollSpeed;
@@ -143,21 +145,33 @@ implements I_CmsDragHandler<E, T> {
                         Unit.PX);
                     break;
                 case up:
+                    if (top <= m_scrollSpeed) {
+                        abort = true;
+                        top = 0;
+                        element.getStyle().setTop(CmsDomUtil.getCurrentStyleInt(element, Style.top) - top, Unit.PX);
+                        break;
+                    }
                     top -= m_scrollSpeed;
                     element.getStyle().setTop(
                         CmsDomUtil.getCurrentStyleInt(element, Style.top) - m_scrollSpeed,
                         Unit.PX);
                     break;
                 case left:
-                    left += m_scrollSpeed;
-                    element.getStyle().setLeft(
-                        CmsDomUtil.getCurrentStyleInt(element, Style.left) + m_scrollSpeed,
-                        Unit.PX);
-                    break;
-                case right:
+                    if (left <= m_scrollSpeed) {
+                        abort = true;
+                        element.getStyle().setLeft(CmsDomUtil.getCurrentStyleInt(element, Style.left) - left, Unit.PX);
+                        left = 0;
+                        break;
+                    }
                     left -= m_scrollSpeed;
                     element.getStyle().setLeft(
                         CmsDomUtil.getCurrentStyleInt(element, Style.left) - m_scrollSpeed,
+                        Unit.PX);
+                    break;
+                case right:
+                    left += m_scrollSpeed;
+                    element.getStyle().setLeft(
+                        CmsDomUtil.getCurrentStyleInt(element, Style.left) + m_scrollSpeed,
                         Unit.PX);
                     break;
                 default:
@@ -170,6 +184,10 @@ implements I_CmsDragHandler<E, T> {
             } else {
                 m_scrollParent.setScrollLeft(left);
                 m_scrollParent.setScrollTop(top);
+            }
+            if (abort) {
+                this.cancel();
+                m_scrollTimer = null;
             }
         }
     }
