@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/draganddrop/Attic/I_CmsDragTarget.java,v $
- * Date   : $Date: 2010/05/04 14:00:21 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/05/05 08:27:34 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,21 +32,17 @@
 package org.opencms.gwt.client.draganddrop;
 
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.IndexedPanel;
-import com.google.gwt.user.client.ui.InsertPanel;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Interface defining all methods needed for a drag and drop target. These will mostly be called by the drag and drop handler.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
-public interface I_CmsDragTarget extends HasWidgets, IndexedPanel, InsertPanel {
+public interface I_CmsDragTarget {
 
     /**
      * The root element of this widget.<p>
@@ -54,22 +50,4 @@ public interface I_CmsDragTarget extends HasWidgets, IndexedPanel, InsertPanel {
      * @return the element
      */
     Element getElement();
-
-    /**
-     * Inserts a child widget at the specified position before the specified
-     * index. Setting a position of <code>(-1, -1)</code> will cause the child
-     * widget to be positioned statically. If the widget is already a child of
-     * this panel, it will be moved to the specified index.
-     * 
-     * @param w the child widget to be inserted
-     * @param left the widget's left position
-     * @param top the widget's top position
-     * @param beforeIndex the index before which it will be inserted
-     * 
-     * @throws IndexOutOfBoundsException if <code>beforeIndex</code> is out of
-     *           range
-     *
-     * @see com.google.gwt.user.client.ui.AbsolutePanel#insert(Widget, int, int, int)
-     */
-    void insert(Widget w, int left, int top, int beforeIndex);
 }
