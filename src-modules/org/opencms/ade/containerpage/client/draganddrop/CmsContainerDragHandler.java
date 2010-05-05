@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsContainerDragHandler.java,v $
- * Date   : $Date: 2010/05/04 11:21:47 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2010/05/05 09:49:43 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,18 +33,16 @@ package org.opencms.ade.containerpage.client.draganddrop;
 
 import org.opencms.ade.containerpage.client.CmsContainerpageController;
 import org.opencms.ade.containerpage.client.CmsContainerpageEditor;
+import org.opencms.ade.containerpage.client.ui.CmsDraggableListItemWidget;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
-import org.opencms.gwt.client.draganddrop.A_CmsDragHandler;
-import org.opencms.gwt.client.draganddrop.I_CmsDragElement;
-import org.opencms.gwt.client.draganddrop.I_CmsDragElementExt;
-import org.opencms.gwt.client.draganddrop.I_CmsDragTarget;
+import org.opencms.gwt.client.draganddrop.A_CmsSortingDragHandler;
 import org.opencms.gwt.client.draganddrop.I_CmsLayoutBundle;
-import org.opencms.gwt.client.ui.CmsDraggableListItemWidget;
+import org.opencms.gwt.client.draganddrop.I_CmsSortableDragTarget;
+import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.util.CmsDebugLog;
-import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
-import org.opencms.gwt.client.util.CmsDomUtil.Style;
+import org.opencms.gwt.shared.CmsListInfoBean;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -68,11 +66,12 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * 
  * @since 8.0.0
  */
-public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElementExt, I_CmsDragTargetContainer> {
+public class CmsContainerDragHandler
+extends A_CmsSortingDragHandler<I_CmsDragContainerElement<I_CmsDragTargetContainer>, I_CmsDragTargetContainer> {
 
     /**
      * Bean holding info about draggable elements.<p>
@@ -80,7 +79,7 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElementEx
     protected class DragInfo {
 
         /** The draggable element. */
-        private I_CmsDragElementExt m_draggable;
+        private I_CmsDragContainerElement<I_CmsDragTargetContainer> m_draggable;
 
         /** The cursor offset left. */
         private int m_offsetLeft;
@@ -99,7 +98,11 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElementEx
          * @param offsetLeft the cursor offset left
          * @param offsetTop the cursor offset top
          */
-        public DragInfo(I_CmsDragElementExt draggable, Widget placeholder, int offsetLeft, int offsetTop) {
+        public DragInfo(
+            I_CmsDragContainerElement<I_CmsDragTargetContainer> draggable,
+            Widget placeholder,
+            int offsetLeft,
+            int offsetTop) {
 
             m_draggable = draggable;
             m_placeholder1 = placeholder;
@@ -112,7 +115,7 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElementEx
          *
          * @return the draggable element
          */
-        public I_CmsDragElementExt getDraggable() {
+        public I_CmsDragContainerElement<I_CmsDragTargetContainer> getDraggable() {
 
             return m_draggable;
         }
@@ -184,6 +187,20 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElementEx
     }
 
     /**
+     * @see org.opencms.gwt.client.draganddrop.I_CmsDragHandler#createDraggableListItemWidget(org.opencms.gwt.shared.CmsListInfoBean, java.lang.String)
+     */
+    public CmsListItemWidget createDraggableListItemWidget(CmsListInfoBean infoBean, String id) {
+
+        // TODO: Auto-generated method stub
+        CmsDraggableListItemWidget<I_CmsDragTargetContainer> item = new CmsDraggableListItemWidget<I_CmsDragTargetContainer>(
+            infoBean,
+            true);
+        item.setClientId(id);
+        registerMouseHandler(item);
+        return item;
+    }
+
+    /**
      * @see org.opencms.gwt.client.draganddrop.I_CmsDragHandler#getCurrentTarget()
      */
     public I_CmsDragTargetContainer getCurrentTarget() {
@@ -194,7 +211,7 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElementEx
     /**
      * @see org.opencms.gwt.client.draganddrop.I_CmsDragHandler#getDragElement()
      */
-    public I_CmsDragElementExt getDragElement() {
+    public I_CmsDragContainerElement<I_CmsDragTargetContainer> getDragElement() {
 
         return m_dragElement;
     }
@@ -251,7 +268,7 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElementEx
      */
     protected CmsDragContainerElement createDragClone(
         com.google.gwt.user.client.Element element,
-        I_CmsDragTarget dragParent,
+        I_CmsDragTargetContainer dragParent,
         String clientId) {
 
         com.google.gwt.user.client.Element elementClone = DOM.createDiv();
@@ -274,7 +291,7 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElementEx
      * 
      * @return the place-holder widget
      */
-    protected Widget createPlaceholder(I_CmsDragElement element) {
+    protected Widget createPlaceholder(I_CmsDragContainerElement<I_CmsDragTargetContainer> element) {
 
         Widget result = new HTML(element.getElement().getInnerHTML());
         result.addStyleName(element.getElement().getClassName()
@@ -289,7 +306,7 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElementEx
     }
 
     /**
-     * @see org.opencms.gwt.client.draganddrop.A_CmsDragHandler#elementCancelAction()
+     * @see org.opencms.gwt.client.draganddrop.A_CmsSortingDragHandler#elementCancelAction()
      */
     @Override
     protected void elementCancelAction() {
@@ -299,7 +316,7 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElementEx
     }
 
     /**
-     * @see org.opencms.gwt.client.draganddrop.A_CmsDragHandler#elementDropAction()
+     * @see org.opencms.gwt.client.draganddrop.A_CmsSortingDragHandler#elementDropAction()
      */
     @Override
     protected void elementDropAction() {
@@ -309,19 +326,14 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElementEx
             && (m_current != m_dropZoneInfo)) {
             m_controller.addToRecentList(m_dragElement.getClientId());
             m_controller.setPageChanged();
-
-            // insert while keeping position data
-            Element element = m_current.getDraggable().getElement();
             m_currentTarget.insert(
                 (Widget)m_current.getDraggable(),
-                CmsDomUtil.getCurrentStyleInt(element, Style.left),
-                CmsDomUtil.getCurrentStyleInt(element, Style.top),
                 m_currentTarget.getWidgetIndex(m_current.getPlaceholder()));
         }
     }
 
     /**
-     * @see org.opencms.gwt.client.draganddrop.A_CmsDragHandler#elementEnterTargetAction()
+     * @see org.opencms.gwt.client.draganddrop.A_CmsSortingDragHandler#elementEnterTargetAction()
      */
     @Override
     protected void elementEnterTargetAction() {
@@ -341,7 +353,7 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElementEx
         if ((m_targetInfos.get(m_currentTarget) != m_startInfo)
             && (m_targetInfos.get(m_currentTarget) != m_dropZoneInfo)) {
             m_startInfo.getPlaceholder().addStyleName(I_CmsLayoutBundle.INSTANCE.dragdropCss().overlayShow());
-            I_CmsDragTarget orgTarget = m_startInfo.getDraggable().getDragParent();
+            I_CmsSortableDragTarget orgTarget = m_startInfo.getDraggable().getDragParent();
             orgTarget.insert(m_current.getPlaceholder(), orgTarget.getWidgetIndex((Widget)m_startInfo.getDraggable()));
         } else {
             m_startInfo.getPlaceholder().removeStyleName(I_CmsLayoutBundle.INSTANCE.dragdropCss().overlayShow());
@@ -360,7 +372,7 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElementEx
     }
 
     /**
-     * @see org.opencms.gwt.client.draganddrop.A_CmsDragHandler#elementLeaveTargetAction()
+     * @see org.opencms.gwt.client.draganddrop.A_CmsSortingDragHandler#elementLeaveTargetAction()
      */
     @Override
     protected void elementLeaveTargetAction() {
@@ -387,7 +399,7 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElementEx
     }
 
     /**
-     * @see org.opencms.gwt.client.draganddrop.A_CmsDragHandler#positionElement()
+     * @see org.opencms.gwt.client.draganddrop.A_CmsSortingDragHandler#positionElement()
      */
     @Override
     protected void positionElement() {
@@ -421,12 +433,12 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElementEx
     }
 
     /**
-     * @see org.opencms.gwt.client.draganddrop.A_CmsDragHandler#prepareElementForDrag()
+     * @see org.opencms.gwt.client.draganddrop.A_CmsSortingDragHandler#prepareElementForDrag()
      */
     @Override
     protected void prepareElementForDrag() {
 
-        if (m_dragElement instanceof CmsDraggableListItemWidget) {
+        if (m_dragElement instanceof CmsDraggableListItemWidget<?>) {
             m_dragFromMenu = true;
 
             CmsDragTargetMenu dragParent = new CmsDragTargetMenu();
@@ -453,6 +465,7 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElementEx
             Document.get().getBody().addClassName(I_CmsButton.ButtonData.MOVE.getIconClass());
             DOM.setCapture(m_dragElement.getElement());
         } else {
+            m_currentTarget = m_dragElement.getDragParent();
             m_dragFromMenu = false;
             m_placeholder = createPlaceholder(m_dragElement);
         }
@@ -484,7 +497,7 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElementEx
                         // preparing the tool-bar menu drop-zone
                         m_editor.getClipboard().showDropzone(true);
                         I_CmsDragTargetContainer dropZone = m_editor.getClipboard().getDropzone();
-                        CmsDraggableListItemWidget menuItem = m_controller.getContainerpageUtil().createListItem(
+                        CmsDraggableListItemWidget<I_CmsDragTargetContainer> menuItem = m_controller.getContainerpageUtil().createListItem(
                             arg,
                             dropZone);
                         dropZone.add(menuItem);
@@ -498,55 +511,92 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElementEx
                         setDropZoneInfo(infoMenu);
                         getTargets().add(0, dropZone);
                     }
-                    CmsDebugLog.getInstance().printLine(
-                        "Loaded content for " + arg.getContents().size() + " container types");
-                    Iterator<Entry<String, CmsDragTargetContainer>> it = m_controller.getContainerTargets().entrySet().iterator();
-                    while (it.hasNext()) {
-                        Entry<String, CmsDragTargetContainer> entry = it.next();
-                        String containerType = m_controller.getContainerType(entry.getKey());
-                        if (arg.getContents().containsKey(containerType)
-                            && (entry.getValue() != getDragElement().getDragParent())) {
-                            try {
-                                CmsDragContainerElement dragElement;
-                                if (arg.isSubContainer()) {
-                                    CmsDebugLog.getInstance().printLine("Generating sub-container elements.");
-                                    List<CmsContainerElement> subElements = new ArrayList<CmsContainerElement>();
-                                    Iterator<String> itSub = arg.getSubItems().iterator();
-                                    while (itSub.hasNext()) {
-                                        CmsContainerElement element = m_controller.getCachedElement(itSub.next());
-                                        if (element != null) {
-                                            subElements.add(element);
-                                        }
+                    if (m_controller.isSubcontainerEditing()) {
+                        if (isDragFromMenu()) {
+                            String type = m_controller.getSubcontainerType();
+                            if (arg.getContents().containsKey(type)) {
+                                try {
+                                    CmsDragContainerElement dragElement;
+                                    if (arg.isSubContainer()) {
+                                        CmsDebugLog.getInstance().printLine(
+                                            "Cannot drop sub-container into subcontainer");
+                                        //TODO: use notification
+                                    } else {
+                                        dragElement = m_controller.getContainerpageUtil().createElement(
+                                            arg,
+                                            m_controller.getSubcontainer(),
+                                            type);
+                                        m_controller.getSubcontainer().add(dragElement);
+                                        int offsetLeft = dragElement.getOffsetWidth() - 20;
+                                        DragInfo info = new DragInfo(
+                                            dragElement,
+                                            createPlaceholder(dragElement),
+                                            offsetLeft,
+                                            20);
+                                        addTargetInfo(m_controller.getSubcontainer(), info);
+                                        prepareElement(info, m_controller.getSubcontainer(), true);
+                                        addDragTarget(m_controller.getSubcontainer());
+                                        m_controller.getSubcontainer().highlightContainer();
                                     }
-                                    dragElement = m_controller.getContainerpageUtil().createSubcontainerElement(
-                                        arg,
-                                        subElements,
-                                        entry.getValue(),
-                                        containerType);
-                                    CmsDebugLog.getInstance().printLine("Sub-container created.");
-                                } else {
-                                    dragElement = m_controller.getContainerpageUtil().createElement(
-                                        arg,
-                                        entry.getValue(),
-                                        containerType);
+
+                                } catch (Exception e) {
+                                    CmsDebugLog.getInstance().printLine(e.getMessage());
+                                }
+                            } else {
+                                CmsDebugLog.getInstance().printLine("No content for type " + type);
+                            }
+                        }
+                    } else {
+                        CmsDebugLog.getInstance().printLine(
+                            "Loaded content for " + arg.getContents().size() + " container types");
+                        Iterator<Entry<String, CmsDragTargetContainer>> it = m_controller.getContainerTargets().entrySet().iterator();
+                        while (it.hasNext()) {
+                            Entry<String, CmsDragTargetContainer> entry = it.next();
+                            String containerType = m_controller.getContainerType(entry.getKey());
+                            if (arg.getContents().containsKey(containerType)
+                                && (entry.getValue() != getDragElement().getDragParent())) {
+                                try {
+                                    CmsDragContainerElement dragElement;
+                                    if (arg.isSubContainer()) {
+                                        CmsDebugLog.getInstance().printLine("Generating sub-container elements.");
+                                        List<CmsContainerElement> subElements = new ArrayList<CmsContainerElement>();
+                                        Iterator<String> itSub = arg.getSubItems().iterator();
+                                        while (itSub.hasNext()) {
+                                            CmsContainerElement element = m_controller.getCachedElement(itSub.next());
+                                            if (element != null) {
+                                                subElements.add(element);
+                                            }
+                                        }
+                                        dragElement = m_controller.getContainerpageUtil().createSubcontainerElement(
+                                            arg,
+                                            subElements,
+                                            entry.getValue(),
+                                            containerType);
+                                        CmsDebugLog.getInstance().printLine("Sub-container created.");
+                                    } else {
+                                        dragElement = m_controller.getContainerpageUtil().createElement(
+                                            arg,
+                                            entry.getValue(),
+                                            containerType);
+                                    }
+
+                                    entry.getValue().add(dragElement);
+                                    int offsetLeft = dragElement.getOffsetWidth() - 20;
+                                    DragInfo info = new DragInfo(
+                                        dragElement,
+                                        createPlaceholder(dragElement),
+                                        offsetLeft,
+                                        20);
+                                    addTargetInfo(entry.getValue(), info);
+                                    prepareElement(info, entry.getValue(), true);
+                                    addDragTarget(entry.getValue());
+                                    entry.getValue().highlightContainer();
+                                } catch (Exception e) {
+                                    CmsDebugLog.getInstance().printLine(e.getMessage());
+                                    continue;
                                 }
 
-                                entry.getValue().add(dragElement);
-                                int offsetLeft = dragElement.getOffsetWidth() - 20;
-                                DragInfo info = new DragInfo(
-                                    dragElement,
-                                    createPlaceholder(dragElement),
-                                    offsetLeft,
-                                    20);
-                                addTargetInfo(entry.getValue(), info);
-                                prepareElement(info, entry.getValue(), true);
-                                addDragTarget(entry.getValue());
-                                entry.getValue().highlightContainer();
-                            } catch (Exception e) {
-                                CmsDebugLog.getInstance().printLine(e.getMessage());
-                                continue;
                             }
-
                         }
                     }
                 }
@@ -566,7 +616,7 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElementEx
     }
 
     /**
-     * @see org.opencms.gwt.client.draganddrop.A_CmsDragHandler#restoreElementAfterDrag()
+     * @see org.opencms.gwt.client.draganddrop.A_CmsSortingDragHandler#restoreElementAfterDrag()
      */
     @Override
     protected void restoreElementAfterDrag() {
@@ -603,7 +653,7 @@ public class CmsContainerDragHandler extends A_CmsDragHandler<I_CmsDragElementEx
     }
 
     /**
-     * @see org.opencms.gwt.client.draganddrop.A_CmsDragHandler#targetSortChangeAction()
+     * @see org.opencms.gwt.client.draganddrop.A_CmsSortingDragHandler#targetSortChangeAction()
      */
     @Override
     protected void targetSortChangeAction() {

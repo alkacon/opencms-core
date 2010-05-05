@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsMenuDragHandler.java,v $
- * Date   : $Date: 2010/05/04 11:44:48 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/05/05 09:49:43 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,9 +31,10 @@
 
 package org.opencms.ade.containerpage.client.draganddrop;
 
-import org.opencms.gwt.client.draganddrop.A_CmsDragHandler;
-import org.opencms.gwt.client.draganddrop.I_CmsDragElement;
+import org.opencms.gwt.client.draganddrop.A_CmsSortingDragHandler;
 import org.opencms.gwt.client.draganddrop.I_CmsLayoutBundle;
+import org.opencms.gwt.client.ui.CmsListItemWidget;
+import org.opencms.gwt.shared.CmsListInfoBean;
 
 import java.util.ArrayList;
 
@@ -50,11 +51,11 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
-public class CmsMenuDragHandler extends A_CmsDragHandler<CmsDragMenuElement, CmsDragTargetMenu> {
+public class CmsMenuDragHandler extends A_CmsSortingDragHandler<CmsDragMenuElement, I_CmsDragTargetContainer> {
 
     /** The provisional drag parent. */
     private CmsDragTargetMenu m_provisionalParent;
@@ -71,7 +72,7 @@ public class CmsMenuDragHandler extends A_CmsDragHandler<CmsDragMenuElement, Cms
     /**
      * @see org.opencms.gwt.client.draganddrop.I_CmsDragHandler#getCurrentTarget()
      */
-    public CmsDragTargetMenu getCurrentTarget() {
+    public I_CmsDragTargetContainer getCurrentTarget() {
 
         return m_currentTarget;
     }
@@ -91,7 +92,7 @@ public class CmsMenuDragHandler extends A_CmsDragHandler<CmsDragMenuElement, Cms
      * 
      * @return the place-holder widget
      */
-    protected Widget createPlaceholder(I_CmsDragElement element) {
+    protected Widget createPlaceholder(CmsDragMenuElement element) {
 
         Widget result = new HTML(element.getElement().getInnerHTML());
         result.addStyleName(element.getElement().getClassName()
@@ -106,7 +107,7 @@ public class CmsMenuDragHandler extends A_CmsDragHandler<CmsDragMenuElement, Cms
     }
 
     /**
-     * @see org.opencms.gwt.client.draganddrop.A_CmsDragHandler#elementCancelAction()
+     * @see org.opencms.gwt.client.draganddrop.A_CmsSortingDragHandler#elementCancelAction()
      */
     @Override
     protected void elementCancelAction() {
@@ -115,7 +116,7 @@ public class CmsMenuDragHandler extends A_CmsDragHandler<CmsDragMenuElement, Cms
     }
 
     /**
-     * @see org.opencms.gwt.client.draganddrop.A_CmsDragHandler#elementDropAction()
+     * @see org.opencms.gwt.client.draganddrop.A_CmsSortingDragHandler#elementDropAction()
      */
     @Override
     protected void elementDropAction() {
@@ -124,7 +125,7 @@ public class CmsMenuDragHandler extends A_CmsDragHandler<CmsDragMenuElement, Cms
     }
 
     /**
-     * @see org.opencms.gwt.client.draganddrop.A_CmsDragHandler#elementEnterTargetAction()
+     * @see org.opencms.gwt.client.draganddrop.A_CmsSortingDragHandler#elementEnterTargetAction()
      */
     @Override
     protected void elementEnterTargetAction() {
@@ -133,7 +134,7 @@ public class CmsMenuDragHandler extends A_CmsDragHandler<CmsDragMenuElement, Cms
     }
 
     /**
-     * @see org.opencms.gwt.client.draganddrop.A_CmsDragHandler#elementLeaveTargetAction()
+     * @see org.opencms.gwt.client.draganddrop.A_CmsSortingDragHandler#elementLeaveTargetAction()
      */
     @Override
     protected void elementLeaveTargetAction() {
@@ -142,7 +143,7 @@ public class CmsMenuDragHandler extends A_CmsDragHandler<CmsDragMenuElement, Cms
     }
 
     /**
-     * @see org.opencms.gwt.client.draganddrop.A_CmsDragHandler#prepareElementForDrag()
+     * @see org.opencms.gwt.client.draganddrop.A_CmsSortingDragHandler#prepareElementForDrag()
      */
     @Override
     protected void prepareElementForDrag() {
@@ -155,7 +156,7 @@ public class CmsMenuDragHandler extends A_CmsDragHandler<CmsDragMenuElement, Cms
         m_provisionalParent.getElement().getStyle().setLeft(listEl.getAbsoluteLeft(), Unit.PX);
         m_provisionalParent.getElement().getStyle().setZIndex(99999);
         RootPanel.get().add(m_provisionalParent);
-        m_targets = new ArrayList<CmsDragTargetMenu>();
+        m_targets = new ArrayList<I_CmsDragTargetContainer>();
         m_targets.add(m_currentTarget);
         m_placeholder = createPlaceholder(m_dragElement);
         m_currentTarget.insert(m_placeholder, m_currentTarget.getWidgetIndex(m_dragElement));
@@ -165,7 +166,7 @@ public class CmsMenuDragHandler extends A_CmsDragHandler<CmsDragMenuElement, Cms
     }
 
     /**
-     * @see org.opencms.gwt.client.draganddrop.A_CmsDragHandler#restoreElementAfterDrag()
+     * @see org.opencms.gwt.client.draganddrop.A_CmsSortingDragHandler#restoreElementAfterDrag()
      */
     @Override
     protected void restoreElementAfterDrag() {
@@ -178,11 +179,19 @@ public class CmsMenuDragHandler extends A_CmsDragHandler<CmsDragMenuElement, Cms
     }
 
     /**
-     * @see org.opencms.gwt.client.draganddrop.A_CmsDragHandler#targetSortChangeAction()
+     * @see org.opencms.gwt.client.draganddrop.A_CmsSortingDragHandler#targetSortChangeAction()
      */
     @Override
     protected void targetSortChangeAction() {
 
         // nothing to do here
+    }
+
+    /**
+     * @see org.opencms.gwt.client.draganddrop.I_CmsDragHandler#createDraggableListItemWidget(org.opencms.gwt.shared.CmsListInfoBean, java.lang.String)
+     */
+    public CmsListItemWidget createDraggableListItemWidget(CmsListInfoBean infoBean, String id) {
+
+        throw new UnsupportedOperationException();
     }
 }

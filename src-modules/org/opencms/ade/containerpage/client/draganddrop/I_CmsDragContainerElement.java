@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/I_CmsDragTargetContainer.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/I_CmsDragContainerElement.java,v $
  * Date   : $Date: 2010/05/05 09:49:43 $
- * Version: $Revision: 1.2 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,39 +31,51 @@
 
 package org.opencms.ade.containerpage.client.draganddrop;
 
-import org.opencms.gwt.client.draganddrop.I_CmsSortableDragTarget;
+import org.opencms.gwt.client.draganddrop.I_CmsDragElement;
+import org.opencms.gwt.client.draganddrop.I_CmsDragTarget;
 
 /**
- * Extended drag target functions used within the container page editor.<p>
+ * Extending the draggable for elements with an id.<p>
+ * 
+ * There may be a better name for this interface...<p>
+ * 
+ * @param <T> the drag parent type
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
-public interface I_CmsDragTargetContainer extends I_CmsSortableDragTarget {
+public interface I_CmsDragContainerElement<T extends I_CmsDragTarget> extends I_CmsDragElement<T> {
 
     /**
-     * Returns the container type.<p>
+     * Returns the client id.<p>
+     *
+     * @return the client id
+     */
+    String getClientId();
+
+    /**
+     * Registers a new drag parent.<p>
      * 
-     * @return the container type
+     * @param target the new drag parent
      */
-    String getContainerType();
+    void setDragParent(T target);
 
     /**
-     * Puts a highlighting border around the container content.<p>
+     * Returns the parent drag target.<p>
+     * 
+     * @return the parent drag target
      */
-    void highlightContainer();
+    T getDragParent();
 
     /**
-     * Refreshes position and dimension of the highlighting border. Call when anything changed during the drag process.<p>
+     * Sets whether this object is visible.<p>
+     * 
+     * @param visible <code>true</code> to show the object, <code>false</code> to hide it
+     * 
+     * @see com.google.gwt.user.client.ui.UIObject#setVisible(boolean)
      */
-    void refreshHighlighting();
-
-    /**
-     * Removes the highlighting border.<p>
-     */
-    void removeHighlighting();
-
+    void setVisible(boolean visible);
 }

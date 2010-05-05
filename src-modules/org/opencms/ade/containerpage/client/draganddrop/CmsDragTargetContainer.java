@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsDragTargetContainer.java,v $
- * Date   : $Date: 2010/05/04 13:40:56 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/05/05 09:49:43 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 8.0.0
  */
@@ -65,7 +65,8 @@ public class CmsDragTargetContainer implements I_CmsDragTargetContainer {
     /** Container element id. */
     private String m_containerId;
 
-    private CmsDebugLog m_debug;
+    /** The container type. */
+    private String m_containerType;
 
     /** Highlighting border for this container. */
     private CmsHighlightingBorder m_highlighting;
@@ -82,10 +83,8 @@ public class CmsDragTargetContainer implements I_CmsDragTargetContainer {
 
         m_root = RootPanel.get(containerData.getName());
         m_containerId = containerData.getName();
+        m_containerType = containerData.getType();
         m_root.getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragTarget());
-        m_debug = CmsDebugLog.getInstance();
-        m_debug.printLine("created instance of container id: " + containerData.getName());
-        //   consumeChildren();
     }
 
     /**
@@ -120,7 +119,14 @@ public class CmsDragTargetContainer implements I_CmsDragTargetContainer {
             if (w instanceof CmsDragContainerElement) {
                 elements.add((CmsDragContainerElement)w);
             } else {
-                m_debug.printLine("WARNING: " + w.toString() + " is no instance of CmsDragContainerElement");
+                if (CmsDomUtil.hasClass(
+                    org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle.INSTANCE.containerpageCss().subcontainerPlaceholder(),
+                    w.getElement())) {
+                    CmsDebugLog.getInstance().printLine("Ignoring sub-container placeholder.");
+                } else {
+                    CmsDebugLog.getInstance().printLine(
+                        "WARNING: " + w.toString() + " is no instance of CmsDragContainerElement");
+                }
             }
         }
         return elements;
@@ -135,6 +141,14 @@ public class CmsDragTargetContainer implements I_CmsDragTargetContainer {
     public String getContainerId() {
 
         return m_containerId;
+    }
+
+    /**
+     * @see org.opencms.ade.containerpage.client.draganddrop.I_CmsDragTargetContainer#getContainerType()
+     */
+    public String getContainerType() {
+
+        return m_containerType;
     }
 
     /**
@@ -153,16 +167,6 @@ public class CmsDragTargetContainer implements I_CmsDragTargetContainer {
     public Iterator<Widget> getElementIterator() {
 
         return m_root.iterator();
-    }
-
-    /**
-     * Collects the containers position data into a bean.<p>
-     * 
-     * @return the position bean
-     */
-    public CmsPositionBean getPositionInfo() {
-
-        return CmsPositionBean.generatePositionInfo(m_root);
     }
 
     /**
@@ -218,14 +222,6 @@ public class CmsDragTargetContainer implements I_CmsDragTargetContainer {
 
         m_root.insert(w, beforeIndex);
 
-    }
-
-    /**
-     * @see org.opencms.gwt.client.draganddrop.I_CmsDragTarget#insert(com.google.gwt.user.client.ui.Widget, int, int, int)
-     */
-    public void insert(Widget w, int left, int top, int beforeIndex) {
-
-        m_root.insert(w, left, top, beforeIndex);
     }
 
     /**

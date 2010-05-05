@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsDragTargetMenu.java,v $
- * Date   : $Date: 2010/05/04 14:40:41 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/05/05 09:49:43 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import com.google.gwt.user.client.ui.AbsolutePanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -77,5 +77,13 @@ public class CmsDragTargetMenu extends AbsolutePanel implements I_CmsDragTargetC
     public void removeHighlighting() {
 
         // the menu drop-zone will not be highlighted, so there is nothing to do here
+    }
+
+    /**
+     * @see org.opencms.ade.containerpage.client.draganddrop.I_CmsDragTargetContainer#getContainerType()
+     */
+    public String getContainerType() {
+
+        return null;
     }
 }

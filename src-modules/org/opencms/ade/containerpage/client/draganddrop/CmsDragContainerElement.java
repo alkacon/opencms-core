@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsDragContainerElement.java,v $
- * Date   : $Date: 2010/05/04 13:17:36 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/05/05 09:49:43 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,8 +32,6 @@
 package org.opencms.ade.containerpage.client.draganddrop;
 
 import org.opencms.ade.containerpage.client.ui.CmsElementOptionBar;
-import org.opencms.gwt.client.draganddrop.I_CmsDragElementExt;
-import org.opencms.gwt.client.draganddrop.I_CmsDragTarget;
 import org.opencms.gwt.client.draganddrop.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.css.I_CmsToolbarButtonLayoutBundle;
@@ -71,11 +69,12 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.0
  */
-public class CmsDragContainerElement extends AbsolutePanel implements I_CmsDragElementExt, HasClickHandlers {
+public class CmsDragContainerElement extends AbsolutePanel
+implements I_CmsDragContainerElement<I_CmsDragTargetContainer>, HasClickHandlers {
 
     private static final String MOVE_HANDLE_CLASS = I_CmsButton.ButtonData.MOVE.getIconClass();
 
@@ -92,7 +91,7 @@ public class CmsDragContainerElement extends AbsolutePanel implements I_CmsDragE
     private String m_clientId;
 
     /** The current drag parent. */
-    private I_CmsDragTarget m_dragParent;
+    private I_CmsDragTargetContainer m_dragParent;
 
     /** The option bar, holding optional function buttons. */
     private CmsElementOptionBar m_elementOptionBar;
@@ -114,7 +113,7 @@ public class CmsDragContainerElement extends AbsolutePanel implements I_CmsDragE
      */
     public CmsDragContainerElement(
         Element element,
-        I_CmsDragTarget parent,
+        I_CmsDragTargetContainer parent,
         String clientId,
         String sitePath,
         String noEditReason) {
@@ -193,7 +192,7 @@ public class CmsDragContainerElement extends AbsolutePanel implements I_CmsDragE
     }
 
     /**
-     * @see org.opencms.gwt.client.draganddrop.I_CmsDragElementExt#clearDrag()
+     * @see org.opencms.ade.containerpage.client.draganddrop.I_CmsDragContainerElement#clearDrag()
      */
     public void clearDrag() {
 
@@ -244,9 +243,9 @@ public class CmsDragContainerElement extends AbsolutePanel implements I_CmsDragE
     }
 
     /**
-     * @see org.opencms.gwt.client.draganddrop.I_CmsDragElement#getDragParent()
+     * @see org.opencms.ade.containerpage.client.draganddrop.I_CmsDragContainerElement#getDragParent()
      */
-    public I_CmsDragTarget getDragParent() {
+    public I_CmsDragTargetContainer getDragParent() {
 
         return m_dragParent;
     }
@@ -294,7 +293,7 @@ public class CmsDragContainerElement extends AbsolutePanel implements I_CmsDragE
     }
 
     /**
-     * @see org.opencms.gwt.client.draganddrop.I_CmsDragElementExt#prepareDrag()
+     * @see org.opencms.ade.containerpage.client.draganddrop.I_CmsDragContainerElement#prepareDrag()
      */
     public void prepareDrag() {
 
@@ -319,9 +318,9 @@ public class CmsDragContainerElement extends AbsolutePanel implements I_CmsDragE
     }
 
     /**
-     * @see org.opencms.gwt.client.draganddrop.I_CmsDragElement#setDragParent(org.opencms.gwt.client.draganddrop.I_CmsDragTarget)
+     * @see org.opencms.ade.containerpage.client.draganddrop.I_CmsDragContainerElement#setDragParent(org.opencms.gwt.client.draganddrop.I_CmsDragTarget)
      */
-    public void setDragParent(I_CmsDragTarget target) {
+    public void setDragParent(I_CmsDragTargetContainer target) {
 
         m_dragParent = target;
     }
