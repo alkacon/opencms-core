@@ -32,6 +32,10 @@
 	<source path="shared" />
 	<super-source path="client/super_src/" />
 
+	<set-property name="compiler.emulatedStack" value="true" />
+	<set-configuration-property name="compiler.emulatedStack.recordLineNumbers" value="true" />
+	<set-configuration-property name="compiler.emulatedStack.recordFileNames" value="true" />
+
 	<generate-with class="org.opencms.gwt.rebind.rpc.CmsRpcServiceGenerator">
 		<when-type-assignable class="com.google.gwt.user.client.rpc.RemoteService" />
 	</generate-with>
