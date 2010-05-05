@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapTreeItemFactory.java,v $
- * Date   : $Date: 2010/05/04 06:54:27 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/05/05 14:31:01 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,20 +31,16 @@
 
 package org.opencms.ade.sitemap.client;
 
-import org.opencms.ade.sitemap.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.shared.CmsListInfoBean;
-
-import com.google.gwt.user.client.ui.Image;
 
 /**
  * Sitemap entry tree item factory.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
  * 
@@ -73,9 +69,6 @@ public class CmsSitemapTreeItemFactory {
         infoBean.addAdditionalInfo(Messages.get().key(Messages.GUI_NAME_0), entry.getName());
         infoBean.addAdditionalInfo(Messages.get().key(Messages.GUI_VFS_PATH_0), entry.getVfsPath());
         CmsListItemWidget itemWidget = new CmsListItemWidget(infoBean);
-        Image icon = new Image(I_CmsImageBundle.INSTANCE.magnifierIconActive());
-        icon.addStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
-        itemWidget.setIcon(icon);
         CmsSitemapTreeItem treeItem = new CmsSitemapTreeItem(itemWidget, entry.getSitePath());
         treeItem.setId(entry.getName());
         if (m_controller.isEditable()) {
