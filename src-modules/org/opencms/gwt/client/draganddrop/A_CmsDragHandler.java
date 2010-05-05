@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/draganddrop/Attic/A_CmsDragHandler.java,v $
- * Date   : $Date: 2010/05/05 14:15:29 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2010/05/05 14:17:03 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,6 @@ import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Timer;
@@ -67,7 +66,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 8.0.0
  */
@@ -99,9 +98,6 @@ implements I_CmsDragHandler<E, T> {
 
         /** Flag indicating if the scroll parent is the body element. */
         private boolean m_isBody;
-
-        /** Command to be executed after each scroll action. */
-        private Command m_onScrollCommand;
 
         /** The element that should scrolled. */
         private Element m_scrollParent;
@@ -175,11 +171,7 @@ implements I_CmsDragHandler<E, T> {
                 m_scrollParent.setScrollLeft(left);
                 m_scrollParent.setScrollTop(top);
             }
-            if (m_onScrollCommand != null) {
-                m_onScrollCommand.execute();
-            }
         }
-
     }
 
     /** Animation enabled flag. */
