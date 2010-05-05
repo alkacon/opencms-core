@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsLabel.java,v $
- * Date   : $Date: 2010/04/30 09:35:10 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/05/05 14:33:31 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.gwt.client.ui.input;
 
+import org.opencms.gwt.client.ui.I_CmsTruncable;
 import org.opencms.gwt.client.ui.css.I_CmsInputCss;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.util.CmsDebugLog;
@@ -38,33 +39,12 @@ import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsTextMetrics;
 import org.opencms.util.CmsStringUtil;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.HasAllMouseHandlers;
-import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.event.dom.client.MouseDownEvent;
-import com.google.gwt.event.dom.client.MouseDownHandler;
-import com.google.gwt.event.dom.client.MouseMoveEvent;
-import com.google.gwt.event.dom.client.MouseMoveHandler;
-import com.google.gwt.event.dom.client.MouseOutEvent;
-import com.google.gwt.event.dom.client.MouseOutHandler;
-import com.google.gwt.event.dom.client.MouseOverEvent;
-import com.google.gwt.event.dom.client.MouseOverHandler;
-import com.google.gwt.event.dom.client.MouseUpEvent;
-import com.google.gwt.event.dom.client.MouseUpHandler;
-import com.google.gwt.event.dom.client.MouseWheelEvent;
-import com.google.gwt.event.dom.client.MouseWheelHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.HasHTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasText;
@@ -75,33 +55,20 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
-public class CmsLabel extends Widget
-implements HasHorizontalAlignment, HasText, HasHTML, HasClickHandlers, HasAllMouseHandlers {
+public class CmsLabel extends Widget implements HasHorizontalAlignment, HasText, HasHTML, I_CmsTruncable {
 
     /** The CSS bundle instance used for this widget.<p> */
     protected static final I_CmsInputCss CSS = I_CmsInputLayoutBundle.INSTANCE.inputCss();
 
     /** List of elements to measure. */
-    protected static ArrayList<Element> m_elements;
-
-    /** Timer to defer width measures. */
-    protected static Timer m_timer;
-
-    /** Attribute name constant. */
-    private static final String ATTR_WIDTH_CHECKED = "__widthChecked";
+    protected static List<Element> m_elements;
 
     /** Current horizontal alignment. */
     private HorizontalAlignmentConstant m_horzAlign;
-
-    /** The key for identifying the text metrics to use. */
-    private String m_textMetricsKey;
-
-    /** Indicates if text truncation is desired, used mainly for performance reasons. */
-    private boolean m_truncate;
 
     /**
      * Creates an empty label.<p>
@@ -110,7 +77,6 @@ implements HasHorizontalAlignment, HasText, HasHTML, HasClickHandlers, HasAllMou
 
         this(Document.get().createDivElement());
         fixInline();
-
     }
 
     /**
@@ -120,7 +86,6 @@ implements HasHorizontalAlignment, HasText, HasHTML, HasClickHandlers, HasAllMou
      */
     public CmsLabel(Element element) {
 
-        m_truncate = true;
         setElement(element);
         fixInline();
     }
@@ -134,209 +99,6 @@ implements HasHorizontalAlignment, HasText, HasHTML, HasClickHandlers, HasAllMou
 
         this();
         setText(text);
-    }
-
-    /**
-     * Truncates long text and sets the original text to the title attribute.<p>
-     *  
-     * @param element the element which should be fixed
-     * @param textMetricsKey the key identifying the text metrics to use  
-     */
-    protected static void fixElement(Element element, String textMetricsKey) {
-
-        CmsDebugLog log = CmsDebugLog.getInstance();
-
-        if (getWidthChecked(element)) {
-            return;
-        }
-        setWidthChecked(element, true);
-
-        // measure the actual text width
-        CmsTextMetrics tm = CmsTextMetrics.get(element, textMetricsKey);
-        String text = element.getInnerText();
-        int textWidth = tm.getWidth(text);
-        tm.release();
-
-        // the current element width
-
-        int elementWidth = CmsDomUtil.getCurrentStyleInt(element, CmsDomUtil.Style.width);
-        if (elementWidth >= textWidth) {
-            element.getStyle().setVisibility(Style.Visibility.VISIBLE);
-            return;
-        }
-
-        log.printLine("fixElement: ");
-        log.printLine("text: " + text);
-        log.printLine("elemWidth: " + elementWidth);
-        log.printLine("textWidth: " + textWidth);
-
-        // if the text does not have enough space, fix it
-        int maxChars = (int)((float)elementWidth / (float)textWidth * text.length());
-        if (maxChars < 1) {
-            maxChars = 1;
-        }
-        String newText = text.substring(0, maxChars - 1);
-        if (text.startsWith("/")) {
-            // file name?
-            newText = CmsStringUtil.formatResourceName(text, maxChars);
-        } else if (maxChars > 2) {
-            // enough space for ellipsis?
-            newText += CmsDomUtil.Entity.hellip.html();
-        }
-        if (newText.isEmpty()) {
-            // if empty, it will break the layout
-            newText = CmsDomUtil.Entity.nbsp.html();
-        }
-        // use html instead of text because of the entities
-        element.setInnerHTML(newText);
-        // add tooltip with the original text
-        element.setAttribute(CmsDomUtil.Attribute.title.name(), text);
-        // set the corresponding style
-        element.addClassName(I_CmsInputLayoutBundle.INSTANCE.inputCss().labelTruncated());
-        element.getStyle().setVisibility(Style.Visibility.VISIBLE);
-    }
-
-    /**
-     * Fixes the text as soon as the possible.<p> 
-     * 
-     * @param element the element to fix
-     * @param textMetricsKey the key identifying the text metrics to use 
-     */
-    protected static void fixNow(final Element element, final String textMetricsKey) {
-
-        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-
-            /**
-             * @see com.google.gwt.core.client.Scheduler.ScheduledCommand#execute()
-             */
-            public void execute() {
-
-                fixElement(element, textMetricsKey);
-            }
-        });
-    }
-
-    /**
-     * Schedule the width measure of the given element.<p>
-     * 
-     * @param element the element to measure
-     * @param textMetricsKey the key identifying the text metrics to use 
-     */
-    protected static void scheduleUpdate(Element element, final String textMetricsKey) {
-
-        if (m_timer == null) {
-            m_elements = new ArrayList<Element>();
-            m_elements.add(element);
-            /* defer until children have been (hopefully) layouted. */
-            m_timer = new Timer() {
-
-                /**
-                 * @see com.google.gwt.user.client.Timer#run()
-                 */
-                @Override
-                public void run() {
-
-                    m_timer = null;
-                    List<Element> elements = new ArrayList<Element>();
-                    elements.addAll(m_elements);
-                    m_elements = null;
-                    for (Element elem : elements) {
-                        if (CmsDomUtil.getCurrentStyleInt(elem, CmsDomUtil.Style.width) > 0) {
-                            fixNow(elem, textMetricsKey);
-                        } else {
-                            scheduleUpdate(elem, textMetricsKey);
-                        }
-                    }
-                }
-            };
-            m_timer.schedule(10);
-        } else {
-            m_elements.add(element);
-        }
-    }
-
-    /**
-     * Gets the width checked value.<p>
-     * 
-     * @param element the element to get it for
-     * 
-     * @return true if the width of the element has already been checked
-     */
-    private static boolean getWidthChecked(Element element) {
-
-        return Boolean.parseBoolean(DOM.getElementAttribute(
-            element.<com.google.gwt.user.client.Element> cast(),
-            ATTR_WIDTH_CHECKED));
-    }
-
-    /**
-     * Sets the width checked value.<p>
-     * 
-     * @param element the element to set it for
-     * @param value the value to set
-     */
-    private static void setWidthChecked(Element element, boolean value) {
-
-        DOM.setElementAttribute(
-            element.<com.google.gwt.user.client.Element> cast(),
-            ATTR_WIDTH_CHECKED,
-            String.valueOf(value));
-    }
-
-    /**
-     * @see com.google.gwt.event.dom.client.HasClickHandlers#addClickHandler(com.google.gwt.event.dom.client.ClickHandler)
-     */
-    public HandlerRegistration addClickHandler(ClickHandler handler) {
-
-        return addDomHandler(handler, ClickEvent.getType());
-    }
-
-    /**
-     * @see com.google.gwt.event.dom.client.HasMouseDownHandlers#addMouseDownHandler(com.google.gwt.event.dom.client.MouseDownHandler)
-     */
-    public HandlerRegistration addMouseDownHandler(MouseDownHandler handler) {
-
-        return addDomHandler(handler, MouseDownEvent.getType());
-    }
-
-    /**
-     * @see com.google.gwt.event.dom.client.HasMouseMoveHandlers#addMouseMoveHandler(com.google.gwt.event.dom.client.MouseMoveHandler)
-     */
-    public HandlerRegistration addMouseMoveHandler(MouseMoveHandler handler) {
-
-        return addDomHandler(handler, MouseMoveEvent.getType());
-    }
-
-    /**
-     * @see com.google.gwt.event.dom.client.HasMouseOutHandlers#addMouseOutHandler(com.google.gwt.event.dom.client.MouseOutHandler)
-     */
-    public HandlerRegistration addMouseOutHandler(MouseOutHandler handler) {
-
-        return addDomHandler(handler, MouseOutEvent.getType());
-    }
-
-    /**
-     * @see com.google.gwt.event.dom.client.HasMouseOverHandlers#addMouseOverHandler(com.google.gwt.event.dom.client.MouseOverHandler)
-     */
-    public HandlerRegistration addMouseOverHandler(MouseOverHandler handler) {
-
-        return addDomHandler(handler, MouseOverEvent.getType());
-    }
-
-    /**
-     * @see com.google.gwt.event.dom.client.HasMouseUpHandlers#addMouseUpHandler(com.google.gwt.event.dom.client.MouseUpHandler)
-     */
-    public HandlerRegistration addMouseUpHandler(MouseUpHandler handler) {
-
-        return addDomHandler(handler, MouseUpEvent.getType());
-    }
-
-    /**
-     * @see com.google.gwt.event.dom.client.HasMouseWheelHandlers#addMouseWheelHandler(com.google.gwt.event.dom.client.MouseWheelHandler)
-     */
-    public HandlerRegistration addMouseWheelHandler(MouseWheelHandler handler) {
-
-        return addDomHandler(handler, MouseWheelEvent.getType());
     }
 
     /**
@@ -364,16 +126,6 @@ implements HasHorizontalAlignment, HasText, HasHTML, HasClickHandlers, HasAllMou
     }
 
     /**
-     * Checks if text truncation is desired.<p>
-     *
-     * @return the truncate
-     */
-    public boolean isTruncate() {
-
-        return m_truncate;
-    }
-
-    /**
      * @see com.google.gwt.user.client.ui.Widget#onAttach()
      */
     @Override
@@ -398,6 +150,8 @@ implements HasHorizontalAlignment, HasText, HasHTML, HasClickHandlers, HasAllMou
     public void setHTML(String html) {
 
         getElement().setInnerHTML(html);
+        // reset tooltip
+        getElement().removeAttribute(CmsDomUtil.Attribute.title.name());
     }
 
     /**
@@ -405,76 +159,77 @@ implements HasHorizontalAlignment, HasText, HasHTML, HasClickHandlers, HasAllMou
      */
     public void setText(String text) {
 
-        if (isTruncate()) {
-            getElement().getStyle().setVisibility(Style.Visibility.HIDDEN);
-        }
         getElement().setInnerText(text);
-        setWidthChecked(getElement(), false);
-        widthCheck();
+        // reset tooltip
+        getElement().removeAttribute(CmsDomUtil.Attribute.title.name());
     }
 
     /**
-     * Sets the text metrics key for this label.<p>
-     * 
-     * @param textMetricsKey the key identifying the text metrics to be used
+     * @see org.opencms.gwt.client.ui.I_CmsTruncable#truncate(java.lang.String, int)
      */
-    public void setTextMetricsKey(String textMetricsKey) {
+    public void truncate(String textMetricsKey, int labelWidth) {
 
-        m_textMetricsKey = textMetricsKey;
-    }
-
-    /**
-     * Sets the truncation flag.<p>
-     *
-     * @param truncate the truncation flag to set
-     */
-    public void setTruncate(boolean truncate) {
-
-        if (!truncate) {
-            getElement().getStyle().setVisibility(Style.Visibility.VISIBLE);
-        }
-        m_truncate = truncate;
-    }
-
-    /**
-     * Will check the width and truncate the text if necessary.<p>
-     */
-    public void widthCheck() {
-
-        if (!m_truncate || !isAttached()) {
-            return;
-        }
         Element element = getElement();
-        if (getWidthChecked(element)) {
+        String title = element.getAttribute(CmsDomUtil.Attribute.title.name());
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(title)) {
+            element.setInnerText(title);
+            element.removeAttribute(CmsDomUtil.Attribute.title.name());
+        }
+
+        // measure the actual text width
+        CmsTextMetrics tm = CmsTextMetrics.get(element, textMetricsKey);
+        String text = element.getInnerText();
+        int textWidth = tm.getWidth(text);
+        tm.release();
+
+        CmsDebugLog log = CmsDebugLog.getInstance();
+        log.printLine("truncate");
+
+        if (labelWidth >= textWidth) {
+            // nothing to do
             return;
         }
-        if (CmsDomUtil.getCurrentStyleInt(element, CmsDomUtil.Style.width) > 0) {
-            fixNow(element, m_textMetricsKey);
-            return;
+
+        log.printLine("text: " + text);
+        log.printLine("elemWidth: " + labelWidth);
+        log.printLine("textWidth: " + textWidth);
+
+        // if the text does not have enough space, fix it
+        int maxChars = (int)((float)labelWidth / (float)textWidth * text.length());
+        if (maxChars < 1) {
+            maxChars = 1;
         }
-        scheduleUpdate(element, m_textMetricsKey);
-    }
-
-    /**
-     * @see com.google.gwt.user.client.ui.Widget#onLoad()
-     */
-    @Override
-    protected void onLoad() {
-
-        super.onLoad();
-        widthCheck();
+        String newText = text.substring(0, maxChars - 1);
+        if (text.startsWith("/")) {
+            // file name?
+            newText = CmsStringUtil.formatResourceName(text, maxChars);
+        } else if (maxChars > 2) {
+            // enough space for ellipsis?
+            newText += CmsDomUtil.Entity.hellip.html();
+        }
+        if (newText.isEmpty()) {
+            // if empty, it could break the layout
+            newText = CmsDomUtil.Entity.nbsp.html();
+        }
+        // use html instead of text because of the entities
+        element.setInnerHTML(newText);
+        // add tooltip with the original text
+        element.setAttribute(CmsDomUtil.Attribute.title.name(), text);
+        // set the corresponding style
+        element.addClassName(I_CmsInputLayoutBundle.INSTANCE.inputCss().labelTruncated());
     }
 
     /**
      * Helper method for changing the label's CSS display property from inline to inline-block (if possible).<p>
      * 
-     * This avoids some display problems, e.g. in Chrome.
+     * This avoids some display problems, e.g. in Chrome.<p>
      */
     private void fixInline() {
 
         Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 
             public void execute() {
+
                 Element element = getElement();
                 String display = CmsDomUtil.getCurrentStyle(element, CmsDomUtil.Style.display);
                 if (display.equalsIgnoreCase("inline")) {
@@ -483,6 +238,5 @@ implements HasHorizontalAlignment, HasText, HasHTML, HasClickHandlers, HasAllMou
                 }
             }
         });
-
     }
 }

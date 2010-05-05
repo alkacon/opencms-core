@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsBrokenLinksPanel.java,v $
- * Date   : $Date: 2010/04/28 13:03:40 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/05/05 14:33:31 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -66,6 +66,9 @@ public class CmsBrokenLinksPanel extends Composite {
     protected interface I_CmsBrokenLinksPanelUiBinder extends UiBinder<Widget, CmsBrokenLinksPanel> {
         // empty
     }
+
+    /** Text metrics key. */
+    private static final String TM_PUBLISH_BROKEN = "PublishBroken";
 
     /** The UiBinder instance for this widget. */
     private static final I_CmsBrokenLinksPanelUiBinder UI_BINDER = GWT.create(I_CmsBrokenLinksPanelUiBinder.class);
@@ -114,14 +117,14 @@ public class CmsBrokenLinksPanel extends Composite {
         // We remove the publish button so that it only appears in the dialog
         // when it's in the list returned by getButtons()
         m_publishButton.removeFromParent();
-
+        m_list.truncate(TM_PUBLISH_BROKEN, CmsPublishDialog.DIALOG_WIDTH);
     }
 
     /**
-     * Adds a resource bean to be displayed.<p>
-     * 
-     * @param res a resource bean
-     */
+      * Adds a resource bean to be displayed.<p>
+      * 
+      * @param res a resource bean
+      */
     public void addEntry(CmsPublishResource res) {
 
         CmsListItemWidget itemWidget = CmsPublishGroupPanel.createListItemWidget(res);
@@ -134,7 +137,6 @@ public class CmsBrokenLinksPanel extends Composite {
             item.addChild(subItem);
         }
         m_list.addItem(item);
-
     }
 
     /**

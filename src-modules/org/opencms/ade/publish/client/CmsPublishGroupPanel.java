@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishGroupPanel.java,v $
- * Date   : $Date: 2010/04/28 13:03:40 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/05/05 14:33:31 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,14 +56,13 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Panel;
 
 /**
  * A panel representing a single publish group.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 8.0.0
  */
@@ -71,6 +70,9 @@ public class CmsPublishGroupPanel extends Composite implements I_CmsHasSize {
 
     /** The CSS bundle used for this widget. */
     protected static final I_CmsPublishCss CSS = I_CmsPublishLayoutBundle.INSTANCE.publishCss();
+
+    /** Text metrics key. */
+    private static final String TM_PUBLISH_LIST = "PublishList";
 
     /** The handler which is called when the publish item selection changes. */
     protected I_CmsPublishSelectionChangeHandler m_selectionChangeHandler;
@@ -85,7 +87,7 @@ public class CmsPublishGroupPanel extends Composite implements I_CmsHasSize {
     private int m_numProblems;
 
     /** The root panel of this widget. */
-    private Panel m_panel = new CmsList<CmsTreeItem>();
+    private CmsList<CmsTreeItem> m_panel = new CmsList<CmsTreeItem>();
 
     /** Flag which indicates whether we're in 'only show resources with problems' mode. */
     private boolean m_problemMode;
@@ -116,6 +118,7 @@ public class CmsPublishGroupPanel extends Composite implements I_CmsHasSize {
 
         initWidget(m_panel);
         m_panel.add(m_header);
+        m_panel.truncate(TM_PUBLISH_LIST, CmsPublishDialog.DIALOG_WIDTH);
         for (CmsPublishResource resourceBean : group) {
             addResource(resourceBean, false);
         }
@@ -133,7 +136,6 @@ public class CmsPublishGroupPanel extends Composite implements I_CmsHasSize {
         clear.setStyleName(CSS.clear());
         m_header.add(clear);
         m_selectionChangeHandler = selectionChangeHandler;
-
     }
 
     /**
@@ -283,7 +285,6 @@ public class CmsPublishGroupPanel extends Composite implements I_CmsHasSize {
         for (CmsPublishResource related : resourceBean.getRelated()) {
             row.addChild(buildItem(related));
         }
-
     }
 
     /**
@@ -304,7 +305,6 @@ public class CmsPublishGroupPanel extends Composite implements I_CmsHasSize {
 
                 m_selectionChangeHandler.onChangePublishSelection();
             }
-
         };
 
         CmsListItemWidget itemWidget = createListItemWidget(resourceBean);
@@ -410,5 +410,4 @@ public class CmsPublishGroupPanel extends Composite implements I_CmsHasSize {
             item.setVisible(visible);
         }
     }
-
 }

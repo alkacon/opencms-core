@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItemWidget.java,v $
- * Date   : $Date: 2010/05/04 13:17:13 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2010/05/05 14:33:31 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -66,20 +66,20 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Tobias Herrmann
  * @author Michael Moossen
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 8.0.0
  */
-public class CmsListItemWidget extends Composite implements HasMouseOutHandlers, HasMouseOverHandlers {
+public class CmsListItemWidget extends Composite implements HasMouseOutHandlers, HasMouseOverHandlers, I_CmsTruncable {
 
     /** Additional info item HTML. */
-    protected static class AdditionalInfoItem extends CmsSimplePanel {
+    protected static class AdditionalInfoItem extends CmsSimplePanel implements I_CmsTruncable {
 
         /** Text metrics key. */
-        private static final String TM_ADDITIONAL_INFO_ITEM_TITLE = "AdditionalInfoItemTitle";
+        private static final String TMA_TITLE = "AddInfoTitle";
 
         /** Text metrics key. */
-        private static final String TM_ADDITIONAL_INFO_ITEM_VALUE = "AdditionalInfoItemValue";
+        private static final String TMA_VALUE = "AddInfoValue";
 
         /** The title element. */
         private CmsLabel m_titleElem;
@@ -100,18 +100,14 @@ public class CmsListItemWidget extends Composite implements HasMouseOutHandlers,
             I_CmsListItemWidgetCss style = I_CmsLayoutBundle.INSTANCE.listItemWidgetCss();
             // create title
             m_titleElem = new CmsLabel(title + ":");
-            m_titleElem.setTextMetricsKey(TM_ADDITIONAL_INFO_ITEM_TITLE);
             m_titleElem.addStyleName(style.itemAdditionalTitle());
-            m_titleElem.setTruncate(false);
             add(m_titleElem);
             // create value
             m_valueElem = new CmsLabel(value);
-            m_valueElem.setTextMetricsKey(TM_ADDITIONAL_INFO_ITEM_VALUE);
             if ((value == null) || (value.trim().length() == 0)) {
                 m_valueElem.setHTML(CmsDomUtil.Entity.nbsp.html());
             }
             m_valueElem.addStyleName(style.itemAdditionalValue());
-            m_valueElem.setTruncate(false);
             if (additionalStyle != null) {
                 m_valueElem.addStyleName(additionalStyle);
             }
@@ -137,6 +133,17 @@ public class CmsListItemWidget extends Composite implements HasMouseOutHandlers,
 
             return m_valueElem;
         }
+
+        /**
+         * @see org.opencms.gwt.client.ui.I_CmsTruncable#truncate(java.lang.String, int)
+         */
+        public void truncate(String textMetricsPrefix, int widgetWidth) {
+
+            // width fixed by css to 90 see I_CmsListItemWidgetCss#itemAdditionalTitle
+            m_titleElem.truncate(textMetricsPrefix + TMA_TITLE, 85);
+            // the rest
+            m_valueElem.truncate(textMetricsPrefix + TMA_VALUE, widgetWidth - 100);
+        }
     }
 
     /**
@@ -150,10 +157,10 @@ public class CmsListItemWidget extends Composite implements HasMouseOutHandlers,
     protected static final String OPENCLASS = I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().open();
 
     /** Text metrics key. */
-    private static final String TM_LIST_ITEM_WIDGET_SUBTITLE = "ListItemWidgetSubtitle";
+    private static final String TM_SUBTITLE = "Subtitle";
 
     /** Text metrics key. */
-    private static final String TM_LIST_ITEM_WIDGET_TITLE = "ListItemWidgetTitle";
+    private static final String TM_TITLE = "Title";
 
     /** The ui-binder instance for this class. */
     private static I_CmsListItemWidgetUiBinder uiBinder = GWT.create(I_CmsListItemWidgetUiBinder.class);
@@ -162,8 +169,6 @@ public class CmsListItemWidget extends Composite implements HasMouseOutHandlers,
     @UiField
     protected CmsSimplePanel m_additionalInfo;
 
-    // TODO: would not it be better to create this panel on-the-fly if needed
-    // it would be 'slower' on mouseover, but the whole user experience could be better specially if a page has *many* of these
     /** Panel to hold buttons.*/
     @UiField
     protected FlowPanel m_buttonPanel;
@@ -191,8 +196,14 @@ public class CmsListItemWidget extends Composite implements HasMouseOutHandlers,
     @UiField
     protected FlowPanel m_titleRow;
 
+    /** The child width in px for truncation. */
+    private int m_childWidth;
+
     /** The event handler registrations. */
     private List<HandlerRegistration> m_handlerRegistrations;
+
+    /** The text metrics prefix. */
+    private String m_tmPrefix;
 
     /**
      * Constructor. Using a 'li'-tag as default root element.<p>
@@ -306,7 +317,7 @@ public class CmsListItemWidget extends Composite implements HasMouseOutHandlers,
      * @param index the additional info index
      * @param label the new value to set
      */
-    public void setAdditionalInfoLabel(int index, String label) {
+    public void setAdditionalInfoValue(int index, String label) {
 
         ((AdditionalInfoItem)m_additionalInfo.getWidget(index)).getValueElem().setText(label);
     }
@@ -318,6 +329,10 @@ public class CmsListItemWidget extends Composite implements HasMouseOutHandlers,
      */
     public void setIcon(Image image) {
 
+        m_iconPanel.setVisible(true);
+        if (image == null) {
+            return;
+        }
         m_iconPanel.setWidget(image);
     }
 
@@ -342,6 +357,37 @@ public class CmsListItemWidget extends Composite implements HasMouseOutHandlers,
     }
 
     /**
+     * @see org.opencms.gwt.client.ui.I_CmsTruncable#truncate(java.lang.String, int)
+     */
+    public void truncate(String textMetricsPrefix, int widgetWidth) {
+
+        m_childWidth = widgetWidth;
+        m_tmPrefix = textMetricsPrefix;
+        int width = widgetWidth - 4; // just to be on the save side
+        if (m_openClose != null) {
+            width -= 16;
+        }
+        if (m_iconPanel.isVisible()) {
+            width -= 32;
+        }
+        m_title.truncate(textMetricsPrefix + TM_TITLE, width);
+        m_subtitle.truncate(textMetricsPrefix + TM_SUBTITLE, width);
+        for (Widget addInfo : m_additionalInfo) {
+            ((AdditionalInfoItem)addInfo).truncate(textMetricsPrefix, widgetWidth - 10);
+        }
+    }
+
+    /**
+     * Updates the truncation of labels if needed.<p>
+     * 
+     * Use after changing any text on the widget.<p>
+     */
+    public void updateTruncation() {
+
+        truncate(m_tmPrefix, m_childWidth);
+    }
+
+    /**
      * Constructor.<p>
      * 
      * @param infoBean bean holding the item information
@@ -350,39 +396,27 @@ public class CmsListItemWidget extends Composite implements HasMouseOutHandlers,
 
         CmsHTMLHoverPanel itemContent = uiBinder.createAndBindUi(this);
         initWidget(itemContent);
+        m_iconPanel.setVisible(false);
         m_title.setText(infoBean.getTitle());
-        m_title.setTextMetricsKey(TM_LIST_ITEM_WIDGET_TITLE);
-
         m_subtitle.setText(infoBean.getSubTitle());
-        m_subtitle.setTextMetricsKey(TM_LIST_ITEM_WIDGET_SUBTITLE);
         if ((infoBean.getAdditionalInfo() != null) && (infoBean.getAdditionalInfo().size() > 0)) {
             m_openClose = new CmsPushButton(I_CmsButton.UiIcon.triangle_1_e, I_CmsButton.UiIcon.triangle_1_s);
             m_openClose.setShowBorder(false);
             m_titleRow.insert(m_openClose, 0);
+            final CmsListItemWidget widget = this;
             m_openClose.addClickHandler(new ClickHandler() {
-
-                /** If initialized. */
-                private boolean m_init;
 
                 /**
                  * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
                  */
                 public void onClick(ClickEvent event) {
 
-                    if (CmsListItemWidget.this.getStyleName().contains(CmsListItemWidget.OPENCLASS)) {
-                        CmsListItemWidget.this.removeStyleName(CmsListItemWidget.OPENCLASS);
+                    if (widget.getStyleName().contains(CmsListItemWidget.OPENCLASS)) {
+                        widget.removeStyleName(CmsListItemWidget.OPENCLASS);
                         m_openClose.setDown(false);
                     } else {
-                        CmsListItemWidget.this.addStyleName(CmsListItemWidget.OPENCLASS);
+                        widget.addStyleName(CmsListItemWidget.OPENCLASS);
                         m_openClose.setDown(true);
-                        if (!m_init) {
-                            m_init = true;
-                            for (Widget w : m_additionalInfo) {
-                                CmsLabel valueElem = ((AdditionalInfoItem)w).getValueElem();
-                                valueElem.setTruncate(true);
-                                valueElem.widthCheck();
-                            }
-                        }
                     }
                 }
             });

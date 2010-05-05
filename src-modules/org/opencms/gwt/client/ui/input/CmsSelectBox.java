@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsSelectBox.java,v $
- * Date   : $Date: 2010/04/28 13:03:40 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2010/05/05 14:33:31 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.gwt.client.ui.input;
 
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsButton;
+import org.opencms.gwt.client.ui.I_CmsTruncable;
 import org.opencms.gwt.client.ui.css.I_CmsInputCss;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
@@ -69,6 +70,7 @@ import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Widget for selecting one of multiple items from a drop-down list which opens
@@ -76,12 +78,12 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 8.0.0
  * 
  */
-public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValueChangeHandlers<String> {
+public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
 
     /**
      * The UI Binder interface for this widget.<p>
@@ -95,14 +97,11 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
      */
     private class CmsSelectCell extends CmsLabel {
 
-        /** Text metrics key. */
-        private static final String TM_SELECT_CELL = "SelectCell";
+        /** The value of the select option. */
+        protected String m_value;
 
         /** The text of the select option. */
-        String m_text;
-
-        /** The value of the select option. */
-        String m_value;
+        private String m_text;
 
         /**
          * Creates a new select cell.<p>
@@ -113,14 +112,13 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
         public CmsSelectCell(String value, String text) {
 
             super();
-            setTextMetricsKey(TM_SELECT_CELL);
             final CmsSelectCell self = this;
             m_value = value;
             m_text = text;
             setText(m_text);
 
             addStyleName(CSS.selectBoxCell());
-            addClickHandler(new ClickHandler() {
+            addDomHandler(new ClickHandler() {
 
                 /**
                  * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
@@ -130,9 +128,9 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
                     onValueSelect(m_value);
                     self.removeStyleName(CSS.selectHover());
                 }
-            });
+            }, ClickEvent.getType());
 
-            addMouseOverHandler(new MouseOverHandler() {
+            addDomHandler(new MouseOverHandler() {
 
                 /**
                  * @see com.google.gwt.event.dom.client.MouseOverHandler#onMouseOver(com.google.gwt.event.dom.client.MouseOverEvent)
@@ -142,9 +140,9 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
                     self.addStyleName(CSS.selectHover());
 
                 }
-            });
+            }, MouseOverEvent.getType());
 
-            addMouseOutHandler(new MouseOutHandler() {
+            addDomHandler(new MouseOutHandler() {
 
                 /**
                  * @see com.google.gwt.event.dom.client.MouseOutHandler#onMouseOut(com.google.gwt.event.dom.client.MouseOutEvent)
@@ -153,7 +151,7 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
 
                     self.removeStyleName(CSS.selectHover());
                 }
-            });
+            }, MouseOutEvent.getType());
         }
     }
 
@@ -161,7 +159,10 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
     protected static final I_CmsInputCss CSS = I_CmsInputLayoutBundle.INSTANCE.inputCss();
 
     /** Text metrics key. */
-    private static final String TM_SELECT_BOX_OPENER = "SelectBoxOpener";
+    private static final String TM_OPENER_LABEL = "OpenerLabel";
+
+    /** Text metrics key. */
+    private static final String TM_OPTION = "Option";
 
     /** The UiBinder instance used for this widget. */
     private static I_CmsSelectBoxUiBinder uiBinder = GWT.create(I_CmsSelectBoxUiBinder.class);
@@ -217,10 +218,8 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
         m_panel = uiBinder.createAndBindUi(this);
         initWidget(m_panel);
         m_openerLabel.addStyleName(CSS.selectBoxOpener());
-        m_openerLabel.setTextMetricsKey(TM_SELECT_BOX_OPENER);
-        m_selectBoxState = new CmsStyleVariable(m_opener/*, m_selector*/);
+        m_selectBoxState = new CmsStyleVariable(m_opener);
         m_selectBoxState.setValue(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
-        //    m_selectBoxState.setValue(CSS.selectBoxClosed());
 
         m_opener.addStyleName(CSS.selectBoxSelected());
         m_openClose = new CmsPushButton(I_CmsButton.UiIcon.triangle_1_e, I_CmsButton.UiIcon.triangle_1_s);
@@ -427,6 +426,19 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
         m_selectedValue = null;
         for (CmsPair<String, String> item : items) {
             addOption(item.getFirst(), item.getSecond());
+        }
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.I_CmsTruncable#truncate(java.lang.String, int)
+     */
+    public void truncate(String textMetricsPrefix, int widgetWidth) {
+
+        m_openerLabel.truncate(textMetricsPrefix + TM_OPENER_LABEL, widgetWidth);
+        for (Widget widget : m_selector) {
+            if (widget instanceof CmsLabel) {
+                ((CmsLabel)widget).truncate(textMetricsPrefix + TM_OPTION, widgetWidth - 2 - 5); // 2px border left/right + 5px left margin
+            }
         }
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishSelectPanel.java,v $
- * Date   : $Date: 2010/04/28 13:03:40 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2010/05/05 14:33:31 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -80,7 +80,7 @@ import com.google.gwt.user.client.ui.Widget;
  *  
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 8.0.0
  */
@@ -102,6 +102,9 @@ public class CmsPublishSelectPanel extends Composite implements I_CmsPublishSele
 
     /** The scroll threshold for the list of problem resources. */
     private static final int SCROLL_THRESHOLD = 100;
+
+    /** Text metrics key. */
+    private static final String TM_PUBLISH = "Publish";
 
     /** The UiBinder instance used for this widget. */
     private static final I_CmsPublishSelectPanelUiBinder UI_BINDER = GWT.create(I_CmsPublishSelectPanelUiBinder.class);
@@ -247,6 +250,7 @@ public class CmsPublishSelectPanel extends Composite implements I_CmsPublishSele
                 m_publishDialog.onChangeOptions();
             }
         });
+        m_projectSelector.truncate(TM_PUBLISH, 200);
 
         m_checkboxRelated.addClickHandler(new ClickHandler() {
 

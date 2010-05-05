@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/tree/Attic/CmsTreeItem.java,v $
- * Date   : $Date: 2010/04/21 14:29:37 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/05/05 14:33:31 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Georg Westenberger
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 8.0.0
  */
@@ -127,18 +127,6 @@ public class CmsTreeItem extends CmsSimpleListItem {
     }
 
     /**
-     * Returns the widget at the given position.<p>
-     * 
-     * @param index the position
-     * 
-     * @return  the widget at the given position
-     */
-    public Widget getWidget(int index) {
-
-        return m_content.getWidget(index);
-    }
-
-    /**
      * Adds a child list item.<p>
      * 
      * @param item the child to add
@@ -160,21 +148,6 @@ public class CmsTreeItem extends CmsSimpleListItem {
     public void clearChildren() {
 
         m_children.clearList();
-        onChangeChildren();
-    }
-
-    /**
-     * Inserts the given item at the given position.<p>
-     * 
-     * @param item the item to insert
-     * @param position the position
-     * 
-     * @see org.opencms.gwt.client.ui.CmsList#insertItem(CmsListItem, int)
-     */
-    public void insertChild(CmsTreeItem item, int position) {
-
-        m_children.insert(item, position);
-        item.setTree(m_tree);
         onChangeChildren();
     }
 
@@ -228,12 +201,39 @@ public class CmsTreeItem extends CmsSimpleListItem {
         return m_tree;
     }
 
+    /**
+     * Returns the widget at the given position.<p>
+     * 
+     * @param index the position
+     * 
+     * @return  the widget at the given position
+     */
+    public Widget getWidget(int index) {
+
+        return m_content.getWidget(index);
+    }
+
     /** 
      * Hides the open/close icons for this tree item and its descendants.<p>
      */
     public void hideOpeners() {
 
         addStyleName(CSS.listTreeItemNoOpeners());
+    }
+
+    /**
+     * Inserts the given item at the given position.<p>
+     * 
+     * @param item the item to insert
+     * @param position the position
+     * 
+     * @see org.opencms.gwt.client.ui.CmsList#insertItem(CmsListItem, int)
+     */
+    public void insertChild(CmsTreeItem item, int position) {
+
+        m_children.insert(item, position);
+        item.setTree(m_tree);
+        onChangeChildren();
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsList.java,v $
- * Date   : $Date: 2010/04/19 11:48:19 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/05/05 14:33:31 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,17 +49,23 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.0
  */
-public class CmsList<I extends CmsListItem> extends ComplexPanel {
+public class CmsList<I extends CmsListItem> extends ComplexPanel implements I_CmsTruncable {
 
     /** The css bundle used for this widget. */
     private static final I_CmsListTreeCss CSS = I_CmsLayoutBundle.INSTANCE.listTreeCss();
 
+    /** The child width in px for truncation. */
+    private int m_childWidth;
+
     /** The map of items. */
     private Map<String, I> m_items;
+
+    /** The text metrics prefix. */
+    private String m_tmPrefix;
 
     /**
      * Constructor.<p>
@@ -74,16 +80,12 @@ public class CmsList<I extends CmsListItem> extends ComplexPanel {
     /**
      * @see com.google.gwt.user.client.ui.Panel#add(com.google.gwt.user.client.ui.Widget)
      */
-    @SuppressWarnings("unchecked")
     @Override
     public void add(Widget widget) {
 
         assert widget instanceof CmsListItem;
         add(widget, getElement());
-        CmsListItem item = (CmsListItem)widget;
-        if (item.getId() != null) {
-            m_items.put(item.getId(), (I)item);
-        }
+        registerItem((CmsListItem)widget);
     }
 
     /**
@@ -142,15 +144,11 @@ public class CmsList<I extends CmsListItem> extends ComplexPanel {
      * @param widget the widget to insert
      * @param position the position
      */
-    @SuppressWarnings("unchecked")
     public void insert(Widget widget, int position) {
 
         assert widget instanceof CmsListItem;
         insert(widget, getElement(), position, true);
-        CmsListItem item = (CmsListItem)widget;
-        if (item.getId() != null) {
-            m_items.put(item.getId(), (I)item);
-        }
+        registerItem((CmsListItem)widget);
     }
 
     /**
@@ -196,6 +194,18 @@ public class CmsList<I extends CmsListItem> extends ComplexPanel {
     }
 
     /**
+     * @see org.opencms.gwt.client.ui.I_CmsTruncable#truncate(java.lang.String, int)
+     */
+    public void truncate(String textMetricsPrefix, int widgetWidth) {
+
+        m_childWidth = widgetWidth;
+        for (CmsListItem item : m_items.values()) {
+            item.truncate(textMetricsPrefix, widgetWidth);
+        }
+        m_tmPrefix = textMetricsPrefix;
+    }
+
+    /**
      * Updates the layout for all list items in this list.<p>
      */
     public void updateLayout() {
@@ -204,6 +214,22 @@ public class CmsList<I extends CmsListItem> extends ComplexPanel {
             if (widget instanceof CmsListItem) {
                 ((CmsListItem)widget).updateLayout();
             }
+        }
+    }
+
+    /**
+     * Registers the given item on this list.<p>
+     * 
+     * @param item the item to register
+     */
+    @SuppressWarnings("unchecked")
+    protected void registerItem(CmsListItem item) {
+
+        if (item.getId() != null) {
+            m_items.put(item.getId(), (I)item);
+        }
+        if (m_tmPrefix != null) {
+            item.truncate(m_tmPrefix, m_childWidth);
         }
     }
 }

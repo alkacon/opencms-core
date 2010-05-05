@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsToolbarNotificationWidget.java,v $
- * Date   : $Date: 2010/04/29 09:31:56 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/05/05 14:33:31 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -184,7 +184,7 @@ public class CmsToolbarNotificationWidget extends Composite implements I_CmsNoti
                     }
                 }
             };
-            m_timer.schedule(3000);
+            m_timer.schedule(type == Type.NORMAL ? 5000 : 10000);
         }
     }
 
