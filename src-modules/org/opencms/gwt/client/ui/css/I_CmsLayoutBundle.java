@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2010/04/30 06:57:26 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2010/05/05 12:39:52 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import com.google.gwt.resources.client.ImageResource.RepeatStyle;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * 
  * @since 8.0.0
  */
@@ -278,6 +278,18 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String popupShadow();
+    }
+
+    /** The drag and drop CSS used by the base module. */
+    @Shared
+    interface I_CmsDragCss extends CssResource {
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String dragStarted();
     }
 
     /** General CSS, used for general re-occurring styles. */
@@ -931,6 +943,14 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     /**
      * Access method.<p>
      * 
+     * @return the drag and drop CSS
+     */
+    @Source("dragdrop.css")
+    I_CmsDragCss dragdropCss();
+
+    /**
+     * Access method.<p>
+     * 
      * @return the toolbar CSS
      */
     @Source("floatDecoratedPanel.css")
@@ -1072,16 +1092,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      */
     @Source("listtree.css")
     I_CmsListTreeCss listTreeCss();
-
-    /**
-
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/placeholderOverlay_trans.png")
-    @ImageOptions(repeatStyle = RepeatStyle.Both)
-    ImageResource overlayImage();
 
     /**
      * Access method. These CSS classes are used to indicate the state of ui items, use them within a dedicated CSS resources.

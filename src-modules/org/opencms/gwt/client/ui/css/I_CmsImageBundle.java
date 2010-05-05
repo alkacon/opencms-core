@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsImageBundle.java,v $
- * Date   : $Date: 2010/04/07 13:36:29 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/05/05 12:39:52 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import com.google.gwt.resources.client.ImageResource.RepeatStyle;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -338,6 +338,14 @@ public interface I_CmsImageBundle extends ClientBundle {
      * 
      * @return the image resource
      */
+    @Source("images/loading.gif")
+    ImageResource loading();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
     @Source("images/ade_add.png")
     ImageResource magnifierIconActive();
 
@@ -410,24 +418,25 @@ public interface I_CmsImageBundle extends ClientBundle {
      * 
      * @return the image resource
      */
-    @Source("images/plus.png")
-    ImageResource plus();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/loading.gif")
-    ImageResource loading();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
     @Source("images/opencms_logo_16.png")
     ImageResource opencmsLogo();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/placeholderOverlay_trans.png")
+    @ImageOptions(repeatStyle = RepeatStyle.Both)
+    ImageResource overlayImage();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/plus.png")
+    ImageResource plus();
 
     /**
      * Access method.<p>
@@ -546,20 +555,6 @@ public interface I_CmsImageBundle extends ClientBundle {
      * Access method.<p>
      * @return an image resource
      */
-    @Source("images/toolbaricons/ade_reset.png")
-    ImageResource toolbarReset();
-
-    /** 
-     * Access method.<p>
-     * @return an image resource
-     */
-    @Source("images/toolbaricons/ade_reset_sw.png")
-    ImageResource toolbarResetSW();
-
-    /** 
-     * Access method.<p>
-     * @return an image resource
-     */
     @Source("images/toolbaricons/ade_move.png")
     ImageResource toolbarMove();
 
@@ -639,6 +634,20 @@ public interface I_CmsImageBundle extends ClientBundle {
      */
     @Source("images/toolbaricons/ade_delete_sw.png")
     ImageResource toolbarRemoveSW();
+
+    /** 
+     * Access method.<p>
+     * @return an image resource
+     */
+    @Source("images/toolbaricons/ade_reset.png")
+    ImageResource toolbarReset();
+
+    /** 
+     * Access method.<p>
+     * @return an image resource
+     */
+    @Source("images/toolbaricons/ade_reset_sw.png")
+    ImageResource toolbarResetSW();
 
     /** 
      * Access method.<p>

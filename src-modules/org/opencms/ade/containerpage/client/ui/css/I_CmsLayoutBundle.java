@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2010/05/05 09:49:13 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/05/05 12:44:47 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,13 +33,14 @@ package org.opencms.ade.containerpage.client.ui.css;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.CssResource;
+import com.google.gwt.resources.client.CssResource.Shared;
 
 /**
  * Resource bundle to access CSS and image resources.
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -47,8 +48,7 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsIm
 
     /** Container-page CSS. */
     public interface I_CmsContainerpageCss
-    extends org.opencms.gwt.client.ui.css.I_CmsToolbarButtonLayoutBundle.I_CmsToolbarButtonCss,
-    org.opencms.gwt.client.draganddrop.I_CmsLayoutBundle.I_CmsDragCss {
+    extends org.opencms.gwt.client.ui.css.I_CmsToolbarButtonLayoutBundle.I_CmsToolbarButtonCss, I_CmsDragDropCss {
 
         /** Access method.<p>
          * 
@@ -78,13 +78,13 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsIm
          * 
          * @return the CSS class name
          */
-        String menuTabContainer();
+        String menuContent();
 
         /** Access method.<p>
          * 
          * @return the CSS class name
          */
-        String menuContent();
+        String menuTabContainer();
 
         /** Access method.<p>
          * 
@@ -127,6 +127,93 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsIm
         String contentEditor();
     }
 
+    /** The drag and drop CSS classes used also within the container-page CSS. */
+    @Shared
+    public interface I_CmsDragDropCss extends org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsDragCss {
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String dragElement();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String dragging();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String dragPlaceholder();
+    }
+
+    /** The drag and drop CSS classes. */
+    public interface I_CmsDragDropExtendedCss extends I_CmsDragDropCss {
+
+        /**
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String clearFix();
+
+        /**
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String currentTarget();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String dragElementBackground();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String dragElementBorder();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String dragSubContainer();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String dragTarget();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String overlayShow();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String placeholderOverlay();
+
+    }
+
     /** The bundle instance. */
     I_CmsLayoutBundle INSTANCE = GWT.create(I_CmsLayoutBundle.class);
 
@@ -146,4 +233,12 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsIm
     @Source("contentEditor.css")
     @CssResource.NotStrict
     I_CmsContentEditorCss contentEditorCss();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the drag and drop CSS
+     */
+    @Source("dragdrop.css")
+    I_CmsDragDropExtendedCss dragdropCss();
 }

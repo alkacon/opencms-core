@@ -86,18 +86,7 @@
 .subcontainerPlaceholder *{
 	visibility: hidden !important;
 }
-/**
-.subcontainerPlaceholder:after{
-    content: ".";
-    display: block;
-    height: 100%;
-    width: 100%;
-    position:absolute;
-    top:0px;
-    left: 0px;
-    background: #ffffff;
-}
-**/
+
 .subcontainerEditor{}
 
 .subcontainerEditing .cms_ade_subcontainer .optionBar {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/I_CmsDragContainerElement.java,v $
- * Date   : $Date: 2010/05/05 09:49:43 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/05/05 12:44:47 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,11 +43,16 @@ import org.opencms.gwt.client.draganddrop.I_CmsDragTarget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
 public interface I_CmsDragContainerElement<T extends I_CmsDragTarget> extends I_CmsDragElement<T> {
+
+    /**
+     * Clears all properties set for dragging.<p>
+     */
+    void clearDrag();
 
     /**
      * Returns the client id.<p>
@@ -57,18 +62,23 @@ public interface I_CmsDragContainerElement<T extends I_CmsDragTarget> extends I_
     String getClientId();
 
     /**
-     * Registers a new drag parent.<p>
-     * 
-     * @param target the new drag parent
-     */
-    void setDragParent(T target);
-
-    /**
      * Returns the parent drag target.<p>
      * 
      * @return the parent drag target
      */
     T getDragParent();
+
+    /**
+     * Prepares the element for dragging.<p>
+     */
+    void prepareDrag();
+
+    /**
+     * Registers a new drag parent.<p>
+     * 
+     * @param target the new drag parent
+     */
+    void setDragParent(T target);
 
     /**
      * Sets whether this object is visible.<p>

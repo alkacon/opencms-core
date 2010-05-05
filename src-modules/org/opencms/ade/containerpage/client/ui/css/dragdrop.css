@@ -51,11 +51,6 @@
 }
 
 
-
-/** setting browser specific shadow  **/
-
-@def shadow literal("4px 4px 4px #666666");
-
 @if user.agent gecko1_8 gecko{
 	
 	/** Assigned to the body on drag start. */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/draganddrop/Attic/I_CmsDragElement.java,v $
- * Date   : $Date: 2010/05/05 09:19:16 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/05/05 12:39:52 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,21 +43,11 @@ import com.google.gwt.user.client.Element;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
 public interface I_CmsDragElement<T extends I_CmsDragTarget> extends HasAllMouseHandlers, HasContextMenuHandlers {
-
-    /**
-     * Prepares the element for dragging.<p>
-     */
-    void prepareDrag();
-
-    /**
-     * Clears all properties set for dragging.<p>
-     */
-    void clearDrag();
 
     /**
      * The root element of this widget.<p>
