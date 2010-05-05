@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/draganddrop/Attic/A_CmsDragHandler.java,v $
- * Date   : $Date: 2010/05/05 14:17:03 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2010/05/05 14:18:24 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -66,7 +66,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 8.0.0
  */
@@ -74,7 +74,7 @@ public abstract class A_CmsDragHandler<E extends I_CmsDragElement<T>, T extends 
 implements I_CmsDragHandler<E, T> {
 
     /** Scroll direction enumeration. */
-    public enum Direction {
+    protected enum Direction {
         /** Scroll direction. */
         down,
 
