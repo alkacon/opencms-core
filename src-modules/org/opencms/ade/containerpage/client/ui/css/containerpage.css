@@ -56,10 +56,6 @@
 	margin: 2px;
 }
 
-.cms_ade_subcontainer .dragElement .optionBar{
-	visibility: hidden;
-}
-
 .optionBar{
 	position: absolute;
 	top: 2px;
@@ -79,12 +75,33 @@
 	display: none;
 }
 
-.dragPlaceholder .optionBar{
-	display: none;	
-}
-
-.dragStarted .optionBar{
+.dragStarted .optionBar, .dragPlaceholder .optionBar, .subcontainerEditing .optionBar, .cms_ade_subcontainer .dragElement .optionBar{
 	display: none;
+}
+.subcontainerPlaceholder{
+	position:relative;
+	color: #ffffff;
+	background: #ffffff;
+}
+.subcontainerPlaceholder *{
+	visibility: hidden !important;
+}
+/**
+.subcontainerPlaceholder:after{
+    content: ".";
+    display: block;
+    height: 100%;
+    width: 100%;
+    position:absolute;
+    top:0px;
+    left: 0px;
+    background: #ffffff;
+}
+**/
+.subcontainerEditor{}
+
+.subcontainerEditing .cms_ade_subcontainer .optionBar {
+	display: block;
 }
 
 .dragStarted .dragElement.dragging .optionBar{

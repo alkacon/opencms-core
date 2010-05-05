@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageHandler.java,v $
- * Date   : $Date: 2010/05/04 09:45:21 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/05/05 09:49:13 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,12 +33,15 @@ package org.opencms.ade.containerpage.client;
 
 import org.opencms.ade.containerpage.client.draganddrop.CmsDragContainerElement;
 import org.opencms.ade.containerpage.client.draganddrop.CmsDragMenuElement;
+import org.opencms.ade.containerpage.client.draganddrop.CmsDragSubcontainer;
+import org.opencms.ade.containerpage.client.draganddrop.I_CmsDragContainerElement;
+import org.opencms.ade.containerpage.client.draganddrop.I_CmsDragTargetContainer;
 import org.opencms.ade.containerpage.client.ui.CmsContentEditorDialog;
 import org.opencms.ade.containerpage.client.ui.CmsLeavePageDialog;
+import org.opencms.ade.containerpage.client.ui.CmsSubcontainerEditor;
 import org.opencms.ade.containerpage.client.ui.I_CmsToolbarButton;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.publish.client.CmsPublishDialog;
-import org.opencms.gwt.client.draganddrop.I_CmsDragElement;
 import org.opencms.gwt.client.ui.CmsConfirmDialog;
 import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
 import org.opencms.gwt.client.util.CmsDebugLog;
@@ -58,7 +61,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -131,7 +134,7 @@ public class CmsContainerpageHandler {
      * 
      * @param element the element
      */
-    public void enableDragHandler(I_CmsDragElement element) {
+    public void enableDragHandler(I_CmsDragContainerElement<I_CmsDragTargetContainer> element) {
 
         m_controller.getContainerpageUtil().enableDragHandler(element);
     }
@@ -241,7 +244,7 @@ public class CmsContainerpageHandler {
 
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(element.getNoEditReason())) {
             if (CmsDomUtil.hasClass(CmsContainerpageUtil.CLASS_SUB_CONTAINER_ELEMENTS, element.getElement())) {
-                openSubcontainerEditor(element);
+                openSubcontainerEditor((CmsDragSubcontainer)element);
             } else {
                 CmsContentEditorDialog.get().openEditDialog(element.getClientId(), element.getSitePath());
             }
@@ -373,10 +376,8 @@ public class CmsContainerpageHandler {
      * 
      * @param subContainer the sub-container element
      */
-    private void openSubcontainerEditor(CmsDragContainerElement subContainer) {
+    private void openSubcontainerEditor(CmsDragSubcontainer subContainer) {
 
-        // TODO: implement
-
-        CmsDebugLog.getInstance().printLine("should open sub-container editor");
+        CmsSubcontainerEditor.openSubcontainerEditor(subContainer, m_controller, this);
     }
 }

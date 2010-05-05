@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsDragSubcontainer.java,v $
- * Date   : $Date: 2010/05/04 14:40:41 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/05/05 09:49:25 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,14 +31,15 @@
 
 package org.opencms.ade.containerpage.client.draganddrop;
 
-import org.opencms.gwt.client.draganddrop.I_CmsDragTarget;
 import org.opencms.gwt.client.draganddrop.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.CmsHighlightingBorder;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsPositionBean;
 
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Implementation of a draggable sub-container element. To be used for content elements within a container-page.<p>
@@ -46,14 +47,20 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
 public class CmsDragSubcontainer extends CmsDragContainerElement implements I_CmsDragTargetContainer {
 
+    /** The container type. */
+    private String m_containerType;
+
     /** Highlighting border for this container. */
     private CmsHighlightingBorder m_highlighting;
+
+    /** The sub-container's place-holder while it's being edited. */
+    private Widget m_placeholder;
 
     /**
      * Constructor.<p>
@@ -66,12 +73,30 @@ public class CmsDragSubcontainer extends CmsDragContainerElement implements I_Cm
      */
     public CmsDragSubcontainer(
         Element element,
-        I_CmsDragTarget parent,
+        I_CmsDragTargetContainer parent,
         String clientId,
         String sitePath,
         String noEditReason) {
 
         super(element, parent, clientId, sitePath, noEditReason);
+    }
+
+    /**
+     * @see org.opencms.ade.containerpage.client.draganddrop.I_CmsDragTargetContainer#getContainerType()
+     */
+    public String getContainerType() {
+
+        return m_containerType;
+    }
+
+    /**
+     * Returns the place-holder.<p>
+     *
+     * @return the place-holder
+     */
+    public Widget getPlaceholder() {
+
+        return m_placeholder;
     }
 
     /**
@@ -100,7 +125,9 @@ public class CmsDragSubcontainer extends CmsDragContainerElement implements I_Cm
      */
     public void refreshHighlighting() {
 
-        m_highlighting.setPosition(CmsPositionBean.getInnerDimensions(this));
+        CmsPositionBean position = CmsPositionBean.getInnerDimensions(this);
+        m_placeholder.setHeight(position.getHeight() + 10 + Unit.PX.getType());
+        m_highlighting.setPosition(position);
     }
 
     /**
@@ -108,9 +135,30 @@ public class CmsDragSubcontainer extends CmsDragContainerElement implements I_Cm
      */
     public void removeHighlighting() {
 
+        m_placeholder.getElement().getStyle().clearHeight();
         m_highlighting.removeFromParent();
         m_highlighting = null;
         getElement().removeClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragging());
         getElement().removeClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().clearFix());
+    }
+
+    /**
+     * Sets the container type.<p>
+     *
+     * @param containerType the container type to set
+     */
+    public void setContainerType(String containerType) {
+
+        m_containerType = containerType;
+    }
+
+    /**
+     * Sets the placeholder.<p>
+     *
+     * @param placeholder the placeholder to set
+     */
+    public void setPlaceholder(Widget placeholder) {
+
+        m_placeholder = placeholder;
     }
 }

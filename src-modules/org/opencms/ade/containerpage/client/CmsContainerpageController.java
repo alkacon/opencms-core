@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageController.java,v $
- * Date   : $Date: 2010/05/04 09:45:21 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/05/05 09:49:13 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,7 +32,9 @@
 package org.opencms.ade.containerpage.client;
 
 import org.opencms.ade.containerpage.client.draganddrop.CmsDragContainerElement;
+import org.opencms.ade.containerpage.client.draganddrop.CmsDragSubcontainer;
 import org.opencms.ade.containerpage.client.draganddrop.CmsDragTargetContainer;
+import org.opencms.ade.containerpage.client.draganddrop.I_CmsDragTargetContainer;
 import org.opencms.ade.containerpage.client.ui.CmsLeavePageDialog;
 import org.opencms.ade.containerpage.client.ui.I_CmsToolbarButton;
 import org.opencms.ade.containerpage.shared.CmsCntPageData;
@@ -76,7 +78,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -167,6 +169,11 @@ public final class CmsContainerpageController {
         /** The requested client id's. */
         private Set<String> m_clientIds;
 
+        /**
+         * Constructor.<p>
+         * 
+         * @param clientIds the client id's to reload
+         */
         public ReloadElementAction(Set<String> clientIds) {
 
             super();
@@ -194,19 +201,23 @@ public final class CmsContainerpageController {
         @Override
         protected void onResponse(Map<String, CmsContainerElement> result) {
 
-            if (result != null) {
-                addElements(result);
-                Iterator<CmsDragContainerElement> it = getAllDragElements().iterator();
-                while (it.hasNext()) {
-                    CmsDragContainerElement dragElement = it.next();
-                    if (m_clientIds.contains(dragElement.getClientId())) {
-                        try {
-                            replaceDragElement(dragElement, m_elements.get(dragElement.getClientId()));
-                        } catch (Exception e) {
-                            CmsDebugLog.getInstance().printLine(e.getLocalizedMessage());
-                        }
-                    }
+            if (result == null) {
+                return;
+            }
+            addElements(result);
+            Iterator<CmsDragContainerElement> it = getAllDragElements().iterator();
+            while (it.hasNext()) {
+                CmsDragContainerElement dragElement = it.next();
+                if (!m_clientIds.contains(dragElement.getClientId())) {
+                    continue;
                 }
+                try {
+                    replaceDragElement(dragElement, m_elements.get(dragElement.getClientId()));
+                } catch (Exception e) {
+                    CmsDebugLog.getInstance().printLine("trying to replace");
+                    CmsDebugLog.getInstance().printLine(e.getLocalizedMessage());
+                }
+
             }
 
         }
@@ -296,8 +307,11 @@ public final class CmsContainerpageController {
     /** The container data. */
     private Map<String, CmsContainerJso> m_containers;
 
-    /** prefetched data. */
+    /** The prefetched data. */
     private CmsCntPageData m_data;
+
+    /** The currently edited sub-container element. */
+    private CmsDragSubcontainer m_editingSubcontainer;
 
     /** The container-page handler. */
     private CmsContainerpageHandler m_handler;
@@ -428,6 +442,15 @@ public final class CmsContainerpageController {
         Iterator<CmsDragTargetContainer> it = m_targetContainers.values().iterator();
         while (it.hasNext()) {
             result.addAll(it.next().getAllDragElements());
+        }
+        if (isSubcontainerEditing()) {
+            Iterator<Widget> itSub = m_editingSubcontainer.iterator();
+            while (itSub.hasNext()) {
+                Widget w = itSub.next();
+                if (w instanceof CmsDragContainerElement) {
+                    result.add((CmsDragContainerElement)w);
+                }
+            }
         }
         return result;
     }
@@ -601,6 +624,29 @@ public final class CmsContainerpageController {
     }
 
     /**
+     * Returns the sub-container element being edited.<p>
+     * 
+     * @return the sub-container
+     */
+    public CmsDragSubcontainer getSubcontainer() {
+
+        return m_editingSubcontainer;
+    }
+
+    /**
+     * Returns the type of the currently edited sub-container.<p>
+     * 
+     * @return the sub-container type, or <code>null</code> if no editing is taking place
+     */
+    public String getSubcontainerType() {
+
+        if (m_editingSubcontainer != null) {
+            return m_editingSubcontainer.getContainerType();
+        }
+        return null;
+    }
+
+    /**
      * Returns if the page has changed.<p>
      * 
      * @return <code>true</code> if the page has changed
@@ -640,6 +686,16 @@ public final class CmsContainerpageController {
                 previewNativeEvent(event);
             }
         });
+    }
+
+    /**
+     * Returns if a sub-container is currently being edited.<p>
+     * 
+     * @return <code>true</code> if a sub-container is being edited
+     */
+    public boolean isSubcontainerEditing() {
+
+        return m_editingSubcontainer != null;
     }
 
     /**
@@ -751,8 +807,8 @@ public final class CmsContainerpageController {
     public void replaceDragElement(CmsDragContainerElement dragElement, CmsContainerElement elementData)
     throws Exception {
 
-        CmsDragTargetContainer dragParent = (CmsDragTargetContainer)dragElement.getDragParent();
-        String containerType = m_containers.get(dragParent.getContainerId()).getType();
+        I_CmsDragTargetContainer dragParent = dragElement.getDragParent();
+        String containerType = dragParent.getContainerType();
 
         String elementContent = elementData.getContents().get(containerType);
         if ((elementContent != null) && (elementContent.trim().length() > 0)) {
@@ -876,6 +932,14 @@ public final class CmsContainerpageController {
     }
 
     /**
+     * Saves the sub-container.<p>
+     */
+    public void saveSubcontainer() {
+
+        // TODO: implement
+    }
+
+    /**
      * Sets the page changed flag to <code>true</code>.<p>
      */
     public void setPageChanged() {
@@ -915,6 +979,24 @@ public final class CmsContainerpageController {
             }
         };
         action.execute();
+    }
+
+    /**
+     * Tells the controller that sub-container editing has started.<p>
+     * 
+     * @param subContainer the sub-container
+     */
+    public void startEditingSubcontainer(CmsDragSubcontainer subContainer) {
+
+        m_editingSubcontainer = subContainer;
+    }
+
+    /**
+     * Tells the controller that sub-container editing has stopped.<p>
+     */
+    public void stopEditingSubcontainer() {
+
+        m_editingSubcontainer = null;
     }
 
     /**
@@ -1037,37 +1119,36 @@ public final class CmsContainerpageController {
     void previewNativeEvent(NativePreviewEvent event) {
 
         Event nativeEvent = Event.as(event.getNativeEvent());
-        if (hasPageChanged()) {
-            if ((nativeEvent.getTypeInt() == Event.ONCLICK)) {
-                CmsDebugLog.getInstance().printLine("Previewing event");
-
-                EventTarget target = nativeEvent.getEventTarget();
-                if (Element.is(target)) {
-                    Element element = Element.as(target);
-                    CmsDebugLog.getInstance().printLine("Checking element");
-                    element = CmsDomUtil.getAncestor(element, CmsDomUtil.Tag.a);
-                    if (element != null) {
-                        AnchorElement anc = AnchorElement.as(element);
-                        final String uri = anc.getHref();
-                        if (CmsStringUtil.isEmptyOrWhitespaceOnly(uri)) {
-                            return;
-                        }
-                        nativeEvent.preventDefault();
-                        nativeEvent.stopPropagation();
-                        CmsLeavePageDialog dialog = new CmsLeavePageDialog(uri, this, null);
-                        CmsDebugLog.getInstance().printLine("Event canceled ++");
-                        dialog.center();
-                    }
-                }
-            }
-            if ((event.getTypeInt() == Event.ONKEYPRESS) && (nativeEvent.getKeyCode() == 116)) {
-                nativeEvent.preventDefault();
-                nativeEvent.stopPropagation();
-                CmsLeavePageDialog dialog = new CmsLeavePageDialog(Window.Location.getHref(), this, null);
-                dialog.center();
-                CmsDebugLog.getInstance().printLine("Reload canceled");
-            }
+        if (!hasPageChanged()) {
+            return;
         }
+        if ((nativeEvent.getTypeInt() == Event.ONCLICK)) {
+            EventTarget target = nativeEvent.getEventTarget();
+            if (!Element.is(target)) {
+                return;
+            }
+            Element element = Element.as(target);
+            element = CmsDomUtil.getAncestor(element, CmsDomUtil.Tag.a);
+            if (element == null) {
+                return;
+            }
+            AnchorElement anc = AnchorElement.as(element);
+            final String uri = anc.getHref();
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(uri)) {
+                return;
+            }
+            nativeEvent.preventDefault();
+            nativeEvent.stopPropagation();
+            CmsLeavePageDialog dialog = new CmsLeavePageDialog(uri, this, null);
+            dialog.center();
+        }
+        if ((event.getTypeInt() == Event.ONKEYPRESS) && (nativeEvent.getKeyCode() == 116)) {
+            nativeEvent.preventDefault();
+            nativeEvent.stopPropagation();
+            CmsLeavePageDialog dialog = new CmsLeavePageDialog(Window.Location.getHref(), this, null);
+            dialog.center();
+        }
+
     }
 
     /**
@@ -1099,6 +1180,7 @@ public final class CmsContainerpageController {
                 result.add(element.getClientId());
             }
         }
+
         return result;
     }
 }

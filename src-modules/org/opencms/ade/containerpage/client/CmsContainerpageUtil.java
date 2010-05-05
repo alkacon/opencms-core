@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageUtil.java,v $
- * Date   : $Date: 2010/05/04 09:45:21 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/05/05 09:49:13 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,12 +36,11 @@ import org.opencms.ade.containerpage.client.draganddrop.CmsDragContainerElement;
 import org.opencms.ade.containerpage.client.draganddrop.CmsDragMenuElement;
 import org.opencms.ade.containerpage.client.draganddrop.CmsDragSubcontainer;
 import org.opencms.ade.containerpage.client.draganddrop.CmsDragTargetContainer;
+import org.opencms.ade.containerpage.client.draganddrop.I_CmsDragContainerElement;
 import org.opencms.ade.containerpage.client.draganddrop.I_CmsDragTargetContainer;
 import org.opencms.ade.containerpage.client.ui.A_CmsToolbarOptionButton;
 import org.opencms.ade.containerpage.client.ui.CmsElementOptionBar;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
-import org.opencms.gwt.client.draganddrop.I_CmsDragElement;
-import org.opencms.gwt.client.draganddrop.I_CmsDragTarget;
 import org.opencms.gwt.client.util.CmsDomUtil;
 
 import java.util.ArrayList;
@@ -58,7 +57,7 @@ import com.google.gwt.user.client.Element;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -118,6 +117,7 @@ public class CmsContainerpageUtil {
                     clientId,
                     sitePath,
                     noEditReason);
+                subContainer.setContainerType(container.getContainerType());
                 elements.add(subContainer);
                 DOM.removeChild(container.getElement(), child);
                 consumeContainerElements(subContainer);
@@ -174,7 +174,7 @@ public class CmsContainerpageUtil {
      */
     public CmsDragContainerElement createElement(
         CmsContainerElement containerElement,
-        I_CmsDragTarget dragParent,
+        I_CmsDragTargetContainer dragParent,
         String containerType) throws Exception {
 
         com.google.gwt.user.client.Element element;
@@ -200,7 +200,7 @@ public class CmsContainerpageUtil {
      * 
      * @return the list item widget
      */
-    public CmsDragMenuElement createListItem(CmsContainerElement containerElement, I_CmsDragTarget dragParent) {
+    public CmsDragMenuElement createListItem(CmsContainerElement containerElement, I_CmsDragTargetContainer dragParent) {
 
         CmsDragMenuElement menuItem = new CmsDragMenuElement(containerElement);
         menuItem.setDragParent(dragParent);
@@ -223,7 +223,7 @@ public class CmsContainerpageUtil {
     public CmsDragContainerElement createSubcontainerElement(
         CmsContainerElement containerElement,
         List<CmsContainerElement> subElements,
-        I_CmsDragTarget dragParent,
+        I_CmsDragTargetContainer dragParent,
         String containerType) throws Exception {
 
         com.google.gwt.user.client.Element element = DOM.createDiv();
@@ -235,6 +235,7 @@ public class CmsContainerpageUtil {
             containerElement.getClientId(),
             containerElement.getFile(),
             containerElement.getNoEditReason());
+        subContainer.setContainerType(containerType);
         addOptionBar(subContainer);
 
         //adding sub-elements
@@ -254,7 +255,7 @@ public class CmsContainerpageUtil {
      * 
      * @param element the element
      */
-    public void enableDragHandler(I_CmsDragElement element) {
+    public void enableDragHandler(I_CmsDragContainerElement<I_CmsDragTargetContainer> element) {
 
         m_dragHandler.registerMouseHandler(element);
     }
@@ -283,7 +284,7 @@ public class CmsContainerpageUtil {
      */
     private CmsDragContainerElement createElement(
         com.google.gwt.user.client.Element element,
-        I_CmsDragTarget dragParent,
+        I_CmsDragTargetContainer dragParent,
         String clientId,
         String sitePath,
         String noEditReason) {
@@ -312,7 +313,7 @@ public class CmsContainerpageUtil {
      */
     private CmsDragSubcontainer createSubcontainer(
         com.google.gwt.user.client.Element element,
-        I_CmsDragTarget dragParent,
+        I_CmsDragTargetContainer dragParent,
         String clientId,
         String sitePath,
         String noEditReason) {
