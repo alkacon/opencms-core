@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapHoverbar.java,v $
- * Date   : $Date: 2010/05/04 06:54:27 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/05/05 14:31:42 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 8.0.0
  */
@@ -263,7 +263,9 @@ public class CmsSitemapHoverbar extends FlowPanel {
                         getEditButton().disable(Messages.get().key(Messages.GUI_DISABLED_PARENT_SITEMAP_0));
                     }
                 }
-                onAttach();
+                if (!isAttached()) {
+                    onAttach();
+                }
             }
 
             /**
@@ -272,7 +274,9 @@ public class CmsSitemapHoverbar extends FlowPanel {
             @Override
             protected void onHoverOut(MouseOutEvent event) {
 
-                deattach();
+                if (isAttached()) {
+                    deattach();
+                }
             }
 
         };
