@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/draganddrop/Attic/A_CmsDragHandler.java,v $
- * Date   : $Date: 2010/05/05 12:39:52 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2010/05/05 14:15:29 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,7 +33,6 @@ package org.opencms.gwt.client.draganddrop;
 
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsMoveAnimation;
-import org.opencms.gwt.client.util.CmsScrollTimer;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.gwt.client.util.CmsDomUtil.Style;
 
@@ -42,6 +41,7 @@ import java.util.List;
 
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ContextMenuEvent;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseEvent;
@@ -51,9 +51,11 @@ import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -65,12 +67,120 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 8.0.0
  */
 public abstract class A_CmsDragHandler<E extends I_CmsDragElement<T>, T extends I_CmsDragTarget>
 implements I_CmsDragHandler<E, T> {
+
+    /** Scroll direction enumeration. */
+    public enum Direction {
+        /** Scroll direction. */
+        down,
+
+        /** Scroll direction. */
+        left,
+
+        /** Scroll direction. */
+        right,
+
+        /** Scroll direction. */
+        up
+    }
+
+    /**
+     * Timer to schedule automated scrolling.<p>
+     */
+    private class CmsScrollTimer extends Timer {
+
+        /** The current scroll direction. */
+        private Direction m_direction;
+
+        /** Flag indicating if the scroll parent is the body element. */
+        private boolean m_isBody;
+
+        /** Command to be executed after each scroll action. */
+        private Command m_onScrollCommand;
+
+        /** The element that should scrolled. */
+        private Element m_scrollParent;
+
+        /** The scroll speed. */
+        private int m_scrollSpeed;
+
+        /**
+         * Constructor.<p>
+         * 
+         * @param scrollParent the element that should scrolled
+         * @param scrollSpeed the scroll speed
+         * @param direction the scroll direction
+         */
+        public CmsScrollTimer(Element scrollParent, int scrollSpeed, Direction direction) {
+
+            m_scrollParent = scrollParent;
+            m_scrollSpeed = scrollSpeed;
+            m_isBody = m_scrollParent.getTagName().equalsIgnoreCase(CmsDomUtil.Tag.body.name());
+            m_direction = direction;
+        }
+
+        /**
+         * @see com.google.gwt.user.client.Timer#run()
+         */
+        @Override
+        public void run() {
+
+            int top, left;
+            if (m_isBody) {
+                top = Window.getScrollTop();
+                left = Window.getScrollLeft();
+            } else {
+                top = m_scrollParent.getScrollTop();
+                left = m_scrollParent.getScrollLeft();
+            }
+            Element element = m_dragElement.getElement();
+            switch (m_direction) {
+                case down:
+                    top += m_scrollSpeed;
+                    element.getStyle().setTop(
+                        CmsDomUtil.getCurrentStyleInt(element, Style.top) + m_scrollSpeed,
+                        Unit.PX);
+                    break;
+                case up:
+                    top -= m_scrollSpeed;
+                    element.getStyle().setTop(
+                        CmsDomUtil.getCurrentStyleInt(element, Style.top) - m_scrollSpeed,
+                        Unit.PX);
+                    break;
+                case left:
+                    left += m_scrollSpeed;
+                    element.getStyle().setLeft(
+                        CmsDomUtil.getCurrentStyleInt(element, Style.left) + m_scrollSpeed,
+                        Unit.PX);
+                    break;
+                case right:
+                    left -= m_scrollSpeed;
+                    element.getStyle().setLeft(
+                        CmsDomUtil.getCurrentStyleInt(element, Style.left) - m_scrollSpeed,
+                        Unit.PX);
+                    break;
+                default:
+                    break;
+
+            }
+
+            if (m_isBody) {
+                Window.scrollTo(left, top);
+            } else {
+                m_scrollParent.setScrollLeft(left);
+                m_scrollParent.setScrollTop(top);
+            }
+            if (m_onScrollCommand != null) {
+                m_onScrollCommand.execute();
+            }
+        }
+
+    }
 
     /** Animation enabled flag. */
     protected boolean m_animationEnabled;
@@ -103,7 +213,7 @@ implements I_CmsDragHandler<E, T> {
     protected Widget m_placeholder;
 
     /** Current scroll direction. */
-    protected CmsScrollTimer.Direction m_scrollDirection;
+    protected Direction m_scrollDirection;
 
     /** Scroll timer. */
     protected Timer m_scrollTimer;
@@ -246,7 +356,10 @@ implements I_CmsDragHandler<E, T> {
         // only act on left button up, ignore right click
         if (m_dragging && (event.getNativeButton() == NativeEvent.BUTTON_LEFT)) {
             m_dragging = false;
-
+            if (m_scrollTimer != null) {
+                m_scrollTimer.cancel();
+                m_scrollTimer = null;
+            }
             DOM.releaseCapture(m_dragElement.getElement());
             event.preventDefault();
             event.stopPropagation();
@@ -436,7 +549,7 @@ implements I_CmsDragHandler<E, T> {
 
         if (m_isScrollEnabled) {
 
-            CmsScrollTimer.Direction direction = CmsScrollTimer.getScrollDirection(m_currentEvent, 100);
+            Direction direction = getScrollDirection(m_currentEvent, 100);
             if ((m_scrollTimer != null) && (m_scrollDirection != direction)) {
                 m_scrollTimer.cancel();
                 m_scrollTimer = null;
@@ -459,5 +572,41 @@ implements I_CmsDragHandler<E, T> {
      * Method executed when the widget order within the current target has been changed.<p> 
      */
     protected abstract void targetSortChangeAction();
+
+    /**
+     * Convenience method to get the appropriate scroll direction.<p>
+     * 
+     * @param event the mouse event indicating the cursor position
+     * @param offset the scroll parent border offset, if the cursor is within the border offset, scrolling should be triggered
+     * 
+     * @return the scroll direction
+     */
+    private Direction getScrollDirection(MouseEvent<?> event, int offset) {
+
+        Element body = RootPanel.getBodyElement();
+        int windowHeight = Window.getClientHeight();
+        int bodyHeight = body.getClientHeight();
+        if (windowHeight < bodyHeight) {
+            if ((windowHeight - event.getClientY() < offset) && (Window.getScrollTop() < bodyHeight - windowHeight)) {
+                return Direction.down;
+            }
+            if ((event.getClientY() < offset) && (Window.getScrollTop() > 0)) {
+                return Direction.up;
+            }
+        }
+
+        int windowWidth = Window.getClientWidth();
+        int bodyWidth = body.getClientWidth();
+        if (windowWidth < bodyWidth) {
+            if ((windowWidth - event.getClientX() < offset) && (Window.getScrollLeft() < bodyWidth - windowWidth)) {
+                return Direction.right;
+            }
+            if ((event.getClientX() < offset) && (Window.getScrollLeft() > 0)) {
+                return Direction.left;
+            }
+        }
+
+        return null;
+    }
 
 }
