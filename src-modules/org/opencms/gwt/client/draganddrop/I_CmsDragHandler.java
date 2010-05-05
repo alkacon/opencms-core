@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/draganddrop/Attic/I_CmsDragHandler.java,v $
- * Date   : $Date: 2010/05/04 11:21:47 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/05/05 09:19:16 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,9 @@
 
 package org.opencms.gwt.client.draganddrop;
 
+import org.opencms.gwt.client.ui.CmsListItemWidget;
+import org.opencms.gwt.shared.CmsListInfoBean;
+
 import java.util.List;
 
 import com.google.gwt.event.dom.client.ContextMenuHandler;
@@ -50,11 +53,11 @@ import com.google.gwt.event.shared.EventHandler;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
-public interface I_CmsDragHandler<E extends I_CmsDragElement, T extends I_CmsDragTarget>
+public interface I_CmsDragHandler<E extends I_CmsDragElement<T>, T extends I_CmsDragTarget>
 extends MouseDownHandler, MouseUpHandler, MouseMoveHandler, MouseOverHandler, MouseOutHandler, ContextMenuHandler {
 
     /**
@@ -90,7 +93,7 @@ extends MouseDownHandler, MouseUpHandler, MouseMoveHandler, MouseOverHandler, Mo
      * 
      * @param element the draggable element
      */
-    void registerMouseHandler(I_CmsDragElement element);
+    void registerMouseHandler(E element);
 
     /**
      * Sets the possible drag targets.<p>
@@ -98,4 +101,14 @@ extends MouseDownHandler, MouseUpHandler, MouseMoveHandler, MouseOverHandler, Mo
      * @param targets
      */
     void setDragTargets(List<T> targets);
+
+    /**
+     * Factory method to create a draggable list item widget.<p>
+     * 
+     * @param infoBean the item info
+     * @param id the item id
+     * 
+     * @return the list item
+     */
+    CmsListItemWidget createDraggableListItemWidget(CmsListInfoBean infoBean, String id);
 }

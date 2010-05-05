@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/draganddrop/Attic/I_CmsDragElement.java,v $
- * Date   : $Date: 2010/05/04 13:17:36 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/05/05 09:19:16 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,20 +39,25 @@ import com.google.gwt.user.client.Element;
 /**
  * Interface defining all methods used by drag and drop on a draggable element.<p>
  * 
+ * @param <T> the drag parent type
+ * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
-public interface I_CmsDragElement extends HasAllMouseHandlers, HasContextMenuHandlers {
+public interface I_CmsDragElement<T extends I_CmsDragTarget> extends HasAllMouseHandlers, HasContextMenuHandlers {
 
     /**
-     * Returns the parent drag target.<p>
-     * 
-     * @return the parent drag target
+     * Prepares the element for dragging.<p>
      */
-    I_CmsDragTarget getDragParent();
+    void prepareDrag();
+
+    /**
+     * Clears all properties set for dragging.<p>
+     */
+    void clearDrag();
 
     /**
      * The root element of this widget.<p>
@@ -70,21 +75,5 @@ public interface I_CmsDragElement extends HasAllMouseHandlers, HasContextMenuHan
      * @return true if the event is triggered on the handle of the element
      */
     boolean isHandleEvent(NativeEvent event);
-
-    /**
-     * Registers a new drag parent.<p>
-     * 
-     * @param target the new drag parent
-     */
-    void setDragParent(I_CmsDragTarget target);
-
-    /**
-     * Sets whether this object is visible.<p>
-     * 
-     * @param visible <code>true</code> to show the object, <code>false</code> to hide it
-     * 
-     * @see com.google.gwt.user.client.ui.UIObject#setVisible(boolean)
-     */
-    void setVisible(boolean visible);
 
 }

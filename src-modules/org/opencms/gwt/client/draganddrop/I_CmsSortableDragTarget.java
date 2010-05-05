@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/draganddrop/Attic/I_CmsDragElementExt.java,v $
- * Date   : $Date: 2010/04/14 14:32:29 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/draganddrop/Attic/I_CmsSortableDragTarget.java,v $
+ * Date   : $Date: 2010/05/05 09:19:16 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -31,10 +31,12 @@
 
 package org.opencms.gwt.client.draganddrop;
 
+import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.ui.IndexedPanel;
+import com.google.gwt.user.client.ui.InsertPanel;
+
 /**
- * Extending the draggable for elements with an id.<p>
- * 
- * There may be a better name for this interface...<p>
+ * Sortable drag target.<p>
  * 
  * @author Tobias Herrmann
  * 
@@ -42,22 +44,6 @@ package org.opencms.gwt.client.draganddrop;
  * 
  * @since 8.0.0
  */
-public interface I_CmsDragElementExt extends I_CmsDragElement {
-
-    /**
-     * Returns the client id.<p>
-     *
-     * @return the client id
-     */
-    String getClientId();
-
-    /**
-     * Prepares the element for dragging.<p>
-     */
-    void prepareDrag();
-
-    /**
-     * Clears all properties set for dragging.<p>
-     */
-    void clearDrag();
+public interface I_CmsSortableDragTarget extends I_CmsDragTarget, HasWidgets, IndexedPanel, InsertPanel {
+    // nothing to do, just a collection of interfaces
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsResultsTab.java,v $
- * Date   : $Date: 2010/04/30 10:17:38 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/05/05 09:20:00 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,11 +36,9 @@ import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.shared.CmsGallerySearchObject;
 import org.opencms.ade.galleries.shared.CmsResultsListInfoBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
-import org.opencms.gwt.client.draganddrop.I_CmsDragElement;
 import org.opencms.gwt.client.draganddrop.I_CmsDragHandler;
-import org.opencms.gwt.client.draganddrop.I_CmsDragTarget;
-import org.opencms.gwt.client.ui.CmsDraggableListItemWidget;
 import org.opencms.gwt.client.ui.CmsFloatDecoratedPanel;
+import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
@@ -68,7 +66,7 @@ import com.google.gwt.user.client.ui.Image;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.
  */
@@ -87,7 +85,7 @@ public class CmsResultsTab extends A_CmsTab implements ClickHandler, ValueChange
     private CmsPushButton m_closeTypesBtn;
 
     /** The reference to the drag handler for the list elements. */
-    private I_CmsDragHandler<? extends I_CmsDragElement, ? extends I_CmsDragTarget> m_dragHandler;
+    private I_CmsDragHandler<?, ?> m_dragHandler;
 
     /** The select box to change the sort order. */
     private CmsSelectBox m_sortSelectBox;
@@ -100,7 +98,7 @@ public class CmsResultsTab extends A_CmsTab implements ClickHandler, ValueChange
      *  
      * @param handler the reference to the drag handler
      */
-    public CmsResultsTab(I_CmsDragHandler<? extends I_CmsDragElement, ? extends I_CmsDragTarget> handler) {
+    public CmsResultsTab(I_CmsDragHandler<?, ?> handler) {
 
         super();
         m_dragHandler = handler;
@@ -130,13 +128,11 @@ public class CmsResultsTab extends A_CmsTab implements ClickHandler, ValueChange
 
         ArrayList<CmsResultsListInfoBean> list = searchObj.getResults();
         for (CmsResultsListInfoBean resultItem : list) {
-            CmsDraggableListItemWidget resultItemWidget;
+            CmsListItemWidget resultItemWidget;
             if (m_dragHandler != null) {
-                resultItemWidget = new CmsDraggableListItemWidget(resultItem, true);
-                resultItemWidget.setClientId(resultItem.getClientId());
-                m_dragHandler.registerMouseHandler(resultItemWidget);
+                resultItemWidget = m_dragHandler.createDraggableListItemWidget(resultItem, resultItem.getClientId());
             } else {
-                resultItemWidget = new CmsDraggableListItemWidget(resultItem, false);
+                resultItemWidget = new CmsListItemWidget(resultItem);
             }
 
             Image icon = new Image(resultItem.getIconResource());
@@ -257,13 +253,11 @@ public class CmsResultsTab extends A_CmsTab implements ClickHandler, ValueChange
         clearList();
         ArrayList<CmsResultsListInfoBean> list = searchObj.getResults();
         for (CmsResultsListInfoBean resultItem : list) {
-            CmsDraggableListItemWidget resultItemWidget;
+            CmsListItemWidget resultItemWidget;
             if (m_dragHandler != null) {
-                resultItemWidget = new CmsDraggableListItemWidget(resultItem, true);
-                resultItemWidget.setClientId(resultItem.getClientId());
-                m_dragHandler.registerMouseHandler(resultItemWidget);
+                resultItemWidget = m_dragHandler.createDraggableListItemWidget(resultItem, resultItem.getClientId());
             } else {
-                resultItemWidget = new CmsDraggableListItemWidget(resultItem, false);
+                resultItemWidget = new CmsListItemWidget(resultItem);
             }
 
             Image icon = new Image(resultItem.getIconResource());

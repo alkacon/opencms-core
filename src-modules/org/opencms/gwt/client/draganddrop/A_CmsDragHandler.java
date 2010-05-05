@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/draganddrop/Attic/A_CmsDragHandler.java,v $
- * Date   : $Date: 2010/05/04 14:41:03 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2010/05/05 09:19:16 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,6 @@ import java.util.List;
 
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.event.dom.client.ContextMenuEvent;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseEvent;
@@ -66,11 +65,11 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 8.0.0
  */
-public abstract class A_CmsDragHandler<E extends I_CmsDragElement, T extends I_CmsDragTarget>
+public abstract class A_CmsDragHandler<E extends I_CmsDragElement<T>, T extends I_CmsDragTarget>
 implements I_CmsDragHandler<E, T> {
 
     /** Animation enabled flag. */
@@ -185,7 +184,6 @@ implements I_CmsDragHandler<E, T> {
         m_dragging = true;
         Document.get().getBody().addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragStarted());
         m_currentEvent = event;
-        m_currentTarget = (T)m_dragElement.getDragParent();
         m_cursorOffsetLeft = m_currentEvent.getRelativeX(m_dragElement.getElement());
         m_cursorOffsetTop = m_currentEvent.getRelativeY(m_dragElement.getElement());
 
@@ -263,7 +261,7 @@ implements I_CmsDragHandler<E, T> {
     /**
      * @see org.opencms.gwt.client.draganddrop.I_CmsDragHandler#registerMouseHandler(org.opencms.gwt.client.draganddrop.I_CmsDragElement)
      */
-    public void registerMouseHandler(I_CmsDragElement element) {
+    public void registerMouseHandler(E element) {
 
         element.addMouseDownHandler(this);
         element.addMouseMoveHandler(this);
@@ -308,9 +306,9 @@ implements I_CmsDragHandler<E, T> {
             }
         };
         int endTop = DOM.getAbsoluteTop(m_placeholder.getElement())
-            - DOM.getAbsoluteTop(m_dragElement.getDragParent().getElement());
+            - DOM.getAbsoluteTop((Element)m_placeholder.getElement().getParentElement());
         int endLeft = DOM.getAbsoluteLeft(m_placeholder.getElement())
-            - DOM.getAbsoluteLeft(m_dragElement.getDragParent().getElement());
+            - DOM.getAbsoluteLeft((Element)m_placeholder.getElement().getParentElement());
         int startTop = CmsDomUtil.getCurrentStyleInt(m_dragElement.getElement(), Style.top);
         int startLeft = CmsDomUtil.getCurrentStyleInt(m_dragElement.getElement(), Style.left);
         CmsMoveAnimation ani = new CmsMoveAnimation(
@@ -419,13 +417,13 @@ implements I_CmsDragHandler<E, T> {
 
     /**
      * Prepares the draggable element for the dragging process. Sets styles, creates place-holders and other stuff.<p>
+     * 
+     * Important: Set the current target.<p>
      */
     protected abstract void prepareElementForDrag();
 
     /**
      * Restores the draggable element to it's static state. Removing styles and place-holders, etc..<p>
-     * 
-     * Important: Set the new drag parent property on the draggable element if necessary ({@link org.opencms.gwt.client.draganddrop.I_CmsDragElement#setDragParent})!<p>
      */
     protected abstract void restoreElementAfterDrag();
 
@@ -453,52 +451,7 @@ implements I_CmsDragHandler<E, T> {
     /**
      * Sorts the elements inside a target depending on the mouse position.<p>
      */
-    protected void sortTarget() {
-
-        Iterator<Widget> it = m_currentTarget.iterator();
-        while (it.hasNext()) {
-            Widget child = it.next();
-            Element element = child.getElement();
-
-            String positioning = element.getStyle().getPosition();
-            if ((positioning.equals(Position.ABSOLUTE.getCssName()) || positioning.equals(Position.FIXED.getCssName()))
-                || !child.isVisible()
-                || (m_placeholder == child)) {
-                // only take visible and not 'position:absolute' elements into account, also ignore the place-holder
-                continue;
-            }
-
-            // check if the mouse pointer is within the width of the element 
-            int left = m_currentEvent.getRelativeX(element);
-            if ((left <= 0) || (left >= element.getOffsetWidth())) {
-                continue;
-            }
-
-            // check if the mouse pointer is within the height of the element 
-            int top = m_currentEvent.getRelativeY(element);
-            int height = element.getOffsetHeight();
-            if ((top <= 0) || (top >= height)) {
-                continue;
-            }
-
-            int index = m_currentTarget.getWidgetIndex(child);
-
-            // check if the mouse pointer is within the upper half of the element,
-            // only act if the place-holder index has to be changed
-            if (top < height / 2) {
-                if (m_currentTarget.getWidgetIndex(m_placeholder) != index) {
-                    m_currentTarget.insert(m_placeholder, index);
-                    targetSortChangeAction();
-                }
-            } else {
-                if (m_currentTarget.getWidgetIndex(m_placeholder) != index + 1) {
-                    m_currentTarget.insert(m_placeholder, index + 1);
-                    targetSortChangeAction();
-                }
-            }
-            return;
-        }
-    }
+    protected abstract void sortTarget();
 
     /**
      * Method executed when the widget order within the current target has been changed.<p> 

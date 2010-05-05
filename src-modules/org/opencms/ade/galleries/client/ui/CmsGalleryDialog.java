@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsGalleryDialog.java,v $
- * Date   : $Date: 2010/04/29 08:14:29 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/05/05 09:20:00 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,9 +38,7 @@ import org.opencms.ade.galleries.client.CmsResultsTabHandler;
 import org.opencms.ade.galleries.client.CmsTypesTabHandler;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
-import org.opencms.gwt.client.draganddrop.I_CmsDragElement;
 import org.opencms.gwt.client.draganddrop.I_CmsDragHandler;
-import org.opencms.gwt.client.draganddrop.I_CmsDragTarget;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
 import org.opencms.gwt.client.ui.CmsTabbedPanel.CmsTabLayout;
 
@@ -57,14 +55,14 @@ import com.google.gwt.user.client.ui.Composite;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.
  */
 public class CmsGalleryDialog extends Composite implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer> {
 
     /** The reference to the drag handler. */
-    private I_CmsDragHandler<? extends I_CmsDragElement, ? extends I_CmsDragTarget> m_dragHandler;
+    private I_CmsDragHandler<?, ?> m_dragHandler;
 
     /** The flag for the initails search. */
     private boolean m_isInitialSearch;
@@ -97,7 +95,7 @@ public class CmsGalleryDialog extends Composite implements BeforeSelectionHandle
     public CmsGalleryDialog(
         ArrayList<String> tabsConfig,
         CmsGalleryController controller,
-        I_CmsDragHandler<? extends I_CmsDragElement, ? extends I_CmsDragTarget> handler) {
+        I_CmsDragHandler<?, ?> handler) {
 
         initCss();
         m_dragHandler = handler;
@@ -115,7 +113,7 @@ public class CmsGalleryDialog extends Composite implements BeforeSelectionHandle
      * 
      * @param handler the reference to the drag handler
      */
-    public CmsGalleryDialog(I_CmsDragHandler<? extends I_CmsDragElement, ? extends I_CmsDragTarget> handler) {
+    public CmsGalleryDialog(I_CmsDragHandler<?, ?> handler) {
 
         initCss();
         m_dragHandler = handler;
