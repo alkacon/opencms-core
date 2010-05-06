@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItem.java,v $
- * Date   : $Date: 2010/05/06 13:09:44 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2010/05/06 13:24:43 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,7 +34,6 @@ package org.opencms.gwt.client.ui;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -43,7 +42,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Michael Moossen
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 8.0.0
  */
@@ -53,7 +52,7 @@ public class CmsListItem extends Composite implements I_CmsListItem {
     protected String m_id;
 
     /** The underlying panel. */
-    protected Panel m_panel;
+    protected CmsFlowPanel m_panel;
 
     /**
      * Constructor.<p>
@@ -62,6 +61,7 @@ public class CmsListItem extends Composite implements I_CmsListItem {
 
         m_panel = new CmsFlowPanel("li");
         m_panel.setStyleName(I_CmsLayoutBundle.INSTANCE.listTreeCss().listTreeItem());
+        initWidget(m_panel);
     }
 
     /**
@@ -81,6 +81,18 @@ public class CmsListItem extends Composite implements I_CmsListItem {
     public void add(Widget w) {
 
         m_panel.add(w);
+    }
+
+    /**
+     * Returns the child widget with the given index.<p>
+     * 
+     * @param index the index
+     * 
+     * @return the child widget
+     */
+    public Widget getWidget(int index) {
+
+        return m_panel.getWidget(index);
     }
 
     /**
