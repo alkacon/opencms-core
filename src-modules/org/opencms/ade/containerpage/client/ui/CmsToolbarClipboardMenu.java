@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsToolbarClipboardMenu.java,v $
- * Date   : $Date: 2010/05/04 13:17:36 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/05/06 14:26:54 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,8 +37,10 @@ import org.opencms.ade.containerpage.client.draganddrop.CmsDragMenuElement;
 import org.opencms.ade.containerpage.client.draganddrop.CmsDragTargetMenu;
 import org.opencms.ade.containerpage.client.draganddrop.CmsMenuDragHandler;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
 import org.opencms.gwt.client.ui.I_CmsButton;
+import org.opencms.gwt.client.util.CmsDebugLog;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -53,7 +55,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 8.0.0
  */
@@ -113,7 +115,7 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu {
      * 
      * @param listItem the item widget
      */
-    public void addToFavorites(CmsDragMenuElement listItem) {
+    public void addToFavorites(CmsListItem listItem) {
 
         m_favorites.addListItem(listItem);
     }
@@ -123,7 +125,7 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu {
      * 
      * @param listItem the item widget
      */
-    public void addToRecent(CmsDragMenuElement listItem) {
+    public void addToRecent(CmsListItem listItem) {
 
         m_recent.addListItem(listItem);
     }
@@ -151,13 +153,17 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu {
 
         Iterator<Widget> it = m_favorites.iterator();
         while (it.hasNext()) {
-            CmsDragMenuElement element = (CmsDragMenuElement)it.next();
-            element.showDeleteButton();
+            try {
+                CmsDragMenuElement element = (CmsDragMenuElement)((CmsListItem)it.next()).getWidget(0);
+                element.showDeleteButton();
 
-            // disabling the container-page drag and enabling the menu drag
-            element.removeDndMouseHandlers();
-            element.setDragParent(m_favorites.getListTarget());
-            m_menuDragHandler.registerMouseHandler(element);
+                // disabling the container-page drag and enabling the menu drag
+                element.removeDndMouseHandlers();
+                element.setDragParent(m_favorites.getListTarget());
+                m_menuDragHandler.registerMouseHandler(element);
+            } catch (ClassCastException e) {
+                CmsDebugLog.getInstance().printLine("Could not cast widget");
+            }
         }
     }
 
@@ -204,13 +210,17 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu {
         List<String> clientIds = new ArrayList<String>();
         Iterator<Widget> it = m_favorites.iterator();
         while (it.hasNext()) {
-            CmsDragMenuElement element = (CmsDragMenuElement)it.next();
-            element.hideDeleteButton();
-            clientIds.add(element.getClientId());
+            try {
+                CmsDragMenuElement element = (CmsDragMenuElement)((CmsListItem)it.next()).getWidget(0);
+                element.hideDeleteButton();
+                clientIds.add(element.getClientId());
 
-            // disabling the menu drag and re-enabling the container-page drag
-            element.removeDndMouseHandlers();
-            getHandler().enableDragHandler(element);
+                // disabling the menu drag and re-enabling the container-page drag
+                element.removeDndMouseHandlers();
+                getHandler().enableDragHandler(element);
+            } catch (ClassCastException e) {
+                CmsDebugLog.getInstance().printLine("Could not cast widget");
+            }
         }
         getHandler().saveFavoriteList(clientIds);
     }

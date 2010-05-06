@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageUtil.java,v $
- * Date   : $Date: 2010/05/05 09:49:13 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/05/06 14:26:40 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,6 +41,7 @@ import org.opencms.ade.containerpage.client.draganddrop.I_CmsDragTargetContainer
 import org.opencms.ade.containerpage.client.ui.A_CmsToolbarOptionButton;
 import org.opencms.ade.containerpage.client.ui.CmsElementOptionBar;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
+import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.util.CmsDomUtil;
 
 import java.util.ArrayList;
@@ -57,7 +58,7 @@ import com.google.gwt.user.client.Element;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -193,6 +194,22 @@ public class CmsContainerpageUtil {
     }
 
     /**
+     * Creates a list item.<p>
+     * 
+     * @param containerElement the element data
+     * @param dragParent the drag parent, may be null
+     * 
+     * @return the list item widget
+     */
+    public CmsListItem createListItem(CmsContainerElement containerElement, I_CmsDragTargetContainer dragParent) {
+
+        CmsDragMenuElement widget = createListWidget(containerElement, dragParent);
+        CmsListItem listItem = new CmsListItem(widget);
+        widget.setParentListItem(listItem);
+        return listItem;
+    }
+
+    /**
      * Creates a draggable list item widget.<p>
      * 
      * @param containerElement the element data
@@ -200,7 +217,7 @@ public class CmsContainerpageUtil {
      * 
      * @return the list item widget
      */
-    public CmsDragMenuElement createListItem(CmsContainerElement containerElement, I_CmsDragTargetContainer dragParent) {
+    public CmsDragMenuElement createListWidget(CmsContainerElement containerElement, I_CmsDragTargetContainer dragParent) {
 
         CmsDragMenuElement menuItem = new CmsDragMenuElement(containerElement);
         menuItem.setDragParent(dragParent);

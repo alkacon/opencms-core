@@ -20,7 +20,7 @@
 		}
 	</ui:style>
 	<g:FlowPanel addStyleNames="{containerpage.containerpageCss.clipboardTabPanel}">
-		<cnt:CmsDragTargetMenu ui:field="m_listPanel" addStyleNames="{style.itemList} {containerpage.containerpageCss.clipboardList} {resources.generalCss.cornerAll}"></cnt:CmsDragTargetMenu>
+		<cnt:CmsDragTargetList ui:field="m_listPanel" addStyleNames="{style.itemList} {containerpage.containerpageCss.clipboardList} {resources.generalCss.cornerAll}"></cnt:CmsDragTargetList>
 		<g:FlowPanel ui:field="m_buttonEditingPanel" styleName="{style.buttonPanel}"><cms:CmsPushButton ui:field="m_saveButton" addStyleNames="{resources.buttonCss.cmsMinWidth}" /><cms:CmsPushButton ui:field="m_cancelButton" addStyleNames="{resources.buttonCss.cmsMinWidth}" /></g:FlowPanel>
 		<g:FlowPanel ui:field="m_buttonUsePanel" styleName="{style.buttonPanel}"><cms:CmsPushButton ui:field="m_editButton" addStyleNames="{resources.buttonCss.cmsMinWidth}" /></g:FlowPanel>
 	</g:FlowPanel>

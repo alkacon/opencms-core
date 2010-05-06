@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageEditor.java,v $
- * Date   : $Date: 2010/05/05 12:44:47 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2010/05/06 14:26:40 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -66,7 +66,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 8.0.0
  */
@@ -282,6 +282,7 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
 
         RootPanel.get().add(m_toolbar);
         if (controller.getData().isToolbarVisible()) {
+            showToolbar(true);
             containerpageHandler.activateSelection();
         } else {
             showToolbar(false);

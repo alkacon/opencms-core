@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsMenuDragHandler.java,v $
- * Date   : $Date: 2010/05/05 12:44:47 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/05/06 14:26:54 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,11 +51,12 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
-public class CmsMenuDragHandler extends A_CmsSortingDragHandler<CmsDragMenuElement, I_CmsDragTargetContainer> {
+public class CmsMenuDragHandler
+extends A_CmsSortingDragHandler<I_CmsDragContainerElement<I_CmsDragTargetContainer>, I_CmsDragTargetContainer> {
 
     /** The provisional drag parent. */
     private CmsDragTargetMenu m_provisionalParent;
@@ -80,7 +81,7 @@ public class CmsMenuDragHandler extends A_CmsSortingDragHandler<CmsDragMenuEleme
     /**
      * @see org.opencms.gwt.client.draganddrop.I_CmsDragHandler#getDragElement()
      */
-    public CmsDragMenuElement getDragElement() {
+    public I_CmsDragContainerElement<I_CmsDragTargetContainer> getDragElement() {
 
         return m_dragElement;
     }
@@ -149,21 +150,29 @@ public class CmsMenuDragHandler extends A_CmsSortingDragHandler<CmsDragMenuEleme
     protected void prepareElementForDrag() {
 
         m_currentTarget = m_dragElement.getDragParent();
+        CmsDragContainerElement clone = createDragClone(
+            m_dragElement.getElement(),
+            m_currentTarget,
+            m_dragElement.getClientId());
 
         // a provisional target is needed so the element may be dragged out of an overflow:hidden element
         m_provisionalParent = new CmsDragTargetMenu();
         m_provisionalParent.setWidth(m_dragElement.getElement().getOffsetWidth() + "px");
         m_provisionalParent.getElement().getStyle().setPosition(Position.ABSOLUTE);
-        Element listEl = m_dragElement.getParent().getElement();
+        Element listEl = m_currentTarget.getElement();
         m_provisionalParent.getElement().getStyle().setTop(listEl.getAbsoluteTop(), Unit.PX);
         m_provisionalParent.getElement().getStyle().setLeft(listEl.getAbsoluteLeft(), Unit.PX);
         m_provisionalParent.getElement().getStyle().setZIndex(99999);
         RootPanel.get().add(m_provisionalParent);
         m_targets = new ArrayList<I_CmsDragTargetContainer>();
         m_targets.add(m_currentTarget);
-        m_placeholder = createPlaceholder(m_dragElement);
-        m_currentTarget.insert(m_placeholder, m_currentTarget.getWidgetIndex(m_dragElement));
-        m_provisionalParent.add(m_dragElement);
+        m_placeholder = ((CmsDragMenuElement)m_dragElement).getParentListItem();
+        m_placeholder.addStyleName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragPlaceholder());
+        m_dragElement = clone;
+        DOM.setCapture(m_dragElement.getElement());
+        //   m_placeholder = createPlaceholder(m_dragElement);
+        //   m_currentTarget.insert(m_placeholder, m_currentTarget.getWidgetIndex(m_dragElement));
+        m_provisionalParent.add((Widget)m_dragElement);
         m_dragElement.prepareDrag();
         // TODO: resolve ie7/8 issue with loosing the element while dragging
     }
@@ -174,9 +183,8 @@ public class CmsMenuDragHandler extends A_CmsSortingDragHandler<CmsDragMenuEleme
     @Override
     protected void restoreElementAfterDrag() {
 
-        m_dragElement.getDragParent().insert(m_dragElement, m_dragElement.getDragParent().getWidgetIndex(m_placeholder));
-        m_placeholder.removeFromParent();
-        m_dragElement.clearDrag();
+        // m_dragElement.getDragParent().insert(m_dragElement, m_dragElement.getDragParent().getWidgetIndex(m_placeholder));
+        m_placeholder.removeStyleName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragPlaceholder());
         m_provisionalParent.removeFromParent();
         m_provisionalParent = null;
     }
@@ -196,5 +204,32 @@ public class CmsMenuDragHandler extends A_CmsSortingDragHandler<CmsDragMenuEleme
     public CmsListItemWidget createDraggableListItemWidget(CmsListInfoBean infoBean, String id) {
 
         throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Creates a clone of element to be dragged around.<p>
+     * 
+     * @param element the element to clone
+     * @param dragParent the drag parent
+     * @param clientId the client id
+     * 
+     * @return the generated clone
+     */
+    protected CmsDragContainerElement createDragClone(
+        com.google.gwt.user.client.Element element,
+        I_CmsDragTargetContainer dragParent,
+        String clientId) {
+
+        com.google.gwt.user.client.Element elementClone = DOM.createDiv();
+        elementClone.setInnerHTML(element.getInnerHTML());
+        elementClone.setClassName(element.getClassName());
+        CmsDragContainerElement dragElement = new CmsDragContainerElement(
+            elementClone,
+            dragParent,
+            clientId,
+            null,
+            null);
+        registerMouseHandler(dragElement);
+        return dragElement;
     }
 }

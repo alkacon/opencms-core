@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsDragMenuElement.java,v $
- * Date   : $Date: 2010/05/05 09:49:43 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/05/06 14:26:54 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.ade.containerpage.client.draganddrop;
 
 import org.opencms.ade.containerpage.client.ui.CmsDraggableListItemWidget;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
+import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.shared.CmsListInfoBean;
@@ -45,7 +46,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -53,6 +54,9 @@ public class CmsDragMenuElement extends CmsDraggableListItemWidget<I_CmsDragTarg
 
     /** The element delete button. */
     private CmsPushButton m_deleteButton;
+
+    /** Parent list item. */
+    private CmsListItem m_parentListItem;
 
     /**
      * Constructor.<p>
@@ -89,11 +93,31 @@ public class CmsDragMenuElement extends CmsDraggableListItemWidget<I_CmsDragTarg
     }
 
     /**
+     * Returns the parent list item.<p>
+     *
+     * @return the parent list item
+     */
+    public CmsListItem getParentListItem() {
+
+        return m_parentListItem;
+    }
+
+    /**
      * Hides the element delete button.<p>
      */
     public void hideDeleteButton() {
 
         removeButton(m_deleteButton);
+    }
+
+    /**
+     * Sets the parent list item.<p>
+     *
+     * @param parentListItem the parent list item to set
+     */
+    public void setParentListItem(CmsListItem parentListItem) {
+
+        m_parentListItem = parentListItem;
     }
 
     /**

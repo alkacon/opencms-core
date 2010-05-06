@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsFavoriteTab.java,v $
- * Date   : $Date: 2010/04/28 13:03:39 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/05/06 14:26:54 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,8 +32,8 @@
 package org.opencms.ade.containerpage.client.ui;
 
 import org.opencms.ade.containerpage.client.Messages;
-import org.opencms.ade.containerpage.client.draganddrop.CmsDragMenuElement;
-import org.opencms.ade.containerpage.client.draganddrop.CmsDragTargetMenu;
+import org.opencms.ade.containerpage.client.draganddrop.CmsDragTargetList;
+import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsPushButton;
 
 import java.util.Iterator;
@@ -52,7 +52,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -87,7 +87,7 @@ public class CmsFavoriteTab extends Composite {
 
     /** The list panel holding the favorite elements. */
     @UiField
-    /*DEFAULT*/CmsDragTargetMenu m_listPanel;
+    /*DEFAULT*/CmsDragTargetList m_listPanel;
 
     /** The save favorites button. */
     @UiField
@@ -116,7 +116,7 @@ public class CmsFavoriteTab extends Composite {
      * 
      * @param item the item to add
      */
-    public void addListItem(CmsDragMenuElement item) {
+    public void addListItem(CmsListItem item) {
 
         m_listPanel.add(item);
     }
@@ -134,7 +134,7 @@ public class CmsFavoriteTab extends Composite {
      * 
      * @return the favorite list drag target
      */
-    public CmsDragTargetMenu getListTarget() {
+    public CmsDragTargetList getListTarget() {
 
         return m_listPanel;
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsContainerDragHandler.java,v $
- * Date   : $Date: 2010/05/05 14:15:29 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2010/05/06 14:26:54 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -66,7 +66,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * 
  * @since 8.0.0
  */
@@ -497,7 +497,7 @@ extends A_CmsSortingDragHandler<I_CmsDragContainerElement<I_CmsDragTargetContain
                         // preparing the tool-bar menu drop-zone
                         m_editor.getClipboard().showDropzone(true);
                         I_CmsDragTargetContainer dropZone = m_editor.getClipboard().getDropzone();
-                        CmsDraggableListItemWidget<I_CmsDragTargetContainer> menuItem = m_controller.getContainerpageUtil().createListItem(
+                        CmsDraggableListItemWidget<I_CmsDragTargetContainer> menuItem = m_controller.getContainerpageUtil().createListWidget(
                             arg,
                             dropZone);
                         dropZone.add(menuItem);

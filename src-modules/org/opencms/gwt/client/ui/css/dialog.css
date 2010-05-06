@@ -70,21 +70,21 @@
 
 @if user.agent ie6 {
     .popupShadow, .popupOverlay{
-        filter: literal("alpha(opacity = 30)");
+        filter: literal("alpha(opacity = 50)");
     }
     .popupShadow{
         height: literal("expression(this.parentNode.offsetHeight)");
     }
 } @elif user.agent ie8 {
 	.popupShadow, .popupOverlay{
-		-ms-filter: "alpha(opacity = 30)";
+		-ms-filter: "alpha(opacity = 50)";
 	}
 	.popupShadow{
 		height: 100%;
 	}
 } @else {
     .popupShadow, .popupOverlay{
-        opacity: 0.3;
+        opacity: 0.5;
     }
     .popupShadow{
         height: 100%;

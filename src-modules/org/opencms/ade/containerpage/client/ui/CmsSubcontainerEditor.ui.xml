@@ -6,13 +6,6 @@
 	<ui:with field="containerpage" type="org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle" />
 	<ui:style>
 		.editor{}
-		.overlay{
-			position: fixed;
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100%;
-		}
 		.dialog{
 			width: 300px;
 			border: 1px solid #aaaaaa;
@@ -20,7 +13,7 @@
 		}
 	</ui:style>
 	<g:HTMLPanel styleName="{containerpage.containerpageCss.subcontainerEditor}">
-		<div style="z-index:1000;" class="{resources.dialogCss.popupOverlay} {style.overlay}"></div>
+		<div style="z-index:1000;" class="{resources.dialogCss.popupOverlay} {containerpage.containerpageCss.subcontainerOverlay}"></div>
 		<div ui:field="m_dialog" class="{resources.dialogCss.popup} {resources.dialogCss.popupContent} {resources.generalCss.cornerAll} {style.dialog}">
 			<g:Label ui:field="m_dialogHeading" addStyleNames="{resources.dialogCss.popupHead} {resources.generalCss.cornerTop}">Subcontainer editor</g:Label>
 			<div class="{resources.dialogCss.popupMainContent}">
