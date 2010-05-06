@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/Attic/CmsGalleryService.java,v $
- * Date   : $Date: 2010/05/06 09:27:20 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/05/06 14:41:58 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -80,7 +80,7 @@ import java.util.Map.Entry;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 8.0.0
  * 
@@ -203,6 +203,9 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     /** The instance of the resource manager. */
     CmsResourceManager m_resourceManager;
 
+    /** The core service. */
+    private CmsCoreService m_coreService;
+
     /** The available resource type id's. */
     private JSONArray m_resourceTypeNames;
 
@@ -283,7 +286,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
      * @param categories the categories
      * @return the map with categories
      */
-    // TODO: remove id not used any more
+    // TODO: remove if not used any more
     private ArrayList<CmsCategoriesListInfoBean> buildCategoriesList(List<CmsCategory> categories) {
 
         ArrayList<CmsCategoriesListInfoBean> list = new ArrayList<CmsCategoriesListInfoBean>();
@@ -342,7 +345,8 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
      * @param galleryTypes the galleries
      * @return the map with gallery info beans
      */
-    private ArrayList<CmsGalleriesListInfoBean> buildGalleriesList(Map<String, CmsGalleryTypeInfo> galleryTypes) {
+    private ArrayList<CmsGalleriesListInfoBean> buildGalleriesList(Map<String, CmsGalleryTypeInfo> galleryTypes)
+    throws CmsRpcException {
 
         ArrayList<CmsGalleriesListInfoBean> list = new ArrayList<CmsGalleriesListInfoBean>();
         if (galleryTypes == null) {
@@ -352,8 +356,12 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         while (iGalleryTypes.hasNext()) {
             Entry<String, CmsGalleryTypeInfo> ent = iGalleryTypes.next();
             CmsGalleryTypeInfo tInfo = ent.getValue();
-            String iconPath = CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES
-                + OpenCms.getWorkplaceManager().getExplorerTypeSetting(tInfo.getResourceType().getTypeName()).getIcon());
+
+            // set the icon
+            String iconPath = getCoreService().getIcon(tInfo.getResourceType().getTypeName());
+
+            //TODO: remove    String iconPath = CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES
+            //                + OpenCms.getWorkplaceManager().getExplorerTypeSetting(tInfo.getResourceType().getTypeName()).getIcon());
             ArrayList<String> contentTypes = new ArrayList<String>();
             Iterator<I_CmsResourceType> it = tInfo.getContentTypes().iterator();
             while (it.hasNext()) {
@@ -535,11 +543,13 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 String fileIcon = getFileIconName(path);
                 String iconPath = CmsWorkplace.RES_PATH_FILETYPES;
                 if (CmsStringUtil.isEmptyOrWhitespaceOnly(fileIcon)) {
-                    iconPath += OpenCms.getWorkplaceManager().getExplorerTypeSetting(sResult.getResourceType()).getIcon();
+                    //TODO: remove iconPath += OpenCms.getWorkplaceManager().getExplorerTypeSetting(sResult.getResourceType()).getIcon();
+                    iconPath = getCoreService().getIcon(sResult.getResourceType());
                 } else {
+                    // TODO: refactor this part, this should be made in core service or even in core
                     iconPath += "mimetype/" + fileIcon;
+                    iconPath = CmsWorkplace.getResourceUri(iconPath);
                 }
-                iconPath = CmsWorkplace.getResourceUri(iconPath);
 
                 // 1: resource path as id
                 bean.setId(path);
@@ -580,7 +590,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
      * 
      * @return the map containing the available resource types
      */
-    private ArrayList<CmsTypesListInfoBean> buildTypesList(List<I_CmsResourceType> types) {
+    private ArrayList<CmsTypesListInfoBean> buildTypesList(List<I_CmsResourceType> types) throws CmsRpcException {
 
         ArrayList<CmsTypesListInfoBean> list = new ArrayList<CmsTypesListInfoBean>();
         if (types == null) {
@@ -590,6 +600,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         while (it.hasNext()) {
             I_CmsResourceType type = it.next();
             CmsTypesListInfoBean bean = new CmsTypesListInfoBean();
+
             // 1: unique id
             bean.setId(type.getTypeName());
             // 2: type nice name            
@@ -599,8 +610,9 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             bean.setTitle(CmsWorkplaceMessages.getResourceTypeName(wpLocale, type.getTypeName()));
             bean.setSubTitle(CmsWorkplaceMessages.getResourceTypeDescription(wpLocale, type.getTypeName()));
             // 4: resouce type icon
-            String iconPath = CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES
-                + OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName()).getIcon());
+            String iconPath = getCoreService().getIcon(type.getTypeName());
+            //TODO: remove            String iconPath = CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES
+            //                + OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName()).getIcon());
             bean.setIconResource(iconPath);
             // 5: gallery id of corresponding galleries
             ArrayList<String> galleryNames = new ArrayList<String>();
@@ -691,11 +703,26 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     }
 
     /**
+     * Returns the coreService.<p>
+     *
+     * @return the coreService
+     */
+    private CmsCoreService getCoreService() {
+
+        if (m_coreService == null) {
+            m_coreService = new CmsCoreService();
+            m_coreService.setCms(getCmsObject());
+        }
+        return m_coreService;
+    }
+
+    /**
      * Gets the file-icon-name.<p>
      * 
      * @param path the file path
      * @return the file-icon-name for this files mime-type, or an empty string if none available
      */
+    //TODO: refactor: this should be more general and moved to core service or core 
     private String getFileIconName(String path) {
 
         String mt = OpenCms.getResourceManager().getMimeType(path, null);

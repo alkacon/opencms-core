@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/rpc/Attic/I_CmsCoreServiceAsync.java,v $
- * Date   : $Date: 2010/05/04 09:40:41 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/05/06 14:41:59 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
  * 
@@ -67,6 +67,14 @@ public interface I_CmsCoreServiceAsync {
         boolean includeSubCats,
         List<String> refVfsPaths,
         AsyncCallback<CmsCategoryTreeEntry> callback);
+
+    /**
+     * Returns the path to the icon of the given resource.<p>
+     * 
+     * @param resourceType the resource type
+     * @param callback the async callback
+     */
+    void getIcon(String resourceType, AsyncCallback<String> callback);
 
     /**
      * Locks the given resource.<p>
