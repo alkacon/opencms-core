@@ -13,6 +13,8 @@
 	height:405px;
 	overflow: auto;
 	position: relative;
+	background-color: value("constantsCss.backgroundColorList");
+	padding:0 2px;
 }
 
 .tabPanel {
