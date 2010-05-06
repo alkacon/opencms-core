@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageController.java,v $
- * Date   : $Date: 2010/05/05 09:49:13 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/05/06 14:56:23 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -78,7 +78,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -340,7 +340,6 @@ public final class CmsContainerpageController {
             CmsDebugLog.getInstance().printLine("WARNING: The data provider has not been initialized!");
             return null;
         }
-
         return INSTANCE;
     }
 
@@ -383,7 +382,6 @@ public final class CmsContainerpageController {
             public void execute() {
 
                 getContainerpageService().addToFavoriteList(clientId, this);
-
             }
 
             /**
@@ -392,8 +390,7 @@ public final class CmsContainerpageController {
             @Override
             protected void onResponse(Void result) {
 
-                CmsDebugLog.getInstance().printLine("Added " + clientId + " to favorite list");
-
+                // nothing to do
             }
         };
         action.execute();
@@ -415,7 +412,6 @@ public final class CmsContainerpageController {
             public void execute() {
 
                 getContainerpageService().addToRecentList(clientId, this);
-
             }
 
             /**
@@ -424,8 +420,7 @@ public final class CmsContainerpageController {
             @Override
             protected void onResponse(Void result) {
 
-                CmsDebugLog.getInstance().printLine("Added " + clientId + " to recent list");
-
+                // nothing to do
             }
         };
         action.execute();
@@ -706,7 +701,6 @@ public final class CmsContainerpageController {
     public void leaveUnsaved(String targetUri) {
 
         setPageChanged(false, true);
-        CmsDebugLog.getInstance().printLine(targetUri);
         Window.Location.assign(targetUri);
     }
 
@@ -782,7 +776,6 @@ public final class CmsContainerpageController {
         Set<String> related = getRelatedElementIds(id);
         ReloadElementAction action = new ReloadElementAction(related);
         action.execute();
-
     }
 
     /**
@@ -848,7 +841,6 @@ public final class CmsContainerpageController {
                 public void execute() {
 
                     getContainerpageService().saveContainerpage(getCurrentUri(), getPageContent(), this);
-
                 }
 
                 /**
@@ -859,7 +851,6 @@ public final class CmsContainerpageController {
 
                     setPageChanged(false, true);
                     Window.Location.assign(targetUri);
-
                 }
             };
             action.execute();
@@ -881,7 +872,6 @@ public final class CmsContainerpageController {
                 public void execute() {
 
                     getContainerpageService().saveContainerpage(getCurrentUri(), getPageContent(), this);
-
                 }
 
                 /**
@@ -890,9 +880,8 @@ public final class CmsContainerpageController {
                 @Override
                 protected void onResponse(Void result) {
 
-                    CmsDebugLog.getInstance().printLine("Page saved");
+                    //TODO: add notification
                     setPageChanged(false, false);
-
                 }
             };
             action.execute();
@@ -915,7 +904,6 @@ public final class CmsContainerpageController {
             public void execute() {
 
                 getContainerpageService().saveFavoriteList(clientIds, this);
-
             }
 
             /**
@@ -924,8 +912,7 @@ public final class CmsContainerpageController {
             @Override
             protected void onResponse(Void result) {
 
-                CmsDebugLog.getInstance().printLine("Favorite list saved");
-
+                //TODO: add notification
             }
         };
         action.execute();
@@ -965,7 +952,6 @@ public final class CmsContainerpageController {
             public void execute() {
 
                 getContainerpageService().setToolbarVisible(visible, this);
-
             }
 
             /**
@@ -974,8 +960,7 @@ public final class CmsContainerpageController {
             @Override
             protected void onResponse(Void result) {
 
-                CmsDebugLog.getInstance().printLine("Visibility set");
-
+                //nothing to do
             }
         };
         action.execute();
@@ -1005,10 +990,9 @@ public final class CmsContainerpageController {
     protected void lockContainerpage() {
 
         if (CmsCoreProvider.get().lock(getCurrentUri())) {
-            CmsDebugLog.getInstance().printLine("Page locked");
+            // nothing to do here
         } else {
-            // TODO: do something here
-            CmsDebugLog.getInstance().printLine("Page not locked");
+            // TODO: add notification
         }
     }
 
@@ -1082,7 +1066,6 @@ public final class CmsContainerpageController {
 
                     CmsDebugLog.getInstance().printLine("Page saved");
                     setPageChanged(false, false);
-
                 }
             };
             action.execute();
@@ -1097,7 +1080,7 @@ public final class CmsContainerpageController {
         if (CmsCoreProvider.get().unlock(getCurrentUri())) {
             CmsDebugLog.getInstance().printLine("Page unlocked");
         } else {
-            // TODO: think if it is needed to do something here
+            // ignore
         }
     }
 
@@ -1106,7 +1089,7 @@ public final class CmsContainerpageController {
      * 
      * @param elements the element data
      */
-    /*DEFAULT*/void addElements(Map<String, CmsContainerElement> elements) {
+    protected void addElements(Map<String, CmsContainerElement> elements) {
 
         m_elements.putAll(elements);
     }
@@ -1116,7 +1099,7 @@ public final class CmsContainerpageController {
      * 
      * @param event the native event
      */
-    void previewNativeEvent(NativePreviewEvent event) {
+    protected void previewNativeEvent(NativePreviewEvent event) {
 
         Event nativeEvent = Event.as(event.getNativeEvent());
         if (!hasPageChanged()) {
@@ -1148,7 +1131,6 @@ public final class CmsContainerpageController {
             CmsLeavePageDialog dialog = new CmsLeavePageDialog(Window.Location.getHref(), this, null);
             dialog.center();
         }
-
     }
 
     /**
@@ -1180,7 +1162,6 @@ public final class CmsContainerpageController {
                 result.add(element.getClientId());
             }
         }
-
         return result;
     }
 }
