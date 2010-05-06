@@ -28,7 +28,7 @@
         </any>
     </replace-with>
     
-     <generate-with class="org.opencms.gwt.rebind.CmsInitGenerator" >
+     <generate-with class="org.opencms.gwt.rebind.CmsClassInitGenerator" >
         <when-type-assignable class="org.opencms.gwt.client.I_CmsClassInitializer"/>
     </generate-with>
     

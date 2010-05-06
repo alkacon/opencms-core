@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/gwt/rebind/Attic/CmsInitGenerator.java,v $
- * Date   : $Date: 2010/05/05 15:26:26 $
+ * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/gwt/rebind/CmsClassInitGenerator.java,v $
+ * Date   : $Date: 2010/05/06 07:37:51 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -57,7 +57,7 @@ import com.google.gwt.user.rebind.SourceWriter;
  *  
  *  @since 8.0.0
  */
-public class CmsInitGenerator extends Generator {
+public class CmsClassInitGenerator extends Generator {
 
     /** The name of the class to generate. */
     private static final String CLASS_NAME = "CmsClassInitializerImpl";
