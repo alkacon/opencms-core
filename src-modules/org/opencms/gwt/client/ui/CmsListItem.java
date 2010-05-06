@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItem.java,v $
- * Date   : $Date: 2010/05/06 06:32:14 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/05/06 13:09:44 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,8 +31,8 @@
 
 package org.opencms.gwt.client.ui;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.uibinder.client.UiBinder;
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
@@ -41,22 +41,13 @@ import com.google.gwt.user.client.ui.Widget;
  * Provides a UI list item.<p>
  * 
  * @author Michael Moossen
+ * @author Tobias Herrmann
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 8.0.0
  */
-public class CmsListItem extends Composite implements I_CmsTruncable {
-
-    /**
-     * @see com.google.gwt.uibinder.client.UiBinder
-     */
-    protected interface I_CmsListItemUiBinder extends UiBinder<Panel, CmsListItem> {
-        // GWT interface, nothing to do here
-    }
-
-    /** The ui-binder instance for this class. */
-    private static I_CmsListItemUiBinder uiBinder = GWT.create(I_CmsListItemUiBinder.class);
+public class CmsListItem extends Composite implements I_CmsListItem {
 
     /** The logical id, it is not the HTML id. */
     protected String m_id;
@@ -69,7 +60,8 @@ public class CmsListItem extends Composite implements I_CmsTruncable {
      */
     public CmsListItem() {
 
-        init();
+        m_panel = new CmsFlowPanel("li");
+        m_panel.setStyleName(I_CmsLayoutBundle.INSTANCE.listTreeCss().listTreeItem());
     }
 
     /**
@@ -84,9 +76,7 @@ public class CmsListItem extends Composite implements I_CmsTruncable {
     }
 
     /**
-     * Adds a widget to this list item.<p>
-     * 
-     * @param w the widget to add
+     * @see org.opencms.gwt.client.ui.I_CmsListItem#add(com.google.gwt.user.client.ui.Widget)
      */
     public void add(Widget w) {
 
@@ -94,9 +84,7 @@ public class CmsListItem extends Composite implements I_CmsTruncable {
     }
 
     /**
-     * Returns the logical id, it is not the HTML id.<p>
-     *
-     * @return the id
+     * @see org.opencms.gwt.client.ui.I_CmsListItem#getId()
      */
     public String getId() {
 
@@ -104,9 +92,7 @@ public class CmsListItem extends Composite implements I_CmsTruncable {
     }
 
     /**
-     * Sets the logical id, it is not the HTML id.<p>
-     *
-     * @param id the id to set
+     * @see org.opencms.gwt.client.ui.I_CmsListItem#setId(java.lang.String)
      */
     public void setId(String id) {
 
@@ -131,19 +117,10 @@ public class CmsListItem extends Composite implements I_CmsTruncable {
     }
 
     /**
-     * Method for updating the layout of the item.<p>
+     * @see org.opencms.gwt.client.ui.I_CmsListItem#updateLayout()
      */
     public void updateLayout() {
 
         // empty
-    }
-
-    /**
-     * Initializes this list item.<p>
-     */
-    protected void init() {
-
-        m_panel = uiBinder.createAndBindUi(this);
-        initWidget(m_panel);
     }
 }

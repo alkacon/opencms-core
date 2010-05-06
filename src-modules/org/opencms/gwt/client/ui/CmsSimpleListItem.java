@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsSimpleListItem.java,v $
- * Date   : $Date: 2010/04/19 11:48:19 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/05/06 13:09:44 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,7 @@ import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -44,12 +45,12 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  * 
  */
-public class CmsSimpleListItem extends CmsListItem {
+public class CmsSimpleListItem extends Composite implements I_CmsListItem {
 
     /**
      * @see com.google.gwt.uibinder.client.UiBinder
@@ -65,12 +66,20 @@ public class CmsSimpleListItem extends CmsListItem {
     @UiField
     protected CmsFloatDecoratedPanel m_content;
 
+    /** The logical id, it is not the HTML id. */
+    protected String m_id;
+
+    /** This widgets panel. */
+    protected Panel m_panel;
+
     /** 
      * Default constructor.<p>
      */
     public CmsSimpleListItem() {
 
-        super();
+        m_panel = uiBinder.createAndBindUi(this);
+        initWidget(m_panel);
+        m_content.addStyleName(I_CmsLayoutBundle.INSTANCE.listTreeCss().listTreeItemContent());
     }
 
     /**
@@ -91,9 +100,8 @@ public class CmsSimpleListItem extends CmsListItem {
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.CmsListItem#add(com.google.gwt.user.client.ui.Widget)
+     * @see org.opencms.gwt.client.ui.I_CmsListItem#add(com.google.gwt.user.client.ui.Widget)
      */
-    @Override
     public void add(Widget w) {
 
         m_content.add(w);
@@ -111,6 +119,14 @@ public class CmsSimpleListItem extends CmsListItem {
     }
 
     /**
+     * @see org.opencms.gwt.client.ui.I_CmsListItem#getId()
+     */
+    public String getId() {
+
+        return m_id;
+    }
+
+    /**
      * Hides or shows the content.<p>
      * 
      * @param visible if true, shows the content, else hides it
@@ -121,23 +137,38 @@ public class CmsSimpleListItem extends CmsListItem {
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.CmsListItem#updateLayout()
+     * @see org.opencms.gwt.client.ui.I_CmsListItem#setId(java.lang.String)
      */
-    @Override
-    public void updateLayout() {
+    public void setId(String id) {
 
-        m_content.updateLayout();
+        m_id = id;
     }
 
     /**
-     * Initializes this widget.<p>
-     * 
+     * @see org.opencms.gwt.client.ui.I_CmsTruncable#truncate(java.lang.String, int)
      */
-    @Override
-    protected void init() {
+    public void truncate(String textMetricsKey, int labelWidth) {
 
-        m_panel = uiBinder.createAndBindUi(this);
-        initWidget(m_panel);
-        m_content.addStyleName(I_CmsLayoutBundle.INSTANCE.listTreeCss().listTreeItemContent());
+        int width = labelWidth - 4; // just to be on the safe side
+        for (Widget widget : m_panel) {
+            if (widget instanceof CmsListItemWidget) {
+                ((CmsListItemWidget)widget).truncate(textMetricsKey, width);
+            }
+            if (widget instanceof CmsList<?>) {
+                ((CmsList<?>)widget).truncate(textMetricsKey, width - 25); // 25px indentation
+            }
+            if (widget instanceof CmsFloatDecoratedPanel) {
+                ((CmsFloatDecoratedPanel)widget).truncate(textMetricsKey, width);
+            }
+        }
+
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.I_CmsListItem#updateLayout()
+     */
+    public void updateLayout() {
+
+        m_content.updateLayout();
     }
 }

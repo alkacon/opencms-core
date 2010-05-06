@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/tree/Attic/CmsTreeItem.java,v $
- * Date   : $Date: 2010/05/06 09:27:20 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/05/06 13:09:44 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,8 +32,8 @@
 package org.opencms.gwt.client.ui.tree;
 
 import org.opencms.gwt.client.ui.CmsList;
-import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsSimpleListItem;
+import org.opencms.gwt.client.ui.I_CmsListItem;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsListTreeCss;
@@ -64,7 +64,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Georg Westenberger
  * @author Michael Moossen
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 8.0.0
  */
@@ -97,6 +97,15 @@ public class CmsTreeItem extends CmsSimpleListItem {
     public CmsTreeItem() {
 
         super();
+        m_styleVar = new CmsStyleVariable(this);
+        m_leafStyleVar = new CmsStyleVariable(this);
+        m_opener = createOpener();
+        m_content.addToFloat(m_opener);
+        m_children = new CmsList<CmsTreeItem>();
+        m_children.setStyleName(CSS.listTreeItemChildren());
+        m_panel.add(m_children);
+        onChangeChildren();
+        setOpen(false);
     }
 
     /**
@@ -121,7 +130,7 @@ public class CmsTreeItem extends CmsSimpleListItem {
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.CmsListItem#add(com.google.gwt.user.client.ui.Widget)
+     * @see org.opencms.gwt.client.ui.CmsSimpleListItem#add(com.google.gwt.user.client.ui.Widget)
      */
     @Override
     public void add(Widget w) {
@@ -134,7 +143,7 @@ public class CmsTreeItem extends CmsSimpleListItem {
      * 
      * @param item the child to add
      * 
-     * @see org.opencms.gwt.client.ui.CmsList#addItem(CmsListItem)
+     * @see org.opencms.gwt.client.ui.CmsList#addItem(I_CmsListItem)
      */
     public void addChild(CmsTreeItem item) {
 
@@ -241,7 +250,7 @@ public class CmsTreeItem extends CmsSimpleListItem {
      * @param item the item to insert
      * @param position the position
      * 
-     * @see org.opencms.gwt.client.ui.CmsList#insertItem(CmsListItem, int)
+     * @see org.opencms.gwt.client.ui.CmsList#insertItem(I_CmsListItem, int)
      */
     public void insertChild(CmsTreeItem item, int position) {
 
@@ -255,7 +264,7 @@ public class CmsTreeItem extends CmsSimpleListItem {
      * 
      * @param item the item to remove
      * 
-     * @see org.opencms.gwt.client.ui.CmsList#removeItem(CmsListItem)
+     * @see org.opencms.gwt.client.ui.CmsList#removeItem(I_CmsListItem)
      */
     public void removeChild(CmsTreeItem item) {
 
@@ -306,7 +315,7 @@ public class CmsTreeItem extends CmsSimpleListItem {
         m_opener.setDown(open);
         if (open) {
             for (Widget widget : m_children) {
-                ((CmsListItem)widget).updateLayout();
+                ((I_CmsListItem)widget).updateLayout();
             }
             fireOpen();
         }
@@ -381,24 +390,6 @@ public class CmsTreeItem extends CmsSimpleListItem {
     protected Image getPlusImage() {
 
         return new Image(I_CmsImageBundle.INSTANCE.plus());
-    }
-
-    /**
-     * Initializes this widget.<p>
-     */
-    @Override
-    protected void init() {
-
-        super.init();
-        m_styleVar = new CmsStyleVariable(this);
-        m_leafStyleVar = new CmsStyleVariable(this);
-        m_opener = createOpener();
-        m_content.addToFloat(m_opener);
-        m_children = new CmsList<CmsTreeItem>();
-        m_children.setStyleName(CSS.listTreeItemChildren());
-        m_panel.add(m_children);
-        onChangeChildren();
-        setOpen(false);
     }
 
     /** 

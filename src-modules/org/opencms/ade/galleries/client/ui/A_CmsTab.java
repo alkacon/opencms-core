@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/A_CmsTab.java,v $
- * Date   : $Date: 2010/05/06 09:27:20 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/05/06 13:10:28 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,7 +35,7 @@ import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle.I_CmsGalleryDialogCss;
 import org.opencms.gwt.client.ui.CmsFlowPanel;
 import org.opencms.gwt.client.ui.CmsList;
-import org.opencms.gwt.client.ui.CmsListItem;
+import org.opencms.gwt.client.ui.I_CmsListItem;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -51,7 +51,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.
  */
@@ -92,7 +92,7 @@ public abstract class A_CmsTab extends Composite {
 
     /** The scrollable list panel. */
     @UiField
-    protected CmsList<? extends CmsListItem> m_scrollList;
+    protected CmsList<? extends I_CmsListItem> m_scrollList;
 
     /** The option panel. */
     @UiField

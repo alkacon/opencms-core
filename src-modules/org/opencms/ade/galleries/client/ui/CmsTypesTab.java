@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsTypesTab.java,v $
- * Date   : $Date: 2010/05/06 10:20:38 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/05/06 13:10:28 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,9 +35,7 @@ import org.opencms.ade.galleries.client.CmsTypesTabHandler;
 import org.opencms.ade.galleries.shared.CmsGalleryDialogBean;
 import org.opencms.ade.galleries.shared.CmsTypesListInfoBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
-import org.opencms.gwt.client.draganddrop.I_CmsDragElement;
 import org.opencms.gwt.client.draganddrop.I_CmsDragHandler;
-import org.opencms.gwt.client.draganddrop.I_CmsDragTarget;
 import org.opencms.gwt.client.ui.CmsFloatDecoratedPanel;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
@@ -64,7 +62,7 @@ import com.google.gwt.user.client.ui.Image;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.
  */
@@ -121,7 +119,7 @@ public class CmsTypesTab extends A_CmsTab implements ValueChangeHandler<String> 
     protected CmsTypesTabHandler m_tabHandler;
 
     /** The reference to the drag handler for the list elements. */
-    private I_CmsDragHandler<? extends I_CmsDragElement, ? extends I_CmsDragTarget> m_dragHandler;
+    private I_CmsDragHandler<?, ?> m_dragHandler;
 
     /** The select box to change the sort order. */
     private CmsSelectBox m_sortSelectBox;
@@ -131,7 +129,7 @@ public class CmsTypesTab extends A_CmsTab implements ValueChangeHandler<String> 
      * 
      * @param handler the reference to drag handler
      */
-    public CmsTypesTab(I_CmsDragHandler<? extends I_CmsDragElement, ? extends I_CmsDragTarget> handler) {
+    public CmsTypesTab(I_CmsDragHandler<?, ?> handler) {
 
         super();
         m_dragHandler = handler;

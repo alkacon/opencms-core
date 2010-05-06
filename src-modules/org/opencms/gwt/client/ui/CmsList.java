@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsList.java,v $
- * Date   : $Date: 2010/05/05 14:33:31 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/05/06 13:09:44 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,11 +49,11 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 8.0.0
  */
-public class CmsList<I extends CmsListItem> extends ComplexPanel implements I_CmsTruncable {
+public class CmsList<I extends I_CmsListItem> extends ComplexPanel implements I_CmsTruncable {
 
     /** The css bundle used for this widget. */
     private static final I_CmsListTreeCss CSS = I_CmsLayoutBundle.INSTANCE.listTreeCss();
@@ -83,9 +83,9 @@ public class CmsList<I extends CmsListItem> extends ComplexPanel implements I_Cm
     @Override
     public void add(Widget widget) {
 
-        assert widget instanceof CmsListItem;
+        assert widget instanceof I_CmsListItem;
         add(widget, getElement());
-        registerItem((CmsListItem)widget);
+        registerItem((I_CmsListItem)widget);
     }
 
     /**
@@ -97,7 +97,7 @@ public class CmsList<I extends CmsListItem> extends ComplexPanel implements I_Cm
      */
     public void addItem(I item) {
 
-        add(item);
+        add((Widget)item);
     }
 
     /**
@@ -146,9 +146,9 @@ public class CmsList<I extends CmsListItem> extends ComplexPanel implements I_Cm
      */
     public void insert(Widget widget, int position) {
 
-        assert widget instanceof CmsListItem;
+        assert widget instanceof I_CmsListItem;
         insert(widget, getElement(), position, true);
-        registerItem((CmsListItem)widget);
+        registerItem((I_CmsListItem)widget);
     }
 
     /**
@@ -159,7 +159,7 @@ public class CmsList<I extends CmsListItem> extends ComplexPanel implements I_Cm
      */
     public void insertItem(I item, int position) {
 
-        insert(item, position);
+        insert((Widget)item, position);
     }
 
     /**
@@ -171,7 +171,7 @@ public class CmsList<I extends CmsListItem> extends ComplexPanel implements I_Cm
      */
     public void removeItem(I item) {
 
-        remove(item);
+        remove((Widget)item);
         if (item.getId() != null) {
             m_items.remove(item.getId());
         }
@@ -189,7 +189,7 @@ public class CmsList<I extends CmsListItem> extends ComplexPanel implements I_Cm
     public I removeItem(String itemId) {
 
         I item = m_items.get(itemId);
-        remove(item);
+        remove((Widget)item);
         return item;
     }
 
@@ -199,7 +199,7 @@ public class CmsList<I extends CmsListItem> extends ComplexPanel implements I_Cm
     public void truncate(String textMetricsPrefix, int widgetWidth) {
 
         m_childWidth = widgetWidth;
-        for (CmsListItem item : m_items.values()) {
+        for (I_CmsListItem item : m_items.values()) {
             item.truncate(textMetricsPrefix, widgetWidth);
         }
         m_tmPrefix = textMetricsPrefix;
@@ -211,8 +211,8 @@ public class CmsList<I extends CmsListItem> extends ComplexPanel implements I_Cm
     public void updateLayout() {
 
         for (Widget widget : this) {
-            if (widget instanceof CmsListItem) {
-                ((CmsListItem)widget).updateLayout();
+            if (widget instanceof I_CmsListItem) {
+                ((I_CmsListItem)widget).updateLayout();
             }
         }
     }
@@ -223,7 +223,7 @@ public class CmsList<I extends CmsListItem> extends ComplexPanel implements I_Cm
      * @param item the item to register
      */
     @SuppressWarnings("unchecked")
-    protected void registerItem(CmsListItem item) {
+    protected void registerItem(I_CmsListItem item) {
 
         if (item.getId() != null) {
             m_items.put(item.getId(), (I)item);

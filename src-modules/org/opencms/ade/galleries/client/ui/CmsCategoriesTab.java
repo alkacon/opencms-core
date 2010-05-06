@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsCategoriesTab.java,v $
- * Date   : $Date: 2010/05/06 09:27:20 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/05/06 13:10:28 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,8 +37,8 @@ import org.opencms.ade.galleries.shared.CmsGalleryDialogBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
 import org.opencms.gwt.client.ui.CmsFloatDecoratedPanel;
 import org.opencms.gwt.client.ui.CmsList;
-import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
+import org.opencms.gwt.client.ui.I_CmsListItem;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.util.CmsDomUtil;
@@ -63,7 +63,7 @@ import com.google.gwt.user.client.ui.Image;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.
  */
@@ -267,7 +267,7 @@ public class CmsCategoriesTab extends A_CmsTab implements ValueChangeHandler<Str
      * @param categoryPath the category id to search
      * @return the category item widget
      */
-    public CmsCategoryTreeItem searchCategoryItem(CmsList<? extends CmsListItem> list, String categoryPath) {
+    public CmsCategoryTreeItem searchCategoryItem(CmsList<? extends I_CmsListItem> list, String categoryPath) {
 
         CmsCategoryTreeItem resultItem = (CmsCategoryTreeItem)list.getItem(categoryPath);
         // item is not in this tree level

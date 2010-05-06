@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsCategoryTreeItem.java,v $
- * Date   : $Date: 2010/05/06 09:27:20 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/05/06 13:10:28 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,7 +32,7 @@
 package org.opencms.ade.galleries.client.ui;
 
 import org.opencms.gwt.client.ui.CmsList;
-import org.opencms.gwt.client.ui.CmsListItem;
+import org.opencms.gwt.client.ui.I_CmsListItem;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
 
@@ -43,7 +43,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.
  */
@@ -112,7 +112,7 @@ public class CmsCategoryTreeItem extends CmsTreeItem {
      * 
      * @return the children list
      */
-    public CmsList<? extends CmsListItem> getChildren() {
+    public CmsList<? extends I_CmsListItem> getChildren() {
 
         return m_children;
     }
