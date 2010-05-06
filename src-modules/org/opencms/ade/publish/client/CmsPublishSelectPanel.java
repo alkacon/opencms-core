@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishSelectPanel.java,v $
- * Date   : $Date: 2010/05/05 14:33:31 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2010/05/06 13:38:24 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,13 +36,13 @@ import org.opencms.ade.publish.shared.CmsPublishGroup;
 import org.opencms.ade.publish.shared.CmsPublishOptions;
 import org.opencms.ade.publish.shared.CmsPublishResource;
 import org.opencms.file.CmsResource;
-import org.opencms.gwt.client.i18n.CmsMessages;
 import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.util.CmsListSplitter;
+import org.opencms.gwt.client.util.CmsMessages;
 import org.opencms.gwt.client.util.CmsPair;
 import org.opencms.gwt.client.util.CmsScrollToBottomHandler;
 import org.opencms.util.CmsUUID;
@@ -80,7 +80,7 @@ import com.google.gwt.user.client.ui.Widget;
  *  
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 8.0.0
  */
@@ -273,7 +273,6 @@ public class CmsPublishSelectPanel extends Composite implements I_CmsPublishSele
                 m_publishOptions.setIncludeSiblings(m_checkboxSiblings.isChecked());
                 m_publishDialog.onChangeOptions();
             }
-
         });
 
         m_checkboxProblems.addClickHandler(new ClickHandler() {
@@ -284,9 +283,7 @@ public class CmsPublishSelectPanel extends Composite implements I_CmsPublishSele
             public void onClick(ClickEvent e) {
 
                 setProblemMode(m_checkboxProblems.isChecked());
-
             }
-
         });
 
         m_publishButton.setText(messages.key(Messages.GUI_PUBLISH_DIALOG_PUBLISH_0));
@@ -331,7 +328,7 @@ public class CmsPublishSelectPanel extends Composite implements I_CmsPublishSele
         m_relatedLabel.setText(" " + messages.key(Messages.GUI_PUBLISH_CHECKBOXES_REL_RES_0));
         m_relatedLabel.addStyleName(CSS.clear());
         m_siblingsLabel.addStyleName(CSS.clear());
-        m_problemsLabel.setText(messages.key(Messages.GUI_PUBLISH_CHECKBOXES_PROBLEMS_0));
+        m_problemsLabel.setText(" " + messages.key(Messages.GUI_PUBLISH_CHECKBOXES_PROBLEMS_0));
         m_problemsLabel.addStyleName(CSS.clear());
         connectToCheckbox(m_problemsLabel, m_checkboxProblems);
         connectToCheckbox(m_siblingsLabel, m_checkboxSiblings);
