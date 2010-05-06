@@ -198,4 +198,12 @@
 	width: 68%;
 }
 
+.separator {
+	width: 100%;
+	height: 1px;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	background-color: value("constants.borderColorInactive");
+}
+
 
