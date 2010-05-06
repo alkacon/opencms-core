@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleryControllerHandler.java,v $
- * Date   : $Date: 2010/05/06 10:20:38 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/05/06 14:48:15 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import java.util.List;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 8.0.0
 
@@ -180,7 +180,7 @@ public class CmsGalleryControllerHandler {
      */
     public void onUpdateGalleries(ArrayList<CmsGalleriesListInfoBean> galleries, ArrayList<String> selectedGalleries) {
 
-        m_galleryDialog.getGalleriesTab().updateGalleries(galleries, selectedGalleries);
+        m_galleryDialog.getGalleriesTab().updateContent(galleries, selectedGalleries);
     }
 
     /**
@@ -191,7 +191,7 @@ public class CmsGalleryControllerHandler {
      */
     public void onUpdateTypes(ArrayList<CmsTypesListInfoBean> types, List<String> selectedTypes) {
 
-        m_galleryDialog.getTypesTab().updateTypes(types, selectedTypes);
+        m_galleryDialog.getTypesTab().updateContent(types, selectedTypes);
     }
 
     /**
@@ -202,7 +202,7 @@ public class CmsGalleryControllerHandler {
      */
     public void onUpdateCategories(ArrayList<CmsCategoryInfoBean> categoriesList, ArrayList<String> selectedCategories) {
 
-        m_galleryDialog.getCategoriesTab().updateCategories(categoriesList, selectedCategories);
+        m_galleryDialog.getCategoriesTab().updateContent(categoriesList, selectedCategories);
     }
 
     /**
@@ -213,6 +213,6 @@ public class CmsGalleryControllerHandler {
      */
     public void onUpdateCategories(CmsCategoryTreeEntry categoryTreeEntry, ArrayList<String> selectedCategories) {
 
-        m_galleryDialog.getCategoriesTab().updateCategories(categoryTreeEntry, selectedCategories);
+        m_galleryDialog.getCategoriesTab().updateContent(categoryTreeEntry, selectedCategories);
     }
 }

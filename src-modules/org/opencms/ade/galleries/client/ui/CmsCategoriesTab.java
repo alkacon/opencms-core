@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsCategoriesTab.java,v $
- * Date   : $Date: 2010/05/06 13:10:28 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/05/06 14:48:15 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import com.google.gwt.user.client.ui.Image;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.
  */
@@ -328,7 +328,7 @@ public class CmsCategoriesTab extends A_CmsTab implements ValueChangeHandler<Str
      * @param categoriesBeans the updates list of categories tree item beans
      * @param selectedCategories the categories to select in the list by update
      */
-    public void updateCategories(ArrayList<CmsCategoryInfoBean> categoriesBeans, ArrayList<String> selectedCategories) {
+    public void updateContent(ArrayList<CmsCategoryInfoBean> categoriesBeans, ArrayList<String> selectedCategories) {
 
         clearList();
         for (CmsCategoryInfoBean categoryBean : categoriesBeans) {
@@ -356,7 +356,7 @@ public class CmsCategoriesTab extends A_CmsTab implements ValueChangeHandler<Str
      * @param treeEntry the root category entry
      * @param selectedCategories the categories to select after update
      */
-    public void updateCategories(CmsCategoryTreeEntry treeEntry, ArrayList<String> selectedCategories) {
+    public void updateContent(CmsCategoryTreeEntry treeEntry, ArrayList<String> selectedCategories) {
 
         clearList();
         if (treeEntry.getChildren() != null) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsGalleriesTab.java,v $
- * Date   : $Date: 2010/05/06 10:20:38 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/05/06 14:48:15 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import com.google.gwt.user.client.ui.Image;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.
  */
@@ -269,7 +269,7 @@ public class CmsGalleriesTab extends A_CmsTab implements ValueChangeHandler<Stri
      * @param galleries the new gallery list
      * @param selectedGalleries the list of galleries to select
      */
-    public void updateGalleries(ArrayList<CmsGalleriesListInfoBean> galleries, ArrayList<String> selectedGalleries) {
+    public void updateContent(ArrayList<CmsGalleriesListInfoBean> galleries, ArrayList<String> selectedGalleries) {
 
         clearList();
         for (CmsGalleriesListInfoBean galleryItem : galleries) {
