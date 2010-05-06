@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsPushButton.java,v $
- * Date   : $Date: 2010/05/06 13:11:19 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/05/06 13:46:49 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,18 +33,17 @@ package org.opencms.gwt.client.ui;
 
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsDomUtil;
-import org.opencms.util.CmsStringUtil;
 
 import com.google.gwt.user.client.ui.PushButton;
 
 /**
- * Base button class.<p>
+ * Push button class.<p>
  * 
- * Uses CSS classes cmsState and dependent from 'button.css', make sure it is injected<p>
+ * Uses CSS classes cmsState and dependent from 'button.css', make sure it is injected.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -102,30 +101,6 @@ public class CmsPushButton extends PushButton {
 
         this(upIcon);
         setDownUiIcon(downIcon);
-    }
-
-    /**
-     * Convenience method to assemble the HTML to use for a button face.<p>
-     * 
-     * @param text text the up face text to set, set to <code>null</code> to not show any
-     * @param imageClass the up face image class to use, set to <code>null</code> to not show any
-     * 
-     * @return the HTML
-     */
-    public static String createFaceHtml(String text, String imageClass) {
-
-        StringBuffer sb = new StringBuffer();
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(imageClass)) {
-            CmsDomUtil.AttributeValue attr = new CmsDomUtil.AttributeValue(CmsDomUtil.Attribute.clazz, imageClass);
-            sb.append(CmsDomUtil.enclose(CmsDomUtil.Tag.span, "", attr));
-        }
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(text)) {
-            if (sb.length() > 0) {
-                sb.append(CmsDomUtil.Entity.nbsp.html());
-            }
-            sb.append(text.trim());
-        }
-        return sb.toString();
     }
 
     /**
@@ -359,7 +334,7 @@ public class CmsPushButton extends PushButton {
      */
     protected String getFaceHtml(String text, String imageClass) {
 
-        return createFaceHtml(text, imageClass);
+        return CmsDomUtil.createFaceHtml(text, imageClass);
     }
 
     /**

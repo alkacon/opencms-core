@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsDomUtil.java,v $
- * Date   : $Date: 2010/05/06 13:39:00 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2010/05/06 13:46:49 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.gwt.client.util;
 
 import org.opencms.gwt.client.util.impl.DOMImpl;
 import org.opencms.gwt.client.util.impl.DocumentStyleImpl;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +50,7 @@ import com.google.gwt.user.client.DOM;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 8.0.0
  */
@@ -758,5 +759,29 @@ public final class CmsDomUtil {
         hasClass |= elementClass.endsWith(" " + className);
 
         return hasClass;
+    }
+
+    /**
+     * Convenience method to assemble the HTML to use for a button face.<p>
+     * 
+     * @param text text the up face text to set, set to <code>null</code> to not show any
+     * @param imageClass the up face image class to use, set to <code>null</code> to not show any
+     * 
+     * @return the HTML
+     */
+    public static String createFaceHtml(String text, String imageClass) {
+    
+        StringBuffer sb = new StringBuffer();
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(imageClass)) {
+            AttributeValue attr = new AttributeValue(Attribute.clazz, imageClass);
+            sb.append(enclose(Tag.span, "", attr));
+        }
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(text)) {
+            if (sb.length() > 0) {
+                sb.append(Entity.nbsp.html());
+            }
+            sb.append(text.trim());
+        }
+        return sb.toString();
     }
 }
