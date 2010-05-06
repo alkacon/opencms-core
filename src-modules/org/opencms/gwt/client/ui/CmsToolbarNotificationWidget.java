@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsToolbarNotificationWidget.java,v $
- * Date   : $Date: 2010/05/05 14:33:31 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/05/06 13:38:11 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -238,7 +238,6 @@ public class CmsToolbarNotificationWidget extends Composite implements I_CmsNoti
                 @Override
                 protected void onUpdate(double progress) {
 
-                    super.onUpdate(progress);
                     double top = m_top + (-1 + progress) * m_height;
                     Style cntStyle = getElement().getStyle();
                     cntStyle.setTop(top, Unit.PX);
@@ -363,7 +362,6 @@ public class CmsToolbarNotificationWidget extends Composite implements I_CmsNoti
                 @Override
                 protected void onUpdate(double progress) {
 
-                    super.onUpdate(progress);
                     Style cntStyle = getElement().getStyle();
                     cntStyle.setTop(m_top - progress * m_height, Unit.PX);
                     cntStyle.setOpacity(1 - progress);

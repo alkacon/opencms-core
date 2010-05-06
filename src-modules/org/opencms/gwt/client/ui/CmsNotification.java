@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsNotification.java,v $
- * Date   : $Date: 2010/04/29 09:31:56 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/05/06 13:38:11 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,8 +31,6 @@
 
 package org.opencms.gwt.client.ui;
 
-import org.opencms.gwt.client.util.CmsDebugLog;
-
 import com.google.gwt.animation.client.Animation;
 
 /**
@@ -40,7 +38,7 @@ import com.google.gwt.animation.client.Animation;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -77,26 +75,7 @@ public final class CmsNotification {
         @Override
         protected void onCancel() {
 
-            CmsDebugLog.getInstance().printLine("cancel");
             onComplete();
-        }
-
-        /**
-         * @see com.google.gwt.animation.client.Animation#onComplete()
-         */
-        @Override
-        protected void onComplete() {
-
-            CmsDebugLog.getInstance().printLine("complete");
-        }
-
-        /**
-         * @see com.google.gwt.animation.client.Animation#onUpdate(double)
-         */
-        @Override
-        protected void onUpdate(double progress) {
-
-            CmsDebugLog.getInstance().printLine("update: " + progress);
         }
     }
 
