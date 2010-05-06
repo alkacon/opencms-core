@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsSimpleListItem.java,v $
- * Date   : $Date: 2010/05/06 13:09:44 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/05/06 13:37:38 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,14 +41,13 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * Simple list item which uses a CmsFloatDecoratedPanel for layout.<p>
+ * List item which uses a CmsFloatDecoratedPanel for layout.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
- * 
  */
 public class CmsSimpleListItem extends Composite implements I_CmsListItem {
 
@@ -147,25 +146,22 @@ public class CmsSimpleListItem extends Composite implements I_CmsListItem {
     /**
      * @see org.opencms.gwt.client.ui.I_CmsTruncable#truncate(java.lang.String, int)
      */
-    public void truncate(String textMetricsKey, int labelWidth) {
+    public void truncate(String textMetricsPrefix, int widgetWidth) {
 
-        int width = labelWidth - 4; // just to be on the safe side
         for (Widget widget : m_panel) {
-            if (widget instanceof CmsListItemWidget) {
-                ((CmsListItemWidget)widget).truncate(textMetricsKey, width);
+            if (!(widget instanceof I_CmsTruncable)) {
+                continue;
             }
+            int width = widgetWidth - 4; // just to be on the safe side
             if (widget instanceof CmsList<?>) {
-                ((CmsList<?>)widget).truncate(textMetricsKey, width - 25); // 25px indentation
+                width -= 25; // 25px left margin
             }
-            if (widget instanceof CmsFloatDecoratedPanel) {
-                ((CmsFloatDecoratedPanel)widget).truncate(textMetricsKey, width);
-            }
+            ((I_CmsTruncable)widget).truncate(textMetricsPrefix, width);
         }
-
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.I_CmsListItem#updateLayout()
+     * Method for updating the layout of the item.<p>
      */
     public void updateLayout() {
 

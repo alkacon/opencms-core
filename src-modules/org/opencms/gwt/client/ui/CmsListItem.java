@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItem.java,v $
- * Date   : $Date: 2010/05/06 13:24:43 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2010/05/06 13:37:38 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Michael Moossen
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 8.0.0
  */
@@ -126,13 +126,5 @@ public class CmsListItem extends Composite implements I_CmsListItem {
             }
             ((I_CmsTruncable)widget).truncate(textMetricsPrefix, width);
         }
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.I_CmsListItem#updateLayout()
-     */
-    public void updateLayout() {
-
-        // empty
     }
 }

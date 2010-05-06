@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/I_CmsListItem.java,v $
- * Date   : $Date: 2010/05/06 13:09:44 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/05/06 13:37:38 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -64,10 +64,4 @@ public interface I_CmsListItem extends I_CmsTruncable {
      * @param id the id to set
      */
     void setId(String id);
-
-    /**
-     * Method for updating the layout of the item.<p>
-     */
-    void updateLayout();
-
 }

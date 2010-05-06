@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/tree/Attic/CmsTreeItem.java,v $
- * Date   : $Date: 2010/05/06 13:09:44 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/05/06 13:37:38 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,7 +33,6 @@ package org.opencms.gwt.client.ui.tree;
 
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsSimpleListItem;
-import org.opencms.gwt.client.ui.I_CmsListItem;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsListTreeCss;
@@ -64,7 +63,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Georg Westenberger
  * @author Michael Moossen
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 8.0.0
  */
@@ -143,7 +142,7 @@ public class CmsTreeItem extends CmsSimpleListItem {
      * 
      * @param item the child to add
      * 
-     * @see org.opencms.gwt.client.ui.CmsList#addItem(I_CmsListItem)
+     * @see org.opencms.gwt.client.ui.CmsList#addItem(org.opencms.gwt.client.ui.I_CmsListItem)
      */
     public void addChild(CmsTreeItem item) {
 
@@ -250,7 +249,7 @@ public class CmsTreeItem extends CmsSimpleListItem {
      * @param item the item to insert
      * @param position the position
      * 
-     * @see org.opencms.gwt.client.ui.CmsList#insertItem(I_CmsListItem, int)
+     * @see org.opencms.gwt.client.ui.CmsList#insertItem(org.opencms.gwt.client.ui.I_CmsListItem, int)
      */
     public void insertChild(CmsTreeItem item, int position) {
 
@@ -264,7 +263,7 @@ public class CmsTreeItem extends CmsSimpleListItem {
      * 
      * @param item the item to remove
      * 
-     * @see org.opencms.gwt.client.ui.CmsList#removeItem(I_CmsListItem)
+     * @see org.opencms.gwt.client.ui.CmsList#removeItem(org.opencms.gwt.client.ui.I_CmsListItem)
      */
     public void removeChild(CmsTreeItem item) {
 
@@ -298,8 +297,8 @@ public class CmsTreeItem extends CmsSimpleListItem {
      */
     public CmsTreeItem removeChild(String itemId) {
 
-        m_children.getItem(itemId).setParentItem(null);
         CmsTreeItem removeItem = m_children.removeItem(itemId);
+        removeItem.setParentItem(null);
         onChangeChildren();
         return removeItem;
     }
@@ -315,7 +314,9 @@ public class CmsTreeItem extends CmsSimpleListItem {
         m_opener.setDown(open);
         if (open) {
             for (Widget widget : m_children) {
-                ((I_CmsListItem)widget).updateLayout();
+                if (widget instanceof CmsSimpleListItem) {
+                    ((CmsSimpleListItem)widget).updateLayout();
+                }
             }
             fireOpen();
         }
