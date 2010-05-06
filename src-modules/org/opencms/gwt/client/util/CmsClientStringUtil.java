@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsClientStringUtil.java,v $
- * Date   : $Date: 2010/04/19 11:47:45 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/05/06 09:35:11 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,7 @@ package org.opencms.gwt.client.util;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  * 
@@ -88,6 +88,20 @@ public final class CmsClientStringUtil {
         }
         return result;
     }
+
+    /**
+     * The parseFloat() function parses a string and returns a float.<p>
+     * 
+     * Only the first number in the string is returned. Leading and trailing spaces are allowed.
+     * 
+     * @param str the string to be parsed
+     * 
+     * @return the parsed number
+     */
+    public static native double parseFloat(String str) /*-{
+        var ret = parseFloat(str, 10);
+        return ret;
+    }-*/;
 
     /**
      * The parseInt() function parses a string and returns an integer.<p>

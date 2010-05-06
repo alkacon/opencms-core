@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsDomUtil.java,v $
- * Date   : $Date: 2010/04/26 06:10:49 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2010/05/06 09:35:11 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import com.google.gwt.user.client.DOM;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 8.0.0
  */
@@ -105,6 +105,12 @@ public final class CmsDomUtil {
 
         /** CSS Property. */
         backgroundImage,
+
+        /** CSS property. */
+        borderLeftWidth,
+
+        /** CSS property. */
+        borderRightWidth,
 
         /** CSS Property. */
         borderStyle,
@@ -240,6 +246,9 @@ public final class CmsDomUtil {
     public static enum Tag {
 
         /** HTML Tag. */
+        a,
+
+        /** HTML Tag. */
         ALL {
 
             /**
@@ -251,9 +260,6 @@ public final class CmsDomUtil {
                 return "*";
             }
         },
-
-        /** HTML Tag. */
-        a,
 
         /** HTML Tag. */
         b,
@@ -386,6 +392,26 @@ public final class CmsDomUtil {
     }
 
     /**
+     * Returns the given element or it's closest ancestor with the given class.
+     * Returns <code>null</code> if no appropriate element was found.<p>
+     * 
+     * @param element the element
+     * @param className the class name
+     * 
+     * @return the matching element
+     */
+    public static Element getAncestor(Element element, String className) {
+
+        if (hasClass(className, element)) {
+            return element;
+        }
+        if (element.getTagName().equalsIgnoreCase(Tag.body.name())) {
+            return null;
+        }
+        return getAncestor(element.getParentElement(), className);
+    }
+
+    /**
      * Returns the given element or it's closest ancestor with the given tag name.
      * Returns <code>null</code> if no appropriate element was found.<p>
      * 
@@ -427,26 +453,6 @@ public final class CmsDomUtil {
     }
 
     /**
-     * Returns the given element or it's closest ancestor with the given class.
-     * Returns <code>null</code> if no appropriate element was found.<p>
-     * 
-     * @param element the element
-     * @param className the class name
-     * 
-     * @return the matching element
-     */
-    public static Element getAncestor(Element element, String className) {
-
-        if (hasClass(className, element)) {
-            return element;
-        }
-        if (element.getTagName().equalsIgnoreCase(Tag.body.name())) {
-            return null;
-        }
-        return getAncestor(element.getParentElement(), className);
-    }
-
-    /**
      * Returns the computed style of the given element.<p>
      * 
      * @param element the element
@@ -460,6 +466,20 @@ public final class CmsDomUtil {
             styleImpl = GWT.create(DocumentStyleImpl.class);
         }
         return styleImpl.getCurrentStyle(element, style.toString());
+    }
+
+    /**
+     * Returns the computed style of the given element as floating point number.<p>
+     * 
+     * @param element the element
+     * @param style the CSS property 
+     * 
+     * @return the currently computed style
+     */
+    public static double getCurrentStyleFloat(Element element, Style style) {
+
+        String currentStyle = getCurrentStyle(element, style);
+        return CmsClientStringUtil.parseFloat(currentStyle);
     }
 
     /**
