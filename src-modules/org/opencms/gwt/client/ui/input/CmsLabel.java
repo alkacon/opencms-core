@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsLabel.java,v $
- * Date   : $Date: 2010/05/05 14:33:31 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/05/06 07:21:11 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -183,13 +183,13 @@ public class CmsLabel extends Widget implements HasHorizontalAlignment, HasText,
         tm.release();
 
         CmsDebugLog log = CmsDebugLog.getInstance();
-        log.printLine("truncate");
 
         if (labelWidth >= textWidth) {
             // nothing to do
             return;
         }
 
+        log.printLine("truncate");
         log.printLine("text: " + text);
         log.printLine("elemWidth: " + labelWidth);
         log.printLine("textWidth: " + textWidth);
