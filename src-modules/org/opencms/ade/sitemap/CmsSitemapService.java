@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsSitemapService.java,v $
- * Date   : $Date: 2010/05/04 09:41:33 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/05/06 07:33:01 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,6 +52,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.explorer.CmsResourceUtil;
+import org.opencms.xml.content.CmsXmlContentPropertyHelper;
 import org.opencms.xml.sitemap.CmsSitemapEntry;
 import org.opencms.xml.sitemap.CmsXmlSitemap;
 import org.opencms.xml.sitemap.CmsXmlSitemapFactory;
@@ -69,7 +70,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 8.0.0
  * 
@@ -235,7 +236,10 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
         CmsObject cms = getCmsObject();
         try {
             CmsResource sitemap = cms.readResource(sitemapUri);
-            result = new CmsSitemapData(getDefaultTemplate(sitemapUri), getTemplates(), null, //CmsXmlContentPropertyHelper.getPropertyInfo(cms, sitemap),
+            result = new CmsSitemapData(
+                getDefaultTemplate(sitemapUri),
+                getTemplates(),
+                CmsXmlContentPropertyHelper.getPropertyInfo(cms, sitemap),
                 getCachedRecentList(),
                 getNoEditReason(cms, getRequest()),
                 isDisplayToolbar(getRequest()),
