@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleryController.java,v $
- * Date   : $Date: 2010/05/06 09:27:20 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/05/06 10:20:38 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import com.google.gwt.core.client.GWT;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 8.0.0
  */
@@ -282,7 +282,7 @@ public class CmsGalleryController {
     public void sortGalleries(String sortParams) {
 
         m_dialogBean.sortGalleries(sortParams);
-        m_handler.onUpdateGalleries(m_dialogBean.getGalleries());
+        m_handler.onUpdateGalleries(m_dialogBean.getGalleries(), m_searchObject.getGalleries());
     }
 
     /**
@@ -348,7 +348,7 @@ public class CmsGalleryController {
     public void sortTypes(String sortParams) {
 
         m_dialogBean.sortTypes(sortParams);
-        m_handler.onUpdateTypes(m_dialogBean.getTypes());
+        m_handler.onUpdateTypes(m_dialogBean.getTypes(), m_searchObject.getTypes());
     }
 
     /**
