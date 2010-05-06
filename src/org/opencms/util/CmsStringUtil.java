@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
- * Date   : $Date: 2009/11/02 16:35:30 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/05/06 13:10:17 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,6 +42,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -58,7 +59,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * @author  Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -764,16 +765,15 @@ public final class CmsStringUtil {
     /**
      * Returns a string representation for the given list using the given separator.<p>
      * 
-     * @param <E> type of list entries
      * @param list the list to write
      * @param separator the item separator string
      * 
      * @return the string representation for the given map
      */
-    public static <E> String listAsString(List<E> list, String separator) {
+    public static String listAsString(List<?> list, String separator) {
 
         StringBuffer string = new StringBuffer(128);
-        Iterator<E> it = list.iterator();
+        Iterator<?> it = list.iterator();
         while (it.hasNext()) {
             string.append(it.next());
             if (it.hasNext()) {
@@ -981,7 +981,8 @@ public final class CmsStringUtil {
     public static Map<String, String> splitAsMap(String source, String paramDelim, String keyValDelim) {
 
         int keyValLen = keyValDelim.length();
-        Map<String, String> params = new HashMap<String, String>();
+        // use LinkedHashMap to preserve the order of items 
+        Map<String, String> params = new LinkedHashMap<String, String>();
         Iterator<String> itParams = CmsStringUtil.splitAsList(source, paramDelim, true).iterator();
         while (itParams.hasNext()) {
             String param = itParams.next();
