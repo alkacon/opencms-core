@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsSelectBox.java,v $
- * Date   : $Date: 2010/05/06 06:32:14 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2010/05/06 08:16:58 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -78,7 +78,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 8.0.0
  * 
@@ -243,6 +243,7 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
 
         m_popup.setWidget(m_selector);
         m_popup.addStyleName(CSS.selectorPopup());
+        m_popup.addAutoHidePartner(m_panel.getElement());
 
         m_selector.setStyleName(CSS.selectBoxSelector());
         m_selector.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerBottom());
@@ -337,6 +338,7 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
     @Override
     public void fireEvent(GwtEvent<?> event) {
 
+        super.fireEvent(event);
         if (m_handlerManager != null) {
             m_handlerManager.fireEvent(event);
         }
