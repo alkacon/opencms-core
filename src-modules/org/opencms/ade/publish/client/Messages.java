@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/Messages.java,v $
- * Date   : $Date: 2010/04/26 15:08:18 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/05/06 13:11:19 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,14 +31,14 @@
 
 package org.opencms.ade.publish.client;
 
-import org.opencms.gwt.client.i18n.CmsMessages;
+import org.opencms.gwt.client.util.CmsMessages;
 
 /**
  * This class contains the message keys for the client side of the publish module.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */

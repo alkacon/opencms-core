@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsPushButton.java,v $
- * Date   : $Date: 2010/04/28 13:03:39 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/05/06 13:11:19 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,8 @@
 package org.opencms.gwt.client.ui;
 
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.util.CmsStringUtil;
 
 import com.google.gwt.user.client.ui.PushButton;
 
@@ -42,7 +44,7 @@ import com.google.gwt.user.client.ui.PushButton;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -74,7 +76,6 @@ public class CmsPushButton extends PushButton {
      */
     public CmsPushButton() {
 
-        super();
         setStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsState());
         setShowBorder(true);
         setSize(I_CmsButton.Size.medium);
@@ -104,6 +105,30 @@ public class CmsPushButton extends PushButton {
     }
 
     /**
+     * Convenience method to assemble the HTML to use for a button face.<p>
+     * 
+     * @param text text the up face text to set, set to <code>null</code> to not show any
+     * @param imageClass the up face image class to use, set to <code>null</code> to not show any
+     * 
+     * @return the HTML
+     */
+    public static String createFaceHtml(String text, String imageClass) {
+
+        StringBuffer sb = new StringBuffer();
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(imageClass)) {
+            CmsDomUtil.AttributeValue attr = new CmsDomUtil.AttributeValue(CmsDomUtil.Attribute.clazz, imageClass);
+            sb.append(CmsDomUtil.enclose(CmsDomUtil.Tag.span, "", attr));
+        }
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(text)) {
+            if (sb.length() > 0) {
+                sb.append(CmsDomUtil.Entity.nbsp.html());
+            }
+            sb.append(text.trim());
+        }
+        return sb.toString();
+    }
+
+    /**
      * Disables the button and changes the button title attribute to the disabled reason.<p>
      *   
      * @param disabledReason the disabled reason
@@ -124,9 +149,9 @@ public class CmsPushButton extends PushButton {
     }
 
     /**
-     * Returns the downImageClass.<p>
+     * Returns the image class of the down face.<p>
      *
-     * @return the downImageClass
+     * @return the image class of the down face
      */
     public String getDownImageClass() {
 
@@ -134,9 +159,9 @@ public class CmsPushButton extends PushButton {
     }
 
     /**
-     * Returns the imageClass.<p>
+     * Returns the master image class.<p>
      *
-     * @return the imageClass
+     * @return the master image class
      */
     public String getImageClass() {
 
@@ -176,9 +201,9 @@ public class CmsPushButton extends PushButton {
     }
 
     /**
-     * Returns the showBorder.<p>
+     * Checks if the button has borders.<p>
      *
-     * @return the showBorder
+     * @return <code>true</code> if the button has borders
      */
     public boolean isShowBorder() {
 
@@ -186,9 +211,9 @@ public class CmsPushButton extends PushButton {
     }
 
     /**
-     * Returns the useMinWidth.<p>
+     * Checks if the button is constraint to a minimal width.<p>
      *
-     * @return the useMinWidth
+     * @return <code>true</code> if the button is constraint to a minimal width
      */
     public boolean isUseMinWidth() {
 
@@ -205,9 +230,9 @@ public class CmsPushButton extends PushButton {
     }
 
     /**
-     * Sets the downImageClass.<p>
+     * Sets the image class for the down face.<p>
      *
-     * @param downImageClass the downImageClass to set
+     * @param downImageClass the image class to set
      */
     public void setDownImageClass(String downImageClass) {
 
@@ -226,9 +251,9 @@ public class CmsPushButton extends PushButton {
     }
 
     /**
-     * Sets the imageClass.<p>
+     * Sets the master image class.<p>
      *
-     * @param imageClass the imageClass to set
+     * @param imageClass the master image class to set
      */
     public void setImageClass(String imageClass) {
 
@@ -237,9 +262,9 @@ public class CmsPushButton extends PushButton {
     }
 
     /**
-     * Sets the showBorder.<p>
+     * Tells the button to use or not borders.<p>
      *
-     * @param showBorder the showBorder to set
+     * @param showBorder <code>true</code> to use borders
      */
     public void setShowBorder(boolean showBorder) {
 
@@ -308,9 +333,9 @@ public class CmsPushButton extends PushButton {
     }
 
     /**
-     * Sets the useMinWidth.<p>
+     * Tells the button to use a minimal width.<p>
      *
-     * @param useMinWidth the useMinWidth to set
+     * @param useMinWidth <code>true</code> to use a minimal width
      */
     public void setUseMinWidth(boolean useMinWidth) {
 
@@ -334,14 +359,7 @@ public class CmsPushButton extends PushButton {
      */
     protected String getFaceHtml(String text, String imageClass) {
 
-        String result = ((imageClass != null) && (imageClass.trim().length() > 0)) ? "<span class='"
-            + imageClass
-            + "'></span>" : "";
-        if ((text != null) && (text.trim().length() > 0)) {
-            result += (result.length() > 0) ? "&nbsp;" : "";
-            result += text.trim();
-        }
-        return result;
+        return createFaceHtml(text, imageClass);
     }
 
     /**

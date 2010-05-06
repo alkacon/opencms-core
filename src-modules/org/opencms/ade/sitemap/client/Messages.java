@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/Messages.java,v $
- * Date   : $Date: 2010/05/04 09:40:41 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/05/06 13:11:19 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,14 +31,14 @@
 
 package org.opencms.ade.sitemap.client;
 
-import org.opencms.gwt.client.i18n.CmsMessages;
+import org.opencms.gwt.client.util.CmsMessages;
 
 /**
  * Convenience class to access the localized messages of this OpenCms package.<p> 
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 8.0.0
  */
