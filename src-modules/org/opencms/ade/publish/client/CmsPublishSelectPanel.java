@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishSelectPanel.java,v $
- * Date   : $Date: 2010/05/06 13:38:24 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2010/05/06 14:34:25 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -80,7 +79,7 @@ import com.google.gwt.user.client.ui.Widget;
  *  
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 8.0.0
  */
@@ -330,36 +329,9 @@ public class CmsPublishSelectPanel extends Composite implements I_CmsPublishSele
         m_siblingsLabel.addStyleName(CSS.clear());
         m_problemsLabel.setText(" " + messages.key(Messages.GUI_PUBLISH_CHECKBOXES_PROBLEMS_0));
         m_problemsLabel.addStyleName(CSS.clear());
-        connectToCheckbox(m_problemsLabel, m_checkboxProblems);
-        connectToCheckbox(m_siblingsLabel, m_checkboxSiblings);
-        connectToCheckbox(m_relatedLabel, m_checkboxRelated);
         m_selectLabel.setText(messages.key(Messages.GUI_PUBLISH_TOP_PANEL_LEFT_LABEL_0));
         m_selectorLabel.setText(messages.key(Messages.GUI_PUBLISH_TOP_PANEL_RIGHT_LABEL_0));
         addScrollHandler();
-
-    }
-
-    /**
-     * Helper method for connecting a clickable wigdet to a checkbox.<p>
-     * 
-     * This means that when the user clicks on the widget, a click on the 
-     * checkbox is triggered. 
-     *  
-     * @param widget the widget which should be connected to the checkbox
-     * @param checkbox the checkbox 
-     */
-    private static void connectToCheckbox(HasClickHandlers widget, final CmsCheckBox checkbox) {
-
-        widget.addClickHandler(new ClickHandler() {
-
-            /**
-             * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
-             */
-            public void onClick(ClickEvent event) {
-
-                checkbox.click();
-            }
-        });
     }
 
     /** 

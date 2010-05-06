@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsCheckBox.java,v $
- * Date   : $Date: 2010/05/06 13:56:27 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/05/06 14:30:56 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.gwt.client.ui.input;
 
 import org.opencms.gwt.client.I_CmsHasInit;
+import org.opencms.gwt.client.ui.CmsToggleButton;
 import org.opencms.gwt.client.ui.css.I_CmsInputCss;
 import org.opencms.gwt.client.ui.css.I_CmsInputImageBundle;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
@@ -59,7 +60,7 @@ import com.google.gwt.user.client.ui.Label;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 8.0.0
  */
@@ -153,14 +154,6 @@ public class CmsCheckBox extends Composite implements HasClickHandlers, I_CmsFor
     public HandlerRegistration addClickHandler(ClickHandler handler) {
 
         return addDomHandler(handler, ClickEvent.getType());
-    }
-
-    /**
-     * Simulates a click by the user programatically.<p>
-     */
-    public void click() {
-
-        m_button.onClick();
     }
 
     /**
