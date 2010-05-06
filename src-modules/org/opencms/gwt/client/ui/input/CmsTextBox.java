@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsTextBox.java,v $
- * Date   : $Date: 2010/04/15 13:53:28 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/05/06 09:51:37 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,9 +31,14 @@
 
 package org.opencms.gwt.client.ui.input;
 
+import org.opencms.gwt.client.I_CmsHasInit;
 import org.opencms.gwt.client.ui.css.I_CmsInputCss;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
+import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
+
+import java.util.Map;
 
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -44,15 +49,18 @@ import com.google.gwt.user.client.ui.TextBox;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  * 
  */
-public class CmsTextBox extends Composite implements I_CmsFormWidget {
+public class CmsTextBox extends Composite implements I_CmsFormWidget, I_CmsHasInit {
 
     /** The CSS bundle used for this widget. */
     public static final I_CmsInputCss CSS = I_CmsInputLayoutBundle.INSTANCE.inputCss();
+
+    /** The widget type identifier for this widget. */
+    public static final String WIDGET_TYPE = "string";
 
     /** Default pseudo-padding for text boxes. */
     private static final int DEFAULT_PADDING = 4;
@@ -89,6 +97,21 @@ public class CmsTextBox extends Composite implements I_CmsFormWidget {
     }
 
     /**
+     * Initializes this class.<p>
+     */
+    public static void initClass() {
+
+        // registers a factory for creating new instances of this widget
+        CmsWidgetFactoryRegistry.instance().registerFactory(WIDGET_TYPE, new I_CmsFormWidgetFactory() {
+
+            public I_CmsFormWidget createWidget(Map<String, String> widgetParams) {
+
+                return new CmsTextBox();
+            }
+        });
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getFieldType()
      */
     public FieldType getFieldType() {
@@ -101,7 +124,19 @@ public class CmsTextBox extends Composite implements I_CmsFormWidget {
      */
     public Object getFormValue() {
 
-        return m_textbox.getText();
+        String result = m_textbox.getText();
+        if (result.equals("")) {
+            result = null;
+        }
+        return result;
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getFormValueAsString()
+     */
+    public String getFormValueAsString() {
+
+        return (String)getFormValue();
     }
 
     /**
@@ -147,6 +182,15 @@ public class CmsTextBox extends Composite implements I_CmsFormWidget {
             String strValue = (String)value;
             setText(strValue);
         }
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setFormValueAsString(java.lang.String)
+     */
+    public void setFormValueAsString(String newValue) {
+
+        setFormValue(newValue);
+
     }
 
     /**

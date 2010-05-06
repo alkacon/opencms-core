@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsSelectBox.java,v $
- * Date   : $Date: 2010/05/06 08:16:58 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2010/05/06 09:51:37 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,12 +31,16 @@
 
 package org.opencms.gwt.client.ui.input;
 
+import org.opencms.gwt.client.I_CmsHasInit;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsTruncable;
 import org.opencms.gwt.client.ui.css.I_CmsInputCss;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
+import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
+import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsPair;
 import org.opencms.gwt.client.util.CmsStyleVariable;
 
@@ -78,12 +82,13 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 8.0.0
  * 
  */
-public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
+public class CmsSelectBox extends Composite
+implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, I_CmsTruncable {
 
     /**
      * The UI Binder interface for this widget.<p>
@@ -166,6 +171,9 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
 
     /** The UiBinder instance used for this widget. */
     private static I_CmsSelectBoxUiBinder uiBinder = GWT.create(I_CmsSelectBoxUiBinder.class);
+
+    /** The widget type identifier. */
+    private static final String WIDGET_TYPE = "select";
 
     /** Error widget. */
     @UiField
@@ -274,6 +282,35 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
     }
 
     /**
+     * Constructs a new select box from a map.<p>
+     * 
+     * The keys of the map are the values of the select options, and the values of the map are the labels to be displayed
+     * for each option.
+     * 
+     * @param items the map of select options 
+     */
+    public CmsSelectBox(Map<String, String> items) {
+
+        this();
+        setItems(items);
+    }
+
+    /**
+     * Initializes this class.<p>
+     */
+    public static void initClass() {
+
+        // registers a factory for creating new instances of this widget
+        CmsWidgetFactoryRegistry.instance().registerFactory(WIDGET_TYPE, new I_CmsFormWidgetFactory() {
+
+            public I_CmsFormWidget createWidget(Map<String, String> widgetParams) {
+
+                return new CmsSelectBox(widgetParams);
+            }
+        });
+    }
+
+    /**
      * Positions an element in the DOM relative to another element.<p>
      * 
      * @param elem the element to position
@@ -281,17 +318,17 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
      * @param dx the x offset relative to the reference element
      * @param dy the y offset relative to the reference element 
      */
-    private static void positionElement(Element elem, Element referenceElement, int dx, int dy) {
+    private static void positionElement(Element elem, Element referenceElement, double dx, double dy) {
 
         Style style = elem.getStyle();
         style.setLeft(0, Unit.PX);
         style.setTop(0, Unit.PX);
-        int myX = elem.getAbsoluteLeft();
-        int myY = elem.getAbsoluteTop();
-        int refX = referenceElement.getAbsoluteLeft();
-        int refY = referenceElement.getAbsoluteTop();
-        int newX = refX - myX + dx;
-        int newY = refY - myY + dy;
+        double myX = elem.getAbsoluteLeft();
+        double myY = elem.getAbsoluteTop();
+        double refX = referenceElement.getAbsoluteLeft();
+        double refY = referenceElement.getAbsoluteTop();
+        double newX = refX - myX + dx;
+        double newY = refY - myY + dy;
         style.setLeft(newX, Unit.PX);
         style.setTop(newY, Unit.PX);
     }
@@ -362,6 +399,14 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
     }
 
     /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getFormValueAsString()
+     */
+    public String getFormValueAsString() {
+
+        return (String)getFormValue();
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#reset()
      */
     public void reset() {
@@ -415,6 +460,14 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
     }
 
     /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setFormValueAsString(java.lang.String)
+     */
+    public void setFormValueAsString(String formValue) {
+
+        setFormValue(formValue);
+    }
+
+    /**
      * Sets the items as key-value pairs.<p>
      * 
      * The first component of each pair is the option value, the second is the text to be displayed for the option value.<p>
@@ -432,8 +485,23 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.I_CmsTruncable#truncate(java.lang.String, int)
+     * Sets the items using a map from option values to label texts.<p>
+     * 
+     * @param items the map containing the select options
      */
+    public void setItems(Map<String, String> items) {
+
+        m_valueLabels.clear();
+        m_selector.clear();
+        m_selectedValue = null;
+        for (Map.Entry<String, String> entry : items.entrySet()) {
+            addOption(entry.getKey(), entry.getValue());
+        }
+    }
+
+    /**
+    * @see org.opencms.gwt.client.ui.I_CmsTruncable#truncate(java.lang.String, int)
+    */
     public void truncate(String textMetricsPrefix, int widgetWidth) {
 
         m_openerLabel.truncate(textMetricsPrefix + TM_OPENER_LABEL, widgetWidth);
@@ -490,9 +558,17 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
             return;
         }
         m_openClose.setDown(true);
-        m_popup.setWidth(2 /* left/right border */+ m_opener.getElement().getClientWidth() + "px");
+        Element openerElement = m_opener.getElement();
+        double borderLeft = CmsDomUtil.getCurrentStyleFloat(openerElement, CmsDomUtil.Style.borderLeftWidth);
+        double borderRight = CmsDomUtil.getCurrentStyleFloat(openerElement, CmsDomUtil.Style.borderRightWidth);
+        m_popup.setWidth(borderLeft
+            + borderRight
+            + CmsDomUtil.getCurrentStyleFloat(openerElement, CmsDomUtil.Style.width)
+            + "px");
         m_popup.show();
-        positionElement(m_popup.getElement(), m_panel.getElement(), 0, m_opener.getElement().getClientHeight());
+        positionElement(m_popup.getElement(), m_panel.getElement(), 1, CmsDomUtil.getCurrentStyleFloat(
+            m_opener.getElement(),
+            CmsDomUtil.Style.height));
         m_selectBoxState.setValue(I_CmsLayoutBundle.INSTANCE.generalCss().cornerTop());
         // m_selectBoxState.setValue(CSS.selectBoxOpen());
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsRadioButtonGroup.java,v $
- * Date   : $Date: 2010/04/15 13:53:28 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/05/06 09:51:37 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,10 +31,14 @@
 
 package org.opencms.gwt.client.ui.input;
 
+import org.opencms.gwt.client.I_CmsHasInit;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
+import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
 import org.opencms.gwt.client.util.CmsPair;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,12 +61,16 @@ import com.google.gwt.user.client.ui.Panel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 8.0.0
  * 
  */
-public class CmsRadioButtonGroup extends Composite implements I_CmsFormWidget, HasValueChangeHandlers<String> {
+public class CmsRadioButtonGroup extends Composite
+implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsHasInit {
+
+    /** The widget type identifier. */
+    public static final String WIDGET_TYPE = "radio";
 
     /** A collection of event handlers for this widget. */
     HandlerManager m_handlers = new HandlerManager(null);
@@ -91,28 +99,40 @@ public class CmsRadioButtonGroup extends Composite implements I_CmsFormWidget, H
      */
     public CmsRadioButtonGroup(List<CmsPair<String, String>> items) {
 
-        m_panel.add(m_table);
-        m_panel.add(m_error);
-        m_radioButtons = new HashMap<String, CmsRadioButton>();
-        int i = 0;
+        init(items);
+    }
 
-        for (CmsPair<String, String> pair : items) {
-            final CmsRadioButton button = new CmsRadioButton(pair.getFirst());
-            m_radioButtons.put(pair.getFirst(), button);
-            button.addClickHandler(new ClickHandler() {
+    /**
+     * Creates a new instance from a map of strings.<p>
+     * 
+     * The keys of the map are used as the values of the radio buttons, and the values of the map are used as labels 
+     * for the radio buttons.
+     *  
+     * @param items the string map containing the select options 
+     */
+    public CmsRadioButtonGroup(Map<String, String> items) {
 
-                public void onClick(ClickEvent e) {
-
-                    changeSelectedItem(button.getName());
-                }
-            });
-            m_table.setWidget(i, 0, button);
-            m_table.setText(i, 1, pair.getSecond());
-            i += 1;
+        List<CmsPair<String, String>> pairs = new ArrayList<CmsPair<String, String>>();
+        for (Map.Entry<String, String> entry : items.entrySet()) {
+            pairs.add(new CmsPair<String, String>(entry.getKey(), entry.getValue()));
         }
-        initWidget(m_panel);
-        m_panel.setStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().radioButtonGroup());
-        m_panel.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().textMedium());
+        init(pairs);
+
+    }
+
+    /**
+     * Initializes this class.<p>
+     */
+    public static void initClass() {
+
+        // registers a factory for creating new instances of this widget
+        CmsWidgetFactoryRegistry.instance().registerFactory(WIDGET_TYPE, new I_CmsFormWidgetFactory() {
+
+            public I_CmsFormWidget createWidget(Map<String, String> widgetParams) {
+
+                return new CmsRadioButtonGroup(widgetParams);
+            }
+        });
     }
 
     /**
@@ -160,6 +180,14 @@ public class CmsRadioButtonGroup extends Composite implements I_CmsFormWidget, H
     }
 
     /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getFormValueAsString()
+     */
+    public String getFormValueAsString() {
+
+        return (String)getFormValue();
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#reset()
      */
     public void reset() {
@@ -203,6 +231,45 @@ public class CmsRadioButtonGroup extends Composite implements I_CmsFormWidget, H
                 changeSelectedItem(strValue);
             }
         }
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setFormValueAsString(java.lang.String)
+     */
+    public void setFormValueAsString(String formValue) {
+
+        setFormValue(formValue);
+    }
+
+    /**
+     * Internal method for initializing the widget with a list of select options.<p>
+     * 
+     * @param items the list of select options 
+     */
+    protected void init(List<CmsPair<String, String>> items) {
+
+        m_panel.add(m_table);
+        m_panel.add(m_error);
+        m_radioButtons = new HashMap<String, CmsRadioButton>();
+        int i = 0;
+
+        for (CmsPair<String, String> pair : items) {
+            final CmsRadioButton button = new CmsRadioButton(pair.getFirst());
+            m_radioButtons.put(pair.getFirst(), button);
+            button.addClickHandler(new ClickHandler() {
+
+                public void onClick(ClickEvent e) {
+
+                    changeSelectedItem(button.getName());
+                }
+            });
+            m_table.setWidget(i, 0, button);
+            m_table.setText(i, 1, pair.getSecond());
+            i += 1;
+        }
+        initWidget(m_panel);
+        m_panel.setStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().radioButtonGroup());
+        m_panel.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().textMedium());
     }
 
     /**

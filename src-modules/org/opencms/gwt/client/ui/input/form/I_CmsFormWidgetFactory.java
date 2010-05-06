@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/I_CmsValidator.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/form/Attic/I_CmsFormWidgetFactory.java,v $
  * Date   : $Date: 2010/05/06 09:51:37 $
- * Version: $Revision: 1.3 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,27 +29,32 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.gwt.client.ui.input;
+package org.opencms.gwt.client.ui.input.form;
+
+import org.opencms.gwt.client.ui.input.I_CmsFormWidget;
+
+import java.util.Map;
 
 /**
- * The interface for form widget validators.<p>
+ * This is an interface for classes which can create a single widget type if given 
+ * a map of string parameters.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
+ * 
  */
-public interface I_CmsValidator {
+public interface I_CmsFormWidgetFactory {
 
     /**
-     * Validates a form field synchronously, and returns the result.<p>
+     * Creates a new widget based on a map of parameters.<p>
      * 
-     * Implementations of this method are also responsible for displaying error messages.
+     * @param widgetParams the configuration parameters for the widget 
      * 
-     * @param field the field which should be validated 
-     * 
-     * @return true if the validation was successful
+     * @return the newly created widget 
      */
-    boolean validate(I_CmsFormField field);
+    I_CmsFormWidget createWidget(Map<String, String> widgetParams);
+
 }

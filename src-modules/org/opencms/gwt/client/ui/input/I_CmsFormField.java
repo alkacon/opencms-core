@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/I_CmsFormField.java,v $
- * Date   : $Date: 2010/03/09 09:03:53 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/05/06 09:51:37 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,12 +39,19 @@ package org.opencms.gwt.client.ui.input;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  * 
  */
 public interface I_CmsFormField {
+
+    /**
+     * Returns the default value for the form field.<p>
+     * 
+     * @return the default value for the form field 
+     */
+    Object getDefaultValue();
 
     /**
      * The description of the form field, or null if there is no description.<p>
@@ -93,7 +100,7 @@ public interface I_CmsFormField {
     /**
      * Validates this form field and informs the validation handler if it failed.<p>
      * 
-     * @param handler the validation handler
+     * @return true if the validation has succeeded 
      */
-    void validate(I_CmsValidationHandler handler);
+    boolean validate();
 }

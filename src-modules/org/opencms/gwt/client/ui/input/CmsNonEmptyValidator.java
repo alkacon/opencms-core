@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/I_CmsValidator.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsNonEmptyValidator.java,v $
  * Date   : $Date: 2010/05/06 09:51:37 $
- * Version: $Revision: 1.3 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,24 +32,41 @@
 package org.opencms.gwt.client.ui.input;
 
 /**
- * The interface for form widget validators.<p>
+ * A validator that checks whether a field is not empty.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  */
-public interface I_CmsValidator {
+public class CmsNonEmptyValidator implements I_CmsValidator {
+
+    /** The error message to display if the validation fails. */
+    private String m_errorMessage;
+
+    /** 
+     * Constructs a new validator with a given error message.<p>
+     * 
+     * @param errorMessage the error message to use when the validated field is empty 
+     */
+    public CmsNonEmptyValidator(String errorMessage) {
+
+        m_errorMessage = errorMessage;
+    }
 
     /**
-     * Validates a form field synchronously, and returns the result.<p>
-     * 
-     * Implementations of this method are also responsible for displaying error messages.
-     * 
-     * @param field the field which should be validated 
-     * 
-     * @return true if the validation was successful
+     * @see org.opencms.gwt.client.ui.input.I_CmsValidator#validate(org.opencms.gwt.client.ui.input.I_CmsFormField)
      */
-    boolean validate(I_CmsFormField field);
+    public boolean validate(I_CmsFormField field) {
+
+        String value = field.getWidget().getFormValueAsString();
+        if ((value == null) || value.trim().equals("")) {
+            field.getWidget().setErrorMessage(m_errorMessage);
+            return false;
+        } else {
+            field.getWidget().setErrorMessage(null);
+            return true;
+        }
+    }
 }

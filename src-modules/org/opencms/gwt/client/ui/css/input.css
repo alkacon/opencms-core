@@ -94,10 +94,14 @@
     width: 12px;
 }
 
-.radioButtonGroup *, .multiCheckBox *, .textBoxPanel * {
+.radioButtonGroup *, .multiCheckBox *, .textBoxPanel *, .formLabel, .formWidgetContainer * {
 	font-size: inherit;
 	font-family: inherit;
 	color: value("constants.color");
+}
+
+.formLabel {
+	font-weight: bold;
 }
 
 .selectBoxRoot *, .selectBoxSelector * {
@@ -176,3 +180,22 @@
 .alignBottom {
 	vertical-align: bottom;
 }
+
+.formRow {
+	margin-bottom: 2px;
+	margin-top: 2px;
+}
+
+.formLabel {
+	width: 30%;
+	overflow: hidden;
+	vertical-align: top;
+	margin-top: 2px;
+}
+
+
+.formWidgetContainer {
+	width: 68%;
+}
+
+

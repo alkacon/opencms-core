@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsTextArea.java,v $
- * Date   : $Date: 2010/04/15 13:53:28 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/05/06 09:51:37 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,9 +31,14 @@
 
 package org.opencms.gwt.client.ui.input;
 
+import org.opencms.gwt.client.I_CmsHasInit;
 import org.opencms.gwt.client.ui.css.I_CmsInputCss;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
+import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
+
+import java.util.Map;
 
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -45,18 +50,21 @@ import com.google.gwt.user.client.ui.TextArea;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 8.0.0
  * 
  */
-public class CmsTextArea extends Composite implements I_CmsFormWidget {
+public class CmsTextArea extends Composite implements I_CmsFormWidget, I_CmsHasInit {
 
     /** The CSS bundle for this widget. */
     private static I_CmsInputCss CSS = I_CmsInputLayoutBundle.INSTANCE.inputCss();
 
     /** Default padding for text areas. */
     private static final int DEFAULT_PADDING = 4;
+
+    /** The widget type identifier for this widget. */
+    private static final String WIDGET_TYPE = "textarea";
 
     /** The error display for this widget. */
     private CmsErrorWidget m_error = new CmsErrorWidget();
@@ -67,6 +75,7 @@ public class CmsTextArea extends Composite implements I_CmsFormWidget {
     /** The internal text area widet used by this widget. */
     private TextArea m_textArea = new TextArea();
 
+    /** The container for the text area. */
     private CmsPaddedPanel m_textAreaContainer = new CmsPaddedPanel(DEFAULT_PADDING);
 
     /**
@@ -85,6 +94,21 @@ public class CmsTextArea extends Composite implements I_CmsFormWidget {
     }
 
     /**
+     * Initializes this class.<p>
+     */
+    public static void initClass() {
+
+        // registers a factory for creating new instances of this widget
+        CmsWidgetFactoryRegistry.instance().registerFactory(WIDGET_TYPE, new I_CmsFormWidgetFactory() {
+
+            public I_CmsFormWidget createWidget(Map<String, String> widgetParams) {
+
+                return new CmsTextArea();
+            }
+        });
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getFieldType()
      */
     public FieldType getFieldType() {
@@ -98,6 +122,14 @@ public class CmsTextArea extends Composite implements I_CmsFormWidget {
     public Object getFormValue() {
 
         return m_textArea.getText();
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getFormValueAsString()
+     */
+    public String getFormValueAsString() {
+
+        return (String)getFormValue();
     }
 
     /**
@@ -143,6 +175,14 @@ public class CmsTextArea extends Composite implements I_CmsFormWidget {
             String strValue = (String)value;
             m_textArea.setText(strValue);
         }
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setFormValueAsString(java.lang.String)
+     */
+    public void setFormValueAsString(String newValue) {
+
+        setFormValue(newValue);
     }
 
     /**

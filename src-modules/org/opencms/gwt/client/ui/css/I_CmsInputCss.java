@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsInputCss.java,v $
- * Date   : $Date: 2010/04/30 09:35:10 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/05/06 09:51:37 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import com.google.gwt.resources.client.CssResource;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 8.0.0
  */
@@ -85,6 +85,27 @@ public interface I_CmsInputCss extends CssResource {
      * @return the css class
      */
     String error();
+
+    /**
+     * Css class reader.<p>
+     * 
+     * @return the css class
+     */
+    String formLabel();
+
+    /**
+     * Css class reader.<p>
+     * 
+     * @return the css class
+     */
+    String formRow();
+
+    /**
+     * Css class reader.<p>
+     * 
+     * @return the css class
+     */
+    String formWidgetContainer();
 
     /**
      * Css class reader.<p>
@@ -161,6 +182,13 @@ public interface I_CmsInputCss extends CssResource {
      * 
      * @return the css class
      */
+    // String textAreaWidget();
+
+    /**
+     * Css class reader.<p>
+     * 
+     * @return the css class
+     */
     String selectIcon();
 
     /**
@@ -169,13 +197,6 @@ public interface I_CmsInputCss extends CssResource {
      * @return the css class
      */
     String selectorPopup();
-
-    /**
-     * Css class reader.<p>
-     * 
-     * @return the css class
-     */
-    // String textAreaWidget();
 
     /** 
      * Css class reader.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsRegexValidator.java,v $
- * Date   : $Date: 2010/03/09 09:03:53 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/05/06 09:51:37 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,7 @@ package org.opencms.gwt.client.ui.input;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  */
@@ -86,16 +86,22 @@ public class CmsRegexValidator implements I_CmsValidator {
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsValidator#validate(org.opencms.gwt.client.ui.input.I_CmsFormWidget, org.opencms.gwt.client.ui.input.I_CmsValidationHandler)
+     * @see org.opencms.gwt.client.ui.input.I_CmsValidator#validate(org.opencms.gwt.client.ui.input.I_CmsFormField)
      */
-    public void validate(I_CmsFormWidget widget, I_CmsValidationHandler handler) {
+    public boolean validate(I_CmsFormField field) {
 
+        I_CmsFormWidget widget = field.getWidget();
         if (widget.getFieldType() == I_CmsFormWidget.FieldType.STRING) {
             String value = (String)widget.getFormValue();
             if (!matchRuleRegex(m_regex, value)) {
                 widget.setErrorMessage(m_message);
-                handler.validationFailed();
+                return false;
+            } else {
+                widget.setErrorMessage(null);
+                return true;
             }
+
         }
+        return false;
     }
 }

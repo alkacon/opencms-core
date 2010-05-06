@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/I_CmsFormWidget.java,v $
- * Date   : $Date: 2010/03/09 09:03:53 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/05/06 09:51:37 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,7 @@ package org.opencms.gwt.client.ui.input;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  */
@@ -79,6 +79,13 @@ public interface I_CmsFormWidget {
     Object getFormValue();
 
     /**
+     * Gets the current value of the widget as a string.<p>
+     * 
+     * @return the current value of the widget 
+     */
+    String getFormValueAsString();
+
+    /**
      * Resets the widget to its default state.
      */
     void reset();
@@ -105,5 +112,12 @@ public interface I_CmsFormWidget {
      * @param value the new value 
      */
     void setFormValue(Object value);
+
+    /**
+     * Sets the current value of the widget as a string.<p>
+     * 
+     * @param value the new value of the widget 
+     */
+    void setFormValueAsString(String value);
 
 }

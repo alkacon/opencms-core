@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsMultiCheckBox.java,v $
- * Date   : $Date: 2010/04/15 13:53:28 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/05/06 09:51:37 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,13 +31,18 @@
 
 package org.opencms.gwt.client.ui.input;
 
+import org.opencms.gwt.client.I_CmsHasInit;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
+import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
 import org.opencms.gwt.client.util.CmsPair;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.google.gwt.user.client.ui.Composite;
@@ -50,12 +55,15 @@ import com.google.gwt.user.client.ui.Panel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 8.0.0
  *  
  */
-public class CmsMultiCheckBox extends Composite implements I_CmsFormWidget {
+public class CmsMultiCheckBox extends Composite implements I_CmsFormWidget, I_CmsHasInit {
+
+    /** The type string for this widget. */
+    public static final String WIDGET_TYPE = "multiselect";
 
     /** Error display for this widget. */
     private CmsErrorWidget m_error = new CmsErrorWidget();
@@ -79,20 +87,40 @@ public class CmsMultiCheckBox extends Composite implements I_CmsFormWidget {
     public CmsMultiCheckBox(List<CmsPair<String, String>> items) {
 
         super();
-        m_items = items;
-        m_table = new Grid(items.size(), 2);
-        m_panel.add(m_table);
-        m_panel.add(m_error);
-        initWidget(m_panel);
-        m_panel.setStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().multiCheckBox());
-        m_panel.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().textMedium());
-        int i = 0;
-        for (CmsPair<String, String> pair : items) {
-            String value = pair.getSecond();
-            m_table.setWidget(i, 0, new CmsCheckBox());
-            m_table.setText(i, 1, value);
-            i += 1;
+        init(items);
+    }
+
+    /**
+     * Constructs a new checkbox group from a map from strings to strings.<p>
+     * 
+     * The keys of the map are used as the selection values of the checkboxes, while the value
+     * for a given key in the map is used as the label for the checkbox which is displayed to the user. 
+     * 
+     * @param items the map of checkbox options 
+     */
+    public CmsMultiCheckBox(Map<String, String> items) {
+
+        super();
+        List<CmsPair<String, String>> pairs = new ArrayList<CmsPair<String, String>>();
+        for (Map.Entry<String, String> entry : items.entrySet()) {
+            pairs.add(new CmsPair<String, String>(entry.getKey(), entry.getValue()));
         }
+        init(pairs);
+    }
+
+    /**
+     * Initializes this class.<p>
+     */
+    public static void initClass() {
+
+        // registers a factory for creating new instances of this widget
+        CmsWidgetFactoryRegistry.instance().registerFactory(WIDGET_TYPE, new I_CmsFormWidgetFactory() {
+
+            public I_CmsFormWidget createWidget(Map<String, String> widgetParams) {
+
+                return new CmsMultiCheckBox(widgetParams);
+            }
+        });
     }
 
     /**
@@ -109,6 +137,16 @@ public class CmsMultiCheckBox extends Composite implements I_CmsFormWidget {
     public Object getFormValue() {
 
         return new ArrayList<String>(getSelected());
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getFormValueAsString()
+     */
+    public String getFormValueAsString() {
+
+        List<String> selected = new ArrayList<String>(getSelected());
+        return CmsStringUtil.listAsString(selected, "|");
+
     }
 
     /**
@@ -177,6 +215,39 @@ public class CmsMultiCheckBox extends Composite implements I_CmsFormWidget {
                 checkbox.setChecked(keySet.contains(key));
                 i += 1;
             }
+        }
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setFormValueAsString(java.lang.String)
+     */
+    public void setFormValueAsString(String formValue) {
+
+        List<String> values = CmsStringUtil.splitAsList(formValue, "|");
+        setFormValue(values);
+
+    }
+
+    /**
+     * Initializes the widget with a list of select options.<p>
+     * 
+     * @param items the select options 
+     */
+    protected void init(List<CmsPair<String, String>> items) {
+
+        m_items = items;
+        m_table = new Grid(items.size(), 2);
+        m_panel.add(m_table);
+        m_panel.add(m_error);
+        initWidget(m_panel);
+        m_panel.setStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().multiCheckBox());
+        m_panel.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().textMedium());
+        int i = 0;
+        for (CmsPair<String, String> pair : items) {
+            String value = pair.getSecond();
+            m_table.setWidget(i, 0, new CmsCheckBox());
+            m_table.setText(i, 1, value);
+            i += 1;
         }
     }
 

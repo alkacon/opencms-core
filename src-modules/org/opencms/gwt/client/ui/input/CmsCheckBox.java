@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsCheckBox.java,v $
- * Date   : $Date: 2010/04/28 08:37:52 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/05/06 09:51:37 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,9 +31,14 @@
 
 package org.opencms.gwt.client.ui.input;
 
+import org.opencms.gwt.client.I_CmsHasInit;
 import org.opencms.gwt.client.ui.css.I_CmsInputCss;
 import org.opencms.gwt.client.ui.css.I_CmsInputImageBundle;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
+import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
+import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
+
+import java.util.Map;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -54,11 +59,14 @@ import com.google.gwt.user.client.ui.Label;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 8.0.0
  */
-public class CmsCheckBox extends Composite implements HasClickHandlers, I_CmsFormWidget {
+public class CmsCheckBox extends Composite implements HasClickHandlers, I_CmsFormWidget, I_CmsHasInit {
+
+    /** Type string for this widget. */
+    public static final String WIDGET_TYPE = "checkbox";
 
     /** CSS bundle for this widget. */
     private static final I_CmsInputCss CSS = I_CmsInputLayoutBundle.INSTANCE.inputCss();
@@ -120,6 +128,21 @@ public class CmsCheckBox extends Composite implements HasClickHandlers, I_CmsFor
     }
 
     /**
+     * Initializes this class.<p>
+     */
+    public static void initClass() {
+
+        // registers a factory for creating new instances of this widget
+        CmsWidgetFactoryRegistry.instance().registerFactory(WIDGET_TYPE, new I_CmsFormWidgetFactory() {
+
+            public I_CmsFormWidget createWidget(Map<String, String> widgetParams) {
+
+                return new CmsCheckBox();
+            }
+        });
+    }
+
+    /**
      * Adds a click handler to the checkbox.<p>
      * 
      * @see com.google.gwt.event.dom.client.HasClickHandlers#addClickHandler(com.google.gwt.event.dom.client.ClickHandler)
@@ -151,6 +174,14 @@ public class CmsCheckBox extends Composite implements HasClickHandlers, I_CmsFor
     public Boolean getFormValue() {
 
         return this.isChecked() ? Boolean.TRUE : Boolean.FALSE;
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getFormValueAsString()
+     */
+    public String getFormValueAsString() {
+
+        return "" + isChecked();
     }
 
     /**
@@ -216,8 +247,16 @@ public class CmsCheckBox extends Composite implements HasClickHandlers, I_CmsFor
 
         if (value instanceof Boolean) {
             Boolean boolValue = (Boolean)value;
-            this.setChecked(boolValue.booleanValue());
+            setChecked(boolValue.booleanValue());
         }
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setFormValueAsString(java.lang.String)
+     */
+    public void setFormValueAsString(String value) {
+
+        setChecked(value.equalsIgnoreCase("true") || value.equalsIgnoreCase("checked"));
     }
 
 }

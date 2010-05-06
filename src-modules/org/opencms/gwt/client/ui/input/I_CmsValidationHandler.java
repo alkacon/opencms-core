@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/I_CmsValidationHandler.java,v $
- * Date   : $Date: 2010/03/09 09:03:53 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/05/06 09:51:37 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,11 +32,11 @@
 package org.opencms.gwt.client.ui.input;
 
 /**
- * Interface for notifying an object about a form field validation failure.<p>
+ * Interface for notifying an object about a form validation failure or success.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  * 
@@ -44,8 +44,12 @@ package org.opencms.gwt.client.ui.input;
 public interface I_CmsValidationHandler {
 
     /**
-     * The method that should be called when a validation has failed.<p>
+     * This method is called when a form validation has been completed.<p>
+     * 
+     * The boolean parameter passed to this method indicates whether there have been validation errors or not.
+     * 
+     * @param validationSucceeded if true, there were no validation errors
      */
-    void validationFailed();
+    void onValidationComplete(boolean validationSucceeded);
 
 }
