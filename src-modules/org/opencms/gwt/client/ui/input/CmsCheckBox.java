@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsCheckBox.java,v $
- * Date   : $Date: 2010/05/06 09:51:37 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/05/06 13:56:27 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import com.google.gwt.user.client.ui.Label;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 8.0.0
  */
@@ -135,6 +135,9 @@ public class CmsCheckBox extends Composite implements HasClickHandlers, I_CmsFor
         // registers a factory for creating new instances of this widget
         CmsWidgetFactoryRegistry.instance().registerFactory(WIDGET_TYPE, new I_CmsFormWidgetFactory() {
 
+            /**
+             * @see org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory#createWidget(java.util.Map)
+             */
             public I_CmsFormWidget createWidget(Map<String, String> widgetParams) {
 
                 return new CmsCheckBox();
