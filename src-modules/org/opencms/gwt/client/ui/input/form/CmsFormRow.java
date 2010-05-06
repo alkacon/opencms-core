@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/form/Attic/CmsFormRow.java,v $
- * Date   : $Date: 2010/05/06 09:51:37 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/05/06 14:58:20 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,14 +50,15 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger 
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
 public class CmsFormRow extends Composite {
 
     /** The ui binder interface for this widget. */
-    interface I_CmsFormRowUiBinder extends UiBinder<Widget, CmsFormRow> {
+    protected interface I_CmsFormRowUiBinder extends UiBinder<Widget, CmsFormRow> {
+        // uibinder
     }
 
     /** The CSS bundle used for this widget. */
