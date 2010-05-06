@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsDomUtil.java,v $
- * Date   : $Date: 2010/05/06 09:35:11 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2010/05/06 13:39:00 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import com.google.gwt.user.client.DOM;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 8.0.0
  */
@@ -60,8 +60,99 @@ public final class CmsDomUtil {
      */
     public static enum Attribute {
 
+        /** class. */
+        clazz {
+
+            /**
+             * @see java.lang.Enum#toString()
+             */
+            @Override
+            public String toString() {
+
+                return "class";
+            }
+        },
+
         /** title. */
         title;
+    }
+
+    /**
+     * Helper class to encapsulate an attribute/value pair.<p>
+     */
+    public static class AttributeValue {
+
+        /** The attribute. */
+        private Attribute m_attr;
+
+        /** The attribute value. */
+        private String m_value;
+
+        /**
+         * Constructor.<p>
+         * 
+         * @param attr the attribute
+         */
+        public AttributeValue(Attribute attr) {
+
+            this(attr, null);
+        }
+
+        /**
+         * Constructor.<p>
+         * 
+         * @param attr the attribute
+         * @param value the value
+         */
+        public AttributeValue(Attribute attr, String value) {
+
+            m_attr = attr;
+            m_value = value;
+        }
+
+        /**
+         * Returns the attribute.<p>
+         *
+         * @return the attribute
+         */
+        public Attribute getAttr() {
+
+            return m_attr;
+        }
+
+        /**
+         * Returns the value.<p>
+         *
+         * @return the value
+         */
+        public String getValue() {
+
+            return m_value;
+        }
+
+        /**
+         * Sets the value.<p>
+         *
+         * @param value the value to set
+         */
+        public void setValue(String value) {
+
+            m_value = value;
+        }
+
+        /**
+         * @see java.lang.Object#toString()
+         */
+        @Override
+        public String toString() {
+
+            StringBuffer sb = new StringBuffer();
+            sb.append(m_attr.toString());
+            if (m_value != null) {
+                sb.append("=\"").append(m_value).append("\"");
+            }
+            return sb.toString();
+        }
     }
 
     /**
@@ -292,6 +383,9 @@ public final class CmsDomUtil {
         script,
 
         /** HTML Tag. */
+        span,
+
+        /** HTML Tag. */
         ul;
     }
 
@@ -370,12 +464,13 @@ public final class CmsDomUtil {
      * 
      * @param tag the tag to use
      * @param text the text to enclose
+     * @param attrs the optional tag attributes
      * 
      * @return HTML code
      */
-    public static String enclose(Tag tag, String text) {
+    public static String enclose(Tag tag, String text, AttributeValue... attrs) {
 
-        return open(tag) + text + close(tag);
+        return open(tag, attrs) + text + close(tag);
     }
 
     /**
@@ -392,7 +487,8 @@ public final class CmsDomUtil {
     }
 
     /**
-     * Returns the given element or it's closest ancestor with the given class.
+     * Returns the given element or it's closest ancestor with the given class.<p>
+     * 
      * Returns <code>null</code> if no appropriate element was found.<p>
      * 
      * @param element the element
@@ -412,7 +508,8 @@ public final class CmsDomUtil {
     }
 
     /**
-     * Returns the given element or it's closest ancestor with the given tag name.
+     * Returns the given element or it's closest ancestor with the given tag name.<p>
+     * 
      * Returns <code>null</code> if no appropriate element was found.<p>
      * 
      * @param element the element
@@ -432,7 +529,8 @@ public final class CmsDomUtil {
     }
 
     /**
-     * Returns the given element or it's closest ancestor with the given tag and class.
+     * Returns the given element or it's closest ancestor with the given tag and class.<p>
+     * 
      * Returns <code>null</code> if no appropriate element was found.<p>
      * 
      * @param element the element
@@ -615,12 +713,19 @@ public final class CmsDomUtil {
      * Generates an opening tag.<p>
      * 
      * @param tag the tag to use
+     * @param attrs the optional tag attributes
      * 
      * @return HTML code
      */
-    public static String open(Tag tag) {
+    public static String open(Tag tag, AttributeValue... attrs) {
 
-        return "<" + tag.name() + ">";
+        StringBuffer sb = new StringBuffer();
+        sb.append("<").append(tag.name());
+        for (AttributeValue attr : attrs) {
+            sb.append(" ").append(attr.toString());
+        }
+        sb.append(">");
+        return sb.toString();
     }
 
     /**
