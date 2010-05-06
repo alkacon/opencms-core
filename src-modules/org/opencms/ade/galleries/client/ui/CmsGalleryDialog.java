@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsGalleryDialog.java,v $
- * Date   : $Date: 2010/05/05 09:20:00 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/05/06 06:32:27 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,11 +55,14 @@ import com.google.gwt.user.client.ui.Composite;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.
  */
 public class CmsGalleryDialog extends Composite implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer> {
+
+    /** The initial dialog width. */
+    public static final int DIALOG_WIDTH = 620;
 
     /** The reference to the drag handler. */
     private I_CmsDragHandler<?, ?> m_dragHandler;
@@ -120,6 +123,7 @@ public class CmsGalleryDialog extends Composite implements BeforeSelectionHandle
         m_tabbedPanel = new CmsTabbedPanel<A_CmsTab>(CmsTabLayout.standard, false);
 
         // All composites must call initWidget() in their constructors.
+        // TODO: BUT there should be only one constructor with logic, the others should just delegate
         initWidget(m_tabbedPanel);
     }
 

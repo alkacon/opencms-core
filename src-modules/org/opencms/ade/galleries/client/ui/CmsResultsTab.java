@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsResultsTab.java,v $
- * Date   : $Date: 2010/05/05 09:20:00 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/05/06 06:32:27 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -66,11 +66,17 @@ import com.google.gwt.user.client.ui.Image;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.
  */
 public class CmsResultsTab extends A_CmsTab implements ClickHandler, ValueChangeHandler<String> {
+
+    /** Text metrics key. */
+    private static final String TM_RESULT_SORT = "ResultSort";
+
+    /** Text metrics key. */
+    private static final String TM_RESULT_TAB = "ResultTab";
 
     /** Button to remove the selected categories. */
     private CmsPushButton m_closeCategoriesBtn;
@@ -102,6 +108,7 @@ public class CmsResultsTab extends A_CmsTab implements ClickHandler, ValueChange
 
         super();
         m_dragHandler = handler;
+        m_scrollList.truncate(TM_RESULT_TAB, CmsGalleryDialog.DIALOG_WIDTH);
     }
 
     /**
@@ -124,6 +131,7 @@ public class CmsResultsTab extends A_CmsTab implements ClickHandler, ValueChange
         m_sortSelectBox.addValueChangeHandler(this);
         // TODO: use the common way to set the width of the select box
         m_sortSelectBox.setWidth("200px");
+        m_sortSelectBox.truncate(TM_RESULT_SORT, 200);
         addWidgetToOptions(m_sortSelectBox);
 
         ArrayList<CmsResultsListInfoBean> list = searchObj.getResults();

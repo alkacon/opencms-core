@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsSearchTab.java,v $
- * Date   : $Date: 2010/04/28 10:25:47 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/05/06 06:32:27 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,11 +36,14 @@ package org.opencms.ade.galleries.client.ui;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.
  */
 public class CmsSearchTab extends A_CmsTab {
+
+    /** Text metrics key. */
+    private static final String TM_SEARCH_TAB = "SearchTab";
 
     /**
      * Constructor.<p>
@@ -48,6 +51,7 @@ public class CmsSearchTab extends A_CmsTab {
     public CmsSearchTab() {
 
         super();
+        m_scrollList.truncate(TM_SEARCH_TAB, CmsGalleryDialog.DIALOG_WIDTH);
     }
 
     /**

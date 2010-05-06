@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsGalleriesTab.java,v $
- * Date   : $Date: 2010/04/30 10:17:38 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/05/06 06:32:27 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import com.google.gwt.user.client.ui.Image;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.
  */
@@ -104,6 +104,12 @@ public class CmsGalleriesTab extends A_CmsTab implements ValueChangeHandler<Stri
         }
     }
 
+    /** Text metrics key. */
+    private static final String TM_GALLERY_SORT = "GallerySort";
+
+    /** Text metrics key. */
+    private static final String TM_GALLERY_TAB = "GalleryTab";
+
     /** The reference to the handler of this tab. */
     protected CmsGalleriesTabHandler m_tabHandler;
 
@@ -116,6 +122,7 @@ public class CmsGalleriesTab extends A_CmsTab implements ValueChangeHandler<Stri
     public CmsGalleriesTab() {
 
         super();
+        m_scrollList.truncate(TM_GALLERY_TAB, CmsGalleryDialog.DIALOG_WIDTH);
     }
 
     /**
@@ -130,6 +137,7 @@ public class CmsGalleriesTab extends A_CmsTab implements ValueChangeHandler<Stri
         m_sortSelectBox.addValueChangeHandler(this);
         // TODO: use the common way to set the width of the select box
         m_sortSelectBox.setWidth("200px");
+        m_sortSelectBox.truncate(TM_GALLERY_SORT, 200);
         addWidgetToOptions(m_sortSelectBox);
         for (CmsGalleriesListInfoBean galleryItem : dialogBean.getGalleries()) {
             CmsListItemWidget listItemWidget = new CmsListItemWidget(galleryItem);
