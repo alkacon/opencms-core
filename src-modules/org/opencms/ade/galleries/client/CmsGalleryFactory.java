@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleryFactory.java,v $
- * Date   : $Date: 2010/04/28 12:56:14 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/05/06 06:13:38 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,9 +32,7 @@
 package org.opencms.ade.galleries.client;
 
 import org.opencms.ade.galleries.client.ui.CmsGalleryDialog;
-import org.opencms.gwt.client.draganddrop.I_CmsDragElement;
 import org.opencms.gwt.client.draganddrop.I_CmsDragHandler;
-import org.opencms.gwt.client.draganddrop.I_CmsDragTarget;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
@@ -44,7 +42,7 @@ import java.util.ArrayList;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.
  */
@@ -85,8 +83,7 @@ public final class CmsGalleryFactory {
      * @param handler the reference to the drag handler
      * @return gallery dialog
      */
-    public static CmsGalleryDialog createDialog(
-        I_CmsDragHandler<? extends I_CmsDragElement, ? extends I_CmsDragTarget> handler) {
+    public static CmsGalleryDialog createDialog(I_CmsDragHandler<?, ?> handler) {
 
         CmsGalleryController controller = new CmsGalleryController();
         CmsGalleryDialog galleryDialog = new CmsGalleryDialog(handler);
