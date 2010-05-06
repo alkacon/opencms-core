@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/Attic/I_CmsHasInit.java,v $
- * Date   : $Date: 2010/05/06 09:38:46 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/05/06 13:10:36 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,18 +31,16 @@
 
 package org.opencms.gwt.client;
 
-
 /**
  * The marker interface for classes which should be initialized via {@link I_CmsClassInitializer}.
  * 
- * @see org.opencms.gwt.rebind.CmsClassInitGenerator
- * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  * 
+ * @see org.opencms.gwt.rebind.CmsClassInitGenerator
  */
 public interface I_CmsHasInit {
 
