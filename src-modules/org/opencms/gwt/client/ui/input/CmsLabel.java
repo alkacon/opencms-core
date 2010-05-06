@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsLabel.java,v $
- * Date   : $Date: 2010/05/06 07:21:11 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/05/06 14:47:38 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,7 +34,6 @@ package org.opencms.gwt.client.ui.input;
 import org.opencms.gwt.client.ui.I_CmsTruncable;
 import org.opencms.gwt.client.ui.css.I_CmsInputCss;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
-import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsTextMetrics;
 import org.opencms.util.CmsStringUtil;
@@ -55,7 +54,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -182,17 +181,10 @@ public class CmsLabel extends Widget implements HasHorizontalAlignment, HasText,
         int textWidth = tm.getWidth(text);
         tm.release();
 
-        CmsDebugLog log = CmsDebugLog.getInstance();
-
         if (labelWidth >= textWidth) {
             // nothing to do
             return;
         }
-
-        log.printLine("truncate");
-        log.printLine("text: " + text);
-        log.printLine("elemWidth: " + labelWidth);
-        log.printLine("textWidth: " + textWidth);
 
         // if the text does not have enough space, fix it
         int maxChars = (int)((float)labelWidth / (float)textWidth * text.length());
