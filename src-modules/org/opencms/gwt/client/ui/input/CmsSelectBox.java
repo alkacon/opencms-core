@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsSelectBox.java,v $
- * Date   : $Date: 2010/05/05 14:33:31 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2010/05/06 06:32:14 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -78,7 +78,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 8.0.0
  * 
@@ -435,9 +435,10 @@ public class CmsSelectBox extends Composite implements I_CmsFormWidget, HasValue
     public void truncate(String textMetricsPrefix, int widgetWidth) {
 
         m_openerLabel.truncate(textMetricsPrefix + TM_OPENER_LABEL, widgetWidth);
+        int labelWidth = widgetWidth - 2 - 5; // 2px border left/right + 5px left margin
         for (Widget widget : m_selector) {
-            if (widget instanceof CmsLabel) {
-                ((CmsLabel)widget).truncate(textMetricsPrefix + TM_OPTION, widgetWidth - 2 - 5); // 2px border left/right + 5px left margin
+            if (widget instanceof I_CmsTruncable) {
+                ((I_CmsTruncable)widget).truncate(textMetricsPrefix + TM_OPTION, labelWidth);
             }
         }
     }

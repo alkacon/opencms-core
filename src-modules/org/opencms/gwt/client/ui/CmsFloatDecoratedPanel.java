@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsFloatDecoratedPanel.java,v $
- * Date   : $Date: 2010/05/05 14:33:31 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/05/06 06:32:14 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 8.0.0
  */
@@ -140,8 +140,8 @@ public class CmsFloatDecoratedPanel extends Composite implements I_CmsTruncable 
         int width = widgetWidth;
         width -= (!isAttached() ? 30 * m_floatBox.getWidgetCount() : getFloatBoxWidth());
         for (Widget widget : m_primary) {
-            if (widget instanceof CmsListItemWidget) {
-                ((CmsListItemWidget)widget).truncate(textMetricsPrefix, width);
+            if (widget instanceof I_CmsTruncable) {
+                ((I_CmsTruncable)widget).truncate(textMetricsPrefix, width);
             }
         }
     }

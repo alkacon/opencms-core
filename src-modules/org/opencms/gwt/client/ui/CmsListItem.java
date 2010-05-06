@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItem.java,v $
- * Date   : $Date: 2010/05/05 14:33:31 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/05/06 06:32:14 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 8.0.0
  */
@@ -118,17 +118,15 @@ public class CmsListItem extends Composite implements I_CmsTruncable {
      */
     public void truncate(String textMetricsPrefix, int widgetWidth) {
 
-        int width = widgetWidth - 4; // just to be on the safe side
         for (Widget widget : m_panel) {
-            if (widget instanceof CmsListItemWidget) {
-                ((CmsListItemWidget)widget).truncate(textMetricsPrefix, width);
+            if (!(widget instanceof I_CmsTruncable)) {
+                continue;
             }
+            int width = widgetWidth - 4; // just to be on the safe side
             if (widget instanceof CmsList<?>) {
-                ((CmsList<?>)widget).truncate(textMetricsPrefix, width - 25); // 25px indentation
+                width -= 25; // 25px left margin
             }
-            if (widget instanceof CmsFloatDecoratedPanel) {
-                ((CmsFloatDecoratedPanel)widget).truncate(textMetricsPrefix, width);
-            }
+            ((I_CmsTruncable)widget).truncate(textMetricsPrefix, width);
         }
     }
 
