@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsResultsTabHandler.java,v $
- * Date   : $Date: 2010/04/29 07:37:51 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/05/06 09:27:20 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ package org.opencms.ade.galleries.client;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  */
@@ -85,5 +85,15 @@ public class CmsResultsTabHandler extends A_CmsTabHandler {
     public void onSelection() {
 
         m_controller.updateResultsTab();
+    }
+
+    /**
+     * Will be triggered when the user changes the sort parameter.<p>
+     * 
+     * @param sortParams the sort parameters
+     */
+    public void onResultsSort(String sortParams) {
+
+        m_controller.sortResults(sortParams);
     }
 }

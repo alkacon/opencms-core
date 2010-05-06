@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/tree/Attic/CmsTreeItem.java,v $
- * Date   : $Date: 2010/05/05 14:33:31 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/05/06 09:27:20 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Georg Westenberger
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 8.0.0
  */
@@ -81,6 +81,9 @@ public class CmsTreeItem extends CmsSimpleListItem {
 
     /** The style variable controlling this tree item's leaf/non-leaf state. */
     private CmsStyleVariable m_leafStyleVar;
+
+    /** The item parent. */
+    private CmsTreeItem m_parentItem;
 
     /** The style variable controlling this tree item's open/closed state. */
     private CmsStyleVariable m_styleVar;
@@ -136,6 +139,7 @@ public class CmsTreeItem extends CmsSimpleListItem {
     public void addChild(CmsTreeItem item) {
 
         m_children.addItem(item);
+        item.setParentItem(this);
         item.setTree(m_tree);
         onChangeChildren();
     }
@@ -192,6 +196,16 @@ public class CmsTreeItem extends CmsSimpleListItem {
     }
 
     /**
+     * Returns the parent item.<p>
+     *
+     * @return the parent item
+     */
+    public CmsTreeItem getParentItem() {
+
+        return m_parentItem;
+    }
+
+    /**
      * Gets the tree to which this tree item belongs, or null if it does not belong to a tree.<p>
      * 
      * @return a tree or null
@@ -245,6 +259,7 @@ public class CmsTreeItem extends CmsSimpleListItem {
      */
     public void removeChild(CmsTreeItem item) {
 
+        item.setParentItem(null);
         m_children.removeItem(item);
         onChangeChildren();
     }
@@ -258,6 +273,7 @@ public class CmsTreeItem extends CmsSimpleListItem {
      */
     public void removeChild(int index) {
 
+        m_children.getItem(index).setParentItem(null);
         m_children.remove(index);
         onChangeChildren();
     }
@@ -273,6 +289,7 @@ public class CmsTreeItem extends CmsSimpleListItem {
      */
     public CmsTreeItem removeChild(String itemId) {
 
+        m_children.getItem(itemId).setParentItem(null);
         CmsTreeItem removeItem = m_children.removeItem(itemId);
         onChangeChildren();
         return removeItem;
@@ -293,6 +310,16 @@ public class CmsTreeItem extends CmsSimpleListItem {
             }
             fireOpen();
         }
+    }
+
+    /**
+     * Sets the parent item.<p>
+     *
+     * @param parentItem the parent item to set
+     */
+    public void setParentItem(CmsTreeItem parentItem) {
+
+        m_parentItem = parentItem;
     }
 
     /**

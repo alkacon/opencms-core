@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/Attic/CmsGalleryDialogBean.java,v $
- * Date   : $Date: 2010/04/30 10:17:38 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/05/06 09:27:20 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,11 +32,13 @@
 package org.opencms.ade.galleries.shared;
 
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
+import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.gwt.shared.CmsListInfoBean;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.TreeMap;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
@@ -46,7 +48,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
  */
@@ -136,11 +138,12 @@ public class CmsGalleryDialogBean implements IsSerializable {
     //TODO: add sitemap data, add vfs tree data, add container page data, resource locales if required
 
     /** The categories to display in the list of available categories. */
-    //TODO: remove replaced by list   private LinkedHashMap<String, CmsCategoriesListInfoBean> m_categories;
-    private ArrayList<CmsCategoriesListInfoBean> m_categories;
+    private ArrayList<CmsCategoryInfoBean> m_categoriesList;
+
+    /** The category tree entry to display as tree. */
+    private CmsCategoryTreeEntry m_categoryTreeEntry;
 
     /** The galleries to display in the list with available galleries. */
-    //TODO: remove replaced by private LinkedHashMap<String, CmsGalleriesListInfoBean> m_galleries; 
     private ArrayList<CmsGalleriesListInfoBean> m_galleries;
 
     /** The available workplace locales. */
@@ -150,17 +153,26 @@ public class CmsGalleryDialogBean implements IsSerializable {
     private ArrayList<String> m_tabs;
 
     /** The types to display in the list of available categories. */
-    //TODO: remove replaced by private private LinkedHashMap<String, CmsTypesListInfoBean> m_types;
     private ArrayList<CmsTypesListInfoBean> m_types;
 
     /**
-     * Returns the categories map.<p>
+     * Returns the categories.<p>
      *
      * @return the categories
      */
-    public ArrayList<CmsCategoriesListInfoBean> getCategories() {
+    public CmsCategoryTreeEntry getCategories() {
 
-        return m_categories;
+        return m_categoryTreeEntry;
+    }
+
+    /**
+     * Returns the categoriesList.<p>
+     *
+     * @return the categoriesList
+     */
+    public ArrayList<CmsCategoryInfoBean> getCategoriesList() {
+
+        return m_categoriesList;
     }
 
     /**
@@ -204,13 +216,23 @@ public class CmsGalleryDialogBean implements IsSerializable {
     }
 
     /**
-     * Sets the categories map.<p>
+     * Sets the categories.<p>
      *
      * @param categories the categories to set
      */
-    public void setCategories(ArrayList<CmsCategoriesListInfoBean> categories) {
+    public void setCategories(CmsCategoryTreeEntry categories) {
 
-        m_categories = categories;
+        m_categoryTreeEntry = categories;
+    }
+
+    /**
+     * Sets the categoriesList.<p>
+     *
+     * @param categoriesList the categoriesList to set
+     */
+    public void setCategoriesList(ArrayList<CmsCategoryInfoBean> categoriesList) {
+
+        m_categoriesList = categoriesList;
     }
 
     /**
@@ -254,23 +276,46 @@ public class CmsGalleryDialogBean implements IsSerializable {
     }
 
     /**
+     * Sorts the categories according to provided sort parameters.<p>
+     * 
+     * @param sortParams the sort parameters
+     */
+    public void sortCategories(String sortParams) {
+
+        if (SortParams.title_asc == SortParams.valueOf(sortParams)) {
+            if (m_categoriesList == null) {
+                m_categoriesList = new ArrayList<CmsCategoryInfoBean>();
+                treeToList(m_categoryTreeEntry.getChildren());
+            }
+            Collections.sort(m_categoriesList);
+
+        } else if (SortParams.title_desc == SortParams.valueOf(sortParams)) {
+            if (m_categoriesList == null) {
+                m_categoriesList = new ArrayList<CmsCategoryInfoBean>();
+                treeToList(m_categoryTreeEntry.getChildren());
+            }
+            Collections.sort(m_categoriesList, new CmsSortTitleDesc());
+        }
+    }
+
+    /**
      * Sorts the gallery list.<p>
      * 
      * @param sortParams the sort parameters
      */
     public void sortGalleries(String sortParams) {
 
-        if (SortParams.title_asc.name().equals(sortParams)) {
+        if (SortParams.title_asc == SortParams.valueOf(sortParams)) {
             Collections.sort(m_galleries);
-        } else if (SortParams.title_desc.name().equals(sortParams)) {
+        } else if (SortParams.title_desc == SortParams.valueOf(sortParams)) {
             Collections.sort(m_galleries, new CmsSortTitleDesc());
-        } else if (SortParams.type_asc.name().equals(sortParams)) {
+        } else if (SortParams.type_asc == SortParams.valueOf(sortParams)) {
             Collections.sort(m_galleries, new CmsSortTypeAsc());
-        } else if (SortParams.type_desc.name().equals(sortParams)) {
+        } else if (SortParams.type_desc == SortParams.valueOf(sortParams)) {
             Collections.sort(m_galleries, new CmsSortTypeDesc());
-        } else if (SortParams.path_asc.name().equals(sortParams)) {
+        } else if (SortParams.path_asc == SortParams.valueOf(sortParams)) {
             Collections.sort(m_galleries, new CmsSortIdAsc());
-        } else if (SortParams.path_desc.name().equals(sortParams)) {
+        } else if (SortParams.path_desc == SortParams.valueOf(sortParams)) {
             Collections.sort(m_galleries, new CmsSortIdDesc());
         }
     }
@@ -286,6 +331,27 @@ public class CmsGalleryDialogBean implements IsSerializable {
             Collections.sort(m_types);
         } else if (SortParams.title_desc.name().equals(sortParams)) {
             Collections.sort(m_types, new CmsSortTitleDesc());
+        }
+    }
+
+    /**
+     * Converts categories tree to a list of tree info beans.<p>
+     * 
+     * @param entries the tree entries
+     */
+    private void treeToList(List<CmsCategoryTreeEntry> entries) {
+
+        if (entries != null) {
+            for (CmsCategoryTreeEntry entry : entries) {
+                CmsCategoryInfoBean bean = new CmsCategoryInfoBean(
+                    entry.getTitle(),
+                    entry.getPath(),
+                    null,
+                    entry.getPath(),
+                    entry.getIconResource());
+                m_categoriesList.add(bean);
+                treeToList(entry.getChildren());
+            }
         }
     }
 }

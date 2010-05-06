@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsCoreService.java,v $
- * Date   : $Date: 2010/05/04 09:40:41 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/05/06 09:27:20 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.gwt;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.gwt.shared.CmsCoreData;
@@ -41,6 +42,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsCategory;
 import org.opencms.relations.CmsCategoryService;
+import org.opencms.workplace.CmsWorkplace;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +54,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 8.0.0
  * 
@@ -99,8 +101,14 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         }
 
         CmsCategoryTreeEntry result = null;
+        String iconPath = "";
         try {
             result = new CmsCategoryTreeEntry(fromPath);
+
+            iconPath = CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES
+                + OpenCms.getWorkplaceManager().getExplorerTypeSetting(CmsResourceTypeFolder.RESOURCE_TYPE_NAME).getIcon());
+            result.setIconResource(iconPath);
+
             // get the categories
             List<CmsCategory> categories = catService.readCategoriesForRepositories(
                 cms,
@@ -111,6 +119,10 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             CmsCategoryTreeEntry parent = result;
             for (CmsCategory category : categories) {
                 CmsCategoryTreeEntry current = new CmsCategoryTreeEntry(category);
+
+                iconPath = CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES
+                    + OpenCms.getWorkplaceManager().getExplorerTypeSetting(CmsResourceTypeFolder.RESOURCE_TYPE_NAME).getIcon());
+                current.setIconResource(iconPath);
                 String parentPath = CmsResource.getParentFolder(current.getPath());
                 if (!parentPath.equals(parent.getPath())) {
                     parent = findCategory(result, parentPath);

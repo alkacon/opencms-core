@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/A_CmsTab.java,v $
- * Date   : $Date: 2010/04/28 10:25:47 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/05/06 09:27:20 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.
  */
@@ -84,7 +84,7 @@ public abstract class A_CmsTab extends Composite {
 
     /** The option panel. */
     @UiField
-    protected Panel m_options;
+    protected CmsFlowPanel m_options;
 
     /** The option panel. */
     @UiField
@@ -92,7 +92,7 @@ public abstract class A_CmsTab extends Composite {
 
     /** The scrollable list panel. */
     @UiField
-    protected CmsList<CmsListItem> m_scrollList;
+    protected CmsList<? extends CmsListItem> m_scrollList;
 
     /** The option panel. */
     @UiField
@@ -101,6 +101,22 @@ public abstract class A_CmsTab extends Composite {
     /** The types parameter panel panel. */
     @UiField
     protected Panel m_types;
+
+    //    /** The types parameter panel panel. */
+    //    @UiField
+    //    protected CmsFlowPanel m_sortLabel;
+    //
+    //    /** The types parameter panel panel. */
+    //    @UiField
+    //    protected CmsFlowPanel m_sortSelectBox;
+    //
+    //    /** The types parameter panel panel. */
+    //    @UiField
+    //    protected CmsFlowPanel m_localeLabel;
+    //
+    //    /** The types parameter panel panel. */
+    //    @UiField
+    //    protected CmsFlowPanel m_localeSelectBox;
 
     /**
      * The default constructor with drag handler.<p>
@@ -115,6 +131,21 @@ public abstract class A_CmsTab extends Composite {
     //    /** The full text search parameter panel. */
     //    @UiField
     //    protected Panel m_text;
+
+    /**
+     * Will be triggered when a tab is selected.<p>
+     */
+    public abstract void onSelection();
+
+    /**
+     * Updates the layout for all list items in this list.<p>
+     * 
+     * @see org.opencms.gwt.client.ui.CmsList#updateLayout()
+     */
+    public void updateListLayout() {
+
+        m_scrollList.updateLayout();
+    }
 
     /**
      * Add a list item widget to the list panel.<p>
@@ -158,16 +189,6 @@ public abstract class A_CmsTab extends Composite {
     }
 
     /**
-     * Updates the layout for all list items in this list.<p>
-     * 
-     * @see org.opencms.gwt.client.ui.CmsList#updateLayout()
-     */
-    public void updateListLayout() {
-
-        m_scrollList.updateLayout();
-    }
-
-    /**
      * Initializes this list item.<p>
      */
     protected void init() {
@@ -177,9 +198,4 @@ public abstract class A_CmsTab extends Composite {
 
         CmsGalleryDialog.initCss();
     }
-
-    /**
-     * Will be triggered when a tab is selected.<p>
-     */
-    public abstract void onSelection();
 }

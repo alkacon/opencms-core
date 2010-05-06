@@ -12,7 +12,11 @@
 			<cms:CmsFlowPanel ui:field="m_galleries" tag="span" addStyleNames="{resources.generalCss.cornerAll}"></cms:CmsFlowPanel>
 			<cms:CmsFlowPanel ui:field="m_categories" tag="span" addStyleNames="{resources.generalCss.cornerAll}"></cms:CmsFlowPanel>			
 		</cms:CmsFlowPanel>
-		<cms:CmsFlowPanel ui:field="m_options" tag="div" addStyleNames="{galleryResources.galleryDialogCss.marginBottom}">			
+		<cms:CmsFlowPanel ui:field="m_options" tag="div" addStyleNames="{galleryResources.galleryDialogCss.marginBottom}">
+			<!-- <cms:CmsFlowPanel ui:field="m_sortLabel" tag="span"></cms:CmsFlowPanel>	
+			<cms:CmsFlowPanel ui:field="m_sortSelectBox" tag="span"></cms:CmsFlowPanel>
+			<cms:CmsFlowPanel ui:field="m_localeLabel" tag="span"></cms:CmsFlowPanel>	
+			<cms:CmsFlowPanel ui:field="m_localeSelectBox" tag="span"></cms:CmsFlowPanel>-->
 		</cms:CmsFlowPanel>
 		<cms:CmsFlowPanel ui:field="m_list" tag="div" styleName="{galleryResources.galleryDialogCss.criteriaList}"  addStyleNames="{resources.generalCss.cornerAll}">
 			<cms:CmsList ui:field="m_scrollList" >

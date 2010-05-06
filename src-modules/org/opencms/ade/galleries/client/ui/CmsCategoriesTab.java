@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsCategoriesTab.java,v $
- * Date   : $Date: 2010/05/06 06:32:27 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/05/06 09:27:20 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,18 +32,22 @@
 package org.opencms.ade.galleries.client.ui;
 
 import org.opencms.ade.galleries.client.CmsCategoriesTabHandler;
-import org.opencms.ade.galleries.shared.CmsCategoriesListInfoBean;
+import org.opencms.ade.galleries.shared.CmsCategoryInfoBean;
 import org.opencms.ade.galleries.shared.CmsGalleryDialogBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
 import org.opencms.gwt.client.ui.CmsFloatDecoratedPanel;
+import org.opencms.gwt.client.ui.CmsList;
+import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsPair;
+import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -59,7 +63,7 @@ import com.google.gwt.user.client.ui.Image;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.
  */
@@ -96,13 +100,11 @@ public class CmsCategoriesTab extends A_CmsTab implements ValueChangeHandler<Str
          */
         public void onClick(ClickEvent event) {
 
-            //TODO: CmsCheckBox sender = (CmsCheckBox)event.getSource();
             if (m_checkBox.isChecked()) {
                 m_tabHandler.onSelectCategory(m_categoryPath);
             } else {
                 m_tabHandler.onDeselectCategory(m_categoryPath);
             }
-
         }
     }
 
@@ -115,6 +117,9 @@ public class CmsCategoriesTab extends A_CmsTab implements ValueChangeHandler<Str
     /** The reference to the handler of this tab. */
     protected CmsCategoriesTabHandler m_tabHandler;
 
+    /** The flag to indicate when the categories are opened for the fist time. */
+    private boolean m_isInitOpen;
+
     /** The select box to change the sort order. */
     private CmsSelectBox m_sortSelectBox;
 
@@ -125,6 +130,8 @@ public class CmsCategoriesTab extends A_CmsTab implements ValueChangeHandler<Str
 
         super();
         m_scrollList.truncate(TM_CATEGORY_TAB, CmsGalleryDialog.DIALOG_WIDTH);
+
+        m_isInitOpen = false;
     }
 
     /**
@@ -134,6 +141,8 @@ public class CmsCategoriesTab extends A_CmsTab implements ValueChangeHandler<Str
      */
     public void fillContent(CmsGalleryDialogBean dialogBean) {
 
+        setInitOpen(true);
+
         ArrayList<CmsPair<String, String>> sortList = getSortList();
         m_sortSelectBox = new CmsSelectBox(sortList);
         m_sortSelectBox.addValueChangeHandler(this);
@@ -141,18 +150,31 @@ public class CmsCategoriesTab extends A_CmsTab implements ValueChangeHandler<Str
         m_sortSelectBox.setWidth("200px");
         m_sortSelectBox.truncate(TM_CATEGORY_SORT, 200);
         addWidgetToOptions(m_sortSelectBox);
-        for (CmsCategoriesListInfoBean categoryItem : dialogBean.getCategories()) {
-            CmsListItemWidget listItemWidget = new CmsListItemWidget(categoryItem);
-            Image icon = new Image(categoryItem.getIconResource());
-            icon.setStyleName(DIALOG_CSS.listIcon());
-            listItemWidget.setIcon(icon);
-            CmsCheckBox checkBox = new CmsCheckBox();
-            checkBox.addClickHandler(new CheckboxHandler(categoryItem.getId(), checkBox));
-            CmsCategoryListItem listItem = new CmsCategoryListItem(checkBox, listItemWidget);
-            listItem.setId(categoryItem.getId());
-            listItem.setItemTitle(categoryItem.getTitle());
-            listItem.setSubTitle(categoryItem.getSubTitle());
-            addWidgetToList(listItem);
+
+        CmsCategoryTreeEntry categoryRoot = dialogBean.getCategories();
+        if (categoryRoot.getChildren() != null) {
+            for (CmsCategoryTreeEntry category : categoryRoot.getChildren()) {
+                // set the category tree entry bean
+                CmsCategoryInfoBean categoryBean = new CmsCategoryInfoBean(
+                    category.getTitle(),
+                    category.getPath(),
+                    null,
+                    category.getPath(),
+                    category.getIconResource());
+                // set the list item widget
+                CmsListItemWidget listItemWidget = new CmsListItemWidget(categoryBean);
+                Image icon = new Image(categoryBean.getIconResource());
+                icon.setStyleName(DIALOG_CSS.listIcon());
+                listItemWidget.setIcon(icon);
+                // the checkbox
+                CmsCheckBox checkBox = new CmsCheckBox();
+                checkBox.addClickHandler(new CheckboxHandler(categoryBean.getId(), checkBox));
+                // set the category tree item and add to list 
+                CmsCategoryTreeItem treeItem = new CmsCategoryTreeItem(true, checkBox, listItemWidget);
+                treeItem.init(categoryBean.getId(), categoryBean.getTitle(), categoryBean.getSubTitle());
+                addChildren(treeItem, category.getChildren());
+                addWidgetToList(treeItem);
+            }
         }
     }
 
@@ -162,6 +184,7 @@ public class CmsCategoriesTab extends A_CmsTab implements ValueChangeHandler<Str
      * @param selectedCategories the list of selected categories by the user
      * @return the panel showing the selected categories
      */
+    // TODO: handle the case the selected item is not found 
     public CmsFloatDecoratedPanel getCategoriesParamsPanel(ArrayList<String> selectedCategories) {
 
         CmsFloatDecoratedPanel categoriesPanel = new CmsFloatDecoratedPanel();
@@ -169,7 +192,7 @@ public class CmsCategoriesTab extends A_CmsTab implements ValueChangeHandler<Str
         if (selectedCategories.size() == 1) {
             panelText = panelText.concat("<b>").concat(Messages.get().key(Messages.GUI_PARAMS_LABEL_CATEGORY_0)).concat(
                 "</b> ");
-            CmsCategoryListItem categoryItem = (CmsCategoryListItem)m_scrollList.getItem(selectedCategories.get(0));
+            CmsCategoryTreeItem categoryItem = searchCategoryItem(m_scrollList, selectedCategories.get(0));
             String title = categoryItem.getItemTitle();
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
                 title = categoryItem.getSubTitle();
@@ -179,8 +202,7 @@ public class CmsCategoriesTab extends A_CmsTab implements ValueChangeHandler<Str
             panelText = panelText.concat("<b>").concat(Messages.get().key(Messages.GUI_PARAMS_LABEL_CATEGORIES_0)).concat(
                 "</b> ");
             for (String categoryPath : selectedCategories) {
-
-                CmsCategoryListItem categoryItem = (CmsCategoryListItem)m_scrollList.getItem(categoryPath);
+                CmsCategoryTreeItem categoryItem = searchCategoryItem(m_scrollList, categoryPath);
                 String title = categoryItem.getItemTitle();
                 if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
                     title = categoryItem.getSubTitle();
@@ -191,6 +213,16 @@ public class CmsCategoriesTab extends A_CmsTab implements ValueChangeHandler<Str
         categoriesPanel.add(new HTMLPanel(CmsDomUtil.Tag.div.name(), panelText));
 
         return categoriesPanel;
+    }
+
+    /**
+     * Returns the isInitOpen.<p>
+     *
+     * @return the isInitOpen
+     */
+    public boolean isInitOpen() {
+
+        return m_isInitOpen;
     }
 
     /**
@@ -206,14 +238,65 @@ public class CmsCategoriesTab extends A_CmsTab implements ValueChangeHandler<Str
     }
 
     /**
+     * Will be triggered if the value in the select box changes.<p>
+     * 
      * @see com.google.gwt.event.logical.shared.ValueChangeHandler#onValueChange(com.google.gwt.event.logical.shared.ValueChangeEvent)
      */
     public void onValueChange(ValueChangeEvent<String> event) {
 
         if (event.getSource() == m_sortSelectBox) {
-            // TODO: implement
-            event.getValue();
+            m_tabHandler.onSortCategories(event.getValue());
         }
+    }
+
+    /**
+     * Opens the first level in the categories tree.<p>
+     */
+    public void openFirstLevel() {
+
+        for (int i = 0; i < m_scrollList.getWidgetCount(); i++) {
+            CmsCategoryTreeItem item = (CmsCategoryTreeItem)m_scrollList.getItem(i);
+            item.setOpen(true);
+        }
+    }
+
+    /**
+     * Searches in the categories tree or list the item and returns it.<p>
+     * 
+     * @param list the list of items to start from
+     * @param categoryPath the category id to search
+     * @return the category item widget
+     */
+    public CmsCategoryTreeItem searchCategoryItem(CmsList<? extends CmsListItem> list, String categoryPath) {
+
+        CmsCategoryTreeItem resultItem = (CmsCategoryTreeItem)list.getItem(categoryPath);
+        // item is not in this tree level
+        if (resultItem == null) {
+            // if list is not empty
+            for (int i = 0; i < list.getWidgetCount(); i++) {
+                CmsCategoryTreeItem listItem = (CmsCategoryTreeItem)list.getWidget(i);
+                if (listItem.getChildCount() == 0) {
+                    continue;
+                }
+                // continue search in children
+                resultItem = searchCategoryItem(listItem.getChildren(), categoryPath);
+                // break the search if result item is found
+                if (resultItem != null) {
+                    break;
+                }
+            }
+        }
+        return resultItem;
+    }
+
+    /**
+     * Sets the isInitOpen.<p>
+     *
+     * @param isInitOpen the isInitOpen to set
+     */
+    public void setInitOpen(boolean isInitOpen) {
+
+        m_isInitOpen = isInitOpen;
     }
 
     /**
@@ -234,8 +317,157 @@ public class CmsCategoriesTab extends A_CmsTab implements ValueChangeHandler<Str
     public void uncheckCategories(ArrayList<String> categories) {
 
         for (String category : categories) {
-            CmsCategoryListItem item = (CmsCategoryListItem)m_scrollList.getItem(category);
+            CmsCategoryTreeItem item = searchCategoryItem(m_scrollList, category);
             item.getCheckbox().setChecked(false);
+        }
+    }
+
+    /**
+     * Updates the content of the categories list.<p>
+     * 
+     * @param categoriesBeans the updates list of categories tree item beans
+     * @param selectedCategories the categories to select in the list by update
+     */
+    public void updateCategories(ArrayList<CmsCategoryInfoBean> categoriesBeans, ArrayList<String> selectedCategories) {
+
+        clearList();
+        for (CmsCategoryInfoBean categoryBean : categoriesBeans) {
+            // set the list item widget
+            CmsListItemWidget listItemWidget = new CmsListItemWidget(categoryBean);
+            Image icon = new Image(categoryBean.getIconResource());
+            icon.setStyleName(DIALOG_CSS.listIcon());
+            listItemWidget.setIcon(icon);
+            // the checkbox
+            CmsCheckBox checkBox = new CmsCheckBox();
+            if (selectedCategories.contains(categoryBean.getId())) {
+                checkBox.setChecked(true);
+            }
+            checkBox.addClickHandler(new CheckboxHandler(categoryBean.getId(), checkBox));
+            // set the category list item and add to list 
+            CmsCategoryTreeItem listItem = new CmsCategoryTreeItem(false, checkBox, listItemWidget);
+            listItem.init(categoryBean.getId(), categoryBean.getTitle(), categoryBean.getSubTitle());
+            addWidgetToList(listItem);
+        }
+    }
+
+    /**
+     * Updates the content of th categories tree.<p>
+     * 
+     * @param treeEntry the root category entry
+     * @param selectedCategories the categories to select after update
+     */
+    public void updateCategories(CmsCategoryTreeEntry treeEntry, ArrayList<String> selectedCategories) {
+
+        clearList();
+        if (treeEntry.getChildren() != null) {
+            // add the first level and children
+            for (CmsCategoryTreeEntry category : treeEntry.getChildren()) {
+                // set the category tree entry bean
+                CmsCategoryInfoBean categoryBean = new CmsCategoryInfoBean(
+                    category.getTitle(),
+                    category.getPath(),
+                    null,
+                    category.getPath(),
+                    category.getIconResource());
+
+                // set the list item widget
+                CmsListItemWidget listItemWidget = new CmsListItemWidget(categoryBean);
+                Image icon = new Image(categoryBean.getIconResource());
+                icon.setStyleName(DIALOG_CSS.listIcon());
+                listItemWidget.setIcon(icon);
+                // the checkbox
+                CmsCheckBox checkBox = new CmsCheckBox();
+                if (selectedCategories.contains(categoryBean.getId())) {
+                    checkBox.setChecked(true);
+                }
+                checkBox.addClickHandler(new CheckboxHandler(categoryBean.getId(), checkBox));
+
+                // set the category tree item and add to list 
+                CmsCategoryTreeItem treeItem = new CmsCategoryTreeItem(true, checkBox, listItemWidget);
+                treeItem.init(categoryBean.getId(), categoryBean.getTitle(), categoryBean.getSubTitle());
+                addChildren(treeItem, category.getChildren(), selectedCategories);
+                addWidgetToList(treeItem);
+                treeItem.setOpen(true);
+            }
+        }
+    }
+
+    /**
+     * Adds children item to the category tree.<p>
+     * 
+     * @param parent the parent item 
+     * @param children the list of children
+     */
+    private void addChildren(CmsCategoryTreeItem parent, List<CmsCategoryTreeEntry> children) {
+
+        if (children != null) {
+            for (CmsCategoryTreeEntry child : children) {
+                // set the category tree entry bean
+                CmsCategoryInfoBean childBean = new CmsCategoryInfoBean(
+                    child.getTitle(),
+                    child.getPath(),
+                    null,
+                    child.getPath(),
+                    child.getIconResource());
+                // set the list item widget
+                CmsListItemWidget childListItemWidget = new CmsListItemWidget(childBean);
+                Image icon = new Image(childBean.getIconResource());
+                icon.setStyleName(DIALOG_CSS.listIcon());
+                childListItemWidget.setIcon(icon);
+                // the checkbox
+                CmsCheckBox checkBox = new CmsCheckBox();
+                checkBox.addClickHandler(new CheckboxHandler(childBean.getId(), checkBox));
+                // set the category tree item and add to parent tree item
+                CmsCategoryTreeItem treeItem = new CmsCategoryTreeItem(true, checkBox, childListItemWidget);
+                treeItem.init(childBean.getId(), childBean.getTitle(), childBean.getSubTitle());
+                parent.addChild(treeItem);
+                addChildren(treeItem, child.getChildren());
+            }
+        }
+    }
+
+    /**
+     * Adds children item to the category tree and select the categories.<p>
+     * 
+     * @param parent the parent item 
+     * @param children the list of children
+     * @param selectedCategories the list of categories to select
+     */
+    private void addChildren(
+        CmsCategoryTreeItem parent,
+        List<CmsCategoryTreeEntry> children,
+        ArrayList<String> selectedCategories) {
+
+        if (children != null) {
+            for (CmsCategoryTreeEntry child : children) {
+                // set the category tree entry bean
+                CmsCategoryInfoBean childBean = new CmsCategoryInfoBean(
+                    child.getTitle(),
+                    child.getPath(),
+                    null,
+                    child.getPath(),
+                    child.getIconResource());
+                // set the list item widget
+                CmsListItemWidget childListItemWidget = new CmsListItemWidget(childBean);
+                Image icon = new Image(childBean.getIconResource());
+                icon.setStyleName(DIALOG_CSS.listIcon());
+                childListItemWidget.setIcon(icon);
+                // the checkbox
+                CmsCheckBox checkBox = new CmsCheckBox();
+                if (selectedCategories.contains(childBean.getId())) {
+                    checkBox.setChecked(true);
+                }
+                checkBox.addClickHandler(new CheckboxHandler(childBean.getId(), checkBox));
+                // set the category tree item and add to parent tree item
+                CmsCategoryTreeItem treeItem = new CmsCategoryTreeItem(true, checkBox, childListItemWidget);
+                treeItem.init(childBean.getId(), childBean.getTitle(), childBean.getSubTitle());
+                if (selectedCategories.contains(childBean.getId())) {
+                    parent.setOpen(true);
+                    openParents(parent);
+                }
+                parent.addChild(treeItem);
+                addChildren(treeItem, child.getChildren(), selectedCategories);
+            }
         }
     }
 
@@ -255,5 +487,18 @@ public class CmsCategoriesTab extends A_CmsTab implements ValueChangeHandler<Str
             Messages.GUI_SORT_LABEL_TITLE_DECS_0)));
 
         return list;
+    }
+
+    /**
+     * Goes up the tree and opens the parents of the item.<p>
+     * 
+     * @param item the child item to start from
+     */
+    private void openParents(CmsCategoryTreeItem item) {
+
+        if (item != null) {
+            item.setOpen(true);
+            openParents((CmsCategoryTreeItem)item.getParentItem());
+        }
     }
 }

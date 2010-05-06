@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleryController.java,v $
- * Date   : $Date: 2010/04/30 10:17:38 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/05/06 09:27:20 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,7 @@ import org.opencms.ade.galleries.shared.CmsGalleryInfoBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchObject;
 import org.opencms.ade.galleries.shared.CmsTypesListInfoBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
+import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
 import org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService;
 import org.opencms.ade.galleries.shared.rpc.I_CmsGalleryServiceAsync;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
@@ -55,7 +56,7 @@ import com.google.gwt.core.client.GWT;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
  */
@@ -125,6 +126,7 @@ public class CmsGalleryController {
             }
         };
         initialAction.execute();
+
     }
 
     /**
@@ -281,6 +283,61 @@ public class CmsGalleryController {
 
         m_dialogBean.sortGalleries(sortParams);
         m_handler.onUpdateGalleries(m_dialogBean.getGalleries());
+    }
+
+    /**
+     * Sorts the categories according to given parameters and updates the list.<p>
+     * 
+     * @param sortParams the sort parameters
+     */
+    public void sortCategories(String sortParams) {
+
+        m_dialogBean.sortCategories(sortParams);
+        if ((SortParams.title_asc == SortParams.valueOf(sortParams))
+            || (SortParams.title_desc == SortParams.valueOf(sortParams))) {
+            m_handler.onUpdateCategories(m_dialogBean.getCategoriesList(), m_searchObject.getCategories());
+        } else if (SortParams.tree == SortParams.valueOf(sortParams)) {
+            m_handler.onUpdateCategories(m_dialogBean.getCategories(), m_searchObject.getCategories());
+        }
+    }
+
+    /**
+     * Sorts the results according to given parameters and updates the list.<p>
+     * 
+     * @param sortParams the sort parameters
+     */
+    public void sortResults(final String sortParams) {
+
+        /** The RPC search action for the gallery dialog. */
+        CmsRpcAction<CmsGallerySearchObject> sortAction = new CmsRpcAction<CmsGallerySearchObject>() {
+
+            /**
+            * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+            */
+            @Override
+            public void execute() {
+
+                m_searchObject.setSortOrder(sortParams);
+                CmsGallerySearchObject preparedObject = prepareSearchObject();
+                getGalleryService().getSearch(preparedObject, this);
+            }
+
+            /**
+            * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+            */
+            @Override
+            public void onResponse(CmsGallerySearchObject searchObj) {
+
+                m_searchObject.setResults(searchObj.getResults());
+                m_searchObject.setResultCount(searchObj.getResultCount());
+                m_searchObject.setSortOrder(searchObj.getSortOrder());
+                m_searchObject.setPage(searchObj.getPage());
+
+                m_handler.onResultTabSelection(m_searchObject);
+            }
+
+        };
+        sortAction.execute();
     }
 
     /**

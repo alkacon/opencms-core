@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsGalleriesTab.java,v $
- * Date   : $Date: 2010/05/06 06:32:27 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/05/06 09:27:20 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import com.google.gwt.user.client.ui.Image;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.
  */
@@ -132,6 +132,20 @@ public class CmsGalleriesTab extends A_CmsTab implements ValueChangeHandler<Stri
      */
     public void fillContent(CmsGalleryDialogBean dialogBean) {
 
+        //TODO: use this code to add labels before select boxes
+        //        Label label = new Label();
+        //        label.setWidth("30px");
+        //        label.setText(Messages.get().key(Messages.GUI_SORT_LABEL_SORT_0));
+        //        m_sortLabel.add(label);
+        //
+        //        ArrayList<CmsPair<String, String>> sortList = getSortList();
+        //        m_selectBox = new CmsSelectBox(sortList);
+        //        m_selectBox.addValueChangeHandler(this);
+        //        // TODO: use the common way to set the width of the select box
+        //        m_selectBox.setWidth("200px");
+        //        m_sortSelectBox.add(m_selectBox);
+        //addWidgetToOptions(m_sortSelectBox);
+
         ArrayList<CmsPair<String, String>> sortList = getSortList();
         m_sortSelectBox = new CmsSelectBox(sortList);
         m_sortSelectBox.addValueChangeHandler(this);
@@ -139,6 +153,7 @@ public class CmsGalleriesTab extends A_CmsTab implements ValueChangeHandler<Stri
         m_sortSelectBox.setWidth("200px");
         m_sortSelectBox.truncate(TM_GALLERY_SORT, 200);
         addWidgetToOptions(m_sortSelectBox);
+
         for (CmsGalleriesListInfoBean galleryItem : dialogBean.getGalleries()) {
             CmsListItemWidget listItemWidget = new CmsListItemWidget(galleryItem);
             Image icon = new Image(galleryItem.getIconResource());
@@ -162,14 +177,11 @@ public class CmsGalleriesTab extends A_CmsTab implements ValueChangeHandler<Stri
      */
     public HTMLPanel getGallerisParamsPanel(ArrayList<String> selectedGalleries) {
 
-        //,LinkedHashMap<String, CmsGalleriesListInfoBean> galleries) 
-
         HTMLPanel galleriesPanel;
         String panelText = "";
         if (selectedGalleries.size() == 1) {
             panelText = panelText.concat("<b>").concat(Messages.get().key(Messages.GUI_PARAMS_LABEL_GALLERY_0)).concat(
                 "</b>");
-            //CmsGalleriesListInfoBean galleryBean = galleries.get(selectedGalleries.get(0));
             CmsGalleryListItem galleryBean = (CmsGalleryListItem)m_scrollList.getItem(selectedGalleries.get(0));
             String title = galleryBean.getItemTitle();
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
@@ -180,7 +192,6 @@ public class CmsGalleriesTab extends A_CmsTab implements ValueChangeHandler<Stri
             panelText = panelText.concat("<b>").concat(Messages.get().key(Messages.GUI_PARAMS_LABEL_GALLERIES_0)).concat(
                 "</b>");
             for (String galleryPath : selectedGalleries) {
-
                 CmsGalleryListItem galleryBean = (CmsGalleryListItem)m_scrollList.getItem(galleryPath);
                 String title = galleryBean.getItemTitle();
                 if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/Attic/CmsCategoriesListInfoBean.java,v $
- * Date   : $Date: 2010/03/30 14:08:36 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/05/06 09:27:20 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,7 +35,7 @@ import org.opencms.gwt.shared.CmsListInfoBean;
 
 import java.util.Map;
 
-//TODO: do we need here I_CmsItemId?? is the id in the LinkedHashMap enough?
+//TODO: remove, replaced by CmsCategoriesTreeInfoBean
 /**
  * A specific bean holding all info to be displayed in {@link org.opencms.ade.galleries.client.ui.CmsCategoryListItem}s.<p>
  * 
@@ -43,7 +43,7 @@ import java.util.Map;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -52,11 +52,11 @@ public class CmsCategoriesListInfoBean extends CmsListInfoBean implements I_CmsI
     /** The path to the category icon. */
     private String m_iconResource;
 
-    /** THe path to the root category. */
-    private String m_rootPath;
-
     /** The category level. */
     private int m_level;
+
+    /** THe path to the root category. */
+    private String m_rootPath;
 
     /**
      * The empty default constructor.<p>
@@ -76,16 +76,6 @@ public class CmsCategoriesListInfoBean extends CmsListInfoBean implements I_CmsI
     public CmsCategoriesListInfoBean(String title, String subtitle, Map<String, String> additionalInfo) {
 
         super(title, subtitle, additionalInfo);
-    }
-
-    /**
-     * Sets the icon.<p>
-     *
-     * @param icon the icon to set
-     */
-    public void setIconResource(String icon) {
-
-        m_iconResource = icon;
     }
 
     /**
@@ -109,23 +99,13 @@ public class CmsCategoriesListInfoBean extends CmsListInfoBean implements I_CmsI
     }
 
     /**
-     * Sets the category path as a unique id for this category.<p>
-     * 
-     * @see org.opencms.ade.galleries.shared.I_CmsItemId#setId(java.lang.String)
-     */
-    public void setId(String id) {
-
-        setSubTitle(id);
-    }
-
-    /**
-     * Sets the root path of the category.<p>
+     * Returns the level of the category.<p>
      *
-     * @param rootPath the root path to set
+     * @return the level
      */
-    public void setRootPath(String rootPath) {
+    public int getLevel() {
 
-        m_rootPath = rootPath;
+        return m_level;
     }
 
     /**
@@ -139,6 +119,26 @@ public class CmsCategoriesListInfoBean extends CmsListInfoBean implements I_CmsI
     }
 
     /**
+     * Sets the icon.<p>
+     *
+     * @param icon the icon to set
+     */
+    public void setIconResource(String icon) {
+
+        m_iconResource = icon;
+    }
+
+    /**
+     * Sets the category path as a unique id for this category.<p>
+     * 
+     * @see org.opencms.ade.galleries.shared.I_CmsItemId#setId(java.lang.String)
+     */
+    public void setId(String id) {
+
+        setSubTitle(id);
+    }
+
+    /**
      * Sets the level of the category.<p>
      *
      * @param level the level of the category to set
@@ -149,13 +149,13 @@ public class CmsCategoriesListInfoBean extends CmsListInfoBean implements I_CmsI
     }
 
     /**
-     * Returns the level of the category.<p>
+     * Sets the root path of the category.<p>
      *
-     * @return the level
+     * @param rootPath the root path to set
      */
-    public int getLevel() {
+    public void setRootPath(String rootPath) {
 
-        return m_level;
+        m_rootPath = rootPath;
     }
 
 }

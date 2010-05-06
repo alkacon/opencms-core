@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/Attic/CmsGalleryService.java,v $
- * Date   : $Date: 2010/04/30 10:17:38 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/05/06 09:27:20 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,8 +46,10 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.gwt.CmsCoreService;
 import org.opencms.gwt.CmsGwtService;
 import org.opencms.gwt.CmsRpcException;
+import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
@@ -55,7 +57,6 @@ import org.opencms.loader.CmsResourceManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsCategory;
-import org.opencms.relations.CmsCategoryService;
 import org.opencms.search.galleries.CmsGallerySearch;
 import org.opencms.search.galleries.CmsGallerySearchParameters;
 import org.opencms.search.galleries.CmsGallerySearchResult;
@@ -79,7 +80,7 @@ import java.util.Map.Entry;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 8.0.0
  * 
@@ -87,6 +88,7 @@ import java.util.Map.Entry;
  * @see org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService
  * @see org.opencms.ade.galleries.shared.rpc.I_CmsGalleryServiceAsync
  */
+// TODO: check the error handling, waht happens in error case? Feedback for user?
 public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryService {
 
     /**
@@ -251,6 +253,8 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             gInfoBean.setDialogInfo(buildSearchParamsLists(tabs));
             gInfoBean.setSearchObject(buildInitialSearch(searchObj));
             gInfoBean.setDialogMode(dialogMode);
+        } catch (CmsRpcException e) {
+            throw e;
         } catch (Throwable e) {
             error(e);
         }
@@ -279,6 +283,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
      * @param categories the categories
      * @return the map with categories
      */
+    // TODO: remove id not used any more
     private ArrayList<CmsCategoriesListInfoBean> buildCategoriesList(List<CmsCategory> categories) {
 
         ArrayList<CmsCategoriesListInfoBean> list = new ArrayList<CmsCategoriesListInfoBean>();
@@ -403,6 +408,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
      * @param initialSearch the search object with parameters for the initial search
      * @return the search object containing the results of the initial search
      */
+    // TODO: error handling, what happens if error? 
     private CmsGallerySearchObject buildInitialSearch(CmsGallerySearchObject initialSearch) {
 
         CmsGallerySearchObject searchObj = new CmsGallerySearchObject();
@@ -452,8 +458,9 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
      * 
      * @param tabs the configured tabs for the gallery dialog
      * @return the content of the gallery dialog
+     * @throws CmsRpcException 
      */
-    private CmsGalleryDialogBean buildSearchParamsLists(ArrayList<String> tabs) {
+    private CmsGalleryDialogBean buildSearchParamsLists(ArrayList<String> tabs) throws CmsRpcException {
 
         CmsGalleryDialogBean bean = new CmsGalleryDialogBean();
         // set the tabs to display in the gallery
@@ -477,8 +484,11 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             while (iGalleryTypes.hasNext()) {
                 galleryFolders.addAll(iGalleryTypes.next().getValue().getGalleries());
             }
-            ArrayList<CmsCategoriesListInfoBean> categories = buildCategoriesList(readCategories(galleryFolders));
-            bean.setCategories(categories);
+            // TODO: replace with tree
+            //            ArrayList<CmsCategoriesListInfoBean> categories = buildCategoriesList(readCategories(galleryFolders));
+            //            bean.setCategories(categories);
+            CmsCategoryTreeEntry category = readCategoriesTree(galleryFolders);
+            bean.setCategories(category);
         }
         // collect sitemap data
         if (tabs.contains(I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_sitemap.name())) {
@@ -875,33 +885,52 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     }
 
     /**
-     * Generates a list of all available CmsCategory obejcts.<p>
+     * Generates a list of all available CmsCategory objects.<p>
      * 
      * @param galleries the galleries
      * @return a list of categories
+     * @throws CmsRpcException error happens during reading categories
      */
-    private List<CmsCategory> readCategories(List<CmsResource> galleries) {
+    private CmsCategoryTreeEntry readCategoriesTree(List<CmsResource> galleries) throws CmsRpcException {
 
-        CmsCategoryService catService = CmsCategoryService.getInstance();
-        List<String> repositories = new ArrayList<String>();
+        List<String> refPath = new ArrayList<String>();
         if ((galleries != null) && !galleries.isEmpty()) {
             Iterator<CmsResource> iGalleries = galleries.iterator();
 
             while (iGalleries.hasNext()) {
                 CmsResource res = iGalleries.next();
-                repositories.addAll(catService.getCategoryRepositories(getCmsObject(), getCmsObject().getSitePath(res)));
+                refPath.add(getCmsObject().getSitePath(res));
             }
-        } else {
-            repositories.add(CmsCategoryService.CENTRALIZED_REPOSITORY);
         }
-        List<CmsCategory> categories = null;
-        try {
-            categories = catService.readCategoriesForRepositories(getCmsObject(), "", true, repositories);
-        } catch (CmsException e) {
-            // error reading categories
-            logError(e);
-        }
-        return categories;
+
+        CmsCoreService coreService = new CmsCoreService();
+        coreService.setCms(getCmsObject());
+        CmsCategoryTreeEntry categoryTreeEntry = null;
+
+        categoryTreeEntry = coreService.getCategories("", true, refPath);
+
+        return categoryTreeEntry;
+        //TODO: remove or move to extra method, reads the categories as list
+        //        CmsCategoryService catService = CmsCategoryService.getInstance();
+        //        List<String> repositories = new ArrayList<String>();
+        //        if ((galleries != null) && !galleries.isEmpty()) {
+        //            Iterator<CmsResource> iGalleries = galleries.iterator();
+        //
+        //            while (iGalleries.hasNext()) {
+        //                CmsResource res = iGalleries.next();
+        //                repositories.addAll(catService.getCategoryRepositories(getCmsObject(), getCmsObject().getSitePath(res)));
+        //            }
+        //        } else {
+        //            repositories.add(CmsCategoryService.CENTRALIZED_REPOSITORY);
+        //        }
+        //        List<CmsCategory> categories = null;
+        //        try {
+        //            categories = catService.readCategoriesForRepositories(getCmsObject(), "", true, repositories);
+        //        } catch (CmsException e) {
+        //            // error reading categories
+        //            logError(e);
+        //        }
+        //        return categories;
     }
 
     /**

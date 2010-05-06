@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsResultsTab.java,v $
- * Date   : $Date: 2010/05/06 06:32:27 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/05/06 09:27:20 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -66,7 +66,7 @@ import com.google.gwt.user.client.ui.Image;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.
  */
@@ -177,7 +177,6 @@ public class CmsResultsTab extends A_CmsTab implements ClickHandler, ValueChange
             m_tabHandler.onRemoveCategories();
         }
         // TODO: add search params panel
-
     }
 
     /**
@@ -197,8 +196,7 @@ public class CmsResultsTab extends A_CmsTab implements ClickHandler, ValueChange
     public void onValueChange(ValueChangeEvent<String> event) {
 
         if (event.getSource() == m_sortSelectBox) {
-            // TODO: implement
-            event.getValue();
+            m_tabHandler.onResultsSort(event.getValue());
         }
     }
 

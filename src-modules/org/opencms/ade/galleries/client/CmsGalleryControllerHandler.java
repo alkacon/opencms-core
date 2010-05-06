@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleryControllerHandler.java,v $
- * Date   : $Date: 2010/04/30 10:17:38 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/05/06 09:27:20 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,10 +32,12 @@
 package org.opencms.ade.galleries.client;
 
 import org.opencms.ade.galleries.client.ui.CmsGalleryDialog;
+import org.opencms.ade.galleries.shared.CmsCategoryInfoBean;
 import org.opencms.ade.galleries.shared.CmsGalleriesListInfoBean;
 import org.opencms.ade.galleries.shared.CmsGalleryDialogBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchObject;
 import org.opencms.ade.galleries.shared.CmsTypesListInfoBean;
+import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 
 import java.util.ArrayList;
 
@@ -46,7 +48,7 @@ import java.util.ArrayList;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
 
@@ -72,7 +74,12 @@ public class CmsGalleryControllerHandler {
      */
     public void onCategoriesTabSelection() {
 
-        m_galleryDialog.getCategoriesTab().updateListLayout();
+        if (m_galleryDialog.getCategoriesTab().isInitOpen()) {
+            m_galleryDialog.getCategoriesTab().updateListLayout();
+
+            m_galleryDialog.getCategoriesTab().openFirstLevel();
+            m_galleryDialog.getCategoriesTab().setInitOpen(false);
+        }
     }
 
     /**
@@ -182,5 +189,29 @@ public class CmsGalleryControllerHandler {
     public void onUpdateTypes(ArrayList<CmsTypesListInfoBean> types) {
 
         m_galleryDialog.getTypesTab().updateTypes(types);
+    }
+
+    /**
+     * Will be triggered when categories list is sorted.<p>
+     *  
+     * @param categoriesList the updated categories list
+     * @param selectedCategories the selected categories
+     */
+    public void onUpdateCategories(
+        ArrayList<CmsCategoryInfoBean> categoriesList,
+        ArrayList<String> selectedCategories) {
+
+        m_galleryDialog.getCategoriesTab().updateCategories(categoriesList, selectedCategories);
+    }
+
+    /**
+     * Will be triggered when the tree is selected.<p>
+     * 
+     * @param categoryTreeEntry the category root entry
+     * @param selectedCategories the selected categories
+     */
+    public void onUpdateCategories(CmsCategoryTreeEntry categoryTreeEntry, ArrayList<String> selectedCategories) {
+
+        m_galleryDialog.getCategoriesTab().updateCategories(categoryTreeEntry, selectedCategories);
     }
 }
