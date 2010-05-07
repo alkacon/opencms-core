@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsSitemapService.java,v $
- * Date   : $Date: 2010/05/06 07:33:01 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/05/07 12:04:15 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 8.0.0
  * 
@@ -266,6 +266,14 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
         } catch (Throwable e) {
             error(e);
         }
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#translateUrlName(java.lang.String)
+     */
+    public String translateUrlName(String urlName) {
+
+        return getCmsObject().getRequestContext().getFileTranslator().translateResource(urlName);
     }
 
     /**

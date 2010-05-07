@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/rpc/Attic/I_CmsSitemapService.java,v $
- * Date   : $Date: 2010/05/03 14:33:06 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/05/07 12:04:15 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 8.0.0
  * 
@@ -130,4 +130,15 @@ public interface I_CmsSitemapService extends RemoteService {
      * @throws CmsRpcException if something goes wrong 
      */
     void save(String sitemapUri, List<I_CmsSitemapChange> changes) throws CmsRpcException;
+
+    /**
+     * Translates an URL name of a sitemap entry to a valid form containing no illegal characters.<p>
+     * 
+     * @param urlName the url name to be translated
+     *  
+     * @return the translated URL name
+     *  
+     * @throws CmsRpcException if something goes wrong 
+     */
+    String translateUrlName(String urlName) throws CmsRpcException;
 }
