@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsResultsTabHandler.java,v $
- * Date   : $Date: 2010/05/07 11:41:30 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/05/07 13:59:19 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ package org.opencms.ade.galleries.client;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
  */
@@ -53,6 +53,17 @@ public class CmsResultsTabHandler extends A_CmsTabHandler {
     public CmsResultsTabHandler(CmsGalleryController controller) {
 
         super(controller);
+    }
+
+    /**
+     * Will be triggered when the result item is clicked.<p>
+     * 
+     * @param id the id of the result
+     */
+    public void onClick(String id) {
+
+        m_controller.openPreview(id);
+
     }
 
     /**
@@ -80,31 +91,20 @@ public class CmsResultsTabHandler extends A_CmsTabHandler {
     }
 
     /**
-     * Will be triggered when the user selects the results tab.<p>
+     * @see org.opencms.ade.galleries.client.A_CmsTabHandler#onSelection()
      */
+    @Override
     public void onSelection() {
 
         m_controller.updateResultsTab();
     }
 
     /**
-     * Will be triggered when the user changes the sort parameter.<p>
-     * 
-     * @param sortParams the sort parameters
+     * @see org.opencms.ade.galleries.client.A_CmsTabHandler#onSort(java.lang.String)
      */
-    public void onResultsSort(String sortParams) {
+    @Override
+    public void onSort(String sortParams) {
 
         m_controller.sortResults(sortParams);
-    }
-
-    /**
-     * Will be triggered when the result item is clicked.<p>
-     * 
-     * @param id the id of the result
-     */
-    public void onClick(String id) {
-
-        m_controller.openPreview(id);
-
     }
 }

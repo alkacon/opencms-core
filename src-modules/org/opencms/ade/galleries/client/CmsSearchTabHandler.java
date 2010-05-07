@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsSearchTabHandler.java,v $
- * Date   : $Date: 2010/04/28 10:25:46 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/05/07 13:59:19 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ package org.opencms.ade.galleries.client;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  */
@@ -53,5 +53,23 @@ public class CmsSearchTabHandler extends A_CmsTabHandler {
     public CmsSearchTabHandler(CmsGalleryController controller) {
 
         super(controller);
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.A_CmsTabHandler#onSelection()
+     */
+    @Override
+    public void onSelection() {
+
+        // TODO: Auto-generated method stub
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.A_CmsTabHandler#onSort(java.lang.String)
+     */
+    @Override
+    public void onSort(String sortParams) {
+
+        // no list present
     }
 }

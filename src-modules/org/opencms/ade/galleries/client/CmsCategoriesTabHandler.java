@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsCategoriesTabHandler.java,v $
- * Date   : $Date: 2010/05/06 09:27:20 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/05/07 13:59:19 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ package org.opencms.ade.galleries.client;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  */
@@ -76,19 +76,19 @@ public class CmsCategoriesTabHandler extends A_CmsTabHandler {
     }
 
     /**
-     * Will be triggered when the user selects the categories tab.<p>
+     * @see org.opencms.ade.galleries.client.A_CmsTabHandler#onSelection()
      */
+    @Override
     public void onSelection() {
 
         m_controller.updateCategoriesTab();
     }
 
     /**
-     * Will be triggered when user sorts the categories.<p>
-     * 
-     * @param sortParams the sort parameters
+     * @see org.opencms.ade.galleries.client.A_CmsTabHandler#onSort(java.lang.String)
      */
-    public void onSortCategories(String sortParams) {
+    @Override
+    public void onSort(String sortParams) {
 
         m_controller.sortCategories(sortParams);
     }

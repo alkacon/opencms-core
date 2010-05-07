@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/Attic/CmsGalleryProvider.java,v $
- * Date   : $Date: 2010/05/03 14:33:05 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/05/07 13:59:19 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 8.0.0
  * 
@@ -91,21 +91,18 @@ public final class CmsGalleryProvider implements I_CmsGalleryProviderConstants, 
             + ","
             + I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_search.name()
             + ","
-            + I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_sitemap.name()),
+            + I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_sitemap.name());
 
-        /** The default tab id when gallery is opened. */
-        TAB_ID_DEFAULT(I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_galleries.name()),
+        /** The configuration. */
+        private String m_config;
 
-        /** The tab id when gallery is opened in ade dialogmode. */
-        TAB_ID_ADE(I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_types.name());
+        /** Constructor.<p>
+         *
+         * @param config the configuration
+         */
+        private GalleryConfiguration(String config) {
 
-        /** Property name. */
-        private String m_name;
-
-        /** Constructor.<p> */
-        private GalleryConfiguration(String name) {
-
-            m_name = name;
+            m_config = config;
         }
 
         /** 
@@ -113,9 +110,9 @@ public final class CmsGalleryProvider implements I_CmsGalleryProviderConstants, 
          * 
          * @return the name
          */
-        public String getName() {
+        public String getConfig() {
 
-            return m_name;
+            return m_config;
         }
     }
 
@@ -176,45 +173,75 @@ public final class CmsGalleryProvider implements I_CmsGalleryProviderConstants, 
 
         JSONObject keys = new JSONObject();
         // view, widget or editor dialogmode
-        String dialogMode = getDialogMode(request);
-        if (GalleryMode.view.name().equals(dialogMode)
-            || GalleryMode.widget.name().equals(dialogMode)
-            || GalleryMode.editor.name().equals(dialogMode)) {
 
-            try {
-                keys.put(ReqParam.dialogmode.name(), getDialogMode(request));
-                keys.put(ReqParam.gallerypath.name(), getGalleryPath(request));
-                keys.put(ReqParam.gallerytabid.name(), GalleryConfiguration.TAB_ID_DEFAULT.getName());
-                keys.put(ReqParam.tabs.name(), GalleryConfiguration.TABS_DEFAULT.getName());
-                keys.put(ReqParam.types.name(), getTypes(request));
-            } catch (Throwable e) {
-                LOG.error(e.getLocalizedMessage(), e);
+        GalleryMode dialogMode = getDialogMode(request);
+        switch (dialogMode) {
+
+            case editor:
+            case view:
+            case widget:
                 try {
-                    keys.put("error", e.getLocalizedMessage());
-                } catch (JSONException e1) {
-                    // ignore, should never happen
-                    LOG.error(e1.getLocalizedMessage(), e1);
+                    keys.put(ReqParam.dialogmode.name(), dialogMode.name());
+                    keys.put(ReqParam.gallerypath.name(), getGalleryPath(request));
+                    keys.put(
+                        ReqParam.gallerytabid.name(),
+                        I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_galleries.name());
+                    keys.put(ReqParam.tabs.name(), GalleryConfiguration.TABS_DEFAULT.getConfig());
+                    keys.put(ReqParam.types.name(), getTypesFromRequest(request));
+                } catch (Throwable e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                    try {
+                        keys.put("error", e.getLocalizedMessage());
+                    } catch (JSONException e1) {
+                        // ignore, should never happen
+                        LOG.error(e1.getLocalizedMessage(), e1);
+                    }
                 }
-            }
-        } else if (GalleryMode.ade.name().equals(dialogMode)) {
-            try {
-
-                keys.put(ReqParam.dialogmode.name(), getDialogMode(request));
-                keys.put(ReqParam.gallerypath.name(), "");
-                keys.put(ReqParam.gallerytabid.name(), GalleryConfiguration.TABS_ADE.getName());
-                keys.put(ReqParam.tabs.name(), GalleryConfiguration.TABS_ADE.getName());
-                // TODO: where do the types set for ade mode?
-                keys.put(ReqParam.types.name(), "");
-
-            } catch (Throwable e) {
-                LOG.error(e.getLocalizedMessage(), e);
+                break;
+            case ade:
                 try {
-                    keys.put("error", e.getLocalizedMessage());
-                } catch (JSONException e1) {
-                    // ignore, should never happen
-                    LOG.error(e1.getLocalizedMessage(), e1);
+
+                    keys.put(ReqParam.dialogmode.name(), dialogMode.name());
+                    keys.put(ReqParam.gallerypath.name(), "");
+                    keys.put(
+                        ReqParam.gallerytabid.name(),
+                        I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_types.name());
+                    keys.put(ReqParam.tabs.name(), GalleryConfiguration.TABS_ADE.getConfig());
+                    keys.put(ReqParam.types.name(), getTypesForContainerpage(request));
+
+                } catch (Throwable e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                    try {
+                        keys.put("error", e.getLocalizedMessage());
+                    } catch (JSONException e1) {
+                        // ignore, should never happen
+                        LOG.error(e1.getLocalizedMessage(), e1);
+                    }
                 }
-            }
+                break;
+            case sitemap:
+                try {
+
+                    keys.put(ReqParam.dialogmode.name(), dialogMode.name());
+                    keys.put(ReqParam.gallerypath.name(), "");
+                    keys.put(
+                        ReqParam.gallerytabid.name(),
+                        I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_vfstree.name());
+                    keys.put(ReqParam.tabs.name(), GalleryConfiguration.TABS_SITEMAP.getConfig());
+                    keys.put(ReqParam.types.name(), getTypesForSitemap(request));
+
+                } catch (Throwable e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                    try {
+                        keys.put("error", e.getLocalizedMessage());
+                    } catch (JSONException e1) {
+                        // ignore, should never happen
+                        LOG.error(e1.getLocalizedMessage(), e1);
+                    }
+                }
+                break;
+            default:
+                break;
         }
         return keys;
     }
@@ -226,11 +253,19 @@ public final class CmsGalleryProvider implements I_CmsGalleryProviderConstants, 
      * 
      * @return the comma separated resource types
      */
-    private String getDialogMode(HttpServletRequest request) {
+    private GalleryMode getDialogMode(HttpServletRequest request) {
 
-        return (CmsStringUtil.isNotEmptyOrWhitespaceOnly(request.getParameter(ReqParam.dialogmode.name()))
+        // TODO: this is all crap, change it soon
+        String temp = (CmsStringUtil.isNotEmptyOrWhitespaceOnly(request.getParameter(ReqParam.dialogmode.name()))
         ? request.getParameter(ReqParam.dialogmode.name())
         : (String)request.getAttribute(ReqParam.dialogmode.name()));
+        GalleryMode mode = null;
+        try {
+            mode = GalleryMode.valueOf(temp);
+        } catch (Exception e) {
+            mode = GalleryMode.ade;
+        }
+        return mode;
 
     }
 
@@ -247,14 +282,46 @@ public final class CmsGalleryProvider implements I_CmsGalleryProviderConstants, 
     }
 
     /**
-     * Returns the available resource types for this gallery dialog.<p>
+     * Returns the available resource types for this gallery dialog from request parameters.<p>
+     * 
+     * Use for gallery mode editor, view and widget.<p> 
      * 
      * @param request the current request to get the the parameter
      * 
      * @return the comma separated resource types
      */
-    private String getTypes(HttpServletRequest request) {
+    private String getTypesFromRequest(HttpServletRequest request) {
 
         return request.getParameter(ReqParam.types.name());
+    }
+
+    /**
+     * Returns the available resource types for this gallery dialog within the container-page editor.<p>
+     * 
+     * Use for gallery mode ade.<p> 
+     * 
+     * @param request the current request
+     * 
+     * @return the comma separated resource types
+     */
+    private String getTypesForContainerpage(HttpServletRequest request) {
+
+        //TODO: implement
+        return "";
+    }
+
+    /**
+     * Returns the available resource types for this gallery dialog within the sitemap editor.<p>
+     * 
+     * Use for gallery mode ade.<p> 
+     * 
+     * @param request the current request
+     * 
+     * @return the comma separated resource types
+     */
+    private String getTypesForSitemap(HttpServletRequest request) {
+
+        //TODO: implement
+        return "";
     }
 }

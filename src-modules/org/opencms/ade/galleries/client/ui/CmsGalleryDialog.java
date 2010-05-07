@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsGalleryDialog.java,v $
- * Date   : $Date: 2010/05/07 13:33:01 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2010/05/07 13:59:19 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 8.0.
  */
@@ -75,7 +75,7 @@ public class CmsGalleryDialog extends Composite implements BeforeSelectionHandle
     private FlowPanel m_parentPanel;
 
     /** The tabbed panel. */
-    private CmsTabbedPanel<A_CmsTab> m_tabbedPanel;
+    private CmsTabbedPanel<A_CmsListTab> m_tabbedPanel;
 
     /**
      * The default constructor for the gallery dialog.<p> 
@@ -89,13 +89,11 @@ public class CmsGalleryDialog extends Composite implements BeforeSelectionHandle
         m_parentPanel = new FlowPanel();
         m_parentPanel.setStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().galleryDialogSize());
         // tabs
-        m_tabbedPanel = new CmsTabbedPanel<A_CmsTab>(CmsTabLayout.standard, false);
+        m_tabbedPanel = new CmsTabbedPanel<A_CmsListTab>(CmsTabLayout.standard, false);
         // add tabs to parent widget        
         m_parentPanel.add(m_tabbedPanel);
-
         // All composites must call initWidget() in their constructors.
-        initWidget(m_parentPanel);
-
+        initWidget(m_tabbedPanel);
     }
 
     /**
@@ -238,7 +236,7 @@ public class CmsGalleryDialog extends Composite implements BeforeSelectionHandle
 
         int selectedIndex = m_tabbedPanel.getSelectedIndex();
 
-        A_CmsTab tabWidget = m_tabbedPanel.getWidget(selectedIndex);
+        A_CmsListTab tabWidget = m_tabbedPanel.getWidget(selectedIndex);
         // delegate to the specific tab handler on selection
         if (tabWidget instanceof CmsTypesTab) {
             tabWidget.onSelection();

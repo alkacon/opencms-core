@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsCategoriesTab.java,v $
- * Date   : $Date: 2010/05/07 08:16:13 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/05/07 13:59:19 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.ade.galleries.client.ui;
 
+import org.opencms.ade.galleries.client.A_CmsTabHandler;
 import org.opencms.ade.galleries.client.CmsCategoriesTabHandler;
 import org.opencms.ade.galleries.shared.CmsCategoryInfoBean;
 import org.opencms.ade.galleries.shared.CmsGalleryDialogBean;
@@ -40,7 +41,6 @@ import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.I_CmsListItem;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
-import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsPair;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
@@ -51,8 +51,6 @@ import java.util.List;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Image;
 
@@ -63,11 +61,11 @@ import com.google.gwt.user.client.ui.Image;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.
  */
-public class CmsCategoriesTab extends A_CmsTab implements ValueChangeHandler<String> {
+public class CmsCategoriesTab extends A_CmsListTab {
 
     /** 
      * Extended ClickHandler class to use with checkboxes in the category list.<p>
@@ -109,9 +107,6 @@ public class CmsCategoriesTab extends A_CmsTab implements ValueChangeHandler<Str
     }
 
     /** Text metrics key. */
-    private static final String TM_CATEGORY_SORT = "CategorySort";
-
-    /** Text metrics key. */
     private static final String TM_CATEGORY_TAB = "CategoryTab";
 
     /** The reference to the handler of this tab. */
@@ -119,9 +114,6 @@ public class CmsCategoriesTab extends A_CmsTab implements ValueChangeHandler<Str
 
     /** The flag to indicate when the categories are opened for the fist time. */
     private boolean m_isInitOpen;
-
-    /** The select box to change the sort order. */
-    private CmsSelectBox m_sortSelectBox;
 
     /**
      * Constructor.<p>
@@ -142,13 +134,6 @@ public class CmsCategoriesTab extends A_CmsTab implements ValueChangeHandler<Str
     public void fillContent(CmsGalleryDialogBean dialogBean) {
 
         setInitOpen(true);
-
-        ArrayList<CmsPair<String, String>> sortList = getSortList();
-        m_sortSelectBox = new CmsSelectBox(sortList);
-        m_sortSelectBox.addValueChangeHandler(this);
-        m_sortSelectBox.addStyleName(DIALOG_CSS.selectboxWidth());
-        m_sortSelectBox.truncate(TM_CATEGORY_SORT, 200);
-        addWidgetToOptions(m_sortSelectBox);
 
         CmsCategoryTreeEntry categoryRoot = dialogBean.getCategories();
         if (categoryRoot.getChildren() != null) {
@@ -222,30 +207,6 @@ public class CmsCategoriesTab extends A_CmsTab implements ValueChangeHandler<Str
     public boolean isInitOpen() {
 
         return m_isInitOpen;
-    }
-
-    /**
-     * Will be triggered when a tab is selected.<p>
-     * 
-     * @see org.opencms.ade.galleries.client.ui.A_CmsTab#onSelection()
-     */
-    @Override
-    public void onSelection() {
-
-        m_tabHandler.onSelection();
-
-    }
-
-    /**
-     * Will be triggered if the value in the select box changes.<p>
-     * 
-     * @see com.google.gwt.event.logical.shared.ValueChangeHandler#onValueChange(com.google.gwt.event.logical.shared.ValueChangeEvent)
-     */
-    public void onValueChange(ValueChangeEvent<String> event) {
-
-        if (event.getSource() == m_sortSelectBox) {
-            m_tabHandler.onSortCategories(event.getValue());
-        }
     }
 
     /**
@@ -392,6 +353,33 @@ public class CmsCategoriesTab extends A_CmsTab implements ValueChangeHandler<Str
     }
 
     /**
+     * @see org.opencms.ade.galleries.client.ui.A_CmsListTab#getSortList()
+     */
+    @Override
+    protected ArrayList<CmsPair<String, String>> getSortList() {
+
+        ArrayList<CmsPair<String, String>> list = new ArrayList<CmsPair<String, String>>();
+        list.add(new CmsPair<String, String>(SortParams.tree.name(), Messages.get().key(
+            Messages.GUI_SORT_LABEL_HIERARCHIC_0)));
+        list.add(new CmsPair<String, String>(SortParams.title_asc.name(), Messages.get().key(
+            Messages.GUI_SORT_LABEL_TITLE_ASC_0)));
+        list.add(new CmsPair<String, String>(SortParams.title_desc.name(), Messages.get().key(
+            Messages.GUI_SORT_LABEL_TITLE_DECS_0)));
+
+        return list;
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.ui.A_CmsListTab#getTabHandler()
+     */
+    @Override
+    protected A_CmsTabHandler getTabHandler() {
+
+        // TODO: Auto-generated method stub
+        return m_tabHandler;
+    }
+
+    /**
      * Adds children item to the category tree.<p>
      * 
      * @param parent the parent item 
@@ -468,24 +456,6 @@ public class CmsCategoriesTab extends A_CmsTab implements ValueChangeHandler<Str
                 addChildren(treeItem, child.getChildren(), selectedCategories);
             }
         }
-    }
-
-    /**
-     * Returns a list with sort values for this tab.<p>
-     * 
-     * @return list of sort order value/text pairs
-     */
-    private ArrayList<CmsPair<String, String>> getSortList() {
-
-        ArrayList<CmsPair<String, String>> list = new ArrayList<CmsPair<String, String>>();
-        list.add(new CmsPair<String, String>(SortParams.tree.name(), Messages.get().key(
-            Messages.GUI_SORT_LABEL_HIERARCHIC_0)));
-        list.add(new CmsPair<String, String>(SortParams.title_asc.name(), Messages.get().key(
-            Messages.GUI_SORT_LABEL_TITLE_ASC_0)));
-        list.add(new CmsPair<String, String>(SortParams.title_desc.name(), Messages.get().key(
-            Messages.GUI_SORT_LABEL_TITLE_DECS_0)));
-
-        return list;
     }
 
     /**

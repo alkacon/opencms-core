@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/A_CmsTabHandler.java,v $
- * Date   : $Date: 2010/04/28 10:25:46 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/05/07 13:59:19 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ package org.opencms.ade.galleries.client;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  */
@@ -58,4 +58,16 @@ public abstract class A_CmsTabHandler {
 
         m_controller = controller;
     }
+
+    /**
+     * Will be triggered when the tab is selected.<p>
+     */
+    public abstract void onSelection();
+
+    /** 
+     * Sorts the list, if present.<p>
+     * 
+     * @param sortParams the sort parameters
+     */
+    public abstract void onSort(String sortParams);
 }

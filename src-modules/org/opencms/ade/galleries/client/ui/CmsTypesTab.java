@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsTypesTab.java,v $
- * Date   : $Date: 2010/05/07 08:16:13 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/05/07 13:59:19 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,6 @@ import org.opencms.gwt.client.draganddrop.I_CmsDragHandler;
 import org.opencms.gwt.client.ui.CmsFloatDecoratedPanel;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
-import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsPair;
 import org.opencms.util.CmsStringUtil;
@@ -50,8 +49,6 @@ import java.util.List;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Image;
 
@@ -62,17 +59,11 @@ import com.google.gwt.user.client.ui.Image;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.
  */
-public class CmsTypesTab extends A_CmsTab implements ValueChangeHandler<String> {
-
-    /** Text metrics key. */
-    private static final String TM_TYPE_TAB = "TypeTab";
-
-    /** Text metrics key. */
-    private static final String TM_TYPE_SORT = "TypeSort";
+public class CmsTypesTab extends A_CmsListTab {
 
     /** 
      * Extended ClickHandler class to use with checkboxes in the types list.<p>
@@ -113,14 +104,14 @@ public class CmsTypesTab extends A_CmsTab implements ValueChangeHandler<String> 
         }
     }
 
+    /** Text metrics key. */
+    private static final String TM_TYPE_TAB = "TypeTab";
+
     /** The reference to the handler of this tab. */
     protected CmsTypesTabHandler m_tabHandler;
 
     /** The reference to the drag handler for the list elements. */
     private I_CmsDragHandler<?, ?> m_dragHandler;
-
-    /** The select box to change the sort order. */
-    private CmsSelectBox m_sortSelectBox;
 
     /**
      * Constructor with the drag handler.<p>
@@ -143,12 +134,6 @@ public class CmsTypesTab extends A_CmsTab implements ValueChangeHandler<String> 
     //TODO: add the drag handler and use CmsDraggableListItemWidget instead of CmsListItemWidget
     public void fillContent(CmsGalleryDialogBean dialogBean, List<String> selectedTypes) {
 
-        ArrayList<CmsPair<String, String>> sortList = getSortList();
-        m_sortSelectBox = new CmsSelectBox(sortList);
-        m_sortSelectBox.addValueChangeHandler(this);
-        m_sortSelectBox.addStyleName(DIALOG_CSS.selectboxWidth());
-        m_sortSelectBox.truncate(TM_TYPE_SORT, 200);
-        addWidgetToOptions(m_sortSelectBox);
         for (CmsTypesListInfoBean typeBean : dialogBean.getTypes()) {
             // TODO: replace with CmsDraggableList Item see: CmsTabResultsPanel
             CmsListItemWidget listItemWidget = new CmsListItemWidget(typeBean);
@@ -166,16 +151,6 @@ public class CmsTypesTab extends A_CmsTab implements ValueChangeHandler<String> 
             listItem.setSubTitle(typeBean.getSubTitle());
             addWidgetToList(listItem);
         }
-    }
-
-    /**
-     * Returns the tabHandler.<p>
-     *
-     * @return the tabHandler
-     */
-    public CmsTypesTabHandler getTabHandler() {
-
-        return m_tabHandler;
     }
 
     /**
@@ -213,27 +188,6 @@ public class CmsTypesTab extends A_CmsTab implements ValueChangeHandler<String> 
         typesPanel.add(test);
 
         return typesPanel;
-    }
-
-    /**
-     * Will be triggered when the tab is selected.<p>
-     *
-     * @see org.opencms.ade.galleries.client.ui.A_CmsTab#onSelection()
-     */
-    @Override
-    public void onSelection() {
-
-        m_tabHandler.onSelection();
-    }
-
-    /**
-     * @see com.google.gwt.event.logical.shared.ValueChangeHandler#onValueChange(com.google.gwt.event.logical.shared.ValueChangeEvent)
-     */
-    public void onValueChange(ValueChangeEvent<String> event) {
-
-        if (event.getSource() == m_sortSelectBox) {
-            m_tabHandler.onTypesSort(event.getValue());
-        }
     }
 
     /**
@@ -288,11 +242,10 @@ public class CmsTypesTab extends A_CmsTab implements ValueChangeHandler<String> 
     }
 
     /**
-     * Returns a list with sort values for this tab.<p>
-     * 
-     * @return list of sort order value/text pairs
+     * @see org.opencms.ade.galleries.client.ui.A_CmsListTab#getSortList()
      */
-    private ArrayList<CmsPair<String, String>> getSortList() {
+    @Override
+    protected ArrayList<CmsPair<String, String>> getSortList() {
 
         ArrayList<CmsPair<String, String>> list = new ArrayList<CmsPair<String, String>>();
         list.add(new CmsPair<String, String>(SortParams.title_asc.name(), Messages.get().key(
@@ -301,6 +254,15 @@ public class CmsTypesTab extends A_CmsTab implements ValueChangeHandler<String> 
             Messages.GUI_SORT_LABEL_TITLE_DECS_0)));
 
         return list;
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.ui.A_CmsListTab#getTabHandler()
+     */
+    @Override
+    protected CmsTypesTabHandler getTabHandler() {
+
+        return m_tabHandler;
     }
 
 }

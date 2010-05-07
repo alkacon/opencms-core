@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsResultsTab.java,v $
- * Date   : $Date: 2010/05/07 11:41:30 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/05/07 13:59:19 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,6 @@ import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
-import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.util.CmsClientStringUtil;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsPair;
@@ -54,8 +53,6 @@ import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Image;
 
@@ -67,11 +64,11 @@ import com.google.gwt.user.client.ui.Image;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.
  */
-public class CmsResultsTab extends A_CmsTab implements ClickHandler, ValueChangeHandler<String> {
+public class CmsResultsTab extends A_CmsListTab implements ClickHandler {
 
     /**
      * Special click handler to use with push button.<p>
@@ -102,31 +99,25 @@ public class CmsResultsTab extends A_CmsTab implements ClickHandler, ValueChange
     }
 
     /** Text metrics key. */
-    private static final String TM_RESULT_SORT = "ResultSort";
-
-    /** Text metrics key. */
     private static final String TM_RESULT_TAB = "ResultTab";
+
+    /** The reference to the handler of this tab. */
+    protected CmsResultsTabHandler m_tabHandler;
 
     /** Button to remove the selected categories. */
     private CmsPushButton m_closeCategoriesBtn;
 
-    /** Button to remove the selected galleries. */
-    private CmsPushButton m_closeGalleriesBtn;
-
     /** Button to remove the full text search. */
     //private CmsImageButton m_closeSearchBtn;
+
+    /** Button to remove the selected galleries. */
+    private CmsPushButton m_closeGalleriesBtn;
 
     /** Button to remove the selected types. */
     private CmsPushButton m_closeTypesBtn;
 
     /** The reference to the drag handler for the list elements. */
     private I_CmsDragHandler<?, ?> m_dragHandler;
-
-    /** The select box to change the sort order. */
-    private CmsSelectBox m_sortSelectBox;
-
-    /** The reference to the handler of this tab. */
-    protected CmsResultsTabHandler m_tabHandler;
 
     /**
      * The constructor with the drag handler.<p>
@@ -155,12 +146,6 @@ public class CmsResultsTab extends A_CmsTab implements ClickHandler, ValueChange
         CmsFloatDecoratedPanel categoriesParams) {
 
         showParams(searchObj, typesParams, galleriesParams, categoriesParams);
-        ArrayList<CmsPair<String, String>> sortList = getSortList();
-        m_sortSelectBox = new CmsSelectBox(sortList);
-        m_sortSelectBox.addValueChangeHandler(this);
-        m_sortSelectBox.addStyleName(DIALOG_CSS.selectboxWidth());
-        m_sortSelectBox.truncate(TM_RESULT_SORT, 200);
-        addWidgetToOptions(m_sortSelectBox);
 
         ArrayList<CmsResultsListInfoBean> list = searchObj.getResults();
         for (CmsResultsListInfoBean resultItem : list) {
@@ -189,16 +174,6 @@ public class CmsResultsTab extends A_CmsTab implements ClickHandler, ValueChange
     }
 
     /**
-     * Returns the tabHandler.<p>
-     *
-     * @return the tabHandler
-     */
-    public CmsResultsTabHandler getTabHandler() {
-
-        return m_tabHandler;
-    }
-
-    /**
      * Callback to handle click events on the close button of the selected parameters.<p>
      * 
      * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
@@ -212,27 +187,6 @@ public class CmsResultsTab extends A_CmsTab implements ClickHandler, ValueChange
         } else if (event.getSource() == m_closeCategoriesBtn) {
             m_tabHandler.onRemoveCategories();
         } // TODO: add search params panel
-    }
-
-    /**
-     * Will be triggered when the tab is selected.<p>
-     *
-     * @see org.opencms.ade.galleries.client.ui.A_CmsTab#onSelection()
-     */
-    @Override
-    public void onSelection() {
-
-        m_tabHandler.onSelection();
-    }
-
-    /**
-     * @see com.google.gwt.event.logical.shared.ValueChangeHandler#onValueChange(com.google.gwt.event.logical.shared.ValueChangeEvent)
-     */
-    public void onValueChange(ValueChangeEvent<String> event) {
-
-        if (event.getSource() == m_sortSelectBox) {
-            m_tabHandler.onResultsSort(event.getValue());
-        }
     }
 
     /**
@@ -318,11 +272,10 @@ public class CmsResultsTab extends A_CmsTab implements ClickHandler, ValueChange
     }
 
     /**
-     * Returns a list with sort values for this tab.<p>
-     * 
-     * @return list of sort order value/text pairs
+     * @see org.opencms.ade.galleries.client.ui.A_CmsListTab#getSortList()
      */
-    private ArrayList<CmsPair<String, String>> getSortList() {
+    @Override
+    protected ArrayList<CmsPair<String, String>> getSortList() {
 
         ArrayList<CmsPair<String, String>> list = new ArrayList<CmsPair<String, String>>();
         list.add(new CmsPair<String, String>(SortParams.title_asc.name(), Messages.get().key(
@@ -343,6 +296,15 @@ public class CmsResultsTab extends A_CmsTab implements ClickHandler, ValueChange
             Messages.GUI_SORT_LABEL_PATH_DESC_0)));
 
         return list;
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.ui.A_CmsListTab#getTabHandler()
+     */
+    @Override
+    protected CmsResultsTabHandler getTabHandler() {
+
+        return m_tabHandler;
     }
 
     /**

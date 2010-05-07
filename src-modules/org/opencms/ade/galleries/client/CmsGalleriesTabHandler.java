@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleriesTabHandler.java,v $
- * Date   : $Date: 2010/04/30 10:17:38 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/05/07 13:59:19 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ package org.opencms.ade.galleries.client;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  */
@@ -66,16 +66,6 @@ public class CmsGalleriesTabHandler extends A_CmsTabHandler {
     }
 
     /**
-     * Will be triggered when the user changes the value of the sort select box.<p>
-     * 
-     * @param sortParams the new sort parameters
-     */
-    public void onGalleriesSort(String sortParams) {
-
-        m_controller.sortGalleries(sortParams);
-    }
-
-    /**
      * Will be triggered when the user checks the checkbox to select a gallery.<p>
      * 
      * @param galleryPath the gallery path as id
@@ -86,10 +76,20 @@ public class CmsGalleriesTabHandler extends A_CmsTabHandler {
     }
 
     /**
-     * Will be triggered when the user selects the galleries tab.<p>
+     * @see org.opencms.ade.galleries.client.A_CmsTabHandler#onSelection()
      */
+    @Override
     public void onSelection() {
 
         m_controller.updateGalleriesTab();
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.A_CmsTabHandler#onSort(java.lang.String)
+     */
+    @Override
+    public void onSort(String sortParams) {
+
+        m_controller.sortGalleries(sortParams);
     }
 }

@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/A_CmsTab.java,v $
- * Date   : $Date: 2010/05/07 08:16:13 $
- * Version: $Revision: 1.4 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/A_CmsListTab.java,v $
+ * Date   : $Date: 2010/05/07 13:59:19 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,13 +31,20 @@
 
 package org.opencms.ade.galleries.client.ui;
 
+import org.opencms.ade.galleries.client.A_CmsTabHandler;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle.I_CmsGalleryDialogCss;
 import org.opencms.gwt.client.ui.CmsFlowPanel;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.I_CmsListItem;
+import org.opencms.gwt.client.ui.input.CmsSelectBox;
+import org.opencms.gwt.client.util.CmsPair;
+
+import java.util.ArrayList;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
@@ -50,24 +57,27 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.
  */
-public abstract class A_CmsTab extends Composite {
+public abstract class A_CmsListTab extends Composite implements ValueChangeHandler<String> {
 
     /**
      * @see com.google.gwt.uibinder.client.UiBinder
      */
-    /* default */interface I_CmsTabUiBinder extends UiBinder<Widget, A_CmsTab> {
+    /* default */interface I_CmsTabUiBinder extends UiBinder<Widget, A_CmsListTab> {
         // GWT interface, nothing to do here
     }
 
     /** The css bundle used for this widget. */
     protected static final I_CmsGalleryDialogCss DIALOG_CSS = I_CmsLayoutBundle.INSTANCE.galleryDialogCss();
 
+    /** Text metrics key. */
+    private static final String TM_GALLERY_SORT = "gallerySort";
+
     /** The ui-binder instance for this class. */
-    
+
     private static I_CmsTabUiBinder uiBinder = GWT.create(I_CmsTabUiBinder.class);
 
     /** The categories parameter panel. */
@@ -102,11 +112,14 @@ public abstract class A_CmsTab extends Composite {
     @UiField
     protected Panel m_types;
 
+    /** The select box to change the sort order. */
+    private CmsSelectBox m_sortSelectBox;
+
     /**
      * The default constructor with drag handler.<p>
      * 
      */
-    public A_CmsTab() {
+    public A_CmsListTab() {
 
         init();
     }
@@ -119,7 +132,29 @@ public abstract class A_CmsTab extends Composite {
     /**
      * Will be triggered when a tab is selected.<p>
      */
-    public abstract void onSelection();
+    public void onSelection() {
+
+        getTabHandler().onSelection();
+    }
+
+    /**
+     * Will be triggered if the value in the select box changes.<p>
+     * 
+     * @see com.google.gwt.event.logical.shared.ValueChangeHandler#onValueChange(com.google.gwt.event.logical.shared.ValueChangeEvent)
+     */
+    public void onValueChange(ValueChangeEvent<String> event) {
+
+        if (event.getSource() == m_sortSelectBox) {
+            getTabHandler().onSort(event.getValue());
+        }
+    }
+
+    /**
+     * Returns the tab handler.<p>
+     *
+     * @return the tab handler
+     */
+    protected abstract A_CmsTabHandler getTabHandler();
 
     /**
      * Updates the layout for all list items in this list.<p>
@@ -181,5 +216,19 @@ public abstract class A_CmsTab extends Composite {
         initWidget(uiBinder.createAndBindUi(this));
 
         CmsGalleryDialog.initCss();
+
+        ArrayList<CmsPair<String, String>> sortList = getSortList();
+        m_sortSelectBox = new CmsSelectBox(sortList);
+        m_sortSelectBox.addValueChangeHandler(this);
+        m_sortSelectBox.addStyleName(DIALOG_CSS.selectboxWidth());
+        m_sortSelectBox.truncate(TM_GALLERY_SORT, 200);
+        addWidgetToOptions(m_sortSelectBox);
     }
+
+    /**
+     * Returns a list with sort values for this tab.<p>
+     * 
+     * @return list of sort order value/text pairs
+     */
+    protected abstract ArrayList<CmsPair<String, String>> getSortList();
 }

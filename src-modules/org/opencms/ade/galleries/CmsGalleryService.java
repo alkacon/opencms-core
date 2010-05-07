@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/Attic/CmsGalleryService.java,v $
- * Date   : $Date: 2010/05/07 08:16:13 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/05/07 13:59:19 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -80,7 +80,7 @@ import java.util.Map.Entry;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 8.0.0
  * 
@@ -342,9 +342,10 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     /**
      * Returns the map with the available galleries.<p>
      * 
-     * The map uses gallery path as teh key and stores the CmsGalleriesListInfoBean as the value.
+     * The map uses gallery path as the key and stores the CmsGalleriesListInfoBean as the value.
      * 
      * @param galleryTypes the galleries
+     * 
      * @return the map with gallery info beans
      */
     private ArrayList<CmsGalleriesListInfoBean> buildGalleriesList(Map<String, CmsGalleryTypeInfo> galleryTypes)

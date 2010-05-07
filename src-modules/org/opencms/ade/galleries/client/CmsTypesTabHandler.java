@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsTypesTabHandler.java,v $
- * Date   : $Date: 2010/04/30 10:17:38 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/05/07 13:59:19 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ package org.opencms.ade.galleries.client;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  */
@@ -66,19 +66,19 @@ public class CmsTypesTabHandler extends A_CmsTabHandler {
     }
 
     /**
-     * Will be triggered when the user selects the types tab.<p>
+     * @see org.opencms.ade.galleries.client.A_CmsTabHandler#onSelection()
      */
+    @Override
     public void onSelection() {
 
         m_controller.updatesTypesTab();
     }
 
     /**
-     * Will be triggered when the user changes the value of the sort select box.<p>
-     * 
-     * @param sortParams the new sort parameters
+     * @see org.opencms.ade.galleries.client.A_CmsTabHandler#onSort(java.lang.String)
      */
-    public void onTypesSort(String sortParams) {
+    @Override
+    public void onSort(String sortParams) {
 
         m_controller.sortTypes(sortParams);
     }
