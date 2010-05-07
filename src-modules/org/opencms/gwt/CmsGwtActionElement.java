@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsGwtActionElement.java,v $
- * Date   : $Date: 2010/05/07 09:51:27 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/05/07 10:12:53 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import com.google.gwt.user.server.rpc.RPC;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -137,7 +137,7 @@ public class CmsGwtActionElement extends CmsJspActionElement {
      */
     protected String serialize(Method method, Object data) throws SerializationException {
 
-        return escape(RPC.encodeResponseForSuccess(method, data, CmsSerializationPolicy.instance()));
+        return escape(RPC.encodeResponseForSuccess(method, data, CmsPrefetchSerializationPolicy.instance()));
     }
 
     /**

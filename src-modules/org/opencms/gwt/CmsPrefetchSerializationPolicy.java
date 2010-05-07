@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsSerializationPolicy.java,v $
- * Date   : $Date: 2010/05/07 10:04:37 $
- * Version: $Revision: 1.2 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsPrefetchSerializationPolicy.java,v $
+ * Date   : $Date: 2010/05/07 10:12:53 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,18 +51,18 @@ import com.google.gwt.user.server.rpc.impl.LegacySerializationPolicy;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  * 
  */
-public final class CmsSerializationPolicy extends SerializationPolicy {
+public final class CmsPrefetchSerializationPolicy extends SerializationPolicy {
 
     /** The logger used for this class. */
-    private static Log LOG = CmsLog.getLog(CmsSerializationPolicy.class);
+    private static Log LOG = CmsLog.getLog(CmsPrefetchSerializationPolicy.class);
 
     /** The singleton instance of this serialization policy. */
-    private static CmsSerializationPolicy m_instance;
+    private static CmsPrefetchSerializationPolicy m_instance;
 
     /** The location of the whitelist file on the classpath. */
     private static final String SERIALIZATION_WHITELIST = "org/opencms/gwt/serialization-whitelist.txt";
@@ -76,7 +76,7 @@ public final class CmsSerializationPolicy extends SerializationPolicy {
     /**
      * Hidden default constructor.<p>
      */
-    private CmsSerializationPolicy() {
+    private CmsPrefetchSerializationPolicy() {
 
     }
 
@@ -85,10 +85,10 @@ public final class CmsSerializationPolicy extends SerializationPolicy {
      * 
      * @return the singleton instance of this class 
      */
-    public static CmsSerializationPolicy instance() {
+    public static CmsPrefetchSerializationPolicy instance() {
 
         if (m_instance == null) {
-            m_instance = new CmsSerializationPolicy();
+            m_instance = new CmsPrefetchSerializationPolicy();
         }
         return m_instance;
     }
@@ -177,7 +177,7 @@ public final class CmsSerializationPolicy extends SerializationPolicy {
 
         Set<String> result = new HashSet<String>();
         try {
-            ClassLoader loader = CmsSerializationPolicy.class.getClassLoader();
+            ClassLoader loader = CmsPrefetchSerializationPolicy.class.getClassLoader();
             InputStream stream = loader.getResourceAsStream(SERIALIZATION_WHITELIST);
             if (stream == null) {
                 throw new Exception(SERIALIZATION_WHITELIST + " not found on classpath!");
