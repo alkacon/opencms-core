@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/form/Attic/CmsForm.java,v $
- * Date   : $Date: 2010/05/06 09:51:37 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/05/07 13:51:20 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  * 
@@ -155,6 +155,18 @@ public class CmsForm extends Composite {
             }
         }
         return result;
+    }
+
+    /**
+     * Returns the form field with a given id.<p>
+     * 
+     * @param id the id of the form field 
+     * 
+     * @return the form field with the given id, or null if no field was found 
+     */
+    public I_CmsFormField getField(String id) {
+
+        return m_fields.get(id);
     }
 
     /**
