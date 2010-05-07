@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleryController.java,v $
- * Date   : $Date: 2010/05/06 10:20:38 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/05/07 11:41:30 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import com.google.gwt.core.client.GWT;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 8.0.0
  */
@@ -372,7 +372,6 @@ public class CmsGalleryController {
      */
     public void updateResultsTab() {
 
-        // TODO: perform the search on tab selection and update the result lists
         /** The RPC search action for the gallery dialog. */
         CmsRpcAction<CmsGallerySearchObject> searchAction = new CmsRpcAction<CmsGallerySearchObject>() {
 
@@ -486,5 +485,10 @@ public class CmsGalleryController {
         } else {
             return preparedSearchObj;
         }
+    }
+
+    public void openPreview(final String id) {
+
+        //TODO: call the rpc action and open the preview dialog in the callback
     }
 }

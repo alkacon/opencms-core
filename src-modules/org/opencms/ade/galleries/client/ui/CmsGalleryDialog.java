@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsGalleryDialog.java,v $
- * Date   : $Date: 2010/05/06 07:21:11 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/05/07 11:41:30 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,6 +39,7 @@ import org.opencms.ade.galleries.client.CmsTypesTabHandler;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.gwt.client.draganddrop.I_CmsDragHandler;
+import org.opencms.gwt.client.ui.CmsFlowPanel;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
 import org.opencms.gwt.client.ui.CmsTabbedPanel.CmsTabLayout;
 
@@ -55,7 +56,7 @@ import com.google.gwt.user.client.ui.Composite;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 8.0.
  */
@@ -69,6 +70,9 @@ public class CmsGalleryDialog extends Composite implements BeforeSelectionHandle
 
     /** The flag for the initails search. */
     private boolean m_isInitialSearch;
+
+    /** The parent panel for the gallery dialog. */
+    private CmsFlowPanel m_parent;
 
     /** The tabbed panel. */
     private CmsTabbedPanel<A_CmsTab> m_tabbedPanel;
@@ -87,30 +91,6 @@ public class CmsGalleryDialog extends Composite implements BeforeSelectionHandle
         initWidget(m_tabbedPanel);
     }
 
-    // TODO: remove, if do not used any more
-    /**
-     * The constructor of the gallery dialog.<p>
-     * 
-     * @param tabsConfig the tabs config string for this gallery dialog
-     * @param controller the reference to the gallery controller
-     * @param handler the reference to the drag handler
-     */
-    public CmsGalleryDialog(
-        ArrayList<String> tabsConfig,
-        CmsGalleryController controller,
-        I_CmsDragHandler<?, ?> handler) {
-
-        initCss();
-        m_dragHandler = handler;
-        m_tabbedPanel = new CmsTabbedPanel<A_CmsTab>(CmsTabLayout.standard, false);
-
-        // All composites must call initWidget() in their constructors.
-        initWidget(m_tabbedPanel);
-
-        fillTabs(tabsConfig, controller);
-
-    }
-
     /**
      * The default constructor for the gallery dialog.<p> 
      * 
@@ -123,7 +103,6 @@ public class CmsGalleryDialog extends Composite implements BeforeSelectionHandle
         m_tabbedPanel = new CmsTabbedPanel<A_CmsTab>(CmsTabLayout.standard, false);
 
         // All composites must call initWidget() in their constructors.
-        // TODO: BUT there should be only one constructor with logic, the others should just delegate
         initWidget(m_tabbedPanel);
     }
 

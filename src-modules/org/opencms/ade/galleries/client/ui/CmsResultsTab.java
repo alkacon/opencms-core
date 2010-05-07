@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsResultsTab.java,v $
- * Date   : $Date: 2010/05/07 08:16:14 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/05/07 11:41:30 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,6 +41,7 @@ import org.opencms.gwt.client.ui.CmsFloatDecoratedPanel;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsButton;
+import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.util.CmsClientStringUtil;
 import org.opencms.gwt.client.util.CmsDomUtil;
@@ -66,11 +67,39 @@ import com.google.gwt.user.client.ui.Image;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.
  */
 public class CmsResultsTab extends A_CmsTab implements ClickHandler, ValueChangeHandler<String> {
+
+    /**
+     * Special click handler to use with push button.<p>
+     */
+    private class CmsPushButtonHandler implements ClickHandler {
+
+        /** The id of the selected item. */
+        private String m_id;
+
+        /**
+         * Constructor.<p>
+         * 
+         * @param id
+         */
+        public CmsPushButtonHandler(String id) {
+
+            m_id = id;
+        }
+
+        /**
+         * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
+         */
+        public void onClick(ClickEvent event) {
+
+            m_tabHandler.onClick(m_id);
+
+        }
+    }
 
     /** Text metrics key. */
     private static final String TM_RESULT_SORT = "ResultSort";
@@ -97,7 +126,7 @@ public class CmsResultsTab extends A_CmsTab implements ClickHandler, ValueChange
     private CmsSelectBox m_sortSelectBox;
 
     /** The reference to the handler of this tab. */
-    private CmsResultsTabHandler m_tabHandler;
+    protected CmsResultsTabHandler m_tabHandler;
 
     /**
      * The constructor with the drag handler.<p>
@@ -135,13 +164,21 @@ public class CmsResultsTab extends A_CmsTab implements ClickHandler, ValueChange
 
         ArrayList<CmsResultsListInfoBean> list = searchObj.getResults();
         for (CmsResultsListInfoBean resultItem : list) {
+
             CmsListItemWidget resultItemWidget;
             if (m_dragHandler != null) {
                 resultItemWidget = m_dragHandler.createDraggableListItemWidget(resultItem, resultItem.getClientId());
             } else {
                 resultItemWidget = new CmsListItemWidget(resultItem);
             }
-
+            // add  preview button
+            CmsPushButton previewButton = new CmsPushButton();
+            previewButton.setImageClass(I_CmsImageBundle.INSTANCE.style().magnifierIcon());
+            previewButton.setShowBorder(false);
+            previewButton.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
+            previewButton.addClickHandler(new CmsPushButtonHandler(resultItem.getId()));
+            resultItemWidget.addButton(previewButton);
+            // add file icon
             Image icon = new Image(resultItem.getIconResource());
             icon.setStyleName(DIALOG_CSS.listIcon());
             resultItemWidget.setIcon(icon);
@@ -174,8 +211,7 @@ public class CmsResultsTab extends A_CmsTab implements ClickHandler, ValueChange
             m_tabHandler.onRemoveGalleries();
         } else if (event.getSource() == m_closeCategoriesBtn) {
             m_tabHandler.onRemoveCategories();
-        }
-        // TODO: add search params panel
+        } // TODO: add search params panel
     }
 
     /**
@@ -264,7 +300,14 @@ public class CmsResultsTab extends A_CmsTab implements ClickHandler, ValueChange
             } else {
                 resultItemWidget = new CmsListItemWidget(resultItem);
             }
-
+            // add  preview button
+            CmsPushButton previewButton = new CmsPushButton();
+            previewButton.setImageClass(I_CmsImageBundle.INSTANCE.style().magnifierIcon());
+            previewButton.setShowBorder(false);
+            previewButton.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
+            previewButton.addClickHandler(new CmsPushButtonHandler(resultItem.getId()));
+            resultItemWidget.addButton(previewButton);
+            // add file icon
             Image icon = new Image(resultItem.getIconResource());
             icon.setStyleName(DIALOG_CSS.listIcon());
             resultItemWidget.setIcon(icon);
