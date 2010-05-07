@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleryController.java,v $
- * Date   : $Date: 2010/05/07 11:41:30 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/05/07 13:33:01 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import com.google.gwt.core.client.GWT;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 8.0.0
  */
@@ -229,6 +229,17 @@ public class CmsGalleryController {
     }
 
     /**
+     * Opens the preview for the selected item.<p>
+     * 
+     * @param id the item to select
+     */
+    public void openPreview(final String id) {
+
+        m_handler.onOpenPreview();
+        //TODO: call the rpc action and open the preview dialog in the callback
+    }
+
+    /**
      * Remove the category from the search object.<p>
      * 
      * @param categoryPath the category path as id
@@ -275,17 +286,6 @@ public class CmsGalleryController {
     }
 
     /**
-     * Sorts the galleries according to given parameters and updates the list.<p>
-     * 
-     * @param sortParams the sort parameters
-     */
-    public void sortGalleries(String sortParams) {
-
-        m_dialogBean.sortGalleries(sortParams);
-        m_handler.onUpdateGalleries(m_dialogBean.getGalleries(), m_searchObject.getGalleries());
-    }
-
-    /**
      * Sorts the categories according to given parameters and updates the list.<p>
      * 
      * @param sortParams the sort parameters
@@ -299,6 +299,17 @@ public class CmsGalleryController {
         } else if (SortParams.tree == SortParams.valueOf(sortParams)) {
             m_handler.onUpdateCategories(m_dialogBean.getCategories(), m_searchObject.getCategories());
         }
+    }
+
+    /**
+     * Sorts the galleries according to given parameters and updates the list.<p>
+     * 
+     * @param sortParams the sort parameters
+     */
+    public void sortGalleries(String sortParams) {
+
+        m_dialogBean.sortGalleries(sortParams);
+        m_handler.onUpdateGalleries(m_dialogBean.getGalleries(), m_searchObject.getGalleries());
     }
 
     /**
@@ -485,10 +496,5 @@ public class CmsGalleryController {
         } else {
             return preparedSearchObj;
         }
-    }
-
-    public void openPreview(final String id) {
-
-        //TODO: call the rpc action and open the preview dialog in the callback
     }
 }

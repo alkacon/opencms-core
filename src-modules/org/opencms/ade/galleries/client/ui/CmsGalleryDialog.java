@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsGalleryDialog.java,v $
- * Date   : $Date: 2010/05/07 11:41:30 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/05/07 13:33:01 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,6 @@ import org.opencms.ade.galleries.client.CmsTypesTabHandler;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.gwt.client.draganddrop.I_CmsDragHandler;
-import org.opencms.gwt.client.ui.CmsFlowPanel;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
 import org.opencms.gwt.client.ui.CmsTabbedPanel.CmsTabLayout;
 
@@ -50,13 +49,14 @@ import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
 
 /**
  * Provides the method for the gallery dialog.<p>
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 8.0.
  */
@@ -72,7 +72,7 @@ public class CmsGalleryDialog extends Composite implements BeforeSelectionHandle
     private boolean m_isInitialSearch;
 
     /** The parent panel for the gallery dialog. */
-    private CmsFlowPanel m_parent;
+    private FlowPanel m_parentPanel;
 
     /** The tabbed panel. */
     private CmsTabbedPanel<A_CmsTab> m_tabbedPanel;
@@ -85,10 +85,17 @@ public class CmsGalleryDialog extends Composite implements BeforeSelectionHandle
         initCss();
         m_dragHandler = null;
         m_isInitialSearch = false;
+        // parent widget
+        m_parentPanel = new FlowPanel();
+        m_parentPanel.setStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().galleryDialogSize());
+        // tabs
         m_tabbedPanel = new CmsTabbedPanel<A_CmsTab>(CmsTabLayout.standard, false);
+        // add tabs to parent widget        
+        m_parentPanel.add(m_tabbedPanel);
 
         // All composites must call initWidget() in their constructors.
-        initWidget(m_tabbedPanel);
+        initWidget(m_parentPanel);
+
     }
 
     /**
@@ -98,12 +105,8 @@ public class CmsGalleryDialog extends Composite implements BeforeSelectionHandle
      */
     public CmsGalleryDialog(I_CmsDragHandler<?, ?> handler) {
 
-        initCss();
+        this();
         m_dragHandler = handler;
-        m_tabbedPanel = new CmsTabbedPanel<A_CmsTab>(CmsTabLayout.standard, false);
-
-        // All composites must call initWidget() in their constructors.
-        initWidget(m_tabbedPanel);
     }
 
     /**
@@ -113,6 +116,8 @@ public class CmsGalleryDialog extends Composite implements BeforeSelectionHandle
 
         I_CmsLayoutBundle.INSTANCE.galleryDialogCss().ensureInjected();
         I_CmsLayoutBundle.INSTANCE.listTreeCss().ensureInjected();
+        //TODO: let here or move to preview dialog?
+        I_CmsLayoutBundle.INSTANCE.previewDialogCss().ensureInjected();
         org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle.INSTANCE.galleryDialogCss().ensureInjected();
     }
 
@@ -183,6 +188,16 @@ public class CmsGalleryDialog extends Composite implements BeforeSelectionHandle
 
         // TODO: better way to get the last index
         return (CmsGalleriesTab)m_tabbedPanel.getWidget(1);
+    }
+
+    /**
+     * Returns the parent panel of the dialog.<p>
+     *
+     * @return the parent
+     */
+    public FlowPanel getParentPanel() {
+
+        return m_parentPanel;
     }
 
     /**

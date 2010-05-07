@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleriesVfs.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/ui/Attic/CmsPreviewDialog.java,v $
  * Date   : $Date: 2010/05/07 13:33:01 $
- * Version: $Revision: 1.10 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,35 +29,37 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.galleries.client;
+package org.opencms.ade.galleries.client.preview.ui;
 
-import org.opencms.ade.galleries.client.ui.CmsGalleryDialog;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
-import org.opencms.gwt.client.A_CmsEntryPoint;
 
-import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Label;
 
 /**
- * Gallery Dialog entry class to be open from the vfs tree.<p>
+ * Provides a widget for the preview dialog of the gallery items.<p>
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.1 $
  * 
- * @since 8.0.0
+ * @since 8.0.
  */
-public class CmsGalleriesVfs extends A_CmsEntryPoint {
+public class CmsPreviewDialog extends Composite {
+
+    /***/
+    private FlowPanel m_panel;
 
     /**
-     * @see org.opencms.gwt.client.A_CmsEntryPoint#onModuleLoad()
+     * Constructor.<p> 
      */
-    @Override
-    public void onModuleLoad() {
+    public CmsPreviewDialog() {
 
-        super.onModuleLoad();
-        RootPanel.getBodyElement().addClassName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().galleriesDialog());
-        CmsGalleryDialog galleryDialog = CmsGalleryFactory.createDialog();
-        // add the gallery dialog to dom
-        RootPanel.get().add(galleryDialog);
+        m_panel = new FlowPanel();
+        m_panel.setStylePrimaryName(I_CmsLayoutBundle.INSTANCE.previewDialogCss().previewDialog());
+        m_panel.add(new Label("Hallo"));
+
+        initWidget(m_panel);
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleryControllerHandler.java,v $
- * Date   : $Date: 2010/05/06 14:48:15 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/05/07 13:33:01 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.ade.galleries.client;
 
+import org.opencms.ade.galleries.client.preview.ui.CmsPreviewDialog;
 import org.opencms.ade.galleries.client.ui.CmsGalleryDialog;
 import org.opencms.ade.galleries.shared.CmsCategoryInfoBean;
 import org.opencms.ade.galleries.shared.CmsGalleriesListInfoBean;
@@ -49,7 +50,7 @@ import java.util.List;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 8.0.0
 
@@ -151,6 +152,15 @@ public class CmsGalleryControllerHandler {
     }
 
     /**
+     * Will be triggered when the preview is opened.<p>
+     */
+    public void onOpenPreview() {
+
+        CmsPreviewDialog preview = new CmsPreviewDialog();
+        m_galleryDialog.getParentPanel().add(preview);
+    }
+
+    /**
      * Will be triggered when the results tab is selected.<p>
      *
      * @param searchObj the current search object 
@@ -173,28 +183,6 @@ public class CmsGalleryControllerHandler {
     }
 
     /**
-     * Will be triggered when the sort parameters of the galleries list are changed.<p>
-     *  
-     * @param galleries the updated galleries list
-     * @param selectedGalleries the list of galleries to select
-     */
-    public void onUpdateGalleries(ArrayList<CmsGalleriesListInfoBean> galleries, ArrayList<String> selectedGalleries) {
-
-        m_galleryDialog.getGalleriesTab().updateContent(galleries, selectedGalleries);
-    }
-
-    /**
-     * Will be triggered when the sort parameters of the types list are changed.<p>
-     *  
-     * @param types the updated types list
-     * @param selectedTypes the list of types to select
-     */
-    public void onUpdateTypes(ArrayList<CmsTypesListInfoBean> types, List<String> selectedTypes) {
-
-        m_galleryDialog.getTypesTab().updateContent(types, selectedTypes);
-    }
-
-    /**
      * Will be triggered when categories list is sorted.<p>
      *  
      * @param categoriesList the updated categories list
@@ -214,5 +202,27 @@ public class CmsGalleryControllerHandler {
     public void onUpdateCategories(CmsCategoryTreeEntry categoryTreeEntry, ArrayList<String> selectedCategories) {
 
         m_galleryDialog.getCategoriesTab().updateContent(categoryTreeEntry, selectedCategories);
+    }
+
+    /**
+     * Will be triggered when the sort parameters of the galleries list are changed.<p>
+     *  
+     * @param galleries the updated galleries list
+     * @param selectedGalleries the list of galleries to select
+     */
+    public void onUpdateGalleries(ArrayList<CmsGalleriesListInfoBean> galleries, ArrayList<String> selectedGalleries) {
+
+        m_galleryDialog.getGalleriesTab().updateContent(galleries, selectedGalleries);
+    }
+
+    /**
+     * Will be triggered when the sort parameters of the types list are changed.<p>
+     *  
+     * @param types the updated types list
+     * @param selectedTypes the list of types to select
+     */
+    public void onUpdateTypes(ArrayList<CmsTypesListInfoBean> types, List<String> selectedTypes) {
+
+        m_galleryDialog.getTypesTab().updateContent(types, selectedTypes);
     }
 }
