@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsSerializationPolicy.java,v $
- * Date   : $Date: 2010/05/07 09:51:27 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/05/07 10:04:37 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import com.google.gwt.user.server.rpc.impl.LegacySerializationPolicy;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  * 
@@ -192,7 +192,7 @@ public final class CmsSerializationPolicy extends SerializationPolicy {
             }
 
         } catch (Exception e) {
-            LOG.warn(e.getLocalizedMessage(), e);
+            LOG.error(e.getLocalizedMessage(), e);
         }
         return result;
     }
