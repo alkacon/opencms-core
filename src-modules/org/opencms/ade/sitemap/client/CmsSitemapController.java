@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2010/05/04 09:40:41 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2010/05/07 14:05:48 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,8 +47,10 @@ import org.opencms.gwt.client.rpc.CmsRpcPrefetcher;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
@@ -58,11 +60,14 @@ import com.google.gwt.user.client.Window;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 8.0.0
  */
 public class CmsSitemapController {
+
+    /** The set of names of hidden properties. */
+    private static Set<String> hiddenProperties;
 
     /** The list of changes. */
     protected List<I_CmsSitemapChange> m_changes;
@@ -87,6 +92,28 @@ public class CmsSitemapController {
         m_changes = new ArrayList<I_CmsSitemapChange>();
         m_undone = new ArrayList<I_CmsSitemapChange>();
         m_data = (CmsSitemapData)CmsRpcPrefetcher.getSerializedObject(getService(), CmsSitemapData.DICT_NAME);
+    }
+
+    static {
+        hiddenProperties = new HashSet<String>();
+        hiddenProperties.add("template");
+        hiddenProperties.add("template-inherited");
+        hiddenProperties.add("sitemap");
+    }
+
+    /**
+     * Checks whether a string is the name of a hidden property.<p>
+     * 
+     * A hidden property is a property which should not appear in the property editor
+     * because it requires special treatment.<p>
+     * 
+     * @param propertyName the property name which should be checked
+     * 
+     * @return true if the argument is the name of a hidden property
+     */
+    public static boolean isHiddenProperty(String propertyName) {
+
+        return hiddenProperties.contains(propertyName);
     }
 
     /**
@@ -154,14 +181,17 @@ public class CmsSitemapController {
      * @param entry the sitemap entry to update
      * @param title the new title, can be <code>null</code> to keep the old one
      * @param vfsReference the new VFS reference, can be <code>null</code> to keep the old one
+     * @param name the new URL name, can be <code>null</code> to keep the old one 
      * @param properties the new properties, can be <code>null</code> to keep the old properties
      */
-    public void edit(CmsClientSitemapEntry entry, String title, String vfsReference, Map<String, String> properties) {
+    public void edit(CmsClientSitemapEntry entry, String title, String vfsReference, String name,
+
+    Map<String, String> properties) {
 
         boolean changedTitle = ((title != null) && !title.trim().equals(entry.getTitle()));
         boolean changedVfsRef = ((vfsReference != null) && !vfsReference.trim().equals(entry.getVfsPath()));
-        boolean changedProperties = ((properties != null) && !properties.equals(entry.getProperties()));
-        assert (!changedTitle && !changedVfsRef && !changedProperties);
+        //boolean changedProperties = ((properties != null) && !properties.equals(entry.getProperties()));
+        //assert (!changedTitle && !changedVfsRef && !changedProperties);
 
         CmsClientSitemapEntry newEntry = entry.cloneEntry();
         if (changedTitle) {
@@ -170,9 +200,12 @@ public class CmsSitemapController {
         if (changedVfsRef) {
             newEntry.setVfsPath(vfsReference);
         }
-        if (changedProperties) {
-            newEntry.setProperties(properties);
+        if (properties != null) {
+            // to preserve the hidden properties (navigation, sitemap...), we only copy the new property values
+            newEntry.getProperties().putAll(properties);
         }
+        // TODO: set URL name of the entry, and also change the URL shown in the widget
+
         addChange(new CmsSitemapChangeEdit(entry, newEntry), false);
     }
 
@@ -217,6 +250,25 @@ public class CmsSitemapController {
     public CmsSitemapData getData() {
 
         return m_data;
+    }
+
+    /**
+     * Checks whether a given sitemap entry has sibling entries with a given URL name.<p>
+     * 
+     * @param entry the entry which should be checked 
+     * @param urlNameValue the url name value
+     * @return true if the url name value occurs in siblings of the sitemap entry which was passed in 
+     */
+    public boolean hasSiblingEntriesWithName(CmsClientSitemapEntry entry, String urlNameValue) {
+
+        String parentPath = CmsResource.getParentFolder(entry.getSitePath());
+        CmsClientSitemapEntry parentEntry = getEntry(parentPath);
+        for (CmsClientSitemapEntry siblingEntry : parentEntry.getChildren()) {
+            if ((siblingEntry != entry) && urlNameValue.equals(siblingEntry.getName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -309,6 +361,18 @@ public class CmsSitemapController {
     public void setHandler(CmsSitemapControllerHandler handler) {
 
         m_handler = handler;
+    }
+
+    /**
+     * Starts the edit dialog for a given sitemap path.<p>
+     *  
+     * @param sitePath the site path of the entry to edit
+     */
+    public void startEdit(String sitePath) {
+
+        final CmsClientSitemapEntry entry = getEntry(sitePath);
+        assert entry != null;
+        (new CmsSitemapEntryEditor(this, entry, getService(), m_data.getProperties())).start();
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapTreeItem.java,v $
- * Date   : $Date: 2010/05/05 14:33:31 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/05/07 14:05:48 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import com.google.gwt.user.client.DOM;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 8.0.0
  * 
@@ -53,6 +53,9 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
 
     /** Attribute name constant. */
     public static final String ATTR_SITEPATH = "__sitePath";
+
+    /** The list item widget of this item. */
+    private CmsListItemWidget m_listItemWidget;
 
     /** The current site path. */
     private String m_sitePath;
@@ -66,6 +69,7 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
     public CmsSitemapTreeItem(CmsListItemWidget widget, String sitePath) {
 
         super(widget);
+        m_listItemWidget = widget;
         m_sitePath = sitePath;
         DOM.setElementAttribute(widget.getContentPanel().getElement(), ATTR_SITEPATH, sitePath);
     }
@@ -87,7 +91,7 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
      */
     public void updateEntry(CmsClientSitemapEntry entry) {
 
-        CmsListItemWidget widget = (CmsListItemWidget)getWidget();
+        CmsListItemWidget widget = m_listItemWidget;
         widget.setTitleLabel(entry.getTitle());
         widget.setAdditionalInfoValue(0, entry.getName());
         widget.setAdditionalInfoValue(1, entry.getVfsPath());

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapHoverbarHandler.java,v $
- * Date   : $Date: 2010/05/04 06:54:27 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/05/07 14:05:48 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import com.google.gwt.user.client.Window;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 8.0.0
  * 
@@ -102,7 +102,8 @@ public class CmsSitemapHoverbarHandler {
      */
     public void onEdit(String sitePath) {
 
-        // TODO: show edit dialog
+        m_controller.startEdit(sitePath);
+
     }
 
     /**

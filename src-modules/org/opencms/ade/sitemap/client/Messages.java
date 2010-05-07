@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/Messages.java,v $
- * Date   : $Date: 2010/05/06 13:11:19 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/05/07 14:05:48 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.client.util.CmsMessages;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 8.0.0
  */
@@ -102,13 +102,34 @@ public final class Messages {
     public static final String GUI_NO_EDIT_NOTIFICATION_1 = "GUI_NO_EDIT_NOTIFICATION_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROPERTY_EDITOR_TITLE_0 = "GUI_PROPERTY_EDITOR_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SITEMAP_0 = "GUI_SITEMAP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TITLE_CANT_BE_EMPTY_0 = "GUI_TITLE_CANT_BE_EMPTY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TITLE_PROPERTY_0 = "GUI_TITLE_PROPERTY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TITLE_PROPERTY_DESC_0 = "GUI_TITLE_PROPERTY_DESC_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TOOLBAR_REDO_0 = "GUI_TOOLBAR_REDO_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TOOLBAR_UNDO_0 = "GUI_TOOLBAR_UNDO_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_URLNAME_CANT_BE_EMPTY_0 = "GUI_URLNAME_CANT_BE_EMPTY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_URLNAME_PROPERTY_0 = "GUI_URLNAME_PROPERTY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_URLNAME_PROPERTY_DESC_0 = "GUI_URLNAME_PROPERTY_DESC_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_VFS_PATH_0 = "GUI_VFS_PATH_0";
