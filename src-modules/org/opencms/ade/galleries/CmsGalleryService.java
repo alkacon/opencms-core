@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/Attic/CmsGalleryService.java,v $
- * Date   : $Date: 2010/05/06 14:41:58 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/05/07 08:16:13 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -80,7 +80,7 @@ import java.util.Map.Entry;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 8.0.0
  * 
@@ -218,6 +218,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     /**
      * @see org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService#getCriteriaLists(java.util.ArrayList)
      */
+    // TODO: is not used at the moment, can be removed
     public CmsGalleryInfoBean getCriteriaLists(ArrayList<String> tabs) throws CmsRpcException {
 
         CmsGalleryInfoBean gInfoBean = new CmsGalleryInfoBean();
@@ -232,6 +233,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     /** 
      * @see org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService#getInitialSearch(org.opencms.ade.galleries.shared.CmsGallerySearchObject)
      */
+    // TODO: is not used! Can be removed
     public CmsGalleryInfoBean getInitialSearch(CmsGallerySearchObject searchObj) throws CmsRpcException {
 
         CmsGalleryInfoBean gInfoBean = new CmsGalleryInfoBean();

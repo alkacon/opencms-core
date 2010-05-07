@@ -17,6 +17,10 @@
 	padding:0 2px;
 }
 
+.selectboxWidth {
+		width: 200px;
+}
+
 .tabPanel {
 	margin:10px 8px 8px;
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsTypesTab.java,v $
- * Date   : $Date: 2010/05/06 14:48:15 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/05/07 08:16:13 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import com.google.gwt.user.client.ui.Image;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.
  */
@@ -105,13 +105,11 @@ public class CmsTypesTab extends A_CmsTab implements ValueChangeHandler<String> 
          */
         public void onClick(ClickEvent event) {
 
-            //TODO: CmsCheckBox sender = (CmsCheckBox)event.getSource();
             if (m_checkBox.isChecked()) {
                 m_tabHandler.selectType(m_resourceType);
             } else {
                 m_tabHandler.deselectType(m_resourceType);
             }
-
         }
     }
 
@@ -148,8 +146,7 @@ public class CmsTypesTab extends A_CmsTab implements ValueChangeHandler<String> 
         ArrayList<CmsPair<String, String>> sortList = getSortList();
         m_sortSelectBox = new CmsSelectBox(sortList);
         m_sortSelectBox.addValueChangeHandler(this);
-        // TODO: use the common way to set the width of the select box
-        m_sortSelectBox.setWidth("200px");
+        m_sortSelectBox.addStyleName(DIALOG_CSS.selectboxWidth());
         m_sortSelectBox.truncate(TM_TYPE_SORT, 200);
         addWidgetToOptions(m_sortSelectBox);
         for (CmsTypesListInfoBean typeBean : dialogBean.getTypes()) {

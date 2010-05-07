@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/A_CmsTab.java,v $
- * Date   : $Date: 2010/05/06 13:10:28 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/05/07 08:16:13 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,13 +45,12 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 
-//TODO: This class should replace CmsTabInnerPanel
 /**
  * Provides a widget for the content of a tab.<p>
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.
  */
@@ -60,7 +59,7 @@ public abstract class A_CmsTab extends Composite {
     /**
      * @see com.google.gwt.uibinder.client.UiBinder
      */
-    /* default */interface I_CmsTab extends UiBinder<Widget, A_CmsTab> {
+    /* default */interface I_CmsTabUiBinder extends UiBinder<Widget, A_CmsTab> {
         // GWT interface, nothing to do here
     }
 
@@ -68,7 +67,8 @@ public abstract class A_CmsTab extends Composite {
     protected static final I_CmsGalleryDialogCss DIALOG_CSS = I_CmsLayoutBundle.INSTANCE.galleryDialogCss();
 
     /** The ui-binder instance for this class. */
-    private static I_CmsTab uiBinder = GWT.create(I_CmsTab.class);
+    
+    private static I_CmsTabUiBinder uiBinder = GWT.create(I_CmsTabUiBinder.class);
 
     /** The categories parameter panel. */
     @UiField
@@ -101,22 +101,6 @@ public abstract class A_CmsTab extends Composite {
     /** The types parameter panel panel. */
     @UiField
     protected Panel m_types;
-
-    //    /** The types parameter panel panel. */
-    //    @UiField
-    //    protected CmsFlowPanel m_sortLabel;
-    //
-    //    /** The types parameter panel panel. */
-    //    @UiField
-    //    protected CmsFlowPanel m_sortSelectBox;
-    //
-    //    /** The types parameter panel panel. */
-    //    @UiField
-    //    protected CmsFlowPanel m_localeLabel;
-    //
-    //    /** The types parameter panel panel. */
-    //    @UiField
-    //    protected CmsFlowPanel m_localeSelectBox;
 
     /**
      * The default constructor with drag handler.<p>

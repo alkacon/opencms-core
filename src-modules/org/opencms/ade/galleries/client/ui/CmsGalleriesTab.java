@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsGalleriesTab.java,v $
- * Date   : $Date: 2010/05/06 14:48:15 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/05/07 08:16:14 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import com.google.gwt.user.client.ui.Image;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.
  */
@@ -133,25 +133,10 @@ public class CmsGalleriesTab extends A_CmsTab implements ValueChangeHandler<Stri
      */
     public void fillContent(CmsGalleryDialogBean dialogBean, ArrayList<String> selectedGalleries) {
 
-        //TODO: use this code to add labels before select boxes
-        //        Label label = new Label();
-        //        label.setWidth("30px");
-        //        label.setText(Messages.get().key(Messages.GUI_SORT_LABEL_SORT_0));
-        //        m_sortLabel.add(label);
-        //
-        //        ArrayList<CmsPair<String, String>> sortList = getSortList();
-        //        m_selectBox = new CmsSelectBox(sortList);
-        //        m_selectBox.addValueChangeHandler(this);
-        //        // TODO: use the common way to set the width of the select box
-        //        m_selectBox.setWidth("200px");
-        //        m_sortSelectBox.add(m_selectBox);
-        //addWidgetToOptions(m_sortSelectBox);
-
         ArrayList<CmsPair<String, String>> sortList = getSortList();
         m_sortSelectBox = new CmsSelectBox(sortList);
         m_sortSelectBox.addValueChangeHandler(this);
-        // TODO: use the common way to set the width of the select box
-        m_sortSelectBox.setWidth("200px");
+        m_sortSelectBox.addStyleName(DIALOG_CSS.selectboxWidth());
         m_sortSelectBox.truncate(TM_GALLERY_SORT, 200);
         addWidgetToOptions(m_sortSelectBox);
 
@@ -298,7 +283,6 @@ public class CmsGalleriesTab extends A_CmsTab implements ValueChangeHandler<Stri
     private ArrayList<CmsPair<String, String>> getSortList() {
 
         ArrayList<CmsPair<String, String>> list = new ArrayList<CmsPair<String, String>>();
-        //TODO: move constants to the I_CmsGalleryProviderConstants
         list.add(new CmsPair<String, String>(SortParams.title_asc.name(), Messages.get().key(
             Messages.GUI_SORT_LABEL_TITLE_ASC_0)));
         list.add(new CmsPair<String, String>(SortParams.title_desc.name(), Messages.get().key(

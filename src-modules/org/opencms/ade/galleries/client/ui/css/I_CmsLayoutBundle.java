@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2010/03/30 14:08:36 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/05/07 08:16:13 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import com.google.gwt.resources.client.CssResource;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -76,13 +76,19 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
          * 
          * @return the CSS class name
          */
-        String tabPanel();
+        String marginBottom();
 
         /** Access method.<p>
          * 
          * @return the CSS class name
          */
-        String marginBottom();
+        String paramsText();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String selectboxWidth();
 
         /** Access method.<p>
          * 
@@ -94,7 +100,7 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
          * 
          * @return the CSS class name
          */
-        String paramsText();
+        String tabPanel();
 
     }
 
