@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsClientStringUtil.java,v $
- * Date   : $Date: 2010/05/06 09:35:11 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/05/10 06:28:15 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,7 @@ package org.opencms.gwt.client.util;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  * 
@@ -100,6 +100,9 @@ public final class CmsClientStringUtil {
      */
     public static native double parseFloat(String str) /*-{
         var ret = parseFloat(str, 10);
+        if (isNaN(ret)) {
+        return 0;
+        }
         return ret;
     }-*/;
 
