@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/form/Attic/CmsForm.java,v $
- * Date   : $Date: 2010/05/07 13:51:20 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/05/10 06:54:24 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  * 
@@ -59,6 +59,9 @@ public class CmsForm extends Composite {
 
     /** A map from field ids to the corresponding widgets. */
     private Map<String, I_CmsFormField> m_fields = new LinkedHashMap<String, I_CmsFormField>();
+
+    /** The initial values of the form fields. */
+    private Map<String, String> m_initialValues = new HashMap<String, String>();
 
     /** The main panel for this widget. */
     private FlowPanel m_panel = new FlowPanel();
@@ -91,6 +94,7 @@ public class CmsForm extends Composite {
         if (initialValue != null) {
             formField.getWidget().setFormValueAsString(initialValue);
         }
+        m_initialValues.put(formField.getId(), initialValue);
         addRow(labelText, description, (Widget)widget);
 
     }
@@ -167,6 +171,19 @@ public class CmsForm extends Composite {
     public I_CmsFormField getField(String id) {
 
         return m_fields.get(id);
+    }
+
+    /**
+     * Resets all form fields to their initial values.<p>
+     */
+    public void reset() {
+
+        for (Map.Entry<String, I_CmsFormField> entry : m_fields.entrySet()) {
+            String id = entry.getKey();
+            I_CmsFormField field = entry.getValue();
+            field.getWidget().setFormValueAsString(m_initialValues.get(id));
+        }
+
     }
 
     /**

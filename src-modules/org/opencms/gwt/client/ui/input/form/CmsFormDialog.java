@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/form/Attic/CmsFormDialog.java,v $
- * Date   : $Date: 2010/05/06 09:51:37 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/05/10 06:54:24 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -75,6 +75,7 @@ public class CmsFormDialog extends CmsPopupDialog {
         setWidth("600px");
         m_form = (CmsForm)getContent();
         addButton(createCancelButton());
+        addButton(createResetButton());
         addButton(createOkButton());
     }
 
@@ -156,6 +157,9 @@ public class CmsFormDialog extends CmsPopupDialog {
         button.setUseMinWidth(true);
         button.addClickHandler(new ClickHandler() {
 
+            /**
+             * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
+             */
             public void onClick(ClickEvent event) {
 
                 hide();
@@ -176,6 +180,9 @@ public class CmsFormDialog extends CmsPopupDialog {
         button.setUseMinWidth(true);
         button.addClickHandler(new ClickHandler() {
 
+            /**
+             * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
+             */
             public void onClick(ClickEvent event) {
 
                 onClickOk();
@@ -183,4 +190,29 @@ public class CmsFormDialog extends CmsPopupDialog {
         });
         return button;
     }
+
+    /** 
+     * Creates the Reset button.<p>
+     * 
+     * @return the Reset button
+     */
+    private Widget createResetButton() {
+
+        CmsPushButton button = new CmsPushButton();
+        button.setText(Messages.get().key(Messages.GUI_RESET_0));
+        button.setUseMinWidth(true);
+        button.addClickHandler(new ClickHandler() {
+
+            /**
+             * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
+             */
+            public void onClick(ClickEvent event) {
+
+                m_form.reset();
+            }
+        });
+        return button;
+
+    }
+
 }

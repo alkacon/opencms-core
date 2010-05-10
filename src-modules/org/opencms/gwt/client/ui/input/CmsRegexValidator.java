@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsRegexValidator.java,v $
- * Date   : $Date: 2010/05/06 09:51:37 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/05/10 06:54:24 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,7 @@ package org.opencms.gwt.client.ui.input;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  */
@@ -92,7 +92,7 @@ public class CmsRegexValidator implements I_CmsValidator {
 
         I_CmsFormWidget widget = field.getWidget();
         if (widget.getFieldType() == I_CmsFormWidget.FieldType.STRING) {
-            String value = (String)widget.getFormValue();
+            String value = widget.getFormValueAsString();
             if (!matchRuleRegex(m_regex, value)) {
                 widget.setErrorMessage(m_message);
                 return false;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsCheckBox.java,v $
- * Date   : $Date: 2010/05/06 14:30:56 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/05/10 06:54:24 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import com.google.gwt.user.client.ui.Label;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 8.0.0
  */
@@ -252,6 +252,10 @@ public class CmsCheckBox extends Composite implements HasClickHandlers, I_CmsFor
      */
     public void setFormValueAsString(String value) {
 
+        if (value == null) {
+            setChecked(false);
+            return;
+        }
         setChecked(value.equalsIgnoreCase("true") || value.equalsIgnoreCase("checked"));
     }
 

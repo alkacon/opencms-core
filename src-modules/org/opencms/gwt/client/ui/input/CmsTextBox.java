@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsTextBox.java,v $
- * Date   : $Date: 2010/05/06 13:56:27 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/05/10 06:54:24 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import com.google.gwt.user.client.ui.TextBox;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  * 
@@ -192,6 +192,9 @@ public class CmsTextBox extends Composite implements I_CmsFormWidget, I_CmsHasIn
      */
     public void setFormValueAsString(String newValue) {
 
+        if (newValue == null) {
+            newValue = "";
+        }
         setFormValue(newValue);
 
     }
