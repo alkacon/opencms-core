@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsCheckBox.java,v $
- * Date   : $Date: 2010/05/10 06:54:24 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/05/10 14:56:51 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import com.google.gwt.user.client.ui.Label;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 8.0.0
  */
@@ -109,6 +109,7 @@ public class CmsCheckBox extends Composite implements HasClickHandlers, I_CmsFor
         m_button.getUpFace().setImage(new Image(IMAGES.checkboxUnchecked()));
         m_button.getDownDisabledFace().setImage(new Image(IMAGES.checkboxCheckedDisabled()));
         m_button.getUpDisabledFace().setImage(new Image(IMAGES.checkboxUncheckedDisabled()));
+        m_button.setShowBorder(false);
 
         initWidget(m_root);
         if (labelText != null) {

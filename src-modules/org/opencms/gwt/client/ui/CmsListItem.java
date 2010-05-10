@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItem.java,v $
- * Date   : $Date: 2010/05/06 13:37:38 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2010/05/10 14:56:51 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.gwt.client.ui;
 
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.util.CmsDomUtil;
 
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
@@ -42,7 +43,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Michael Moossen
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 8.0.0
  */
@@ -59,7 +60,7 @@ public class CmsListItem extends Composite implements I_CmsListItem {
      */
     public CmsListItem() {
 
-        m_panel = new CmsFlowPanel("li");
+        m_panel = new CmsFlowPanel(CmsDomUtil.Tag.li.name());
         m_panel.setStyleName(I_CmsLayoutBundle.INSTANCE.listTreeCss().listTreeItem());
         initWidget(m_panel);
     }
