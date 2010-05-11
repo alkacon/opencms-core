@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsDomUtil.java,v $
- * Date   : $Date: 2010/05/11 10:43:31 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2010/05/11 12:10:07 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,6 +44,7 @@ import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.NodeList;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant;
@@ -53,7 +54,7 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentC
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * 
  * @since 8.0.0
  */
@@ -767,6 +768,29 @@ public final class CmsDomUtil {
         }
         sb.append(">");
         return sb.toString();
+    }
+
+    /**
+     * Positions an element in the DOM relative to another element.<p>
+     * 
+     * @param elem the element to position
+     * @param referenceElement the element relative to which the first element should be positioned
+     * @param dx the x offset relative to the reference element
+     * @param dy the y offset relative to the reference element 
+     */
+    public static void positionElement(Element elem, Element referenceElement, double dx, double dy) {
+
+        com.google.gwt.dom.client.Style style = elem.getStyle();
+        style.setLeft(0, Unit.PX);
+        style.setTop(0, Unit.PX);
+        double myX = elem.getAbsoluteLeft();
+        double myY = elem.getAbsoluteTop();
+        double refX = referenceElement.getAbsoluteLeft();
+        double refY = referenceElement.getAbsoluteTop();
+        double newX = refX - myX + dx;
+        double newY = refY - myY + dy;
+        style.setLeft(newX, Unit.PX);
+        style.setTop(newY, Unit.PX);
     }
 
     /**
