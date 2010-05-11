@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/Attic/CmsCoreProvider.java,v $
- * Date   : $Date: 2010/05/04 09:40:41 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/05/11 12:34:01 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,13 +39,14 @@ import org.opencms.gwt.shared.rpc.I_CmsCoreService;
 import org.opencms.gwt.shared.rpc.I_CmsCoreServiceAsync;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * Client side core data provider.<p>
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
  * 
@@ -233,6 +234,39 @@ public final class CmsCoreProvider extends CmsCoreData {
             rootPath = rootPath.substring(siteRoot.length());
         }
         return rootPath;
+    }
+
+    /**
+     * Translates an url name to a form containing no illegal characters.<p>
+     * 
+     * @param urlname the url name which should be translated 
+     * @param callback the callback which should be called with the translated url name 
+     */
+    public void translateUrlName(final String urlname, final AsyncCallback<String> callback) {
+
+        CmsRpcAction<String> action = new CmsRpcAction<String>() {
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+             */
+            @Override
+            public void execute() {
+
+                start(200);
+                getService().translateUrlName(urlname, this);
+            }
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+             */
+            @Override
+            protected void onResponse(String result) {
+
+                stop();
+                callback.onSuccess(result);
+            }
+        };
+        action.execute();
     }
 
     /**

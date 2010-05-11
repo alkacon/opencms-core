@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsCoreService.java,v $
- * Date   : $Date: 2010/05/06 14:41:58 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/05/11 12:34:01 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 8.0.0
  * 
@@ -209,6 +209,16 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     }
 
     /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#translateUrlName(java.lang.String)
+     */
+    public String translateUrlName(String urlName) {
+
+        String result = getCmsObject().getRequestContext().getFileTranslator().translateResource(urlName);
+        result = result.replace('/', '_');
+        return result;
+    }
+
+    /**
      * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#unlock(java.lang.String)
      */
     public String unlock(String uri) throws CmsRpcException {
@@ -267,6 +277,8 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
      * 
      * @param type the resource type
      * @return the resource file icon
+     * 
+     * @throws CmsRpcException if something goes wrong 
      */
     private String findIcon(String type) throws CmsRpcException {
 
@@ -282,4 +294,5 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             return "";
         }
     }
+
 }

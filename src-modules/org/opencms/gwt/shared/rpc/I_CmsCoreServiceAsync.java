@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/rpc/Attic/I_CmsCoreServiceAsync.java,v $
- * Date   : $Date: 2010/05/06 14:41:59 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/05/11 12:34:01 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 8.0.0
  * 
@@ -102,6 +102,14 @@ public interface I_CmsCoreServiceAsync {
     void prefetch(AsyncCallback<CmsCoreData> callback);
 
     /**
+     * Translates an URL name of a sitemap entry to a valid form containing no illegal characters.<p>
+     * 
+     * @param urlName the url name to be translated
+     * @param callback the async callback 
+     */
+    void translateUrlName(String urlName, AsyncCallback<String> callback);
+
+    /**
      * Unlocks the given resource.<p>
      * 
      * @param uri the resource URI 
@@ -109,4 +117,5 @@ public interface I_CmsCoreServiceAsync {
      */
     @SynchronizedRpcRequest
     void unlock(String uri, AsyncCallback<String> callback);
+
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/rpc/Attic/I_CmsCoreService.java,v $
- * Date   : $Date: 2010/05/06 14:41:59 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/05/11 12:34:01 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 8.0.0
  * 
@@ -113,6 +113,17 @@ public interface I_CmsCoreService extends RemoteService {
     CmsCoreData prefetch() throws CmsRpcException;
 
     /**
+     * Translates an URL name of a sitemap entry to a valid form containing no illegal characters.<p>
+     * 
+     * @param urlName the url name to be translated
+     *  
+     * @return the translated URL name
+     *  
+     * @throws CmsRpcException if something goes wrong 
+     */
+    String translateUrlName(String urlName) throws CmsRpcException;
+
+    /**
      * Unlocks the given resource.<p>
      * 
      * @param uri the resource URI 
@@ -122,4 +133,5 @@ public interface I_CmsCoreService extends RemoteService {
      * @throws CmsRpcException if something goes wrong 
      */
     String unlock(String uri) throws CmsRpcException;
+
 }
