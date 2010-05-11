@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsToggleButton.java,v $
- * Date   : $Date: 2010/05/11 09:11:51 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/05/11 10:43:31 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.gwt.client.ui;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsDomUtil;
 
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.ToggleButton;
 
 /**
@@ -41,11 +42,14 @@ import com.google.gwt.user.client.ui.ToggleButton;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
-public class CmsToggleButton extends ToggleButton {
+public class CmsToggleButton extends ToggleButton implements HasHorizontalAlignment {
+
+    /** The current horizontal alignment. */
+    private HorizontalAlignmentConstant m_align;
 
     /** The down face image class. */
     private String m_downImageClass;
@@ -74,6 +78,7 @@ public class CmsToggleButton extends ToggleButton {
     public CmsToggleButton() {
 
         super();
+        m_align = HasHorizontalAlignment.ALIGN_RIGHT;
         setStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsState());
         setShowBorder(true);
         setSize(I_CmsButton.Size.medium);
@@ -119,6 +124,16 @@ public class CmsToggleButton extends ToggleButton {
     public String getDownImageClass() {
 
         return m_downImageClass;
+    }
+
+    /**
+     * This is the alignment of the text in reference to the image, possible values are left or right.<p>
+     * 
+     * @see com.google.gwt.user.client.ui.HasHorizontalAlignment#getHorizontalAlignment()
+     */
+    public HorizontalAlignmentConstant getHorizontalAlignment() {
+
+        return m_align;
     }
 
     /**
@@ -212,6 +227,20 @@ public class CmsToggleButton extends ToggleButton {
     public void setDownImageClass(String imageClass) {
 
         setDownFace(m_text, imageClass);
+    }
+
+    /**
+     * This is the alignment of the text in reference to the image, possible values are left or right.<p>
+     * 
+     * @see com.google.gwt.user.client.ui.HasHorizontalAlignment#setHorizontalAlignment(com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant)
+     */
+    public void setHorizontalAlignment(HorizontalAlignmentConstant align) {
+
+        if (align.equals(HasHorizontalAlignment.ALIGN_CENTER)) {
+            // ignore center alignment
+            return;
+        }
+        m_align = align;
     }
 
     /**
@@ -335,6 +364,6 @@ public class CmsToggleButton extends ToggleButton {
      */
     protected String getFaceHtml(String text, String imageClass) {
 
-        return CmsDomUtil.createFaceHtml(text, imageClass);
+        return CmsDomUtil.createFaceHtml(text, imageClass, m_align);
     }
 }

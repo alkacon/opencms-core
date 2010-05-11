@@ -16,8 +16,12 @@
     text-align: center;
 }
 
-.spacer {
+.spacerRight {
 	margin-right: 4px;
+}
+
+.spacerLeft {
+	margin-left: 4px;
 }
 
 .cmsTextButton .html-face{

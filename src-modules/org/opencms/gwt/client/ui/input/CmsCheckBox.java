@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsCheckBox.java,v $
- * Date   : $Date: 2010/05/11 09:11:52 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2010/05/11 10:43:31 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,6 +46,7 @@ import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 
 /**
  * This class represents a labeled checkbox which is not represented as an INPUT element in 
@@ -57,11 +58,12 @@ import com.google.gwt.user.client.ui.FlowPanel;
  * @author Georg Westenberger
  * @author Michael Moossen
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 8.0.0
  */
-public class CmsCheckBox extends Composite implements HasClickHandlers, I_CmsFormWidget, I_CmsHasInit {
+public class CmsCheckBox extends Composite
+implements HasClickHandlers, I_CmsFormWidget, I_CmsHasInit, HasHorizontalAlignment {
 
     /** Type string for this widget. */
     public static final String WIDGET_TYPE = "checkbox";
@@ -103,6 +105,7 @@ public class CmsCheckBox extends Composite implements HasClickHandlers, I_CmsFor
         if (labelText != null) {
             m_button.setText(labelText);
         }
+        setHorizontalAlignment(ALIGN_RIGHT);
 
         m_root = new FlowPanel();
         m_error = new CmsErrorWidget();
@@ -266,6 +269,34 @@ public class CmsCheckBox extends Composite implements HasClickHandlers, I_CmsFor
      */
     public void setFormValueAsString(String value) {
 
-        setChecked(value.equalsIgnoreCase("true") || value.equalsIgnoreCase("checked"));
+        setChecked(Boolean.parseBoolean(value) || value.equalsIgnoreCase("checked"));
+    }
+
+    /** The current horizontal alignment. */
+    private HorizontalAlignmentConstant m_align;
+
+    /**
+     * This is the alignment of the text in reference to the checkbox, possible values are left or right.<p>
+     * 
+     * @see com.google.gwt.user.client.ui.HasHorizontalAlignment#getHorizontalAlignment()
+     */
+    public HorizontalAlignmentConstant getHorizontalAlignment() {
+
+        return m_align;
+    }
+
+    /**
+     * This is the alignment of the text in reference to the checkbox, possible values are left or right.<p>
+     * 
+     * @see com.google.gwt.user.client.ui.HasHorizontalAlignment#setHorizontalAlignment(com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant)
+     */
+    public void setHorizontalAlignment(HorizontalAlignmentConstant align) {
+
+        if (align.equals(HasHorizontalAlignment.ALIGN_CENTER)) {
+            // ignore center alignment
+            return;
+        }
+        m_button.setHorizontalAlignment(align);
+        m_align = align;
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsDomUtil.java,v $
- * Date   : $Date: 2010/05/11 09:11:52 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2010/05/11 10:43:31 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,13 +45,15 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant;
 
 /**
  * Utility class to access the HTML DOM.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * 
  * @since 8.0.0
  */
@@ -450,6 +452,43 @@ public final class CmsDomUtil {
     }
 
     /**
+     * Convenience method to assemble the HTML to use for a button face.<p>
+     * 
+     * @param text text the up face text to set, set to <code>null</code> to not show any
+     * @param imageClass the up face image class to use, set to <code>null</code> to not show any
+     * @param align the alignment of the text in reference to the image
+     * 
+     * @return the HTML
+     */
+    public static String createFaceHtml(String text, String imageClass, HorizontalAlignmentConstant align) {
+
+        StringBuffer sb = new StringBuffer();
+        if (align == HasHorizontalAlignment.ALIGN_LEFT) {
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(text)) {
+                sb.append(text.trim());
+            }
+        }
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(imageClass)) {
+            String clazz = imageClass;
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(text)) {
+                if (align == HasHorizontalAlignment.ALIGN_LEFT) {
+                    clazz += " " + I_CmsLayoutBundle.INSTANCE.buttonCss().spacerLeft();
+                } else {
+                    clazz += " " + I_CmsLayoutBundle.INSTANCE.buttonCss().spacerRight();
+                }
+            }
+            AttributeValue attr = new AttributeValue(Attribute.clazz, clazz);
+            sb.append(enclose(Tag.span, "", attr));
+        }
+        if (align == HasHorizontalAlignment.ALIGN_RIGHT) {
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(text)) {
+                sb.append(text.trim());
+            }
+        }
+        return sb.toString();
+    }
+
+    /**
      * Creates an iFrame element with the given name attribute.<p>
      * 
      * @param name the name attribute value
@@ -760,30 +799,5 @@ public final class CmsDomUtil {
         hasClass |= elementClass.endsWith(" " + className);
 
         return hasClass;
-    }
-
-    /**
-     * Convenience method to assemble the HTML to use for a button face.<p>
-     * 
-     * @param text text the up face text to set, set to <code>null</code> to not show any
-     * @param imageClass the up face image class to use, set to <code>null</code> to not show any
-     * 
-     * @return the HTML
-     */
-    public static String createFaceHtml(String text, String imageClass) {
-
-        StringBuffer sb = new StringBuffer();
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(imageClass)) {
-            String clazz = imageClass;
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(text)) {
-                clazz += " " + I_CmsLayoutBundle.INSTANCE.buttonCss().spacer();
-            }
-            AttributeValue attr = new AttributeValue(Attribute.clazz, clazz);
-            sb.append(enclose(Tag.span, "", attr));
-        }
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(text)) {
-            sb.append(text.trim());
-        }
-        return sb.toString();
     }
 }

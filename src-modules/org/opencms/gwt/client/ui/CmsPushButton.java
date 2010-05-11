@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsPushButton.java,v $
- * Date   : $Date: 2010/05/11 09:11:52 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/05/11 10:43:31 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.gwt.client.ui;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsDomUtil;
 
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.PushButton;
 
 /**
@@ -43,11 +44,14 @@ import com.google.gwt.user.client.ui.PushButton;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
-public class CmsPushButton extends PushButton {
+public class CmsPushButton extends PushButton implements HasHorizontalAlignment {
+
+    /** The current horizontal alignment. */
+    private HorizontalAlignmentConstant m_align;
 
     /** The down face image class. */
     private String m_downImageClass;
@@ -75,6 +79,7 @@ public class CmsPushButton extends PushButton {
      */
     public CmsPushButton() {
 
+        m_align = HasHorizontalAlignment.ALIGN_RIGHT;
         setStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsState());
         setShowBorder(true);
         setSize(I_CmsButton.Size.medium);
@@ -131,6 +136,16 @@ public class CmsPushButton extends PushButton {
     public String getDownImageClass() {
 
         return m_downImageClass;
+    }
+
+    /**
+     * This is the alignment of the text in reference to the image, possible values are left or right.<p>
+     * 
+     * @see com.google.gwt.user.client.ui.HasHorizontalAlignment#getHorizontalAlignment()
+     */
+    public HorizontalAlignmentConstant getHorizontalAlignment() {
+
+        return m_align;
     }
 
     /**
@@ -234,6 +249,20 @@ public class CmsPushButton extends PushButton {
     public void setDownUiIcon(I_CmsButton.UiIcon icon) {
 
         setDownImageClass(I_CmsLayoutBundle.INSTANCE.iconsCss().uiIcon() + " " + icon.name());
+    }
+
+    /**
+     * This is the alignment of the text in reference to the image, possible values are left or right.<p>
+     * 
+     * @see com.google.gwt.user.client.ui.HasHorizontalAlignment#setHorizontalAlignment(com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant)
+     */
+    public void setHorizontalAlignment(HorizontalAlignmentConstant align) {
+
+        if (align.equals(HasHorizontalAlignment.ALIGN_CENTER)) {
+            // ignore center alignment
+            return;
+        }
+        m_align = align;
     }
 
     /**
@@ -356,6 +385,6 @@ public class CmsPushButton extends PushButton {
      */
     protected String getFaceHtml(String text, String imageClass) {
 
-        return CmsDomUtil.createFaceHtml(text, imageClass);
+        return CmsDomUtil.createFaceHtml(text, imageClass, m_align);
     }
 }
