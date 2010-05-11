@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsInputCss.java,v $
- * Date   : $Date: 2010/05/06 11:59:20 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/05/11 09:11:52 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import com.google.gwt.resources.client.CssResource;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 8.0.0
  */
@@ -63,6 +63,13 @@ public interface I_CmsInputCss extends CssResource {
      * 
      * @return the css class
      */
+    String checkBoxImage();
+
+    /**
+     * Css class reader.<p>
+     * 
+     * @return the css class
+     */
     String checkBoxImageChecked();
 
     /**
@@ -71,13 +78,6 @@ public interface I_CmsInputCss extends CssResource {
      * @return the css class
      */
     String checkBoxImageUnchecked();
-
-    /**
-     * Css class reader.<p>
-     * 
-     * @return the css class
-     */
-    String checkBoxLabel();
 
     /**
      * Css class reader.<p>

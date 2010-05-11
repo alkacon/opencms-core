@@ -28,70 +28,23 @@
 	}
 }
 
-.checkBoxLabel {
-	margin-left: 5px;
+@sprite .cmsState-up-disabled .checkBoxImage {
+	gwt-image: "images.checkboxUncheckedDisabled";
 }
-
-@sprite .cmsState-up-disabled .checkBoxImageChecked, .cmsState-down-disabled .checkBoxImageChecked{
-	gwt-image: "images.checkboxChecked";
-	display: inline-block;
-    vertical-align: middle;
-    cursor: wait;
-    margin-top: 1px;
-    background-position: 50% 50%;
-    height: 12px;
-    width: 12px;
+@sprite .cmsState-down-disabled .checkBoxImage {
+	gwt-image: "images.checkboxCheckedDisabled";
 }
-@sprite .cmsState-up .checkBoxImageChecked{
-	gwt-image: "images.checkboxChecked";
-	display: inline-block;
-    vertical-align: middle;
-    cursor: pointer;
-    margin-top: 1px;
-    background-position: 50% 50%;
-    height: 12px;
-    width: 12px;
-}
-@sprite .cmsState-up-hovering .checkBoxImageChecked, .cmsState-down-hovering .checkBoxImageChecked, .cmsState-down .checkBoxImageChecked{
-    gwt-image: "images.checkboxChecked";
-    display: inline-block;
-    vertical-align: middle;
-    cursor: pointer;
-    margin-top: 1px;
-    background-position: 50% 50%;
-    height: 12px;
-    width: 12px;
-}
-
-@sprite .cmsState-up-disabled .checkBoxImageUnchecked, .cmsState-down-disabled .checkBoxImageUnchecked{
+@sprite .cmsState-up .checkBoxImage, .checkBoxImageUnchecked {
 	gwt-image: "images.checkboxUnchecked";
-	display: inline-block;
-    vertical-align: middle;
-    cursor: wait;
-    margin-top: 1px;
-    background-position: 50% 50%;
-    height: 12px;
-    width: 12px;
 }
-@sprite .cmsState-up .checkBoxImageUnchecked{
-	gwt-image: "images.checkboxUnchecked";
-	display: inline-block;
-    vertical-align: middle;
-    cursor: pointer;
-    margin-top: 1px;
-    background-position: 50% 50%;
-    height: 12px;
-    width: 12px;
+@sprite .cmsState-down .checkBoxImage, .checkBoxImageChecked {
+	gwt-image: "images.checkboxChecked";
 }
-@sprite .cmsState-up-hovering .checkBoxImageUnchecked, .cmsState-down-hovering .checkBoxImageUnchecked, .cmsState-down .checkBoxImageUnchecked{
-    gwt-image: "images.checkboxUnchecked";
-    display: inline-block;
-    vertical-align: middle;
-    cursor: pointer;
-    margin-top: 1px;
-    background-position: 50% 50%;
-    height: 12px;
-    width: 12px;
+@sprite .cmsState-up-hovering .checkBoxImage {
+	gwt-image: "images.checkboxUncheckedHover";
+}
+@sprite .cmsState-down-hovering .checkBoxImage {
+	gwt-image: "images.checkboxCheckedHover";
 }
 
 .radioButtonGroup *, .multiCheckBox *, .textBoxPanel *, .formLabel, .formWidgetContainer * {
@@ -138,6 +91,7 @@
 .selectBoxCell {
 	background-color: white;
 	padding-left: 5px;
+	cursor: pointer;
 }
 
 .selectHover {

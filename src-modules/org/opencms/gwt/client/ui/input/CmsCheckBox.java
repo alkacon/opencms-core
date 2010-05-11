@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsCheckBox.java,v $
- * Date   : $Date: 2010/05/10 14:56:51 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/05/11 09:11:52 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,7 +34,6 @@ package org.opencms.gwt.client.ui.input;
 import org.opencms.gwt.client.I_CmsHasInit;
 import org.opencms.gwt.client.ui.CmsToggleButton;
 import org.opencms.gwt.client.ui.css.I_CmsInputCss;
-import org.opencms.gwt.client.ui.css.I_CmsInputImageBundle;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
@@ -47,20 +46,18 @@ import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Label;
 
 /**
- * This class represents a labelled checkbox which is not represented as an INPUT element in 
- * the DOM, but is displayed as an image. 
+ * This class represents a labeled checkbox which is not represented as an INPUT element in 
+ * the DOM, but is displayed as an image.<p> 
  * 
  * It can be checked/unchecked and enabled/disabled, which means 4 combinations in total.
- * So you need to supply 4 images, one for each of the combinations.
+ * So you need to supply 4 images, one for each of the combinations.<p>
  * 
  * @author Georg Westenberger
+ * @author Michael Moossen
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 8.0.0
  */
@@ -72,20 +69,14 @@ public class CmsCheckBox extends Composite implements HasClickHandlers, I_CmsFor
     /** CSS bundle for this widget. */
     private static final I_CmsInputCss CSS = I_CmsInputLayoutBundle.INSTANCE.inputCss();
 
-    /** Image bundle for this widget. */
-    private static final I_CmsInputImageBundle IMAGES = I_CmsInputImageBundle.INSTANCE;
-
     /** Toggle button which actually displays the checkbox. */
-    private final CmsToggleButton m_button = new CmsToggleButton();
+    private final CmsToggleButton m_button;
 
     /** The error display for this widget. */
-    private final CmsErrorWidget m_error = new CmsErrorWidget();
+    private final CmsErrorWidget m_error;
 
     /** Internal root widget to which all other components of this widget are attached. */
-    private final FlowPanel m_root = new FlowPanel();
-
-    /** A row containing the checkbox and a label (only used if the checkbox has a label). */
-    private final HorizontalPanel m_row = new HorizontalPanel();
+    private final FlowPanel m_root;
 
     /**
      * Default constructor which creates a checkbox without a label.<p>
@@ -99,34 +90,38 @@ public class CmsCheckBox extends Composite implements HasClickHandlers, I_CmsFor
      * Public constructor for a checkbox.<p>
      * 
      * The label text passed will be displayed to the right of the checkbox. If
-     * it is null, no label is displayed.
+     * it is null, no label is displayed.<p>
      * 
      * @param labelText the label text
      */
     public CmsCheckBox(String labelText) {
 
-        m_button.getDownFace().setImage(new Image(IMAGES.checkboxChecked()));
-        m_button.getUpFace().setImage(new Image(IMAGES.checkboxUnchecked()));
-        m_button.getDownDisabledFace().setImage(new Image(IMAGES.checkboxCheckedDisabled()));
-        m_button.getUpDisabledFace().setImage(new Image(IMAGES.checkboxUncheckedDisabled()));
+        m_button = new CmsToggleButton();
+        m_button.setUseMinWidth(false);
         m_button.setShowBorder(false);
-
-        initWidget(m_root);
+        m_button.setImageClass(CSS.checkBoxImage());
         if (labelText != null) {
-            m_row.add(m_button);
-            Label label = new Label(labelText);
-            label.setText(labelText);
-            label.addStyleName(CSS.checkBoxLabel());
-            m_row.add(label);
-            m_root.add(m_row);
-        } else {
-            m_root.add(m_button);
+            m_button.setText(labelText);
         }
+
+        m_root = new FlowPanel();
+        m_error = new CmsErrorWidget();
+        m_root.add(m_button);
         m_root.add(m_error);
 
+        initWidget(m_root);
         addStyleName(CSS.checkBox());
         addStyleName(CSS.inlineBlock());
+    }
 
+    /**
+     * Sets the text.<p>
+     *
+     * @param text the text to set
+     */
+    public void setText(String text) {
+
+        m_button.setText(text);
     }
 
     /**
@@ -158,6 +153,24 @@ public class CmsCheckBox extends Composite implements HasClickHandlers, I_CmsFor
     }
 
     /**
+     * Disables the checkbox and changes the checkbox title attribute to the disabled reason.<p>
+     *   
+     * @param disabledReason the disabled reason
+     */
+    public void disable(String disabledReason) {
+
+        m_button.disable(disabledReason);
+    }
+
+    /**
+     * Enables the checkbox, switching the checkbox title attribute from the disabled reason to the original title.<p>
+     */
+    public void enable() {
+
+        m_button.enable();
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getFieldType()
      */
     public FieldType getFieldType() {
@@ -170,7 +183,7 @@ public class CmsCheckBox extends Composite implements HasClickHandlers, I_CmsFor
      */
     public Boolean getFormValue() {
 
-        return this.isChecked() ? Boolean.TRUE : Boolean.FALSE;
+        return isChecked() ? Boolean.TRUE : Boolean.FALSE;
     }
 
     /**
@@ -206,7 +219,7 @@ public class CmsCheckBox extends Composite implements HasClickHandlers, I_CmsFor
      */
     public void reset() {
 
-        this.setChecked(false);
+        setChecked(false);
     }
 
     /**
@@ -253,11 +266,6 @@ public class CmsCheckBox extends Composite implements HasClickHandlers, I_CmsFor
      */
     public void setFormValueAsString(String value) {
 
-        if (value == null) {
-            setChecked(false);
-            return;
-        }
         setChecked(value.equalsIgnoreCase("true") || value.equalsIgnoreCase("checked"));
     }
-
 }

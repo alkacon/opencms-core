@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishSelectPanel.java,v $
- * Date   : $Date: 2010/05/06 14:34:25 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2010/05/11 09:11:52 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -79,7 +79,7 @@ import com.google.gwt.user.client.ui.Widget;
  *  
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 8.0.0
  */
@@ -112,10 +112,6 @@ public class CmsPublishSelectPanel extends Composite implements I_CmsPublishSele
     @UiField
     protected CmsPushButton m_cancelButton;
 
-    /** The panel with checkboxes. */
-    @UiField
-    protected Panel m_checkboxPanel;
-
     /** The checkbox for the "show problems only" mode. */
     @UiField
     protected CmsCheckBox m_checkboxProblems;
@@ -136,10 +132,6 @@ public class CmsPublishSelectPanel extends Composite implements I_CmsPublishSele
     @UiField
     protected Label m_noResources;
 
-    /** The label next to the 'only show resources with problems' checkbox. */
-    @UiField
-    protected InlineLabel m_problemsLabel;
-
     /** The panel which shows a message telling the user the number of problems. */
     @UiField
     protected Panel m_problemsPanel;
@@ -157,10 +149,6 @@ public class CmsPublishSelectPanel extends Composite implements I_CmsPublishSele
 
     /** The current publish list options. */
     protected CmsPublishOptions m_publishOptions;
-
-    /** The label for the "include related" checkbox. */
-    @UiField
-    protected InlineLabel m_relatedLabel;
 
     /** The scroll panel containing the group panel. */
     @UiField
@@ -185,10 +173,6 @@ public class CmsPublishSelectPanel extends Composite implements I_CmsPublishSele
     /** The panel containing the project selector. */
     @UiField
     protected FlowPanel m_selectorPanel;
-
-    /** The label for the "include siblings" checkbox. */
-    @UiField
-    protected InlineLabel m_siblingsLabel;
 
     /** The top button bar. */
     @UiField
@@ -323,15 +307,14 @@ public class CmsPublishSelectPanel extends Composite implements I_CmsPublishSele
             }
         });
 
-        m_siblingsLabel.setText(" " + messages.key(Messages.GUI_PUBLISH_CHECKBOXES_SIBLINGS_0));
-        m_relatedLabel.setText(" " + messages.key(Messages.GUI_PUBLISH_CHECKBOXES_REL_RES_0));
-        m_relatedLabel.addStyleName(CSS.clear());
-        m_siblingsLabel.addStyleName(CSS.clear());
-        m_problemsLabel.setText(" " + messages.key(Messages.GUI_PUBLISH_CHECKBOXES_PROBLEMS_0));
-        m_problemsLabel.addStyleName(CSS.clear());
+        m_checkboxSiblings.setText(messages.key(Messages.GUI_PUBLISH_CHECKBOXES_SIBLINGS_0));
+        m_checkboxRelated.setText(messages.key(Messages.GUI_PUBLISH_CHECKBOXES_REL_RES_0));
+        m_checkboxProblems.setText(messages.key(Messages.GUI_PUBLISH_CHECKBOXES_PROBLEMS_0));
+
         m_selectLabel.setText(messages.key(Messages.GUI_PUBLISH_TOP_PANEL_LEFT_LABEL_0));
         m_selectorLabel.setText(messages.key(Messages.GUI_PUBLISH_TOP_PANEL_RIGHT_LABEL_0));
         addScrollHandler();
+
     }
 
     /** 
@@ -582,7 +565,9 @@ public class CmsPublishSelectPanel extends Composite implements I_CmsPublishSele
         m_noResources.setVisible(!visible);
         m_scrollPanel.setVisible(visible);
         m_topBar.getElement().getStyle().setVisibility(visible ? Visibility.VISIBLE : Visibility.HIDDEN);
-        m_checkboxPanel.setVisible(visible);
+        m_checkboxSiblings.setVisible(visible);
+        m_checkboxRelated.setVisible(visible);
+        m_checkboxProblems.setVisible(visible);
     }
 
     /**

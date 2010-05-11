@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsPushButton.java,v $
- * Date   : $Date: 2010/05/06 13:46:49 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/05/11 09:11:52 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import com.google.gwt.user.client.ui.PushButton;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -205,6 +205,18 @@ public class CmsPushButton extends PushButton {
     }
 
     /**
+     * Sets the down face text and image.<p>
+     * 
+     * @param text the down face text to set, set to <code>null</code> to not show any
+     * @param imageClass the down face image class to use, set to <code>null</code> to not show any
+     */
+    public void setDownFace(String text, String imageClass) {
+
+        m_downImageClass = imageClass;
+        getDownFace().setHTML(getFaceHtml(text, imageClass));
+    }
+
+    /**
      * Sets the image class for the down face.<p>
      *
      * @param downImageClass the image class to set
@@ -212,7 +224,6 @@ public class CmsPushButton extends PushButton {
     public void setDownImageClass(String downImageClass) {
 
         setDownFace(m_text, downImageClass);
-        m_downImageClass = downImageClass;
     }
 
     /**
@@ -233,7 +244,6 @@ public class CmsPushButton extends PushButton {
     public void setImageClass(String imageClass) {
 
         setUpFace(m_text, imageClass);
-        m_imageClass = imageClass;
     }
 
     /**
@@ -284,7 +294,6 @@ public class CmsPushButton extends PushButton {
     public void setText(String text) {
 
         setUpFace(text, m_imageClass);
-        m_text = text;
     }
 
     /**
@@ -305,6 +314,19 @@ public class CmsPushButton extends PushButton {
     public void setUiIcon(I_CmsButton.UiIcon icon) {
 
         setImageClass(I_CmsLayoutBundle.INSTANCE.iconsCss().uiIcon() + " " + icon.name());
+    }
+
+    /**
+     * Sets the up face text and image.<p>
+     * 
+     * @param text the up face text to set, set to <code>null</code> to not show any
+     * @param imageClass the up face image class to use, set to <code>null</code> to not show any
+     */
+    public void setUpFace(String text, String imageClass) {
+
+        m_text = text;
+        m_imageClass = imageClass;
+        getUpFace().setHTML(getFaceHtml(text, imageClass));
     }
 
     /**
@@ -336,27 +358,4 @@ public class CmsPushButton extends PushButton {
 
         return CmsDomUtil.createFaceHtml(text, imageClass);
     }
-
-    /**
-     * Sets the down face text and image.<p>
-     * 
-     * @param text the down face text to set, set to <code>null</code> to not show any
-     * @param imageClass the down face image class to use, set to <code>null</code> to not show any
-     */
-    protected void setDownFace(String text, String imageClass) {
-
-        getDownFace().setHTML(getFaceHtml(text, imageClass));
-    }
-
-    /**
-     * Sets the up face text and image.<p>
-     * 
-     * @param text the up face text to set, set to <code>null</code> to not show any
-     * @param imageClass the up face image class to use, set to <code>null</code> to not show any
-     */
-    protected void setUpFace(String text, String imageClass) {
-
-        getUpFace().setHTML(getFaceHtml(text, imageClass));
-    }
-
 }

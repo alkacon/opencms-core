@@ -16,6 +16,9 @@
     text-align: center;
 }
 
+.spacer {
+	margin-right: 4px;
+}
 
 .cmsTextButton .html-face{
 	font-family: inherit;

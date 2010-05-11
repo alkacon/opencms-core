@@ -1,9 +1,9 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui" 
 	xmlns:cmsi="urn:import:org.opencms.gwt.client.ui.input"
-	xmlns:cms="urn:import:org.opencms.gwt.client.ui"  >
-	
+	xmlns:cms="urn:import:org.opencms.gwt.client.ui">
+
 	<ui:with field="res" type="org.opencms.ade.publish.client.I_CmsPublishLayoutBundle" />
 	<ui:with field="main" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
 	<g:FlowPanel styleName="{res.publishCss.selectPanel}">
@@ -12,30 +12,27 @@
 			<cmsi:CmsSelectBox ui:field="m_projectSelector" />
 		</g:FlowPanel>
 		<g:FlowPanel ui:field="m_topBar" styleName="{res.publishCss.topBar}">
-			<g:InlineLabel ui:field = "m_selectLabel" />
-		    <cms:CmsPushButton ui:field="m_selectAll"/>
-		    <cms:CmsPushButton ui:field="m_selectNone"/>
+			<g:InlineLabel ui:field="m_selectLabel" />
+			<cms:CmsPushButton ui:field="m_selectAll" />
+			<cms:CmsPushButton ui:field="m_selectNone" />
 		</g:FlowPanel>
-		<g:Label ui:field="m_noResources"  styleName="{res.publishCss.noResources}"/>
+		<g:Label ui:field="m_noResources" styleName="{res.publishCss.noResources}" />
 		<g:ScrollPanel ui:field="m_scrollPanel" styleName="{res.publishCss.scrollPanel}" addStyleNames="{main.generalCss.cornerAll}">
 			<g:FlowPanel ui:field="m_groupPanelContainer" styleName="{res.publishCss.groupPanel}"></g:FlowPanel>
 		</g:ScrollPanel>
-		<g:FlowPanel ui:field="m_checkboxPanel" styleName="{res.publishCss.checkboxes}">
-			<g:FlowPanel>
-				<cmsi:CmsCheckBox ui:field="m_checkboxRelated"></cmsi:CmsCheckBox>
-				<g:InlineLabel styleName="{res.publishCss.text}" addStyleNames="{main.generalCss.textMedium}" ui:field="m_relatedLabel"></g:InlineLabel>
-			</g:FlowPanel>
-			<g:FlowPanel>
-				<cmsi:CmsCheckBox ui:field="m_checkboxSiblings"></cmsi:CmsCheckBox>
-				<g:InlineLabel styleName="{res.publishCss.text}" addStyleNames="{main.generalCss.textMedium}" ui:field="m_siblingsLabel"></g:InlineLabel>
-			</g:FlowPanel>
-			<g:FlowPanel>
-				<cmsi:CmsCheckBox ui:field="m_checkboxProblems"></cmsi:CmsCheckBox>
-				<g:InlineLabel styleName="{res.publishCss.text}" addStyleNames="{main.generalCss.textMedium}" ui:field="m_problemsLabel"></g:InlineLabel>
-			</g:FlowPanel>
+		<cms:CmsSimplePanel styleName="{res.publishCss.checkboxes}">
+			<cmsi:CmsCheckBox ui:field="m_checkboxRelated"></cmsi:CmsCheckBox>
+		</cms:CmsSimplePanel>
+		<cms:CmsSimplePanel styleName="{res.publishCss.checkboxes}">
+			<cmsi:CmsCheckBox ui:field="m_checkboxSiblings"></cmsi:CmsCheckBox>
+		</cms:CmsSimplePanel>
+		<cms:CmsSimplePanel styleName="{res.publishCss.checkboxes}">
+			<cmsi:CmsCheckBox ui:field="m_checkboxProblems"></cmsi:CmsCheckBox>
+		</cms:CmsSimplePanel>
+		<cms:CmsSimplePanel ui:field="m_problemsPanel" styleName="{res.publishCss.problemPanel}" />
+		<g:FlowPanel>
+			<cms:CmsPushButton ui:field="m_publishButton"></cms:CmsPushButton>
+			<cms:CmsPushButton ui:field="m_cancelButton"></cms:CmsPushButton>
 		</g:FlowPanel>
-		<g:FlowPanel ui:field="m_problemsPanel" styleName="{res.publishCss.problemPanel}" />
-		<cms:CmsPushButton ui:field="m_publishButton"></cms:CmsPushButton>
-		<cms:CmsPushButton ui:field="m_cancelButton"></cms:CmsPushButton> 
 	</g:FlowPanel>
 </ui:UiBinder> 

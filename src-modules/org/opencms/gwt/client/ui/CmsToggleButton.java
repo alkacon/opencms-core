@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsToggleButton.java,v $
- * Date   : $Date: 2010/05/11 07:18:31 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/05/11 09:11:51 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,11 +41,14 @@ import com.google.gwt.user.client.ui.ToggleButton;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
 public class CmsToggleButton extends ToggleButton {
+
+    /** The down face image class. */
+    private String m_downImageClass;
 
     /** The image class. */
     private String m_imageClass;
@@ -106,6 +109,16 @@ public class CmsToggleButton extends ToggleButton {
 
         setEnabled(true);
         super.setTitle(m_title);
+    }
+
+    /**
+     * Returns the image class of the down face.<p>
+     *
+     * @return the image class of the down face
+     */
+    public String getDownImageClass() {
+
+        return m_downImageClass;
     }
 
     /**
@@ -180,6 +193,28 @@ public class CmsToggleButton extends ToggleButton {
     }
 
     /**
+     * Sets the down face text and image.<p>
+     * 
+     * @param text the down face text to set, set to <code>null</code> to not show any
+     * @param imageClass the down face image class to use, set to <code>null</code> to not show any
+     */
+    public void setDownFace(String text, String imageClass) {
+
+        m_downImageClass = imageClass;
+        getDownFace().setHTML(getFaceHtml(text, imageClass));
+    }
+
+    /**
+     * Sets the imageClassDown.<p>
+     *
+     * @param imageClass the imageClass to set
+     */
+    public void setDownImageClass(String imageClass) {
+
+        setDownFace(m_text, imageClass);
+    }
+
+    /**
      * Sets the imageClass.<p>
      *
      * @param imageClass the imageClass to set
@@ -187,7 +222,6 @@ public class CmsToggleButton extends ToggleButton {
     public void setImageClass(String imageClass) {
 
         setUpFace(m_text, imageClass);
-        m_imageClass = imageClass;
     }
 
     /**
@@ -262,6 +296,19 @@ public class CmsToggleButton extends ToggleButton {
     }
 
     /**
+     * Sets the up face text and image.<p>
+     * 
+     * @param text the up face text to set, set to <code>null</code> to not show any
+     * @param imageClass the up face image class to use, set to <code>null</code> to not show any
+     */
+    public void setUpFace(String text, String imageClass) {
+
+        m_text = text;
+        m_imageClass = imageClass;
+        getUpFace().setHTML(getFaceHtml(text, imageClass));
+    }
+
+    /**
      * Sets the useMinWidth.<p>
      *
      * @param useMinWidth the useMinWidth to set
@@ -289,16 +336,5 @@ public class CmsToggleButton extends ToggleButton {
     protected String getFaceHtml(String text, String imageClass) {
 
         return CmsDomUtil.createFaceHtml(text, imageClass);
-    }
-
-    /**
-     * Sets the up face text and image.<p>
-     * 
-     * @param text the up face text to set, set to <code>null</code> to not show any
-     * @param imageClass the up face image class to use, set to <code>null</code> to not show any
-     */
-    protected void setUpFace(String text, String imageClass) {
-
-        getUpFace().setHTML(getFaceHtml(text, imageClass));
     }
 }

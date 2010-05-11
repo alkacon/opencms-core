@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsDomUtil.java,v $
- * Date   : $Date: 2010/05/06 13:46:49 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2010/05/11 09:11:52 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.gwt.client.util;
 
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.impl.DOMImpl;
 import org.opencms.gwt.client.util.impl.DocumentStyleImpl;
 import org.opencms.util.CmsStringUtil;
@@ -50,7 +51,7 @@ import com.google.gwt.user.client.DOM;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @since 8.0.0
  */
@@ -770,16 +771,17 @@ public final class CmsDomUtil {
      * @return the HTML
      */
     public static String createFaceHtml(String text, String imageClass) {
-    
+
         StringBuffer sb = new StringBuffer();
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(imageClass)) {
-            AttributeValue attr = new AttributeValue(Attribute.clazz, imageClass);
+            String clazz = imageClass;
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(text)) {
+                clazz += " " + I_CmsLayoutBundle.INSTANCE.buttonCss().spacer();
+            }
+            AttributeValue attr = new AttributeValue(Attribute.clazz, clazz);
             sb.append(enclose(Tag.span, "", attr));
         }
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(text)) {
-            if (sb.length() > 0) {
-                sb.append(Entity.nbsp.html());
-            }
             sb.append(text.trim());
         }
         return sb.toString();
