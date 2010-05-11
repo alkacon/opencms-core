@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsSelectBox.java,v $
- * Date   : $Date: 2010/05/10 06:54:24 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2010/05/11 09:11:20 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -82,10 +82,9 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 8.0.0
- * 
  */
 public class CmsSelectBox extends Composite
 implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, I_CmsTruncable {
@@ -217,6 +216,12 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, I_CmsT
 
     /** The labels for each of the select options. */
     private final Map<String, String> m_valueLabels = new HashMap<String, String>();
+
+    /** The text metrics prefix. */
+    private String m_textMetricsPrefix;
+
+    /** The widget width for truncation. */
+    private int m_widgetWidth;
 
     /**
      * Creates a new select box.<p>
@@ -430,6 +435,9 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, I_CmsT
         String label = m_valueLabels.get(value);
 
         m_openerLabel.setText(label);
+        if (m_textMetricsPrefix != null) {
+            truncate(m_textMetricsPrefix, m_widgetWidth);
+        }
         m_selectedValue = value;
         close();
     }
@@ -461,7 +469,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, I_CmsT
         }
         if (value instanceof String) {
             String strValue = (String)value;
-            this.onValueSelect(strValue);
+            onValueSelect(strValue);
         }
     }
 
@@ -510,6 +518,8 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, I_CmsT
     */
     public void truncate(String textMetricsPrefix, int widgetWidth) {
 
+        m_textMetricsPrefix = textMetricsPrefix;
+        m_widgetWidth = widgetWidth;
         m_openerLabel.truncate(textMetricsPrefix + TM_OPENER_LABEL, widgetWidth);
         int labelWidth = widgetWidth - 2 - 5; // 2px border left/right + 5px left margin
         for (Widget widget : m_selector) {
@@ -572,11 +582,10 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, I_CmsT
             + CmsDomUtil.getCurrentStyleFloat(openerElement, CmsDomUtil.Style.width)
             + "px");
         m_popup.show();
-        positionElement(m_popup.getElement(), m_panel.getElement(), 1, CmsDomUtil.getCurrentStyleFloat(
+        positionElement(m_popup.getElement(), m_panel.getElement(), 0, CmsDomUtil.getCurrentStyleFloat(
             m_opener.getElement(),
             CmsDomUtil.Style.height));
         m_selectBoxState.setValue(I_CmsLayoutBundle.INSTANCE.generalCss().cornerTop());
-        // m_selectBoxState.setValue(CSS.selectBoxOpen());
     }
 
     /**
