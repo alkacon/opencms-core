@@ -6,7 +6,6 @@
 	<ui:with field="main" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
 	<g:FlowPanel ui:field="m_panel" styleName="{layout.inputCss.selectBoxRoot}" addStyleNames="{main.generalCss.textMedium}">
 		<g:FocusPanel ui:field="m_opener" styleName="{layout.inputCss.selectBoxSelected}">
-			<cmsInput:CmsLabel ui:field="m_openerLabel"/>
 		</g:FocusPanel>
 		<cmsInput:CmsErrorWidget ui:field="m_error" />
 	</g:FlowPanel>

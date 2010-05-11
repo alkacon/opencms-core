@@ -1,0 +1,76 @@
+/*
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/A_CmsSelectCell.java,v $
+ * Date   : $Date: 2010/05/11 13:41:15 $
+ * Version: $Revision: 1.1 $
+ *
+ * This library is part of OpenCms -
+ * the Open Source Content Management System
+ *
+ * Copyright (C) 2002 - 2009 Alkacon Software (http://www.alkacon.com)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about Alkacon Software, please see the
+ * company website: http://www.alkacon.com
+ *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+package org.opencms.gwt.client.ui.input;
+
+import com.google.gwt.event.dom.client.DomEvent;
+import com.google.gwt.event.shared.EventHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.ui.Composite;
+
+/**
+ * An abstract class for widgets which represent options for select boxes.<p>
+ * 
+ * @author Georg Westenberger
+ * 
+ * @version $Revision: 1.1 $
+ * 
+ * @since 8.0.0
+ * 
+ */
+public abstract class A_CmsSelectCell extends Composite {
+
+    /**
+     * Returns the value of the select option as a string.<p>
+     * 
+     * @return the value of the select option 
+     */
+    public abstract String getValue();
+
+    /**
+     * Adds a new event handler to the widget.<p>
+     * 
+     * This method is used because we want the select box to register some event handlers on this widget,
+     * but we can't use {@link com.google.gwt.user.client.ui.Widget#addDomHandler} directly, since it's both protected
+     * and final.
+     *    
+     * @param <H> the event type
+     * @param handler the new event handler
+     * @param type the event type object 
+     * 
+     * @return the HandlerRegistration for removing the event handler
+     */
+    public <H extends EventHandler> HandlerRegistration registerDomHandler(final H handler, DomEvent.Type<H> type) {
+
+        return addDomHandler(handler, type);
+    }
+
+}
