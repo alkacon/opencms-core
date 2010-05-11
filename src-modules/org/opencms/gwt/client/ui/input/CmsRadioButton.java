@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsRadioButton.java,v $
- * Date   : $Date: 2010/04/06 08:25:33 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/05/11 15:49:06 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,10 +31,15 @@
 
 package org.opencms.gwt.client.ui.input;
 
-import org.opencms.gwt.client.ui.css.I_CmsInputImageBundle;
+import org.opencms.gwt.client.ui.CmsToggleButton;
+import org.opencms.gwt.client.ui.css.I_CmsInputCss;
+import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 
-import com.google.gwt.user.client.ui.CustomButton;
-import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 
 /**
  * Class representing a single radio button.<p>
@@ -43,15 +48,21 @@ import com.google.gwt.user.client.ui.Image;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
  * 
  */
-public class CmsRadioButton extends CustomButton {
+public class CmsRadioButton extends Composite implements HasHorizontalAlignment, HasClickHandlers {
 
-    /** The image bundle used by this widget. */
-    private static final I_CmsInputImageBundle IMAGES = I_CmsInputImageBundle.INSTANCE;
+    /** The CSS bundle instance used for this widget. */
+    private static final I_CmsInputCss CSS = I_CmsInputLayoutBundle.INSTANCE.inputCss();
+
+    /** The current horizontal alignment. */
+    private HorizontalAlignmentConstant m_align;
+
+    /** The wigdet used to implement the actual radio button. */
+    private CmsToggleButton m_button = new CmsToggleButton();
 
     /** The value associated with this radio button. */
     private String m_name;
@@ -60,14 +71,43 @@ public class CmsRadioButton extends CustomButton {
      * Creates a new radio button.<p>
      * 
      * @param name the value associated with this radio button
+     * @param labelText the label text of the radio button
      */
-    public CmsRadioButton(String name) {
+    public CmsRadioButton(String name, String labelText) {
 
         m_name = name;
-        getUpFace().setImage(new Image(IMAGES.radioUnchecked()));
-        getDownFace().setImage(new Image(IMAGES.radioChecked()));
-        getUpDisabledFace().setImage(new Image(IMAGES.radioUncheckedDisabled()));
-        getDownDisabledFace().setImage(new Image(IMAGES.radioCheckedDisabled()));
+        m_button.setUseMinWidth(false);
+        m_button.setShowBorder(false);
+        m_button.setImageClass(CSS.radioButtonImage());
+        if (labelText != null) {
+            m_button.setText(labelText);
+        }
+        setHorizontalAlignment(ALIGN_RIGHT);
+
+        initWidget(m_button);
+        addStyleName(CSS.radioButton());
+        addStyleName(CSS.inlineBlock());
+
+    }
+
+    /**
+     * Adds a click handler to the radio button.<p>
+     * 
+     * @see com.google.gwt.event.dom.client.HasClickHandlers#addClickHandler(com.google.gwt.event.dom.client.ClickHandler)
+     */
+    public HandlerRegistration addClickHandler(ClickHandler handler) {
+
+        return m_button.addClickHandler(handler);
+    }
+
+    /**
+     * This is the alignment of the text in reference to the checkbox, possible values are left or right.<p>
+     * 
+     * @see com.google.gwt.user.client.ui.HasHorizontalAlignment#getHorizontalAlignment()
+     */
+    public HorizontalAlignmentConstant getHorizontalAlignment() {
+
+        return m_align;
     }
 
     /**
@@ -81,27 +121,48 @@ public class CmsRadioButton extends CustomButton {
     }
 
     /**
-     * Raise visibility of setDown to public.<p>
+     * Returns true if the radio button is checked.<p>
      * 
-     * @see com.google.gwt.user.client.ui.CustomButton#setDown(boolean)
+     * @return true if the  radio button is checked 
      */
-    @Override
-    public void setDown(boolean down) {
+    public boolean isChecked() {
 
-        super.setDown(down);
+        return m_button.isDown();
     }
 
     /**
-     * When the user clicks on the radio button, it always has to be checked afterwards,
-     * so we override the onClick method.
+     * Sets the 'checked' status of the radio button.<p>
      * 
-     * @see com.google.gwt.user.client.ui.CustomButton#onClick()
+     * @param checked if true, check the radio button, else uncheck it 
      */
-    @Override
-    protected void onClick() {
+    public void setChecked(boolean checked) {
 
-        super.onClick();
-        setDown(true);
+        m_button.setDown(checked);
+    }
+
+    /**
+     * Enables or disables the radio button.<p>
+     * 
+     * @param enabled if true, the radio button is enabled, else disabled 
+     */
+    public void setEnabled(boolean enabled) {
+
+        m_button.setEnabled(enabled);
+    }
+
+    /**
+     * This is the alignment of the text in reference to the checkbox, possible values are left or right.<p>
+     * 
+     * @see com.google.gwt.user.client.ui.HasHorizontalAlignment#setHorizontalAlignment(com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant)
+     */
+    public void setHorizontalAlignment(HorizontalAlignmentConstant align) {
+
+        if (align.equals(HasHorizontalAlignment.ALIGN_CENTER)) {
+            // ignore center alignment
+            return;
+        }
+        m_button.setHorizontalAlignment(align);
+        m_align = align;
     }
 
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsMultiCheckBox.java,v $
- * Date   : $Date: 2010/05/11 14:21:56 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/05/11 15:49:06 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import com.google.gwt.user.client.ui.Panel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 8.0.0
  *  
@@ -87,7 +87,7 @@ public class CmsMultiCheckBox extends Composite implements I_CmsFormWidget, I_Cm
     public CmsMultiCheckBox(List<CmsPair<String, String>> items) {
 
         super();
-        init(pairsToMap(items));
+        init(CmsPair.pairsToMap(items));
     }
 
     /**
@@ -120,25 +120,6 @@ public class CmsMultiCheckBox extends Composite implements I_CmsFormWidget, I_Cm
                 return new CmsMultiCheckBox(widgetParams);
             }
         });
-    }
-
-    /**
-     * Internal helper method for converting a list of string pairs to a string map.<p>
-     * 
-     * The first component of each pair is used as a map key, the second component as the 
-     * value for the key.
-     * 
-     * @param pairs the list of pairs 
-     * 
-     * @return a string map 
-     */
-    private static Map<String, String> pairsToMap(List<CmsPair<String, String>> pairs) {
-
-        LinkedHashMap<String, String> result = new LinkedHashMap<String, String>();
-        for (CmsPair<String, String> pair : pairs) {
-            result.put(pair.getFirst(), pair.getSecond());
-        }
-        return result;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsPair.java,v $
- * Date   : $Date: 2010/03/09 09:03:53 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/05/11 15:49:06 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,10 @@
 
 package org.opencms.gwt.client.util;
 
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Generic pair class.<p>
  * 
@@ -39,7 +43,7 @@ package org.opencms.gwt.client.util;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -61,6 +65,25 @@ public class CmsPair<A, B> {
 
         m_first = a;
         m_second = b;
+    }
+
+    /**
+     * Helper method for converting a list of string pairs to a string map.<p>
+     * 
+     * The first component of each pair is used as a map key, the second component as the 
+     * value for the key.
+     * 
+     * @param pairs the list of pairs 
+     * 
+     * @return a string map 
+     */
+    public static Map<String, String> pairsToMap(List<CmsPair<String, String>> pairs) {
+
+        LinkedHashMap<String, String> result = new LinkedHashMap<String, String>();
+        for (CmsPair<String, String> pair : pairs) {
+            result.put(pair.getFirst(), pair.getSecond());
+        }
+        return result;
     }
 
     /**

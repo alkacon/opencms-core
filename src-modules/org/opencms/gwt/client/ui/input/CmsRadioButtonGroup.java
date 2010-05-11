@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsRadioButtonGroup.java,v $
- * Date   : $Date: 2010/05/10 06:54:24 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/05/11 15:49:06 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,6 @@ import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Panel;
 
@@ -61,7 +60,7 @@ import com.google.gwt.user.client.ui.Panel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 8.0.0
  * 
@@ -73,7 +72,7 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsHasInit {
     public static final String WIDGET_TYPE = "radio";
 
     /** A collection of event handlers for this widget. */
-    HandlerManager m_handlers = new HandlerManager(null);
+    HandlerManager m_handlers = new HandlerManager(this);
 
     /** The error display used by this widget. */
     private CmsErrorWidget m_error = new CmsErrorWidget();
@@ -87,9 +86,6 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsHasInit {
     /** The value of the selected radio button, or null. */
     private String m_selected;
 
-    /** The table containing the radio buttons and labels. */
-    private FlexTable m_table = new FlexTable();
-
     /**
      * Creates a new instance from a list of key/value pairs.<p>
      * 
@@ -99,7 +95,7 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsHasInit {
      */
     public CmsRadioButtonGroup(List<CmsPair<String, String>> items) {
 
-        init(items);
+        init(CmsPair.pairsToMap(items));
     }
 
     /**
@@ -116,7 +112,7 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsHasInit {
         for (Map.Entry<String, String> entry : items.entrySet()) {
             pairs.add(new CmsPair<String, String>(entry.getKey(), entry.getValue()));
         }
-        init(pairs);
+        init(CmsPair.pairsToMap(pairs));
 
     }
 
@@ -197,7 +193,7 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsHasInit {
 
         if (m_selected != null) {
             CmsRadioButton button = m_radioButtons.get(m_selected);
-            button.setDown(false);
+            button.setChecked(false);
             m_selected = null;
         }
     }
@@ -253,16 +249,15 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsHasInit {
      * 
      * @param items the list of select options 
      */
-    protected void init(List<CmsPair<String, String>> items) {
+    protected void init(Map<String, String> items) {
 
-        m_panel.add(m_table);
-        m_panel.add(m_error);
+        initWidget(m_panel);
         m_radioButtons = new HashMap<String, CmsRadioButton>();
-        int i = 0;
+        for (Map.Entry<String, String> entry : items.entrySet()) {
 
-        for (CmsPair<String, String> pair : items) {
-            final CmsRadioButton button = new CmsRadioButton(pair.getFirst());
-            m_radioButtons.put(pair.getFirst(), button);
+            final CmsRadioButton button = new CmsRadioButton(entry.getKey(), entry.getValue());
+
+            m_radioButtons.put(entry.getKey(), button);
             button.addClickHandler(new ClickHandler() {
 
                 public void onClick(ClickEvent e) {
@@ -270,11 +265,11 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsHasInit {
                     changeSelectedItem(button.getName());
                 }
             });
-            m_table.setWidget(i, 0, button);
-            m_table.setText(i, 1, pair.getSecond());
-            i += 1;
+            FlowPanel wrapper = new FlowPanel();
+            wrapper.add(button);
+            m_panel.add(wrapper);
         }
-        initWidget(m_panel);
+        m_panel.add(m_error);
         m_panel.setStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().radioButtonGroup());
         m_panel.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().textMedium());
     }
@@ -288,12 +283,12 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsHasInit {
 
         if (m_selected != null) {
             CmsRadioButton selectedButton = m_radioButtons.get(m_selected);
-            selectedButton.setDown(false);
+            selectedButton.setChecked(false);
         }
         m_selected = key;
         CmsRadioButton button = m_radioButtons.get(m_selected);
         if (button != null) {
-            button.setDown(true);
+            button.setChecked(true);
         }
         fireValueChangedEvent(getSelected());
     }

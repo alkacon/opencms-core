@@ -47,6 +47,51 @@
 	gwt-image: "images.checkboxCheckedHover";
 }
 
+
+
+
+
+.radioButton .gwt-ToggleButton {
+	outline: none;
+}
+
+@if user.agent ie6 {
+	.checkBox * {
+		display: inline;
+	}
+}
+
+
+
+@sprite .cmsState-up-disabled .radioButtonImage {
+	gwt-image: "images.radioUncheckedDisabled";
+}
+
+@sprite .cmsState-down-disabled .radioButtonImage {
+	gwt-image: "images.radioCheckedDisabled";
+}
+
+@sprite .cmsState-up .radioButtonImage {
+	gwt-image: "images.radioUnchecked";
+}
+
+@sprite .cmsState-down .radioButtonImage {
+	gwt-image: "images.radioChecked";
+}
+
+@sprite .cmsState-up-hovering .radioButtonImage {
+	gwt-image: "images.radioUncheckedHover"; 
+}
+
+@sprite .cmsState-down-hovering .radioButtonImage {
+	gwt-image: "images.radioCheckedHover";
+}
+	
+
+
+
+
+
 .radioButtonGroup *, .multiCheckBox *, .textBoxPanel *, .formLabel, .formWidgetContainer * {
 	font-size: inherit;
 	font-family: inherit;
