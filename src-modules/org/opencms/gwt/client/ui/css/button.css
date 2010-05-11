@@ -40,7 +40,7 @@
         overflow: visible !important;
     }
 } @else {
-    .cmsTextButton, .cmsTextButton div, .cmsImageButton, .cmsImageButtonTransparent, .cmsImageButtonTransparent div{
+    .cmsTextButton, .cmsTextButton div, .cmsImageButtonTransparent, .cmsImageButtonTransparent div{
         display: inline-block;
         white-space: nowrap;
         vertical-align: middle;
