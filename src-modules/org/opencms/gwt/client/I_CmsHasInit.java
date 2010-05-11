@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/Attic/I_CmsHasInit.java,v $
- * Date   : $Date: 2010/05/06 13:10:36 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/05/11 09:57:45 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,7 @@ package org.opencms.gwt.client;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  * 
@@ -44,4 +44,5 @@ package org.opencms.gwt.client;
  */
 public interface I_CmsHasInit {
 
+    // empty
 }
