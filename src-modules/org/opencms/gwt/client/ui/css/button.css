@@ -5,7 +5,7 @@
 .cmsState.cmsState-up-disabled{ cursor: auto; }
 .cmsHovering{}
 
-.cmsTextButton,.cmsImageButton { 
+.cmsTextButton { 
     border-width:1px;
     border-style: solid;
     padding: 2px 4px;
@@ -30,7 +30,7 @@
 }
 
 @if user.agent ie6 {
-    .cmsTextButton, .cmsImageButton, .cmsImageButtonTransparent{
+    .cmsTextButton, .cmsImageButtonTransparent{
         white-space: nowrap;
         display: inline;
         vertical-align: middle;
@@ -40,7 +40,7 @@
         overflow: visible !important;
     }
 } @else {
-    .cmsTextButton, .cmsTextButton div, .cmsImageButton, .cmsImageButton div, .cmsImageButtonTransparent, .cmsImageButtonTransparent div{
+    .cmsTextButton, .cmsTextButton div, .cmsImageButton, .cmsImageButtonTransparent, .cmsImageButtonTransparent div{
         display: inline-block;
         white-space: nowrap;
         vertical-align: middle;
@@ -68,7 +68,7 @@
 
 .cmsButtonMedium{}
 
-.cmsTextButton.cmsState-up-disabled,.cmsImageButton.cmsState-up-disabled{
+.cmsTextButton.cmsState-up-disabled{
     color: value("constantsCss.colorDisabled");
     background: #bbbbbb;
 }
@@ -76,7 +76,6 @@
 
 
 
-@sprite .cmsTextButton.cmsState-up, .cmsImageButton.cmsState-up{gwt-image: "backgroundDefault"; background-position: 50% 50%; height: auto;} 
-@sprite .cmsTextButton.cmsState-down-hovering, .cmsTextButton.cmsState-up-hovering, 
-    .cmsImageButton.cmsState-down-hovering, .cmsImageButton.cmsState-up-hovering{gwt-image: "backgroundHover"; background-position: 50% 50%; height: auto;}
-@sprite .cmsTextButton.cmsState-down, .cmsImageButton.cmsState-down{gwt-image: "backgroundActive"; background-position: 50% 50%;height: auto;}      
+@sprite .cmsTextButton.cmsState-up{gwt-image: "backgroundDefault"; background-position: 50% 50%; height: auto;} 
+@sprite .cmsTextButton.cmsState-down-hovering, .cmsTextButton.cmsState-up-hovering{gwt-image: "backgroundHover"; background-position: 50% 50%; height: auto;}
+@sprite .cmsTextButton.cmsState-down{gwt-image: "backgroundActive"; background-position: 50% 50%;height: auto;}      

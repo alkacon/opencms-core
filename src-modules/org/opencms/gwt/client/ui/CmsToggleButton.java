@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsToggleButton.java,v $
- * Date   : $Date: 2010/05/06 13:46:49 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/05/11 07:18:31 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import com.google.gwt.user.client.ui.ToggleButton;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -72,8 +72,6 @@ public class CmsToggleButton extends ToggleButton {
 
         super();
         setStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsState());
-        addStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsImageButton());
-        addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
         setShowBorder(true);
         setSize(I_CmsButton.Size.medium);
     }
