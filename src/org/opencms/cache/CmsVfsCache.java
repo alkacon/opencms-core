@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/cache/CmsVfsCache.java,v $
- * Date   : $Date: 2010/03/10 10:19:17 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/05/12 09:38:51 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.cache;
 
+import org.opencms.db.CmsDriverManager;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.I_CmsEventListener;
@@ -44,7 +45,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.6 
  */
@@ -69,6 +70,11 @@ public abstract class CmsVfsCache implements I_CmsEventListener {
         switch (event.getType()) {
             case I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED:
             case I_CmsEventListener.EVENT_RESOURCE_MODIFIED:
+                Object change = event.getData().get(I_CmsEventListener.KEY_CHANGE);
+                if ((change != null) && change.equals(new Integer(CmsDriverManager.NOTHING_CHANGED))) {
+                    // skip lock & unlock
+                    return;
+                }
                 // a resource has been modified in a way that it *IS NOT* necessary also to clear 
                 // lists of cached sub-resources where the specified resource might be contained inside.
                 resource = (CmsResource)event.getData().get(I_CmsEventListener.KEY_RESOURCE);

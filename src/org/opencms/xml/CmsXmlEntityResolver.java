@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlEntityResolver.java,v $
- * Date   : $Date: 2009/12/14 12:51:02 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/05/12 09:38:51 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.xml;
 
 import org.opencms.configuration.CmsConfigurationManager;
+import org.opencms.db.CmsDriverManager;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -63,7 +64,7 @@ import org.xml.sax.InputSource;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -232,6 +233,11 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
                 }
                 break;
             case I_CmsEventListener.EVENT_RESOURCE_MODIFIED:
+                Object change = event.getData().get(I_CmsEventListener.KEY_CHANGE);
+                if ((change != null) && change.equals(new Integer(CmsDriverManager.NOTHING_CHANGED))) {
+                    // skip lock & unlock
+                    return;
+                }
                 resource = (CmsResource)event.getData().get(I_CmsEventListener.KEY_RESOURCE);
                 uncacheSystemId(resource.getRootPath());
                 break;

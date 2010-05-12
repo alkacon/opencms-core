@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/gwt/CmsGwtService.java,v $
- * Date   : $Date: 2010/05/03 10:47:32 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/05/12 09:38:51 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.gwt;
 
+import org.opencms.db.CmsDriverManager;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsEvent;
@@ -67,7 +68,7 @@ import com.google.gwt.user.server.rpc.SerializationPolicyLoader;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 8.0.0
  */
@@ -90,6 +91,25 @@ public class CmsGwtService extends RemoteServiceServlet implements I_CmsEventLis
 
     /** The online serialization policy. */
     private SerializationPolicy m_serPolicyOnline;
+
+    /**
+     * Constructor.<p>
+     */
+    public CmsGwtService() {
+
+        super();
+        // listen on VFS changes for serialization policies 
+        OpenCms.addCmsEventListener(this, new int[] {
+            I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED,
+            I_CmsEventListener.EVENT_RESOURCES_AND_PROPERTIES_MODIFIED,
+            I_CmsEventListener.EVENT_RESOURCE_MODIFIED,
+            I_CmsEventListener.EVENT_RESOURCES_MODIFIED,
+            I_CmsEventListener.EVENT_RESOURCE_DELETED,
+            I_CmsEventListener.EVENT_PUBLISH_PROJECT,
+            I_CmsEventListener.EVENT_CLEAR_CACHES,
+            I_CmsEventListener.EVENT_CLEAR_ONLINE_CACHES,
+            I_CmsEventListener.EVENT_CLEAR_OFFLINE_CACHES});
+    }
 
     /**
      * Checks the permissions of the current user to match the required security level.<p> 
@@ -118,6 +138,11 @@ public class CmsGwtService extends RemoteServiceServlet implements I_CmsEventLis
         switch (event.getType()) {
             case I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED:
             case I_CmsEventListener.EVENT_RESOURCE_MODIFIED:
+                Object change = event.getData().get(I_CmsEventListener.KEY_CHANGE);
+                if ((change != null) && change.equals(new Integer(CmsDriverManager.NOTHING_CHANGED))) {
+                    // skip lock & unlock
+                    return;
+                }
                 // a resource has been modified in a way that it *IS NOT* necessary also to clear 
                 // lists of cached sub-resources where the specified resource might be contained inside.
                 resource = (CmsResource)event.getData().get(I_CmsEventListener.KEY_RESOURCE);

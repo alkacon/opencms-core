@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2010/03/31 10:13:18 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2010/05/12 09:38:51 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -145,7 +145,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -2052,17 +2052,6 @@ public final class OpenCmsCore {
         }
         gwtService = (CmsGwtService)Class.forName(serviceName).newInstance();
         gwtService.init(servletConfig);
-        // listen on VFS changes for serialization policies 
-        OpenCms.addCmsEventListener(gwtService, new int[] {
-            I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED,
-            I_CmsEventListener.EVENT_RESOURCES_AND_PROPERTIES_MODIFIED,
-            I_CmsEventListener.EVENT_RESOURCE_MODIFIED,
-            I_CmsEventListener.EVENT_RESOURCES_MODIFIED,
-            I_CmsEventListener.EVENT_RESOURCE_DELETED,
-            I_CmsEventListener.EVENT_PUBLISH_PROJECT,
-            I_CmsEventListener.EVENT_CLEAR_CACHES,
-            I_CmsEventListener.EVENT_CLEAR_ONLINE_CACHES,
-            I_CmsEventListener.EVENT_CLEAR_OFFLINE_CACHES});
 
         return gwtService;
     }

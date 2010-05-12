@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2010/01/19 13:54:35 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/05/12 09:38:51 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.search;
 
+import org.opencms.db.CmsDriverManager;
 import org.opencms.db.CmsPublishedResource;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -90,7 +91,7 @@ import org.apache.lucene.util.Version;
  * @author Alexander Kandzior
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -173,6 +174,11 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 case I_CmsEventListener.EVENT_RESOURCE_CREATED:
                 case I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED:
                 case I_CmsEventListener.EVENT_RESOURCE_MODIFIED:
+                    Object change = event.getData().get(I_CmsEventListener.KEY_CHANGE);
+                    if ((change != null) && change.equals(new Integer(CmsDriverManager.NOTHING_CHANGED))) {
+                        // skip lock & unlock
+                        return;
+                    }
                     // a resource has been modified - offline indexes require (re)indexing
                     List<CmsResource> resources = Collections.singletonList((CmsResource)event.getData().get(
                         I_CmsEventListener.KEY_RESOURCE));
