@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/Attic/CmsJspSitemapNavBuilder.java,v $
- * Date   : $Date: 2010/02/18 09:47:39 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/05/12 08:36:03 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,6 +41,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.sitemap.CmsSitemapEntry;
 import org.opencms.xml.sitemap.CmsSitemapManager;
+import org.opencms.xml.sitemap.CmsSitemapProperty;
 import org.opencms.xml.sitemap.CmsXmlSitemapFactory;
 
 import java.util.ArrayList;
@@ -61,7 +62,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 7.9.2 
  * 
@@ -146,7 +147,7 @@ public class CmsJspSitemapNavBuilder extends CmsJspNavBuilder {
 
         List<CmsSitemapEntry> entries = folderEntry.getSubEntries();
         if (entries.isEmpty()) {
-            String subsitemap = folderEntry.getProperties().get(CmsSitemapManager.Property.sitemap.getName());
+            String subsitemap = folderEntry.getProperties().get(CmsSitemapProperty.sitemap.getName());
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(subsitemap)) {
                 try {
                     entries = CmsXmlSitemapFactory.unmarshal(m_cms, m_cms.readResource(new CmsUUID(subsitemap))).getSitemap(
@@ -247,7 +248,7 @@ public class CmsJspSitemapNavBuilder extends CmsJspNavBuilder {
         // check if the current entry is in the navigation
         // inheriting parents properties
         boolean isInNavigation = Boolean.parseBoolean(entry.getProperties(true).get(
-            CmsSitemapManager.Property.navigation.getName()));
+            CmsSitemapProperty.navigation.getName()));
         if (isInNavigation) {
             // navText and navPos determine if an entry is in the navigation
             properties.put(CmsPropertyDefinition.PROPERTY_NAVTEXT, entry.getTitle());

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2010/05/03 14:27:17 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2010/05/12 08:36:03 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -76,56 +76,11 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.36 $
+ * @version $Revision: 1.37 $
  * 
  * @since 7.9.2
  */
 public class CmsSitemapManager extends CmsVfsCache {
-
-    /** Property name constants. */
-    public enum Property {
-
-        /** <code>navigation</code> property name. */
-        navigation("navigation"),
-        /** <code>sitemap</code> property name. */
-        sitemap("sitemap"),
-        /** <code>template</code> property name. */
-        template("template"),
-        /** <code>template-inhertited</code> property name. */
-        templateInherited("template-inherited");
-
-        /** The name of the property. */
-        private final String m_name;
-
-        /**
-         * Default constructor.<p>
-         * 
-         * @param name the name of the property
-         */
-        private Property(String name) {
-
-            m_name = name;
-        }
-
-        /**
-         * Returns the name of the property.<p>
-         * 
-         * @return the name of the property
-         */
-        public String getName() {
-
-            return m_name;
-        }
-
-        /**
-         * @see java.lang.Enum#toString()
-         */
-        @Override
-        public String toString() {
-
-            return m_name;
-        }
-    }
 
     /** Request attribute name constant for the current sitemap entry bean. */
     public static final String ATTR_SITEMAP_ENTRY = "__currentSitemapEntry";
@@ -725,7 +680,7 @@ public class CmsSitemapManager extends CmsVfsCache {
         List<CmsSitemapEntry> subEntries = entry.getSubEntries();
         if (subEntries.isEmpty()) {
             // check sitemap property
-            String subSitemapId = entry.getProperties().get(CmsSitemapManager.Property.sitemap.name());
+            String subSitemapId = entry.getProperties().get(CmsSitemapProperty.sitemap.name());
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(subSitemapId)) {
                 // switch to sub-sitemap
                 CmsResource subSitemap = cms.readResource(new CmsUUID(subSitemapId));
@@ -740,7 +695,7 @@ public class CmsSitemapManager extends CmsVfsCache {
                     return null;
                 }
                 // be sure the sub-entries do not inherit the sitemap property
-                properties.remove(CmsSitemapManager.Property.sitemap.name());
+                properties.remove(CmsSitemapProperty.sitemap.name());
                 // continue with the sub-sitemap
                 subEntries = sitemap.getSiteEntries();
             } else if ((entryPaths.size() == 1) && CmsUUID.isValidUUID(entryPaths.get(0))) {
@@ -754,7 +709,7 @@ public class CmsSitemapManager extends CmsVfsCache {
                 // clone & extend the properties
                 HashMap<String, String> entryProps = new HashMap<String, String>(entry.getProperties());
                 // detail pages are NEVER shown in the navigation
-                entryProps.put(Property.navigation.getName(), Boolean.FALSE.toString());
+                entryProps.put(CmsSitemapProperty.navigation.getName(), Boolean.FALSE.toString());
                 // create entry
                 CmsSitemapEntry contentEntry = new CmsSitemapEntry(
                     entry.getId(),

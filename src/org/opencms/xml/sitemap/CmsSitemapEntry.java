@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapEntry.java,v $
- * Date   : $Date: 2010/04/26 09:54:16 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/05/12 08:36:03 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 7.6 
  */
@@ -297,10 +297,10 @@ public class CmsSitemapEntry {
         Map<String, String> ownProperties = getProperties(false);
         Map<String, String> allProperties = getProperties(true);
 
-        if (ownProperties.containsKey(CmsSitemapManager.Property.template.getName())) {
-            return ownProperties.get(CmsSitemapManager.Property.template.getName());
-        } else if (allProperties.containsKey(CmsSitemapManager.Property.templateInherited.getName())) {
-            return allProperties.get(CmsSitemapManager.Property.templateInherited.getName());
+        if (ownProperties.containsKey(CmsSitemapProperty.template.getName())) {
+            return ownProperties.get(CmsSitemapProperty.template.getName());
+        } else if (allProperties.containsKey(CmsSitemapProperty.templateInherited.getName())) {
+            return allProperties.get(CmsSitemapProperty.templateInherited.getName());
         } else {
             return defaultValue;
         }
