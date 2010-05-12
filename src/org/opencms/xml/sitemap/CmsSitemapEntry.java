@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapEntry.java,v $
- * Date   : $Date: 2010/05/12 08:36:03 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/05/12 09:19:10 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.Collections;
@@ -47,7 +48,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 7.6 
  */
@@ -81,7 +82,7 @@ public class CmsSitemapEntry {
     private final boolean m_sitemap;
 
     /** The list of sub-entries. */
-    private final List<CmsSitemapEntry> m_subEntries;
+    private List<CmsSitemapEntry> m_subEntries;
 
     /** The entry title. */
     private final String m_title;
@@ -146,6 +147,25 @@ public class CmsSitemapEntry {
         m_originalUri = originalUri;
         m_sitemap = true;
         m_contentId = contentId;
+    }
+
+    /**
+     * Clone constructor.<p>
+     * 
+     * @param entry the entry to clone
+     */
+    public CmsSitemapEntry(CmsSitemapEntry entry) {
+
+        this(
+            entry.getId(),
+            entry.getOriginalUri(),
+            entry.getResourceId(),
+            entry.getName(),
+            entry.getTitle(),
+            entry.getProperties(),
+            entry.getSubEntries(),
+            entry.getContentId());
+        setRuntimeInfo(entry.getInheritedProperties(), entry.getPosition());
     }
 
     /**
@@ -297,10 +317,10 @@ public class CmsSitemapEntry {
         Map<String, String> ownProperties = getProperties(false);
         Map<String, String> allProperties = getProperties(true);
 
-        if (ownProperties.containsKey(CmsSitemapProperty.template.getName())) {
-            return ownProperties.get(CmsSitemapProperty.template.getName());
-        } else if (allProperties.containsKey(CmsSitemapProperty.templateInherited.getName())) {
-            return allProperties.get(CmsSitemapProperty.templateInherited.getName());
+        if (ownProperties.containsKey(CmsSitemapManager.Property.template.getName())) {
+            return ownProperties.get(CmsSitemapManager.Property.template.getName());
+        } else if (allProperties.containsKey(CmsSitemapManager.Property.templateInherited.getName())) {
+            return allProperties.get(CmsSitemapManager.Property.templateInherited.getName());
         } else {
             return defaultValue;
         }
@@ -354,6 +374,10 @@ public class CmsSitemapEntry {
      */
     protected void removeName() {
 
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_name)) {
+            // nothing to do
+            return;
+        }
         fixPath(m_name);
         m_name = "";
     }
@@ -366,7 +390,7 @@ public class CmsSitemapEntry {
      */
     protected void setRuntimeInfo(Map<String, String> inheritedProperties, int position) {
 
-        // set the inhereted properties
+        // set the inherited properties
         m_inheritedProperties = new HashMap<String, String>();
         if (inheritedProperties != null) {
             // it is important that they are cloned, see CmsSitemapManager#getEntry(...)
@@ -380,6 +404,16 @@ public class CmsSitemapEntry {
     }
 
     /**
+     * Sets the sub-entries.<p>
+     * 
+     * @param subEntries the sub-entries to set
+     */
+    protected void setSubEntries(List<CmsSitemapEntry> subEntries) {
+
+        m_subEntries = subEntries;
+    }
+
+    /**
      * Fixes the path.<p>
      * 
      * @param name the name to remove from the path
@@ -388,6 +422,7 @@ public class CmsSitemapEntry {
 
         int pos = m_originalUri.indexOf(name + "/");
         if (pos < 0) {
+            // nothing to do
             return;
         }
         m_originalUri = m_originalUri.substring(0, pos) + m_originalUri.substring(pos + 1 + name.length());

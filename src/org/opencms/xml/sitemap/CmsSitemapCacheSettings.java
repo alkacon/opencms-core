@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapCacheSettings.java,v $
- * Date   : $Date: 2010/01/26 11:00:46 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/05/12 09:19:10 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,7 @@ package org.opencms.xml.sitemap;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 7.9.2
  */
@@ -45,29 +45,11 @@ public class CmsSitemapCacheSettings {
     /** Default size for documents caches. */
     private static final int DEFAULT_DOCUMENT_SIZE = 32;
 
-    /** Default size for missing URI caches. */
-    private static final int DEFAULT_MISSING_URI_SIZE = 4096;
-
-    /** Default size for URI caches. */
-    private static final int DEFAULT_URI_SIZE = 4096;
-
     /** The size of the documents offline cache. */
     private int m_documentOfflineSize;
 
     /** The size of the documents online cache. */
     private int m_documentOnlineSize;
-
-    /** The size of the missing URI offline cache. */
-    private int m_missingUriOfflineSize;
-
-    /** The size of the missing URI online cache. */
-    private int m_missingUriOnlineSize;
-
-    /** The size of the URI offline cache. */
-    private int m_uriOfflineSize;
-
-    /** The size of the URI online cache. */
-    private int m_uriOnlineSize;
 
     /**
      * Default constructor.<p>
@@ -104,58 +86,6 @@ public class CmsSitemapCacheSettings {
     }
 
     /**
-     * Returns the size of the missing URI offline cache.<p>
-     * 
-     * @return the size of the missing URI offline cache
-     */
-    public int getMissingUriOfflineSize() {
-
-        if (m_missingUriOfflineSize <= 0) {
-            return DEFAULT_MISSING_URI_SIZE;
-        }
-        return m_missingUriOfflineSize;
-    }
-
-    /**
-     * Returns the size of the missing URI online cache.<p>
-     * 
-     * @return the size of the missing URI online cache
-     */
-    public int getMissingUriOnlineSize() {
-
-        if (m_missingUriOnlineSize <= 0) {
-            return DEFAULT_MISSING_URI_SIZE;
-        }
-        return m_missingUriOnlineSize;
-    }
-
-    /**
-     * Returns the size of the URI offline cache.<p>
-     * 
-     * @return the size of the URI offline cache
-     */
-    public int getUriOfflineSize() {
-
-        if (m_uriOfflineSize <= 0) {
-            return DEFAULT_URI_SIZE;
-        }
-        return m_uriOfflineSize;
-    }
-
-    /**
-     * Returns the size of the URI online cache.<p>
-     * 
-     * @return the size of the URI online cache
-     */
-    public int getUriOnlineSize() {
-
-        if (m_uriOnlineSize <= 0) {
-            return DEFAULT_URI_SIZE;
-        }
-        return m_uriOnlineSize;
-    }
-
-    /**
      * Sets the size of the cache for sitemap documents.<p>
      *
      * @param size the size of the cache for sitemap documents
@@ -173,46 +103,6 @@ public class CmsSitemapCacheSettings {
     public void setDocumentOnlineSize(String size) {
 
         m_documentOnlineSize = getIntValue(size, DEFAULT_DOCUMENT_SIZE);
-    }
-
-    /**
-     * Sets the size of the cache for missing URIs.<p>
-     *
-     * @param size the size of the cache for missing URIs
-     */
-    public void setMissingUriOfflineSize(String size) {
-
-        m_missingUriOfflineSize = getIntValue(size, DEFAULT_MISSING_URI_SIZE);
-    }
-
-    /**
-     * Sets the size of the cache for missing URIs.<p>
-     *
-     * @param size the size of the cache for missing URIs
-     */
-    public void setMissingUriOnlineSize(String size) {
-
-        m_missingUriOnlineSize = getIntValue(size, DEFAULT_MISSING_URI_SIZE);
-    }
-
-    /**
-     * Sets the size of the cache for URIs.<p>
-     *
-     * @param size the size of the cache for URIs
-     */
-    public void setUriOfflineSize(String size) {
-
-        m_uriOfflineSize = getIntValue(size, DEFAULT_URI_SIZE);
-    }
-
-    /**
-     * Sets the size of the cache for URIs.<p>
-     *
-     * @param size the size of the cache for URIs
-     */
-    public void setUriOnlineSize(String size) {
-
-        m_uriOnlineSize = getIntValue(size, DEFAULT_URI_SIZE);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/v8/CmsXmlAddSitemapConfig.java,v $
- * Date   : $Date: 2010/02/24 12:44:22 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/05/12 09:19:24 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import org.dom4j.Node;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  */
@@ -87,14 +87,6 @@ public class CmsXmlAddSitemapConfig extends A_CmsSetupXmlUpdate {
             String xp = xpath + "/" + CmsSystemConfiguration.N_SITEMAP_CACHE + "/" + CmsSystemConfiguration.N_DOCUMENTS;
             CmsSetupXmlHelper.setValue(document, xp + "/@" + CmsSystemConfiguration.A_OFFLINE, "32");
             CmsSetupXmlHelper.setValue(document, xp + "/@" + CmsSystemConfiguration.A_ONLINE, "32");
-            // <missing-uris offline="4096" online="4096" />
-            xp = xpath + "/" + CmsSystemConfiguration.N_SITEMAP_CACHE + "/" + CmsSystemConfiguration.N_MISSING_URIS;
-            CmsSetupXmlHelper.setValue(document, xp + "/@" + CmsSystemConfiguration.A_OFFLINE, "4096");
-            CmsSetupXmlHelper.setValue(document, xp + "/@" + CmsSystemConfiguration.A_ONLINE, "4096");
-            // <uris offline="4096" online="4096" />
-            xp = xpath + "/" + CmsSystemConfiguration.N_SITEMAP_CACHE + "/" + CmsSystemConfiguration.N_URIS;
-            CmsSetupXmlHelper.setValue(document, xp + "/@" + CmsSystemConfiguration.A_OFFLINE, "4096");
-            CmsSetupXmlHelper.setValue(document, xp + "/@" + CmsSystemConfiguration.A_ONLINE, "4096");
 
             return true;
         }

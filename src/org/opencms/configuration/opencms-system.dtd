@@ -603,7 +603,7 @@ Each job can have an optional list of parameters.
 <!--
 # Cache sizes for the sitemap. 
 -->
-<!ELEMENT sitemap-cache (documents, missing-uris, uris) >
+<!ELEMENT sitemap-cache (documents) >
 
 <!--
 # Document caches. 
@@ -611,17 +611,3 @@ Each job can have an optional list of parameters.
 <!ELEMENT documents EMPTY >
 <!ATTLIST documents offline CDATA #REQUIRED>
 <!ATTLIST documents online CDATA #REQUIRED>
-
-<!--
-# Missing URIs caches. 
--->
-<!ELEMENT missing-uris EMPTY >
-<!ATTLIST missing-uris offline CDATA #REQUIRED>
-<!ATTLIST missing-uris online CDATA #REQUIRED>
-
-<!--
-# URIs caches. 
--->
-<!ELEMENT uris EMPTY >
-<!ATTLIST uris offline CDATA #REQUIRED>
-<!ATTLIST uris online CDATA #REQUIRED>

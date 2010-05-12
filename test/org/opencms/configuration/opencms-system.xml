@@ -169,9 +169,7 @@
         </ade>
         <sitemap>
             <sitemap-cache>
-                <documents offline="1" online="2" />
-                <missing-uris offline="5" online="6" />
-                <uris offline="9" online="10" />
+                <documents offline="32" online="32" />
             </sitemap-cache>
         </sitemap>
 	</system>

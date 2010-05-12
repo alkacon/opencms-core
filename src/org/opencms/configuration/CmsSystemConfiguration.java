@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2010/04/08 14:57:49 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/05/12 09:19:10 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -86,11 +86,14 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 6.0.0
  */
 public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
+
+    /** The attribute name for the deleted node. */
+    public static final String A_DELETED = "deleted";
 
     /** The "error" attribute. */
     public static final String A_ERROR = "error";
@@ -173,11 +176,17 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The node name for the defaultusers expression. */
     public static final String N_DEFAULTUSERS = "defaultusers";
 
+    /** The node name for the device selector node. */
+    public static final String N_DEVICESELECTOR = "device-selector";
+
     /** The node name for the digest type. */
     public static final String N_DIGESTTYPE = "digest-type";
 
     /** The node name for the login account lock minutes.  */
     public static final String N_DISABLEMINUTES = "disableMinutes";
+
+    /** The node name for the sitemap cache for documents. */
+    public static final String N_DOCUMENTS = "documents";
 
     /** The node name for the email-interval node. */
     public static final String N_EMAIL_INTERVAL = "email-interval";
@@ -277,9 +286,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
     /** The node name for the maxkeys node. */
     public static final String N_MAXKEYS = "maxkeys";
-
-    /** The node name for the device selector node. */
-    public static final String N_DEVICESELECTOR = "device-selector";
 
     /** The node name for the maxusagepercent node. */
     public static final String N_MAXUSAGE_PERCENT = "maxusagepercent";
@@ -476,20 +482,8 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The node name for the workplace-server node. */
     public static final String N_WORKPLACE_SERVER = "workplace-server";
 
-    /** The attribute name for the deleted node. */
-    public static final String A_DELETED = "deleted";
-
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSystemConfiguration.class);
-
-    /** The node name for the sitemap cache for documents. */
-    public static final String N_DOCUMENTS = "documents";
-
-    /** The node name for the sitemap cache for missing URIs. */
-    public static final String N_MISSING_URIS = "missing-uris";
-
-    /** The node name for the sitemap cache for URIs. */
-    public static final String N_URIS = "uris";
 
     /** The ADE cache settings. */
     private CmsADECacheSettings m_adeCacheSettings;
@@ -1151,16 +1145,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         digester.addCallParam(sitemapCachePath + "/" + N_DOCUMENTS, 0, A_OFFLINE);
         digester.addCallMethod(sitemapCachePath + "/" + N_DOCUMENTS, "setDocumentOnlineSize", 1);
         digester.addCallParam(sitemapCachePath + "/" + N_DOCUMENTS, 0, A_ONLINE);
-        // URIs cache
-        digester.addCallMethod(sitemapCachePath + "/" + N_URIS, "setUriOfflineSize", 1);
-        digester.addCallParam(sitemapCachePath + "/" + N_URIS, 0, A_OFFLINE);
-        digester.addCallMethod(sitemapCachePath + "/" + N_URIS, "setUriOnlineSize", 1);
-        digester.addCallParam(sitemapCachePath + "/" + N_URIS, 0, A_ONLINE);
-        // missing URIs cache
-        digester.addCallMethod(sitemapCachePath + "/" + N_MISSING_URIS, "setMissingUriOfflineSize", 1);
-        digester.addCallParam(sitemapCachePath + "/" + N_MISSING_URIS, 0, A_OFFLINE);
-        digester.addCallMethod(sitemapCachePath + "/" + N_MISSING_URIS, "setMissingUriOnlineSize", 1);
-        digester.addCallParam(sitemapCachePath + "/" + N_MISSING_URIS, 0, A_ONLINE);
         // set the settings
         digester.addSetNext(sitemapCachePath, "setSitemapCacheSettings");
     }
@@ -1581,14 +1565,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             Element docsCacheElem = cacheElem.addElement(N_DOCUMENTS);
             docsCacheElem.addAttribute(A_OFFLINE, "" + getSitemapCacheSettings().getDocumentOfflineSize());
             docsCacheElem.addAttribute(A_ONLINE, "" + getSitemapCacheSettings().getDocumentOnlineSize());
-            // missing URIs cache
-            Element missingCacheElem = cacheElem.addElement(N_MISSING_URIS);
-            missingCacheElem.addAttribute(A_OFFLINE, "" + getSitemapCacheSettings().getMissingUriOfflineSize());
-            missingCacheElem.addAttribute(A_ONLINE, "" + getSitemapCacheSettings().getMissingUriOnlineSize());
-            // URIs cache
-            Element uriCacheElem = cacheElem.addElement(N_URIS);
-            uriCacheElem.addAttribute(A_OFFLINE, "" + getSitemapCacheSettings().getUriOfflineSize());
-            uriCacheElem.addAttribute(A_ONLINE, "" + getSitemapCacheSettings().getUriOnlineSize());
         }
 
         // return the system node
