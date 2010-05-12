@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2010/05/12 12:33:31 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2010/05/12 12:39:59 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,6 +45,7 @@ import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.rpc.CmsRpcPrefetcher;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.xml.sitemap.CmsSitemapManager;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -60,7 +61,7 @@ import com.google.gwt.user.client.Window;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 8.0.0
  */
@@ -96,9 +97,9 @@ public class CmsSitemapController {
 
     static {
         hiddenProperties = new HashSet<String>();
-        hiddenProperties.add("template");
-        hiddenProperties.add("template-inherited");
-        hiddenProperties.add("sitemap");
+        hiddenProperties.add(CmsSitemapManager.Property.template.toString());
+        hiddenProperties.add(CmsSitemapManager.Property.templateInherited.toString());
+        hiddenProperties.add(CmsSitemapManager.Property.sitemap.toString());
     }
 
     /**
@@ -491,35 +492,35 @@ public class CmsSitemapController {
 
         switch (change.getType()) {
             case DELETE:
-            CmsSitemapChangeDelete changeDelete = (CmsSitemapChangeDelete)change;
-            CmsClientSitemapEntry deleteParent = getEntry(CmsResource.getParentFolder(changeDelete.getEntry().getSitePath()));
-            deleteParent.removeChild(changeDelete.getEntry().getPosition());
+                CmsSitemapChangeDelete changeDelete = (CmsSitemapChangeDelete)change;
+                CmsClientSitemapEntry deleteParent = getEntry(CmsResource.getParentFolder(changeDelete.getEntry().getSitePath()));
+                deleteParent.removeChild(changeDelete.getEntry().getPosition());
                 break;
 
             case EDIT:
-            CmsSitemapChangeEdit changeEdit = (CmsSitemapChangeEdit)change;
-            CmsClientSitemapEntry editEntry = getEntry(changeEdit.getOldEntry().getSitePath());
-            editEntry.setTitle(changeEdit.getNewEntry().getTitle());
-            editEntry.setVfsPath(changeEdit.getNewEntry().getVfsPath());
-            editEntry.setProperties(changeEdit.getNewEntry().getProperties());
+                CmsSitemapChangeEdit changeEdit = (CmsSitemapChangeEdit)change;
+                CmsClientSitemapEntry editEntry = getEntry(changeEdit.getOldEntry().getSitePath());
+                editEntry.setTitle(changeEdit.getNewEntry().getTitle());
+                editEntry.setVfsPath(changeEdit.getNewEntry().getVfsPath());
+                editEntry.setProperties(changeEdit.getNewEntry().getProperties());
                 break;
 
             case MOVE:
-            CmsSitemapChangeMove changeMove = (CmsSitemapChangeMove)change;
-            CmsClientSitemapEntry sourceParent = getEntry(CmsResource.getParentFolder(changeMove.getSourcePath()));
-            CmsClientSitemapEntry moved = sourceParent.removeChild(changeMove.getSourcePosition());
-            CmsClientSitemapEntry destParent = getEntry(CmsResource.getParentFolder(changeMove.getDestinationPath()));
-            destParent.insertChild(moved, changeMove.getDestinationPosition());
+                CmsSitemapChangeMove changeMove = (CmsSitemapChangeMove)change;
+                CmsClientSitemapEntry sourceParent = getEntry(CmsResource.getParentFolder(changeMove.getSourcePath()));
+                CmsClientSitemapEntry moved = sourceParent.removeChild(changeMove.getSourcePosition());
+                CmsClientSitemapEntry destParent = getEntry(CmsResource.getParentFolder(changeMove.getDestinationPath()));
+                destParent.insertChild(moved, changeMove.getDestinationPosition());
                 break;
 
             case NEW:
-            CmsSitemapChangeNew changeNew = (CmsSitemapChangeNew)change;
-            CmsClientSitemapEntry newParent = getEntry(CmsResource.getParentFolder(changeNew.getEntry().getSitePath()));
-            if (changeNew.getEntry().getPosition() < 0) {
-                newParent.addChild(changeNew.getEntry());
-            } else {
-                newParent.insertChild(changeNew.getEntry(), changeNew.getEntry().getPosition());
-            }
+                CmsSitemapChangeNew changeNew = (CmsSitemapChangeNew)change;
+                CmsClientSitemapEntry newParent = getEntry(CmsResource.getParentFolder(changeNew.getEntry().getSitePath()));
+                if (changeNew.getEntry().getPosition() < 0) {
+                    newParent.addChild(changeNew.getEntry());
+                } else {
+                    newParent.insertChild(changeNew.getEntry(), changeNew.getEntry().getPosition());
+                }
                 break;
 
             default:
