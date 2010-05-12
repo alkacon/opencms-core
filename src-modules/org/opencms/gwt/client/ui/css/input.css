@@ -186,15 +186,17 @@
 }
 
 .formLabel {
-	width: 30%;
+	width: 200px;
 	overflow: hidden;
 	vertical-align: top;
 	margin-top: 2px;
+	float: left;
 }
 
 
 .formWidgetContainer {
-	width: 68%;
+	width: 370px;
+	margin-left: 200px;
 }
 
 .separator {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/form/Attic/CmsFormRow.java,v $
- * Date   : $Date: 2010/05/06 14:58:20 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/05/12 09:07:26 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger 
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -81,8 +81,6 @@ public class CmsFormRow extends Composite {
     public CmsFormRow() {
 
         initWidget(uiBinder.createAndBindUi(this));
-        m_label.addStyleName(CSS.inlineBlock());
-        m_widgetContainer.addStyleName(CSS.inlineBlock());
     }
 
     /**
