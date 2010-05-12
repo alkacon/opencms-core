@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/I_CmsSitemapChange.java,v $
- * Date   : $Date: 2010/04/21 14:29:20 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/05/12 10:14:06 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,11 +38,36 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
 public interface I_CmsSitemapChange extends IsSerializable {
+
+    /**
+     * The change type.<p>
+     */
+    public enum Type {
+
+        /** Delete entry. */
+        DELETE,
+
+        /** Edit entry. */
+        EDIT,
+
+        /** Move entry. */
+        MOVE,
+
+        /** New entry. */
+        NEW;
+    }
+
+    /**
+     * Returns the change type.<p>
+     * 
+     * @return the change type
+     */
+    Type getType();
 
     /**
      * Returns the revert of this change for undoing.<p>

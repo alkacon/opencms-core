@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsSitemapChangeNew.java,v $
- * Date   : $Date: 2010/04/21 14:29:20 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/05/12 10:14:06 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,12 +31,13 @@
 
 package org.opencms.ade.sitemap.shared;
 
+
 /**
  * Stores one addition change to the sitemap.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -63,6 +64,14 @@ public class CmsSitemapChangeNew implements I_CmsSitemapChange {
     public CmsClientSitemapEntry getEntry() {
 
         return m_entry;
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.shared.I_CmsSitemapChange#getType()
+     */
+    public Type getType() {
+
+        return Type.NEW;
     }
 
     /**

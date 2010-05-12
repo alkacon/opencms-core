@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2010/05/07 14:05:48 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2010/05/12 10:14:06 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import com.google.gwt.user.client.Window;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 8.0.0
  */
@@ -501,30 +501,41 @@ public class CmsSitemapController {
      */
     private void update(I_CmsSitemapChange change) {
 
-        if (change instanceof CmsSitemapChangeDelete) {
-            CmsSitemapChangeDelete changeDelete = (CmsSitemapChangeDelete)change;
-            CmsClientSitemapEntry deleteParent = getEntry(CmsResource.getParentFolder(changeDelete.getEntry().getSitePath()));
-            deleteParent.removeChild(changeDelete.getEntry().getPosition());
-        } else if (change instanceof CmsSitemapChangeEdit) {
-            CmsSitemapChangeEdit changeEdit = (CmsSitemapChangeEdit)change;
-            CmsClientSitemapEntry editEntry = getEntry(changeEdit.getOldEntry().getSitePath());
-            editEntry.setTitle(changeEdit.getNewEntry().getTitle());
-            editEntry.setVfsPath(changeEdit.getNewEntry().getVfsPath());
-            editEntry.setProperties(changeEdit.getNewEntry().getProperties());
-        } else if (change instanceof CmsSitemapChangeMove) {
-            CmsSitemapChangeMove changeMove = (CmsSitemapChangeMove)change;
-            CmsClientSitemapEntry sourceParent = getEntry(CmsResource.getParentFolder(changeMove.getSourcePath()));
-            CmsClientSitemapEntry moved = sourceParent.removeChild(changeMove.getSourcePosition());
-            CmsClientSitemapEntry destParent = getEntry(CmsResource.getParentFolder(changeMove.getDestinationPath()));
-            destParent.insertChild(moved, changeMove.getDestinationPosition());
-        } else if (change instanceof CmsSitemapChangeNew) {
-            CmsSitemapChangeNew changeNew = (CmsSitemapChangeNew)change;
-            CmsClientSitemapEntry newParent = getEntry(CmsResource.getParentFolder(changeNew.getEntry().getSitePath()));
-            if (changeNew.getEntry().getPosition() < 0) {
-                newParent.addChild(changeNew.getEntry());
-            } else {
-                newParent.insertChild(changeNew.getEntry(), changeNew.getEntry().getPosition());
-            }
+        switch (change.getType()) {
+            case DELETE:
+                CmsSitemapChangeDelete changeDelete = (CmsSitemapChangeDelete)change;
+                CmsClientSitemapEntry deleteParent = getEntry(CmsResource.getParentFolder(changeDelete.getEntry().getSitePath()));
+                deleteParent.removeChild(changeDelete.getEntry().getPosition());
+                break;
+
+            case EDIT:
+                CmsSitemapChangeEdit changeEdit = (CmsSitemapChangeEdit)change;
+                CmsClientSitemapEntry editEntry = getEntry(changeEdit.getOldEntry().getSitePath());
+                editEntry.setTitle(changeEdit.getNewEntry().getTitle());
+                editEntry.setVfsPath(changeEdit.getNewEntry().getVfsPath());
+                editEntry.setProperties(changeEdit.getNewEntry().getProperties());
+                break;
+
+            case MOVE:
+                CmsSitemapChangeMove changeMove = (CmsSitemapChangeMove)change;
+                CmsClientSitemapEntry sourceParent = getEntry(CmsResource.getParentFolder(changeMove.getSourcePath()));
+                CmsClientSitemapEntry moved = sourceParent.removeChild(changeMove.getSourcePosition());
+                CmsClientSitemapEntry destParent = getEntry(CmsResource.getParentFolder(changeMove.getDestinationPath()));
+                destParent.insertChild(moved, changeMove.getDestinationPosition());
+                break;
+
+            case NEW:
+                CmsSitemapChangeNew changeNew = (CmsSitemapChangeNew)change;
+                CmsClientSitemapEntry newParent = getEntry(CmsResource.getParentFolder(changeNew.getEntry().getSitePath()));
+                if (changeNew.getEntry().getPosition() < 0) {
+                    newParent.addChild(changeNew.getEntry());
+                } else {
+                    newParent.insertChild(changeNew.getEntry(), changeNew.getEntry().getPosition());
+                }
+                break;
+
+            default:
+                break;
         }
     }
 }

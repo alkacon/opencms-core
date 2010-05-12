@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapControllerHandler.java,v $
- * Date   : $Date: 2010/05/03 14:33:05 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/05/12 10:14:06 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import org.opencms.util.CmsStringUtil;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 8.0.0
  * 
@@ -88,30 +88,41 @@ public class CmsSitemapControllerHandler {
      */
     public void onChange(I_CmsSitemapChange change) {
 
-        if (change instanceof CmsSitemapChangeDelete) {
-            CmsSitemapChangeDelete changeDelete = (CmsSitemapChangeDelete)change;
-            CmsTreeItem deleteParent = getTreeItem(CmsResource.getParentFolder(changeDelete.getEntry().getSitePath()));
-            deleteParent.removeChild(changeDelete.getEntry().getName());
-        } else if (change instanceof CmsSitemapChangeEdit) {
-            CmsSitemapChangeEdit changeEdit = (CmsSitemapChangeEdit)change;
-            CmsSitemapTreeItem editEntry = (CmsSitemapTreeItem)getTreeItem(changeEdit.getOldEntry().getSitePath());
-            editEntry.updateEntry(changeEdit.getNewEntry());
-        } else if (change instanceof CmsSitemapChangeMove) {
-            CmsSitemapChangeMove changeMove = (CmsSitemapChangeMove)change;
-            CmsTreeItem sourceParent = getTreeItem(CmsResource.getParentFolder(changeMove.getSourcePath()));
-            CmsTreeItem moved = sourceParent.getChild(changeMove.getSourcePosition());
-            sourceParent.removeChild(changeMove.getSourcePosition());
-            CmsTreeItem destParent = getTreeItem(CmsResource.getParentFolder(changeMove.getDestinationPath()));
-            destParent.insertChild(moved, changeMove.getDestinationPosition());
-        } else if (change instanceof CmsSitemapChangeNew) {
-            CmsSitemapChangeNew changeNew = (CmsSitemapChangeNew)change;
-            CmsTreeItem newParent = getTreeItem(CmsResource.getParentFolder(changeNew.getEntry().getSitePath()));
-            CmsSitemapTreeItem newChild = m_factory.create(changeNew.getEntry());
-            if (changeNew.getEntry().getPosition() != -1) {
-                newParent.insertChild(newChild, changeNew.getEntry().getPosition());
-            } else {
-                newParent.addChild(newChild);
-            }
+        switch (change.getType()) {
+            case DELETE:
+                CmsSitemapChangeDelete changeDelete = (CmsSitemapChangeDelete)change;
+                CmsTreeItem deleteParent = getTreeItem(CmsResource.getParentFolder(changeDelete.getEntry().getSitePath()));
+                deleteParent.removeChild(changeDelete.getEntry().getName());
+                break;
+
+            case EDIT:
+                CmsSitemapChangeEdit changeEdit = (CmsSitemapChangeEdit)change;
+                CmsSitemapTreeItem editEntry = (CmsSitemapTreeItem)getTreeItem(changeEdit.getOldEntry().getSitePath());
+                editEntry.updateEntry(changeEdit.getNewEntry());
+                break;
+
+            case MOVE:
+                CmsSitemapChangeMove changeMove = (CmsSitemapChangeMove)change;
+                CmsTreeItem sourceParent = getTreeItem(CmsResource.getParentFolder(changeMove.getSourcePath()));
+                CmsTreeItem moved = sourceParent.getChild(changeMove.getSourcePosition());
+                sourceParent.removeChild(changeMove.getSourcePosition());
+                CmsTreeItem destParent = getTreeItem(CmsResource.getParentFolder(changeMove.getDestinationPath()));
+                destParent.insertChild(moved, changeMove.getDestinationPosition());
+                break;
+
+            case NEW:
+                CmsSitemapChangeNew changeNew = (CmsSitemapChangeNew)change;
+                CmsTreeItem newParent = getTreeItem(CmsResource.getParentFolder(changeNew.getEntry().getSitePath()));
+                CmsSitemapTreeItem newChild = m_factory.create(changeNew.getEntry());
+                if (changeNew.getEntry().getPosition() != -1) {
+                    newParent.insertChild(newChild, changeNew.getEntry().getPosition());
+                } else {
+                    newParent.addChild(newChild);
+                }
+                break;
+
+            default:
+                break;
         }
     }
 
