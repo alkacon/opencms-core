@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/sitemap/Attic/CmsSitemapServer.java,v $
- * Date   : $Date: 2010/05/12 08:36:03 $
- * Version: $Revision: 1.55 $
+ * Date   : $Date: 2010/05/12 09:18:42 $
+ * Version: $Revision: 1.56 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,6 @@ import org.opencms.xml.content.CmsXmlContentPropertyHelper;
 import org.opencms.xml.sitemap.CmsSitemapBean;
 import org.opencms.xml.sitemap.CmsSitemapEntry;
 import org.opencms.xml.sitemap.CmsSitemapManager;
-import org.opencms.xml.sitemap.CmsSitemapProperty;
 import org.opencms.xml.sitemap.CmsXmlSitemap;
 import org.opencms.xml.sitemap.CmsXmlSitemapFactory;
 
@@ -86,7 +85,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.55 $
+ * @version $Revision: 1.56 $
  * 
  * @since 7.6
  */
@@ -570,7 +569,7 @@ public class CmsSitemapServer extends A_CmsAjaxServer {
                 cms,
                 cms.getRequestContext().removeSiteRoot(sitemap.getEntryPoint()));
             Map<String, String> properties = new HashMap<String, String>(parentEntry.getInheritedProperties());
-            properties.remove(CmsSitemapProperty.sitemap.getName());
+            properties.remove(CmsSitemapManager.Property.sitemap.getName());
             JSONObject jsonParentEntry = jsonifyEntry(new CmsSitemapEntry(
                 parentEntry.getId(),
                 parentEntry.getOriginalUri(),
