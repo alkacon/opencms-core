@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapHoverbarHandler.java,v $
- * Date   : $Date: 2010/05/07 14:05:48 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/05/12 12:33:31 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.ade.sitemap.client;
 
+import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.CmsConfirmDialog;
 import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
@@ -42,7 +43,7 @@ import com.google.gwt.user.client.Window;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 8.0.0
  * 
@@ -102,8 +103,9 @@ public class CmsSitemapHoverbarHandler {
      */
     public void onEdit(String sitePath) {
 
-        m_controller.startEdit(sitePath);
-
+        final CmsClientSitemapEntry entry = m_controller.getEntry(sitePath);
+        assert entry != null;
+        (new CmsSitemapEntryEditor(m_controller, entry)).start();
     }
 
     /**

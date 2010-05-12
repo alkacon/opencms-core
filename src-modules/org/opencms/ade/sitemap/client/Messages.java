@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/Messages.java,v $
- * Date   : $Date: 2010/05/07 14:05:48 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/05/12 12:33:31 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.client.util.CmsMessages;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 8.0.0
  */
@@ -108,6 +108,15 @@ public final class Messages {
     public static final String GUI_SITEMAP_0 = "GUI_SITEMAP_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_TEMPLATE_INHERIT_0 = "GUI_TEMPLATE_INHERIT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TEMPLATE_PROPERTY_DESC_0 = "GUI_TEMPLATE_PROPERTY_DESC_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TEMPLATE_PROPERTY_TITLE_0 = "GUI_TEMPLATE_PROPERTY_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_TITLE_CANT_BE_EMPTY_0 = "GUI_TITLE_CANT_BE_EMPTY_0";
 
     /** Message constant for key in the resource bundle. */
@@ -133,6 +142,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_VFS_PATH_0 = "GUI_VFS_PATH_0";
+
+    /** Message constant for key in the resource bundle. */
+    protected static final String GUI_URLNAME_ALREADY_EXISTS_0 = "GUI_URLNAME_ALREADY_EXISTS_0";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.ade.sitemap.clientmessages";

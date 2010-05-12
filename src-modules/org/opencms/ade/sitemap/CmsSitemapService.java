@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsSitemapService.java,v $
- * Date   : $Date: 2010/05/12 09:19:10 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2010/05/12 12:33:31 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,7 +71,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 8.0.0
  * 
@@ -270,16 +270,6 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
     }
 
     /**
-     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#translateUrlName(java.lang.String)
-     */
-    public String translateUrlName(String urlName) {
-
-        String result = getCmsObject().getRequestContext().getFileTranslator().translateResource(urlName);
-        result = result.replace('/', '_');
-        return result;
-    }
-
-    /**
      * Returns the cached recent list, creating it if it doesn't already exist.<p>
      * 
      * @return the cached recent list
@@ -427,9 +417,9 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
             CmsPropertyDefinition.PROPERTY_ADE_TEMPLATE_IMAGE,
             false);
         return new CmsSitemapTemplate(
-            cms.getSitePath(resource),
             titleProp.getValue(),
             descProp.getValue(),
+            cms.getSitePath(resource),
             imageProp.getValue());
     }
 

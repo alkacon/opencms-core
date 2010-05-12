@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/rpc/Attic/I_CmsSitemapServiceAsync.java,v $
- * Date   : $Date: 2010/05/07 12:04:15 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/05/12 12:33:31 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 8.0.0
  * 
@@ -115,11 +115,4 @@ public interface I_CmsSitemapServiceAsync {
      */
     void save(String sitemapUri, List<I_CmsSitemapChange> changes, AsyncCallback<Void> callback);
 
-    /**
-     * Translates an URL name of a sitemap entry to a valid form containing no illegal characters.<p>
-     * 
-     * @param urlName the url name to be translated
-     * @param callback the async callback 
-     */
-    void translateUrlName(String urlName, AsyncCallback<String> callback);
 }
