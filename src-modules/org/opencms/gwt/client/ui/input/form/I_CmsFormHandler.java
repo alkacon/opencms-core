@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/form/Attic/I_CmsFormHandler.java,v $
- * Date   : $Date: 2010/05/06 09:51:37 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/05/14 12:00:18 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import java.util.Map;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -47,7 +47,11 @@ public interface I_CmsFormHandler {
     /**
      * The method which should be called when a {@link CmsForm} is submitted.<p>
      * 
-     * @param fieldValues a map containing the values of all fields which have non-default values 
+     * The map passed as a parameter will contain key-value pairs where the key is the 
+     * name of the field and the value is the value obtained from the field. It is explicitly
+     * allowed that the value is null; this means that the property is set to 'default'.
+     * 
+     * @param fieldValues a map of field values
      */
     void onSubmitForm(Map<String, String> fieldValues);
 
