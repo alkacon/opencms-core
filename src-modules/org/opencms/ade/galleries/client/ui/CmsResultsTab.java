@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsResultsTab.java,v $
- * Date   : $Date: 2010/05/07 13:59:19 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/05/14 13:34:53 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,11 +33,13 @@ package org.opencms.ade.galleries.client.ui;
 
 import org.opencms.ade.galleries.client.CmsResultsTabHandler;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
-import org.opencms.ade.galleries.shared.CmsGallerySearchObject;
+import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.CmsResultsListInfoBean;
+import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
 import org.opencms.gwt.client.draganddrop.I_CmsDragHandler;
 import org.opencms.gwt.client.ui.CmsFloatDecoratedPanel;
+import org.opencms.gwt.client.ui.CmsFlowPanel;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsButton;
@@ -48,13 +50,16 @@ import org.opencms.gwt.client.util.CmsPair;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Provides the widget for the results tab.<p>
@@ -64,7 +69,7 @@ import com.google.gwt.user.client.ui.Image;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.
  */
@@ -93,7 +98,7 @@ public class CmsResultsTab extends A_CmsListTab implements ClickHandler {
          */
         public void onClick(ClickEvent event) {
 
-            m_tabHandler.onClick(m_id);
+            getTabHandler().onClick(m_id);
 
         }
     }
@@ -101,14 +106,11 @@ public class CmsResultsTab extends A_CmsListTab implements ClickHandler {
     /** Text metrics key. */
     private static final String TM_RESULT_TAB = "ResultTab";
 
-    /** The reference to the handler of this tab. */
-    protected CmsResultsTabHandler m_tabHandler;
+    /** The categories parameter panel. */
+    private CmsFlowPanel m_categories;
 
     /** Button to remove the selected categories. */
     private CmsPushButton m_closeCategoriesBtn;
-
-    /** Button to remove the full text search. */
-    //private CmsImageButton m_closeSearchBtn;
 
     /** Button to remove the selected galleries. */
     private CmsPushButton m_closeGalleriesBtn;
@@ -119,16 +121,44 @@ public class CmsResultsTab extends A_CmsListTab implements ClickHandler {
     /** The reference to the drag handler for the list elements. */
     private I_CmsDragHandler<?, ?> m_dragHandler;
 
-    /**
-     * The constructor with the drag handler.<p>
-     *  
-     * @param handler the reference to the drag handler
-     */
-    public CmsResultsTab(I_CmsDragHandler<?, ?> handler) {
+    /** The galleries parameter panel. */
+    private CmsFlowPanel m_galleries;
 
-        super();
-        m_dragHandler = handler;
+    /** Button to remove the full text search. */
+    //private CmsImageButton m_closeSearchBtn;
+
+    /** The panel showing the search parameters. */
+    private FlowPanel m_params;
+
+    /** The reference to the handler of this tab. */
+    private CmsResultsTabHandler m_tabHandler;
+
+    /** The types parameter panel panel. */
+    private CmsFlowPanel m_types;
+
+    /**
+     * The constructor.<p>
+     * 
+     * @param tabHandler the tab handler 
+     * @param dragHandler the drag handler
+     */
+    public CmsResultsTab(CmsResultsTabHandler tabHandler, I_CmsDragHandler<?, ?> dragHandler) {
+
+        super(GalleryTabId.cms_tab_results);
+        m_dragHandler = dragHandler;
+        m_tabHandler = tabHandler;
         m_scrollList.truncate(TM_RESULT_TAB, CmsGalleryDialog.DIALOG_WIDTH);
+        m_params = new FlowPanel();
+        m_categories = new CmsFlowPanel(CmsDomUtil.Tag.span.name());
+        m_categories.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
+        m_galleries = new CmsFlowPanel(CmsDomUtil.Tag.span.name());
+        m_galleries.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
+        m_types = new CmsFlowPanel(CmsDomUtil.Tag.span.name());
+        m_types.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
+        m_params.add(m_types);
+        m_params.add(m_galleries);
+        m_params.add(m_categories);
+        m_tab.insert(m_params, 0);
     }
 
     /**
@@ -140,14 +170,14 @@ public class CmsResultsTab extends A_CmsListTab implements ClickHandler {
      * @param categoriesParams the widget to display the selected categories
      */
     public void fillContent(
-        CmsGallerySearchObject searchObj,
-        CmsFloatDecoratedPanel typesParams,
-        HTMLPanel galleriesParams,
-        CmsFloatDecoratedPanel categoriesParams) {
+        CmsGallerySearchBean searchObj,
+        Widget typesParams,
+        Widget galleriesParams,
+        Widget categoriesParams) {
 
         showParams(searchObj, typesParams, galleriesParams, categoriesParams);
 
-        ArrayList<CmsResultsListInfoBean> list = searchObj.getResults();
+        List<CmsResultsListInfoBean> list = searchObj.getResults();
         for (CmsResultsListInfoBean resultItem : list) {
 
             CmsListItemWidget resultItemWidget;
@@ -217,16 +247,6 @@ public class CmsResultsTab extends A_CmsListTab implements ClickHandler {
     }
 
     /**
-     * Returns the tab handler.<p>
-     *
-     * @param handler the tab handler
-     */
-    public void setHandler(CmsResultsTabHandler handler) {
-
-        m_tabHandler = handler;
-    }
-
-    /**
      * Updates the content of the results tab.<p>
      * 
      * @param searchObj the current search object containing search results
@@ -235,7 +255,7 @@ public class CmsResultsTab extends A_CmsListTab implements ClickHandler {
      * @param categoriesParams the widget to display the selected categories
      */
     public void updateContent(
-        CmsGallerySearchObject searchObj,
+        CmsGallerySearchBean searchObj,
         CmsFloatDecoratedPanel typesParams,
         HTMLPanel galleriesParams,
         CmsFloatDecoratedPanel categoriesParams) {
@@ -246,7 +266,7 @@ public class CmsResultsTab extends A_CmsListTab implements ClickHandler {
         updateListSize();
         // update the result list
         clearList();
-        ArrayList<CmsResultsListInfoBean> list = searchObj.getResults();
+        List<CmsResultsListInfoBean> list = searchObj.getResults();
         for (CmsResultsListInfoBean resultItem : list) {
             CmsListItemWidget resultItemWidget;
             if (m_dragHandler != null) {
@@ -269,6 +289,17 @@ public class CmsResultsTab extends A_CmsListTab implements ClickHandler {
             listItem.setId(resultItem.getId());
             addWidgetToList(listItem);
         }
+    }
+
+    /**
+     * Clears all search parameters.<p>
+     */
+    protected void clearParams() {
+
+        m_types.clear();
+        m_galleries.clear();
+        m_categories.clear();
+        //        m_text.clear();
     }
 
     /**
@@ -316,16 +347,16 @@ public class CmsResultsTab extends A_CmsListTab implements ClickHandler {
      * @param categoriesParams the widget to display the selected categories
      */
     private void showParams(
-        CmsGallerySearchObject searchObj,
-        CmsFloatDecoratedPanel typesParams,
-        HTMLPanel galleriesParams,
-        CmsFloatDecoratedPanel categoriesParams) {
+        CmsGallerySearchBean searchObj,
+        Widget typesParams,
+        Widget galleriesParams,
+        Widget categoriesParams) {
 
         if (searchObj.isNotEmpty()) {
             m_params.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().marginBottom());
             // selected types           
             // only show params, if any selected
-            if (searchObj.getTypes().size() > 0) {
+            if (typesParams != null) {
                 typesParams.getElement().getStyle().setDisplay(Display.INLINE);
                 m_types.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().showParams());
                 m_types.add(typesParams);
@@ -342,7 +373,7 @@ public class CmsResultsTab extends A_CmsListTab implements ClickHandler {
 
             // selected galleries
             // only show params, if any selected
-            if (searchObj.getGalleries().size() > 0) {
+            if (galleriesParams != null) {
                 m_galleries.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().showParams());
                 m_galleries.add(galleriesParams);
                 galleriesParams.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().paramsText());
@@ -357,7 +388,7 @@ public class CmsResultsTab extends A_CmsListTab implements ClickHandler {
 
             // selected categories        
             // only show params, if any selected
-            if (searchObj.getCategories().size() > 0) {
+            if (categoriesParams != null) {
                 m_categories.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().showParams());
                 m_categories.add(categoriesParams);
                 categoriesParams.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().paramsText());

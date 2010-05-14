@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsGalleryDialog.java,v $
- * Date   : $Date: 2010/05/07 13:59:19 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2010/05/14 13:34:53 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,14 +35,15 @@ import org.opencms.ade.galleries.client.CmsCategoriesTabHandler;
 import org.opencms.ade.galleries.client.CmsGalleriesTabHandler;
 import org.opencms.ade.galleries.client.CmsGalleryController;
 import org.opencms.ade.galleries.client.CmsResultsTabHandler;
+import org.opencms.ade.galleries.client.CmsSearchTabHandler;
 import org.opencms.ade.galleries.client.CmsTypesTabHandler;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
-import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
+import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.gwt.client.draganddrop.I_CmsDragHandler;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
 import org.opencms.gwt.client.ui.CmsTabbedPanel.CmsTabLayout;
 
-import java.util.ArrayList;
+import java.util.Iterator;
 
 import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
 import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
@@ -56,7 +57,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 8.0.
  */
@@ -65,8 +66,14 @@ public class CmsGalleryDialog extends Composite implements BeforeSelectionHandle
     /** The initial dialog width. */
     public static final int DIALOG_WIDTH = 600;
 
+    /** The categories tab. */
+    private CmsCategoriesTab m_categoriesTab;
+
     /** The reference to the drag handler. */
     private I_CmsDragHandler<?, ?> m_dragHandler;
+
+    /** The galleries tab. */
+    private CmsGalleriesTab m_galleriesTab;
 
     /** The flag for the initails search. */
     private boolean m_isInitialSearch;
@@ -74,8 +81,14 @@ public class CmsGalleryDialog extends Composite implements BeforeSelectionHandle
     /** The parent panel for the gallery dialog. */
     private FlowPanel m_parentPanel;
 
+    /** The results tab. */
+    private CmsResultsTab m_resultsTab;
+
     /** The tabbed panel. */
-    private CmsTabbedPanel<A_CmsListTab> m_tabbedPanel;
+    private CmsTabbedPanel<A_CmsTab> m_tabbedPanel;
+
+    /** The types tab. */
+    private CmsTypesTab m_typesTab;
 
     /**
      * The default constructor for the gallery dialog.<p> 
@@ -89,7 +102,7 @@ public class CmsGalleryDialog extends Composite implements BeforeSelectionHandle
         m_parentPanel = new FlowPanel();
         m_parentPanel.setStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().galleryDialogSize());
         // tabs
-        m_tabbedPanel = new CmsTabbedPanel<A_CmsListTab>(CmsTabLayout.standard, false);
+        m_tabbedPanel = new CmsTabbedPanel<A_CmsTab>(CmsTabLayout.standard, false);
         // add tabs to parent widget        
         m_parentPanel.add(m_tabbedPanel);
         // All composites must call initWidget() in their constructors.
@@ -114,7 +127,6 @@ public class CmsGalleryDialog extends Composite implements BeforeSelectionHandle
 
         I_CmsLayoutBundle.INSTANCE.galleryDialogCss().ensureInjected();
         I_CmsLayoutBundle.INSTANCE.listTreeCss().ensureInjected();
-        //TODO: let here or move to preview dialog?
         I_CmsLayoutBundle.INSTANCE.previewDialogCss().ensureInjected();
         org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle.INSTANCE.galleryDialogCss().ensureInjected();
     }
@@ -122,46 +134,36 @@ public class CmsGalleryDialog extends Composite implements BeforeSelectionHandle
     /**
      * Fill the tabs with the content provided from the info bean. <p>
      * 
-     * @param tabsConfig the tabs config string for this gallery dialog
+     * @param tabIds the tabs to show 
      * @param controller the reference to the gallery controller
      */
-    public void fillTabs(ArrayList<String> tabsConfig, CmsGalleryController controller) {
+    public void fillTabs(GalleryTabId[] tabIds, CmsGalleryController controller) {
 
-        if (tabsConfig.contains(I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_types.name())) {
-            CmsTypesTab tabContent = new CmsTypesTab(m_dragHandler);
-            tabContent.setTabHandler(new CmsTypesTabHandler(controller));
-            m_tabbedPanel.add(tabContent, Messages.get().key(Messages.GUI_TAB_TITLE_TYPES_0));
+        for (int i = 0; i < tabIds.length; i++) {
+            //TODO: add missing cases
+            switch (tabIds[i]) {
+                case cms_tab_types:
+                    m_typesTab = new CmsTypesTab(new CmsTypesTabHandler(controller), m_dragHandler);
+                    m_tabbedPanel.add(m_typesTab, Messages.get().key(Messages.GUI_TAB_TITLE_TYPES_0));
+                    break;
+                case cms_tab_galleries:
+                    m_galleriesTab = new CmsGalleriesTab(new CmsGalleriesTabHandler(controller));
+                    m_tabbedPanel.add(m_galleriesTab, Messages.get().key(Messages.GUI_TAB_TITLE_GALLERIES_0));
+                    break;
+                case cms_tab_categories:
+                    m_categoriesTab = new CmsCategoriesTab(new CmsCategoriesTabHandler(controller));
+                    m_tabbedPanel.add(m_categoriesTab, Messages.get().key(Messages.GUI_TAB_TITLE_CATEGORIES_0));
+                    break;
+                case cms_tab_search:
+                    CmsSearchTab tabContent = new CmsSearchTab(new CmsSearchTabHandler(controller));
+                    m_tabbedPanel.add(tabContent, Messages.get().key(Messages.GUI_TAB_TITLE_SEARCH_0));
+                    break;
+                case cms_tab_sitemap:
+                    //TODO: add sitemap tree tab
+            }
         }
-
-        if (tabsConfig.contains(I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_galleries.name())) {
-
-            CmsGalleriesTab tabContent = new CmsGalleriesTab();
-            tabContent.setTabHandler(new CmsGalleriesTabHandler(controller));
-            m_tabbedPanel.add(tabContent, Messages.get().key(Messages.GUI_TAB_TITLE_GALLERIES_0));
-
-        }
-
-        if (tabsConfig.contains(I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_categories.name())) {
-
-            CmsCategoriesTab tabContent = new CmsCategoriesTab();
-            tabContent.setTabHandler(new CmsCategoriesTabHandler(controller));
-            m_tabbedPanel.add(tabContent, Messages.get().key(Messages.GUI_TAB_TITLE_CATEGORIES_0));
-
-        }
-
-        if (tabsConfig.contains(I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_search.name())) {
-            // TODO: fill with content
-            m_tabbedPanel.add(new CmsSearchTab(), Messages.get().key(Messages.GUI_TAB_TITLE_SEARCH_0));
-        }
-
-        if (tabsConfig.contains(I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_sitemap.name())) {
-            // implement  
-        }
-        // add left margin to the result button
-        CmsResultsTab resultTab = new CmsResultsTab(m_dragHandler);
-        resultTab.setHandler(new CmsResultsTabHandler(controller));
-        m_tabbedPanel.addWithLeftMargin(resultTab, Messages.get().key(Messages.GUI_TAB_TITLE_RESULTS_0));
-
+        m_resultsTab = new CmsResultsTab(new CmsResultsTabHandler(controller), m_dragHandler);
+        m_tabbedPanel.addWithLeftMargin(m_resultsTab, Messages.get().key(Messages.GUI_TAB_TITLE_RESULTS_0));
         m_tabbedPanel.addBeforeSelectionHandler(this);
         m_tabbedPanel.addSelectionHandler(this);
     }
@@ -173,8 +175,7 @@ public class CmsGalleryDialog extends Composite implements BeforeSelectionHandle
      */
     public CmsCategoriesTab getCategoriesTab() {
 
-        // TODO: better way to get the last index
-        return (CmsCategoriesTab)m_tabbedPanel.getWidget(2);
+        return m_categoriesTab;
     }
 
     /**
@@ -184,8 +185,7 @@ public class CmsGalleryDialog extends Composite implements BeforeSelectionHandle
      */
     public CmsGalleriesTab getGalleriesTab() {
 
-        // TODO: better way to get the last index
-        return (CmsGalleriesTab)m_tabbedPanel.getWidget(1);
+        return m_galleriesTab;
     }
 
     /**
@@ -205,8 +205,7 @@ public class CmsGalleryDialog extends Composite implements BeforeSelectionHandle
      */
     public CmsResultsTab getResultsTab() {
 
-        // TODO: better way to get the last index
-        return (CmsResultsTab)m_tabbedPanel.getWidget(4);
+        return m_resultsTab;
     }
 
     /**
@@ -216,8 +215,7 @@ public class CmsGalleryDialog extends Composite implements BeforeSelectionHandle
      */
     public CmsTypesTab getTypesTab() {
 
-        // TODO: better way to get the last index
-        return (CmsTypesTab)m_tabbedPanel.getWidget(0);
+        return m_typesTab;
     }
 
     /**
@@ -236,18 +234,11 @@ public class CmsGalleryDialog extends Composite implements BeforeSelectionHandle
 
         int selectedIndex = m_tabbedPanel.getSelectedIndex();
 
-        A_CmsListTab tabWidget = m_tabbedPanel.getWidget(selectedIndex);
-        // delegate to the specific tab handler on selection
-        if (tabWidget instanceof CmsTypesTab) {
-            tabWidget.onSelection();
-        } else if (tabWidget instanceof CmsGalleriesTab) {
-            tabWidget.onSelection();
-        } else if (tabWidget instanceof CmsCategoriesTab) {
-            tabWidget.onSelection();
-        } else if ((tabWidget instanceof CmsResultsTab) && m_isInitialSearch) {
+        A_CmsTab tabWidget = m_tabbedPanel.getWidget(selectedIndex);
+        if ((tabWidget instanceof CmsResultsTab) && m_isInitialSearch) {
             // no search here
             m_isInitialSearch = false;
-        } else if ((tabWidget instanceof CmsResultsTab) && !m_isInitialSearch) {
+        } else {
             tabWidget.onSelection();
         }
     }
@@ -262,5 +253,22 @@ public class CmsGalleryDialog extends Composite implements BeforeSelectionHandle
 
         m_isInitialSearch = isInitial;
         m_tabbedPanel.selectTab(tabIndex);
+    }
+
+    /**
+     * Selects a tab by the given id.<p>
+     * 
+     * @param tabId the tab id
+     */
+    public void selectTab(GalleryTabId tabId) {
+
+        Iterator<A_CmsTab> it = m_tabbedPanel.iterator();
+        while (it.hasNext()) {
+            A_CmsTab tab = it.next();
+            if (tabId == tab.getTabId()) {
+                m_tabbedPanel.selectTab(tab);
+                break;
+            }
+        }
     }
 }

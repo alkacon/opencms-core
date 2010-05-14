@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleryController.java,v $
- * Date   : $Date: 2010/05/07 13:33:01 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/05/14 13:34:53 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,19 +32,21 @@
 package org.opencms.ade.galleries.client;
 
 import org.opencms.ade.galleries.shared.CmsGalleriesListInfoBean;
-import org.opencms.ade.galleries.shared.CmsGalleryDialogBean;
-import org.opencms.ade.galleries.shared.CmsGalleryInfoBean;
-import org.opencms.ade.galleries.shared.CmsGallerySearchObject;
+import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
+import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.CmsTypesListInfoBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
+import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
 import org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService;
 import org.opencms.ade.galleries.shared.rpc.I_CmsGalleryServiceAsync;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
-import org.opencms.util.CmsStringUtil;
+import org.opencms.gwt.client.rpc.CmsRpcPrefetcher;
+import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 import com.google.gwt.core.client.GWT;
 
@@ -56,23 +58,23 @@ import com.google.gwt.core.client.GWT;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 8.0.0
  */
 public class CmsGalleryController {
 
     /** The gallery dialog bean. */
-    protected CmsGalleryDialogBean m_dialogBean;
+    protected CmsGalleryDataBean m_dialogBean;
 
     /** The gallery dialog mode. */
-    protected String m_dialogMode;
+    protected I_CmsGalleryProviderConstants.GalleryMode m_dialogMode;
 
     /** The gallery controller handler. */
     protected CmsGalleryControllerHandler m_handler;
 
     /** The gallery search object. */
-    protected CmsGallerySearchObject m_searchObject;
+    protected CmsGallerySearchBean m_searchObject;
 
     /** The gallery service instance. */
     private I_CmsGalleryServiceAsync m_gallerySvc;
@@ -80,52 +82,65 @@ public class CmsGalleryController {
     /**
      * Constructor.<p>
      * 
-     * 
+     * @param handler the controller handler 
      */
-    // TODO: macht es sinn hier schon onGetInitialSearch aufzurufen?, nein eigenen initialize method schreiben!!!
-    public CmsGalleryController() {
+    public CmsGalleryController(CmsGalleryControllerHandler handler) {
+
+        m_handler = handler;
 
         // get initial search for gallery
-        m_searchObject = new CmsGallerySearchObject();
-        m_searchObject.init();
+        m_searchObject = (CmsGallerySearchBean)CmsRpcPrefetcher.getSerializedObject(
+            getGalleryService(),
+            CmsGallerySearchBean.DICT_NAME);
+        //        m_searchObject = null;
+        m_dialogBean = (CmsGalleryDataBean)CmsRpcPrefetcher.getSerializedObject(
+            getGalleryService(),
+            CmsGalleryDataBean.DICT_NAME);
+        //        m_dialogBean = new CmsGalleryDataBean();
+        //        m_dialogBean.setMode(GalleryMode.view);
 
-        m_dialogBean = new CmsGalleryDialogBean();
         // set tabs config
-        String[] tabs = CmsStringUtil.splitAsArray(CmsGalleryProvider.get().getTabs(), ",");
-        final ArrayList<String> tabsConfig = new ArrayList<String>();
-        for (int i = 0; tabs.length > i; i++) {
-            tabsConfig.add(tabs[i]);
-        }
-        m_dialogBean.setTabs(tabsConfig);
+        //        String[] tabs = CmsStringUtil.splitAsArray(CmsGalleryProvider.get().getTabs(), ",");
+        //        final ArrayList<String> tabsConfig = new ArrayList<String>();
+        //        for (int i = 0; tabs.length > i; i++) {
+        //            tabsConfig.add(tabs[i]);
+        //        }
+        //        m_dialogBean.setTabs(tabsConfig);
 
-        m_dialogMode = CmsGalleryProvider.get().getDialogMode();
+        m_dialogMode = GalleryMode.view;
+        // m_dialogBean.getMode();
+
+        if (m_searchObject == null) {
+            m_searchObject = new CmsGallerySearchBean();
+        }
+        m_handler.onInitialSearch(m_searchObject, m_dialogBean, this);
 
         // TODO: move to an extra initialize method
         /** The RPC action to get the initial gallery info object. */
-        CmsRpcAction<CmsGalleryInfoBean> initialAction = new CmsRpcAction<CmsGalleryInfoBean>() {
-
-            /**
-            * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
-            */
-            @Override
-            public void execute() {
-
-                // TODO: first search, there are no explicit types set!!! the prepareSearch cannot be call at this moment
-                getGalleryService().getInitialSettings(tabsConfig, m_searchObject, m_dialogMode, this);
-            }
-
-            /**
-            * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
-            */
-            @Override
-            public void onResponse(CmsGalleryInfoBean infoBean) {
-
-                m_dialogBean = infoBean.getDialogInfo();
-                m_searchObject = infoBean.getSearchObject();
-                m_handler.onInitialSearch(m_searchObject, m_dialogBean, getGalleryTabIdIndex(), isOpenInResults());
-            }
-        };
-        initialAction.execute();
+        //        CmsRpcAction<CmsGalleryInfoBean> initialAction = new CmsRpcAction<CmsGalleryInfoBean>() {
+        //
+        //            /**
+        //            * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+        //            */
+        //            @Override
+        //            public void execute() {
+        //
+        //                // TODO: first search, there are no explicit types set!!! the prepareSearch cannot be call at this moment
+        //                getGalleryService().getInitialSettings(tabsConfig, m_searchObject, this);
+        //            }
+        //
+        //            /**
+        //            * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+        //            */
+        //            @Override
+        //            public void onResponse(CmsGalleryInfoBean infoBean) {
+        //
+        //                m_dialogBean = infoBean.getDialogInfo();
+        //                m_searchObject = infoBean.getSearchObject();
+        //                m_handler.onInitialSearch(m_searchObject, m_dialogBean, getGalleryTabIdIndex(), isOpenInResults());
+        //            }
+        //        };
+        //        initialAction.execute();
 
     }
 
@@ -136,9 +151,7 @@ public class CmsGalleryController {
      */
     public void addCategory(String categoryPath) {
 
-        if (!m_searchObject.getCategories().contains(categoryPath)) {
-            m_searchObject.getCategories().add(categoryPath);
-        }
+        m_searchObject.addCategory(categoryPath);
     }
 
     /**
@@ -148,9 +161,7 @@ public class CmsGalleryController {
      */
     public void addGallery(String galleryPath) {
 
-        if (!m_searchObject.getGalleries().contains(galleryPath)) {
-            m_searchObject.getGalleries().add(galleryPath);
-        }
+        m_searchObject.addGallery(galleryPath);
     }
 
     /**
@@ -161,9 +172,7 @@ public class CmsGalleryController {
     //TODO: is resource type id or name used?
     public void addType(String resourceType) {
 
-        if (!m_searchObject.getTypes().contains(resourceType)) {
-            m_searchObject.getTypes().add(resourceType);
-        }
+        m_searchObject.addType(resourceType);
     }
 
     /**
@@ -171,9 +180,9 @@ public class CmsGalleryController {
      */
     public void clearCategories() {
 
-        ArrayList<String> selectedCategories = m_searchObject.getCategories();
+        List<String> selectedCategories = m_searchObject.getCategories();
         m_handler.onClearCategories(selectedCategories);
-        m_searchObject.getCategories().clear();
+        m_searchObject.clearCategories();
         updateResultsTab();
     }
 
@@ -182,9 +191,9 @@ public class CmsGalleryController {
      */
     public void clearGalleries() {
 
-        ArrayList<String> selectedGalleries = m_searchObject.getGalleries();
+        List<String> selectedGalleries = m_searchObject.getGalleries();
         m_handler.onClearGalleries(selectedGalleries);
-        m_searchObject.getGalleries().clear();
+        m_searchObject.clearGalleries();
         updateResultsTab();
     }
 
@@ -193,26 +202,10 @@ public class CmsGalleryController {
      */
     public void clearTypes() {
 
-        ArrayList<String> selectedTypes = (ArrayList<String>)m_searchObject.getTypes();
+        List<String> selectedTypes = m_searchObject.getTypes();
         m_handler.onClearTypes(selectedTypes);
-        m_searchObject.getTypes().clear();
+        m_searchObject.clearTypes();
         updateResultsTab();
-    }
-
-    /**
-     * Returns the int value of the tab id.<p> 
-     * 
-     * @return tab id
-     */
-    public int getGalleryTabIdIndex() {
-
-        if (I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_results.name().equals(m_searchObject.getTabId())) {
-            return m_dialogBean.getTabs().size();
-        } else if (m_dialogBean.getTabs().indexOf(m_searchObject.getTabId()) > -1) {
-            return m_dialogBean.getTabs().indexOf(m_searchObject.getTabId());
-        } else {
-            return CmsGallerySearchObject.DEFAULT_TAB_ID;
-        }
     }
 
     /**
@@ -246,9 +239,7 @@ public class CmsGalleryController {
      */
     public void removeCategory(String categoryPath) {
 
-        if (m_searchObject.getCategories().contains(categoryPath)) {
-            m_searchObject.getCategories().remove(categoryPath);
-        }
+        m_searchObject.removeCategory(categoryPath);
     }
 
     /**
@@ -258,9 +249,7 @@ public class CmsGalleryController {
      */
     public void removeGallery(String galleryPath) {
 
-        if (m_searchObject.getGalleries().contains(galleryPath)) {
-            m_searchObject.getGalleries().remove(galleryPath);
-        }
+        m_searchObject.removeGallery(galleryPath);
     }
 
     /**
@@ -270,9 +259,7 @@ public class CmsGalleryController {
      */
     public void removeType(String resourceType) {
 
-        if (m_searchObject.getTypes().contains(resourceType)) {
-            m_searchObject.getTypes().remove(resourceType);
-        }
+        m_searchObject.removeType(resourceType);
     }
 
     /**
@@ -320,7 +307,7 @@ public class CmsGalleryController {
     public void sortResults(final String sortParams) {
 
         /** The RPC search action for the gallery dialog. */
-        CmsRpcAction<CmsGallerySearchObject> sortAction = new CmsRpcAction<CmsGallerySearchObject>() {
+        CmsRpcAction<CmsGallerySearchBean> sortAction = new CmsRpcAction<CmsGallerySearchBean>() {
 
             /**
             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
@@ -329,7 +316,7 @@ public class CmsGalleryController {
             public void execute() {
 
                 m_searchObject.setSortOrder(sortParams);
-                CmsGallerySearchObject preparedObject = prepareSearchObject();
+                CmsGallerySearchBean preparedObject = prepareSearchObject();
                 getGalleryService().getSearch(preparedObject, this);
             }
 
@@ -337,7 +324,7 @@ public class CmsGalleryController {
             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
             */
             @Override
-            public void onResponse(CmsGallerySearchObject searchObj) {
+            public void onResponse(CmsGallerySearchBean searchObj) {
 
                 m_searchObject.setResults(searchObj.getResults());
                 m_searchObject.setResultCount(searchObj.getResultCount());
@@ -367,7 +354,11 @@ public class CmsGalleryController {
      */
     public void updateCategoriesTab() {
 
-        m_handler.onCategoriesTabSelection();
+        if (m_dialogBean.getCategories() == null) {
+            loadCatgories();
+        } else {
+            m_handler.onCategoriesTabSelection();
+        }
     }
 
     /**
@@ -375,7 +366,11 @@ public class CmsGalleryController {
      */
     public void updateGalleriesTab() {
 
-        m_handler.onGalleriesTabSelection();
+        if (m_dialogBean.getGalleries() == null) {
+            loadGalleries();
+        } else {
+            m_handler.onGalleriesTabSelection();
+        }
     }
 
     /**
@@ -384,7 +379,7 @@ public class CmsGalleryController {
     public void updateResultsTab() {
 
         /** The RPC search action for the gallery dialog. */
-        CmsRpcAction<CmsGallerySearchObject> searchAction = new CmsRpcAction<CmsGallerySearchObject>() {
+        CmsRpcAction<CmsGallerySearchBean> searchAction = new CmsRpcAction<CmsGallerySearchBean>() {
 
             /**
             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
@@ -392,7 +387,7 @@ public class CmsGalleryController {
             @Override
             public void execute() {
 
-                CmsGallerySearchObject preparedObject = prepareSearchObject();
+                CmsGallerySearchBean preparedObject = prepareSearchObject();
                 getGalleryService().getSearch(preparedObject, this);
             }
 
@@ -400,7 +395,7 @@ public class CmsGalleryController {
             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
             */
             @Override
-            public void onResponse(CmsGallerySearchObject searchObj) {
+            public void onResponse(CmsGallerySearchBean searchObj) {
 
                 m_searchObject.setResults(searchObj.getResults());
                 m_searchObject.setResultCount(searchObj.getResultCount());
@@ -444,18 +439,17 @@ public class CmsGalleryController {
      * 
      * @return the search object
      */
-    CmsGallerySearchObject prepareSearchObject() {
+    CmsGallerySearchBean prepareSearchObject() {
 
-        CmsGallerySearchObject searchObj = m_searchObject;
-        CmsGallerySearchObject preparedSearchObj = new CmsGallerySearchObject(searchObj);
+        CmsGallerySearchBean preparedSearchObj = new CmsGallerySearchBean(m_searchObject);
         // add the available types to the search object used for next search, 
         // if the criteria for types are empty
-        if (searchObj.getTypes().isEmpty()) {
+        if ((m_searchObject.getTypes() == null) || m_searchObject.getTypes().isEmpty()) {
             // no galleries is selected, provide all available types
-            if (m_searchObject.getGalleries().isEmpty()) {
+            if ((m_searchObject.getGalleries() == null) || m_searchObject.getGalleries().isEmpty()) {
                 // additionally provide all available gallery folders 'widget' and 'editor' dialogmode 
-                if (m_dialogMode.equals(I_CmsGalleryProviderConstants.GalleryMode.widget)
-                    || m_dialogMode.equals(I_CmsGalleryProviderConstants.GalleryMode.editor)) {
+                if ((m_dialogMode == I_CmsGalleryProviderConstants.GalleryMode.widget)
+                    || (m_dialogMode == I_CmsGalleryProviderConstants.GalleryMode.editor)) {
                     ArrayList<String> availableGalleries = new ArrayList<String>();
                     for (CmsGalleriesListInfoBean galleryPath : m_dialogBean.getGalleries()) {
                         availableGalleries.add(galleryPath.getId());
@@ -468,12 +462,12 @@ public class CmsGalleryController {
                 }
                 preparedSearchObj.setTypes(availableTypes);
                 // at least one gallery is selected 
-            } else if (searchObj.getGalleries().size() > 0) {
+            } else {
 
                 // get the resource types associated with the selected galleries
                 HashSet<String> contentTypes = new HashSet<String>();
                 for (CmsGalleriesListInfoBean gallery : m_dialogBean.getGalleries()) {
-                    if (searchObj.getGalleries().contains(gallery.getId())) {
+                    if (m_searchObject.getGalleries().contains(gallery.getId())) {
                         contentTypes.addAll(gallery.getContentTypes());
                     }
                 }
@@ -496,5 +490,70 @@ public class CmsGalleryController {
         } else {
             return preparedSearchObj;
         }
+    }
+
+    /**
+     * Loading all available categories.<p>
+     */
+    private void loadCatgories() {
+
+        CmsRpcAction<CmsCategoryTreeEntry> action = new CmsRpcAction<CmsCategoryTreeEntry>() {
+
+            @Override
+            public void execute() {
+
+                if (m_dialogBean.getGalleries() == null) {
+                    List<String> types = new ArrayList<String>();
+                    for (CmsTypesListInfoBean type : m_dialogBean.getTypes()) {
+                        types.add(type.getId());
+                    }
+                    getGalleryService().getCategoryTreeTypes(types, this);
+                } else {
+                    List<String> galleries = new ArrayList<String>();
+                    for (CmsGalleriesListInfoBean info : m_dialogBean.getGalleries()) {
+                        galleries.add(info.getId());
+                    }
+                    getGalleryService().getCategoryTreeGalleries(galleries, this);
+                }
+            }
+
+            @Override
+            protected void onResponse(CmsCategoryTreeEntry result) {
+
+                m_dialogBean.setCategories(result);
+                m_handler.setCategoriesTabContent(result);
+                m_handler.onCategoriesTabSelection();
+            }
+        };
+        action.execute();
+    }
+
+    /**
+     * Loading all available galleries.<p>
+     */
+    private void loadGalleries() {
+
+        CmsRpcAction<List<CmsGalleriesListInfoBean>> action = new CmsRpcAction<List<CmsGalleriesListInfoBean>>() {
+
+            @Override
+            public void execute() {
+
+                List<String> types = new ArrayList<String>();
+                for (CmsTypesListInfoBean type : m_dialogBean.getTypes()) {
+                    types.add(type.getId());
+                }
+
+                getGalleryService().getGalleries(types, this);
+            }
+
+            @Override
+            protected void onResponse(List<CmsGalleriesListInfoBean> result) {
+
+                m_dialogBean.setGalleries(result);
+                m_handler.setGalleriesTabContent(result, m_searchObject.getGalleries());
+                m_handler.onGalleriesTabSelection();
+            }
+        };
+        action.execute();
     }
 }

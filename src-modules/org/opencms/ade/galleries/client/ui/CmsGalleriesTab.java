@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsGalleriesTab.java,v $
- * Date   : $Date: 2010/05/07 13:59:19 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/05/14 13:34:53 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,7 +33,7 @@ package org.opencms.ade.galleries.client.ui;
 
 import org.opencms.ade.galleries.client.CmsGalleriesTabHandler;
 import org.opencms.ade.galleries.shared.CmsGalleriesListInfoBean;
-import org.opencms.ade.galleries.shared.CmsGalleryDialogBean;
+import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
@@ -42,6 +42,7 @@ import org.opencms.gwt.client.util.CmsPair;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -55,7 +56,7 @@ import com.google.gwt.user.client.ui.Image;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.
  */
@@ -94,9 +95,9 @@ public class CmsGalleriesTab extends A_CmsListTab {
 
             //CmsCheckBox sender = (CmsCheckBox)event.getSource();
             if (m_checkBox.isChecked()) {
-                m_tabHandler.onSelectGallery(m_galleryPath);
+                getTabHandler().onSelectGallery(m_galleryPath);
             } else {
-                m_tabHandler.onDeselectGallery(m_galleryPath);
+                getTabHandler().onDeselectGallery(m_galleryPath);
             }
         }
     }
@@ -104,37 +105,37 @@ public class CmsGalleriesTab extends A_CmsListTab {
     /** Text metrics key. */
     private static final String TM_GALLERY_TAB = "GalleryTab";
 
-    /** The reference to the handler of this tab. */
-    protected CmsGalleriesTabHandler m_tabHandler;
-
-    //    /** The select box to change the sort order. */
-    //    private CmsSelectBox m_sortSelectBox;
+    /** The tab handler. */
+    private CmsGalleriesTabHandler m_tabHandler;
 
     /**
      * Constructor.<p>
+     * 
+     * @param tabHandler the tab handler 
      */
-    public CmsGalleriesTab() {
+    public CmsGalleriesTab(CmsGalleriesTabHandler tabHandler) {
 
-        super();
+        super(GalleryTabId.cms_tab_galleries);
         m_scrollList.truncate(TM_GALLERY_TAB, CmsGalleryDialog.DIALOG_WIDTH);
+        m_tabHandler = tabHandler;
     }
 
     /**
      * Fill the content of the galleries tab panel.<p>
      * 
-     * @param dialogBean the gallery dialog data bean containing the current search parameters
+     * @param galleryInfos the gallery info beans 
      * @param selectedGalleries the list of galleries to select
      */
-    public void fillContent(CmsGalleryDialogBean dialogBean, ArrayList<String> selectedGalleries) {
+    public void fillContent(List<CmsGalleriesListInfoBean> galleryInfos, List<String> selectedGalleries) {
 
-        for (CmsGalleriesListInfoBean galleryItem : dialogBean.getGalleries()) {
+        for (CmsGalleriesListInfoBean galleryItem : galleryInfos) {
             CmsListItemWidget listItemWidget = new CmsListItemWidget(galleryItem);
             Image icon = new Image(galleryItem.getIconResource());
             icon.setStyleName(DIALOG_CSS.listIcon());
             listItemWidget.setIcon(icon);
             CmsCheckBox checkBox = new CmsCheckBox();
             checkBox.addClickHandler(new CheckboxHandler(galleryItem.getId(), checkBox));
-            if (selectedGalleries.contains(galleryItem.getId())) {
+            if ((selectedGalleries != null) && selectedGalleries.contains(galleryItem.getId())) {
                 checkBox.setChecked(true);
             }
             CmsGalleryListItem listItem = new CmsGalleryListItem(checkBox, listItemWidget);
@@ -151,44 +152,26 @@ public class CmsGalleriesTab extends A_CmsListTab {
      * @param selectedGalleries the list of selected galleries by the user
      * @return the panel showing the selected galleries
      */
-    public HTMLPanel getGallerisParamsPanel(ArrayList<String> selectedGalleries) {
+    public HTMLPanel getGallerisParamsPanel(List<String> selectedGalleries) {
 
+        if ((selectedGalleries == null) || (selectedGalleries.size() == 0)) {
+            return null;
+        }
         HTMLPanel galleriesPanel;
-        String panelText = "";
-        if (selectedGalleries.size() == 1) {
-            panelText = panelText.concat("<b>").concat(Messages.get().key(Messages.GUI_PARAMS_LABEL_GALLERY_0)).concat(
-                "</b>");
-            CmsGalleryListItem galleryBean = (CmsGalleryListItem)m_scrollList.getItem(selectedGalleries.get(0));
+        String panelText = CmsDomUtil.enclose(CmsDomUtil.Tag.b, Messages.get().key(
+            Messages.GUI_PARAMS_LABEL_GALLERIES_0));
+        for (String galleryPath : selectedGalleries) {
+            CmsGalleryListItem galleryBean = (CmsGalleryListItem)m_scrollList.getItem(galleryPath);
             String title = galleryBean.getItemTitle();
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
                 title = galleryBean.getSubTitle();
             }
-            panelText = panelText.concat(" ").concat(title);
-        } else {
-            panelText = panelText.concat("<b>").concat(Messages.get().key(Messages.GUI_PARAMS_LABEL_GALLERIES_0)).concat(
-                "</b>");
-            for (String galleryPath : selectedGalleries) {
-                CmsGalleryListItem galleryBean = (CmsGalleryListItem)m_scrollList.getItem(galleryPath);
-                String title = galleryBean.getItemTitle();
-                if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
-                    title = galleryBean.getSubTitle();
-                }
-                panelText = panelText.concat(" ").concat(title);
-            }
+            panelText += " " + title + ",";
         }
+        panelText = panelText.substring(0, panelText.length() - 1);
         galleriesPanel = new HTMLPanel(CmsDomUtil.Tag.div.name(), panelText);
 
         return galleriesPanel;
-    }
-
-    /**
-     * Sets the tab handler.<p>
-     *
-     * @param tabHandler the tab handler to set
-     */
-    public void setTabHandler(CmsGalleriesTabHandler tabHandler) {
-
-        m_tabHandler = tabHandler;
     }
 
     /**
@@ -196,7 +179,7 @@ public class CmsGalleriesTab extends A_CmsListTab {
     * 
     * @param galleries the galleries to deselect
     */
-    public void uncheckGalleries(ArrayList<String> galleries) {
+    public void uncheckGalleries(List<String> galleries) {
 
         for (String gallery : galleries) {
             CmsGalleryListItem item = (CmsGalleryListItem)m_scrollList.getItem(gallery);
@@ -210,7 +193,7 @@ public class CmsGalleriesTab extends A_CmsListTab {
      * @param galleries the new gallery list
      * @param selectedGalleries the list of galleries to select
      */
-    public void updateContent(ArrayList<CmsGalleriesListInfoBean> galleries, ArrayList<String> selectedGalleries) {
+    public void updateContent(List<CmsGalleriesListInfoBean> galleries, List<String> selectedGalleries) {
 
         clearList();
         for (CmsGalleriesListInfoBean galleryItem : galleries) {
@@ -220,7 +203,7 @@ public class CmsGalleriesTab extends A_CmsListTab {
             listItemWidget.setIcon(icon);
             CmsCheckBox checkBox = new CmsCheckBox();
             checkBox.addClickHandler(new CheckboxHandler(galleryItem.getId(), checkBox));
-            if (selectedGalleries.contains(galleryItem.getId())) {
+            if ((selectedGalleries != null) && selectedGalleries.contains(galleryItem.getId())) {
                 checkBox.setChecked(true);
             }
             CmsGalleryListItem listItem = new CmsGalleryListItem(checkBox, listItemWidget);
@@ -235,9 +218,9 @@ public class CmsGalleriesTab extends A_CmsListTab {
      * @see org.opencms.ade.galleries.client.ui.A_CmsListTab#getSortList()
      */
     @Override
-    protected ArrayList<CmsPair<String, String>> getSortList() {
+    protected List<CmsPair<String, String>> getSortList() {
 
-        ArrayList<CmsPair<String, String>> list = new ArrayList<CmsPair<String, String>>();
+        List<CmsPair<String, String>> list = new ArrayList<CmsPair<String, String>>();
         list.add(new CmsPair<String, String>(SortParams.title_asc.name(), Messages.get().key(
             Messages.GUI_SORT_LABEL_TITLE_ASC_0)));
         list.add(new CmsPair<String, String>(SortParams.title_desc.name(), Messages.get().key(

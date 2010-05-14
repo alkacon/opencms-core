@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleryControllerHandler.java,v $
- * Date   : $Date: 2010/05/07 13:33:01 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/05/14 13:34:53 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,12 +35,12 @@ import org.opencms.ade.galleries.client.preview.ui.CmsPreviewDialog;
 import org.opencms.ade.galleries.client.ui.CmsGalleryDialog;
 import org.opencms.ade.galleries.shared.CmsCategoryInfoBean;
 import org.opencms.ade.galleries.shared.CmsGalleriesListInfoBean;
-import org.opencms.ade.galleries.shared.CmsGalleryDialogBean;
-import org.opencms.ade.galleries.shared.CmsGallerySearchObject;
+import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
+import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.CmsTypesListInfoBean;
+import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -50,7 +50,7 @@ import java.util.List;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 8.0.0
 
@@ -76,12 +76,12 @@ public class CmsGalleryControllerHandler {
      */
     public void onCategoriesTabSelection() {
 
-        if (m_galleryDialog.getCategoriesTab().isInitOpen()) {
-            m_galleryDialog.getCategoriesTab().updateListLayout();
-
-            m_galleryDialog.getCategoriesTab().openFirstLevel();
-            m_galleryDialog.getCategoriesTab().setInitOpen(false);
+        if (!m_galleryDialog.getCategoriesTab().isInitOpen()) {
+            return;
         }
+        m_galleryDialog.getCategoriesTab().updateLayout();
+        m_galleryDialog.getCategoriesTab().openFirstLevel();
+        m_galleryDialog.getCategoriesTab().setInitOpen(false);
     }
 
     /**
@@ -89,10 +89,12 @@ public class CmsGalleryControllerHandler {
      * 
      * @param categories the categories to remove from selection 
      */
-    public void onClearCategories(ArrayList<String> categories) {
+    public void onClearCategories(List<String> categories) {
 
         m_galleryDialog.getResultsTab().removeCategories();
-        m_galleryDialog.getCategoriesTab().uncheckCategories(categories);
+        if (categories != null) {
+            m_galleryDialog.getCategoriesTab().uncheckCategories(categories);
+        }
     }
 
     /**
@@ -100,10 +102,12 @@ public class CmsGalleryControllerHandler {
      * 
      * @param galleries the galleries to remove from selection
      */
-    public void onClearGalleries(ArrayList<String> galleries) {
+    public void onClearGalleries(List<String> galleries) {
 
         m_galleryDialog.getResultsTab().removeGalleries();
-        m_galleryDialog.getGalleriesTab().uncheckGalleries(galleries);
+        if (galleries != null) {
+            m_galleryDialog.getGalleriesTab().uncheckGalleries(galleries);
+        }
     }
 
     /**
@@ -111,10 +115,12 @@ public class CmsGalleryControllerHandler {
      * 
      * @param types the types to be removed from selection
      */
-    public void onClearTypes(ArrayList<String> types) {
+    public void onClearTypes(List<String> types) {
 
         m_galleryDialog.getResultsTab().removeTypes();
-        m_galleryDialog.getTypesTab().uncheckTypes(types);
+        if (types != null) {
+            m_galleryDialog.getTypesTab().uncheckTypes(types);
+        }
     }
 
     /**
@@ -122,7 +128,7 @@ public class CmsGalleryControllerHandler {
      */
     public void onGalleriesTabSelection() {
 
-        m_galleryDialog.getGalleriesTab().updateListLayout();
+        m_galleryDialog.getGalleriesTab().updateLayout();
     }
 
     /**
@@ -130,25 +136,31 @@ public class CmsGalleryControllerHandler {
      *  
      * @param searchObj the current search object
      * @param dialogBean the current dialog data bean
-     * @param tabIdIndex the tab id to be selected on opening
-     * @param isOpenInResults flag to indicate if gallery is opened in results tab
+     * @param controller the dialog controller
      */
     public void onInitialSearch(
-        CmsGallerySearchObject searchObj,
-        CmsGalleryDialogBean dialogBean,
-        int tabIdIndex,
-        boolean isOpenInResults) {
+        CmsGallerySearchBean searchObj,
+        CmsGalleryDataBean dialogBean,
+        CmsGalleryController controller) {
 
-        m_galleryDialog.getGalleriesTab().fillContent(dialogBean, searchObj.getGalleries());
-        m_galleryDialog.getTypesTab().fillContent(dialogBean, searchObj.getTypes());
-        m_galleryDialog.getCategoriesTab().fillContent(dialogBean);
-        m_galleryDialog.getResultsTab().fillContent(
-            searchObj,
-            m_galleryDialog.getTypesTab().getTypesParamsPanel(searchObj.getTypes()),
-            m_galleryDialog.getGalleriesTab().getGallerisParamsPanel(searchObj.getGalleries()),
-            m_galleryDialog.getCategoriesTab().getCategoriesParamsPanel(searchObj.getCategories()));
-
-        m_galleryDialog.selectTab(tabIdIndex, isOpenInResults);
+        m_galleryDialog.fillTabs(dialogBean.getMode().getTabs(), controller);
+        if ((m_galleryDialog.getGalleriesTab() != null) && (dialogBean.getGalleries() != null)) {
+            setGalleriesTabContent(dialogBean.getGalleries(), searchObj.getGalleries());
+        }
+        if ((m_galleryDialog.getTypesTab() != null) && (dialogBean.getTypes() != null)) {
+            setTypesTabContent(dialogBean.getTypes(), searchObj.getTypes());
+        }
+        if ((m_galleryDialog.getCategoriesTab() != null) && (dialogBean.getCategories() != null)) {
+            setCategoriesTabContent(dialogBean.getCategories());
+        }
+        if (dialogBean.getStartTab() == GalleryTabId.cms_tab_results) {
+            m_galleryDialog.getResultsTab().fillContent(
+                searchObj,
+                m_galleryDialog.getTypesTab().getTypesParamsPanel(searchObj.getTypes()),
+                m_galleryDialog.getGalleriesTab().getGallerisParamsPanel(searchObj.getGalleries()),
+                m_galleryDialog.getCategoriesTab().getCategoriesParamsPanel(searchObj.getCategories()));
+        }
+        m_galleryDialog.selectTab(dialogBean.getStartTab());
     }
 
     /**
@@ -165,7 +177,7 @@ public class CmsGalleryControllerHandler {
      *
      * @param searchObj the current search object 
      */
-    public void onResultTabSelection(CmsGallerySearchObject searchObj) {
+    public void onResultTabSelection(CmsGallerySearchBean searchObj) {
 
         m_galleryDialog.getResultsTab().updateContent(
             searchObj,
@@ -179,7 +191,7 @@ public class CmsGalleryControllerHandler {
      */
     public void onTypesTabSelection() {
 
-        m_galleryDialog.getTypesTab().updateListLayout();
+        m_galleryDialog.getTypesTab().updateLayout();
     }
 
     /**
@@ -188,7 +200,7 @@ public class CmsGalleryControllerHandler {
      * @param categoriesList the updated categories list
      * @param selectedCategories the selected categories
      */
-    public void onUpdateCategories(ArrayList<CmsCategoryInfoBean> categoriesList, ArrayList<String> selectedCategories) {
+    public void onUpdateCategories(List<CmsCategoryInfoBean> categoriesList, List<String> selectedCategories) {
 
         m_galleryDialog.getCategoriesTab().updateContent(categoriesList, selectedCategories);
     }
@@ -199,7 +211,7 @@ public class CmsGalleryControllerHandler {
      * @param categoryTreeEntry the category root entry
      * @param selectedCategories the selected categories
      */
-    public void onUpdateCategories(CmsCategoryTreeEntry categoryTreeEntry, ArrayList<String> selectedCategories) {
+    public void onUpdateCategories(CmsCategoryTreeEntry categoryTreeEntry, List<String> selectedCategories) {
 
         m_galleryDialog.getCategoriesTab().updateContent(categoryTreeEntry, selectedCategories);
     }
@@ -210,7 +222,7 @@ public class CmsGalleryControllerHandler {
      * @param galleries the updated galleries list
      * @param selectedGalleries the list of galleries to select
      */
-    public void onUpdateGalleries(ArrayList<CmsGalleriesListInfoBean> galleries, ArrayList<String> selectedGalleries) {
+    public void onUpdateGalleries(List<CmsGalleriesListInfoBean> galleries, List<String> selectedGalleries) {
 
         m_galleryDialog.getGalleriesTab().updateContent(galleries, selectedGalleries);
     }
@@ -221,8 +233,41 @@ public class CmsGalleryControllerHandler {
      * @param types the updated types list
      * @param selectedTypes the list of types to select
      */
-    public void onUpdateTypes(ArrayList<CmsTypesListInfoBean> types, List<String> selectedTypes) {
+    public void onUpdateTypes(List<CmsTypesListInfoBean> types, List<String> selectedTypes) {
 
         m_galleryDialog.getTypesTab().updateContent(types, selectedTypes);
     }
+
+    /**
+     * Sets the list content of the types tab.<p>
+     * 
+     * @param typeInfos the type info beans
+     * @param selectedTypes the selected types
+     */
+    public void setTypesTabContent(List<CmsTypesListInfoBean> typeInfos, List<String> selectedTypes) {
+
+        m_galleryDialog.getTypesTab().fillContent(typeInfos, selectedTypes);
+    }
+
+    /**
+     * Sets the list content of the galleries tab.<p>
+     * 
+     * @param galleryInfos the gallery info beans
+     * @param selectedGalleries the selected galleries
+     */
+    public void setGalleriesTabContent(List<CmsGalleriesListInfoBean> galleryInfos, List<String> selectedGalleries) {
+
+        m_galleryDialog.getGalleriesTab().fillContent(galleryInfos, selectedGalleries);
+    }
+
+    /**
+     * Sets the list content of the category tab.<p>
+     * 
+     * @param categoryRoot the root category tree entry
+     */
+    public void setCategoriesTabContent(CmsCategoryTreeEntry categoryRoot) {
+
+        m_galleryDialog.getCategoriesTab().fillContent(categoryRoot);
+    }
+
 }

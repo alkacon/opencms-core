@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/Attic/CmsGalleryActionElement.java,v $
- * Date   : $Date: 2010/05/14 13:34:53 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/05/14 13:36:29 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Polina Smagina 
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -102,15 +102,13 @@ public class CmsGalleryActionElement extends CmsGwtActionElement {
         }
 
         StringBuffer sb = new StringBuffer();
-        sb.append("\n");
         sb.append(ClientMessages.get().export(getRequest()));
-        sb.append("\n");
         sb.append(CmsGalleryDataBean.DICT_NAME).append("='");
         sb.append(serialize(I_CmsGalleryService.class.getMethod("getInitialSettings", GalleryMode.class), data));
-        sb.append("';\n");
+        sb.append("';");
         sb.append(CmsGallerySearchBean.DICT_NAME).append("='").append(
             serialize(I_CmsGalleryService.class.getMethod("getSearch", CmsGalleryDataBean.class), search));
-        sb.append("';\n");
+        sb.append("';");
         return sb.toString();
     }
 

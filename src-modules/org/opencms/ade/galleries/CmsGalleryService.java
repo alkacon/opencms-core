@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/Attic/CmsGalleryService.java,v $
- * Date   : $Date: 2010/05/07 13:59:19 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/05/14 13:34:53 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,33 +31,31 @@
 
 package org.opencms.ade.galleries;
 
-import org.opencms.ade.galleries.shared.CmsCategoriesListInfoBean;
 import org.opencms.ade.galleries.shared.CmsGalleriesListInfoBean;
-import org.opencms.ade.galleries.shared.CmsGalleryDialogBean;
-import org.opencms.ade.galleries.shared.CmsGalleryInfoBean;
-import org.opencms.ade.galleries.shared.CmsGallerySearchObject;
+import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
+import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.CmsResultsListInfoBean;
 import org.opencms.ade.galleries.shared.CmsTypesListInfoBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
+import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
+import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
+import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.ReqParam;
 import org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
-import org.opencms.file.types.CmsResourceTypeFolder;
+import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.CmsCoreService;
 import org.opencms.gwt.CmsGwtService;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
-import org.opencms.json.JSONArray;
-import org.opencms.json.JSONException;
-import org.opencms.json.JSONObject;
+import org.opencms.loader.CmsLoaderException;
 import org.opencms.loader.CmsResourceManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
-import org.opencms.relations.CmsCategory;
-import org.opencms.search.galleries.CmsGallerySearch;
 import org.opencms.search.galleries.CmsGallerySearchParameters;
 import org.opencms.search.galleries.CmsGallerySearchResult;
 import org.opencms.search.galleries.CmsGallerySearchResultList;
@@ -75,12 +73,14 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.Map.Entry;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * Handles all RPC services related to the gallery dialog.<p>
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 8.0.0
  * 
@@ -88,7 +88,6 @@ import java.util.Map.Entry;
  * @see org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService
  * @see org.opencms.ade.galleries.shared.rpc.I_CmsGalleryServiceAsync
  */
-// TODO: check the error handling, waht happens in error case? Feedback for user?
 public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryService {
 
     /**
@@ -206,137 +205,173 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     /** The core service. */
     private CmsCoreService m_coreService;
 
-    /** The available resource type id's. */
-    private JSONArray m_resourceTypeNames;
-
-    /** The available resource types. */
-    private List<I_CmsResourceType> m_resourceTypes;
-
     /** The workplace locale from the current user's settings. */
     private Locale m_wpLocale;
 
     /**
-     * @see org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService#getCriteriaLists(java.util.ArrayList)
+     * Returns a new configured service instance.<p>
+     * 
+     * @param request the current request
+     * 
+     * @return a new service instance
      */
-    // TODO: is not used at the moment, can be removed
-    public CmsGalleryInfoBean getCriteriaLists(ArrayList<String> tabs) throws CmsRpcException {
+    public static CmsGalleryService newInstance(HttpServletRequest request) {
 
-        CmsGalleryInfoBean gInfoBean = new CmsGalleryInfoBean();
-        try {
-            gInfoBean.setDialogInfo(buildSearchParamsLists(tabs));
-        } catch (Throwable e) {
-            error(e);
-        }
-        return gInfoBean;
-    }
-
-    /** 
-     * @see org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService#getInitialSearch(org.opencms.ade.galleries.shared.CmsGallerySearchObject)
-     */
-    // TODO: is not used! Can be removed
-    public CmsGalleryInfoBean getInitialSearch(CmsGallerySearchObject searchObj) throws CmsRpcException {
-
-        CmsGalleryInfoBean gInfoBean = new CmsGalleryInfoBean();
-        try {
-            gInfoBean.setSearchObject(buildInitialSearch(searchObj));
-        } catch (Throwable e) {
-            error(e);
-        }
-        return gInfoBean;
+        CmsGalleryService srv = new CmsGalleryService();
+        srv.setCms(CmsFlexController.getCmsObject(request));
+        srv.setRequest(request);
+        return srv;
     }
 
     /**
-     * @see org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService#getInitialSettings(ArrayList, CmsGallerySearchObject, String)
+     * @see org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService#getCategoryTreeGalleries(java.util.List)
      */
-    public CmsGalleryInfoBean getInitialSettings(
-        ArrayList<String> tabs,
-        CmsGallerySearchObject searchObj,
-        String dialogMode) throws CmsRpcException {
+    public CmsCategoryTreeEntry getCategoryTreeGalleries(List<String> galleries) throws CmsRpcException {
 
-        CmsGalleryInfoBean gInfoBean = new CmsGalleryInfoBean();
-        try {
-            gInfoBean.setDialogInfo(buildSearchParamsLists(tabs));
-            gInfoBean.setSearchObject(buildInitialSearch(searchObj));
-            gInfoBean.setDialogMode(dialogMode);
-        } catch (CmsRpcException e) {
-            throw e;
-        } catch (Throwable e) {
-            error(e);
+        List<CmsResource> galleryFolders = new ArrayList<CmsResource>();
+        if (galleries != null) {
+            for (String foldername : galleries) {
+                try {
+                    galleryFolders.add(getCmsObject().readResource(foldername));
+                } catch (CmsException e) {
+                    // TODO: Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
         }
-        return gInfoBean;
+        return readCategoriesTree(galleryFolders);
     }
 
     /**
-     * @see org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService#getSearch(CmsGallerySearchObject)
+     * @see org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService#getCategoryTreeTypes(java.util.List)
      */
-    public CmsGallerySearchObject getSearch(CmsGallerySearchObject searchObj) throws CmsRpcException {
+    public CmsCategoryTreeEntry getCategoryTreeTypes(List<String> types) throws CmsRpcException {
 
-        CmsGallerySearchObject gSearchObj = new CmsGallerySearchObject();
+        Map<String, CmsGalleryTypeInfo> typeInfos = readGalleryTypes(readResourceTypes(types));
+        List<CmsResource> galleryFolders = new ArrayList<CmsResource>();
+        for (CmsGalleryTypeInfo info : typeInfos.values()) {
+            galleryFolders.addAll(info.getGalleries());
+        }
+        return readCategoriesTree(galleryFolders);
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService#getGalleries(java.util.List)
+     */
+    public List<CmsGalleriesListInfoBean> getGalleries(List<String> resourceTypes) throws CmsRpcException {
+
+        return buildGalleriesList(readGalleryTypes(readResourceTypes(resourceTypes)));
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService#getInitialSettings(org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode)
+     */
+    public CmsGalleryDataBean getInitialSettings(GalleryMode galleryMode) throws CmsRpcException {
+
+        CmsGalleryDataBean data = new CmsGalleryDataBean();
+        data.setMode(galleryMode);
+        data.setLocales(buildLocalesMap());
+        switch (galleryMode) {
+
+            case editor:
+            case view:
+            case widget:
+                List<I_CmsResourceType> types = readResourceTypesFromRequest();
+                data.setTypes(buildTypesList(types));
+                data.setGalleries(buildGalleriesList(readGalleryTypes(types)));
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getRequest().getParameter(ReqParam.gallerypath.name()))) {
+                    data.setStartTab(GalleryTabId.cms_tab_results);
+                } else {
+                    data.setStartTab(GalleryTabId.cms_tab_galleries);
+                }
+                break;
+            case ade:
+                data.setTypes(buildTypesList(readResourceTypesForContainerpage()));
+                data.setStartTab(GalleryTabId.cms_tab_types);
+                break;
+            case sitemap:
+                data.setTypes(buildTypesList(readResourceTypesForSitemap()));
+                data.setStartTab(GalleryTabId.cms_tab_search);
+                break;
+            default:
+                break;
+        }
+        return data;
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService#getSearch(org.opencms.ade.galleries.shared.CmsGalleryDataBean)
+     */
+    public CmsGallerySearchBean getSearch(CmsGalleryDataBean data) throws CmsRpcException {
+
+        CmsGallerySearchBean result = new CmsGallerySearchBean();
+        // search within all available types
+        List<String> types = new ArrayList<String>();
+        for (CmsTypesListInfoBean info : data.getTypes()) {
+            types.add(info.getId());
+        }
+        result.setTypes(types);
+        switch (data.getMode()) {
+            case editor:
+            case view:
+            case widget:
+                String gallery = getRequest().getParameter(ReqParam.gallerypath.name());
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(gallery)) {
+                    List<String> galleries = new ArrayList<String>();
+                    galleries.add(gallery);
+                    result.setGalleries(galleries);
+                }
+                String currentelement = getRequest().getParameter(ReqParam.currentelement.name());
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(currentelement)) {
+                    CmsSitemapEntry entry = null;
+                    try {
+                        entry = OpenCms.getSitemapManager().getEntryForUri(getCmsObject(), currentelement);
+                    } catch (CmsException e) {
+                        error(e);
+                    }
+                    if ((entry != null) && entry.isSitemap()) {
+                        //TODO: handle sitemap entries
+                    } else {
+                        // get search results given resource path
+                        result = findResourceInGallery(currentelement, result);
+                    }
+                } else {
+                    result = search(result);
+                }
+                // remove all types
+                result.setTypes(null);
+                break;
+            case ade:
+                //TODO: get last search from session
+                result = search(result);
+                // remove all types
+                result.setTypes(null);
+                break;
+            case sitemap:
+                //TODO: get last search from session
+                result = search(result);
+                // remove all types
+                result.setTypes(null);
+                break;
+            default:
+                break;
+        }
+
+        return result;
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService#getSearch(CmsGallerySearchBean)
+     */
+    public CmsGallerySearchBean getSearch(CmsGallerySearchBean searchObj) throws CmsRpcException {
+
+        CmsGallerySearchBean gSearchObj = null;
         try {
             gSearchObj = search(searchObj);
         } catch (Throwable e) {
             error(e);
         }
         return gSearchObj;
-    }
-
-    /**
-     * Returns the map with given categories.<p>
-     * 
-     * The map uses category path as the key and stores the CmsCategoriesListInfoBean as the value.
-     * 
-     * @param categories the categories
-     * @return the map with categories
-     */
-    // TODO: remove if not used any more
-    private ArrayList<CmsCategoriesListInfoBean> buildCategoriesList(List<CmsCategory> categories) {
-
-        ArrayList<CmsCategoriesListInfoBean> list = new ArrayList<CmsCategoriesListInfoBean>();
-        if ((categories == null) || (categories.size() == 0)) {
-            return list;
-        }
-        // the next lines sort the categories according to their path 
-        Map<String, CmsCategory> sorted = new TreeMap<String, CmsCategory>();
-
-        Iterator<CmsCategory> i = categories.iterator();
-        while (i.hasNext()) {
-            CmsCategory category = i.next();
-            String categoryPath = category.getPath();
-            if (sorted.get(categoryPath) != null) {
-                continue;
-            }
-            sorted.put(categoryPath, category);
-        }
-
-        List<CmsCategory> sortedCategories = new ArrayList<CmsCategory>(sorted.values());
-
-        i = sortedCategories.iterator();
-        while (i.hasNext()) {
-            CmsCategory cat = i.next();
-            CmsCategoriesListInfoBean bean = new CmsCategoriesListInfoBean();
-            try {
-                // 1: category path as id
-                bean.setId(cat.getPath());
-                // 2: category title
-                bean.setTitle(cat.getTitle());
-                // 3: category path
-                bean.setSubTitle(cat.getPath());
-                // 4: category root path
-                bean.setRootPath(cat.getRootPath());
-                // 5: category level                
-                int level = CmsResource.getPathLevel(cat.getPath());
-                bean.setLevel(level);
-                // 6: set icon path 
-                String iconPath = CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES
-                    + OpenCms.getWorkplaceManager().getExplorerTypeSetting(CmsResourceTypeFolder.RESOURCE_TYPE_NAME).getIcon());
-                bean.setIconResource(iconPath);
-                list.add(bean);
-            } catch (Exception e) {
-                // TODO: Improve error handling
-                logError(e);
-            }
-        }
-        return list;
     }
 
     /**
@@ -348,10 +383,10 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
      * 
      * @return the map with gallery info beans
      */
-    private ArrayList<CmsGalleriesListInfoBean> buildGalleriesList(Map<String, CmsGalleryTypeInfo> galleryTypes)
+    private List<CmsGalleriesListInfoBean> buildGalleriesList(Map<String, CmsGalleryTypeInfo> galleryTypes)
     throws CmsRpcException {
 
-        ArrayList<CmsGalleriesListInfoBean> list = new ArrayList<CmsGalleriesListInfoBean>();
+        List<CmsGalleriesListInfoBean> list = new ArrayList<CmsGalleriesListInfoBean>();
         if (galleryTypes == null) {
             return list;
         }
@@ -410,50 +445,13 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     }
 
     /**
-     * Returns the current search object containing the initial search results.<p>
-     * 
-     * These could be the list of search results specified by the provided search object or 
-     * a list of search results containing a specific resource, which was previously selected. 
-     * The path to the selected resource is provided by the search object.
-     * 
-     * @param initialSearch the search object with parameters for the initial search
-     * @return the search object containing the results of the initial search
-     */
-    // TODO: error handling, what happens if error? 
-    private CmsGallerySearchObject buildInitialSearch(CmsGallerySearchObject initialSearch) {
-
-        CmsGallerySearchObject searchObj = new CmsGallerySearchObject();
-        try {
-            String resourcePath = initialSearch.getResourcePath();
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(resourcePath)) {
-                CmsSitemapEntry entry = OpenCms.getSitemapManager().getEntryForUri(getCmsObject(), resourcePath);
-                if (entry.isSitemap()) {
-                    //TODO: put the sitemap parameter in results
-                    //result.put(ResponseKey.sitemap.name(), buildJSONForSitemap(resourcePath, null, null, true));
-                } else {
-                    // get search results given resource path
-                    searchObj = findResourceInGallery(resourcePath, initialSearch);
-                }
-            } else {
-                // search with the initial search
-                searchObj = search(initialSearch);
-            }
-            return searchObj;
-        } catch (Exception e) {
-            // TODO: improve error handling
-            logError(e);
-        }
-        return searchObj;
-    }
-
-    /**
      * Returns a map with the available locales.<p>
      * 
      * The map entry key is the current locale and the value the localized nice.
      * 
      * @return the map representation of all available locales
      */
-    private TreeMap<String, String> buildLocalesMap() {
+    private Map<String, String> buildLocalesMap() {
 
         TreeMap<String, String> localesMap = new TreeMap<String, String>();
         Iterator<Locale> it = OpenCms.getLocaleManager().getAvailableLocales().iterator();
@@ -465,71 +463,13 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     }
 
     /**
-     * Returns the gallery dialog bean containing the content of the configured tabs.<p>
-     * 
-     * @param tabs the configured tabs for the gallery dialog
-     * @return the content of the gallery dialog
-     * @throws CmsRpcException 
-     */
-    private CmsGalleryDialogBean buildSearchParamsLists(ArrayList<String> tabs) throws CmsRpcException {
-
-        CmsGalleryDialogBean bean = new CmsGalleryDialogBean();
-        // set the tabs to display in the gallery
-        bean.setTabs(tabs);
-
-        Map<String, CmsGalleryTypeInfo> galleryTypes = readGalleryTypes(getResourceTypes());
-        // collect galleries
-        if (tabs.contains(I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_galleries.name())) {
-            ArrayList<CmsGalleriesListInfoBean> galleries = buildGalleriesList(galleryTypes);
-            bean.setGalleries(galleries);
-        }
-        // collect types
-        if (tabs.contains(I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_types.name())) {
-            ArrayList<CmsTypesListInfoBean> types = buildTypesList(getResourceTypes());
-            bean.setTypes(types);
-        }
-        // collect categories
-        if (tabs.contains(I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_categories.name())) {
-            List<CmsResource> galleryFolders = new ArrayList<CmsResource>();
-            Iterator<Entry<String, CmsGalleryTypeInfo>> iGalleryTypes = galleryTypes.entrySet().iterator();
-            while (iGalleryTypes.hasNext()) {
-                galleryFolders.addAll(iGalleryTypes.next().getValue().getGalleries());
-            }
-            // TODO: replace with tree
-            //            ArrayList<CmsCategoriesListInfoBean> categories = buildCategoriesList(readCategories(galleryFolders));
-            //            bean.setCategories(categories);
-            CmsCategoryTreeEntry category = readCategoriesTree(galleryFolders);
-            bean.setCategories(category);
-        }
-        // collect sitemap data
-        if (tabs.contains(I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_sitemap.name())) {
-            // TODO: implement, change target uri to "/",add available site roots 
-            //result.put(ResponseKey.sitemap.name(), buildJSONForSitemap("/demo_t3/", null, null, true));
-        }
-        // collect vfs tree data
-        if (tabs.contains(I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_vfstree.name())) {
-            //TODO: implement add available site roots
-            //result.put(ResponseKey.vfstree.name(), buildJSONForVfsTree(null));
-        }
-        // collect container page types
-        if (tabs.contains(I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_containerpage.name())) {
-            //TODO: implement
-        }
-        // TODO: set current locale if required        
-        // set the available locales
-        bean.setLocales(buildLocalesMap());
-
-        return bean;
-    }
-
-    /**
      * Returns the list of beans for the given search results.<p>
      * 
      * @param searchResult the list of search results
      * 
      * @return the list with the current search results
      */
-    private ArrayList<CmsResultsListInfoBean> buildSearchResultList(List<CmsGallerySearchResult> searchResult) {
+    private List<CmsResultsListInfoBean> buildSearchResultList(List<CmsGallerySearchResult> searchResult) {
 
         ArrayList<CmsResultsListInfoBean> list = new ArrayList<CmsResultsListInfoBean>();
         if ((searchResult == null) || (searchResult.size() == 0)) {
@@ -593,7 +533,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
      * 
      * @return the map containing the available resource types
      */
-    private ArrayList<CmsTypesListInfoBean> buildTypesList(List<I_CmsResourceType> types) throws CmsRpcException {
+    private List<CmsTypesListInfoBean> buildTypesList(List<I_CmsResourceType> types) throws CmsRpcException {
 
         ArrayList<CmsTypesListInfoBean> list = new ArrayList<CmsTypesListInfoBean>();
         if (types == null) {
@@ -639,7 +579,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
      * 
      * @return the gallery search object containing the current search parameter and the search result list
      */
-    private CmsGallerySearchObject findResourceInGallery(String resourceName, CmsGallerySearchObject initialSearchObj) {
+    private CmsGallerySearchBean findResourceInGallery(String resourceName, CmsGallerySearchBean initialSearchObj) {
 
         CmsResource resource = null;
         CmsProperty locale = CmsProperty.getNullProperty();
@@ -649,7 +589,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         } catch (CmsException e) {
             logError(e);
         }
-        CmsGallerySearchObject searchObj = new CmsGallerySearchObject(initialSearchObj);
+        CmsGallerySearchBean searchObj = new CmsGallerySearchBean(initialSearchObj);
         if (resource == null) {
             return searchObj;
         }
@@ -671,7 +611,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         boolean found = false;
         searchObj.setPage(currentPage);
         CmsGallerySearchParameters params = prepareSearchParams(searchObj);
-        CmsGallerySearch searchBean = new CmsGallerySearch();
+        org.opencms.search.galleries.CmsGallerySearch searchBean = new org.opencms.search.galleries.CmsGallerySearch();
         searchBean.init(getCmsObject());
         searchBean.setIndex(ADVANCED_GALLERY_INDEX);
 
@@ -693,7 +633,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 break;
             }
         }
-        CmsGallerySearchObject searchResultsObj = new CmsGallerySearchObject();
+        CmsGallerySearchBean searchResultsObj = new CmsGallerySearchBean();
         if (found && (searchResults != null)) {
             searchResultsObj.setSortOrder(params.getSortOrder().name());
             searchResultsObj.setResultCount(searchResults.getHitCount());
@@ -812,48 +752,6 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     }
 
     /**
-     * Returns the available resource type names.<p>
-     * 
-     * @return the resource type names
-     */
-    private JSONArray getResourceTypeNames() {
-
-        if (m_resourceTypeNames == null) {
-            try {
-                JSONObject data = CmsGalleryProvider.get().getData(getRequest());
-                String typesString = data.optString(I_CmsGalleryProviderConstants.ReqParam.types.name());
-                String[] typesArray = CmsStringUtil.splitAsArray(typesString, ",");
-                m_resourceTypeNames = new JSONArray(typesArray);
-            } catch (JSONException e) {
-                // TODO: improve error handling
-                logError(e);
-            }
-            if ((m_resourceTypeNames == null) || (m_resourceTypeNames.length() == 0)) {
-                // using all available types if typeNames is null or empty
-                m_resourceTypes = getResourceManager().getResourceTypes();
-                m_resourceTypeNames = new JSONArray();
-                for (I_CmsResourceType type : m_resourceTypes) {
-                    m_resourceTypeNames.put(type.getTypeName());
-                }
-            }
-        }
-        return m_resourceTypeNames;
-    }
-
-    /**
-     * Returns the available resource types.<p>
-     * 
-     * @return the resource types
-     */
-    private List<I_CmsResourceType> getResourceTypes() {
-
-        if (m_resourceTypes == null) {
-            m_resourceTypes = readContentTypes(getResourceTypeNames());
-        }
-        return m_resourceTypes;
-    }
-
-    /**
      * Returns the workplace locale from the current user's settings.<p>
      * 
      * @return the workplace locale
@@ -873,11 +771,11 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
      * 
      * @return the prepared search parameters
      */
-    private CmsGallerySearchParameters prepareSearchParams(CmsGallerySearchObject searchData) {
+    private CmsGallerySearchParameters prepareSearchParams(CmsGallerySearchBean searchData) {
 
         List<String> types = searchData.getTypes();
-        ArrayList<String> galleries = searchData.getGalleries();
-        ArrayList<String> categories = searchData.getCategories();
+        List<String> galleries = searchData.getGalleries();
+        List<String> categories = searchData.getCategories();
         String queryStr = searchData.getQuery();
         int matches = searchData.getMachesPerPage();
         CmsGallerySearchParameters.CmsGallerySortParam sortOrder;
@@ -940,51 +838,6 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         categoryTreeEntry = coreService.getCategories("", true, refPath);
 
         return categoryTreeEntry;
-        //TODO: remove or move to extra method, reads the categories as list
-        //        CmsCategoryService catService = CmsCategoryService.getInstance();
-        //        List<String> repositories = new ArrayList<String>();
-        //        if ((galleries != null) && !galleries.isEmpty()) {
-        //            Iterator<CmsResource> iGalleries = galleries.iterator();
-        //
-        //            while (iGalleries.hasNext()) {
-        //                CmsResource res = iGalleries.next();
-        //                repositories.addAll(catService.getCategoryRepositories(getCmsObject(), getCmsObject().getSitePath(res)));
-        //            }
-        //        } else {
-        //            repositories.add(CmsCategoryService.CENTRALIZED_REPOSITORY);
-        //        }
-        //        List<CmsCategory> categories = null;
-        //        try {
-        //            categories = catService.readCategoriesForRepositories(getCmsObject(), "", true, repositories);
-        //        } catch (CmsException e) {
-        //            // error reading categories
-        //            logError(e);
-        //        }
-        //        return categories;
-    }
-
-    /**
-     * Reads the resource-types for given resource-type-id's.<p>
-     * 
-     * @param types the type-names
-     * @return the list of resource-types
-     */
-    // TODO: replace parameter with list
-    private List<I_CmsResourceType> readContentTypes(JSONArray types) {
-
-        List<I_CmsResourceType> result = new ArrayList<I_CmsResourceType>();
-        if ((types == null) || (types.length() == 0)) {
-            return result;
-        }
-        for (int i = 0; i < types.length(); i++) {
-            try {
-                result.add(getResourceManager().getResourceType(types.getString(i)));
-            } catch (Exception e) {
-                // TODO: Improve error handling
-                logError(e);
-            }
-        }
-        return result;
     }
 
     /**
@@ -1018,19 +871,93 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     }
 
     /**
+     * Reads a list of resource types by the given names.<p>
+     * 
+     * @param typeNames the type names
+     * 
+     * @return the resource types
+     */
+    private List<I_CmsResourceType> readResourceTypes(List<String> typeNames) {
+
+        List<I_CmsResourceType> resTypes = new ArrayList<I_CmsResourceType>();
+        for (String typeName : typeNames) {
+            try {
+                resTypes.add(getResourceManager().getResourceType(typeName));
+            } catch (CmsLoaderException e) {
+                // TODO: Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+        return resTypes;
+    }
+
+    /**
+     * Returns the resource types configured to be used within the container-page editor.<p>
+     * 
+     * @return the resource types
+     */
+    private List<I_CmsResourceType> readResourceTypesForContainerpage() {
+
+        //TODO: retrieve type list from configuration
+        return getResourceManager().getResourceTypes();
+    }
+
+    /**
+     * Returns the resource types configured to be used within the sitemap editor.<p>
+     * 
+     * @return the resource types
+     */
+    private List<I_CmsResourceType> readResourceTypesForSitemap() {
+
+        List<I_CmsResourceType> result = new ArrayList<I_CmsResourceType>();
+        try {
+            result.add(getResourceManager().getResourceType(CmsResourceTypeXmlContainerPage.getStaticTypeName()));
+        } catch (Exception e) {
+            // this should really never happen
+            logError(e);
+        }
+        return result;
+    }
+
+    /**
+     * Returns a list of resource types by a request parameter.<p>
+     * 
+     * @return the resource types
+     */
+    private List<I_CmsResourceType> readResourceTypesFromRequest() {
+
+        List<I_CmsResourceType> result = new ArrayList<I_CmsResourceType>();
+        String typesParam = getRequest().getParameter(ReqParam.types.name());
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(typesParam)) {
+            String[] temp = typesParam.split(",");
+            for (int i = 0; i < temp.length; i++) {
+                try {
+                    result.add(getResourceManager().getResourceType(temp[i].trim()));
+                } catch (Exception e) {
+                    logError(e);
+                }
+            }
+        }
+        if (result.size() == 0) {
+            result = getResourceManager().getResourceTypes();
+        }
+        return result;
+    }
+
+    /**
      * Returns the gallery search object containing the results for the current parameter.<p>
      * 
      * @param searchObj the current search object 
      */
-    private CmsGallerySearchObject search(CmsGallerySearchObject searchObj) {
+    private CmsGallerySearchBean search(CmsGallerySearchBean searchObj) {
 
-        CmsGallerySearchObject searchObjBean = new CmsGallerySearchObject(searchObj);
+        CmsGallerySearchBean searchObjBean = new CmsGallerySearchBean(searchObj);
         if (searchObj == null) {
             return searchObjBean;
         }
         // search
         CmsGallerySearchParameters params = prepareSearchParams(searchObj);
-        CmsGallerySearch searchBean = new CmsGallerySearch();
+        org.opencms.search.galleries.CmsGallerySearch searchBean = new org.opencms.search.galleries.CmsGallerySearch();
         searchBean.init(getCmsObject());
         searchBean.setIndex(ADVANCED_GALLERY_INDEX);
         CmsGallerySearchResultList searchResults = searchBean.getResult(params);
@@ -1043,4 +970,5 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
         return searchObjBean;
     }
+
 }

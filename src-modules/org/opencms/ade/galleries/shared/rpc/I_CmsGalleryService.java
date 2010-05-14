@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/rpc/Attic/I_CmsGalleryService.java,v $
- * Date   : $Date: 2010/04/28 10:25:47 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/05/14 13:34:53 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,11 +31,14 @@
 
 package org.opencms.ade.galleries.shared.rpc;
 
-import org.opencms.ade.galleries.shared.CmsGalleryInfoBean;
-import org.opencms.ade.galleries.shared.CmsGallerySearchObject;
+import org.opencms.ade.galleries.shared.CmsGalleriesListInfoBean;
+import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
+import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
+import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.gwt.CmsRpcException;
+import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
@@ -44,8 +47,9 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  * Handles all RPC services related to the gallery dialog.<p>
  * 
  * @author Polina Smagina
+ * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
  * 
@@ -57,43 +61,61 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 public interface I_CmsGalleryService extends RemoteService {
 
     /**
-     * Returns the gallery info bean containing the content of the configured criteria tabs.<p> 
+     * Returns all available categories for given galleries.<p>
      * 
-     * @param tabs the configuration of the tabs
+     * @param galleries the galleries
      * 
-     * @return the gallery info bean with the tabs' content
+     * @return the category tree root entry
      * 
-     * @throws CmsRpcException if something goes wrong
+     * @throws CmsRpcException is something goes wrong
      */
-    CmsGalleryInfoBean getCriteriaLists(ArrayList<String> tabs) throws CmsRpcException;
+    CmsCategoryTreeEntry getCategoryTreeGalleries(List<String> galleries) throws CmsRpcException;
 
     /**
-     * Returns the search results for initial search parameter.<p>
+     * Returns all available categories for given resource types, by looking up associated galleries first.<p>
      * 
-     * As search results content of selected galleries or categories or a specified resource can be returned.
+     * Only use this if no galleries list is available.<p>
      * 
-     * @param searchObj the initial search object
+     * @param types the resource types
      * 
-     * @return the gallery info bean including search results 
+     * @return the category tree root entry
      * 
-     * @throws CmsRpcException if something goes wrong
+     * @throws CmsRpcException is something goes wrong
      */
-    CmsGalleryInfoBean getInitialSearch(CmsGallerySearchObject searchObj) throws CmsRpcException;
+    CmsCategoryTreeEntry getCategoryTreeTypes(List<String> types) throws CmsRpcException;
 
     /**
-     * Returns the initial setting for the gallery.<p>
+     * Returns the available galleries depending on the given resource types.<p>
      * 
-     * This includes the content of the criteria tabs and if provided the search results for the search object.
-     *  
-     * @param tabs the configuration of the tabs
-     * @param searchObj the initial search object
-     * @param dialogMode the dialog mode of this gallery dialog
+     * @param resourceTypes the resource types
      * 
-     * @return the gallery info bean including the tabs' content and search results 
+     * @return the galleries
+     * 
      * @throws CmsRpcException if something goes wrong
      */
-    CmsGalleryInfoBean getInitialSettings(ArrayList<String> tabs, CmsGallerySearchObject searchObj, String dialogMode)
-    throws CmsRpcException;
+    List<CmsGalleriesListInfoBean> getGalleries(List<String> resourceTypes) throws CmsRpcException;
+
+    /**
+     * Returns the initial data for the given gallery mode.<p>
+     * 
+     * @param galleryMode the gallery mode
+     * 
+     * @return the data bean
+     * 
+     * @throws CmsRpcException if something goes wrong
+     */
+    CmsGalleryDataBean getInitialSettings(I_CmsGalleryProviderConstants.GalleryMode galleryMode) throws CmsRpcException;
+
+    /**
+     * Performs an initial search based on the given data bean and the available parameters of the request.<p>
+     * 
+     * @param data the data bean
+     * 
+     * @return the search result
+     * 
+     * @throws CmsRpcException if something goes wrong
+     */
+    CmsGallerySearchBean getSearch(CmsGalleryDataBean data) throws CmsRpcException;
 
     /**
      * Returns the gallery search object containing search results and the currant search parameter.<p>  
@@ -102,6 +124,6 @@ public interface I_CmsGalleryService extends RemoteService {
      * @return the search object containing search results
      * @throws CmsRpcException is something goes wrong
      */
-    CmsGallerySearchObject getSearch(CmsGallerySearchObject searchObj) throws CmsRpcException;
+    CmsGallerySearchBean getSearch(CmsGallerySearchBean searchObj) throws CmsRpcException;
 
 }

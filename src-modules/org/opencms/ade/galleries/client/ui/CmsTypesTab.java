@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsTypesTab.java,v $
- * Date   : $Date: 2010/05/07 13:59:19 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/05/14 13:34:53 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,8 +32,8 @@
 package org.opencms.ade.galleries.client.ui;
 
 import org.opencms.ade.galleries.client.CmsTypesTabHandler;
-import org.opencms.ade.galleries.shared.CmsGalleryDialogBean;
 import org.opencms.ade.galleries.shared.CmsTypesListInfoBean;
+import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
 import org.opencms.gwt.client.draganddrop.I_CmsDragHandler;
 import org.opencms.gwt.client.ui.CmsFloatDecoratedPanel;
@@ -59,7 +59,7 @@ import com.google.gwt.user.client.ui.Image;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.
  */
@@ -97,9 +97,9 @@ public class CmsTypesTab extends A_CmsListTab {
         public void onClick(ClickEvent event) {
 
             if (m_checkBox.isChecked()) {
-                m_tabHandler.selectType(m_resourceType);
+                getTabHandler().selectType(m_resourceType);
             } else {
-                m_tabHandler.deselectType(m_resourceType);
+                getTabHandler().deselectType(m_resourceType);
             }
         }
     }
@@ -107,42 +107,48 @@ public class CmsTypesTab extends A_CmsListTab {
     /** Text metrics key. */
     private static final String TM_TYPE_TAB = "TypeTab";
 
-    /** The reference to the handler of this tab. */
-    protected CmsTypesTabHandler m_tabHandler;
-
     /** The reference to the drag handler for the list elements. */
     private I_CmsDragHandler<?, ?> m_dragHandler;
 
-    /**
-     * Constructor with the drag handler.<p>
-     * 
-     * @param handler the reference to drag handler
-     */
-    public CmsTypesTab(I_CmsDragHandler<?, ?> handler) {
+    /** The reference to the handler of this tab. */
+    private CmsTypesTabHandler m_tabHandler;
 
-        super();
-        m_dragHandler = handler;
+    /**
+     * Constructor.<p>
+     * 
+     * @param tabHandler the tab handler 
+     * @param dragHandler the drag handler
+     */
+    public CmsTypesTab(CmsTypesTabHandler tabHandler, I_CmsDragHandler<?, ?> dragHandler) {
+
+        super(GalleryTabId.cms_tab_types);
+        m_tabHandler = tabHandler;
+        m_dragHandler = dragHandler;
         m_scrollList.truncate(TM_TYPE_TAB, CmsGalleryDialog.DIALOG_WIDTH);
     }
 
     /**
      * Fill the content of the types tab panel.<p>
      * 
-     * @param dialogBean the gallery dialog data bean containing the current search parameters
+     * @param typeInfos the type info beans 
      * @param selectedTypes the list of types to select
      */
-    //TODO: add the drag handler and use CmsDraggableListItemWidget instead of CmsListItemWidget
-    public void fillContent(CmsGalleryDialogBean dialogBean, List<String> selectedTypes) {
+    public void fillContent(List<CmsTypesListInfoBean> typeInfos, List<String> selectedTypes) {
 
-        for (CmsTypesListInfoBean typeBean : dialogBean.getTypes()) {
-            // TODO: replace with CmsDraggableList Item see: CmsTabResultsPanel
-            CmsListItemWidget listItemWidget = new CmsListItemWidget(typeBean);
+        for (CmsTypesListInfoBean typeBean : typeInfos) {
+            CmsListItemWidget listItemWidget;
+            if (m_dragHandler != null) {
+                // TODO: check if this is working
+                listItemWidget = m_dragHandler.createDraggableListItemWidget(typeBean, typeBean.getId());
+            } else {
+                listItemWidget = new CmsListItemWidget(typeBean);
+            }
             Image icon = new Image(typeBean.getIconResource());
             icon.setStyleName(DIALOG_CSS.listIcon());
             listItemWidget.setIcon(icon);
             CmsCheckBox checkBox = new CmsCheckBox();
             checkBox.addClickHandler(new CheckboxHandler(typeBean.getId(), checkBox));
-            if (selectedTypes.contains(typeBean.getId())) {
+            if ((selectedTypes != null) && selectedTypes.contains(typeBean.getId())) {
                 checkBox.setChecked(true);
             }
             CmsTypeListItem listItem = new CmsTypeListItem(checkBox, listItemWidget);
@@ -161,28 +167,22 @@ public class CmsTypesTab extends A_CmsListTab {
      */
     public CmsFloatDecoratedPanel getTypesParamsPanel(List<String> selectedTypes) {
 
+        if ((selectedTypes == null) || (selectedTypes.size() == 0)) {
+            return null;
+        }
         CmsFloatDecoratedPanel typesPanel = new CmsFloatDecoratedPanel();
-        String panelText = "";
-        if (selectedTypes.size() == 1) {
-            panelText += CmsDomUtil.enclose(CmsDomUtil.Tag.b, Messages.get().key(Messages.GUI_PARAMS_LABEL_TYPE_0));
-            CmsTypeListItem galleryItem = (CmsTypeListItem)m_scrollList.getItem(selectedTypes.get(0));
-            String title = galleryItem.getTitle();
+        String panelText = CmsDomUtil.enclose(CmsDomUtil.Tag.b, Messages.get().key(Messages.GUI_PARAMS_LABEL_TYPES_0));
+        for (String type : selectedTypes) {
+
+            CmsTypeListItem galleryItem = (CmsTypeListItem)m_scrollList.getItem(type);
+            String title = galleryItem.getItemTitle();
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
                 title = galleryItem.getSubTitle();
             }
-            panelText = panelText + " " + title;
-        } else {
-            panelText += CmsDomUtil.enclose(CmsDomUtil.Tag.b, Messages.get().key(Messages.GUI_PARAMS_LABEL_TYPES_0));
-            for (String galleryPath : selectedTypes) {
+            panelText += " " + title + ",";
 
-                CmsTypeListItem galleryItem = (CmsTypeListItem)m_scrollList.getItem(galleryPath);
-                String title = galleryItem.getItemTitle();
-                if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
-                    title = galleryItem.getSubTitle();
-                }
-                panelText = panelText + " " + title;
-            }
         }
+        panelText = panelText.substring(0, panelText.length() - 1);
         HTMLPanel test = new HTMLPanel(CmsDomUtil.Tag.div.name(), panelText);
         test.getElement().getStyle().setDisplay(Display.INLINE_BLOCK);
         typesPanel.add(test);
@@ -191,21 +191,11 @@ public class CmsTypesTab extends A_CmsListTab {
     }
 
     /**
-     * Returns the tab handler.<p>
-     *
-     * @param handler the tab handler
-     */
-    public void setTabHandler(CmsTypesTabHandler handler) {
-
-        m_tabHandler = handler;
-    }
-
-    /**
      * Deselect the types  in the types list.<p>
      * 
      * @param types the categories to deselect
      */
-    public void uncheckTypes(ArrayList<String> types) {
+    public void uncheckTypes(List<String> types) {
 
         for (String type : types) {
             CmsTypeListItem item = (CmsTypeListItem)m_scrollList.getItem(type);
@@ -219,7 +209,7 @@ public class CmsTypesTab extends A_CmsListTab {
      * @param types the new types list
      * @param selectedTypes the list of types to select
      */
-    public void updateContent(ArrayList<CmsTypesListInfoBean> types, List<String> selectedTypes) {
+    public void updateContent(List<CmsTypesListInfoBean> types, List<String> selectedTypes) {
 
         clearList();
         for (CmsTypesListInfoBean typeBean : types) {
@@ -230,7 +220,7 @@ public class CmsTypesTab extends A_CmsListTab {
             listItemWidget.setIcon(icon);
             CmsCheckBox checkBox = new CmsCheckBox();
             checkBox.addClickHandler(new CheckboxHandler(typeBean.getId(), checkBox));
-            if (selectedTypes.contains(typeBean.getId())) {
+            if ((selectedTypes != null) && selectedTypes.contains(typeBean.getId())) {
                 checkBox.setChecked(true);
             }
             CmsTypeListItem listItem = new CmsTypeListItem(checkBox, listItemWidget);
@@ -245,7 +235,7 @@ public class CmsTypesTab extends A_CmsListTab {
      * @see org.opencms.ade.galleries.client.ui.A_CmsListTab#getSortList()
      */
     @Override
-    protected ArrayList<CmsPair<String, String>> getSortList() {
+    protected List<CmsPair<String, String>> getSortList() {
 
         ArrayList<CmsPair<String, String>> list = new ArrayList<CmsPair<String, String>>();
         list.add(new CmsPair<String, String>(SortParams.title_asc.name(), Messages.get().key(

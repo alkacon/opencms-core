@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleryFactory.java,v $
- * Date   : $Date: 2010/05/06 06:13:38 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/05/14 13:34:53 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,16 +33,13 @@ package org.opencms.ade.galleries.client;
 
 import org.opencms.ade.galleries.client.ui.CmsGalleryDialog;
 import org.opencms.gwt.client.draganddrop.I_CmsDragHandler;
-import org.opencms.util.CmsStringUtil;
-
-import java.util.ArrayList;
 
 /**
  * Factory class to create gallery dialog with or without paramter.<p>
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.
  */
@@ -63,17 +60,8 @@ public final class CmsGalleryFactory {
      */
     public static CmsGalleryDialog createDialog() {
 
-        CmsGalleryController controller = new CmsGalleryController();
         CmsGalleryDialog galleryDialog = new CmsGalleryDialog();
-
-        String[] tabs = CmsStringUtil.splitAsArray(CmsGalleryProvider.get().getTabs(), ",");
-        ArrayList<String> tabsConfig = new ArrayList<String>();
-        for (String i : tabs) {
-            tabsConfig.add(i);
-        }
-        galleryDialog.fillTabs(tabsConfig, controller);
-        controller.setHandler(new CmsGalleryControllerHandler(galleryDialog));
-
+        new CmsGalleryController(new CmsGalleryControllerHandler(galleryDialog));
         return galleryDialog;
     }
 
@@ -85,17 +73,8 @@ public final class CmsGalleryFactory {
      */
     public static CmsGalleryDialog createDialog(I_CmsDragHandler<?, ?> handler) {
 
-        CmsGalleryController controller = new CmsGalleryController();
         CmsGalleryDialog galleryDialog = new CmsGalleryDialog(handler);
-
-        String[] tabs = CmsStringUtil.splitAsArray(CmsGalleryProvider.get().getTabs(), ",");
-        ArrayList<String> tabsConfig = new ArrayList<String>();
-        for (String i : tabs) {
-            tabsConfig.add(i);
-        }
-        galleryDialog.fillTabs(tabsConfig, controller);
-        controller.setHandler(new CmsGalleryControllerHandler(galleryDialog));
-
+        new CmsGalleryController(new CmsGalleryControllerHandler(galleryDialog));
         return galleryDialog;
     }
 }

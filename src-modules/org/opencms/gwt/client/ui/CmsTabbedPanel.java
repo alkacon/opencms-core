@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsTabbedPanel.java,v $
- * Date   : $Date: 2010/04/28 10:25:47 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/05/14 13:34:53 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.gwt.client.ui;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsDomUtil;
 
+import java.util.Iterator;
 import java.util.List;
 
 import com.google.gwt.dom.client.Element;
@@ -57,7 +58,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.0
  * 
@@ -202,15 +203,38 @@ public class CmsTabbedPanel<E extends Widget> extends Composite {
     }
 
     /**
-     * Programmatically selects the specified tab.<p>
+     * Returns an iterator over all tabs.<p>
      * 
-     * Wrapper function for {@link com.google.gwt.user.client.ui.TabLayoutPanel#selectTab(int index)}
+     * @return the iterator
+     */
+    @SuppressWarnings("unchecked")
+    public Iterator<E> iterator() {
+
+        return (Iterator<E>)m_tabPanel.iterator();
+    }
+
+    /**
+     * Delegate method.<p>
+     * 
+     * @see com.google.gwt.user.client.ui.TabLayoutPanel#selectTab(int index)
      * 
      * @param tabIndex the index of the tab to be selected
      */
     public void selectTab(int tabIndex) {
 
         m_tabPanel.selectTab(tabIndex);
+    }
+
+    /**
+     * Delegate method.<p>
+     * 
+     * @see com.google.gwt.user.client.ui.TabLayoutPanel#selectTab(Widget index)
+     * 
+     * @param tabWidget the tab widget to select
+     */
+    public void selectTab(E tabWidget) {
+
+        m_tabPanel.selectTab(tabWidget);
     }
 
     /**

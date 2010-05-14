@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsSearchTab.java,v $
- * Date   : $Date: 2010/05/07 13:59:19 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/05/14 13:34:53 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,47 +31,68 @@
 
 package org.opencms.ade.galleries.client.ui;
 
-import org.opencms.ade.galleries.client.A_CmsTabHandler;
-import org.opencms.gwt.client.util.CmsPair;
+import org.opencms.ade.galleries.client.CmsSearchTabHandler;
+import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 
-import java.util.ArrayList;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.user.client.ui.FlowPanel;
 
 /**
  * Provides the widget for the full text search tab.<p>
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.
  */
-public class CmsSearchTab extends A_CmsListTab {
+public class CmsSearchTab extends A_CmsTab {
 
-    // TODO:use a different super class!!
-    /** Text metrics key. */
-    private static final String TM_SEARCH_TAB = "SearchTab";
+    /** The ui-binder interface. */
+    interface I_CmsSearchTabUiBinder extends UiBinder<FlowPanel, CmsSearchTab> {
+        // GWT interface, nothing to do here
+    }
+
+    /** The ui-binder instance. */
+    private static I_CmsSearchTabUiBinder uiBinder = GWT.create(I_CmsSearchTabUiBinder.class);
+
+    /** The tab panel. */
+    private FlowPanel m_tab;
+
+    /** The tab handler. */
+    private CmsSearchTabHandler m_tabHandler;
 
     /**
      * Constructor.<p>
+     * 
+     * @param tabHandler the tab handler 
      */
-    public CmsSearchTab() {
+    public CmsSearchTab(CmsSearchTabHandler tabHandler) {
 
-        super();
-        m_scrollList.truncate(TM_SEARCH_TAB, CmsGalleryDialog.DIALOG_WIDTH);
+        super(GalleryTabId.cms_tab_search);
+        m_tab = uiBinder.createAndBindUi(this);
+        initWidget(m_tab);
+        m_tabHandler = tabHandler;
     }
 
+    /**
+     * @see org.opencms.ade.galleries.client.ui.A_CmsTab#getTabHandler()
+     */
     @Override
-    public A_CmsTabHandler getTabHandler() {
+    public CmsSearchTabHandler getTabHandler() {
 
-        // TODO: Auto-generated method stub
-        return null;
+        return m_tabHandler;
     }
 
+    /**
+     * @see org.opencms.ade.galleries.client.ui.A_CmsTab#updateLayout()
+     */
     @Override
-    protected ArrayList<CmsPair<String, String>> getSortList() {
+    public void updateLayout() {
 
         // TODO: Auto-generated method stub
-        return new ArrayList<CmsPair<String, String>>();
+
     }
 
 }

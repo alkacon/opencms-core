@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsCategoriesTab.java,v $
- * Date   : $Date: 2010/05/07 13:59:19 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/05/14 13:34:53 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,10 +31,9 @@
 
 package org.opencms.ade.galleries.client.ui;
 
-import org.opencms.ade.galleries.client.A_CmsTabHandler;
 import org.opencms.ade.galleries.client.CmsCategoriesTabHandler;
 import org.opencms.ade.galleries.shared.CmsCategoryInfoBean;
-import org.opencms.ade.galleries.shared.CmsGalleryDialogBean;
+import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
 import org.opencms.gwt.client.ui.CmsFloatDecoratedPanel;
 import org.opencms.gwt.client.ui.CmsList;
@@ -61,7 +60,7 @@ import com.google.gwt.user.client.ui.Image;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.
  */
@@ -99,9 +98,9 @@ public class CmsCategoriesTab extends A_CmsListTab {
         public void onClick(ClickEvent event) {
 
             if (m_checkBox.isChecked()) {
-                m_tabHandler.onSelectCategory(m_categoryPath);
+                getTabHandler().onSelectCategory(m_categoryPath);
             } else {
-                m_tabHandler.onDeselectCategory(m_categoryPath);
+                getTabHandler().onDeselectCategory(m_categoryPath);
             }
         }
     }
@@ -109,33 +108,34 @@ public class CmsCategoriesTab extends A_CmsListTab {
     /** Text metrics key. */
     private static final String TM_CATEGORY_TAB = "CategoryTab";
 
-    /** The reference to the handler of this tab. */
-    protected CmsCategoriesTabHandler m_tabHandler;
-
     /** The flag to indicate when the categories are opened for the fist time. */
     private boolean m_isInitOpen;
 
+    /** The tab handler. */
+    private CmsCategoriesTabHandler m_tabHandler;
+
     /**
      * Constructor.<p>
+     * 
+     * @param tabHandler the tab handler 
      */
-    public CmsCategoriesTab() {
+    public CmsCategoriesTab(CmsCategoriesTabHandler tabHandler) {
 
-        super();
+        super(GalleryTabId.cms_tab_categories);
         m_scrollList.truncate(TM_CATEGORY_TAB, CmsGalleryDialog.DIALOG_WIDTH);
-
+        m_tabHandler = tabHandler;
         m_isInitOpen = false;
     }
 
     /**
      * Fill the content of the categories tab panel.<p>
      * 
-     * @param dialogBean the gallery dialog data bean containing the available categories
+     * @param categoryRoot the category tree root entry 
      */
-    public void fillContent(CmsGalleryDialogBean dialogBean) {
+    public void fillContent(CmsCategoryTreeEntry categoryRoot) {
 
         setInitOpen(true);
 
-        CmsCategoryTreeEntry categoryRoot = dialogBean.getCategories();
         if (categoryRoot.getChildren() != null) {
             for (CmsCategoryTreeEntry category : categoryRoot.getChildren()) {
                 // set the category tree entry bean
@@ -169,31 +169,23 @@ public class CmsCategoriesTab extends A_CmsListTab {
      * @return the panel showing the selected categories
      */
     // TODO: handle the case the selected item is not found 
-    public CmsFloatDecoratedPanel getCategoriesParamsPanel(ArrayList<String> selectedCategories) {
+    public CmsFloatDecoratedPanel getCategoriesParamsPanel(List<String> selectedCategories) {
 
+        if ((selectedCategories == null) || (selectedCategories.size() == 0)) {
+            return null;
+        }
         CmsFloatDecoratedPanel categoriesPanel = new CmsFloatDecoratedPanel();
-        String panelText = "";
-        if (selectedCategories.size() == 1) {
-            panelText = panelText.concat("<b>").concat(Messages.get().key(Messages.GUI_PARAMS_LABEL_CATEGORY_0)).concat(
-                "</b> ");
-            CmsCategoryTreeItem categoryItem = searchCategoryItem(m_scrollList, selectedCategories.get(0));
+        String panelText = CmsDomUtil.enclose(CmsDomUtil.Tag.b, Messages.get().key(
+            Messages.GUI_PARAMS_LABEL_CATEGORIES_0));
+        for (String categoryPath : selectedCategories) {
+            CmsCategoryTreeItem categoryItem = searchCategoryItem(m_scrollList, categoryPath);
             String title = categoryItem.getItemTitle();
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
                 title = categoryItem.getSubTitle();
             }
-            panelText = panelText.concat(" ").concat(title);
-        } else {
-            panelText = panelText.concat("<b>").concat(Messages.get().key(Messages.GUI_PARAMS_LABEL_CATEGORIES_0)).concat(
-                "</b> ");
-            for (String categoryPath : selectedCategories) {
-                CmsCategoryTreeItem categoryItem = searchCategoryItem(m_scrollList, categoryPath);
-                String title = categoryItem.getItemTitle();
-                if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
-                    title = categoryItem.getSubTitle();
-                }
-                panelText = panelText.concat(" ").concat(title);
-            }
+            panelText += " " + title + ",";
         }
+        panelText = panelText.substring(0, panelText.length() - 1);
         categoriesPanel.add(new HTMLPanel(CmsDomUtil.Tag.div.name(), panelText));
 
         return categoriesPanel;
@@ -260,21 +252,11 @@ public class CmsCategoriesTab extends A_CmsListTab {
     }
 
     /**
-     * Sets the tab handler.<p>
-     *
-     * @param tabHandler the tab handler to set
-     */
-    public void setTabHandler(CmsCategoriesTabHandler tabHandler) {
-
-        m_tabHandler = tabHandler;
-    }
-
-    /**
      * Deselect the categories  in the category list.<p>
      * 
      * @param categories the categories to deselect
      */
-    public void uncheckCategories(ArrayList<String> categories) {
+    public void uncheckCategories(List<String> categories) {
 
         for (String category : categories) {
             CmsCategoryTreeItem item = searchCategoryItem(m_scrollList, category);
@@ -288,7 +270,7 @@ public class CmsCategoriesTab extends A_CmsListTab {
      * @param categoriesBeans the updates list of categories tree item beans
      * @param selectedCategories the categories to select in the list by update
      */
-    public void updateContent(ArrayList<CmsCategoryInfoBean> categoriesBeans, ArrayList<String> selectedCategories) {
+    public void updateContent(List<CmsCategoryInfoBean> categoriesBeans, List<String> selectedCategories) {
 
         clearList();
         for (CmsCategoryInfoBean categoryBean : categoriesBeans) {
@@ -299,7 +281,7 @@ public class CmsCategoriesTab extends A_CmsListTab {
             listItemWidget.setIcon(icon);
             // the checkbox
             CmsCheckBox checkBox = new CmsCheckBox();
-            if (selectedCategories.contains(categoryBean.getId())) {
+            if ((selectedCategories != null) && selectedCategories.contains(categoryBean.getId())) {
                 checkBox.setChecked(true);
             }
             checkBox.addClickHandler(new CheckboxHandler(categoryBean.getId(), checkBox));
@@ -316,7 +298,7 @@ public class CmsCategoriesTab extends A_CmsListTab {
      * @param treeEntry the root category entry
      * @param selectedCategories the categories to select after update
      */
-    public void updateContent(CmsCategoryTreeEntry treeEntry, ArrayList<String> selectedCategories) {
+    public void updateContent(CmsCategoryTreeEntry treeEntry, List<String> selectedCategories) {
 
         clearList();
         if (treeEntry.getChildren() != null) {
@@ -356,9 +338,9 @@ public class CmsCategoriesTab extends A_CmsListTab {
      * @see org.opencms.ade.galleries.client.ui.A_CmsListTab#getSortList()
      */
     @Override
-    protected ArrayList<CmsPair<String, String>> getSortList() {
+    protected List<CmsPair<String, String>> getSortList() {
 
-        ArrayList<CmsPair<String, String>> list = new ArrayList<CmsPair<String, String>>();
+        List<CmsPair<String, String>> list = new ArrayList<CmsPair<String, String>>();
         list.add(new CmsPair<String, String>(SortParams.tree.name(), Messages.get().key(
             Messages.GUI_SORT_LABEL_HIERARCHIC_0)));
         list.add(new CmsPair<String, String>(SortParams.title_asc.name(), Messages.get().key(
@@ -373,9 +355,8 @@ public class CmsCategoriesTab extends A_CmsListTab {
      * @see org.opencms.ade.galleries.client.ui.A_CmsListTab#getTabHandler()
      */
     @Override
-    protected A_CmsTabHandler getTabHandler() {
+    protected CmsCategoriesTabHandler getTabHandler() {
 
-        // TODO: Auto-generated method stub
         return m_tabHandler;
     }
 
@@ -423,7 +404,7 @@ public class CmsCategoriesTab extends A_CmsListTab {
     private void addChildren(
         CmsCategoryTreeItem parent,
         List<CmsCategoryTreeEntry> children,
-        ArrayList<String> selectedCategories) {
+        List<String> selectedCategories) {
 
         if (children != null) {
             for (CmsCategoryTreeEntry child : children) {

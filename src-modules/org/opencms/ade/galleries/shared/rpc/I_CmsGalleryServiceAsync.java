@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/rpc/Attic/I_CmsGalleryServiceAsync.java,v $
- * Date   : $Date: 2010/04/28 10:25:47 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/05/14 13:34:53 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,10 +31,13 @@
 
 package org.opencms.ade.galleries.shared.rpc;
 
-import org.opencms.ade.galleries.shared.CmsGalleryInfoBean;
-import org.opencms.ade.galleries.shared.CmsGallerySearchObject;
+import org.opencms.ade.galleries.shared.CmsGalleriesListInfoBean;
+import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
+import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
+import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
+import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -43,7 +46,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  * 
@@ -54,44 +57,54 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public interface I_CmsGalleryServiceAsync {
 
     /**
-     * Returns the gallery info bean containing the content of the configured criteria tabs.<p> 
+     * Returns all available categories for given galleries.<p>
      * 
-     * @param tabs the configuration of the tabs
-     * @param callback the async callback
+     * @param galleries the galleries
+     * @param callback the callback
      */
-    void getCriteriaLists(ArrayList<String> tabs, AsyncCallback<CmsGalleryInfoBean> callback);
+    void getCategoryTreeGalleries(List<String> galleries, AsyncCallback<CmsCategoryTreeEntry> callback);
 
     /**
-     * Returns the search results for initial search parameter.<p>
+     * Returns all available categories for given resource types, by looking up associated galleries first.<p>
      * 
-     * As search results content of selected galleries or categories or a specified resource can be returned.
+     * Only use this if no galleries list is available.<p>
      * 
-     * @param searchObj the initial search bean
-     * @param callback the async callback
+     * @param types the resource types
+     * @param callback the callback
      */
-    void getInitialSearch(CmsGallerySearchObject searchObj, AsyncCallback<CmsGalleryInfoBean> callback);
+    void getCategoryTreeTypes(List<String> types, AsyncCallback<CmsCategoryTreeEntry> callback);
 
     /**
-     * Returns the search results for initial search parameter.<p>
+     * Returns the available galleries depending on the given resource types.<p>
      * 
-     * As search results content of selected galleries or categories or a specified resource can be returned.
+     * @param resourceTypes the resource types
+     * @param callback the callback
+     */
+    void getGalleries(List<String> resourceTypes, AsyncCallback<List<CmsGalleriesListInfoBean>> callback);
+
+    /**
+     * Returns the initial data for the given gallery mode.<p>
      * 
-     * @param tabs the configuration of the tabs
-     * @param searchObj the initial search object 
-     * @param dialogMode the dialog mode of this gallery dialog   
-     * @param callback the async callback
+     * @param galleryMode the gallery mode
+     * @param callback the callback
      */
     void getInitialSettings(
-        ArrayList<String> tabs,
-        CmsGallerySearchObject searchObj,
-        String dialogMode,
-        AsyncCallback<CmsGalleryInfoBean> callback);
+        I_CmsGalleryProviderConstants.GalleryMode galleryMode,
+        AsyncCallback<CmsGalleryDataBean> callback);
+
+    /**
+     * Performs an initial search based on the given data bean and the available parameters of the request.<p>
+     * 
+     * @param data the data bean
+     * @param callback the callback
+     */
+    void getSearch(CmsGalleryDataBean data, AsyncCallback<CmsGallerySearchBean> callback);
 
     /**
      * Returns the gallery search object containing search results and the currant search parameter.<p>  
      * 
      * @param searchObj the current search object
-     * @param callback the async callback
+     * @param callback the callback
      */
-    void getSearch(CmsGallerySearchObject searchObj, AsyncCallback<CmsGallerySearchObject> callback);
+    void getSearch(CmsGallerySearchBean searchObj, AsyncCallback<CmsGallerySearchBean> callback);
 }
