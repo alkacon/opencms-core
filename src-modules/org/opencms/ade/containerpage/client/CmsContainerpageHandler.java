@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageHandler.java,v $
- * Date   : $Date: 2010/05/06 14:26:40 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/05/14 13:34:15 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -249,7 +249,8 @@ public class CmsContainerpageHandler {
                 CmsContentEditorDialog.get().openEditDialog(element.getClientId(), element.getSitePath());
             }
         } else {
-            CmsDebugLog.getInstance().printLine(element.getNoEditReason());
+            //should be deactivated
+            CmsDebugLog.getInstance().printLine("should be deactivated: " + element.getNoEditReason());
         }
     }
 

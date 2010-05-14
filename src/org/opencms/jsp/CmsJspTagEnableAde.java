@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagEnableAde.java,v $
- * Date   : $Date: 2010/04/28 07:19:00 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2010/05/14 13:34:15 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
 /**
  * Implementation of the <code>&lt;enable-ade/&gt;</code> tag.<p>
  * 
- * @version $Revision: 1.30 $ 
+ * @version $Revision: 1.31 $ 
  * 
  * @since 7.6 
  */
@@ -53,12 +53,6 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
 
     /** The container-page editor jsp-include URI. */
     private static final String INCLUDE_JSP_URI = "/system/modules/org.opencms.ade.containerpage/containerpage_include.jsp";
-
-    /** The gallery dialog mode request attribute. */
-    private static final String ATTR_GALLERY_DIALOG_MODE = "dialogmode";
-
-    /** The gallery dialog mode. */
-    private static final String ATTR_GALLERY_DIALOG_MODE_VALUE = "ade";
 
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = 8447599916548975733L;
@@ -90,7 +84,7 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
             // don't display advanced direct edit buttons if a temporary file is displayed
             return;
         }
-        context.getRequest().setAttribute(ATTR_GALLERY_DIALOG_MODE, ATTR_GALLERY_DIALOG_MODE_VALUE);
+
         CmsJspTagInclude.includeTagAction(context, INCLUDE_JSP_URI, null, false, null, null, req, context.getResponse());
     }
 
