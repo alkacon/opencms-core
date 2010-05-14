@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2010/05/12 12:39:59 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2010/05/14 09:36:18 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,7 @@ import org.opencms.ade.sitemap.shared.CmsSitemapChangeEdit;
 import org.opencms.ade.sitemap.shared.CmsSitemapChangeMove;
 import org.opencms.ade.sitemap.shared.CmsSitemapChangeNew;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
+import org.opencms.ade.sitemap.shared.CmsSitemapTemplate;
 import org.opencms.ade.sitemap.shared.I_CmsSitemapChange;
 import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService;
 import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapServiceAsync;
@@ -61,7 +62,7 @@ import com.google.gwt.user.client.Window;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 8.0.0
  */
@@ -203,7 +204,7 @@ public class CmsSitemapController {
         }
         if (properties != null) {
             // to preserve the hidden properties (navigation, sitemap...), we only copy the new property values
-            newEntry.getProperties().putAll(properties);
+            newEntry.updateProperties(properties);
         }
         // TODO: set URL name of the entry, and also change the URL shown in the widget
 
@@ -251,6 +252,30 @@ public class CmsSitemapController {
     public CmsSitemapData getData() {
 
         return m_data;
+    }
+
+    /**
+     * This method returns the default template for a given sitemap path.<p>
+     * 
+     * Starting from the given path, it traverses the ancestors of the entry to find a sitemap 
+     * entry with a non-null 'template-inherited' property value, and then returns this value.
+     * 
+     * @param sitemapPath the sitemap path for which the default template should be returned
+     *  
+     * @return the default template 
+     */
+    public CmsSitemapTemplate getDefaultTemplate(String sitemapPath) {
+
+        if ((sitemapPath == null) || sitemapPath.equals("") || sitemapPath.equals("/")) {
+            return m_data.getDefaultTemplate();
+        }
+        CmsClientSitemapEntry entry = getEntry(sitemapPath);
+        String templateInherited = entry.getProperties().get(CmsSitemapManager.Property.templateInherited);
+        if (templateInherited != null) {
+            return m_data.getTemplates().get(templateInherited);
+        }
+        String parentPath = CmsResource.getParentFolder(sitemapPath);
+        return getDefaultTemplate(parentPath);
     }
 
     /**

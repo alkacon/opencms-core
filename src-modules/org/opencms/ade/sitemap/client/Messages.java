@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/Messages.java,v $
- * Date   : $Date: 2010/05/12 12:33:31 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/05/14 09:36:18 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,11 +38,14 @@ import org.opencms.gwt.client.util.CmsMessages;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 8.0.0
  */
 public final class Messages {
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DEFAULT_TEMPLATE_TITLE_0 = "GUI_DEFAULT_TEMPLATE_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DIALOG_DELETE_TEXT_0 = "GUI_DIALOG_DELETE_TEXT_0";

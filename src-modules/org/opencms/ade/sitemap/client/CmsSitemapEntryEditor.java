@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapEntryEditor.java,v $
- * Date   : $Date: 2010/05/12 12:33:31 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/05/14 09:36:18 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,6 +44,7 @@ import org.opencms.gwt.client.ui.input.I_CmsValidationHandler;
 import org.opencms.gwt.client.ui.input.form.CmsBasicFormField;
 import org.opencms.gwt.client.ui.input.form.CmsForm;
 import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
+import org.opencms.gwt.client.util.CmsPair;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.sitemap.CmsSitemapManager;
 
@@ -57,11 +58,14 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  *  @author Georg Westenberger
  *  
- *  @version $Revision: 1.2 $
+ *  @version $Revision: 1.3 $
  *  
  *  @since 8.0.0
  */
 public class CmsSitemapEntryEditor extends CmsFormDialog {
+
+    /** The key for the default template. */
+    public static final String DEFAULT_TEMPLATE_VALUE = "";
 
     /** The field id of the "title" form field. */
     public static final String FIELD_TITLE = "field_title";
@@ -94,7 +98,7 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
 
     CmsClientSitemapEntry entry) {
 
-        super(Messages.get().key(Messages.GUI_PROPERTY_EDITOR_TITLE_0));
+        super(message(Messages.GUI_PROPERTY_EDITOR_TITLE_0));
 
         m_entry = entry;
         m_controller = controller;
@@ -115,6 +119,42 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
             map.remove(key);
         }
         return value;
+    }
+
+    /**
+     * Returns a localized message from the message bundle.<p>
+     * 
+     * @param key the message key
+     * @param args the message parameters
+     *  
+     * @return the localized message 
+     */
+    protected static String message(String key, Object... args) {
+
+        return Messages.get().key(key, args);
+    }
+
+    /**
+     * Helper method for extracting new values for the 'template' and 'template-inherited' properties from the
+     * raw form data.<p>
+     * 
+     * @param fieldValues the string map produced by the form 
+     * 
+     * @return a pair containing the 'template' and 'template-inherit' property, in that order
+     */
+    private static CmsPair<String, String> getTemplateProperties(Map<String, String> fieldValues) {
+
+        String shouldInheritTemplateStr = getAndRemoveValue(fieldValues, FIELD_TEMPLATE_INHERIT_CHECKBOX);
+        String template = fieldValues.get(CmsSitemapManager.Property.template.toString());
+        if (template.equals(DEFAULT_TEMPLATE_VALUE)) {
+            // return nulls to cause the properties to be deleted  
+            return new CmsPair<String, String>(null, null);
+        }
+
+        // only inherit the template if checkbox is checked 
+        boolean shouldInheritTemplate = shouldInheritTemplateStr.equalsIgnoreCase("true");
+        String templateInherited = shouldInheritTemplate ? template : null;
+        return new CmsPair<String, String>(template, templateInherited);
     }
 
     /**
@@ -157,11 +197,8 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
         String propTemplateInherited = properties.get(CmsSitemapManager.Property.templateInherited.toString());
         boolean inheritTemplate = (propTemplate != null) && propTemplate.equals(propTemplateInherited);
 
-        //TODO: use default/inherited template
-
         CmsBasicFormField templateField = createTemplateField();
-        String firstTemplate = m_controller.getData().getTemplates().keySet().iterator().next();
-        String initialTemplate = propTemplate != null ? propTemplate : firstTemplate;
+        String initialTemplate = propTemplate != null ? propTemplate : "";
         form.addField(templateField, initialTemplate);
 
         CmsBasicFormField templateInheritField = createTemplateInheritField();
@@ -185,14 +222,11 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
         final Map<String, String> fieldValues = getForm().collectValues();
         final String titleValue = getAndRemoveValue(fieldValues, FIELD_TITLE);
         final String urlNameValue = getAndRemoveValue(fieldValues, FIELD_URLNAME);
-        String shouldInheritTemplateStr = getAndRemoveValue(fieldValues, FIELD_TEMPLATE_INHERIT_CHECKBOX);
-        String template = fieldValues.get(CmsSitemapManager.Property.template.toString());
 
-        // only inherit the template if it's not null (default) and the checkbox is checked 
-        boolean shouldInheritTemplate = ((shouldInheritTemplateStr != null) && shouldInheritTemplateStr.equalsIgnoreCase("true"))
-            && (template != null);
-        String templateInherited = shouldInheritTemplate ? template : null;
-        fieldValues.put(CmsSitemapManager.Property.templateInherited.toString(), templateInherited);
+        CmsPair<String, String> templateProps = getTemplateProperties(fieldValues);
+        fieldValues.put(CmsSitemapManager.Property.template.toString(), templateProps.getFirst());
+        fieldValues.put(CmsSitemapManager.Property.templateInherited.toString(), templateProps.getSecond());
+
         CmsCoreProvider.get().translateUrlName(urlNameValue, new AsyncCallback<String>() {
 
             public void onFailure(Throwable caught) {
@@ -204,7 +238,7 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
 
                 setUrlNameField(newUrlName);
                 if (m_controller.hasSiblingEntriesWithName(m_entry, newUrlName)) {
-                    showUrlNameError(Messages.get().key(Messages.GUI_URLNAME_ALREADY_EXISTS_0));
+                    showUrlNameError(message(Messages.GUI_URLNAME_ALREADY_EXISTS_0));
                 } else {
                     hide();
                     m_controller.edit(m_entry, titleValue, null, newUrlName, fieldValues);
@@ -260,8 +294,8 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
      */
     private CmsBasicFormField createTemplateField() {
 
-        String description = Messages.get().key(Messages.GUI_TEMPLATE_PROPERTY_DESC_0);
-        String label = Messages.get().key(Messages.GUI_TEMPLATE_PROPERTY_TITLE_0);
+        String description = message(Messages.GUI_TEMPLATE_PROPERTY_DESC_0);
+        String label = message(Messages.GUI_TEMPLATE_PROPERTY_TITLE_0);
         CmsTemplateSelectBox select = createTemplateSelector(m_controller.getData().getTemplates());
         CmsBasicFormField result = new CmsBasicFormField(FIELD_TEMPLATE, description, label, null, select);
         m_controller.getData().getTemplates();
@@ -278,7 +312,7 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
 
         String description = "";
         String label = "";
-        CmsCheckBox checkbox = new CmsCheckBox(Messages.get().key(Messages.GUI_TEMPLATE_INHERIT_0));
+        CmsCheckBox checkbox = new CmsCheckBox(message(Messages.GUI_TEMPLATE_INHERIT_0));
         CmsBasicFormField result = new CmsBasicFormField(
             FIELD_TEMPLATE_INHERIT_CHECKBOX,
             description,
@@ -304,6 +338,9 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
             selectCell.setTemplate(template);
             result.addOption(selectCell);
         }
+        CmsTemplateSelectCell defaultCell = new CmsTemplateSelectCell();
+        defaultCell.setTemplate(getDefaultTemplate());
+        result.addOption(defaultCell);
         return result;
 
     }
@@ -317,8 +354,8 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
      */
     private CmsBasicFormField createTitleField(CmsClientSitemapEntry entry) {
 
-        String description = Messages.get().key(Messages.GUI_TITLE_PROPERTY_DESC_0);
-        String label = Messages.get().key(Messages.GUI_TITLE_PROPERTY_0);
+        String description = message(Messages.GUI_TITLE_PROPERTY_DESC_0);
+        String label = message(Messages.GUI_TITLE_PROPERTY_0);
 
         CmsBasicFormField result = new CmsBasicFormField(FIELD_TITLE, description, label, null, new CmsTextBox());
         String title = entry.getTitle();
@@ -339,8 +376,8 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
      */
     private CmsBasicFormField createUrlNameField(CmsClientSitemapEntry entry) {
 
-        String description = Messages.get().key(Messages.GUI_URLNAME_PROPERTY_DESC_0);
-        String label = Messages.get().key(Messages.GUI_URLNAME_PROPERTY_0);
+        String description = message(Messages.GUI_URLNAME_PROPERTY_DESC_0);
+        String label = message(Messages.GUI_URLNAME_PROPERTY_0);
 
         CmsBasicFormField result = new CmsBasicFormField(FIELD_URLNAME, description, label, null, new CmsTextBox());
         String urlName = entry.getName();
@@ -348,8 +385,25 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
             urlName = "";
         }
         result.getWidget().setFormValueAsString(urlName);
-        result.setValidator(new CmsNonEmptyValidator(Messages.get().key(Messages.GUI_URLNAME_CANT_BE_EMPTY_0)));
+        result.setValidator(new CmsNonEmptyValidator(message(Messages.GUI_URLNAME_CANT_BE_EMPTY_0)));
         return result;
+    }
+
+    /**
+     * Returns the template which should be used as the "use default" option in the template selector.<p>
+     * 
+     * @return the default template 
+     */
+    private CmsSitemapTemplate getDefaultTemplate() {
+
+        CmsSitemapTemplate template = m_controller.getDefaultTemplate(m_entry.getSitePath());
+        // replace site path with empty string and title with "default" 
+        String defaultTitle = message(Messages.GUI_DEFAULT_TEMPLATE_TITLE_0);
+        return new CmsSitemapTemplate(
+            defaultTitle,
+            template.getDescription(),
+            DEFAULT_TEMPLATE_VALUE,
+            template.getImgPath());
     }
 
 }

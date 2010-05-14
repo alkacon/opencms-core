@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsClientSitemapEntry.java,v $
- * Date   : $Date: 2010/04/21 14:29:20 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/05/14 09:36:18 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.ade.sitemap.shared;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -44,7 +45,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -103,7 +104,7 @@ public class CmsClientSitemapEntry implements IsSerializable {
         CmsClientSitemapEntry entry = new CmsClientSitemapEntry();
         entry.setId(getId());
         entry.setName(getName());
-        entry.setProperties(getProperties());
+        entry.setProperties(new HashMap<String, String>(getProperties()));
         entry.setSitePath(getSitePath());
         entry.setTitle(getTitle());
         entry.setVfsPath(getVfsPath());
@@ -295,6 +296,25 @@ public class CmsClientSitemapEntry implements IsSerializable {
     public void setVfsPath(String path) {
 
         m_vfsPath = path;
+    }
+
+    /**
+     * Updates the properties of the sitemap entry.<p>
+     * 
+     * Entries of the map of properties passed as an argument which have a null value
+     * will cause the corresponding property to be deleted.
+     * 
+     * @param newProperties the properties which should be updated
+     */
+    public void updateProperties(Map<String, String> newProperties) {
+
+        for (Map.Entry<String, String> entry : newProperties.entrySet()) {
+            if (entry.getValue() != null) {
+                m_properties.put(entry.getKey(), entry.getValue());
+            } else {
+                m_properties.remove(entry.getKey());
+            }
+        }
     }
 
     /**
