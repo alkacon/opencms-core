@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/ui/Attic/CmsTemplateSelectCell.java,v $
- * Date   : $Date: 2010/05/12 12:33:31 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/05/14 08:01:26 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -60,6 +60,9 @@ public class CmsTemplateSelectCell extends A_CmsSelectCell {
      */
     protected interface I_CmsTemplateSelectCellUiBinder extends UiBinder<Widget, CmsTemplateSelectCell> {
     }
+
+    /** The parameter for the OpenCms image scaler. */
+    private static final String SCALE_PARAMS = "?__scale=t:0,w:64,h:64";
 
     /** The UiBinder instance used for this widget.<p>*/
     private static I_CmsTemplateSelectCellUiBinder uiBinder = GWT.create(I_CmsTemplateSelectCellUiBinder.class);
@@ -118,7 +121,8 @@ public class CmsTemplateSelectCell extends A_CmsSelectCell {
         m_topLabel.setText(template.getTitle());
         m_bottomLabel.setText(template.getDescription());
         m_imageBox.clear();
-        m_imageBox.add(new Image(CmsStringUtil.joinPaths(CmsCoreProvider.get().getContext(), template.getImgPath())));
+        m_imageBox.add(new Image(CmsStringUtil.joinPaths(CmsCoreProvider.get().getContext(), template.getImgPath()
+            + SCALE_PARAMS)));
     }
 
 }

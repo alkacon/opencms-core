@@ -3,7 +3,12 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	<ui:style>
 	    @def imageBoxWidth 64px ; 
-	    @def imageBoxHeight 64px ; 
+	    @def imageBoxHeight 64px ;
+	    
+	    .selectCell {
+	    	padding-top:4px;
+	    	padding-bottom: 3px;
+	    } 
 
 	    .imageBox {
 	    	float: left;
@@ -35,7 +40,7 @@
 	<ui:with field="layout" type="org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle" />
 	<ui:with field="main" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
 	
-	<g:FlowPanel>
+	<g:FlowPanel styleName="{style.selectCell}">
 		<g:FlowPanel ui:field="m_imageBox"  styleName="{style.imageBox}"></g:FlowPanel>
 		<g:FlowPanel styleName="{style.labels}" >
 			<g:Label ui:field="m_topLabel" styleName="{style.topLabel}"></g:Label>
