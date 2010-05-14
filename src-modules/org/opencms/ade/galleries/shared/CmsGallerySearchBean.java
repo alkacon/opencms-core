@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/Attic/CmsGallerySearchObject.java,v $
- * Date   : $Date: 2010/04/28 10:25:47 $
- * Version: $Revision: 1.4 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/Attic/CmsGallerySearchBean.java,v $
+ * Date   : $Date: 2010/05/14 13:34:52 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,9 +31,6 @@
 
 package org.opencms.ade.galleries.shared;
 
-import org.opencms.ade.galleries.client.CmsGalleryProvider;
-import org.opencms.util.CmsStringUtil;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,39 +44,45 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.1 $ 
  * 
  * @since 8.0.0
  */
-public class CmsGallerySearchObject implements IsSerializable {
+public class CmsGallerySearchBean implements IsSerializable {
+
+    /** Name of the used JS variable. */
+    public static final String DICT_NAME = "cms_gallery_search_bean";
+
+    /** The default matches per page. */
+    public static final int DEFAULT_MATCHES_PER_PAGE = 20;
 
     /** The list of selected categories ids (path). */
-    private ArrayList<String> m_categories = new ArrayList<String>();
+    private List<String> m_categories;
 
     /** The list of selected galleries ids (path). */
-    private ArrayList<String> m_galleries = new ArrayList<String>();
+    private List<String> m_galleries;
 
     /** The selected locale for search. */
     private String m_locale;
 
     // TODO: define somewhere the default value
     /** The number of search results to be display pro page. */
-    private int m_machesPerPage = 12;
+    private int m_machesPerPage;
 
     /** The current search result page. */
-    private int m_page = 1;
+    private int m_page;
 
     /** The search query string. */
-    private String m_query = "";
+    private String m_query;
 
     /** The path to the selected resource. */
-    private String m_resourcePath = "";
+    private String m_resourcePath;
 
     /** The number of all search results. */
     private int m_resultCount;
 
     /** The results to display in the list of search results. */
-    private ArrayList<CmsResultsListInfoBean> m_results;
+    private List<CmsResultsListInfoBean> m_results;
 
     /** The sort order of the search result. */
     private String m_sortOrder;
@@ -96,9 +99,10 @@ public class CmsGallerySearchObject implements IsSerializable {
     /**
      * Empty default constructor. <p>
      */
-    public CmsGallerySearchObject() {
+    public CmsGallerySearchBean() {
 
-        // empty constructor
+        m_machesPerPage = DEFAULT_MATCHES_PER_PAGE;
+        m_page = 1;
     }
 
     /**
@@ -108,7 +112,7 @@ public class CmsGallerySearchObject implements IsSerializable {
      * 
      * @param searchObj a search object with content
      */
-    public CmsGallerySearchObject(CmsGallerySearchObject searchObj) {
+    public CmsGallerySearchBean(CmsGallerySearchBean searchObj) {
 
         setTypes(searchObj.getTypes());
         setGalleries(searchObj.getGalleries());
@@ -122,40 +126,11 @@ public class CmsGallerySearchObject implements IsSerializable {
     }
 
     /**
-     * Initialize the search object using data from gallery core dict.<p>
-     * 
-     */
-    public void init() {
-
-        // if gallery is selected write the gallery path to the gallery list
-        ArrayList<String> galleries = new ArrayList<String>();
-        String galleryTabId = CmsGalleryProvider.get().getGalleryTabId();
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(CmsGalleryProvider.get().getGalleryPath())) {
-            galleries.add(CmsGalleryProvider.get().getGalleryPath());
-            galleryTabId = I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_results.name();
-        }
-
-        setGalleries(galleries);
-        setTabId(galleryTabId);
-
-        // TODO: the types should be set
-        setTypes(new ArrayList<String>());
-        setCategories(new ArrayList<String>());
-        setQuery("");
-        // TODO: set locale
-        setLocale("");
-        // TODO: set the default values
-        setMachesPerPage(getMachesPerPage());
-        setSortOrder(getSortOrder());
-        setPage(getPage());
-    }
-
-    /**
      * Returns the list of the available categories.<p>
      *
      * @return the categories
      */
-    public ArrayList<String> getCategories() {
+    public List<String> getCategories() {
 
         return m_categories;
     }
@@ -165,11 +140,8 @@ public class CmsGallerySearchObject implements IsSerializable {
      *
      * @return the galleries
      */
-    public ArrayList<String> getGalleries() {
+    public List<String> getGalleries() {
 
-        if (m_galleries == null) {
-            return new ArrayList<String>();
-        }
         return m_galleries;
     }
 
@@ -241,11 +213,8 @@ public class CmsGallerySearchObject implements IsSerializable {
      *
      * @return the results
      */
-    public ArrayList<CmsResultsListInfoBean> getResults() {
+    public List<CmsResultsListInfoBean> getResults() {
 
-        if (m_results == null) {
-            return new ArrayList<CmsResultsListInfoBean>();
-        }
         return m_results;
     }
 
@@ -276,10 +245,73 @@ public class CmsGallerySearchObject implements IsSerializable {
      */
     public List<String> getTypes() {
 
-        if (m_types == null) {
-            return new ArrayList<String>();
-        }
         return m_types;
+    }
+
+    public void addType(String type) {
+
+        if (m_types == null) {
+            m_types = new ArrayList<String>();
+        }
+        if (!m_types.contains(type)) {
+            m_types.add(type);
+        }
+    }
+
+    public void removeType(String type) {
+
+        if (m_types != null) {
+            m_types.remove(type);
+        }
+    }
+
+    public void removeGallery(String gallery) {
+
+        if (m_galleries != null) {
+            m_galleries.remove(gallery);
+        }
+    }
+
+    public void removeCategory(String category) {
+
+        if (m_categories != null) {
+            m_categories.remove(category);
+        }
+    }
+
+    public void clearTypes() {
+
+        m_types = null;
+    }
+
+    public void addGallery(String gallery) {
+
+        if (m_galleries == null) {
+            m_galleries = new ArrayList<String>();
+        }
+        if (!m_galleries.contains(gallery)) {
+            m_galleries.add(gallery);
+        }
+    }
+
+    public void clearGalleries() {
+
+        m_galleries = null;
+    }
+
+    public void addCategory(String category) {
+
+        if (m_categories == null) {
+            m_categories = new ArrayList<String>();
+        }
+        if (!m_categories.contains(category)) {
+            m_categories.add(category);
+        }
+    }
+
+    public void clearCategories() {
+
+        m_categories = null;
     }
 
     /**
@@ -287,7 +319,7 @@ public class CmsGallerySearchObject implements IsSerializable {
      *
      * @param categories the categories to set
      */
-    public void setCategories(ArrayList<String> categories) {
+    public void setCategories(List<String> categories) {
 
         m_categories = categories;
     }
@@ -297,7 +329,7 @@ public class CmsGallerySearchObject implements IsSerializable {
      *
      * @param galleries the galleries to set
      */
-    public void setGalleries(ArrayList<String> galleries) {
+    public void setGalleries(List<String> galleries) {
 
         m_galleries = galleries;
     }
@@ -367,7 +399,7 @@ public class CmsGallerySearchObject implements IsSerializable {
      *
      * @param results the results to set
      */
-    public void setResults(ArrayList<CmsResultsListInfoBean> results) {
+    public void setResults(List<CmsResultsListInfoBean> results) {
 
         m_results = results;
     }
@@ -403,54 +435,6 @@ public class CmsGallerySearchObject implements IsSerializable {
     }
 
     /**
-     * Handles the click on the select box of the gallery item.<p>
-     * 
-     * Adds or removes the gallery path from the list with selected galleries.
-     * 
-     * @param gallery the gallery path of the clicked gallery
-     */
-    public void handleClickedGallery(String gallery) {
-
-        if (getGalleries().contains(gallery)) {
-            getGalleries().remove(gallery);
-        } else {
-            getGalleries().add(gallery);
-        }
-    }
-
-    /**
-     * Handles the click on the select box of the category item.<p>
-     * 
-     * Adds or removes the category path from the list with selected categories.
-     * 
-     * @param category the category path of the clicked category
-     */
-    public void handleClickedCategory(String category) {
-
-        if (getCategories().contains(category)) {
-            getCategories().remove(category);
-        } else {
-            getCategories().add(category);
-        }
-    }
-
-    /**
-     * Handles the click on the select box of the type item.<p>
-     * 
-     * Adds or removes the resource type name from the list with selected types.
-     * 
-     * @param type the type name of the clicked type
-     */
-    public void handleClickedType(String type) {
-
-        if (getTypes().contains(type)) {
-            getTypes().remove(type);
-        } else {
-            getTypes().add(type);
-        }
-    }
-
-    /**
      * Checks if any search parameter are selected.<p>
      * 
      * @return true if any search parameter is selected, false if there are no search parameter selected
@@ -458,7 +442,9 @@ public class CmsGallerySearchObject implements IsSerializable {
     public boolean isNotEmpty() {
 
         // TODO: add the param for query
-        if (getTypes().isEmpty() && getGalleries().isEmpty() && getCategories().isEmpty()) {
+        if (((m_types == null) || m_types.isEmpty())
+            && ((m_galleries == null) || m_galleries.isEmpty())
+            && ((m_categories == null) || m_categories.isEmpty())) {
             return false;
         }
         return true;

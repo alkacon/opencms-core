@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/Attic/I_CmsGalleryProviderConstants.java,v $
- * Date   : $Date: 2010/04/30 10:17:38 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/05/14 13:34:52 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,20 +31,20 @@
 
 package org.opencms.ade.galleries.shared;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+
 /**
- * Constant interface for {@link org.opencms.ade.galleries.CmsGalleryProvider} and {@link org.opencms.ade.galleries.client.CmsGalleryProvider}.<p>
+ * Shared constants interface.<p>
  * 
  * @author Polina Smagina 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 8.0.0
- * 
- * @see org.opencms.ade.sitemap.CmsSitemapProvider
- * @see org.opencms.ade.sitemap.client.CmsSitemapProvider
  */
 public interface I_CmsGalleryProviderConstants {
 
+    //TODO: rename interface or consider moving constants elsewhere
     /** Name of the used dictionary. */
     String DICT_NAME = "org.opencms.ade.galleries.core";
 
@@ -52,22 +52,48 @@ public interface I_CmsGalleryProviderConstants {
     String VFS_OPEN_GALLERY_PATH = "system/modules/org.opencms.ade.galleries/testVfs.jsp";
 
     /** Gallery mode constants. */
-    enum GalleryMode {
+    enum GalleryMode implements IsSerializable {
 
         /** The advanced direct edit mode. */
-        ade,
+        ade(GalleryTabId.cms_tab_types, GalleryTabId.cms_tab_galleries, GalleryTabId.cms_tab_categories,
+        GalleryTabId.cms_tab_search),
 
         /** The FCKEditor mode. */
-        editor,
+        editor(GalleryTabId.cms_tab_galleries, GalleryTabId.cms_tab_categories, GalleryTabId.cms_tab_search),
 
         /** The sitemap editor mode. */
-        sitemap,
+        sitemap(GalleryTabId.cms_tab_galleries, GalleryTabId.cms_tab_categories, GalleryTabId.cms_tab_search,
+        GalleryTabId.cms_tab_sitemap),
 
         /** The explorer mode. */
-        view,
+        view(GalleryTabId.cms_tab_types, GalleryTabId.cms_tab_galleries, GalleryTabId.cms_tab_categories,
+        GalleryTabId.cms_tab_search),
 
         /** The widget mode. */
-        widget;
+        widget(GalleryTabId.cms_tab_galleries, GalleryTabId.cms_tab_categories, GalleryTabId.cms_tab_search);
+
+        /** The configuration. */
+        private GalleryTabId[] m_tabs;
+
+        /** Constructor.<p>
+         *
+         * @param tabs the configuration
+         */
+        private GalleryMode(GalleryTabId... tabs) {
+
+            m_tabs = tabs;
+        }
+
+        /** 
+         * Returns the name.<p>
+         * 
+         * @return the name
+         */
+        public GalleryTabId[] getTabs() {
+
+            return m_tabs;
+        }
+
     }
 
     /** Request parameter name constants. */
@@ -77,8 +103,8 @@ public interface I_CmsGalleryProviderConstants {
         //        /** The action of execute. */
         //        action,
 
-        //        /** The current element. */
-        //        currentelement,
+        /** The current element. */
+        currentelement,
 
         /** Generic data parameter. */
         data,
@@ -112,7 +138,7 @@ public interface I_CmsGalleryProviderConstants {
     }
 
     /** Tab ids used for tab configuration. */
-    public enum GalleryTabId {
+    public enum GalleryTabId implements IsSerializable {
 
         /** The id for categories tab. */
         cms_tab_categories,
@@ -140,7 +166,7 @@ public interface I_CmsGalleryProviderConstants {
     }
 
     /** Sorting parameters. */
-    public enum SortParams {
+    public enum SortParams implements IsSerializable {
 
         /** Date last modified ascending. */
         dateLastModified_asc,

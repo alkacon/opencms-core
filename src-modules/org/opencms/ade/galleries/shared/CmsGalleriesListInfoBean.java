@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/Attic/CmsGalleriesListInfoBean.java,v $
- * Date   : $Date: 2010/04/30 10:17:38 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/05/14 13:34:52 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,6 @@ import org.opencms.gwt.shared.CmsListInfoBean;
 import java.util.ArrayList;
 import java.util.Map;
 
-//TODO: do we need here I_CmsItemId?? is the id in the LinkedHashMap enough?
 /**
  * A specific bean holding all info to be displayed in {@link org.opencms.ade.galleries.client.ui.CmsGalleryListItem}s.<p>
  * 
@@ -44,7 +43,7 @@ import java.util.Map;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */

@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/Attic/CmsGalleryDialogBean.java,v $
- * Date   : $Date: 2010/05/06 09:27:20 $
- * Version: $Revision: 1.5 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/Attic/CmsGalleryDataBean.java,v $
+ * Date   : $Date: 2010/05/14 13:34:52 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,8 @@
 
 package org.opencms.ade.galleries.shared;
 
+import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
+import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.gwt.shared.CmsListInfoBean;
@@ -39,7 +41,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.TreeMap;
+import java.util.Map;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
@@ -48,18 +50,22 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.1 $ 
  * 
  * @since 8.0.0
  */
 //TODO: rename in CmsGalleryDialogData
-public class CmsGalleryDialogBean implements IsSerializable {
+public class CmsGalleryDataBean implements IsSerializable {
+
+    /** Name of the used JS variable. */
+    public static final String DICT_NAME = "cms_gallery_data_bean";
 
     /**
      * Provides ascending sorting according to the object id.<p>
      * 
      * Applicable for all CmsListInfoBeans implementing I_CmsItemId.
      */
+    @Deprecated
     protected class CmsSortIdAsc implements Comparator<I_CmsItemId> {
 
         /**
@@ -76,6 +82,7 @@ public class CmsGalleryDialogBean implements IsSerializable {
      * 
      * Applicable for all CmsListInfoBeans implementing I_CmsItemId.
      */
+    @Deprecated
     protected class CmsSortIdDesc implements Comparator<I_CmsItemId> {
 
         /**
@@ -92,6 +99,7 @@ public class CmsGalleryDialogBean implements IsSerializable {
      * 
      * Applicable for all CmsListInfoBeans.
      */
+    @Deprecated
     protected class CmsSortTitleDesc implements Comparator<CmsListInfoBean> {
 
         /**
@@ -108,6 +116,7 @@ public class CmsGalleryDialogBean implements IsSerializable {
      * 
      * Galleries specific comparator.<p>
      */
+    @Deprecated
     protected class CmsSortTypeAsc implements Comparator<CmsGalleriesListInfoBean> {
 
         /**
@@ -124,6 +133,7 @@ public class CmsGalleryDialogBean implements IsSerializable {
      * 
      * Galleries specific comparator.<p>
      */
+    @Deprecated
     protected class CmsSortTypeDesc implements Comparator<CmsGalleriesListInfoBean> {
 
         /**
@@ -138,22 +148,23 @@ public class CmsGalleryDialogBean implements IsSerializable {
     //TODO: add sitemap data, add vfs tree data, add container page data, resource locales if required
 
     /** The categories to display in the list of available categories. */
-    private ArrayList<CmsCategoryInfoBean> m_categoriesList;
+    private List<CmsCategoryInfoBean> m_categoriesList;
 
     /** The category tree entry to display as tree. */
     private CmsCategoryTreeEntry m_categoryTreeEntry;
 
     /** The galleries to display in the list with available galleries. */
-    private ArrayList<CmsGalleriesListInfoBean> m_galleries;
+    private List<CmsGalleriesListInfoBean> m_galleries;
 
     /** The available workplace locales. */
-    private TreeMap<String, String> m_locales;
-
-    /** The configured tabs for this gallery. */
-    private ArrayList<String> m_tabs;
+    private Map<String, String> m_locales;
 
     /** The types to display in the list of available categories. */
-    private ArrayList<CmsTypesListInfoBean> m_types;
+    private List<CmsTypesListInfoBean> m_types;
+
+    private GalleryMode m_mode;
+
+    private GalleryTabId m_startTab;
 
     /**
      * Returns the categories.<p>
@@ -170,7 +181,7 @@ public class CmsGalleryDialogBean implements IsSerializable {
      *
      * @return the categoriesList
      */
-    public ArrayList<CmsCategoryInfoBean> getCategoriesList() {
+    public List<CmsCategoryInfoBean> getCategoriesList() {
 
         return m_categoriesList;
     }
@@ -180,7 +191,7 @@ public class CmsGalleryDialogBean implements IsSerializable {
      *
      * @return the galleries
      */
-    public ArrayList<CmsGalleriesListInfoBean> getGalleries() {
+    public List<CmsGalleriesListInfoBean> getGalleries() {
 
         return m_galleries;
     }
@@ -190,19 +201,9 @@ public class CmsGalleryDialogBean implements IsSerializable {
      *
      * @return the locales
      */
-    public TreeMap<String, String> getLocales() {
+    public Map<String, String> getLocales() {
 
         return m_locales;
-    }
-
-    /**
-     * Returns the tabs arrays.<p>
-     *
-     * @return the tabs
-     */
-    public ArrayList<String> getTabs() {
-
-        return m_tabs;
     }
 
     /**
@@ -210,7 +211,7 @@ public class CmsGalleryDialogBean implements IsSerializable {
      *
      * @return the types
      */
-    public ArrayList<CmsTypesListInfoBean> getTypes() {
+    public List<CmsTypesListInfoBean> getTypes() {
 
         return m_types;
     }
@@ -230,7 +231,7 @@ public class CmsGalleryDialogBean implements IsSerializable {
      *
      * @param categoriesList the categoriesList to set
      */
-    public void setCategoriesList(ArrayList<CmsCategoryInfoBean> categoriesList) {
+    public void setCategoriesList(List<CmsCategoryInfoBean> categoriesList) {
 
         m_categoriesList = categoriesList;
     }
@@ -240,7 +241,7 @@ public class CmsGalleryDialogBean implements IsSerializable {
      *
      * @param galleries the galleries to set
      */
-    public void setGalleries(ArrayList<CmsGalleriesListInfoBean> galleries) {
+    public void setGalleries(List<CmsGalleriesListInfoBean> galleries) {
 
         m_galleries = galleries;
     }
@@ -250,19 +251,9 @@ public class CmsGalleryDialogBean implements IsSerializable {
      *
      * @param locales the locales to set
      */
-    public void setLocales(TreeMap<String, String> locales) {
+    public void setLocales(Map<String, String> locales) {
 
         m_locales = locales;
-    }
-
-    /**
-     * Sets the tabs array.<p>
-     *
-     * @param tabs the tabs to set
-     */
-    public void setTabs(ArrayList<String> tabs) {
-
-        m_tabs = tabs;
     }
 
     /**
@@ -270,7 +261,7 @@ public class CmsGalleryDialogBean implements IsSerializable {
      *
      * @param types the types to set
      */
-    public void setTypes(ArrayList<CmsTypesListInfoBean> types) {
+    public void setTypes(List<CmsTypesListInfoBean> types) {
 
         m_types = types;
     }
@@ -280,6 +271,7 @@ public class CmsGalleryDialogBean implements IsSerializable {
      * 
      * @param sortParams the sort parameters
      */
+    @Deprecated
     public void sortCategories(String sortParams) {
 
         if (SortParams.title_asc == SortParams.valueOf(sortParams)) {
@@ -303,6 +295,7 @@ public class CmsGalleryDialogBean implements IsSerializable {
      * 
      * @param sortParams the sort parameters
      */
+    @Deprecated
     public void sortGalleries(String sortParams) {
 
         if (SortParams.title_asc == SortParams.valueOf(sortParams)) {
@@ -325,6 +318,7 @@ public class CmsGalleryDialogBean implements IsSerializable {
      * 
      * @param sortParams the sort parameters
      */
+    @Deprecated
     public void sortTypes(String sortParams) {
 
         if (SortParams.title_asc.name().equals(sortParams)) {
@@ -339,6 +333,7 @@ public class CmsGalleryDialogBean implements IsSerializable {
      * 
      * @param entries the tree entries
      */
+    @Deprecated
     private void treeToList(List<CmsCategoryTreeEntry> entries) {
 
         if (entries != null) {
@@ -353,5 +348,45 @@ public class CmsGalleryDialogBean implements IsSerializable {
                 treeToList(entry.getChildren());
             }
         }
+    }
+
+    /**
+     * Sets the gallery mode.<p>
+     *
+     * @param mode the gallery mode to set
+     */
+    public void setMode(GalleryMode mode) {
+
+        m_mode = mode;
+    }
+
+    /**
+     * Returns the gallery mode.<p>
+     *
+     * @return the gallery mode
+     */
+    public GalleryMode getMode() {
+
+        return m_mode;
+    }
+
+    /**
+     * Sets the start tab.<p>
+     *
+     * @param startTab the start tab to set
+     */
+    public void setStartTab(GalleryTabId startTab) {
+
+        m_startTab = startTab;
+    }
+
+    /**
+     * Returns the start tab.<p>
+     *
+     * @return the startTab
+     */
+    public GalleryTabId getStartTab() {
+
+        return m_startTab;
     }
 }
