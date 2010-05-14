@@ -22,7 +22,9 @@
 		<userinstalled />
 		<dateinstalled />
 		<dependencies />
-		<exportpoints />
+		<exportpoints>
+			<exportpoint uri="/system/modules/org.opencms.gwt/lib/" destination="WEB-INF/lib/"/>
+		</exportpoints>
 		<resources>
 			<resource uri="/system/modules/org.opencms.gwt/" />
 		</resources>
