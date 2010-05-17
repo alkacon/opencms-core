@@ -5,5 +5,4 @@
 	<source path="client" />
 	<source path="shared" />
 	<entry-point class="org.opencms.ade.sitemap.client.CmsSitemapView"></entry-point>
-	<set-configuration-property name="CssResource.style" value="pretty" /> 
 </module>

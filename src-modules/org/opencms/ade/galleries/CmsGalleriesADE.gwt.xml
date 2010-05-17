@@ -4,5 +4,4 @@
 	<inherits name="org.opencms.gwt.Base" />
 	<source path="client" />
 	<source path="shared" />
-	<set-configuration-property name="CssResource.style" value="pretty" /> 
 </module>

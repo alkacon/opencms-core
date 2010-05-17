@@ -28,19 +28,21 @@
         </any>
     </replace-with>
     
-     <generate-with class="org.opencms.gwt.rebind.CmsClassInitGenerator" >
-        <when-type-assignable class="org.opencms.gwt.client.I_CmsClassInitializer"/>
-    </generate-with>
-    
 	<source path="client" />
 	<source path="shared" />
 	<super-source path="client/super_src/" />
+
+	<generate-with class="org.opencms.gwt.rebind.rpc.CmsRpcServiceGenerator">
+		<when-type-assignable class="com.google.gwt.user.client.rpc.RemoteService" />
+	</generate-with> 
+    <generate-with class="org.opencms.gwt.rebind.CmsClassInitGenerator" >
+        <when-type-assignable class="org.opencms.gwt.client.I_CmsClassInitializer"/>
+    </generate-with>
+
+	<set-configuration-property name="CssResource.style" value="pretty" /> 
 
 	<set-property name="compiler.emulatedStack" value="true" />
 	<set-configuration-property name="compiler.emulatedStack.recordLineNumbers" value="true" />
 	<set-configuration-property name="compiler.emulatedStack.recordFileNames" value="true" />
 
-	<generate-with class="org.opencms.gwt.rebind.rpc.CmsRpcServiceGenerator">
-		<when-type-assignable class="com.google.gwt.user.client.rpc.RemoteService" />
-	</generate-with> 
 </module>
