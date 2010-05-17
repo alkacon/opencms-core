@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/ui/Attic/CmsTemplateSelectCell.java,v $
- * Date   : $Date: 2010/05/14 08:01:26 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/05/17 07:39:10 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -59,6 +59,7 @@ public class CmsTemplateSelectCell extends A_CmsSelectCell {
      * The UiBinder interface used for this widget.<p>
      */
     protected interface I_CmsTemplateSelectCellUiBinder extends UiBinder<Widget, CmsTemplateSelectCell> {
+        // empty
     }
 
     /** The parameter for the OpenCms image scaler. */
