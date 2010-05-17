@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsContainerPageHandler.java,v $
- * Date   : $Date: 2010/01/21 08:56:59 $
- * Version: $Revision: 1.3 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsXmlContainerPageHandler.java,v $
+ * Date   : $Date: 2010/05/17 06:58:54 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,16 +47,16 @@ import java.util.Locale;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.1 $
  * 
  * @since 7.6
  */
-public class CmsContainerPageHandler extends CmsDefaultXmlContentHandler {
+public class CmsXmlContainerPageHandler extends CmsDefaultXmlContentHandler {
 
     /**
      * Creates a new instance.<p>
      */
-    public CmsContainerPageHandler() {
+    public CmsXmlContainerPageHandler() {
 
         super();
     }
