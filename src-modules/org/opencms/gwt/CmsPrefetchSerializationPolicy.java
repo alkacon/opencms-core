@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsPrefetchSerializationPolicy.java,v $
- * Date   : $Date: 2010/05/07 10:12:53 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/05/17 07:51:42 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import com.google.gwt.user.server.rpc.impl.LegacySerializationPolicy;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  * 
@@ -78,6 +78,7 @@ public final class CmsPrefetchSerializationPolicy extends SerializationPolicy {
      */
     private CmsPrefetchSerializationPolicy() {
 
+        // do nothing
     }
 
     /**
