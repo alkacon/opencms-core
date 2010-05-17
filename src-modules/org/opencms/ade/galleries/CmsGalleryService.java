@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/Attic/CmsGalleryService.java,v $
- * Date   : $Date: 2010/05/14 13:34:53 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/05/17 06:50:20 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -80,7 +80,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 8.0.0
  * 
@@ -234,8 +234,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 try {
                     galleryFolders.add(getCmsObject().readResource(foldername));
                 } catch (CmsException e) {
-                    // TODO: Auto-generated catch block
-                    e.printStackTrace();
+                    logError(e);
                 }
             }
         }
@@ -302,7 +301,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     /**
      * @see org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService#getSearch(org.opencms.ade.galleries.shared.CmsGalleryDataBean)
      */
-    public CmsGallerySearchBean getSearch(CmsGalleryDataBean data) throws CmsRpcException {
+    public CmsGallerySearchBean getSearch(CmsGalleryDataBean data) {
 
         CmsGallerySearchBean result = new CmsGallerySearchBean();
         // search within all available types
@@ -327,7 +326,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                     try {
                         entry = OpenCms.getSitemapManager().getEntryForUri(getCmsObject(), currentelement);
                     } catch (CmsException e) {
-                        error(e);
+                        logError(e);
                     }
                     if ((entry != null) && entry.isSitemap()) {
                         //TODO: handle sitemap entries
@@ -377,7 +376,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     /**
      * Returns the map with the available galleries.<p>
      * 
-     * The map uses gallery path as the key and stores the CmsGalleriesListInfoBean as the value.
+     * The map uses gallery path as the key and stores the CmsGalleriesListInfoBean as the value.<p>
      * 
      * @param galleryTypes the galleries
      * 
@@ -398,8 +397,6 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             // set the icon
             String iconPath = getCoreService().getIcon(tInfo.getResourceType().getTypeName());
 
-            //TODO: remove    String iconPath = CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES
-            //                + OpenCms.getWorkplaceManager().getExplorerTypeSetting(tInfo.getResourceType().getTypeName()).getIcon());
             ArrayList<String> contentTypes = new ArrayList<String>();
             Iterator<I_CmsResourceType> it = tInfo.getContentTypes().iterator();
             while (it.hasNext()) {
@@ -421,9 +418,6 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 }
                 // 1: sitepath as gallery id 
                 bean.setId(sitePath);
-                // TODO: set the resource
-                //CmsFormatterInfoBean formatterInfo = new CmsFormatterInfoBean(tInfo.getResourceType(), false);
-                //formatterInfo.setResource(res);
                 // 2: content types
                 bean.setContentTypes(contentTypes);
                 // 3: title
@@ -435,9 +429,6 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 // 6: gallery type name
                 bean.setGalleryTypeName(tInfo.getResourceType().getTypeName());
 
-                // TODO:: active flag
-                //jsonObj.put(ItemKey.gallerytypeid.toString(), tInfo.getResourceType().getTypeId());
-
                 list.add(bean);
             }
         }
@@ -447,7 +438,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     /**
      * Returns a map with the available locales.<p>
      * 
-     * The map entry key is the current locale and the value the localized nice.
+     * The map entry key is the current locale and the value the localized nice name.<p>
      * 
      * @return the map representation of all available locales
      */
@@ -517,7 +508,6 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 // }
                 list.add(bean);
             } catch (Exception e) {
-                // TODO: Improve error handling
                 logError(e);
             }
         }
@@ -701,34 +691,25 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
      * Generates a list of available galleries for the given gallery-type.<p>
      * 
      * @param galleryTypeId the gallery-type
+     * 
      * @return the list of galleries
+     * 
+     * @throws CmsException if something goes wrong
      */
-    private List<CmsResource> getGalleriesByType(int galleryTypeId) {
+    private List<CmsResource> getGalleriesByType(int galleryTypeId) throws CmsException {
 
         List<CmsResource> galleries = new ArrayList<CmsResource>();
-        try {
-            // get the galleries of the current site
-            galleries = getCmsObject().readResources(
-                "/",
-                CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(galleryTypeId));
-        } catch (CmsException e) {
-            // error reading resources with filter
-            logError(e);
-        }
+        galleries = getCmsObject().readResources(
+            "/",
+            CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(galleryTypeId));
 
         // if the current site is NOT the root site - add all other galleries from the system path
         if (!getCmsObject().getRequestContext().getSiteRoot().equals("")) {
             List<CmsResource> systemGalleries = null;
-            try {
-                // get the galleries in the /system/ folder
-                systemGalleries = getCmsObject().readResources(
-                    CmsWorkplace.VFS_PATH_SYSTEM,
-                    CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(galleryTypeId));
-            } catch (CmsException e) {
-                // error reading resources with filter
-                logError(e);
-            }
-
+            // get the galleries in the /system/ folder
+            systemGalleries = getCmsObject().readResources(
+                CmsWorkplace.VFS_PATH_SYSTEM,
+                CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(galleryTypeId));
             if ((systemGalleries != null) && (systemGalleries.size() > 0)) {
                 // add the found system galleries to the result
                 galleries.addAll(systemGalleries);
@@ -816,7 +797,9 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
      * Generates a list of all available CmsCategory objects.<p>
      * 
      * @param galleries the galleries
+     * 
      * @return a list of categories
+     * 
      * @throws CmsRpcException error happens during reading categories
      */
     private CmsCategoryTreeEntry readCategoriesTree(List<CmsResource> galleries) throws CmsRpcException {
@@ -844,6 +827,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
      * Returns a map with gallery type names associated with the list of available galleries for this type.<p>
      * 
      * @param resourceTypes the resources types to collect the galleries for 
+     * 
      * @return a map with gallery type and  the associated galleries
      */
     private Map<String, CmsGalleryTypeInfo> readGalleryTypes(List<I_CmsResourceType> resourceTypes) {
@@ -854,16 +838,23 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             I_CmsResourceType contentType = iTypes.next();
             Iterator<I_CmsResourceType> galleryTypes = contentType.getGalleryTypes().iterator();
             while (galleryTypes.hasNext()) {
-                I_CmsResourceType galleryType = galleryTypes.next();
-                if (galleryTypeInfos.containsKey(galleryType.getTypeName())) {
-                    CmsGalleryTypeInfo typeInfo = galleryTypeInfos.get(galleryType.getTypeName());
-                    typeInfo.addContentType(contentType);
-                } else {
-                    CmsGalleryTypeInfo typeInfo = new CmsGalleryTypeInfo(
-                        galleryType,
-                        contentType,
-                        getGalleriesByType(galleryType.getTypeId()));
-                    galleryTypeInfos.put(galleryType.getTypeName(), typeInfo);
+                try {
+                    I_CmsResourceType galleryType = galleryTypes.next();
+                    if (galleryTypeInfos.containsKey(galleryType.getTypeName())) {
+                        CmsGalleryTypeInfo typeInfo = galleryTypeInfos.get(galleryType.getTypeName());
+                        typeInfo.addContentType(contentType);
+                    } else {
+                        CmsGalleryTypeInfo typeInfo;
+
+                        typeInfo = new CmsGalleryTypeInfo(
+                            galleryType,
+                            contentType,
+                            getGalleriesByType(galleryType.getTypeId()));
+
+                        galleryTypeInfos.put(galleryType.getTypeName(), typeInfo);
+                    }
+                } catch (CmsException e) {
+                    logError(e);
                 }
             }
         }
@@ -884,8 +875,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             try {
                 resTypes.add(getResourceManager().getResourceType(typeName));
             } catch (CmsLoaderException e) {
-                // TODO: Auto-generated catch block
-                e.printStackTrace();
+                logError(e);
             }
         }
         return resTypes;
@@ -906,15 +896,16 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
      * Returns the resource types configured to be used within the sitemap editor.<p>
      * 
      * @return the resource types
+     * 
+     * @throws CmsRpcException if something goes wrong
      */
-    private List<I_CmsResourceType> readResourceTypesForSitemap() {
+    private List<I_CmsResourceType> readResourceTypesForSitemap() throws CmsRpcException {
 
         List<I_CmsResourceType> result = new ArrayList<I_CmsResourceType>();
         try {
             result.add(getResourceManager().getResourceType(CmsResourceTypeXmlContainerPage.getStaticTypeName()));
         } catch (Exception e) {
-            // this should really never happen
-            logError(e);
+            error(e);
         }
         return result;
     }
