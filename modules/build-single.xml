@@ -355,10 +355,15 @@
 									  fork="yes" 
 									  failonerror="true"
 									  maxmemory="512m">
+						  			<arg value="-XdisableClassMetadata" />
+						  			<arg value="-XdisableCastChecking" />
+						  			<arg value="-compileReport" />
 						            <arg value="-localWorkers" />
 						            <arg value="2" />
 						            <arg value="-logLevel" />
 						            <arg value="INFO" />
+						            <arg value="-style" />
+						            <arg value="obfuscated" />
 						            <arg value="-gen" />
 						            <arg file="${opencms.output}/gwt/gen/" />
 						            <arg value="-extra" />
