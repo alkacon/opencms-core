@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/I_CmsSitemapInitHandler.java,v $
- * Date   : $Date: 2010/04/22 14:32:07 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/super_src/org/opencms/xml/sitemap/Attic/I_CmsSitemapChange.java,v $
+ * Date   : $Date: 2010/05/18 12:58:17 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -29,27 +29,43 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.sitemap.client;
+package org.opencms.xml.sitemap;
 
-import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
-
-import java.util.List;
+import java.io.Serializable;
 
 /**
- * Sitemap initialization handler.<p>
+ * Stores one change to the sitemap.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  */
-public interface I_CmsSitemapInitHandler {
+public interface I_CmsSitemapChange extends Serializable {
 
     /**
-     * Will be triggered once the controller is initialized.<p>
-     * 
-     * @param roots the sitemap root entries
+     * The change type.<p>
      */
-    void onInit(List<CmsClientSitemapEntry> roots);
+    public enum Type {
+
+        /** Delete entry. */
+        DELETE,
+
+        /** Edit entry. */
+        EDIT,
+
+        /** Move entry. */
+        MOVE,
+
+        /** New entry. */
+        NEW;
+    }
+
+    /**
+     * Returns the change type.<p>
+     * 
+     * @return the change type
+     */
+    Type getType();
 }

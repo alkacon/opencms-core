@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapTreeItem.java,v $
- * Date   : $Date: 2010/05/07 14:05:48 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/05/18 12:58:17 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,14 +35,12 @@ import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem;
 
-import com.google.gwt.user.client.DOM;
-
 /**
  * Sitemap entry tree item implementation.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 8.0.0
  * 
@@ -71,7 +69,6 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
         super(widget);
         m_listItemWidget = widget;
         m_sitePath = sitePath;
-        DOM.setElementAttribute(widget.getContentPanel().getElement(), ATTR_SITEPATH, sitePath);
     }
 
     /**

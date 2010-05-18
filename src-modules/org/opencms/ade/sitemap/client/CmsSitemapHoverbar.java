@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapHoverbar.java,v $
- * Date   : $Date: 2010/05/05 14:31:42 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/05/18 12:58:17 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,6 @@ import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsDomUtil;
 
-import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.MouseOutEvent;
@@ -50,7 +49,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 8.0.0
  */
@@ -77,6 +76,9 @@ public class CmsSitemapHoverbar extends FlowPanel {
     /** The parent sitemap button. */
     private CmsPushButton m_parentSitemapButton;
 
+    /** The hovered sitemap entry site path. */
+    protected String m_sitePath;
+
     /**
      * Constructor.<p>
      * 
@@ -92,7 +94,7 @@ public class CmsSitemapHoverbar extends FlowPanel {
              */
             public void onClick(ClickEvent event) {
 
-                String sitePath = getSitePath();
+                String sitePath = m_sitePath;
                 deattach();
                 if (event.getSource().equals(getMoveButton())) {
                     handler.onMove(sitePath);
@@ -241,8 +243,12 @@ public class CmsSitemapHoverbar extends FlowPanel {
      * 
      * @param controller the controller 
      * @param itemWidget the item widget to hover
+     * @param sitePath the sitemap entry's site path 
      */
-    public void installOn(final CmsSitemapController controller, final CmsListItemWidget itemWidget) {
+    public void installOn(
+        final CmsSitemapController controller,
+        final CmsListItemWidget itemWidget,
+        final String sitePath) {
 
         A_CmsHoverHandler handler = new A_CmsHoverHandler() {
 
@@ -253,8 +259,9 @@ public class CmsSitemapHoverbar extends FlowPanel {
             @Override
             protected void onHoverIn(MouseOverEvent event) {
 
+                m_sitePath = sitePath;
                 itemWidget.getContentPanel().getElement().appendChild(getElement());
-                if (controller.isRoot(getSitePath())) {
+                if (controller.isRoot(m_sitePath)) {
                     getDeleteButton().disable(Messages.get().key(Messages.GUI_DISABLED_ROOT_ITEM_0));
                     getMoveButton().disable(Messages.get().key(Messages.GUI_DISABLED_ROOT_ITEM_0));
                     getSubsitemapButton().disable(Messages.get().key(Messages.GUI_DISABLED_ROOT_ITEM_0));
@@ -296,18 +303,5 @@ public class CmsSitemapHoverbar extends FlowPanel {
         getParentSitemapButton().setVisible(false);
         getElement().removeFromParent();
         onDetach();
-    }
-
-    /**
-     * Returns the site path of the hovered item.<p>
-     * 
-     * @return the site path of the hovered item
-     */
-    protected String getSitePath() {
-
-        Element anscestor = CmsDomUtil.getAncestor(
-            getElement(),
-            I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().itemContent());
-        return anscestor.getAttribute(CmsSitemapTreeItem.ATTR_SITEPATH);
     }
 }

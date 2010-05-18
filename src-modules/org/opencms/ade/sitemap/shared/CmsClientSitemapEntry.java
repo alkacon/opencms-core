@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsClientSitemapEntry.java,v $
- * Date   : $Date: 2010/05/14 09:36:18 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/05/18 12:58:17 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,14 +45,11 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
 public class CmsClientSitemapEntry implements IsSerializable {
-
-    /** The children. */
-    private List<CmsClientSitemapEntry> m_children;
 
     /** The entry id. */
     private CmsUUID m_id;
@@ -69,6 +66,9 @@ public class CmsClientSitemapEntry implements IsSerializable {
     /** The sitemap path. */
     private String m_sitePath;
 
+    /** The children. */
+    private List<CmsClientSitemapEntry> m_subEntries;
+
     /** The title. */
     private String m_title;
 
@@ -80,7 +80,24 @@ public class CmsClientSitemapEntry implements IsSerializable {
      */
     public CmsClientSitemapEntry() {
 
-        m_children = new ArrayList<CmsClientSitemapEntry>();
+        m_subEntries = new ArrayList<CmsClientSitemapEntry>();
+    }
+
+    /**
+     * Creates a copy without children of the given entry.<p>
+     * 
+     * @param clone the entry to clone 
+     */
+    public CmsClientSitemapEntry(CmsClientSitemapEntry clone) {
+
+        this();
+        setId(clone.getId());
+        setName(clone.getName());
+        setProperties(new HashMap<String, String>(clone.getProperties()));
+        setSitePath(clone.getSitePath());
+        setTitle(clone.getTitle());
+        setVfsPath(clone.getVfsPath());
+        setPosition(clone.getPosition());
     }
 
     /**
@@ -88,38 +105,10 @@ public class CmsClientSitemapEntry implements IsSerializable {
      * 
      * @param entry the entry to add
      */
-    public void addChild(CmsClientSitemapEntry entry) {
+    public void addSubEntry(CmsClientSitemapEntry entry) {
 
-        entry.setPosition(m_children.size());
-        m_children.add(entry);
-    }
-
-    /**
-     * Creates a copy without children of the current entry.<p>
-     * 
-     * @return a copy without children of the current entry
-     */
-    public CmsClientSitemapEntry cloneEntry() {
-
-        CmsClientSitemapEntry entry = new CmsClientSitemapEntry();
-        entry.setId(getId());
-        entry.setName(getName());
-        entry.setProperties(new HashMap<String, String>(getProperties()));
-        entry.setSitePath(getSitePath());
-        entry.setTitle(getTitle());
-        entry.setVfsPath(getVfsPath());
-        entry.setPosition(getPosition());
-        return entry;
-    }
-
-    /**
-     * Returns the children.<p>
-     *
-     * @return the children
-     */
-    public List<CmsClientSitemapEntry> getChildren() {
-
-        return m_children;
+        entry.setPosition(m_subEntries.size());
+        m_subEntries.add(entry);
     }
 
     /**
@@ -173,6 +162,16 @@ public class CmsClientSitemapEntry implements IsSerializable {
     }
 
     /**
+     * Returns the children.<p>
+     *
+     * @return the children
+     */
+    public List<CmsClientSitemapEntry> getSubEntries() {
+
+        return m_subEntries;
+    }
+
+    /**
      * Returns the title.<p>
      *
      * @return the title
@@ -198,9 +197,9 @@ public class CmsClientSitemapEntry implements IsSerializable {
      * @param entry the entry to insert
      * @param position the position
      */
-    public void insertChild(CmsClientSitemapEntry entry, int position) {
+    public void insertSubEntry(CmsClientSitemapEntry entry, int position) {
 
-        m_children.add(position, entry);
+        m_subEntries.add(position, entry);
         updatePositions(position);
     }
 
@@ -211,21 +210,11 @@ public class CmsClientSitemapEntry implements IsSerializable {
      * 
      * @return the removed child
      */
-    public CmsClientSitemapEntry removeChild(int position) {
+    public CmsClientSitemapEntry removeSubEntry(int position) {
 
-        CmsClientSitemapEntry removed = m_children.remove(position);
+        CmsClientSitemapEntry removed = m_subEntries.remove(position);
         updatePositions(position);
         return removed;
-    }
-
-    /**
-     * Sets the children.<p>
-     *
-     * @param children the children to set
-     */
-    public void setChildren(List<CmsClientSitemapEntry> children) {
-
-        m_children = children;
     }
 
     /**
@@ -279,6 +268,17 @@ public class CmsClientSitemapEntry implements IsSerializable {
     }
 
     /**
+     * Sets the children.<p>
+     *
+     * @param children the children to set
+     */
+    public void setSubEntries(List<CmsClientSitemapEntry> children) {
+
+        m_subEntries.clear();
+        m_subEntries.addAll(children);
+    }
+
+    /**
      * Sets the title.<p>
      *
      * @param title the title to set
@@ -324,8 +324,8 @@ public class CmsClientSitemapEntry implements IsSerializable {
      */
     private void updatePositions(int position) {
 
-        for (int i = position; i < m_children.size(); i++) {
-            m_children.get(i).setPosition(i);
+        for (int i = position; i < m_subEntries.size(); i++) {
+            m_subEntries.get(i).setPosition(i);
         }
     }
 }

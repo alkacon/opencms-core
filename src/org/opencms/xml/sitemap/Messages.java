@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/Messages.java,v $
- * Date   : $Date: 2010/05/12 09:19:10 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/05/18 12:58:17 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -53,6 +53,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_SITEMAP_1 = "ERR_SITEMAP_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_SITEMAP_ELEMENT_NOT_FOUND_1 = "ERR_SITEMAP_ELEMENT_NOT_FOUND_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_SITEMAP_ELEMENT_NOT_FOUND_2 = "ERR_SITEMAP_ELEMENT_NOT_FOUND_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_SITEMAP_HANDLER_INSTANTIATION_0 = "ERR_SITEMAP_HANDLER_INSTANTIATION_0";

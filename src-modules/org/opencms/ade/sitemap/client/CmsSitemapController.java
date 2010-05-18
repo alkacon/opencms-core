@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2010/05/14 09:36:18 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2010/05/18 12:58:17 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,22 +31,24 @@
 
 package org.opencms.ade.sitemap.client;
 
+import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeDelete;
+import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeEdit;
+import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeMove;
+import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeNew;
+import org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
-import org.opencms.ade.sitemap.shared.CmsSitemapChangeDelete;
-import org.opencms.ade.sitemap.shared.CmsSitemapChangeEdit;
-import org.opencms.ade.sitemap.shared.CmsSitemapChangeMove;
-import org.opencms.ade.sitemap.shared.CmsSitemapChangeNew;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.ade.sitemap.shared.CmsSitemapTemplate;
-import org.opencms.ade.sitemap.shared.I_CmsSitemapChange;
 import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService;
 import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapServiceAsync;
 import org.opencms.file.CmsResource;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.rpc.CmsRpcPrefetcher;
+import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.sitemap.CmsSitemapManager;
+import org.opencms.xml.sitemap.I_CmsSitemapChange;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -62,7 +64,7 @@ import com.google.gwt.user.client.Window;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 8.0.0
  */
@@ -72,28 +74,31 @@ public class CmsSitemapController {
     private static Set<String> hiddenProperties;
 
     /** The list of changes. */
-    protected List<I_CmsSitemapChange> m_changes;
+    protected List<I_CmsClientSitemapChange> m_changes;
 
     /** The sitemap data. */
     protected CmsSitemapData m_data;
 
     /** The handler. */
-    protected CmsSitemapControllerHandler m_handler;
+    protected I_CmsSitemapControllerHandler m_handler;
 
     /** The list of undone changes. */
-    protected List<I_CmsSitemapChange> m_undone;
+    protected List<I_CmsClientSitemapChange> m_undone;
 
     /** The sitemap service instance. */
     private I_CmsSitemapServiceAsync m_service;
 
     /**
      * Constructor.<p>
+     * 
+     * @param handler the handler to set
      */
-    public CmsSitemapController() {
+    public CmsSitemapController(I_CmsSitemapControllerHandler handler) {
 
-        m_changes = new ArrayList<I_CmsSitemapChange>();
-        m_undone = new ArrayList<I_CmsSitemapChange>();
+        m_changes = new ArrayList<I_CmsClientSitemapChange>();
+        m_undone = new ArrayList<I_CmsClientSitemapChange>();
         m_data = (CmsSitemapData)CmsRpcPrefetcher.getSerializedObject(getService(), CmsSitemapData.DICT_NAME);
+        m_handler = handler;
     }
 
     static {
@@ -132,7 +137,12 @@ public class CmsSitemapController {
             @Override
             public void execute() {
 
-                getService().save(CmsCoreProvider.get().getUri(), m_changes, this);
+                start(0);
+                List<I_CmsSitemapChange> changes = new ArrayList<I_CmsSitemapChange>();
+                for (I_CmsClientSitemapChange change : m_changes) {
+                    changes.add(change.getChangeForCommit());
+                }
+                getService().save(CmsCoreProvider.get().getUri(), changes, this);
             }
 
             /**
@@ -146,6 +156,16 @@ public class CmsSitemapController {
 
                 // state
                 m_handler.onReset();
+                stop(true);
+            }
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#show()
+             */
+            @Override
+            protected void show() {
+
+                CmsNotification.get().send(CmsNotification.Type.NORMAL, Messages.get().key(Messages.GUI_SAVING_0));
             }
         };
         saveAction.execute();
@@ -162,7 +182,7 @@ public class CmsSitemapController {
         assert (getEntry(CmsResource.getParentFolder(newEntry.getSitePath())) != null);
 
         newEntry.setPosition(-1); // ensure it will be inserted at the end
-        addChange(new CmsSitemapChangeNew(newEntry), false);
+        addChange(new CmsClientSitemapChangeNew(newEntry), false);
     }
 
     /**
@@ -174,7 +194,7 @@ public class CmsSitemapController {
 
         CmsClientSitemapEntry entry = getEntry(sitePath);
         assert (entry != null);
-        addChange(new CmsSitemapChangeDelete(entry), false);
+        addChange(new CmsClientSitemapChangeDelete(entry), false);
     }
 
     /**
@@ -195,7 +215,7 @@ public class CmsSitemapController {
         //boolean changedProperties = ((properties != null) && !properties.equals(entry.getProperties()));
         //assert (!changedTitle && !changedVfsRef && !changedProperties);
 
-        CmsClientSitemapEntry newEntry = entry.cloneEntry();
+        CmsClientSitemapEntry newEntry = new CmsClientSitemapEntry(entry);
         if (changedTitle) {
             newEntry.setTitle(title);
         }
@@ -204,11 +224,11 @@ public class CmsSitemapController {
         }
         if (properties != null) {
             // to preserve the hidden properties (navigation, sitemap...), we only copy the new property values
-            newEntry.updateProperties(properties);
+            newEntry.getProperties().putAll(properties);
         }
         // TODO: set URL name of the entry, and also change the URL shown in the widget
 
-        addChange(new CmsSitemapChangeEdit(entry, newEntry), false);
+        addChange(new CmsClientSitemapChangeEdit(entry, newEntry), false);
     }
 
     /**
@@ -237,7 +257,7 @@ public class CmsSitemapController {
             public void onResponse(List<CmsClientSitemapEntry> result) {
 
                 CmsClientSitemapEntry target = getEntry(sitePath);
-                target.setChildren(result);
+                target.setSubEntries(result);
                 m_handler.onGetChildren(target);
             }
         };
@@ -300,7 +320,7 @@ public class CmsSitemapController {
                 continue;
             }
             boolean found = false;
-            for (CmsClientSitemapEntry child : result.getChildren()) {
+            for (CmsClientSitemapEntry child : result.getSubEntries()) {
                 if (child.getName().equals(name)) {
                     found = true;
                     result = child;
@@ -326,7 +346,7 @@ public class CmsSitemapController {
 
         String parentPath = CmsResource.getParentFolder(entry.getSitePath());
         CmsClientSitemapEntry parentEntry = getEntry(parentPath);
-        for (CmsClientSitemapEntry siblingEntry : parentEntry.getChildren()) {
+        for (CmsClientSitemapEntry siblingEntry : parentEntry.getSubEntries()) {
             if ((siblingEntry != entry) && urlNameValue.equals(siblingEntry.getName())) {
                 return true;
             }
@@ -379,7 +399,7 @@ public class CmsSitemapController {
         assert ((toPath != null) && (!entry.getSitePath().equals(toPath) || (entry.getPosition() != position)));
         assert (getEntry(CmsResource.getParentFolder(toPath)) != null);
 
-        addChange(new CmsSitemapChangeMove(entry.getSitePath(), entry.getPosition(), toPath, position), false);
+        addChange(new CmsClientSitemapChangeMove(entry.getSitePath(), entry.getPosition(), toPath, position), false);
     }
 
     /**
@@ -392,7 +412,7 @@ public class CmsSitemapController {
         }
 
         // redo
-        I_CmsSitemapChange change = m_undone.remove(m_undone.size() - 1);
+        I_CmsClientSitemapChange change = m_undone.remove(m_undone.size() - 1);
         addChange(change, true);
 
         // state
@@ -417,16 +437,6 @@ public class CmsSitemapController {
     }
 
     /**
-     * Sets the controller handler.<p>
-     * 
-     * @param handler the handler to set
-     */
-    public void setHandler(CmsSitemapControllerHandler handler) {
-
-        m_handler = handler;
-    }
-
-    /**
      * Undoes the last change.<p>
      */
     public void undo() {
@@ -441,12 +451,12 @@ public class CmsSitemapController {
         }
 
         // undo
-        I_CmsSitemapChange change = m_changes.remove(m_changes.size() - 1);
+        I_CmsClientSitemapChange change = m_changes.remove(m_changes.size() - 1);
         m_undone.add(change);
 
         // update data
-        I_CmsSitemapChange revertChange = change.revert();
-        update(revertChange);
+        I_CmsClientSitemapChange revertChange = change.revert();
+        revertChange.applyToModel(this);
 
         // refresh view
         m_handler.onChange(revertChange);
@@ -480,7 +490,7 @@ public class CmsSitemapController {
      * @param position the new position between its siblings, only used when moving
      * @param redo if redoing a change
      */
-    private void addChange(I_CmsSitemapChange change, boolean redo) {
+    private void addChange(I_CmsClientSitemapChange change, boolean redo) {
 
         // state
         if (!isDirty()) {
@@ -501,55 +511,10 @@ public class CmsSitemapController {
         // add it
         m_changes.add(change);
 
-        // update data
-        update(change);
+        // apply change to the model
+        change.applyToModel(this);
 
         // refresh view
         m_handler.onChange(change);
-    }
-
-    /**
-     * Updates the internal data for the given change.<p>
-     * 
-     * @param change the change
-     */
-    private void update(I_CmsSitemapChange change) {
-
-        switch (change.getType()) {
-            case DELETE:
-                CmsSitemapChangeDelete changeDelete = (CmsSitemapChangeDelete)change;
-                CmsClientSitemapEntry deleteParent = getEntry(CmsResource.getParentFolder(changeDelete.getEntry().getSitePath()));
-                deleteParent.removeChild(changeDelete.getEntry().getPosition());
-                break;
-
-            case EDIT:
-                CmsSitemapChangeEdit changeEdit = (CmsSitemapChangeEdit)change;
-                CmsClientSitemapEntry editEntry = getEntry(changeEdit.getOldEntry().getSitePath());
-                editEntry.setTitle(changeEdit.getNewEntry().getTitle());
-                editEntry.setVfsPath(changeEdit.getNewEntry().getVfsPath());
-                editEntry.setProperties(changeEdit.getNewEntry().getProperties());
-                break;
-
-            case MOVE:
-                CmsSitemapChangeMove changeMove = (CmsSitemapChangeMove)change;
-                CmsClientSitemapEntry sourceParent = getEntry(CmsResource.getParentFolder(changeMove.getSourcePath()));
-                CmsClientSitemapEntry moved = sourceParent.removeChild(changeMove.getSourcePosition());
-                CmsClientSitemapEntry destParent = getEntry(CmsResource.getParentFolder(changeMove.getDestinationPath()));
-                destParent.insertChild(moved, changeMove.getDestinationPosition());
-                break;
-
-            case NEW:
-                CmsSitemapChangeNew changeNew = (CmsSitemapChangeNew)change;
-                CmsClientSitemapEntry newParent = getEntry(CmsResource.getParentFolder(changeNew.getEntry().getSitePath()));
-                if (changeNew.getEntry().getPosition() < 0) {
-                    newParent.addChild(changeNew.getEntry());
-                } else {
-                    newParent.insertChild(changeNew.getEntry(), changeNew.getEntry().getPosition());
-                }
-                break;
-
-            default:
-                break;
-        }
     }
 }

@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsSitemapChangeNew.java,v $
- * Date   : $Date: 2010/05/12 10:14:06 $
- * Version: $Revision: 1.2 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/I_CmsSitemapChange.java,v $
+ * Date   : $Date: 2010/05/18 12:58:17 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,56 +29,43 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.sitemap.shared;
+package org.opencms.xml.sitemap;
 
+import java.io.Serializable;
 
 /**
- * Stores one addition change to the sitemap.<p>
+ * Stores one change to the sitemap.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  */
-public class CmsSitemapChangeNew implements I_CmsSitemapChange {
-
-    /** The new entry with children. */
-    private CmsClientSitemapEntry m_entry;
+public interface I_CmsSitemapChange extends Serializable {
 
     /**
-     * Constructor.<p>
+     * The change type.<p>
+     */
+    public enum Type {
+
+        /** Delete entry. */
+        DELETE,
+
+        /** Edit entry. */
+        EDIT,
+
+        /** Move entry. */
+        MOVE,
+
+        /** New entry. */
+        NEW;
+    }
+
+    /**
+     * Returns the change type.<p>
      * 
-     * @param entry the new entry
+     * @return the change type
      */
-    public CmsSitemapChangeNew(CmsClientSitemapEntry entry) {
-
-        m_entry = entry;
-    }
-
-    /**
-     * Returns the new entry.<p>
-     *
-     * @return the new entry
-     */
-    public CmsClientSitemapEntry getEntry() {
-
-        return m_entry;
-    }
-
-    /**
-     * @see org.opencms.ade.sitemap.shared.I_CmsSitemapChange#getType()
-     */
-    public Type getType() {
-
-        return Type.NEW;
-    }
-
-    /**
-     * @see org.opencms.ade.sitemap.shared.I_CmsSitemapChange#revert()
-     */
-    public I_CmsSitemapChange revert() {
-
-        return new CmsSitemapChangeDelete(getEntry());
-    }
+    Type getType();
 }

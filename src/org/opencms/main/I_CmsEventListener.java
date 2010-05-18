@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/I_CmsEventListener.java,v $
- * Date   : $Date: 2009/11/23 10:04:45 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/05/18 12:58:17 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ package org.opencms.main;
  * @author Alexander Kandzior 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  * 
@@ -325,6 +325,16 @@ public interface I_CmsEventListener {
      * </ul>
      */
     int EVENT_RESOURCES_MODIFIED = 12;
+
+    /** 
+     * Event "a sitemap has been modified".<p>
+     * 
+     * Event data:
+     * <ul>
+     * <li>key "resources" (mandatory): a List of modified sitemap entries identified by their root path</li>
+     * </ul>
+     */
+    int EVENT_SITEMAP_CHANGED = 33;
 
     /**
      * Event "update exported resources".<p>

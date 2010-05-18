@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsXmlSitemap.java,v $
- * Date   : $Date: 2010/03/10 13:09:55 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2010/05/18 12:58:17 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,13 +37,16 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
+import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsLink;
 import org.opencms.relations.CmsRelationType;
+import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -53,7 +56,6 @@ import org.opencms.xml.CmsXmlGenericWrapper;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentMacroVisitor;
-import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.content.CmsXmlContentPropertyHelper;
 import org.opencms.xml.page.CmsXmlPage;
 import org.opencms.xml.types.CmsXmlNestedContentDefinition;
@@ -62,6 +64,7 @@ import org.opencms.xml.types.I_CmsXmlContentValue;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -84,7 +87,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 7.5.2
  * 
@@ -351,6 +354,55 @@ public class CmsXmlSitemap extends CmsXmlContent {
     }
 
     /**
+     * Applies the given changes in the current locale, and only in memory.<p>
+     * 
+     * @param cms the current cms context
+     * @param changes the changes to apply
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void applyChanges(CmsObject cms, List<I_CmsSitemapChange> changes) throws CmsException {
+
+        Locale locale = cms.getRequestContext().getLocale();
+
+        // create the locale
+        if (!hasLocale(locale)) {
+            addLocale(cms, locale);
+        }
+
+        Set<String> modified = new HashSet<String>();
+        // apply the changes to the raw XML structure
+        for (I_CmsSitemapChange change : changes) {
+            switch (change.getType()) {
+                case DELETE:
+                    modified.addAll(deleteEntry(cms, (CmsSitemapChangeDelete)change));
+                    break;
+                case NEW:
+                    modified.add(newEntry(cms, (CmsSitemapChangeNew)change));
+                    break;
+                case MOVE:
+                    modified.addAll(moveEntry(cms, (CmsSitemapChangeMove)change));
+                    break;
+                case EDIT:
+                    modified.add(editEntry(cms, (CmsSitemapChangeEdit)change));
+                    break;
+                default:
+
+            }
+        }
+
+        // generate bookmarks
+        initDocument(m_document, m_encoding, m_contentDefinition);
+
+        // event handling
+        List<String> result = new ArrayList<String>(modified);
+        Collections.sort(result);
+        OpenCms.fireCmsEvent(new CmsEvent(
+            I_CmsEventListener.EVENT_SITEMAP_CHANGED,
+            Collections.<String, Object> singletonMap(I_CmsEventListener.KEY_RESOURCES, result)));
+    }
+
+    /**
      * Returns the sitemap bean for the given locale.<p>
      *
      * @param cms the cms context
@@ -396,58 +448,6 @@ public class CmsXmlSitemap extends CmsXmlContent {
     }
 
     /**
-     * Saves given sitemap in the current locale, and not only in memory but also to VFS.<p>
-     * 
-     * @param cms the current cms context
-     * @param entryPoint the entry point
-     * @param entries the sitemap to save
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public void save(CmsObject cms, String entryPoint, List<CmsSitemapEntry> entries) throws CmsException {
-
-        CmsFile file = getFile();
-
-        // lock the file
-        cms.lockResourceTemporary(cms.getSitePath(file));
-
-        Locale locale = cms.getRequestContext().getLocale();
-
-        // wipe the locale
-        if (hasLocale(locale)) {
-            removeLocale(locale);
-        }
-        addLocale(cms, locale);
-
-        // get the properties
-        Map<String, CmsXmlContentProperty> propertiesConf = CmsXmlContentDefinition.getContentHandlerForResource(
-            cms,
-            getFile()).getProperties();
-
-        // store the entry point
-        Element parent = getLocaleNode(locale);
-        parent.clearContent();
-
-        // the entry point
-        Element entryPointEntry = parent.addElement(XmlNode.EntryPoint.name());
-        CmsRelationType type = CmsRelationType.ENTRY_POINT;
-        CmsSitemapEntry sitemapEntry = OpenCms.getSitemapManager().getEntryForUri(cms, entryPoint);
-        CmsXmlVfsFileValue.fillSitemapEntry(entryPointEntry, sitemapEntry, type);
-
-        // recursively add the nodes to the raw XML structure
-        for (CmsSitemapEntry entry : entries) {
-            saveEntry(cms, parent, entry, propertiesConf);
-        }
-
-        // generate bookmarks
-        initDocument(m_document, m_encoding, m_contentDefinition);
-
-        // write to VFS
-        file.setContents(marshal());
-        cms.writeFile(file);
-    }
-
-    /**
      * @see org.opencms.xml.A_CmsXmlDocument#validateXmlStructure(org.xml.sax.EntityResolver)
      */
     @Override
@@ -458,15 +458,89 @@ public class CmsXmlSitemap extends CmsXmlContent {
     }
 
     /**
+     * Low level deletion of a sitemap entry.<p>
+     * 
+     * @param cms the CMS context
+     * @param change the change to apply
+     * 
+     * @return the site path of the entries that need to be re-indexed
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    protected List<String> deleteEntry(CmsObject cms, CmsSitemapChangeDelete change) throws CmsException {
+
+        Element entryElement = getElement(cms, change.getSitePath());
+        if (entryElement == null) {
+            // element not found
+            String sitemapPath = (getFile() == null) ? null : cms.getSitePath(getFile());
+            throw new CmsSitemapEntryNotFoundException(change.getSitePath(), sitemapPath);
+        }
+
+        entryElement.detach();
+
+        // return touched entries
+        return getSubTreePaths(
+            CmsResource.getParentFolder(cms.getRequestContext().addSiteRoot(change.getSitePath())),
+            entryElement);
+    }
+
+    /**
+     * Low level edition of a sitemap entry.<p>
+     * 
+     * @param cms the CMS context
+     * @param change the change to apply
+     * 
+     * @return the site path of the entries that need to be re-indexed
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    protected String editEntry(CmsObject cms, CmsSitemapChangeEdit change) throws CmsException {
+
+        Element entryElement = getElement(cms, change.getSitePath());
+        if (entryElement == null) {
+            // element not found
+            throw new CmsSitemapEntryNotFoundException(change.getSitePath(), getFile() == null
+            ? null
+            : cms.getSitePath(getFile()));
+        }
+
+        // the title
+        if (change.getTitle() != null) {
+            Element titleElement = entryElement.element(XmlNode.Title.name());
+            if (!titleElement.getText().equals(change.getTitle())) {
+                titleElement.clearContent();
+                titleElement.addCDATA(change.getTitle());
+            }
+        }
+
+        // the vfs reference
+        if (change.getVfsPath() != null) {
+            Element vfsElement = entryElement.element(XmlNode.VfsFile.name());
+            fillResource(cms, vfsElement, change.getVfsPath());
+        }
+
+        // the properties
+        if (change.getProperties() != null) {
+            CmsXmlContentPropertyHelper.saveProperties(
+                cms,
+                entryElement,
+                CmsXmlContentDefinition.getContentHandlerForResource(cms, getFile()).getProperties(),
+                change.getProperties());
+        }
+
+        return cms.getRequestContext().addSiteRoot(change.getSitePath());
+    }
+
+    /**
      * Fills a {@link CmsXmlVfsFileValue} with the resource identified by the given id.<p>
      * 
      * @param cms the current CMS context
      * @param element the XML element to fill
-     * @param resourceId the ID identifying the resource to use
+     * @param resourcePath the site path identifying the resource to use
      * 
      * @throws CmsException if the resource can not be read
      */
-    protected void fillResource(CmsObject cms, Element element, CmsUUID resourceId) throws CmsException {
+    protected void fillResource(CmsObject cms, Element element, String resourcePath) throws CmsException {
 
         String xpath = element.getPath();
         int pos = xpath.lastIndexOf("/" + XmlNode.SiteEntry.name() + "/");
@@ -474,8 +548,8 @@ public class CmsXmlSitemap extends CmsXmlContent {
             xpath = xpath.substring(pos + 1);
         }
         CmsRelationType type = getContentDefinition().getContentHandler().getRelationType(xpath);
-        CmsResource res = cms.readResource(resourceId);
-        CmsXmlVfsFileValue.fillResource(element, res, type);
+        CmsResource res = cms.readResource(resourcePath);
+        CmsXmlVfsFileValue.fillEntry(element, res.getStructureId(), res.getRootPath(), type);
     }
 
     /**
@@ -546,6 +620,110 @@ public class CmsXmlSitemap extends CmsXmlContent {
                     org.opencms.xml.content.Messages.LOG_XMLCONTENT_INIT_BOOKMARKS_0), e);
             }
         }
+    }
+
+    /**
+     * Low level rename/move of a sitemap entry.<p>
+     * 
+     * @param cms the CMS context
+     * @param change the change to apply
+     * 
+     * @return the site path of the entries that need to be re-indexed
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    protected List<String> moveEntry(CmsObject cms, CmsSitemapChangeMove change) throws CmsException {
+
+        Element entryElement = getElement(cms, change.getSourcePath());
+        if (entryElement == null) {
+            // element not found
+            String sitemapPath = (getFile() == null) ? null : cms.getSitePath(getFile());
+            throw new CmsSitemapEntryNotFoundException(change.getSourcePath(), sitemapPath);
+        }
+
+        String srcParentPath = CmsResource.getParentFolder(change.getSourcePath());
+        String destParentPath = CmsResource.getParentFolder(change.getDestinationPath());
+        Element newParent = getElement(cms, destParentPath);
+        if (newParent == null) {
+            // new parent entry not found
+            String sitemapPath = (getFile() == null) ? null : cms.getSitePath(getFile());
+            throw new CmsSitemapEntryNotFoundException(destParentPath, sitemapPath);
+        }
+
+        // move
+        if (!srcParentPath.equals(destParentPath)) {
+            // detach from old place
+            entryElement.detach();
+            // attach at new place
+            entryElement.setParent(newParent);
+            // at the right position
+            List<Element> siblings = CmsCollectionsGenericWrapper.list(newParent.elements());
+            siblings.add(change.getDestinationPosition(), entryElement);
+        } else {
+            // check position
+            List<Element> siblings = CmsCollectionsGenericWrapper.list(newParent.elements());
+            if (siblings.indexOf(entryElement) != change.getDestinationPosition()) {
+                siblings.remove(entryElement);
+                siblings.add(change.getDestinationPosition(), entryElement);
+            }
+        }
+
+        // rename
+        String srcName = CmsResource.getName(change.getSourcePath());
+        String destName = CmsResource.getName(change.getDestinationPath());
+        if (!srcName.equals(destName)) {
+            Element nameElement = entryElement.element(XmlNode.Name.name());
+            nameElement.clearContent();
+            if (destName.endsWith("/")) {
+                destName = destName.substring(0, destName.length() - 1);
+            }
+            nameElement.addCDATA(destName);
+        }
+
+        // return touched entries
+        return getSubTreePaths(cms.getRequestContext().addSiteRoot(destParentPath), entryElement);
+    }
+
+    /**
+     * Low level insertion of a sitemap entry.<p>
+     * 
+     * @param cms the CMS context
+     * @param change the change to apply
+     * 
+     * @return the site path of the entries that need to be re-indexed
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    protected String newEntry(CmsObject cms, CmsSitemapChangeNew change) throws CmsException {
+
+        Element parent = getElement(cms, CmsResource.getParentFolder(change.getSitePath()));
+        if (parent == null) {
+            // parent entry not found
+            String sitemapPath = (getFile() == null) ? null : cms.getSitePath(getFile());
+            throw new CmsSitemapEntryNotFoundException(change.getSitePath(), sitemapPath);
+        }
+        // the entry
+        Element entryElement = parent.addElement(XmlNode.SiteEntry.name());
+        entryElement.addElement(XmlNode.Id.name()).addCDATA(new CmsUUID().toString());
+        String name = CmsResource.getName(change.getSitePath());
+        if (name.endsWith("/")) {
+            name = name.substring(0, name.length() - 1);
+        }
+        entryElement.addElement(XmlNode.Name.name()).addCDATA(name);
+        entryElement.addElement(XmlNode.Title.name()).addCDATA(change.getTitle());
+
+        // the vfs reference
+        Element vfsFile = entryElement.addElement(XmlNode.VfsFile.name());
+        fillResource(cms, vfsFile, change.getVfsPath());
+
+        // the properties
+        CmsXmlContentPropertyHelper.saveProperties(
+            cms,
+            entryElement,
+            CmsXmlContentDefinition.getContentHandlerForResource(cms, getFile()).getProperties(),
+            change.getProperties());
+
+        return cms.getRequestContext().addSiteRoot(change.getSitePath());
     }
 
     /**
@@ -649,44 +827,6 @@ public class CmsXmlSitemap extends CmsXmlContent {
     }
 
     /**
-     * Saves the given entry in the XML content.<p>
-     * 
-     * @param cms the CMS context
-     * @param parent the parent element for this entry
-     * @param entry the entry to save
-     * @param propertiesConf the properties configuration
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    protected void saveEntry(
-        CmsObject cms,
-        Element parent,
-        CmsSitemapEntry entry,
-        Map<String, CmsXmlContentProperty> propertiesConf) throws CmsException {
-
-        // the entry
-        Element entryElement = parent.addElement(XmlNode.SiteEntry.name());
-        entryElement.addElement(XmlNode.Id.name()).addCDATA(entry.getId().toString());
-        entryElement.addElement(XmlNode.Name.name()).addCDATA(entry.getName());
-        entryElement.addElement(XmlNode.Title.name()).addCDATA(entry.getTitle());
-
-        // the vfs reference
-        Element vfsFile = entryElement.addElement(XmlNode.VfsFile.name());
-        fillResource(cms, vfsFile, entry.getResourceId());
-
-        // the properties
-        Map<String, String> properties = entry.getProperties();
-        CmsXmlContentPropertyHelper.saveProperties(cms, entryElement, propertiesConf, properties);
-
-        // the subentries
-        int subentryCount = 0;
-        for (CmsSitemapEntry subentry : entry.getSubEntries()) {
-            saveEntry(cms, entryElement, subentry, propertiesConf);
-            subentryCount++;
-        }
-    }
-
-    /**
      * @see org.opencms.xml.content.CmsXmlContent#setFile(org.opencms.file.CmsFile)
      */
     @Override
@@ -694,5 +834,85 @@ public class CmsXmlSitemap extends CmsXmlContent {
 
         // just for visibility from the factory
         super.setFile(file);
+    }
+
+    /**
+     * Locates a DOM element for the given sitemap path.<p>
+     * 
+     * @param cms the CMS context 
+     * @param sitePath the site path
+     * 
+     * @return the corresponding DOM element or <code>null</code> if not found
+     */
+    private Element getElement(CmsObject cms, String sitePath) {
+
+        // check entry point
+        String entryPoint = getValue(XmlNode.EntryPoint.name(), cms.getRequestContext().getLocale()).getStringValue(cms);
+        if (!sitePath.startsWith(entryPoint)) {
+            return null;
+        }
+        Element parent = getLocaleNode(cms.getRequestContext().getLocale());
+        String[] pathEntries = CmsStringUtil.splitAsArray(sitePath.substring(entryPoint.length()), '/');
+
+        // handle special case of root node in root sitemap
+        if (parent.elements(XmlNode.SiteEntry.name()).size() == 1) {
+            Element element = parent.element(XmlNode.SiteEntry.name());
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(element.elementText(XmlNode.Name.name()))) {
+                parent = element;
+            }
+        }
+
+        // tree level iteration
+        for (String name : pathEntries) {
+            boolean found = false;
+            // level entry iteration
+            for (Element element : CmsCollectionsGenericWrapper.<Element> list(parent.elements(XmlNode.SiteEntry.name()))) {
+                if (element.elementText(XmlNode.Name.name()).equals(name)) {
+                    found = true;
+                    parent = element;
+                    break;
+                }
+            }
+            if (!found) {
+                return null;
+            }
+        }
+        return parent;
+    }
+
+    /**
+     * Returns the list of all paths in the element tree, being the given element child of the given parent path.<p>
+     * 
+     * @param parentPath the parent path to start with
+     * @param entryElement the element to start with
+     * 
+     * @return the list of paths
+     */
+    private List<String> getSubTreePaths(String parentPath, Element entryElement) {
+
+        String srcPath = parentPath;
+        List<String> result = new ArrayList<String>();
+        if (srcPath.endsWith("/")) {
+            srcPath = srcPath.substring(0, srcPath.length() - 1);
+        }
+        Map<String, List<Element>> subEntries = new HashMap<String, List<Element>>();
+        subEntries.put(srcPath, Collections.singletonList(entryElement));
+        while (!subEntries.isEmpty()) {
+            String path = subEntries.keySet().iterator().next();
+            List<Element> entries = subEntries.remove(path);
+            for (Element entry : entries) {
+                String entryPath = path + "/" + entry.elementText(XmlNode.Name.name());
+                if (entryPath.endsWith("/")) {
+                    entryPath = entryPath.substring(0, entryPath.length() - 1);
+                }
+                result.add(entryPath + "/");
+                // continue recursion
+                List<Element> children = CmsCollectionsGenericWrapper.<Element> list(entry.elements(XmlNode.SiteEntry.name()));
+                if (!children.isEmpty()) {
+                    subEntries.put(entryPath, children);
+                }
+            }
+        }
+        return result;
     }
 }

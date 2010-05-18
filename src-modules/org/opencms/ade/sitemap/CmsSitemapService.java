@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsSitemapService.java,v $
- * Date   : $Date: 2010/05/12 12:33:31 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2010/05/18 12:58:17 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,7 +34,6 @@ package org.opencms.ade.sitemap;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.ade.sitemap.shared.CmsSitemapTemplate;
-import org.opencms.ade.sitemap.shared.I_CmsSitemapChange;
 import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
@@ -57,11 +56,11 @@ import org.opencms.xml.sitemap.CmsSitemapEntry;
 import org.opencms.xml.sitemap.CmsSitemapManager;
 import org.opencms.xml.sitemap.CmsXmlSitemap;
 import org.opencms.xml.sitemap.CmsXmlSitemapFactory;
+import org.opencms.xml.sitemap.I_CmsSitemapChange;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -71,7 +70,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 8.0.0
  * 
@@ -141,27 +140,6 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
             error(e);
         }
         return children;
-    }
-
-    /**
-     * Returns the default template for the given sitemap.<p>
-     * 
-     * @param sitemapUri the sitemap URI
-     * 
-     * @return the default template
-     * 
-     * @throws CmsRpcException if something goes wrong
-     */
-    public CmsSitemapTemplate getDefaultTemplate(String sitemapUri) throws CmsRpcException {
-
-        CmsSitemapTemplate result = null;
-        CmsObject cms = getCmsObject();
-        try {
-            result = getTemplateBean(cms, OpenCms.getSitemapManager().getDefaultTemplate(cms, sitemapUri, getRequest()));
-        } catch (Throwable e) {
-            error(e);
-        }
-        return result;
     }
 
     /**
@@ -258,11 +236,17 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
      */
     public void save(String sitemapUri, List<I_CmsSitemapChange> changes) throws CmsRpcException {
 
-        // TODO:
         CmsObject cms = getCmsObject();
         try {
-
-            // and at the end unlock
+            // TODO: what's about historical requests?
+            CmsResource sitemap = cms.readResource(sitemapUri);
+            CmsXmlSitemap xml = CmsXmlSitemapFactory.unmarshal(cms, sitemap);
+            // apply changes
+            xml.applyChanges(cms, changes);
+            // write to VFS
+            xml.getFile().setContents(xml.marshal());
+            cms.writeFile(xml.getFile());
+            // and unlock
             cms.unlockResource(sitemapUri);
         } catch (Throwable e) {
             error(e);
@@ -311,10 +295,31 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
             CmsClientSitemapEntry child = toClientEntry(subEntry);
             children.add(child);
             if (levels > 1) {
-                child.setChildren(getChildren(child.getSitePath(), levels - 1));
+                child.setSubEntries(getChildren(child.getSitePath(), levels - 1));
             }
         }
         return children;
+    }
+
+    /**
+     * Returns the default template for the given sitemap.<p>
+     * 
+     * @param sitemapUri the sitemap URI
+     * 
+     * @return the default template
+     * 
+     * @throws CmsRpcException if something goes wrong
+     */
+    private CmsSitemapTemplate getDefaultTemplate(String sitemapUri) throws CmsRpcException {
+
+        CmsSitemapTemplate result = null;
+        CmsObject cms = getCmsObject();
+        try {
+            result = getTemplateBean(cms, OpenCms.getSitemapManager().getDefaultTemplate(cms, sitemapUri, getRequest()));
+        } catch (Throwable e) {
+            error(e);
+        }
+        return result;
     }
 
     /**
@@ -387,14 +392,15 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
 
         // TODO: what's about historical requests?
         CmsXmlSitemap xml = CmsXmlSitemapFactory.unmarshal(cms, sitemap);
-        String sitePath = cms.getRequestContext().removeSiteRoot(xml.getSitemap(cms, Locale.ENGLISH).getEntryPoint());
+        String sitePath = cms.getRequestContext().removeSiteRoot(
+            xml.getSitemap(cms, cms.getRequestContext().getLocale()).getEntryPoint());
         CmsClientSitemapEntry root = getEntry(sitePath);
         String name = CmsResource.getName(sitePath);
         if (name.endsWith("/")) {
             name = name.substring(0, name.length() - 1);
         }
         root.setName(name);
-        root.setChildren(getChildren(root.getSitePath(), 2));
+        root.setSubEntries(getChildren(root.getSitePath(), 2));
         return root;
     }
 

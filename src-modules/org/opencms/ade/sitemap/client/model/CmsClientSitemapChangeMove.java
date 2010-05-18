@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsSitemapChangeMove.java,v $
- * Date   : $Date: 2010/05/12 10:14:06 $
- * Version: $Revision: 1.2 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeMove.java,v $
+ * Date   : $Date: 2010/05/18 12:58:17 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,19 +29,30 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.sitemap.shared;
+package org.opencms.ade.sitemap.client.model;
 
+import org.opencms.ade.sitemap.client.CmsSitemapController;
+import org.opencms.ade.sitemap.client.CmsSitemapView;
+import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
+import org.opencms.file.CmsResource;
+import org.opencms.gwt.client.ui.tree.CmsTreeItem;
+import org.opencms.xml.sitemap.CmsSitemapChangeMove;
+import org.opencms.xml.sitemap.I_CmsSitemapChange;
+import org.opencms.xml.sitemap.I_CmsSitemapChange.Type;
 
 /**
  * Stores one move change to the sitemap.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  */
-public class CmsSitemapChangeMove implements I_CmsSitemapChange {
+public class CmsClientSitemapChangeMove implements I_CmsClientSitemapChange {
+
+    /** Serialization unique id. */
+    private static final long serialVersionUID = -9157910545359649719L;
 
     /** The destination path. */
     private String m_destinationPath;
@@ -63,12 +74,47 @@ public class CmsSitemapChangeMove implements I_CmsSitemapChange {
      * @param destinationPath the destination path
      * @param destinationPosition the destination position
      */
-    public CmsSitemapChangeMove(String sourcePath, int sourcePosition, String destinationPath, int destinationPosition) {
+    public CmsClientSitemapChangeMove(
+        String sourcePath,
+        int sourcePosition,
+        String destinationPath,
+        int destinationPosition) {
 
         m_sourcePath = sourcePath;
         m_destinationPath = destinationPath;
         m_sourcePosition = sourcePosition;
         m_destinationPosition = destinationPosition;
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#applyToModel(org.opencms.ade.sitemap.client.CmsSitemapController)
+     */
+    public void applyToModel(CmsSitemapController controller) {
+
+        CmsClientSitemapEntry sourceParent = controller.getEntry(CmsResource.getParentFolder(getSourcePath()));
+        CmsClientSitemapEntry moved = sourceParent.removeSubEntry(getSourcePosition());
+        CmsClientSitemapEntry destParent = controller.getEntry(CmsResource.getParentFolder(getDestinationPath()));
+        destParent.insertSubEntry(moved, getDestinationPosition());
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#applyToView(org.opencms.ade.sitemap.client.CmsSitemapView)
+     */
+    public void applyToView(CmsSitemapView view) {
+
+        CmsTreeItem sourceParent = view.getTreeItem(CmsResource.getParentFolder(getSourcePath()));
+        CmsTreeItem moved = sourceParent.getChild(getSourcePosition());
+        sourceParent.removeChild(getSourcePosition());
+        CmsTreeItem destParent = view.getTreeItem(CmsResource.getParentFolder(getDestinationPath()));
+        destParent.insertChild(moved, getDestinationPosition());
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#getChangeForCommit()
+     */
+    public I_CmsSitemapChange getChangeForCommit() {
+
+        return new CmsSitemapChangeMove(getSourcePath(), getDestinationPath(), getDestinationPosition());
     }
 
     /**
@@ -112,7 +158,7 @@ public class CmsSitemapChangeMove implements I_CmsSitemapChange {
     }
 
     /**
-     * @see org.opencms.ade.sitemap.shared.I_CmsSitemapChange#getType()
+     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#getType()
      */
     public Type getType() {
 
@@ -120,11 +166,11 @@ public class CmsSitemapChangeMove implements I_CmsSitemapChange {
     }
 
     /**
-     * @see org.opencms.ade.sitemap.shared.I_CmsSitemapChange#revert()
+     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#revert()
      */
-    public I_CmsSitemapChange revert() {
+    public I_CmsClientSitemapChange revert() {
 
-        return new CmsSitemapChangeMove(
+        return new CmsClientSitemapChangeMove(
             getDestinationPath(),
             getDestinationPosition(),
             getSourcePath(),

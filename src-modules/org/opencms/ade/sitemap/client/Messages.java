@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/Messages.java,v $
- * Date   : $Date: 2010/05/14 09:36:18 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2010/05/18 12:58:17 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.client.util.CmsMessages;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 8.0.0
  */
@@ -96,9 +96,6 @@ public final class Messages {
     public static final String GUI_HOVERBAR_SUBSITEMAP_0 = "GUI_HOVERBAR_SUBSITEMAP_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_LOADING_0 = "GUI_LOADING_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_NAME_0 = "GUI_NAME_0";
 
     /** Message constant for key in the resource bundle. */
@@ -106,6 +103,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PROPERTY_EDITOR_TITLE_0 = "GUI_PROPERTY_EDITOR_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SAVING_0 = "GUI_SAVING_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SITEMAP_0 = "GUI_SITEMAP_0";

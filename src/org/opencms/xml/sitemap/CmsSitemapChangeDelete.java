@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/I_CmsSitemapChange.java,v $
- * Date   : $Date: 2010/05/12 10:14:06 $
- * Version: $Revision: 1.2 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapChangeDelete.java,v $
+ * Date   : $Date: 2010/05/18 12:58:17 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,50 +29,58 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.sitemap.shared;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
+package org.opencms.xml.sitemap;
 
 /**
- * Stores one change to the sitemap.<p>
+ * Stores one deletion change to the sitemap.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  */
-public interface I_CmsSitemapChange extends IsSerializable {
+public class CmsSitemapChangeDelete implements I_CmsSitemapChange {
+
+    /** Serialization unique id. */
+    private static final long serialVersionUID = -6327424948083713380L;
+
+    /** The deleted entry's site path . */
+    private String m_sitePath;
 
     /**
-     * The change type.<p>
+     * Serialization constructor.<p>
      */
-    public enum Type {
+    protected CmsSitemapChangeDelete() {
 
-        /** Delete entry. */
-        DELETE,
-
-        /** Edit entry. */
-        EDIT,
-
-        /** Move entry. */
-        MOVE,
-
-        /** New entry. */
-        NEW;
+        // empty
     }
 
     /**
-     * Returns the change type.<p>
+     * Constructor.<p>
      * 
-     * @return the change type
+     * @param sitePath the deleted entry's site path
      */
-    Type getType();
+    public CmsSitemapChangeDelete(String sitePath) {
+
+        m_sitePath = sitePath;
+    }
 
     /**
-     * Returns the revert of this change for undoing.<p>
-     * 
-     * @return the revert change
+     * Returns the deleted entry's site path.<p>
+     *
+     * @return the deleted entry's site path
      */
-    I_CmsSitemapChange revert();
+    public String getSitePath() {
+
+        return m_sitePath;
+    }
+
+    /**
+     * @see org.opencms.xml.sitemap.I_CmsSitemapChange#getType()
+     */
+    public Type getType() {
+
+        return Type.DELETE;
+    }
 }
