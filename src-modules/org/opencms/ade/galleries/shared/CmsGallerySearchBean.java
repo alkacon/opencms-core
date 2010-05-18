@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/Attic/CmsGallerySearchBean.java,v $
- * Date   : $Date: 2010/05/14 13:34:52 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/05/18 12:49:13 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,17 +44,20 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  */
 public class CmsGallerySearchBean implements IsSerializable {
 
-    /** Name of the used JS variable. */
-    public static final String DICT_NAME = "cms_gallery_search_bean";
-
     /** The default matches per page. */
     public static final int DEFAULT_MATCHES_PER_PAGE = 20;
+
+    /** The default tab id to use when the gallery is opened. */
+    public static final int DEFAULT_TAB_ID = 0;
+
+    /** Name of the used JS variable. */
+    public static final String DICT_NAME = "cms_gallery_search_bean";
 
     /** The list of selected categories ids (path). */
     private List<String> m_categories;
@@ -93,9 +96,6 @@ public class CmsGallerySearchBean implements IsSerializable {
     /** The list of the resource types ids (resource type name). */
     private List<String> m_types = new ArrayList<String>();
 
-    /** The default tab id to use when the gallery is opened. */
-    public static final int DEFAULT_TAB_ID = 0;
-
     /**
      * Empty default constructor. <p>
      */
@@ -123,6 +123,75 @@ public class CmsGallerySearchBean implements IsSerializable {
         setSortOrder(searchObj.getSortOrder());
         setTabId(searchObj.getTabId());
         setPage(searchObj.getPage());
+    }
+
+    /**
+     * Adds a category to the categories list.<p>
+     * 
+     * @param category the category
+     */
+    public void addCategory(String category) {
+
+        if (m_categories == null) {
+            m_categories = new ArrayList<String>();
+        }
+        if (!m_categories.contains(category)) {
+            m_categories.add(category);
+        }
+    }
+
+    /**
+     * Adds a gallery folder to the galleries list.<p>
+     * 
+     * @param gallery the gallery
+     */
+    public void addGallery(String gallery) {
+
+        if (m_galleries == null) {
+            m_galleries = new ArrayList<String>();
+        }
+        if (!m_galleries.contains(gallery)) {
+            m_galleries.add(gallery);
+        }
+    }
+
+    /**
+     * Adds a type to the types list.<p>
+     * 
+     * @param type the type
+     */
+    public void addType(String type) {
+
+        if (m_types == null) {
+            m_types = new ArrayList<String>();
+        }
+        if (!m_types.contains(type)) {
+            m_types.add(type);
+        }
+    }
+
+    /**
+     * Clears the categories list.<p>
+     */
+    public void clearCategories() {
+
+        m_categories = null;
+    }
+
+    /**
+     * Clears the galleries list.<p>
+     */
+    public void clearGalleries() {
+
+        m_galleries = null;
+    }
+
+    /**
+     * Clears the types list.<p>
+     */
+    public void clearTypes() {
+
+        m_types = null;
     }
 
     /**
@@ -248,30 +317,28 @@ public class CmsGallerySearchBean implements IsSerializable {
         return m_types;
     }
 
-    public void addType(String type) {
+    /**
+     * Checks if any search parameter are selected.<p>
+     * 
+     * @return true if any search parameter is selected, false if there are no search parameter selected
+     */
+    public boolean isNotEmpty() {
 
-        if (m_types == null) {
-            m_types = new ArrayList<String>();
+        // TODO: add the param for query
+        if (((m_types == null) || m_types.isEmpty())
+            && ((m_galleries == null) || m_galleries.isEmpty())
+            && ((m_categories == null) || m_categories.isEmpty())) {
+            return false;
         }
-        if (!m_types.contains(type)) {
-            m_types.add(type);
-        }
+        return true;
+
     }
 
-    public void removeType(String type) {
-
-        if (m_types != null) {
-            m_types.remove(type);
-        }
-    }
-
-    public void removeGallery(String gallery) {
-
-        if (m_galleries != null) {
-            m_galleries.remove(gallery);
-        }
-    }
-
+    /**
+     * Removes a category from the categories list.<p>
+     * 
+     * @param category the category
+     */
     public void removeCategory(String category) {
 
         if (m_categories != null) {
@@ -279,39 +346,28 @@ public class CmsGallerySearchBean implements IsSerializable {
         }
     }
 
-    public void clearTypes() {
+    /**
+     * Removes a gallery folder from the galleries list.<p>
+     * 
+     * @param gallery the gallery
+     */
+    public void removeGallery(String gallery) {
 
-        m_types = null;
-    }
-
-    public void addGallery(String gallery) {
-
-        if (m_galleries == null) {
-            m_galleries = new ArrayList<String>();
-        }
-        if (!m_galleries.contains(gallery)) {
-            m_galleries.add(gallery);
+        if (m_galleries != null) {
+            m_galleries.remove(gallery);
         }
     }
 
-    public void clearGalleries() {
+    /**
+     * Removes a type from the types list.<p>
+     * 
+     * @param type the type
+     */
+    public void removeType(String type) {
 
-        m_galleries = null;
-    }
-
-    public void addCategory(String category) {
-
-        if (m_categories == null) {
-            m_categories = new ArrayList<String>();
+        if (m_types != null) {
+            m_types.remove(type);
         }
-        if (!m_categories.contains(category)) {
-            m_categories.add(category);
-        }
-    }
-
-    public void clearCategories() {
-
-        m_categories = null;
     }
 
     /**
@@ -432,22 +488,5 @@ public class CmsGallerySearchBean implements IsSerializable {
     public void setTypes(List<String> types) {
 
         m_types = types;
-    }
-
-    /**
-     * Checks if any search parameter are selected.<p>
-     * 
-     * @return true if any search parameter is selected, false if there are no search parameter selected
-     */
-    public boolean isNotEmpty() {
-
-        // TODO: add the param for query
-        if (((m_types == null) || m_types.isEmpty())
-            && ((m_galleries == null) || m_galleries.isEmpty())
-            && ((m_categories == null) || m_categories.isEmpty())) {
-            return false;
-        }
-        return true;
-
     }
 }
