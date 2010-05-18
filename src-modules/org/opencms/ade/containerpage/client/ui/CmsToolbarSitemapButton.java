@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsToolbarSitemapButton.java,v $
- * Date   : $Date: 2010/04/28 13:03:39 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/05/18 14:09:26 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import org.opencms.gwt.client.util.CmsDomUtil;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -62,7 +62,7 @@ public class CmsToolbarSitemapButton extends A_CmsToolbarButton {
     public void onToolbarActivate() {
 
         CmsDomUtil.ensureMouseOut(getElement());
-        getHandler().gototSitemap();
+        getHandler().gotoSitemap();
     }
 
     /**

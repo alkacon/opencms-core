@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/shared/rpc/Attic/I_CmsContainerpageServiceAsync.java,v $
- * Date   : $Date: 2010/05/04 09:45:21 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/05/18 14:09:26 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
@@ -85,6 +85,24 @@ public interface I_CmsContainerpageServiceAsync {
         Collection<String> clientIds,
         Set<String> containerTypes,
         AsyncCallback<Map<String, CmsContainerElement>> callback);
+
+    /**
+     * Gets the element data for an id and a map of properties.<p>
+     * 
+     * @param containerPageUri the current URI
+     * @param reqParams optional request parameters 
+     * @param clientId the requested element ids 
+     * @param properties the properties for which the element data should be loaded 
+     * @param types the container types of the current page
+     * @param callback the callback for receiving the element data  
+     */
+    void getElementWithProperties(
+        String containerPageUri,
+        String reqParams,
+        String clientId,
+        Map<String, String> properties,
+        Set<String> types,
+        AsyncCallback<CmsContainerElement> callback);
 
     /**
      * Requests the container element data of the favorite list.<p>

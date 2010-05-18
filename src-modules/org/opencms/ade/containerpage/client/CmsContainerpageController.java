@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageController.java,v $
- * Date   : $Date: 2010/05/18 12:31:14 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/05/18 14:09:26 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -78,7 +78,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.0
  */
@@ -582,6 +582,51 @@ public final class CmsContainerpageController {
     }
 
     /**
+     * Retrieves a container element with a given set of properties.<p>
+     * 
+     * @param clientId the id of the container element
+     * @param properties the set of properties
+     *  
+     * @param callback the callback which should be executed when the element has been loaded 
+     */
+    public void getElementWithProperties(
+        final String clientId,
+        final Map<String, String> properties,
+        final I_CmsSimpleCallback<CmsContainerElement> callback) {
+
+        CmsRpcAction<CmsContainerElement> action = new CmsRpcAction<CmsContainerElement>() {
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+             */
+            @Override
+            public void execute() {
+
+                start(200);
+                getContainerpageService().getElementWithProperties(
+                    CmsContainerpageController.getCurrentUri(),
+                    null,
+                    clientId,
+                    properties,
+                    m_containerTypes,
+                    this);
+
+            }
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+             */
+            @Override
+            protected void onResponse(CmsContainerElement result) {
+
+                callback.execute(result);
+            }
+
+        };
+        action.execute();
+    }
+
+    /**
      * Returns the container-page handler.<p>
      *
      * @return the container-page handler
@@ -776,6 +821,40 @@ public final class CmsContainerpageController {
         Set<String> related = getRelatedElementIds(id);
         ReloadElementAction action = new ReloadElementAction(related);
         action.execute();
+    }
+
+    /**
+     * Reloads a container page element with a new set of properties.<p>
+     * 
+     * @param elementWidget the widget of the container page element which should be reloaded
+     * @param clientId the id of the container page element which should be reloaded
+     * @param properties the new set of properties 
+     */
+    public void reloadElementWithProperties(
+        final CmsDragContainerElement elementWidget,
+        String clientId,
+        Map<String, String> properties) {
+
+        I_CmsSimpleCallback<CmsContainerElement> callback = new I_CmsSimpleCallback<CmsContainerElement>() {
+
+            public void execute(CmsContainerElement newElement) {
+
+                try {
+                    replaceDragElement(elementWidget, newElement);
+                    setPageChanged(true, false);
+                } catch (Exception e) {
+                    //TODO: check if this can ever happen
+                    CmsDebugLog.getInstance().printLine(e.getLocalizedMessage());
+                }
+            }
+
+            public void onError(String message) {
+
+                // will never be executed, do nothing 
+            }
+        };
+
+        getElementWithProperties(clientId, properties, callback);
     }
 
     /**
@@ -984,6 +1063,16 @@ public final class CmsContainerpageController {
         m_editingSubcontainer = null;
     }
 
+    /** 
+     * Adds the given element data to the element cache.<p>
+     * 
+     * @param elements the element data
+     */
+    protected void addElements(Map<String, CmsContainerElement> elements) {
+
+        m_elements.putAll(elements);
+    }
+
     /**
      * Locks the container-page.<p>
      */
@@ -995,6 +1084,49 @@ public final class CmsContainerpageController {
             // TODO: add notification
         }
     }
+    
+    
+        /**
+     * Previews events. Shows the leaving page dialog, if the page has changed and an anchor has been clicked.<p>
+     * 
+     * @param event the native event
+     */
+    protected void previewNativeEvent(NativePreviewEvent event) {
+
+        Event nativeEvent = Event.as(event.getNativeEvent());
+        if (!hasPageChanged()) {
+            return;
+        }
+        if ((nativeEvent.getTypeInt() == Event.ONCLICK)) {
+            EventTarget target = nativeEvent.getEventTarget();
+            if (!Element.is(target)) {
+                return;
+            }
+            Element element = Element.as(target);
+            element = CmsDomUtil.getAncestor(element, CmsDomUtil.Tag.a);
+            if (element == null) {
+                return;
+            }
+            AnchorElement anc = AnchorElement.as(element);
+            final String uri = anc.getHref();
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(uri)) {
+                return;
+            }
+            nativeEvent.preventDefault();
+            nativeEvent.stopPropagation();
+            CmsLeavePageDialog dialog = new CmsLeavePageDialog(uri, this, null);
+            dialog.center();
+        }
+        if ((event.getTypeInt() == Event.ONKEYDOWN) && (nativeEvent.getKeyCode() == 116)) {
+            nativeEvent.preventDefault();
+            nativeEvent.stopPropagation();
+            CmsLeavePageDialog dialog = new CmsLeavePageDialog(Window.Location.getHref(), this, null);
+            dialog.center();
+        }
+    }
+    
+    
+
 
     /**
      * Sets the page changed flag and initializes the window closing handler if necessary.<p>
@@ -1081,55 +1213,6 @@ public final class CmsContainerpageController {
             CmsDebugLog.getInstance().printLine("Page unlocked");
         } else {
             // ignore
-        }
-    }
-
-    /** 
-     * Adds the given element data to the element cache.<p>
-     * 
-     * @param elements the element data
-     */
-    protected void addElements(Map<String, CmsContainerElement> elements) {
-
-        m_elements.putAll(elements);
-    }
-
-    /**
-     * Previews events. Shows the leaving page dialog, if the page has changed and an anchor has been clicked.<p>
-     * 
-     * @param event the native event
-     */
-    protected void previewNativeEvent(NativePreviewEvent event) {
-
-        Event nativeEvent = Event.as(event.getNativeEvent());
-        if (!hasPageChanged()) {
-            return;
-        }
-        if ((nativeEvent.getTypeInt() == Event.ONCLICK)) {
-            EventTarget target = nativeEvent.getEventTarget();
-            if (!Element.is(target)) {
-                return;
-            }
-            Element element = Element.as(target);
-            element = CmsDomUtil.getAncestor(element, CmsDomUtil.Tag.a);
-            if (element == null) {
-                return;
-            }
-            AnchorElement anc = AnchorElement.as(element);
-            final String uri = anc.getHref();
-            if (CmsStringUtil.isEmptyOrWhitespaceOnly(uri)) {
-                return;
-            }
-            nativeEvent.preventDefault();
-            nativeEvent.stopPropagation();
-            CmsLeavePageDialog dialog = new CmsLeavePageDialog(uri, this, null);
-            dialog.center();
-        }
-        if ((event.getTypeInt() == Event.ONKEYDOWN) && (nativeEvent.getKeyCode() == 116)) {
-            nativeEvent.preventDefault();
-            nativeEvent.stopPropagation();
-            CmsLeavePageDialog dialog = new CmsLeavePageDialog(Window.Location.getHref(), this, null);
-            dialog.center();
         }
     }
 

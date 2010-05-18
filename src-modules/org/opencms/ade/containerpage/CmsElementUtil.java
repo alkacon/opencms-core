@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsElementUtil.java,v $
- * Date   : $Date: 2010/04/27 13:08:46 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/05/18 14:09:26 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,6 +53,7 @@ import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.containerpage.CmsSubContainerBean;
 import org.opencms.xml.containerpage.CmsXmlSubContainer;
 import org.opencms.xml.containerpage.CmsXmlSubContainerFactory;
+import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.content.CmsXmlContentPropertyHelper;
 
 import java.io.IOException;
@@ -72,7 +73,7 @@ import javax.servlet.http.HttpServletResponse;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -111,6 +112,72 @@ public class CmsElementUtil {
         m_res = res;
         m_cntPageUri = cntPageUri;
         m_manager = OpenCms.getADEManager();
+    }
+
+    /**
+     * Converts a map of properties from server format to client format.<p>
+     * 
+     * @param cms the CmsObject to use for VFS operations 
+     * @param props the map of properties 
+     * @param propConfig the property configuration
+     * 
+     * @return the converted property map 
+     */
+    public static Map<String, String> convertPropertiesToClientFormat(
+        CmsObject cms,
+        Map<String, String> props,
+        Map<String, CmsXmlContentProperty> propConfig) {
+
+        return convertProperties(cms, props, propConfig, true);
+    }
+
+    /**
+     * Converts a map of properties from client format to server format.<p>
+     * 
+     * @param cms the CmsObject to use for VFS operations 
+     * @param props the map of properties 
+     * @param propConfig the property configuration
+     * 
+     * @return the converted property map
+     */
+    public static Map<String, String> convertPropertiesToServerFormat(
+        CmsObject cms,
+        Map<String, String> props,
+        Map<String, CmsXmlContentProperty> propConfig) {
+
+        return convertProperties(cms, props, propConfig, false);
+    }
+
+    /**
+     * Helper method for converting a map of properties from client format to server format or vice versa.<p>
+     * 
+     * @param cms the CmsObject to use for VFS operations 
+     * @param props the map of properties 
+     * @param propConfig the property configuration 
+     * @param toClient if true, convert from server to client, else from client to server
+     *  
+     * @return the converted property map 
+     */
+    private static Map<String, String> convertProperties(
+        CmsObject cms,
+        Map<String, String> props,
+        Map<String, CmsXmlContentProperty> propConfig,
+        boolean toClient) {
+
+        Map<String, String> result = new HashMap<String, String>();
+        for (Map.Entry<String, String> entry : props.entrySet()) {
+            String propName = entry.getKey();
+            String propValue = entry.getValue();
+            String type = propConfig.get(propName).getPropertyType();
+            String newValue;
+            if (toClient) {
+                newValue = CmsXmlContentPropertyHelper.getPropValuePaths(cms, type, propValue);
+            } else {
+                newValue = CmsXmlContentPropertyHelper.getPropValueIds(cms, type, propValue);
+            }
+            result.put(propName, newValue);
+        }
+        return result;
     }
 
     /**
@@ -184,6 +251,11 @@ public class CmsElementUtil {
         elementBean.setLastModifiedByUser(m_cms.readUser(resource.getUserLastModified()).getName());
         elementBean.setNavText(resUtil.getNavText());
         elementBean.setTitle(resUtil.getTitle());
+
+        Map<String, CmsXmlContentProperty> propertyConfig = CmsXmlContentPropertyHelper.getPropertyInfo(m_cms, resource);
+        elementBean.setProperties(convertPropertiesToClientFormat(m_cms, element.getProperties(), propertyConfig));
+        elementBean.setPropertyConfig(new HashMap<String, CmsXmlContentProperty>(propertyConfig));
+
         elementBean.setNoEditReason(CmsEncoder.escapeHtml(resUtil.getNoEditReason(OpenCms.getWorkplaceManager().getWorkplaceLocale(
             m_cms))));
         elementBean.setStatus(resUtil.getStateAbbreviation());
@@ -285,4 +357,5 @@ public class CmsElementUtil {
         }
         return jsonProperties;
     }
+
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsContainerpageService.java,v $
- * Date   : $Date: 2010/05/04 09:45:21 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/05/18 14:09:26 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,6 +50,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.xml.containerpage.CmsADESessionCache;
 import org.opencms.xml.containerpage.CmsContainerBean;
@@ -60,6 +61,8 @@ import org.opencms.xml.containerpage.CmsXmlContainerPage;
 import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
 import org.opencms.xml.containerpage.CmsXmlSubContainer;
 import org.opencms.xml.containerpage.CmsXmlSubContainerFactory;
+import org.opencms.xml.content.CmsXmlContentProperty;
+import org.opencms.xml.content.CmsXmlContentPropertyHelper;
 import org.opencms.xml.sitemap.CmsSitemapEntry;
 import org.opencms.xml.sitemap.CmsXmlSitemap;
 
@@ -81,7 +84,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 8.0.0
  */
@@ -165,6 +168,31 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#getElementWithProperties(java.lang.String, java.lang.String, java.lang.String, java.util.Map, java.util.Set)
+     */
+    public CmsContainerElement getElementWithProperties(
+        String containerpageUri,
+        String uriParams,
+        String clientId,
+        Map<String, String> properties,
+        Set<String> types) throws CmsRpcException {
+
+        try {
+
+            CmsObject cms = getCmsObject();
+            CmsElementUtil elemUtil = new CmsElementUtil(cms, uriParams, getRequest(), getResponse());
+            CmsUUID serverId = OpenCms.getADEManager().convertToServerId(clientId);
+            CmsContainerElementBean elementBean = createElement(serverId, properties);
+            getSessionCache().setCacheContainerElement(elementBean.getClientId(), elementBean);
+            CmsContainerElement element = elemUtil.getElementData(elementBean, types);
+            return element;
+        } catch (Throwable e) {
+            error(e);
+        }
+        return null; // will never be executed since error() throws an exception 
+    }
+
+    /**
      * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#getFavoriteList(java.lang.String, java.util.Set)
      */
     public List<CmsContainerElement> getFavoriteList(String containerpageUri, Set<String> containerTypes)
@@ -226,43 +254,12 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
         CmsObject cms = getCmsObject();
         try {
-            Iterator<CmsContainer> it = containers.iterator();
-
-            CmsADESessionCache cache = getSessionCache();
             List<CmsContainerBean> containerBeans = new ArrayList<CmsContainerBean>();
-            while (it.hasNext()) {
-                CmsContainer container = it.next();
-                List<CmsContainerElementBean> elements = new ArrayList<CmsContainerElementBean>();
-                Iterator<String> elIt = container.getElements().iterator();
-                while (elIt.hasNext()) {
-                    try {
-                        String clientId = elIt.next();
-                        CmsContainerElementBean element = cache.getCacheContainerElement(clientId);
-
-                        //TODO: check whether it is necessary to read the resource and the formatter again 
-
-                        // make sure resource is readable, 
-                        CmsResource resource = cms.readResource(element.getElementId());
-
-                        // check if there is a valid formatter
-                        I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(resource);
-                        String formatterUri = resType.getFormatterForContainerType(cms, resource, container.getType());
-                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(formatterUri)) {
-                            CmsResource formatter = cms.readResource(formatterUri);
-                            elements.add(new CmsContainerElementBean(
-                                element.getElementId(),
-                                formatter.getStructureId(),
-                                element.getProperties()));
-                        }
-                    } catch (Exception e) {
-                        log(e.getLocalizedMessage(), e);
-                    }
-                }
-                containerBeans.add(new CmsContainerBean(container.getName(), container.getType(), -1, elements));
+            for (CmsContainer container : containers) {
+                CmsContainerBean containerBean = getContainerBean(container);
+                containerBeans.add(containerBean);
             }
-
             CmsContainerPageBean page = new CmsContainerPageBean(cms.getRequestContext().getLocale(), containerBeans);
-
             cms.lockResourceTemporary(containerpageUri);
             CmsXmlContainerPage xmlCnt = CmsXmlContainerPageFactory.unmarshal(cms, cms.readFile(containerpageUri));
             xmlCnt.save(cms, page);
@@ -317,6 +314,38 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
+     * Creates a new container element from a resource id and a map of properties.<p> 
+     * 
+     * @param resourceId the resource id 
+     * @param properties the map of properties 
+     * 
+     * @return the new container element bean 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    private CmsContainerElementBean createElement(CmsUUID resourceId, Map<String, String> properties)
+    throws CmsException {
+
+        CmsObject cms = getCmsObject();
+        Map<String, CmsXmlContentProperty> propertiesConf = OpenCms.getADEManager().getElementPropertyConfiguration(
+            cms,
+            cms.readResource(resourceId));
+
+        Map<String, String> changedProps = new HashMap<String, String>();
+        if (properties != null) {
+            for (Map.Entry<String, String> entry : properties.entrySet()) {
+                String propName = entry.getKey();
+                String propType = propertiesConf.get(propName).getPropertyType();
+                changedProps.put(propName, CmsXmlContentPropertyHelper.getPropValueIds(
+                    cms,
+                    propType,
+                    properties.get(propName)));
+            }
+        }
+        return new CmsContainerElementBean(resourceId, null, changedProps);
+    }
+
+    /**
      * Reads the cached element-bean for the given client-side-id from cache.<p>
      * 
      * @param clientId the client-side-id
@@ -362,6 +391,46 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             }
         }
         return result;
+    }
+
+    /**
+     * Helper method for converting a CmsContainer to a CmsContainerBean when saving a container page.<p>
+     * 
+     * @param container the container for which the CmsContainerBean should be created
+     *  
+     * @return a container bean
+     */
+    private CmsContainerBean getContainerBean(CmsContainer container) {
+
+        CmsObject cms = getCmsObject();
+        CmsADESessionCache cache = getSessionCache();
+        List<CmsContainerElementBean> elements = new ArrayList<CmsContainerElementBean>();
+        for (String clientId : container.getElements()) {
+            try {
+                CmsContainerElementBean element = cache.getCacheContainerElement(clientId);
+
+                //TODO: check whether it is necessary to read the resource and the formatter again 
+
+                // make sure resource is readable, 
+                CmsResource resource = cms.readResource(element.getElementId());
+
+                // check if there is a valid formatter
+                I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(resource);
+                String formatterUri = resType.getFormatterForContainerType(cms, resource, container.getType());
+                boolean hasValidFormatter = CmsStringUtil.isNotEmptyOrWhitespaceOnly(formatterUri);
+                if (hasValidFormatter) {
+                    CmsResource formatter = cms.readResource(formatterUri);
+                    elements.add(new CmsContainerElementBean(
+                        element.getElementId(),
+                        formatter.getStructureId(),
+                        element.getProperties()));
+                }
+            } catch (Exception e) {
+                log(e.getLocalizedMessage(), e);
+            }
+        }
+        CmsContainerBean containerBean = new CmsContainerBean(container.getName(), container.getType(), -1, elements);
+        return containerBean;
     }
 
     /**
@@ -456,7 +525,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
      * 
      * @param listElements the list of element beans to retrieve the data for
      * @param containerpageUri the current URI
-     * @param types the container types to consider
+     * @param containerTypes the container types of the current page 
      * 
      * @return the elements data
      * 

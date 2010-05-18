@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/shared/Attic/CmsContainerElement.java,v $
- * Date   : $Date: 2010/04/21 14:13:46 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/05/18 14:09:26 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,8 @@
 
 package org.opencms.ade.containerpage.shared;
 
+import org.opencms.xml.content.CmsXmlContentProperty;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +43,7 @@ import java.util.Map;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -62,6 +64,7 @@ public class CmsContainerElement implements Serializable {
     /** The full file path. */
     private String m_file;
 
+    /** Flag for indicating whether this is a subcontainer. */
     private boolean m_isSubContainer;
 
     /** The last user modifying the element. */
@@ -75,6 +78,12 @@ public class CmsContainerElement implements Serializable {
 
     /** The no edit reason. If empty editing is allowed. */
     private String m_noEditReason;
+
+    /** The properties for this container entry. */
+    private Map<String, String> m_properties;
+
+    /** The property for this container element. */
+    private Map<String, CmsXmlContentProperty> m_propertyConfig;
 
     /** The resource status. */
     private char m_status;
@@ -163,6 +172,26 @@ public class CmsContainerElement implements Serializable {
     public String getNoEditReason() {
 
         return m_noEditReason;
+    }
+
+    /**
+     * Returns the properties for this container element.<p>
+     * 
+     * @return a map of properties
+     */
+    public Map<String, String> getProperties() {
+
+        return m_properties;
+    }
+
+    /**
+     * Gets the property configuration for this container element.<p>
+     * 
+     * @return the property configuration map 
+     */
+    public Map<String, CmsXmlContentProperty> getPropertyConfig() {
+
+        return m_propertyConfig;
     }
 
     /**
@@ -286,6 +315,26 @@ public class CmsContainerElement implements Serializable {
     public void setNoEditReason(String noEditReason) {
 
         m_noEditReason = noEditReason;
+    }
+
+    /**
+     * Sets the properties for this container element.<p>
+     * 
+     * @param properties the new properties
+     */
+    public void setProperties(Map<String, String> properties) {
+
+        m_properties = properties;
+    }
+
+    /**
+     * Sets the property configuration of this container element.<p>
+     * 
+     * @param propConfig the new property configuration 
+     */
+    public void setPropertyConfig(Map<String, CmsXmlContentProperty> propConfig) {
+
+        m_propertyConfig = propConfig;
     }
 
     /**

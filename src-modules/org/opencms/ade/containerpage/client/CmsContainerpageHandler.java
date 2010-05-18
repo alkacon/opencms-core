@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageHandler.java,v $
- * Date   : $Date: 2010/05/14 13:34:15 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/05/18 14:09:26 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,16 +41,25 @@ import org.opencms.ade.containerpage.client.ui.CmsSubcontainerEditor;
 import org.opencms.ade.containerpage.client.ui.I_CmsToolbarButton;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.publish.client.CmsPublishDialog;
+import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.gwt.client.ui.CmsConfirmDialog;
 import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
+import org.opencms.gwt.client.ui.input.I_CmsFormField;
+import org.opencms.gwt.client.ui.input.form.CmsBasicFormField;
+import org.opencms.gwt.client.ui.input.form.CmsForm;
+import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
+import org.opencms.gwt.client.ui.input.form.I_CmsFormHandler;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.gwt.client.util.CmsMapUtil;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
@@ -61,7 +70,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -130,6 +139,59 @@ public class CmsContainerpageHandler {
     }
 
     /**
+     * Starts the property editor for the given container element.<p>
+     * 
+     * @param elementWidget the container element widget for which the properties should be edited 
+     */
+    public void editProperties(final CmsDragContainerElement elementWidget) {
+
+        final String id = elementWidget.getClientId();
+
+        m_controller.getElement(id, new I_CmsSimpleCallback<CmsContainerElement>() {
+
+            public void execute(final CmsContainerElement elementBean) {
+
+                Map<String, String> properties = elementBean.getProperties();
+                Map<String, CmsXmlContentProperty> propertyConfig = elementBean.getPropertyConfig();
+                if (propertyConfig.size() == 0) {
+                    String message = Messages.get().key(Messages.GUI_NO_PROPERTIES_0);
+                    String title = Messages.get().key(Messages.GUI_NO_PROPERTIES_TITLE_0);
+                    (new CmsAlertDialog(title, message)).center();
+                    return;
+                }
+                I_CmsFormHandler formHandler = new I_CmsFormHandler() {
+
+                    public void onSubmitForm(Map<String, String> fieldValues) {
+
+                        m_controller.reloadElementWithProperties(
+                            elementWidget,
+                            elementBean.getClientId(),
+                            CmsMapUtil.removeNullEntries(fieldValues));
+                    }
+                };
+                String title = Messages.get().key(Messages.GUI_PROPERTY_DIALOG_TITLE_0);
+                CmsFormDialog dialog = new CmsFormDialog(title);
+                dialog.setWidth("450px");
+                CmsForm form = dialog.getForm();
+                Map<String, I_CmsFormField> formFields = CmsBasicFormField.createFields(propertyConfig.values());
+                for (I_CmsFormField field : formFields.values()) {
+                    form.addField(field, properties.get(field.getId()));
+                }
+                dialog.setFormHandler(formHandler);
+                dialog.center();
+            }
+
+            public void onError(String message) {
+
+                // can never happen 
+
+            }
+
+        });
+
+    }
+
+    /**
      * Enables the drag handler on the given element.<p>
      * 
      * @param element the element
@@ -156,9 +218,9 @@ public class CmsContainerpageHandler {
     }
 
     /**
-     * Leaves the current page and opens the sitemap.<p>§
+     * Leaves the current page and opens the sitemap.<p>ï¿½
      */
-    public void gototSitemap() {
+    public void gotoSitemap() {
 
         if (m_controller.hasPageChanged()) {
             CmsLeavePageDialog dialog = new CmsLeavePageDialog(
