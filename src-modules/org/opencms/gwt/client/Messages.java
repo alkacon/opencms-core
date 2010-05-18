@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/Attic/Messages.java,v $
- * Date   : $Date: 2010/05/10 06:54:24 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/05/18 12:58:02 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.client.util.CmsMessages;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 8.0.0
  */
@@ -58,6 +58,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DIALOG_RESET_TITLE_0 = "GUI_DIALOG_RESET_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DONE_0 = "GUI_DONE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ERROR_0 = "GUI_ERROR_0";
@@ -121,6 +124,12 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_UNLOCK_NOTIFICATION_2 = "GUI_UNLOCK_NOTIFICATION_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCKING_0 = "GUI_LOCKING_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UNLOCKING_0 = "GUI_UNLOCKING_0";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.gwt.clientmessages";

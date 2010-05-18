@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/Messages.java,v $
- * Date   : $Date: 2010/05/06 13:11:19 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/05/18 12:58:02 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.client.util.CmsMessages;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -121,6 +121,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PUBLISH_UNREMOVE_BUTTON_0 = "GUI_PUBLISH_UNREMOVE_BUTTON_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PUBLISHING_0 = "GUI_PUBLISHING_0";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.ade.publish.clientmessages";

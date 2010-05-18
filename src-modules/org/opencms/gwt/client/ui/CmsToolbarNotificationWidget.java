@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsToolbarNotificationWidget.java,v $
- * Date   : $Date: 2010/05/06 13:38:11 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/05/18 12:58:02 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,12 +35,9 @@ import org.opencms.gwt.client.ui.CmsNotification.Mode;
 import org.opencms.gwt.client.ui.CmsNotification.NotificationAnimation;
 import org.opencms.gwt.client.ui.CmsNotification.Type;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
-import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Unit;
@@ -56,7 +53,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -150,23 +147,8 @@ public class CmsToolbarNotificationWidget extends Composite implements I_CmsNoti
         // set the right class
         getElement().addClassName(classForType(type));
 
-        // hide content and display 
-        getElement().getStyle().setVisibility(Visibility.HIDDEN);
-        setVisible(true);
-
-        // wait for correct layout
-        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-
-            /**
-             * @see com.google.gwt.core.client.Scheduler.ScheduledCommand#execute()
-             */
-            public void execute() {
-
-                m_animation = getShowAnimation();
-                m_animation.run();
-                CmsDebugLog.getInstance().printLine("show: " + m_message.getInnerText());
-            }
-        });
+        m_animation = getShowAnimation();
+        m_animation.run();
 
         if ((mode != null) && ((mode != Mode.STICKY) || needsRestoration)) {
             // create timer to hide the notification
@@ -184,7 +166,7 @@ public class CmsToolbarNotificationWidget extends Composite implements I_CmsNoti
                     }
                 }
             };
-            m_timer.schedule(type == Type.NORMAL ? 5000 : 10000);
+            m_timer.schedule(3000 * (type == Type.NORMAL ? 1 : 2));
         }
     }
 
@@ -213,7 +195,6 @@ public class CmsToolbarNotificationWidget extends Composite implements I_CmsNoti
                     Element cntElement = getElement();
                     m_height = CmsDomUtil.getCurrentStyleInt(cntElement, CmsDomUtil.Style.height);
                     m_top = CmsDomUtil.getCurrentStyleInt(cntElement, CmsDomUtil.Style.top);
-                    CmsDebugLog.getInstance().printLine("setHeight: " + m_height);
                     cntElement.getStyle().setTop(m_top - m_height, Unit.PX);
                     cntElement.getStyle().clearVisibility();
                     run(ANIMATION_DURATION);
@@ -238,7 +219,7 @@ public class CmsToolbarNotificationWidget extends Composite implements I_CmsNoti
                 @Override
                 protected void onUpdate(double progress) {
 
-                    double top = m_top + (-1 + progress) * m_height;
+                    double top = m_top + (progress - 1) * m_height;
                     Style cntStyle = getElement().getStyle();
                     cntStyle.setTop(top, Unit.PX);
                     cntStyle.setOpacity(progress);
@@ -255,8 +236,6 @@ public class CmsToolbarNotificationWidget extends Composite implements I_CmsNoti
 
         m_animation = null;
         restore();
-        // debug
-        CmsDebugLog.getInstance().printLine("hide: " + m_message.getInnerText());
     }
 
     /**
@@ -338,7 +317,6 @@ public class CmsToolbarNotificationWidget extends Composite implements I_CmsNoti
                     Element cntElement = getElement();
                     m_height = CmsDomUtil.getCurrentStyleInt(cntElement, CmsDomUtil.Style.height);
                     m_top = CmsDomUtil.getCurrentStyleInt(cntElement, CmsDomUtil.Style.top);
-                    CmsDebugLog.getInstance().printLine("setHeight: " + m_height);
                     run(ANIMATION_DURATION);
                 }
 
@@ -349,11 +327,10 @@ public class CmsToolbarNotificationWidget extends Composite implements I_CmsNoti
                 protected void onComplete() {
 
                     super.onComplete();
+                    onHideComplete();
                     Style cntStyle = getElement().getStyle();
-                    cntStyle.setDisplay(Style.Display.NONE);
                     cntStyle.setTop(m_top, Unit.PX);
                     cntStyle.clearOpacity();
-                    onHideComplete();
                 }
 
                 /**
@@ -363,7 +340,8 @@ public class CmsToolbarNotificationWidget extends Composite implements I_CmsNoti
                 protected void onUpdate(double progress) {
 
                     Style cntStyle = getElement().getStyle();
-                    cntStyle.setTop(m_top - progress * m_height, Unit.PX);
+                    double top = m_top - progress * m_height;
+                    cntStyle.setTop(top, Unit.PX);
                     cntStyle.setOpacity(1 - progress);
                 }
             };
@@ -389,10 +367,12 @@ public class CmsToolbarNotificationWidget extends Composite implements I_CmsNoti
         m_type = null;
         if (m_animation != null) {
             m_animation.cancel();
+            m_animation = null;
         }
-        if (!isVisible()) {
+        if (getElement().getStyle().getVisibility().equalsIgnoreCase(Visibility.HIDDEN.getCssName())) {
             return;
         }
+
         if (!force) {
             m_animation = getHideAnimation();
             m_animation.run();
@@ -406,7 +386,7 @@ public class CmsToolbarNotificationWidget extends Composite implements I_CmsNoti
      */
     private void restore() {
 
-        setVisible(false);
+        getElement().getStyle().setVisibility(Visibility.HIDDEN);
         // back to plain style without error or warning
         getElement().setClassName(I_CmsLayoutBundle.INSTANCE.toolbarCss().notificationContainer());
     }

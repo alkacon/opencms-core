@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/Attic/CmsCoreProvider.java,v $
- * Date   : $Date: 2010/05/11 12:34:01 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/05/18 12:58:02 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 8.0.0
  * 
@@ -199,7 +199,7 @@ public final class CmsCoreProvider extends CmsCoreData {
             @Override
             public void onResponse(String result) {
 
-                stop();
+                stop(false);
                 if (result == null) {
                     // ok
                     return;
@@ -207,6 +207,15 @@ public final class CmsCoreProvider extends CmsCoreData {
                 // unable to lock
                 String text = Messages.get().key(Messages.GUI_LOCK_NOTIFICATION_2, uri, result);
                 CmsNotification.get().send(CmsNotification.Type.WARNING, text);
+            }
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#show()
+             */
+            @Override
+            protected void show() {
+
+                CmsNotification.get().send(CmsNotification.Type.NORMAL, Messages.get().key(Messages.GUI_LOCKING_0));
             }
         };
         return lockAction.executeSync() == null;
@@ -244,6 +253,7 @@ public final class CmsCoreProvider extends CmsCoreData {
      */
     public void translateUrlName(final String urlname, final AsyncCallback<String> callback) {
 
+        // do not stop/start since we do not want to give any feedback to the user
         CmsRpcAction<String> action = new CmsRpcAction<String>() {
 
             /**
@@ -252,7 +262,6 @@ public final class CmsCoreProvider extends CmsCoreData {
             @Override
             public void execute() {
 
-                start(200);
                 getService().translateUrlName(urlname, this);
             }
 
@@ -262,7 +271,6 @@ public final class CmsCoreProvider extends CmsCoreData {
             @Override
             protected void onResponse(String result) {
 
-                stop();
                 callback.onSuccess(result);
             }
         };
@@ -309,7 +317,7 @@ public final class CmsCoreProvider extends CmsCoreData {
             @Override
             public void onResponse(String result) {
 
-                stop();
+                stop(false);
                 if (result == null) {
                     // ok
                     return;
@@ -317,6 +325,15 @@ public final class CmsCoreProvider extends CmsCoreData {
                 // unable to lock
                 String text = Messages.get().key(Messages.GUI_UNLOCK_NOTIFICATION_2, uri, result);
                 CmsNotification.get().send(CmsNotification.Type.WARNING, text);
+            }
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#show()
+             */
+            @Override
+            protected void show() {
+
+                CmsNotification.get().send(CmsNotification.Type.NORMAL, Messages.get().key(Messages.GUI_UNLOCKING_0));
             }
         };
         return unlockAction.executeSync() == null;

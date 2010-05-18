@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishDialog.java,v $
- * Date   : $Date: 2010/05/05 14:33:31 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2010/05/18 12:58:02 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,6 +38,7 @@ import org.opencms.ade.publish.shared.CmsPublishResource;
 import org.opencms.ade.publish.shared.rpc.I_CmsPublishService;
 import org.opencms.ade.publish.shared.rpc.I_CmsPublishServiceAsync;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
+import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.CmsPopupDialog;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.util.CmsUUID;
@@ -60,15 +61,12 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 8.0.0
  * 
  */
 public class CmsPublishDialog extends CmsPopupDialog {
-
-    /** The dialog width in pixels. */
-    public static final int DIALOG_WIDTH = 800;
 
     /**
      * The action for publishing and/or removing resources from the publish list.<p>
@@ -106,7 +104,16 @@ public class CmsPublishDialog extends CmsPopupDialog {
         protected void onResponse(List<CmsPublishResource> result) {
 
             onReceiveStatus(result);
-            stop();
+            stop(true);
+        }
+
+        /**
+         * @see org.opencms.gwt.client.rpc.CmsRpcAction#show()
+         */
+        @Override
+        protected void show() {
+
+            CmsNotification.get().send(CmsNotification.Type.NORMAL, Messages.get().key(Messages.GUI_PUBLISHING_0));
         }
     }
 
@@ -134,7 +141,7 @@ public class CmsPublishDialog extends CmsPopupDialog {
         @Override
         public void execute() {
 
-            start(500);
+            start(200);
             getService().getPublishGroups(m_options, this);
         }
 
@@ -145,9 +152,12 @@ public class CmsPublishDialog extends CmsPopupDialog {
         protected void onResponse(List<CmsPublishGroup> result) {
 
             onReceivePublishList(result);
-            stop();
+            stop(false);
         }
     }
+
+    /** The dialog width in pixels. */
+    public static final int DIALOG_WIDTH = 800;
 
     /** The project map used by showPublishDialog. */
     public static Map<String, String> m_staticProjects;
@@ -235,7 +245,7 @@ public class CmsPublishDialog extends CmsPopupDialog {
                 if (handler != null) {
                     publishDialog.addCloseHandler(handler);
                 }
-                stop();
+                stop(false);
                 publishDialog.center();
             }
         }).execute();

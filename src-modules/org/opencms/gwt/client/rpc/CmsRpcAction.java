@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/rpc/Attic/CmsRpcAction.java,v $
- * Date   : $Date: 2010/05/04 09:41:17 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/05/18 12:58:02 $
+ * Version: $Revision: 1.13 $
  * 
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 8.0
  */
@@ -91,7 +91,7 @@ public abstract class CmsRpcAction<T> implements AsyncCallback<T> {
         String ticket = CmsLog.log(message + "\n" + CmsClientStringUtil.getStackTrace(t, "\n"));
 
         // remove the nice overlay
-        stop();
+        stop(false);
 
         // give feedback
         provideFeedback(ticket, message);
@@ -141,14 +141,20 @@ public abstract class CmsRpcAction<T> implements AsyncCallback<T> {
      * Stops the timer.<p>
      * 
      * Note: Has to be called manually on success.<p>
+     * 
+     * @param displayDone <code>true</code> if you want to tell the user that the operation was successful
      */
-    public void stop() {
+    public void stop(boolean displayDone) {
 
         if (m_timer != null) {
             m_timer.cancel();
             m_timer = null;
         }
-        CmsNotification.get().hide();
+        if (!displayDone) {
+            CmsNotification.get().hide();
+        } else {
+            CmsNotification.get().send(CmsNotification.Type.NORMAL, Messages.get().key(Messages.GUI_DONE_0));
+        }
     }
 
     /**
@@ -195,6 +201,8 @@ public abstract class CmsRpcAction<T> implements AsyncCallback<T> {
 
     /**
      * Shows the 'loading message'.<p>
+     * 
+     * Overwrite to customize the message.<p>
      */
     protected void show() {
 
