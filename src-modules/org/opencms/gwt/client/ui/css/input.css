@@ -185,7 +185,7 @@
 	margin-top: 2px;
 }
 
-@def formLabelWidth 200px ;
+@def formLabelWidth 160px ;
 
 .formLabel {
 	width: formLabelWidth;
@@ -194,7 +194,6 @@
 	margin-top: 2px;
 	float: left;
 }
-
 
 .formWidgetContainer {
 	width: 370px;
