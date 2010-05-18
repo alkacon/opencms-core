@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsXmlSubContainer.java,v $
- * Date   : $Date: 2010/05/18 12:58:09 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/05/18 13:15:51 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,6 @@ import org.opencms.xml.CmsXmlGenericWrapper;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentMacroVisitor;
-import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.content.CmsXmlContentPropertyHelper;
 import org.opencms.xml.page.CmsXmlPage;
 import org.opencms.xml.types.CmsXmlNestedContentDefinition;
@@ -81,7 +80,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 7.9.1
  */
@@ -265,14 +264,9 @@ public class CmsXmlSubContainer extends CmsXmlContent {
         }
         addLocale(cms, locale);
 
-        // get the properties
-        Map<String, CmsXmlContentProperty> propertiesConf = OpenCms.getADEManager().getElementPropertyConfiguration(
-            cms,
-            getFile());
-
         // add the nodes to the raw XML structure
         Element parent = getLocaleNode(locale);
-        saveSubCnt(cms, parent, subCnt, propertiesConf);
+        saveSubCnt(cms, parent, subCnt);
 
         // generate bookmarks
         initDocument(m_document, m_encoding, m_contentDefinition);
@@ -289,9 +283,11 @@ public class CmsXmlSubContainer extends CmsXmlContent {
      * @param element the XML element to fill
      * @param resourceId the ID identifying the resource to use
      * 
+     * @return the resource 
+     * 
      * @throws CmsException if the resource can not be read
      */
-    protected void fillResource(CmsObject cms, Element element, CmsUUID resourceId) throws CmsException {
+    protected CmsResource fillResource(CmsObject cms, Element element, CmsUUID resourceId) throws CmsException {
 
         String xpath = element.getPath();
         int pos = xpath.lastIndexOf("/" + XmlNode.SubContainers.name() + "/");
@@ -301,6 +297,7 @@ public class CmsXmlSubContainer extends CmsXmlContent {
         CmsRelationType type = getContentDefinition().getContentHandler().getRelationType(xpath);
         CmsResource res = cms.readResource(resourceId);
         CmsXmlVfsFileValue.fillEntry(element, res.getStructureId(), res.getRootPath(), type);
+        return res;
     }
 
     /**
@@ -415,15 +412,10 @@ public class CmsXmlSubContainer extends CmsXmlContent {
      * @param cms the current CMS object
      * @param parent the element to add it
      * @param subCnt the container page to add
-     * @param propertiesConf the properties configuration
      * 
      * @throws CmsException if something goes wrong
      */
-    protected void saveSubCnt(
-        CmsObject cms,
-        Element parent,
-        CmsSubContainerBean subCnt,
-        Map<String, CmsXmlContentProperty> propertiesConf) throws CmsException {
+    protected void saveSubCnt(CmsObject cms, Element parent, CmsSubContainerBean subCnt) throws CmsException {
 
         parent.clearContent();
         Element subCntElem = parent.addElement(XmlNode.SubContainers.name());
@@ -441,11 +433,11 @@ public class CmsXmlSubContainer extends CmsXmlContent {
 
             // the element
             Element uriElem = elemElement.addElement(XmlNode.Uri.name());
-            fillResource(cms, uriElem, element.getElementId());
+            CmsResource uriRes = fillResource(cms, uriElem, element.getElementId());
 
             // the properties
             Map<String, String> properties = element.getProperties();
-            CmsXmlContentPropertyHelper.saveProperties(cms, elemElement, propertiesConf, properties);
+            CmsXmlContentPropertyHelper.saveProperties(cms, elemElement, properties, uriRes);
         }
     }
 

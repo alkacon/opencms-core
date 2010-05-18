@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentPropertyHelper.java,v $
- * Date   : $Date: 2010/05/18 12:58:26 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/05/18 13:15:51 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,6 +39,7 @@ import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsLink;
 import org.opencms.relations.CmsRelationType;
 import org.opencms.util.CmsMacroResolver;
@@ -70,7 +71,7 @@ import org.dom4j.Element;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 7.9.2
  */
@@ -432,19 +433,25 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
      * 
      * @param cms the current CMS context
      * @param parentElement the parent xml element
-     * @param propertiesConf the property configuration
      * @param properties the properties to save, if there is a list of resources, every entry can be a site path or a UUID
+     * @param resource the resource to get the property configuration from
+     * 
+     * @throws CmsException if something goes wrong 
      */
     public static void saveProperties(
         CmsObject cms,
         Element parentElement,
-        Map<String, CmsXmlContentProperty> propertiesConf,
-        Map<String, String> properties) {
+        Map<String, String> properties,
+        CmsResource resource) throws CmsException {
 
         // remove old entries
         for (Object propElement : parentElement.elements(CmsXmlContentProperty.XmlNode.Properties.name())) {
             parentElement.remove((Element)propElement);
         }
+        Map<String, CmsXmlContentProperty> propertiesConf = OpenCms.getADEManager().getElementPropertyConfiguration(
+            cms,
+            resource);
+
         // create new entries
         for (Map.Entry<String, String> property : properties.entrySet()) {
             String propName = property.getKey();

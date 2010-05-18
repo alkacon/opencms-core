@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsXmlSitemap.java,v $
- * Date   : $Date: 2010/05/18 12:58:17 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2010/05/18 13:15:51 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 7.5.2
  * 
@@ -521,11 +521,7 @@ public class CmsXmlSitemap extends CmsXmlContent {
 
         // the properties
         if (change.getProperties() != null) {
-            CmsXmlContentPropertyHelper.saveProperties(
-                cms,
-                entryElement,
-                CmsXmlContentDefinition.getContentHandlerForResource(cms, getFile()).getProperties(),
-                change.getProperties());
+            CmsXmlContentPropertyHelper.saveProperties(cms, entryElement, change.getProperties(), getFile());
         }
 
         return cms.getRequestContext().addSiteRoot(change.getSitePath());
@@ -538,9 +534,11 @@ public class CmsXmlSitemap extends CmsXmlContent {
      * @param element the XML element to fill
      * @param resourcePath the site path identifying the resource to use
      * 
+     * @return the resource 
+     * 
      * @throws CmsException if the resource can not be read
      */
-    protected void fillResource(CmsObject cms, Element element, String resourcePath) throws CmsException {
+    protected CmsResource fillResource(CmsObject cms, Element element, String resourcePath) throws CmsException {
 
         String xpath = element.getPath();
         int pos = xpath.lastIndexOf("/" + XmlNode.SiteEntry.name() + "/");
@@ -550,6 +548,7 @@ public class CmsXmlSitemap extends CmsXmlContent {
         CmsRelationType type = getContentDefinition().getContentHandler().getRelationType(xpath);
         CmsResource res = cms.readResource(resourcePath);
         CmsXmlVfsFileValue.fillEntry(element, res.getStructureId(), res.getRootPath(), type);
+        return res;
     }
 
     /**
@@ -717,11 +716,7 @@ public class CmsXmlSitemap extends CmsXmlContent {
         fillResource(cms, vfsFile, change.getVfsPath());
 
         // the properties
-        CmsXmlContentPropertyHelper.saveProperties(
-            cms,
-            entryElement,
-            CmsXmlContentDefinition.getContentHandlerForResource(cms, getFile()).getProperties(),
-            change.getProperties());
+        CmsXmlContentPropertyHelper.saveProperties(cms, entryElement, change.getProperties(), getFile());
 
         return cms.getRequestContext().addSiteRoot(change.getSitePath());
     }

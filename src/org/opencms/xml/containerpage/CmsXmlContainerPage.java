@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsXmlContainerPage.java,v $
- * Date   : $Date: 2010/05/18 12:58:09 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/05/18 13:15:51 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,6 @@ import org.opencms.xml.CmsXmlGenericWrapper;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentMacroVisitor;
-import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.content.CmsXmlContentPropertyHelper;
 import org.opencms.xml.page.CmsXmlPage;
 import org.opencms.xml.types.CmsXmlNestedContentDefinition;
@@ -80,7 +79,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 7.5.2
  * 
@@ -267,14 +266,9 @@ public class CmsXmlContainerPage extends CmsXmlContent {
         }
         addLocale(cms, locale);
 
-        // get the properties
-        Map<String, CmsXmlContentProperty> propertiesConf = OpenCms.getADEManager().getElementPropertyConfiguration(
-            cms,
-            getFile());
-
         // add the nodes to the raw XML structure
         Element parent = getLocaleNode(locale);
-        saveCntPage(cms, parent, savePage, propertiesConf);
+        saveCntPage(cms, parent, savePage);
 
         // generate bookmarks
         initDocument(m_document, m_encoding, m_contentDefinition);
@@ -321,9 +315,11 @@ public class CmsXmlContainerPage extends CmsXmlContent {
      * @param element the XML element to fill
      * @param resourceId the ID identifying the resource to use
      * 
+     * @return the resource 
+     * 
      * @throws CmsException if the resource can not be read
      */
-    protected void fillResource(CmsObject cms, Element element, CmsUUID resourceId) throws CmsException {
+    protected CmsResource fillResource(CmsObject cms, Element element, CmsUUID resourceId) throws CmsException {
 
         String xpath = element.getPath();
         int pos = xpath.lastIndexOf("/" + XmlNode.Containers.name() + "/");
@@ -333,6 +329,7 @@ public class CmsXmlContainerPage extends CmsXmlContent {
         CmsRelationType type = getContentDefinition().getContentHandler().getRelationType(xpath);
         CmsResource res = cms.readResource(resourceId);
         CmsXmlVfsFileValue.fillEntry(element, res.getStructureId(), res.getRootPath(), type);
+        return res;
     }
 
     /**
@@ -451,15 +448,10 @@ public class CmsXmlContainerPage extends CmsXmlContent {
      * @param cms the current CMS object
      * @param parent the element to add it
      * @param cntPage the container page to add
-     * @param propertiesConf the properties configuration
      * 
      * @throws CmsException if something goes wrong
      */
-    protected void saveCntPage(
-        CmsObject cms,
-        Element parent,
-        CmsContainerPageBean cntPage,
-        Map<String, CmsXmlContentProperty> propertiesConf) throws CmsException {
+    protected void saveCntPage(CmsObject cms, Element parent, CmsContainerPageBean cntPage) throws CmsException {
 
         parent.clearContent();
 
@@ -477,13 +469,13 @@ public class CmsXmlContainerPage extends CmsXmlContent {
 
                 // the element
                 Element uriElem = elemElement.addElement(XmlNode.Uri.name());
-                fillResource(cms, uriElem, element.getElementId());
+                CmsResource uriRes = fillResource(cms, uriElem, element.getElementId());
                 Element formatterElem = elemElement.addElement(XmlNode.Formatter.name());
                 fillResource(cms, formatterElem, element.getFormatterId());
 
                 // the properties
                 Map<String, String> properties = element.getProperties();
-                CmsXmlContentPropertyHelper.saveProperties(cms, elemElement, propertiesConf, properties);
+                CmsXmlContentPropertyHelper.saveProperties(cms, elemElement, properties, uriRes);
             }
         }
     }
