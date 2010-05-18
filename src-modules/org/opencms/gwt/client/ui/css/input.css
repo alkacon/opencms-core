@@ -111,11 +111,20 @@
 	color: red;
 }
 
-@sprite .selectBoxSelected {
+@sprite .openerNoHover.selectBoxSelected {
 	width: auto; 
 	min-height: 0px;
 	border: 1px solid value("constants.borderColor");
 	gwt-image: "images.backgroundLight";
+	background-position: 50% 50%;
+	outline: none;
+}
+
+@sprite .openerHover.selectBoxSelected {
+	width: auto;
+	min-height: 0px;
+	border: 1px solid  value("constants.borderColor");
+	gwt-image: "images.backgroundDark";
 	background-position: 50% 50%;
 	outline: none;
 }
@@ -158,6 +167,10 @@
 
 .selectBoxOpener {
 	margin: 3px 12px 3px 5px;
+}
+
+.openerNoHover {}
+.openerHover {
 }
 
 @if user.agent ie6 {

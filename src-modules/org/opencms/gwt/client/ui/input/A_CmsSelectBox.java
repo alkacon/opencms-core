@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/A_CmsSelectBox.java,v $
- * Date   : $Date: 2010/05/11 13:41:15 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/05/18 14:58:17 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -76,7 +76,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  * 
@@ -157,6 +157,8 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
         m_selectBoxState.setValue(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
 
         m_opener.addStyleName(CSS.selectBoxSelected());
+        addHoverHandlers(m_opener);
+
         m_openClose = new CmsPushButton(I_CmsButton.UiIcon.triangle_1_e, I_CmsButton.UiIcon.triangle_1_s);
         m_openClose.setShowBorder(false);
         m_openClose.addStyleName(CSS.selectIcon());
@@ -440,6 +442,40 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
      * @param newValue the value selected by the user
      */
     protected abstract void updateOpener(String newValue);
+
+    /**
+     * Helper method for adding event handlers for a 'hover' effect to the opener.<p>
+     * 
+     * @param panel the opener
+     */
+    private void addHoverHandlers(FocusPanel panel) {
+
+        final CmsStyleVariable hoverVar = new CmsStyleVariable(panel);
+        hoverVar.setValue(CSS.openerNoHover());
+        panel.addMouseOverHandler(new MouseOverHandler() {
+
+            /**
+             * @see com.google.gwt.event.dom.client.MouseOverHandler#onMouseOver(com.google.gwt.event.dom.client.MouseOverEvent)
+             */
+            public void onMouseOver(MouseOverEvent event) {
+
+                hoverVar.setValue(CSS.openerHover());
+
+            }
+        });
+
+        panel.addMouseOutHandler(new MouseOutHandler() {
+
+            /**
+             * @see com.google.gwt.event.dom.client.MouseOutHandler#onMouseOut(com.google.gwt.event.dom.client.MouseOutEvent)
+             */
+            public void onMouseOut(MouseOutEvent event) {
+
+                hoverVar.setValue(CSS.openerNoHover());
+            }
+        });
+
+    }
 
     /**
      * Initializes the event handlers of a select cell.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsInputCss.java,v $
- * Date   : $Date: 2010/05/11 15:49:06 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/05/18 14:58:17 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import com.google.gwt.resources.client.CssResource;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 8.0.0
  */
@@ -133,6 +133,20 @@ public interface I_CmsInputCss extends CssResource {
      * 
      * @return the css class
      */
+    String openerHover();
+
+    /**
+     * Css class reader.<p>
+     * 
+     * @return the css class
+     */
+    String openerNoHover();
+
+    /**
+     * Css class reader.<p>
+     * 
+     * @return the css class
+     */
 
     String radioButton();
 
@@ -179,6 +193,13 @@ public interface I_CmsInputCss extends CssResource {
      */
     String selectBoxSelected();
 
+    /**
+     * Css class reader.<p>
+     * 
+     * @return the css class
+     */
+    // String textAreaWidget();
+
     /** 
      * Css class reader.<p>
      * 
@@ -192,13 +213,6 @@ public interface I_CmsInputCss extends CssResource {
      * @return the css class
      */
     String selectHover();
-
-    /**
-     * Css class reader.<p>
-     * 
-     * @return the css class
-     */
-    // String textAreaWidget();
 
     /**
      * Css class reader.<p>
