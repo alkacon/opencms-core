@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsXmlSubContainer.java,v $
- * Date   : $Date: 2010/02/15 08:53:23 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/05/18 12:58:09 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -81,7 +81,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 7.9.1
  */
@@ -300,7 +300,7 @@ public class CmsXmlSubContainer extends CmsXmlContent {
         }
         CmsRelationType type = getContentDefinition().getContentHandler().getRelationType(xpath);
         CmsResource res = cms.readResource(resourceId);
-        CmsXmlVfsFileValue.fillResource(element, res, type);
+        CmsXmlVfsFileValue.fillEntry(element, res.getStructureId(), res.getRootPath(), type);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlVfsFileValue.java,v $
- * Date   : $Date: 2010/02/16 08:01:09 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/05/18 12:58:09 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,7 +32,6 @@
 package org.opencms.xml.types;
 
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsResource;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
@@ -41,9 +40,9 @@ import org.opencms.relations.CmsLinkUpdateUtil;
 import org.opencms.relations.CmsRelationType;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 import org.opencms.xml.I_CmsXmlDocument;
 import org.opencms.xml.page.CmsXmlPage;
-import org.opencms.xml.sitemap.CmsSitemapEntry;
 
 import java.util.Locale;
 
@@ -57,7 +56,7 @@ import org.dom4j.Element;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 7.0.0 
  */
@@ -112,34 +111,16 @@ public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
     }
 
     /**
-     * Fills the given element with a {@link CmsXmlVfsFileValue} for the given resource.<p>
+     * Fills the given element with a {@link CmsXmlVfsFileValue} for the given data.<p>
      * 
      * @param element the element to fill
-     * @param resource the resource to use
+     * @param id the id to use
+     * @param rootPath the path to use
      * @param type the relation type to use
      */
-    public static void fillResource(Element element, CmsResource resource, CmsRelationType type) {
+    public static void fillEntry(Element element, CmsUUID id, String rootPath, CmsRelationType type) {
 
-        CmsLink link = new CmsLink(
-            CmsXmlVfsFileValue.TYPE_VFS_LINK,
-            type,
-            resource.getStructureId(),
-            resource.getRootPath(),
-            true);
-        // update xml node
-        CmsLinkUpdateUtil.updateXmlForVfsFile(link, element.addElement(CmsXmlPage.NODE_LINK));
-    }
-
-    /**
-     * Fills the given element with a {@link CmsXmlVfsFileValue} for the given sitemap entry.<p>
-     * 
-     * @param element the element to fill
-     * @param entry the sitemap entry to use
-     * @param type the relation type to use
-     */
-    public static void fillSitemapEntry(Element element, CmsSitemapEntry entry, CmsRelationType type) {
-
-        CmsLink link = new CmsLink(CmsXmlVfsFileValue.TYPE_VFS_LINK, type, entry.getId(), entry.getRootPath(), true);
+        CmsLink link = new CmsLink(CmsXmlVfsFileValue.TYPE_VFS_LINK, type, id, rootPath, true);
         // update xml node
         CmsLinkUpdateUtil.updateXmlForVfsFile(link, element.addElement(CmsXmlPage.NODE_LINK));
     }
