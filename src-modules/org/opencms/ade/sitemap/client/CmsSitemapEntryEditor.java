@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapEntryEditor.java,v $
- * Date   : $Date: 2010/05/14 09:36:18 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/05/18 13:29:53 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  *  @author Georg Westenberger
  *  
- *  @version $Revision: 1.3 $
+ *  @version $Revision: 1.4 $
  *  
  *  @since 8.0.0
  */
@@ -158,28 +158,6 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
     }
 
     /**
-     * Helper method for removing hidden properties from a map of property configurations.<p>
-     * 
-     * The map passed into the method is not changed; a map which only contains the non-hidden
-     * property definitions is returned.
-     * 
-     * @param propConfig the property configuration 
-     * 
-     * @return the filtered property configuration 
-     */
-    private static Map<String, CmsXmlContentProperty> removeHiddenProperties(
-        Map<String, CmsXmlContentProperty> propConfig) {
-
-        Map<String, CmsXmlContentProperty> result = new HashMap<String, CmsXmlContentProperty>();
-        for (Map.Entry<String, CmsXmlContentProperty> entry : propConfig.entrySet()) {
-            if (!CmsSitemapController.isHiddenProperty(entry.getKey())) {
-                result.put(entry.getKey(), entry.getValue());
-            }
-        }
-        return result;
-    }
-
-    /**
      * Shows the sitemap entry editor to the user.
      */
     public void start() {
@@ -255,10 +233,12 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
 
         m_form.validate(new I_CmsValidationHandler() {
 
+            /**
+             * @see org.opencms.gwt.client.ui.input.I_CmsValidationHandler#onValidationComplete(boolean)
+             */
             public void onValidationComplete(boolean validationSucceeded) {
 
                 if (validationSucceeded) {
-
                     handleSubmit();
                 }
             }
@@ -404,6 +384,27 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
             template.getDescription(),
             DEFAULT_TEMPLATE_VALUE,
             template.getImgPath());
+    }
+
+    /**
+     * Helper method for removing hidden properties from a map of property configurations.<p>
+     * 
+     * The map passed into the method is not changed; a map which only contains the non-hidden
+     * property definitions is returned.
+     * 
+     * @param propConfig the property configuration 
+     * 
+     * @return the filtered property configuration 
+     */
+    private Map<String, CmsXmlContentProperty> removeHiddenProperties(Map<String, CmsXmlContentProperty> propConfig) {
+
+        Map<String, CmsXmlContentProperty> result = new HashMap<String, CmsXmlContentProperty>();
+        for (Map.Entry<String, CmsXmlContentProperty> entry : propConfig.entrySet()) {
+            if (!m_controller.isHiddenProperty(entry.getKey())) {
+                result.put(entry.getKey(), entry.getValue());
+            }
+        }
+        return result;
     }
 
 }

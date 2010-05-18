@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2010/05/18 12:58:17 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2010/05/18 13:29:53 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,14 +64,11 @@ import com.google.gwt.user.client.Window;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 8.0.0
  */
 public class CmsSitemapController {
-
-    /** The set of names of hidden properties. */
-    private static Set<String> hiddenProperties;
 
     /** The list of changes. */
     protected List<I_CmsClientSitemapChange> m_changes;
@@ -84,6 +81,9 @@ public class CmsSitemapController {
 
     /** The list of undone changes. */
     protected List<I_CmsClientSitemapChange> m_undone;
+
+    /** The set of names of hidden properties. */
+    private Set<String> m_hiddenProperties;
 
     /** The sitemap service instance. */
     private I_CmsSitemapServiceAsync m_service;
@@ -99,28 +99,10 @@ public class CmsSitemapController {
         m_undone = new ArrayList<I_CmsClientSitemapChange>();
         m_data = (CmsSitemapData)CmsRpcPrefetcher.getSerializedObject(getService(), CmsSitemapData.DICT_NAME);
         m_handler = handler;
-    }
-
-    static {
-        hiddenProperties = new HashSet<String>();
-        hiddenProperties.add(CmsSitemapManager.Property.template.toString());
-        hiddenProperties.add(CmsSitemapManager.Property.templateInherited.toString());
-        hiddenProperties.add(CmsSitemapManager.Property.sitemap.toString());
-    }
-
-    /**
-     * Checks whether a string is the name of a hidden property.<p>
-     * 
-     * A hidden property is a property which should not appear in the property editor
-     * because it requires special treatment.<p>
-     * 
-     * @param propertyName the property name which should be checked
-     * 
-     * @return true if the argument is the name of a hidden property
-     */
-    public static boolean isHiddenProperty(String propertyName) {
-
-        return hiddenProperties.contains(propertyName);
+        m_hiddenProperties = new HashSet<String>();
+        m_hiddenProperties.add(CmsSitemapManager.Property.template.toString());
+        m_hiddenProperties.add(CmsSitemapManager.Property.templateInherited.toString());
+        m_hiddenProperties.add(CmsSitemapManager.Property.sitemap.toString());
     }
 
     /**
@@ -247,6 +229,7 @@ public class CmsSitemapController {
             public void execute() {
 
                 // Make the call to the sitemap service
+                start(500);
                 getService().getChildren(sitePath, this);
             }
 
@@ -259,6 +242,7 @@ public class CmsSitemapController {
                 CmsClientSitemapEntry target = getEntry(sitePath);
                 target.setSubEntries(result);
                 m_handler.onGetChildren(target);
+                stop(false);
             }
         };
         getChildrenAction.execute();
@@ -372,6 +356,21 @@ public class CmsSitemapController {
     public boolean isEditable() {
 
         return CmsStringUtil.isEmptyOrWhitespaceOnly(m_data.getNoEditReason());
+    }
+
+    /**
+     * Checks whether a string is the name of a hidden property.<p>
+     * 
+     * A hidden property is a property which should not appear in the property editor
+     * because it requires special treatment.<p>
+     * 
+     * @param propertyName the property name which should be checked
+     * 
+     * @return true if the argument is the name of a hidden property
+     */
+    public boolean isHiddenProperty(String propertyName) {
+
+        return m_hiddenProperties.contains(propertyName);
     }
 
     /**
