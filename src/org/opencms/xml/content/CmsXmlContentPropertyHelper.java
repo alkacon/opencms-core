@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentPropertyHelper.java,v $
- * Date   : $Date: 2010/04/22 14:32:08 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/05/18 12:58:26 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import org.dom4j.Element;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 7.9.2
  */
@@ -433,7 +433,7 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
      * @param cms the current CMS context
      * @param parentElement the parent xml element
      * @param propertiesConf the property configuration
-     * @param properties the properties to save
+     * @param properties the properties to save, if there is a list of resources, every entry can be a site path or a UUID
      */
     public static void saveProperties(
         CmsObject cms,
@@ -441,6 +441,11 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
         Map<String, CmsXmlContentProperty> propertiesConf,
         Map<String, String> properties) {
 
+        // remove old entries
+        for (Object propElement : parentElement.elements(CmsXmlContentProperty.XmlNode.Properties.name())) {
+            parentElement.remove((Element)propElement);
+        }
+        // create new entries
         for (Map.Entry<String, String> property : properties.entrySet()) {
             String propName = property.getKey();
             String propValue = property.getValue();
@@ -464,11 +469,23 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
                 for (String strId : CmsStringUtil.splitAsList(propValue, CmsXmlContentProperty.PROP_SEPARATOR)) {
                     try {
                         Element fileValueElem = filelistElem.addElement(CmsXmlContentProperty.XmlNode.Uri.name());
-                        CmsResource res = cms.readResource(new CmsUUID(strId));
-                        // HACK: here we assume weak relations, but it would be more robust to check it
+                        CmsResource res = null;
+                        if (CmsUUID.isValidUUID(strId)) {
+                            // try as id
+                            try {
+                                res = cms.readResource(new CmsUUID(strId));
+                            } catch (Throwable e) {
+                                // did not work out, try as path
+                                res = cms.readResource(strId);
+                            }
+                        } else {
+                            // try as path
+                            res = cms.readResource(strId);
+                        }
+                        // HACK: here we assume weak relations, but it would be more robust to check it, with smth like:
                         // type = xmlContent.getContentDefinition().getContentHandler().getRelationType(fileValueElem.getPath());
                         CmsRelationType type = CmsRelationType.XML_WEAK;
-                        CmsXmlVfsFileValue.fillResource(fileValueElem, res, type);
+                        CmsXmlVfsFileValue.fillEntry(fileValueElem, res.getStructureId(), res.getRootPath(), type);
                     } catch (CmsException e) {
                         // should never happen
                         LOG.error(e.getLocalizedMessage(), e);
