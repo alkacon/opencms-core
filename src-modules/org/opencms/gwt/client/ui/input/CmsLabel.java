@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsLabel.java,v $
- * Date   : $Date: 2010/05/06 14:47:38 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/05/18 12:57:03 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -220,6 +220,9 @@ public class CmsLabel extends Widget implements HasHorizontalAlignment, HasText,
 
         Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 
+            /**
+             * @see com.google.gwt.core.client.Scheduler.ScheduledCommand#execute()
+             */
             public void execute() {
 
                 Element element = getElement();
