@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapHoverbarHandler.java,v $
- * Date   : $Date: 2010/05/12 12:33:31 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/05/18 13:30:22 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import com.google.gwt.user.client.Window;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 8.0.0
  * 
@@ -71,7 +71,11 @@ public class CmsSitemapHoverbarHandler {
      */
     public void onDelete(final String sitePath) {
 
-        // TODO: check if the current entry has children and show the dialog only if so
+        if (m_controller.getEntry(sitePath).getSubEntries().isEmpty()) {
+            m_controller.delete(sitePath);
+            return;
+        }
+        // show the dialog only if the entry has children 
         CmsConfirmDialog dialog = new CmsConfirmDialog(
             Messages.get().key(Messages.GUI_DIALOG_DELETE_TITLE_0),
             Messages.get().key(Messages.GUI_DIALOG_DELETE_TEXT_0));
