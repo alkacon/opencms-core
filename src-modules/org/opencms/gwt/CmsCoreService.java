@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsCoreService.java,v $
- * Date   : $Date: 2010/05/11 12:34:01 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/05/18 12:31:13 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,8 +33,6 @@ package org.opencms.gwt;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
-import org.opencms.file.types.CmsResourceTypeFolder;
-import org.opencms.file.types.CmsResourceTypeUnknownFile;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.gwt.shared.CmsCoreData;
@@ -43,12 +41,9 @@ import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsCategory;
 import org.opencms.relations.CmsCategoryService;
-import org.opencms.workplace.CmsWorkplace;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -57,7 +52,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 8.0.0
  * 
@@ -66,9 +61,6 @@ import javax.servlet.http.HttpServletRequest;
  * @see org.opencms.gwt.shared.rpc.I_CmsCoreServiceAsync
  */
 public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
-
-    /** The map with resource icons. */
-    private static Map<String, String> m_iconsMap;
 
     /** Serialization uid. */
     private static final long serialVersionUID = 5915848952948986278L;
@@ -97,8 +89,6 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         CmsObject cms = getCmsObject();
         CmsCategoryService catService = CmsCategoryService.getInstance();
 
-        String resourceIcon = getIcon(CmsResourceTypeFolder.RESOURCE_TYPE_NAME);
-
         List<String> repositories = new ArrayList<String>();
         if ((refPaths != null) && !refPaths.isEmpty()) {
             for (String refPath : refPaths) {
@@ -111,8 +101,6 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         CmsCategoryTreeEntry result = null;
         try {
             result = new CmsCategoryTreeEntry(fromPath);
-            result.setIconResource(resourceIcon);
-
             // get the categories
             List<CmsCategory> categories = catService.readCategoriesForRepositories(
                 cms,
@@ -123,7 +111,6 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             CmsCategoryTreeEntry parent = result;
             for (CmsCategory category : categories) {
                 CmsCategoryTreeEntry current = new CmsCategoryTreeEntry(category);
-                current.setIconResource(resourceIcon);
                 String parentPath = CmsResource.getParentFolder(current.getPath());
                 if (!parentPath.equals(parent.getPath())) {
                     parent = findCategory(result, parentPath);
@@ -134,31 +121,6 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             error(e);
         }
         return result;
-    }
-
-    /**
-     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#getIcon(java.lang.String)
-     */
-    public String getIcon(String type) throws CmsRpcException {
-
-        String icon = "";
-        try {
-            if (m_iconsMap == null) {
-                m_iconsMap = new HashMap<String, String>();
-            }
-
-            if (m_iconsMap.containsKey(type)) {
-                icon = m_iconsMap.get(type);
-                return icon;
-            } else {
-                icon = findIcon(type);
-                m_iconsMap.put(type, icon);
-                return icon;
-            }
-        } catch (Throwable e) {
-            error(e);
-        }
-        return icon;
     }
 
     /**
@@ -271,28 +233,4 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         }
         return null;
     }
-
-    /**
-     * Returns the path to the resource icon from the configuration.<p>
-     * 
-     * @param type the resource type
-     * @return the resource file icon
-     * 
-     * @throws CmsRpcException if something goes wrong 
-     */
-    private String findIcon(String type) throws CmsRpcException {
-
-        try {
-            return CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES
-                + OpenCms.getWorkplaceManager().getExplorerTypeSetting(type).getIcon());
-        } catch (NullPointerException e) {
-            return CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES
-                + OpenCms.getWorkplaceManager().getExplorerTypeSetting(CmsResourceTypeUnknownFile.getStaticTypeName()).getIcon());
-
-        } catch (Throwable e) {
-            error(e);
-            return "";
-        }
-    }
-
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/rpc/Attic/I_CmsCoreService.java,v $
- * Date   : $Date: 2010/05/11 12:34:01 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/05/18 12:31:14 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 8.0.0
  * 
@@ -69,17 +69,6 @@ public interface I_CmsCoreService extends RemoteService {
      */
     CmsCategoryTreeEntry getCategories(String fromCatPath, boolean includeSubCats, List<String> refVfsPaths)
     throws CmsRpcException;
-
-    /**
-     * Returns the path to the icon of the given resource.<p>
-     * 
-     * @param resourceType the resource type    
-     * 
-     * @return the resource categories
-     * 
-     * @throws CmsRpcException if something goes wrong 
-     */
-    String getIcon(String resourceType) throws CmsRpcException;
 
     /**
      * Locks the given resource.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2010/05/11 10:43:31 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2010/05/18 12:31:13 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import com.google.gwt.resources.client.ImageResource.RepeatStyle;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.30 $
+ * @version $Revision: 1.31 $
  * 
  * @since 8.0.0
  */
@@ -1097,6 +1097,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      * @return the list item CSS
      */
     @Source("listItemWidget.css")
+    @CssResource.NotStrict
     I_CmsListItemWidgetCss listItemWidgetCss();
 
     /**

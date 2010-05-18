@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsContainerpageActionElement.java,v $
- * Date   : $Date: 2010/05/14 13:34:15 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/05/18 12:31:14 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -80,7 +80,7 @@ public class CmsContainerpageActionElement extends CmsGwtActionElement {
         String prefetchedData = serialize(I_CmsContainerpageService.class.getMethod("prefetch"), getCntPageData());
         sb.append(CmsCntPageData.DICT_NAME).append("='").append(prefetchedData).append("';");
         sb.append(CmsContainer.KEY_CONTAINER_DATA).append("= new Array();");
-        return sb.toString();
+        return wrapScript(sb).toString();
     }
 
     /**

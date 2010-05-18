@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/Attic/CmsPublish.java,v $
- * Date   : $Date: 2010/04/27 10:04:25 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/05/18 12:31:14 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,6 @@ import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsUUID;
-import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 
 import java.util.ArrayList;
@@ -78,7 +77,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -858,7 +857,7 @@ public class CmsPublish {
             resource.getStructureId(),
             resUtil.getFullPath(),
             resUtil.getTitle(),
-            CmsWorkplace.getResourceUri(resUtil.getIconPathExplorer()),
+            resUtil.getResourceTypeName(),
             resource.getState(),
             removable,
             info,

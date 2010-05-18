@@ -1,3 +1,4 @@
+@external cms_type_icon;
 .itemContainer .itemAdditional{
 	display: none;
 }
@@ -35,6 +36,11 @@
 	width: 32px;
 	float: left;
 	overflow: hidden;
+}
+
+.itemIcon .cms_type_icon{
+	height: 32px;
+	width: 32px;
 }
 
 .itemTitle{

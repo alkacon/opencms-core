@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageController.java,v $
- * Date   : $Date: 2010/05/06 14:56:23 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/05/18 12:31:14 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -78,7 +78,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
@@ -1125,7 +1125,7 @@ public final class CmsContainerpageController {
             CmsLeavePageDialog dialog = new CmsLeavePageDialog(uri, this, null);
             dialog.center();
         }
-        if ((event.getTypeInt() == Event.ONKEYPRESS) && (nativeEvent.getKeyCode() == 116)) {
+        if ((event.getTypeInt() == Event.ONKEYDOWN) && (nativeEvent.getKeyCode() == 116)) {
             nativeEvent.preventDefault();
             nativeEvent.stopPropagation();
             CmsLeavePageDialog dialog = new CmsLeavePageDialog(Window.Location.getHref(), this, null);

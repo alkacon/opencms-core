@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsPopupDialog.java,v $
- * Date   : $Date: 2010/04/15 10:06:31 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/05/18 12:31:13 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  * 
@@ -71,7 +71,7 @@ public class CmsPopupDialog extends CmsPopup {
     public CmsPopupDialog(String title, Widget content) {
 
         super(title);
-        this.setContent(content);
+        setContent(content);
     }
 
     /**

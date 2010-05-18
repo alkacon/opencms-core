@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/Attic/CmsCategoryInfoBean.java,v $
- * Date   : $Date: 2010/05/06 09:27:20 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/05/18 12:31:14 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,18 +46,14 @@ import java.util.Map;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
-public class CmsCategoryInfoBean extends CmsListInfoBean
-implements I_CmsItemId, Comparable<CmsCategoryInfoBean> {
+public class CmsCategoryInfoBean extends CmsListInfoBean implements I_CmsItemId, Comparable<CmsCategoryInfoBean> {
 
     /** The category path as id. */
     private String m_categoryPath;
-
-    /** The path to the category icon. */
-    private String m_iconResource;
 
     /**
      * The default constructor.<p>
@@ -74,18 +70,11 @@ implements I_CmsItemId, Comparable<CmsCategoryInfoBean> {
      * @param subtitle the subtitle to set
      * @param additionalInfo the additional info
      * @param id category path as id
-     * @param iconResource the path to category icon(folder)
      */
-    public CmsCategoryInfoBean(
-        String title,
-        String subtitle,
-        Map<String, String> additionalInfo,
-        String id,
-        String iconResource) {
+    public CmsCategoryInfoBean(String title, String subtitle, Map<String, String> additionalInfo, String id) {
 
         super(title, subtitle, additionalInfo);
         m_categoryPath = id;
-        m_iconResource = iconResource;
     }
 
     /**
@@ -99,32 +88,12 @@ implements I_CmsItemId, Comparable<CmsCategoryInfoBean> {
     }
 
     /**
-     * Returns the icon.<p>
-     *
-     * @return the icon
-     */
-    public String getIconResource() {
-
-        return m_iconResource;
-    }
-
-    /**
      * @see org.opencms.ade.galleries.shared.I_CmsItemId#getId()
      */
 
     public String getId() {
 
         return m_categoryPath;
-    }
-
-    /**
-     * Sets the icon.<p>
-     *
-     * @param icon the icon to set
-     */
-    public void setIconResource(String icon) {
-
-        m_iconResource = icon;
     }
 
     /** 

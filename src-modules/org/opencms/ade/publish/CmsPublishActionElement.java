@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/Attic/CmsPublishActionElement.java,v $
- * Date   : $Date: 2010/05/03 14:33:06 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/05/18 12:31:14 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import javax.servlet.jsp.PageContext;
 /**
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -66,7 +66,7 @@ public class CmsPublishActionElement extends CmsGwtActionElement {
 
         StringBuffer sb = new StringBuffer();
         sb.append(ClientMessages.get().export(getRequest()));
-        return sb.toString();
+        return wrapScript(sb).toString();
     }
 
     /**

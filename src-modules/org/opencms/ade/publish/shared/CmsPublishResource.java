@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/shared/Attic/CmsPublishResource.java,v $
- * Date   : $Date: 2010/04/27 10:04:25 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/05/18 12:31:14 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,14 +44,14 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.6 
  */
 public class CmsPublishResource implements IsSerializable {
 
-    /** The resource icon.*/
-    private String m_icon;
+    /** The resource type name.*/
+    private String m_resourceType;
 
     /** The resource id.*/
     private CmsUUID m_id;
@@ -80,7 +80,7 @@ public class CmsPublishResource implements IsSerializable {
      * @param id the resource id
      * @param name the resource name
      * @param title the resource title
-     * @param icon the resource icon
+     * @param resourceType the resource type name
      * @param state the resource state
      * @param removable to indicate if the resource can be removed from the user's publish list
      * @param info the additional information, if any
@@ -90,14 +90,14 @@ public class CmsPublishResource implements IsSerializable {
         CmsUUID id,
         String name,
         String title,
-        String icon,
+        String resourceType,
         CmsResourceState state,
         boolean removable,
         CmsPublishResourceInfo info,
         List<CmsPublishResource> related) {
 
         super();
-        m_icon = icon;
+        m_resourceType = resourceType;
         m_id = id;
         m_name = name;
         // m_related = ((related == null) ? Collections.<CmsPublishResource> emptyList() : related);
@@ -118,13 +118,13 @@ public class CmsPublishResource implements IsSerializable {
     }
 
     /**
-     * Returns the icon.<p>
+     * Returns the resource type name.<p>
      *
-     * @return the icon
+     * @return the resource type name
      */
-    public String getIcon() {
+    public String getResourceType() {
 
-        return m_icon;
+        return m_resourceType;
     }
 
     /**

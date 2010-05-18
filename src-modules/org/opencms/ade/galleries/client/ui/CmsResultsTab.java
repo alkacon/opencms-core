@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsResultsTab.java,v $
- * Date   : $Date: 2010/05/14 13:34:53 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/05/18 12:31:13 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,6 @@ import org.opencms.ade.galleries.shared.CmsResultsListInfoBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
 import org.opencms.gwt.client.draganddrop.I_CmsDragHandler;
-import org.opencms.gwt.client.ui.CmsFloatDecoratedPanel;
 import org.opencms.gwt.client.ui.CmsFlowPanel;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsPushButton;
@@ -47,6 +46,7 @@ import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.util.CmsClientStringUtil;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsPair;
+import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
@@ -57,8 +57,6 @@ import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -69,7 +67,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 8.0.
  */
@@ -176,7 +174,7 @@ public class CmsResultsTab extends A_CmsListTab implements ClickHandler {
         Widget categoriesParams) {
 
         showParams(searchObj, typesParams, galleriesParams, categoriesParams);
-
+        updateListSize();
         List<CmsResultsListInfoBean> list = searchObj.getResults();
         for (CmsResultsListInfoBean resultItem : list) {
 
@@ -194,9 +192,9 @@ public class CmsResultsTab extends A_CmsListTab implements ClickHandler {
             previewButton.addClickHandler(new CmsPushButtonHandler(resultItem.getId()));
             resultItemWidget.addButton(previewButton);
             // add file icon
-            Image icon = new Image(resultItem.getIconResource());
-            icon.setStyleName(DIALOG_CSS.listIcon());
-            resultItemWidget.setIcon(icon);
+            resultItemWidget.setIcon(CmsIconUtil.getResourceIconClasses(
+                resultItem.getResourceType(),
+                resultItem.getId()));
             CmsResultListItem listItem = new CmsResultListItem(resultItemWidget);
             listItem.setId(resultItem.getId());
             addWidgetToList(listItem);
@@ -256,39 +254,14 @@ public class CmsResultsTab extends A_CmsListTab implements ClickHandler {
      */
     public void updateContent(
         CmsGallerySearchBean searchObj,
-        CmsFloatDecoratedPanel typesParams,
-        HTMLPanel galleriesParams,
-        CmsFloatDecoratedPanel categoriesParams) {
+        Widget typesParams,
+        Widget galleriesParams,
+        Widget categoriesParams) {
 
         //update the search params
         clearParams();
-        showParams(searchObj, typesParams, galleriesParams, categoriesParams);
-        updateListSize();
-        // update the result list
         clearList();
-        List<CmsResultsListInfoBean> list = searchObj.getResults();
-        for (CmsResultsListInfoBean resultItem : list) {
-            CmsListItemWidget resultItemWidget;
-            if (m_dragHandler != null) {
-                resultItemWidget = m_dragHandler.createDraggableListItemWidget(resultItem, resultItem.getClientId());
-            } else {
-                resultItemWidget = new CmsListItemWidget(resultItem);
-            }
-            // add  preview button
-            CmsPushButton previewButton = new CmsPushButton();
-            previewButton.setImageClass(I_CmsImageBundle.INSTANCE.style().magnifierIcon());
-            previewButton.setShowBorder(false);
-            previewButton.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
-            previewButton.addClickHandler(new CmsPushButtonHandler(resultItem.getId()));
-            resultItemWidget.addButton(previewButton);
-            // add file icon
-            Image icon = new Image(resultItem.getIconResource());
-            icon.setStyleName(DIALOG_CSS.listIcon());
-            resultItemWidget.setIcon(icon);
-            CmsResultListItem listItem = new CmsResultListItem(resultItemWidget);
-            listItem.setId(resultItem.getId());
-            addWidgetToList(listItem);
-        }
+        fillContent(searchObj, typesParams, galleriesParams, categoriesParams);
     }
 
     /**

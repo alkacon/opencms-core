@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsGalleryDialog.java,v $
- * Date   : $Date: 2010/05/14 13:34:53 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2010/05/18 12:31:13 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 8.0.
  */
@@ -160,6 +160,8 @@ public class CmsGalleryDialog extends Composite implements BeforeSelectionHandle
                     break;
                 case cms_tab_sitemap:
                     //TODO: add sitemap tree tab
+                default:
+                    break;
             }
         }
         m_resultsTab = new CmsResultsTab(new CmsResultsTabHandler(controller), m_dragHandler);

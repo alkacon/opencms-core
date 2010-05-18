@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/Attic/CmsGalleryActionElement.java,v $
- * Date   : $Date: 2010/05/14 13:36:29 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/05/18 12:31:14 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Polina Smagina 
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -109,7 +109,7 @@ public class CmsGalleryActionElement extends CmsGwtActionElement {
         sb.append(CmsGallerySearchBean.DICT_NAME).append("='").append(
             serialize(I_CmsGalleryService.class.getMethod("getSearch", CmsGalleryDataBean.class), search));
         sb.append("';");
-        return sb.toString();
+        return wrapScript(sb).toString();
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsSitemapActionElement.java,v $
- * Date   : $Date: 2010/05/03 14:33:05 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/05/18 12:31:13 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -98,7 +98,7 @@ public class CmsSitemapActionElement extends CmsGwtActionElement {
             getSitemapData());
         sb.append(CmsSitemapData.DICT_NAME).append("='").append(prefetchedData).append("';");
         sb.append(ClientMessages.get().export(getRequest()));
-        return sb.toString();
+        return wrapScript(sb).toString();
     }
 
     /**

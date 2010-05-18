@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContainer.java,v $
- * Date   : $Date: 2010/05/04 09:45:21 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2010/05/18 12:31:14 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 7.6 
  */
@@ -431,7 +431,7 @@ public class CmsJspTagContainer extends TagSupport {
         }
         jsonContainer.put(JsonContainer.elements.name(), jsonElements);
         // the container meta data is added to the javascript window object by the following tag, used within the container-page editor 
-        return new StringBuffer("<script>if (").append(KEY_CONTAINER_DATA).append("!=null) {").append(
+        return new StringBuffer("<script type=\"text/javascript\">if (").append(KEY_CONTAINER_DATA).append("!=null) {").append(
             KEY_CONTAINER_DATA).append(".push(").append(jsonContainer.toString()).append("); } </script>").toString();
     }
 

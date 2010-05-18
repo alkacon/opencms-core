@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishGroupPanel.java,v $
- * Date   : $Date: 2010/05/05 14:33:31 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/05/18 12:31:14 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,6 +44,7 @@ import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
 import org.opencms.gwt.client.util.CmsStyleVariable;
 import org.opencms.gwt.client.util.I_CmsHasSize;
+import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsUUID;
 
@@ -62,7 +63,7 @@ import com.google.gwt.user.client.ui.Label;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 8.0.0
  */
@@ -168,9 +169,7 @@ public class CmsPublishGroupPanel extends Composite implements I_CmsHasSize {
             warningImage.addStyleName(permaVisible);
             itemWidget.addButton(warningImage);
         }
-        Image icon = new Image(resourceBean.getIcon());
-        icon.addStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
-        itemWidget.setIcon(icon);
+        itemWidget.setIcon(CmsIconUtil.getResourceIconClasses(resourceBean.getResourceType()));
         return itemWidget;
     }
 

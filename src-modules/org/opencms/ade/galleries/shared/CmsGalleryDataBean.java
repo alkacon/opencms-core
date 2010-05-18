@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/Attic/CmsGalleryDataBean.java,v $
- * Date   : $Date: 2010/05/14 13:34:52 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/05/18 12:31:14 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  */
@@ -342,8 +342,7 @@ public class CmsGalleryDataBean implements IsSerializable {
                     entry.getTitle(),
                     entry.getPath(),
                     null,
-                    entry.getPath(),
-                    entry.getIconResource());
+                    entry.getPath());
                 m_categoriesList.add(bean);
                 treeToList(entry.getChildren());
             }

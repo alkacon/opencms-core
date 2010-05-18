@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItemWidget.java,v $
- * Date   : $Date: 2010/05/05 14:33:31 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2010/05/18 12:31:13 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,6 +57,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -66,7 +67,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Tobias Herrmann
  * @author Michael Moossen
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @since 8.0.0
  */
@@ -334,6 +335,19 @@ public class CmsListItemWidget extends Composite implements HasMouseOutHandlers,
             return;
         }
         m_iconPanel.setWidget(image);
+    }
+
+    /**
+     * Sets the icon for this item using the given CSS classes.<p>
+     * 
+     * @param iconClasses the CSS classes
+     */
+    public void setIcon(String iconClasses) {
+
+        m_iconPanel.setVisible(true);
+        Panel iconWidget = new SimplePanel();
+        iconWidget.addStyleName(iconClasses);
+        m_iconPanel.setWidget(iconWidget);
     }
 
     /**

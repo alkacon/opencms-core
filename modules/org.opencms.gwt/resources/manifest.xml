@@ -89,6 +89,26 @@
 			<accesscontrol />
 		</file>
 		<file>
+			<source>system/modules/org.opencms.gwt/resourceIcon.css</source>
+			<destination>system/modules/org.opencms.gwt/resourceIcon.css</destination>
+			<type>jsp</type>
+			<uuidstructure>c69e7fdf-619d-11df-ace9-2393f34d19cc</uuidstructure>
+			<uuidresource>c69e7fe0-619d-11df-ace9-2393f34d19cc</uuidresource>
+			<datelastmodified>Mon, 17 May 2010 10:20:11 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 17 May 2010 10:20:11 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>system/modules/org.opencms.gwt/lib</destination>
 			<type>folder</type>
 			<uuidstructure>c0adf2a2-1a47-11db-34ab-fdb4e480b6c9</uuidstructure>

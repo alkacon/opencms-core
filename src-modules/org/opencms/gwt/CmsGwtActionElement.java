@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsGwtActionElement.java,v $
- * Date   : $Date: 2010/05/14 13:34:53 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/05/18 12:31:13 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,11 +53,20 @@ import com.google.gwt.user.server.rpc.RPC;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
 public class CmsGwtActionElement extends CmsJspActionElement {
+
+    /** The opening script tag. */
+    private static final String SCRIPT_TAG_OPEN = "<script type=\"text/javascript\">";
+
+    /** The closing script tag. */
+    private static final String SCRIPT_TAG_CLOSE = "</script>";
+
+    /** The resource icon CSS URI. */
+    private static final String ICON_CSS_URI = "/system/modules/org.opencms.gwt/resourceIcon.css";
 
     /** The current core data. */
     private CmsCoreData m_coreData;
@@ -75,7 +84,7 @@ public class CmsGwtActionElement extends CmsJspActionElement {
     }
 
     /**
-     * Returns the serialized data for the core provider.<p>
+     * Returns the serialized data for the core provider wrapped into a script tag.<p>
      * 
      * @return the data
      * 
@@ -84,9 +93,12 @@ public class CmsGwtActionElement extends CmsJspActionElement {
     public String export() throws Exception {
 
         StringBuffer sb = new StringBuffer();
+
         String prefetchedData = serialize(I_CmsCoreService.class.getMethod("prefetch"), getCoreData());
         sb.append(CmsCoreData.DICT_NAME).append("='").append(prefetchedData).append("';");
         sb.append(ClientMessages.get().export(getRequest()));
+        wrapScript(sb);
+        sb.append("<style type=\"text/css\">\n @import url(\"").append(link(ICON_CSS_URI)).append("\");\n</style>\n");
         return sb.toString();
     }
 
@@ -153,5 +165,19 @@ public class CmsGwtActionElement extends CmsJspActionElement {
         String ret = s.replaceAll("\\\\", "\\\\\\\\");
         // escape single quotation marks
         return ret.replaceAll("'", "\\\\'");
+    }
+
+    /**
+     * Wraps the given buffer with surrounding script tags.<p> 
+     * 
+     * @param sb the string buffer to wrap
+     * 
+     * @return the string buffer
+     */
+    protected StringBuffer wrapScript(StringBuffer sb) {
+
+        sb.insert(0, SCRIPT_TAG_OPEN);
+        sb.append(SCRIPT_TAG_CLOSE).append("\n");
+        return sb;
     }
 }

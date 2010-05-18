@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/Attic/CmsCategoryTreeEntry.java,v $
- * Date   : $Date: 2010/05/06 09:27:20 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/05/18 12:31:13 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -56,9 +56,6 @@ public class CmsCategoryTreeEntry extends CmsCategory {
 
     /** The children. */
     private List<CmsCategoryTreeEntry> m_children;
-
-    /** The path to the category icon. */
-    private String m_iconResource;
 
     /** The path of the category. */
     private String m_path;
@@ -139,16 +136,6 @@ public class CmsCategoryTreeEntry extends CmsCategory {
     }
 
     /**
-     * Returns the iconResource.<p>
-     *
-     * @return the iconResource
-     */
-    public String getIconResource() {
-
-        return m_iconResource;
-    }
-
-    /**
      * Returns the path.<p>
      *
      * @return the path
@@ -167,15 +154,5 @@ public class CmsCategoryTreeEntry extends CmsCategory {
     public void setChildren(List<CmsCategoryTreeEntry> children) {
 
         m_children = children;
-    }
-
-    /**
-     * Sets the iconResource.<p>
-     *
-     * @param iconResource the iconResource to set
-     */
-    public void setIconResource(String iconResource) {
-
-        m_iconResource = iconResource;
     }
 }

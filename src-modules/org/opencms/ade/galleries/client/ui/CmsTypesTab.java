@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsTypesTab.java,v $
- * Date   : $Date: 2010/05/14 13:34:53 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/05/18 12:31:14 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,6 +41,7 @@ import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsPair;
+import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
@@ -50,7 +51,6 @@ import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.Image;
 
 /**
  * Provides the widget for the types tab.<p>
@@ -59,7 +59,7 @@ import com.google.gwt.user.client.ui.Image;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.
  */
@@ -143,9 +143,7 @@ public class CmsTypesTab extends A_CmsListTab {
             } else {
                 listItemWidget = new CmsListItemWidget(typeBean);
             }
-            Image icon = new Image(typeBean.getIconResource());
-            icon.setStyleName(DIALOG_CSS.listIcon());
-            listItemWidget.setIcon(icon);
+            listItemWidget.setIcon(CmsIconUtil.getResourceIconClasses(typeBean.getId()));
             CmsCheckBox checkBox = new CmsCheckBox();
             checkBox.addClickHandler(new CheckboxHandler(typeBean.getId(), checkBox));
             if ((selectedTypes != null) && selectedTypes.contains(typeBean.getId())) {
@@ -212,23 +210,7 @@ public class CmsTypesTab extends A_CmsListTab {
     public void updateContent(List<CmsTypesListInfoBean> types, List<String> selectedTypes) {
 
         clearList();
-        for (CmsTypesListInfoBean typeBean : types) {
-            // TODO: replace with CmsDraggableList Item see: CmsTabResultsPanel
-            CmsListItemWidget listItemWidget = new CmsListItemWidget(typeBean);
-            Image icon = new Image(typeBean.getIconResource());
-            icon.setStyleName(DIALOG_CSS.listIcon());
-            listItemWidget.setIcon(icon);
-            CmsCheckBox checkBox = new CmsCheckBox();
-            checkBox.addClickHandler(new CheckboxHandler(typeBean.getId(), checkBox));
-            if ((selectedTypes != null) && selectedTypes.contains(typeBean.getId())) {
-                checkBox.setChecked(true);
-            }
-            CmsTypeListItem listItem = new CmsTypeListItem(checkBox, listItemWidget);
-            listItem.setId(typeBean.getId());
-            listItem.setItemTitle(typeBean.getTitle());
-            listItem.setSubTitle(typeBean.getSubTitle());
-            addWidgetToList(listItem);
-        }
+        fillContent(types, selectedTypes);
     }
 
     /**

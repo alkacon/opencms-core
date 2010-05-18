@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsGalleriesTab.java,v $
- * Date   : $Date: 2010/05/14 13:34:53 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/05/18 12:31:13 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,6 +39,7 @@ import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsPair;
+import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
@@ -47,7 +48,6 @@ import java.util.List;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.Image;
 
 /**
  * Provides the widget for the galleries(folder) tab.<p>
@@ -56,7 +56,7 @@ import com.google.gwt.user.client.ui.Image;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.
  */
@@ -130,9 +130,7 @@ public class CmsGalleriesTab extends A_CmsListTab {
 
         for (CmsGalleriesListInfoBean galleryItem : galleryInfos) {
             CmsListItemWidget listItemWidget = new CmsListItemWidget(galleryItem);
-            Image icon = new Image(galleryItem.getIconResource());
-            icon.setStyleName(DIALOG_CSS.listIcon());
-            listItemWidget.setIcon(icon);
+            listItemWidget.setIcon(CmsIconUtil.getResourceIconClasses(galleryItem.getGalleryTypeName()));
             CmsCheckBox checkBox = new CmsCheckBox();
             checkBox.addClickHandler(new CheckboxHandler(galleryItem.getId(), checkBox));
             if ((selectedGalleries != null) && selectedGalleries.contains(galleryItem.getId())) {
@@ -196,22 +194,7 @@ public class CmsGalleriesTab extends A_CmsListTab {
     public void updateContent(List<CmsGalleriesListInfoBean> galleries, List<String> selectedGalleries) {
 
         clearList();
-        for (CmsGalleriesListInfoBean galleryItem : galleries) {
-            CmsListItemWidget listItemWidget = new CmsListItemWidget(galleryItem);
-            Image icon = new Image(galleryItem.getIconResource());
-            icon.setStyleName(DIALOG_CSS.listIcon());
-            listItemWidget.setIcon(icon);
-            CmsCheckBox checkBox = new CmsCheckBox();
-            checkBox.addClickHandler(new CheckboxHandler(galleryItem.getId(), checkBox));
-            if ((selectedGalleries != null) && selectedGalleries.contains(galleryItem.getId())) {
-                checkBox.setChecked(true);
-            }
-            CmsGalleryListItem listItem = new CmsGalleryListItem(checkBox, listItemWidget);
-            listItem.setId(galleryItem.getId());
-            listItem.setItemTitle(galleryItem.getTitle());
-            listItem.setSubTitle(galleryItem.getSubTitle());
-            addWidgetToList(listItem);
-        }
+        fillContent(galleries, selectedGalleries);
     }
 
     /**
