@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/ui/Attic/CmsTemplateSelectCell.java,v $
- * Date   : $Date: 2010/05/17 07:39:10 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/05/19 14:30:39 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -122,8 +122,8 @@ public class CmsTemplateSelectCell extends A_CmsSelectCell {
         m_topLabel.setText(template.getTitle());
         m_bottomLabel.setText(template.getDescription());
         m_imageBox.clear();
+        // TODO: use a default image if the image is not set, ie. null !!!
         m_imageBox.add(new Image(CmsStringUtil.joinPaths(CmsCoreProvider.get().getContext(), template.getImgPath()
             + SCALE_PARAMS)));
     }
-
 }
