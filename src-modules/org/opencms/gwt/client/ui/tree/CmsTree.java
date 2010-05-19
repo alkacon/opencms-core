@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/tree/Attic/CmsTree.java,v $
- * Date   : $Date: 2010/05/05 14:33:31 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/05/19 10:18:00 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,6 +39,7 @@ import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.ui.HasAnimation;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -48,14 +49,26 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
-public class CmsTree<I extends CmsTreeItem> extends CmsList<I> implements HasOpenHandlers<I> {
+public class CmsTree<I extends CmsTreeItem> extends CmsList<I> implements HasOpenHandlers<I>, HasAnimation {
 
     /** The event handlers for the tree. */
-    protected HandlerManager m_handlers = new HandlerManager(null);
+    protected HandlerManager m_handlers;
+
+    /** Flag to indicate is animations are enabled or not. */
+    private boolean m_animate;
+
+    /**
+     * Constructor.<p>
+     */
+    public CmsTree() {
+
+        m_animate = false;
+        m_handlers = new HandlerManager(this);
+    }
 
     /**
      * @see org.opencms.gwt.client.ui.CmsList#add(com.google.gwt.user.client.ui.Widget)
@@ -78,6 +91,9 @@ public class CmsTree<I extends CmsTreeItem> extends CmsList<I> implements HasOpe
         m_handlers.addHandler(OpenEvent.getType(), handler);
         return new HandlerRegistration() {
 
+            /**
+             * @see com.google.gwt.event.shared.HandlerRegistration#removeHandler()
+             */
             public void removeHandler() {
 
                 m_handlers.removeHandler(OpenEvent.getType(), handler);
@@ -102,5 +118,21 @@ public class CmsTree<I extends CmsTreeItem> extends CmsList<I> implements HasOpe
     public void fireOpen(I item) {
 
         OpenEvent.fire(this, item);
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.HasAnimation#isAnimationEnabled()
+     */
+    public boolean isAnimationEnabled() {
+
+        return m_animate;
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.HasAnimation#setAnimationEnabled(boolean)
+     */
+    public void setAnimationEnabled(boolean enable) {
+
+        m_animate = enable;
     }
 }

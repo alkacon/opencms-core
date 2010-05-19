@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/tree/Attic/CmsTreeItem.java,v $
- * Date   : $Date: 2010/05/06 13:37:38 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/05/19 10:18:00 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,6 +38,7 @@ import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsListTreeCss;
 import org.opencms.gwt.client.util.CmsStyleVariable;
 
+import com.google.gwt.animation.client.Animation;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Image;
@@ -63,11 +64,14 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Georg Westenberger
  * @author Michael Moossen
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 8.0.0
  */
 public class CmsTreeItem extends CmsSimpleListItem {
+
+    /** The duration of the animations. */
+    public static final int ANIMATION_DURATION = 200;
 
     /** The CSS bundle used for this widget. */
     private static final I_CmsListTreeCss CSS = I_CmsLayoutBundle.INSTANCE.listTreeCss();
@@ -80,6 +84,9 @@ public class CmsTreeItem extends CmsSimpleListItem {
 
     /** The style variable controlling this tree item's leaf/non-leaf state. */
     private CmsStyleVariable m_leafStyleVar;
+
+    /** Flag to indicate if open or closed. */
+    private boolean m_open;
 
     /** The item parent. */
     private CmsTreeItem m_parentItem;
@@ -104,6 +111,7 @@ public class CmsTreeItem extends CmsSimpleListItem {
         m_children.setStyleName(CSS.listTreeItemChildren());
         m_panel.add(m_children);
         onChangeChildren();
+        m_open = true;
         setOpen(false);
     }
 
@@ -147,9 +155,7 @@ public class CmsTreeItem extends CmsSimpleListItem {
     public void addChild(CmsTreeItem item) {
 
         m_children.addItem(item);
-        item.setParentItem(this);
-        item.setTree(m_tree);
-        onChangeChildren();
+        adopt(item);
     }
 
     /**
@@ -159,8 +165,9 @@ public class CmsTreeItem extends CmsSimpleListItem {
      */
     public void clearChildren() {
 
-        m_children.clearList();
-        onChangeChildren();
+        for (int i = getChildCount(); i > 0; i--) {
+            removeChild(i - 1);
+        }
     }
 
     /**
@@ -254,8 +261,17 @@ public class CmsTreeItem extends CmsSimpleListItem {
     public void insertChild(CmsTreeItem item, int position) {
 
         m_children.insert(item, position);
-        item.setTree(m_tree);
-        onChangeChildren();
+        adopt(item);
+    }
+
+    /**
+     * Checks if the item is open or closed.<p>
+     *
+     * @return <code>true</code> if open
+     */
+    public boolean isOpen() {
+
+        return m_open;
     }
 
     /**
@@ -263,13 +279,43 @@ public class CmsTreeItem extends CmsSimpleListItem {
      * 
      * @param item the item to remove
      * 
+     * @return the removed item 
+     * 
      * @see org.opencms.gwt.client.ui.CmsList#removeItem(org.opencms.gwt.client.ui.I_CmsListItem)
      */
-    public void removeChild(CmsTreeItem item) {
+    public CmsTreeItem removeChild(final CmsTreeItem item) {
 
         item.setParentItem(null);
-        m_children.removeItem(item);
+        item.setTree(null);
         onChangeChildren();
+        if ((m_tree != null) && m_tree.isAnimationEnabled()) {
+            // could be null if already detached
+            // animate
+            (new Animation() {
+
+                /**
+                 * @see com.google.gwt.animation.client.Animation#onComplete()
+                 */
+                @Override
+                protected void onComplete() {
+
+                    super.onComplete();
+                    m_children.removeItem(item);
+                }
+
+                /**
+                 * @see com.google.gwt.animation.client.Animation#onUpdate(double)
+                 */
+                @Override
+                protected void onUpdate(double progress) {
+
+                    item.getElement().getStyle().setOpacity(1 - progress);
+                }
+            }).run(ANIMATION_DURATION);
+        } else {
+            m_children.removeItem(item);
+        }
+        return item;
     }
 
     /**
@@ -277,13 +323,13 @@ public class CmsTreeItem extends CmsSimpleListItem {
      * 
      * @param index the index of the item to remove
      * 
+     * @return the removed item 
+     * 
      * @see org.opencms.gwt.client.ui.CmsList#remove(int)
      */
-    public void removeChild(int index) {
+    public CmsTreeItem removeChild(int index) {
 
-        m_children.getItem(index).setParentItem(null);
-        m_children.remove(index);
-        onChangeChildren();
+        return removeChild(m_children.getItem(index));
     }
 
     /**
@@ -297,10 +343,7 @@ public class CmsTreeItem extends CmsSimpleListItem {
      */
     public CmsTreeItem removeChild(String itemId) {
 
-        CmsTreeItem removeItem = m_children.removeItem(itemId);
-        removeItem.setParentItem(null);
-        onChangeChildren();
-        return removeItem;
+        return removeChild(m_children.getItem(itemId));
     }
 
     /**
@@ -309,6 +352,11 @@ public class CmsTreeItem extends CmsSimpleListItem {
      * @param open if true, open the tree item, else close it
      */
     public void setOpen(boolean open) {
+
+        if (m_open == open) {
+            return;
+        }
+        m_open = open;
 
         m_styleVar.setValue(open ? CSS.listTreeItemOpen() : CSS.listTreeItemClosed());
         m_opener.setDown(open);
@@ -350,6 +398,34 @@ public class CmsTreeItem extends CmsSimpleListItem {
     }
 
     /**
+     * Adopts the given item.<p>
+     * 
+     * @param item the item to adopt
+     */
+    protected void adopt(final CmsTreeItem item) {
+
+        item.setParentItem(this);
+        item.setTree(m_tree);
+        onChangeChildren();
+        if ((m_tree != null) && m_tree.isAnimationEnabled()) {
+            // could be null if not yet attached
+            item.getElement().getStyle().setOpacity(0);
+            // animate
+            (new Animation() {
+
+                /**
+                 * @see com.google.gwt.animation.client.Animation#onUpdate(double)
+                 */
+                @Override
+                protected void onUpdate(double progress) {
+
+                    item.getElement().getStyle().setOpacity(progress);
+                }
+            }).run(ANIMATION_DURATION);
+        }
+    }
+
+    /**
      * Creates the button for opening/closing this item.<p>
      * 
      * @return a button
@@ -373,6 +449,16 @@ public class CmsTreeItem extends CmsSimpleListItem {
         return opener;
     }
 
+    /** 
+     * Fires the open event on the tree.<p> 
+     */
+    protected void fireOpen() {
+
+        if (m_tree != null) {
+            m_tree.fireOpen(this);
+        }
+    }
+
     /**
      * The '-' image.<p>
      * 
@@ -393,20 +479,10 @@ public class CmsTreeItem extends CmsSimpleListItem {
         return new Image(I_CmsImageBundle.INSTANCE.plus());
     }
 
-    /** 
-     * Fires the open event on the tree.<p> 
-     */
-    private void fireOpen() {
-
-        if (m_tree != null) {
-            m_tree.fireOpen(this);
-        }
-    }
-
     /**
      * Helper method which is called when the list of children changes.<p> 
      */
-    private void onChangeChildren() {
+    protected void onChangeChildren() {
 
         int count = getChildCount();
         m_leafStyleVar.setValue(count == 0 ? CSS.listTreeItemLeaf() : CSS.listTreeItemInternal());

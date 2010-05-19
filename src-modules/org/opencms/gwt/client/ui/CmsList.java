@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsList.java,v $
- * Date   : $Date: 2010/05/06 13:37:38 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/05/19 10:18:00 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 8.0.0
  */
@@ -167,14 +167,17 @@ public class CmsList<I extends I_CmsListItem> extends ComplexPanel implements I_
      * 
      * @param item the item to remove
      * 
+     * @return the removed item
+     * 
      * @see #remove(Widget)
      */
-    public void removeItem(I item) {
+    public I removeItem(I item) {
 
         remove((Widget)item);
         if (item.getId() != null) {
             m_items.remove(item.getId());
         }
+        return item;
     }
 
     /**
