@@ -39,6 +39,9 @@
 				<formatter type="center" uri="/system/modules/org.opencms.frontend.template3/elements/textbox/center.jsp" />
 				<formatter type="footer" uri="/system/modules/org.opencms.frontend.template3/elements/textbox/footer.jsp" />
 			</formatters>
+			<properties>
+				<property name="test1" type="string" widget="string" default=""/>
+			</properties>
 		</xsd:appinfo>
 
 	</xsd:annotation>  

@@ -1,4 +1,6 @@
 <%@ page import="org.opencms.jsp.*" %>
+<%@ page import= "org.opencms.xml.containerpage.*" %>
+<%@ page import="java.util.*"  %>
 <%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %><%
@@ -12,7 +14,13 @@
 		<h4><c:out value="${content.value['Title']}" /></h4>
 		<div class="boxbody">
 			<c:out value="${content.value['Content']}" escapeXml="false" />
-
+			<% 
+			CmsContainerElementBean element =  (CmsContainerElementBean) request.getAttribute("__currentElement");
+			Map<String, String> properties =  element.getProperties();
+			for (Map.Entry<String, String> entry: properties.entrySet()) {
+				out.println(entry.getKey() + " -> " + entry.getValue());
+			}
+			%>
 			<c:if test="${content.hasValue['JspFile']}">
 				<c:set var="path" value="${content.value['JspFile'].stringValue}" />
 				<c:choose>
