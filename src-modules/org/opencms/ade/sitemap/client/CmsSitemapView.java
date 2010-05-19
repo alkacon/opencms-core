@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapView.java,v $
- * Date   : $Date: 2010/05/18 12:58:17 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2010/05/19 10:19:10 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,9 +43,17 @@ import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsToolbarPlaceHolder;
 import org.opencms.gwt.client.ui.tree.A_CmsDeepLazyOpenHandler;
 import org.opencms.gwt.client.ui.tree.CmsLazyTree;
+import org.opencms.gwt.client.ui.tree.CmsTreeItem;
+import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsStringUtil;
 
+import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.Event.NativePreviewEvent;
+import com.google.gwt.user.client.Event.NativePreviewHandler;
+import com.google.gwt.user.client.Window.ClosingEvent;
+import com.google.gwt.user.client.Window.ClosingHandler;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 
@@ -54,11 +62,11 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 8.0.0
  */
-public class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitemapControllerHandler {
+public class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitemapControllerHandler, NativePreviewHandler {
 
     /** Text metrics key. */
     private static final String TM_SITEMAP = "Sitemap";
@@ -100,6 +108,23 @@ public class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitemapContr
             m_hoverbar.installOn(m_controller, itemWidget, entry.getSitePath());
         }
         return treeItem;
+    }
+
+    /**
+     * Ensures the given item is visible in the viewport.<p>
+     * 
+     * @param item the item to see
+     */
+    public void ensureVisible(CmsSitemapTreeItem item) {
+
+        // open the tree
+        CmsTreeItem ti = item;
+        while (ti != null) {
+            ti.setOpen(true);
+            ti = ti.getParentItem();
+        }
+        // scroll
+        CmsDomUtil.ensureVisible(RootPanel.getBodyElement(), item.getElement(), 200);
     }
 
     /**
@@ -252,10 +277,49 @@ public class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitemapContr
         });
         m_tree.addItem(rootItem);
         m_tree.truncate(TM_SITEMAP, 920);
+        m_tree.setAnimationEnabled(true);
 
         // paint
         page.remove(loadingLabel);
         page.add(m_tree);
+
+        // key events handling
+        Event.addNativePreviewHandler(this);
+
+        // unload event handling
+        Window.addWindowClosingHandler(new ClosingHandler() {
+
+            /**
+             * @see com.google.gwt.user.client.Window.ClosingHandler#onWindowClosing(com.google.gwt.user.client.Window.ClosingEvent)
+             */
+            public void onWindowClosing(ClosingEvent event) {
+
+                if (!m_controller.isDirty()) {
+                    return;
+                }
+                boolean savePage = Window.confirm(Messages.get().key(Messages.GUI_CONFIRM_DIRTY_LEAVING_0));
+                if (savePage) {
+                    m_controller.commit(true);
+                }
+            }
+        });
+    }
+
+    /**
+     * @see com.google.gwt.user.client.Event.NativePreviewHandler#onPreviewNativeEvent(com.google.gwt.user.client.Event.NativePreviewEvent)
+     */
+    public void onPreviewNativeEvent(NativePreviewEvent event) {
+
+        Event nativeEvent = Event.as(event.getNativeEvent());
+        if (event.getTypeInt() != Event.ONKEYUP) {
+            return;
+        }
+        if ((nativeEvent.getKeyCode() == 'z') || (nativeEvent.getKeyCode() == 'Z')) {
+            m_controller.undo();
+        }
+        if ((nativeEvent.getKeyCode() == 'r') || (nativeEvent.getKeyCode() == 'R')) {
+            m_controller.redo();
+        }
     }
 
     /**

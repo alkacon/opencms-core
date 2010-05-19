@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapToolbarHandler.java,v $
- * Date   : $Date: 2010/04/22 09:23:34 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/05/19 10:19:10 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
  * 
@@ -127,7 +127,7 @@ public class CmsSitemapToolbarHandler {
      */
     public void onSave() {
 
-        m_controller.commit();
+        m_controller.commit(false);
     }
 
     /**

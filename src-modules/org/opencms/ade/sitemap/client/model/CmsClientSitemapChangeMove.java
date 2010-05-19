@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeMove.java,v $
- * Date   : $Date: 2010/05/18 12:58:17 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/05/19 10:19:10 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.ade.sitemap.client.model;
 
 import org.opencms.ade.sitemap.client.CmsSitemapController;
+import org.opencms.ade.sitemap.client.CmsSitemapTreeItem;
 import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.file.CmsResource;
@@ -45,7 +46,7 @@ import org.opencms.xml.sitemap.I_CmsSitemapChange.Type;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -102,10 +103,11 @@ public class CmsClientSitemapChangeMove implements I_CmsClientSitemapChange {
      */
     public void applyToView(CmsSitemapView view) {
 
-        CmsTreeItem sourceParent = view.getTreeItem(CmsResource.getParentFolder(getSourcePath()));
+        CmsSitemapTreeItem sourceParent = view.getTreeItem(CmsResource.getParentFolder(getSourcePath()));
         CmsTreeItem moved = sourceParent.getChild(getSourcePosition());
         sourceParent.removeChild(getSourcePosition());
-        CmsTreeItem destParent = view.getTreeItem(CmsResource.getParentFolder(getDestinationPath()));
+        CmsSitemapTreeItem destParent = view.getTreeItem(CmsResource.getParentFolder(getDestinationPath()));
+        view.ensureVisible(destParent);
         destParent.insertChild(moved, getDestinationPosition());
     }
 

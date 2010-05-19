@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeNew.java,v $
- * Date   : $Date: 2010/05/18 12:58:17 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/05/19 10:19:10 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,6 @@ import org.opencms.ade.sitemap.client.CmsSitemapTreeItem;
 import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.file.CmsResource;
-import org.opencms.gwt.client.ui.tree.CmsTreeItem;
 import org.opencms.xml.sitemap.CmsSitemapChangeNew;
 import org.opencms.xml.sitemap.I_CmsSitemapChange;
 import org.opencms.xml.sitemap.I_CmsSitemapChange.Type;
@@ -46,7 +45,7 @@ import org.opencms.xml.sitemap.I_CmsSitemapChange.Type;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -57,6 +56,9 @@ public class CmsClientSitemapChangeNew implements I_CmsClientSitemapChange {
 
     /** The new entry with children. */
     private CmsClientSitemapEntry m_entry;
+
+    /** The corresponding tree item, if available from a delete operation. */
+    private CmsSitemapTreeItem m_treeItem;
 
     /**
      * Constructor.<p>
@@ -86,8 +88,9 @@ public class CmsClientSitemapChangeNew implements I_CmsClientSitemapChange {
      */
     public void applyToView(CmsSitemapView view) {
 
-        CmsTreeItem newParent = view.getTreeItem(CmsResource.getParentFolder(getEntry().getSitePath()));
-        CmsSitemapTreeItem newChild = view.create(getEntry());
+        CmsSitemapTreeItem newParent = view.getTreeItem(CmsResource.getParentFolder(getEntry().getSitePath()));
+        view.ensureVisible(newParent);
+        CmsSitemapTreeItem newChild = (m_treeItem != null ? m_treeItem : view.create(getEntry()));
         if (getEntry().getPosition() != -1) {
             newParent.insertChild(newChild, getEntry().getPosition());
         } else {
@@ -131,6 +134,18 @@ public class CmsClientSitemapChangeNew implements I_CmsClientSitemapChange {
      */
     public I_CmsClientSitemapChange revert() {
 
-        return new CmsClientSitemapChangeDelete(getEntry());
+        CmsClientSitemapChangeDelete change = new CmsClientSitemapChangeDelete(getEntry());
+        change.setTreeItem(m_treeItem);
+        return change;
+    }
+
+    /**
+     * Sets the corresponding tree item from a delete operation.<p>
+     * 
+     * @param treeItem the item to set
+     */
+    public void setTreeItem(CmsSitemapTreeItem treeItem) {
+
+        m_treeItem = treeItem;
     }
 }

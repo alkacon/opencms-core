@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeDelete.java,v $
- * Date   : $Date: 2010/05/18 12:58:17 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/05/19 10:19:10 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,10 +32,10 @@
 package org.opencms.ade.sitemap.client.model;
 
 import org.opencms.ade.sitemap.client.CmsSitemapController;
+import org.opencms.ade.sitemap.client.CmsSitemapTreeItem;
 import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.file.CmsResource;
-import org.opencms.gwt.client.ui.tree.CmsTreeItem;
 import org.opencms.xml.sitemap.CmsSitemapChangeDelete;
 import org.opencms.xml.sitemap.I_CmsSitemapChange;
 import org.opencms.xml.sitemap.I_CmsSitemapChange.Type;
@@ -45,7 +45,7 @@ import org.opencms.xml.sitemap.I_CmsSitemapChange.Type;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -56,6 +56,8 @@ public class CmsClientSitemapChangeDelete implements I_CmsClientSitemapChange {
 
     /** The deleted entry with children. */
     private CmsClientSitemapEntry m_entry;
+
+    private CmsSitemapTreeItem m_treeItem;
 
     /**
      * Constructor.<p>
@@ -81,8 +83,10 @@ public class CmsClientSitemapChangeDelete implements I_CmsClientSitemapChange {
      */
     public void applyToView(CmsSitemapView view) {
 
-        CmsTreeItem deleteParent = view.getTreeItem(CmsResource.getParentFolder(getEntry().getSitePath()));
-        deleteParent.removeChild(getEntry().getName());
+        CmsSitemapTreeItem deleteParent = view.getTreeItem(CmsResource.getParentFolder(getEntry().getSitePath()));
+        view.ensureVisible(deleteParent);
+        m_treeItem = (CmsSitemapTreeItem)deleteParent.removeChild(getEntry().getName());
+        m_treeItem.setOpen(false);
     }
 
     /**
@@ -116,6 +120,18 @@ public class CmsClientSitemapChangeDelete implements I_CmsClientSitemapChange {
      */
     public I_CmsClientSitemapChange revert() {
 
-        return new CmsClientSitemapChangeNew(getEntry());
+        CmsClientSitemapChangeNew change = new CmsClientSitemapChangeNew(getEntry());
+        change.setTreeItem(m_treeItem);
+        return change;
+    }
+
+    /**
+     * Sets the corresponding tree item from a new operation.<p>
+     * 
+     * @param treeItem the item to set
+     */
+    public void setTreeItem(CmsSitemapTreeItem treeItem) {
+
+        m_treeItem = treeItem;
     }
 }

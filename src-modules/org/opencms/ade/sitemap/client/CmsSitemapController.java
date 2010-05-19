@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2010/05/18 13:29:53 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2010/05/19 10:19:10 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import com.google.gwt.user.client.Window;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 8.0.0
  */
@@ -107,8 +107,10 @@ public class CmsSitemapController {
 
     /**
      * Commits the changes.<p>
+     * 
+     * @param sync if to use a synchronized or an asynchronized request  
      */
-    public void commit() {
+    public void commit(final boolean sync) {
 
         // save the sitemap
         CmsRpcAction<Void> saveAction = new CmsRpcAction<Void>() {
@@ -124,7 +126,11 @@ public class CmsSitemapController {
                 for (I_CmsClientSitemapChange change : m_changes) {
                     changes.add(change.getChangeForCommit());
                 }
-                getService().save(CmsCoreProvider.get().getUri(), changes, this);
+                if (sync) {
+                    getService().saveSync(CmsCoreProvider.get().getUri(), changes, this);
+                } else {
+                    getService().save(CmsCoreProvider.get().getUri(), changes, this);
+                }
             }
 
             /**
