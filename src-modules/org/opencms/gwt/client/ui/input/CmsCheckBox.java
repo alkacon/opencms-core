@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsCheckBox.java,v $
- * Date   : $Date: 2010/05/11 10:43:31 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2010/05/19 14:31:10 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
  * @author Georg Westenberger
  * @author Michael Moossen
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 8.0.0
  */
@@ -70,6 +70,9 @@ implements HasClickHandlers, I_CmsFormWidget, I_CmsHasInit, HasHorizontalAlignme
 
     /** CSS bundle for this widget. */
     private static final I_CmsInputCss CSS = I_CmsInputLayoutBundle.INSTANCE.inputCss();
+
+    /** The current horizontal alignment. */
+    private HorizontalAlignmentConstant m_align;
 
     /** Toggle button which actually displays the checkbox. */
     private final CmsToggleButton m_button;
@@ -115,16 +118,6 @@ implements HasClickHandlers, I_CmsFormWidget, I_CmsHasInit, HasHorizontalAlignme
         initWidget(m_root);
         addStyleName(CSS.checkBox());
         addStyleName(CSS.inlineBlock());
-    }
-
-    /**
-     * Sets the text.<p>
-     *
-     * @param text the text to set
-     */
-    public void setText(String text) {
-
-        m_button.setText(text);
     }
 
     /**
@@ -195,6 +188,16 @@ implements HasClickHandlers, I_CmsFormWidget, I_CmsHasInit, HasHorizontalAlignme
     public String getFormValueAsString() {
 
         return "" + isChecked();
+    }
+
+    /**
+     * This is the alignment of the text in reference to the checkbox, possible values are left or right.<p>
+     * 
+     * @see com.google.gwt.user.client.ui.HasHorizontalAlignment#getHorizontalAlignment()
+     */
+    public HorizontalAlignmentConstant getHorizontalAlignment() {
+
+        return m_align;
     }
 
     /**
@@ -269,20 +272,7 @@ implements HasClickHandlers, I_CmsFormWidget, I_CmsHasInit, HasHorizontalAlignme
      */
     public void setFormValueAsString(String value) {
 
-        setChecked(Boolean.parseBoolean(value) || value.equalsIgnoreCase("checked"));
-    }
-
-    /** The current horizontal alignment. */
-    private HorizontalAlignmentConstant m_align;
-
-    /**
-     * This is the alignment of the text in reference to the checkbox, possible values are left or right.<p>
-     * 
-     * @see com.google.gwt.user.client.ui.HasHorizontalAlignment#getHorizontalAlignment()
-     */
-    public HorizontalAlignmentConstant getHorizontalAlignment() {
-
-        return m_align;
+        setChecked(Boolean.parseBoolean(value) || "checked".equalsIgnoreCase(value));
     }
 
     /**
@@ -298,5 +288,15 @@ implements HasClickHandlers, I_CmsFormWidget, I_CmsHasInit, HasHorizontalAlignme
         }
         m_button.setHorizontalAlignment(align);
         m_align = align;
+    }
+
+    /**
+     * Sets the text.<p>
+     *
+     * @param text the text to set
+     */
+    public void setText(String text) {
+
+        m_button.setText(text);
     }
 }
