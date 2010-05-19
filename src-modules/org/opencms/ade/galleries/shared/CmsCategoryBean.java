@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/Attic/CmsCategoryInfoBean.java,v $
- * Date   : $Date: 2010/05/18 12:31:14 $
- * Version: $Revision: 1.2 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/Attic/CmsCategoryBean.java,v $
+ * Date   : $Date: 2010/05/19 09:02:51 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,9 +31,10 @@
 
 package org.opencms.ade.galleries.shared;
 
-import org.opencms.gwt.shared.CmsListInfoBean;
+import org.opencms.gwt.shared.sort.I_CmsHasPath;
+import org.opencms.gwt.shared.sort.I_CmsHasTitle;
 
-import java.util.Map;
+import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * A specific bean holding all info to be displayed in the categories tab.<p>
@@ -46,61 +47,90 @@ import java.util.Map;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  */
-public class CmsCategoryInfoBean extends CmsListInfoBean implements I_CmsItemId, Comparable<CmsCategoryInfoBean> {
+public class CmsCategoryBean implements I_CmsHasTitle, I_CmsHasPath, IsSerializable {
 
     /** The category path as id. */
-    private String m_categoryPath;
+    private String m_path;
 
-    /**
-     * The default constructor.<p>
-     */
-    public CmsCategoryInfoBean() {
+    private String m_description;
 
-        // empty
-    }
+    private String m_title;
 
     /**
      * The constructor.<p>
      * 
      * @param title the title to set 
-     * @param subtitle the subtitle to set
-     * @param additionalInfo the additional info
-     * @param id category path as id
+     * @param description the subtitle to set
+     * @param path the category path
      */
-    public CmsCategoryInfoBean(String title, String subtitle, Map<String, String> additionalInfo, String id) {
+    public CmsCategoryBean(String title, String description, String path) {
 
-        super(title, subtitle, additionalInfo);
-        m_categoryPath = id;
+        m_title = title;
+        m_description = description;
+        m_path = path;
     }
 
     /**
-     * 
-     * @see java.lang.Comparable#compareTo(java.lang.Object)
+     * Returns the category path.<p>
+     *
+     * @return the category path
      */
-    //TODO: what does happen, if title is null?
-    public int compareTo(CmsCategoryInfoBean o) {
+    public String getPath() {
 
-        return getTitle().compareTo(o.getTitle());
+        return m_path;
     }
 
     /**
-     * @see org.opencms.ade.galleries.shared.I_CmsItemId#getId()
+     * Returns the description.<p>
+     *
+     * @return the description
      */
+    public String getDescription() {
 
-    public String getId() {
-
-        return m_categoryPath;
+        return m_description;
     }
 
-    /** 
-     * @see org.opencms.ade.galleries.shared.I_CmsItemId#setId(java.lang.String)
+    /**
+     * Returns the title.<p>
+     *
+     * @return the title
      */
-    public void setId(String id) {
+    public String getTitle() {
 
-        m_categoryPath = id;
+        return m_title;
+    }
+
+    /**
+     * Sets the category path.<p>
+     *
+     * @param path the category path to set
+     */
+    public void setPath(String path) {
+
+        m_path = path;
+    }
+
+    /**
+     * Sets the description.<p>
+     *
+     * @param description the description to set
+     */
+    public void setDescription(String description) {
+
+        m_description = description;
+    }
+
+    /**
+     * Sets the title.<p>
+     *
+     * @param title the title to set
+     */
+    public void setTitle(String title) {
+
+        m_title = title;
     }
 }

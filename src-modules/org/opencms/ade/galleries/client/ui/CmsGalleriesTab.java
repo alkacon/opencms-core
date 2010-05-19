@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsGalleriesTab.java,v $
- * Date   : $Date: 2010/05/18 12:31:13 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/05/19 09:02:51 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,7 +32,7 @@
 package org.opencms.ade.galleries.client.ui;
 
 import org.opencms.ade.galleries.client.CmsGalleriesTabHandler;
-import org.opencms.ade.galleries.shared.CmsGalleriesListInfoBean;
+import org.opencms.ade.galleries.shared.CmsGalleryFolderBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
@@ -40,6 +40,7 @@ import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsPair;
 import org.opencms.gwt.shared.CmsIconUtil;
+import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
@@ -56,7 +57,7 @@ import com.google.gwt.user.client.ui.HTMLPanel;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 8.0.
  */
@@ -126,20 +127,23 @@ public class CmsGalleriesTab extends A_CmsListTab {
      * @param galleryInfos the gallery info beans 
      * @param selectedGalleries the list of galleries to select
      */
-    public void fillContent(List<CmsGalleriesListInfoBean> galleryInfos, List<String> selectedGalleries) {
+    public void fillContent(List<CmsGalleryFolderBean> galleryInfos, List<String> selectedGalleries) {
 
-        for (CmsGalleriesListInfoBean galleryItem : galleryInfos) {
-            CmsListItemWidget listItemWidget = new CmsListItemWidget(galleryItem);
-            listItemWidget.setIcon(CmsIconUtil.getResourceIconClasses(galleryItem.getGalleryTypeName()));
+        for (CmsGalleryFolderBean galleryItem : galleryInfos) {
+            CmsListItemWidget listItemWidget = new CmsListItemWidget(new CmsListInfoBean(
+                galleryItem.getTitle(),
+                galleryItem.getPath(),
+                null));
+            listItemWidget.setIcon(CmsIconUtil.getResourceIconClasses(galleryItem.getType()));
             CmsCheckBox checkBox = new CmsCheckBox();
-            checkBox.addClickHandler(new CheckboxHandler(galleryItem.getId(), checkBox));
-            if ((selectedGalleries != null) && selectedGalleries.contains(galleryItem.getId())) {
+            checkBox.addClickHandler(new CheckboxHandler(galleryItem.getPath(), checkBox));
+            if ((selectedGalleries != null) && selectedGalleries.contains(galleryItem.getPath())) {
                 checkBox.setChecked(true);
             }
             CmsGalleryListItem listItem = new CmsGalleryListItem(checkBox, listItemWidget);
-            listItem.setId(galleryItem.getId());
+            listItem.setId(galleryItem.getPath());
             listItem.setItemTitle(galleryItem.getTitle());
-            listItem.setSubTitle(galleryItem.getSubTitle());
+            listItem.setSubTitle(galleryItem.getPath());
             addWidgetToList(listItem);
         }
     }
@@ -191,7 +195,7 @@ public class CmsGalleriesTab extends A_CmsListTab {
      * @param galleries the new gallery list
      * @param selectedGalleries the list of galleries to select
      */
-    public void updateContent(List<CmsGalleriesListInfoBean> galleries, List<String> selectedGalleries) {
+    public void updateContent(List<CmsGalleryFolderBean> galleries, List<String> selectedGalleries) {
 
         clearList();
         fillContent(galleries, selectedGalleries);

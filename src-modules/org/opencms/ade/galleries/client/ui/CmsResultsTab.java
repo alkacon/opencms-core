@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsResultsTab.java,v $
- * Date   : $Date: 2010/05/18 12:31:13 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/05/19 09:02:51 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,7 +34,7 @@ package org.opencms.ade.galleries.client.ui;
 import org.opencms.ade.galleries.client.CmsResultsTabHandler;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
-import org.opencms.ade.galleries.shared.CmsResultsListInfoBean;
+import org.opencms.ade.galleries.shared.CmsResultItemBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
 import org.opencms.gwt.client.draganddrop.I_CmsDragHandler;
@@ -47,6 +47,7 @@ import org.opencms.gwt.client.util.CmsClientStringUtil;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsPair;
 import org.opencms.gwt.shared.CmsIconUtil;
+import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
@@ -67,7 +68,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 8.0.
  */
@@ -175,28 +176,33 @@ public class CmsResultsTab extends A_CmsListTab implements ClickHandler {
 
         showParams(searchObj, typesParams, galleriesParams, categoriesParams);
         updateListSize();
-        List<CmsResultsListInfoBean> list = searchObj.getResults();
-        for (CmsResultsListInfoBean resultItem : list) {
+        List<CmsResultItemBean> list = searchObj.getResults();
+        for (CmsResultItemBean resultItem : list) {
 
             CmsListItemWidget resultItemWidget;
+            CmsListInfoBean infoBean = new CmsListInfoBean(resultItem.getTitle(), resultItem.getDescription(), null);
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(resultItem.getExcerpt())) {
+                //TODO: add localization
+                infoBean.addAdditionalInfo("Excerpt", resultItem.getExcerpt());
+            }
             if (m_dragHandler != null) {
-                resultItemWidget = m_dragHandler.createDraggableListItemWidget(resultItem, resultItem.getClientId());
+                resultItemWidget = m_dragHandler.createDraggableListItemWidget(infoBean, resultItem.getClientId());
             } else {
-                resultItemWidget = new CmsListItemWidget(resultItem);
+                resultItemWidget = new CmsListItemWidget(infoBean);
             }
             // add  preview button
             CmsPushButton previewButton = new CmsPushButton();
             previewButton.setImageClass(I_CmsImageBundle.INSTANCE.style().magnifierIcon());
             previewButton.setShowBorder(false);
             previewButton.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
-            previewButton.addClickHandler(new CmsPushButtonHandler(resultItem.getId()));
+            previewButton.addClickHandler(new CmsPushButtonHandler(resultItem.getPath()));
             resultItemWidget.addButton(previewButton);
             // add file icon
             resultItemWidget.setIcon(CmsIconUtil.getResourceIconClasses(
-                resultItem.getResourceType(),
-                resultItem.getId()));
+                resultItem.getType(),
+                resultItem.getPath()));
             CmsResultListItem listItem = new CmsResultListItem(resultItemWidget);
-            listItem.setId(resultItem.getId());
+            listItem.setId(resultItem.getPath());
             addWidgetToList(listItem);
         }
     }

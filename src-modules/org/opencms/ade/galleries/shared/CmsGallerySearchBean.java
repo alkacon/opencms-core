@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/Attic/CmsGallerySearchBean.java,v $
- * Date   : $Date: 2010/05/18 12:49:13 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/05/19 09:02:51 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  */
@@ -85,7 +85,7 @@ public class CmsGallerySearchBean implements IsSerializable {
     private int m_resultCount;
 
     /** The results to display in the list of search results. */
-    private List<CmsResultsListInfoBean> m_results;
+    private List<CmsResultItemBean> m_results;
 
     /** The sort order of the search result. */
     private String m_sortOrder;
@@ -282,7 +282,7 @@ public class CmsGallerySearchBean implements IsSerializable {
      *
      * @return the results
      */
-    public List<CmsResultsListInfoBean> getResults() {
+    public List<CmsResultItemBean> getResults() {
 
         return m_results;
     }
@@ -455,7 +455,7 @@ public class CmsGallerySearchBean implements IsSerializable {
      *
      * @param results the results to set
      */
-    public void setResults(List<CmsResultsListInfoBean> results) {
+    public void setResults(List<CmsResultItemBean> results) {
 
         m_results = results;
     }

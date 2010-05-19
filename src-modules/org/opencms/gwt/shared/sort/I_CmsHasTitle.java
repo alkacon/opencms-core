@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/sort/Attic/I_CmsHasTitle.java,v $
- * Date   : $Date: 2010/05/18 12:31:13 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/05/19 09:02:51 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,17 @@
 
 package org.opencms.gwt.shared.sort;
 
+/**
+ * Marker interface for objects with a title property to allow easy sorting.<p>
+ * 
+ * @see CmsComparatorTitle
+ * 
+ * @author Tobias Herrmann
+ * 
+ * @version $Revision: 1.2 $
+ * 
+ * @since 8.0.0
+ */
 public interface I_CmsHasTitle {
 
     /**

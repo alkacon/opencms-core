@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/sort/Attic/CmsComparatorTitleAsc.java,v $
- * Date   : $Date: 2010/05/18 12:31:13 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/sort/Attic/I_CmsHasPath.java,v $
+ * Date   : $Date: 2010/05/19 09:02:51 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -31,16 +31,23 @@
 
 package org.opencms.gwt.shared.sort;
 
-import java.util.Comparator;
-
-public class CmsComparatorTitleAsc implements Comparator<I_CmsHasTitle> {
+/**
+ * Marker interface for objects with a path property to allow easy sorting.<p>
+ * 
+ * @see CmsComparatorPath
+ * 
+ * @author Tobias Herrmann
+ * 
+ * @version $Revision: 1.1 $
+ * 
+ * @since 8.0.0
+ */
+public interface I_CmsHasPath {
 
     /**
-     * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+     * Returns the id.<p>
+     * 
+     * @return the id
      */
-    public int compare(I_CmsHasTitle o1, I_CmsHasTitle o2) {
-
-        return o1.getTitle().compareTo(o2.getTitle());
-    }
-
+    String getPath();
 }

@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/sort/Attic/I_CmsHasId.java,v $
- * Date   : $Date: 2010/05/18 12:31:13 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/sort/Attic/CmsComparatorTitle.java,v $
+ * Date   : $Date: 2010/05/19 09:02:51 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -31,12 +31,41 @@
 
 package org.opencms.gwt.shared.sort;
 
-public interface I_CmsHasId {
+import java.util.Comparator;
+
+/**
+ * Comparator for objects with a title property.<p>
+ * 
+ * @see I_CmsHasTitle
+ * 
+ * @author Tobias Herrmann
+ * 
+ * @version $Revision: 1.1 $
+ * 
+ * @since 8.0.0
+ */
+public class CmsComparatorTitle implements Comparator<I_CmsHasTitle> {
+
+    /** Sort order flag. */
+    private boolean m_ascending;
 
     /**
-     * Returns the id.<p>
+     * Constructor.<p>
      * 
-     * @return the id
+     * @param ascending if <code>true</code> order is ascending
      */
-    String getId();
+    public CmsComparatorTitle(boolean ascending) {
+
+        m_ascending = ascending;
+    }
+
+    /**
+     * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+     */
+    public int compare(I_CmsHasTitle o1, I_CmsHasTitle o2) {
+
+        int result = o1.getTitle().compareTo(o2.getTitle());
+        return m_ascending ? result : -result;
+    }
+
 }

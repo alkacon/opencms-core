@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/rpc/Attic/I_CmsGalleryServiceAsync.java,v $
- * Date   : $Date: 2010/05/14 13:34:53 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/05/19 09:02:51 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,7 @@
 
 package org.opencms.ade.galleries.shared.rpc;
 
-import org.opencms.ade.galleries.shared.CmsGalleriesListInfoBean;
+import org.opencms.ade.galleries.shared.CmsGalleryFolderBean;
 import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
@@ -46,7 +46,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
  * 
@@ -80,7 +80,7 @@ public interface I_CmsGalleryServiceAsync {
      * @param resourceTypes the resource types
      * @param callback the callback
      */
-    void getGalleries(List<String> resourceTypes, AsyncCallback<List<CmsGalleriesListInfoBean>> callback);
+    void getGalleries(List<String> resourceTypes, AsyncCallback<List<CmsGalleryFolderBean>> callback);
 
     /**
      * Returns the initial data for the given gallery mode.<p>

@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/sort/Attic/CmsComparatorIdDesc.java,v $
- * Date   : $Date: 2010/05/18 12:31:13 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/sort/Attic/CmsComparatorPath.java,v $
+ * Date   : $Date: 2010/05/19 09:02:51 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -33,13 +33,38 @@ package org.opencms.gwt.shared.sort;
 
 import java.util.Comparator;
 
-public class CmsComparatorIdDesc implements Comparator<I_CmsHasId> {
+/**
+ * Comparator for objects with a path property.<p>
+ * 
+ * @see I_CmsHasPath
+ * 
+ * @author Tobias Herrmann
+ * 
+ * @version $Revision: 1.1 $
+ * 
+ * @since 8.0.0
+ */
+public class CmsComparatorPath implements Comparator<I_CmsHasPath> {
+
+    /** Sort order flag. */
+    private boolean m_ascending;
+
+    /**
+     * Constructor.<p>
+     * 
+     * @param ascending if <code>true</code> order is ascending
+     */
+    public CmsComparatorPath(boolean ascending) {
+
+        m_ascending = ascending;
+    }
 
     /**
      * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
      */
-    public int compare(I_CmsHasId o1, I_CmsHasId o2) {
+    public int compare(I_CmsHasPath o1, I_CmsHasPath o2) {
 
-        return -o1.getId().compareTo(o2.getId());
+        int result = o1.getPath().compareTo(o2.getPath());
+        return m_ascending ? result : -result;
     }
 }

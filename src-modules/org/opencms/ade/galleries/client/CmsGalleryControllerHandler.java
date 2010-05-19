@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleryControllerHandler.java,v $
- * Date   : $Date: 2010/05/14 13:34:53 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/05/19 09:02:51 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,11 +33,11 @@ package org.opencms.ade.galleries.client;
 
 import org.opencms.ade.galleries.client.preview.ui.CmsPreviewDialog;
 import org.opencms.ade.galleries.client.ui.CmsGalleryDialog;
-import org.opencms.ade.galleries.shared.CmsCategoryInfoBean;
-import org.opencms.ade.galleries.shared.CmsGalleriesListInfoBean;
+import org.opencms.ade.galleries.shared.CmsCategoryBean;
+import org.opencms.ade.galleries.shared.CmsGalleryFolderBean;
 import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
-import org.opencms.ade.galleries.shared.CmsTypesListInfoBean;
+import org.opencms.ade.galleries.shared.CmsResourceTypeBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 
@@ -50,7 +50,7 @@ import java.util.List;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 8.0.0
 
@@ -200,7 +200,7 @@ public class CmsGalleryControllerHandler {
      * @param categoriesList the updated categories list
      * @param selectedCategories the selected categories
      */
-    public void onUpdateCategories(List<CmsCategoryInfoBean> categoriesList, List<String> selectedCategories) {
+    public void onUpdateCategories(List<CmsCategoryBean> categoriesList, List<String> selectedCategories) {
 
         m_galleryDialog.getCategoriesTab().updateContent(categoriesList, selectedCategories);
     }
@@ -222,7 +222,7 @@ public class CmsGalleryControllerHandler {
      * @param galleries the updated galleries list
      * @param selectedGalleries the list of galleries to select
      */
-    public void onUpdateGalleries(List<CmsGalleriesListInfoBean> galleries, List<String> selectedGalleries) {
+    public void onUpdateGalleries(List<CmsGalleryFolderBean> galleries, List<String> selectedGalleries) {
 
         m_galleryDialog.getGalleriesTab().updateContent(galleries, selectedGalleries);
     }
@@ -233,7 +233,7 @@ public class CmsGalleryControllerHandler {
      * @param types the updated types list
      * @param selectedTypes the list of types to select
      */
-    public void onUpdateTypes(List<CmsTypesListInfoBean> types, List<String> selectedTypes) {
+    public void onUpdateTypes(List<CmsResourceTypeBean> types, List<String> selectedTypes) {
 
         m_galleryDialog.getTypesTab().updateContent(types, selectedTypes);
     }
@@ -244,7 +244,7 @@ public class CmsGalleryControllerHandler {
      * @param typeInfos the type info beans
      * @param selectedTypes the selected types
      */
-    public void setTypesTabContent(List<CmsTypesListInfoBean> typeInfos, List<String> selectedTypes) {
+    public void setTypesTabContent(List<CmsResourceTypeBean> typeInfos, List<String> selectedTypes) {
 
         m_galleryDialog.getTypesTab().fillContent(typeInfos, selectedTypes);
     }
@@ -255,7 +255,7 @@ public class CmsGalleryControllerHandler {
      * @param galleryInfos the gallery info beans
      * @param selectedGalleries the selected galleries
      */
-    public void setGalleriesTabContent(List<CmsGalleriesListInfoBean> galleryInfos, List<String> selectedGalleries) {
+    public void setGalleriesTabContent(List<CmsGalleryFolderBean> galleryInfos, List<String> selectedGalleries) {
 
         m_galleryDialog.getGalleriesTab().fillContent(galleryInfos, selectedGalleries);
     }

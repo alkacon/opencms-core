@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/Attic/CmsGalleryService.java,v $
- * Date   : $Date: 2010/05/18 12:31:14 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2010/05/19 09:02:51 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,11 +31,11 @@
 
 package org.opencms.ade.galleries;
 
-import org.opencms.ade.galleries.shared.CmsGalleriesListInfoBean;
 import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
+import org.opencms.ade.galleries.shared.CmsGalleryFolderBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
-import org.opencms.ade.galleries.shared.CmsResultsListInfoBean;
-import org.opencms.ade.galleries.shared.CmsTypesListInfoBean;
+import org.opencms.ade.galleries.shared.CmsResourceTypeBean;
+import org.opencms.ade.galleries.shared.CmsResultItemBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
@@ -80,7 +80,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 8.0.0
  * 
@@ -254,7 +254,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     /**
      * @see org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService#getGalleries(java.util.List)
      */
-    public List<CmsGalleriesListInfoBean> getGalleries(List<String> resourceTypes) {
+    public List<CmsGalleryFolderBean> getGalleries(List<String> resourceTypes) {
 
         return buildGalleriesList(readGalleryTypes(readResourceTypes(resourceTypes)));
     }
@@ -303,8 +303,8 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         CmsGallerySearchBean result = new CmsGallerySearchBean();
         // search within all available types
         List<String> types = new ArrayList<String>();
-        for (CmsTypesListInfoBean info : data.getTypes()) {
-            types.add(info.getId());
+        for (CmsResourceTypeBean info : data.getTypes()) {
+            types.add(info.getType());
         }
         result.setTypes(types);
         switch (data.getMode()) {
@@ -379,9 +379,9 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
      * 
      * @return the map with gallery info beans
      */
-    private List<CmsGalleriesListInfoBean> buildGalleriesList(Map<String, CmsGalleryTypeInfo> galleryTypes) {
+    private List<CmsGalleryFolderBean> buildGalleriesList(Map<String, CmsGalleryTypeInfo> galleryTypes) {
 
-        List<CmsGalleriesListInfoBean> list = new ArrayList<CmsGalleriesListInfoBean>();
+        List<CmsGalleryFolderBean> list = new ArrayList<CmsGalleryFolderBean>();
         if (galleryTypes == null) {
             return list;
         }
@@ -397,7 +397,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             Iterator<CmsResource> ir = tInfo.getGalleries().iterator();
             while (ir.hasNext()) {
                 CmsResource res = ir.next();
-                CmsGalleriesListInfoBean bean = new CmsGalleriesListInfoBean();
+                CmsGalleryFolderBean bean = new CmsGalleryFolderBean();
                 String sitePath = getCmsObject().getSitePath(res);
                 String title = "";
                 try {
@@ -409,15 +409,13 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                     logError(e);
                 }
                 // sitepath as gallery id 
-                bean.setId(sitePath);
+                bean.setPath(sitePath);
                 // content types
                 bean.setContentTypes(contentTypes);
                 // title
                 bean.setTitle(title);
-                // gallery path as sub title            
-                bean.setSubTitle(sitePath);
                 // gallery type name
-                bean.setGalleryTypeName(tInfo.getResourceType().getTypeName());
+                bean.setType(tInfo.getResourceType().getTypeName());
                 list.add(bean);
             }
         }
@@ -449,9 +447,9 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
      * 
      * @return the list with the current search results
      */
-    private List<CmsResultsListInfoBean> buildSearchResultList(List<CmsGallerySearchResult> searchResult) {
+    private List<CmsResultItemBean> buildSearchResultList(List<CmsGallerySearchResult> searchResult) {
 
-        ArrayList<CmsResultsListInfoBean> list = new ArrayList<CmsResultsListInfoBean>();
+        ArrayList<CmsResultItemBean> list = new ArrayList<CmsResultItemBean>();
         if ((searchResult == null) || (searchResult.size() == 0)) {
             return list;
         }
@@ -460,29 +458,24 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             try {
                 Locale wpLocale = getWorkplaceLocale();
                 CmsGallerySearchResult sResult = iSearchResult.next();
-                CmsResultsListInfoBean bean = new CmsResultsListInfoBean();
+                CmsResultItemBean bean = new CmsResultItemBean();
                 String path = sResult.getPath();
                 path = getCmsObject().getRequestContext().removeSiteRoot(path);
 
                 // resource path as id
-                bean.setId(path);
+                bean.setPath(path);
                 // title
                 bean.setTitle(sResult.getTitle());
                 // resource type
-                bean.setResourceType(sResult.getResourceType());
+                bean.setType(sResult.getResourceType());
                 // structured id
                 bean.setClientId(sResult.getStructureId());
                 // TODO: set following infos if required: date last modified, description, structured id
 
                 // set nice resource type name as subtitle
                 I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(sResult.getResourceType());
-                bean.setSubTitle(CmsWorkplaceMessages.getResourceTypeName(wpLocale, type.getTypeName()));
-
-                // TODO: only add excerpt if not empty
-                // if (!CmsStringUtil.isEmptyOrWhitespaceOnly(sResult.getExcerpt())) {
-                //      formatterInfo.addAdditionalInfo(EXCERPT_FIELD_NAME, OpenCms.getWorkplaceManager().getMessages(
-                //      wpLocale).key(Messages.GUI_LABEL_EXCERPT), sResult.getExcerpt());
-                // }
+                bean.setDescription(CmsWorkplaceMessages.getResourceTypeName(wpLocale, type.getTypeName()));
+                bean.setExcerpt(sResult.getExcerpt());
                 list.add(bean);
             } catch (Exception e) {
                 logError(e);
@@ -500,25 +493,25 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
      * 
      * @return the map containing the available resource types
      */
-    private List<CmsTypesListInfoBean> buildTypesList(List<I_CmsResourceType> types) {
+    private List<CmsResourceTypeBean> buildTypesList(List<I_CmsResourceType> types) {
 
-        ArrayList<CmsTypesListInfoBean> list = new ArrayList<CmsTypesListInfoBean>();
+        ArrayList<CmsResourceTypeBean> list = new ArrayList<CmsResourceTypeBean>();
         if (types == null) {
             return list;
         }
         Iterator<I_CmsResourceType> it = types.iterator();
         while (it.hasNext()) {
             I_CmsResourceType type = it.next();
-            CmsTypesListInfoBean bean = new CmsTypesListInfoBean();
+            CmsResourceTypeBean bean = new CmsResourceTypeBean();
 
             // unique id
-            bean.setId(type.getTypeName());
+            bean.setType(type.getTypeName());
             // type nice name            
             Locale wpLocale = getWorkplaceLocale();
             // TODO: remove:  bean.setTypeNiceName(CmsWorkplaceMessages.getResourceTypeDescription(wpLocale, type.getTypeName()));
             // type title and subtitle
             bean.setTitle(CmsWorkplaceMessages.getResourceTypeName(wpLocale, type.getTypeName()));
-            bean.setSubTitle(CmsWorkplaceMessages.getResourceTypeDescription(wpLocale, type.getTypeName()));
+            bean.setDescription(CmsWorkplaceMessages.getResourceTypeDescription(wpLocale, type.getTypeName()));
             // gallery id of corresponding galleries
             ArrayList<String> galleryNames = new ArrayList<String>();
             Iterator<I_CmsResourceType> galleryTypes = type.getGalleryTypes().iterator();

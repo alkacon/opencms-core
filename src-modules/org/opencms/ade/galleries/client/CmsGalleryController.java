@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleryController.java,v $
- * Date   : $Date: 2010/05/14 13:34:53 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/05/19 09:02:51 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,10 +31,11 @@
 
 package org.opencms.ade.galleries.client;
 
-import org.opencms.ade.galleries.shared.CmsGalleriesListInfoBean;
+import org.opencms.ade.galleries.shared.CmsCategoryBean;
 import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
+import org.opencms.ade.galleries.shared.CmsGalleryFolderBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
-import org.opencms.ade.galleries.shared.CmsTypesListInfoBean;
+import org.opencms.ade.galleries.shared.CmsResourceTypeBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
@@ -43,8 +44,13 @@ import org.opencms.ade.galleries.shared.rpc.I_CmsGalleryServiceAsync;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.rpc.CmsRpcPrefetcher;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
+import org.opencms.gwt.shared.sort.CmsComparatorPath;
+import org.opencms.gwt.shared.sort.CmsComparatorTitle;
+import org.opencms.gwt.shared.sort.CmsComparatorType;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
@@ -58,7 +64,7 @@ import com.google.gwt.core.client.GWT;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 8.0.0
  */
@@ -279,12 +285,32 @@ public class CmsGalleryController {
      */
     public void sortCategories(String sortParams) {
 
-        m_dialogBean.sortCategories(sortParams);
-        if ((SortParams.title_asc == SortParams.valueOf(sortParams))
-            || (SortParams.title_desc == SortParams.valueOf(sortParams))) {
-            m_handler.onUpdateCategories(m_dialogBean.getCategoriesList(), m_searchObject.getCategories());
-        } else if (SortParams.tree == SortParams.valueOf(sortParams)) {
-            m_handler.onUpdateCategories(m_dialogBean.getCategories(), m_searchObject.getCategories());
+        List<CmsCategoryBean> categories;
+        SortParams sort = SortParams.valueOf(sortParams);
+        switch (sort) {
+            case tree:
+                m_handler.onUpdateCategories(m_dialogBean.getCategories(), m_searchObject.getCategories());
+                return;
+            case title_asc:
+                categories = new ArrayList<CmsCategoryBean>();
+                categoryTreeToList(categories, m_dialogBean.getCategories());
+                Collections.sort(categories, new CmsComparatorTitle(true));
+                m_handler.onUpdateCategories(categories, m_searchObject.getCategories());
+                break;
+            case title_desc:
+                categories = new ArrayList<CmsCategoryBean>();
+                categoryTreeToList(categories, m_dialogBean.getCategories());
+                Collections.sort(categories, new CmsComparatorTitle(false));
+                m_handler.onUpdateCategories(categories, m_searchObject.getCategories());
+                break;
+            case type_asc:
+            case type_desc:
+            case path_asc:
+            case path_desc:
+            case dateLastModified_asc:
+            case dateLastModified_desc:
+
+            default:
         }
     }
 
@@ -295,8 +321,35 @@ public class CmsGalleryController {
      */
     public void sortGalleries(String sortParams) {
 
-        m_dialogBean.sortGalleries(sortParams);
-        m_handler.onUpdateGalleries(m_dialogBean.getGalleries(), m_searchObject.getGalleries());
+        List<CmsGalleryFolderBean> galleries = m_dialogBean.getGalleries();
+        SortParams sort = SortParams.valueOf(sortParams);
+        switch (sort) {
+            case title_asc:
+                Collections.sort(galleries, new CmsComparatorTitle(true));
+                break;
+            case title_desc:
+                Collections.sort(galleries, new CmsComparatorTitle(false));
+                break;
+            case type_asc:
+                Collections.sort(galleries, new CmsComparatorType(true));
+                break;
+            case type_desc:
+                Collections.sort(galleries, new CmsComparatorType(false));
+                break;
+            case path_asc:
+                Collections.sort(galleries, new CmsComparatorPath(true));
+                break;
+            case path_desc:
+                Collections.sort(galleries, new CmsComparatorPath(false));
+                break;
+            case dateLastModified_asc:
+            case dateLastModified_desc:
+            case tree:
+            default:
+                // not supported
+                return;
+        }
+        m_handler.onUpdateGalleries(galleries, m_searchObject.getGalleries());
     }
 
     /**
@@ -345,8 +398,31 @@ public class CmsGalleryController {
      */
     public void sortTypes(String sortParams) {
 
-        m_dialogBean.sortTypes(sortParams);
-        m_handler.onUpdateTypes(m_dialogBean.getTypes(), m_searchObject.getTypes());
+        List<CmsResourceTypeBean> types = m_dialogBean.getTypes();
+        SortParams sort = SortParams.valueOf(sortParams);
+        switch (sort) {
+            case title_asc:
+                Collections.sort(types, new CmsComparatorTitle(true));
+                break;
+            case title_desc:
+                Collections.sort(types, new CmsComparatorTitle(false));
+                break;
+            case type_asc:
+                Collections.sort(types, new CmsComparatorType(true));
+                break;
+            case type_desc:
+                Collections.sort(types, new CmsComparatorType(false));
+                break;
+            case dateLastModified_asc:
+            case dateLastModified_desc:
+            case path_asc:
+            case path_desc:
+            case tree:
+            default:
+                // not supported
+                return;
+        }
+        m_handler.onUpdateTypes(types, m_searchObject.getTypes());
     }
 
     /**
@@ -355,7 +431,7 @@ public class CmsGalleryController {
     public void updateCategoriesTab() {
 
         if (m_dialogBean.getCategories() == null) {
-            loadCatgories();
+            loadCategories();
         } else {
             m_handler.onCategoriesTabSelection();
         }
@@ -451,14 +527,14 @@ public class CmsGalleryController {
                 if ((m_dialogMode == I_CmsGalleryProviderConstants.GalleryMode.widget)
                     || (m_dialogMode == I_CmsGalleryProviderConstants.GalleryMode.editor)) {
                     ArrayList<String> availableGalleries = new ArrayList<String>();
-                    for (CmsGalleriesListInfoBean galleryPath : m_dialogBean.getGalleries()) {
-                        availableGalleries.add(galleryPath.getId());
+                    for (CmsGalleryFolderBean galleryPath : m_dialogBean.getGalleries()) {
+                        availableGalleries.add(galleryPath.getPath());
                     }
                     preparedSearchObj.setGalleries(availableGalleries);
                 }
                 ArrayList<String> availableTypes = new ArrayList<String>();
-                for (CmsTypesListInfoBean type : m_dialogBean.getTypes()) {
-                    availableTypes.add(type.getId());
+                for (CmsResourceTypeBean type : m_dialogBean.getTypes()) {
+                    availableTypes.add(type.getType());
                 }
                 preparedSearchObj.setTypes(availableTypes);
                 // at least one gallery is selected 
@@ -466,15 +542,15 @@ public class CmsGalleryController {
 
                 // get the resource types associated with the selected galleries
                 HashSet<String> contentTypes = new HashSet<String>();
-                for (CmsGalleriesListInfoBean gallery : m_dialogBean.getGalleries()) {
-                    if (m_searchObject.getGalleries().contains(gallery.getId())) {
+                for (CmsGalleryFolderBean gallery : m_dialogBean.getGalleries()) {
+                    if (m_searchObject.getGalleries().contains(gallery.getPath())) {
                         contentTypes.addAll(gallery.getContentTypes());
                     }
                 }
                 // available types
                 ArrayList<String> availableTypes = new ArrayList<String>();
-                for (CmsTypesListInfoBean type : m_dialogBean.getTypes()) {
-                    availableTypes.add(type.getId());
+                for (CmsResourceTypeBean type : m_dialogBean.getTypes()) {
+                    availableTypes.add(type.getType());
                 }
                 // check if the associated type is also an available type
                 ArrayList<String> checkedTypes = new ArrayList<String>();
@@ -493,9 +569,32 @@ public class CmsGalleryController {
     }
 
     /**
+     * Converts categories tree to a list of info beans.<p>
+     * 
+     * @param categoryList the category list
+     * @param entries the tree entries
+     */
+    private void categoryTreeToList(List<CmsCategoryBean> categoryList, CmsCategoryTreeEntry treeEntry) {
+
+        if (treeEntry == null) {
+            return;
+        }
+        // skipping the root tree entry where the path property is empty
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(treeEntry.getPath())) {
+            CmsCategoryBean bean = new CmsCategoryBean(treeEntry.getTitle(), treeEntry.getPath(), treeEntry.getPath());
+            categoryList.add(bean);
+        }
+        if (treeEntry.getChildren() != null) {
+            for (CmsCategoryTreeEntry entry : treeEntry.getChildren()) {
+                categoryTreeToList(categoryList, entry);
+            }
+        }
+    }
+
+    /**
      * Loading all available categories.<p>
      */
-    private void loadCatgories() {
+    private void loadCategories() {
 
         CmsRpcAction<CmsCategoryTreeEntry> action = new CmsRpcAction<CmsCategoryTreeEntry>() {
 
@@ -504,14 +603,14 @@ public class CmsGalleryController {
 
                 if (m_dialogBean.getGalleries() == null) {
                     List<String> types = new ArrayList<String>();
-                    for (CmsTypesListInfoBean type : m_dialogBean.getTypes()) {
-                        types.add(type.getId());
+                    for (CmsResourceTypeBean type : m_dialogBean.getTypes()) {
+                        types.add(type.getType());
                     }
                     getGalleryService().getCategoryTreeTypes(types, this);
                 } else {
                     List<String> galleries = new ArrayList<String>();
-                    for (CmsGalleriesListInfoBean info : m_dialogBean.getGalleries()) {
-                        galleries.add(info.getId());
+                    for (CmsGalleryFolderBean info : m_dialogBean.getGalleries()) {
+                        galleries.add(info.getPath());
                     }
                     getGalleryService().getCategoryTreeGalleries(galleries, this);
                 }
@@ -533,21 +632,21 @@ public class CmsGalleryController {
      */
     private void loadGalleries() {
 
-        CmsRpcAction<List<CmsGalleriesListInfoBean>> action = new CmsRpcAction<List<CmsGalleriesListInfoBean>>() {
+        CmsRpcAction<List<CmsGalleryFolderBean>> action = new CmsRpcAction<List<CmsGalleryFolderBean>>() {
 
             @Override
             public void execute() {
 
                 List<String> types = new ArrayList<String>();
-                for (CmsTypesListInfoBean type : m_dialogBean.getTypes()) {
-                    types.add(type.getId());
+                for (CmsResourceTypeBean type : m_dialogBean.getTypes()) {
+                    types.add(type.getType());
                 }
 
                 getGalleryService().getGalleries(types, this);
             }
 
             @Override
-            protected void onResponse(List<CmsGalleriesListInfoBean> result) {
+            protected void onResponse(List<CmsGalleryFolderBean> result) {
 
                 m_dialogBean.setGalleries(result);
                 m_handler.setGalleriesTabContent(result, m_searchObject.getGalleries());

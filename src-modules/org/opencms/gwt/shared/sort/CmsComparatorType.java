@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/sort/Attic/CmsComparatorTypeAsc.java,v $
- * Date   : $Date: 2010/05/18 12:31:13 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/sort/Attic/CmsComparatorType.java,v $
+ * Date   : $Date: 2010/05/19 09:02:51 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -33,13 +33,38 @@ package org.opencms.gwt.shared.sort;
 
 import java.util.Comparator;
 
-public class CmsComparatorTypeAsc implements Comparator<I_CmsHasType> {
+/**
+ * Comparator for objects with a type property.<p>
+ * 
+ * @see I_CmsHasType
+ * 
+ * @author Tobias Herrmann
+ * 
+ * @version $Revision: 1.1 $
+ * 
+ * @since 8.0.0
+ */
+public class CmsComparatorType implements Comparator<I_CmsHasType> {
+
+    /** Sort order flag. */
+    private boolean m_ascending;
+
+    /**
+     * Constructor.<p>
+     * 
+     * @param ascending if <code>true</code> order is ascending
+     */
+    public CmsComparatorType(boolean ascending) {
+
+        m_ascending = ascending;
+    }
 
     /**
      * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
      */
     public int compare(I_CmsHasType o1, I_CmsHasType o2) {
 
-        return o1.getType().compareTo(o2.getType());
+        int result = o1.getType().compareTo(o2.getType());
+        return m_ascending ? result : -result;
     }
 }

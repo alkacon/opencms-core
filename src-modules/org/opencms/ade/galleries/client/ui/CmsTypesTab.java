@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsTypesTab.java,v $
- * Date   : $Date: 2010/05/18 12:31:14 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/05/19 09:02:51 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,7 +32,7 @@
 package org.opencms.ade.galleries.client.ui;
 
 import org.opencms.ade.galleries.client.CmsTypesTabHandler;
-import org.opencms.ade.galleries.shared.CmsTypesListInfoBean;
+import org.opencms.ade.galleries.shared.CmsResourceTypeBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
 import org.opencms.gwt.client.draganddrop.I_CmsDragHandler;
@@ -42,6 +42,7 @@ import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsPair;
 import org.opencms.gwt.shared.CmsIconUtil;
+import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
@@ -59,7 +60,7 @@ import com.google.gwt.user.client.ui.HTMLPanel;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 8.0.
  */
@@ -133,26 +134,27 @@ public class CmsTypesTab extends A_CmsListTab {
      * @param typeInfos the type info beans 
      * @param selectedTypes the list of types to select
      */
-    public void fillContent(List<CmsTypesListInfoBean> typeInfos, List<String> selectedTypes) {
+    public void fillContent(List<CmsResourceTypeBean> typeInfos, List<String> selectedTypes) {
 
-        for (CmsTypesListInfoBean typeBean : typeInfos) {
+        for (CmsResourceTypeBean typeBean : typeInfos) {
             CmsListItemWidget listItemWidget;
+            CmsListInfoBean infoBean = new CmsListInfoBean(typeBean.getTitle(), typeBean.getDescription(), null);
             if (m_dragHandler != null) {
                 // TODO: check if this is working
-                listItemWidget = m_dragHandler.createDraggableListItemWidget(typeBean, typeBean.getId());
+                listItemWidget = m_dragHandler.createDraggableListItemWidget(infoBean, typeBean.getType());
             } else {
-                listItemWidget = new CmsListItemWidget(typeBean);
+                listItemWidget = new CmsListItemWidget(infoBean);
             }
-            listItemWidget.setIcon(CmsIconUtil.getResourceIconClasses(typeBean.getId()));
+            listItemWidget.setIcon(CmsIconUtil.getResourceIconClasses(typeBean.getType()));
             CmsCheckBox checkBox = new CmsCheckBox();
-            checkBox.addClickHandler(new CheckboxHandler(typeBean.getId(), checkBox));
-            if ((selectedTypes != null) && selectedTypes.contains(typeBean.getId())) {
+            checkBox.addClickHandler(new CheckboxHandler(typeBean.getType(), checkBox));
+            if ((selectedTypes != null) && selectedTypes.contains(typeBean.getType())) {
                 checkBox.setChecked(true);
             }
             CmsTypeListItem listItem = new CmsTypeListItem(checkBox, listItemWidget);
-            listItem.setId(typeBean.getId());
+            listItem.setId(typeBean.getType());
             listItem.setItemTitle(typeBean.getTitle());
-            listItem.setSubTitle(typeBean.getSubTitle());
+            listItem.setSubTitle(typeBean.getDescription());
             addWidgetToList(listItem);
         }
     }
@@ -207,7 +209,7 @@ public class CmsTypesTab extends A_CmsListTab {
      * @param types the new types list
      * @param selectedTypes the list of types to select
      */
-    public void updateContent(List<CmsTypesListInfoBean> types, List<String> selectedTypes) {
+    public void updateContent(List<CmsResourceTypeBean> types, List<String> selectedTypes) {
 
         clearList();
         fillContent(types, selectedTypes);
