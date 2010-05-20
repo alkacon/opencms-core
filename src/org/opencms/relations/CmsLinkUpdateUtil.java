@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsLinkUpdateUtil.java,v $
- * Date   : $Date: 2009/06/04 14:29:53 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/05/20 09:14:15 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.dom4j.Element;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -166,14 +166,12 @@ public final class CmsLinkUpdateUtil {
                 // element wasn't there before, add element and set value
                 nodeElement = parent.addElement(nodeName);
             }
-            if (nodeElement != null) {
-                // element is there, update element value
-                nodeElement.clearContent();
-                if (cdata) {
-                    nodeElement.addCDATA(value);
-                } else {
-                    nodeElement.addText(value);
-                }
+            // element is there, update element value
+            nodeElement.clearContent();
+            if (cdata) {
+                nodeElement.addCDATA(value);
+            } else {
+                nodeElement.addText(value);
             }
         } else {
             // remove only if element exists
