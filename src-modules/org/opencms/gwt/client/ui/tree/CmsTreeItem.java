@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/tree/Attic/CmsTreeItem.java,v $
- * Date   : $Date: 2010/05/19 10:18:00 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/05/20 07:16:54 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Georg Westenberger
  * @author Michael Moossen
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 8.0.0
  */
@@ -287,7 +287,6 @@ public class CmsTreeItem extends CmsSimpleListItem {
 
         item.setParentItem(null);
         item.setTree(null);
-        onChangeChildren();
         if ((m_tree != null) && m_tree.isAnimationEnabled()) {
             // could be null if already detached
             // animate
@@ -301,6 +300,7 @@ public class CmsTreeItem extends CmsSimpleListItem {
 
                     super.onComplete();
                     m_children.removeItem(item);
+                    onChangeChildren();
                 }
 
                 /**
@@ -314,6 +314,7 @@ public class CmsTreeItem extends CmsSimpleListItem {
             }).run(ANIMATION_DURATION);
         } else {
             m_children.removeItem(item);
+            onChangeChildren();
         }
         return item;
     }
