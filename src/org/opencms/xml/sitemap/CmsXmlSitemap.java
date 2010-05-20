@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsXmlSitemap.java,v $
- * Date   : $Date: 2010/05/18 13:15:51 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2010/05/20 09:14:04 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 7.5.2
  * 
@@ -367,6 +367,7 @@ public class CmsXmlSitemap extends CmsXmlContent {
 
         // create the locale
         if (!hasLocale(locale)) {
+            // TODO: copy entry point
             addLocale(cms, locale);
         }
 
