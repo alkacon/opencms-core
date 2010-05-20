@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsList.java,v $
- * Date   : $Date: 2010/05/19 10:18:00 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2010/05/20 09:16:10 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 8.0.0
  */
@@ -80,12 +80,13 @@ public class CmsList<I extends I_CmsListItem> extends ComplexPanel implements I_
     /**
      * @see com.google.gwt.user.client.ui.Panel#add(com.google.gwt.user.client.ui.Widget)
      */
+    @SuppressWarnings("unchecked")
     @Override
     public void add(Widget widget) {
 
         assert widget instanceof I_CmsListItem;
         add(widget, getElement());
-        registerItem((I_CmsListItem)widget);
+        registerItem((I)widget);
     }
 
     /**
@@ -98,6 +99,19 @@ public class CmsList<I extends I_CmsListItem> extends ComplexPanel implements I_
     public void addItem(I item) {
 
         add((Widget)item);
+    }
+
+    /**
+     * Changes the id for the given item.<p>
+     * 
+     * @param item the item to change the id for
+     * @param id the new id
+     */
+    public void changeId(I item, String id) {
+
+        if (m_items.remove(item.getId()) != null) {
+            m_items.put(id, item);
+        }
     }
 
     /**
@@ -144,11 +158,12 @@ public class CmsList<I extends I_CmsListItem> extends ComplexPanel implements I_
      * @param widget the widget to insert
      * @param position the position
      */
+    @SuppressWarnings("unchecked")
     public void insert(Widget widget, int position) {
 
         assert widget instanceof I_CmsListItem;
         insert(widget, getElement(), position, true);
-        registerItem((I_CmsListItem)widget);
+        registerItem((I)widget);
     }
 
     /**
@@ -225,11 +240,10 @@ public class CmsList<I extends I_CmsListItem> extends ComplexPanel implements I_
      * 
      * @param item the item to register
      */
-    @SuppressWarnings("unchecked")
-    protected void registerItem(I_CmsListItem item) {
+    protected void registerItem(I item) {
 
         if (item.getId() != null) {
-            m_items.put(item.getId(), (I)item);
+            m_items.put(item.getId(), item);
         }
         if (m_tmPrefix != null) {
             item.truncate(m_tmPrefix, m_childWidth);
