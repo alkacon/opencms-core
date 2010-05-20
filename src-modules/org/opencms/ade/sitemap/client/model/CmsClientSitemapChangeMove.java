@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeMove.java,v $
- * Date   : $Date: 2010/05/19 10:19:10 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/05/20 09:17:29 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,6 @@ import org.opencms.ade.sitemap.client.CmsSitemapTreeItem;
 import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.file.CmsResource;
-import org.opencms.gwt.client.ui.tree.CmsTreeItem;
 import org.opencms.xml.sitemap.CmsSitemapChangeMove;
 import org.opencms.xml.sitemap.I_CmsSitemapChange;
 import org.opencms.xml.sitemap.I_CmsSitemapChange.Type;
@@ -46,7 +45,7 @@ import org.opencms.xml.sitemap.I_CmsSitemapChange.Type;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -96,6 +95,7 @@ public class CmsClientSitemapChangeMove implements I_CmsClientSitemapChange {
         CmsClientSitemapEntry moved = sourceParent.removeSubEntry(getSourcePosition());
         CmsClientSitemapEntry destParent = controller.getEntry(CmsResource.getParentFolder(getDestinationPath()));
         destParent.insertSubEntry(moved, getDestinationPosition());
+        moved.updateSitePath(getDestinationPath());
     }
 
     /**
@@ -104,11 +104,13 @@ public class CmsClientSitemapChangeMove implements I_CmsClientSitemapChange {
     public void applyToView(CmsSitemapView view) {
 
         CmsSitemapTreeItem sourceParent = view.getTreeItem(CmsResource.getParentFolder(getSourcePath()));
-        CmsTreeItem moved = sourceParent.getChild(getSourcePosition());
-        sourceParent.removeChild(getSourcePosition());
+        sourceParent.getTree().setAnimationEnabled(false);
+        CmsSitemapTreeItem moved = (CmsSitemapTreeItem)sourceParent.removeChild(getSourcePosition());
+        sourceParent.getTree().setAnimationEnabled(true);
         CmsSitemapTreeItem destParent = view.getTreeItem(CmsResource.getParentFolder(getDestinationPath()));
-        view.ensureVisible(destParent);
         destParent.insertChild(moved, getDestinationPosition());
+        moved.updateSitePath(getDestinationPath());
+        view.ensureVisible(moved);
     }
 
     /**

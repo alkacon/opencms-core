@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsClientSitemapEntry.java,v $
- * Date   : $Date: 2010/05/18 14:08:53 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/05/20 09:17:29 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.ade.sitemap.shared;
 
+import org.opencms.file.CmsResource;
 import org.opencms.gwt.client.util.CmsMapUtil;
 import org.opencms.util.CmsUUID;
 
@@ -46,7 +47,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -300,6 +301,20 @@ public class CmsClientSitemapEntry implements IsSerializable {
     }
 
     /**
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+
+        StringBuffer sb = new StringBuffer();
+        sb.append(m_sitePath).append("\n");
+        for (CmsClientSitemapEntry child : m_subEntries) {
+            sb.append(child.toString());
+        }
+        return sb.toString();
+    }
+
+    /**
      * Updates the properties of the sitemap entry.<p>
      * 
      * Entries of the map of properties passed as an argument which have a null value
@@ -313,6 +328,28 @@ public class CmsClientSitemapEntry implements IsSerializable {
     }
 
     /**
+     * Updates the recursively the site path.<p>
+     * 
+     * @param sitepath the new site path to set
+     */
+    public void updateSitePath(String sitepath) {
+
+        if (m_sitePath.equals(sitepath)) {
+            // nothing to do
+            return;
+        }
+        m_sitePath = sitepath;
+        String name = CmsResource.getName(sitepath);
+        if (name.endsWith("/")) {
+            name = name.substring(0, name.length() - 1);
+        }
+        m_name = name;
+        for (CmsClientSitemapEntry child : m_subEntries) {
+            child.updateSitePath(sitepath + CmsResource.getName(child.getSitePath()));
+        }
+    }
+
+    /**
      * Updates all the children positions starting from the given position.<p>
      * 
      * @param position the position to start with
@@ -323,4 +360,5 @@ public class CmsClientSitemapEntry implements IsSerializable {
             m_subEntries.get(i).setPosition(i);
         }
     }
+
 }

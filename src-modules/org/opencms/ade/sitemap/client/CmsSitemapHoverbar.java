@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapHoverbar.java,v $
- * Date   : $Date: 2010/05/18 12:58:17 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/05/20 09:17:29 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 8.0.0
  */
@@ -242,25 +242,21 @@ public class CmsSitemapHoverbar extends FlowPanel {
      * Installs this hoverbar for the given item widget.<p>
      * 
      * @param controller the controller 
-     * @param itemWidget the item widget to hover
-     * @param sitePath the sitemap entry's site path 
+     * @param treeItem the item to hover
      */
-    public void installOn(
-        final CmsSitemapController controller,
-        final CmsListItemWidget itemWidget,
-        final String sitePath) {
+    public void installOn(final CmsSitemapController controller, final CmsSitemapTreeItem treeItem) {
 
+        final CmsListItemWidget widget = (CmsListItemWidget)treeItem.getWidget(0);
         A_CmsHoverHandler handler = new A_CmsHoverHandler() {
 
             /**
              * @see org.opencms.gwt.client.ui.A_CmsHoverHandler#onHoverIn(com.google.gwt.event.dom.client.MouseOverEvent)
              */
-            @SuppressWarnings("synthetic-access")
             @Override
             protected void onHoverIn(MouseOverEvent event) {
 
-                m_sitePath = sitePath;
-                itemWidget.getContentPanel().getElement().appendChild(getElement());
+                m_sitePath = treeItem.getSitePath();
+                widget.getContentPanel().add(CmsSitemapHoverbar.this);
                 if (controller.isRoot(m_sitePath)) {
                     getDeleteButton().disable(Messages.get().key(Messages.GUI_DISABLED_ROOT_ITEM_0));
                     getMoveButton().disable(Messages.get().key(Messages.GUI_DISABLED_ROOT_ITEM_0));
@@ -270,9 +266,6 @@ public class CmsSitemapHoverbar extends FlowPanel {
                         getEditButton().disable(Messages.get().key(Messages.GUI_DISABLED_PARENT_SITEMAP_0));
                     }
                 }
-                if (!isAttached()) {
-                    onAttach();
-                }
             }
 
             /**
@@ -281,14 +274,11 @@ public class CmsSitemapHoverbar extends FlowPanel {
             @Override
             protected void onHoverOut(MouseOutEvent event) {
 
-                if (isAttached()) {
-                    deattach();
-                }
+                CmsSitemapHoverbar.this.removeFromParent();
             }
-
         };
-        itemWidget.addMouseOutHandler(handler);
-        itemWidget.addMouseOverHandler(handler);
+        widget.addMouseOutHandler(handler);
+        widget.addMouseOverHandler(handler);
     }
 
     /**
@@ -301,7 +291,6 @@ public class CmsSitemapHoverbar extends FlowPanel {
         getSubsitemapButton().enable();
         getEditButton().enable();
         getParentSitemapButton().setVisible(false);
-        getElement().removeFromParent();
-        onDetach();
+        removeFromParent();
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2010/05/19 10:19:10 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2010/05/20 09:17:29 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import com.google.gwt.user.client.Window;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 8.0.0
  */
@@ -191,18 +191,35 @@ public class CmsSitemapController {
      * @param entry the sitemap entry to update
      * @param title the new title, can be <code>null</code> to keep the old one
      * @param vfsReference the new VFS reference, can be <code>null</code> to keep the old one
-     * @param name the new URL name, can be <code>null</code> to keep the old one 
      * @param properties the new properties, can be <code>null</code> to keep the old properties
      */
-    public void edit(CmsClientSitemapEntry entry, String title, String vfsReference, String name,
+    public void edit(CmsClientSitemapEntry entry, String title, String vfsReference, Map<String, String> properties) {
 
-    Map<String, String> properties) {
-
+        // check changes
         boolean changedTitle = ((title != null) && !title.trim().equals(entry.getTitle()));
         boolean changedVfsRef = ((vfsReference != null) && !vfsReference.trim().equals(entry.getVfsPath()));
-        //boolean changedProperties = ((properties != null) && !properties.equals(entry.getProperties()));
-        //assert (!changedTitle && !changedVfsRef && !changedProperties);
+        boolean changedProperties = false;
+        if (properties != null) {
+            for (Map.Entry<String, String> prop : properties.entrySet()) {
+                String newValue = prop.getValue();
+                String value = entry.getProperties().get(prop.getKey());
+                if (newValue == null) {
+                    if (value != null) {
+                        changedProperties = true;
+                        break;
+                    }
+                } else if (!newValue.equals(value)) {
+                    changedProperties = true;
+                    break;
+                }
+            }
+        }
+        if (!changedTitle && !changedVfsRef && !changedProperties) {
+            // nothing to do
+            return;
+        }
 
+        // create changes
         CmsClientSitemapEntry newEntry = new CmsClientSitemapEntry(entry);
         if (changedTitle) {
             newEntry.setTitle(title);
@@ -210,21 +227,22 @@ public class CmsSitemapController {
         if (changedVfsRef) {
             newEntry.setVfsPath(vfsReference);
         }
-        if (properties != null) {
+        if (changedProperties) {
             // to preserve the hidden properties (navigation, sitemap...), we only copy the new property values
             newEntry.getProperties().putAll(properties);
         }
-        // TODO: set URL name of the entry, and also change the URL shown in the widget
 
+        // apply changes
         addChange(new CmsClientSitemapChangeEdit(entry, newEntry), false);
     }
 
     /**
      * Retrieves the children entries of the given node from the server.<p>
      * 
-     * @param sitePath the site pat of the sitemap entry to get the children for
+     * @param originalPath the original site path of the sitemap entry to get the children for
+     * @param sitePath the current site path, in case if has been moved or renamed
      */
-    public void getChildren(final String sitePath) {
+    public void getChildren(final String originalPath, final String sitePath) {
 
         CmsRpcAction<List<CmsClientSitemapEntry>> getChildrenAction = new CmsRpcAction<List<CmsClientSitemapEntry>>() {
 
@@ -236,7 +254,7 @@ public class CmsSitemapController {
 
                 // Make the call to the sitemap service
                 start(500);
-                getService().getChildren(sitePath, this);
+                getService().getChildren(originalPath, this);
             }
 
             /**
@@ -247,7 +265,11 @@ public class CmsSitemapController {
 
                 CmsClientSitemapEntry target = getEntry(sitePath);
                 target.setSubEntries(result);
-                m_handler.onGetChildren(target);
+                if (!originalPath.equals(sitePath)) {
+                    target.setSitePath("abc"); // hack to be able to execute updateSitePath
+                    target.updateSitePath(sitePath);
+                }
+                m_handler.onGetChildren(target, originalPath);
                 stop(false);
             }
         };
@@ -401,7 +423,10 @@ public class CmsSitemapController {
     public void move(CmsClientSitemapEntry entry, String toPath, int position) {
 
         assert (getEntry(entry.getSitePath()) != null);
-        assert ((toPath != null) && (!entry.getSitePath().equals(toPath) || (entry.getPosition() != position)));
+        if ((toPath == null) || (entry.getSitePath().equals(toPath) && (entry.getPosition() == position))) {
+            // nothing to do
+            return;
+        }
         assert (getEntry(CmsResource.getParentFolder(toPath)) != null);
 
         addChange(new CmsClientSitemapChangeMove(entry.getSitePath(), entry.getPosition(), toPath, position), false);
@@ -507,7 +532,7 @@ public class CmsSitemapController {
             }
         }
 
-        if (!redo) {
+        if (!redo && !m_undone.isEmpty()) {
             // after a new change no changes can be redone
             m_undone.clear();
             m_handler.onClearUndo();

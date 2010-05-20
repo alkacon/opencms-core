@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapView.java,v $
- * Date   : $Date: 2010/05/19 10:19:10 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2010/05/20 09:17:29 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 8.0.0
  */
@@ -87,10 +87,11 @@ public class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitemapContr
      * Creates a new tree item from the given sitemap entry.<p>
      * 
      * @param entry the sitemap entry
+     * @param originalPath the original path in case it was renamed or moved
      * 
      * @return the new created (still orphan) tree item 
      */
-    public CmsSitemapTreeItem create(CmsClientSitemapEntry entry) {
+    public CmsSitemapTreeItem create(CmsClientSitemapEntry entry, String originalPath) {
 
         CmsListInfoBean infoBean = new CmsListInfoBean();
         infoBean.setTitle(entry.getTitle());
@@ -98,14 +99,14 @@ public class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitemapContr
         infoBean.addAdditionalInfo(Messages.get().key(Messages.GUI_NAME_0), entry.getName());
         infoBean.addAdditionalInfo(Messages.get().key(Messages.GUI_VFS_PATH_0), entry.getVfsPath());
         CmsListItemWidget itemWidget = new CmsListItemWidget(infoBean);
-        CmsSitemapTreeItem treeItem = new CmsSitemapTreeItem(itemWidget, entry.getSitePath());
-        treeItem.setId(entry.getName());
+        CmsSitemapTreeItem treeItem = new CmsSitemapTreeItem(itemWidget, originalPath);
+        treeItem.updateSitePath(entry.getSitePath());
         if (m_controller.isEditable()) {
             if (m_hoverbar == null) {
                 CmsSitemapHoverbarHandler handler = new CmsSitemapHoverbarHandler(m_controller);
                 m_hoverbar = new CmsSitemapHoverbar(handler);
             }
-            m_hoverbar.installOn(m_controller, itemWidget, entry.getSitePath());
+            m_hoverbar.installOn(m_controller, treeItem);
         }
         return treeItem;
     }
@@ -118,7 +119,7 @@ public class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitemapContr
     public void ensureVisible(CmsSitemapTreeItem item) {
 
         // open the tree
-        CmsTreeItem ti = item;
+        CmsTreeItem ti = item.getParentItem();
         while (ti != null) {
             ti.setOpen(true);
             ti = ti.getParentItem();
@@ -182,16 +183,18 @@ public class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitemapContr
     }
 
     /**
-     * @see org.opencms.ade.sitemap.client.I_CmsSitemapControllerHandler#onGetChildren(org.opencms.ade.sitemap.shared.CmsClientSitemapEntry)
+     * @see org.opencms.ade.sitemap.client.I_CmsSitemapControllerHandler#onGetChildren(org.opencms.ade.sitemap.shared.CmsClientSitemapEntry, String)
      */
-    public void onGetChildren(CmsClientSitemapEntry entry) {
+    public void onGetChildren(CmsClientSitemapEntry entry, String originalPath) {
 
         CmsSitemapTreeItem target = getTreeItem(entry.getSitePath());
+        target.getTree().setAnimationEnabled(false);
         target.clearChildren();
         for (CmsClientSitemapEntry child : entry.getSubEntries()) {
-            target.addChild(create(child));
+            target.addChild(create(child, originalPath + child.getName() + "/"));
         }
         target.onFinishLoading();
+        target.getTree().setAnimationEnabled(true);
     }
 
     /**
@@ -250,14 +253,14 @@ public class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitemapContr
 
         // read pre-fetched data
         CmsClientSitemapEntry root = m_controller.getData().getRoot();
-        CmsSitemapTreeItem rootItem = create(root);
+        CmsSitemapTreeItem rootItem = create(root, root.getSitePath());
         rootItem.clearChildren();
         for (CmsClientSitemapEntry child : root.getSubEntries()) {
-            CmsSitemapTreeItem childItem = create(child);
+            CmsSitemapTreeItem childItem = create(child, child.getSitePath());
             rootItem.addChild(childItem);
             childItem.clearChildren();
             for (CmsClientSitemapEntry grandchild : child.getSubEntries()) {
-                childItem.addChild(create(grandchild));
+                childItem.addChild(create(grandchild, grandchild.getSitePath()));
             }
             childItem.onFinishLoading();
         }
@@ -272,7 +275,7 @@ public class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitemapContr
              */
             public void load(final CmsSitemapTreeItem target) {
 
-                m_controller.getChildren(target.getSitePath());
+                m_controller.getChildren(target.getOriginalPath(), target.getSitePath());
             }
         });
         m_tree.addItem(rootItem);
@@ -310,7 +313,14 @@ public class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitemapContr
      */
     public void onPreviewNativeEvent(NativePreviewEvent event) {
 
-        Event nativeEvent = Event.as(event.getNativeEvent());
+        Event nativeEvent;
+        try {
+            nativeEvent = Event.as(event.getNativeEvent());
+        } catch (Exception e) {
+            // sometimes in dev mode, and only in dev mode, we get
+            // "Found interface com.google.gwt.user.client.Event, but class was expected"
+            return;
+        }
         if (event.getTypeInt() != Event.ONKEYUP) {
             return;
         }

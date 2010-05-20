@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapTreeItem.java,v $
- * Date   : $Date: 2010/05/18 12:58:17 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/05/20 09:17:29 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,15 +32,17 @@
 package org.opencms.ade.sitemap.client;
 
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
+import org.opencms.file.CmsResource;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem;
+import org.opencms.gwt.client.ui.tree.CmsTreeItem;
 
 /**
  * Sitemap entry tree item implementation.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 8.0.0
  * 
@@ -49,11 +51,11 @@ import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem;
  */
 public class CmsSitemapTreeItem extends CmsLazyTreeItem {
 
-    /** Attribute name constant. */
-    public static final String ATTR_SITEPATH = "__sitePath";
-
     /** The list item widget of this item. */
     private CmsListItemWidget m_listItemWidget;
+
+    /** The original site path. */
+    private String m_originalPath;
 
     /** The current site path. */
     private String m_sitePath;
@@ -67,8 +69,24 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
     public CmsSitemapTreeItem(CmsListItemWidget widget, String sitePath) {
 
         super(widget);
+        String name = CmsResource.getName(sitePath);
+        if (name.endsWith("/")) {
+            name = name.substring(0, name.length() - 1);
+        }
+        setId(name);
         m_listItemWidget = widget;
+        m_originalPath = sitePath;
         m_sitePath = sitePath;
+    }
+
+    /**
+     * Returns the original site path, in case this entry has been moved or renamed.<p>
+     *
+     * @return the original site path
+     */
+    public String getOriginalPath() {
+
+        return m_originalPath;
     }
 
     /**
@@ -82,16 +100,57 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
     }
 
     /**
+     * @see com.google.gwt.user.client.ui.UIObject#toString()
+     */
+    @Override
+    public String toString() {
+
+        StringBuffer sb = new StringBuffer();
+        sb.append(m_sitePath).append("\n");
+        for (int i = 0; i < getChildCount(); i++) {
+            CmsTreeItem child = getChild(i);
+            sb.append(child.toString());
+        }
+        return sb.toString();
+    }
+
+    /**
      * Refreshes the displayed data from the given sitemap entry.<p>
      * 
      * @param entry the sitemap entry to update
      */
     public void updateEntry(CmsClientSitemapEntry entry) {
 
-        CmsListItemWidget widget = m_listItemWidget;
-        widget.setTitleLabel(entry.getTitle());
-        widget.setAdditionalInfoValue(0, entry.getName());
-        widget.setAdditionalInfoValue(1, entry.getVfsPath());
-        widget.updateTruncation();
+        m_listItemWidget.setTitleLabel(entry.getTitle());
+        m_listItemWidget.setAdditionalInfoValue(1, entry.getVfsPath());
+        m_listItemWidget.updateTruncation();
+    }
+
+    /**
+     * Updates the recursively the site path.<p>
+     * 
+     * @param sitePath the new site path to set
+     */
+    public void updateSitePath(String sitePath) {
+
+        if (m_sitePath.equals(sitePath)) {
+            // nothing to do
+            return;
+        }
+        m_sitePath = sitePath;
+        m_listItemWidget.setSubtitleLabel(sitePath);
+        String name = CmsResource.getName(sitePath);
+        if (name.endsWith("/")) {
+            name = name.substring(0, name.length() - 1);
+        }
+        setId(name);
+        m_listItemWidget.setAdditionalInfoValue(0, name);
+        if (getLoadState() == LoadState.LOADED) {
+            for (int i = 0; i < getChildCount(); i++) {
+                CmsSitemapTreeItem item = (CmsSitemapTreeItem)getChild(i);
+                item.updateSitePath(sitePath + CmsResource.getName(item.getSitePath()));
+            }
+        }
+        m_listItemWidget.updateTruncation();
     }
 }

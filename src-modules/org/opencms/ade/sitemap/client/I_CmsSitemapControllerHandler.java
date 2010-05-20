@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/I_CmsSitemapControllerHandler.java,v $
- * Date   : $Date: 2010/05/18 12:58:17 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/05/20 09:17:29 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  * 
@@ -68,8 +68,9 @@ public interface I_CmsSitemapControllerHandler {
      * Will be triggered when an entry gets its children.<p>
      * 
      * @param entry the entry that got its children
+     * @param originalParent the original path, in case of moved or renamed
      */
-    void onGetChildren(CmsClientSitemapEntry entry);
+    void onGetChildren(CmsClientSitemapEntry entry, String originalParent);
 
     /**
      * Will be triggered when redoing the last possible action.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapEntryEditor.java,v $
- * Date   : $Date: 2010/05/18 13:29:53 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/05/20 09:17:29 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ import org.opencms.ade.sitemap.client.ui.CmsTemplateSelectBox;
 import org.opencms.ade.sitemap.client.ui.CmsTemplateSelectCell;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsSitemapTemplate;
+import org.opencms.file.CmsResource;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.CmsNonEmptyValidator;
@@ -58,7 +59,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  *  @author Georg Westenberger
  *  
- *  @version $Revision: 1.4 $
+ *  @version $Revision: 1.5 $
  *  
  *  @since 8.0.0
  */
@@ -94,9 +95,7 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
      * @param controller the controller which should be used to update the edited sitemap entry 
      * @param entry the entry which should be edited
      */
-    public CmsSitemapEntryEditor(CmsSitemapController controller,
-
-    CmsClientSitemapEntry entry) {
+    public CmsSitemapEntryEditor(CmsSitemapController controller, CmsClientSitemapEntry entry) {
 
         super(message(Messages.GUI_PROPERTY_EDITOR_TITLE_0));
 
@@ -110,6 +109,7 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
      * 
      * @param map the map from which to retrieve the value 
      * @param key the key
+     * 
      * @return the removed value 
      */
     protected static String getAndRemoveValue(Map<String, String> map, String key) {
@@ -158,7 +158,7 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
     }
 
     /**
-     * Shows the sitemap entry editor to the user.
+     * Shows the sitemap entry editor to the user.<p>
      */
     public void start() {
 
@@ -189,7 +189,6 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
             form.addField(field, currentValue);
         }
         center();
-
     }
 
     /** 
@@ -207,11 +206,17 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
 
         CmsCoreProvider.get().translateUrlName(urlNameValue, new AsyncCallback<String>() {
 
+            /**
+             * @see com.google.gwt.user.client.rpc.AsyncCallback#onFailure(java.lang.Throwable)
+             */
             public void onFailure(Throwable caught) {
 
                 // this will never be executed; do nothing 
             }
 
+            /**
+             * @see com.google.gwt.user.client.rpc.AsyncCallback#onSuccess(Object)
+             */
             public void onSuccess(String newUrlName) {
 
                 setUrlNameField(newUrlName);
@@ -219,7 +224,12 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
                     showUrlNameError(message(Messages.GUI_URLNAME_ALREADY_EXISTS_0));
                 } else {
                     hide();
-                    m_controller.edit(m_entry, titleValue, null, newUrlName, fieldValues);
+                    // edit
+                    m_controller.edit(m_entry, titleValue, null, fieldValues);
+                    // move
+                    String newPath = CmsResource.getParentFolder(m_entry.getSitePath());
+                    newPath += newUrlName + "/";
+                    m_controller.move(m_entry, newPath, m_entry.getPosition());
                 }
             }
         });
@@ -243,7 +253,6 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
                 }
             }
         });
-
     }
 
     /**
@@ -254,7 +263,6 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
     protected void setUrlNameField(String urlName) {
 
         getForm().getField(FIELD_URLNAME).getWidget().setFormValueAsString(urlName);
-
     }
 
     /**
@@ -280,7 +288,6 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
         CmsBasicFormField result = new CmsBasicFormField(FIELD_TEMPLATE, description, label, null, select);
         m_controller.getData().getTemplates();
         return result;
-
     }
 
     /** 
@@ -322,7 +329,6 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
         defaultCell.setTemplate(getDefaultTemplate());
         result.addOption(defaultCell);
         return result;
-
     }
 
     /**
@@ -390,7 +396,7 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
      * Helper method for removing hidden properties from a map of property configurations.<p>
      * 
      * The map passed into the method is not changed; a map which only contains the non-hidden
-     * property definitions is returned.
+     * property definitions is returned.<p>
      * 
      * @param propConfig the property configuration 
      * 
@@ -406,5 +412,4 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
         }
         return result;
     }
-
 }
