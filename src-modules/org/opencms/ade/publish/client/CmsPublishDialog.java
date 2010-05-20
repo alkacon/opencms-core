@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishDialog.java,v $
- * Date   : $Date: 2010/05/18 12:58:02 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2010/05/20 09:46:29 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 8.0.0
  * 
@@ -113,7 +113,7 @@ public class CmsPublishDialog extends CmsPopupDialog {
         @Override
         protected void show() {
 
-            CmsNotification.get().send(CmsNotification.Type.NORMAL, Messages.get().key(Messages.GUI_PUBLISHING_0));
+            CmsNotification.get().sendSticky(CmsNotification.Type.NORMAL, Messages.get().key(Messages.GUI_PUBLISHING_0));
         }
     }
 

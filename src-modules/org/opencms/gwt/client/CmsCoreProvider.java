@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/Attic/CmsCoreProvider.java,v $
- * Date   : $Date: 2010/05/18 12:58:02 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/05/20 09:46:29 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 8.0.0
  * 
@@ -215,7 +215,9 @@ public final class CmsCoreProvider extends CmsCoreData {
             @Override
             protected void show() {
 
-                CmsNotification.get().send(CmsNotification.Type.NORMAL, Messages.get().key(Messages.GUI_LOCKING_0));
+                CmsNotification.get().sendSticky(
+                    CmsNotification.Type.NORMAL,
+                    Messages.get().key(Messages.GUI_LOCKING_0));
             }
         };
         return lockAction.executeSync() == null;
@@ -333,7 +335,9 @@ public final class CmsCoreProvider extends CmsCoreData {
             @Override
             protected void show() {
 
-                CmsNotification.get().send(CmsNotification.Type.NORMAL, Messages.get().key(Messages.GUI_UNLOCKING_0));
+                CmsNotification.get().sendSticky(
+                    CmsNotification.Type.NORMAL,
+                    Messages.get().key(Messages.GUI_UNLOCKING_0));
             }
         };
         return unlockAction.executeSync() == null;

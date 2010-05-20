@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsToolbarNotificationWidget.java,v $
- * Date   : $Date: 2010/05/18 12:58:02 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/05/20 09:46:29 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -106,7 +106,8 @@ public class CmsToolbarNotificationWidget extends Composite implements I_CmsNoti
      */
     public void hide() {
 
-        hide(false);
+        m_mode = null;
+        hide(true);
     }
 
     /**
@@ -160,7 +161,7 @@ public class CmsToolbarNotificationWidget extends Composite implements I_CmsNoti
                 @Override
                 public void run() {
 
-                    hide();
+                    hide(false);
                     if (stickyMessage != null) {
                         show(null, oldType, stickyMessage);
                     }
@@ -227,6 +228,38 @@ public class CmsToolbarNotificationWidget extends Composite implements I_CmsNoti
             };
         }
         return m_showAnimation;
+    }
+
+    /**
+     * Hides the notification message.<p>
+     * 
+     * @param force if <code>true</code> will also hide the message if mode is fixed
+     */
+    protected void hide(boolean force) {
+
+        // remove last notification if still shown
+        if (m_timer != null) {
+            m_timer.cancel();
+            m_timer = null;
+        }
+        if ((m_mode == Mode.STICKY) && !force) {
+            return;
+        }
+        m_type = null;
+        if (m_animation != null) {
+            m_animation.cancel();
+            m_animation = null;
+        }
+        if (getElement().getStyle().getVisibility().equalsIgnoreCase(Visibility.HIDDEN.getCssName())) {
+            return;
+        }
+
+        if (!force) {
+            m_animation = getHideAnimation();
+            m_animation.run();
+        } else {
+            onHideComplete();
+        }
     }
 
     /**
@@ -347,38 +380,6 @@ public class CmsToolbarNotificationWidget extends Composite implements I_CmsNoti
             };
         }
         return m_hideAnimation;
-    }
-
-    /**
-     * Hides the notification message.<p>
-     * 
-     * @param force if <code>true</code> will also hide the message if mode is fixed
-     */
-    private void hide(boolean force) {
-
-        // remove last notification if still shown
-        if (m_timer != null) {
-            m_timer.cancel();
-            m_timer = null;
-        }
-        if ((m_mode == Mode.STICKY) && !force) {
-            return;
-        }
-        m_type = null;
-        if (m_animation != null) {
-            m_animation.cancel();
-            m_animation = null;
-        }
-        if (getElement().getStyle().getVisibility().equalsIgnoreCase(Visibility.HIDDEN.getCssName())) {
-            return;
-        }
-
-        if (!force) {
-            m_animation = getHideAnimation();
-            m_animation.run();
-        } else {
-            onHideComplete();
-        }
     }
 
     /**
