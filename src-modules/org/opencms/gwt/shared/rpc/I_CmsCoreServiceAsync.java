@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/rpc/Attic/I_CmsCoreServiceAsync.java,v $
- * Date   : $Date: 2010/05/18 12:31:14 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/05/20 11:41:39 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 8.0.0
  * 
@@ -85,6 +85,17 @@ public interface I_CmsCoreServiceAsync {
      */
     @SynchronizedRpcRequest
     void lockTemp(String uri, AsyncCallback<String> callback);
+
+    /**
+     * Locks the given resource with a temporary lock additionally checking that 
+     * the given resource has not been modified after the given timestamp.<p>
+     * 
+     * @param uri the resource URI 
+     * @param modification the timestamp to check
+     * @param callback the async callback
+     */
+    @SynchronizedRpcRequest
+    void lockTempAndCheckModification(String uri, long modification, AsyncCallback<String> callback);
 
     /**
      * Generates core data for prefetching in the host page.<p>

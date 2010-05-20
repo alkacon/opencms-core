@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2010/05/20 09:46:29 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2010/05/20 11:41:39 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import com.google.gwt.user.client.Window;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 8.0.0
  */
@@ -524,7 +524,7 @@ public class CmsSitemapController {
 
         // state
         if (!isDirty()) {
-            if (CmsCoreProvider.get().lock()) {
+            if (CmsCoreProvider.get().lockAndCheckModification(CmsCoreProvider.get().getUri(), m_data.getTimestamp())) {
                 m_handler.onStartEdit();
             } else {
                 // could not lock

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/Attic/CmsCoreProvider.java,v $
- * Date   : $Date: 2010/05/20 09:46:29 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/05/20 11:41:39 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 8.0.0
  * 
@@ -207,6 +207,60 @@ public final class CmsCoreProvider extends CmsCoreData {
                 // unable to lock
                 String text = Messages.get().key(Messages.GUI_LOCK_NOTIFICATION_2, uri, result);
                 CmsNotification.get().send(CmsNotification.Type.WARNING, text);
+            }
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#show()
+             */
+            @Override
+            protected void show() {
+
+                CmsNotification.get().sendSticky(
+                    CmsNotification.Type.NORMAL,
+                    Messages.get().key(Messages.GUI_LOCKING_0));
+            }
+        };
+        return lockAction.executeSync() == null;
+    }
+
+    /**
+     * Locks the given resource with a temporary lock, synchronously and additionally checking that 
+     * the given resource has not been modified after the given timestamp.<p>
+     * 
+     * @param uri the resource URI
+     * @param modification the timestamp to check
+     * 
+     * @return <code>true</code> if succeeded, if not a a warning is already shown to the user
+     */
+    public boolean lockAndCheckModification(final String uri, final long modification) {
+
+        // lock the sitemap
+        CmsRpcAction<String> lockAction = new CmsRpcAction<String>() {
+
+            /**
+            * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+            */
+            @Override
+            public void execute() {
+
+                start(200);
+                getService().lockTempAndCheckModification(uri, modification, this);
+            }
+
+            /**
+            * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+            */
+            @Override
+            public void onResponse(String result) {
+
+                stop(false);
+                if (result == null) {
+                    // ok
+                    return;
+                }
+                // unable to lock
+                String text = Messages.get().key(Messages.GUI_LOCK_NOTIFICATION_2, uri, result);
+                CmsNotification.get().send(CmsNotification.Type.ERROR, text);
             }
 
             /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsSitemapData.java,v $
- * Date   : $Date: 2010/05/03 14:33:05 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/05/20 11:41:39 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0
  */
@@ -79,31 +79,15 @@ public class CmsSitemapData implements IsSerializable {
     /** The available templates. */
     private Map<String, CmsSitemapTemplate> m_templates;
 
+    /** The sitemap resource last modification date. */
+    private long m_timestamp;
+
     /**
      * Constructor.<p>
      */
     public CmsSitemapData() {
 
         // empty
-    }
-
-    /**
-     * Clone constructor.<p>
-     * 
-     * @param clone the instance to clone 
-     */
-    public CmsSitemapData(CmsSitemapData clone) {
-
-        this(
-            clone.getDefaultTemplate(),
-            clone.getTemplates(),
-            clone.getProperties(),
-            clone.getRecentList(),
-            clone.getNoEditReason(),
-            clone.isDisplayToolbar(),
-            clone.getCntPageType(),
-            clone.getParentSitemap(),
-            clone.getRoot());
     }
 
     /**
@@ -118,6 +102,7 @@ public class CmsSitemapData implements IsSerializable {
      * @param cntPageType the type of the container page resource
      * @param parentSitemap the path to the parent sitemap or <code>null</code>
      * @param root the sitemap root
+     * @param timestamp the sitemap resource last modification date
      */
     public CmsSitemapData(
         CmsSitemapTemplate defaultTemplate,
@@ -128,7 +113,8 @@ public class CmsSitemapData implements IsSerializable {
         boolean displayToolbar,
         int cntPageType,
         String parentSitemap,
-        CmsClientSitemapEntry root) {
+        CmsClientSitemapEntry root,
+        long timestamp) {
 
         m_defaultTemplate = defaultTemplate;
         m_templates = templates;
@@ -139,6 +125,7 @@ public class CmsSitemapData implements IsSerializable {
         m_cntPageType = cntPageType;
         m_parentSitemap = parentSitemap;
         m_root = root;
+        m_timestamp = timestamp;
     }
 
     /**
@@ -219,6 +206,16 @@ public class CmsSitemapData implements IsSerializable {
     public Map<String, CmsSitemapTemplate> getTemplates() {
 
         return m_templates;
+    }
+
+    /**
+     * Returns the sitemap resource last modification date.<p>
+     *
+     * @return the sitemap resource last modification date
+     */
+    public long getTimestamp() {
+
+        return m_timestamp;
     }
 
     /**

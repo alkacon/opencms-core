@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/rpc/Attic/I_CmsCoreService.java,v $
- * Date   : $Date: 2010/05/18 12:31:14 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/05/20 11:41:39 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 8.0.0
  * 
@@ -93,6 +93,19 @@ public interface I_CmsCoreService extends RemoteService {
     String lockTemp(String uri) throws CmsRpcException;
 
     /**
+     * Locks the given resource with a temporary lock additionally checking that 
+     * the given resource has not been modified after the given timestamp.<p>
+     * 
+     * @param uri the resource URI 
+     * @param modification the timestamp to check
+     * 
+     * @return <code>null</code> if successful, an error message if not 
+     * 
+     * @throws CmsRpcException if something goes wrong 
+     */
+    String lockTempAndCheckModification(String uri, long modification) throws CmsRpcException;
+
+    /**
      * Generates core data for prefetching in the host page.<p>
      * 
      * @return the core data
@@ -122,5 +135,4 @@ public interface I_CmsCoreService extends RemoteService {
      * @throws CmsRpcException if something goes wrong 
      */
     String unlock(String uri) throws CmsRpcException;
-
 }

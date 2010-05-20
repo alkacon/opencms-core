@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsCoreService.java,v $
- * Date   : $Date: 2010/05/18 12:31:13 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/05/20 11:41:39 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 8.0.0
  * 
@@ -153,6 +153,24 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             error(e);
         }
         return null;
+    }
+
+    /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#lockTempAndCheckModification(java.lang.String, long)
+     */
+    public String lockTempAndCheckModification(String uri, long modification) throws CmsRpcException {
+
+        CmsObject cms = getCmsObject();
+        try {
+            // check time stamp
+            if (cms.readResource(uri).getDateLastModified() != modification) {
+                return Messages.get().container(Messages.ERR_RESOURCE_MODIFIED_AFTER_OPEN_1, uri).key();
+            }
+        } catch (Throwable e) {
+            error(e);
+        }
+        // lock
+        return lockTemp(uri);
     }
 
     /**

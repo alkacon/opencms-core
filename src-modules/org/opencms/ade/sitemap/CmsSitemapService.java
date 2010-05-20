@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsSitemapService.java,v $
- * Date   : $Date: 2010/05/19 10:19:10 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2010/05/20 11:41:39 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 8.0.0
  * 
@@ -224,7 +224,8 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
                 isDisplayToolbar(getRequest()),
                 OpenCms.getResourceManager().getResourceType(CmsResourceTypeXmlContainerPage.getStaticTypeName()).getTypeId(),
                 getParentSitemap(cms, sitemap),
-                getRoot(sitemap));
+                getRoot(sitemap),
+                sitemap.getDateLastModified());
         } catch (Throwable e) {
             error(e);
         }
