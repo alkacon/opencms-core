@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsTextBox.java,v $
- * Date   : $Date: 2010/05/10 06:54:24 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/05/21 09:10:25 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,6 +40,9 @@ import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
 
 import java.util.Map;
 
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.TextBox;
@@ -49,7 +52,7 @@ import com.google.gwt.user.client.ui.TextBox;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  * 
@@ -65,17 +68,20 @@ public class CmsTextBox extends Composite implements I_CmsFormWidget, I_CmsHasIn
     /** Default pseudo-padding for text boxes. */
     private static final int DEFAULT_PADDING = 4;
 
+    /** The text box used internally by this widget. */
+    protected TextBox m_textbox = new TextBox();
+
+    /** The handler registration for the change handler. */
+    private HandlerRegistration m_changeHandlerReg;
+
     /** The error display for this widget. */
     private CmsErrorWidget m_error = new CmsErrorWidget();
 
-    /** The container for the textbox container and error widget. */
-    private FlowPanel m_panel = new FlowPanel();
-
-    /** The text box used internally by this widget. */
-    private TextBox m_textbox = new TextBox();
-
     //    /** The horizontal "padding" for the text box. */
     //    private int m_paddingX;
+
+    /** The container for the textbox container and error widget. */
+    private FlowPanel m_panel = new FlowPanel();
 
     /** The container for the text box. */
     private CmsPaddedPanel m_textboxContainer = new CmsPaddedPanel(DEFAULT_PADDING);
@@ -158,6 +164,37 @@ public class CmsTextBox extends Composite implements I_CmsFormWidget, I_CmsHasIn
     public void reset() {
 
         m_textbox.setText("");
+    }
+
+    /**
+     * Sets the change handler callback for this input field.<p>
+     * 
+     * The change handler will be executed when a keypress event is fired and the value of the textbox has changed.
+     * 
+     * @param callback the change handler callback 
+     */
+    public void setChangeHandler(final Runnable callback) {
+
+        if (m_changeHandlerReg != null) {
+            m_changeHandlerReg.removeHandler();
+        }
+        m_changeHandlerReg = m_textbox.addKeyPressHandler(new KeyPressHandler() {
+
+            String m_oldValue = m_textbox.getValue();
+
+            /**
+             * @see com.google.gwt.event.dom.client.KeyPressHandler#onKeyPress(com.google.gwt.event.dom.client.KeyPressEvent)
+             */
+            public void onKeyPress(KeyPressEvent event) {
+
+                String newValue = m_textbox.getValue();
+                if (!newValue.equals(m_oldValue)) {
+                    callback.run();
+                }
+                m_oldValue = newValue;
+            }
+        });
+
     }
 
     /**
