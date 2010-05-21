@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2010/05/03 12:53:26 $
- * Version: $Revision: 1.1180 $
+ * Date   : $Date: 2010/05/21 14:33:03 $
+ * Version: $Revision: 1.1181 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -25,6 +25,7 @@ OpenCms x.x.x - Month Day, Year
 * Keep browser based authentication text when rewriting the opencms-system.xml
 * Fixed issue with broken dialog when trying to edit a group that is part of an organizational unit
 - Enhanced english and german dialog text when undo changes inclusive siblings which says that only the content changes are be undone
+- Updated Apache Commons Email to version 1.2
 
 OpenCms 7.5.2 - January 20, 2010
 - Added additional MIME types
