@@ -355,9 +355,9 @@
 									  fork="yes" 
 									  failonerror="true"
 									  maxmemory="512m">
-						  			<arg value="-XdisableClassMetadata" />
+						  		<!--	<arg value="-XdisableClassMetadata" />
 						  			<arg value="-XdisableCastChecking" />
-						  			<arg value="-compileReport" />
+						  			<arg value="-compileReport" />  removing compiler args for faster compiling and easier debugging -> stacktrace -->
 						            <arg value="-localWorkers" />
 						            <arg value="2" />
 						            <arg value="-logLevel" />
