@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/Attic/CmsOpenVfsGallery.java,v $
- * Date   : $Date: 2010/04/21 15:43:31 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/05/21 14:27:40 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0
  */
@@ -113,8 +113,8 @@ public class CmsOpenVfsGallery extends CmsDialog {
                 // get the matching gallery type name
                 galleryType = OpenCms.getResourceManager().getResourceType(res.getTypeId()).getTypeName();
                 // TODO: use 990 for debugging: String width = "660";
-                String width = "1100";
-                String height = "510";
+                String width = "660";
+                String height = "486";
                 StringBuffer galleryUri = new StringBuffer(256);
                 // path to the gallery dialog with the required request parameters
                 galleryUri.append(VFS_OPEN_GALLERY_PATH);

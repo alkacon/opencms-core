@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleriesVfs.java,v $
- * Date   : $Date: 2010/05/07 13:33:01 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/05/21 14:27:40 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,9 @@ import org.opencms.ade.galleries.client.ui.CmsGalleryDialog;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.A_CmsEntryPoint;
 
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
 
 /**
@@ -42,11 +45,13 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 8.0.0
  */
-public class CmsGalleriesVfs extends A_CmsEntryPoint {
+public class CmsGalleriesVfs extends A_CmsEntryPoint implements ResizeHandler {
+
+    private CmsGalleryDialog m_galleryDialog;
 
     /**
      * @see org.opencms.gwt.client.A_CmsEntryPoint#onModuleLoad()
@@ -55,9 +60,19 @@ public class CmsGalleriesVfs extends A_CmsEntryPoint {
     public void onModuleLoad() {
 
         super.onModuleLoad();
-        RootPanel.getBodyElement().addClassName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().galleriesDialog());
-        CmsGalleryDialog galleryDialog = CmsGalleryFactory.createDialog();
+        Window.addResizeHandler(this);
+        RootPanel.getBodyElement().addClassName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().galleryBody());
+        m_galleryDialog = CmsGalleryFactory.createDialog();
         // add the gallery dialog to dom
-        RootPanel.get().add(galleryDialog);
+        RootPanel.get().add(m_galleryDialog);
+
+    }
+
+    /**
+     * @see com.google.gwt.event.logical.shared.ResizeHandler#onResize(com.google.gwt.event.logical.shared.ResizeEvent)
+     */
+    public void onResize(ResizeEvent event) {
+
+        m_galleryDialog.setDialogSize(event.getWidth(), event.getHeight());
     }
 }

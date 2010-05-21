@@ -1,15 +1,18 @@
-.galleriesDialog{
-	margin:1px;
+.galleryBody {
+	margin:0px;
 	padding:0px;
 }
-
-.galleryDialogSize{
-	width:650px;
-	height:486px;
+ 
+ 
+/* The height is set as inline style. */
+.parentPanel {				
+	min-height:483px;
+	min-width:650px;	
+	position:relative;		
 }
 
 .criteriaList {
-	border:1px solid #999999;
+	border:1px solid value("constantsCss.borderColor");
 	height:405px;
 	overflow: auto;
 	position: relative;
@@ -18,7 +21,7 @@
 }
 
 .selectboxWidth {
-		width: 200px;
+	width: 200px;
 }
 
 .tabPanel {
@@ -40,7 +43,6 @@
 	color:value("constantsCss.color");
 	border:1px solid value("constantsCss.borderColor");
 	display:inline-block;
-	/*margin:1px 1px 1px 0;*/
 	margin-right:1px;
 	margin-bottom:1px;
 	padding:2px;

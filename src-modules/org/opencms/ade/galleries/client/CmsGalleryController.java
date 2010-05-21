@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleryController.java,v $
- * Date   : $Date: 2010/05/19 09:02:51 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/05/21 14:27:40 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ import org.opencms.ade.galleries.shared.CmsCategoryBean;
 import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
 import org.opencms.ade.galleries.shared.CmsGalleryFolderBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
+import org.opencms.ade.galleries.shared.CmsPreviewInfoBean;
 import org.opencms.ade.galleries.shared.CmsResourceTypeBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
@@ -52,7 +53,9 @@ import org.opencms.util.CmsStringUtil;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
 
@@ -64,7 +67,7 @@ import com.google.gwt.core.client.GWT;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 8.0.0
  */
@@ -232,9 +235,25 @@ public class CmsGalleryController {
      * 
      * @param id the item to select
      */
+    //TODO: move to the preview controller
     public void openPreview(final String id) {
 
-        m_handler.onOpenPreview();
+        // TODO: replace dummy with data from rpc call
+        CmsPreviewInfoBean dummyBean = new CmsPreviewInfoBean();
+        dummyBean.setPreviewHtml(new String("<p>Test</p>"));
+        Map<String, String> dummyProps = new LinkedHashMap<String, String>();
+        dummyProps.put("Title", "Mein Title");
+        dummyProps.put("Description", "Mein Title");
+        dummyProps.put("Groesse", "Mein Title");
+        dummyProps.put("Groesse und sehr lang und so", "Mein Title");
+        dummyProps.put("Groesse", "Mein Title und hier auch etwas länger");
+        dummyProps.put("Groesse", "Mein Title");
+        dummyProps.put("Groesse und alles durcheinander", "Mein Title und auch enen langen Text");
+        dummyProps.put("Groesse", "Mein Title");
+        dummyProps.put("Groesse", "Mein Title");
+        dummyProps.put("Groesse", "Mein Title udn am Ende auch");
+        dummyBean.setPropeties(dummyProps);
+        m_handler.onOpenPreview(dummyBean);
         //TODO: call the rpc action and open the preview dialog in the callback
     }
 

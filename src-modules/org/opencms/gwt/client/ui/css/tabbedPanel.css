@@ -4,10 +4,6 @@
 	display:block;
     background:value("constantsCss.backgroundColorLight") none repeat scroll 0 0;   
     border:1px solid value("constantsCss.borderColor");
- /*   -moz-border-radius-topleft:4px;
-	-moz-border-radius-topright:4px;	
-	-moz-border-radius-bottomleft:4px;
-	-moz-border-radius-bottomright:4px; */
 	height: 100%;
 	margin:0;
 	padding:0;
@@ -15,8 +11,9 @@
 	font-family: value("constantsCss.fontFamily"); */   	
 }
 
+/*TODO: remove if not used within gallery preview*/
 .internal-tabbed {
-	margin:1px;
+	/*margin:1px;*/
 }
 
 @sprite .gwt-TabLayoutPanel .gwt-TabLayoutPanelTabBar {

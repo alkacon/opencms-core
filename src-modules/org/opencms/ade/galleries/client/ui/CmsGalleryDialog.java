@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsGalleryDialog.java,v $
- * Date   : $Date: 2010/05/18 12:31:13 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2010/05/21 14:27:40 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,8 +47,12 @@ import java.util.Iterator;
 
 import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
 import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
+import com.google.gwt.event.logical.shared.HasResizeHandlers;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 
@@ -57,14 +61,18 @@ import com.google.gwt.user.client.ui.FlowPanel;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 8.0.
  */
-public class CmsGalleryDialog extends Composite implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer> {
+public class CmsGalleryDialog extends Composite
+implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHandler, HasResizeHandlers {
 
     /** The initial dialog width. */
     public static final int DIALOG_WIDTH = 600;
+
+    /** The initial dialog width. */
+    public static final int DIALOG_HIGHT = 486;
 
     /** The categories tab. */
     private CmsCategoriesTab m_categoriesTab;
@@ -96,17 +104,23 @@ public class CmsGalleryDialog extends Composite implements BeforeSelectionHandle
     public CmsGalleryDialog() {
 
         initCss();
+
         m_dragHandler = null;
         m_isInitialSearch = false;
         // parent widget
         m_parentPanel = new FlowPanel();
-        m_parentPanel.setStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().galleryDialogSize());
+        m_parentPanel.setStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().parentPanel());
+
+        // set the default hight of the dialog
+        m_parentPanel.setHeight(Integer.toString(DIALOG_HIGHT - 2));
         // tabs
         m_tabbedPanel = new CmsTabbedPanel<A_CmsTab>(CmsTabLayout.standard, false);
         // add tabs to parent widget        
         m_parentPanel.add(m_tabbedPanel);
+
         // All composites must call initWidget() in their constructors.
-        initWidget(m_tabbedPanel);
+        initWidget(m_parentPanel);
+        addResizeHandler(this);
     }
 
     /**
@@ -128,6 +142,7 @@ public class CmsGalleryDialog extends Composite implements BeforeSelectionHandle
         I_CmsLayoutBundle.INSTANCE.galleryDialogCss().ensureInjected();
         I_CmsLayoutBundle.INSTANCE.listTreeCss().ensureInjected();
         I_CmsLayoutBundle.INSTANCE.previewDialogCss().ensureInjected();
+        org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().ensureInjected();
         org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle.INSTANCE.galleryDialogCss().ensureInjected();
     }
 
@@ -258,6 +273,21 @@ public class CmsGalleryDialog extends Composite implements BeforeSelectionHandle
     }
 
     /**
+     * Sets the size of the gallery parent panel and triggers the event to the tab.<p>
+     * 
+     * @param width the new width 
+     * @param height the new height
+     */
+    public void setDialogSize(int width, int height) {
+
+        if (height > DIALOG_HIGHT) {
+            m_parentPanel.setHeight(Integer.toString(height - 2));
+            m_parentPanel.setWidth(Integer.toString(width - 2));
+            ResizeEvent.fire(this, width, height);
+        }
+    }
+
+    /**
      * Selects a tab by the given id.<p>
      * 
      * @param tabId the tab id
@@ -272,5 +302,25 @@ public class CmsGalleryDialog extends Composite implements BeforeSelectionHandle
                 break;
             }
         }
+    }
+
+    /**
+     * @see com.google.gwt.event.logical.shared.HasResizeHandlers#addResizeHandler(com.google.gwt.event.logical.shared.ResizeHandler)
+     */
+    public HandlerRegistration addResizeHandler(ResizeHandler handler) {
+
+        return addHandler(handler, ResizeEvent.getType());
+    }
+
+    /**
+     * 
+     * @see com.google.gwt.event.logical.shared.ResizeHandler#onResize(com.google.gwt.event.logical.shared.ResizeEvent)
+     */
+    public void onResize(ResizeEvent event) {
+
+        // TODO: implement
+        int newHeight = event.getHeight();
+        int newWidth = event.getWidth();
+
     }
 }

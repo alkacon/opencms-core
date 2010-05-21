@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/Messages.java,v $
- * Date   : $Date: 2010/05/06 13:11:19 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/05/21 14:27:40 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.client.util.CmsMessages;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
  */
@@ -106,6 +106,15 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SORT_LABEL_SORT_0 = "GUI_SORT_LABEL_SORT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREVIEW_BUTTON_SELECT_0 = "GUI_PREVIEW_BUTTON_SELECT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREVIEW_BUTTON_SAVE_0 = "GUI_PREVIEW_BUTTON_SAVE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREVIEW_TAB_PROPERTIES_0 = "GUI_PREVIEW_TAB_PROPERTIES_0";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.ade.galleries.clientmessages";

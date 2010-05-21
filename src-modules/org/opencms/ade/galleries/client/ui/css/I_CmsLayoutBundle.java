@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2010/05/07 13:33:01 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/05/21 14:27:39 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import com.google.gwt.resources.client.CssResource;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -58,13 +58,7 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
          * 
          * @return the CSS class name
          */
-        String galleriesDialog();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String galleryDialogSize();
+        String galleryBody();
 
         /** Access method.<p>
          * 
@@ -83,6 +77,12 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
          * @return the CSS class name
          */
         String paramsText();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String parentPanel();
 
         /** Access method.<p>
          * 
@@ -111,7 +111,79 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
          * 
          * @return the CSS class name
          */
+        String clearFix();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String detailsHolder();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String inputField();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String labelField();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String previewButton();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String previewButtonBar();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String previewCloseButton();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
         String previewDialog();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String previewHolder();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String previewPanel();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String propertiesList();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String propertyLeft();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String propertyRight();
     }
 
     /** The bundle instance. */
@@ -122,15 +194,15 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
      * 
      * @return the gallery dialog CSS
      */
-    @Source("previewdialog.css")
-    I_CmsPreviewDialogCss previewDialogCss();
+    @Source("gallerydialog.css")
+    I_CmsGalleryDialogCss galleryDialogCss();
 
     /**
      * Access method.<p>
      * 
      * @return the gallery dialog CSS
      */
-    @Source("gallerydialog.css")
-    I_CmsGalleryDialogCss galleryDialogCss();
+    @Source("previewdialog.css")
+    I_CmsPreviewDialogCss previewDialogCss();
 
 }

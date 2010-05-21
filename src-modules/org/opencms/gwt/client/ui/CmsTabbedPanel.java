@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsTabbedPanel.java,v $
- * Date   : $Date: 2010/05/14 13:34:53 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/05/21 14:27:40 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,23 +58,23 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 8.0.0
  * 
  */
 public class CmsTabbedPanel<E extends Widget> extends Composite {
 
-    /** The TabLayoutPanel widget. */
-    private TabLayoutPanel m_tabPanel;
-
     /** Enumeration with layout keys. */
     public enum CmsTabLayout {
-        /** Standard layout size. */
-        standard(32),
-
         /** Small layout size. */
-        small(25);
+        small(25),
+
+        /** Standard layout size. */
+        standard(32);
+
+        /** The default tabbar height. */
+        public static final CmsTabLayout DEFAULT = standard;
 
         /** Property name. */
         private int m_barHeight;
@@ -95,10 +95,10 @@ public class CmsTabbedPanel<E extends Widget> extends Composite {
             return m_barHeight;
         }
 
-        /** The default tabbar height. */
-        public static final CmsTabLayout DEFAULT = standard;
-
     }
+
+    /** The TabLayoutPanel widget. */
+    private TabLayoutPanel m_tabPanel;
 
     /**
      * The default constructor for an empty tabbed panel. <p>
@@ -167,6 +167,32 @@ public class CmsTabbedPanel<E extends Widget> extends Composite {
     }
 
     /**
+     * Add the before selection handler to the tabbed panel.<p>
+     * 
+     * Wrapper function for {@link com.google.gwt.user.client.ui.TabLayoutPanel#addBeforeSelectionHandler(BeforeSelectionHandler)}
+     * 
+     * @param handler the before selection handler
+     * @return the registration for the event
+     */
+    public HandlerRegistration addBeforeSelectionHandler(BeforeSelectionHandler<Integer> handler) {
+
+        return m_tabPanel.addBeforeSelectionHandler(handler);
+    }
+
+    /**
+     * Adds a SelectionEvent handler to the tabbed panel.<p>
+     * 
+     * Wrapper function for {@link com.google.gwt.user.client.ui.TabLayoutPanel#addSelectionHandler(SelectionHandler)}
+     * 
+     * @param handler the selection handler
+     * @return the registration for the event
+     */
+    public HandlerRegistration addSelectionHandler(SelectionHandler<Integer> handler) {
+
+        return m_tabPanel.addSelectionHandler(handler);
+    }
+
+    /**
      * Add a new tab with the provided name and content and additional left margin.<p>
      * 
      * @param tabContent the widget to add as a tab 
@@ -186,6 +212,45 @@ public class CmsTabbedPanel<E extends Widget> extends Composite {
         if ((tabDivs != null) && (tabDivs.size() > tabIndex)) {
             tabDivs.get(tabIndex).addClassName(I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().tabLeftMargin());
         }
+    }
+
+    /**
+     * Gets the index of the currently-selected tab.<p>
+     * 
+     * Wrapper function for {@link com.google.gwt.user.client.ui.TabLayoutPanel#getSelectedIndex()}
+     * 
+     * @return the selected index, or -1 if none is selected.
+     */
+    public int getSelectedIndex() {
+
+        return m_tabPanel.getSelectedIndex();
+
+    }
+
+    /**
+     * Gets the number of child widgets in this panel.<p>
+     * 
+     * Wrapper function for {@link com.google.gwt.user.client.ui.TabLayoutPanel#getWidgetCount()}
+     * 
+     * @return the number of children
+     */
+    public int getTabCount() {
+
+        return m_tabPanel.getWidgetCount();
+    }
+
+    /**
+     * Gets the child widget at the specified index.<p>
+     * 
+     * Wrapper function for {@link com.google.gwt.user.client.ui.TabLayoutPanel#getWidget(int)}
+     * 
+     * @param tabIndex the child widget's index
+     * @return the child widget
+     */
+    @SuppressWarnings("unchecked")
+    public E getWidget(int tabIndex) {
+
+        return (E)m_tabPanel.getWidget(tabIndex);
     }
 
     /**
@@ -216,18 +281,6 @@ public class CmsTabbedPanel<E extends Widget> extends Composite {
     /**
      * Delegate method.<p>
      * 
-     * @see com.google.gwt.user.client.ui.TabLayoutPanel#selectTab(int index)
-     * 
-     * @param tabIndex the index of the tab to be selected
-     */
-    public void selectTab(int tabIndex) {
-
-        m_tabPanel.selectTab(tabIndex);
-    }
-
-    /**
-     * Delegate method.<p>
-     * 
      * @see com.google.gwt.user.client.ui.TabLayoutPanel#selectTab(Widget index)
      * 
      * @param tabWidget the tab widget to select
@@ -238,67 +291,14 @@ public class CmsTabbedPanel<E extends Widget> extends Composite {
     }
 
     /**
-     * Gets the index of the currently-selected tab.<p>
+     * Delegate method.<p>
      * 
-     * Wrapper function for {@link com.google.gwt.user.client.ui.TabLayoutPanel#getSelectedIndex()}
+     * @see com.google.gwt.user.client.ui.TabLayoutPanel#selectTab(int index)
      * 
-     * @return the selected index, or -1 if none is selected.
+     * @param tabIndex the index of the tab to be selected
      */
-    public int getSelectedIndex() {
+    public void selectTab(int tabIndex) {
 
-        return m_tabPanel.getSelectedIndex();
-
-    }
-
-    /**
-     * Gets the child widget at the specified index.<p>
-     * 
-     * Wrapper function for {@link com.google.gwt.user.client.ui.TabLayoutPanel#getWidget(int)}
-     * 
-     * @param tabIndex the child widget's index
-     * @return the child widget
-     */
-    @SuppressWarnings("unchecked")
-    public E getWidget(int tabIndex) {
-
-        return (E)m_tabPanel.getWidget(tabIndex);
-    }
-
-    /**
-     * Gets the number of child widgets in this panel.<p>
-     * 
-     * Wrapper function for {@link com.google.gwt.user.client.ui.TabLayoutPanel#getWidgetCount()}
-     * 
-     * @return the number of children
-     */
-    public int getTabCount() {
-
-        return m_tabPanel.getWidgetCount();
-    }
-
-    /**
-     * Add the before selection handler to the tabbed panel.<p>
-     * 
-     * Wrapper function for {@link com.google.gwt.user.client.ui.TabLayoutPanel#addBeforeSelectionHandler(BeforeSelectionHandler)}
-     * 
-     * @param handler the before selection handler
-     * @return the registration for the event
-     */
-    public HandlerRegistration addBeforeSelectionHandler(BeforeSelectionHandler<Integer> handler) {
-
-        return m_tabPanel.addBeforeSelectionHandler(handler);
-    }
-
-    /**
-     * Adds a SelectionEvent handler to the tabbed panel.<p>
-     * 
-     * Wrapper function for {@link com.google.gwt.user.client.ui.TabLayoutPanel#addSelectionHandler(SelectionHandler)}
-     * 
-     * @param handler the selection handler
-     * @return the registration for the event
-     */
-    public HandlerRegistration addSelectionHandler(SelectionHandler<Integer> handler) {
-
-        return m_tabPanel.addSelectionHandler(handler);
+        m_tabPanel.selectTab(tabIndex);
     }
 }

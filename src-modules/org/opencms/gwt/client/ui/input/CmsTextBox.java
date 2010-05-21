@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsTextBox.java,v $
- * Date   : $Date: 2010/05/21 09:10:25 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/05/21 14:27:40 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import com.google.gwt.user.client.ui.TextBox;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.0
  * 
@@ -244,5 +244,13 @@ public class CmsTextBox extends Composite implements I_CmsFormWidget, I_CmsHasIn
     public void setText(String text) {
 
         m_textbox.setText(text);
+    }
+
+    /**
+     * Sets the changed style on the text box.<p>
+     */
+    public void setChangedStyle() {
+
+        m_textbox.addStyleName(CSS.changed());
     }
 }

@@ -1,7 +1,82 @@
+/* The height and width are set as inline style. */
 .previewDialog {
 	position:absolute;
 	top:0px;
 	left:0px;
-	width:100%;
+	min-height:483px;
+	min-width:650px;	
+	display: block;
+	background-color: value("constantsCss.backgroundColorList");
+	border:1px solid value("constantsCss.borderColor");
+}
+
+.previewCloseButton{
+	position: absolute;
+	top:0px;
+	right:0px;
+	margin:2px;
+}
+
+/* Preview panel */
+.previewHolder {		
+	border:1px solid value("constantsCss.borderColor");	
+	margin:1px;
+}
+
+.previewPanel {	
 	height:100%;
+}
+
+/* Tabs panel (details) */
+.detailsHolder {	
+	margin:1px;
+}
+
+.previewButtonBar{
+	position: absolute;
+	bottom:0px;
+	right:0px;
+	margin:2px;
+}
+
+.previewButton {
+	margin-left:1px;
+}
+
+.propertiesList {	
+	height:60px; /* Change the height on resize */
+	overflow: auto;
+	position: relative;
+	margin:0px;
+	padding-right:5px;
+	padding-top:2px;	
+}
+
+.propertiesList.clearFix:after {
+    content: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+}
+
+/* Form css */
+.propertyLeft {
+	margin:1px 1px 1px 5px;
+	float:left;
+}
+
+.propertyRight {
+	margin:1px 1px 1px 5px;
+	float:right;
+}
+
+.labelField{
+	float:left;
+	font-weight:bold;
+}
+
+.inputField{
+	float:right;
+	margin-left:2px;
 }

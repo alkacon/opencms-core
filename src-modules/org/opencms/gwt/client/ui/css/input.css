@@ -87,7 +87,10 @@
 	gwt-image: "images.radioCheckedHover";
 }
 	
-
+/* Style for edited text box */
+.changed{
+	color:blue !important;;
+}
 
 
 
