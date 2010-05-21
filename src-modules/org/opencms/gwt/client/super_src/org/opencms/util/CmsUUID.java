@@ -1,7 +1,7 @@
 /* 
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/super_src/org/opencms/util/Attic/CmsUUID.java,v $
- * Date   : $Date: 2010/04/13 14:30:20 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/05/21 13:18:50 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0 
  */
@@ -184,6 +184,18 @@ public final class CmsUUID implements IsSerializable, Cloneable, Comparable<CmsU
         }
         return m_uuid.equals(NULL_UUID.m_uuid);
     }
+    
+    /**
+     * Returns <code>true</code> if the given UUID is valid.<p>
+     * 
+     * @param uuid the UUID to check
+     * 
+     * @return <code>true</code> if the given UUID is valid
+     */
+    public static native boolean isValidUUID(String uuid)/*-{
+        var regex=/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/;
+        return regex.test(uuid);
+    }-*/;
 
     /**
      * @see java.lang.Object#toString()
