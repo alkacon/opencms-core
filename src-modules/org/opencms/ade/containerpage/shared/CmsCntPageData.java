@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/shared/Attic/CmsCntPageData.java,v $
- * Date   : $Date: 2010/05/04 09:45:21 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/05/21 13:20:08 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,8 @@
 
 package org.opencms.ade.containerpage.shared;
 
+import java.util.Map;
+
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
@@ -38,7 +40,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -55,6 +57,9 @@ public final class CmsCntPageData implements IsSerializable {
 
     /** The current container page URI. */
     private String m_cntPageUri;
+
+    /** The map of available types and their new resource id's. */
+    private Map<String, String> m_newTypes;
 
     /** The reason why the user is not able to edit the current container page. */
     private String m_noEditReason;
@@ -75,6 +80,7 @@ public final class CmsCntPageData implements IsSerializable {
      * @param noEditReason the reason why the current user is not allowed to edit the current container page
      * @param requestParams the original request parameters
      * @param sitemapUri the current sitemap URI
+     * @param newTypes the map of available types and their new resource id's
      * @param toolbarVisible if the toolbar is visible
      */
     public CmsCntPageData(
@@ -82,12 +88,14 @@ public final class CmsCntPageData implements IsSerializable {
         String noEditReason,
         String requestParams,
         String sitemapUri,
+        Map<String, String> newTypes,
         boolean toolbarVisible) {
 
         m_cntPageUri = cntPageUri;
         m_noEditReason = noEditReason;
         m_requestParams = requestParams;
         m_sitemapUri = sitemapUri;
+        m_newTypes = newTypes;
         m_toolbarVisible = toolbarVisible;
     }
 
@@ -127,6 +135,16 @@ public final class CmsCntPageData implements IsSerializable {
     public String getEditorUri() {
 
         return EDITOR_URI;
+    }
+
+    /**
+     * Returns the map of available types and their new resource id's.<p>
+     * 
+     * @return the map of available types and their new resource id's
+     */
+    public Map<String, String> getNewTypes() {
+
+        return m_newTypes;
     }
 
     /**

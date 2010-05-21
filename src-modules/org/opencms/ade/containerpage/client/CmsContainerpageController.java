@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageController.java,v $
- * Date   : $Date: 2010/05/18 14:09:26 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/05/21 13:20:07 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,6 +40,7 @@ import org.opencms.ade.containerpage.client.ui.I_CmsToolbarButton;
 import org.opencms.ade.containerpage.shared.CmsCntPageData;
 import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
+import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService;
 import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageServiceAsync;
 import org.opencms.gwt.client.CmsCoreProvider;
@@ -78,7 +79,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 8.0.0
  */
@@ -87,10 +88,10 @@ public final class CmsContainerpageController {
     /**
      * A RPC action implementation used to request the data for container-page elements.<p>
      */
-    private class MultiElementAction extends CmsRpcAction<Map<String, CmsContainerElement>> {
+    private class MultiElementAction extends CmsRpcAction<Map<String, CmsContainerElementData>> {
 
         /** Call-back executed on response. */
-        private I_CmsSimpleCallback<Map<String, CmsContainerElement>> m_callback;
+        private I_CmsSimpleCallback<Map<String, CmsContainerElementData>> m_callback;
 
         /** The requested client id's. */
         private Set<String> m_clientIds;
@@ -101,7 +102,9 @@ public final class CmsContainerpageController {
          * @param clientIds the client id's
          * @param callback the call-back
          */
-        public MultiElementAction(Set<String> clientIds, I_CmsSimpleCallback<Map<String, CmsContainerElement>> callback) {
+        public MultiElementAction(
+            Set<String> clientIds,
+            I_CmsSimpleCallback<Map<String, CmsContainerElementData>> callback) {
 
             super();
             m_clientIds = clientIds;
@@ -114,7 +117,7 @@ public final class CmsContainerpageController {
         @Override
         public void execute() {
 
-            Map<String, CmsContainerElement> result = new HashMap<String, CmsContainerElement>();
+            Map<String, CmsContainerElementData> result = new HashMap<String, CmsContainerElementData>();
             List<String> neededIds = new ArrayList<String>();
             Iterator<String> it = m_clientIds.iterator();
             while (it.hasNext()) {
@@ -142,11 +145,11 @@ public final class CmsContainerpageController {
          * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
          */
         @Override
-        protected void onResponse(Map<String, CmsContainerElement> result) {
+        protected void onResponse(Map<String, CmsContainerElementData> result) {
 
             if (result != null) {
                 addElements(result);
-                Map<String, CmsContainerElement> elements = new HashMap<String, CmsContainerElement>();
+                Map<String, CmsContainerElementData> elements = new HashMap<String, CmsContainerElementData>();
                 Iterator<String> it = m_clientIds.iterator();
                 while (it.hasNext()) {
                     String clientId = it.next();
@@ -164,7 +167,7 @@ public final class CmsContainerpageController {
     /**
      * A RPC action implementation used to reload the data for a container-page element.<p>
      */
-    private class ReloadElementAction extends CmsRpcAction<Map<String, CmsContainerElement>> {
+    private class ReloadElementAction extends CmsRpcAction<Map<String, CmsContainerElementData>> {
 
         /** The requested client id's. */
         private Set<String> m_clientIds;
@@ -199,7 +202,7 @@ public final class CmsContainerpageController {
          * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
          */
         @Override
-        protected void onResponse(Map<String, CmsContainerElement> result) {
+        protected void onResponse(Map<String, CmsContainerElementData> result) {
 
             if (result == null) {
                 return;
@@ -226,10 +229,10 @@ public final class CmsContainerpageController {
     /**
      * A RPC action implementation used to request the data for a single container-page element.<p>
      */
-    private class SingleElementAction extends CmsRpcAction<Map<String, CmsContainerElement>> {
+    private class SingleElementAction extends CmsRpcAction<Map<String, CmsContainerElementData>> {
 
         /** Call-back executed on response. */
-        private I_CmsSimpleCallback<CmsContainerElement> m_callback;
+        private I_CmsSimpleCallback<CmsContainerElementData> m_callback;
 
         /** The requested client id. */
         private String m_clientId;
@@ -240,7 +243,7 @@ public final class CmsContainerpageController {
          * @param clientId the client id
          * @param callback the call-back
          */
-        public SingleElementAction(String clientId, I_CmsSimpleCallback<CmsContainerElement> callback) {
+        public SingleElementAction(String clientId, I_CmsSimpleCallback<CmsContainerElementData> callback) {
 
             super();
             m_clientId = clientId;
@@ -272,7 +275,7 @@ public final class CmsContainerpageController {
          * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
          */
         @Override
-        protected void onResponse(Map<String, CmsContainerElement> result) {
+        protected void onResponse(Map<String, CmsContainerElementData> result) {
 
             if (result != null) {
                 addElements(result);
@@ -293,7 +296,7 @@ public final class CmsContainerpageController {
     /*DEFAULT*/Set<String> m_containerTypes;
 
     /** The container element data. All requested elements will be cached here.*/
-    /*DEFAULT*/Map<String, CmsContainerElement> m_elements;
+    /*DEFAULT*/Map<String, CmsContainerElementData> m_elements;
 
     /** Flag if the container-page has changed. */
     /*DEFAULT*/boolean m_pageChanged;
@@ -427,6 +430,48 @@ public final class CmsContainerpageController {
     }
 
     /**
+     * Creates a new resource for crag container elements with the status new and opens the content editor.<p>
+     * 
+     * @param element the container element
+     */
+    public void createAndEditNewElement(final CmsDragContainerElement element) {
+
+        if (!element.isNew()) {
+            return;
+        }
+        m_handler.showPageOverlay();
+        CmsRpcAction<CmsContainerElement> action = new CmsRpcAction<CmsContainerElement>() {
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+             */
+            @Override
+            public void execute() {
+
+                getContainerpageService().createNewElement(
+                    getCurrentUri(),
+                    element.getClientId(),
+                    element.getNewType(),
+                    this);
+            }
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+             */
+            @Override
+            protected void onResponse(CmsContainerElement result) {
+
+                element.setNewType(null);
+                element.setClientId(result.getClientId());
+                element.setSitePath(result.getSitePath());
+                getHandler().hidePageOverlay();
+                getHandler().openEditorForElement(element);
+            }
+        };
+        action.execute();
+    }
+
+    /**
      * Returns all drag elements of the page.<p>
      * 
      * @return the drag elements
@@ -457,7 +502,7 @@ public final class CmsContainerpageController {
      * 
      * @return the element data
      */
-    public CmsContainerElement getCachedElement(String clientId) {
+    public CmsContainerElementData getCachedElement(String clientId) {
 
         if (m_elements.containsKey(clientId)) {
             return m_elements.get(clientId);
@@ -475,19 +520,6 @@ public final class CmsContainerpageController {
     public CmsContainerJso getContainer(String containerName) {
 
         return m_containers.get(containerName);
-    }
-
-    /**
-     * Returns the container-page RPC service.<p>
-     * 
-     * @return the container-page service
-     */
-    public I_CmsContainerpageServiceAsync getContainerpageService() {
-
-        if (m_containerpageService == null) {
-            m_containerpageService = GWT.create(I_CmsContainerpageService.class);
-        }
-        return m_containerpageService;
     }
 
     /**
@@ -559,7 +591,7 @@ public final class CmsContainerpageController {
      * @param clientId the element id
      * @param callback the call-back to execute with the requested data
      */
-    public void getElement(String clientId, I_CmsSimpleCallback<CmsContainerElement> callback) {
+    public void getElement(String clientId, I_CmsSimpleCallback<CmsContainerElementData> callback) {
 
         if (m_elements.containsKey(clientId)) {
             callback.execute(m_elements.get(clientId));
@@ -575,7 +607,7 @@ public final class CmsContainerpageController {
      * @param clientIds the element id's
      * @param callback the call-back to execute with the requested data
      */
-    public void getElements(Set<String> clientIds, I_CmsSimpleCallback<Map<String, CmsContainerElement>> callback) {
+    public void getElements(Set<String> clientIds, I_CmsSimpleCallback<Map<String, CmsContainerElementData>> callback) {
 
         MultiElementAction action = new MultiElementAction(clientIds, callback);
         action.execute();
@@ -592,9 +624,9 @@ public final class CmsContainerpageController {
     public void getElementWithProperties(
         final String clientId,
         final Map<String, String> properties,
-        final I_CmsSimpleCallback<CmsContainerElement> callback) {
+        final I_CmsSimpleCallback<CmsContainerElementData> callback) {
 
-        CmsRpcAction<CmsContainerElement> action = new CmsRpcAction<CmsContainerElement>() {
+        CmsRpcAction<CmsContainerElementData> action = new CmsRpcAction<CmsContainerElementData>() {
 
             /**
              * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
@@ -617,7 +649,7 @@ public final class CmsContainerpageController {
              * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
              */
             @Override
-            protected void onResponse(CmsContainerElement result) {
+            protected void onResponse(CmsContainerElementData result) {
 
                 callback.execute(result);
             }
@@ -637,28 +669,45 @@ public final class CmsContainerpageController {
     }
 
     /**
+     * Returns the new resource client id for the given resource type.
+     * Returns <code>null</code>, if the type is can not be created.<p>
+     * 
+     * @param resourceType the resource type name
+     * 
+     * @return the new resource id
+     */
+    public String getNewResourceId(String resourceType) {
+
+        return getData().getNewTypes().get(resourceType);
+    }
+
+    /**
      * Returns the current containers and their elements.<p>
      * 
      * @return the list of containers
      */
-    public List<CmsContainer> getPageContent() {
+    protected List<CmsContainer> getPageContent() {
 
         List<CmsContainer> containers = new ArrayList<CmsContainer>();
         Iterator<Entry<String, CmsDragTargetContainer>> it = m_targetContainers.entrySet().iterator();
         while (it.hasNext()) {
             Entry<String, CmsDragTargetContainer> entry = it.next();
-            List<String> elementIds = new ArrayList<String>();
+            List<CmsContainerElement> elements = new ArrayList<CmsContainerElement>();
             Iterator<Widget> elIt = entry.getValue().iterator();
             while (elIt.hasNext()) {
                 try {
-                    CmsDragContainerElement element = (CmsDragContainerElement)elIt.next();
-                    elementIds.add(element.getClientId());
+                    CmsDragContainerElement elementWidget = (CmsDragContainerElement)elIt.next();
+                    CmsContainerElement element = new CmsContainerElement();
+                    element.setClientId(elementWidget.getClientId());
+                    element.setNewType(elementWidget.getNewType());
+                    element.setSitePath(elementWidget.getSitePath());
+                    elements.add(element);
                 } catch (ClassCastException e) {
                     // no proper container element, skip it (this should never happen!)
                     CmsDebugLog.getInstance().printLine("WARNING: there is an inappropriate element within a container");
                 }
             }
-            containers.add(new CmsContainer(entry.getKey(), m_containers.get(entry.getKey()).getType(), -1, elementIds));
+            containers.add(new CmsContainer(entry.getKey(), m_containers.get(entry.getKey()).getType(), -1, elements));
         }
         return containers;
     }
@@ -707,7 +756,7 @@ public final class CmsContainerpageController {
         m_containerpageUtil = containerpageUtil;
         m_handler = handler;
 
-        m_elements = new HashMap<String, CmsContainerElement>();
+        m_elements = new HashMap<String, CmsContainerElementData>();
         m_containerTypes = new HashSet<String>();
         m_containers = new HashMap<String, CmsContainerJso>();
 
@@ -754,9 +803,9 @@ public final class CmsContainerpageController {
      * 
      * @param callback the call-back to execute with the result data 
      */
-    public void loadFavorites(final I_CmsSimpleCallback<List<CmsContainerElement>> callback) {
+    public void loadFavorites(final I_CmsSimpleCallback<List<CmsContainerElementData>> callback) {
 
-        CmsRpcAction<List<CmsContainerElement>> action = new CmsRpcAction<List<CmsContainerElement>>() {
+        CmsRpcAction<List<CmsContainerElementData>> action = new CmsRpcAction<List<CmsContainerElementData>>() {
 
             /**
              * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
@@ -771,7 +820,7 @@ public final class CmsContainerpageController {
              * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
              */
             @Override
-            protected void onResponse(List<CmsContainerElement> result) {
+            protected void onResponse(List<CmsContainerElementData> result) {
 
                 callback.execute(result);
             }
@@ -784,9 +833,9 @@ public final class CmsContainerpageController {
      * 
      * @param callback the call-back to execute with the result data
      */
-    public void loadRecent(final I_CmsSimpleCallback<List<CmsContainerElement>> callback) {
+    public void loadRecent(final I_CmsSimpleCallback<List<CmsContainerElementData>> callback) {
 
-        CmsRpcAction<List<CmsContainerElement>> action = new CmsRpcAction<List<CmsContainerElement>>() {
+        CmsRpcAction<List<CmsContainerElementData>> action = new CmsRpcAction<List<CmsContainerElementData>>() {
 
             /**
              * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
@@ -801,7 +850,7 @@ public final class CmsContainerpageController {
              * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
              */
             @Override
-            protected void onResponse(List<CmsContainerElement> result) {
+            protected void onResponse(List<CmsContainerElementData> result) {
 
                 callback.execute(result);
             }
@@ -835,9 +884,9 @@ public final class CmsContainerpageController {
         String clientId,
         Map<String, String> properties) {
 
-        I_CmsSimpleCallback<CmsContainerElement> callback = new I_CmsSimpleCallback<CmsContainerElement>() {
+        I_CmsSimpleCallback<CmsContainerElementData> callback = new I_CmsSimpleCallback<CmsContainerElementData>() {
 
-            public void execute(CmsContainerElement newElement) {
+            public void execute(CmsContainerElementData newElement) {
 
                 try {
                     replaceDragElement(elementWidget, newElement);
@@ -876,7 +925,7 @@ public final class CmsContainerpageController {
      * 
      * @throws Exception if something goes wrong
      */
-    public void replaceDragElement(CmsDragContainerElement dragElement, CmsContainerElement elementData)
+    public void replaceDragElement(CmsDragContainerElement dragElement, CmsContainerElementData elementData)
     throws Exception {
 
         I_CmsDragTargetContainer dragParent = dragElement.getDragParent();
@@ -888,7 +937,17 @@ public final class CmsContainerpageController {
                 elementData,
                 dragParent,
                 containerType);
-
+            if (dragElement.isNew()) {
+                // if replacing element data has the same structure id, keep the 'new' state by setting the new type property
+                // this should only be the case when editing properties of a new element that has not been created in the VFS yet
+                String id = dragElement.getClientId();
+                if (id.contains("#")) {
+                    id = id.substring(0, id.indexOf("#"));
+                }
+                if (elementData.getClientId().startsWith(id)) {
+                    replacer.setNewType(dragElement.getNewType());
+                }
+            }
             dragParent.insert(replacer, dragParent.getWidgetIndex(dragElement));
             dragElement.removeFromParent();
         }
@@ -961,6 +1020,7 @@ public final class CmsContainerpageController {
 
                     //TODO: add notification
                     setPageChanged(false, false);
+                    Window.Location.reload();
                 }
             };
             action.execute();
@@ -1068,9 +1128,22 @@ public final class CmsContainerpageController {
      * 
      * @param elements the element data
      */
-    protected void addElements(Map<String, CmsContainerElement> elements) {
+    protected void addElements(Map<String, CmsContainerElementData> elements) {
 
         m_elements.putAll(elements);
+    }
+
+    /**
+     * Returns the container-page RPC service.<p>
+     * 
+     * @return the container-page service
+     */
+    protected I_CmsContainerpageServiceAsync getContainerpageService() {
+
+        if (m_containerpageService == null) {
+            m_containerpageService = GWT.create(I_CmsContainerpageService.class);
+        }
+        return m_containerpageService;
     }
 
     /**
@@ -1084,13 +1157,12 @@ public final class CmsContainerpageController {
             // TODO: add notification
         }
     }
-    
-    
-        /**
-     * Previews events. Shows the leaving page dialog, if the page has changed and an anchor has been clicked.<p>
-     * 
-     * @param event the native event
-     */
+
+    /**
+    * Previews events. Shows the leaving page dialog, if the page has changed and an anchor has been clicked.<p>
+    * 
+    * @param event the native event
+    */
     protected void previewNativeEvent(NativePreviewEvent event) {
 
         Event nativeEvent = Event.as(event.getNativeEvent());
@@ -1124,9 +1196,6 @@ public final class CmsContainerpageController {
             dialog.center();
         }
     }
-    
-    
-
 
     /**
      * Sets the page changed flag and initializes the window closing handler if necessary.<p>

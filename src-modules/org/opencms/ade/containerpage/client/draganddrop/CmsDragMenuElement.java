@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsDragMenuElement.java,v $
- * Date   : $Date: 2010/05/06 14:26:54 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/05/21 13:20:08 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,7 +32,7 @@
 package org.opencms.ade.containerpage.client.draganddrop;
 
 import org.opencms.ade.containerpage.client.ui.CmsDraggableListItemWidget;
-import org.opencms.ade.containerpage.shared.CmsContainerElement;
+import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
@@ -46,7 +46,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -63,9 +63,9 @@ public class CmsDragMenuElement extends CmsDraggableListItemWidget<I_CmsDragTarg
      * 
      * @param element the element data
      */
-    public CmsDragMenuElement(CmsContainerElement element) {
+    public CmsDragMenuElement(CmsContainerElementData element) {
 
-        super(new CmsListInfoBean(element.getTitle(), element.getFile(), null), true);
+        super(new CmsListInfoBean(element.getTitle(), element.getSitePath(), null), true);
         setClientId(element.getClientId());
         m_deleteButton = new CmsPushButton();
         m_deleteButton.setImageClass(I_CmsImageBundle.INSTANCE.style().deleteIcon());

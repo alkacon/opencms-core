@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/Messages.java,v $
- * Date   : $Date: 2010/05/18 14:09:26 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/05/21 13:20:07 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.client.util.CmsMessages;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -90,7 +90,13 @@ public final class Messages {
     public static final String GUI_PROPERTY_DIALOG_TITLE_0 = "GUI_PROPERTY_DIALOG_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_TAB_FAVORITES_DESCRIPTION_0 = "GUI_TAB_FAVORITES_DESCRIPTION_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_TAB_FAVORITES_TITLE_0 = "GUI_TAB_FAVORITES_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TAB_RECENT_DESCRIPTION_0 = "GUI_TAB_RECENT_DESCRIPTION_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TAB_RECENT_TITLE_0 = "GUI_TAB_RECENT_TITLE_0";

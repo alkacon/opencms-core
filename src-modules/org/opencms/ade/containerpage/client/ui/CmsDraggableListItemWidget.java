@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsDraggableListItemWidget.java,v $
- * Date   : $Date: 2010/05/05 12:44:47 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/05/21 13:20:08 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -91,6 +91,9 @@ implements I_CmsDragContainerElement<T> {
 
     /** The event handler registrations. */
     private List<HandlerRegistration> m_handlerRegistrations;
+
+    /** The is new element type. */
+    private String m_newType;
 
     /** The move handle element. */
     private Element m_moveHandle;
@@ -260,6 +263,14 @@ implements I_CmsDragContainerElement<T> {
     }
 
     /**
+     * @see org.opencms.ade.containerpage.client.draganddrop.I_CmsDragContainerElement#isNew()
+     */
+    public boolean isNew() {
+
+        return m_newType != null;
+    }
+
+    /**
      * @see org.opencms.ade.containerpage.client.draganddrop.I_CmsDragContainerElement#prepareDrag()
      */
     public void prepareDrag() {
@@ -314,4 +325,21 @@ implements I_CmsDragContainerElement<T> {
         m_dragEnabled = (handle != null);
         m_moveHandle = handle;
     }
+
+    /**
+     * @see org.opencms.ade.containerpage.client.draganddrop.I_CmsDragContainerElement#setNewType(java.lang.String)
+     */
+    public void setNewType(String type) {
+
+        m_newType = type;
+    }
+
+    /**
+     * @see org.opencms.ade.containerpage.client.draganddrop.I_CmsDragContainerElement#getNewType()
+     */
+    public String getNewType() {
+
+        return m_newType;
+    }
+
 }

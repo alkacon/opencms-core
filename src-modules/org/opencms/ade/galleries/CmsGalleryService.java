@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/Attic/CmsGalleryService.java,v $
- * Date   : $Date: 2010/05/19 09:02:51 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2010/05/21 13:20:08 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -80,7 +80,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 8.0.0
  * 
@@ -798,11 +798,23 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
      * Returns the resource types configured to be used within the container-page editor.<p>
      * 
      * @return the resource types
+     * @throws CmsRpcException if something goes wrong reading the configuration
      */
-    private List<I_CmsResourceType> readResourceTypesForContainerpage() {
+    private List<I_CmsResourceType> readResourceTypesForContainerpage() throws CmsRpcException {
 
-        //TODO: retrieve type list from configuration
-        return getResourceManager().getResourceTypes();
+        List<I_CmsResourceType> result = new ArrayList<I_CmsResourceType>();
+        try {
+            List<CmsResource> resources = OpenCms.getADEManager().getSearchableResourceTypes(
+                getCmsObject(),
+                getCmsObject().getRequestContext().getUri(),
+                getThreadLocalRequest());
+            for (CmsResource resource : resources) {
+                result.add(getResourceManager().getResourceType(resource));
+            }
+        } catch (CmsException e) {
+            error(e);
+        }
+        return result;
     }
 
     /**

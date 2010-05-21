@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageUtil.java,v $
- * Date   : $Date: 2010/05/06 14:26:40 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/05/21 13:20:07 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import org.opencms.ade.containerpage.client.draganddrop.I_CmsDragContainerElemen
 import org.opencms.ade.containerpage.client.draganddrop.I_CmsDragTargetContainer;
 import org.opencms.ade.containerpage.client.ui.A_CmsToolbarOptionButton;
 import org.opencms.ade.containerpage.client.ui.CmsElementOptionBar;
-import org.opencms.ade.containerpage.shared.CmsContainerElement;
+import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.util.CmsDomUtil;
 
@@ -58,7 +58,7 @@ import com.google.gwt.user.client.Element;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -174,7 +174,7 @@ public class CmsContainerpageUtil {
      * @throws Exception if something goes wrong
      */
     public CmsDragContainerElement createElement(
-        CmsContainerElement containerElement,
+        CmsContainerElementData containerElement,
         I_CmsDragTargetContainer dragParent,
         String containerType) throws Exception {
 
@@ -189,7 +189,7 @@ public class CmsContainerpageUtil {
             element,
             dragParent,
             containerElement.getClientId(),
-            containerElement.getFile(),
+            containerElement.getSitePath(),
             containerElement.getNoEditReason());
     }
 
@@ -201,7 +201,7 @@ public class CmsContainerpageUtil {
      * 
      * @return the list item widget
      */
-    public CmsListItem createListItem(CmsContainerElement containerElement, I_CmsDragTargetContainer dragParent) {
+    public CmsListItem createListItem(CmsContainerElementData containerElement, I_CmsDragTargetContainer dragParent) {
 
         CmsDragMenuElement widget = createListWidget(containerElement, dragParent);
         CmsListItem listItem = new CmsListItem(widget);
@@ -217,7 +217,7 @@ public class CmsContainerpageUtil {
      * 
      * @return the list item widget
      */
-    public CmsDragMenuElement createListWidget(CmsContainerElement containerElement, I_CmsDragTargetContainer dragParent) {
+    public CmsDragMenuElement createListWidget(CmsContainerElementData containerElement, I_CmsDragTargetContainer dragParent) {
 
         CmsDragMenuElement menuItem = new CmsDragMenuElement(containerElement);
         menuItem.setDragParent(dragParent);
@@ -238,8 +238,8 @@ public class CmsContainerpageUtil {
      * @throws Exception if something goes wrong
      */
     public CmsDragContainerElement createSubcontainerElement(
-        CmsContainerElement containerElement,
-        List<CmsContainerElement> subElements,
+        CmsContainerElementData containerElement,
+        List<CmsContainerElementData> subElements,
         I_CmsDragTargetContainer dragParent,
         String containerType) throws Exception {
 
@@ -250,15 +250,15 @@ public class CmsContainerpageUtil {
             element,
             dragParent,
             containerElement.getClientId(),
-            containerElement.getFile(),
+            containerElement.getSitePath(),
             containerElement.getNoEditReason());
         subContainer.setContainerType(containerType);
         addOptionBar(subContainer);
 
         //adding sub-elements
-        Iterator<CmsContainerElement> it = subElements.iterator();
+        Iterator<CmsContainerElementData> it = subElements.iterator();
         while (it.hasNext()) {
-            CmsContainerElement subElement = it.next();
+            CmsContainerElementData subElement = it.next();
             if (subElement.getContents().containsKey(containerType)) {
                 CmsDragContainerElement subDragElement = createElement(subElement, subContainer, containerType);
                 subContainer.add(subDragElement);

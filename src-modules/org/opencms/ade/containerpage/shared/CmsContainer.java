@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/shared/Attic/CmsContainer.java,v $
- * Date   : $Date: 2010/05/04 09:45:21 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/05/21 13:20:08 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import java.util.List;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -52,7 +52,7 @@ public class CmsContainer implements Serializable {
     private static final long serialVersionUID = -8888935436501323896L;
 
     /** List of the contained elements id's. */
-    private List<String> m_elements;
+    private List<CmsContainerElement> m_elements;
 
     /** The maximum number of elements. */
     private int m_maxElements;
@@ -79,7 +79,7 @@ public class CmsContainer implements Serializable {
      * @param maxElements the maximum number of elements displayed by this container
      * @param elements the container elements id's
      */
-    public CmsContainer(String name, String type, int maxElements, List<String> elements) {
+    public CmsContainer(String name, String type, int maxElements, List<CmsContainerElement> elements) {
 
         m_elements = elements;
         m_name = name;
@@ -92,7 +92,7 @@ public class CmsContainer implements Serializable {
      * 
      * @return the list of the contained elements id's
      */
-    public List<String> getElements() {
+    public List<CmsContainerElement> getElements() {
 
         return m_elements;
     }
@@ -132,7 +132,7 @@ public class CmsContainer implements Serializable {
      * 
      * @param elements the elements
      */
-    public void setElements(List<String> elements) {
+    public void setElements(List<CmsContainerElement> elements) {
 
         m_elements = elements;
 

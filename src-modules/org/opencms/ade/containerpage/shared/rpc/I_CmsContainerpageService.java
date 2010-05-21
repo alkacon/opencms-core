@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/shared/rpc/Attic/I_CmsContainerpageService.java,v $
- * Date   : $Date: 2010/05/18 14:09:26 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/05/21 13:20:08 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.ade.containerpage.shared.rpc;
 import org.opencms.ade.containerpage.shared.CmsCntPageData;
 import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
+import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.gwt.CmsRpcException;
 
 import java.util.Collection;
@@ -49,7 +50,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.0
  */
@@ -75,6 +76,20 @@ public interface I_CmsContainerpageService extends RemoteService {
     void addToRecentList(String clientId) throws CmsRpcException;
 
     /**
+     * Creates a new element of the given type and returns the new element data containing structure id and site path.<p>
+     * 
+     * @param containerpageUri the current URI
+     * @param clientId the client id of the new element (this will be the structure id of the configured new resource)
+     * @param resourceType the resource tape of the new element
+     * 
+     * @return the new element data containing structure id and site path
+     * 
+     * @throws CmsRpcException if something goes wrong processing the request
+     */
+    CmsContainerElement createNewElement(String containerpageUri, String clientId, String resourceType)
+    throws CmsRpcException;
+
+    /**
      * Returns container element data by client id.<p>
      * 
      * @param containerpageUri the current URI
@@ -86,7 +101,7 @@ public interface I_CmsContainerpageService extends RemoteService {
      * 
      * @throws CmsRpcException if something goes wrong processing the request
      */
-    Map<String, CmsContainerElement> getElementsData(
+    Map<String, CmsContainerElementData> getElementsData(
         String containerpageUri,
         String reqParams,
         Collection<String> clientIds,
@@ -105,7 +120,7 @@ public interface I_CmsContainerpageService extends RemoteService {
      * 
      * @throws CmsRpcException if something goes wrong processing the request 
      */
-    CmsContainerElement getElementWithProperties(
+    CmsContainerElementData getElementWithProperties(
         String containerPageUri,
         String reqParams,
         String clientId,
@@ -122,7 +137,7 @@ public interface I_CmsContainerpageService extends RemoteService {
      * 
      * @throws CmsRpcException if something goes wrong processing the request
      */
-    List<CmsContainerElement> getFavoriteList(String containerpageUri, Set<String> containerTypes)
+    List<CmsContainerElementData> getFavoriteList(String containerpageUri, Set<String> containerTypes)
     throws CmsRpcException;
 
     /**
@@ -135,7 +150,8 @@ public interface I_CmsContainerpageService extends RemoteService {
      * 
      * @throws CmsRpcException if something goes wrong processing the request
      */
-    List<CmsContainerElement> getRecentList(String containerpageUri, Set<String> containerTypes) throws CmsRpcException;
+    List<CmsContainerElementData> getRecentList(String containerpageUri, Set<String> containerTypes)
+    throws CmsRpcException;
 
     /**
      * Returns the initialization data.<p>

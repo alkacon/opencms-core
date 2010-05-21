@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsDragContainerElement.java,v $
- * Date   : $Date: 2010/05/05 12:44:47 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/05/21 13:20:07 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,7 +69,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 8.0.0
  */
@@ -95,6 +95,9 @@ implements I_CmsDragContainerElement<I_CmsDragTargetContainer>, HasClickHandlers
 
     /** The option bar, holding optional function buttons. */
     private CmsElementOptionBar m_elementOptionBar;
+
+    /** The is new element type. */
+    private String m_newType;
 
     /** The no edit reason, if empty editing is allowed. */
     private String m_noEditReason;
@@ -261,6 +264,14 @@ implements I_CmsDragContainerElement<I_CmsDragTargetContainer>, HasClickHandlers
     }
 
     /**
+     * @see org.opencms.ade.containerpage.client.draganddrop.I_CmsDragContainerElement#getNewType()
+     */
+    public String getNewType() {
+
+        return m_newType;
+    }
+
+    /**
      * Returns the no edit reason.<p>
      *
      * @return the no edit reason
@@ -293,6 +304,14 @@ implements I_CmsDragContainerElement<I_CmsDragTargetContainer>, HasClickHandlers
     }
 
     /**
+     * @see org.opencms.ade.containerpage.client.draganddrop.I_CmsDragContainerElement#isNew()
+     */
+    public boolean isNew() {
+
+        return m_newType != null;
+    }
+
+    /**
      * @see org.opencms.ade.containerpage.client.draganddrop.I_CmsDragContainerElement#prepareDrag()
      */
     public void prepareDrag() {
@@ -318,6 +337,16 @@ implements I_CmsDragContainerElement<I_CmsDragTargetContainer>, HasClickHandlers
     }
 
     /**
+     * Sets the client id.<p>
+     *
+     * @param clientId the client id to set
+     */
+    public void setClientId(String clientId) {
+
+        m_clientId = clientId;
+    }
+
+    /**
      * @see org.opencms.ade.containerpage.client.draganddrop.I_CmsDragContainerElement#setDragParent(org.opencms.gwt.client.draganddrop.I_CmsDragTarget)
      */
     public void setDragParent(I_CmsDragTargetContainer target) {
@@ -337,6 +366,34 @@ implements I_CmsDragContainerElement<I_CmsDragTargetContainer>, HasClickHandlers
         }
         add(elementOptionBar);
         m_elementOptionBar = elementOptionBar;
+    }
+
+    /**
+     * @see org.opencms.ade.containerpage.client.draganddrop.I_CmsDragContainerElement#setNewType(java.lang.String)
+     */
+    public void setNewType(String type) {
+
+        m_newType = type;
+    }
+
+    /**
+     * Sets the no edit reason.<p>
+     *
+     * @param noEditReason the no edit reason to set
+     */
+    public void setNoEditReason(String noEditReason) {
+
+        m_noEditReason = noEditReason;
+    }
+
+    /**
+     * Sets the site path.<p>
+     *
+     * @param sitePath the site path to set
+     */
+    public void setSitePath(String sitePath) {
+
+        m_sitePath = sitePath;
     }
 
     /**

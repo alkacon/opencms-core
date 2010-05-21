@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageHandler.java,v $
- * Date   : $Date: 2010/05/18 14:09:26 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/05/21 13:20:07 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,12 +39,14 @@ import org.opencms.ade.containerpage.client.ui.CmsContentEditorDialog;
 import org.opencms.ade.containerpage.client.ui.CmsLeavePageDialog;
 import org.opencms.ade.containerpage.client.ui.CmsSubcontainerEditor;
 import org.opencms.ade.containerpage.client.ui.I_CmsToolbarButton;
-import org.opencms.ade.containerpage.shared.CmsContainerElement;
+import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.ade.publish.client.CmsPublishDialog;
 import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.gwt.client.ui.CmsConfirmDialog;
 import org.opencms.gwt.client.ui.CmsListItem;
+import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.I_CmsFormField;
 import org.opencms.gwt.client.ui.input.form.CmsBasicFormField;
 import org.opencms.gwt.client.ui.input.form.CmsForm;
@@ -61,16 +63,22 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.Style.Position;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
  * The container-page handler.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
@@ -84,6 +92,9 @@ public class CmsContainerpageHandler {
 
     /** The currently active tool-bar button. */
     private I_CmsToolbarButton m_activeButton;
+
+    /** Overlay to prevent user actions while shown. */
+    private SimplePanel m_overlay;
 
     /**
      * Constructor.<p>
@@ -147,9 +158,9 @@ public class CmsContainerpageHandler {
 
         final String id = elementWidget.getClientId();
 
-        m_controller.getElement(id, new I_CmsSimpleCallback<CmsContainerElement>() {
+        m_controller.getElement(id, new I_CmsSimpleCallback<CmsContainerElementData>() {
 
-            public void execute(final CmsContainerElement elementBean) {
+            public void execute(final CmsContainerElementData elementBean) {
 
                 Map<String, String> properties = elementBean.getProperties();
                 Map<String, CmsXmlContentProperty> propertyConfig = elementBean.getPropertyConfig();
@@ -234,21 +245,31 @@ public class CmsContainerpageHandler {
     }
 
     /**
+     * Removes page overlay if present.<p>
+     */
+    public void hidePageOverlay() {
+
+        if (m_overlay != null) {
+            m_overlay.removeFromParent();
+        }
+    }
+
+    /**
      * Loads the favorite list from the server and adds it's items to the clip-board.<p>
      */
     public void loadFavorites() {
 
-        m_controller.loadFavorites(new I_CmsSimpleCallback<List<CmsContainerElement>>() {
+        m_controller.loadFavorites(new I_CmsSimpleCallback<List<CmsContainerElementData>>() {
 
             /**
              * Generating the list item widgets and inserting them into the favorite list.<p> 
              * 
              * @param arg the element data
              */
-            public void execute(List<CmsContainerElement> arg) {
+            public void execute(List<CmsContainerElementData> arg) {
 
                 m_editor.getClipboard().clearFavorites();
-                Iterator<CmsContainerElement> it = arg.iterator();
+                Iterator<CmsContainerElementData> it = arg.iterator();
                 while (it.hasNext()) {
                     addToFavorites(m_controller.getContainerpageUtil().createListItem(it.next(), null));
                 }
@@ -270,17 +291,17 @@ public class CmsContainerpageHandler {
      */
     public void loadRecent() {
 
-        m_controller.loadRecent(new I_CmsSimpleCallback<List<CmsContainerElement>>() {
+        m_controller.loadRecent(new I_CmsSimpleCallback<List<CmsContainerElementData>>() {
 
             /**
              * Generating the list item widgets and inserting them into the recent list.<p> 
              * 
              * @param arg the element data
              */
-            public void execute(List<CmsContainerElement> arg) {
+            public void execute(List<CmsContainerElementData> arg) {
 
                 m_editor.getClipboard().clearRecent();
-                Iterator<CmsContainerElement> it = arg.iterator();
+                Iterator<CmsContainerElementData> it = arg.iterator();
                 while (it.hasNext()) {
                     addToRecent(m_controller.getContainerpageUtil().createListItem(it.next(), null));
                 }
@@ -304,15 +325,35 @@ public class CmsContainerpageHandler {
      */
     public void openEditorForElement(CmsDragContainerElement element) {
 
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(element.getNoEditReason())) {
-            if (CmsDomUtil.hasClass(CmsContainerpageUtil.CLASS_SUB_CONTAINER_ELEMENTS, element.getElement())) {
-                openSubcontainerEditor((CmsDragSubcontainer)element);
-            } else {
-                CmsContentEditorDialog.get().openEditDialog(element.getClientId(), element.getSitePath());
-            }
+        if (element.isNew()) {
+            CmsDebugLog.getInstance().printLine(
+                "editing new element, id: " + element.getClientId() + ", tpype: " + element.getNewType());
+            m_controller.createAndEditNewElement(element);
+            return;
+        }
+
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(element.getNoEditReason())) {
+            CmsNotification.get().send(
+                CmsNotification.Type.WARNING,
+                "should be deactivated: " + element.getNoEditReason());
+            Timer timer = new Timer() {
+
+                /**
+                 * @see com.google.gwt.user.client.Timer#run()
+                 */
+                @Override
+                public void run() {
+
+                    CmsNotification.get().hide();
+                }
+            };
+            timer.schedule(2000);
+            return;
+        }
+        if (CmsDomUtil.hasClass(CmsContainerpageUtil.CLASS_SUB_CONTAINER_ELEMENTS, element.getElement())) {
+            openSubcontainerEditor((CmsDragSubcontainer)element);
         } else {
-            //should be deactivated
-            CmsDebugLog.getInstance().printLine("should be deactivated: " + element.getNoEditReason());
+            CmsContentEditorDialog.get().openEditDialog(element.getClientId(), element.getSitePath());
         }
     }
 
@@ -397,6 +438,22 @@ public class CmsContainerpageHandler {
     public void setActiveButton(I_CmsToolbarButton button) {
 
         m_activeButton = button;
+    }
+
+    /**
+     * Shows a page overlay preventing user actions.<p>
+     */
+    public void showPageOverlay() {
+
+        if (m_overlay == null) {
+            m_overlay = new SimplePanel();
+            m_overlay.setStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupOverlay());
+            Style style = m_overlay.getElement().getStyle();
+            style.setWidth(100, Unit.PCT);
+            style.setHeight(100, Unit.PCT);
+            style.setPosition(Position.FIXED);
+        }
+        RootPanel.get().add(m_overlay);
     }
 
     /**

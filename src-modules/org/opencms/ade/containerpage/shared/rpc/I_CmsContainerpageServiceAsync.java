@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/shared/rpc/Attic/I_CmsContainerpageServiceAsync.java,v $
- * Date   : $Date: 2010/05/18 14:09:26 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/05/21 13:20:08 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.ade.containerpage.shared.rpc;
 import org.opencms.ade.containerpage.shared.CmsCntPageData;
 import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
+import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 
 import java.util.Collection;
 import java.util.List;
@@ -48,7 +49,7 @@ import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.0
  */
@@ -71,6 +72,20 @@ public interface I_CmsContainerpageServiceAsync {
     void addToRecentList(String clientId, AsyncCallback<Void> callback);
 
     /**
+     * Creates a new element of the given type and returns the new element data containing structure id and site path.<p>
+     * 
+     * @param containerpageUri the current URI
+     * @param clientId the client id of the new element (this will be the structure id of the configured new resource)
+     * @param resourceType the resource tape of the new element
+     * @param callback the call-back executed on response
+     */
+    void createNewElement(
+        String containerpageUri,
+        String clientId,
+        String resourceType,
+        AsyncCallback<CmsContainerElement> callback);
+
+    /**
      * Requests container element data by client id.<p>
      * 
      * @param containerpageUri the current URI
@@ -84,7 +99,7 @@ public interface I_CmsContainerpageServiceAsync {
         String reqParams,
         Collection<String> clientIds,
         Set<String> containerTypes,
-        AsyncCallback<Map<String, CmsContainerElement>> callback);
+        AsyncCallback<Map<String, CmsContainerElementData>> callback);
 
     /**
      * Gets the element data for an id and a map of properties.<p>
@@ -102,7 +117,7 @@ public interface I_CmsContainerpageServiceAsync {
         String clientId,
         Map<String, String> properties,
         Set<String> types,
-        AsyncCallback<CmsContainerElement> callback);
+        AsyncCallback<CmsContainerElementData> callback);
 
     /**
      * Requests the container element data of the favorite list.<p>
@@ -114,7 +129,7 @@ public interface I_CmsContainerpageServiceAsync {
     void getFavoriteList(
         String containerpageUri,
         Set<String> containerTypes,
-        AsyncCallback<List<CmsContainerElement>> callback);
+        AsyncCallback<List<CmsContainerElementData>> callback);
 
     /**
      * Requests the container element data of the recent list.<p>
@@ -126,7 +141,7 @@ public interface I_CmsContainerpageServiceAsync {
     void getRecentList(
         String containerpageUri,
         Set<String> containerTypes,
-        AsyncCallback<List<CmsContainerElement>> callback);
+        AsyncCallback<List<CmsContainerElementData>> callback);
 
     /**
      * Returns the initialization data.<p>

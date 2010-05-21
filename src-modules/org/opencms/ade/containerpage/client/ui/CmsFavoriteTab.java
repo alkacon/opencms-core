@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsFavoriteTab.java,v $
- * Date   : $Date: 2010/05/06 14:26:54 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/05/21 13:20:08 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,6 +45,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -52,7 +53,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -71,27 +72,31 @@ public class CmsFavoriteTab extends Composite {
 
     /** Button panel shown while editing the favorites. */
     @UiField
-    /*DEFAULT*/FlowPanel m_buttonEditingPanel;
+    protected FlowPanel m_buttonEditingPanel;
 
     /** Button panel shown while using the favorites. */
     @UiField
-    /*DEFAULT*/FlowPanel m_buttonUsePanel;
+    protected FlowPanel m_buttonUsePanel;
 
     /** The cancel edit button. */
     @UiField
-    /*DEFAULT*/CmsPushButton m_cancelButton;
+    protected CmsPushButton m_cancelButton;
 
     /** The edit button. */
     @UiField
-    /*DEFAULT*/CmsPushButton m_editButton;
+    protected CmsPushButton m_editButton;
 
     /** The list panel holding the favorite elements. */
     @UiField
-    /*DEFAULT*/CmsDragTargetList m_listPanel;
+    protected CmsDragTargetList m_listPanel;
 
     /** The save favorites button. */
     @UiField
-    /*DEFAULT*/CmsPushButton m_saveButton;
+    protected CmsPushButton m_saveButton;
+
+    /** The tab description label. */
+    @UiField
+    protected Label m_decriptionLabel;
 
     /**
      * Constructor.<p>
@@ -102,6 +107,7 @@ public class CmsFavoriteTab extends Composite {
 
         initWidget(uiBinder.createAndBindUi(this));
         m_clipboard = clipboard;
+        m_decriptionLabel.setText(Messages.get().key(Messages.GUI_TAB_FAVORITES_DESCRIPTION_0));
         m_buttonEditingPanel.setVisible(false);
         m_editButton.setText(Messages.get().key(Messages.GUI_BUTTON_EDITFAVORITES_TEXT_0));
         m_editButton.setTitle(Messages.get().key(Messages.GUI_BUTTON_EDITFAVORITES_TEXT_0));

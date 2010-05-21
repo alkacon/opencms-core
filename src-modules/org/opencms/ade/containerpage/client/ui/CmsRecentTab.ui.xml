@@ -6,10 +6,14 @@
 	<ui:with field="containerpage" type="org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle"></ui:with>
 	<ui:style>
 		.itemList{
-			max-height: 348px;
+			max-height: 412px;
+		}
+		.description{
+			margin-bottom: 4px;
 		}
 	</ui:style>
 	<g:FlowPanel styleName="{containerpage.containerpageCss.clipboardTabPanel}">
+		<g:Label ui:field="m_decriptionLabel" addStyleNames="{style.description} {resources.generalCss.textBig}"></g:Label>
 		<cnt:CmsDragTargetList ui:field="m_listPanel" addStyleNames="{style.itemList} {containerpage.containerpageCss.clipboardList} {resources.generalCss.cornerAll}" ></cnt:CmsDragTargetList>
 	</g:FlowPanel>
 </ui:UiBinder> 

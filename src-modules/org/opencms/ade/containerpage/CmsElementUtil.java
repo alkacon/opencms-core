@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsElementUtil.java,v $
- * Date   : $Date: 2010/05/18 14:09:26 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/05/21 13:20:07 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,15 +31,12 @@
 
 package org.opencms.ade.containerpage;
 
-import org.opencms.ade.containerpage.shared.CmsContainerElement;
+import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsEncoder;
-import org.opencms.json.JSONException;
-import org.opencms.json.JSONObject;
 import org.opencms.loader.CmsTemplateLoaderFacade;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
@@ -73,7 +70,7 @@ import javax.servlet.http.HttpServletResponse;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -84,9 +81,6 @@ public class CmsElementUtil {
 
     /** The actual container page uri. */
     private String m_cntPageUri;
-
-    /** The container page manager. */
-    private CmsADEManager m_manager;
 
     /** The http request. */
     private HttpServletRequest m_req;
@@ -111,7 +105,6 @@ public class CmsElementUtil {
         m_req = req;
         m_res = res;
         m_cntPageUri = cntPageUri;
-        m_manager = OpenCms.getADEManager();
     }
 
     /**
@@ -237,16 +230,16 @@ public class CmsElementUtil {
      * 
      * @throws CmsException if something goes wrong
      */
-    public CmsContainerElement getElementData(CmsContainerElementBean element, Collection<String> types)
+    public CmsContainerElementData getElementData(CmsContainerElementBean element, Collection<String> types)
     throws CmsException {
 
         // create new json object for the element
         CmsResource resource = m_cms.readResource(element.getElementId());
         CmsResourceUtil resUtil = new CmsResourceUtil(m_cms, resource);
         //      resElement.put(JsonElement.objtype.name(), TYPE_ELEMENT);
-        CmsContainerElement elementBean = new CmsContainerElement();
+        CmsContainerElementData elementBean = new CmsContainerElementData();
         elementBean.setClientId(element.getClientId());
-        elementBean.setFile(resUtil.getFullPath());
+        elementBean.setSitePath(resUtil.getFullPath());
         elementBean.setLastModifiedDate(resource.getDateLastModified());
         elementBean.setLastModifiedByUser(m_cms.readUser(resource.getUserLastModified()).getName());
         elementBean.setNavText(resUtil.getNavText());
@@ -325,37 +318,4 @@ public class CmsElementUtil {
         elementBean.setContents(contents);
         return elementBean;
     }
-
-    /**
-     * Returns the property information for the given element as a JSON object.<p>
-     * 
-     * @param element the element
-     * 
-     * @return the property information
-     * 
-     * @throws CmsException if something goes wrong
-     * @throws JSONException if something goes wrong generating the JSON
-     */
-    public JSONObject getElementPropertyInfo(CmsContainerElementBean element) throws CmsException, JSONException {
-
-        CmsResource elementRes = m_cms.readResource(element.getElementId());
-        JSONObject jsonProperties = CmsXmlContentPropertyHelper.getPropertyInfoJSON(m_cms, elementRes);
-        Map<String, CmsProperty> properties = m_manager.getElementProperties(m_cms, element);
-        Iterator<Map.Entry<String, CmsProperty>> itProperties = properties.entrySet().iterator();
-        while (itProperties.hasNext()) {
-            Map.Entry<String, CmsProperty> entry = itProperties.next();
-            String propertyName = entry.getKey();
-            JSONObject jsonProperty = jsonProperties.optJSONObject(propertyName);
-            if (jsonProperty != null) {
-                jsonProperty.put(
-                    CmsXmlContentPropertyHelper.JsonProperty.value.name(),
-                    CmsXmlContentPropertyHelper.getPropValuePaths(
-                        m_cms,
-                        jsonProperty.getString(CmsXmlContentPropertyHelper.JsonProperty.type.name()),
-                        properties.get(propertyName).getStructureValue()));
-            }
-        }
-        return jsonProperties;
-    }
-
 }

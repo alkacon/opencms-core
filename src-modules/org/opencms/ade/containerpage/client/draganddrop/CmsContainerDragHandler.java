@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsContainerDragHandler.java,v $
- * Date   : $Date: 2010/05/06 14:26:54 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2010/05/21 13:20:08 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,7 +35,7 @@ import org.opencms.ade.containerpage.client.CmsContainerpageController;
 import org.opencms.ade.containerpage.client.CmsContainerpageEditor;
 import org.opencms.ade.containerpage.client.ui.CmsDraggableListItemWidget;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
-import org.opencms.ade.containerpage.shared.CmsContainerElement;
+import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.gwt.client.draganddrop.A_CmsSortingDragHandler;
 import org.opencms.gwt.client.draganddrop.I_CmsSortableDragTarget;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
@@ -43,6 +43,8 @@ import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.gwt.shared.CmsListInfoBean;
+import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -66,7 +68,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * 
  * @since 8.0.0
  */
@@ -166,6 +168,9 @@ extends A_CmsSortingDragHandler<I_CmsDragContainerElement<I_CmsDragTargetContain
     /** The element info of the favorite list drop-zone. */
     private DragInfo m_dropZoneInfo;
 
+    /** The is new element type. */
+    private String m_newType;
+
     /** The element info of the start element. */
     private DragInfo m_startInfo;
 
@@ -191,11 +196,25 @@ extends A_CmsSortingDragHandler<I_CmsDragContainerElement<I_CmsDragTargetContain
      */
     public CmsListItemWidget createDraggableListItemWidget(CmsListInfoBean infoBean, String id) {
 
-        // TODO: Auto-generated method stub
+        boolean isDraggable = false;
+        boolean isNew = false;
+        String clientId = id;
+        if (CmsUUID.isValidUUID(id)) {
+            isDraggable = true;
+        } else {
+            clientId = m_controller.getNewResourceId(id);
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(id)) {
+                isDraggable = true;
+                isNew = true;
+            }
+        }
         CmsDraggableListItemWidget<I_CmsDragTargetContainer> item = new CmsDraggableListItemWidget<I_CmsDragTargetContainer>(
             infoBean,
-            true);
-        item.setClientId(id);
+            isDraggable);
+        item.setClientId(clientId);
+        if (isNew) {
+            item.setNewType(id);
+        }
         registerMouseHandler(item);
         return item;
     }
@@ -399,6 +418,26 @@ extends A_CmsSortingDragHandler<I_CmsDragContainerElement<I_CmsDragTargetContain
     }
 
     /**
+     * Returns the currently dragged new element type.<p>
+     * 
+     * @return the new element type
+     */
+    protected String getNewType() {
+
+        return m_newType;
+    }
+
+    /**
+     * Returns if currently dragged element is a new element.<p>
+     * 
+     * @return <code>true</code> if the currently dragged element is new
+     */
+    protected boolean isNew() {
+
+        return m_newType != null;
+    }
+
+    /**
      * @see org.opencms.gwt.client.draganddrop.A_CmsSortingDragHandler#positionElement()
      */
     @Override
@@ -438,6 +477,7 @@ extends A_CmsSortingDragHandler<I_CmsDragContainerElement<I_CmsDragTargetContain
     @Override
     protected void prepareElementForDrag() {
 
+        m_newType = m_dragElement.getNewType();
         if (m_dragElement instanceof CmsDraggableListItemWidget<?>) {
             m_dragFromMenu = true;
 
@@ -448,7 +488,7 @@ extends A_CmsSortingDragHandler<I_CmsDragContainerElement<I_CmsDragTargetContain
             RootPanel.get().add(dragParent);
             m_currentTarget = dragParent;
             m_dragElement = createDragClone(m_dragElement.getElement(), dragParent, m_dragElement.getClientId());
-
+            m_dragElement.setNewType(m_newType);
             m_dragElement.setDragParent(dragParent);
             m_placeholder = new SimplePanel();
             dragParent.add((Widget)m_dragElement);
@@ -480,7 +520,7 @@ extends A_CmsSortingDragHandler<I_CmsDragContainerElement<I_CmsDragTargetContain
         m_currentTarget.getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().currentTarget());
         m_currentTarget.highlightContainer();
         String clientId = m_dragElement.getClientId();
-        m_controller.getElement(clientId, new I_CmsSimpleCallback<CmsContainerElement>() {
+        m_controller.getElement(clientId, new I_CmsSimpleCallback<CmsContainerElementData>() {
 
             /**
              * Executed with the requested element data.
@@ -490,10 +530,10 @@ extends A_CmsSortingDragHandler<I_CmsDragContainerElement<I_CmsDragTargetContain
              * 
              * @see org.opencms.gwt.client.util.I_CmsSimpleCallback#execute(Object)
              */
-            public void execute(CmsContainerElement arg) {
+            public void execute(CmsContainerElementData arg) {
 
                 if ((arg != null) && isDragging()) {
-                    if (!isDragFromMenu()) {
+                    if (!isDragFromMenu() && !isNew()) {
                         // preparing the tool-bar menu drop-zone
                         m_editor.getClipboard().showDropzone(true);
                         I_CmsDragTargetContainer dropZone = m_editor.getClipboard().getDropzone();
@@ -526,6 +566,7 @@ extends A_CmsSortingDragHandler<I_CmsDragContainerElement<I_CmsDragTargetContain
                                             arg,
                                             m_controller.getSubcontainer(),
                                             type);
+                                        dragElement.setNewType(getNewType());
                                         m_controller.getSubcontainer().add(dragElement);
                                         int offsetLeft = dragElement.getOffsetWidth() - 20;
                                         DragInfo info = new DragInfo(
@@ -559,10 +600,10 @@ extends A_CmsSortingDragHandler<I_CmsDragContainerElement<I_CmsDragTargetContain
                                     CmsDragContainerElement dragElement;
                                     if (arg.isSubContainer()) {
                                         CmsDebugLog.getInstance().printLine("Generating sub-container elements.");
-                                        List<CmsContainerElement> subElements = new ArrayList<CmsContainerElement>();
+                                        List<CmsContainerElementData> subElements = new ArrayList<CmsContainerElementData>();
                                         Iterator<String> itSub = arg.getSubItems().iterator();
                                         while (itSub.hasNext()) {
-                                            CmsContainerElement element = m_controller.getCachedElement(itSub.next());
+                                            CmsContainerElementData element = m_controller.getCachedElement(itSub.next());
                                             if (element != null) {
                                                 subElements.add(element);
                                             }
@@ -579,7 +620,7 @@ extends A_CmsSortingDragHandler<I_CmsDragContainerElement<I_CmsDragTargetContain
                                             entry.getValue(),
                                             containerType);
                                     }
-
+                                    dragElement.setNewType(getNewType());
                                     entry.getValue().add(dragElement);
                                     int offsetLeft = dragElement.getOffsetWidth() - 20;
                                     DragInfo info = new DragInfo(

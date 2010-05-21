@@ -27,6 +27,8 @@
 	overflow: auto;
 	min-height: 38px;
 	border: 1px solid #aaaaaa;
+	padding: 0 2px;
+	background: #FFFFFF;
 }
 
 /** hiding buttons in clip-board menu while dragging **/

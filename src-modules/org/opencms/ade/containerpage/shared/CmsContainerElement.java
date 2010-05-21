@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/shared/Attic/CmsContainerElement.java,v $
- * Date   : $Date: 2010/05/18 14:09:26 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/05/21 13:20:08 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,68 +31,27 @@
 
 package org.opencms.ade.containerpage.shared;
 
-import org.opencms.xml.content.CmsXmlContentProperty;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
- * Bean holding all element information. Used for communication between client and server via RPC.<p>
+ * Bean holding basic container element information.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
-public class CmsContainerElement implements Serializable {
-
-    /** The serial version id. */
-    private static final long serialVersionUID = 53971824834674417L;
+public class CmsContainerElement implements IsSerializable {
 
     /** The element client id. */
     private String m_clientId;
 
-    /** The contents by container type. */
-    private Map<String, String> m_contents;
+    /** The full site path. */
+    private String m_sitePath;
 
-    /** The sub-container description. */
-    private String m_description;
-
-    /** The full file path. */
-    private String m_file;
-
-    /** Flag for indicating whether this is a subcontainer. */
-    private boolean m_isSubContainer;
-
-    /** The last user modifying the element. */
-    private String m_lastModifiedByUser;
-
-    /** The date of last modification. */
-    private long m_lastModifiedDate;
-
-    /** The element navText property. */
-    private String m_navText;
-
-    /** The no edit reason. If empty editing is allowed. */
-    private String m_noEditReason;
-
-    /** The properties for this container entry. */
-    private Map<String, String> m_properties;
-
-    /** The property for this container element. */
-    private Map<String, CmsXmlContentProperty> m_propertyConfig;
-
-    /** The resource status. */
-    private char m_status;
-
-    /** The contained sub-item id's. */
-    private List<String> m_subItems;
-
-    /** The element title property. */
-    private String m_title;
+    /** The resource type for new elements. If this field is not empty, the element is regarded as new and not created yet. */
+    private String m_newType;
 
     /**
      * Returns the client id.<p>
@@ -105,136 +64,34 @@ public class CmsContainerElement implements Serializable {
     }
 
     /**
-     * Returns the contents.<p>
-     *
-     * @return the contents
-     */
-    public Map<String, String> getContents() {
-
-        return m_contents;
-    }
-
-    /**
-     * Returns the description.<p>
-     *
-     * @return the description
-     */
-    public String getDescription() {
-
-        return m_description;
-    }
-
-    /**
-     * Returns the file.<p>
-     *
-     * @return the file
-     */
-    public String getFile() {
-
-        return m_file;
-    }
-
-    /**
-     * Returns the last modifying user.<p>
-     *
-     * @return the last modifying user
-     */
-    public String getLastModifiedByUser() {
-
-        return m_lastModifiedByUser;
-    }
-
-    /**
-     * Returns the last modification date.<p>
-     *
-     * @return the last modification date
-     */
-    public long getLastModifiedDate() {
-
-        return m_lastModifiedDate;
-    }
-
-    /**
-     * Returns the navText.<p>
-     *
-     * @return the navText
-     */
-    public String getNavText() {
-
-        return m_navText;
-    }
-
-    /**
-     * Returns the no edit reason. If empty editing is allowed.<p>
-     *
-     * @return the no edit reason
-     */
-    public String getNoEditReason() {
-
-        return m_noEditReason;
-    }
-
-    /**
-     * Returns the properties for this container element.<p>
+     * Returns the resource type name for elements that have not been created in the VFS yet.
+     * Returns <code>null</code> if the element has already been created.<p>
      * 
-     * @return a map of properties
+     * @return the new resource type name
      */
-    public Map<String, String> getProperties() {
+    public String getNewType() {
 
-        return m_properties;
+        return m_newType;
     }
 
     /**
-     * Gets the property configuration for this container element.<p>
+     * Returns the site path.<p>
+     *
+     * @return the site path
+     */
+    public String getSitePath() {
+
+        return m_sitePath;
+    }
+
+    /**
+     * Returns if if the element is new and has not been created in the VFS yet.<p>
      * 
-     * @return the property configuration map 
+     * @return <code>true</code> if the element is not created in the VFS yet
      */
-    public Map<String, CmsXmlContentProperty> getPropertyConfig() {
+    public boolean isNew() {
 
-        return m_propertyConfig;
-    }
-
-    /**
-     * Returns the status.<p>
-     *
-     * @return the status
-     */
-    public char getStatus() {
-
-        return m_status;
-    }
-
-    /**
-     * Returns the sub-items.<p>
-     *
-     * @return the sub-items
-     */
-    public List<String> getSubItems() {
-
-        return m_subItems;
-    }
-
-    /**
-     * Returns the title.<p>
-     *
-     * @return the title
-     */
-    public String getTitle() {
-
-        return m_title;
-    }
-
-    /**
-     * Returns if the element is a sub-container.<p>
-     *
-     * @return <code>true</code> if the element is a sub-container
-     */
-    public boolean isSubContainer() {
-
-        if (m_subItems == null) {
-            m_subItems = new ArrayList<String>();
-        }
-        return m_isSubContainer;
+        return m_newType != null;
     }
 
     /**
@@ -248,145 +105,24 @@ public class CmsContainerElement implements Serializable {
     }
 
     /**
-     * Sets the contents.<p>
-     *
-     * @param contents the contents to set
-     */
-    public void setContents(Map<String, String> contents) {
-
-        m_contents = contents;
-    }
-
-    /**
-     * Sets the description.<p>
-     *
-     * @param description the description to set
-     */
-    public void setDescription(String description) {
-
-        m_description = description;
-    }
-
-    /**
-     * Sets the file.<p>
-     *
-     * @param file the file to set
-     */
-    public void setFile(String file) {
-
-        m_file = file;
-    }
-
-    /**
-     * Sets the modifying userdByUser.<p>
-     *
-     * @param lastModifiedByUser the last modifying user to set
-     */
-    public void setLastModifiedByUser(String lastModifiedByUser) {
-
-        m_lastModifiedByUser = lastModifiedByUser;
-    }
-
-    /**
-     * Sets the last modification date.<p>
-     *
-     * @param lastModifiedDate the last modification date to set
-     */
-    public void setLastModifiedDate(long lastModifiedDate) {
-
-        m_lastModifiedDate = lastModifiedDate;
-    }
-
-    /**
-     * Sets the navText.<p>
-     *
-     * @param navText the navText to set
-     */
-    public void setNavText(String navText) {
-
-        m_navText = navText;
-    }
-
-    /**
-     * Sets the no edit reason.<p>
-     *
-     * @param noEditReason the no edit reason to set
-     */
-    public void setNoEditReason(String noEditReason) {
-
-        m_noEditReason = noEditReason;
-    }
-
-    /**
-     * Sets the properties for this container element.<p>
+     * Sets the new type. Set the resource type name for elements that are not created in the VFS yet.
+     * Set to <code>null</code>, for all existing elements.<p>
      * 
-     * @param properties the new properties
+     * @param newType the new type
      */
-    public void setProperties(Map<String, String> properties) {
+    public void setNewType(String newType) {
 
-        m_properties = properties;
+        m_newType = newType;
     }
 
     /**
-     * Sets the property configuration of this container element.<p>
-     * 
-     * @param propConfig the new property configuration 
-     */
-    public void setPropertyConfig(Map<String, CmsXmlContentProperty> propConfig) {
-
-        m_propertyConfig = propConfig;
-    }
-
-    /**
-     * Sets the status.<p>
+     * Sets the site path.<p>
      *
-     * @param status the status to set
+     * @param sitePath the site path to set
      */
-    public void setStatus(char status) {
+    public void setSitePath(String sitePath) {
 
-        m_status = status;
-    }
-
-    /**
-     * Sets whether the element is a sub-container.<p>
-     *
-     * @param isSubContainer <code>true</code> if the element is a sub-container
-     */
-    public void setSubContainer(boolean isSubContainer) {
-
-        m_isSubContainer = isSubContainer;
-    }
-
-    /**
-     * Sets the sub-items.<p>
-     *
-     * @param subItems the sub-items to set
-     */
-    public void setSubItems(List<String> subItems) {
-
-        m_subItems = subItems;
-    }
-
-    /**
-     * Sets the title.<p>
-     *
-     * @param title the title to set
-     */
-    public void setTitle(String title) {
-
-        m_title = title;
-    }
-
-    /**
-     * @see java.lang.Object#toString()
-     */
-    @Override
-    public String toString() {
-
-        StringBuffer result = new StringBuffer();
-        result.append("Title: ").append(m_title).append("  File: ").append(m_file).append("  ClientId: ").append(
-            m_clientId);
-        return result.toString();
+        m_sitePath = sitePath;
     }
 
 }
