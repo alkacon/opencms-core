@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsXmlSitemap.java,v $
- * Date   : $Date: 2010/05/20 09:14:04 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2010/05/25 07:42:30 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 7.5.2
  * 
@@ -459,6 +459,40 @@ public class CmsXmlSitemap extends CmsXmlContent {
     }
 
     /**
+     * Creates a new "sitemap entry already exists" exception.<p> 
+     * 
+     * @param cms the current CMS context
+     * @param sitePath the entry's site path
+     * 
+     * @return a new ready to be thrown exception
+     */
+    protected CmsSitemapEntryException createEntryAlreadyExistsException(CmsObject cms, String sitePath) {
+
+        String sitemapPath = (getFile() == null) ? null : cms.getSitePath(getFile());
+        return new CmsSitemapEntryException(sitemapPath != null ? Messages.get().container(
+            Messages.ERR_SITEMAP_ELEMENT_ALREADY_EXISTS_2,
+            sitePath,
+            sitemapPath) : Messages.get().container(Messages.ERR_SITEMAP_ELEMENT_ALREADY_EXISTS_1, sitePath), null);
+    }
+
+    /**
+     * Creates a new "sitemap entry not found" exception.<p> 
+     * 
+     * @param cms the current CMS context
+     * @param sitePath the entry's site path
+     * 
+     * @return a new ready to be thrown exception
+     */
+    protected CmsSitemapEntryException createEntryNotFoundException(CmsObject cms, String sitePath) {
+
+        String sitemapPath = (getFile() == null) ? null : cms.getSitePath(getFile());
+        return new CmsSitemapEntryException(sitemapPath != null ? Messages.get().container(
+            Messages.ERR_SITEMAP_ELEMENT_NOT_FOUND_2,
+            sitePath,
+            sitemapPath) : Messages.get().container(Messages.ERR_SITEMAP_ELEMENT_NOT_FOUND_1, sitePath), null);
+    }
+
+    /**
      * Low level deletion of a sitemap entry.<p>
      * 
      * @param cms the CMS context
@@ -473,8 +507,7 @@ public class CmsXmlSitemap extends CmsXmlContent {
         Element entryElement = getElement(cms, change.getSitePath());
         if (entryElement == null) {
             // element not found
-            String sitemapPath = (getFile() == null) ? null : cms.getSitePath(getFile());
-            throw new CmsSitemapEntryNotFoundException(change.getSitePath(), sitemapPath);
+            throw createEntryNotFoundException(cms, change.getSitePath());
         }
 
         entryElement.detach();
@@ -500,9 +533,7 @@ public class CmsXmlSitemap extends CmsXmlContent {
         Element entryElement = getElement(cms, change.getSitePath());
         if (entryElement == null) {
             // element not found
-            throw new CmsSitemapEntryNotFoundException(change.getSitePath(), getFile() == null
-            ? null
-            : cms.getSitePath(getFile()));
+            throw createEntryNotFoundException(cms, change.getSitePath());
         }
 
         // the title
@@ -637,8 +668,7 @@ public class CmsXmlSitemap extends CmsXmlContent {
         Element entryElement = getElement(cms, change.getSourcePath());
         if (entryElement == null) {
             // element not found
-            String sitemapPath = (getFile() == null) ? null : cms.getSitePath(getFile());
-            throw new CmsSitemapEntryNotFoundException(change.getSourcePath(), sitemapPath);
+            throw createEntryNotFoundException(cms, change.getSourcePath());
         }
 
         String srcParentPath = CmsResource.getParentFolder(change.getSourcePath());
@@ -646,8 +676,7 @@ public class CmsXmlSitemap extends CmsXmlContent {
         Element newParent = getElement(cms, destParentPath);
         if (newParent == null) {
             // new parent entry not found
-            String sitemapPath = (getFile() == null) ? null : cms.getSitePath(getFile());
-            throw new CmsSitemapEntryNotFoundException(destParentPath, sitemapPath);
+            throw createEntryNotFoundException(cms, destParentPath);
         }
 
         // move
@@ -696,14 +725,19 @@ public class CmsXmlSitemap extends CmsXmlContent {
      */
     protected String newEntry(CmsObject cms, CmsSitemapChangeNew change) throws CmsException {
 
-        Element parent = getElement(cms, CmsResource.getParentFolder(change.getSitePath()));
+        // the entry
+        Element entryElement = getElement(cms, change.getSitePath());
+        if (entryElement != null) {
+            // entry already exists
+            throw createEntryAlreadyExistsException(cms, change.getSitePath());
+        }
+        String parentPath = CmsResource.getParentFolder(change.getSitePath());
+        Element parent = getElement(cms, parentPath);
         if (parent == null) {
             // parent entry not found
-            String sitemapPath = (getFile() == null) ? null : cms.getSitePath(getFile());
-            throw new CmsSitemapEntryNotFoundException(change.getSitePath(), sitemapPath);
+            throw createEntryNotFoundException(cms, parentPath);
         }
-        // the entry
-        Element entryElement = parent.addElement(XmlNode.SiteEntry.name());
+        entryElement = parent.addElement(XmlNode.SiteEntry.name());
         entryElement.addElement(XmlNode.Id.name()).addCDATA(new CmsUUID().toString());
         String name = CmsResource.getName(change.getSitePath());
         if (name.endsWith("/")) {
