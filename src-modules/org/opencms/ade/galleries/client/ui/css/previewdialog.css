@@ -4,7 +4,7 @@
 	top:0px;
 	left:0px;
 	min-height:483px;
-	min-width:650px;	
+	min-width:648px;	
 	display: block;
 	background-color: value("constantsCss.backgroundColorList");
 	border:1px solid value("constantsCss.borderColor");
