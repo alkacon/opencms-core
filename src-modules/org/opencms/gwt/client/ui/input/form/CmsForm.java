@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/form/Attic/CmsForm.java,v $
- * Date   : $Date: 2010/05/25 09:40:15 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/05/25 14:34:36 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,8 @@
 
 package org.opencms.gwt.client.ui.input.form;
 
+import org.opencms.gwt.client.ui.css.I_CmsInputCss;
+import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.input.I_CmsFormField;
 import org.opencms.gwt.client.ui.input.I_CmsFormWidget;
 import org.opencms.gwt.client.ui.input.I_CmsValidationHandler;
@@ -54,12 +56,15 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  * 
  */
 public class CmsForm extends Composite {
+
+    /** The CSS bundle used for this form. **/
+    private static final I_CmsInputCss CSS = I_CmsInputLayoutBundle.INSTANCE.inputCss();
 
     /** A map from field ids to the corresponding widgets. */
     private Map<String, I_CmsFormField> m_fields = new LinkedHashMap<String, I_CmsFormField>();
@@ -123,6 +128,7 @@ public class CmsForm extends Composite {
     public Label addLabel(String labelText) {
 
         Label label = new Label(labelText);
+        label.setStyleName(CSS.formDescriptionLabel());
         m_panel.add(label);
         return label;
     }

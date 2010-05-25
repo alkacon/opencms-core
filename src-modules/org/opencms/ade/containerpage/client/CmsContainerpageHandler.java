@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageHandler.java,v $
- * Date   : $Date: 2010/05/25 12:36:33 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/05/25 14:34:36 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,8 +43,8 @@ import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.ade.publish.client.CmsPublishDialog;
 import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.gwt.client.ui.CmsConfirmDialog;
-import org.opencms.gwt.client.ui.CmsSimpleListItem;
 import org.opencms.gwt.client.ui.CmsNotification;
+import org.opencms.gwt.client.ui.CmsSimpleListItem;
 import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.I_CmsFormField;
@@ -78,7 +78,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 8.0.0
  */
@@ -184,6 +184,8 @@ public class CmsContainerpageHandler {
                 CmsFormDialog dialog = new CmsFormDialog(title);
                 dialog.setWidth("450px");
                 CmsForm form = dialog.getForm();
+                form.addLabel(Messages.get().key(Messages.GUI_PROPERTY_DIALOG_TEXT_0));
+
                 Map<String, I_CmsFormField> formFields = CmsBasicFormField.createFields(propertyConfig.values());
                 for (I_CmsFormField field : formFields.values()) {
                     form.addField(field, properties.get(field.getId()));
@@ -350,11 +352,11 @@ public class CmsContainerpageHandler {
             timer.schedule(2000);
             return;
         }
-            if (CmsDomUtil.hasClass(CmsContainerpageUtil.CLASS_SUB_CONTAINER_ELEMENTS, element.getElement())) {
-                openSubcontainerEditor((CmsDragSubcontainer)element);
-            } else {
-                CmsContentEditorDialog.get().openEditDialog(element.getClientId(), element.getSitePath());
-            }
+        if (CmsDomUtil.hasClass(CmsContainerpageUtil.CLASS_SUB_CONTAINER_ELEMENTS, element.getElement())) {
+            openSubcontainerEditor((CmsDragSubcontainer)element);
+        } else {
+            CmsContentEditorDialog.get().openEditDialog(element.getClientId(), element.getSitePath());
+        }
     }
 
     /**
