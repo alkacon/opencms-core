@@ -9,7 +9,6 @@
 .textBoxWidget, .checkBox {}
 
 .textBoxPanel, .textAreaContainer {
-	width: 100%;
 	border: 1px solid value("constants.borderColor");
 }
 
