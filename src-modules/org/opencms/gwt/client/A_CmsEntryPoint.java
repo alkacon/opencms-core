@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/Attic/A_CmsEntryPoint.java,v $
- * Date   : $Date: 2010/05/25 07:05:00 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2010/05/25 12:36:33 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import com.google.gwt.core.client.GWT;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 8.0.0
  * 
@@ -84,6 +84,7 @@ public abstract class A_CmsEntryPoint implements EntryPoint {
         I_CmsLayoutBundle.INSTANCE.stateCss().ensureInjected();
         I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().ensureInjected();
         I_CmsLayoutBundle.INSTANCE.toolbarCss().ensureInjected();
+        I_CmsLayoutBundle.INSTANCE.listItemCss().ensureInjected();
 
         I_CmsInputLayoutBundle.INSTANCE.inputCss().ensureInjected();
 
@@ -96,6 +97,7 @@ public abstract class A_CmsEntryPoint implements EntryPoint {
 
         I_CmsClassInitializer initializer = GWT.create(I_CmsClassInitializer.class);
         initializer.initClasses();
+
     }
 
     /**

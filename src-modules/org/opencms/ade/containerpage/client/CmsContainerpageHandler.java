@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageHandler.java,v $
- * Date   : $Date: 2010/05/21 13:20:07 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/05/25 12:36:33 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.ade.publish.client.CmsPublishDialog;
 import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.gwt.client.ui.CmsConfirmDialog;
-import org.opencms.gwt.client.ui.CmsListItem;
+import org.opencms.gwt.client.ui.CmsSimpleListItem;
 import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
@@ -78,7 +78,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.0
  */
@@ -122,7 +122,7 @@ public class CmsContainerpageHandler {
      * 
      * @param listItem the list item
      */
-    public void addToFavorites(CmsListItem listItem) {
+    public void addToFavorites(CmsSimpleListItem listItem) {
 
         m_editor.getClipboard().addToFavorites(listItem);
     }
@@ -132,7 +132,7 @@ public class CmsContainerpageHandler {
      * 
      * @param listItem the list item
      */
-    public void addToRecent(CmsListItem listItem) {
+    public void addToRecent(CmsSimpleListItem listItem) {
 
         m_editor.getClipboard().addToRecent(listItem);
     }
@@ -350,11 +350,11 @@ public class CmsContainerpageHandler {
             timer.schedule(2000);
             return;
         }
-        if (CmsDomUtil.hasClass(CmsContainerpageUtil.CLASS_SUB_CONTAINER_ELEMENTS, element.getElement())) {
-            openSubcontainerEditor((CmsDragSubcontainer)element);
-        } else {
-            CmsContentEditorDialog.get().openEditDialog(element.getClientId(), element.getSitePath());
-        }
+            if (CmsDomUtil.hasClass(CmsContainerpageUtil.CLASS_SUB_CONTAINER_ELEMENTS, element.getElement())) {
+                openSubcontainerEditor((CmsDragSubcontainer)element);
+            } else {
+                CmsContentEditorDialog.get().openEditDialog(element.getClientId(), element.getSitePath());
+            }
     }
 
     /**

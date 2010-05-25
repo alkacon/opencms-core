@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/A_CmsTab.java,v $
- * Date   : $Date: 2010/05/14 13:34:53 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/05/25 12:36:33 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import com.google.gwt.user.client.ui.Composite;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -83,12 +83,5 @@ public abstract class A_CmsTab extends Composite {
      * @return the tab handler
      */
     protected abstract A_CmsTabHandler getTabHandler();
-
-    /**
-     * Updates the layout for all list items in this list.<p>
-     * 
-     * @see org.opencms.gwt.client.ui.CmsList#updateLayout()
-     */
-    public abstract void updateLayout();
 
 }

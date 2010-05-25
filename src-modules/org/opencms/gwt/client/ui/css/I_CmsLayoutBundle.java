@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2010/05/18 12:31:13 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2010/05/25 12:36:33 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import com.google.gwt.resources.client.ImageResource.RepeatStyle;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.31 $
+ * @version $Revision: 1.32 $
  * 
  * @since 8.0.0
  */
@@ -480,6 +480,18 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     }
 
     /** List item CSS. */
+    interface I_CmsListItemCss extends CssResource {
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String listItemCheckbox();
+
+    }
+
+    /** List item CSS. */
     interface I_CmsListItemWidgetCss extends I_CmsStateCss {
 
         /** 
@@ -647,6 +659,20 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String listTreeItemOpen();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String minus();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String plus();
     }
 
     /** Page CSS. */
@@ -1094,6 +1120,14 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     /**
      * Access method.<p>
      * 
+     * @return the list item CSS 
+     */
+    @Source("listitem.css")
+    I_CmsListItemCss listItemCss();
+
+    /**
+     * Access method.<p>
+     * 
      * @return the list item CSS
      */
     @Source("listItemWidget.css")
@@ -1107,6 +1141,22 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      */
     @Source("listtree.css")
     I_CmsListTreeCss listTreeCss();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/minus.png")
+    ImageResource minus();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource 
+     */
+    @Source("images/plus.png")
+    ImageResource plus();
 
     /**
      * Access method. These CSS classes are used to indicate the state of ui items, use them within a dedicated CSS resources.

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleryControllerHandler.java,v $
- * Date   : $Date: 2010/05/21 14:27:40 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/05/25 12:36:33 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import java.util.List;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 8.0.0
 
@@ -84,7 +84,6 @@ public class CmsGalleryControllerHandler {
         if (!m_galleryDialog.getCategoriesTab().isInitOpen()) {
             return;
         }
-        m_galleryDialog.getCategoriesTab().updateLayout();
         m_galleryDialog.getCategoriesTab().openFirstLevel();
         m_galleryDialog.getCategoriesTab().setInitOpen(false);
     }
@@ -133,7 +132,7 @@ public class CmsGalleryControllerHandler {
      */
     public void onGalleriesTabSelection() {
 
-        m_galleryDialog.getGalleriesTab().updateLayout();
+        // do nothing
     }
 
     /**
@@ -207,7 +206,7 @@ public class CmsGalleryControllerHandler {
      */
     public void onTypesTabSelection() {
 
-        m_galleryDialog.getTypesTab().updateLayout();
+        // do nothing
     }
 
     /**

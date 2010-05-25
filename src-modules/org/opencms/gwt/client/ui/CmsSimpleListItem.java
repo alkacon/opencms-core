@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsSimpleListItem.java,v $
- * Date   : $Date: 2010/05/06 13:37:38 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/05/25 12:36:33 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,70 +32,48 @@
 package org.opencms.gwt.client.ui;
 
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.util.CmsDomUtil;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * List item which uses a CmsFloatDecoratedPanel for layout.<p>
+ * Provides a UI list item.<p>
  * 
- * @author Georg Westenberger
+ * @author Michael Moossen
+ * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
 public class CmsSimpleListItem extends Composite implements I_CmsListItem {
 
-    /**
-     * @see com.google.gwt.uibinder.client.UiBinder
-     */
-    protected interface I_CmsSimpleListItemUiBinder extends UiBinder<Panel, CmsSimpleListItem> {
-        // GWT interface, nothing to do here
-    }
-
-    /** The ui-binder instance for this class. */
-    private static I_CmsSimpleListItemUiBinder uiBinder = GWT.create(I_CmsSimpleListItemUiBinder.class);
-
-    /** The content area. */
-    @UiField
-    protected CmsFloatDecoratedPanel m_content;
-
     /** The logical id, it is not the HTML id. */
     protected String m_id;
 
-    /** This widgets panel. */
-    protected Panel m_panel;
+    /** The underlying panel. */
+    protected CmsFlowPanel m_panel;
 
-    /** 
-     * Default constructor.<p>
+    /**
+     * Constructor.<p> 
      */
     public CmsSimpleListItem() {
 
-        m_panel = uiBinder.createAndBindUi(this);
+        m_panel = new CmsFlowPanel(CmsDomUtil.Tag.li.name());
+        m_panel.setStyleName(I_CmsLayoutBundle.INSTANCE.listTreeCss().listTreeItem());
         initWidget(m_panel);
-        m_content.addStyleName(I_CmsLayoutBundle.INSTANCE.listTreeCss().listTreeItemContent());
     }
 
     /**
-     * Creates a new list item containing several widgets.<p>
+     * Constructor.<p>
      * 
-     * @param content the widgets to put into the item 
+     * @param widget the widget to use
      */
-    public CmsSimpleListItem(Widget... content) {
+    public CmsSimpleListItem(CmsListItemWidget widget) {
 
         this();
-        if (content.length > 0) {
-            // put all but the last widget into the float section
-            for (int i = 0; i < content.length - 1; i++) {
-                m_content.addToFloat(content[i]);
-            }
-            m_content.add(content[content.length - 1]);
-        }
+        add(widget);
     }
 
     /**
@@ -103,18 +81,7 @@ public class CmsSimpleListItem extends Composite implements I_CmsListItem {
      */
     public void add(Widget w) {
 
-        m_content.add(w);
-    }
-
-    /**
-     * Adds a widget to the item's floating section.<p>
-     * 
-     * @param w the widget to add
-     */
-    public void addLeft(Widget w) {
-
-        m_content.addToFloat(w);
-
+        m_panel.add(w);
     }
 
     /**
@@ -126,13 +93,15 @@ public class CmsSimpleListItem extends Composite implements I_CmsListItem {
     }
 
     /**
-     * Hides or shows the content.<p>
+     * Returns the child widget with the given index.<p>
      * 
-     * @param visible if true, shows the content, else hides it
+     * @param index the index
+     * 
+     * @return the child widget
      */
-    public void setContentVisible(boolean visible) {
+    public Widget getWidget(int index) {
 
-        m_content.setVisible(visible);
+        return m_panel.getWidget(index);
     }
 
     /**
@@ -158,13 +127,5 @@ public class CmsSimpleListItem extends Composite implements I_CmsListItem {
             }
             ((I_CmsTruncable)widget).truncate(textMetricsPrefix, width);
         }
-    }
-
-    /**
-     * Method for updating the layout of the item.<p>
-     */
-    public void updateLayout() {
-
-        m_content.updateLayout();
     }
 }

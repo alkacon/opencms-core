@@ -3,7 +3,6 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:cms="urn:import:org.opencms.gwt.client.ui">
 	<ui:with field="resources" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
-	<cms:CmsFlowPanel tag="li" styleName="{resources.listTreeCss.listTreeItem}">
-			<cms:CmsFloatDecoratedPanel ui:field="m_content" ></cms:CmsFloatDecoratedPanel>
+	<cms:CmsFlowPanel  tag="li" styleName="{resources.listTreeCss.listTreeItem}">
 	</cms:CmsFlowPanel>
 </ui:UiBinder> 

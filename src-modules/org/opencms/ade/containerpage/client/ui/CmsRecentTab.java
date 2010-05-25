@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsRecentTab.java,v $
- * Date   : $Date: 2010/05/21 13:20:08 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/05/25 12:36:33 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,7 +33,7 @@ package org.opencms.ade.containerpage.client.ui;
 
 import org.opencms.ade.containerpage.client.Messages;
 import org.opencms.ade.containerpage.client.draganddrop.CmsDragTargetList;
-import org.opencms.gwt.client.ui.CmsListItem;
+import org.opencms.gwt.client.ui.CmsSimpleListItem;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -47,7 +47,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -83,7 +83,7 @@ public class CmsRecentTab extends Composite {
      * 
      * @param item the item to add
      */
-    public void addListItem(CmsListItem item) {
+    public void addListItem(CmsSimpleListItem item) {
 
         m_listPanel.add(item);
     }

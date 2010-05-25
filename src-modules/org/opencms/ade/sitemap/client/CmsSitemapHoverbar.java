@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapHoverbar.java,v $
- * Date   : $Date: 2010/05/20 09:17:29 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2010/05/25 12:36:33 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,11 +49,14 @@ import com.google.gwt.user.client.ui.FlowPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 8.0.0
  */
 public class CmsSitemapHoverbar extends FlowPanel {
+
+    /** The hovered sitemap entry site path. */
+    protected String m_sitePath;
 
     /** The delete button. */
     private CmsPushButton m_deleteButton;
@@ -70,14 +73,11 @@ public class CmsSitemapHoverbar extends FlowPanel {
     /** The new button. */
     private CmsPushButton m_newButton;
 
-    /** The subsitemap button. */
-    private CmsPushButton m_subsitemapButton;
-
     /** The parent sitemap button. */
     private CmsPushButton m_parentSitemapButton;
 
-    /** The hovered sitemap entry site path. */
-    protected String m_sitePath;
+    /** The subsitemap button. */
+    private CmsPushButton m_subsitemapButton;
 
     /**
      * Constructor.<p>
@@ -219,16 +219,6 @@ public class CmsSitemapHoverbar extends FlowPanel {
     }
 
     /**
-     * Returns the subsitemap Button.<p>
-     *
-     * @return the subsitemap Button
-     */
-    public CmsPushButton getSubsitemapButton() {
-
-        return m_subsitemapButton;
-    }
-
-    /**
      * Returns the parent sitemap Button.<p>
      *
      * @return the parent sitemap Button
@@ -239,6 +229,16 @@ public class CmsSitemapHoverbar extends FlowPanel {
     }
 
     /**
+     * Returns the subsitemap Button.<p>
+     *
+     * @return the subsitemap Button
+     */
+    public CmsPushButton getSubsitemapButton() {
+
+        return m_subsitemapButton;
+    }
+
+    /**
      * Installs this hoverbar for the given item widget.<p>
      * 
      * @param controller the controller 
@@ -246,7 +246,7 @@ public class CmsSitemapHoverbar extends FlowPanel {
      */
     public void installOn(final CmsSitemapController controller, final CmsSitemapTreeItem treeItem) {
 
-        final CmsListItemWidget widget = (CmsListItemWidget)treeItem.getWidget(0);
+        final CmsListItemWidget widget = treeItem.getListItemWidget();
         A_CmsHoverHandler handler = new A_CmsHoverHandler() {
 
             /**

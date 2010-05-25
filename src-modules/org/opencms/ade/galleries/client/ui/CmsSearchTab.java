@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsSearchTab.java,v $
- * Date   : $Date: 2010/05/14 13:34:53 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/05/25 12:36:33 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.
  */
@@ -83,16 +83,6 @@ public class CmsSearchTab extends A_CmsTab {
     public CmsSearchTabHandler getTabHandler() {
 
         return m_tabHandler;
-    }
-
-    /**
-     * @see org.opencms.ade.galleries.client.ui.A_CmsTab#updateLayout()
-     */
-    @Override
-    public void updateLayout() {
-
-        // TODO: Auto-generated method stub
-
     }
 
 }

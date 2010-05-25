@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsDragTargetList.java,v $
- * Date   : $Date: 2010/05/06 14:26:54 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/05/25 12:36:33 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,18 +32,18 @@
 package org.opencms.ade.containerpage.client.draganddrop;
 
 import org.opencms.gwt.client.ui.CmsList;
-import org.opencms.gwt.client.ui.CmsListItem;
+import org.opencms.gwt.client.ui.CmsSimpleListItem;
 
 /**
  * A drag target list implementation.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
-public class CmsDragTargetList extends CmsList<CmsListItem> implements I_CmsDragTargetContainer {
+public class CmsDragTargetList extends CmsList<CmsSimpleListItem> implements I_CmsDragTargetContainer {
 
     /**
      * @see org.opencms.ade.containerpage.client.draganddrop.I_CmsDragTargetContainer#getContainerType()

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageUtil.java,v $
- * Date   : $Date: 2010/05/21 13:20:07 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/05/25 12:36:33 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import org.opencms.ade.containerpage.client.draganddrop.I_CmsDragTargetContainer
 import org.opencms.ade.containerpage.client.ui.A_CmsToolbarOptionButton;
 import org.opencms.ade.containerpage.client.ui.CmsElementOptionBar;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
-import org.opencms.gwt.client.ui.CmsListItem;
+import org.opencms.gwt.client.ui.CmsSimpleListItem;
 import org.opencms.gwt.client.util.CmsDomUtil;
 
 import java.util.ArrayList;
@@ -58,7 +58,7 @@ import com.google.gwt.user.client.Element;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
@@ -201,10 +201,10 @@ public class CmsContainerpageUtil {
      * 
      * @return the list item widget
      */
-    public CmsListItem createListItem(CmsContainerElementData containerElement, I_CmsDragTargetContainer dragParent) {
+    public CmsSimpleListItem createListItem(CmsContainerElementData containerElement, I_CmsDragTargetContainer dragParent) {
 
         CmsDragMenuElement widget = createListWidget(containerElement, dragParent);
-        CmsListItem listItem = new CmsListItem(widget);
+        CmsSimpleListItem listItem = new CmsSimpleListItem(widget);
         widget.setParentListItem(listItem);
         return listItem;
     }

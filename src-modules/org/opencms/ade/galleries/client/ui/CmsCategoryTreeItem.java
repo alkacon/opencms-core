@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsCategoryTreeItem.java,v $
- * Date   : $Date: 2010/05/06 13:10:28 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/05/25 12:36:33 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,14 +43,11 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.
  */
 public class CmsCategoryTreeItem extends CmsTreeItem {
-
-    /** The reference to the checkbox. */
-    private CmsCheckBox m_checkbox;
 
     /** The title text. */
     private String m_itemTitle;
@@ -59,52 +56,26 @@ public class CmsCategoryTreeItem extends CmsTreeItem {
     private String m_subTitle;
 
     /**
-     * The empty constructor.<p>
-     */
-    public CmsCategoryTreeItem() {
-
-        // empty
-    }
-
-    /**
-     * Initialize the required members.<p>
-     *
-     * @param categoryPath the id
-     * @param title the category title to set
-     * @param subtitle the the category path to set
-     */
-    public void init(String categoryPath, String title, String subtitle) {
-
-        setId(categoryPath);
-        m_itemTitle = title;
-        m_subTitle = subtitle;
-
-    }
-
-    /**
-     * The constructor.<p>
+     * Creates a new category tree item with a main widget and a check box.<p>
      * 
-     * @param showOpeners if true, show open/close icons
-     * @param content the widgets to put into the tree item 
+     * @param showOpeners if true, show the open/close icons
+     * @param checkbox the check box 
+     * @param mainWidget the main widget 
      */
-    public CmsCategoryTreeItem(boolean showOpeners, Widget... content) {
+    public CmsCategoryTreeItem(boolean showOpeners, CmsCheckBox checkbox, Widget mainWidget) {
 
-        super(showOpeners, content);
-        for (Widget i : content) {
-            if (i instanceof CmsCheckBox) {
-                m_checkbox = (CmsCheckBox)i;
-            }
-        }
+        super(showOpeners, checkbox, mainWidget);
     }
 
     /**
-     * Returns the reference to the checkbox.<p>
-     *
-     * @return the checkbox
+     * Creates a new category tree item with a main widget.<p>
+     * 
+     * @param showOpeners if true, show the open/close icons 
+     * @param mainWidget the main widget 
      */
-    public CmsCheckBox getCheckbox() {
+    public CmsCategoryTreeItem(boolean showOpeners, Widget mainWidget) {
 
-        return m_checkbox;
+        super(showOpeners, mainWidget);
     }
 
     /**
@@ -135,6 +106,21 @@ public class CmsCategoryTreeItem extends CmsTreeItem {
     public String getSubTitle() {
 
         return m_subTitle;
+    }
+
+    /**
+     * Initialize the required members.<p>
+     *
+     * @param categoryPath the id
+     * @param title the category title to set
+     * @param subtitle the the category path to set
+     */
+    public void init(String categoryPath, String title, String subtitle) {
+
+        setId(categoryPath);
+        m_itemTitle = title;
+        m_subTitle = subtitle;
+
     }
 
     /**

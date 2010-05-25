@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsCategoryListItem.java,v $
- * Date   : $Date: 2010/04/30 10:17:38 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/05/25 12:36:33 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,7 @@
 
 package org.opencms.ade.galleries.client.ui;
 
-import org.opencms.gwt.client.ui.CmsSimpleListItem;
+import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 
 import com.google.gwt.user.client.ui.Widget;
@@ -41,14 +41,11 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.
  */
-public class CmsCategoryListItem extends CmsSimpleListItem {
-
-    /** The reference to the list item checkbox. */
-    private CmsCheckBox m_checkbox;
+public class CmsCategoryListItem extends CmsListItem {
 
     /** The title text. */
     private String m_itemTitle;
@@ -57,28 +54,24 @@ public class CmsCategoryListItem extends CmsSimpleListItem {
     private String m_subTitle;
 
     /**
-     * The list item constructor.
+     * Constructs a new category list item with a checkbox and a main widget.<p>
      * 
-     * @param content the content of the category list item
+     * @param checkbox the checkbox 
+     * @param widget the main widget
      */
-    public CmsCategoryListItem(Widget... content) {
+    public CmsCategoryListItem(CmsCheckBox checkbox, Widget widget) {
 
-        super(content);
-        for (Widget i : content) {
-            if (i instanceof CmsCheckBox) {
-                m_checkbox = (CmsCheckBox)i;
-            }
-        }
+        initContent(checkbox, widget);
     }
 
     /**
-     * Returns the reference to the list checkbox.<p>
+     * Constructs a new category list item with a main widget.<p>
      * 
-     * @return the checkbox
+     * @param widget the main widget
      */
-    public CmsCheckBox getCheckbox() {
+    public CmsCategoryListItem(Widget widget) {
 
-        return m_checkbox;
+        initContent(widget);
     }
 
     /**

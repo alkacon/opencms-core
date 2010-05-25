@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/tree/Attic/CmsTreeItem.java,v $
- * Date   : $Date: 2010/05/20 09:16:10 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/05/25 12:36:33 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,10 +32,12 @@
 package org.opencms.gwt.client.ui.tree;
 
 import org.opencms.gwt.client.ui.CmsList;
-import org.opencms.gwt.client.ui.CmsSimpleListItem;
+import org.opencms.gwt.client.ui.CmsListItem;
+import org.opencms.gwt.client.ui.CmsToggleButton;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsListTreeCss;
+import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.util.CmsStyleVariable;
 
 import com.google.gwt.animation.client.Animation;
@@ -64,17 +66,20 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Georg Westenberger
  * @author Michael Moossen
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 8.0.0
  */
-public class CmsTreeItem extends CmsSimpleListItem {
+public class CmsTreeItem extends CmsListItem {
 
     /** The duration of the animations. */
     public static final int ANIMATION_DURATION = 200;
 
     /** The CSS bundle used for this widget. */
     private static final I_CmsListTreeCss CSS = I_CmsLayoutBundle.INSTANCE.listTreeCss();
+
+    /** The width of the opener. */
+    private static final int OPENER_WIDTH = 16;
 
     /** The children list. */
     protected CmsList<CmsTreeItem> m_children;
@@ -97,16 +102,53 @@ public class CmsTreeItem extends CmsSimpleListItem {
     /** The tree reference. */
     private CmsTree<CmsTreeItem> m_tree;
 
+    /**
+     * Creates a new list tree item containing a main widget and a check box.<p>
+     * 
+     * @param showOpeners if true, show open/close icons
+     * @param checkbox the check box 
+     * @param mainWidget the main widget 
+     */
+    public CmsTreeItem(boolean showOpeners, CmsCheckBox checkbox, Widget mainWidget) {
+
+        this(showOpeners);
+        addMainWidget(mainWidget);
+        addCheckBox(checkbox);
+        initContent();
+        if (!showOpeners) {
+            hideOpeners();
+        }
+    }
+
+    /**
+     * Creates a new list tree item containing a main widget.<p>
+     * 
+     * @param showOpeners if true, show open/close icons 
+     * @param mainWidget the main widget 
+     */
+    public CmsTreeItem(boolean showOpeners, Widget mainWidget) {
+
+        this(showOpeners);
+        addMainWidget(mainWidget);
+        initContent();
+        if (!showOpeners) {
+            hideOpeners();
+        }
+
+    }
+
     /** 
      * Default constructor.<p>
+     * 
+     * @param showOpeners if true, the opener icons should be shown 
      */
-    public CmsTreeItem() {
+    protected CmsTreeItem(boolean showOpeners) {
 
         super();
         m_styleVar = new CmsStyleVariable(this);
         m_leafStyleVar = new CmsStyleVariable(this);
         m_opener = createOpener();
-        m_content.addToFloat(m_opener);
+        addDecoration(m_opener, showOpeners ? OPENER_WIDTH : 0, true);
         m_children = new CmsList<CmsTreeItem>();
         m_children.setStyleName(CSS.listTreeItemChildren());
         m_panel.add(m_children);
@@ -116,33 +158,12 @@ public class CmsTreeItem extends CmsSimpleListItem {
     }
 
     /**
-     * Creates a new list tree item containing several widgets.<p>
-     * 
-     * @param showOpeners if true, show open/close icons
-     * @param content the widgets to put into the tree item 
-     */
-    public CmsTreeItem(boolean showOpeners, Widget... content) {
-
-        this();
-        if (content.length > 0) {
-            // put all but the last widget into the float section
-            for (int i = 0; i < content.length - 1; i++) {
-                m_content.addToFloat(content[i]);
-            }
-            add(content[content.length - 1]);
-        }
-        if (!showOpeners) {
-            hideOpeners();
-        }
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.CmsSimpleListItem#add(com.google.gwt.user.client.ui.Widget)
+     * @see org.opencms.gwt.client.ui.CmsListItem#add(com.google.gwt.user.client.ui.Widget)
      */
     @Override
     public void add(Widget w) {
 
-        m_content.add(w);
+        throw new UnsupportedOperationException();
     }
 
     /**
@@ -228,18 +249,6 @@ public class CmsTreeItem extends CmsSimpleListItem {
     public CmsTree<CmsTreeItem> getTree() {
 
         return m_tree;
-    }
-
-    /**
-     * Returns the widget at the given position.<p>
-     * 
-     * @param index the position
-     * 
-     * @return  the widget at the given position
-     */
-    public Widget getWidget(int index) {
-
-        return m_content.getWidget(index);
     }
 
     /** 
@@ -348,7 +357,7 @@ public class CmsTreeItem extends CmsSimpleListItem {
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.CmsSimpleListItem#setId(java.lang.String)
+     * @see org.opencms.gwt.client.ui.CmsListItem#setId(java.lang.String)
      */
     @Override
     public void setId(String id) {
@@ -376,11 +385,6 @@ public class CmsTreeItem extends CmsSimpleListItem {
         m_styleVar.setValue(open ? CSS.listTreeItemOpen() : CSS.listTreeItemClosed());
         m_opener.setDown(open);
         if (open) {
-            for (Widget widget : m_children) {
-                if (widget instanceof CmsSimpleListItem) {
-                    ((CmsSimpleListItem)widget).updateLayout();
-                }
-            }
             fireOpen();
         }
     }
@@ -447,10 +451,11 @@ public class CmsTreeItem extends CmsSimpleListItem {
      */
     protected ToggleButton createOpener() {
 
-        final ToggleButton opener = new ToggleButton();
+        final CmsToggleButton opener = new CmsToggleButton();
         opener.setStyleName(CSS.listTreeItemHandler());
-        opener.getUpFace().setImage(getPlusImage());
-        opener.getDownFace().setImage(getMinusImage());
+
+        opener.setUpFace("", CSS.plus());
+        opener.setDownFace("", CSS.minus());
         opener.addClickHandler(new ClickHandler() {
 
             /**

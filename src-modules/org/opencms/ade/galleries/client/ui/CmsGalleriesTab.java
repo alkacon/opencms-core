@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsGalleriesTab.java,v $
- * Date   : $Date: 2010/05/19 09:02:51 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/05/25 12:36:33 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import com.google.gwt.user.client.ui.HTMLPanel;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 8.0.
  */
@@ -185,7 +185,7 @@ public class CmsGalleriesTab extends A_CmsListTab {
 
         for (String gallery : galleries) {
             CmsGalleryListItem item = (CmsGalleryListItem)m_scrollList.getItem(gallery);
-            item.getCheckbox().setChecked(false);
+            item.getCheckBox().setChecked(false);
         }
     }
 

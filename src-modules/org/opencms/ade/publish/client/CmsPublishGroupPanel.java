@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishGroupPanel.java,v $
- * Date   : $Date: 2010/05/18 12:31:14 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2010/05/25 12:36:33 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,9 +33,9 @@ package org.opencms.ade.publish.client;
 
 import org.opencms.ade.publish.shared.CmsPublishResource;
 import org.opencms.gwt.client.ui.CmsList;
-import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.CmsSimpleListItem;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
@@ -63,7 +63,7 @@ import com.google.gwt.user.client.ui.Label;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 8.0.0
  */
@@ -79,7 +79,7 @@ public class CmsPublishGroupPanel extends Composite implements I_CmsHasSize {
     protected I_CmsPublishSelectionChangeHandler m_selectionChangeHandler;
 
     /** The group header (containing the label and add/remove buttons). */
-    private CmsListItem m_header = new CmsListItem();
+    private CmsSimpleListItem m_header = new CmsSimpleListItem();
 
     /** Resources which don't have any problems. */
     private ArrayList<CmsTreeItem> m_noProblemItems = new ArrayList<CmsTreeItem>();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/A_CmsListTab.java,v $
- * Date   : $Date: 2010/05/14 13:34:53 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/05/25 12:36:33 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.
  */
@@ -132,15 +132,6 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
         if (event.getSource() == m_sortSelectBox) {
             getTabHandler().onSort(event.getValue());
         }
-    }
-
-    /**
-     * @see org.opencms.ade.galleries.client.ui.A_CmsTab#updateLayout()
-     */
-    @Override
-    public void updateLayout() {
-
-        m_scrollList.updateLayout();
     }
 
     /**

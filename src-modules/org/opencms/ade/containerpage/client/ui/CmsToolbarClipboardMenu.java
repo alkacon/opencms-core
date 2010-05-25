@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsToolbarClipboardMenu.java,v $
- * Date   : $Date: 2010/05/06 14:26:54 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2010/05/25 12:36:33 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,7 +37,7 @@ import org.opencms.ade.containerpage.client.draganddrop.CmsDragMenuElement;
 import org.opencms.ade.containerpage.client.draganddrop.CmsDragTargetMenu;
 import org.opencms.ade.containerpage.client.draganddrop.CmsMenuDragHandler;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
-import org.opencms.gwt.client.ui.CmsListItem;
+import org.opencms.gwt.client.ui.CmsSimpleListItem;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.util.CmsDebugLog;
@@ -55,7 +55,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 8.0.0
  */
@@ -115,7 +115,7 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu {
      * 
      * @param listItem the item widget
      */
-    public void addToFavorites(CmsListItem listItem) {
+    public void addToFavorites(CmsSimpleListItem listItem) {
 
         m_favorites.addListItem(listItem);
     }
@@ -125,7 +125,7 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu {
      * 
      * @param listItem the item widget
      */
-    public void addToRecent(CmsListItem listItem) {
+    public void addToRecent(CmsSimpleListItem listItem) {
 
         m_recent.addListItem(listItem);
     }
@@ -154,7 +154,7 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu {
         Iterator<Widget> it = m_favorites.iterator();
         while (it.hasNext()) {
             try {
-                CmsDragMenuElement element = (CmsDragMenuElement)((CmsListItem)it.next()).getWidget(0);
+                CmsDragMenuElement element = (CmsDragMenuElement)((CmsSimpleListItem)it.next()).getWidget(0);
                 element.showDeleteButton();
 
                 // disabling the container-page drag and enabling the menu drag
@@ -211,7 +211,7 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu {
         Iterator<Widget> it = m_favorites.iterator();
         while (it.hasNext()) {
             try {
-                CmsDragMenuElement element = (CmsDragMenuElement)((CmsListItem)it.next()).getWidget(0);
+                CmsDragMenuElement element = (CmsDragMenuElement)((CmsSimpleListItem)it.next()).getWidget(0);
                 element.hideDeleteButton();
                 clientIds.add(element.getClientId());
 

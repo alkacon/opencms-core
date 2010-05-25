@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsList.java,v $
- * Date   : $Date: 2010/05/20 09:16:10 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2010/05/25 12:36:33 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 8.0.0
  */
@@ -221,18 +221,6 @@ public class CmsList<I extends I_CmsListItem> extends ComplexPanel implements I_
             item.truncate(textMetricsPrefix, widgetWidth);
         }
         m_tmPrefix = textMetricsPrefix;
-    }
-
-    /**
-     * Updates the layout for all list items in this list.<p>
-     */
-    public void updateLayout() {
-
-        for (Widget widget : this) {
-            if (widget instanceof CmsSimpleListItem) {
-                ((CmsSimpleListItem)widget).updateLayout();
-            }
-        }
     }
 
     /**

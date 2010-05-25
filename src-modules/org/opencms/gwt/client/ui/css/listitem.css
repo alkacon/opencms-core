@@ -1,0 +1,12 @@
+
+
+.listItemCheckbox {
+	margin-left: 2px;
+	margin-right: 2px;
+}
+
+@if user.agent ie6 {
+	.listItemCheckbox {
+		vertical-align: -20px;
+	} 
+}

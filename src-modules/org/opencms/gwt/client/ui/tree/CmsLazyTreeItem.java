@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/tree/Attic/CmsLazyTreeItem.java,v $
- * Date   : $Date: 2010/04/21 14:29:37 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/05/25 12:36:33 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.gwt.client.ui.tree;
 
 import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
+import org.opencms.gwt.client.ui.input.CmsCheckBox;
 
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
@@ -44,7 +45,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Georg Westenberger
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -81,13 +82,25 @@ public class CmsLazyTreeItem extends CmsTreeItem {
     private LoadState m_loadState = LoadState.UNLOADED;
 
     /**
-     * Constructs a new lazy tree item.<p>
+     * Constructs a new lazy tree item with a main widget and a check box.<p>
      * 
-     * @param widgets the widgets to insert into the new tree item
+     * @param checkbox the check box 
+     * @param widget the main widget
      */
-    public CmsLazyTreeItem(Widget... widgets) {
+    public CmsLazyTreeItem(CmsCheckBox checkbox, Widget widget) {
 
-        super(true, widgets);
+        super(true, checkbox, widget);
+        addChild(new LoadingItem());
+    }
+
+    /**
+     * Constructs a new lazy tree item with a main widget.<p>
+     * 
+     * @param widget the main widget 
+     */
+    public CmsLazyTreeItem(Widget widget) {
+
+        super(true, widget);
         addChild(new LoadingItem());
     }
 
