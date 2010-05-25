@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItem.java,v $
- * Date   : $Date: 2010/05/25 12:36:33 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2010/05/25 13:55:16 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  *  
  * @since 8.0.0 
  */
@@ -107,18 +107,7 @@ public class CmsListItem extends Composite implements I_CmsListItem {
      */
     public void add(Widget w) {
 
-        //      m_content.add(w);
-    }
-
-    /**
-     * Adds a widget to the item's floating section.<p>
-     * 
-     * @param w the widget to add
-     */
-    public void addLeft(Widget w) {
-
-        //m_content.addToFloat(w);
-
+        throw new UnsupportedOperationException();
     }
 
     /**
@@ -152,16 +141,6 @@ public class CmsListItem extends Composite implements I_CmsListItem {
             return null;
         }
         return (CmsListItemWidget)m_mainWidget;
-    }
-
-    /**
-     * Hides or shows the content.<p>
-     * 
-     * @param visible if true, shows the content, else hides it
-     */
-    public void setContentVisible(boolean visible) {
-
-        //m_content.setVisible(visible);
     }
 
     /**
@@ -220,7 +199,7 @@ public class CmsListItem extends Composite implements I_CmsListItem {
      * Adds the main widget to the list item.<p>
      * 
      * In most cases, the widget will be a list item widget. If this is the case, then further calls to {@link CmsListItem#getListItemWidget()} will 
-     * return the widget which was passed as a parameter to this method. Otherwise, the method will return null.
+     * return the widget which was passed as a parameter to this method. Otherwise, the method will return null.<p>
      * 
      * @param widget
      */
@@ -248,7 +227,7 @@ public class CmsListItem extends Composite implements I_CmsListItem {
     }
 
     /**
-     * This method is a convenience method which sets the checkbox and main widget of this widget, and then calls {@link CmsListItem#initContent()}.
+     * This method is a convenience method which sets the checkbox and main widget of this widget, and then calls {@link CmsListItem#initContent()}.<p>
      *  
      * @param checkbox the checkbox to add
      * @param mainWidget the mainWidget to add
