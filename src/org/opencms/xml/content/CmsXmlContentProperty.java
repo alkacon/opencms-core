@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentProperty.java,v $
- * Date   : $Date: 2010/04/22 14:32:08 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/05/25 11:52:18 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import java.io.Serializable;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 7.9.2
  */
@@ -120,6 +120,14 @@ public class CmsXmlContentProperty implements Cloneable, Serializable {
     /** The widget configuration. */
     private String m_widgetConfiguration;
 
+    /**
+     * Serialization constructor.<p>
+     */ 
+    protected CmsXmlContentProperty() {
+    
+        // empty
+    }
+    
     /**
      * Public constructor.<p>
      * 
