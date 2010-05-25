@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/super_src/org/opencms/db/Attic/CmsResourceState.java,v $
- * Date   : $Date: 2010/05/17 08:01:57 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/05/25 13:33:40 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import java.io.Serializable;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.5.3 
  */
@@ -118,6 +118,15 @@ public class CmsResourceState implements Serializable {
     }
 
     /**
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+
+        return (obj instanceof CmsResourceState) && (((CmsResourceState)obj).m_state == m_state);
+    }
+
+    /**
      * Returns resource state abbreviation.<p>
      * 
      * @return resource state abbreviation
@@ -138,13 +147,22 @@ public class CmsResourceState implements Serializable {
     }
 
     /**
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+
+        return new Integer(m_state).hashCode();
+    }
+
+    /**
      * Returns if this is {@link CmsResource#STATE_CHANGED}.<p>
      * 
      * @return if this is {@link CmsResource#STATE_CHANGED}
      */
     public boolean isChanged() {
 
-        return (this == CmsResource.STATE_CHANGED);
+        return (this.equals(STATE_CHANGED));
     }
 
     /**
@@ -154,7 +172,7 @@ public class CmsResourceState implements Serializable {
      */
     public boolean isDeleted() {
 
-        return (this == CmsResource.STATE_DELETED);
+        return (this.equals(CmsResource.STATE_DELETED));
     }
 
     /**
@@ -164,7 +182,7 @@ public class CmsResourceState implements Serializable {
      */
     public boolean isKeep() {
 
-        return (this == CmsResource.STATE_KEEP);
+        return (this.equals(CmsResource.STATE_KEEP));
     }
 
     /**
@@ -174,7 +192,7 @@ public class CmsResourceState implements Serializable {
      */
     public boolean isNew() {
 
-        return (this == CmsResource.STATE_NEW);
+        return (this.equals(CmsResource.STATE_NEW));
     }
 
     /**
@@ -184,7 +202,7 @@ public class CmsResourceState implements Serializable {
      */
     public boolean isUnchanged() {
 
-        return (this == CmsResource.STATE_UNCHANGED);
+        return (this.equals(CmsResource.STATE_UNCHANGED));
     }
 
     /**
