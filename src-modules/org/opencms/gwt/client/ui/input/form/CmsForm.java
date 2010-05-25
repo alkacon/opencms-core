@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/form/Attic/CmsForm.java,v $
- * Date   : $Date: 2010/05/14 12:00:18 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/05/25 07:18:04 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  * 
@@ -97,6 +97,19 @@ public class CmsForm extends Composite {
         m_initialValues.put(formField.getId(), initialValue);
         addRow(labelText, description, (Widget)widget);
 
+    }
+
+    /**
+     * Adds a text label.<p>
+     * 
+     * @param labelText the text for the label
+     * @return a label with the given text
+     */
+    public Label addLabel(String labelText) {
+
+        Label label = new Label(labelText);
+        m_panel.add(label);
+        return label;
     }
 
     /**
