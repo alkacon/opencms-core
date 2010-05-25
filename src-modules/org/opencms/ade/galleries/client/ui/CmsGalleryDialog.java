@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsGalleryDialog.java,v $
- * Date   : $Date: 2010/05/21 14:27:40 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2010/05/25 09:26:05 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,6 +45,7 @@ import org.opencms.gwt.client.ui.CmsTabbedPanel.CmsTabLayout;
 
 import java.util.Iterator;
 
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
 import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
 import com.google.gwt.event.logical.shared.HasResizeHandlers;
@@ -61,7 +62,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 8.0.
  */
@@ -112,7 +113,7 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
         m_parentPanel.setStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().parentPanel());
 
         // set the default hight of the dialog
-        m_parentPanel.setHeight(Integer.toString(DIALOG_HIGHT - 2));
+        m_parentPanel.getElement().getStyle().setHeight((DIALOG_HIGHT - 2), Unit.PX);
         // tabs
         m_tabbedPanel = new CmsTabbedPanel<A_CmsTab>(CmsTabLayout.standard, false);
         // add tabs to parent widget        

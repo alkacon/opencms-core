@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/ui/Attic/A_CmsPreview.java,v $
- * Date   : $Date: 2010/05/21 14:27:39 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/05/25 09:26:06 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,6 +39,7 @@ import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsDomUtil.Style;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -52,7 +53,7 @@ import com.google.gwt.user.client.ui.Widget;
  *  
  * @author Polina Smagina
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.
  */
@@ -107,8 +108,8 @@ public abstract class A_CmsPreview extends Composite {
         initWidget(uiBinder.createAndBindUi(this));
 
         // height of the preview dialog
-        m_parentPanel.setHeight(Integer.toString(dialogHeight));
-        m_parentPanel.setWidth(Integer.toString(dialogWidth - 2));
+        m_parentPanel.getElement().getStyle().setHeight(dialogHeight, Unit.PX);
+        m_parentPanel.getElement().getStyle().setWidth((dialogWidth - 2), Unit.PX);
 
         int previewHeght = m_minPreviewHeight;
         int detailsHeight = dialogHeight - previewHeght;
@@ -120,14 +121,14 @@ public abstract class A_CmsPreview extends Composite {
             - 1;
         // FF: -1;
         // IE7 -2;
-        m_previewHolder.setHeight(Integer.toString(previewHeght));
+        m_previewHolder.getElement().getStyle().setHeight(previewHeght, Unit.PX);
 
         detailsHeight = detailsHeight
             - CmsDomUtil.getCurrentStyleInt(m_tabsHolder.getElement(), Style.marginBottom)
             - CmsDomUtil.getCurrentStyleInt(m_tabsHolder.getElement(), Style.marginTop)
             - 2;
-        m_tabsHolder.setHeight(Integer.toString(detailsHeight));
-        m_tabsHolder.setWidth(Integer.toString(dialogWidth - 4));
+        m_tabsHolder.getElement().getStyle().setHeight(detailsHeight, Unit.PX);
+        m_tabsHolder.getElement().getStyle().setWidth((dialogWidth - 4), Unit.PX);
 
         // close button        
         m_closeButton.setUiIcon(I_CmsButton.UiIcon.closethick);

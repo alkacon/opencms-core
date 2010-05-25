@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/Attic/CmsOpenVfsGallery.java,v $
- * Date   : $Date: 2010/05/21 14:27:40 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/05/25 09:26:06 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0
  */
@@ -67,7 +67,7 @@ public class CmsOpenVfsGallery extends CmsDialog {
     private static final Log LOG = CmsLog.getLog(CmsOpenVfsGallery.class);
 
     /** Path to the host page. */
-    public static final String VFS_OPEN_GALLERY_PATH = "/system/modules/org.opencms.ade.galleries/testVfs.jsp";
+    public static final String VFS_OPEN_GALLERY_PATH = "/system/modules/org.opencms.ade.galleries/gallery.jsp";
 
     /**
      * Public constructor with JSP action element.<p>
