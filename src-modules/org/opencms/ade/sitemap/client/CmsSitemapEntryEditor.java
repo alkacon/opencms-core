@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapEntryEditor.java,v $
- * Date   : $Date: 2010/05/25 09:40:15 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/05/25 12:21:46 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  *  @author Georg Westenberger
  *  
- *  @version $Revision: 1.7 $
+ *  @version $Revision: 1.8 $
  *  
  *  @since 8.0.0
  */
@@ -259,7 +259,7 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
                 setUrlNameField(newUrlName);
                 if (m_mode == Mode.EDIT) {
                     String newPath = CmsResource.getParentFolder(m_entry.getSitePath()) + newUrlName + "/";
-                    if (m_controller.getEntry(newPath) != null) {
+                    if (!newPath.equals(m_entry.getSitePath()) && (m_controller.getEntry(newPath) != null)) {
                         // already exists
                         showUrlNameError(message(Messages.GUI_URLNAME_ALREADY_EXISTS_0));
                     } else {
