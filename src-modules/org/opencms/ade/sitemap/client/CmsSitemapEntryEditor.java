@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapEntryEditor.java,v $
- * Date   : $Date: 2010/05/20 09:17:29 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/05/25 07:44:46 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,11 +59,23 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  *  @author Georg Westenberger
  *  
- *  @version $Revision: 1.5 $
+ *  @version $Revision: 1.6 $
  *  
  *  @since 8.0.0
  */
 public class CmsSitemapEntryEditor extends CmsFormDialog {
+
+    /**
+     * The editor mode.<p>
+     */
+    public enum Mode {
+
+        /** Edition of an existing entry. */
+        EDIT,
+
+        /** Creation of a new entry. */
+        NEW;
+    }
 
     /** The key for the default template. */
     public static final String DEFAULT_TEMPLATE_VALUE = "";
@@ -80,11 +92,17 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
     /** The field id of the 'template-inherited' property. */
     private static final String FIELD_TEMPLATE_INHERIT_CHECKBOX = "field_template_inherited";
 
+    /** Default name for new entries. */
+    private static final String NEW_NAME = "new";
+
     /** The sitemap controller which changes the actual entry data when the user clicks OK in this dialog. */
     protected CmsSitemapController m_controller;
 
     /** The sitemap entry which is being edited. */
     protected CmsClientSitemapEntry m_entry;
+
+    /** The current mode. */
+    protected Mode m_mode;
 
     /** The configuration of the properties. */
     private Map<String, CmsXmlContentProperty> m_propertyConfig;
@@ -93,15 +111,17 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
      * Creates a new sitemap entry editor.<p>
      * 
      * @param controller the controller which should be used to update the edited sitemap entry 
-     * @param entry the entry which should be edited
+     * @param sitePath the site path of the entry which should be edited
+     * @param mode the edition mode
      */
-    public CmsSitemapEntryEditor(CmsSitemapController controller, CmsClientSitemapEntry entry) {
+    public CmsSitemapEntryEditor(CmsSitemapController controller, String sitePath, Mode mode) {
 
         super(message(Messages.GUI_PROPERTY_EDITOR_TITLE_0));
 
-        m_entry = entry;
+        m_entry = controller.getEntry(sitePath);
         m_controller = controller;
         m_propertyConfig = removeHiddenProperties(controller.getData().getProperties());
+        m_mode = mode;
     }
 
     /**
@@ -152,8 +172,7 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
         }
 
         // only inherit the template if checkbox is checked 
-        boolean shouldInheritTemplate = shouldInheritTemplateStr.equalsIgnoreCase("true");
-        String templateInherited = shouldInheritTemplate ? template : null;
+        String templateInherited = Boolean.parseBoolean(shouldInheritTemplateStr) ? template : null;
         return new CmsPair<String, String>(template, templateInherited);
     }
 
@@ -162,15 +181,15 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
      */
     public void start() {
 
-        Map<String, String> properties = m_entry.getProperties();
         CmsForm form = getForm();
 
         CmsBasicFormField urlNameField = createUrlNameField(m_entry);
-        form.addField(urlNameField, m_entry.getName());
+        form.addField(urlNameField, urlNameField.getWidget().getFormValueAsString());
 
         CmsBasicFormField titleField = createTitleField(m_entry);
-        form.addField(titleField, m_entry.getTitle());
+        form.addField(titleField, titleField.getWidget().getFormValueAsString());
 
+        Map<String, String> properties = m_entry.getProperties();
         String propTemplate = properties.get(CmsSitemapManager.Property.template.toString());
         String propTemplateInherited = properties.get(CmsSitemapManager.Property.templateInherited.toString());
         boolean inheritTemplate = (propTemplate != null) && propTemplate.equals(propTemplateInherited);
@@ -220,19 +239,58 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
             public void onSuccess(String newUrlName) {
 
                 setUrlNameField(newUrlName);
-                if (m_controller.hasSiblingEntriesWithName(m_entry, newUrlName)) {
-                    showUrlNameError(message(Messages.GUI_URLNAME_ALREADY_EXISTS_0));
+                if (m_mode == Mode.EDIT) {
+                    String newPath = CmsResource.getParentFolder(m_entry.getSitePath()) + newUrlName + "/";
+                    if (m_controller.getEntry(newPath) != null) {
+                        // already exists
+                        showUrlNameError(message(Messages.GUI_URLNAME_ALREADY_EXISTS_0));
+                    } else {
+                        hide();
+                        // edit
+                        // TODO: handle VFS path
+                        m_controller.edit(m_entry, titleValue, null, fieldValues);
+                        // move
+                        m_controller.move(m_entry, newPath, m_entry.getPosition());
+                    }
                 } else {
-                    hide();
-                    // edit
-                    m_controller.edit(m_entry, titleValue, null, fieldValues);
-                    // move
-                    String newPath = CmsResource.getParentFolder(m_entry.getSitePath());
-                    newPath += newUrlName + "/";
-                    m_controller.move(m_entry, newPath, m_entry.getPosition());
+                    String newPath = m_entry.getSitePath() + newUrlName + "/";
+                    if (m_controller.getEntry(newPath) != null) {
+                        // already exists
+                        showUrlNameError(message(Messages.GUI_URLNAME_ALREADY_EXISTS_0));
+                    } else {
+                        hide();
+                        // create
+                        CmsClientSitemapEntry entry = new CmsClientSitemapEntry();
+                        entry.setName(newUrlName);
+                        entry.setSitePath(newPath);
+                        entry.setTitle(titleValue);
+                        // TODO: handle VFS path
+                        entry.setVfsPath("/");
+                        entry.getProperties().putAll(fieldValues);
+                        m_controller.create(entry);
+                    }
                 }
             }
         });
+    }
+
+    /**
+     * Checks whether a given sitemap entry has sibling entries with a given URL name.<p>
+     * 
+     * @param entry the entry which should be checked 
+     * @param urlNameValue the url name value
+     * @return true if the url name value occurs in siblings of the sitemap entry which was passed in 
+     */
+    public boolean hasSiblingEntriesWithName(CmsClientSitemapEntry entry, String urlNameValue) {
+
+        String parentPath = CmsResource.getParentFolder(entry.getSitePath());
+        CmsClientSitemapEntry parentEntry = m_controller.getEntry(parentPath);
+        for (CmsClientSitemapEntry siblingEntry : parentEntry.getSubEntries()) {
+            if ((siblingEntry != entry) && urlNameValue.equals(siblingEntry.getName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -285,9 +343,7 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
         String description = message(Messages.GUI_TEMPLATE_PROPERTY_DESC_0);
         String label = message(Messages.GUI_TEMPLATE_PROPERTY_TITLE_0);
         CmsTemplateSelectBox select = createTemplateSelector(m_controller.getData().getTemplates());
-        CmsBasicFormField result = new CmsBasicFormField(FIELD_TEMPLATE, description, label, null, select);
-        m_controller.getData().getTemplates();
-        return result;
+        return new CmsBasicFormField(FIELD_TEMPLATE, description, label, null, select);
     }
 
     /** 
@@ -344,11 +400,11 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
         String label = message(Messages.GUI_TITLE_PROPERTY_0);
 
         CmsBasicFormField result = new CmsBasicFormField(FIELD_TITLE, description, label, null, new CmsTextBox());
-        String title = entry.getTitle();
+        String title = (m_mode == Mode.EDIT ? entry.getTitle() : "");
         if (title == null) {
             title = "";
         }
-        result.getWidget().setFormValueAsString(entry.getTitle());
+        result.getWidget().setFormValueAsString(title);
         result.setValidator(new CmsNonEmptyValidator(Messages.get().key(Messages.GUI_TITLE_CANT_BE_EMPTY_0)));
         return result;
     }
@@ -366,7 +422,7 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
         String label = message(Messages.GUI_URLNAME_PROPERTY_0);
 
         CmsBasicFormField result = new CmsBasicFormField(FIELD_URLNAME, description, label, null, new CmsTextBox());
-        String urlName = entry.getName();
+        String urlName = (m_mode == Mode.EDIT ? entry.getName() : NEW_NAME);
         if (urlName == null) {
             urlName = "";
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapHoverbarHandler.java,v $
- * Date   : $Date: 2010/05/18 13:30:22 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/05/25 07:44:46 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,7 @@
 
 package org.opencms.ade.sitemap.client;
 
-import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
+import org.opencms.ade.sitemap.client.CmsSitemapEntryEditor.Mode;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.CmsConfirmDialog;
 import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
@@ -43,7 +43,7 @@ import com.google.gwt.user.client.Window;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 8.0.0
  * 
@@ -107,9 +107,7 @@ public class CmsSitemapHoverbarHandler {
      */
     public void onEdit(String sitePath) {
 
-        final CmsClientSitemapEntry entry = m_controller.getEntry(sitePath);
-        assert entry != null;
-        (new CmsSitemapEntryEditor(m_controller, entry)).start();
+        (new CmsSitemapEntryEditor(m_controller, sitePath, Mode.EDIT)).start();
     }
 
     /**
@@ -119,7 +117,7 @@ public class CmsSitemapHoverbarHandler {
      */
     public void onGoto(final String sitePath) {
 
-        Window.Location.replace(CmsCoreProvider.get().link(sitePath));
+        Window.Location.assign(CmsCoreProvider.get().link(sitePath));
     }
 
     /**
@@ -139,7 +137,7 @@ public class CmsSitemapHoverbarHandler {
      */
     public void onNew(String sitePath) {
 
-        // TODO: show new dialog
+        (new CmsSitemapEntryEditor(m_controller, sitePath, Mode.NEW)).start();
     }
 
     /**
@@ -149,7 +147,7 @@ public class CmsSitemapHoverbarHandler {
      */
     public void onParent(final String sitePath) {
 
-        Window.Location.replace(CmsCoreProvider.get().link(m_controller.getData().getParentSitemap()));
+        Window.Location.assign(CmsCoreProvider.get().link(m_controller.getData().getParentSitemap()));
     }
 
     /**

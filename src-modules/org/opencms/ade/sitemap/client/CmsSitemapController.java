@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2010/05/20 11:41:39 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2010/05/25 07:44:46 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import com.google.gwt.user.client.Window;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 8.0.0
  */
@@ -208,9 +208,15 @@ public class CmsSitemapController {
                         changedProperties = true;
                         break;
                     }
-                } else if (!newValue.equals(value)) {
-                    changedProperties = true;
-                    break;
+                } else {
+                    if (value == null) {
+                        // check default value
+                        value = m_data.getProperties().get(prop.getKey()).getDefault();
+                    }
+                    if (!newValue.equals(value)) {
+                        changedProperties = true;
+                        break;
+                    }
                 }
             }
         }
@@ -341,29 +347,11 @@ public class CmsSitemapController {
             }
             if (!found) {
                 // not found
+                result = null;
                 break;
             }
         }
         return result;
-    }
-
-    /**
-     * Checks whether a given sitemap entry has sibling entries with a given URL name.<p>
-     * 
-     * @param entry the entry which should be checked 
-     * @param urlNameValue the url name value
-     * @return true if the url name value occurs in siblings of the sitemap entry which was passed in 
-     */
-    public boolean hasSiblingEntriesWithName(CmsClientSitemapEntry entry, String urlNameValue) {
-
-        String parentPath = CmsResource.getParentFolder(entry.getSitePath());
-        CmsClientSitemapEntry parentEntry = getEntry(parentPath);
-        for (CmsClientSitemapEntry siblingEntry : parentEntry.getSubEntries()) {
-            if ((siblingEntry != entry) && urlNameValue.equals(siblingEntry.getName())) {
-                return true;
-            }
-        }
-        return false;
     }
 
     /**

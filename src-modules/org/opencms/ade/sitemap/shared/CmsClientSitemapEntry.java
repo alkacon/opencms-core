@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsClientSitemapEntry.java,v $
- * Date   : $Date: 2010/05/20 09:17:29 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/05/25 07:44:46 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
@@ -83,6 +83,7 @@ public class CmsClientSitemapEntry implements IsSerializable {
     public CmsClientSitemapEntry() {
 
         m_subEntries = new ArrayList<CmsClientSitemapEntry>();
+        m_properties = new HashMap<String, String>();
     }
 
     /**
