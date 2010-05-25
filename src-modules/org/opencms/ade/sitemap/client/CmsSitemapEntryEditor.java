@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapEntryEditor.java,v $
- * Date   : $Date: 2010/05/25 07:44:46 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/05/25 09:40:15 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  *  @author Georg Westenberger
  *  
- *  @version $Revision: 1.6 $
+ *  @version $Revision: 1.7 $
  *  
  *  @since 8.0.0
  */
@@ -177,6 +177,25 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
     }
 
     /**
+     * Checks whether a given sitemap entry has sibling entries with a given URL name.<p>
+     * 
+     * @param entry the entry which should be checked 
+     * @param urlNameValue the url name value
+     * @return true if the url name value occurs in siblings of the sitemap entry which was passed in 
+     */
+    public boolean hasSiblingEntriesWithName(CmsClientSitemapEntry entry, String urlNameValue) {
+
+        String parentPath = CmsResource.getParentFolder(entry.getSitePath());
+        CmsClientSitemapEntry parentEntry = m_controller.getEntry(parentPath);
+        for (CmsClientSitemapEntry siblingEntry : parentEntry.getSubEntries()) {
+            if ((siblingEntry != entry) && urlNameValue.equals(siblingEntry.getName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Shows the sitemap entry editor to the user.<p>
      */
     public void start() {
@@ -184,16 +203,15 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
         CmsForm form = getForm();
 
         CmsBasicFormField urlNameField = createUrlNameField(m_entry);
-        form.addField(urlNameField, urlNameField.getWidget().getFormValueAsString());
+        form.addField(urlNameField);
 
         CmsBasicFormField titleField = createTitleField(m_entry);
-        form.addField(titleField, titleField.getWidget().getFormValueAsString());
+        form.addField(titleField);
 
         Map<String, String> properties = m_entry.getProperties();
         String propTemplate = properties.get(CmsSitemapManager.Property.template.toString());
         String propTemplateInherited = properties.get(CmsSitemapManager.Property.templateInherited.toString());
         boolean inheritTemplate = (propTemplate != null) && propTemplate.equals(propTemplateInherited);
-
         CmsBasicFormField templateField = createTemplateField();
         String initialTemplate = propTemplate != null ? propTemplate : "";
         form.addField(templateField, initialTemplate);
@@ -272,25 +290,6 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
                 }
             }
         });
-    }
-
-    /**
-     * Checks whether a given sitemap entry has sibling entries with a given URL name.<p>
-     * 
-     * @param entry the entry which should be checked 
-     * @param urlNameValue the url name value
-     * @return true if the url name value occurs in siblings of the sitemap entry which was passed in 
-     */
-    public boolean hasSiblingEntriesWithName(CmsClientSitemapEntry entry, String urlNameValue) {
-
-        String parentPath = CmsResource.getParentFolder(entry.getSitePath());
-        CmsClientSitemapEntry parentEntry = m_controller.getEntry(parentPath);
-        for (CmsClientSitemapEntry siblingEntry : parentEntry.getSubEntries()) {
-            if ((siblingEntry != entry) && urlNameValue.equals(siblingEntry.getName())) {
-                return true;
-            }
-        }
-        return false;
     }
 
     /**
