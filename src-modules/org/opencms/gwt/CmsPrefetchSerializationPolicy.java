@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsPrefetchSerializationPolicy.java,v $
- * Date   : $Date: 2010/05/17 07:51:42 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/05/25 11:52:41 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,47 +31,27 @@
 
 package org.opencms.gwt;
 
-import org.opencms.main.CmsLog;
-
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-
-import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.server.rpc.SerializationPolicy;
 import com.google.gwt.user.server.rpc.impl.LegacySerializationPolicy;
 
 /**
- * A GWT serialization policy which, in addition to the types allowed by the GWT legacy serialization policy, also
- * allows a list of classes specified in a text file on the class path.<p>
+ * A GWT serialization policy for pre-fetching.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
- * 
  */
 public final class CmsPrefetchSerializationPolicy extends SerializationPolicy {
-
-    /** The logger used for this class. */
-    private static Log LOG = CmsLog.getLog(CmsPrefetchSerializationPolicy.class);
 
     /** The singleton instance of this serialization policy. */
     private static CmsPrefetchSerializationPolicy m_instance;
 
-    /** The location of the whitelist file on the classpath. */
-    private static final String SERIALIZATION_WHITELIST = "org/opencms/gwt/serialization-whitelist.txt";
-
     /** An instance of the legacy serialization policy. */
     private LegacySerializationPolicy m_legacyPolicy = LegacySerializationPolicy.getInstance();
-
-    /** A set of class names for which serialization should be enabled .*/
-    private Set<String> m_whitelist;
 
     /**
      * Hidden default constructor.<p>
@@ -100,21 +80,7 @@ public final class CmsPrefetchSerializationPolicy extends SerializationPolicy {
     @Override
     public Set<String> getClientFieldNamesForEnhancedClass(Class<?> clazz) {
 
-        return m_legacyPolicy.getClientFieldNamesForEnhancedClass(clazz);
-    }
-
-    /**
-     * Gets the whitelist of classes for which serialization should also be allowed.<p>
-     * 
-     * @return the whitelist of class names 
-     */
-    public Set<String> getWhitelist() {
-
-        if (m_whitelist == null) {
-            m_whitelist = readWhitelist();
-        }
-        return m_whitelist;
-
+        return null;
     }
 
     /**
@@ -123,7 +89,7 @@ public final class CmsPrefetchSerializationPolicy extends SerializationPolicy {
     @Override
     public boolean shouldDeserializeFields(Class<?> clazz) {
 
-        return m_legacyPolicy.shouldDeserializeFields(clazz) || isClassInWhitelist(clazz);
+        return m_legacyPolicy.shouldDeserializeFields(clazz);
     }
 
     /**
@@ -132,70 +98,24 @@ public final class CmsPrefetchSerializationPolicy extends SerializationPolicy {
     @Override
     public boolean shouldSerializeFields(Class<?> clazz) {
 
-        return m_legacyPolicy.shouldSerializeFields(clazz) || isClassInWhitelist(clazz);
+        return m_legacyPolicy.shouldDeserializeFields(clazz);
     }
 
     /**
      * @see com.google.gwt.user.server.rpc.SerializationPolicy#validateDeserialize(java.lang.Class)
      */
     @Override
-    public void validateDeserialize(Class<?> clazz) throws SerializationException {
+    public void validateDeserialize(Class<?> clazz) {
 
-        if (!isClassInWhitelist(clazz)) {
-            m_legacyPolicy.validateDeserialize(clazz);
-        }
+        // all are valid
     }
 
     /**
      * @see com.google.gwt.user.server.rpc.SerializationPolicy#validateSerialize(java.lang.Class)
      */
     @Override
-    public void validateSerialize(Class<?> clazz) throws SerializationException {
+    public void validateSerialize(Class<?> clazz) {
 
-        if (!isClassInWhitelist(clazz)) {
-            m_legacyPolicy.validateSerialize(clazz);
-        }
+        // all are valid
     }
-
-    /**
-     * Checks whether the whitelist contains a given class.<p>
-     * 
-     * @param clazz the class for which it should be checked whether it is in the whitelist
-     * 
-     * @return true if the whitelist contains the class
-     */
-    private boolean isClassInWhitelist(Class<?> clazz) {
-
-        return getWhitelist().contains(clazz.getName());
-    }
-
-    /**
-     * Reads the whitelist of allowed classes from a text file on the classpath.<p>
-     * 
-     * @return the whitelist as a set of class names.
-     */
-    private Set<String> readWhitelist() {
-
-        Set<String> result = new HashSet<String>();
-        try {
-            ClassLoader loader = CmsPrefetchSerializationPolicy.class.getClassLoader();
-            InputStream stream = loader.getResourceAsStream(SERIALIZATION_WHITELIST);
-            if (stream == null) {
-                throw new Exception(SERIALIZATION_WHITELIST + " not found on classpath!");
-            }
-            BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                line = line.trim();
-                if (!line.isEmpty()) {
-                    result.add(line);
-                }
-            }
-
-        } catch (Exception e) {
-            LOG.error(e.getLocalizedMessage(), e);
-        }
-        return result;
-    }
-
 }
