@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContainer.java,v $
- * Date   : $Date: 2010/05/18 12:31:14 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2010/05/26 09:42:39 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,6 +46,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.explorer.CmsResourceUtil;
+import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.containerpage.CmsADEManager;
 import org.opencms.xml.containerpage.CmsADESessionCache;
 import org.opencms.xml.containerpage.CmsContainerBean;
@@ -56,6 +57,7 @@ import org.opencms.xml.containerpage.CmsXmlContainerPage;
 import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
 import org.opencms.xml.containerpage.CmsXmlSubContainer;
 import org.opencms.xml.containerpage.CmsXmlSubContainerFactory;
+import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.sitemap.CmsSitemapEntry;
 
 import java.io.IOException;
@@ -63,6 +65,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -78,20 +81,11 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 7.6 
  */
 public class CmsJspTagContainer extends TagSupport {
-
-    /** Key used to write container data into the javascript window object. */
-    public static final String KEY_CONTAINER_DATA = "org_opencms_ade_containerpage_containers";
-
-    /** HTML class used to identify container elements. */
-    public static final String CLASS_CONTAINER_ELEMENTS = "cms_ade_element";
-
-    /** HTML class used to identify sub container elements. */
-    public static final String CLASS_SUB_CONTAINER_ELEMENTS = "cms_ade_subcontainer";
 
     /** Json property name constants for containers. */
     public enum JsonContainer {
@@ -105,6 +99,15 @@ public class CmsJspTagContainer extends TagSupport {
         /** The container type. */
         type;
     }
+
+    /** HTML class used to identify container elements. */
+    public static final String CLASS_CONTAINER_ELEMENTS = "cms_ade_element";
+
+    /** HTML class used to identify sub container elements. */
+    public static final String CLASS_SUB_CONTAINER_ELEMENTS = "cms_ade_subcontainer";
+
+    /** Key used to write container data into the javascript window object. */
+    public static final String KEY_CONTAINER_DATA = "org_opencms_ade_containerpage_containers";
 
     /** The create no tag attribute value constant. */
     private static final String CREATE_NO_TAG = "none";
@@ -436,6 +439,18 @@ public class CmsJspTagContainer extends TagSupport {
     }
 
     /**
+     * Returns the closing wrapper tag for a container element.<p>
+     * 
+     * @return the closing tag
+     * 
+     * @see org.opencms.jsp.CmsJspTagContainer#getElementWrapperTagStart(CmsObject, CmsResource, CmsContainerElementBean, boolean)
+     */
+    protected static String getElementWrapperTagEnd() {
+
+        return "</div>";
+    }
+
+    /**
      * Returns the opening wrapper tag for elements in the offline project. The wrapper tag is needed by the container-page editor
      * to identify elements within a container.<p>
      * 
@@ -460,23 +475,17 @@ public class CmsJspTagContainer extends TagSupport {
         } else {
             result.append(CLASS_CONTAINER_ELEMENTS);
         }
+        result.append("'");
+
         String noEditReason = new CmsResourceUtil(cms, resource).getNoEditReason(OpenCms.getWorkplaceManager().getWorkplaceLocale(
             cms));
-        result.append("' title='").append(elementBean.getClientId()).append("' alt='").append(elementBean.getSitePath()).append(
-            "' rel='").append(CmsStringUtil.escapeHtml(noEditReason)).append("'>");
+
+        result.append(" title='").append(elementBean.getClientId()).append("'");
+        result.append(" alt='").append(elementBean.getSitePath()).append("'");
+        result.append(" hasprops='").append(hasProperties(cms, resource)).append("'");
+        result.append(" rel='").append(CmsStringUtil.escapeHtml(noEditReason)).append("'>");
+
         return result.toString();
-    }
-
-    /**
-     * Returns the closing wrapper tag for a container element.<p>
-     * 
-     * @return the closing tag
-     * 
-     * @see org.opencms.jsp.CmsJspTagContainer#getElementWrapperTagStart(CmsObject, CmsResource, CmsContainerElementBean, boolean)
-     */
-    protected static String getElementWrapperTagEnd() {
-
-        return "</div>";
     }
 
     /**
@@ -504,6 +513,24 @@ public class CmsJspTagContainer extends TagSupport {
 
         String classAttr = CmsStringUtil.isEmptyOrWhitespaceOnly(tagClass) ? "" : "class=\"" + tagClass + "\" ";
         return "<" + tagName + " id=\"" + containerName + "\" " + classAttr + ">";
+    }
+
+    /**
+     * Helper method for checking whether there are properties defined for a given content element.<p>
+     * 
+     * @param cms the CmsObject to use for VFS operations 
+     * @param resource the resource for which it should be checked whether it has properties 
+     * 
+     * @return true if the resource has properties defined 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    private static boolean hasProperties(CmsObject cms, CmsResource resource) throws CmsException {
+
+        Map<String, CmsXmlContentProperty> propConfig = CmsXmlContentDefinition.getContentHandlerForResource(
+            cms,
+            resource).getProperties();
+        return !propConfig.isEmpty();
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsDragSubcontainer.java,v $
- * Date   : $Date: 2010/05/05 12:44:47 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/05/26 09:42:39 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -78,7 +78,7 @@ public class CmsDragSubcontainer extends CmsDragContainerElement implements I_Cm
         String sitePath,
         String noEditReason) {
 
-        super(element, parent, clientId, sitePath, noEditReason);
+        super(element, parent, clientId, sitePath, noEditReason, false);
     }
 
     /**

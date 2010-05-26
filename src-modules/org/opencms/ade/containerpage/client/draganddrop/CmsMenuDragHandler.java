@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsMenuDragHandler.java,v $
- * Date   : $Date: 2010/05/06 14:26:54 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/05/26 09:42:39 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -71,6 +71,14 @@ extends A_CmsSortingDragHandler<I_CmsDragContainerElement<I_CmsDragTargetContain
     }
 
     /**
+     * @see org.opencms.gwt.client.draganddrop.I_CmsDragHandler#createDraggableListItemWidget(org.opencms.gwt.shared.CmsListInfoBean, java.lang.String)
+     */
+    public CmsListItemWidget createDraggableListItemWidget(CmsListInfoBean infoBean, String id) {
+
+        throw new UnsupportedOperationException();
+    }
+
+    /**
      * @see org.opencms.gwt.client.draganddrop.I_CmsDragHandler#getCurrentTarget()
      */
     public I_CmsDragTargetContainer getCurrentTarget() {
@@ -84,6 +92,34 @@ extends A_CmsSortingDragHandler<I_CmsDragContainerElement<I_CmsDragTargetContain
     public I_CmsDragContainerElement<I_CmsDragTargetContainer> getDragElement() {
 
         return m_dragElement;
+    }
+
+    /**
+     * Creates a clone of element to be dragged around.<p>
+     * 
+     * @param element the element to clone
+     * @param dragParent the drag parent
+     * @param clientId the client id
+     * 
+     * @return the generated clone
+     */
+    protected CmsDragContainerElement createDragClone(
+        com.google.gwt.user.client.Element element,
+        I_CmsDragTargetContainer dragParent,
+        String clientId) {
+
+        com.google.gwt.user.client.Element elementClone = DOM.createDiv();
+        elementClone.setInnerHTML(element.getInnerHTML());
+        elementClone.setClassName(element.getClassName());
+        CmsDragContainerElement dragElement = new CmsDragContainerElement(
+            elementClone,
+            dragParent,
+            clientId,
+            null,
+            null,
+            false);
+        registerMouseHandler(dragElement);
+        return dragElement;
     }
 
     /**
@@ -196,40 +232,5 @@ extends A_CmsSortingDragHandler<I_CmsDragContainerElement<I_CmsDragTargetContain
     protected void targetSortChangeAction() {
 
         // nothing to do here
-    }
-
-    /**
-     * @see org.opencms.gwt.client.draganddrop.I_CmsDragHandler#createDraggableListItemWidget(org.opencms.gwt.shared.CmsListInfoBean, java.lang.String)
-     */
-    public CmsListItemWidget createDraggableListItemWidget(CmsListInfoBean infoBean, String id) {
-
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * Creates a clone of element to be dragged around.<p>
-     * 
-     * @param element the element to clone
-     * @param dragParent the drag parent
-     * @param clientId the client id
-     * 
-     * @return the generated clone
-     */
-    protected CmsDragContainerElement createDragClone(
-        com.google.gwt.user.client.Element element,
-        I_CmsDragTargetContainer dragParent,
-        String clientId) {
-
-        com.google.gwt.user.client.Element elementClone = DOM.createDiv();
-        elementClone.setInnerHTML(element.getInnerHTML());
-        elementClone.setClassName(element.getClassName());
-        CmsDragContainerElement dragElement = new CmsDragContainerElement(
-            elementClone,
-            dragParent,
-            clientId,
-            null,
-            null);
-        registerMouseHandler(dragElement);
-        return dragElement;
     }
 }

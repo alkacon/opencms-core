@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageUtil.java,v $
- * Date   : $Date: 2010/05/25 12:36:33 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/05/26 09:42:39 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import com.google.gwt.user.client.Element;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.0
  */
@@ -104,9 +104,16 @@ public class CmsContainerpageUtil {
                 String clientId = child.getAttribute("title");
                 String sitePath = child.getAttribute("alt");
                 String noEditReason = child.getAttribute("rel");
+                String hasProps = child.getAttribute("hasprops");
                 Element elementRoot = (Element)child.getFirstChildElement();
                 DOM.removeChild(child, elementRoot);
-                elements.add(createElement(elementRoot, container, clientId, sitePath, noEditReason));
+                elements.add(createElement(
+                    elementRoot,
+                    container,
+                    clientId,
+                    sitePath,
+                    noEditReason,
+                    Boolean.parseBoolean(hasProps)));
                 DOM.removeChild(container.getElement(), child);
             } else if (CmsDomUtil.hasClass(CLASS_SUB_CONTAINER_ELEMENTS, child)) {
                 String clientId = child.getAttribute("title");
@@ -179,6 +186,7 @@ public class CmsContainerpageUtil {
         String containerType) throws Exception {
 
         com.google.gwt.user.client.Element element;
+        boolean hasProps = !containerElement.getPropertyConfig().isEmpty();
         if (containerElement.isSubContainer()) {
             throw new UnsupportedOperationException(
                 "Not allowed for Subcontainers, use createSubcontainerElement instead.");
@@ -190,7 +198,8 @@ public class CmsContainerpageUtil {
             dragParent,
             containerElement.getClientId(),
             containerElement.getSitePath(),
-            containerElement.getNoEditReason());
+            containerElement.getNoEditReason(),
+            hasProps);
     }
 
     /**
@@ -201,7 +210,9 @@ public class CmsContainerpageUtil {
      * 
      * @return the list item widget
      */
-    public CmsSimpleListItem createListItem(CmsContainerElementData containerElement, I_CmsDragTargetContainer dragParent) {
+    public CmsSimpleListItem createListItem(
+        CmsContainerElementData containerElement,
+        I_CmsDragTargetContainer dragParent) {
 
         CmsDragMenuElement widget = createListWidget(containerElement, dragParent);
         CmsSimpleListItem listItem = new CmsSimpleListItem(widget);
@@ -217,7 +228,9 @@ public class CmsContainerpageUtil {
      * 
      * @return the list item widget
      */
-    public CmsDragMenuElement createListWidget(CmsContainerElementData containerElement, I_CmsDragTargetContainer dragParent) {
+    public CmsDragMenuElement createListWidget(
+        CmsContainerElementData containerElement,
+        I_CmsDragTargetContainer dragParent) {
 
         CmsDragMenuElement menuItem = new CmsDragMenuElement(containerElement);
         menuItem.setDragParent(dragParent);
@@ -296,6 +309,7 @@ public class CmsContainerpageUtil {
      * @param clientId the client id
      * @param sitePath the element site-path
      * @param noEditReason the no edit reason
+     * @param hasProps if true, the container element has properties which can be edited 
      * 
      * @return the draggable element
      */
@@ -304,14 +318,16 @@ public class CmsContainerpageUtil {
         I_CmsDragTargetContainer dragParent,
         String clientId,
         String sitePath,
-        String noEditReason) {
+        String noEditReason,
+        boolean hasProps) {
 
         CmsDragContainerElement dragElement = new CmsDragContainerElement(
             element,
             dragParent,
             clientId,
             sitePath,
-            noEditReason);
+            noEditReason,
+            hasProps);
         enableDragHandler(dragElement);
         addOptionBar(dragElement);
         return dragElement;

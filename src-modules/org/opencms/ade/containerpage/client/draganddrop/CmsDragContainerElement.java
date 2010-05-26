@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsDragContainerElement.java,v $
- * Date   : $Date: 2010/05/21 13:20:07 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/05/26 09:42:39 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,13 +69,14 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 8.0.0
  */
 public class CmsDragContainerElement extends AbsolutePanel
 implements I_CmsDragContainerElement<I_CmsDragTargetContainer>, HasClickHandlers {
 
+    /** The CSS class of the move handle. */
     private static final String MOVE_HANDLE_CLASS = I_CmsButton.ButtonData.MOVE.getIconClass();
 
     /** The start offset left of the element to its parent. */
@@ -96,6 +97,9 @@ implements I_CmsDragContainerElement<I_CmsDragTargetContainer>, HasClickHandlers
     /** The option bar, holding optional function buttons. */
     private CmsElementOptionBar m_elementOptionBar;
 
+    /** Indicates whether this element has properties to edit. */
+    private boolean m_hasProperties;
+
     /** The is new element type. */
     private String m_newType;
 
@@ -113,18 +117,21 @@ implements I_CmsDragContainerElement<I_CmsDragTargetContainer>, HasClickHandlers
      * @param clientId the client id
      * @param sitePath the element site-path
      * @param noEditReason the no edit reason, if empty, editing is allowed
+     * @param hasProps should be true if the element has properties which can be edited 
      */
     public CmsDragContainerElement(
         Element element,
         I_CmsDragTargetContainer parent,
         String clientId,
         String sitePath,
-        String noEditReason) {
+        String noEditReason,
+        boolean hasProps) {
 
         super(element);
         m_clientId = clientId;
         m_sitePath = sitePath;
         m_noEditReason = noEditReason;
+        m_hasProperties = hasProps;
         setDragParent(parent);
 
         getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragElement());
@@ -289,6 +296,16 @@ implements I_CmsDragContainerElement<I_CmsDragTargetContainer>, HasClickHandlers
     public String getSitePath() {
 
         return m_sitePath;
+    }
+
+    /**
+     * Returns true if the element has properties to edit.<p>
+     * 
+     * @return true if the element has properties to edit 
+     */
+    public boolean hasProperties() {
+
+        return m_hasProperties;
     }
 
     /**
