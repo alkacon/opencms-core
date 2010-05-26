@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsBrokenLinksPanel.java,v $
- * Date   : $Date: 2010/05/05 14:33:31 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/05/26 06:34:06 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
@@ -130,7 +130,6 @@ public class CmsBrokenLinksPanel extends Composite {
         CmsListItemWidget itemWidget = CmsPublishGroupPanel.createListItemWidget(res);
         CmsTreeItem item = new CmsTreeItem(false, itemWidget);
         item.setOpen(true);
-        item.setContentVisible(true);
         for (CmsPublishResource subRes : res.getRelated()) {
             CmsListItemWidget subWidget = CmsPublishGroupPanel.createListItemWidget(subRes);
             CmsTreeItem subItem = new CmsTreeItem(false, subWidget);
