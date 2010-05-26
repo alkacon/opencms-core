@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapEntryEditor.java,v $
- * Date   : $Date: 2010/05/25 12:21:46 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/05/26 10:23:17 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  *  @author Georg Westenberger
  *  
- *  @version $Revision: 1.8 $
+ *  @version $Revision: 1.9 $
  *  
  *  @since 8.0.0
  */
@@ -201,6 +201,8 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
     public void start() {
 
         CmsForm form = getForm();
+
+        form.addLabel(Messages.get().key(Messages.GUI_PROPERTY_EDITOR_TEXT_0));
 
         CmsBasicFormField urlNameField = createUrlNameField(m_entry);
         form.addField(urlNameField);
