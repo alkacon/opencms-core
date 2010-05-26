@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/Attic/CmsResourceTypeXmlSitemap.java,v $
- * Date   : $Date: 2010/03/15 15:12:54 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/05/26 12:11:41 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,23 +45,14 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsLink;
-import org.opencms.relations.CmsRelationType;
 import org.opencms.relations.I_CmsLinkParseable;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.xml.CmsXmlContentDefinition;
-import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.sitemap.CmsXmlSitemap;
 import org.opencms.xml.sitemap.CmsXmlSitemapFactory;
-import org.opencms.xml.types.CmsXmlVfsFileValue;
-import org.opencms.xml.types.I_CmsXmlContentValue;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
@@ -72,7 +63,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 7.6 
  */
@@ -247,77 +238,6 @@ public class CmsResourceTypeXmlSitemap extends CmsResourceTypeXmlContent {
         m_staticFrozen = true;
 
         super.initConfiguration(RESOURCE_TYPE_NAME, id, className);
-    }
-
-    /**
-     * @see org.opencms.relations.I_CmsLinkParseable#parseLinks(org.opencms.file.CmsObject, org.opencms.file.CmsFile)
-     */
-    @Override
-    public List<CmsLink> parseLinks(CmsObject cms, CmsFile file) {
-
-        if (file.getLength() == 0) {
-            return Collections.emptyList();
-        }
-        CmsXmlSitemap xmlContent;
-        long requestTime = cms.getRequestContext().getRequestTime();
-        try {
-            // prevent the check rules to remove the broken links
-            cms.getRequestContext().setRequestTime(CmsResource.DATE_RELEASED_EXPIRED_IGNORE);
-            xmlContent = CmsXmlSitemapFactory.unmarshal(cms, file);
-        } catch (CmsException e) {
-            if (LOG.isErrorEnabled()) {
-                LOG.error(org.opencms.db.Messages.get().getBundle().key(
-                    org.opencms.db.Messages.ERR_READ_RESOURCE_1,
-                    cms.getSitePath(file)), e);
-            }
-            return Collections.emptyList();
-        } finally {
-            cms.getRequestContext().setRequestTime(requestTime);
-        }
-
-        Set<CmsLink> links = new HashSet<CmsLink>();
-
-        // add XSD link
-        CmsLink xsdLink = getXsdLink(cms, xmlContent);
-        if (xsdLink != null) {
-            links.add(xsdLink);
-        }
-
-        // iterate over all languages
-        List<Locale> locales = xmlContent.getLocales();
-        Iterator<Locale> i = locales.iterator();
-        while (i.hasNext()) {
-            Locale locale = i.next();
-            List<I_CmsXmlContentValue> values = xmlContent.getValues(locale);
-
-            // iterate over all body elements per language
-            Iterator<I_CmsXmlContentValue> j = values.iterator();
-            while (j.hasNext()) {
-                I_CmsXmlContentValue value = j.next();
-                if (!(value instanceof CmsXmlVfsFileValue)) {
-                    // filter only relations relevant fields
-                    // sitemaps do not have XmlHtml nor VarFiles
-                    continue;
-                }
-                CmsXmlVfsFileValue refValue = (CmsXmlVfsFileValue)value;
-                CmsLink link = refValue.getLink(cms);
-                if (link == null) {
-                    // empty node
-                    continue;
-                }
-                if (CmsXmlUtils.removeXpathIndex(value.getPath()).equals(CmsXmlSitemap.XmlNode.EntryPoint.name())) {
-                    // entry points have an own relation type
-                    link = new CmsLink(
-                        link.getName(),
-                        CmsRelationType.ENTRY_POINT,
-                        link.getStructureId(),
-                        link.getUri(),
-                        true);
-                }
-                links.add(link);
-            }
-        }
-        return new ArrayList<CmsLink>(links);
     }
 
     /**

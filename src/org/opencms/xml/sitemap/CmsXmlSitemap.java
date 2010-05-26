@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsXmlSitemap.java,v $
- * Date   : $Date: 2010/05/25 07:42:30 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2010/05/26 12:11:41 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.27 $ 
  * 
  * @since 7.5.2
  * 
@@ -98,8 +98,6 @@ public class CmsXmlSitemap extends CmsXmlContent {
     /** XML node name constants. */
     public enum XmlNode {
 
-        /** Entry point node name. */
-        EntryPoint,
         /** Entry ID node name. */
         Id,
         /** Entry name node name. */
@@ -367,7 +365,6 @@ public class CmsXmlSitemap extends CmsXmlContent {
 
         // create the locale
         if (!hasLocale(locale)) {
-            // TODO: copy entry point
             addLocale(cms, locale);
         }
 
@@ -626,26 +623,11 @@ public class CmsXmlSitemap extends CmsXmlContent {
                     CmsXmlContentDefinition.XSD_ATTRIBUTE_VALUE_LANGUAGE).getValue());
 
                 addLocale(locale);
-                // get entry point
-                Element entryPoint = sitemap.element(XmlNode.EntryPoint.name());
-                String entryPointPath = null;
-                if (entryPoint != null) {
-                    addBookmarkForElement(entryPoint, locale, sitemap, null, definition);
-                    Element linkEntryPoint = entryPoint.element(CmsXmlPage.NODE_LINK);
-                    if (linkEntryPoint == null) {
-                        // this can happen when adding the entry node to the xml content
-                        // it is not dangerous since the link has to be set before saving 
-                    } else {
-                        entryPointPath = new CmsLink(linkEntryPoint).getUri();
-                    }
-                } else {
-                    entryPointPath = "/";
-                }
 
                 // get the entries
-                List<CmsSitemapEntry> entries = readSiteEntries(sitemap, "", definition, locale, entryPointPath);
+                List<CmsSitemapEntry> entries = readSiteEntries(sitemap, "", definition, locale, "/");
                 // create the sitemap
-                m_sitemaps.put(locale, new CmsSitemapBean(locale, entryPointPath, entries));
+                m_sitemaps.put(locale, new CmsSitemapBean(locale, entries));
             } catch (NullPointerException e) {
                 LOG.error(org.opencms.xml.content.Messages.get().getBundle().key(
                     org.opencms.xml.content.Messages.LOG_XMLCONTENT_INIT_BOOKMARKS_0), e);
@@ -873,16 +855,15 @@ public class CmsXmlSitemap extends CmsXmlContent {
      * @param sitePath the site path
      * 
      * @return the corresponding DOM element or <code>null</code> if not found
+     * 
+     * @throws CmsException if something goes wrong 
      */
-    private Element getElement(CmsObject cms, String sitePath) {
+    private Element getElement(CmsObject cms, String sitePath) throws CmsException {
 
-        // check entry point
-        String entryPoint = getValue(XmlNode.EntryPoint.name(), cms.getRequestContext().getLocale()).getStringValue(cms);
-        if (!sitePath.startsWith(entryPoint)) {
-            return null;
-        }
         Element parent = getLocaleNode(cms.getRequestContext().getLocale());
-        String[] pathEntries = CmsStringUtil.splitAsArray(sitePath.substring(entryPoint.length()), '/');
+        // TODO: this might not be the best way to do that
+        String originalUri = OpenCms.getSitemapManager().getEntryForUri(cms, sitePath).getOriginalUri();
+        String[] pathEntries = CmsStringUtil.splitAsArray(originalUri, '/');
 
         // handle special case of root node in root sitemap
         if (parent.elements(XmlNode.SiteEntry.name()).size() == 1) {

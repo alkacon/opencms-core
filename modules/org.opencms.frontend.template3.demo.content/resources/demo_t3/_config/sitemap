@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<AlkaconSitemaps xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/workplace/editors/sitemap/schemas/sitemap.xsd">
+<AlkaconSitemaps xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.ade.sitemap/schemas/sitemap.xsd">
   <AlkaconSitemap language="en">
-  <EntryPoint>
-   <link type="WEAK">
-      <target><![CDATA[/sites/default/demo_t3/]]></target>
-    </link>
-   </EntryPoint>
     <SiteEntry>
       <Id><![CDATA[6a92725e-ff5c-11de-afed-5b6dea36776d]]></Id>
       <Name/>

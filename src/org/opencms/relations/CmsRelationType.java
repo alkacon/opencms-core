@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsRelationType.java,v $
- * Date   : $Date: 2010/02/03 13:48:15 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/05/26 12:11:40 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,6 @@ import java.util.Locale;
  *   <li>{@link #OU_RESOURCE}</li>
  *   <li>{@link #CATEGORY}</li>
  *   <li>{@link #XSD}</li>
- *   <li>{@link #ENTRY_POINT}</li>
  * </ul>
  * <p>
  * 
@@ -69,7 +68,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 6.3.0
  */
@@ -119,9 +118,6 @@ public final class CmsRelationType implements Serializable {
     /** Constant for the weak links from xmlcontent to the used xsd. */
     public static final CmsRelationType XSD = new CmsRelationType(10, "XSD", true, true);
 
-    /** Constant for the weak links from sitemap to their entry point. */
-    public static final CmsRelationType ENTRY_POINT = new CmsRelationType(11, "ENTRY_POINT", true, true);
-
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = -4060567973007877250L;
 
@@ -139,8 +135,7 @@ public final class CmsRelationType implements Serializable {
         EMBEDDED_OBJECT,
         OU_RESOURCE,
         CATEGORY,
-        XSD,
-        ENTRY_POINT};
+        XSD};
 
     /** Flag to indicate if the relations of this type are parsed from the content or not. */
     private final boolean m_defInContent;

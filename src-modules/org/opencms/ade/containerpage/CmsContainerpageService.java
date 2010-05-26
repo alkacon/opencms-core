@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsContainerpageService.java,v $
- * Date   : $Date: 2010/05/21 13:20:07 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2010/05/26 12:11:40 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -66,7 +66,6 @@ import org.opencms.xml.containerpage.CmsXmlSubContainerFactory;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.content.CmsXmlContentPropertyHelper;
 import org.opencms.xml.sitemap.CmsSitemapEntry;
-import org.opencms.xml.sitemap.CmsXmlSitemap;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -86,7 +85,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 8.0.0
  */
@@ -678,11 +677,11 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
      */
     private String getSitemapUri(CmsObject cms, HttpServletRequest request) throws CmsException {
 
-        CmsXmlSitemap sitemap = null;
+        String sitemap = null;
         CmsSitemapEntry sitemapInfo = OpenCms.getSitemapManager().getRuntimeInfo(request);
         if (sitemapInfo != null) {
             sitemap = OpenCms.getSitemapManager().getSitemapForUri(cms, sitemapInfo.getSitePath(cms), false);
         }
-        return (sitemap == null) ? "" : OpenCms.getLinkManager().substituteLink(cms, sitemap.getFile());
+        return (sitemap == null) ? "" : OpenCms.getLinkManager().substituteLink(cms, sitemap);
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapBean.java,v $
- * Date   : $Date: 2010/02/03 15:10:53 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/05/26 12:11:41 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,14 +40,11 @@ import java.util.Locale;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 7.6
  */
 public class CmsSitemapBean {
-
-    /** The entry point, as root path. */
-    private final String m_entryPoint;
 
     /** The locale. */
     private final Locale m_locale;
@@ -59,24 +56,12 @@ public class CmsSitemapBean {
      * Creates a new sitemap bean.<p> 
      * 
      * @param locale the locale
-     * @param entryPoint the entry point
      * @param siteEntries the site entries
      **/
-    public CmsSitemapBean(Locale locale, String entryPoint, List<CmsSitemapEntry> siteEntries) {
+    public CmsSitemapBean(Locale locale, List<CmsSitemapEntry> siteEntries) {
 
         m_locale = locale;
-        m_entryPoint = entryPoint;
         m_siteEntries = Collections.unmodifiableList(siteEntries);
-    }
-
-    /**
-     * Returns the entry point, as root path.<p>
-     * 
-     * @return the entry point
-     */
-    public String getEntryPoint() {
-
-        return m_entryPoint;
     }
 
     /**

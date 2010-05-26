@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapEntry.java,v $
- * Date   : $Date: 2010/05/12 09:19:10 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/05/26 12:11:41 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 7.6 
  */
@@ -56,6 +56,9 @@ public class CmsSitemapEntry {
 
     /** The content id, for detail pages. */
     private CmsUUID m_contentId;
+
+    /** The entry point. */
+    private String m_entryPoint = "";
 
     /** The entry id. */
     private final CmsUUID m_id;
@@ -66,7 +69,7 @@ public class CmsSitemapEntry {
     /** The entry name. */
     private String m_name;
 
-    /** The original uri, without content ID. */
+    /** The original uri, without entry point info nor content ID. */
     private String m_originalUri;
 
     /** The position. */
@@ -111,6 +114,25 @@ public class CmsSitemapEntry {
     }
 
     /**
+     * Clone constructor.<p>
+     * 
+     * @param entry the entry to clone
+     */
+    public CmsSitemapEntry(CmsSitemapEntry entry) {
+
+        this(
+            entry.getId(),
+            entry.getOriginalUri(),
+            entry.getResourceId(),
+            entry.getName(),
+            entry.getTitle(),
+            entry.getProperties(),
+            entry.getSubEntries(),
+            entry.getContentId());
+        setRuntimeInfo("", entry.getPosition(), entry.getInheritedProperties());
+    }
+
+    /**
      * Creates a new sitemap entry bean.<p> 
      * 
      * @param id the entry's id
@@ -150,25 +172,6 @@ public class CmsSitemapEntry {
     }
 
     /**
-     * Clone constructor.<p>
-     * 
-     * @param entry the entry to clone
-     */
-    public CmsSitemapEntry(CmsSitemapEntry entry) {
-
-        this(
-            entry.getId(),
-            entry.getOriginalUri(),
-            entry.getResourceId(),
-            entry.getName(),
-            entry.getTitle(),
-            entry.getProperties(),
-            entry.getSubEntries(),
-            entry.getContentId());
-        setRuntimeInfo(entry.getInheritedProperties(), entry.getPosition());
-    }
-
-    /**
      * Returns the content id, for detail pages.<p>
      *
      * @return the content id
@@ -176,6 +179,16 @@ public class CmsSitemapEntry {
     public CmsUUID getContentId() {
 
         return m_contentId;
+    }
+
+    /**
+     * Returns the entry point.<p>
+     *
+     * @return the entry point, as root path
+     */
+    public String getEntryPoint() {
+
+        return m_entryPoint;
     }
 
     /**
@@ -272,6 +285,12 @@ public class CmsSitemapEntry {
     public String getRootPath() {
 
         StringBuffer sb = new StringBuffer();
+        sb.append(getEntryPoint());
+        if (getEntryPoint().endsWith("/") && getOriginalUri().startsWith("/")) {
+            sb.deleteCharAt(sb.length() - 1);
+        } else if (!getEntryPoint().endsWith("/") && !getOriginalUri().startsWith("/")) {
+            sb.append("/");
+        }
         sb.append(getOriginalUri());
         if (getContentId() != null) {
             sb.append(getContentId()).append('/');
@@ -370,7 +389,7 @@ public class CmsSitemapEntry {
     /**
      * Root entries of root sitemaps HAVE to have an empty name,
      * but we can not enforce that while editing the xml, so 
-     * we have to enforce it here. 
+     * we have to enforce it here.<p>
      */
     protected void removeName() {
 
@@ -384,11 +403,11 @@ public class CmsSitemapEntry {
 
     /**
      * Sets the runtime information.<p>
-     * 
-     * @param inheritedProperties the inherited properties to set
+     * @param entryPoint the entry point
      * @param position the position to set
+     * @param inheritedProperties the inherited properties to set
      */
-    protected void setRuntimeInfo(Map<String, String> inheritedProperties, int position) {
+    protected void setRuntimeInfo(String entryPoint, int position, Map<String, String> inheritedProperties) {
 
         // set the inherited properties
         m_inheritedProperties = new HashMap<String, String>();
@@ -401,6 +420,7 @@ public class CmsSitemapEntry {
         m_properties.put(CmsPropertyDefinition.PROPERTY_NAVPOS, String.valueOf(position));
         m_inheritedProperties.put(CmsPropertyDefinition.PROPERTY_NAVPOS, String.valueOf(position));
         m_position = position;
+        m_entryPoint = entryPoint;
     }
 
     /**

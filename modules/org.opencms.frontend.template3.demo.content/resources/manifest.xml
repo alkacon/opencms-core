@@ -56,6 +56,10 @@
 					<value><![CDATA[/demo_t3/_config/restype.config]]></value>
 				</property>
 				<property>
+					<name>ade.sitemap</name>
+					<value><![CDATA[/demo_t3/_config/sitemap]]></value>
+				</property>
+				<property>
 					<name>default-file</name>
 					<value><![CDATA[intro.html]]></value>
 				</property>

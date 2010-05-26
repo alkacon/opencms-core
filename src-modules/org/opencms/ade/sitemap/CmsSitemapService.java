@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsSitemapService.java,v $
- * Date   : $Date: 2010/05/20 11:41:39 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2010/05/26 12:11:41 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,6 +40,7 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.history.CmsHistoryResourceHandler;
 import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
@@ -70,7 +71,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 8.0.0
  * 
@@ -106,11 +107,6 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
      */
     public String createSubsitemap(String sitemapUri, String path) {
 
-        // TODO: Auto-generated method stub
-        // TODO: problem with locales, 
-        // - if it applies to only one locale, what happens if the later language changes to the subsitemap?
-        // - if it applies to all locales, how to keep the entry point consistent?
-        // anyhow, should not be keep only one language variation with language root folders? 
         return null;
     }
 
@@ -223,7 +219,7 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
                 getNoEditReason(cms, getRequest()),
                 isDisplayToolbar(getRequest()),
                 OpenCms.getResourceManager().getResourceType(CmsResourceTypeXmlContainerPage.getStaticTypeName()).getTypeId(),
-                getParentSitemap(cms, sitemap),
+                OpenCms.getSitemapManager().getParentSitemap(cms, sitemapUri),
                 getRoot(sitemap),
                 sitemap.getDateLastModified());
         } catch (Throwable e) {
@@ -348,26 +344,6 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
     }
 
     /**
-     * Returns the parent sitemap.<p>
-     * 
-     * @param cms the current cms context
-     * @param sitemap the sitemap resource
-     * 
-     * @return the parent sitemap path or <code>null</code>
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    private String getParentSitemap(CmsObject cms, CmsResource sitemap) throws CmsException {
-
-        CmsResource parentSitemapRes = OpenCms.getSitemapManager().getParentSitemap(cms, sitemap);
-        String parentSitemap = null;
-        if (parentSitemapRes != null) {
-            parentSitemap = cms.getSitePath(parentSitemapRes);
-        }
-        return parentSitemap;
-    }
-
-    /**
      * Returns the current resource, taken into account historical requests.<p>
      * 
      * @param cms the current cms object
@@ -401,14 +377,8 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
 
         // TODO: what's about historical requests?
         CmsXmlSitemap xml = CmsXmlSitemapFactory.unmarshal(cms, sitemap);
-        String sitePath = cms.getRequestContext().removeSiteRoot(
-            xml.getSitemap(cms, cms.getRequestContext().getLocale()).getEntryPoint());
-        CmsClientSitemapEntry root = getEntry(sitePath);
-        String name = CmsResource.getName(sitePath);
-        if (name.endsWith("/")) {
-            name = name.substring(0, name.length() - 1);
-        }
-        root.setName(name);
+        CmsClientSitemapEntry root = toClientEntry(xml.getSitemap(cms, cms.getRequestContext().getLocale()).getSiteEntries().get(
+            0));
         root.setSubEntries(getChildren(root.getSitePath(), 2));
         return root;
     }
@@ -481,9 +451,11 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
         clientEntry.setId(entry.getId());
         clientEntry.setName(entry.getName());
         clientEntry.setTitle(entry.getTitle());
-        String vfsPath = "---";
-        if (getCmsObject().existsResource(entry.getResourceId())) {
+        String vfsPath;
+        try {
             vfsPath = getCmsObject().getSitePath(getCmsObject().readResource(entry.getResourceId()));
+        } catch (CmsVfsResourceNotFoundException e) {
+            vfsPath = e.getLocalizedMessage(getCmsObject().getRequestContext().getLocale());
         }
         clientEntry.setVfsPath(vfsPath);
         clientEntry.setProperties(new HashMap<String, String>(entry.getProperties()));

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/sitemap/Attic/TestCmsXmlSitemap.java,v $
- * Date   : $Date: 2010/02/15 10:02:28 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/05/26 12:11:41 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import junit.framework.TestSuite;
  *
  * @author Michael Moossen
  *  
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class TestCmsXmlSitemap extends OpenCmsTestCase {
 
@@ -125,17 +125,6 @@ public class TestCmsXmlSitemap extends OpenCmsTestCase {
             CmsRelationFilter.TARGETS.filterType(CmsRelationType.XSD));
         assertEquals(1, relations.size());
         assertRelation(new CmsRelation(sitemapResource, xsdResource, CmsRelationType.XSD), relations.get(0));
-
-        // assert entry point relations
-        String entrypointName = "/";
-        CmsResource entrypointResource = cms.readResource(entrypointName);
-        relations = cms.getRelationsForResource(
-            sitemapResource,
-            CmsRelationFilter.TARGETS.filterType(CmsRelationType.ENTRY_POINT));
-        assertEquals(1, relations.size());
-        assertRelation(
-            new CmsRelation(sitemapResource, entrypointResource, CmsRelationType.ENTRY_POINT),
-            relations.get(0));
 
         // assert xml-strong relations
         relations = cms.getRelationsForResource(

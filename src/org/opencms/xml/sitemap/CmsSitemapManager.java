@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2010/05/12 09:19:10 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2010/05/26 12:11:40 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,6 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlSitemap;
 import org.opencms.file.types.I_CmsResourceType;
@@ -46,9 +45,6 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsResourceInit;
 import org.opencms.main.OpenCms;
 import org.opencms.monitor.CmsMemoryMonitor;
-import org.opencms.relations.CmsRelation;
-import org.opencms.relations.CmsRelationFilter;
-import org.opencms.relations.CmsRelationType;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.content.CmsXmlContentProperty;
@@ -69,7 +65,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.38 $
+ * @version $Revision: 1.39 $
  * 
  * @since 7.9.2
  */
@@ -370,33 +366,58 @@ public class CmsSitemapManager {
      * or <code>null</code> if the given sitemap is a root sitemap.<p>
      * 
      * @param cms the current CMS context
-     * @param sitemap the sitemap resource to get the parent sitemap for
+     * @param sitemapUri the sitemap URI to get the parent sitemap for
      * 
-     * @return the parent sitemap
+     * @return the parent sitemap, or <code>null</code> if the given sitemap is a root sitemap
      * 
      * @throws CmsException if something goes wrong
      */
-    public CmsResource getParentSitemap(CmsObject cms, CmsResource sitemap) throws CmsException {
+    public String getParentSitemap(CmsObject cms, String sitemapUri) throws CmsException {
 
-        CmsRelationFilter filter = CmsRelationFilter.SOURCES.filterType(CmsRelationType.XML_WEAK);
-        for (CmsRelation relation : cms.getRelationsForResource(sitemap, filter)) {
-            if (CmsResource.isTemporaryFileName(relation.getSourcePath())) {
-                // temp file
+        Map<String, String> active = m_cache.getActiveSitemaps(cms);
+        // always use root paths
+        String sitemapPath = cms.getRequestContext().addSiteRoot(sitemapUri);
+        // search for the given sitemap's entry point
+        String entryPoint = null;
+        for (Map.Entry<String, String> entry : active.entrySet()) {
+            if (!entry.getValue().equals(sitemapPath)) {
+                // wrong sitemap
                 continue;
             }
-            CmsResource source = relation.getSource(cms, CmsResourceFilter.ALL);
-            if (((source.getFlags() & CmsResource.FLAG_TEMPFILE) > 0)) {
-                // temp file
+            if (!entry.getKey().startsWith(cms.getRequestContext().getLocale().toString())) {
+                // wrong locale
                 continue;
             }
-            if (!CmsResourceTypeXmlSitemap.isSitemap(source)) {
-                // not sitemap
-                continue;
-            }
-            // found
-            return source;
+            // this one!
+            entryPoint = entry.getKey();
+            break;
         }
-        return null;
+        if (entryPoint == null) {
+            // not found
+            return null;
+        }
+        // search for the longest entry point that matches the given sitemap
+        Map.Entry<String, String> bestMatch = null;
+        for (Map.Entry<String, String> entry : active.entrySet()) {
+            String key = entry.getKey();
+            if (entryPoint.equals(key)) {
+                // the same
+                continue;
+            }
+            if (!entryPoint.startsWith(key)) {
+                // not matching
+                continue;
+            }
+            if ((bestMatch == null) || (key.length() > bestMatch.getKey().length())) {
+                // a better match found
+                bestMatch = entry;
+            }
+        }
+        if (bestMatch == null) {
+            return null;
+        }
+        // and return the site path
+        return cms.getRequestContext().removeSiteRoot(bestMatch.getValue());
     }
 
     /**
@@ -431,40 +452,40 @@ public class CmsSitemapManager {
     }
 
     /**
-     * Returns the sitemap for the given sitemap URI.<p>
+     * Returns the sitemap URI for the given sitemap entry URI.<p>
      * 
      * @param cms the current CMS context
-     * @param uri the sitemap URI to get the sitemap for
-     * @param findRoot if <code>true</code> it will find a root sitemap, and not a sub-sitemap
+     * @param uri the sitemap entry URI to get the sitemap URI for
+     * @param findRoot if <code>true</code> it will find a root sitemap URI, and not also sub-sitemaps
      * 
-     * @return the sitemap for the given sitemap URI
+     * @return the sitemap URI for the given sitemap entry URI
      * 
      * @throws CmsException if something goes wrong
      */
-    public CmsXmlSitemap getSitemapForUri(CmsObject cms, String uri, boolean findRoot) throws CmsException {
+    public String getSitemapForUri(CmsObject cms, String uri, boolean findRoot) throws CmsException {
 
-        Map<String, CmsXmlSitemap> active = m_cache.getActiveSitemaps(cms);
-        String rootUri = cms.getRequestContext().addSiteRoot(uri);
-        Map.Entry<String, CmsXmlSitemap> bestMatch = null;
-        for (Map.Entry<String, CmsXmlSitemap> entry : active.entrySet()) {
+        Map<String, String> active = m_cache.getActiveSitemaps(cms);
+        // always use locale prefixed root paths for the entry point
+        String entryPoint = cms.getRequestContext().getLocale().toString() + cms.getRequestContext().addSiteRoot(uri);
+        Map.Entry<String, String> bestMatch = null;
+        for (Map.Entry<String, String> entry : active.entrySet()) {
             String key = entry.getKey();
-            if (!key.startsWith(rootUri)) {
+            if (!key.startsWith(entryPoint)) {
+                // not matching
                 continue;
             }
             if ((bestMatch == null)
                 || (!findRoot && key.startsWith(bestMatch.getKey()) && (key.length() != bestMatch.getKey().length()))
                 || (findRoot && bestMatch.getKey().startsWith(key))) {
-                // security check
-                if (cms.existsResource(entry.getValue().getFile().getStructureId())) {
-                    // a better match found
-                    bestMatch = entry;
-                }
+                // a better match found
+                bestMatch = entry;
             }
         }
         if (bestMatch == null) {
             return null;
         }
-        return bestMatch.getValue();
+        // and return the site path
+        return cms.getRequestContext().removeSiteRoot(bestMatch.getValue());
     }
 
     /**
