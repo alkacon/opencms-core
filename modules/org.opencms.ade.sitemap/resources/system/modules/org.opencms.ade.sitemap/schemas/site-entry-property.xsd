@@ -1,7 +1,7 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
 	
 	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
-	<xsd:include schemaLocation="opencms://system/workplace/editors/sitemap/schemas/property_value_choice.xsd"/>
+	<xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.sitemap/schemas/property_value_choice.xsd"/>
 		
 	<xsd:element name="AlkaconSiteEntryProperties" type="OpenCmsAlkaconSiteEntryProperties"/>
 	
