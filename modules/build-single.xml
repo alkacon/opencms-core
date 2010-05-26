@@ -149,14 +149,25 @@
 						<if>
 							<available file="${module.input.src.test}" />
 							<then>
+								<var name="notemptyVar" unset="true" />
 								<for param="file">
 									<fileset dir="${module.input.src.test}">
 										<include name="*" />
 									</fileset>
 									<sequential>
-										<var name="notempty" value="true" />
+										<var name="notemptyVar" value="true" />
 									</sequential>
 								</for>
+								<if>
+									<!-- properties set by var for some reason get passed to other build files called with
+									the 'ant' task even when the inheritAll attribute is set to false, so we set a normal
+									property instead.
+									-->
+									<isset property="notemptyVar" />
+									<then>
+										<property name="notempty" value="true" /> 
+									</then>
+								</if>
 							</then>
 						</if>
 						<if>
