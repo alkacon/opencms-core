@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapEntryEditor.java,v $
- * Date   : $Date: 2010/05/26 10:23:17 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/05/26 13:55:48 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  *  @author Georg Westenberger
  *  
- *  @version $Revision: 1.9 $
+ *  @version $Revision: 1.10 $
  *  
  *  @since 8.0.0
  */
@@ -92,9 +92,6 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
     /** The field id of the 'template-inherited' property. */
     private static final String FIELD_TEMPLATE_INHERIT_CHECKBOX = "field_template_inherited";
 
-    /** Default name for new entries. */
-    private static final String NEW_NAME = "new";
-
     /** The sitemap controller which changes the actual entry data when the user clicks OK in this dialog. */
     protected CmsSitemapController m_controller;
 
@@ -103,6 +100,9 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
 
     /** The current mode. */
     protected Mode m_mode;
+
+    /** The mode handler for this sitemap entry editor. */
+    protected I_CmsSitemapEntryEditorModeHandler m_modeHandler;
 
     /** The configuration of the properties. */
     private Map<String, CmsXmlContentProperty> m_propertyConfig;
@@ -122,6 +122,7 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
         m_controller = controller;
         m_propertyConfig = removeHiddenProperties(controller.getData().getProperties());
         m_mode = mode;
+        m_modeHandler = createModeHandler(m_mode, controller, m_entry);
     }
 
     /**
@@ -152,6 +153,27 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
     protected static String message(String key, Object... args) {
 
         return Messages.get().key(key, args);
+    }
+
+    /**
+     * Helper method for creating new mode handlers.<p>
+     * 
+     * @param mode the mode for which to create a mode handler
+     * @param controller a sitemap controller for the mode handler
+     * @param entry the sitemap entry for the mode handler 
+     * 
+     * @return the newly created mode handler 
+     */
+    private static I_CmsSitemapEntryEditorModeHandler createModeHandler(
+        Mode mode,
+        CmsSitemapController controller,
+        CmsClientSitemapEntry entry) {
+
+        if (mode == Mode.EDIT) {
+            return new CmsEditEntryMode(controller, entry);
+        } else {
+            return new CmsNewEntryMode(controller, entry);
+        }
     }
 
     /**
@@ -243,54 +265,25 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
         fieldValues.put(CmsSitemapManager.Property.template.toString(), templateProps.getFirst());
         fieldValues.put(CmsSitemapManager.Property.templateInherited.toString(), templateProps.getSecond());
 
-        CmsCoreProvider.get().translateUrlName(urlNameValue, new AsyncCallback<String>() {
+        validateUrlName(urlNameValue, new AsyncCallback<String>() {
 
             /**
              * @see com.google.gwt.user.client.rpc.AsyncCallback#onFailure(java.lang.Throwable)
              */
             public void onFailure(Throwable caught) {
 
-                // this will never be executed; do nothing 
+                // do nothing, this will never be called 
             }
 
             /**
-             * @see com.google.gwt.user.client.rpc.AsyncCallback#onSuccess(Object)
+             * @see com.google.gwt.user.client.rpc.AsyncCallback#onSuccess(java.lang.Object) 
              */
             public void onSuccess(String newUrlName) {
 
-                setUrlNameField(newUrlName);
-                if (m_mode == Mode.EDIT) {
-                    String newPath = CmsResource.getParentFolder(m_entry.getSitePath()) + newUrlName + "/";
-                    if (!newPath.equals(m_entry.getSitePath()) && (m_controller.getEntry(newPath) != null)) {
-                        // already exists
-                        showUrlNameError(message(Messages.GUI_URLNAME_ALREADY_EXISTS_0));
-                    } else {
-                        hide();
-                        // edit
-                        // TODO: handle VFS path
-                        m_controller.edit(m_entry, titleValue, null, fieldValues);
-                        // move
-                        m_controller.move(m_entry, newPath, m_entry.getPosition());
-                    }
-                } else {
-                    String newPath = m_entry.getSitePath() + newUrlName + "/";
-                    if (m_controller.getEntry(newPath) != null) {
-                        // already exists
-                        showUrlNameError(message(Messages.GUI_URLNAME_ALREADY_EXISTS_0));
-                    } else {
-                        hide();
-                        // create
-                        CmsClientSitemapEntry entry = new CmsClientSitemapEntry();
-                        entry.setName(newUrlName);
-                        entry.setSitePath(newPath);
-                        entry.setTitle(titleValue);
-                        // TODO: handle VFS path
-                        entry.setVfsPath("/");
-                        entry.getProperties().putAll(fieldValues);
-                        m_controller.create(entry);
-                    }
-                }
+                hide();
+                m_modeHandler.handleSubmit(titleValue, newUrlName, null, fieldValues);
             }
+
         });
     }
 
@@ -332,6 +325,42 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
     protected void showUrlNameError(String message) {
 
         getForm().getField(FIELD_URLNAME).getWidget().setErrorMessage(message);
+    }
+
+    /**
+     * Validates the url name, and if it is ok, executes another action and passes the translated url
+     * name to it.<p>
+     * 
+     * @param urlName the url name to validate 
+     * @param nextAction the action which should be executed if the validation turns out ok
+     */
+    protected void validateUrlName(String urlName, final AsyncCallback<String> nextAction) {
+
+        CmsCoreProvider.get().translateUrlName(urlName, new AsyncCallback<String>() {
+
+            /**
+             * @see com.google.gwt.user.client.rpc.AsyncCallback#onFailure(java.lang.Throwable)
+             */
+            public void onFailure(Throwable caught) {
+
+                // will never be executed; do nothing 
+            }
+
+            /**
+             * @see com.google.gwt.user.client.rpc.AsyncCallback#onSuccess(java.lang.Object)
+             */
+            public void onSuccess(String newUrlName) {
+
+                setUrlNameField(newUrlName);
+                String newPath = m_modeHandler.createPath(newUrlName);
+                if (!m_modeHandler.isPathAllowed(newPath)) {
+                    showUrlNameError(message(Messages.GUI_URLNAME_ALREADY_EXISTS_0));
+                } else {
+                    nextAction.onSuccess(newUrlName);
+                }
+            }
+        });
+
     }
 
     /**
@@ -401,7 +430,7 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
         String label = message(Messages.GUI_TITLE_PROPERTY_0);
 
         CmsBasicFormField result = new CmsBasicFormField(FIELD_TITLE, description, label, null, new CmsTextBox());
-        String title = (m_mode == Mode.EDIT ? entry.getTitle() : "");
+        String title = m_modeHandler.getTitle();
         if (title == null) {
             title = "";
         }
@@ -423,7 +452,7 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
         String label = message(Messages.GUI_URLNAME_PROPERTY_0);
 
         CmsBasicFormField result = new CmsBasicFormField(FIELD_URLNAME, description, label, null, new CmsTextBox());
-        String urlName = (m_mode == Mode.EDIT ? entry.getName() : NEW_NAME);
+        String urlName = m_modeHandler.getName();
         if (urlName == null) {
             urlName = "";
         }
