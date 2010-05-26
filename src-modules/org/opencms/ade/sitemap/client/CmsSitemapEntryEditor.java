@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapEntryEditor.java,v $
- * Date   : $Date: 2010/05/26 13:55:48 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/05/26 14:42:18 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,6 +52,8 @@ import org.opencms.xml.sitemap.CmsSitemapManager;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
@@ -59,7 +61,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  *  @author Georg Westenberger
  *  
- *  @version $Revision: 1.10 $
+ *  @version $Revision: 1.11 $
  *  
  *  @since 8.0.0
  */
@@ -355,7 +357,7 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
                 String newPath = m_modeHandler.createPath(newUrlName);
                 if (!m_modeHandler.isPathAllowed(newPath)) {
                     showUrlNameError(message(Messages.GUI_URLNAME_ALREADY_EXISTS_0));
-                } else {
+                } else if (nextAction != null) {
                     nextAction.onSuccess(newUrlName);
                 }
             }
@@ -450,8 +452,15 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
 
         String description = message(Messages.GUI_URLNAME_PROPERTY_DESC_0);
         String label = message(Messages.GUI_URLNAME_PROPERTY_0);
+        final CmsTextBox textbox = new CmsTextBox();
+        textbox.addBlurHandler(new BlurHandler() {
 
-        CmsBasicFormField result = new CmsBasicFormField(FIELD_URLNAME, description, label, null, new CmsTextBox());
+            public void onBlur(BlurEvent event) {
+
+                validateUrlName(textbox.getText(), null);
+            }
+        });
+        CmsBasicFormField result = new CmsBasicFormField(FIELD_URLNAME, description, label, null, textbox);
         String urlName = m_modeHandler.getName();
         if (urlName == null) {
             urlName = "";
