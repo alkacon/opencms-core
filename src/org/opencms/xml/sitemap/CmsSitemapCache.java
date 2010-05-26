@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapCache.java,v $
- * Date   : $Date: 2010/05/26 12:11:40 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/05/26 12:42:44 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.CmsResourceTypeXmlSitemap;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -61,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 7.6 
  */
@@ -124,9 +125,8 @@ public final class CmsSitemapCache extends CmsVfsCache {
     /**
      * Returns the active sitemap lookup table.<p>
      * 
-     * This method is synchronized since the CMS object is not thread safe,
-     * and it does not make any sense anyhow to concurrently initialize the 
-     * look up table.<p>
+     * This method is synchronized since it does not make any sense 
+     * to concurrently initialize the look up table.<p>
      * 
      * @param cms the current CMS context
      * 
@@ -177,14 +177,19 @@ public final class CmsSitemapCache extends CmsVfsCache {
             null,
             CmsResourceFilter.IGNORE_EXPIRATION.addRequireFolder());
         for (CmsResource entryPoint : entryPoints) {
-            String sitemapPath = cms.readPropertyObject(entryPoint, CmsPropertyDefinition.PROPERTY_ADE_SITEMAP, false).getValue();
+            String sitemapPath = adminCms.readPropertyObject(
+                entryPoint,
+                CmsPropertyDefinition.PROPERTY_ADE_SITEMAP,
+                false).getValue();
             CmsFile sitemapFile;
             try {
-                // interpret property value as site path
-                adminCms.getRequestContext().setSiteRoot(cms.getRequestContext().getSiteRoot());
+                // interpret property value as root path
                 sitemapFile = cms.readFile(sitemapPath);
-            } finally {
-                adminCms.getRequestContext().setSiteRoot("");
+            } catch (CmsVfsResourceNotFoundException e) {
+                // interpret property value as site path
+                sitemapPath = OpenCms.getSiteManager().getSiteForRootPath(entryPoint.getRootPath()).getSiteRoot()
+                    + sitemapPath;
+                sitemapFile = cms.readFile(sitemapPath);
             }
             CmsXmlSitemap xmlSitemap = CmsXmlSitemapFactory.unmarshal(adminCms, sitemapFile);
             for (Locale locale : xmlSitemap.getLocales()) {
