@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/template3/Attic/CmsTemplateMenu.java,v $
- * Date   : $Date: 2010/02/03 15:10:54 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/05/26 14:20:10 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  * 
  * @since 7.6
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  */
 public class CmsTemplateMenu extends CmsJspActionElement {
 
@@ -285,7 +285,7 @@ public class CmsTemplateMenu extends CmsJspActionElement {
      * Reads the properties from the current resource, without search.<p>
      * 
      * Usage example on a JSP with the EL, reading the title property of the current resource: 
-     * <code>${cms.properties['Title']}<code>
+     * <code>${cms.properties['Title']}</code>.<p>
      * 
      * @return a map that lazily reads all resource properties from the OpenCms VFS, without search
      * 
@@ -311,7 +311,7 @@ public class CmsTemplateMenu extends CmsJspActionElement {
      * Reads the properties from the current resource, with search.<p>
      * 
      * Usage example on a JSP with the EL, reading the title property of the current resource: 
-     * <code>${cms.propertiesSearch['Title']}<code>
+     * <code>${cms.propertiesSearch['Title']}</code>.<p>
      * 
      * @return a map that lazily reads all resource properties from the OpenCms VFS, with search
      * 
