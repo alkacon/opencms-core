@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapEntryEditor.java,v $
- * Date   : $Date: 2010/05/26 14:42:18 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/05/26 14:44:10 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  *  @author Georg Westenberger
  *  
- *  @version $Revision: 1.11 $
+ *  @version $Revision: 1.12 $
  *  
  *  @since 8.0.0
  */
@@ -455,6 +455,9 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
         final CmsTextBox textbox = new CmsTextBox();
         textbox.addBlurHandler(new BlurHandler() {
 
+            /**
+             * @see com.google.gwt.event.dom.client.BlurHandler#onBlur(com.google.gwt.event.dom.client.BlurEvent)
+             */
             public void onBlur(BlurEvent event) {
 
                 validateUrlName(textbox.getText(), null);
