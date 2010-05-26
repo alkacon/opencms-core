@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsElementUtil.java,v $
- * Date   : $Date: 2010/05/21 13:20:07 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/05/26 09:32:14 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import javax.servlet.http.HttpServletResponse;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -161,7 +161,11 @@ public class CmsElementUtil {
         for (Map.Entry<String, String> entry : props.entrySet()) {
             String propName = entry.getKey();
             String propValue = entry.getValue();
-            String type = propConfig.get(propName).getPropertyType();
+            CmsXmlContentProperty configEntry = propConfig.get(propName);
+            if (configEntry == null) {
+                continue; // ignore properties which are not configured anymore 
+            }
+            String type = configEntry.getPropertyType();
             String newValue;
             if (toClient) {
                 newValue = CmsXmlContentPropertyHelper.getPropValuePaths(cms, type, propValue);
