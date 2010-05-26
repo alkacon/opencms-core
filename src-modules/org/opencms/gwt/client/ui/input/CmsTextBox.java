@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsTextBox.java,v $
- * Date   : $Date: 2010/05/21 14:27:40 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/05/26 14:40:16 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,6 +40,8 @@ import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
 
 import java.util.Map;
 
+import com.google.gwt.event.dom.client.BlurHandler;
+import com.google.gwt.event.dom.client.HasBlurHandlers;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -52,12 +54,12 @@ import com.google.gwt.user.client.ui.TextBox;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 8.0.0
  * 
  */
-public class CmsTextBox extends Composite implements I_CmsFormWidget, I_CmsHasInit {
+public class CmsTextBox extends Composite implements I_CmsFormWidget, I_CmsHasInit, HasBlurHandlers {
 
     /** The CSS bundle used for this widget. */
     public static final I_CmsInputCss CSS = I_CmsInputLayoutBundle.INSTANCE.inputCss();
@@ -121,6 +123,14 @@ public class CmsTextBox extends Composite implements I_CmsFormWidget, I_CmsHasIn
     }
 
     /**
+     * @see com.google.gwt.event.dom.client.HasBlurHandlers#addBlurHandler(com.google.gwt.event.dom.client.BlurHandler)
+     */
+    public HandlerRegistration addBlurHandler(BlurHandler handler) {
+
+        return m_textbox.addBlurHandler(handler);
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getFieldType()
      */
     public FieldType getFieldType() {
@@ -164,6 +174,14 @@ public class CmsTextBox extends Composite implements I_CmsFormWidget, I_CmsHasIn
     public void reset() {
 
         m_textbox.setText("");
+    }
+
+    /**
+     * Sets the changed style on the text box.<p>
+     */
+    public void setChangedStyle() {
+
+        m_textbox.addStyleName(CSS.changed());
     }
 
     /**
@@ -246,11 +264,4 @@ public class CmsTextBox extends Composite implements I_CmsFormWidget, I_CmsHasIn
         m_textbox.setText(text);
     }
 
-    /**
-     * Sets the changed style on the text box.<p>
-     */
-    public void setChangedStyle() {
-
-        m_textbox.addStyleName(CSS.changed());
-    }
 }

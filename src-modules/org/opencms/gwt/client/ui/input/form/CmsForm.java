@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/form/Attic/CmsForm.java,v $
- * Date   : $Date: 2010/05/25 14:34:36 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/05/26 14:40:16 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,6 +43,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.BlurHandler;
+import com.google.gwt.event.dom.client.HasBlurHandlers;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -56,7 +59,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  * 
@@ -93,13 +96,25 @@ public class CmsForm extends Composite {
      * 
      * @param formField the form field which should be added
      */
-    public void addField(I_CmsFormField formField) {
+    public void addField(final I_CmsFormField formField) {
 
         String initialValue = formField.getWidget().getFormValueAsString();
         m_initialValues.put(formField.getId(), initialValue);
         String description = formField.getDescription();
         String labelText = formField.getLabel();
         I_CmsFormWidget widget = formField.getWidget();
+        if (widget instanceof HasBlurHandlers) {
+            ((HasBlurHandlers)widget).addBlurHandler(new BlurHandler() {
+
+                /**
+                 * @see com.google.gwt.event.dom.client.BlurHandler#onBlur(com.google.gwt.event.dom.client.BlurEvent)
+                 */
+                public void onBlur(BlurEvent event) {
+
+                    formField.validate();
+                }
+            });
+        }
         m_fields.put(formField.getId(), formField);
         addRow(labelText, description, (Widget)widget);
 
@@ -215,6 +230,7 @@ public class CmsForm extends Composite {
             I_CmsFormField field = entry.getValue();
             field.getWidget().setFormValueAsString(m_initialValues.get(id));
         }
+        validateFields();
 
     }
 
@@ -250,5 +266,4 @@ public class CmsForm extends Composite {
         }
         return validationSucceeded;
     }
-
 }
