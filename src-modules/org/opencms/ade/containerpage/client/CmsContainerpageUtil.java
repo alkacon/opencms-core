@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageUtil.java,v $
- * Date   : $Date: 2010/05/26 09:42:39 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/05/26 10:19:15 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import com.google.gwt.user.client.Element;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 8.0.0
  */
@@ -100,39 +100,35 @@ public class CmsContainerpageUtil {
         // to establish the internal widget hierarchy the elements need to be removed from the DOM and added as widgets to the root panel
         Element child = (Element)container.getElement().getFirstChildElement();
         while (child != null) {
-            if (CmsDomUtil.hasClass(CLASS_CONTAINER_ELEMENTS, child)) {
+            boolean isContainerElement = CmsDomUtil.hasClass(CLASS_CONTAINER_ELEMENTS, child);
+            boolean isSubcontainerElement = CmsDomUtil.hasClass(CLASS_SUB_CONTAINER_ELEMENTS, child);
+            if (isContainerElement || isSubcontainerElement) {
                 String clientId = child.getAttribute("title");
                 String sitePath = child.getAttribute("alt");
                 String noEditReason = child.getAttribute("rel");
-                String hasProps = child.getAttribute("hasprops");
-                Element elementRoot = (Element)child.getFirstChildElement();
-                DOM.removeChild(child, elementRoot);
-                elements.add(createElement(
-                    elementRoot,
-                    container,
-                    clientId,
-                    sitePath,
-                    noEditReason,
-                    Boolean.parseBoolean(hasProps)));
-                DOM.removeChild(container.getElement(), child);
-            } else if (CmsDomUtil.hasClass(CLASS_SUB_CONTAINER_ELEMENTS, child)) {
-                String clientId = child.getAttribute("title");
-                String sitePath = child.getAttribute("alt");
-                String noEditReason = child.getAttribute("rel");
-                CmsDragSubcontainer subContainer = createSubcontainer(
-                    child,
-                    container,
-                    clientId,
-                    sitePath,
-                    noEditReason);
-                subContainer.setContainerType(container.getContainerType());
-                elements.add(subContainer);
-                DOM.removeChild(container.getElement(), child);
-                consumeContainerElements(subContainer);
+                boolean hasProps = Boolean.parseBoolean(child.getAttribute("hasprops"));
 
-                // important: adding the option-bar only after the sub-elements have been consumed 
-                addOptionBar(subContainer);
+                if (isContainerElement) {
+                    Element elementRoot = (Element)child.getFirstChildElement();
+                    DOM.removeChild(child, elementRoot);
+                    elements.add(createElement(elementRoot, container, clientId, sitePath, noEditReason, hasProps));
+                    DOM.removeChild(container.getElement(), child);
+                } else if (isSubcontainerElement) {
+                    CmsDragSubcontainer subContainer = createSubcontainer(
+                        child,
+                        container,
+                        clientId,
+                        sitePath,
+                        noEditReason,
+                        hasProps);
+                    subContainer.setContainerType(container.getContainerType());
+                    elements.add(subContainer);
+                    DOM.removeChild(container.getElement(), child);
+                    consumeContainerElements(subContainer);
 
+                    // important: adding the option-bar only after the sub-elements have been consumed 
+                    addOptionBar(subContainer);
+                }
             } else {
                 DOM.removeChild(container.getElement(), child);
             }
@@ -258,13 +254,15 @@ public class CmsContainerpageUtil {
 
         com.google.gwt.user.client.Element element = DOM.createDiv();
         element.addClassName(CmsContainerpageUtil.CLASS_SUB_CONTAINER_ELEMENTS);
+        boolean hasProps = !containerElement.getPropertyConfig().isEmpty();
 
         CmsDragSubcontainer subContainer = createSubcontainer(
             element,
             dragParent,
             containerElement.getClientId(),
             containerElement.getSitePath(),
-            containerElement.getNoEditReason());
+            containerElement.getNoEditReason(),
+            hasProps);
         subContainer.setContainerType(containerType);
         addOptionBar(subContainer);
 
@@ -341,6 +339,7 @@ public class CmsContainerpageUtil {
      * @param clientId the client id
      * @param sitePath the element site-path
      * @param noEditReason the no edit reason
+     * @param hasProps true if the subcontainer has properties to edit 
      * 
      * @return the draggable element
      */
@@ -349,14 +348,16 @@ public class CmsContainerpageUtil {
         I_CmsDragTargetContainer dragParent,
         String clientId,
         String sitePath,
-        String noEditReason) {
+        String noEditReason,
+        boolean hasProps) {
 
         CmsDragSubcontainer subContainer = new CmsDragSubcontainer(
             element,
             dragParent,
             clientId,
             sitePath,
-            noEditReason);
+            noEditReason,
+            hasProps);
         enableDragHandler(subContainer);
         return subContainer;
     }
