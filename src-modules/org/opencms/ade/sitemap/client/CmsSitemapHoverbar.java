@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapHoverbar.java,v $
- * Date   : $Date: 2010/05/25 12:36:33 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2010/05/27 06:52:51 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 8.0.0
  */
@@ -274,7 +274,7 @@ public class CmsSitemapHoverbar extends FlowPanel {
             @Override
             protected void onHoverOut(MouseOutEvent event) {
 
-                CmsSitemapHoverbar.this.removeFromParent();
+                deattach();
             }
         };
         widget.addMouseOutHandler(handler);
