@@ -23,6 +23,7 @@
 		<dependencies>
 			<dependency name="org.opencms.frontend.template3.demo" version="7.6"/>
 			<dependency name="org.opencms.frontend.template3" version="7.6"/>
+			<dependency name="org.opencms.ade.sitemap" version="7.6" />
 		</dependencies>
 		<exportpoints/>
 		<resources>
@@ -190,7 +191,7 @@
 			<properties>
 				<property type="shared">
 					<name>template-elements</name>
-					<value><![CDATA[/system/workplace/editors/sitemap/sitemap.jsp]]></value>
+					<value><![CDATA[/system/modules/org.opencms.ade.sitemap/sitemap.jsp]]></value>
 				</property>
                 <property type="shared">
                     <name>ade.cntpage.config</name>
