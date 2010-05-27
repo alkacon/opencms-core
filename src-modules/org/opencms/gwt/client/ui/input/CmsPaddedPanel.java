@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsPaddedPanel.java,v $
- * Date   : $Date: 2010/04/13 10:27:00 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/05/27 08:19:30 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,18 +49,18 @@ import com.google.gwt.user.client.ui.SimplePanel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  * 
  */
 public class CmsPaddedPanel extends SimplePanel {
 
-    /** The horizontal "padding" for the text box. */
-    private int m_paddingX;
-
     /** The CSS bundle used for this widget. */
     public static final I_CmsInputCss CSS = I_CmsInputLayoutBundle.INSTANCE.inputCss();
+
+    /** The horizontal "padding" for the text box. */
+    private int m_paddingX;
 
     /**
      * Constructs a new instance of this widget.<p>
@@ -103,8 +103,8 @@ public class CmsPaddedPanel extends SimplePanel {
 
         int panelWidth = getElement().getClientWidth();
         getWidget().setWidth((panelWidth - 2 * m_paddingX) + "px");
-        getWidget().getElement().getStyle().setMarginLeft(m_paddingX, Unit.PX);
-        getWidget().getElement().getStyle().setMarginRight(m_paddingX, Unit.PX);
+        getElement().getStyle().setPaddingLeft(m_paddingX, Unit.PX);
+        getElement().getStyle().setPaddingRight(m_paddingX, Unit.PX);
     }
 
     /**
