@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2010/02/15 08:50:17 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2010/05/27 09:44:58 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -81,7 +81,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -89,6 +89,9 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
 
     /** Configuration key for optional javascript in galleries. */
     public static final String CONFIGURATION_GALLERY_JAVASCRIPT_PATH = "gallery.javascript.path";
+
+    /** Configuration key for optional preview provider in galleries. */
+    public static final String CONFIGURATION_GALLERY_PREVIEW_PROVIDER = "gallery.preview.provider";
 
     /** Configuration key for the optional folder class name. */
     public static final String CONFIGURATION_GALLERY_TYPE_NAMES = "gallery.type.names";
@@ -152,6 +155,9 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
 
     /** The path to an additional java-script file to be used in the advanced galleries. */
     private String m_galleryJavascriptPath;
+
+    /** The gallery preview provider. */
+    private String m_galleryPreviewProvider;
 
     /** The gallery type name for this resource type. */
     private String m_galleryTypeNames;
@@ -571,6 +577,21 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
             }
         }
         return m_galleryJavascriptPath;
+    }
+
+    /**
+     * @see org.opencms.file.types.I_CmsResourceType#getGalleryPreviewProvider()
+     */
+    public String getGalleryPreviewProvider() {
+
+        if (m_galleryPreviewProvider == null) {
+            m_galleryPreviewProvider = getConfiguration().get(CONFIGURATION_GALLERY_PREVIEW_PROVIDER);
+            if (m_galleryPreviewProvider == null) {
+                // this is the default preview provider
+                m_galleryPreviewProvider = "org.opencms.ade.galleries.preview.binary.CmsPreviewProvider";
+            }
+        }
+        return m_galleryPreviewProvider;
     }
 
     /**

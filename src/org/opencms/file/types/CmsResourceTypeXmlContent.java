@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlContent.java,v $
- * Date   : $Date: 2010/02/18 07:03:46 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/05/27 09:44:58 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -77,7 +77,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -89,14 +89,8 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsResourceTypeXmlContent.class);
 
-    /** The formatters of this resource type. */
-    private Map<String, String> m_containerFormatters;
-
     /** The (optional) schema of this resource. */
     private String m_schema;
-
-    // TODO: correctly cache m_containerFormatters
-    private int todo;
 
     /**
      * Returns <code>true</code> in case the given resource is an XML content.<p>
@@ -248,13 +242,13 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
                 }
             }
             // cache formatters for all resource types with a defined schema
-            m_containerFormatters = contentDef.getContentHandler().getFormatters();
-            if (m_containerFormatters.isEmpty()) {
+            Map<String, String> containerFormatters = contentDef.getContentHandler().getFormatters();
+            if (containerFormatters.isEmpty()) {
                 LOG.warn(Messages.get().getBundle().key(
                     Messages.LOG_WARN_NO_FORMATTERS_DEFINED_1,
                     contentDef.getSchemaLocation()));
             }
-            return m_containerFormatters.get(containerType);
+            return containerFormatters.get(containerType);
         }
 
         CmsXmlContentDefinition contentDef = null;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/I_CmsResourceType.java,v $
- * Date   : $Date: 2010/01/25 09:43:26 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/05/27 09:44:59 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -77,7 +77,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Thomas Weckert  
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -448,7 +448,15 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * 
      * @return the resource path
      */
+    //TODO: remove
     String getGalleryJavascriptPath();
+
+    /**
+     * Returns the gallery preview provider class name.<p>
+     * 
+     * @return the gallery preview provider class name
+     */
+    String getGalleryPreviewProvider();
 
     /**
      * Returns the gallery types for this resource type.<p>
@@ -767,7 +775,7 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
         boolean recursive) throws CmsException;
 
     /**
-     * Sets the module name if this is an additional resource type which is defined in a module, or <code>null</code>
+     * Sets the module name if this is an additional resource type which is defined in a module, or <code>null</code>.<p>
      * 
      * @param moduleName the module name if this is an additional resource type which is defined in a module, or <code>null</code>
      */
