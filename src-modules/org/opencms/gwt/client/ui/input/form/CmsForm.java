@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/form/Attic/CmsForm.java,v $
- * Date   : $Date: 2010/05/26 14:40:16 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/05/27 08:06:13 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  * 
@@ -77,6 +77,9 @@ public class CmsForm extends Composite {
 
     /** The main panel for this widget. */
     private FlowPanel m_panel = new FlowPanel();
+
+    /** The list of form reset handlers. */
+    private List<I_CmsFormResetHandler> m_resetHandlers = new ArrayList<I_CmsFormResetHandler>();
 
     /** The internal list of validation handlers. */
     private List<I_CmsValidationHandler> m_validationHandlers = new ArrayList<I_CmsValidationHandler>();
@@ -146,6 +149,16 @@ public class CmsForm extends Composite {
         label.setStyleName(CSS.formDescriptionLabel());
         m_panel.add(label);
         return label;
+    }
+
+    /** 
+     * Adds a new form reset handler to the form.<p>
+     * 
+     * @param handler the new form reset handler 
+     */
+    public void addResetHandler(I_CmsFormResetHandler handler) {
+
+        m_resetHandlers.add(handler);
     }
 
     /**
@@ -231,7 +244,9 @@ public class CmsForm extends Composite {
             field.getWidget().setFormValueAsString(m_initialValues.get(id));
         }
         validateFields();
-
+        for (I_CmsFormResetHandler resetHandler : m_resetHandlers) {
+            resetHandler.onResetForm();
+        }
     }
 
     /**
