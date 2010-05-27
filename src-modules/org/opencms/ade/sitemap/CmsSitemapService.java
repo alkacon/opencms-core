@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsSitemapService.java,v $
- * Date   : $Date: 2010/05/26 12:11:41 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2010/05/27 06:52:03 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,7 +71,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 8.0.0
  * 
@@ -290,13 +290,13 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
      */
     private List<CmsClientSitemapEntry> getChildren(String root, int levels) throws CmsException {
 
-        CmsSitemapEntry entry = OpenCms.getSitemapManager().getEntryForUri(getCmsObject(), root);
-        List<CmsSitemapEntry> subEntries = entry.getSubEntries();
-        List<CmsClientSitemapEntry> children = new ArrayList<CmsClientSitemapEntry>(subEntries.size());
+        CmsObject cms = getCmsObject();
+        CmsSitemapEntry entry = OpenCms.getSitemapManager().getEntryForUri(cms, root);
+        List<CmsClientSitemapEntry> children = new ArrayList<CmsClientSitemapEntry>();
         if (entry.getProperties().get(CmsSitemapManager.Property.sitemap.name()) != null) {
             return children;
         }
-        for (CmsSitemapEntry subEntry : subEntries) {
+        for (CmsSitemapEntry subEntry : OpenCms.getSitemapManager().getSubEntries(cms, root)) {
             CmsClientSitemapEntry child = toClientEntry(subEntry);
             children.add(child);
             if (levels > 1) {

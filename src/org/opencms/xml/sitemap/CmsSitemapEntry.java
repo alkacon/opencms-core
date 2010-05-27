@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapEntry.java,v $
- * Date   : $Date: 2010/05/26 12:11:41 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/05/27 06:52:03 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,15 +32,10 @@
 package org.opencms.xml.sitemap;
 
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsPropertyDefinition;
-import org.opencms.file.CmsResource;
-import org.opencms.main.CmsException;
-import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -48,35 +43,32 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 7.6 
  */
 public class CmsSitemapEntry {
 
+    /** The inherited properties. */
+    protected Map<String, String> m_inheritedProperties;
+
+    /** The entry name. */
+    protected String m_name;
+
+    /** The original uri, without entry point info nor content ID. */
+    protected String m_originalUri;
+
+    /** The position. */
+    protected int m_position;
+
+    /** The configured properties. */
+    protected final Map<String, String> m_properties;
+
     /** The content id, for detail pages. */
     private CmsUUID m_contentId;
 
-    /** The entry point. */
-    private String m_entryPoint = "";
-
     /** The entry id. */
     private final CmsUUID m_id;
-
-    /** The inherited properties. */
-    private Map<String, String> m_inheritedProperties;
-
-    /** The entry name. */
-    private String m_name;
-
-    /** The original uri, without entry point info nor content ID. */
-    private String m_originalUri;
-
-    /** The position. */
-    private int m_position;
-
-    /** The configured properties. */
-    private final Map<String, String> m_properties;
 
     /** The file's structure id. */
     private final CmsUUID m_resourceId;
@@ -84,34 +76,8 @@ public class CmsSitemapEntry {
     /** Flag to indicate if this is a sitemap or a VFS entry. */
     private final boolean m_sitemap;
 
-    /** The list of sub-entries. */
-    private List<CmsSitemapEntry> m_subEntries;
-
     /** The entry title. */
     private final String m_title;
-
-    /**
-     * Creates a new VFS entry bean.<p>
-     * 
-     * @param cms the current CMS context
-     * @param uri the current URI
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public CmsSitemapEntry(CmsObject cms, String uri)
-    throws CmsException {
-
-        CmsResource res = cms.readResource(uri);
-        m_id = res.getStructureId();
-        m_resourceId = res.getStructureId();
-        m_name = res.getName();
-        m_title = null;
-        m_subEntries = Collections.emptyList();
-        // do not freeze the properties
-        m_properties = new HashMap<String, String>();
-        m_originalUri = res.getRootPath();
-        m_sitemap = false;
-    }
 
     /**
      * Clone constructor.<p>
@@ -127,9 +93,8 @@ public class CmsSitemapEntry {
             entry.getName(),
             entry.getTitle(),
             entry.getProperties(),
-            entry.getSubEntries(),
+            entry.getInheritedProperties(),
             entry.getContentId());
-        setRuntimeInfo("", entry.getPosition(), entry.getInheritedProperties());
     }
 
     /**
@@ -141,7 +106,7 @@ public class CmsSitemapEntry {
      * @param name the entry's name
      * @param title the entry's title
      * @param properties the properties as a map of name/value pairs
-     * @param subEntries the list of sub-entries
+     * @param inheritedProperties the properties as a map of name/value pairs
      * @param contentId optional content id
      **/
     public CmsSitemapEntry(
@@ -151,23 +116,27 @@ public class CmsSitemapEntry {
         String name,
         String title,
         Map<String, String> properties,
-        List<CmsSitemapEntry> subEntries,
+        Map<String, String> inheritedProperties,
         CmsUUID contentId) {
 
         m_id = id;
         m_resourceId = resourceId;
         m_name = name;
         m_title = title;
-        m_subEntries = (subEntries == null
-        ? Collections.<CmsSitemapEntry> emptyList()
-        : Collections.unmodifiableList(subEntries));
         // do not freeze the properties
         m_properties = new HashMap<String, String>();
         if (properties != null) {
             m_properties.putAll(properties);
         }
+        m_inheritedProperties = new HashMap<String, String>();
+        if (inheritedProperties != null) {
+            m_inheritedProperties.putAll(inheritedProperties);
+        }
         m_originalUri = originalUri;
-        m_sitemap = true;
+        if (m_originalUri.equals("/")) {
+            m_originalUri = "";
+        }
+        m_sitemap = ((id == null) || !id.equals(resourceId));
         m_contentId = contentId;
     }
 
@@ -179,16 +148,6 @@ public class CmsSitemapEntry {
     public CmsUUID getContentId() {
 
         return m_contentId;
-    }
-
-    /**
-     * Returns the entry point.<p>
-     *
-     * @return the entry point, as root path
-     */
-    public String getEntryPoint() {
-
-        return m_entryPoint;
     }
 
     /**
@@ -285,12 +244,7 @@ public class CmsSitemapEntry {
     public String getRootPath() {
 
         StringBuffer sb = new StringBuffer();
-        sb.append(getEntryPoint());
-        if (getEntryPoint().endsWith("/") && getOriginalUri().startsWith("/")) {
-            sb.deleteCharAt(sb.length() - 1);
-        } else if (!getEntryPoint().endsWith("/") && !getOriginalUri().startsWith("/")) {
-            sb.append("/");
-        }
+        sb.append("/");
         sb.append(getOriginalUri());
         if (getContentId() != null) {
             sb.append(getContentId()).append('/');
@@ -308,16 +262,6 @@ public class CmsSitemapEntry {
     public String getSitePath(CmsObject cms) {
 
         return cms.getRequestContext().removeSiteRoot(getRootPath());
-    }
-
-    /**
-     * Returns the sub-entries.<p>
-     *
-     * @return the sub-entries
-     */
-    public List<CmsSitemapEntry> getSubEntries() {
-
-        return m_subEntries;
     }
 
     /**
@@ -384,70 +328,5 @@ public class CmsSitemapEntry {
     public String toString() {
 
         return getRootPath();
-    }
-
-    /**
-     * Root entries of root sitemaps HAVE to have an empty name,
-     * but we can not enforce that while editing the xml, so 
-     * we have to enforce it here.<p>
-     */
-    protected void removeName() {
-
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_name)) {
-            // nothing to do
-            return;
-        }
-        fixPath(m_name);
-        m_name = "";
-    }
-
-    /**
-     * Sets the runtime information.<p>
-     * @param entryPoint the entry point
-     * @param position the position to set
-     * @param inheritedProperties the inherited properties to set
-     */
-    protected void setRuntimeInfo(String entryPoint, int position, Map<String, String> inheritedProperties) {
-
-        // set the inherited properties
-        m_inheritedProperties = new HashMap<String, String>();
-        if (inheritedProperties != null) {
-            // it is important that they are cloned, see CmsSitemapManager#getEntry(...)
-            m_inheritedProperties.putAll(inheritedProperties);
-            m_inheritedProperties.putAll(m_properties);
-        }
-        // set the position
-        m_properties.put(CmsPropertyDefinition.PROPERTY_NAVPOS, String.valueOf(position));
-        m_inheritedProperties.put(CmsPropertyDefinition.PROPERTY_NAVPOS, String.valueOf(position));
-        m_position = position;
-        m_entryPoint = entryPoint;
-    }
-
-    /**
-     * Sets the sub-entries.<p>
-     * 
-     * @param subEntries the sub-entries to set
-     */
-    protected void setSubEntries(List<CmsSitemapEntry> subEntries) {
-
-        m_subEntries = subEntries;
-    }
-
-    /**
-     * Fixes the path.<p>
-     * 
-     * @param name the name to remove from the path
-     */
-    private void fixPath(String name) {
-
-        int pos = m_originalUri.indexOf(name + "/");
-        if (pos < 0) {
-            // nothing to do
-            return;
-        }
-        m_originalUri = m_originalUri.substring(0, pos) + m_originalUri.substring(pos + 1 + name.length());
-        for (CmsSitemapEntry entry : m_subEntries) {
-            entry.fixPath(name);
-        }
     }
 }

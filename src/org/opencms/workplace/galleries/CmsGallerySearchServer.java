@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsGallerySearchServer.java,v $
- * Date   : $Date: 2010/03/03 10:41:00 $
- * Version: $Revision: 1.72 $
+ * Date   : $Date: 2010/05/27 06:52:03 $
+ * Version: $Revision: 1.73 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.72 $
+ * @version $Revision: 1.73 $
  * 
  * @since 7.6
  */
@@ -1301,15 +1301,16 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
                 LOG.error(e.getLocalizedMessage(), e);
             }
         }
-        if (!entry.getSubEntries().isEmpty()) {
+        List<CmsSitemapEntry> subEntries = OpenCms.getSitemapManager().getSubEntries(cms, entry.getSitePath(cms));
+        if (!subEntries.isEmpty()) {
             result.put(SitemapKey.hasSubEntries.name(), true);
             if (targetUri.startsWith(entry.getSitePath(cms))) {
-                JSONArray subEntries = new JSONArray();
-                Iterator<CmsSitemapEntry> it = entry.getSubEntries().iterator();
+                JSONArray jSubEntries = new JSONArray();
+                Iterator<CmsSitemapEntry> it = subEntries.iterator();
                 while (it.hasNext()) {
-                    subEntries.put(buildJSONForSitemapEntry(it.next(), targetUri));
+                    jSubEntries.put(buildJSONForSitemapEntry(it.next(), targetUri));
                 }
-                result.put(SitemapKey.subEntries.name(), subEntries);
+                result.put(SitemapKey.subEntries.name(), jSubEntries);
             }
         }
 

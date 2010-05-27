@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/Attic/CmsJspSitemapNavBuilder.java,v $
- * Date   : $Date: 2010/05/12 09:18:42 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2010/05/27 06:52:03 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,11 +37,8 @@ import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.util.CmsStringUtil;
-import org.opencms.util.CmsUUID;
 import org.opencms.xml.sitemap.CmsSitemapEntry;
 import org.opencms.xml.sitemap.CmsSitemapManager;
-import org.opencms.xml.sitemap.CmsXmlSitemapFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -61,7 +58,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 7.9.2 
  * 
@@ -144,34 +141,20 @@ public class CmsJspSitemapNavBuilder extends CmsJspNavBuilder {
             return super.getNavigationForFolder(folder);
         }
 
-        List<CmsSitemapEntry> entries = folderEntry.getSubEntries();
-        if (entries.isEmpty()) {
-            String subsitemap = folderEntry.getProperties().get(CmsSitemapManager.Property.sitemap.getName());
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(subsitemap)) {
-                try {
-                    entries = CmsXmlSitemapFactory.unmarshal(m_cms, m_cms.readResource(new CmsUUID(subsitemap))).getSitemap(
-                        m_cms,
-                        m_cms.getRequestContext().getLocale()).getSiteEntries();
-                } catch (CmsException e) {
-                    // should never happen
-                    LOG.error(e.getLocalizedMessage(), e);
-                }
-            }
-        }
-        for (CmsSitemapEntry entry : entries) {
-            try {
-                // check permissions
-                m_cms.readResource(entry.getResourceId());
-                // permissions are fine, add it to the results
-                String entryName = folderEntry.getSitePath(m_cms) + entry.getName() + "/";
-                CmsJspNavElement element = getNavigationForResource(entryName);
+        try {
+            List<CmsSitemapEntry> entries = OpenCms.getSitemapManager().getSubEntries(
+                m_cms,
+                folderEntry.getSitePath(m_cms));
+            for (CmsSitemapEntry entry : entries) {
+                CmsJspNavElement element = getNavigationForSiteEntry(entry);
                 if ((element != null) && element.isInNavigation()) {
                     result.add(element);
                 }
-            } catch (Exception e) {
-                // not enough permissions
-                LOG.debug(e.getLocalizedMessage(), e);
             }
+        } catch (Exception e) {
+            // should never happen
+            LOG.error(e.getLocalizedMessage(), e);
+            return Collections.<CmsJspNavElement> emptyList();
         }
 
         Collections.sort(result);
@@ -195,7 +178,7 @@ public class CmsJspSitemapNavBuilder extends CmsJspNavBuilder {
         if (uriEntry.isVfs()) {
             return super.getNavigationForResource(resource);
         }
-        return getNavigationForSiteEntry(resource, uriEntry);
+        return getNavigationForSiteEntry(uriEntry);
     }
 
     /**
@@ -230,17 +213,15 @@ public class CmsJspSitemapNavBuilder extends CmsJspNavBuilder {
     /**
      * Returns a new navigation element for the given URI.<p>
      * 
-     * @param uri the actual URI of the sitemap entry
      * @param entry the sitemap entry 
      *              
      * @return a navigation element for the given sitemap entry
      */
-    protected CmsJspNavElement getNavigationForSiteEntry(String uri, CmsSitemapEntry entry) {
+    protected CmsJspNavElement getNavigationForSiteEntry(CmsSitemapEntry entry) {
 
+        String uri = entry.getSitePath(m_cms);
         int level = CmsResource.getPathLevel(uri);
-        if (uri.endsWith("/")) {
-            level--;
-        }
+        level--; // they are always folder like
         // fill some properties with some meaningful values
         Map<String, String> properties = new HashMap<String, String>();
         properties.put(CmsPropertyDefinition.PROPERTY_TITLE, entry.getTitle());

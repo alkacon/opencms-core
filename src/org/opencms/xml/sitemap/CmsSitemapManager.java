@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2010/05/26 12:11:40 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2010/05/27 06:52:03 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.39 $
+ * @version $Revision: 1.40 $
  * 
  * @since 7.9.2
  */
@@ -280,12 +280,12 @@ public class CmsSitemapManager {
     }
 
     /**
-     * Returns the site entry for the given id, or <code>null</code> if not found.<p> 
+     * Returns the sitemap entry for the given id, or <code>null</code> if not found.<p> 
      * 
      * @param cms the current CMS context
      * @param id the id to look for
      * 
-     * @return the site entry for the given id, or <code>null</code> if not found
+     * @return the sitemap entry for the given id, or <code>null</code> if not found
      * 
      * @throws CmsException if something goes wrong
      */
@@ -301,19 +301,19 @@ public class CmsSitemapManager {
     }
 
     /**
-     * Returns the site entry for the given URI, or <code>null</code> if not found.<p> 
+     * Returns the sitemap entry for the given URI, or <code>null</code> if not found.<p> 
      * 
      * @param cms the current CMS context
-     * @param uri the URI to look for
+     * @param entryUri the sitemap entry URI to look for
      * 
-     * @return the site entry for the given URI, or <code>null</code> if not found
+     * @return the sitemap entry for the given URI, or <code>null</code> if not found
      * 
      * @throws CmsException if something goes wrong
      */
-    public CmsSitemapEntry getEntryForUri(CmsObject cms, String uri) throws CmsException {
+    public CmsSitemapEntry getEntryForUri(CmsObject cms, String entryUri) throws CmsException {
 
         // get the entry for the given path
-        CmsSitemapEntry entry = m_cache.getEntryByUri(cms, uri);
+        CmsInternalSitemapEntry entry = m_cache.getEntryByUri(cms, entryUri);
         if (entry != null) {
             // check permissions
             cms.readResource(entry.getResourceId());
@@ -321,19 +321,19 @@ public class CmsSitemapManager {
         }
 
         // if not found try as detail page
-        String path = uri;
+        String path = entryUri;
         if (path.endsWith("/")) {
             path = path.substring(0, path.length() - 1);
         }
         String detailId = CmsResource.getName(path);
         if (!CmsUUID.isValidUUID(detailId)) {
             // not a detail page URI
-            return new CmsSitemapEntry(cms, uri);
+            return new CmsInternalSitemapEntry(cms, entryUri);
         }
-        entry = m_cache.getEntryByUri(cms, CmsResource.getParentFolder(uri));
+        entry = m_cache.getEntryByUri(cms, CmsResource.getParentFolder(entryUri));
         if (entry == null) {
             // not a detail page URI
-            return new CmsSitemapEntry(cms, uri);
+            return new CmsInternalSitemapEntry(cms, entryUri);
         }
 
         // detail page
@@ -348,7 +348,7 @@ public class CmsSitemapManager {
         // detail pages are NEVER shown in the navigation
         entryProps.put(Property.navigation.getName(), Boolean.FALSE.toString());
         // create entry
-        CmsSitemapEntry contentEntry = new CmsSitemapEntry(
+        CmsInternalSitemapEntry contentEntry = new CmsInternalSitemapEntry(
             entry.getId(),
             entry.getOriginalUri(),
             entry.getResourceId(),
@@ -357,7 +357,7 @@ public class CmsSitemapManager {
             entryProps,
             null,
             id);
-
+        contentEntry.setRuntimeInfo(entry.getEntryPoint(), 0, entry.getInheritedProperties());
         return contentEntry;
     }
 
@@ -486,6 +486,28 @@ public class CmsSitemapManager {
         }
         // and return the site path
         return cms.getRequestContext().removeSiteRoot(bestMatch.getValue());
+    }
+
+    /**
+     * Returns the list of sub-entries for the given sitemap entry URI.<p>
+     * 
+     * @param cms the current CMS context
+     * @param entryUri the sitemap entry URI
+     * 
+     * @return the list of sub-entries for the given sitemap entry URI
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public List<CmsSitemapEntry> getSubEntries(CmsObject cms, String entryUri) throws CmsException {
+
+        List<CmsSitemapEntry> subEntries = new ArrayList<CmsSitemapEntry>();
+        CmsInternalSitemapEntry entry = (CmsInternalSitemapEntry)getEntryForUri(cms, entryUri);
+        for (CmsInternalSitemapEntry subEntry : entry.getSubEntries()) {
+            if (cms.existsResource(subEntry.getResourceId())) {
+                subEntries.add(subEntry);
+            }
+        }
+        return subEntries;
     }
 
     /**
