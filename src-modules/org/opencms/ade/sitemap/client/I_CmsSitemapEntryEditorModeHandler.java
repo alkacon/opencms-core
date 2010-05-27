@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/I_CmsSitemapEntryEditorModeHandler.java,v $
- * Date   : $Date: 2010/05/26 13:55:48 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/05/27 08:26:25 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import java.util.Map;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -51,6 +51,13 @@ public interface I_CmsSitemapEntryEditorModeHandler {
      * @return the full path 
      */
     String createPath(String urlName);
+
+    /**
+     * Returns the description text which will be displayed in the sitemap entry editor.<p>
+     * 
+     * @return a description text 
+     */
+    String getDescriptionText();
 
     /**
      * Returns the URL name with which the sitemap entry editor should be initialized.<p>
@@ -84,4 +91,5 @@ public interface I_CmsSitemapEntryEditorModeHandler {
      * @return true if it is allowed to set the path of the edited entry to the argument 
      */
     boolean isPathAllowed(String path);
+
 }

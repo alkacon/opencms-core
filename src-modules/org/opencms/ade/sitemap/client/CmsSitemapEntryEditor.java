@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapEntryEditor.java,v $
- * Date   : $Date: 2010/05/26 14:44:10 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/05/27 08:26:25 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,9 @@ import org.opencms.gwt.client.ui.input.I_CmsValidationHandler;
 import org.opencms.gwt.client.ui.input.form.CmsBasicFormField;
 import org.opencms.gwt.client.ui.input.form.CmsForm;
 import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
+import org.opencms.gwt.client.ui.input.form.I_CmsFormResetHandler;
 import org.opencms.gwt.client.util.CmsPair;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.sitemap.CmsSitemapManager;
 
@@ -61,7 +63,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  *  @author Georg Westenberger
  *  
- *  @version $Revision: 1.12 $
+ *  @version $Revision: 1.13 $
  *  
  *  @since 8.0.0
  */
@@ -226,10 +228,21 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
 
         CmsForm form = getForm();
 
-        form.addLabel(Messages.get().key(Messages.GUI_PROPERTY_EDITOR_TEXT_0));
+        form.addLabel(m_modeHandler.getDescriptionText());
 
         CmsBasicFormField urlNameField = createUrlNameField(m_entry);
         form.addField(urlNameField);
+        form.addResetHandler(new I_CmsFormResetHandler() {
+
+            /**
+             * @see org.opencms.gwt.client.ui.input.form.I_CmsFormResetHandler#onResetForm()
+             */
+            public void onResetForm() {
+
+                showUrlNameError(null);
+            }
+
+        });
 
         CmsBasicFormField titleField = createTitleField(m_entry);
         form.addField(titleField);
@@ -338,6 +351,12 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
      */
     protected void validateUrlName(String urlName, final AsyncCallback<String> nextAction) {
 
+        showUrlNameError(null);
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(urlName)) {
+            // empty url name; don't bother with translating it
+            showUrlNameError(message(Messages.GUI_URLNAME_CANT_BE_EMPTY_0));
+            return;
+        }
         CmsCoreProvider.get().translateUrlName(urlName, new AsyncCallback<String>() {
 
             /**
@@ -469,7 +488,6 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
             urlName = "";
         }
         result.getWidget().setFormValueAsString(urlName);
-        result.setValidator(new CmsNonEmptyValidator(message(Messages.GUI_URLNAME_CANT_BE_EMPTY_0)));
         return result;
     }
 
