@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapView.java,v $
- * Date   : $Date: 2010/05/20 09:17:29 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2010/05/27 11:13:52 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,13 @@
 
 package org.opencms.ade.sitemap.client;
 
-import org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange;
+import org.opencms.ade.sitemap.client.control.CmsSitemapChangeEvent;
+import org.opencms.ade.sitemap.client.control.CmsSitemapController;
+import org.opencms.ade.sitemap.client.control.CmsSitemapLoadEvent;
+import org.opencms.ade.sitemap.client.control.I_CmsSitemapChangeHandler;
+import org.opencms.ade.sitemap.client.control.I_CmsSitemapLoadHandler;
+import org.opencms.ade.sitemap.client.hoverbar.CmsSitemapHoverbar;
+import org.opencms.ade.sitemap.client.toolbar.CmsSitemapToolbar;
 import org.opencms.ade.sitemap.client.ui.CmsPage;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsImageBundle;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsLayoutBundle;
@@ -40,6 +46,8 @@ import org.opencms.gwt.client.A_CmsEntryPoint;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.CmsHeader;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
+import org.opencms.gwt.client.ui.CmsNotification;
+import org.opencms.gwt.client.ui.CmsToolbar;
 import org.opencms.gwt.client.ui.CmsToolbarPlaceHolder;
 import org.opencms.gwt.client.ui.tree.A_CmsDeepLazyOpenHandler;
 import org.opencms.gwt.client.ui.tree.CmsLazyTree;
@@ -62,11 +70,12 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 8.0.0
  */
-public class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitemapControllerHandler, NativePreviewHandler {
+public class CmsSitemapView extends A_CmsEntryPoint
+implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler, NativePreviewHandler, ClosingHandler {
 
     /** Text metrics key. */
     private static final String TM_SITEMAP = "Sitemap";
@@ -78,7 +87,7 @@ public class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitemapContr
     protected CmsSitemapHoverbar m_hoverbar;
 
     /** The sitemap toolbar. */
-    private CmsSitemapToolbar m_toolbar;
+    private CmsToolbar m_toolbar;
 
     /** The displayed sitemap tree. */
     private CmsLazyTree<CmsSitemapTreeItem> m_tree;
@@ -103,8 +112,7 @@ public class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitemapContr
         treeItem.updateSitePath(entry.getSitePath());
         if (m_controller.isEditable()) {
             if (m_hoverbar == null) {
-                CmsSitemapHoverbarHandler handler = new CmsSitemapHoverbarHandler(m_controller);
-                m_hoverbar = new CmsSitemapHoverbar(handler);
+                m_hoverbar = new CmsSitemapHoverbar(m_controller);
             }
             m_hoverbar.installOn(m_controller, treeItem);
         }
@@ -159,60 +167,26 @@ public class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitemapContr
     }
 
     /**
-     * @see org.opencms.ade.sitemap.client.I_CmsSitemapControllerHandler#onChange(org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange)
+     * @see org.opencms.ade.sitemap.client.control.I_CmsSitemapChangeHandler#onChange(org.opencms.ade.sitemap.client.control.CmsSitemapChangeEvent)
      */
-    public void onChange(I_CmsClientSitemapChange change) {
+    public void onChange(CmsSitemapChangeEvent changeEvent) {
 
-        change.applyToView(this);
+        changeEvent.getChange().applyToView(this);
     }
 
     /**
-     * @see org.opencms.ade.sitemap.client.I_CmsSitemapControllerHandler#onClearUndo()
+     * @see org.opencms.ade.sitemap.client.control.I_CmsSitemapLoadHandler#onLoad(org.opencms.ade.sitemap.client.control.CmsSitemapLoadEvent)
      */
-    public void onClearUndo() {
+    public void onLoad(CmsSitemapLoadEvent event) {
 
-        m_toolbar.getRedoButton().disable(Messages.get().key(Messages.GUI_DISABLED_REDO_0));
-    }
-
-    /**
-     * @see org.opencms.ade.sitemap.client.I_CmsSitemapControllerHandler#onFirstUndo()
-     */
-    public void onFirstUndo() {
-
-        m_toolbar.getRedoButton().enable();
-    }
-
-    /**
-     * @see org.opencms.ade.sitemap.client.I_CmsSitemapControllerHandler#onGetChildren(org.opencms.ade.sitemap.shared.CmsClientSitemapEntry, String)
-     */
-    public void onGetChildren(CmsClientSitemapEntry entry, String originalPath) {
-
-        CmsSitemapTreeItem target = getTreeItem(entry.getSitePath());
+        CmsSitemapTreeItem target = getTreeItem(event.getEntry().getSitePath());
         target.getTree().setAnimationEnabled(false);
         target.clearChildren();
-        for (CmsClientSitemapEntry child : entry.getSubEntries()) {
-            target.addChild(create(child, originalPath + child.getName() + "/"));
+        for (CmsClientSitemapEntry child : event.getEntry().getSubEntries()) {
+            target.addChild(create(child, event.getOriginalPath() + child.getName() + "/"));
         }
         target.onFinishLoading();
         target.getTree().setAnimationEnabled(true);
-    }
-
-    /**
-     * @see org.opencms.ade.sitemap.client.I_CmsSitemapControllerHandler#onLastRedo()
-     */
-    public void onLastRedo() {
-
-        m_toolbar.getRedoButton().disable(Messages.get().key(Messages.GUI_DISABLED_REDO_0));
-    }
-
-    /**
-     * @see org.opencms.ade.sitemap.client.I_CmsSitemapControllerHandler#onLastUndo()
-     */
-    public void onLastUndo() {
-
-        m_toolbar.getSaveButton().disable(Messages.get().key(Messages.GUI_DISABLED_SAVE_0));
-        m_toolbar.getResetButton().disable(Messages.get().key(Messages.GUI_DISABLED_RESET_0));
-        m_toolbar.getUndoButton().disable(Messages.get().key(Messages.GUI_DISABLED_UNDO_0));
     }
 
     /**
@@ -230,9 +204,10 @@ public class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitemapContr
         RootPanel.getBodyElement().addClassName(I_CmsLayoutBundle.INSTANCE.rootCss().root());
 
         // controller & tree-item-factory & tool-bar
-        m_controller = new CmsSitemapController(this);
+        m_controller = new CmsSitemapController();
+        m_controller.addChangeHandler(this);
+        m_controller.addLoadHandler(this);
         m_toolbar = new CmsSitemapToolbar(m_controller);
-        m_toolbar.setHandler(new CmsSitemapToolbarHandler(m_controller));
 
         RootPanel.get().add(m_toolbar);
         RootPanel.get().add(new CmsToolbarPlaceHolder());
@@ -290,22 +265,30 @@ public class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitemapContr
         Event.addNativePreviewHandler(this);
 
         // unload event handling
-        Window.addWindowClosingHandler(new ClosingHandler() {
+        Window.addWindowClosingHandler(this);
 
-            /**
-             * @see com.google.gwt.user.client.Window.ClosingHandler#onWindowClosing(com.google.gwt.user.client.Window.ClosingEvent)
-             */
-            public void onWindowClosing(ClosingEvent event) {
+        // check if editable
+        if (!m_controller.isEditable()) {
+            // notify user
+            CmsNotification.get().sendSticky(
+                CmsNotification.Type.WARNING,
+                Messages.get().key(Messages.GUI_NO_EDIT_NOTIFICATION_1, m_controller.getData().getNoEditReason()));
+        }
+    }
 
-                if (!m_controller.isDirty()) {
-                    return;
-                }
-                boolean savePage = Window.confirm(Messages.get().key(Messages.GUI_CONFIRM_DIRTY_LEAVING_0));
-                if (savePage) {
-                    m_controller.commit(true);
-                }
-            }
-        });
+    /**
+     * @see com.google.gwt.user.client.Window.ClosingHandler#onWindowClosing(com.google.gwt.user.client.Window.ClosingEvent)
+     */
+    public void onWindowClosing(ClosingEvent event) {
+
+        // unload event handling
+        if (!m_controller.isDirty()) {
+            return;
+        }
+        boolean savePage = Window.confirm(Messages.get().key(Messages.GUI_CONFIRM_DIRTY_LEAVING_0));
+        if (savePage) {
+            m_controller.commit(true);
+        }
     }
 
     /**
@@ -330,25 +313,5 @@ public class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitemapContr
         if ((nativeEvent.getKeyCode() == 'r') || (nativeEvent.getKeyCode() == 'R')) {
             m_controller.redo();
         }
-    }
-
-    /**
-     * Will be triggered on reset.<p>
-     */
-    public void onReset() {
-
-        m_toolbar.getSaveButton().disable(Messages.get().key(Messages.GUI_DISABLED_SAVE_0));
-        m_toolbar.getResetButton().disable(Messages.get().key(Messages.GUI_DISABLED_RESET_0));
-        m_toolbar.getUndoButton().disable(Messages.get().key(Messages.GUI_DISABLED_UNDO_0));
-    }
-
-    /**
-     * Will be triggered when the sitemap is changed in anyway for the first time.<p> 
-     */
-    public void onStartEdit() {
-
-        m_toolbar.getSaveButton().enable();
-        m_toolbar.getResetButton().enable();
-        m_toolbar.getUndoButton().enable();
     }
 }

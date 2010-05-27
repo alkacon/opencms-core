@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsEditEntryMode.java,v $
- * Date   : $Date: 2010/05/27 08:26:26 $
- * Version: $Revision: 1.2 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/edit/Attic/CmsEditEntryMode.java,v $
+ * Date   : $Date: 2010/05/27 11:13:51 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,8 +29,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.sitemap.client;
+package org.opencms.ade.sitemap.client.edit;
 
+import org.opencms.ade.sitemap.client.Messages;
+import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.file.CmsResource;
 
@@ -41,7 +43,7 @@ import java.util.Map;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  * 
@@ -68,7 +70,7 @@ public class CmsEditEntryMode implements I_CmsSitemapEntryEditorModeHandler {
     }
 
     /**
-     * @see org.opencms.ade.sitemap.client.I_CmsSitemapEntryEditorModeHandler#createPath(java.lang.String)
+     * @see org.opencms.ade.sitemap.client.edit.I_CmsSitemapEntryEditorModeHandler#createPath(java.lang.String)
      */
     public String createPath(String urlName) {
 
@@ -76,7 +78,7 @@ public class CmsEditEntryMode implements I_CmsSitemapEntryEditorModeHandler {
     }
 
     /**
-     * @see org.opencms.ade.sitemap.client.I_CmsSitemapEntryEditorModeHandler#getDescriptionText()
+     * @see org.opencms.ade.sitemap.client.edit.I_CmsSitemapEntryEditorModeHandler#getDescriptionText()
      */
     public String getDescriptionText() {
 
@@ -85,7 +87,7 @@ public class CmsEditEntryMode implements I_CmsSitemapEntryEditorModeHandler {
     }
 
     /**
-     * @see org.opencms.ade.sitemap.client.I_CmsSitemapEntryEditorModeHandler#getName()
+     * @see org.opencms.ade.sitemap.client.edit.I_CmsSitemapEntryEditorModeHandler#getName()
      */
     public String getName() {
 
@@ -93,7 +95,7 @@ public class CmsEditEntryMode implements I_CmsSitemapEntryEditorModeHandler {
     }
 
     /**
-     * @see org.opencms.ade.sitemap.client.I_CmsSitemapEntryEditorModeHandler#getTitle()
+     * @see org.opencms.ade.sitemap.client.edit.I_CmsSitemapEntryEditorModeHandler#getTitle()
      */
     public String getTitle() {
 
@@ -101,7 +103,7 @@ public class CmsEditEntryMode implements I_CmsSitemapEntryEditorModeHandler {
     }
 
     /**
-     * @see org.opencms.ade.sitemap.client.I_CmsSitemapEntryEditorModeHandler#handleSubmit(java.lang.String, java.lang.String, java.lang.String, java.util.Map)
+     * @see org.opencms.ade.sitemap.client.edit.I_CmsSitemapEntryEditorModeHandler#handleSubmit(java.lang.String, java.lang.String, java.lang.String, java.util.Map)
      */
     public void handleSubmit(String newTitle, String newUrlName, String vfsPath, Map<String, String> fieldValues) {
 
@@ -114,7 +116,7 @@ public class CmsEditEntryMode implements I_CmsSitemapEntryEditorModeHandler {
     }
 
     /**
-     * @see org.opencms.ade.sitemap.client.I_CmsSitemapEntryEditorModeHandler#isPathAllowed(java.lang.String)
+     * @see org.opencms.ade.sitemap.client.edit.I_CmsSitemapEntryEditorModeHandler#isPathAllowed(java.lang.String)
      */
     public boolean isPathAllowed(String path) {
 

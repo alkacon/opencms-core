@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/I_CmsClientSitemapChange.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/toolbar/Attic/CmsSitemapToolbar.java,v $
  * Date   : $Date: 2010/05/27 11:13:52 $
- * Version: $Revision: 1.2 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,56 +29,36 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.sitemap.client.model;
+package org.opencms.ade.sitemap.client.toolbar;
 
-import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
-import org.opencms.xml.sitemap.I_CmsSitemapChange;
-import org.opencms.xml.sitemap.I_CmsSitemapChange.Type;
+import org.opencms.gwt.client.ui.CmsToolbar;
 
 /**
- * Stores one change to the sitemap.<p>
+ * Sitemap toolbar.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.1 $ 
  * 
  * @since 8.0.0
  */
-public interface I_CmsClientSitemapChange {
+public class CmsSitemapToolbar extends CmsToolbar {
 
     /**
-     * Applies the current change to the model.<p>
+     * Constructor.<p>
      * 
-     * @param controller the controller
+     * @param controller the sitemap controller 
      */
-    void applyToModel(CmsSitemapController controller);
+    public CmsSitemapToolbar(CmsSitemapController controller) {
 
-    /**
-     * Applies the current change to the view.<p>
-     * 
-     * @param view the view
-     */
-    void applyToView(CmsSitemapView view);
+        addLeft(new CmsToolbarSaveButton(controller));
+        addLeft(new CmsToolbarUndoButton(controller));
+        addLeft(new CmsToolbarRedoButton(controller));
+        addLeft(new CmsToolbarResetButton(controller));
+        addLeft(new CmsToolbarAddButton(controller));
+        addLeft(new CmsToolbarCliboardButton(controller));
 
-    /**
-     * Returns this change for commit.<p>
-     * 
-     * @return this change for commit
-     */
-    I_CmsSitemapChange getChangeForCommit();
-
-    /**
-     * Returns the change type.<p>
-     * 
-     * @return the change type
-     */
-    Type getType();
-
-    /**
-     * Returns the revert of this change for undoing.<p>
-     * 
-     * @return the revert change
-     */
-    I_CmsClientSitemapChange revert();
+        addRight(new CmsToolbarPublishButton(controller));
+    }
 }

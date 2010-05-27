@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/I_CmsClientSitemapChange.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapResetEvent.java,v $
  * Date   : $Date: 2010/05/27 11:13:52 $
- * Version: $Revision: 1.2 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,56 +29,59 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.sitemap.client.model;
+package org.opencms.ade.sitemap.client.control;
 
-import org.opencms.ade.sitemap.client.CmsSitemapView;
-import org.opencms.ade.sitemap.client.control.CmsSitemapController;
-import org.opencms.xml.sitemap.I_CmsSitemapChange;
-import org.opencms.xml.sitemap.I_CmsSitemapChange.Type;
+import com.google.gwt.event.shared.GwtEvent;
 
 /**
- * Stores one change to the sitemap.<p>
+ * Sitemap reset event.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.1 $ 
  * 
  * @since 8.0.0
+ * 
+ * @see org.opencms.ade.sitemap.client.control.CmsSitemapController
  */
-public interface I_CmsClientSitemapChange {
+public class CmsSitemapResetEvent extends GwtEvent<I_CmsSitemapResetHandler> {
+
+    /** Event type for sitemap change events. */
+    private static final Type<I_CmsSitemapResetHandler> TYPE = new Type<I_CmsSitemapResetHandler>();
 
     /**
-     * Applies the current change to the model.<p>
-     * 
-     * @param controller the controller
+     * Constructor.<p>
      */
-    void applyToModel(CmsSitemapController controller);
+    public CmsSitemapResetEvent() {
+
+        // empty
+    }
 
     /**
-     * Applies the current change to the view.<p>
+     * Gets the event type associated with change events.<p>
      * 
-     * @param view the view
+     * @return the handler type
      */
-    void applyToView(CmsSitemapView view);
+    public static Type<I_CmsSitemapResetHandler> getType() {
+
+        return TYPE;
+    }
 
     /**
-     * Returns this change for commit.<p>
-     * 
-     * @return this change for commit
+     * @see com.google.gwt.event.shared.GwtEvent#getAssociatedType()
      */
-    I_CmsSitemapChange getChangeForCommit();
+    @Override
+    public final Type<I_CmsSitemapResetHandler> getAssociatedType() {
+
+        return TYPE;
+    }
 
     /**
-     * Returns the change type.<p>
-     * 
-     * @return the change type
+     * @see com.google.gwt.event.shared.GwtEvent#dispatch(com.google.gwt.event.shared.EventHandler)
      */
-    Type getType();
+    @Override
+    protected void dispatch(I_CmsSitemapResetHandler handler) {
 
-    /**
-     * Returns the revert of this change for undoing.<p>
-     * 
-     * @return the revert change
-     */
-    I_CmsClientSitemapChange revert();
+        handler.onReset(this);
+    }
 }

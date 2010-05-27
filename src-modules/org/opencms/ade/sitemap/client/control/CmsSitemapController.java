@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2010/05/25 07:44:46 $
- * Version: $Revision: 1.26 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapController.java,v $
+ * Date   : $Date: 2010/05/27 11:13:52 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,8 +29,9 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.sitemap.client;
+package org.opencms.ade.sitemap.client.control;
 
+import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeDelete;
 import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeEdit;
 import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeMove;
@@ -57,6 +58,8 @@ import java.util.Map;
 import java.util.Set;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.shared.HandlerManager;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Window;
 
 /**
@@ -64,7 +67,7 @@ import com.google.gwt.user.client.Window;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.1 $ 
  * 
  * @since 8.0.0
  */
@@ -76,9 +79,6 @@ public class CmsSitemapController {
     /** The sitemap data. */
     protected CmsSitemapData m_data;
 
-    /** The handler. */
-    protected I_CmsSitemapControllerHandler m_handler;
-
     /** The list of undone changes. */
     protected List<I_CmsClientSitemapChange> m_undone;
 
@@ -88,21 +88,118 @@ public class CmsSitemapController {
     /** The sitemap service instance. */
     private I_CmsSitemapServiceAsync m_service;
 
+    /** The handler manager. */
+    protected HandlerManager m_handlerManager;
+
     /**
      * Constructor.<p>
-     * 
-     * @param handler the handler to set
      */
-    public CmsSitemapController(I_CmsSitemapControllerHandler handler) {
+    public CmsSitemapController() {
 
         m_changes = new ArrayList<I_CmsClientSitemapChange>();
         m_undone = new ArrayList<I_CmsClientSitemapChange>();
         m_data = (CmsSitemapData)CmsRpcPrefetcher.getSerializedObject(getService(), CmsSitemapData.DICT_NAME);
-        m_handler = handler;
         m_hiddenProperties = new HashSet<String>();
         m_hiddenProperties.add(CmsSitemapManager.Property.template.toString());
         m_hiddenProperties.add(CmsSitemapManager.Property.templateInherited.toString());
         m_hiddenProperties.add(CmsSitemapManager.Property.sitemap.toString());
+        m_handlerManager = new HandlerManager(this);
+    }
+
+    /**
+     * Adds a new change event handler.<p>
+     * 
+     * @param handler the handler to add
+     * 
+     * @return the handler registration
+     */
+    public HandlerRegistration addChangeHandler(I_CmsSitemapChangeHandler handler) {
+
+        return m_handlerManager.addHandler(CmsSitemapChangeEvent.getType(), handler);
+    }
+
+    /**
+     * Adds a new clear undo event handler.<p>
+     * 
+     * @param handler the handler to add
+     * 
+     * @return the handler registration
+     */
+    public HandlerRegistration addClearUndoHandler(I_CmsSitemapClearUndoHandler handler) {
+
+        return m_handlerManager.addHandler(CmsSitemapClearUndoEvent.getType(), handler);
+    }
+
+    /**
+     * Adds a new first undo event handler.<p>
+     * 
+     * @param handler the handler to add
+     * 
+     * @return the handler registration
+     */
+    public HandlerRegistration addFirstUndoHandler(I_CmsSitemapFirstUndoHandler handler) {
+
+        return m_handlerManager.addHandler(CmsSitemapFirstUndoEvent.getType(), handler);
+    }
+
+    /**
+     * Adds a new last redo event handler.<p>
+     * 
+     * @param handler the handler to add
+     * 
+     * @return the handler registration
+     */
+    public HandlerRegistration addLastRedoHandler(I_CmsSitemapLastRedoHandler handler) {
+
+        return m_handlerManager.addHandler(CmsSitemapLastRedoEvent.getType(), handler);
+    }
+
+    /**
+     * Adds a new last undo event handler.<p>
+     * 
+     * @param handler the handler to add
+     * 
+     * @return the handler registration
+     */
+    public HandlerRegistration addLastUndoHandler(I_CmsSitemapLastUndoHandler handler) {
+
+        return m_handlerManager.addHandler(CmsSitemapLastUndoEvent.getType(), handler);
+    }
+
+    /**
+     * Adds a new load event handler.<p>
+     * 
+     * @param handler the handler to add
+     * 
+     * @return the handler registration
+     */
+    public HandlerRegistration addLoadHandler(I_CmsSitemapLoadHandler handler) {
+
+        return m_handlerManager.addHandler(CmsSitemapLoadEvent.getType(), handler);
+    }
+
+    /**
+     * Adds a new reset event handler.<p>
+     * 
+     * @param handler the handler to add
+     * 
+     * @return the handler registration
+     */
+    public HandlerRegistration addResetHandler(I_CmsSitemapResetHandler handler) {
+
+        return m_handlerManager.addHandler(CmsSitemapResetEvent.getType(), handler);
+    }
+
+    /**
+     * Adds a new start edit event handler.<p>
+     * 
+     * @param handler the handler to add
+     * 
+     * @return the handler registration
+     */
+    public HandlerRegistration addStartEdiHandler(I_CmsSitemapStartEditHandler handler) {
+
+        return m_handlerManager.addHandler(CmsSitemapStartEditEvent.getType(), handler);
     }
 
     /**
@@ -143,7 +240,8 @@ public class CmsSitemapController {
                 m_undone.clear();
 
                 // state
-                m_handler.onReset();
+                m_handlerManager.fireEvent(new CmsSitemapResetEvent());
+
                 stop(true);
             }
 
@@ -275,7 +373,7 @@ public class CmsSitemapController {
                     target.setSitePath("abc"); // hack to be able to execute updateSitePath
                     target.updateSitePath(sitePath);
                 }
-                m_handler.onGetChildren(target, originalPath);
+                m_handlerManager.fireEvent(new CmsSitemapLoadEvent(target, originalPath));
                 stop(false);
             }
         };
@@ -435,7 +533,7 @@ public class CmsSitemapController {
 
         // state
         if (m_undone.isEmpty()) {
-            m_handler.onLastRedo();
+            m_handlerManager.fireEvent(new CmsSitemapLastRedoEvent());
         }
     }
 
@@ -448,7 +546,7 @@ public class CmsSitemapController {
         m_undone.clear();
 
         // state
-        m_handler.onReset();
+        m_handlerManager.fireEvent(new CmsSitemapResetEvent());
 
         CmsCoreProvider.get().unlock();
         Window.Location.reload();
@@ -465,7 +563,7 @@ public class CmsSitemapController {
 
         // pre-state
         if (m_undone.isEmpty()) {
-            m_handler.onFirstUndo();
+            m_handlerManager.fireEvent(new CmsSitemapFirstUndoEvent());
         }
 
         // undo
@@ -477,11 +575,11 @@ public class CmsSitemapController {
         revertChange.applyToModel(this);
 
         // refresh view
-        m_handler.onChange(revertChange);
+        m_handlerManager.fireEvent(new CmsSitemapChangeEvent(revertChange));
 
         // post-state
         if (!isDirty()) {
-            m_handler.onLastUndo();
+            m_handlerManager.fireEvent(new CmsSitemapLastUndoEvent());
             CmsCoreProvider.get().unlock();
         }
     }
@@ -513,7 +611,7 @@ public class CmsSitemapController {
         // state
         if (!isDirty()) {
             if (CmsCoreProvider.get().lockAndCheckModification(CmsCoreProvider.get().getUri(), m_data.getTimestamp())) {
-                m_handler.onStartEdit();
+                m_handlerManager.fireEvent(new CmsSitemapStartEditEvent());
             } else {
                 // could not lock
                 return;
@@ -523,7 +621,7 @@ public class CmsSitemapController {
         if (!redo && !m_undone.isEmpty()) {
             // after a new change no changes can be redone
             m_undone.clear();
-            m_handler.onClearUndo();
+            m_handlerManager.fireEvent(new CmsSitemapClearUndoEvent());
         }
 
         // add it
@@ -533,6 +631,6 @@ public class CmsSitemapController {
         change.applyToModel(this);
 
         // refresh view
-        m_handler.onChange(change);
+        m_handlerManager.fireEvent(new CmsSitemapChangeEvent(change));
     }
 }
