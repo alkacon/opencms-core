@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/rpc/Attic/I_CmsGalleryService.java,v $
- * Date   : $Date: 2010/05/19 09:02:51 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/05/27 10:28:29 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,10 +31,9 @@
 
 package org.opencms.ade.galleries.shared.rpc;
 
-import org.opencms.ade.galleries.shared.CmsGalleryFolderBean;
 import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
+import org.opencms.ade.galleries.shared.CmsGalleryFolderBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
-import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 
@@ -49,7 +48,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  * @author Polina Smagina
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 8.0.0
  * 
@@ -98,13 +97,11 @@ public interface I_CmsGalleryService extends RemoteService {
     /**
      * Returns the initial data for the given gallery mode.<p>
      * 
-     * @param galleryMode the gallery mode
-     * 
      * @return the data bean
      * 
      * @throws CmsRpcException if something goes wrong
      */
-    CmsGalleryDataBean getInitialSettings(I_CmsGalleryProviderConstants.GalleryMode galleryMode) throws CmsRpcException;
+    CmsGalleryDataBean getInitialSettings() throws CmsRpcException;
 
     /**
      * Performs an initial search based on the given data bean and the available parameters of the request.<p>

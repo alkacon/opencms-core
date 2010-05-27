@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/rpc/Attic/I_CmsGalleryServiceAsync.java,v $
- * Date   : $Date: 2010/05/19 09:02:51 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/05/27 10:28:29 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,10 +31,9 @@
 
 package org.opencms.ade.galleries.shared.rpc;
 
-import org.opencms.ade.galleries.shared.CmsGalleryFolderBean;
 import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
+import org.opencms.ade.galleries.shared.CmsGalleryFolderBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
-import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 
 import java.util.List;
@@ -46,7 +45,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 8.0.0
  * 
@@ -85,12 +84,9 @@ public interface I_CmsGalleryServiceAsync {
     /**
      * Returns the initial data for the given gallery mode.<p>
      * 
-     * @param galleryMode the gallery mode
      * @param callback the callback
      */
-    void getInitialSettings(
-        I_CmsGalleryProviderConstants.GalleryMode galleryMode,
-        AsyncCallback<CmsGalleryDataBean> callback);
+    void getInitialSettings(AsyncCallback<CmsGalleryDataBean> callback);
 
     /**
      * Performs an initial search based on the given data bean and the available parameters of the request.<p>

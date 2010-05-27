@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/Attic/CmsGalleryActionElement.java,v $
- * Date   : $Date: 2010/05/18 12:31:14 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/05/27 10:28:29 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Polina Smagina 
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
@@ -94,8 +94,8 @@ public class CmsGalleryActionElement extends CmsGwtActionElement {
      */
     private String export(GalleryMode galleryMode) throws Exception {
 
-        CmsGalleryService galleryService = CmsGalleryService.newInstance(getRequest());
-        CmsGalleryDataBean data = galleryService.getInitialSettings(galleryMode);
+        CmsGalleryService galleryService = CmsGalleryService.newInstance(getRequest(), galleryMode);
+        CmsGalleryDataBean data = galleryService.getInitialSettings();
         CmsGallerySearchBean search = null;
         if (GalleryTabId.cms_tab_results.equals(data.getStartTab())) {
             search = galleryService.getSearch(data);
@@ -104,12 +104,16 @@ public class CmsGalleryActionElement extends CmsGwtActionElement {
         StringBuffer sb = new StringBuffer();
         sb.append(ClientMessages.get().export(getRequest()));
         sb.append(CmsGalleryDataBean.DICT_NAME).append("='");
-        sb.append(serialize(I_CmsGalleryService.class.getMethod("getInitialSettings", GalleryMode.class), data));
+        sb.append(serialize(I_CmsGalleryService.class.getMethod("getInitialSettings"), data));
         sb.append("';");
         sb.append(CmsGallerySearchBean.DICT_NAME).append("='").append(
             serialize(I_CmsGalleryService.class.getMethod("getSearch", CmsGalleryDataBean.class), search));
         sb.append("';");
-        return wrapScript(sb).toString();
+        wrapScript(sb);
+        for (I_CmsPreviewProvider provider : galleryService.getPreviewProvider()) {
+            sb.append(provider.getPreviewInclude(getCmsObject(), getRequest(), getResponse()));
+        }
+        return sb.toString();
     }
 
     /**

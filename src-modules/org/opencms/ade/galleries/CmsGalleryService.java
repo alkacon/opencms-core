@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/Attic/CmsGalleryService.java,v $
- * Date   : $Date: 2010/05/21 13:20:08 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2010/05/27 10:28:29 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,6 +65,7 @@ import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.xml.sitemap.CmsSitemapEntry;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -80,7 +81,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 8.0.0
  * 
@@ -202,6 +203,14 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     /** The instance of the resource manager. */
     CmsResourceManager m_resourceManager;
 
+    private Map<String, I_CmsPreviewProvider> m_previewProvider;
+
+    private List<I_CmsResourceType> m_resourceTypes;
+
+    private Map<I_CmsResourceType, I_CmsPreviewProvider> m_typeProviderMapping;
+
+    private GalleryMode m_galleryMode;
+
     /** The workplace locale from the current user's settings. */
     private Locale m_wpLocale;
 
@@ -209,14 +218,16 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
      * Returns a new configured service instance.<p>
      * 
      * @param request the current request
+     * @param galleryMode the gallery mode
      * 
      * @return a new service instance
      */
-    public static CmsGalleryService newInstance(HttpServletRequest request) {
+    public static CmsGalleryService newInstance(HttpServletRequest request, GalleryMode galleryMode) {
 
         CmsGalleryService srv = new CmsGalleryService();
         srv.setCms(CmsFlexController.getCmsObject(request));
         srv.setRequest(request);
+        srv.setGalleryMode(galleryMode);
         return srv;
     }
 
@@ -260,20 +271,21 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     }
 
     /**
-     * @see org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService#getInitialSettings(org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode)
+     * @see org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService#getInitialSettings()
      */
-    public CmsGalleryDataBean getInitialSettings(GalleryMode galleryMode) throws CmsRpcException {
+    public CmsGalleryDataBean getInitialSettings() throws CmsRpcException {
 
         CmsGalleryDataBean data = new CmsGalleryDataBean();
-        data.setMode(galleryMode);
+        data.setMode(m_galleryMode);
         data.setLocales(buildLocalesMap());
-        switch (galleryMode) {
+        List<I_CmsResourceType> types = getResourceTypes();
+        List<CmsResourceTypeBean> typeList = buildTypesList(types);
+        switch (m_galleryMode) {
 
             case editor:
             case view:
             case widget:
-                List<I_CmsResourceType> types = readResourceTypesFromRequest();
-                data.setTypes(buildTypesList(types));
+                data.setTypes(typeList);
                 data.setGalleries(buildGalleriesList(readGalleryTypes(types)));
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getRequest().getParameter(ReqParam.gallerypath.name()))) {
                     data.setStartTab(GalleryTabId.cms_tab_results);
@@ -282,17 +294,61 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 }
                 break;
             case ade:
-                data.setTypes(buildTypesList(readResourceTypesForContainerpage()));
+                data.setTypes(typeList);
                 data.setStartTab(GalleryTabId.cms_tab_types);
                 break;
             case sitemap:
-                data.setTypes(buildTypesList(readResourceTypesForSitemap()));
+                data.setTypes(typeList);
                 data.setStartTab(GalleryTabId.cms_tab_search);
                 break;
             default:
                 break;
         }
         return data;
+    }
+
+    /**
+     * Returns the preview provider for this gallery mode.<p>
+     * 
+     * @return the preview provider 
+     * 
+     * @throws CmsRpcException if something goes wrong reading the configuration
+     */
+    public Collection<I_CmsPreviewProvider> getPreviewProvider() throws CmsRpcException {
+
+        if (m_previewProvider == null) {
+            initPreviewProvider();
+        }
+        return m_previewProvider.values();
+    }
+
+    /**
+     * Returns the resource types configured to be used within the given gallery mode.<p>
+     * 
+     * @return the resource types
+     * 
+     * @throws CmsRpcException if something goes wrong reading the configuration
+     */
+    public List<I_CmsResourceType> getResourceTypes() throws CmsRpcException {
+
+        if (m_resourceTypes != null) {
+            return m_resourceTypes;
+        }
+        switch (m_galleryMode) {
+            case editor:
+            case view:
+            case widget:
+                m_resourceTypes = readResourceTypesFromRequest();
+                break;
+            case ade:
+                m_resourceTypes = readResourceTypesForContainerpage();
+                break;
+            case sitemap:
+                m_resourceTypes = readResourceTypesForSitemap();
+                break;
+            default:
+        }
+        return m_resourceTypes;
     }
 
     /**
@@ -368,6 +424,21 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             error(e);
         }
         return gSearchObj;
+    }
+
+    /**
+     * Returns the resource type - preview provider mapping.<p>
+     * 
+     * @return the resource type - preview provider mapping
+     * 
+     * @throws CmsRpcException if something goes wrong reading the configuration
+     */
+    private Map<I_CmsResourceType, I_CmsPreviewProvider> getTypeProviderMapping() throws CmsRpcException {
+
+        if (m_typeProviderMapping == null) {
+            initPreviewProvider();
+        }
+        return m_typeProviderMapping;
     }
 
     /**
@@ -492,13 +563,16 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
      * @param types the resource types
      * 
      * @return the map containing the available resource types
+     * 
+     * @throws CmsRpcException 
      */
-    private List<CmsResourceTypeBean> buildTypesList(List<I_CmsResourceType> types) {
+    private List<CmsResourceTypeBean> buildTypesList(List<I_CmsResourceType> types) throws CmsRpcException {
 
         ArrayList<CmsResourceTypeBean> list = new ArrayList<CmsResourceTypeBean>();
         if (types == null) {
             return list;
         }
+        Map<I_CmsResourceType, I_CmsPreviewProvider> typeMapping = getTypeProviderMapping();
         Iterator<I_CmsResourceType> it = types.iterator();
         while (it.hasNext()) {
             I_CmsResourceType type = it.next();
@@ -520,6 +594,10 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 galleryNames.add(galleryType.getTypeName());
             }
             bean.setGalleryTypeNames(galleryNames);
+            I_CmsPreviewProvider preview = typeMapping.get(type);
+            if (preview != null) {
+                bean.setPreviewProviderName(typeMapping.get(type).getPreviewName());
+            }
             list.add(bean);
 
         }
@@ -656,6 +734,34 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             m_wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(getCmsObject());
         }
         return m_wpLocale;
+    }
+
+    /**
+     * Reads the preview provider configuration and generates needed type-provider mappings.<p>
+     * 
+     * @param galleryMode the current gallery mode
+     * 
+     * @throws CmsRpcException if something goes wrong reading the configuration
+     */
+    private void initPreviewProvider() throws CmsRpcException {
+
+        m_previewProvider = new HashMap<String, I_CmsPreviewProvider>();
+        m_typeProviderMapping = new HashMap<I_CmsResourceType, I_CmsPreviewProvider>();
+        for (I_CmsResourceType type : getResourceTypes()) {
+            String providerClass = type.getGalleryPreviewProvider().trim();
+            try {
+                if (m_previewProvider.containsKey(providerClass)) {
+                    m_typeProviderMapping.put(type, m_previewProvider.get(providerClass));
+                } else {
+                    I_CmsPreviewProvider previewProvider = (I_CmsPreviewProvider)Class.forName(providerClass).newInstance();
+                    m_previewProvider.put(providerClass, previewProvider);
+                    m_typeProviderMapping.put(type, previewProvider);
+                }
+            } catch (Exception e) {
+                log(e.getLocalizedMessage(), e);
+            }
+
+        }
     }
 
     /**
@@ -798,6 +904,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
      * Returns the resource types configured to be used within the container-page editor.<p>
      * 
      * @return the resource types
+     * 
      * @throws CmsRpcException if something goes wrong reading the configuration
      */
     private List<I_CmsResourceType> readResourceTypesForContainerpage() throws CmsRpcException {
@@ -885,6 +992,16 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         searchObjBean.setResults(buildSearchResultList(searchResults));
 
         return searchObjBean;
+    }
+
+    /**
+     * Sets the gallery mode.<p>
+     *
+     * @param galleryMode the gallery mode to set
+     */
+    private void setGalleryMode(GalleryMode galleryMode) {
+
+        m_galleryMode = galleryMode;
     }
 
 }

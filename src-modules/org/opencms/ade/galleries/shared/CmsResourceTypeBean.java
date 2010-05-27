@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/Attic/CmsResourceTypeBean.java,v $
- * Date   : $Date: 2010/05/19 09:02:51 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/05/27 10:28:29 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -63,6 +63,9 @@ public class CmsResourceTypeBean implements I_CmsHasTitle, I_CmsHasType, IsSeria
 
     /** The resource type name as a unique id. */
     private String m_type;
+
+    /** The name of the preview provider. */
+    private String m_previewProviderName;
 
     /**
      * Returns the description.<p>
@@ -152,5 +155,25 @@ public class CmsResourceTypeBean implements I_CmsHasTitle, I_CmsHasType, IsSeria
     public void setType(String type) {
 
         m_type = type;
+    }
+
+    /**
+     * Sets the preview provider name.<p>
+     *
+     * @param previewProviderName the preview provider name to set
+     */
+    public void setPreviewProviderName(String previewProviderName) {
+
+        m_previewProviderName = previewProviderName;
+    }
+
+    /**
+     * Returns the preview provider name.<p>
+     *
+     * @return the preview provider name
+     */
+    public String getPreviewProviderName() {
+
+        return m_previewProviderName;
     }
 }

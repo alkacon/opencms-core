@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleryController.java,v $
- * Date   : $Date: 2010/05/27 09:42:23 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/05/27 10:28:29 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,6 +44,7 @@ import org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService;
 import org.opencms.ade.galleries.shared.rpc.I_CmsGalleryServiceAsync;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.rpc.CmsRpcPrefetcher;
+import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.gwt.shared.sort.CmsComparatorPath;
 import org.opencms.gwt.shared.sort.CmsComparatorTitle;
@@ -67,7 +68,7 @@ import com.google.gwt.core.client.GWT;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 8.0.0
  */
@@ -154,6 +155,44 @@ public class CmsGalleryController {
     }
 
     /**
+     * Opens the resource preview for the given resource.<p>
+     * 
+     * @param previewName the name of the preview provider
+     * @param galleryMode the gallery mode
+     * @param resourcePath the resource path
+     * @param parentElement the dialog element to insert the preview into
+     * 
+     * @return debug message
+     */
+    private static native String openPreview(
+        String previewName,
+        String galleryMode,
+        String resourcePath,
+        String parentElementId)/*-{
+        var providerList=$wnd[@org.opencms.ade.galleries.client.preview.I_CmsResourcePreview::KEY_PREVIEW_PROVIDER_LIST];
+        if (providerList){
+        var provider=providerList[previewName];
+        if (provider){
+        var openPreview=provider[@org.opencms.ade.galleries.client.preview.I_CmsResourcePreview::KEY_OPEN_PREVIEW_FUNCTION];
+        if (openPreview){
+        try{
+        openPreview(galleryMode, resourcePath, parentElementId);
+        }catch(err){
+        return err.description;
+        }
+        return "Opened preview";
+        }else{
+        return "Open function not available";
+        }
+        }else{
+        return "Provider "+previewName+" not available";
+        }
+        }else{
+        return "Provider list not available";
+        }
+    }-*/;
+
+    /**
      * Add category to search object.<p>
      * 
      * @param categoryPath the id of the category to add
@@ -235,7 +274,7 @@ public class CmsGalleryController {
      * 
      * @param id the item to select
      */
-    //TODO: move to the preview controller
+    //TODO: remove function
     public void openPreview(final String id) {
 
         // TODO: replace dummy with data from rpc call
@@ -265,6 +304,30 @@ public class CmsGalleryController {
         dummyBean.setImageInfos(dummyInfos);
         m_handler.onOpenPreview(m_dialogMode.name(), dummyBean);
         //TODO: call the rpc action and open the preview dialog in the callback
+    }
+
+    /**
+     * Opens the preview for the given resource by the given resource type.<p>
+     * 
+     * @param resourcePath the resource path
+     * @param resourceType the resource type name
+     */
+    public void openPreview(String resourcePath, String resourceType) {
+
+        CmsDebugLog.getInstance().printLine("Opening preview for path: " + resourcePath + " type: " + resourceType);
+        for (CmsResourceTypeBean typeBean : m_dialogBean.getTypes()) {
+            CmsDebugLog.getInstance().printLine("Checking type: " + typeBean.getType());
+            if (typeBean.getType().equals(resourceType)) {
+                CmsDebugLog.getInstance().printLine(
+                    openPreview(
+                        typeBean.getPreviewProviderName(),
+                        m_dialogMode.name(),
+                        resourcePath,
+                        m_handler.getDialogElementId()));
+                return;
+            }
+        }
+        CmsDebugLog.getInstance().printLine("Could not open preview.");
     }
 
     /**

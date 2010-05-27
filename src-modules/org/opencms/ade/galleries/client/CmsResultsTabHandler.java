@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsResultsTabHandler.java,v $
- * Date   : $Date: 2010/05/07 13:59:19 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/05/27 10:28:29 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ package org.opencms.ade.galleries.client;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 8.0.0
  */
@@ -58,11 +58,12 @@ public class CmsResultsTabHandler extends A_CmsTabHandler {
     /**
      * Will be triggered when the result item is clicked.<p>
      * 
-     * @param id the id of the result
+     * @param resourcePath the resource path of the result
+     * @param resourceType 
      */
-    public void onClick(String id) {
+    public void onClick(String resourcePath, String resourceType) {
 
-        m_controller.openPreview(id);
+        m_controller.openPreview(resourcePath, resourceType);
 
     }
 

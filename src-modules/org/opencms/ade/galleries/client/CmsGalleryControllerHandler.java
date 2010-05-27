@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleryControllerHandler.java,v $
- * Date   : $Date: 2010/05/27 09:42:23 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/05/27 10:28:29 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import java.util.List;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 8.0.0
 
@@ -74,6 +74,16 @@ public class CmsGalleryControllerHandler {
     public CmsGalleryControllerHandler(CmsGalleryDialog galleryDialog) {
 
         m_galleryDialog = galleryDialog;
+    }
+
+    /**
+     * Returns the dialog root element id.<p>
+     * 
+     * @return the dialog root element id
+     */
+    public String getDialogElementId() {
+
+        return m_galleryDialog.getDialogElementId();
     }
 
     /**

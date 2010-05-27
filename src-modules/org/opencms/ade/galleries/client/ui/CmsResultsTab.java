@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsResultsTab.java,v $
- * Date   : $Date: 2010/05/27 09:42:23 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2010/05/27 10:28:29 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,7 +68,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 8.0.
  */
@@ -80,16 +80,20 @@ public class CmsResultsTab extends A_CmsListTab implements ClickHandler {
     private class CmsPushButtonHandler implements ClickHandler {
 
         /** The id of the selected item. */
-        private String m_id;
+        private String m_resourcePath;
+
+        private String m_resourceType;
 
         /**
          * Constructor.<p>
          * 
-         * @param id
+         * @param resourcePath the item resource path 
+         * @param resourceType the item resource type
          */
-        public CmsPushButtonHandler(String id) {
+        public CmsPushButtonHandler(String resourcePath, String resourceType) {
 
-            m_id = id;
+            m_resourcePath = resourcePath;
+            m_resourceType = resourceType;
         }
 
         /**
@@ -97,7 +101,7 @@ public class CmsResultsTab extends A_CmsListTab implements ClickHandler {
          */
         public void onClick(ClickEvent event) {
 
-            getTabHandler().onClick(m_id);
+            getTabHandler().onClick(m_resourcePath, m_resourceType);
 
         }
     }
@@ -195,7 +199,7 @@ public class CmsResultsTab extends A_CmsListTab implements ClickHandler {
             previewButton.setImageClass(I_CmsImageBundle.INSTANCE.style().magnifierIcon());
             previewButton.setShowBorder(false);
             previewButton.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
-            previewButton.addClickHandler(new CmsPushButtonHandler(resultItem.getPath()));
+            previewButton.addClickHandler(new CmsPushButtonHandler(resultItem.getPath(), resultItem.getType()));
             resultItemWidget.addButton(previewButton);
             // add file icon
             resultItemWidget.setIcon(CmsIconUtil.getResourceIconClasses(resultItem.getType(), resultItem.getPath()));
