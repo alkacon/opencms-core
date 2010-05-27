@@ -369,3 +369,15 @@
 	display: inline-block;
 	cursor: pointer;
 }
+
+@sprite .croppingIcon{
+	gwt-image: "croppingIcon";
+	display: inline-block;
+	cursor: pointer;
+}
+
+@sprite .removeCroppingIcon{
+	gwt-image: "croppingIcon";
+	display: inline-block;
+	cursor: pointer;
+}

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/ui/Attic/CmsPropertyForm.java,v $
- * Date   : $Date: 2010/05/25 11:33:23 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/05/27 09:42:23 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
  *  
  * @author Polina Smagina
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.
  */
@@ -165,6 +165,7 @@ public class CmsPropertyForm extends Composite implements Runnable {
      */
     private int getLabelWidth() {
 
+        // 2px: margin-left
         return (m_parentWidth / 3) - 2;
     }
 }

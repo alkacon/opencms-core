@@ -10,6 +10,7 @@
 
 .textBoxPanel, .textAreaContainer {
 	border: 1px solid value("constants.borderColor");
+	overflow:hidden;
 }
 
 /* inner text area of the text area widget */
@@ -222,16 +223,5 @@
 	margin-bottom: 5px;
 	background-color: value("constants.borderColorInactive");
 }
-
-.formDescriptionLabel {
-	margin-bottom: 5px;
-	margin-top: 5px;
-}
-
-
-
-
-
-
 
 

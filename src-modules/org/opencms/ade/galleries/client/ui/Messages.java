@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/Messages.java,v $
- * Date   : $Date: 2010/05/21 14:27:40 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/05/27 09:42:23 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.client.util.CmsMessages;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 8.0.0
  */
@@ -115,6 +115,27 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PREVIEW_TAB_PROPERTIES_0 = "GUI_PREVIEW_TAB_PROPERTIES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREVIEW_TAB_IMAGEFORMAT_0 = "GUI_PREVIEW_TAB_IMAGEFORMAT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREVIEW_TAB_IMAGEINFOS_0 = "GUI_PREVIEW_TAB_IMAGEINFOS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREVIEW_LABEL_FORMAT_0 = "GUI_PREVIEW_LABEL_FORMAT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREVIEW_BUTTON_CROP_0 = "GUI_PREVIEW_BUTTON_CROP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREVIEW_BUTTON_REMOVECROP_0 = "GUI_PREVIEW_BUTTON_REMOVECROP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREVIEW_LABEL_WIDTH_0 = "GUI_PREVIEW_LABEL_WIDTH_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREVIEW_LABEL_HEIGHT_0 = "GUI_PREVIEW_LABEL_HEIGHT_0";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.ade.galleries.clientmessages";

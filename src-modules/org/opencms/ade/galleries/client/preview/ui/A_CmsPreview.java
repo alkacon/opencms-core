@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/ui/Attic/A_CmsPreview.java,v $
- * Date   : $Date: 2010/05/25 09:26:06 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/05/27 09:42:23 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import com.google.gwt.user.client.ui.Widget;
  *  
  * @author Polina Smagina
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.
  */
@@ -72,6 +72,8 @@ public abstract class A_CmsPreview extends Composite {
     /** The close button of the preview dialog. */
     @UiField
     protected CmsPushButton m_closeButton;
+
+    protected String m_dialogMode;
 
     /** The parent panel of the preview dialog. */
     @UiField
@@ -103,9 +105,11 @@ public abstract class A_CmsPreview extends Composite {
      * @param dialogWidth the dialog width to set
      */
     // TODO: this contrustor should be called only once, when the gallery dialod is opened and set to invisible
-    public A_CmsPreview(int dialogHeight, int dialogWidth) {
+    public A_CmsPreview(String dialogMode, int dialogHeight, int dialogWidth) {
 
         initWidget(uiBinder.createAndBindUi(this));
+
+        m_dialogMode = dialogMode;
 
         // height of the preview dialog
         m_parentPanel.getElement().getStyle().setHeight(dialogHeight, Unit.PX);
@@ -140,7 +144,7 @@ public abstract class A_CmsPreview extends Composite {
      * 
      * @param html the content html
      */
-    public abstract void fillPreviewPanel(String html);
+    public abstract void fillPreviewPanel(int height, int width, String html);
 
     /**
      * Fills the content of the tabs panel.<p>
@@ -149,7 +153,7 @@ public abstract class A_CmsPreview extends Composite {
      * @param width the tab width
      * @param infoBean the bean containing the parameter 
      */
-    public abstract void fillPropertiesTab(int height, int width, CmsPreviewInfoBean infoBean);
+    public abstract void fillTabs(int height, int width, CmsPreviewInfoBean infoBean);
 
     /**
      * Will be triggered, when the close button of the preview dialog is clicked.<p>

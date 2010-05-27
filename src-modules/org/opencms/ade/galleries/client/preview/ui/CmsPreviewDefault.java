@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/ui/Attic/CmsPreviewDefault.java,v $
- * Date   : $Date: 2010/05/21 14:27:39 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/05/27 09:42:23 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import com.google.gwt.user.client.ui.Widget;
  *  
  * @author Polina Smagina
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.
  */
@@ -56,16 +56,16 @@ public class CmsPreviewDefault extends A_CmsPreview {
      * @param dialogHeight the dialog height to set
      * @param dialogWidth the dialog width to set     
      */
-    public CmsPreviewDefault(int dialogHeight, int dialogWidth) {
+    public CmsPreviewDefault(String dialogMode, int dialogHeight, int dialogWidth) {
 
-        super(dialogHeight, dialogWidth);
+        super(dialogMode, dialogHeight, dialogWidth);
     }
 
     /**
      * @see org.opencms.ade.galleries.client.preview.ui.A_CmsPreview#fillPreviewPanel(String)
      */
     @Override
-    public void fillPreviewPanel(String html) {
+    public void fillPreviewPanel(int height, int width, String html) {
 
         m_previewPanel.add(new HTML(html));
     }
@@ -74,10 +74,10 @@ public class CmsPreviewDefault extends A_CmsPreview {
      * @see org.opencms.ade.galleries.client.preview.ui.A_CmsPreview#fillPreviewPanel(String)
      */
     @Override
-    public void fillPropertiesTab(int height, int width, CmsPreviewInfoBean infoBean) {
+    public void fillTabs(int height, int width, CmsPreviewInfoBean infoBean) {
 
         m_tabbedPanel = new CmsTabbedPanel<Widget>(CmsTabLayout.small, false);
-        CmsPropertiesTab tab = new CmsPropertiesTab(height, width, infoBean.getPropeties());
+        CmsPropertiesTab tab = new CmsPropertiesTab(m_dialogMode, height, width, infoBean.getPropeties());
         m_tabbedPanel.add(tab, Messages.get().key(Messages.GUI_PREVIEW_TAB_PROPERTIES_0));
 
         m_tabsHolder.add(m_tabbedPanel);

@@ -24,7 +24,11 @@
 }
 
 .previewPanel {	
-	height:100%;
+	height:100%;	
+}
+
+.imagePanel {
+	text-align: center;
 }
 
 /* Tabs panel (details) */
@@ -43,6 +47,7 @@
 	margin-left:1px;
 }
 
+/* Properties tab. */
 .propertiesList {	
 	height:60px; /* Change the height on resize */
 	overflow: auto;
@@ -80,3 +85,72 @@
 	float:right;
 	margin-left:2px;
 }
+
+/* Image format tab. */
+.formatsPanel{
+	padding-top:5px;
+}
+
+.formatsLine {
+	margin:0 0 12px;
+	/*line-height:16px;*/
+}
+
+.formatsLineSize {
+	margin:0 0 3px;
+	/*line-height:20px;*/
+	/*width:300px;*/
+}
+
+.formatButton{
+	margin-left:5px;
+}
+
+.formatSelectBox {
+	width:150px;
+	display:inline-block;
+	margin-left:5px;
+	vertical-align:middle;		
+}
+
+.formatText{
+		width:100px;		
+		margin-left:5px;
+		
+	}
+
+/*.formatLabel{
+	min-width:80px;
+	font-weight:bold;
+	margin-left:5px;
+	float:left;	
+}*/
+
+@if user.agent ie6 {
+	.formatLabel{
+		width:100px;		
+		font-weight:bold;
+		margin-left:5px;
+		display:inline;
+		zoom:1;
+	}
+	
+	
+
+} @else {
+	.formatLabel{
+		width:100px;
+		font-weight:bold;
+		margin-left:5px;
+		display:inline-block;
+		vertical-align:middle;		
+	}
+	
+}
+	
+	
+		
+ 
+
+
+

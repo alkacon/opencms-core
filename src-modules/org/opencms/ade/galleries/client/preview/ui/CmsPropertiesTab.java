@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/ui/Attic/CmsPropertiesTab.java,v $
- * Date   : $Date: 2010/05/21 14:27:39 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/05/27 09:42:23 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.
  */
@@ -84,6 +84,9 @@ public class CmsPropertiesTab extends Composite {
     @UiField
     CmsPushButton m_selectButton;
 
+    /** The mode of the gallery. */
+    private String m_dialogMode;
+
     /**
      * The constructor.<p>
      * 
@@ -91,9 +94,11 @@ public class CmsPropertiesTab extends Composite {
      * @param width the properties tab width
      * @param properties the properties to display
      */
-    public CmsPropertiesTab(int height, int width, Map<String, String> properties) {
+    public CmsPropertiesTab(String dialogMode, int height, int width, Map<String, String> properties) {
 
         initWidget(uiBinder.createAndBindUi(this));
+
+        m_dialogMode = dialogMode;
 
         fillProperties(height, width, properties);
 
@@ -101,6 +106,16 @@ public class CmsPropertiesTab extends Composite {
         m_selectButton.setText(Messages.get().key(Messages.GUI_PREVIEW_BUTTON_SELECT_0));
         m_saveButton.setText(Messages.get().key(Messages.GUI_PREVIEW_BUTTON_SAVE_0));
 
+    }
+
+    /**
+     * Returns the dialogMode.<p>
+     *
+     * @return the dialogMode
+     */
+    public String getDialogMode() {
+
+        return m_dialogMode;
     }
 
     /**
@@ -163,7 +178,7 @@ public class CmsPropertiesTab extends Composite {
         // width of a property form
         int pannelWidth = calculateWidth(width);
         Iterator<Entry<String, String>> it = properties.entrySet().iterator();
-        boolean left = true;
+        boolean isLeft = true;
         while (it.hasNext()) {
 
             Entry<String, String> entry = it.next();
@@ -173,16 +188,18 @@ public class CmsPropertiesTab extends Composite {
                 entry.getKey(),
                 entry.getValue(),
                 TM_PREVIEW_TAB_PROPERTIES);
-            if (left) {
+            if (isLeft) {
                 property.setFormStyle(I_CmsLayoutBundle.INSTANCE.previewDialogCss().propertyLeft());
-                left = false;
+                isLeft = false;
             } else {
                 property.setFormStyle(I_CmsLayoutBundle.INSTANCE.previewDialogCss().propertyRight());
-                left = true;
+                isLeft = true;
             }
             m_properties.add(property);
 
             // TODO: set the calculated height
+
+            // TODO: display or hide the save button depending on the dialogMode
         }
     }
 }

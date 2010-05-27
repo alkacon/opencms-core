@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsImageBundle.java,v $
- * Date   : $Date: 2010/05/05 12:39:52 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/05/27 09:42:23 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import com.google.gwt.resources.client.ImageResource.RepeatStyle;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -54,6 +54,12 @@ public interface I_CmsImageBundle extends ClientBundle {
     /** Bundles the image sprite CSS classes. */
     @Shared
     interface I_CmsImageStyle extends CssResource {
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String croppingIcon();
 
         /** Access method.<p>
          * 
@@ -203,6 +209,12 @@ public interface I_CmsImageBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
+        String removeCroppingIcon();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
         String toolbarAdd();
 
         /** Access method.<p>
@@ -284,6 +296,14 @@ public interface I_CmsImageBundle extends ClientBundle {
     @Source("images/ui-bg_highlight-soft_75_aaaaaa_1x100.png")
     @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
     ImageResource backgroundSoft();
+
+    /**
+     * Image resource accessor.<p>
+     * 
+     * @return an image resource
+     */
+    @Source("images/crop.png")
+    ImageResource croppingIcon();
 
     /**
      * Access method.<p>
@@ -461,6 +481,14 @@ public interface I_CmsImageBundle extends ClientBundle {
      */
     @Source("images/ocms_de_prop_i.png")
     ImageResource propertyIconInactive();
+
+    /**
+     * Image resource accessor.<p>
+     * 
+     * @return an image resource
+     */
+    @Source("images/cropremove.png")
+    ImageResource removeCroppingIcon();
 
     /**
      * Access method.<p>

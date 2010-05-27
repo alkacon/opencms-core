@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/Attic/I_CmsGalleryProviderConstants.java,v $
- * Date   : $Date: 2010/05/14 13:34:52 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/05/27 09:42:23 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Polina Smagina 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 8.0.0
  */
@@ -194,5 +194,34 @@ public interface I_CmsGalleryProviderConstants {
 
         /** Tree.*/
         tree;
+    }
+
+    /** Image parameteres. */
+    public enum ImageParams implements IsSerializable {
+
+        /** The image path. */
+        path,
+
+        /** The image width. */
+        width,
+
+        /** The image height. */
+        height,
+
+        /** The image file name. */
+        file_name,
+
+        /** Property title. */
+        title,
+
+        /** Image type. */
+        file_type,
+
+        /** The last modified date. */
+        dateLastModified,
+
+        /** The file size. */
+        file_size;
+
     }
 }

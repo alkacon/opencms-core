@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsResultsTab.java,v $
- * Date   : $Date: 2010/05/19 09:02:51 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/05/27 09:42:23 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,7 +68,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 8.0.
  */
@@ -175,7 +175,7 @@ public class CmsResultsTab extends A_CmsListTab implements ClickHandler {
         Widget categoriesParams) {
 
         showParams(searchObj, typesParams, galleriesParams, categoriesParams);
-        updateListSize();
+        //updateListSize();
         List<CmsResultItemBean> list = searchObj.getResults();
         for (CmsResultItemBean resultItem : list) {
 
@@ -198,9 +198,7 @@ public class CmsResultsTab extends A_CmsListTab implements ClickHandler {
             previewButton.addClickHandler(new CmsPushButtonHandler(resultItem.getPath()));
             resultItemWidget.addButton(previewButton);
             // add file icon
-            resultItemWidget.setIcon(CmsIconUtil.getResourceIconClasses(
-                resultItem.getType(),
-                resultItem.getPath()));
+            resultItemWidget.setIcon(CmsIconUtil.getResourceIconClasses(resultItem.getType(), resultItem.getPath()));
             CmsResultListItem listItem = new CmsResultListItem(resultItemWidget);
             listItem.setId(resultItem.getPath());
             addWidgetToList(listItem);

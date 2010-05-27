@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleriesVfs.java,v $
- * Date   : $Date: 2010/05/21 14:27:40 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/05/27 09:42:23 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 8.0.0
  */
@@ -73,6 +73,6 @@ public class CmsGalleriesVfs extends A_CmsEntryPoint implements ResizeHandler {
      */
     public void onResize(ResizeEvent event) {
 
-        m_galleryDialog.setDialogSize(event.getWidth(), event.getHeight());
+        //m_galleryDialog.setDialogSize(event.getWidth(), event.getHeight());
     }
 }

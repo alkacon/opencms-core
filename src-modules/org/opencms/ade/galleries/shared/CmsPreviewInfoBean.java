@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/Attic/CmsPreviewInfoBean.java,v $
- * Date   : $Date: 2010/05/21 14:27:40 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/05/27 09:42:23 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.ade.galleries.shared;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -39,11 +40,13 @@ import java.util.Map;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  */
 public class CmsPreviewInfoBean {
+
+    private Map<String, String> m_imageInfos;
 
     /** The html content of the preview. */
     private String m_previewHtml;
@@ -57,7 +60,18 @@ public class CmsPreviewInfoBean {
 
         m_previewHtml = "";
         m_propeties = new LinkedHashMap<String, String>();
+        m_imageInfos = new HashMap<String, String>();
         // implement
+    }
+
+    /**
+     * Returns the imageInfos.<p>
+     *
+     * @return the imageInfos
+     */
+    public Map<String, String> getImageInfos() {
+
+        return m_imageInfos;
     }
 
     /**
@@ -78,6 +92,16 @@ public class CmsPreviewInfoBean {
     public Map<String, String> getPropeties() {
 
         return m_propeties;
+    }
+
+    /**
+     * Sets the imageInfos.<p>
+     *
+     * @param imageInfos the imageInfos to set
+     */
+    public void setImageInfos(Map<String, String> imageInfos) {
+
+        m_imageInfos = imageInfos;
     }
 
     /**

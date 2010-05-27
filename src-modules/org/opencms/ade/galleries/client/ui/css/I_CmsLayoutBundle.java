@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2010/05/21 14:27:39 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/05/27 09:42:23 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import com.google.gwt.resources.client.CssResource;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -118,6 +118,54 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
          * @return the CSS class name
          */
         String detailsHolder();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String formatButton();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String formatLabel();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String formatSelectBox();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String formatsLine();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String formatsLineSize();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String formatsPanel();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String formatText();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String imagePanel();
 
         /** Access method.<p>
          * 
