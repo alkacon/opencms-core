@@ -2,9 +2,9 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder" xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	<ui:with field="resources" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
 	<g:HTML styleName="{resources.highlightCss.highlightBox}">
-		<div class="{resources.highlightCss.borderTop}"></div>
-		<div class="{resources.highlightCss.borderRight}"></div>
-		<div class="{resources.highlightCss.borderBottom}"></div>
-		<div class="{resources.highlightCss.borderLeft}"></div>	
+		<div ui:field="m_borderTop" class="{resources.highlightCss.borderTop}"></div>
+		<div ui:field="m_borderRight" class="{resources.highlightCss.borderRight}"></div>
+		<div ui:field="m_borderBottom" class="{resources.highlightCss.borderBottom}"></div>
+		<div ui:field="m_borderLeft" class="{resources.highlightCss.borderLeft}"></div>	
 	</g:HTML>
 </ui:UiBinder>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsHighlightingBorder.java,v $
- * Date   : $Date: 2010/04/13 09:17:18 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/05/27 09:35:07 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,9 +35,11 @@ import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsPositionBean;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 
@@ -46,7 +48,7 @@ import com.google.gwt.user.client.ui.HTML;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -95,11 +97,27 @@ public class CmsHighlightingBorder extends Composite {
     /** The ui-binder instance. */
     private static I_CmsHighlightingBorderUiBinder uiBinder = GWT.create(I_CmsHighlightingBorderUiBinder.class);
 
+    /** The bottom border. */
+    @UiField
+    protected DivElement m_borderBottom;
+
+    /** The left border. */
+    @UiField
+    protected DivElement m_borderLeft;
+
+    /** The right border. */
+    @UiField
+    protected DivElement m_borderRight;
+
+    /** The top border. */
+    @UiField
+    protected DivElement m_borderTop;
+
     /**
      * Constructor.<p>
      * 
      * @param position the position data
-     * @param color the border colour
+     * @param color the border color
      */
     public CmsHighlightingBorder(CmsPositionBean position, BorderColor color) {
 
@@ -113,7 +131,7 @@ public class CmsHighlightingBorder extends Composite {
      * @param width the width
      * @param positionLeft the absolute left position
      * @param positionTop the absolute top position
-     * @param color the border colour
+     * @param color the border color
      */
     public CmsHighlightingBorder(int height, int width, int positionLeft, int positionTop, BorderColor color) {
 
@@ -123,8 +141,8 @@ public class CmsHighlightingBorder extends Composite {
         Style style = getElement().getStyle();
         style.setLeft(positionLeft - BORDER_OFFSET, Unit.PX);
         style.setTop(positionTop - BORDER_OFFSET, Unit.PX);
-        style.setHeight(height + 2 * BORDER_OFFSET, Unit.PX);
-        style.setWidth(width + 2 * BORDER_OFFSET, Unit.PX);
+        setHeight(height + 2 * BORDER_OFFSET);
+        setWidth(width + 2 * BORDER_OFFSET);
     }
 
     /**
@@ -171,8 +189,8 @@ public class CmsHighlightingBorder extends Composite {
         Style style = getElement().getStyle();
         style.setLeft(positionLeft - BORDER_OFFSET, Unit.PX);
         style.setTop(positionTop - BORDER_OFFSET, Unit.PX);
-        style.setHeight(height + 2 * BORDER_OFFSET, Unit.PX);
-        style.setWidth(width + 2 * BORDER_OFFSET, Unit.PX);
+        setHeight(height + 2 * BORDER_OFFSET);
+        setWidth(width + 2 * BORDER_OFFSET);
     }
 
     /**
@@ -181,6 +199,30 @@ public class CmsHighlightingBorder extends Composite {
     public void show() {
 
         setVisible(true);
+    }
+
+    /**
+     * Sets the highlighting height.<p>
+     * 
+     * @param height the height
+     */
+    private void setHeight(int height) {
+
+        m_borderRight.getStyle().setHeight(height, Unit.PX);
+        m_borderLeft.getStyle().setHeight(height, Unit.PX);
+        m_borderBottom.getStyle().setTop(height, Unit.PX);
+    }
+
+    /**
+     * Sets the highlighting width.<p>
+     * 
+     * @param width the width
+     */
+    private void setWidth(int width) {
+
+        m_borderTop.getStyle().setWidth(width, Unit.PX);
+        m_borderBottom.getStyle().setWidth(width, Unit.PX);
+        m_borderRight.getStyle().setLeft(width, Unit.PX);
     }
 
 }

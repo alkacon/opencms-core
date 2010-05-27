@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsDragContainerElement.java,v $
- * Date   : $Date: 2010/05/26 09:42:39 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2010/05/27 09:35:07 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,9 +33,11 @@ package org.opencms.ade.containerpage.client.draganddrop;
 
 import org.opencms.ade.containerpage.client.ui.CmsElementOptionBar;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.ui.CmsHighlightingBorder;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.css.I_CmsToolbarButtonLayoutBundle;
 import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.gwt.client.util.CmsPositionBean;
 
 import com.google.gwt.dom.client.EventTarget;
 import com.google.gwt.dom.client.NativeEvent;
@@ -62,6 +64,7 @@ import com.google.gwt.event.dom.client.MouseWheelHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.AbsolutePanel;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -69,7 +72,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 8.0.0
  */
@@ -87,6 +90,9 @@ implements I_CmsDragContainerElement<I_CmsDragTargetContainer>, HasClickHandlers
 
     /** The drag handle widget. */
     protected Widget m_dragHandle;
+
+    /** Highlighting border for this element. */
+    protected CmsHighlightingBorder m_highlighting;
 
     /** The elements client id. */
     private String m_clientId;
@@ -309,6 +315,17 @@ implements I_CmsDragContainerElement<I_CmsDragTargetContainer>, HasClickHandlers
     }
 
     /**
+     * Puts a highlighting border around the element.<p>
+     */
+    public void highlightElement() {
+
+        m_highlighting = new CmsHighlightingBorder(CmsPositionBean.generatePositionInfo(this), isNew()
+        ? CmsHighlightingBorder.BorderColor.blue
+        : CmsHighlightingBorder.BorderColor.red);
+        RootPanel.get().add(m_highlighting);
+    }
+
+    /**
      * @see org.opencms.gwt.client.draganddrop.I_CmsDragElement#isHandleEvent(com.google.gwt.dom.client.NativeEvent)
      */
     public boolean isHandleEvent(NativeEvent event) {
@@ -351,6 +368,15 @@ implements I_CmsDragContainerElement<I_CmsDragTargetContainer>, HasClickHandlers
         if (m_elementOptionBar != null) {
             m_elementOptionBar.addStyleName(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().cmsHovering());
         }
+    }
+
+    /**
+     * Removes the highlighting border.<p>
+     */
+    public void removeHighlighting() {
+
+        m_highlighting.removeFromParent();
+        m_highlighting = null;
     }
 
     /**

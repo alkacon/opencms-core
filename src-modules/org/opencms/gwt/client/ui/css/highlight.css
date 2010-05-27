@@ -6,49 +6,11 @@
 
 .highlightBox div{
 	position: absolute;
-	height: 100%;
-	width: 100%;
+	top: 0px;
+	left: 0px;
 }
 
-@if user.agent ie6 {
-	/** the measured position of an element seems to two pixels off in ie6/7
-		so the highlighting border is positioned differently here **/
 
-	.borderLeft{
-		top: -2px;
-		left: -2px;
-	}
-	.borderTop{
-		top: -2px;
-		left: -2px;
-	}
-	.borderBottom{
-		bottom: 2px;
-		left: -2px;
-	}
-	.borderRight{
-		top: -2px;
-		right: 2px;
-	}
-
-} @else {
-	.borderLeft{
-		top: 0px;
-		left: 0px;
-	}
-	.borderTop{
-		top: 0px;
-		left: 0px;
-	}
-	.borderBottom{
-		bottom: 0px;
-		left: 0px;
-	}
-	.borderRight{
-		top: 0px;
-		right: 0px;
-	}
-}
 @sprite .colorRed .borderLeft{
 	gwt-image: 'highlightBorderLeftRed';
 }
