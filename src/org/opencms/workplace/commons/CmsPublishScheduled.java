@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishScheduled.java,v $
- * Date   : $Date: 2009/10/14 11:03:12 $
- * Version: $Revision: 1.3.2.2 $
+ * Date   : $Date: 2010/05/27 07:13:09 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author Mario Jaeger
  * 
- * @version $Revision: 1.3.2.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.5.1
  */
@@ -249,10 +249,7 @@ public class CmsPublishScheduled extends CmsDialog {
         String userName = getCms().getRequestContext().currentUser().getName();
 
         // get the java date format
-        DateFormat dateFormat = DateFormat.getDateTimeInstance(
-            DateFormat.SHORT,
-            DateFormat.SHORT,
-            getCms().getRequestContext().getLocale());
+        DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, getLocale());
         Date date = dateFormat.parse(publishScheduledDate);
 
         // check if the selected date is in the future
@@ -273,7 +270,7 @@ public class CmsPublishScheduled extends CmsDialog {
 
         // create the temporary project, which is deleted after publishing
         // the publish scheduled date in project name
-        String dateTime = CmsDateUtil.getDateTime(date, DateFormat.SHORT, getCms().getRequestContext().getLocale());
+        String dateTime = CmsDateUtil.getDateTime(date, DateFormat.SHORT, getLocale());
         // the resource name to publish scheduled
         String resName = CmsResource.getName(resource);
         String projectName = key(Messages.GUI_PUBLISH_SCHEDULED_PROJECT_NAME_2, new Object[] {resName, dateTime});
