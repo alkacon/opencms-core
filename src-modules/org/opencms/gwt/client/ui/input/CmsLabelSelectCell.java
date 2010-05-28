@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsLabelSelectCell.java,v $
- * Date   : $Date: 2010/05/11 13:41:15 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/05/28 08:22:28 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,18 +31,18 @@
 
 package org.opencms.gwt.client.ui.input;
 
-import com.google.gwt.user.client.ui.Label;
+import org.opencms.gwt.client.ui.I_CmsTruncable;
 
 /**
  * This class represents a single select option in the selector of the select box.
  */
-public class CmsLabelSelectCell extends A_CmsSelectCell {
+public class CmsLabelSelectCell extends A_CmsSelectCell implements I_CmsTruncable {
 
     /** The value of the select option. */
     protected String m_value;
 
     /** The label of which this select cell consists. */
-    private Label m_label = new Label();
+    private CmsLabel m_label = new CmsLabel();
 
     /** The text of the select option. */
     private String m_text;
@@ -79,6 +79,14 @@ public class CmsLabelSelectCell extends A_CmsSelectCell {
     public String getValue() {
 
         return m_value;
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.I_CmsTruncable#truncate(java.lang.String, int)
+     */
+    public void truncate(String textMetricsKey, int labelWidth) {
+
+        m_label.truncate(textMetricsKey, labelWidth);
     }
 
 }

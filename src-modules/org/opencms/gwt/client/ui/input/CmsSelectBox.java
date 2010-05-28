@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsSelectBox.java,v $
- * Date   : $Date: 2010/05/11 13:41:15 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2010/05/28 08:22:28 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import java.util.Map;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 8.0.0
  * 
@@ -160,7 +160,7 @@ public class CmsSelectBox extends A_CmsSelectBox<CmsLabelSelectCell> implements 
     @Override
     public void truncateOpener(String prefix, int width) {
 
-        m_openerWidget.truncate(prefix + TM_OPENER_LABEL, width);
+        m_openerWidget.truncate(prefix + '_' + TM_OPENER_LABEL, width);
     }
 
     /**
