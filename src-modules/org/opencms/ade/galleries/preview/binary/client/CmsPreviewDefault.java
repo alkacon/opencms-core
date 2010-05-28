@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/ui/Attic/CmsPreviewDefault.java,v $
- * Date   : $Date: 2010/05/27 09:42:23 $
- * Version: $Revision: 1.2 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/preview/binary/client/Attic/CmsPreviewDefault.java,v $
+ * Date   : $Date: 2010/05/28 09:31:38 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,10 +29,12 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.galleries.client.preview.ui;
+package org.opencms.ade.galleries.preview.binary.client;
 
-import org.opencms.ade.galleries.client.ui.Messages;
+import org.opencms.ade.galleries.client.preview.ui.A_CmsPreview;
+import org.opencms.ade.galleries.client.preview.ui.CmsPropertiesTab;
 import org.opencms.ade.galleries.shared.CmsPreviewInfoBean;
+import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
 import org.opencms.gwt.client.ui.CmsTabbedPanel.CmsTabLayout;
 
@@ -44,7 +46,7 @@ import com.google.gwt.user.client.ui.Widget;
  *  
  * @author Polina Smagina
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.
  */
@@ -56,7 +58,7 @@ public class CmsPreviewDefault extends A_CmsPreview {
      * @param dialogHeight the dialog height to set
      * @param dialogWidth the dialog width to set     
      */
-    public CmsPreviewDefault(String dialogMode, int dialogHeight, int dialogWidth) {
+    public CmsPreviewDefault(GalleryMode dialogMode, int dialogHeight, int dialogWidth) {
 
         super(dialogMode, dialogHeight, dialogWidth);
     }
@@ -78,7 +80,7 @@ public class CmsPreviewDefault extends A_CmsPreview {
 
         m_tabbedPanel = new CmsTabbedPanel<Widget>(CmsTabLayout.small, false);
         CmsPropertiesTab tab = new CmsPropertiesTab(m_dialogMode, height, width, infoBean.getPropeties());
-        m_tabbedPanel.add(tab, Messages.get().key(Messages.GUI_PREVIEW_TAB_PROPERTIES_0));
+        m_tabbedPanel.add(tab, tab.getTabName());
 
         m_tabsHolder.add(m_tabbedPanel);
     }

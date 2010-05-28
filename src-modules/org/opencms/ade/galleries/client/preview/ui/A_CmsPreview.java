@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/ui/Attic/A_CmsPreview.java,v $
- * Date   : $Date: 2010/05/27 09:42:23 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/05/28 09:31:39 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.ade.galleries.client.preview.ui;
 
 import org.opencms.ade.galleries.shared.CmsPreviewInfoBean;
+import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
 import org.opencms.gwt.client.ui.I_CmsButton;
@@ -53,7 +54,7 @@ import com.google.gwt.user.client.ui.Widget;
  *  
  * @author Polina Smagina
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.
  */
@@ -73,7 +74,7 @@ public abstract class A_CmsPreview extends Composite {
     @UiField
     protected CmsPushButton m_closeButton;
 
-    protected String m_dialogMode;
+    protected GalleryMode m_dialogMode;
 
     /** The parent panel of the preview dialog. */
     @UiField
@@ -105,7 +106,7 @@ public abstract class A_CmsPreview extends Composite {
      * @param dialogWidth the dialog width to set
      */
     // TODO: this contrustor should be called only once, when the gallery dialod is opened and set to invisible
-    public A_CmsPreview(String dialogMode, int dialogHeight, int dialogWidth) {
+    public A_CmsPreview(GalleryMode dialogMode, int dialogHeight, int dialogWidth) {
 
         initWidget(uiBinder.createAndBindUi(this));
 

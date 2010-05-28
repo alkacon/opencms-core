@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/ui/Attic/CmsImagePreview.java,v $
- * Date   : $Date: 2010/05/27 09:42:23 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/preview/image/client/Attic/CmsImagePreview.java,v $
+ * Date   : $Date: 2010/05/28 09:31:39 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -29,12 +29,14 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.galleries.client.preview.ui;
+package org.opencms.ade.galleries.preview.image.client;
 
+import org.opencms.ade.galleries.client.preview.ui.A_CmsPreview;
+import org.opencms.ade.galleries.client.preview.ui.CmsPropertiesTab;
 import org.opencms.ade.galleries.client.ui.Messages;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.shared.CmsPreviewInfoBean;
-import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
+import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
 import org.opencms.gwt.client.ui.CmsTabbedPanel.CmsTabLayout;
 
@@ -50,7 +52,7 @@ public class CmsImagePreview extends A_CmsPreview {
     /** The default min height of the image. */
     private static final int WIDTH_MIN = 640;
 
-    public CmsImagePreview(String dialogMode, int dialogHeight, int dialogWidth) {
+    public CmsImagePreview(GalleryMode dialogMode, int dialogHeight, int dialogWidth) {
 
         // TODO: Auto-generated constructor stub
         super(dialogMode, dialogHeight, dialogWidth);
@@ -63,7 +65,7 @@ public class CmsImagePreview extends A_CmsPreview {
     @Override
     public void fillPreviewPanel(int height, int width, String html) {
 
-        switch (I_CmsGalleryProviderConstants.GalleryMode.valueOf(m_dialogMode)) {
+        switch (m_dialogMode) {
             case ade:
 
             case widget:

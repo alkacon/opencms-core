@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/ui/Attic/CmsPropertiesTab.java,v $
- * Date   : $Date: 2010/05/27 09:42:23 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/05/28 09:31:39 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.ade.galleries.client.preview.ui;
 
 import org.opencms.ade.galleries.client.ui.Messages;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 import org.opencms.gwt.client.ui.CmsPushButton;
 
 import java.util.Iterator;
@@ -53,7 +54,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.
  */
@@ -85,7 +86,7 @@ public class CmsPropertiesTab extends Composite {
     CmsPushButton m_selectButton;
 
     /** The mode of the gallery. */
-    private String m_dialogMode;
+    private GalleryMode m_dialogMode;
 
     /**
      * The constructor.<p>
@@ -94,7 +95,7 @@ public class CmsPropertiesTab extends Composite {
      * @param width the properties tab width
      * @param properties the properties to display
      */
-    public CmsPropertiesTab(String dialogMode, int height, int width, Map<String, String> properties) {
+    public CmsPropertiesTab(GalleryMode dialogMode, int height, int width, Map<String, String> properties) {
 
         initWidget(uiBinder.createAndBindUi(this));
 
@@ -113,9 +114,19 @@ public class CmsPropertiesTab extends Composite {
      *
      * @return the dialogMode
      */
-    public String getDialogMode() {
+    public GalleryMode getDialogMode() {
 
         return m_dialogMode;
+    }
+
+    /**
+     * Returns the tab name.<p>
+     * 
+     * @return the tab name
+     */
+    public String getTabName() {
+
+        return Messages.get().key(Messages.GUI_PREVIEW_TAB_PROPERTIES_0);
     }
 
     /**

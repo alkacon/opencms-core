@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleryControllerHandler.java,v $
- * Date   : $Date: 2010/05/27 10:28:29 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2010/05/28 09:31:39 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,14 +31,11 @@
 
 package org.opencms.ade.galleries.client;
 
-import org.opencms.ade.galleries.client.preview.ui.A_CmsPreview;
-import org.opencms.ade.galleries.client.preview.ui.CmsImagePreview;
 import org.opencms.ade.galleries.client.ui.CmsGalleryDialog;
 import org.opencms.ade.galleries.shared.CmsCategoryBean;
 import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
 import org.opencms.ade.galleries.shared.CmsGalleryFolderBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
-import org.opencms.ade.galleries.shared.CmsPreviewInfoBean;
 import org.opencms.ade.galleries.shared.CmsResourceTypeBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
@@ -52,7 +49,7 @@ import java.util.List;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 8.0.0
 
@@ -61,10 +58,6 @@ public class CmsGalleryControllerHandler {
 
     /** The reference to the gallery dialog. */
     private CmsGalleryDialog m_galleryDialog;
-
-    // TODO: move to the preview controller handler
-    /** The reference to the preview dialog. */
-    private A_CmsPreview m_previewDialog;
 
     /**
      * Constructor.<p>
@@ -184,25 +177,25 @@ public class CmsGalleryControllerHandler {
      */
     // TODO: open the right pewview depending on the resource type
     // TODO: move to the preview handler
-    public void onOpenPreview(String dialogMode, CmsPreviewInfoBean previewBean) {
-
-        // 
-        int dialogHeight = m_galleryDialog.getParentPanel().getOffsetHeight();
-        int dialogWidth = m_galleryDialog.getParentPanel().getOffsetWidth();
-        // TODO: the preview dialog should exists already, only the new size should be updated and the new content filled
-        // TODO: do not create new dialog
-        /*A_CmsPreview preview = new CmsPreviewDefault(
-            dialogMode,
-            dialogHeight,
-            dialogWidth);
-        preview.fillPreviewPanel(dialogHeight, dialogWidth, previewBean.getPreviewHtml());
-        preview.fillTabs(dialogHeight, dialogWidth, previewBean);*/
-
-        A_CmsPreview preview = new CmsImagePreview(dialogMode, dialogHeight, dialogWidth);
-        preview.fillPreviewPanel(dialogHeight, dialogWidth, previewBean.getPreviewHtml());
-        preview.fillTabs(dialogHeight, dialogWidth, previewBean);
-        m_galleryDialog.getParentPanel().add(preview);
-    }
+    //    public void onOpenPreview(GalleryMode dialogMode, CmsPreviewInfoBean previewBean) {
+    //
+    //        // 
+    //        int dialogHeight = m_galleryDialog.getParentPanel().getOffsetHeight();
+    //        int dialogWidth = m_galleryDialog.getParentPanel().getOffsetWidth();
+    //        // TODO: the preview dialog should exists already, only the new size should be updated and the new content filled
+    //        // TODO: do not create new dialog
+    //        /*A_CmsPreview preview = new CmsPreviewDefault(
+    //            dialogMode,
+    //            dialogHeight,
+    //            dialogWidth);
+    //        preview.fillPreviewPanel(dialogHeight, dialogWidth, previewBean.getPreviewHtml());
+    //        preview.fillTabs(dialogHeight, dialogWidth, previewBean);*/
+    //
+    //        A_CmsPreview preview = new CmsImagePreview(dialogMode, dialogHeight, dialogWidth);
+    //        preview.fillPreviewPanel(dialogHeight, dialogWidth, previewBean.getPreviewHtml());
+    //        preview.fillTabs(dialogHeight, dialogWidth, previewBean);
+    //        m_galleryDialog.getParentPanel().add(preview);
+    //    }
 
     /**
      * Will be triggered when the results tab is selected.<p>

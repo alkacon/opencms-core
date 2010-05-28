@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/preview/binary/client/Attic/CmsResourcePreview.java,v $
- * Date   : $Date: 2010/05/28 09:31:38 $
- * Version: $Revision: 1.2 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/preview/image/client/Attic/CmsResourcePreview.java,v $
+ * Date   : $Date: 2010/05/28 09:31:39 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,42 +29,23 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.galleries.preview.binary.client;
+package org.opencms.ade.galleries.preview.image.client;
 
 import org.opencms.ade.galleries.client.preview.A_CmsResourcePreview;
-import org.opencms.ade.galleries.preview.binary.shared.I_CmsBinaryPreviewProvider;
+import org.opencms.ade.galleries.preview.image.shared.I_CmsImagePreviewProvider;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 
 import com.google.gwt.user.client.ui.RootPanel;
 
-/**
- * The binary resource preview.<p>
- * 
- * @author Tobias Herrmann
- * 
- * @version $Revision: 1.2 $
- * 
- * @since 8.0.0
- */
 public class CmsResourcePreview extends A_CmsResourcePreview {
-
-    /**
-     * Debug function.<p>
-     * 
-     * @param text text to display
-     */
-    //TODO: remove
-    private static native void alert(String text) /*-{
-        $wnd.alert(text);
-    }-*/;
 
     /**
      * @see org.opencms.ade.galleries.client.preview.I_CmsResourcePreview#getPreviewName()
      */
     public String getPreviewName() {
 
-        return I_CmsBinaryPreviewProvider.PREVIEW_NAME;
+        return I_CmsImagePreviewProvider.PREVIEW_NAME;
     }
 
     /**
@@ -77,10 +58,7 @@ public class CmsResourcePreview extends A_CmsResourcePreview {
         // inserting the preview into the DOM
         GalleryMode mode = I_CmsGalleryProviderConstants.GalleryMode.valueOf(galleryMode);
 
-        CmsPreviewDefault preview = new CmsPreviewDefault(
-            mode,
-            parentPanel.getOffsetHeight(),
-            parentPanel.getOffsetWidth());
+        CmsImagePreview preview = new CmsImagePreview(mode, parentPanel.getOffsetHeight(), parentPanel.getOffsetWidth());
         parentPanel.add(preview);
     }
 
@@ -89,6 +67,8 @@ public class CmsResourcePreview extends A_CmsResourcePreview {
      */
     public void selectResource(String galleryMode, String resourcePath) {
 
-        alert("select resource " + resourcePath);
+        // TODO: Auto-generated method stub
+
     }
+
 }

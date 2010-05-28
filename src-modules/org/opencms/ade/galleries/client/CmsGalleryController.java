@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleryController.java,v $
- * Date   : $Date: 2010/05/27 10:28:29 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/05/28 09:31:39 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,7 +35,6 @@ import org.opencms.ade.galleries.shared.CmsCategoryBean;
 import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
 import org.opencms.ade.galleries.shared.CmsGalleryFolderBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
-import org.opencms.ade.galleries.shared.CmsPreviewInfoBean;
 import org.opencms.ade.galleries.shared.CmsResourceTypeBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
@@ -54,9 +53,7 @@ import org.opencms.util.CmsStringUtil;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
 
@@ -68,7 +65,7 @@ import com.google.gwt.core.client.GWT;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 8.0.0
  */
@@ -275,36 +272,36 @@ public class CmsGalleryController {
      * @param id the item to select
      */
     //TODO: remove function
-    public void openPreview(final String id) {
-
-        // TODO: replace dummy with data from rpc call
-        CmsPreviewInfoBean dummyBean = new CmsPreviewInfoBean();
-        dummyBean.setPreviewHtml(new String("/opencms/opencms/demo_t3/images/Strelitzie.JPG"));
-        Map<String, String> dummyProps = new LinkedHashMap<String, String>();
-        dummyProps.put("Title", "Mein Title");
-        dummyProps.put("Description", "Mein Title");
-        dummyProps.put("Groesse", "Mein Title");
-        dummyProps.put("Groesse und sehr lang und so", "Mein Title");
-        dummyProps.put("Groesse", "Mein Title und hier auch etwas länger");
-        dummyProps.put("Groesse", "Mein Title");
-        dummyProps.put("Groesse und alles durcheinander", "Mein Title und auch enen langen Text");
-        dummyProps.put("Groesse", "Mein Title");
-        dummyProps.put("Groesse", "Mein Title");
-        dummyProps.put("Groesse", "Mein Title udn am Ende auch");
-        dummyBean.setPropeties(dummyProps);
-
-        Map<String, String> dummyInfos = new LinkedHashMap<String, String>();
-        dummyInfos.put(I_CmsGalleryProviderConstants.ImageParams.title.name(), "");
-        dummyInfos.put(I_CmsGalleryProviderConstants.ImageParams.file_name.name(), "");
-        dummyInfos.put(I_CmsGalleryProviderConstants.ImageParams.file_size.name(), "");
-        dummyInfos.put(I_CmsGalleryProviderConstants.ImageParams.file_type.name(), "Mein Title");
-        dummyInfos.put(I_CmsGalleryProviderConstants.ImageParams.height.name(), "");
-        dummyInfos.put(I_CmsGalleryProviderConstants.ImageParams.width.name(), "");
-        dummyInfos.put(I_CmsGalleryProviderConstants.ImageParams.path.name(), "");
-        dummyBean.setImageInfos(dummyInfos);
-        m_handler.onOpenPreview(m_dialogMode.name(), dummyBean);
-        //TODO: call the rpc action and open the preview dialog in the callback
-    }
+    //    public void openPreview(final String id) {
+    //
+    //        // TODO: replace dummy with data from rpc call
+    //        CmsPreviewInfoBean dummyBean = new CmsPreviewInfoBean();
+    //        dummyBean.setPreviewHtml(new String("/opencms/opencms/demo_t3/images/Strelitzie.JPG"));
+    //        Map<String, String> dummyProps = new LinkedHashMap<String, String>();
+    //        dummyProps.put("Title", "Mein Title");
+    //        dummyProps.put("Description", "Mein Title");
+    //        dummyProps.put("Groesse", "Mein Title");
+    //        dummyProps.put("Groesse und sehr lang und so", "Mein Title");
+    //        dummyProps.put("Groesse", "Mein Title und hier auch etwas länger");
+    //        dummyProps.put("Groesse", "Mein Title");
+    //        dummyProps.put("Groesse und alles durcheinander", "Mein Title und auch enen langen Text");
+    //        dummyProps.put("Groesse", "Mein Title");
+    //        dummyProps.put("Groesse", "Mein Title");
+    //        dummyProps.put("Groesse", "Mein Title udn am Ende auch");
+    //        dummyBean.setPropeties(dummyProps);
+    //
+    //        Map<String, String> dummyInfos = new LinkedHashMap<String, String>();
+    //        dummyInfos.put(I_CmsGalleryProviderConstants.ImageParams.title.name(), "");
+    //        dummyInfos.put(I_CmsGalleryProviderConstants.ImageParams.file_name.name(), "");
+    //        dummyInfos.put(I_CmsGalleryProviderConstants.ImageParams.file_size.name(), "");
+    //        dummyInfos.put(I_CmsGalleryProviderConstants.ImageParams.file_type.name(), "Mein Title");
+    //        dummyInfos.put(I_CmsGalleryProviderConstants.ImageParams.height.name(), "");
+    //        dummyInfos.put(I_CmsGalleryProviderConstants.ImageParams.width.name(), "");
+    //        dummyInfos.put(I_CmsGalleryProviderConstants.ImageParams.path.name(), "");
+    //        dummyBean.setImageInfos(dummyInfos);
+    //        m_handler.onOpenPreview(m_dialogMode, dummyBean);
+    //        //TODO: call the rpc action and open the preview dialog in the callback
+    //    }
 
     /**
      * Opens the preview for the given resource by the given resource type.<p>
