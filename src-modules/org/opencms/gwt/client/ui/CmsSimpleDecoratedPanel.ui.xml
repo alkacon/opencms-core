@@ -3,12 +3,20 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	<ui:style>
 		.panel {
+
 		}
 		
 		.decorationBox {
 			float:left;
+			clear: both;
 			margin-top: 5px;
 		}
+		
+		@if user.agent ie6 {
+			.decorationBox * { 
+				display: inline;
+			}
+		} 
 		
 		.primary {
 			

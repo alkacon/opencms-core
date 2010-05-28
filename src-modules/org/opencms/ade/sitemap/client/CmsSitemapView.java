@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapView.java,v $
- * Date   : $Date: 2010/05/27 11:13:52 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2010/05/28 14:00:43 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 8.0.0
  */
@@ -199,6 +199,7 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler, NativePreviewHand
         super.onModuleLoad();
         I_CmsLayoutBundle.INSTANCE.rootCss().ensureInjected();
         I_CmsLayoutBundle.INSTANCE.pageCss().ensureInjected();
+        I_CmsLayoutBundle.INSTANCE.sitemapItemCss().ensureInjected();
         I_CmsImageBundle.INSTANCE.buttonCss().ensureInjected();
 
         RootPanel.getBodyElement().addClassName(I_CmsLayoutBundle.INSTANCE.rootCss().root());
@@ -277,21 +278,6 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler, NativePreviewHand
     }
 
     /**
-     * @see com.google.gwt.user.client.Window.ClosingHandler#onWindowClosing(com.google.gwt.user.client.Window.ClosingEvent)
-     */
-    public void onWindowClosing(ClosingEvent event) {
-
-        // unload event handling
-        if (!m_controller.isDirty()) {
-            return;
-        }
-        boolean savePage = Window.confirm(Messages.get().key(Messages.GUI_CONFIRM_DIRTY_LEAVING_0));
-        if (savePage) {
-            m_controller.commit(true);
-        }
-    }
-
-    /**
      * @see com.google.gwt.user.client.Event.NativePreviewHandler#onPreviewNativeEvent(com.google.gwt.user.client.Event.NativePreviewEvent)
      */
     public void onPreviewNativeEvent(NativePreviewEvent event) {
@@ -312,6 +298,21 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler, NativePreviewHand
         }
         if ((nativeEvent.getKeyCode() == 'r') || (nativeEvent.getKeyCode() == 'R')) {
             m_controller.redo();
+        }
+    }
+
+    /**
+     * @see com.google.gwt.user.client.Window.ClosingHandler#onWindowClosing(com.google.gwt.user.client.Window.ClosingEvent)
+     */
+    public void onWindowClosing(ClosingEvent event) {
+
+        // unload event handling
+        if (!m_controller.isDirty()) {
+            return;
+        }
+        boolean savePage = Window.confirm(Messages.get().key(Messages.GUI_CONFIRM_DIRTY_LEAVING_0));
+        if (savePage) {
+            m_controller.commit(true);
         }
     }
 }

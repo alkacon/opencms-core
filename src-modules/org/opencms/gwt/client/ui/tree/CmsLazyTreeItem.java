@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/tree/Attic/CmsLazyTreeItem.java,v $
- * Date   : $Date: 2010/05/25 12:36:33 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/05/28 14:00:43 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,8 @@ package org.opencms.gwt.client.ui.tree;
 
 import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsListTreeCss;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 
 import com.google.gwt.user.client.ui.Image;
@@ -45,7 +47,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Georg Westenberger
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -77,6 +79,9 @@ public class CmsLazyTreeItem extends CmsTreeItem {
             super(true, new Label(Messages.get().key(Messages.GUI_LOADING_0)));
         }
     }
+
+    /** The CSS bundle used for this widget. */
+    private static final I_CmsListTreeCss CSS = I_CmsLayoutBundle.INSTANCE.listTreeCss();
 
     /** The load state of this tree item. */
     private LoadState m_loadState = LoadState.UNLOADED;
@@ -119,8 +124,8 @@ public class CmsLazyTreeItem extends CmsTreeItem {
      */
     public void onFinishLoading() {
 
-        m_opener.getUpFace().setImage(getPlusImage());
-        m_opener.getDownFace().setImage(getMinusImage());
+        m_opener.setUpFace("", CSS.plus());
+        m_opener.setDownFace("", CSS.minus());
         m_loadState = LoadState.LOADED;
     }
 

@@ -1,0 +1,9 @@
+.sitemapEntryDecoration {
+
+}
+
+@if user.agent ie6 {
+	.sitemapEntryDecoration {
+		margin-top: 25px !important;
+	}
+}

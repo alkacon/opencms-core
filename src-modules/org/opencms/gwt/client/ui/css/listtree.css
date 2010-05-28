@@ -23,7 +23,7 @@
 @if user.agent ie6 {
 	.listTreeItemHandler {
 		display: inline;
-		vertical-align: -20px;
+		vertical-align: bottom;
 	}
 	
 	.listTreeItemHandler * {

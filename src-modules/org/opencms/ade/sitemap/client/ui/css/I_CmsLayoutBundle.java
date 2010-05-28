@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2010/03/15 15:12:54 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/05/28 14:00:43 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import com.google.gwt.resources.client.CssResource;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -89,5 +89,13 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
      */
     @Source("root.css")
     I_CmsRootCss rootCss();
+    
+    /**
+     * Access method.<p>
+     * 
+     * @return the root CSS
+     **/
+    @Source("sitemapItem.css")
+    I_CmsSitemapItemCss sitemapItemCss();
 
 }

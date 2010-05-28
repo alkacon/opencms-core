@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/tree/Attic/CmsTreeItem.java,v $
- * Date   : $Date: 2010/05/25 12:36:33 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/05/28 14:00:43 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,6 @@ import com.google.gwt.animation.client.Animation;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -66,7 +65,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Georg Westenberger
  * @author Michael Moossen
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 8.0.0
  */
@@ -85,7 +84,7 @@ public class CmsTreeItem extends CmsListItem {
     protected CmsList<CmsTreeItem> m_children;
 
     /** The element showing the open/close icon. */
-    protected ToggleButton m_opener;
+    protected CmsToggleButton m_opener;
 
     /** The style variable controlling this tree item's leaf/non-leaf state. */
     private CmsStyleVariable m_leafStyleVar;
@@ -449,7 +448,7 @@ public class CmsTreeItem extends CmsListItem {
      * 
      * @return a button
      */
-    protected ToggleButton createOpener() {
+    protected CmsToggleButton createOpener() {
 
         final CmsToggleButton opener = new CmsToggleButton();
         opener.setStyleName(CSS.listTreeItemHandler());

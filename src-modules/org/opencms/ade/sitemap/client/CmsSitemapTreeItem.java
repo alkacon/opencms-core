@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapTreeItem.java,v $
- * Date   : $Date: 2010/05/20 09:17:29 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/05/28 14:00:43 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,8 @@
 
 package org.opencms.ade.sitemap.client;
 
+import org.opencms.ade.sitemap.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.ade.sitemap.client.ui.css.I_CmsSitemapItemCss;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.file.CmsResource;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
@@ -42,7 +44,7 @@ import org.opencms.gwt.client.ui.tree.CmsTreeItem;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 8.0.0
  * 
@@ -50,6 +52,8 @@ import org.opencms.gwt.client.ui.tree.CmsTreeItem;
  * @see org.opencms.ade.sitemap.shared.CmsClientSitemapEntry
  */
 public class CmsSitemapTreeItem extends CmsLazyTreeItem {
+    /** The CSS bundle used by this widget. */
+    private static final I_CmsSitemapItemCss CSS = I_CmsLayoutBundle.INSTANCE.sitemapItemCss();
 
     /** The list item widget of this item. */
     private CmsListItemWidget m_listItemWidget;
@@ -74,6 +78,7 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
             name = name.substring(0, name.length() - 1);
         }
         setId(name);
+        m_decoratedPanel.addDecorationBoxStyle(CSS.sitemapEntryDecoration());
         m_listItemWidget = widget;
         m_originalPath = sitePath;
         m_sitePath = sitePath;
