@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishSelectPanel.java,v $
- * Date   : $Date: 2010/05/11 09:11:52 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2010/05/28 08:46:16 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -79,7 +79,7 @@ import com.google.gwt.user.client.ui.Widget;
  *  
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 8.0.0
  */
@@ -211,8 +211,16 @@ public class CmsPublishSelectPanel extends Composite implements I_CmsPublishSele
         items.add(new CmsPair<String, String>(
             CmsUUID.getNullUUID().toString(),
             messages.key(Messages.GUI_PUBLISH_DIALOG_MY_CHANGES_0)));
+        boolean foundOldProject = false;
         for (CmsProjectBean project : projects) {
             items.add(new CmsPair<String, String>(project.getId().toString(), project.getName()));
+
+            // look if the project id from the last publish list is among the available projects.
+            // (this might not be the case if the project has been deleted in the meantime.)
+            if (project.getId().equals(publishOptions.getProjectId())) {
+                foundOldProject = true;
+            }
+
         }
         m_projectSelector.setItems(items);
         m_projectSelector.addStyleName(CSS.selector());
@@ -220,7 +228,9 @@ public class CmsPublishSelectPanel extends Composite implements I_CmsPublishSele
         m_publishDialog = publishDialog;
         m_checkboxRelated.setChecked(publishOptions.isIncludeRelated());
         m_checkboxSiblings.setChecked(publishOptions.isIncludeSiblings());
-        m_projectSelector.selectValue(publishOptions.getProjectId().toString());
+        if (foundOldProject) {
+            m_projectSelector.selectValue(publishOptions.getProjectId().toString());
+        }
 
         m_projectSelector.addValueChangeHandler(new ValueChangeHandler<String>() {
 
