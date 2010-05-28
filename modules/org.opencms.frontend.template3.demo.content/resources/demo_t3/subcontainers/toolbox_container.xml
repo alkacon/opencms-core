@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<AlkaconSubContainers xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/workplace/editors/ade/schemas/sub_container.xsd">
+<AlkaconSubContainers xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.ade.containerpage/schemas/sub_container.xsd">
   <AlkaconSubContainer language="en">
     <SubContainers>
       <Title><![CDATA[Toolbox container]]></Title>

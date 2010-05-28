@@ -1,6 +1,6 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
     <xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd" />
-    <xsd:include schemaLocation="opencms://system/workplace/editors/ade/schemas/type.xsd" />
+    <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.containerpage/schemas/type.xsd" />
     
     <xsd:element name="ADETypeConfigurations" type="OpenCmsADETypeConfigurations" />
 

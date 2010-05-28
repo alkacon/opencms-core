@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsDragContainerElement.java,v $
- * Date   : $Date: 2010/05/27 09:35:07 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2010/05/28 12:29:08 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,7 +72,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 8.0.0
  */
@@ -319,10 +319,14 @@ implements I_CmsDragContainerElement<I_CmsDragTargetContainer>, HasClickHandlers
      */
     public void highlightElement() {
 
-        m_highlighting = new CmsHighlightingBorder(CmsPositionBean.generatePositionInfo(this), isNew()
-        ? CmsHighlightingBorder.BorderColor.blue
-        : CmsHighlightingBorder.BorderColor.red);
-        RootPanel.get().add(m_highlighting);
+        if (m_highlighting == null) {
+            m_highlighting = new CmsHighlightingBorder(CmsPositionBean.generatePositionInfo(this), isNew()
+            ? CmsHighlightingBorder.BorderColor.blue
+            : CmsHighlightingBorder.BorderColor.red);
+            RootPanel.get().add(m_highlighting);
+        } else {
+            m_highlighting.setPosition(CmsPositionBean.generatePositionInfo(this));
+        }
     }
 
     /**
@@ -350,6 +354,7 @@ implements I_CmsDragContainerElement<I_CmsDragTargetContainer>, HasClickHandlers
      */
     public void prepareDrag() {
 
+        removeHighlighting();
         String width = CmsDomUtil.getCurrentStyle(getElement(), CmsDomUtil.Style.width);
         Style style = getElement().getStyle();
         style.setPosition(Position.ABSOLUTE);
@@ -371,12 +376,24 @@ implements I_CmsDragContainerElement<I_CmsDragTargetContainer>, HasClickHandlers
     }
 
     /**
+     * @see com.google.gwt.user.client.ui.Widget#removeFromParent()
+     */
+    @Override
+    public void removeFromParent() {
+
+        removeHighlighting();
+        super.removeFromParent();
+    }
+
+    /**
      * Removes the highlighting border.<p>
      */
     public void removeHighlighting() {
 
-        m_highlighting.removeFromParent();
-        m_highlighting = null;
+        if (m_highlighting != null) {
+            m_highlighting.removeFromParent();
+            m_highlighting = null;
+        }
     }
 
     /**

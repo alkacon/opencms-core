@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/v8/Attic/CmsXmlAddResourceTypes.java,v $
- * Date   : $Date: 2010/02/24 12:44:21 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/05/28 12:29:07 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import org.dom4j.Node;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  */
@@ -111,7 +111,7 @@ public class CmsXmlAddResourceTypes extends A_CmsXmlVfs {
                     document,
                     xpath,
                     CmsResourceTypeXmlContent.CONFIGURATION_SCHEMA,
-                    "/system/workplace/editors/ade/schemas/type_config.xsd");
+                    "/system/modules/org.opencms.ade.containerpage/schemas/type_config.xsd");
             } else if (xpath.equals(getXPathsToUpdate().get(2))) {
                 createResourceType(
                     document,
@@ -144,7 +144,7 @@ public class CmsXmlAddResourceTypes extends A_CmsXmlVfs {
                     document,
                     xpath,
                     CmsResourceTypeXmlContent.CONFIGURATION_SCHEMA,
-                    "/system/workplace/editors/ade/schemas/sub_container.xsd");
+                    "/system/modules/org.opencms.ade.containerpage/schemas/sub_container.xsd");
             } else if (xpath.equals(getXPathsToUpdate().get(5))) {
                 createResourceType(
                     document,

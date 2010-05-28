@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlContainerPage.java,v $
- * Date   : $Date: 2010/03/09 10:22:51 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/05/28 12:29:08 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,7 +69,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 7.6 
  */
@@ -100,7 +100,7 @@ public class CmsResourceTypeXmlContainerPage extends CmsResourceTypeXmlContent {
     private static final String RESOURCE_TYPE_NAME = "containerpage";
 
     /** Fixed schema for container pages. */
-    private static final String SCHEMA = "/system/workplace/editors/ade/schemas/container_page.xsd";
+    private static final String SCHEMA = "/system/modules/org.opencms.ade.containerpage/schemas/container_page.xsd";
 
     /**
      * Default constructor that sets the fixed schema for container pages.<p>
