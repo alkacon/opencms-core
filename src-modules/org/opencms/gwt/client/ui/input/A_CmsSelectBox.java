@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/A_CmsSelectBox.java,v $
- * Date   : $Date: 2010/05/18 14:58:17 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/05/28 09:31:06 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.MouseOutEvent;
@@ -63,10 +62,10 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.PopupPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -76,7 +75,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  * 
@@ -129,7 +128,7 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
     protected Map<String, OPTION> m_selectCells = new HashMap<String, OPTION>();
 
     /** The selector which contains the select options. */
-    protected Panel m_selector = new VerticalPanel();
+    protected Panel m_selector = new FlowPanel();
 
     /** Flag indicating whether this widget is enabled. */
     private boolean m_enabled = true;
@@ -413,13 +412,8 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
         }
 
         m_openClose.setDown(true);
-        Element openerElement = m_opener.getElement();
-        double borderLeft = CmsDomUtil.getCurrentStyleFloat(openerElement, CmsDomUtil.Style.borderLeftWidth);
-        double borderRight = CmsDomUtil.getCurrentStyleFloat(openerElement, CmsDomUtil.Style.borderRightWidth);
-        m_popup.setWidth(borderLeft
-            + borderRight
-            + CmsDomUtil.getCurrentStyleFloat(openerElement, CmsDomUtil.Style.width)
-            + "px");
+        int newWidth = m_opener.getOffsetWidth() - 2 /*border*/;
+        m_popup.setWidth(newWidth + "px");
         m_popup.show();
         CmsDomUtil.positionElement(m_popup.getElement(), m_panel.getElement(), 0, CmsDomUtil.getCurrentStyleFloat(
             m_opener.getElement(),
