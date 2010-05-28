@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/commons/tree.js,v $
- * Date   : $Date: 2010/01/18 10:03:57 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2010/05/28 10:55:27 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -664,6 +664,10 @@ function updateCurrentFolder(doc, folderName) {
     }
     if (m_rootFolder) {
         folderName = folderName.substring(m_rootFolder.length-1);
+        if (folderName == "") {
+            // assure that folder name is never empty (i.e. the root folder itself)
+            folderName = "/";
+        }
     }
     var nodeId = getNodeIdByName(folderName);
     var nodeName = null;
