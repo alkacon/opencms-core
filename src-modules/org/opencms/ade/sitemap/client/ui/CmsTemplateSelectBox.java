@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/ui/Attic/CmsTemplateSelectBox.java,v $
- * Date   : $Date: 2010/05/12 12:33:31 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/05/31 08:15:40 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,12 +38,15 @@ import org.opencms.gwt.client.ui.input.A_CmsSelectBox;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  * 
  */
 public class CmsTemplateSelectBox extends A_CmsSelectBox<CmsTemplateSelectCell> {
+
+    /** Width to which the title label should be truncated. */
+    private static final int TRUNCATION_WIDTH = 250;
 
     /** The select cell which is used as the widget contained in the opener.<p> */
     CmsTemplateSelectCell m_openerWidget;
@@ -58,13 +61,21 @@ public class CmsTemplateSelectBox extends A_CmsSelectBox<CmsTemplateSelectCell> 
     }
 
     /**
+     * @see com.google.gwt.user.client.ui.Widget#onLoad()
+     */
+    @Override
+    public void onLoad() {
+
+        truncate("TEMPLATE_SELECT", TRUNCATION_WIDTH);
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.input.A_CmsSelectBox#truncateOpener(java.lang.String, int)
      */
     @Override
     public void truncateOpener(String prefix, int width) {
 
-        //TODO: implement this
-
+        m_openerWidget.truncate(prefix + "_OPENER", TRUNCATION_WIDTH);
     }
 
     /**

@@ -1,6 +1,7 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:cms = "urn:import:org.opencms.gwt.client.ui.input" >
 	<ui:style>
 	    @def imageBoxWidth 64px ; 
 	    @def imageBoxHeight 64px ;
@@ -42,7 +43,7 @@
 	<g:FlowPanel styleName="{style.selectCell}">
 		<g:FlowPanel ui:field="m_imageBox"  styleName="{style.imageBox}"></g:FlowPanel>
 		<g:FlowPanel styleName="{style.labels}" >
-			<g:Label ui:field="m_topLabel" styleName="{style.topLabel}"></g:Label>
+			<cms:CmsLabel ui:field="m_topLabel" styleName="{style.topLabel}"></cms:CmsLabel>
 			<g:Label ui:field="m_bottomLabel" styleName="{style.bottomLabel}"></g:Label>
 		</g:FlowPanel>
 	</g:FlowPanel>

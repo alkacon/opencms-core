@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/ui/Attic/CmsTemplateSelectCell.java,v $
- * Date   : $Date: 2010/05/25 08:37:31 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/05/31 08:15:40 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,7 +33,9 @@ package org.opencms.ade.sitemap.client.ui;
 
 import org.opencms.ade.sitemap.shared.CmsSitemapTemplate;
 import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.ui.I_CmsTruncable;
 import org.opencms.gwt.client.ui.input.A_CmsSelectCell;
+import org.opencms.gwt.client.ui.input.CmsLabel;
 import org.opencms.util.CmsStringUtil;
 
 import com.google.gwt.core.client.GWT;
@@ -49,11 +51,11 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
-public class CmsTemplateSelectCell extends A_CmsSelectCell {
+public class CmsTemplateSelectCell extends A_CmsSelectCell implements I_CmsTruncable {
 
     /**
      * The UiBinder interface used for this widget.<p>
@@ -78,7 +80,7 @@ public class CmsTemplateSelectCell extends A_CmsSelectCell {
 
     /** The top label containing the title. */
     @UiField
-    protected Label m_topLabel;
+    protected CmsLabel m_topLabel;
 
     /** The bean containing the data for the select option. */
     private CmsSitemapTemplate m_template;
@@ -124,5 +126,13 @@ public class CmsTemplateSelectCell extends A_CmsSelectCell {
         // TODO: use a default image if the image is not set, ie. null !!!
         m_imageBox.add(new Image(CmsStringUtil.joinPaths(CmsCoreProvider.get().getContext(), template.getImgPath()
             + SCALE_PARAMS)));
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.I_CmsTruncable#truncate(java.lang.String, int)
+     */
+    public void truncate(String textMetricsKey, int labelWidth) {
+
+        m_topLabel.truncate(textMetricsKey + "_TOP_LABEL", labelWidth);
     }
 }
