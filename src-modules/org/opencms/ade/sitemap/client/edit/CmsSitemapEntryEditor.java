@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/edit/Attic/CmsSitemapEntryEditor.java,v $
- * Date   : $Date: 2010/05/31 10:21:09 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/05/31 10:26:24 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,7 +65,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  *  @author Georg Westenberger
  *  
- *  @version $Revision: 1.2 $
+ *  @version $Revision: 1.3 $
  *  
  *  @since 8.0.0
  */
@@ -269,9 +269,6 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
             String currentValue = properties.get(field.getId());
             form.addField(field, currentValue);
         }
-
-        form.addLabel("*** " + m_entry.isRoot());
-
         center();
     }
 
@@ -289,7 +286,7 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
         if (m_entry.isRoot()) {
             // The root element's name can't be edited 
             hide();
-            m_modeHandler.handleSubmit(titleValue, null, null, fieldValues);
+            m_modeHandler.handleSubmit(titleValue, "", null, fieldValues);
             return;
         }
         final String urlNameValue = getAndRemoveValue(fieldValues, FIELD_URLNAME);
