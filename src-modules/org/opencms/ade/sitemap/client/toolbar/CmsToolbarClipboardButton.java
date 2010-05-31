@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/toolbar/Attic/CmsToolbarCliboardButton.java,v $
- * Date   : $Date: 2010/05/27 11:13:52 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/toolbar/Attic/CmsToolbarClipboardButton.java,v $
+ * Date   : $Date: 2010/05/31 08:54:31 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -44,14 +44,14 @@ import org.opencms.gwt.client.ui.I_CmsButton;
  * 
  * @since 8.0.0
  */
-public class CmsToolbarCliboardButton extends CmsToggleButton {
+public class CmsToolbarClipboardButton extends CmsToggleButton {
 
     /**
      * Constructor.<p>
      * 
      * @param controller the sitemap controller 
      */
-    public CmsToolbarCliboardButton(final CmsSitemapController controller) {
+    public CmsToolbarClipboardButton(final CmsSitemapController controller) {
 
         setImageClass(I_CmsButton.ButtonData.CLIPBOARD.getIconClass());
         setTitle(I_CmsButton.ButtonData.CLIPBOARD.getTitle());
