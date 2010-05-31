@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/toolbar/Attic/CmsToolbarPublishButton.java,v $
- * Date   : $Date: 2010/05/27 11:13:52 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/05/31 09:15:22 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,13 +39,16 @@ import org.opencms.gwt.client.util.CmsDomUtil;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.user.client.ui.PopupPanel;
 
 /**
  * Sitemap toolbar publish button.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  */
@@ -60,6 +63,7 @@ public class CmsToolbarPublishButton extends CmsToggleButton {
 
         setImageClass(I_CmsButton.ButtonData.PUBLISH.getIconClass());
         setTitle(I_CmsButton.ButtonData.PUBLISH.getTitle());
+
         addClickHandler(new ClickHandler() {
 
             /**
@@ -69,7 +73,17 @@ public class CmsToolbarPublishButton extends CmsToggleButton {
 
                 CmsDomUtil.ensureMouseOut(getElement());
                 setDown(false);
-                CmsPublishDialog.showPublishDialog();
+                setEnabled(false);
+                CmsPublishDialog.showPublishDialog(new CloseHandler<PopupPanel>() {
+
+                    /**
+                     * @see com.google.gwt.event.logical.shared.CloseHandler#onClose(CloseEvent)
+                     */
+                    public void onClose(CloseEvent<PopupPanel> closeEvent) {
+
+                        setEnabled(true);
+                    }
+                });
             }
         });
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/I_CmsToolbarButton.java,v $
- * Date   : $Date: 2010/04/27 13:56:00 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/05/31 09:15:22 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import com.google.gwt.event.dom.client.HasClickHandlers;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -66,14 +66,14 @@ public interface I_CmsToolbarButton extends HasClickHandlers {
     boolean isActive();
 
     /**
-     * Executed when the tool-bar button is clicked.<p>
-     */
-    void onToolbarClick();
-
-    /**
      * Method executed when the button is activated.<p>
      */
     void onToolbarActivate();
+
+    /**
+     * Executed when the tool-bar button is clicked.<p>
+     */
+    void onToolbarClick();
 
     /**
      * Method executed when the button is deactivated.<p>
@@ -87,4 +87,11 @@ public interface I_CmsToolbarButton extends HasClickHandlers {
      * @param active <code>true</code> if active
      */
     void setActive(boolean active);
+
+    /**
+     * Enables or disables the button.<p>
+     * 
+     * @param enabled if true, enable the button, else disable it
+     */
+    void setButtonEnabled(boolean enabled);
 }

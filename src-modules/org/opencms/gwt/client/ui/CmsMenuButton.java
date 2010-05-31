@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsMenuButton.java,v $
- * Date   : $Date: 2010/05/03 07:53:47 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2010/05/31 09:15:22 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 8.0.0
  */
@@ -240,6 +240,16 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
 
             }
         });
+    }
+
+    /**
+     * Enables or disables the button.<p>
+     * 
+     * @param enabled if true, enables the button, else disables it
+     */
+    public void setEnabled(boolean enabled) {
+
+        m_button.setEnabled(enabled);
     }
 
     /**
