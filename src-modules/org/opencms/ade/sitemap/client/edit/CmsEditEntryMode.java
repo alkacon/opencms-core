@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/edit/Attic/CmsEditEntryMode.java,v $
- * Date   : $Date: 2010/05/27 11:13:51 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/05/31 11:43:34 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import java.util.Map;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  * 
@@ -74,6 +74,9 @@ public class CmsEditEntryMode implements I_CmsSitemapEntryEditorModeHandler {
      */
     public String createPath(String urlName) {
 
+        if (urlName.equals("")) {
+            return m_entry.getSitePath();
+        }
         return CmsResource.getParentFolder(m_entry.getSitePath()) + urlName + "/";
     }
 
