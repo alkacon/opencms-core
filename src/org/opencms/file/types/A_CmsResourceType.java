@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2010/05/27 09:44:58 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2010/05/31 05:55:35 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -81,7 +81,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -98,6 +98,9 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
 
     /** Configuration key for the (optional) internal flag. */
     public static final String CONFIGURATION_INTERNAL = "resource.flag.internal";
+
+    /** The default gallery preview provider. */
+    public static final String DEFAULT_GALLERY_PREVIEW_PROVIDER = "org.opencms.ade.galleries.preview.binary.CmsPreviewProvider";
 
     /** Macro for the folder path of the current resource. */
     public static final String MACRO_RESOURCE_FOLDER_PATH = "resource.folder.path";
@@ -588,7 +591,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
             m_galleryPreviewProvider = getConfiguration().get(CONFIGURATION_GALLERY_PREVIEW_PROVIDER);
             if (m_galleryPreviewProvider == null) {
                 // this is the default preview provider
-                m_galleryPreviewProvider = "org.opencms.ade.galleries.preview.binary.CmsPreviewProvider";
+                m_galleryPreviewProvider = DEFAULT_GALLERY_PREVIEW_PROVIDER;
             }
         }
         return m_galleryPreviewProvider;
