@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/edit/Attic/CmsSitemapEntryEditor.java,v $
- * Date   : $Date: 2010/05/27 11:13:51 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/05/31 10:21:09 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,7 +65,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  *  @author Georg Westenberger
  *  
- *  @version $Revision: 1.1 $
+ *  @version $Revision: 1.2 $
  *  
  *  @since 8.0.0
  */
@@ -232,8 +232,11 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
 
         form.addLabel(m_modeHandler.getDescriptionText());
 
-        CmsBasicFormField urlNameField = createUrlNameField(m_entry);
-        form.addField(urlNameField);
+        if (!m_entry.isRoot()) {
+            // the root entry name can't be edited 
+            CmsBasicFormField urlNameField = createUrlNameField(m_entry);
+            form.addField(urlNameField);
+        }
         form.addResetHandler(new I_CmsFormResetHandler() {
 
             /**
@@ -266,6 +269,9 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
             String currentValue = properties.get(field.getId());
             form.addField(field, currentValue);
         }
+
+        form.addLabel("*** " + m_entry.isRoot());
+
         center();
     }
 
@@ -276,12 +282,17 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
 
         final Map<String, String> fieldValues = getForm().collectValues();
         final String titleValue = getAndRemoveValue(fieldValues, FIELD_TITLE);
-        final String urlNameValue = getAndRemoveValue(fieldValues, FIELD_URLNAME);
 
         CmsPair<String, String> templateProps = getTemplateProperties(fieldValues);
         fieldValues.put(CmsSitemapManager.Property.template.toString(), templateProps.getFirst());
         fieldValues.put(CmsSitemapManager.Property.templateInherited.toString(), templateProps.getSecond());
-
+        if (m_entry.isRoot()) {
+            // The root element's name can't be edited 
+            hide();
+            m_modeHandler.handleSubmit(titleValue, null, null, fieldValues);
+            return;
+        }
+        final String urlNameValue = getAndRemoveValue(fieldValues, FIELD_URLNAME);
         validateUrlName(urlNameValue, new AsyncCallback<String>() {
 
             /**

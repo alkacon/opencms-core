@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsClientSitemapEntry.java,v $
- * Date   : $Date: 2010/05/25 07:44:46 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/05/31 10:21:09 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.0
  */
@@ -204,6 +204,16 @@ public class CmsClientSitemapEntry implements IsSerializable {
 
         m_subEntries.add(position, entry);
         updatePositions(position);
+    }
+
+    /**
+     * Returns true if this entry is the root entry of the sitemap.<p>
+     * 
+     * @return true if this entry is the root entry of the sitemap 
+     */
+    public boolean isRoot() {
+
+        return m_name.equals("");
     }
 
     /**
