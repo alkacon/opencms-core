@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/Messages.java,v $
- * Date   : $Date: 2010/01/18 10:01:30 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/06/01 09:57:28 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,11 +40,14 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Jan Baudisch 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_SEARCHINDEX_BAD_INDEXNAME = "ERR_SEARCHINDEX_BAD_INDEXNAME";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_SEARCHINDEX_EDIT_MISSING_PARAM_1 = "ERR_SEARCHINDEX_EDIT_MISSING_PARAM_1";

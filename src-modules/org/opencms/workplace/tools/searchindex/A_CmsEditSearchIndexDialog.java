@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/A_CmsEditSearchIndexDialog.java,v $
- * Date   : $Date: 2010/01/18 10:01:27 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/06/01 09:57:28 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,6 +38,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsSearchIndexSource;
 import org.opencms.search.CmsSearchManager;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWidgetDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
@@ -62,11 +63,14 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
 public abstract class A_CmsEditSearchIndexDialog extends CmsWidgetDialog {
+
+    /** The name constraints when generating new index names. */
+    public static final String INDEX_NAME_CONSTRAINTS = "-._~$ ";
 
     /** localized messages Keys prefix. */
     public static final String KEY_PREFIX = "searchindex";
@@ -136,6 +140,12 @@ public abstract class A_CmsEditSearchIndexDialog extends CmsWidgetDialog {
 
             // if new create it first
             if (!m_searchManager.getSearchIndexes().contains(m_index)) {
+                // check the index name for invalid characters
+                CmsStringUtil.checkName(
+                    m_index.getName(),
+                    INDEX_NAME_CONSTRAINTS,
+                    Messages.ERR_SEARCHINDEX_BAD_INDEXNAME,
+                    Messages.get());
                 // empty or null name and uniqueness check in add method 
                 m_searchManager.addSearchIndex(m_index);
             }
@@ -293,7 +303,7 @@ public abstract class A_CmsEditSearchIndexDialog extends CmsWidgetDialog {
 
         if (!isNewSearchIndex()) {
             // test the needed parameters: if initial we have "indexname", if from same widget we have name.0
-            if (getParamIndexName() == null && getJsp().getRequest().getParameter("name.0") == null) {
+            if ((getParamIndexName() == null) && (getJsp().getRequest().getParameter("name.0") == null)) {
                 throw new CmsIllegalStateException(Messages.get().container(
                     Messages.ERR_SEARCHINDEX_EDIT_MISSING_PARAM_1,
                     PARAM_INDEXNAME));
