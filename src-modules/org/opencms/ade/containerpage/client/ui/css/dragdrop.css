@@ -15,7 +15,7 @@
 
 }
 
-/** Following is a clear-fix for containers with floated contend, forcing the to enclose their content.
+/** Following is a clear-fix for containers with floated content, forcing the container to enclose its content.
     @see http://www.positioniseverything.net/easyclearing.html */
 .dragTarget.clearFix:after {
     content: ".";
