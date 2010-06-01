@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishSelectPanel.java,v $
- * Date   : $Date: 2010/05/28 08:46:16 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2010/06/01 07:25:25 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -79,7 +79,7 @@ import com.google.gwt.user.client.ui.Widget;
  *  
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @since 8.0.0
  */
@@ -205,6 +205,7 @@ public class CmsPublishSelectPanel extends Composite implements I_CmsPublishSele
         m_publishOptions = publishOptions;
 
         initWidget(UI_BINDER.createAndBindUi(this));
+        m_checkboxProblems.setVisible(false);
 
         List<CmsPair<String, String>> items = new ArrayList<CmsPair<String, String>>();
         CmsMessages messages = Messages.get();
@@ -454,6 +455,7 @@ public class CmsPublishSelectPanel extends Composite implements I_CmsPublishSele
 
         m_problemsPanel.clear();
         m_checkboxProblems.setChecked(false);
+        m_checkboxProblems.setVisible(false);
         m_problemsPanel.setVisible(false);
         m_groupPanels.clear();
         m_groupPanelContainer.clear();
@@ -577,7 +579,6 @@ public class CmsPublishSelectPanel extends Composite implements I_CmsPublishSele
         m_topBar.getElement().getStyle().setVisibility(visible ? Visibility.VISIBLE : Visibility.HIDDEN);
         m_checkboxSiblings.setVisible(visible);
         m_checkboxRelated.setVisible(visible);
-        m_checkboxProblems.setVisible(visible);
     }
 
     /**
@@ -593,5 +594,6 @@ public class CmsPublishSelectPanel extends Composite implements I_CmsPublishSele
             m_problemsPanel.add(new InlineLabel(message));
             m_problemsPanel.setVisible(true);
         }
+        m_checkboxProblems.setVisible(numProblems > 0);
     }
 }

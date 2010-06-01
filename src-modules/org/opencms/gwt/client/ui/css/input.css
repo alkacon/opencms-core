@@ -178,11 +178,11 @@
 
 @if user.agent ie6 {
 	.inlineBlock {
-		display: inline !important;
+		display: inline;
 	}
 } @else {
 	.inlineBlock {
-		display: inline-block !important;
+		display: inline-block;
 	}
 }	
 
