@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/toolbar/Attic/CmsToolbarSaveButton.java,v $
- * Date   : $Date: 2010/05/27 11:13:52 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/06/01 14:33:39 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  */
@@ -63,9 +63,9 @@ public class CmsToolbarSaveButton extends CmsToggleButton {
      */
     public CmsToolbarSaveButton(final CmsSitemapController controller) {
 
-        setImageClass(I_CmsButton.ButtonData.RESET.getIconClass());
-        setTitle(I_CmsButton.ButtonData.RESET.getTitle());
-        disable(Messages.get().key(Messages.GUI_DISABLED_RESET_0));
+        setImageClass(I_CmsButton.ButtonData.SAVE.getIconClass());
+        setTitle(I_CmsButton.ButtonData.SAVE.getTitle());
+        disable(Messages.get().key(Messages.GUI_DISABLED_SAVE_0));
         addClickHandler(new ClickHandler() {
 
             /**
