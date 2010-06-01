@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishDialog.java,v $
- * Date   : $Date: 2010/05/20 09:46:29 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2010/06/01 09:29:08 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 8.0.0
  * 
@@ -247,6 +247,8 @@ public class CmsPublishDialog extends CmsPopupDialog {
                 }
                 stop(false);
                 publishDialog.center();
+                // replace current notification widget by overlay
+                publishDialog.catchNotifications();
             }
         }).execute();
     }

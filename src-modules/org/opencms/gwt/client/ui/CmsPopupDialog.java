@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsPopupDialog.java,v $
- * Date   : $Date: 2010/05/18 12:31:13 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/06/01 09:29:08 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,7 +33,10 @@ package org.opencms.gwt.client.ui;
 
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -41,10 +44,9 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
- * 
  */
 public class CmsPopupDialog extends CmsPopup {
 
@@ -99,6 +101,34 @@ public class CmsPopupDialog extends CmsPopup {
             getDialog().getWidget().setStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupMainContent());
         }
         m_buttonPanel.insert(button, position);
+    }
+
+    /**
+     * Replaces current notification widget by an overlay.<p>
+     */
+    public void catchNotifications() {
+
+        // remember current notification widget
+        final I_CmsNotificationWidget widget = CmsNotification.get().getWidget();
+        // create our own notification overlay
+        final CmsDialogNotificationWidget notificationWidget = new CmsDialogNotificationWidget();
+        getDialog().add(notificationWidget);
+        CmsNotification.get().setWidget(notificationWidget);
+
+        // when closing the dialog
+        addCloseHandler(new CloseHandler<PopupPanel>() {
+
+            /**
+             * @see CloseHandler#onClose(CloseEvent)
+             */
+            public void onClose(CloseEvent<PopupPanel> event) {
+
+                // restore the previous notification widget
+                CmsNotification.get().setWidget(widget);
+                // remove the overlay notification widget
+                getDialog().remove(notificationWidget);
+            }
+        });
     }
 
     /**

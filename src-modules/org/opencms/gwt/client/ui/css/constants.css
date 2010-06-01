@@ -18,3 +18,10 @@
 
 @def pageWidth 930px;
 @def toolbarHeight 35px;
+
+@def notificationErrorColor #021324;
+@def notificationErrorBg #FF2800;
+@def notificationWarningColor #021324;
+@def notificationWarningBg #FFC139;
+@def notificationNormalColor #021324;
+@def notificationNormalBg #FFF1A8;
