@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/draganddrop/Attic/A_CmsDragHandler.java,v $
- * Date   : $Date: 2010/05/05 14:33:41 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2010/06/01 12:08:52 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -66,27 +66,12 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @since 8.0.0
  */
 public abstract class A_CmsDragHandler<E extends I_CmsDragElement<T>, T extends I_CmsDragTarget>
 implements I_CmsDragHandler<E, T> {
-
-    /** Scroll direction enumeration. */
-    protected enum Direction {
-        /** Scroll direction. */
-        down,
-
-        /** Scroll direction. */
-        left,
-
-        /** Scroll direction. */
-        right,
-
-        /** Scroll direction. */
-        up
-    }
 
     /**
      * Timer to schedule automated scrolling.<p>
@@ -192,6 +177,21 @@ implements I_CmsDragHandler<E, T> {
         }
     }
 
+    /** Scroll direction enumeration. */
+    protected enum Direction {
+        /** Scroll direction. */
+        down,
+
+        /** Scroll direction. */
+        left,
+
+        /** Scroll direction. */
+        right,
+
+        /** Scroll direction. */
+        up
+    }
+
     /** Animation enabled flag. */
     protected boolean m_animationEnabled;
 
@@ -246,6 +246,22 @@ implements I_CmsDragHandler<E, T> {
     public MouseEvent<? extends EventHandler> getCurrentMouseEvent() {
 
         return m_currentEvent;
+    }
+
+    /**
+     * @see org.opencms.gwt.client.draganddrop.I_CmsDragHandler#getCurrentTarget()
+     */
+    public T getCurrentTarget() {
+
+        return m_currentTarget;
+    }
+
+    /**
+     * @see org.opencms.gwt.client.draganddrop.I_CmsDragHandler#getDragElement()
+     */
+    public E getDragElement() {
+
+        return m_dragElement;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsContainerDragHandler.java,v $
- * Date   : $Date: 2010/05/26 09:42:39 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2010/06/01 12:08:21 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,7 +68,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  * 
  * @since 8.0.0
  */
@@ -217,22 +217,6 @@ extends A_CmsSortingDragHandler<I_CmsDragContainerElement<I_CmsDragTargetContain
         }
         registerMouseHandler(item);
         return item;
-    }
-
-    /**
-     * @see org.opencms.gwt.client.draganddrop.I_CmsDragHandler#getCurrentTarget()
-     */
-    public I_CmsDragTargetContainer getCurrentTarget() {
-
-        return m_currentTarget;
-    }
-
-    /**
-     * @see org.opencms.gwt.client.draganddrop.I_CmsDragHandler#getDragElement()
-     */
-    public I_CmsDragContainerElement<I_CmsDragTargetContainer> getDragElement() {
-
-        return m_dragElement;
     }
 
     /**
@@ -448,8 +432,6 @@ extends A_CmsSortingDragHandler<I_CmsDragContainerElement<I_CmsDragTargetContain
         Element parentElement = (Element)element.getParentElement();
         int left = m_currentEvent.getRelativeX(parentElement) - m_current.getOffsetLeft();
         int top = m_currentEvent.getRelativeY(parentElement) - m_current.getOffsetTop();
-        //        int left = m_currentEvent.getClientX() - m_current.getOffsetLeft();
-        //        int top = m_currentEvent.getClientY() - m_current.getOffsetTop();
         DOM.setStyleAttribute(element, "left", left + "px");
         DOM.setStyleAttribute(element, "top", top + "px");
 

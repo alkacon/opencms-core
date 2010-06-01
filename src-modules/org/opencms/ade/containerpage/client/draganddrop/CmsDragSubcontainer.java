@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsDragSubcontainer.java,v $
- * Date   : $Date: 2010/05/26 10:19:15 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/06/01 12:08:21 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -55,9 +55,6 @@ public class CmsDragSubcontainer extends CmsDragContainerElement implements I_Cm
 
     /** The container type. */
     private String m_containerType;
-
-    /** Highlighting border for this container. */
-    private CmsHighlightingBorder m_highlighting;
 
     /** The sub-container's place-holder while it's being edited. */
     private Widget m_placeholder;
@@ -135,6 +132,7 @@ public class CmsDragSubcontainer extends CmsDragContainerElement implements I_Cm
     /**
      * @see org.opencms.ade.containerpage.client.draganddrop.I_CmsDragTargetContainer#removeHighlighting()
      */
+    @Override
     public void removeHighlighting() {
 
         m_placeholder.getElement().getStyle().clearHeight();

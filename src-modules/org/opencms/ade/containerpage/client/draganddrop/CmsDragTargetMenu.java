@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsDragTargetMenu.java,v $
- * Date   : $Date: 2010/05/05 09:49:43 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/06/01 12:08:21 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,18 +31,18 @@
 
 package org.opencms.ade.containerpage.client.draganddrop;
 
-import com.google.gwt.user.client.ui.AbsolutePanel;
+import com.google.gwt.user.client.ui.FlowPanel;
 
 /**
  * A widget serving as a drag and drop drop-zone within the tool-bar menu.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
-public class CmsDragTargetMenu extends AbsolutePanel implements I_CmsDragTargetContainer {
+public class CmsDragTargetMenu extends FlowPanel implements I_CmsDragTargetContainer {
 
     /**
      * Constructor.<p>
@@ -50,9 +50,6 @@ public class CmsDragTargetMenu extends AbsolutePanel implements I_CmsDragTargetC
     public CmsDragTargetMenu() {
 
         super();
-
-        // overriding overflow hidden set by AbsolutePanel
-        getElement().getStyle().clearOverflow();
     }
 
     /**

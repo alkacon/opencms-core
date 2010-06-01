@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsMenuDragHandler.java,v $
- * Date   : $Date: 2010/05/26 09:42:39 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/06/01 12:08:21 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
@@ -76,22 +76,6 @@ extends A_CmsSortingDragHandler<I_CmsDragContainerElement<I_CmsDragTargetContain
     public CmsListItemWidget createDraggableListItemWidget(CmsListInfoBean infoBean, String id) {
 
         throw new UnsupportedOperationException();
-    }
-
-    /**
-     * @see org.opencms.gwt.client.draganddrop.I_CmsDragHandler#getCurrentTarget()
-     */
-    public I_CmsDragTargetContainer getCurrentTarget() {
-
-        return m_currentTarget;
-    }
-
-    /**
-     * @see org.opencms.gwt.client.draganddrop.I_CmsDragHandler#getDragElement()
-     */
-    public I_CmsDragContainerElement<I_CmsDragTargetContainer> getDragElement() {
-
-        return m_dragElement;
     }
 
     /**
