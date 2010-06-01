@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsTextBox.java,v $
- * Date   : $Date: 2010/05/26 14:40:16 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/06/01 08:21:17 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,8 +42,9 @@ import java.util.Map;
 
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.HasBlurHandlers;
-import com.google.gwt.event.dom.client.KeyPressEvent;
-import com.google.gwt.event.dom.client.KeyPressHandler;
+import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -54,12 +55,13 @@ import com.google.gwt.user.client.ui.TextBox;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 8.0.0
  * 
  */
-public class CmsTextBox extends Composite implements I_CmsFormWidget, I_CmsHasInit, HasBlurHandlers {
+public class CmsTextBox extends Composite
+implements I_CmsFormWidget, I_CmsHasInit, HasBlurHandlers, HasValueChangeHandlers<String> {
 
     /** The CSS bundle used for this widget. */
     public static final I_CmsInputCss CSS = I_CmsInputLayoutBundle.INSTANCE.inputCss();
@@ -72,9 +74,6 @@ public class CmsTextBox extends Composite implements I_CmsFormWidget, I_CmsHasIn
 
     /** The text box used internally by this widget. */
     protected TextBox m_textbox = new TextBox();
-
-    /** The handler registration for the change handler. */
-    private HandlerRegistration m_changeHandlerReg;
 
     /** The error display for this widget. */
     private CmsErrorWidget m_error = new CmsErrorWidget();
@@ -102,6 +101,16 @@ public class CmsTextBox extends Composite implements I_CmsFormWidget, I_CmsHasIn
         m_textboxContainer.add(m_textbox);
         m_textboxContainer.setPaddingX(4);
         initWidget(m_panel);
+        m_textbox.addValueChangeHandler(new ValueChangeHandler<String>() {
+
+            /**
+             * @see com.google.gwt.event.logical.shared.ValueChangeHandler#onValueChange(ValueChangeEvent event) 
+             */
+            public void onValueChange(ValueChangeEvent<String> event) {
+
+                fireValueChangedEvent();
+            }
+        });
     }
 
     /**
@@ -128,6 +137,15 @@ public class CmsTextBox extends Composite implements I_CmsFormWidget, I_CmsHasIn
     public HandlerRegistration addBlurHandler(BlurHandler handler) {
 
         return m_textbox.addBlurHandler(handler);
+    }
+
+    /**
+     * @see com.google.gwt.event.logical.shared.HasValueChangeHandlers#addValueChangeHandler(com.google.gwt.event.logical.shared.ValueChangeHandler)
+     */
+    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler) {
+
+        return addHandler(handler, ValueChangeEvent.getType());
+
     }
 
     /**
@@ -185,37 +203,6 @@ public class CmsTextBox extends Composite implements I_CmsFormWidget, I_CmsHasIn
     }
 
     /**
-     * Sets the change handler callback for this input field.<p>
-     * 
-     * The change handler will be executed when a keypress event is fired and the value of the textbox has changed.
-     * 
-     * @param callback the change handler callback 
-     */
-    public void setChangeHandler(final Runnable callback) {
-
-        if (m_changeHandlerReg != null) {
-            m_changeHandlerReg.removeHandler();
-        }
-        m_changeHandlerReg = m_textbox.addKeyPressHandler(new KeyPressHandler() {
-
-            String m_oldValue = m_textbox.getValue();
-
-            /**
-             * @see com.google.gwt.event.dom.client.KeyPressHandler#onKeyPress(com.google.gwt.event.dom.client.KeyPressEvent)
-             */
-            public void onKeyPress(KeyPressEvent event) {
-
-                String newValue = m_textbox.getValue();
-                if (!newValue.equals(m_oldValue)) {
-                    callback.run();
-                }
-                m_oldValue = newValue;
-            }
-        });
-
-    }
-
-    /**
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setEnabled(boolean)
      */
     public void setEnabled(boolean enabled) {
@@ -262,6 +249,14 @@ public class CmsTextBox extends Composite implements I_CmsFormWidget, I_CmsHasIn
     public void setText(String text) {
 
         m_textbox.setText(text);
+    }
+
+    /** 
+     * Helper method for firing a 'value changed' event.<p>
+     */
+    protected void fireValueChangedEvent() {
+
+        ValueChangeEvent.fire(this, getText());
     }
 
 }

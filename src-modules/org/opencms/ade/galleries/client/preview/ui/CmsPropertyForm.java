@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/ui/Attic/CmsPropertyForm.java,v $
- * Date   : $Date: 2010/05/27 09:42:23 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/06/01 08:21:17 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,8 @@ import org.opencms.gwt.client.ui.input.CmsLabel;
 import org.opencms.gwt.client.ui.input.CmsTextBox;
 
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 
@@ -44,20 +46,23 @@ import com.google.gwt.user.client.ui.FlowPanel;
  *  
  * @author Polina Smagina
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.
  */
-public class CmsPropertyForm extends Composite implements Runnable {
+public class CmsPropertyForm extends Composite {
+
+    /** The flag to indicate if the text box value is changed. */
+    protected boolean m_isChanged;
+
+    /** The text box. */
+    protected CmsTextBox m_textBox;
 
     /** The id of the property. */
     private String m_id;
 
     /** The text box panel. */
     private FlowPanel m_inputPanel;
-
-    /** The flag to indicate if the text box value is changed. */
-    private boolean m_isChanged;
 
     /** The label. */
     private CmsLabel m_label;
@@ -67,9 +72,6 @@ public class CmsPropertyForm extends Composite implements Runnable {
 
     /** The width of the parent panel. */
     private int m_parentWidth;
-
-    /** The text box. */
-    private CmsTextBox m_textBox;
 
     /**
      * The constructor.<p>
@@ -100,10 +102,19 @@ public class CmsPropertyForm extends Composite implements Runnable {
         m_inputPanel.addStyleName(I_CmsLayoutBundle.INSTANCE.previewDialogCss().inputField());
         m_textBox = new CmsTextBox();
         m_textBox.setText(value);
-        m_textBox.setChangeHandler(this);
+        m_textBox.addValueChangeHandler(new ValueChangeHandler<String>() {
+
+            /**
+             * @see com.google.gwt.event.logical.shared.ValueChangeHandler#onValueChange(ValueChangeEvent event)
+             */
+            public void onValueChange(ValueChangeEvent<String> event) {
+
+                m_isChanged = true;
+                m_textBox.setChangedStyle();
+            }
+        });
         m_inputPanel.add(m_textBox);
         m_parent.add(m_inputPanel);
-
         initWidget(m_parent);
     }
 
@@ -125,17 +136,6 @@ public class CmsPropertyForm extends Composite implements Runnable {
     public boolean isChanged() {
 
         return m_isChanged;
-    }
-
-    /**
-     * Will be triggered, if the value of the text box is changed.<p>
-     * 
-     * @see java.lang.Runnable#run()
-     */
-    public void run() {
-
-        m_isChanged = true;
-        m_textBox.setChangedStyle();
     }
 
     /**
