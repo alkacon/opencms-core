@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2010/05/27 06:52:03 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2010/06/02 06:24:28 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,6 +46,7 @@ import org.opencms.main.I_CmsResourceInit;
 import org.opencms.main.OpenCms;
 import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.util.CmsUUID;
+import org.opencms.workplace.CmsWorkplace;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
@@ -65,7 +66,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.40 $
+ * @version $Revision: 1.41 $
  * 
  * @since 7.9.2
  */
@@ -362,6 +363,36 @@ public class CmsSitemapManager {
     }
 
     /**
+     * Returns the entry point for the given sitemap site path.<p>
+     * 
+     * @param cms the CMS context
+     * @param sitePath the sitemap site path
+     * 
+     * @return the site relative entry point for the given sitemap, or <code>null</code> if not found
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public String getEntryPoint(CmsObject cms, String sitePath) throws CmsException {
+
+        String rootPath = sitePath;
+        if (!rootPath.startsWith(CmsWorkplace.VFS_PATH_SYSTEM)) {
+            rootPath = cms.getRequestContext().addSiteRoot(rootPath);
+        }
+        String locale = cms.getRequestContext().getLocale().toString();
+        Map<String, String> active = m_cache.getActiveSitemaps(cms);
+        for (Map.Entry<String, String> entry : active.entrySet()) {
+            if (!entry.getValue().equals(rootPath)) {
+                continue;
+            }
+            if (!entry.getKey().startsWith(locale)) {
+                continue;
+            }
+            return cms.getRequestContext().removeSiteRoot(entry.getKey().substring(locale.length()));
+        }
+        return null;
+    }
+
+    /**
      * Returns the parent sitemap for the given sitemap, 
      * or <code>null</code> if the given sitemap is a root sitemap.<p>
      * 
@@ -545,5 +576,4 @@ public class CmsSitemapManager {
         }
         return m_sitemapTypeId;
     }
-
 }

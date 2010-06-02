@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsXmlSitemap.java,v $
- * Date   : $Date: 2010/05/27 06:52:03 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2010/06/02 06:24:28 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.29 $ 
  * 
  * @since 7.5.2
  * 
@@ -668,11 +668,11 @@ public class CmsXmlSitemap extends CmsXmlContent {
             // attach at new place
             entryElement.setParent(newParent);
             // at the right position
-            List<Element> siblings = CmsCollectionsGenericWrapper.list(newParent.elements());
+            List<Element> siblings = CmsCollectionsGenericWrapper.list(newParent.elements(XmlNode.SiteEntry.name()));
             siblings.add(change.getDestinationPosition(), entryElement);
         } else {
             // check position
-            List<Element> siblings = CmsCollectionsGenericWrapper.list(newParent.elements());
+            List<Element> siblings = CmsCollectionsGenericWrapper.list(newParent.elements(XmlNode.SiteEntry.name()));
             if (siblings.indexOf(entryElement) != change.getDestinationPosition()) {
                 siblings.remove(entryElement);
                 siblings.add(change.getDestinationPosition(), entryElement);
@@ -864,8 +864,19 @@ public class CmsXmlSitemap extends CmsXmlContent {
     private Element getElement(CmsObject cms, String sitePath) throws CmsException {
 
         Element parent = getLocaleNode(cms.getRequestContext().getLocale());
-        // TODO: this might not be the best way to do that
-        String originalUri = OpenCms.getSitemapManager().getEntryForUri(cms, sitePath).getOriginalUri();
+        String entryPoint = "";
+        CmsInternalSitemapEntry rootEntry = getSitemap(cms, cms.getRequestContext().getLocale()).getSiteEntries().get(0);
+        if (rootEntry != null) {
+            entryPoint = cms.getRequestContext().removeSiteRoot(rootEntry.getEntryPoint());
+        } else if (getFile() != null) {
+            entryPoint = OpenCms.getSitemapManager().getEntryPoint(cms, cms.getSitePath(getFile()));
+            if (entryPoint == null) {
+                // if not found, assume absolute paths
+                entryPoint = "";
+            }
+        }
+
+        String originalUri = sitePath.substring(entryPoint.length());
         String[] pathEntries = CmsStringUtil.splitAsArray(originalUri, '/');
 
         // handle special case of root node in root sitemap
