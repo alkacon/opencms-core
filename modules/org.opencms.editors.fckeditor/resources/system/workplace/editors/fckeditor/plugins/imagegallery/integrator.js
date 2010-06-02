@@ -26,19 +26,28 @@ var oSpan = null;
 var vfsPopupUri = "<%= cms.link("/system/workplace/editors/fckeditor/plugins/ocmsimage/popup.html") %>";
 
 /* Do additional stuff when active image is loaded. */
+/**
+ * Sets values in the gallery preview.
+ * 
+ * Additional values like copyright, title/alt
+ */
 function activeImageAdditionalActions(isInitial) {
+	// 
     if (isInitial) {
         loadSelection();
     } else {
+    	// showEnhancedOptions = true 
         if (isEnhanced()) {
             resetCopyrightText();
-        }        
+        }
+        // title/alt attribute
         var imgTitle = cms.galleries.activeItem.title;
         if (cms.galleries.activeItem.description != "") {
             imgTitle = cms.galleries.activeItem.description;
         }
         GetE("txtAlt").value = imgTitle;
-        //set default values for the image opened from the list
+        
+        //set default values for margin and alignment for the image opened from the list
         $('#' + cms.imagepreviewhandler.keys['editorFormatTabId'])
             .find('#' + cms.imagepreviewhandler.editorKeys['imgAlign'])
             .find('.cms-selectbox').selectBox('setValue','left');        
@@ -46,7 +55,7 @@ function activeImageAdditionalActions(isInitial) {
 		GetE("txtVSpace").value = "5";
         cms.galleries.checkGalleryCheckbox($('#' + cms.imagepreviewhandler.editorKeys['imgSpacing']),true);        
     }
-	// activate the "OK" button of the dialog
+	// activate the "OK" button of the fck dialog
 	window.parent.SetOkButton(true);
 }
 
@@ -60,9 +69,15 @@ function SetUrl( url, width, height, alt ) {
         GetE("txtLnkUrl").value = url;
 }
 
+/**
+ * Reads the attributes and values of the editor before the gallery is opened.
+ * @return
+ */
+// TODO: move to fckplugin.js
 function prepareEditor() {
     // get the selected image
 	oImage = dialog.Selection.GetSelectedElement();
+	// only img or span or input(type=img)
 	if (oImage && oImage.tagName != "IMG" && oImage.tagName != "SPAN" && !(oImage.tagName == "INPUT" && oImage.type == "image")) {
 		oImage = null;
 	}
@@ -73,22 +88,29 @@ function prepareEditor() {
 		return;
 	}
     
+	// fck url attribute
     var sUrl = oImage.getAttribute("_fcksavedurl");
 	if (sUrl == null) {
 		sUrl = GetAttribute(oImage, "src", "");
 	}
+	
+	// read scale/cropping params	
 	var paramIndex = sUrl.indexOf("?__scale");
 	if (paramIndex != -1) {
+		// set scale params global to gallery
 		cms.galleries.initValues.scale = sUrl.substring(paramIndex + 9);
 		sUrl = sUrl.substring(0, paramIndex);
 	}
 
+	// set linkpath global to gallery
 	cms.galleries.initValues.linkpath = sUrl;
     
+	// read width and height
     var iWidth, iHeight;
 
 	var regexSize = /^\s*(\d+)px\s*$/i ;
 
+	// from style attribute
 	if (oImage.style.width)	{
 		var aMatch = oImage.style.width.match(regexSize);
 		if (aMatch) {
@@ -105,15 +127,23 @@ function prepareEditor() {
 		}
 	}
 
+	// else from width and height attribute 
 	iWidth = iWidth ? iWidth : GetAttribute(oImage, "width", "");
 	iHeight = iHeight ? iHeight : GetAttribute(oImage, "height", "");
 
+	// set width and height global to gallery
 	cms.galleries.initValues.imgwidth = "" + iWidth;
 	cms.galleries.initValues.imgheight = "" + iHeight;
 
 }
 
-/* Loads the selected image from the editor, if available. */
+/**
+ * Called when an image is selected in the editor and gallery is opened.<p>
+ * 
+ * Loads the available attributes and properties for the selected image from the editor.
+ * Sets these values to the gallery tabs (editor formats tab, extended tab)
+ */
+// TODO: oImage and oLink are global varibales, both are set in the prepareEditor()
 function loadSelection() {
 	var altText = "";
 	var copyText = "";
@@ -121,6 +151,7 @@ function loadSelection() {
 	var imgHSp = "";
 	var imgVSp = "";
 	var imgAlign = GetAttribute(oImage, "align", "");
+	// if img is sourounded with 'span' or 'table'
 	if (dialog.Selection.GetSelection().HasAncestorNode("SPAN") || dialog.Selection.GetSelection().HasAncestorNode("TABLE")) {
 		if (FCK.Selection.HasAncestorNode("SPAN")) {
 			oSpan =	dialog.Selection.GetSelection().MoveToAncestorNode("SPAN");
@@ -153,8 +184,9 @@ function loadSelection() {
 				imgVSp = divElem.style.marginBottom;
 			}
 		} catch	(e) {}
-	 } else	{
+	 } else	{  // only img tag
 	 	if (imgAlign == "left") {
+	 		// read margins or spacing
 	 		imgHSp = oImage.style.marginRight;
 			imgVSp = oImage.style.marginBottom;
 			if (imgHSp == "") {
@@ -163,6 +195,7 @@ function loadSelection() {
 			if (imgVSp == "") {
 				imgVSp = GetAttribute(oImage, "vspace", "");
 			}
+	    // reading align attribute
 	 	} else if (imgAlign == "right") {
 	 		imgHSp = oImage.style.marginLeft;
 	 		imgVSp = oImage.style.marginBottom;
@@ -177,7 +210,9 @@ function loadSelection() {
 			imgVSp = GetAttribute(oImage, "vspace", "");
 		}
 	}
-	var cssTxt = oImage.style.cssText;
+	
+	// replace margins, if align attribute is set
+	var cssTxt = oImage.style.cssText;	
 	if (showEnhancedOptions) {
 		if (imgAlign == "left") {
 			cssTxt = cssTxt.replace(/margin-right:\s*\d+px;/, "");
@@ -196,13 +231,17 @@ function loadSelection() {
     // at this point the url is already given
     var sUrl = cms.galleries.initValues.linkpath;
     
+    ////// Set the read attributes to gallery input fields
     
-
+    // set alt info in gallery
 	GetE("txtAlt").value = altText;
+	
+	// set copyright
 	if (copyText !=	"")	{
 		GetE("txtCopyright").value = copyText;
 	}
 	
+	// check spacing values 
 	if (isNaN(imgHSp) && imgHSp.indexOf("px") != -1)	{	
 		imgHSp = imgHSp.substring(0, imgHSp.length - 2);
 	}
@@ -212,21 +251,24 @@ function loadSelection() {
 
 	if (imgHSp != "" || imgVSp != "") {
 		imgBorder = true;
-	}
+	}	
 	
-
 	if (imgBorder) {
+		// set values for vspacing and hspacing(margin) and
 		GetE("txtVSpace").value	= imgVSp;
 		GetE("txtHSpace").value	= imgHSp;
+		// enable input fields for spacing (margin)
         cms.galleries.checkGalleryCheckbox($('#' + cms.imagepreviewhandler.editorKeys['imgSpacing']), true);		
 	}
 
+	// set align attribute select box
     $('#' + cms.imagepreviewhandler.keys['editorFormatTabId'])
             .find('#' + cms.imagepreviewhandler.editorKeys['imgAlign'])
             .find('.cms-selectbox').selectBox('setValue',imgAlign);
 
-	// get Advanced	Attributes
+	// set attributes in the advanced(extended) tab
     GetE("txtAttId").value = oImage.id;
+    // language attribute
     var langDir = oImage.dir;
     if (langDir == "") {
         langDir = 'none';
@@ -246,6 +288,8 @@ function loadSelection() {
 		if (lnkUrl == null) {
 			lnkUrl = oLink.getAttribute("href", 2);
 		}
+		// set different link target, if image should be used as link
+		// the link target is set in the advanced tab
 		if (lnkUrl != sUrl) {
 			GetE("txtLnkUrl").value = lnkUrl;            
             $('#' + cms.imagepreviewhandler.keys['editorAdvancedTabId']).find('#cmbLnkTarget').find('.cms-selectbox').selectBox('setValue',oLink.target);			
@@ -257,7 +301,11 @@ function loadSelection() {
 	}
 }
 
-/* Resets the image alternative text to the original value. */
+/**
+ * Will be triggered in the advanced mode, when the 'reset alt text' button is clicked.<p>
+ * 
+ *  Resets the image alternative text to the original value (title property).
+ */
 function resetAltText() {
 	var imgTitle = cms.galleries.activeItem.title;
 	if (cms.galleries.activeItem.description != "") {
@@ -266,7 +314,11 @@ function resetAltText() {
 	GetE("txtAlt").value = imgTitle;
 }
 
-/* Resets the image copyright text to the original value. */
+/**
+ * Will be triggered in the advanced mode, when the 'reset alt text' button is clicked.<p>
+ * 
+ * Resets the image copyright text to the original value (copyright property).
+ */
 function resetCopyrightText() {
 	var copyText = cms.galleries.activeItem.copyright;
 	if (copyText == null || copyText == "") {
@@ -294,51 +346,65 @@ function setImageBorder() {
 	}
 }
 
-/* Returns if the image border checkbox is checked or not. */
+/**
+ * Returns if the image spacing checkbox is checked or not. 
+ */
 function insertImageBorder() {
     var checked = $('#' + cms.imagepreviewhandler.editorKeys['imgSpacing']).hasClass('cms-checkbox-checked');    
 	return checked;	
 }
 
-/* Returns if the link to original image checkbox is checked or not. */
+/**
+ * Returns if the link to original image checkbox is checked or not.<p>
+ * 
+ * showEnhancedOptions = true
+ */
 function insertLinkToOriginal() {
     var checked = $('#' + cms.imagepreviewhandler.editorKeys['linkOriginal']).hasClass('cms-checkbox-checked');    
 	return checked;	
 }
 
-/* Returns if the sub title checkbox is checked or not. */
+/**
+ * Returns if the sub title checkbox is checked or not.<p>
+ * 
+ * showEnhancedOptions = true
+ */
 function insertSubTitle() {
 	var checked = $('#' + cms.imagepreviewhandler.editorKeys['fckInsertAlt']).hasClass('cms-checkbox-checked');    
 	return checked;    
 }
 
-/* Returns if the copyright checkbox is checked or not. */
+/**
+ * Returns if the copyright checkbox is checked or not.<p>
+ * 
+ * showEnhancedOptions = true
+ */
 function insertCopyright() {
 	var checked = $('#' + cms.imagepreviewhandler.editorKeys['fckInsertCr']).hasClass('cms-checkbox-checked');    
 	return checked;    
 }
 
-/* Helper method to determine if a checkbox is checked or not. */
-//TODO: check if the method can be removed!! It seems to be used only in the above functions
-function checkChecked(elemName) {
-	var elem = GetE(elemName);
-	if (elem) {
-		return elem.checked;
-	}
-	return false;
-}
-
-/* Returns if enhanced options are used and sub title or copyright should be inserted. */
+/**
+ *  Returns if enhanced options are used and sub title or copyright should be inserted. 
+ */
+// TODO: rename
 function isEnhancedPreview() {
 	return showEnhancedOptions && (insertSubTitle() || insertCopyright());
 }
 
-/* Returns if enhanced options should be shown */
+/**
+ *  Returns if enhanced options should be shown.
+ */
 function isEnhanced() {
     return showEnhancedOptions;
 }
 
-/* The OK button was hit, called by editor button click event. */
+/**
+ *  The OK button was hit, called by editor button click event. 
+ *  
+ *  FCK API! Event callback
+ *  JQuery!
+ */
 function Ok() {
     
     // TODO: is not used: !!! var resType = $('#results li[alt="' + $('#cms-preview').attr('alt') + '"]').data('type');       

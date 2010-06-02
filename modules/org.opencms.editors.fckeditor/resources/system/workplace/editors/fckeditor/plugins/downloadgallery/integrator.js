@@ -9,13 +9,25 @@ var FCK			= oEditor.FCK;
 var FCKConfig		= oEditor.FCKConfig;
 var FCKBrowserInfo	= oEditor.FCKBrowserInfo;
 
-/* Do additional stuff when active item is loaded. */
-// TODO: isInititial flag
+/**
+ * Enables and shows the ok-button of the fck editor.<p>
+ * 
+ * Editor, download gallery
+ * Old name: activeItemAdditionalActions
+ */
 function activeItemAdditionalActions() {
 	// activate the "OK" button of the dialog
 	window.parent.SetOkButton(true);
 }
 
+/**
+ * Check if a link is selected.<p>
+ * 
+ * FCK API!
+ * Use JQuery!
+ * 
+ */
+// TODO: remove after moved to plugin.js
 function prepareEditor() {
     if (hasSelectedText() == true) {
 		var a = FCK.Selection.MoveToAncestorNode('A') ;
@@ -30,19 +42,29 @@ function prepareEditor() {
 	}
 }
 
-/* The OK button was hit, called by editor button click event. */
+/**
+ *  The OK button was hit, called by editor button click event. 
+ *  
+ *  FCK API! Event callback
+ *  JQuery!
+ */
 function Ok() {
 
+	//TODO: this part should be checked in the preview tab
     // if changed properties are not saved yet         
     if ($('button[name="previewSave"]').hasClass('cms-properties-changed')) {
         //text, title, yesLabel, noLabel, callback
         cms.util.dialogConfirmCancel('Do you want to save changed properties?', 'Save', 'Yes', 'No', 'Cancel', saveProperties);       
     } else { // not properties changed, call editor close function               
-        link(cms.galleries.activeItem['linkpath'], cms.galleries.activeItem['title'], cms.galleries.activeItem['description']);
+        
+    	link(cms.galleries.activeItem['linkpath'], cms.galleries.activeItem['title'], cms.galleries.activeItem['description']);
+        
+        // return true to close dialog
         return true;
     }    
 }
 
+//TODO: remove, properties are saved from gwt!!
 /* Saves changed properties and triggers ok button.*/
 function saveProperties(isConfirmed) {
     if (isConfirmed) {
@@ -85,12 +107,22 @@ function saveProperties(isConfirmed) {
       }           
 }
 
-/* Trigger the ok- button of the editor. */
+/**
+ *  Triggers the ok- button of the fck editor.<p> 
+ *  
+ *  Editor mode, download gallery, image gallery.
+ */
 function triggerOkEvent() {
     $('button[name="previewSave"]').removeClass('cms-properties-changed');
     window.parent.Ok();
 }
 
+/**
+ * Insert a new link or update the old after a resource is selected.<p>
+ * @param uri
+ * @param title
+ * @param desc
+ */
 function link(uri, title, desc) {
 		
 	if (hasSelectedText() == true) {
@@ -102,7 +134,13 @@ function link(uri, title, desc) {
 		
 }
 
-/* Pastes a link to the current position of the editor */
+/**
+ * Pastes a new link to the current position of the editor.<p>
+ * 
+ * @param uri the link
+ * @param title to set as link text
+ * @param desc to set as link title
+ */
 function pasteLink(uri, title, desc) {
 	
 	var result = "<a href=\"";
@@ -111,19 +149,17 @@ function pasteLink(uri, title, desc) {
 	result += escapeBrackets(desc);
 	result += "\" target=\"";
     result += $('#' + cms.previewhandler.keys['editorTarget']).find('.cms-selectbox').selectBox('getValue');
-    // TODO read the value of the target select box
-	/*if (modeType == "gallery") {
-		result += $("#gallerylinktarget").val();
-	} else {
-		result += $("#categorylinktarget").val();
-	}*/
 	result += "\">";
 	result += escapeBrackets(title);
 	result += "<\/a>";
 	insertHtml(result);
 }
 
-// checks if a text part has been selected by the user
+/**
+ * Checks if a text part has been selected by the user.<p>
+ * 
+ * FCK API
+ */
 function hasSelectedText() {
 	var sel = dialog.Selection.GetSelection();
 	var text = "";
@@ -140,25 +176,23 @@ function hasSelectedText() {
 	
 }
 
+/**
+ * Collects link infos and update or set a new link. <p>
+ * 
+ * @param uri the link
+ * @param title to set as title attribute
+ */
+// TODO: add 'target' param instead of reading from gallery
 function setLink(uri, title) {
 	
 	var linkInformation = new Object();
 	linkInformation["type"] = "link";
 	linkInformation["href"] = uri;
-    linkInformation["target"] = $('#' + cms.previewhandler.keys['editorTarget']).find('.cms-selectbox').selectBox('getValue');
-    //TODO: read the value from select box
-	/*if (modeType == "gallery") {
-		linkInformation["target"] = $("#gallerylinktarget").val();
-	} else {
-		linkInformation["target"] = $("#categorylinktarget").val();
-	}*/
-    
-   
+    linkInformation["target"] = $('#' + cms.previewhandler.keys['editorTarget']).find('.cms-selectbox').selectBox('getValue');   
 	linkInformation["style"] = "";
 	linkInformation["class"] = "";
 	linkInformation["title"] = title;
-	createLink(linkInformation);
-		
+	createLink(linkInformation);		
 }	
 
 /* Gets the linkpath and target for selected link. */
@@ -180,57 +214,58 @@ function getSelectedLinkUri() {
 	return loadItem;
 }*/
 
-// creates a named anchor or a link from the OpenCms link dialog, called from popup window
+/**
+ * Updates the selected link or set a new link around the selected text.<p>
+ * 
+ * Editor mode, download gallery.
+ * Creates a named anchor or a link from the OpenCms link dialog.
+ * Called by Ok()!
+ * Old name: setLink()
+ */
 function createLink(linkInformation) {
 
     var a = FCK.Selection.MoveToAncestorNode('A') ;
     if (a) {
     	// link present, manipulate it
         FCK.Selection.SelectNode(a);
-        //a.href= linkInformation["href"];
 	    a = FCK.CreateLink(linkInformation["href"])[0];
 		
     } else {
     	// new link, create it
-        a = FCK.CreateLink(linkInformation["href"])[0];
-        
+        a = FCK.CreateLink(linkInformation["href"])[0];        
     }
     
+    // set or remove target attribute
     if (linkInformation["target"] != "") {
 		a.target = linkInformation["target"];
 	} else {
 		a.removeAttribute("target");
 	}
 
+    // set or remove title attribute
     if (linkInformation["title"] != null && linkInformation["title"] != "") {
     		a.title = linkInformation["title"];
     } else {
 		a.removeAttribute("title");
     }
-	
-	//if (USE_LINKSTYLEINPUTS) {
-	//	if (linkInformation["class"] != "") {
-	//		a.setAttribute("class", linkInformation["class"]);
-	//	} else {
-	//		a.removeAttribute("class");
-	//	}
-	//	if (linkInformation["style"] != "") {
-	//		a.style.cssText = linkInformation["style"];
-	//	} else {
-	//		a.removeAttribute("style");
-	//	}
-
-	//}
 } 
 
 
-// inserts the passed html fragment at the current cursor position
+/**
+ * inserts the passed html fragment at the current cursor position.<p>
+ * 
+ * FCK API
+ */
 function insertHtml(htmlContent) {
 	FCK.InsertHtml(htmlContent);
 }
 
 
-
+/**
+ * Escape the brackets.<p>
+ * @param s string
+ * @return escaped string
+ */
 function escapeBrackets(s) {
 	var searchResultStart = s.search(/\[.+/);
 	var searchResultEnd = s.search(/.+\]/);
