@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsXmlSitemap.java,v $
- * Date   : $Date: 2010/06/02 06:24:28 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2010/06/02 08:47:16 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.29 $ 
+ * @version $Revision: 1.30 $ 
  * 
  * @since 7.5.2
  * 
@@ -865,8 +865,9 @@ public class CmsXmlSitemap extends CmsXmlContent {
 
         Element parent = getLocaleNode(cms.getRequestContext().getLocale());
         String entryPoint = "";
-        CmsInternalSitemapEntry rootEntry = getSitemap(cms, cms.getRequestContext().getLocale()).getSiteEntries().get(0);
-        if (rootEntry != null) {
+        List<CmsInternalSitemapEntry> rootEntries = getSitemap(cms, cms.getRequestContext().getLocale()).getSiteEntries();
+        if (rootEntries.size() > 0) {
+            CmsInternalSitemapEntry rootEntry = rootEntries.get(0);
             entryPoint = cms.getRequestContext().removeSiteRoot(rootEntry.getEntryPoint());
         } else if (getFile() != null) {
             entryPoint = OpenCms.getSitemapManager().getEntryPoint(cms, cms.getSitePath(getFile()));
