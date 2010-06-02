@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsMenuDragHandler.java,v $
- * Date   : $Date: 2010/06/02 06:56:00 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/06/02 07:09:50 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,6 @@ import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -51,7 +50,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 8.0.0
  */
@@ -104,27 +103,6 @@ extends A_CmsSortingDragHandler<I_CmsDragContainerElement<I_CmsDragTargetContain
             false);
         registerMouseHandler(dragElement);
         return dragElement;
-    }
-
-    /**
-     * Creates a place-holder for the draggable element.<p>
-     * 
-     * @param element the element
-     * 
-     * @return the place-holder widget
-     */
-    protected Widget createPlaceholder(CmsDragMenuElement element) {
-
-        Widget result = new HTML(element.getElement().getInnerHTML());
-        result.addStyleName(element.getElement().getClassName()
-            + " "
-            + I_CmsLayoutBundle.INSTANCE.dragdropCss().dragPlaceholder());
-
-        Element overlay = DOM.createDiv();
-        overlay.addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().placeholderOverlay());
-        result.getElement().appendChild(overlay);
-
-        return result;
     }
 
     /**
@@ -210,7 +188,6 @@ extends A_CmsSortingDragHandler<I_CmsDragContainerElement<I_CmsDragTargetContain
     @Override
     protected void restoreElementAfterDrag() {
 
-        // m_dragElement.getDragParent().insert(m_dragElement, m_dragElement.getDragParent().getWidgetIndex(m_placeholder));
         m_placeholder.removeStyleName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragPlaceholder());
         m_provisionalParent.removeFromParent();
         m_provisionalParent = null;
