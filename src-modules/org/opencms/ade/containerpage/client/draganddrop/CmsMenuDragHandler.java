@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsMenuDragHandler.java,v $
- * Date   : $Date: 2010/06/02 05:49:10 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/06/02 06:56:00 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 8.0.0
  */
@@ -169,13 +169,19 @@ extends A_CmsSortingDragHandler<I_CmsDragContainerElement<I_CmsDragTargetContain
     @Override
     protected void prepareElementForDrag() {
 
+        // at the very beginning the current target is the list where the drag element is dragged from 
         m_currentTarget = m_dragElement.getDragParent();
+
+        // create clone
         CmsDragContainerElement clone = createDragClone(
             m_dragElement.getElement(),
             m_currentTarget,
             m_dragElement.getClientId());
 
-        // a provisional target is needed so the element may be dragged out of an overflow:hidden element
+        // we append the drag element to the body to prevent any kind of issues 
+        // (ie when the parent is styled with overflow:hidden)
+        // and with put it additionally inside a provisional parent for parent dependent styling 
+        // and we position it absolutely on the original parent for the eventual animation when releasing 
         m_provisionalParent = new CmsDragTargetMenu();
         m_provisionalParent.setWidth(m_dragElement.getElement().getOffsetWidth() + "px");
         m_provisionalParent.getElement().getStyle().setPosition(Position.ABSOLUTE);
@@ -186,9 +192,12 @@ extends A_CmsSortingDragHandler<I_CmsDragContainerElement<I_CmsDragTargetContain
         RootPanel.get().add(m_provisionalParent);
         m_targets = new ArrayList<I_CmsDragTargetContainer>();
         m_targets.add(m_currentTarget);
+        // this is because our drag element is the widget and not the list item
         m_placeholder = ((CmsDragMenuElement)m_dragElement).getParentListItem();
         m_placeholder.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.dragdropCss().dragPlaceholder());
+        // switch to the clone
         m_dragElement = clone;
+        // important: capture all mouse events and dispatch them to this element until released
         DOM.setCapture(m_dragElement.getElement());
         m_provisionalParent.add((Widget)m_dragElement);
         m_dragElement.prepareDrag();
