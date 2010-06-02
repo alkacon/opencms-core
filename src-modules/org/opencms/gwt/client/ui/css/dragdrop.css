@@ -1,3 +1,36 @@
 /** This CSS is currently not injected as it contains only empty styles. **/
 
-.dragStarted{}
+.dragStarted, .dragPlaceholder{}
+
+@if user.agent gecko1_8 gecko{
+	
+	.dragPlaceholder{
+		opacity: 0.5;
+	}
+
+} @elif user.agent safari {
+	
+	.dragPlaceholder{
+		opacity: 0.5;
+	}
+
+} @elif user.agent opera {
+
+	.dragPlaceholder{
+		opacity: 0.5;
+	}
+
+} @elif user.agent ie6 {
+	
+	.dragPlaceholder, .dragPlaceholder > div {
+		filter: literal("progid:DXImageTransform.Microsoft.Alpha( Opacity=50, FinishOpacity=0, Style=0, StartX=0,  FinishX=100, StartY=0, FinishY=100)");
+		zoom: 1;
+	}
+} @elif user.agent ie8 {
+
+/** Assigned to the body on drag start. */
+	.dragPlaceholder, .dragPlaceholder > div {
+		-ms-filter: "progid:DXImageTransform.Microsoft.Alpha( Opacity=50, FinishOpacity=0, Style=0, StartX=0,  FinishX=100, StartY=0, FinishY=100)";
+		zoom: 1;
+	}
+}

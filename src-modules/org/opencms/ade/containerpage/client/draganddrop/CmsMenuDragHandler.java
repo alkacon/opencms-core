@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsMenuDragHandler.java,v $
- * Date   : $Date: 2010/06/01 12:08:21 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/06/02 05:49:10 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.0
  */
@@ -187,11 +187,9 @@ extends A_CmsSortingDragHandler<I_CmsDragContainerElement<I_CmsDragTargetContain
         m_targets = new ArrayList<I_CmsDragTargetContainer>();
         m_targets.add(m_currentTarget);
         m_placeholder = ((CmsDragMenuElement)m_dragElement).getParentListItem();
-        m_placeholder.addStyleName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragPlaceholder());
+        m_placeholder.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.dragdropCss().dragPlaceholder());
         m_dragElement = clone;
         DOM.setCapture(m_dragElement.getElement());
-        //   m_placeholder = createPlaceholder(m_dragElement);
-        //   m_currentTarget.insert(m_placeholder, m_currentTarget.getWidgetIndex(m_dragElement));
         m_provisionalParent.add((Widget)m_dragElement);
         m_dragElement.prepareDrag();
         // TODO: resolve ie7/8 issue with loosing the element while dragging
