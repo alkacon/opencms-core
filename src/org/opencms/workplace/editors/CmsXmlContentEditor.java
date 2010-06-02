@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2009/09/11 14:25:47 $
- * Version: $Revision: 1.86.2.2 $
+ * Date   : $Date: 2010/06/02 08:34:48 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -91,7 +91,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.86.2.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -1432,10 +1432,6 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                         org.opencms.workplace.Messages.LOG_INCLUDE_ERRORPAGE_FAILED_0));
                 }
             }
-            if ((getAction() != ACTION_CANCEL) && (getAction() != ACTION_SHOW_ERRORMESSAGE)) {
-                // no error occurred, redisplay the input form
-                setAction(ACTION_SHOW);
-            }
         } else if (EDITOR_ACTION_ELEMENT_REMOVE.equals(getParamAction())) {
             setAction(ACTION_ELEMENT_REMOVE);
             try {
@@ -1445,10 +1441,6 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                     LOG.error(org.opencms.workplace.Messages.get().getBundle().key(
                         org.opencms.workplace.Messages.LOG_INCLUDE_ERRORPAGE_FAILED_0));
                 }
-            }
-            if ((getAction() != ACTION_CANCEL) && (getAction() != ACTION_SHOW_ERRORMESSAGE)) {
-                // no error occurred, redisplay the input form
-                setAction(ACTION_SHOW);
             }
         } else if (EDITOR_ACTION_ELEMENT_MOVE_DOWN.equals(getParamAction())) {
             setAction(ACTION_ELEMENT_MOVE_DOWN);
@@ -1460,10 +1452,6 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                         org.opencms.workplace.Messages.LOG_INCLUDE_ERRORPAGE_FAILED_0));
                 }
             }
-            if ((getAction() != ACTION_CANCEL) && (getAction() != ACTION_SHOW_ERRORMESSAGE)) {
-                // no error ocurred, redisplay the input form
-                setAction(ACTION_SHOW);
-            }
         } else if (EDITOR_ACTION_ELEMENT_MOVE_UP.equals(getParamAction())) {
             setAction(ACTION_ELEMENT_MOVE_UP);
             try {
@@ -1473,10 +1461,6 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                     LOG.error(org.opencms.workplace.Messages.get().getBundle().key(
                         org.opencms.workplace.Messages.LOG_INCLUDE_ERRORPAGE_FAILED_0));
                 }
-            }
-            if ((getAction() != ACTION_CANCEL) && (getAction() != ACTION_SHOW_ERRORMESSAGE)) {
-                // no error ocurred, redisplay the input form
-                setAction(ACTION_SHOW);
             }
         } else if (EDITOR_ACTION_NEW.equals(getParamAction())) {
             setAction(ACTION_NEW);
@@ -1711,7 +1695,12 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
 
         StringBuffer result = new StringBuffer(1024);
         // only show errors if editor is not opened initially
-        boolean showErrors = (getAction() != ACTION_NEW) && (getAction() != ACTION_DEFAULT);
+        boolean showErrors = (getAction() != ACTION_NEW)
+            && (getAction() != ACTION_DEFAULT)
+            && (getAction() != ACTION_ELEMENT_ADD)
+            && (getAction() != ACTION_ELEMENT_REMOVE)
+            && (getAction() != ACTION_ELEMENT_MOVE_DOWN)
+            && (getAction() != ACTION_ELEMENT_MOVE_UP);
 
         try {
             // check if we are in a nested content definition
