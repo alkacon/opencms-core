@@ -130,18 +130,19 @@ function loadSelection() {
 		try {
 			var idPart = oSpan.getAttribute("id").substring(1);
 			if (idPart == oImage.getAttribute("id").substring(1)) {
-
+				// reading ext. subtitle
 				var altElem = oEditor.FCK.EditorDocument.getElementById("s" + idPart);
 				if (altElem) {
 					altText	= altElem.firstChild.data;
                     cms.galleries.checkGalleryCheckbox($('#' + cms.imagepreviewhandler.editorKeys['fckInsertAlt']), true);                   
 				}
-
+				// reading ext. copyright
 				var cpElem = oEditor.FCK.EditorDocument.getElementById("c" + idPart);
 				if (cpElem) {
 					copyText = cpElem.firstChild.data;
                     cms.galleries.checkGalleryCheckbox($('#' + cms.imagepreviewhandler.editorKeys['fckInsertCr']), true);					
 				}
+				// read margins
 				var divElem = oEditor.FCK.EditorDocument.getElementById("a" + idPart);
 				imgHSp = divElem.style.marginLeft;
 				if (imgAlign == "left") {
@@ -188,6 +189,7 @@ function loadSelection() {
  	}
 	
 	if (altText == "") {
+		// reading alt attribute
 		altText	= GetAttribute(oImage,	"alt", "");
 	}
     
