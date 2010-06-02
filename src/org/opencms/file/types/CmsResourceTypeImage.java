@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeImage.java,v $
- * Date   : $Date: 2009/09/09 15:54:52 $
- * Version: $Revision: 1.19.2.1 $
+ * Date   : $Date: 2010/06/02 14:46:36 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,11 +60,16 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.19.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsResourceTypeImage extends A_CmsResourceType {
+
+    /** The gallery preview provider. */
+    private String m_galleryPreviewProvider;
+
+    private static final String GALLERY_PREVIEW_PROVIDER = "org.opencms.ade.galleries.preview.image.CmsPreviewProvider";
 
     /**
      * A data container for image size and scale operations.<p>
@@ -468,5 +473,21 @@ public class CmsResourceTypeImage extends A_CmsResourceType {
             }
         }
         return super.writeFile(cms, securityManager, resource);
+    }
+
+    /**
+     * @see org.opencms.file.types.I_CmsResourceType#getGalleryPreviewProvider()
+     */
+    @Override
+    public String getGalleryPreviewProvider() {
+
+        if (m_galleryPreviewProvider == null) {
+            m_galleryPreviewProvider = getConfiguration().get(CONFIGURATION_GALLERY_PREVIEW_PROVIDER);
+            if (m_galleryPreviewProvider == null) {
+                // this is the default preview provider
+                m_galleryPreviewProvider = GALLERY_PREVIEW_PROVIDER;
+            }
+        }
+        return m_galleryPreviewProvider;
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/preview/image/client/Attic/CmsResourcePreview.java,v $
- * Date   : $Date: 2010/05/28 09:31:39 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/06/02 14:46:36 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,12 +33,35 @@ package org.opencms.ade.galleries.preview.image.client;
 
 import org.opencms.ade.galleries.client.preview.A_CmsResourcePreview;
 import org.opencms.ade.galleries.preview.image.shared.I_CmsImagePreviewProvider;
+import org.opencms.ade.galleries.shared.CmsPreviewInfoBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import com.google.gwt.user.client.ui.RootPanel;
 
+/**
+ * The image resource preview.<p>
+ * 
+ * @author Tobias Herrmann
+ * 
+ * @version $Revision: 1.2 $
+ * 
+ * @since 8.0.0
+ */
 public class CmsResourcePreview extends A_CmsResourcePreview {
+
+    /**
+     * Debug function.<p>
+     * 
+     * @param text text to display
+     */
+    //TODO: remove
+    private static native void alert(String text) /*-{
+        $wnd.alert(text);
+    }-*/;
 
     /**
      * @see org.opencms.ade.galleries.client.preview.I_CmsResourcePreview#getPreviewName()
@@ -49,7 +72,7 @@ public class CmsResourcePreview extends A_CmsResourcePreview {
     }
 
     /**
-     * @see org.opencms.ade.galleries.client.preview.I_CmsResourcePreview#openPreview(java.lang.String, java.lang.String, java.lang.String)
+     * @see org.opencms.ade.galleries.client.preview.I_CmsResourcePreview#openPreview(String, String, String)
      */
     public void openPreview(String galleryMode, String resourcePath, String parentElementId) {
 
@@ -59,6 +82,44 @@ public class CmsResourcePreview extends A_CmsResourcePreview {
         GalleryMode mode = I_CmsGalleryProviderConstants.GalleryMode.valueOf(galleryMode);
 
         CmsImagePreview preview = new CmsImagePreview(mode, parentPanel.getOffsetHeight(), parentPanel.getOffsetWidth());
+
+        // initialize the controller and controller handler
+        CmsImagePreviewcontroller controller = new CmsImagePreviewcontroller(new CmsImagePreviewControllerHandler(
+            preview));
+
+        // TODO: remove dummy data
+        CmsPreviewInfoBean dummyBean = new CmsPreviewInfoBean();
+        dummyBean.setPreviewHtml(resourcePath);
+        Map<String, String> dummyProps = new LinkedHashMap<String, String>();
+        dummyProps.put("Title", "Mein Title");
+        dummyProps.put("Description", "Mein Title");
+        dummyProps.put("Groesse", "Mein Title");
+        dummyProps.put("Groesse und sehr lang und so", "Mein Title");
+        dummyProps.put("Groesse", "Mein Title und hier auch etwas länger");
+        dummyProps.put("Groesse", "Mein Title");
+        dummyProps.put("Groesse und alles durcheinander", "Mein Title und auch enen langen Text");
+        dummyProps.put("Groesse", "Mein Title");
+        dummyProps.put("Groesse", "Mein Title");
+        dummyProps.put("Groesse", "Mein Title udn am Ende auch");
+        dummyBean.setPropeties(dummyProps);
+
+        Map<String, String> dummyInfos = new LinkedHashMap<String, String>();
+        dummyInfos.put(I_CmsGalleryProviderConstants.ImageParams.title.name(), "");
+        dummyInfos.put(I_CmsGalleryProviderConstants.ImageParams.file_name.name(), "");
+        dummyInfos.put(I_CmsGalleryProviderConstants.ImageParams.file_size.name(), "");
+        dummyInfos.put(I_CmsGalleryProviderConstants.ImageParams.file_type.name(), "Mein Title");
+        dummyInfos.put(I_CmsGalleryProviderConstants.ImageParams.height.name(), "");
+        dummyInfos.put(I_CmsGalleryProviderConstants.ImageParams.width.name(), "");
+        dummyInfos.put(I_CmsGalleryProviderConstants.ImageParams.path.name(), "");
+        dummyBean.setImageInfos(dummyInfos);
+
+        // fill the content of the preview
+        preview.fillPreviewPanel(
+            parentPanel.getOffsetHeight(),
+            parentPanel.getOffsetWidth(),
+            dummyBean.getPreviewHtml());
+        preview.fillTabs(parentPanel.getOffsetHeight(), parentPanel.getOffsetWidth(), dummyBean, controller);
+
         parentPanel.add(preview);
     }
 
@@ -67,8 +128,6 @@ public class CmsResourcePreview extends A_CmsResourcePreview {
      */
     public void selectResource(String galleryMode, String resourcePath) {
 
-        // TODO: Auto-generated method stub
-
+        alert("select resource " + resourcePath);
     }
-
 }

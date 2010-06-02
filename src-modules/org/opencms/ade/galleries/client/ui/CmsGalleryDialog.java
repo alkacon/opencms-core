@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsGalleryDialog.java,v $
- * Date   : $Date: 2010/05/27 10:28:29 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2010/06/02 14:46:36 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import com.google.gwt.user.client.ui.HTMLPanel;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @since 8.0.
  */
@@ -148,8 +148,6 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
         I_CmsLayoutBundle.INSTANCE.galleryDialogCss().ensureInjected();
         I_CmsLayoutBundle.INSTANCE.listTreeCss().ensureInjected();
         I_CmsLayoutBundle.INSTANCE.previewDialogCss().ensureInjected();
-        org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().ensureInjected();
-        org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle.INSTANCE.galleryDialogCss().ensureInjected();
     }
 
     /**
@@ -275,8 +273,8 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
     public void onResize(ResizeEvent event) {
 
         // TODO: implement
-        int newHeight = event.getHeight();
-        int newWidth = event.getWidth();
+        // int newHeight = event.getHeight();
+        // int newWidth = event.getWidth();
 
     }
 

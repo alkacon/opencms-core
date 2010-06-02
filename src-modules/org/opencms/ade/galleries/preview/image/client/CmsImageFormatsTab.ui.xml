@@ -20,20 +20,12 @@
 					<cmsinput:CmsTextBox ></cmsinput:CmsTextBox>
 				</g:FlowPanel>
 			</g:FlowPanel>
-			<!-- <g:FlowPanel addStyleNames="{galleryResources.previewDialogCss.formatsLineSize}">
-				<g:FlowPanel addStyleNames="{galleryResources.previewDialogCss.sizeLabel}">
-					<cmsinput:CmsLabel ui:field="m_widthLabel"></cmsinput:CmsLabel>
-				</g:FlowPanel>				
-				<cmsinput:CmsTextBox addStyleNames="{galleryResources.previewDialogCss.formatText}"></cmsinput:CmsTextBox>									
-			</g:FlowPanel>
 			<g:FlowPanel addStyleNames="{galleryResources.previewDialogCss.formatsLineSize}">
-				<cms:CmsFlowPanel tag='span' addStyleNames="{galleryResources.previewDialogCss.sizeLabel}">				
-					<cmsinput:CmsLabel ui:field="m_heightLabel"></cmsinput:CmsLabel>
-				</cms:CmsFlowPanel>
-				<cms:CmsFlowPanel tag='span' addStyleNames="{galleryResources.previewDialogCss.formatText}">
-					<cmsinput:CmsTextBox></cmsinput:CmsTextBox>
-				</cms:CmsFlowPanel>				
-			</g:FlowPanel>-->			
+				<cmsinput:CmsLabel ui:field="m_heightLabel" addStyleNames="{galleryResources.previewDialogCss.formatLabel}"></cmsinput:CmsLabel>
+				<g:FlowPanel addStyleNames="{galleryResources.previewDialogCss.formatText}">
+					<cmsinput:CmsTextBox ></cmsinput:CmsTextBox>
+				</g:FlowPanel>
+			</g:FlowPanel>	
 		</g:FlowPanel>
 		<g:FlowPanel addStyleNames="{galleryResources.previewDialogCss.previewButtonBar}">
 			<cms:CmsPushButton ui:field="m_selectButton" addStyleNames="{galleryResources.previewDialogCss.previewButton}"></cms:CmsPushButton>			

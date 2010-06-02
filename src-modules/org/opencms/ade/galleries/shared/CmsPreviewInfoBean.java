@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/Attic/CmsPreviewInfoBean.java,v $
- * Date   : $Date: 2010/05/27 09:42:23 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/06/02 14:46:36 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,18 +40,68 @@ import java.util.Map;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  */
 public class CmsPreviewInfoBean {
 
+    /** The description of the resource. */
+    private String m_description;
+
+    /** The map with the image infos to display. */
     private Map<String, String> m_imageInfos;
 
     /** The html content of the preview. */
     private String m_previewHtml;
 
+    /**
+     * Returns the description of the resource.<p>
+     *
+     * @return the description
+     */
+    public String getDescription() {
+
+        return m_description;
+    }
+
+    /**
+     * Sets the description of the resource.<p>
+     *
+     * @param description the description to set
+     */
+    public void setDescription(String description) {
+
+        m_description = description;
+    }
+
+    /**
+     * Returns the title of the resource.<p>
+     *
+     * @return the title
+     */
+    public String getTitle() {
+
+        return m_title;
+    }
+
+    /**
+     * Sets the title of the resource.<p>
+     *
+     * @param title the title to set
+     */
+    public void setTitle(String title) {
+
+        m_title = title;
+    }
+
     private Map<String, String> m_propeties;
+
+    /** The path to the selected resource. */
+    private String m_resourcePath;
+
+    /** The title of the resource. */
+    private String m_title;
 
     /**
      * The contructor.<p>
@@ -95,6 +145,16 @@ public class CmsPreviewInfoBean {
     }
 
     /**
+     * Returns the resource path.<p>
+     *
+     * @return the resource path
+     */
+    public String getResourcePath() {
+
+        return m_resourcePath;
+    }
+
+    /**
      * Sets the imageInfos.<p>
      *
      * @param imageInfos the imageInfos to set
@@ -122,5 +182,15 @@ public class CmsPreviewInfoBean {
     public void setPropeties(Map<String, String> propeties) {
 
         m_propeties = propeties;
+    }
+
+    /**
+     * Sets the resource path.<p>
+     *
+     * @param resourcePath the resource path to set
+     */
+    public void setResourcePath(String resourcePath) {
+
+        m_resourcePath = resourcePath;
     }
 }

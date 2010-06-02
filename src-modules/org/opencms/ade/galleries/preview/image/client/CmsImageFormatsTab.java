@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/preview/image/client/Attic/CmsImageFormatsTab.java,v $
- * Date   : $Date: 2010/05/28 09:31:39 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/06/02 14:46:36 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,6 @@
 
 package org.opencms.ade.galleries.preview.image.client;
 
-import org.opencms.ade.galleries.client.preview.ui.I_CmsPreviewTab;
 import org.opencms.ade.galleries.client.ui.Messages;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 import org.opencms.gwt.client.ui.CmsPushButton;
@@ -50,7 +49,16 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class CmsImageFormatsTab extends Composite implements I_CmsPreviewTab {
+/**
+ * The widget to display the format information of the selected image.<p>
+ * 
+ * @author Polina Smagina
+ * 
+ * @version $Revision: 1.2 $
+ * 
+ * @since 8.0.
+ */
+public class CmsImageFormatsTab extends Composite {
 
     /**
      * @see com.google.gwt.uibinder.client.UiBinder
@@ -59,6 +67,7 @@ public class CmsImageFormatsTab extends Composite implements I_CmsPreviewTab {
         // GWT interface, nothing to do here
     }
 
+    /** The label width. */
     private static final int LABEL_WIDTH = 80;
 
     /** Text metrics key. */
@@ -70,6 +79,10 @@ public class CmsImageFormatsTab extends Composite implements I_CmsPreviewTab {
     /** The cropping button. */
     @UiField
     CmsPushButton m_cropButton;
+
+    /** The height label. */
+    @UiField
+    CmsLabel m_heightLabel;
 
     /** The panel holding the content. */
     @UiField
@@ -95,13 +108,17 @@ public class CmsImageFormatsTab extends Composite implements I_CmsPreviewTab {
     @UiField
     CmsLabel m_widthLabel;
 
-    //    /** The height label. */
-    //    @UiField
-    //    CmsLabel m_heightLabel;
-
     /** The mode of the gallery. */
     private GalleryMode m_dialogMode;
 
+    /**
+     * The constructor.<p>
+     * 
+     * @param dialogMode the mode of the gallery
+     * @param height the height of the tab
+     * @param width the width of the height
+     * @param formats the map with format values for the select box
+     */
     public CmsImageFormatsTab(GalleryMode dialogMode, int height, int width, Map<String, String> formats) {
 
         initWidget(uiBinder.createAndBindUi(this));
@@ -109,12 +126,13 @@ public class CmsImageFormatsTab extends Composite implements I_CmsPreviewTab {
         m_dialogMode = dialogMode;
 
         m_selectBoxLabel.setText(Messages.get().key(Messages.GUI_PREVIEW_LABEL_FORMAT_0));
-        m_selectBoxLabel.truncate(TM_PREVIEW_TAB_IMAGEFORMATS, 80);
+        m_selectBoxLabel.truncate(TM_PREVIEW_TAB_IMAGEFORMATS, LABEL_WIDTH);
 
         // TODO: set the select box values
         m_selectBox.addOption("original", "original");
         m_selectBox.addOption("user", "user");
 
+        // set localized values of the labels
         m_cropButton.setText(Messages.get().key(Messages.GUI_PREVIEW_BUTTON_CROP_0));
         m_cropButton.setImageClass(I_CmsImageBundle.INSTANCE.style().croppingIcon());
 
@@ -122,8 +140,9 @@ public class CmsImageFormatsTab extends Composite implements I_CmsPreviewTab {
         m_removeCropButton.setImageClass(I_CmsImageBundle.INSTANCE.style().removeCroppingIcon());
 
         m_widthLabel.setText(Messages.get().key(Messages.GUI_PREVIEW_LABEL_WIDTH_0));
-        m_widthLabel.truncate(TM_PREVIEW_TAB_IMAGEFORMATS, 80);
-        //        m_heightLabel.setText(Messages.get().key(Messages.GUI_PREVIEW_LABEL_HEIGHT_0));
+        m_widthLabel.truncate(TM_PREVIEW_TAB_IMAGEFORMATS, LABEL_WIDTH);
+        m_heightLabel.setText(Messages.get().key(Messages.GUI_PREVIEW_LABEL_HEIGHT_0));
+        m_heightLabel.truncate(TM_PREVIEW_TAB_IMAGEFORMATS, LABEL_WIDTH);
 
         // buttons        
         m_selectButton.setText(Messages.get().key(Messages.GUI_PREVIEW_BUTTON_SELECT_0));
@@ -131,26 +150,24 @@ public class CmsImageFormatsTab extends Composite implements I_CmsPreviewTab {
     }
 
     /**
-     * Returns the dialogMode.<p>
+     * Returns the gallery dialog mode.<p>
      *
-     * @return the dialogMode
+     * @return the gallery dialog mode
      */
     public GalleryMode getDialogMode() {
 
         return m_dialogMode;
     }
 
+    /**
+     * Will be triggered when the select button is clicked.<p>
+     * 
+     * @param event the clicked event
+     */
     @UiHandler("m_selectButton")
-    public void onSaveClick(ClickEvent event) {
-
-        // TODO: Auto-generated method stub
-
-    }
-
     public void onSelectClick(ClickEvent event) {
 
-        // TODO: Auto-generated method stub
+        // TODO:implement
 
     }
-
 }

@@ -91,15 +91,14 @@
 	padding-top:5px;
 }
 
+/* Line with format select box. */
 .formatsLine {
 	margin:0 0 12px;
-	/*line-height:16px;*/
 }
 
+/** Line with size infos. */
 .formatsLineSize {
 	margin:0 0 3px;
-	/*line-height:20px;*/
-	/*width:300px;*/
 }
 
 .formatButton{
@@ -113,29 +112,22 @@
 	vertical-align:middle;		
 }
 
-.formatText{
-		width:100px;		
-		margin-left:5px;
-		
-	}
-
-/*.formatLabel{
-	min-width:80px;
-	font-weight:bold;
-	margin-left:5px;
-	float:left;	
-}*/
-
 @if user.agent ie6 {
 	.formatLabel{
 		width:100px;		
 		font-weight:bold;
 		margin-left:5px;
 		display:inline;
+		vertical-align:middle;
 		zoom:1;
 	}
 	
-	
+	.formatText{
+		width:100px;		
+		margin-left:5px;
+		display:inline;
+		zoom:1;
+	}	
 
 } @else {
 	.formatLabel{
@@ -143,9 +135,14 @@
 		font-weight:bold;
 		margin-left:5px;
 		display:inline-block;
-		vertical-align:middle;		
+		vertical-align:top;		
 	}
 	
+	.formatText{
+		width:100px;		
+		margin-left:5px;
+		display:inline-block;
+	}	
 }
 	
 	

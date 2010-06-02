@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsGwtActionElement.java,v $
- * Date   : $Date: 2010/05/18 12:31:13 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/06/02 14:46:36 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,17 +53,17 @@ import com.google.gwt.user.server.rpc.RPC;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
 public class CmsGwtActionElement extends CmsJspActionElement {
 
     /** The opening script tag. */
-    private static final String SCRIPT_TAG_OPEN = "<script type=\"text/javascript\">";
+    protected static final String SCRIPT_TAG_OPEN = "<script type=\"text/javascript\">";
 
     /** The closing script tag. */
-    private static final String SCRIPT_TAG_CLOSE = "</script>";
+    protected static final String SCRIPT_TAG_CLOSE = "</script>";
 
     /** The resource icon CSS URI. */
     private static final String ICON_CSS_URI = "/system/modules/org.opencms.gwt/resourceIcon.css";

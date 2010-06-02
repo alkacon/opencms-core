@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/preview/binary/client/Attic/CmsResourcePreview.java,v $
- * Date   : $Date: 2010/05/28 09:31:38 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/06/02 14:46:36 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,8 +33,12 @@ package org.opencms.ade.galleries.preview.binary.client;
 
 import org.opencms.ade.galleries.client.preview.A_CmsResourcePreview;
 import org.opencms.ade.galleries.preview.binary.shared.I_CmsBinaryPreviewProvider;
+import org.opencms.ade.galleries.shared.CmsPreviewInfoBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import com.google.gwt.user.client.ui.RootPanel;
 
@@ -43,7 +47,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -77,10 +81,41 @@ public class CmsResourcePreview extends A_CmsResourcePreview {
         // inserting the preview into the DOM
         GalleryMode mode = I_CmsGalleryProviderConstants.GalleryMode.valueOf(galleryMode);
 
-        CmsPreviewDefault preview = new CmsPreviewDefault(
+        CmsBinaryPreview preview = new CmsBinaryPreview(
             mode,
             parentPanel.getOffsetHeight(),
             parentPanel.getOffsetWidth());
+
+        // initialize the controller and controller handler
+        CmsBinaryPreviewController.init(new CmsBinaryPreviewControllerHandler(preview), preview);
+
+        // TODO: remove dummy data
+        CmsPreviewInfoBean dummyBean = new CmsPreviewInfoBean();
+        dummyBean.setPreviewHtml(new String("/opencms/opencms/demo_t3/images/Strelitzie.JPG"));
+        Map<String, String> dummyProps = new LinkedHashMap<String, String>();
+        dummyProps.put("Title", "Mein Title");
+        dummyProps.put("Description", "Mein Title");
+        dummyProps.put("Groesse", "Mein Title");
+        dummyProps.put("Groesse und sehr lang und so", "Mein Title");
+        dummyProps.put("Groesse", "Mein Title und hier auch etwas länger");
+        dummyProps.put("Groesse", "Mein Title");
+        dummyProps.put("Groesse und alles durcheinander", "Mein Title und auch enen langen Text");
+        dummyProps.put("Groesse", "Mein Title");
+        dummyProps.put("Groesse", "Mein Title");
+        dummyProps.put("Groesse", "Mein Title udn am Ende auch");
+        dummyBean.setPropeties(dummyProps);
+
+        // fill the content of the preview
+        preview.fillPreviewPanel(
+            parentPanel.getOffsetHeight(),
+            parentPanel.getOffsetWidth(),
+            dummyBean.getPreviewHtml());
+        preview.fillTabs(
+            parentPanel.getOffsetHeight(),
+            parentPanel.getOffsetWidth(),
+            dummyBean,
+            CmsBinaryPreviewController.get());
+
         parentPanel.add(preview);
     }
 

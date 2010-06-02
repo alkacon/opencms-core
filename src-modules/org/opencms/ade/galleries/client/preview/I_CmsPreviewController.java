@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/ui/Attic/I_CmsPreviewTab.java,v $
- * Date   : $Date: 2010/05/27 09:42:23 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/Attic/I_CmsPreviewController.java,v $
+ * Date   : $Date: 2010/06/02 14:46:36 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -29,13 +29,25 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.galleries.client.preview.ui;
+package org.opencms.ade.galleries.client.preview;
 
-import com.google.gwt.event.dom.client.ClickEvent;
+import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 
-public interface I_CmsPreviewTab {
+/**
+ * Interface for the preview controller.<p>
+ * 
+ * @author Polina Smagina
+ * 
+ * @version $Revision: 1.1 $ 
+ * 
+ * @since 8.0.0
+ */
+public interface I_CmsPreviewController {
 
-    void onSaveClick(ClickEvent event);
-
-    void onSelectClick(ClickEvent event);
+    /**
+     * Selects the resource.<p>
+     * 
+     * @param dialogMode the gallery mode
+     */
+    void select(GalleryMode dialogMode);
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2010/05/27 09:42:23 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/06/02 14:46:36 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,19 +33,21 @@ package org.opencms.ade.galleries.client.ui.css;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.CssResource;
+import com.google.gwt.resources.client.CssResource.Shared;
 
 /**
  * Resource bundle to access CSS and image resources of the gallery dialog.<p>
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
 public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLayoutBundle {
 
     /** Gallery dialog CSS. */
+    @Shared
     interface I_CmsGalleryDialogCss extends CssResource {
 
         /** Access method.<p>
@@ -105,6 +107,7 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
     }
 
     /** Preview dialog CSS. */
+    @Shared
     interface I_CmsPreviewDialogCss extends CssResource {
 
         /** Access method.<p>

@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/preview/binary/client/Attic/CmsPreviewDefault.java,v $
- * Date   : $Date: 2010/05/28 09:31:38 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/preview/binary/client/Attic/CmsBinaryPreview.java,v $
+ * Date   : $Date: 2010/06/02 14:46:36 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -31,6 +31,8 @@
 
 package org.opencms.ade.galleries.preview.binary.client;
 
+import org.opencms.ade.galleries.client.preview.CmsPropertiesTabHandler;
+import org.opencms.ade.galleries.client.preview.I_CmsPreviewController;
 import org.opencms.ade.galleries.client.preview.ui.A_CmsPreview;
 import org.opencms.ade.galleries.client.preview.ui.CmsPropertiesTab;
 import org.opencms.ade.galleries.shared.CmsPreviewInfoBean;
@@ -42,7 +44,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * Provides a widget for the default preview dialog .<p>
+ * Provides a widget for the binary preview dialog .<p>
  *  
  * @author Polina Smagina
  * 
@@ -50,21 +52,22 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @since 8.0.
  */
-public class CmsPreviewDefault extends A_CmsPreview {
+public class CmsBinaryPreview extends A_CmsPreview {
 
     /**
      * The constructor.<p>
      * 
+     * @param dialogMode the dialog mode
      * @param dialogHeight the dialog height to set
      * @param dialogWidth the dialog width to set     
      */
-    public CmsPreviewDefault(GalleryMode dialogMode, int dialogHeight, int dialogWidth) {
+    public CmsBinaryPreview(GalleryMode dialogMode, int dialogHeight, int dialogWidth) {
 
         super(dialogMode, dialogHeight, dialogWidth);
     }
 
     /**
-     * @see org.opencms.ade.galleries.client.preview.ui.A_CmsPreview#fillPreviewPanel(String)
+     * @see org.opencms.ade.galleries.client.preview.ui.A_CmsPreview#fillPreviewPanel(int, int, String)
      */
     @Override
     public void fillPreviewPanel(int height, int width, String html) {
@@ -73,13 +76,18 @@ public class CmsPreviewDefault extends A_CmsPreview {
     }
 
     /**
-     * @see org.opencms.ade.galleries.client.preview.ui.A_CmsPreview#fillPreviewPanel(String)
+     * @see org.opencms.ade.galleries.client.preview.ui.A_CmsPreview#fillTabs(int, int, CmsPreviewInfoBean, I_CmsPreviewController)
      */
     @Override
-    public void fillTabs(int height, int width, CmsPreviewInfoBean infoBean) {
+    public void fillTabs(int height, int width, CmsPreviewInfoBean infoBean, I_CmsPreviewController controller) {
 
         m_tabbedPanel = new CmsTabbedPanel<Widget>(CmsTabLayout.small, false);
-        CmsPropertiesTab tab = new CmsPropertiesTab(m_dialogMode, height, width, infoBean.getPropeties());
+        CmsPropertiesTab tab = new CmsPropertiesTab(
+            m_dialogMode,
+            height,
+            width,
+            infoBean.getPropeties(),
+            new CmsPropertiesTabHandler(controller));
         m_tabbedPanel.add(tab, tab.getTabName());
 
         m_tabsHolder.add(m_tabbedPanel);

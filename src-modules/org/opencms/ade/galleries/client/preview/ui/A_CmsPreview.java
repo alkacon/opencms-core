@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/ui/Attic/A_CmsPreview.java,v $
- * Date   : $Date: 2010/05/28 09:31:39 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/06/02 14:46:36 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,8 @@
 
 package org.opencms.ade.galleries.client.preview.ui;
 
+import org.opencms.ade.galleries.client.preview.I_CmsPreviewController;
+import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.shared.CmsPreviewInfoBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 import org.opencms.gwt.client.ui.CmsPushButton;
@@ -50,11 +52,14 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * Provides a widget sceleton for the preview.<p>
+ * Provides a widget skeleton for the preview dialog.<p>
+ * 
+ * This widget contains a panel with the resource preview and
+ * a set of tabs with resource information under the preview panel.
  *  
  * @author Polina Smagina
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.
  */
@@ -74,6 +79,7 @@ public abstract class A_CmsPreview extends Composite {
     @UiField
     protected CmsPushButton m_closeButton;
 
+    /** The dialog mode of the gallery. */
     protected GalleryMode m_dialogMode;
 
     /** The parent panel of the preview dialog. */
@@ -99,14 +105,20 @@ public abstract class A_CmsPreview extends Composite {
     /** The min height for the preview panel. */
     private final int m_minPreviewHeight = 364;
 
+    private CmsPropertiesTab m_propertiesTab;
+
     /**
-     * The contructor.<p>
+     * The constructor.<p>
      * 
+     * @param dialogMode the gallery dialog mode (view, widget, ade, editor, ...)
      * @param dialogHeight the dialog height to set
      * @param dialogWidth the dialog width to set
      */
-    // TODO: this contrustor should be called only once, when the gallery dialod is opened and set to invisible
+    // TODO: this contrustor should be called only once, when the gallery dialog is opened and set to invisible
     public A_CmsPreview(GalleryMode dialogMode, int dialogHeight, int dialogWidth) {
+
+        // TODO: to remove, if a better way is found, so the css is only loaded once
+        I_CmsLayoutBundle.INSTANCE.previewDialogCss().ensureInjected();
 
         initWidget(uiBinder.createAndBindUi(this));
 
@@ -141,8 +153,10 @@ public abstract class A_CmsPreview extends Composite {
     }
 
     /**
-     * Fills the content of the preview panel.<p>
+     * Fills the content of the preview panel part.<p>
      * 
+     * @param height the 
+     * @param width 
      * @param html the content html
      */
     public abstract void fillPreviewPanel(int height, int width, String html);
@@ -153,22 +167,31 @@ public abstract class A_CmsPreview extends Composite {
      * @param height the tab height 
      * @param width the tab width
      * @param infoBean the bean containing the parameter 
+     * @param controller the preview controller
      */
-    public abstract void fillTabs(int height, int width, CmsPreviewInfoBean infoBean);
+    public abstract void fillTabs(int height, int width, CmsPreviewInfoBean infoBean, I_CmsPreviewController controller);
+
+    /**
+     * Returns the properties tab.<p>
+     *
+     * @return the properties tab
+     */
+    public CmsPropertiesTab getPropertiesTab() {
+
+        return m_propertiesTab;
+    }
 
     /**
      * Will be triggered, when the close button of the preview dialog is clicked.<p>
+     * 
+     * The preview dialog is set invisible and removed from parent.
      *
      * @param event the click event
      */
-    // TODO: this function should call the preview handler
     @UiHandler("m_closeButton")
     void onCloseClick(ClickEvent event) {
 
-        //TODO: this functions should be called from the preview controller handler
         m_parentPanel.setVisible(false);
-        m_tabsHolder.clear();
-        // TODO: clear the content of the preview panel
-        // TODO: clear the content of the tabs (remove all tabs, so different tabs are opened dependend on resource type)
+        m_parentPanel.removeFromParent();
     }
 }

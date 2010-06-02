@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/rpc/Attic/I_CmsGalleryService.java,v $
- * Date   : $Date: 2010/05/27 10:28:29 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/06/02 14:46:36 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  * @author Polina Smagina
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 8.0.0
  * 
@@ -66,7 +66,7 @@ public interface I_CmsGalleryService extends RemoteService {
      * 
      * @return the category tree root entry
      * 
-     * @throws CmsRpcException is something goes wrong
+     * @throws CmsRpcException if something goes wrong
      */
     CmsCategoryTreeEntry getCategoryTreeGalleries(List<String> galleries) throws CmsRpcException;
 

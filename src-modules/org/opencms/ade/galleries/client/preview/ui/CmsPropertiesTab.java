@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/ui/Attic/CmsPropertiesTab.java,v $
- * Date   : $Date: 2010/05/28 09:31:39 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/06/02 14:46:36 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.ade.galleries.client.preview.ui;
 
+import org.opencms.ade.galleries.client.preview.CmsPropertiesTabHandler;
 import org.opencms.ade.galleries.client.ui.Messages;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
@@ -54,7 +55,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.
  */
@@ -88,23 +89,47 @@ public class CmsPropertiesTab extends Composite {
     /** The mode of the gallery. */
     private GalleryMode m_dialogMode;
 
+    /** The tab handler. */
+    private CmsPropertiesTabHandler m_handler;
+
     /**
      * The constructor.<p>
      * 
+     * @param dialogMode the dialog mode
      * @param height the properties tab height
      * @param width the properties tab width
      * @param properties the properties to display
+     * @param handler tha tab handler to set
      */
-    public CmsPropertiesTab(GalleryMode dialogMode, int height, int width, Map<String, String> properties) {
+    public CmsPropertiesTab(
+        GalleryMode dialogMode,
+        int height,
+        int width,
+        Map<String, String> properties,
+        CmsPropertiesTabHandler handler) {
 
         initWidget(uiBinder.createAndBindUi(this));
 
         m_dialogMode = dialogMode;
+        m_handler = handler;
 
         fillProperties(height, width, properties);
 
-        // buttons        
-        m_selectButton.setText(Messages.get().key(Messages.GUI_PREVIEW_BUTTON_SELECT_0));
+        // buttons
+        switch (m_dialogMode) {
+            case widget:
+                m_selectButton.setText(Messages.get().key(Messages.GUI_PREVIEW_BUTTON_SELECT_0));
+                break;
+            case editor:
+            case sitemap:
+            case ade:
+            case view:
+            default:
+                m_selectButton.setVisible(false);
+                break;
+
+        }
+
         m_saveButton.setText(Messages.get().key(Messages.GUI_PREVIEW_BUTTON_SAVE_0));
 
     }
@@ -130,14 +155,19 @@ public class CmsPropertiesTab extends Composite {
     }
 
     /**
-     * Updates the size of the dialog after the window was resized.<p>
+     * Return true is at least one property is changed.<p>
      * 
-     * @param width the new width
-     * @param height the new height
+     * @return true, if property is changed, false otherwise
      */
-    public void updateHeight(int width, int height) {
+    public boolean isChanged() {
 
-        // TODO: implement
+        for (Widget property : m_properties) {
+            CmsPropertyForm form = ((CmsPropertyForm)property);
+            if (form.isChanged()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -146,9 +176,9 @@ public class CmsPropertiesTab extends Composite {
      * @param event the click event
      */
     @UiHandler("m_saveButton")
-    void onSaveClick(ClickEvent event) {
+    public void onSaveClick(ClickEvent event) {
 
-        //TODO: implement
+        // TODO: implement
     }
 
     /**
@@ -157,9 +187,20 @@ public class CmsPropertiesTab extends Composite {
      * @param event the click event
      */
     @UiHandler("m_selectButton")
-    void onSelectClick(ClickEvent event) {
+    public void onSelectClick(ClickEvent event) {
 
-        //TODO: implement
+        m_handler.onSelect(m_dialogMode);
+    }
+
+    /**
+     * Updates the size of the dialog after the window was resized.<p>
+     * 
+     * @param width the new width
+     * @param height the new height
+     */
+    public void updateHeight(int width, int height) {
+
+        // TODO: implement
     }
 
     /**
@@ -208,9 +249,7 @@ public class CmsPropertiesTab extends Composite {
             }
             m_properties.add(property);
 
-            // TODO: set the calculated height
-
-            // TODO: display or hide the save button depending on the dialogMode
+            // TODO: set the calculated height of the scrolled panel with properties
         }
     }
 }

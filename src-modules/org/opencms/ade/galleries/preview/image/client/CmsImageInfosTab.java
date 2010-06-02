@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/preview/image/client/Attic/CmsImageInfosTab.java,v $
- * Date   : $Date: 2010/05/28 09:31:39 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/06/02 14:46:36 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,6 @@
 
 package org.opencms.ade.galleries.preview.image.client;
 
-import org.opencms.ade.galleries.client.preview.ui.I_CmsPreviewTab;
 import org.opencms.ade.galleries.client.ui.Messages;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 import org.opencms.gwt.client.ui.CmsPushButton;
@@ -47,7 +46,16 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class CmsImageInfosTab extends Composite implements I_CmsPreviewTab {
+/**
+ * The widget to display the information of the selected image.<p>
+ * 
+ * @author Polina Smagina
+ * 
+ * @version $Revision: 1.2 $
+ * 
+ * @since 8.0.
+ */
+public class CmsImageInfosTab extends Composite {
 
     /**
      * @see com.google.gwt.uibinder.client.UiBinder
@@ -70,7 +78,15 @@ public class CmsImageInfosTab extends Composite implements I_CmsPreviewTab {
     /** The mode of the gallery. */
     private GalleryMode m_dialogMode;
 
-    public CmsImageInfosTab(GalleryMode dialogMode, int height, int width, Map<String, String> formats) {
+    /**
+     * The constructor.<p>
+     * 
+     * @param dialogMode the mode of the gallery
+     * @param height the height of the tab
+     * @param width the width of the height
+     * @param infos the map with image infos to display
+     */
+    public CmsImageInfosTab(GalleryMode dialogMode, int height, int width, Map<String, String> infos) {
 
         initWidget(uiBinder.createAndBindUi(this));
 
@@ -82,26 +98,24 @@ public class CmsImageInfosTab extends Composite implements I_CmsPreviewTab {
     }
 
     /**
-     * Returns the dialogMode.<p>
+     * Returns the gallery dialog mode.<p>
      *
-     * @return the dialogMode
+     * @return the gallery dialog mode
      */
     public GalleryMode getDialogMode() {
 
         return m_dialogMode;
     }
 
+    /**
+     * Will be triggered when the select button is clicked.<p>
+     * 
+     * @param event the clicked event
+     */
     @UiHandler("m_selectButton")
-    public void onSaveClick(ClickEvent event) {
-
-        // TODO: Auto-generated method stub
-
-    }
-
     public void onSelectClick(ClickEvent event) {
 
-        // TODO: Auto-generated method stub
+        // TODO:implement
 
     }
-
 }
