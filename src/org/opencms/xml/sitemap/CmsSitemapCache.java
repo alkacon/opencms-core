@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapCache.java,v $
- * Date   : $Date: 2010/05/27 06:52:03 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/06/02 06:23:54 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 7.6 
  */
@@ -71,10 +71,10 @@ public final class CmsSitemapCache extends CmsVfsCache {
     /** The log to use (static for performance reasons).<p> */
     private static final Log LOG = CmsLog.getLog(CmsSitemapCache.class);
 
-    /** Cache for active offline sitemap. */
+    /** Cache for active offline sitemap, as localized entry point root path vs sitemap resource root path. */
     private Map<String, String> m_activeOffline;
 
-    /** Cache for active online sitemap. */
+    /** Cache for active online sitemap, as localized entry point root path vs sitemap resource root path. */
     private Map<String, String> m_activeOnline;
 
     /** The admin context. */
@@ -130,7 +130,7 @@ public final class CmsSitemapCache extends CmsVfsCache {
      * 
      * @param cms the current CMS context
      * 
-     * @return the active sitemap table 
+     * @return the active sitemap table, as localized entry point root path vs sitemap resource root path
      * 
      * @throws CmsException if something goes wrong
      */
