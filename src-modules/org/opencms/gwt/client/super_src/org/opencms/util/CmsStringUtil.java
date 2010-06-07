@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/super_src/org/opencms/util/Attic/CmsStringUtil.java,v $
- * Date   : $Date: 2010/05/12 10:29:03 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/06/07 08:04:35 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  * 
@@ -60,6 +60,90 @@ public final class CmsStringUtil {
 
     }
 
+    /**
+     * Replaces occurrences of special control characters in the given input with 
+     * a HTML representation.<p>
+     * 
+     * This method currently replaces line breaks to <code>&lt;br/&gt;</code> and special HTML chars 
+     * like <code>&lt; &gt; &amp; &quot;</code> with their HTML entity representation.<p>
+     * 
+     * @param source the String to escape
+     * 
+     * @return the escaped String
+     */
+    public static String escapeHtml(String source) {
+        if (source == null) {
+            return null;
+        }
+        source = escapeXml(source);
+        source = substitute(source, "\r", "");
+        source = substitute(source, "\n", "<br/>\n");
+        return source;
+    }
+    
+    /**
+     * Substitutes <code>searchString</code> in the given source String with <code>replaceString</code>.<p>
+     * 
+     * This is a high-performance implementation which should be used as a replacement for 
+     * <code>{@link String#replaceAll(java.lang.String, java.lang.String)}</code> in case no
+     * regular expression evaluation is required.<p>
+     * 
+     * @param source the content which is scanned
+     * @param searchString the String which is searched in content
+     * @param replaceString the String which replaces <code>searchString</code>
+     * 
+     * @return the substituted String
+     */
+    public static String substitute(String source, String searchString, String replaceString) {
+
+        if (source == null) {
+            return null;
+        }
+
+        if (isEmpty(searchString)) {
+            return source;
+        }
+
+        if (replaceString == null) {
+            replaceString = "";
+        }
+        int len = source.length();
+        int sl = searchString.length();
+        int rl = replaceString.length();
+        int length;
+        if (sl == rl) {
+            length = len;
+        } else {
+            int c = 0;
+            int s = 0;
+            int e;
+            while ((e = source.indexOf(searchString, s)) != -1) {
+                c++;
+                s = e + sl;
+            }
+            if (c == 0) {
+                return source;
+            }
+            length = len - (c * (sl - rl));
+        }
+
+        int s = 0;
+        int e = source.indexOf(searchString, s);
+        if (e == -1) {
+            return source;
+        }
+        StringBuffer sb = new StringBuffer(length);
+        while (e != -1) {
+            sb.append(source.substring(s, e));
+            sb.append(replaceString);
+            s = e + sl;
+            e = source.indexOf(searchString, s);
+        }
+        e = len;
+        sb.append(source.substring(s, e));
+        return sb.toString();
+    }
+    
     /**
      * Formats a resource name that it is displayed with the maximum length and path information is adjusted.<p>
      * In order to reduce the length of the displayed names, single folder names are removed/replaced with ... successively, 
@@ -339,5 +423,60 @@ public final class CmsStringUtil {
             params.put(key, value);
         }
         return params;
+    }
+    
+    /**
+     * Escapes a String so it may be printed as text content or attribute
+     * value in a HTML page or an XML file.<p>
+     * 
+     * This method replaces the following characters in a String:
+     * <ul>
+     * <li><b>&lt;</b> with &amp;lt;
+     * <li><b>&gt;</b> with &amp;gt;
+     * <li><b>&amp;</b> with &amp;amp;
+     * <li><b>&quot;</b> with &amp;quot;
+     * </ul><p>
+     * 
+     * @param source the string to escape
+     * @param doubleEscape if <code>false</code>, all entities that already are escaped are left untouched
+     * 
+     * @return the escaped string
+     */
+    private static String escapeXml(String source) {
+        if (source == null) {
+            return null;
+        }
+        StringBuffer result = new StringBuffer(source.length() * 2);
+    
+        for (int i = 0; i < source.length(); ++i) {
+            char ch = source.charAt(i);
+            switch (ch) {
+                case '<':
+                    result.append("&lt;");
+                    break;
+                case '>':
+                    result.append("&gt;");
+                    break;
+                case '&':
+                    // don't escape already escaped international and special characters
+                    int terminatorIndex = source.indexOf(";", i);
+                        if (terminatorIndex > 0) {
+                            if (source.substring(i + 1, terminatorIndex).matches("#[0-9]+")) {
+                                result.append(ch);
+                                break;
+                            }
+                        }
+                    
+                    // note that to other "break" in the above "if" block
+                    result.append("&amp;");
+                    break;
+                case '"':
+                    result.append("&quot;");
+                    break;
+                default:
+                    result.append(ch);
+            }
+        }
+        return new String(result);
     }
 }
