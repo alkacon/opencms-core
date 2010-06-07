@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/tree/Attic/CmsTree.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/tree/Attic/CmsDnDTree.java,v $
  * Date   : $Date: 2010/06/07 14:27:01 $
- * Version: $Revision: 1.5 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,7 @@
 
 package org.opencms.gwt.client.ui.tree;
 
-import org.opencms.gwt.client.ui.CmsList;
+import org.opencms.gwt.client.ui.CmsDnDList;
 import org.opencms.util.CmsStringUtil;
 
 import com.google.gwt.event.logical.shared.HasOpenHandlers;
@@ -41,7 +41,6 @@ import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.HasAnimation;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * A tree of list items.<p>
@@ -50,11 +49,11 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  */
-public class CmsTree<I extends CmsTreeItem> extends CmsList<I> implements HasOpenHandlers<I>, HasAnimation {
+public class CmsDnDTree<I extends CmsDnDTreeItem> extends CmsDnDList<I> implements HasOpenHandlers<I>, HasAnimation {
 
     /** The event handlers for the tree. */
     protected HandlerManager m_handlers;
@@ -65,23 +64,10 @@ public class CmsTree<I extends CmsTreeItem> extends CmsList<I> implements HasOpe
     /**
      * Constructor.<p>
      */
-    public CmsTree() {
+    public CmsDnDTree() {
 
         m_animate = false;
         m_handlers = new HandlerManager(this);
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.CmsList#add(com.google.gwt.user.client.ui.Widget)
-     */
-    @SuppressWarnings("unchecked")
-    @Override
-    public void add(Widget item) {
-
-        super.add(item);
-        if (item instanceof CmsTreeItem) {
-            ((CmsTreeItem)item).setTree((CmsTree<CmsTreeItem>)this);
-        }
     }
 
     /**
@@ -100,6 +86,28 @@ public class CmsTree<I extends CmsTreeItem> extends CmsList<I> implements HasOpe
                 m_handlers.removeHandler(OpenEvent.getType(), handler);
             }
         };
+    }
+
+    /**
+     * Adds a new list drop event handler.<p>
+     * 
+     * @param handler the handler to add
+     * 
+     * @return the handler registration
+     */
+    public HandlerRegistration addTreeDropHandler(I_CmsDnDTreeDropHandler handler) {
+
+        return m_handlerManager.addHandler(CmsDnDTreeDropEvent.getType(), handler);
+    }
+
+    /**
+     * Fires a new drag and drop event.<p>
+     * 
+     * @param dropEvent the event to fire
+     */
+    protected void fireDropEvent(CmsDnDTreeDropEvent dropEvent) {
+
+        m_handlerManager.fireEvent(dropEvent);
     }
 
     /**
@@ -129,7 +137,7 @@ public class CmsTree<I extends CmsTreeItem> extends CmsList<I> implements HasOpe
      * @return the tree entry with the given path, or <code>null</code> if not found
      */
     @SuppressWarnings("unchecked")
-    public I getTreeItem(String path) {
+    public I getItemByPath(String path) {
 
         String[] names = CmsStringUtil.splitAsArray(path, "/");
         I result = null;
@@ -166,5 +174,16 @@ public class CmsTree<I extends CmsTreeItem> extends CmsList<I> implements HasOpe
     public void setAnimationEnabled(boolean enable) {
 
         m_animate = enable;
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.CmsDnDList#registerItem(org.opencms.gwt.client.ui.CmsDnDListItem)
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    protected void registerItem(I item) {
+
+        super.registerItem(item);
+        item.setTree((CmsDnDTree<CmsDnDTreeItem>)this);
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItem.java,v $
- * Date   : $Date: 2010/05/25 13:55:16 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2010/06/07 14:27:01 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,16 +38,17 @@ import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import java.util.LinkedList;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * List item which uses a CmsFloatDecoratedPanel for layout.<p>
+ * List item which uses a float panel for layout.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  *  
  * @since 8.0.0 
  */
@@ -99,6 +100,17 @@ public class CmsListItem extends Composite implements I_CmsListItem {
     public CmsListItem() {
 
         m_panel = uiBinder.createAndBindUi(this);
+        initWidget(m_panel);
+    }
+
+    /** 
+     * Wrapping constructor.<p>
+     * 
+     * @param element the element to wrap 
+     */
+    public CmsListItem(Element element) {
+
+        m_panel = new CmsFlowPanel(element);
         initWidget(m_panel);
     }
 

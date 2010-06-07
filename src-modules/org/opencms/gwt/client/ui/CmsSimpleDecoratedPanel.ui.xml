@@ -7,25 +7,16 @@
 		}
 		
 		.decorationBox {
-			float:left;
-			clear: both;
-			margin-top: 5px;
+
 		}
-		
-		@if user.agent ie6 {
-			.decorationBox * { 
-				display: inline;
-			}
-		} 
 		
 		.primary {
 			
 		}
-		
-	
 	</ui:style>
+	<ui:with field="resources" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
 	<g:FlowPanel ui:field="m_panel" styleName="{style.panel}">
-		<g:FlowPanel ui:field="m_decorationBox"  styleName="{style.decorationBox}"></g:FlowPanel>
-		<g:FlowPanel ui:field="m_primary" styleName="{style.primary}"></g:FlowPanel>
+		<g:FlowPanel ui:field="m_decorationBox"  addStyleNames="{resources.floatDecoratedPanelCss.decorationBox} {style.decorationBox}"></g:FlowPanel>
+		<g:FlowPanel ui:field="m_primary" addStyleNames="{resources.floatDecoratedPanelCss.primary} {style.primary}"></g:FlowPanel>
 	</g:FlowPanel>
 </ui:UiBinder>

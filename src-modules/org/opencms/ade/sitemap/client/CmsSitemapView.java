@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapView.java,v $
- * Date   : $Date: 2010/05/28 14:00:43 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2010/06/07 14:27:01 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,12 +49,13 @@ import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.CmsToolbar;
 import org.opencms.gwt.client.ui.CmsToolbarPlaceHolder;
-import org.opencms.gwt.client.ui.tree.A_CmsDeepLazyOpenHandler;
-import org.opencms.gwt.client.ui.tree.CmsLazyTree;
-import org.opencms.gwt.client.ui.tree.CmsTreeItem;
+import org.opencms.gwt.client.ui.tree.A_CmsDnDDeepLazyOpenHandler;
+import org.opencms.gwt.client.ui.tree.CmsDnDLazyTree;
+import org.opencms.gwt.client.ui.tree.CmsDnDTreeDropEvent;
+import org.opencms.gwt.client.ui.tree.CmsDnDTreeItem;
+import org.opencms.gwt.client.ui.tree.I_CmsDnDTreeDropHandler;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
-import org.opencms.util.CmsStringUtil;
 
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
@@ -70,7 +71,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 8.0.0
  */
@@ -90,7 +91,7 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler, NativePreviewHand
     private CmsToolbar m_toolbar;
 
     /** The displayed sitemap tree. */
-    private CmsLazyTree<CmsSitemapTreeItem> m_tree;
+    private CmsDnDLazyTree<CmsSitemapTreeItem> m_tree;
 
     /**
      * Creates a new tree item from the given sitemap entry.<p>
@@ -127,7 +128,7 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler, NativePreviewHand
     public void ensureVisible(CmsSitemapTreeItem item) {
 
         // open the tree
-        CmsTreeItem ti = item.getParentItem();
+        CmsDnDTreeItem ti = item.getParentItem();
         while (ti != null) {
             ti.setOpen(true);
             ti = ti.getParentItem();
@@ -145,25 +146,7 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler, NativePreviewHand
      */
     public CmsSitemapTreeItem getTreeItem(String path) {
 
-        String[] names = CmsStringUtil.splitAsArray(path, "/");
-        CmsSitemapTreeItem result = null;
-        for (String name : names) {
-            if (CmsStringUtil.isEmptyOrWhitespaceOnly(name)) {
-                // in case of leading slash
-                continue;
-            }
-            if (result != null) {
-                result = (CmsSitemapTreeItem)result.getChild(name);
-            } else {
-                // match the root node
-                result = m_tree.getItem(name);
-            }
-            if (result == null) {
-                // not found
-                break;
-            }
-        }
-        return result;
+        return m_tree.getItemByPath(path);
     }
 
     /**
@@ -244,7 +227,7 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler, NativePreviewHand
         rootItem.setOpen(true);
 
         // starting rendering
-        m_tree = new CmsLazyTree<CmsSitemapTreeItem>(new A_CmsDeepLazyOpenHandler<CmsSitemapTreeItem>() {
+        m_tree = new CmsDnDLazyTree<CmsSitemapTreeItem>(new A_CmsDnDDeepLazyOpenHandler<CmsSitemapTreeItem>() {
 
             /**
              * @see org.opencms.gwt.client.ui.tree.I_CmsLazyOpenHandler#load(org.opencms.gwt.client.ui.tree.CmsLazyTreeItem)
@@ -254,9 +237,24 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler, NativePreviewHand
                 m_controller.getChildren(target.getOriginalPath(), target.getSitePath());
             }
         });
-        m_tree.addItem(rootItem);
+        m_tree.addTreeDropHandler(new I_CmsDnDTreeDropHandler() {
+
+            /**
+            * @see org.opencms.gwt.client.ui.tree.I_CmsDnDTreeDropHandler#onDrop(org.opencms.gwt.client.ui.tree.CmsDnDTreeDropEvent)
+            */
+            public void onDrop(CmsDnDTreeDropEvent e) {
+
+                CmsDnDTreeItem item = e.getDestTree().getItemByPath(e.getDestPath());
+                m_controller.moveDnd(
+                    m_controller.getEntry(e.getSrcPath()),
+                    item.getPath(),
+                    item.getParentItem().getItemPosition(item));
+            }
+        });
+        m_tree.setDnDEnabled(true);
         m_tree.truncate(TM_SITEMAP, 920);
         m_tree.setAnimationEnabled(true);
+        m_tree.addItem(rootItem);
 
         // paint
         page.remove(loadingLabel);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsFlowPanel.java,v $
- * Date   : $Date: 2010/03/29 06:39:40 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/06/07 14:27:01 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.gwt.client.ui;
 
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.uibinder.client.UiConstructor;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.ComplexPanel;
@@ -42,11 +43,22 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
 public class CmsFlowPanel extends ComplexPanel {
+
+    /** 
+     * Wrapping constructor.<p>
+     * 
+     * @param element the element to wrap 
+     */
+    public CmsFlowPanel(Element element) {
+
+        element.removeFromParent();
+        setElement(element);
+    }
 
     /**
      * Creates an empty flow panel with a given tag name.

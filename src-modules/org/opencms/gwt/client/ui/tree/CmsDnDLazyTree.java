@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsFloatDecoratedPanelCss.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/tree/Attic/CmsDnDLazyTree.java,v $
  * Date   : $Date: 2010/06/07 14:27:01 $
- * Version: $Revision: 1.2 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,46 +29,30 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.gwt.client.ui.css;
-
-import com.google.gwt.resources.client.CssResource;
+package org.opencms.gwt.client.ui.tree;
 
 /**
- * CSS resource for the CmsFloatDecoratedPanel class.<p>
+ * Lazy tree imeplementation.<p>
+ * 
+ * @param <I> the specific lazy tree item implementation 
  * 
  * @author Georg Westenberger
+ * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  */
-public interface I_CmsFloatDecoratedPanelCss extends CssResource {
+public class CmsDnDLazyTree<I extends CmsDnDLazyTreeItem> extends CmsDnDTree<I> {
 
-    /**
-     * CSS class accessor.<p>
+    /** 
+     * Initializes the lazy tree.<p>
      * 
-     * @return a CSS class
+     * @param openHandler the open handler which should be called when the user clicks on an opener in the tree.
      */
-    String decorationBox();
+    public CmsDnDLazyTree(I_CmsDnDLazyOpenHandler<I> openHandler) {
 
-    /**
-     * CSS class accessor.<p>
-     * 
-     * @return a CSS class
-     */
-    String floatBox();
-
-    /**
-     * CSS class accessor.<p>
-     * 
-     * @return a CSS class
-     */
-    String floatDecoratedPanel();
-
-    /**
-     * CSS class accessor.<P>
-     * 
-     * @return a CSS class
-     */
-    String primary();
+        super();
+        addOpenHandler(openHandler);
+    }
 }

@@ -15,3 +15,15 @@
 .floatDecoratedPanel {
 	zoom: 1;
 }
+
+.decorationBox {
+	float:left;
+	clear: both;
+	margin-top: 5px;
+}
+
+@if user.agent ie6 {
+	.decorationBox * { 
+		display: inline;
+	}
+} 

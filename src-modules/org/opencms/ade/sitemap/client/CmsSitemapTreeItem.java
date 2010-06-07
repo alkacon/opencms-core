@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapTreeItem.java,v $
- * Date   : $Date: 2010/05/28 14:00:43 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2010/06/07 14:27:01 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,27 +31,36 @@
 
 package org.opencms.ade.sitemap.client;
 
+import org.opencms.ade.sitemap.client.hoverbar.CmsHoverbarMoveButton;
+import org.opencms.ade.sitemap.client.hoverbar.CmsSitemapHoverbar;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsSitemapItemCss;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.file.CmsResource;
+import org.opencms.gwt.client.ui.CmsDnDListHandler;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
-import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem;
-import org.opencms.gwt.client.ui.tree.CmsTreeItem;
+import org.opencms.gwt.client.ui.tree.CmsDnDLazyTreeItem;
+import org.opencms.gwt.client.ui.tree.CmsDnDTreeItem;
+import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem.LoadState;
+
+import com.google.gwt.dom.client.EventTarget;
+import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Sitemap entry tree item implementation.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 8.0.0
  * 
  * @see org.opencms.gwt.client.ui.tree.CmsLazyTreeItem
  * @see org.opencms.ade.sitemap.shared.CmsClientSitemapEntry
  */
-public class CmsSitemapTreeItem extends CmsLazyTreeItem {
+public class CmsSitemapTreeItem extends CmsDnDLazyTreeItem {
+
     /** The CSS bundle used by this widget. */
     private static final I_CmsSitemapItemCss CSS = I_CmsLayoutBundle.INSTANCE.sitemapItemCss();
 
@@ -95,6 +104,59 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
     }
 
     /**
+     * @see org.opencms.gwt.client.ui.CmsDnDListItem#enableDnD(org.opencms.gwt.client.ui.CmsDnDListHandler)
+     */
+    @Override
+    public void enableDnD(CmsDnDListHandler handler) {
+
+        m_dndEnabled = true;
+        handler.registerMouseHandler(this);
+        m_children.setDnDHandler(handler);
+        m_children.setDnDEnabled(true);
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.CmsDnDListItem#disableDnD()
+     */
+    @Override
+    public void disableDnD() {
+
+        m_children.setDnDEnabled(false);
+        m_dndEnabled = false;
+        removeDndMouseHandlers();
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.CmsDnDListItem#isHandleEvent(com.google.gwt.dom.client.NativeEvent)
+     */
+    @Override
+    public boolean isHandleEvent(NativeEvent event) {
+
+        if (!m_dndEnabled) {
+            return false;
+        }
+        for (Widget w : getListItemWidget().getContentPanel()) {
+            if (!(w instanceof CmsSitemapHoverbar)) {
+                continue;
+            }
+            for (Widget b : (CmsSitemapHoverbar)w) {
+                if (!(b instanceof CmsHoverbarMoveButton)) {
+                    continue;
+                }
+                if (!((CmsHoverbarMoveButton)b).isEnabled()) {
+                    return false;
+                }
+                EventTarget target = event.getEventTarget();
+                if (com.google.gwt.dom.client.Element.is(target)) {
+                    return b.getElement().isOrHasChild(com.google.gwt.dom.client.Element.as(target));
+                }
+                return false;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Returns the site path.<p>
      *
      * @return the site path
@@ -113,7 +175,7 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
         StringBuffer sb = new StringBuffer();
         sb.append(m_sitePath).append("\n");
         for (int i = 0; i < getChildCount(); i++) {
-            CmsTreeItem child = getChild(i);
+            CmsDnDTreeItem child = getChild(i);
             sb.append(child.toString());
         }
         return sb.toString();
