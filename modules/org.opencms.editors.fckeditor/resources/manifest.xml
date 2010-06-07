@@ -521,6 +521,43 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+		<file>
+			<destination>system/workplace/editors/fckeditor/plugins/galleries</destination>
+			<type>folder</type>
+			<uuidstructure>7b5c5056-6fe7-11df-b2b1-83befda52004</uuidstructure>
+			<datelastmodified>Fri, 04 Jun 2010 14:43:04 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 04 Jun 2010 14:43:04 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/editors/fckeditor/plugins/galleries/integrator.js</source>
+			<destination>system/workplace/editors/fckeditor/plugins/galleries/integrator.js</destination>
+			<type>jsp</type>
+			<uuidstructure>ab89d729-6fe7-11df-b2b1-83befda52004</uuidstructure>
+			<uuidresource>ab89d72a-6fe7-11df-b2b1-83befda52004</uuidresource>
+			<datelastmodified>Fri, 04 Jun 2010 15:02:42 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 04 Jun 2010 14:44:25 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[integrator]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
         <file>
 			<destination>system/workplace/editors/fckeditor/plugins/imagegallery</destination>
 			<type>folder</type>
