@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsSitemapService.java,v $
- * Date   : $Date: 2010/05/27 06:52:03 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2010/06/07 13:37:20 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,7 +71,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 8.0.0
  * 
@@ -231,8 +231,9 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
     /**
      * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#save(java.lang.String, List)
      */
-    public void save(String sitemapUri, List<I_CmsSitemapChange> changes) throws CmsRpcException {
+    public long save(String sitemapUri, List<I_CmsSitemapChange> changes) throws CmsRpcException {
 
+        long timestamp = 0;
         CmsObject cms = getCmsObject();
         try {
             // TODO: what's about historical requests?
@@ -245,17 +246,20 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
             cms.writeFile(xml.getFile());
             // and unlock
             cms.unlockResource(sitemapUri);
+            // get the new timestamp
+            timestamp = cms.readResource(sitemap.getStructureId()).getDateLastModified();
         } catch (Throwable e) {
             error(e);
         }
+        return timestamp;
     }
 
     /**
      * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#saveSync(java.lang.String, java.util.List)
      */
-    public void saveSync(String sitemapUri, List<I_CmsSitemapChange> changes) throws CmsRpcException {
+    public long saveSync(String sitemapUri, List<I_CmsSitemapChange> changes) throws CmsRpcException {
 
-        save(sitemapUri, changes);
+        return save(sitemapUri, changes);
     }
 
     /**

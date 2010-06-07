@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsSitemapData.java,v $
- * Date   : $Date: 2010/05/20 11:41:39 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/06/07 13:37:20 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0
  */
@@ -226,6 +226,16 @@ public class CmsSitemapData implements IsSerializable {
     public boolean isDisplayToolbar() {
 
         return m_displayToolbar;
+    }
+
+    /**
+     * Sets the timestamp.<p>
+     *
+     * @param timestamp the timestamp to set
+     */
+    public void setTimestamp(long timestamp) {
+
+        m_timestamp = timestamp;
     }
 
 }
