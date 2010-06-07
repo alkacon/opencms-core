@@ -58,10 +58,6 @@
 		overflow-y: scroll;
 	}
 
-	.dragPlaceholder{
-		opacity: 0.5;
-	}
-
 } @elif user.agent safari {
 	
 	/** Assigned to the body on drag start. */
@@ -69,10 +65,6 @@
 		overflow-y: scroll;
 	}
 	
-	.dragPlaceholder{
-		opacity: 0.5;
-	}
-
 } @elif user.agent opera {
 
 	/** Assigned to the body on drag start. */
@@ -86,10 +78,6 @@
 
 } @elif user.agent ie6 {
 	
-	.dragPlaceholder, .dragPlaceholder > div {
-		filter: literal("progid:DXImageTransform.Microsoft.Alpha( Opacity=50, FinishOpacity=0, Style=0, StartX=0,  FinishX=100, StartY=0, FinishY=100)");
-		zoom: 1;
-	}
 	.dragTarget.dragging{
 		zoom: 1;
 	}
@@ -104,10 +92,6 @@
 		overflow-y: scroll;
 	}
 	
-	.dragPlaceholder, .dragPlaceholder > div {
-		-ms-filter: "progid:DXImageTransform.Microsoft.Alpha( Opacity=50, FinishOpacity=0, Style=0, StartX=0,  FinishX=100, StartY=0, FinishY=100)";
-		zoom: 1;
-	}
 	.dragTarget.dragging{
 		zoom: 1;
 	}
