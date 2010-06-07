@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/preview/image/client/Attic/CmsImagePreviewcontroller.java,v $
- * Date   : $Date: 2010/06/02 14:46:36 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/06/07 08:07:40 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import org.opencms.gwt.client.CmsCoreProvider;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  */
@@ -70,6 +70,15 @@ public class CmsImagePreviewcontroller implements I_CmsPreviewController {
     }
 
     /**
+     * @see org.opencms.ade.galleries.client.preview.I_CmsPreviewController#closeGalleryDialog()
+     */
+    public boolean closeGalleryDialog() {
+
+        // TODO: Auto-generated method stub
+        return false;
+    }
+
+    /**
      * Saves the changed properties.<p>
      */
     public void saveProperties() {
@@ -90,6 +99,9 @@ public class CmsImagePreviewcontroller implements I_CmsPreviewController {
                 // write the link to the selected resource back to the fck editor
                 String linkPath = CmsCoreProvider.get().link(m_infoBean.getResourcePath());
                 CmsPreviewUtil.setResourcePath(m_fieldId, linkPath);
+                break;
+            case editor:
+                //TODO: implement
                 break;
             case sitemap:
             case ade:

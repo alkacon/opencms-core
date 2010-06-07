@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/Attic/CmsGalleryActionElement.java,v $
- * Date   : $Date: 2010/06/02 14:46:36 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/06/07 08:07:40 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,11 +50,13 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Polina Smagina 
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 8.0.0
  */
 public class CmsGalleryActionElement extends CmsGwtActionElement {
+
+    private GalleryMode m_galleryMode;
 
     /**
      * Constructor.<p>
@@ -66,6 +68,12 @@ public class CmsGalleryActionElement extends CmsGwtActionElement {
     public CmsGalleryActionElement(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         super(context, req, res);
+
+        try {
+            m_galleryMode = GalleryMode.valueOf(getRequest().getParameter(ReqParam.dialogmode.name()).trim());
+        } catch (Exception e) {
+            m_galleryMode = GalleryMode.view;
+        }
     }
 
     /**
@@ -74,13 +82,63 @@ public class CmsGalleryActionElement extends CmsGwtActionElement {
     @Override
     public String export() throws Exception {
 
-        GalleryMode mode = null;
-        try {
-            mode = GalleryMode.valueOf(getRequest().getParameter(ReqParam.dialogmode.name()).trim());
-        } catch (Exception e) {
-            mode = GalleryMode.view;
-        }
-        return export(mode);
+        return export(m_galleryMode);
+    }
+
+    /**
+     * @see org.opencms.gwt.CmsGwtActionElement#exportAll()
+     */
+    @Override
+    public String exportAll() throws Exception {
+
+        StringBuffer sb = new StringBuffer();
+        sb.append(super.export());
+        sb.append(export());
+        return sb.toString();
+    }
+
+    /**
+     * Returns the serialized initial data for gallery dialog within the container-page editor.<p>
+     * 
+     * @return the data
+     * 
+     * @throws Exception if something goes wrong
+     */
+    public String exportForContainerpage() throws Exception {
+
+        return export(GalleryMode.ade);
+    }
+
+    /**
+     * Returns the serialized initial data for gallery dialog within the sitmap editor.<p>
+     * 
+     * @return the data
+     * 
+     * @throws Exception if something goes wrong
+     */
+    public String exportForSitemap() throws Exception {
+
+        return export(GalleryMode.sitemap);
+    }
+
+    /**
+     * Returns the editor title.<p>
+     * 
+     * @return the editor title
+     */
+    public String getTitle() {
+
+        return Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_GALLERIES_TITLE_0);
+    }
+
+    /**
+     * Returns if the current gallery mode is the editor mode (used inside a rich text editor).<p>
+     * 
+     * @return <code>true</code> if the gallery was opened from the editor
+     */
+    public boolean isEditorMode() {
+
+        return m_galleryMode == GalleryMode.editor;
     }
 
     /**
@@ -110,62 +168,10 @@ public class CmsGalleryActionElement extends CmsGwtActionElement {
             serialize(I_CmsGalleryService.class.getMethod("getSearch", CmsGalleryDataBean.class), search));
         sb.append("';");
         wrapScript(sb);
-        // TODO: 
-        if (galleryMode == GalleryMode.editor) {
-            sb.append(SCRIPT_TAG_OPEN).append(
-                link("/system/workplace/resources/editors/fckeditor/editor/dialog/common/fck_dialog_common.js"));
-            sb.append(SCRIPT_TAG_CLOSE);
-        }
         for (I_CmsPreviewProvider provider : galleryService.getPreviewProvider()) {
             sb.append(provider.getPreviewInclude(getCmsObject(), getRequest(), getResponse()));
         }
         return sb.toString();
-    }
-
-    /**
-     * Returns the serialized initial data for gallery dialog within the sitmap editor.<p>
-     * 
-     * @return the data
-     * 
-     * @throws Exception if something goes wrong
-     */
-    public String exportForSitemap() throws Exception {
-
-        return export(GalleryMode.sitemap);
-    }
-
-    /**
-     * Returns the serialized initial data for gallery dialog within the container-page editor.<p>
-     * 
-     * @return the data
-     * 
-     * @throws Exception if something goes wrong
-     */
-    public String exportForContainerpage() throws Exception {
-
-        return export(GalleryMode.ade);
-    }
-
-    /**
-     * @see org.opencms.gwt.CmsGwtActionElement#exportAll()
-     */
-    @Override
-    public String exportAll() throws Exception {
-
-        StringBuffer sb = new StringBuffer();
-        sb.append(super.export());
-        sb.append(export());
-        return sb.toString();
-    }
-
-    /**
-     * Returns the editor title.<p>
-     * 
-     * @return the editor title
-     */
-    public String getTitle() {
-
-        return Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_GALLERIES_TITLE_0);
     }
 
 }

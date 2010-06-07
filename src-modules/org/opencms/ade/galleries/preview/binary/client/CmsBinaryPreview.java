@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/preview/binary/client/Attic/CmsBinaryPreview.java,v $
- * Date   : $Date: 2010/06/02 14:46:36 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/06/07 08:07:40 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,11 +48,14 @@ import com.google.gwt.user.client.ui.Widget;
  *  
  * @author Polina Smagina
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.
  */
 public class CmsBinaryPreview extends A_CmsPreview {
+
+    /** The properties tab. */
+    private CmsPropertiesTab m_propertiesTab;
 
     /**
      * The constructor.<p>
@@ -82,14 +85,24 @@ public class CmsBinaryPreview extends A_CmsPreview {
     public void fillTabs(int height, int width, CmsPreviewInfoBean infoBean, I_CmsPreviewController controller) {
 
         m_tabbedPanel = new CmsTabbedPanel<Widget>(CmsTabLayout.small, false);
-        CmsPropertiesTab tab = new CmsPropertiesTab(
-            m_dialogMode,
+        m_propertiesTab = new CmsPropertiesTab(
+            m_galleryMode,
             height,
             width,
             infoBean.getPropeties(),
             new CmsPropertiesTabHandler(controller));
-        m_tabbedPanel.add(tab, tab.getTabName());
+        m_tabbedPanel.add(m_propertiesTab, m_propertiesTab.getTabName());
 
         m_tabsHolder.add(m_tabbedPanel);
+    }
+
+    /**
+     * Returns if the properties tab has unsaved changes.<p>
+     * 
+     * @return <code>true</code> if the properties tab has unsaved changes
+     */
+    public boolean hasChangedProperties() {
+
+        return m_propertiesTab.isChanged();
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/preview/binary/client/Attic/CmsBinaryPreviewController.java,v $
- * Date   : $Date: 2010/06/02 14:46:36 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/06/07 08:07:40 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,6 @@
 
 package org.opencms.ade.galleries.preview.binary.client;
 
-import org.opencms.ade.galleries.client.preview.CmsEditorPreviewUtil;
 import org.opencms.ade.galleries.client.preview.CmsPreviewUtil;
 import org.opencms.ade.galleries.client.preview.I_CmsPreviewController;
 import org.opencms.ade.galleries.shared.CmsPreviewInfoBean;
@@ -45,7 +44,7 @@ import org.opencms.gwt.client.CmsCoreProvider;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  */
@@ -104,22 +103,25 @@ public final class CmsBinaryPreviewController implements I_CmsPreviewController 
     }
 
     /**
-     * Selects the resource from the preview in fck editor.<p>  
+     * @see org.opencms.ade.galleries.client.preview.I_CmsPreviewController#closeGalleryDialog()
      */
-    static void selectFromEditor() {
+    public boolean closeGalleryDialog() {
 
-        get().onSelect();
-
-    }
-
-    /**
-     * Exports the select method to the window object, so it can be accessed from within the content editor iFrame.<p>
-     */
-    public native void export() /*-{
-        $wnd['Ok']=function(){
-        @org.opencms.ade.galleries.preview.binary.client.CmsBinaryPreviewController::selectFromEditor();
+        if (m_previewDialog.getGalleryMode() == GalleryMode.editor) {
+            if (m_previewDialog.hasChangedProperties()) {
+                //TODO: Save properties
+                return false;
+            } else {
+                CmsPreviewUtil.setLink(
+                    CmsCoreProvider.get().link(m_infoBean.getResourcePath()),
+                    m_infoBean.getTitle(),
+                    "");
+                return true;
+            }
+        } else {
+            throw new UnsupportedOperationException();
         }
-    }-*/;
+    }
 
     /**
      * Saves the changed properties.<p>
@@ -140,9 +142,7 @@ public final class CmsBinaryPreviewController implements I_CmsPreviewController 
 
         switch (dialogMode) {
             case widget:
-                // write the link to the selected resource back to the fck editor
-                String linkPath = CmsCoreProvider.get().link(m_infoBean.getResourcePath());
-                CmsPreviewUtil.setResourcePath(m_fieldId, linkPath);
+
                 break;
             case sitemap:
                 break;
@@ -153,35 +153,5 @@ public final class CmsBinaryPreviewController implements I_CmsPreviewController 
         }
 
         m_handler.onSelect(dialogMode);
-    }
-
-    /**
-     * Selects the resource.<p>
-     * @return
-     */
-    private boolean onSelect() {
-
-        // linkpath , title, description        
-        if (m_previewDialog.getPropertiesTab().isChanged()) {
-
-            // TODO: call the confirmation dialog to save the properties
-        } else {
-            String linkPath = CmsCoreProvider.get().link(m_infoBean.getResourcePath());
-            String title = m_infoBean.getTitle();
-            String description = m_infoBean.getDescription();
-            // TODO: read the target from select box
-            String target = "_blank";
-            if (CmsEditorPreviewUtil.isTextSelected()) {
-                // text selected.
-                CmsEditorPreviewUtil.updateLink(linkPath, title, target);
-            } else {
-                // insert new link 
-                CmsEditorPreviewUtil.pasteLink(linkPath, title, description, target);
-
-            }
-        }
-        // TODO: should be tested! does this work??
-        // close the dialog, return true
-        return true;
     }
 }

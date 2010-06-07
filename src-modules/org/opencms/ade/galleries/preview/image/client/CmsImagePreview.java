@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/preview/image/client/Attic/CmsImagePreview.java,v $
- * Date   : $Date: 2010/06/02 14:46:36 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/06/07 08:07:40 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import com.google.gwt.user.client.ui.Widget;
  *  
  * @author Polina Smagina
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.
  */
@@ -104,7 +104,7 @@ public class CmsImagePreview extends A_CmsPreview {
         m_tabbedPanel = new CmsTabbedPanel<Widget>(CmsTabLayout.small, false);
         // properties tab
         CmsPropertiesTab propertiesTab = new CmsPropertiesTab(
-            m_dialogMode,
+            m_galleryMode,
             height,
             width,
             infoBean.getPropeties(),
@@ -113,14 +113,14 @@ public class CmsImagePreview extends A_CmsPreview {
 
         // image format tab
         CmsImageFormatsTab imageFormatTab = new CmsImageFormatsTab(
-            m_dialogMode,
+            m_galleryMode,
             height,
             width,
             infoBean.getImageInfos());
         m_tabbedPanel.add(imageFormatTab, Messages.get().key(Messages.GUI_PREVIEW_TAB_IMAGEFORMAT_0));
 
         // image infos tab
-        CmsImageInfosTab imageInfosTab = new CmsImageInfosTab(m_dialogMode, height, width, infoBean.getImageInfos());
+        CmsImageInfosTab imageInfosTab = new CmsImageInfosTab(m_galleryMode, height, width, infoBean.getImageInfos());
         m_tabbedPanel.add(imageInfosTab, Messages.get().key(Messages.GUI_PREVIEW_TAB_IMAGEFORMAT_0));
 
         m_tabsHolder.add(m_tabbedPanel);

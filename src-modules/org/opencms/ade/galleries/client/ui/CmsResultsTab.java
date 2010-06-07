@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsResultsTab.java,v $
- * Date   : $Date: 2010/05/27 10:28:29 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2010/06/07 08:07:40 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,7 +68,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 8.0.
  */
@@ -187,7 +187,9 @@ public class CmsResultsTab extends A_CmsListTab implements ClickHandler {
             CmsListInfoBean infoBean = new CmsListInfoBean(resultItem.getTitle(), resultItem.getDescription(), null);
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(resultItem.getExcerpt())) {
                 //TODO: add localization
-                infoBean.addAdditionalInfo("Excerpt", resultItem.getExcerpt());
+                infoBean.addAdditionalInfo(
+                    Messages.get().key(Messages.GUI_RESULT_LABEL_EXCERPT_0),
+                    resultItem.getExcerpt());
             }
             if (m_dragHandler != null) {
                 resultItemWidget = m_dragHandler.createDraggableListItemWidget(infoBean, resultItem.getClientId());

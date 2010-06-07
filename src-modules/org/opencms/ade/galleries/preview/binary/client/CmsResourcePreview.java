@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/preview/binary/client/Attic/CmsResourcePreview.java,v $
- * Date   : $Date: 2010/06/02 14:46:36 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/06/07 08:07:40 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -62,6 +62,14 @@ public class CmsResourcePreview extends A_CmsResourcePreview {
     private static native void alert(String text) /*-{
         $wnd.alert(text);
     }-*/;
+
+    /**
+     * @see org.opencms.ade.galleries.client.preview.I_CmsResourcePreview#closeGalleryDialog()
+     */
+    public boolean closeGalleryDialog() {
+
+        return CmsBinaryPreviewController.get().closeGalleryDialog();
+    }
 
     /**
      * @see org.opencms.ade.galleries.client.preview.I_CmsResourcePreview#getPreviewName()

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/Attic/I_CmsResourcePreview.java,v $
- * Date   : $Date: 2010/05/27 10:28:29 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/06/07 08:07:40 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,13 +31,12 @@
 
 package org.opencms.ade.galleries.client.preview;
 
-
 /**
  * Interface for resource preview within the galleries dialog.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -51,6 +50,14 @@ public interface I_CmsResourcePreview {
 
     /** The select resource function key. */
     String KEY_SELECT_RESOURCE_FUNCTION = "selectResource";
+
+    /**
+     * Checks if further user input is required and other wise sets the selected resource via the provided integrator functions <code>setLink</code> and <code>setImage</code>.
+     * Returning <code>true</code> when all data has been set and the dialog should be closed.
+     * 
+     * @return <code>true</code> when all data has been set and the dialog should be closed
+     */
+    boolean closeGalleryDialog();
 
     /**
      * Returns the preview name, should return the same as in {@link org.opencms.ade.galleries.I_CmsPreviewProvider#getPreviewName()}.<p>

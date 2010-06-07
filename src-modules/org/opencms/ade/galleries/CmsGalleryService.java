@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/Attic/CmsGalleryService.java,v $
- * Date   : $Date: 2010/05/27 10:28:29 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2010/06/07 08:07:40 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -81,7 +81,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 8.0.0
  * 
@@ -287,7 +287,9 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             case widget:
                 data.setTypes(typeList);
                 data.setGalleries(buildGalleriesList(readGalleryTypes(types)));
-                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getRequest().getParameter(ReqParam.gallerypath.name()))) {
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getRequest().getParameter(ReqParam.gallerypath.name()))
+                    || CmsStringUtil.isNotEmptyOrWhitespaceOnly(getRequest().getParameter(
+                        ReqParam.currentelement.name()))) {
                     data.setStartTab(GalleryTabId.cms_tab_results);
                 } else {
                     data.setStartTab(GalleryTabId.cms_tab_galleries);
@@ -424,21 +426,6 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             error(e);
         }
         return gSearchObj;
-    }
-
-    /**
-     * Returns the resource type - preview provider mapping.<p>
-     * 
-     * @return the resource type - preview provider mapping
-     * 
-     * @throws CmsRpcException if something goes wrong reading the configuration
-     */
-    private Map<I_CmsResourceType, I_CmsPreviewProvider> getTypeProviderMapping() throws CmsRpcException {
-
-        if (m_typeProviderMapping == null) {
-            initPreviewProvider();
-        }
-        return m_typeProviderMapping;
     }
 
     /**
@@ -582,7 +569,6 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             bean.setType(type.getTypeName());
             // type nice name            
             Locale wpLocale = getWorkplaceLocale();
-            // TODO: remove:  bean.setTypeNiceName(CmsWorkplaceMessages.getResourceTypeDescription(wpLocale, type.getTypeName()));
             // type title and subtitle
             bean.setTitle(CmsWorkplaceMessages.getResourceTypeName(wpLocale, type.getTypeName()));
             bean.setDescription(CmsWorkplaceMessages.getResourceTypeDescription(wpLocale, type.getTypeName()));
@@ -721,6 +707,21 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             m_resourceManager = OpenCms.getResourceManager();
         }
         return m_resourceManager;
+    }
+
+    /**
+     * Returns the resource type - preview provider mapping.<p>
+     * 
+     * @return the resource type - preview provider mapping
+     * 
+     * @throws CmsRpcException if something goes wrong reading the configuration
+     */
+    private Map<I_CmsResourceType, I_CmsPreviewProvider> getTypeProviderMapping() throws CmsRpcException {
+
+        if (m_typeProviderMapping == null) {
+            initPreviewProvider();
+        }
+        return m_typeProviderMapping;
     }
 
     /**

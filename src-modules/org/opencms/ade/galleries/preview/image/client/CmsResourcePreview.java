@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/preview/image/client/Attic/CmsResourcePreview.java,v $
- * Date   : $Date: 2010/06/02 14:46:36 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/06/07 08:07:40 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,21 +47,20 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
 public class CmsResourcePreview extends A_CmsResourcePreview {
 
     /**
-     * Debug function.<p>
-     * 
-     * @param text text to display
+     * @see org.opencms.ade.galleries.client.preview.I_CmsResourcePreview#closeGalleryDialog()
      */
-    //TODO: remove
-    private static native void alert(String text) /*-{
-        $wnd.alert(text);
-    }-*/;
+    public boolean closeGalleryDialog() {
+
+        // TODO: Auto-generated method stub
+        return false;
+    }
 
     /**
      * @see org.opencms.ade.galleries.client.preview.I_CmsResourcePreview#getPreviewName()
@@ -128,6 +127,6 @@ public class CmsResourcePreview extends A_CmsResourcePreview {
      */
     public void selectResource(String galleryMode, String resourcePath) {
 
-        alert("select resource " + resourcePath);
+        // TODO: implement
     }
 }

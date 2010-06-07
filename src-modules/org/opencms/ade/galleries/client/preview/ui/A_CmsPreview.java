@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/ui/Attic/A_CmsPreview.java,v $
- * Date   : $Date: 2010/06/02 14:46:36 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/06/07 08:07:40 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,7 +32,7 @@
 package org.opencms.ade.galleries.client.preview.ui;
 
 import org.opencms.ade.galleries.client.preview.I_CmsPreviewController;
-import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.ade.galleries.client.ui.CmsGalleryDialog;
 import org.opencms.ade.galleries.shared.CmsPreviewInfoBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 import org.opencms.gwt.client.ui.CmsPushButton;
@@ -59,7 +59,7 @@ import com.google.gwt.user.client.ui.Widget;
  *  
  * @author Polina Smagina
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.
  */
@@ -80,7 +80,7 @@ public abstract class A_CmsPreview extends Composite {
     protected CmsPushButton m_closeButton;
 
     /** The dialog mode of the gallery. */
-    protected GalleryMode m_dialogMode;
+    protected GalleryMode m_galleryMode;
 
     /** The parent panel of the preview dialog. */
     @UiField
@@ -118,11 +118,11 @@ public abstract class A_CmsPreview extends Composite {
     public A_CmsPreview(GalleryMode dialogMode, int dialogHeight, int dialogWidth) {
 
         // TODO: to remove, if a better way is found, so the css is only loaded once
-        I_CmsLayoutBundle.INSTANCE.previewDialogCss().ensureInjected();
+        CmsGalleryDialog.initCss();
 
         initWidget(uiBinder.createAndBindUi(this));
 
-        m_dialogMode = dialogMode;
+        m_galleryMode = dialogMode;
 
         // height of the preview dialog
         m_parentPanel.getElement().getStyle().setHeight(dialogHeight, Unit.PX);
@@ -170,6 +170,16 @@ public abstract class A_CmsPreview extends Composite {
      * @param controller the preview controller
      */
     public abstract void fillTabs(int height, int width, CmsPreviewInfoBean infoBean, I_CmsPreviewController controller);
+
+    /**
+     * Returns the gallery mode.<p>
+     * 
+     * @return the gallery mode
+     */
+    public GalleryMode getGalleryMode() {
+
+        return m_galleryMode;
+    }
 
     /**
      * Returns the properties tab.<p>
