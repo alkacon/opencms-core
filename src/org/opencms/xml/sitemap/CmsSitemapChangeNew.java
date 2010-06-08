@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapChangeNew.java,v $
- * Date   : $Date: 2010/05/18 12:58:17 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/06/08 07:12:45 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -46,6 +46,12 @@ public class CmsSitemapChangeNew implements I_CmsSitemapChange {
 
     /** Serialization unique id. */
     private static final long serialVersionUID = -3407815812421655807L;
+
+    /** The entry point for the new entry. */
+    private String m_entryPoint;
+
+    /** The entry's position. */
+    private int m_position;
 
     /** The entry's properties. */
     private Map<String, String> m_properties;
@@ -57,10 +63,7 @@ public class CmsSitemapChangeNew implements I_CmsSitemapChange {
     private String m_title;
 
     /** The entry's VFS path. */
-    private String m_vfsPath;
-
-    /** The entry's position. */
-    private int m_position;
+    private String m_vfsPath; 
 
     /**
      * Constructor.<p>
@@ -91,6 +94,27 @@ public class CmsSitemapChangeNew implements I_CmsSitemapChange {
     protected CmsSitemapChangeNew() {
 
         // empty
+    }
+
+    /**
+     * Returns the entry point for the sitemap in which the new entry should be created.<p>
+     * 
+     * @return the entry point
+     */
+    public String getEntryPoint() {
+
+        return m_entryPoint;
+
+    }
+
+    /**
+     * Returns the entry's  position.<p>
+     *
+     * @return the entry's position
+     */
+    public int getPosition() {
+
+        return m_position;
     }
 
     /**
@@ -132,16 +156,6 @@ public class CmsSitemapChangeNew implements I_CmsSitemapChange {
     }
 
     /**
-     * Returns the entry's  position.<p>
-     *
-     * @return the entry's position
-     */
-    public int getPosition() {
-
-        return m_position;
-    }
-
-    /**
      * Returns the entry's VFS path.<p>
      *
      * @return the entry's VFS path
@@ -149,5 +163,16 @@ public class CmsSitemapChangeNew implements I_CmsSitemapChange {
     public String getVfsPath() {
 
         return m_vfsPath;
+    }
+
+    /**
+     * Sets the entry point for the sitemap in which the new entry should be created.<p>
+     * 
+     * @param entryPoint the entry point 
+     */
+    public void setEntryPoint(String entryPoint) {
+
+        m_entryPoint = entryPoint;
+
     }
 }

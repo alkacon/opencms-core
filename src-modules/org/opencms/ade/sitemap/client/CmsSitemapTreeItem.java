@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapTreeItem.java,v $
- * Date   : $Date: 2010/06/07 14:27:01 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2010/06/08 07:12:45 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,6 +42,8 @@ import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.tree.CmsDnDLazyTreeItem;
 import org.opencms.gwt.client.ui.tree.CmsDnDTreeItem;
 import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem.LoadState;
+import org.opencms.util.CmsStringUtil;
+import org.opencms.xml.sitemap.CmsSitemapManager;
 
 import com.google.gwt.dom.client.EventTarget;
 import com.google.gwt.dom.client.NativeEvent;
@@ -52,10 +54,10 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 8.0.0
- * 
+ *  
  * @see org.opencms.gwt.client.ui.tree.CmsLazyTreeItem
  * @see org.opencms.ade.sitemap.shared.CmsClientSitemapEntry
  */
@@ -94,13 +96,14 @@ public class CmsSitemapTreeItem extends CmsDnDLazyTreeItem {
     }
 
     /**
-     * Returns the original site path, in case this entry has been moved or renamed.<p>
-     *
-     * @return the original site path
+     * @see org.opencms.gwt.client.ui.CmsDnDListItem#disableDnD()
      */
-    public String getOriginalPath() {
+    @Override
+    public void disableDnD() {
 
-        return m_originalPath;
+        m_children.setDnDEnabled(false);
+        m_dndEnabled = false;
+        removeDndMouseHandlers();
     }
 
     /**
@@ -116,14 +119,23 @@ public class CmsSitemapTreeItem extends CmsDnDLazyTreeItem {
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.CmsDnDListItem#disableDnD()
+     * Returns the original site path, in case this entry has been moved or renamed.<p>
+     *
+     * @return the original site path
      */
-    @Override
-    public void disableDnD() {
+    public String getOriginalPath() {
 
-        m_children.setDnDEnabled(false);
-        m_dndEnabled = false;
-        removeDndMouseHandlers();
+        return m_originalPath;
+    }
+
+    /**
+     * Returns the site path.<p>
+     *
+     * @return the site path
+     */
+    public String getSitePath() {
+
+        return m_sitePath;
     }
 
     /**
@@ -157,16 +169,6 @@ public class CmsSitemapTreeItem extends CmsDnDLazyTreeItem {
     }
 
     /**
-     * Returns the site path.<p>
-     *
-     * @return the site path
-     */
-    public String getSitePath() {
-
-        return m_sitePath;
-    }
-
-    /**
      * @see com.google.gwt.user.client.ui.UIObject#toString()
      */
     @Override
@@ -191,6 +193,20 @@ public class CmsSitemapTreeItem extends CmsDnDLazyTreeItem {
         m_listItemWidget.setTitleLabel(entry.getTitle());
         m_listItemWidget.setAdditionalInfoValue(1, entry.getVfsPath());
         m_listItemWidget.updateTruncation();
+        updateSitemapReferenceStatus(entry);
+    }
+
+    /**
+     * Changes the look of this widget if the entry passed as a parameter has a reference to a sub-sitemap.<p>
+     * 
+     * @param entry the entry which should be checked 
+     */
+    public void updateSitemapReferenceStatus(CmsClientSitemapEntry entry) {
+
+        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(entry.getProperties().get(CmsSitemapManager.Property.sitemap.name()))) {
+            String style = CSS.subSitemapRef();
+            m_listItemWidget.getContentPanel().addStyleName(style);
+        }
     }
 
     /**
@@ -220,4 +236,5 @@ public class CmsSitemapTreeItem extends CmsDnDLazyTreeItem {
         }
         m_listItemWidget.updateTruncation();
     }
+
 }

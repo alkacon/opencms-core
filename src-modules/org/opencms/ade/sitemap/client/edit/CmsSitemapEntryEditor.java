@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/edit/Attic/CmsSitemapEntryEditor.java,v $
- * Date   : $Date: 2010/05/31 10:26:24 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/06/08 07:12:45 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,7 +65,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  *  @author Georg Westenberger
  *  
- *  @version $Revision: 1.3 $
+ *  @version $Revision: 1.4 $
  *  
  *  @since 8.0.0
  */
@@ -125,6 +125,7 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
         super(message(Messages.GUI_PROPERTY_EDITOR_TITLE_0));
 
         m_entry = controller.getEntry(sitePath);
+        assert m_entry != null;
         m_controller = controller;
         m_propertyConfig = removeHiddenProperties(controller.getData().getProperties());
         m_mode = mode;
@@ -137,7 +138,7 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
      * @param map the map from which to retrieve the value 
      * @param key the key
      * 
-     * @return the removed value 
+     * @return the removed value  
      */
     protected static String getAndRemoveValue(Map<String, String> map, String key) {
 

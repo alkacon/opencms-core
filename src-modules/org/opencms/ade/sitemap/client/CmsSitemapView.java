@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapView.java,v $
- * Date   : $Date: 2010/06/07 14:27:01 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2010/06/08 07:12:45 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,6 +42,7 @@ import org.opencms.ade.sitemap.client.ui.CmsPage;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsImageBundle;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
+import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.gwt.client.A_CmsEntryPoint;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.CmsHeader;
@@ -56,6 +57,7 @@ import org.opencms.gwt.client.ui.tree.CmsDnDTreeItem;
 import org.opencms.gwt.client.ui.tree.I_CmsDnDTreeDropHandler;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
+import org.opencms.util.CmsStringUtil;
 
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
@@ -71,7 +73,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 8.0.0
  */
@@ -117,6 +119,7 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler, NativePreviewHand
             }
             m_hoverbar.installOn(m_controller, treeItem);
         }
+        treeItem.updateSitemapReferenceStatus(entry);
         return treeItem;
     }
 
@@ -146,7 +149,22 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler, NativePreviewHand
      */
     public CmsSitemapTreeItem getTreeItem(String path) {
 
-        return m_tree.getItemByPath(path);
+        CmsSitemapData data = m_controller.getData();
+        CmsClientSitemapEntry root = data.getRoot();
+        String rootSitePath = root.getSitePath();
+        String remainingPath = path.substring(rootSitePath.length());
+
+        CmsSitemapTreeItem result = getRootItem();
+
+        String[] names = CmsStringUtil.splitAsArray(remainingPath, "/");
+        for (String name : names) {
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(name)) {
+                continue;
+            }
+            result = (CmsSitemapTreeItem)result.getChild(name);
+        }
+        return result;
+
     }
 
     /**
@@ -188,6 +206,7 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler, NativePreviewHand
         RootPanel.getBodyElement().addClassName(I_CmsLayoutBundle.INSTANCE.rootCss().root());
 
         // controller & tree-item-factory & tool-bar
+
         m_controller = new CmsSitemapController();
         m_controller.addChangeHandler(this);
         m_controller.addLoadHandler(this);
@@ -299,7 +318,7 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler, NativePreviewHand
         }
     }
 
-    /**
+    /** 
      * @see com.google.gwt.user.client.Window.ClosingHandler#onWindowClosing(com.google.gwt.user.client.Window.ClosingEvent)
      */
     public void onWindowClosing(ClosingEvent event) {
@@ -312,5 +331,15 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler, NativePreviewHand
         if (savePage) {
             m_controller.commit(true);
         }
+    }
+
+    /**
+     * Gets the sitemap tree item widget which represents the root of the current sitemap.<p>
+     * 
+     * @return the root sitemap tree item widget 
+     */
+    protected CmsSitemapTreeItem getRootItem() {
+
+        return (CmsSitemapTreeItem)(m_tree.getWidget(0));
     }
 }

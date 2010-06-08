@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsXmlSitemap.java,v $
- * Date   : $Date: 2010/06/02 08:47:16 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2010/06/08 07:12:45 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.30 $ 
+ * @version $Revision: 1.31 $ 
  * 
  * @since 7.5.2
  * 
@@ -401,6 +401,32 @@ public class CmsXmlSitemap extends CmsXmlContent {
     }
 
     /**
+     * Helper method for finding the entry point of the current sitemap.<p>
+     * 
+     * @param cms the cms context
+     * 
+     * @return the entry point
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public String getEntryPoint(CmsObject cms) throws CmsException {
+
+        String entryPoint = "";
+        List<CmsInternalSitemapEntry> rootEntries = getSitemap(cms, cms.getRequestContext().getLocale()).getSiteEntries();
+        if (rootEntries.size() > 0) {
+            CmsInternalSitemapEntry rootEntry = rootEntries.get(0);
+            entryPoint = cms.getRequestContext().removeSiteRoot(rootEntry.getEntryPoint());
+        } else if (getFile() != null) {
+            entryPoint = OpenCms.getSitemapManager().getEntryPoint(cms, cms.getSitePath(getFile()));
+            if (entryPoint == null) {
+                // if not found, assume absolute paths
+                entryPoint = "";
+            }
+        }
+        return entryPoint; 
+    }
+
+    /**
      * Returns the sitemap bean for the given locale.<p>
      *
      * @param cms the cms context
@@ -707,14 +733,15 @@ public class CmsXmlSitemap extends CmsXmlContent {
      */
     protected String newEntry(CmsObject cms, CmsSitemapChangeNew change) throws CmsException {
 
+        String entryPoint = change.getEntryPoint();
         // the entry
-        Element entryElement = getElement(cms, change.getSitePath());
+        Element entryElement = getElement(cms, change.getSitePath(), entryPoint);
         if (entryElement != null) {
             // entry already exists
             throw createEntryAlreadyExistsException(cms, change.getSitePath());
         }
         String parentPath = CmsResource.getParentFolder(change.getSitePath());
-        Element parent = getElement(cms, parentPath);
+        Element parent = getElement(cms, parentPath, entryPoint);
         if (parent == null) {
             // parent entry not found
             throw createEntryNotFoundException(cms, parentPath);
@@ -854,6 +881,7 @@ public class CmsXmlSitemap extends CmsXmlContent {
     /**
      * Locates a DOM element for the given sitemap path.<p>
      * 
+     * 
      * @param cms the CMS context 
      * @param sitePath the site path
      * 
@@ -863,20 +891,22 @@ public class CmsXmlSitemap extends CmsXmlContent {
      */
     private Element getElement(CmsObject cms, String sitePath) throws CmsException {
 
-        Element parent = getLocaleNode(cms.getRequestContext().getLocale());
-        String entryPoint = "";
-        List<CmsInternalSitemapEntry> rootEntries = getSitemap(cms, cms.getRequestContext().getLocale()).getSiteEntries();
-        if (rootEntries.size() > 0) {
-            CmsInternalSitemapEntry rootEntry = rootEntries.get(0);
-            entryPoint = cms.getRequestContext().removeSiteRoot(rootEntry.getEntryPoint());
-        } else if (getFile() != null) {
-            entryPoint = OpenCms.getSitemapManager().getEntryPoint(cms, cms.getSitePath(getFile()));
-            if (entryPoint == null) {
-                // if not found, assume absolute paths
-                entryPoint = "";
-            }
-        }
+        return getElement(cms, sitePath, getEntryPoint(cms));
+    }
 
+    /**
+     * Locates a DOM element for the given sitemap path.<p>
+     * 
+     * @param cms the CMS context 
+     * @param sitePath the site path
+     * @param entryPoint the entryPoint to use
+     * 
+     * @return the corresponding DOM element or <code>null</code> if not found
+     * 
+     */
+    private Element getElement(CmsObject cms, String sitePath, String entryPoint) {
+
+        Element parent = getLocaleNode(cms.getRequestContext().getLocale());
         String originalUri = sitePath.substring(entryPoint.length());
         String[] pathEntries = CmsStringUtil.splitAsArray(originalUri, '/');
 

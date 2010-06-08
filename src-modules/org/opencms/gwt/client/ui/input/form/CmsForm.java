@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/form/Attic/CmsForm.java,v $
- * Date   : $Date: 2010/05/27 08:06:13 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/06/08 07:12:45 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  * 
@@ -91,6 +91,7 @@ public class CmsForm extends Composite {
     public CmsForm() {
 
         initWidget(m_panel);
+        m_panel.addStyleName(CSS.form());
 
     }
 

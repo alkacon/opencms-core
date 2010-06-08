@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/rpc/Attic/I_CmsSitemapService.java,v $
- * Date   : $Date: 2010/06/07 13:37:20 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2010/06/08 07:12:45 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.ade.sitemap.shared.rpc;
 
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
+import org.opencms.ade.sitemap.shared.CmsSubSitemapInfo;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.xml.sitemap.I_CmsSitemapChange;
 
@@ -47,7 +48,7 @@ import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 8.0.0
  * 
@@ -68,7 +69,7 @@ public interface I_CmsSitemapService extends RemoteService {
      * 
      * @throws CmsRpcException if something goes wrong 
      */
-    String createSubsitemap(String sitemapUri, String path) throws CmsRpcException;
+    CmsSubSitemapInfo createSubsitemap(String sitemapUri, String path) throws CmsRpcException;
 
     /**
      * Executed when leaving the page.<p>
@@ -82,24 +83,26 @@ public interface I_CmsSitemapService extends RemoteService {
     /**
      * Returns the sitemap children for the given path.<p>
      * 
+     * @param sitemapUri the URI of the sitemap 
      * @param root the site relative root
      *  
      * @return the sitemap children
      * 
      * @throws CmsRpcException if something goes wrong 
      */
-    List<CmsClientSitemapEntry> getChildren(String root) throws CmsRpcException;
+    List<CmsClientSitemapEntry> getChildren(String sitemapUri, String root) throws CmsRpcException;
 
     /**
      * Returns the sitemap entry for the given path.<p>
      * 
+     * @param sitemapUri the URI of the sitemap 
      * @param root the site relative root
      *  
      * @return the sitemap entry
      * 
      * @throws CmsRpcException if something goes wrong 
      */
-    CmsClientSitemapEntry getEntry(String root) throws CmsRpcException;
+    CmsClientSitemapEntry getEntry(String sitemapUri, String root) throws CmsRpcException;
 
     /**
      * Merges the given super sitemap with the sub-sitemap at the given path.<p>
@@ -127,12 +130,13 @@ public interface I_CmsSitemapService extends RemoteService {
      * 
      * @param sitemapUri the sitemap URI 
      * @param changes the changes to save
+     * @param unlockAfterSave if true, unlocks the sitemap after saving it 
      * 
      * @return the new timestamp
      * 
      * @throws CmsRpcException if something goes wrong 
      */
-    long save(String sitemapUri, List<I_CmsSitemapChange> changes) throws CmsRpcException;
+    long save(String sitemapUri, List<I_CmsSitemapChange> changes, boolean unlockAfterSave) throws CmsRpcException;
 
     /**
      * Saves the changes to the given sitemap.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsHoverbarSubsitemapButton.java,v $
- * Date   : $Date: 2010/05/27 11:13:52 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/06/08 07:12:45 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,7 +34,11 @@ package org.opencms.ade.sitemap.client.hoverbar;
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsImageBundle;
+import org.opencms.gwt.client.ui.CmsConfirmDialog;
 import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
+import org.opencms.util.CmsStringUtil;
+import org.opencms.xml.sitemap.CmsSitemapManager;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -44,7 +48,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  */
@@ -58,8 +62,9 @@ public class CmsHoverbarSubsitemapButton extends CmsPushButton {
     public CmsHoverbarSubsitemapButton(final CmsSitemapHoverbar hoverbar) {
 
         setImageClass(I_CmsImageBundle.INSTANCE.buttonCss().hoverbarSubsitemap());
-        setTitle(Messages.GUI_HOVERBAR_SUBSITEMAP_0);
+        setTitle(Messages.get().key(Messages.GUI_HOVERBAR_SUBSITEMAP_0));
         setShowBorder(false);
+        setVisible(false);
         addClickHandler(new ClickHandler() {
 
             /**
@@ -70,7 +75,29 @@ public class CmsHoverbarSubsitemapButton extends CmsPushButton {
                 hoverbar.deattach();
                 final String sitePath = hoverbar.getSitePath();
                 final CmsSitemapController controller = hoverbar.getController();
-                // TODO:
+                // TODO: check if the site path is not the root 
+                String confirmTitle = Messages.get().key(Messages.GUI_SUBSITEMAP_CONFIRM_TITLE_0);
+                String confirmMessage = Messages.get().key(Messages.GUI_SUBSITEMAP_CONFIRM_TEXT_0);
+                CmsConfirmDialog confirmDialog = new CmsConfirmDialog(confirmTitle, confirmMessage);
+                confirmDialog.setHandler(new I_CmsConfirmDialogHandler() {
+
+                    /**
+                     * @see org.opencms.gwt.client.ui.I_CmsCloseDialogHandler#onClose()
+                     */
+                    public void onClose() {
+
+                        // do nothing
+                    }
+
+                    /**
+                     * @see org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler#onOk()
+                     */
+                    public void onOk() {
+
+                        controller.createSubSitemap(sitePath);
+                    }
+                });
+                confirmDialog.center();
             }
         });
         hoverbar.addAttachHandler(new I_CmsHoverbarAttachHandler() {
@@ -82,6 +109,9 @@ public class CmsHoverbarSubsitemapButton extends CmsPushButton {
 
                 final String sitePath = hoverbar.getSitePath();
                 final CmsSitemapController controller = hoverbar.getController();
+                String sitemapProp = controller.getEntry(sitePath).getProperties().get(
+                    CmsSitemapManager.Property.sitemap.name());
+                setVisible(CmsStringUtil.isEmptyOrWhitespaceOnly(sitemapProp));
                 if (controller.isRoot(sitePath)) {
                     disable(Messages.get().key(Messages.GUI_DISABLED_ROOT_ITEM_0));
                 } else {

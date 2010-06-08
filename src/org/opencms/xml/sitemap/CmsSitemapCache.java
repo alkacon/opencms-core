@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapCache.java,v $
- * Date   : $Date: 2010/06/02 06:23:54 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2010/06/08 07:12:45 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 7.6 
  */
@@ -517,11 +517,11 @@ public final class CmsSitemapCache extends CmsVfsCache {
 
         // get sub-entries
         List<CmsInternalSitemapEntry> subEntries = getSubEntries(cms, locale, entry);
-        if (properties.get(CmsSitemapManager.Property.sitemap.name()) != null) {
+        String sitemapUuid = properties.get(CmsSitemapManager.Property.sitemap.name());
+        if (sitemapUuid != null) {
+            CmsResource sitemapResource = cms.readResource(new CmsUUID(sitemapUuid));
             // collect sitemap
-            active.put(
-                locale.toString() + entry.getRootPath(),
-                properties.get(CmsSitemapManager.Property.sitemap.name()));
+            active.put(locale.toString() + entry.getRootPath(), sitemapResource.getRootPath());
             // be sure the sub-entries do not inherit the sitemap property
             properties.remove(CmsSitemapManager.Property.sitemap.name());
             // be sure to set the right entry point
@@ -532,7 +532,7 @@ public final class CmsSitemapCache extends CmsVfsCache {
             // visit sub-entries
             CmsInternalSitemapEntry subEntry = subEntries.get(position);
             visitEntry(cms, active, subEntry, locale, currentEntryPoint, position, properties, online);
-        }
+        } 
     }
 
     /**

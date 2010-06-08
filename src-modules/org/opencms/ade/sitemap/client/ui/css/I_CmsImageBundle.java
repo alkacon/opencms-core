@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/ui/css/Attic/I_CmsImageBundle.java,v $
- * Date   : $Date: 2010/04/26 13:39:53 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/06/08 07:12:45 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import com.google.gwt.resources.client.ImageResource;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -70,6 +70,13 @@ public interface I_CmsImageBundle extends ClientBundle {
          * @return the CSS class name
          */
         String hoverbarGoto();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String hoverbarGotoSub();
 
         /** 
          * Access method.<p>
@@ -172,6 +179,22 @@ public interface I_CmsImageBundle extends ClientBundle {
      */
     @Source("images/goto_disabled.png")
     ImageResource hoverbarGotoDisabled();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the button CSS
+     */
+    @Source("images/goto_sub.png")
+    ImageResource hoverbarGotoSub();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the button CSS
+     */
+    @Source("images/goto_disabled.png")
+    ImageResource hoverbarGotoSubDisabled();
 
     /** 
      * Access method.<p>

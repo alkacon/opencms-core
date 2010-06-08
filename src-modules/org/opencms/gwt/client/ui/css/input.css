@@ -192,6 +192,9 @@
 	white-space: nowrap;
 }
 
+.form {
+	width: 520px;
+}
 
 .alignBottom {
 	vertical-align: bottom;

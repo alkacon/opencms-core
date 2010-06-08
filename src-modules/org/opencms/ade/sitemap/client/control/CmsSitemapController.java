@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2010/06/07 13:37:20 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/06/08 07:12:45 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,6 +40,7 @@ import org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.ade.sitemap.shared.CmsSitemapTemplate;
+import org.opencms.ade.sitemap.shared.CmsSubSitemapInfo;
 import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService;
 import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapServiceAsync;
 import org.opencms.file.CmsResource;
@@ -67,7 +68,7 @@ import com.google.gwt.user.client.Window;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  */
@@ -99,11 +100,23 @@ public class CmsSitemapController {
         m_changes = new ArrayList<I_CmsClientSitemapChange>();
         m_undone = new ArrayList<I_CmsClientSitemapChange>();
         m_data = (CmsSitemapData)CmsRpcPrefetcher.getSerializedObject(getService(), CmsSitemapData.DICT_NAME);
+
         m_hiddenProperties = new HashSet<String>();
         m_hiddenProperties.add(CmsSitemapManager.Property.template.toString());
         m_hiddenProperties.add(CmsSitemapManager.Property.templateInherited.toString());
         m_hiddenProperties.add(CmsSitemapManager.Property.sitemap.toString());
         m_handlerManager = new HandlerManager(this);
+    }
+
+    /**
+     * Returns the URI of the current sitemap.<p>
+     * 
+     * @return the URI of the current sitemap 
+     */
+    protected static String getSitemapUri() {
+
+        return CmsCoreProvider.get().getUri();
+
     }
 
     /**
@@ -209,53 +222,7 @@ public class CmsSitemapController {
      */
     public void commit(final boolean sync) {
 
-        // save the sitemap
-        CmsRpcAction<Long> saveAction = new CmsRpcAction<Long>() {
-
-            /**
-            * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
-            */
-            @Override
-            public void execute() {
-
-                start(0);
-                List<I_CmsSitemapChange> changes = new ArrayList<I_CmsSitemapChange>();
-                for (I_CmsClientSitemapChange change : m_changes) {
-                    changes.add(change.getChangeForCommit());
-                }
-                if (sync) {
-                    getService().saveSync(CmsCoreProvider.get().getUri(), changes, this);
-                } else {
-                    getService().save(CmsCoreProvider.get().getUri(), changes, this);
-                }
-            }
-
-            /**
-            * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
-            */
-            @Override
-            public void onResponse(Long result) {
-
-                m_data.setTimestamp(result.longValue());
-                m_changes.clear();
-                m_undone.clear();
-
-                // state
-                m_handlerManager.fireEvent(new CmsSitemapResetEvent());
-
-                stop(true);
-            }
-
-            /**
-             * @see org.opencms.gwt.client.rpc.CmsRpcAction#show()
-             */
-            @Override
-            protected void show() {
-
-                CmsNotification.get().sendSticky(CmsNotification.Type.NORMAL, Messages.get().key(Messages.GUI_SAVING_0));
-            }
-        };
-        saveAction.execute();
+        commit(sync, null, true);
     }
 
     /**
@@ -270,6 +237,41 @@ public class CmsSitemapController {
 
         newEntry.setPosition(-1); // ensure it will be inserted at the end
         addChange(new CmsClientSitemapChangeNew(newEntry), false, false);
+    }
+
+    /**
+     * Creates a sub-sitemap from the subtree of the current sitemap starting at a given path.<p>
+     * 
+     * @param path the path whose subtree should be converted to a sub-sitemap 
+     */
+    public void createSubSitemap(final String path) {
+
+        CmsRpcAction<CmsSubSitemapInfo> subSitemapAction = new CmsRpcAction<CmsSubSitemapInfo>() {
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+             */
+            @Override
+            public void execute() {
+
+                start(0);
+                getService().createSubsitemap(getSitemapUri(), path, this);
+            }
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+             */
+            @Override
+            protected void onResponse(CmsSubSitemapInfo result) {
+
+                stop(false);
+                onCreateSubSitemap(path, result);
+
+            }
+        };
+        if (CmsCoreProvider.get().lockAndCheckModification(getSitemapUri(), m_data.getTimestamp())) {
+            commit(false, subSitemapAction, false);
+        }
     }
 
     /**
@@ -359,7 +361,8 @@ public class CmsSitemapController {
 
                 // Make the call to the sitemap service
                 start(500);
-                getService().getChildren(originalPath, this);
+
+                getService().getChildren(getSitemapUri(), originalPath, this);
             }
 
             /**
@@ -369,6 +372,11 @@ public class CmsSitemapController {
             public void onResponse(List<CmsClientSitemapEntry> result) {
 
                 CmsClientSitemapEntry target = getEntry(sitePath);
+                if (target == null) {
+                    // this might happen after an automated deletion 
+                    stop(false);
+                    return;
+                }
                 target.setSubEntries(result);
                 if (!originalPath.equals(sitePath)) {
                     target.setSitePath("abc"); // hack to be able to execute updateSitePath
@@ -406,10 +414,15 @@ public class CmsSitemapController {
         if ((sitemapPath == null) || sitemapPath.equals("") || sitemapPath.equals("/")) {
             return m_data.getDefaultTemplate();
         }
+
         CmsClientSitemapEntry entry = getEntry(sitemapPath);
         String templateInherited = entry.getProperties().get(CmsSitemapManager.Property.templateInherited);
         if (templateInherited != null) {
             return m_data.getTemplates().get(templateInherited);
+        }
+
+        if (sitemapPath.equals(m_data.getRoot().getSitePath())) {
+            return m_data.getDefaultTemplate();
         }
         String parentPath = CmsResource.getParentFolder(sitemapPath);
         return getDefaultTemplate(parentPath);
@@ -624,20 +637,42 @@ public class CmsSitemapController {
     }
 
     /**
-     * Adds a change to the queue.<p>
+     * Internal method which is called when a new sub-sitemap has been successfully created.<p>
      * 
-     * @param oldEntry the old entry
-     * @param newEntry the new entry
-     * @param changeType the change type
-     * @param position the new position between its siblings, only used when moving
-     * @param redo if redoing a change
-     * @param dnd if change was generated by drag and drop
+     * @param path the path in the current sitemap at which the sub-sitemap has been created
+     * @param info the info bean which is the result of the sub-sitemap creation  
+    
      */
+    protected void onCreateSubSitemap(String path, CmsSubSitemapInfo info) {
+
+        String subSitemapPath = info.getSitemapPath();
+        m_data.setTimestamp(info.getParentTimestamp());
+
+        CmsClientSitemapEntry entry = getEntry(path);
+        List<I_CmsClientSitemapChange> changes = new ArrayList<I_CmsClientSitemapChange>();
+        for (CmsClientSitemapEntry childEntry : entry.getSubEntries()) {
+            CmsClientSitemapChangeDelete deleteAction = new CmsClientSitemapChangeDelete(childEntry);
+            changes.add(deleteAction);
+        }
+        CmsClientSitemapEntry newEntry = new CmsClientSitemapEntry(entry);
+        newEntry.getProperties().put(CmsSitemapManager.Property.sitemap.name(), subSitemapPath);
+        CmsClientSitemapChangeEdit editAction = new CmsClientSitemapChangeEdit(entry, newEntry);
+        changes.add(editAction);
+        executeChanges(changes);
+    }
+
+    /**
+    * Adds a change to the queue.<p>
+    * 
+    * @param change the change to be added  
+    * @param redo if redoing a change
+     * @param dnd if change was generated by drag and drop
+    */
     private void addChange(I_CmsClientSitemapChange change, boolean redo, boolean dnd) {
 
         // state
         if (!isDirty()) {
-            if (CmsCoreProvider.get().lockAndCheckModification(CmsCoreProvider.get().getUri(), m_data.getTimestamp())) {
+            if (CmsCoreProvider.get().lockAndCheckModification(getSitemapUri(), m_data.getTimestamp())) {
                 m_handlerManager.fireEvent(new CmsSitemapStartEditEvent());
             } else {
                 // could not lock
@@ -660,6 +695,94 @@ public class CmsSitemapController {
         if (!dnd) {
             // refresh view, in dnd mode view already ok
             m_handlerManager.fireEvent(new CmsSitemapChangeEvent(change));
+        }
+    }
+
+    /**
+     * Commits the changes.<p>
+     * 
+     * @param sync if to use a synchronized or an asynchronized request
+     * @param nextAction if not null, this action will be executed after the sitemap has been saved (successfully)
+     * @param unlockAfterSave if true, unlocks the sitemap after saving  (if sync is true, however, the sitemap will always be unlocked)
+     */
+    private void commit(final boolean sync, final CmsRpcAction<?> nextAction, final boolean unlockAfterSave) {
+
+        // save the sitemap
+        CmsRpcAction<Long> saveAction = new CmsRpcAction<Long>() {
+
+            /**
+            * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+            */
+            @Override
+            public void execute() {
+
+                start(0);
+                List<I_CmsSitemapChange> changes = new ArrayList<I_CmsSitemapChange>();
+                for (I_CmsClientSitemapChange change : m_changes) {
+                    changes.add(change.getChangeForCommit());
+                }
+                if (sync) {
+                    getService().saveSync(getSitemapUri(), changes, this);
+                } else {
+                    getService().save(getSitemapUri(), changes, unlockAfterSave, this);
+                }
+            }
+
+            /**
+            * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+            */
+            @Override
+            public void onResponse(Long result) {
+
+                m_data.setTimestamp(result.longValue());
+
+                m_changes.clear();
+                m_undone.clear();
+
+                // state
+                m_handlerManager.fireEvent(new CmsSitemapResetEvent());
+
+                stop(true);
+                if (nextAction != null) {
+                    nextAction.execute();
+                }
+            }
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#show()
+             */
+            @Override
+            protected void show() {
+
+                CmsNotification.get().sendSticky(CmsNotification.Type.NORMAL, Messages.get().key(Messages.GUI_SAVING_0));
+            }
+        };
+        saveAction.execute();
+    }
+
+    /**
+     * Internal method which updates the model with a single change.<p>
+     * 
+     * @param change the change 
+     */
+    private void executeChange(I_CmsClientSitemapChange change) {
+
+        // apply change to the model
+        change.applyToModel(this);
+        // refresh view
+        m_handlerManager.fireEvent(new CmsSitemapChangeEvent(change));
+    }
+
+    /**
+     * Internal method which updates the model with a list of changes.<p>
+     * 
+     * @param changes the list of changes 
+     */
+    private void executeChanges(List<I_CmsClientSitemapChange> changes) {
+
+        for (I_CmsClientSitemapChange change : changes) {
+            executeChange(change);
+
         }
     }
 }

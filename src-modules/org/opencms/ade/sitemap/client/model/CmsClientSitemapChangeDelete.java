@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeDelete.java,v $
- * Date   : $Date: 2010/05/27 11:13:52 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/06/08 07:12:45 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import org.opencms.xml.sitemap.I_CmsSitemapChange.Type;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -57,6 +57,7 @@ public class CmsClientSitemapChangeDelete implements I_CmsClientSitemapChange {
     /** The deleted entry with children. */
     private CmsClientSitemapEntry m_entry;
 
+    /** The tree item to which the change should be applied. */
     private CmsSitemapTreeItem m_treeItem;
 
     /**
@@ -85,6 +86,7 @@ public class CmsClientSitemapChangeDelete implements I_CmsClientSitemapChange {
 
         CmsSitemapTreeItem deleteParent = view.getTreeItem(CmsResource.getParentFolder(getEntry().getSitePath()));
         m_treeItem = (CmsSitemapTreeItem)deleteParent.getChild(getEntry().getName());
+        m_treeItem.onFinishLoading();
         view.ensureVisible(m_treeItem);
         deleteParent.removeChild(m_treeItem);
     }
