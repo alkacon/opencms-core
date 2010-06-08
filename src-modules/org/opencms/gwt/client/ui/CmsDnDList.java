@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsDnDList.java,v $
- * Date   : $Date: 2010/06/07 14:27:01 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/06/08 14:35:17 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -58,6 +58,9 @@ public class CmsDnDList<I extends CmsDnDListItem> extends CmsList<I> implements 
 
     /** The handler manager. */
     protected HandlerManager m_handlerManager;
+
+    /** Flag to indicate if this list is a drop target. */
+    private boolean m_dropTargetEnabled = true;
 
     /**
      * Constructor.<p>
@@ -78,6 +81,25 @@ public class CmsDnDList<I extends CmsDnDListItem> extends CmsList<I> implements 
     public HandlerRegistration addListDropHandler(I_CmsDnDListDropHandler handler) {
 
         return m_handlerManager.addHandler(CmsDnDListDropEvent.getType(), handler);
+    }
+
+    /**
+     * Enables/Disables this list as a drop target.<p>
+     * 
+     * @param enabled <code>true</code> to enable this list as a drop target 
+     */
+    @SuppressWarnings("unchecked")
+    public void enableDropTarget(boolean enabled) {
+
+        if (m_dropTargetEnabled == enabled) {
+            return;
+        }
+        m_dropTargetEnabled = enabled;
+        if (enabled) {
+            m_handler.addDragTarget((CmsDnDList<CmsDnDListItem>)this);
+        } else {
+            m_handler.removeDragTarget((CmsDnDList<CmsDnDListItem>)this);
+        }
     }
 
     /**
@@ -105,13 +127,18 @@ public class CmsDnDList<I extends CmsDnDListItem> extends CmsList<I> implements 
      * 
      * @param enabled <code>true</code> to enable drag'n drop 
      */
-    @SuppressWarnings("unchecked")
     public void setDnDEnabled(boolean enabled) {
 
+        if (m_dndEnabled == enabled) {
+            return;
+        }
         m_dndEnabled = enabled;
         if (m_handler == null) {
             m_handler = new CmsDnDListHandler();
-            m_handler.addDragTarget((CmsDnDList<CmsDnDListItem>)this);
+            if (m_dropTargetEnabled) {
+                m_dropTargetEnabled = false;
+                enableDropTarget(true);
+            }
         }
         for (Widget w : this) {
             if (w instanceof CmsDnDListItem) {

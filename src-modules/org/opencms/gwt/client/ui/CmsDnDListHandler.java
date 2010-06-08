@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsDnDListHandler.java,v $
- * Date   : $Date: 2010/06/08 09:01:21 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/06/08 14:35:17 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -188,13 +188,7 @@ public class CmsDnDListHandler extends A_CmsSortingDragHandler<CmsDnDListItem, C
     @Override
     protected void elementDropAction() {
 
-        CmsDnDListDropEvent event = new CmsDnDListDropEvent(
-            m_srcList,
-            m_srcId,
-            m_currentTarget,
-            ((CmsDnDListItem)m_placeholder).getId());
-        m_handlerManager.fireEvent(event);
-        m_currentTarget.fireDropEvent(event);
+        fireEvent(m_currentTarget, ((CmsDnDListItem)m_placeholder).getId());
     }
 
     /**
@@ -213,6 +207,19 @@ public class CmsDnDListHandler extends A_CmsSortingDragHandler<CmsDnDListItem, C
     protected void elementLeaveTargetAction() {
 
         // nothing to do
+    }
+
+    /**
+     * Fires the drop event for the given target list and dropped item id.<p>
+     * 
+     * @param targetList the target list
+     * @param droppedItemId the dropped item id
+     */
+    protected void fireEvent(CmsDnDList<CmsDnDListItem> targetList, String droppedItemId) {
+
+        CmsDnDListDropEvent event = new CmsDnDListDropEvent(m_srcList, m_srcId, targetList, droppedItemId);
+        m_handlerManager.fireEvent(event);
+        targetList.fireDropEvent(event);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/tree/Attic/CmsDnDTree.java,v $
- * Date   : $Date: 2010/06/07 14:27:01 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/06/08 14:35:17 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.gwt.client.ui.tree;
 
 import org.opencms.gwt.client.ui.CmsDnDList;
+import org.opencms.gwt.client.ui.CmsDnDListItem;
 import org.opencms.util.CmsStringUtil;
 
 import com.google.gwt.event.logical.shared.HasOpenHandlers;
@@ -49,7 +50,7 @@ import com.google.gwt.user.client.ui.HasAnimation;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -64,10 +65,14 @@ public class CmsDnDTree<I extends CmsDnDTreeItem> extends CmsDnDList<I> implemen
     /**
      * Constructor.<p>
      */
+    @SuppressWarnings("unchecked")
     public CmsDnDTree() {
 
         m_animate = false;
         m_handlers = new HandlerManager(this);
+        m_handler = new CmsDnDTreeHandler();
+        CmsDnDList<? extends CmsDnDListItem> list = this;
+        m_handler.addDragTarget((CmsDnDList<CmsDnDListItem>)list);
     }
 
     /**

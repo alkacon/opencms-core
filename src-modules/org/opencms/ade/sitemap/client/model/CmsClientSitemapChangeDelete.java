@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeDelete.java,v $
- * Date   : $Date: 2010/06/08 07:12:45 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/06/08 14:35:17 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,14 +45,11 @@ import org.opencms.xml.sitemap.I_CmsSitemapChange.Type;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
 public class CmsClientSitemapChangeDelete implements I_CmsClientSitemapChange {
-
-    /** Serialization unique id. */
-    private static final long serialVersionUID = -7543739240827775824L;
 
     /** The deleted entry with children. */
     private CmsClientSitemapEntry m_entry;
@@ -97,6 +94,14 @@ public class CmsClientSitemapChangeDelete implements I_CmsClientSitemapChange {
     public I_CmsSitemapChange getChangeForCommit() {
 
         return new CmsSitemapChangeDelete(getEntry().getSitePath());
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#getChangeForUndo()
+     */
+    public I_CmsClientSitemapChange getChangeForUndo() {
+
+        return this;
     }
 
     /**

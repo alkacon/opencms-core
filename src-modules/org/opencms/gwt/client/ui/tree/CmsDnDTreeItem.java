@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/tree/Attic/CmsDnDTreeItem.java,v $
- * Date   : $Date: 2010/06/07 14:27:01 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/06/08 14:35:17 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,6 +46,7 @@ import org.opencms.gwt.client.util.CmsStyleVariable;
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -68,7 +69,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Georg Westenberger
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  */
@@ -88,6 +89,9 @@ public class CmsDnDTreeItem extends CmsDnDListItem {
 
     /** The element showing the open/close icon. */
     protected CmsToggleButton m_opener;
+
+    /** Timer to open item while dragging and hovering. */
+    Timer m_timer;
 
     /** The style variable controlling this tree item's leaf/non-leaf state. */
     private CmsStyleVariable m_leafStyleVar;
@@ -167,6 +171,19 @@ public class CmsDnDTreeItem extends CmsDnDListItem {
                 }
                 CmsDnDTreeItem destTreeItem = (CmsDnDTreeItem)destItem;
 
+                // this can not be done later because the most likely srcItem == destItem
+                // since the inconsistency we are fixing here
+                // and since we manipulate destItem (to fix it) we will loose info on srcItem
+                CmsDnDListItem srcItem = dropEvent.getSrcList().getItem(dropEvent.getSrcPath());
+                CmsDnDTreeItem srcTreeItem = (CmsDnDTreeItem)srcItem;
+                CmsDnDList<? extends CmsDnDListItem> srcList = dropEvent.getSrcList();
+                String srcPath = dropEvent.getSrcPath();
+                if (srcTreeItem.getTree() != null) {
+                    // event is coming from a tree
+                    srcList = srcTreeItem.getTree();
+                    srcPath = srcTreeItem.getPath();
+                }
+
                 // remove item from old position
                 CmsDnDTreeItem oldParent = destTreeItem.getParentItem();
                 destTreeItem.setParentItem(null);
@@ -178,7 +195,6 @@ public class CmsDnDTreeItem extends CmsDnDListItem {
                 destTreeItem.setTree(getTree());
                 onChangeChildren();
 
-                CmsDnDListItem srcItem = dropEvent.getSrcList().getItem(dropEvent.getSrcPath());
                 if (!(srcItem instanceof CmsDnDTreeItem)) {
                     // event is coming from a list not a tree, forward event
                     getTree().fireDropEvent(
@@ -190,14 +206,6 @@ public class CmsDnDTreeItem extends CmsDnDListItem {
                     return;
                 }
 
-                // event is coming from a tree
-                CmsDnDTreeItem srcTreeItem = (CmsDnDTreeItem)srcItem;
-                CmsDnDList<? extends CmsDnDListItem> srcList = dropEvent.getSrcList();
-                String srcPath = dropEvent.getSrcPath();
-                if (srcTreeItem.getTree() != null) {
-                    srcList = srcTreeItem.getTree();
-                    srcPath = srcTreeItem.getPath();
-                }
                 // forward event
                 getTree().fireDropEvent(
                     new CmsDnDTreeDropEvent(
@@ -394,6 +402,43 @@ public class CmsDnDTreeItem extends CmsDnDListItem {
     public boolean isOpen() {
 
         return m_open;
+    }
+
+    /**
+     * Will be executed when the user drags something over this item.<p>
+     */
+    public void onDragOverIn() {
+
+        getListItemWidget().getContentPanel().addStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().itemActive());
+        if (isOpen()) {
+            return;
+        }
+        m_timer = new Timer() {
+
+            /**
+             * @see com.google.gwt.user.client.Timer#run()
+             */
+            @Override
+            public void run() {
+
+                m_timer = null;
+                setOpen(true);
+            }
+        };
+        m_timer.schedule(1000);
+    }
+
+    /**
+     * Will be executed when the user stops dragging something over this item.<p>
+     */
+    public void onDragOverOut() {
+
+        if (m_timer != null) {
+            m_timer.cancel();
+            m_timer = null;
+        }
+        getListItemWidget().getContentPanel().removeStyleName(
+            I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().itemActive());
     }
 
     /**

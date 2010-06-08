@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapView.java,v $
- * Date   : $Date: 2010/06/08 07:12:45 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2010/06/08 14:35:17 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 8.0.0
  */
@@ -274,6 +274,8 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler, NativePreviewHand
         m_tree.truncate(TM_SITEMAP, 920);
         m_tree.setAnimationEnabled(true);
         m_tree.addItem(rootItem);
+        // prevent drop on root level
+        m_tree.enableDropTarget(false);
 
         // paint
         page.remove(loadingLabel);

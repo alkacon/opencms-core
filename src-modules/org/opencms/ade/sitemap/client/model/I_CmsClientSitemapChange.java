@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/I_CmsClientSitemapChange.java,v $
- * Date   : $Date: 2010/05/27 11:13:52 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/06/08 14:35:17 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import org.opencms.xml.sitemap.I_CmsSitemapChange.Type;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -67,6 +67,13 @@ public interface I_CmsClientSitemapChange {
      * @return this change for commit
      */
     I_CmsSitemapChange getChangeForCommit();
+
+    /**
+     * Returns this change for undo.<p>
+     * 
+     * @return this change for undo
+     */
+    I_CmsClientSitemapChange getChangeForUndo();
 
     /**
      * Returns the change type.<p>

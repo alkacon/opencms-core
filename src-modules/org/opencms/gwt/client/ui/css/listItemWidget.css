@@ -26,8 +26,8 @@
 	position: relative;
 }
 
-@sprite .itemContent.itemActive {
-    gwt-image: "backgroundActive";
+@sprite .itemActive {
+    gwt-image: "backgroundHover";
     background-position: 50% 50%;
     height: auto;
 	position: relative;

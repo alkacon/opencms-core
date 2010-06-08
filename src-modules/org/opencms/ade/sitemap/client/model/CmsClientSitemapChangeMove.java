@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeMove.java,v $
- * Date   : $Date: 2010/05/27 11:13:52 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/06/08 14:35:17 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,14 +45,11 @@ import org.opencms.xml.sitemap.I_CmsSitemapChange.Type;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
 public class CmsClientSitemapChangeMove implements I_CmsClientSitemapChange {
-
-    /** Serialization unique id. */
-    private static final long serialVersionUID = -9157910545359649719L;
 
     /** The destination path. */
     private String m_destinationPath;
@@ -119,6 +116,14 @@ public class CmsClientSitemapChangeMove implements I_CmsClientSitemapChange {
     public I_CmsSitemapChange getChangeForCommit() {
 
         return new CmsSitemapChangeMove(getSourcePath(), getDestinationPath(), getDestinationPosition());
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#getChangeForUndo()
+     */
+    public I_CmsClientSitemapChange getChangeForUndo() {
+
+        return this;
     }
 
     /**
