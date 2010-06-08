@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsHoverbarNewButton.java,v $
- * Date   : $Date: 2010/05/27 11:13:52 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/06/08 07:43:08 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,8 @@ import org.opencms.ade.sitemap.client.edit.CmsSitemapEntryEditor;
 import org.opencms.ade.sitemap.client.edit.CmsSitemapEntryEditor.Mode;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.util.CmsStringUtil;
+import org.opencms.xml.sitemap.CmsSitemapManager;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -46,7 +48,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  */
@@ -62,6 +64,7 @@ public class CmsHoverbarNewButton extends CmsPushButton {
         setImageClass(I_CmsImageBundle.INSTANCE.buttonCss().hoverbarNew());
         setTitle(Messages.get().key(Messages.GUI_HOVERBAR_NEW_0));
         setShowBorder(false);
+        setVisible(false);
         addClickHandler(new ClickHandler() {
 
             /**
@@ -75,5 +78,20 @@ public class CmsHoverbarNewButton extends CmsPushButton {
                 (new CmsSitemapEntryEditor(controller, sitePath, Mode.NEW)).start();
             }
         });
+        hoverbar.addAttachHandler(new I_CmsHoverbarAttachHandler() {
+
+            /**
+             * @see org.opencms.ade.sitemap.client.hoverbar.I_CmsHoverbarAttachHandler#onAttach(org.opencms.ade.sitemap.client.hoverbar.CmsHoverbarAttachEvent)
+             */
+            public void onAttach(CmsHoverbarAttachEvent event) {
+
+                final String sitePath = hoverbar.getSitePath();
+                final CmsSitemapController controller = hoverbar.getController();
+                String sitemapProp = controller.getEntry(sitePath).getProperties().get(
+                    CmsSitemapManager.Property.sitemap.name());
+                setVisible(CmsStringUtil.isEmptyOrWhitespaceOnly(sitemapProp));
+            }
+        });
+
     }
 }
