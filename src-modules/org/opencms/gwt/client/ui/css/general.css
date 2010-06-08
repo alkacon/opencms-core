@@ -83,6 +83,7 @@
 } @elif user.agent ie6 {
 
 	.shadow{
+		/** standard box-shadow is a gradient, but this is a solid color, so it has to be a bit lighter to look similar */ 
 		filter: literal("progid:DXImageTransform.Microsoft.DropShadow(color=#999999,offX=2,offY=2)");
 	}
 	
@@ -110,6 +111,7 @@
 	}
 	
 	.shadow{
+		/** standard box-shadow is a gradient, but this is a solid color, so it has to be a bit lighter to look similar */ 
 		-ms-filter: "progid:DXImageTransform.Microsoft.DropShadow(color=#999999,offX=2,offY=2)"; 
 	}
 	
