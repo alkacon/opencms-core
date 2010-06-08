@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentPropertyHelper.java,v $
- * Date   : $Date: 2010/05/18 13:15:51 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/06/08 14:12:16 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,7 +71,7 @@ import org.dom4j.Element;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 7.9.2
  */
@@ -117,6 +117,40 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
     private CmsXmlContentPropertyHelper() {
 
         // prevent instantiation
+    }
+
+    /**
+     * Converts a map of properties from server format to client format.<p>
+     * 
+     * @param cms the CmsObject to use for VFS operations 
+     * @param props the map of properties 
+     * @param propConfig the property configuration
+     * 
+     * @return the converted property map 
+     */
+    public static Map<String, String> convertPropertiesToClientFormat(
+        CmsObject cms,
+        Map<String, String> props,
+        Map<String, CmsXmlContentProperty> propConfig) {
+
+        return convertProperties(cms, props, propConfig, true);
+    }
+
+    /**
+     * Converts a map of properties from client format to server format.<p>
+     * 
+     * @param cms the CmsObject to use for VFS operations 
+     * @param props the map of properties 
+     * @param propConfig the property configuration
+     * 
+     * @return the converted property map
+     */
+    public static Map<String, String> convertPropertiesToServerFormat(
+        CmsObject cms,
+        Map<String, String> props,
+        Map<String, CmsXmlContentProperty> propConfig) {
+
+        return convertProperties(cms, props, propConfig, false);
     }
 
     /**
@@ -572,4 +606,41 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
         }
         return result;
     }
+
+    /**
+     * Helper method for converting a map of properties from client format to server format or vice versa.<p>
+     * 
+     * @param cms the CmsObject to use for VFS operations 
+     * @param props the map of properties 
+     * @param propConfig the property configuration 
+     * @param toClient if true, convert from server to client, else from client to server
+     *  
+     * @return the converted property map 
+     */
+    private static Map<String, String> convertProperties(
+        CmsObject cms,
+        Map<String, String> props,
+        Map<String, CmsXmlContentProperty> propConfig,
+        boolean toClient) {
+
+        Map<String, String> result = new HashMap<String, String>();
+        for (Map.Entry<String, String> entry : props.entrySet()) {
+            String propName = entry.getKey();
+            String propValue = entry.getValue();
+            CmsXmlContentProperty configEntry = propConfig.get(propName);
+            if (configEntry == null) {
+                continue; // ignore properties which are not configured anymore 
+            }
+            String type = configEntry.getPropertyType();
+            String newValue;
+            if (toClient) {
+                newValue = CmsXmlContentPropertyHelper.getPropValuePaths(cms, type, propValue);
+            } else {
+                newValue = CmsXmlContentPropertyHelper.getPropValueIds(cms, type, propValue);
+            }
+            result.put(propName, newValue);
+        }
+        return result;
+    }
+
 }
