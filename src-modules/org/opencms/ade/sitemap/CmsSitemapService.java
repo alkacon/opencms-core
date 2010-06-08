@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsSitemapService.java,v $
- * Date   : $Date: 2010/06/08 07:12:45 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2010/06/08 14:42:15 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -19,7 +19,7 @@
  * Lesser General Public License for more details.
  *
  * For further information about Alkacon Software, please see the
- * company website: http://www.alkacon.com
+ * company website: http://www.alkacon.com 
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
@@ -31,9 +31,9 @@
 
 package org.opencms.ade.sitemap;
 
-import org.opencms.ade.containerpage.CmsElementUtil;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
+import org.opencms.ade.sitemap.shared.CmsSitemapMergeInfo;
 import org.opencms.ade.sitemap.shared.CmsSitemapTemplate;
 import org.opencms.ade.sitemap.shared.CmsSubSitemapInfo;
 import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService;
@@ -56,7 +56,6 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.explorer.CmsResourceUtil;
-import org.opencms.xml.containerpage.CmsADEManager;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.content.CmsXmlContentPropertyHelper;
 import org.opencms.xml.sitemap.CmsInternalSitemapEntry;
@@ -64,6 +63,7 @@ import org.opencms.xml.sitemap.CmsSitemapBean;
 import org.opencms.xml.sitemap.CmsSitemapChangeDelete;
 import org.opencms.xml.sitemap.CmsSitemapChangeEdit;
 import org.opencms.xml.sitemap.CmsSitemapChangeNew;
+import org.opencms.xml.sitemap.CmsSitemapChangeNewSubSitemapEntry;
 import org.opencms.xml.sitemap.CmsSitemapEntry;
 import org.opencms.xml.sitemap.CmsSitemapManager;
 import org.opencms.xml.sitemap.CmsXmlSitemap;
@@ -83,7 +83,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 8.0.0
  * 
@@ -130,7 +130,6 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
             List<I_CmsSitemapChange> subSitemapChanges = getChangesForSubSitemap(entry);
 
             // create the actual sub-sitemap and fill it
-            // 
             CmsResource subSitemapRes = createNewSitemap(sitemapUri);
             String subSitemapUri = cms.getSitePath(subSitemapRes);
             save(subSitemapUri, subSitemapChanges, true);
@@ -248,9 +247,10 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
     /**
      * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#mergeSubsitemap(java.lang.String, java.lang.String)
      */
-    public void mergeSubsitemap(String sitemapUri, String path) {
+    public CmsSitemapMergeInfo mergeSubsitemap(String sitemapUri, String path) {
 
-        // TODO: 
+        return null;
+        //TODO: implement this 
     }
 
     /**
@@ -337,13 +337,13 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
 
         CmsResource resource = cms.readResource(resourceId);
 
-        CmsSitemapChangeNew result = new CmsSitemapChangeNew(
+        CmsSitemapChangeNew result = new CmsSitemapChangeNewSubSitemapEntry(
             entry.getSitePath(cms),
             entry.getPosition(),
             entry.getTitle(),
             cms.getSitePath(resource),
-            entry.getProperties());
-        result.setEntryPoint(entryPoint);
+            entry.getProperties(),
+            entryPoint);
         return result;
     }
 
@@ -360,7 +360,7 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
         CmsInternalSitemapEntry entry,
         Map<String, CmsXmlContentProperty> propertyConfig) throws CmsException {
 
-        CmsInternalSitemapEntry cloneEntry = entry.copyAsSubSitemapRoot(getCmsObject());
+        CmsInternalSitemapEntry cloneEntry = CmsSitemapManager.copyAsSubSitemapRoot(getCmsObject(), entry);
         return toClientEntry(cloneEntry, propertyConfig);
     }
 
@@ -376,8 +376,8 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
     private CmsResource createNewSitemap(String sitemapUri) throws CmsException {
 
         CmsObject cms = getCmsObject();
-        CmsADEManager ade = OpenCms.getADEManager();
-        return ade.createNewElement(cms, sitemapUri, getRequest(), CmsResourceTypeXmlSitemap.getStaticTypeName());
+        CmsSitemapManager manager = OpenCms.getSitemapManager();
+        return manager.createNewElement(cms, sitemapUri, getRequest(), CmsResourceTypeXmlSitemap.getStaticTypeName());
     }
 
     /**
@@ -659,13 +659,11 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
             vfsPath = e.getLocalizedMessage(getCmsObject().getRequestContext().getLocale());
         }
         clientEntry.setVfsPath(vfsPath);
-        Map<String, String> clientProperties = CmsElementUtil.convertPropertiesToClientFormat(
+        Map<String, String> clientProperties = CmsXmlContentPropertyHelper.convertPropertiesToClientFormat(
             getCmsObject(),
             entry.getProperties(),
             propertyConfig);
         clientEntry.setProperties(clientProperties);
-        // TODO: convert properties to client format here 
-
         clientEntry.setSitePath(entry.getSitePath(getCmsObject()));
         clientEntry.setPosition(entry.getPosition());
         return clientEntry;

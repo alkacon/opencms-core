@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/rpc/Attic/I_CmsSitemapService.java,v $
- * Date   : $Date: 2010/06/08 07:12:45 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2010/06/08 14:42:16 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.ade.sitemap.shared.rpc;
 
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
+import org.opencms.ade.sitemap.shared.CmsSitemapMergeInfo;
 import org.opencms.ade.sitemap.shared.CmsSubSitemapInfo;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.xml.sitemap.I_CmsSitemapChange;
@@ -48,7 +49,7 @@ import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 8.0.0
  * 
@@ -110,9 +111,11 @@ public interface I_CmsSitemapService extends RemoteService {
      * @param sitemapUri the super sitemap URI
      * @param path the starting path
      * 
+     * @return the result of the merge operation 
+     * 
      * @throws CmsRpcException if something goes wrong 
      */
-    void mergeSubsitemap(String sitemapUri, String path) throws CmsRpcException;
+    CmsSitemapMergeInfo mergeSubsitemap(String sitemapUri, String path) throws CmsRpcException;
 
     /**
      * Returns the initialization data for the given sitemap.<p>
@@ -150,4 +153,5 @@ public interface I_CmsSitemapService extends RemoteService {
      */
     @SynchronizedRpcRequest
     long saveSync(String sitemapUri, List<I_CmsSitemapChange> changes) throws CmsRpcException;
+
 }

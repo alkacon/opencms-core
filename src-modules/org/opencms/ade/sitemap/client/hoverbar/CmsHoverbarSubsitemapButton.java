@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsHoverbarSubsitemapButton.java,v $
- * Date   : $Date: 2010/06/08 07:28:33 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/06/08 14:42:16 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  */
@@ -75,7 +75,6 @@ public class CmsHoverbarSubsitemapButton extends CmsPushButton {
                 hoverbar.deattach();
                 final String sitePath = hoverbar.getSitePath();
                 final CmsSitemapController controller = hoverbar.getController();
-                // TODO: check if the site path is not the root 
                 String confirmTitle = Messages.get().key(Messages.GUI_SUBSITEMAP_CONFIRM_TITLE_0);
                 String confirmMessage = Messages.get().key(Messages.GUI_SUBSITEMAP_CONFIRM_TEXT_0);
                 CmsConfirmDialog confirmDialog = new CmsConfirmDialog(confirmTitle, confirmMessage);

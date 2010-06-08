@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsXmlSitemap.java,v $
- * Date   : $Date: 2010/06/08 13:05:33 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2010/06/08 14:42:16 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.32 $ 
+ * @version $Revision: 1.33 $ 
  * 
  * @since 7.5.2
  * 
@@ -376,6 +376,7 @@ public class CmsXmlSitemap extends CmsXmlContent {
                     modified.addAll(deleteEntry(cms, (CmsSitemapChangeDelete)change));
                     break;
                 case NEW:
+                case SUBSITEMAP_NEW:
                     modified.add(newEntry(cms, (CmsSitemapChangeNew)change));
                     break;
                 case MOVE:
@@ -384,6 +385,7 @@ public class CmsXmlSitemap extends CmsXmlContent {
                 case EDIT:
                     modified.add(editEntry(cms, (CmsSitemapChangeEdit)change));
                     break;
+
                 default:
 
             }
@@ -733,16 +735,18 @@ public class CmsXmlSitemap extends CmsXmlContent {
      */
     protected String newEntry(CmsObject cms, CmsSitemapChangeNew change) throws CmsException {
 
-        String entryPoint = change.getEntryPoint();
-        if (entryPoint == null) {
+        String entryPoint;
+        if (change instanceof CmsSitemapChangeNewSubSitemapEntry) {
+            entryPoint = ((CmsSitemapChangeNewSubSitemapEntry)change).getEntryPoint();
+        } else {
             entryPoint = getEntryPoint(cms);
         }
-        // the entry
         Element entryElement = getElement(cms, change.getSitePath(), entryPoint);
         if (entryElement != null) {
             // entry already exists
             throw createEntryAlreadyExistsException(cms, change.getSitePath());
         }
+
         String parentPath = CmsResource.getParentFolder(change.getSitePath());
         Element parent = getElement(cms, parentPath, entryPoint);
         if (parent == null) {

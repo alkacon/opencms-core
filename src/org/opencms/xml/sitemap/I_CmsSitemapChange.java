@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/I_CmsSitemapChange.java,v $
- * Date   : $Date: 2010/05/18 12:58:17 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/06/08 14:42:16 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import java.io.Serializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -59,7 +59,10 @@ public interface I_CmsSitemapChange extends Serializable {
         MOVE,
 
         /** New entry. */
-        NEW;
+        NEW,
+
+        /** New sub-sitemap entry. */
+        SUBSITEMAP_NEW;
     }
 
     /**

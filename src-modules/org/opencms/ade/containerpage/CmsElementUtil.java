@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsElementUtil.java,v $
- * Date   : $Date: 2010/05/26 09:32:14 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/06/08 14:42:15 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import javax.servlet.http.HttpServletResponse;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -105,76 +105,6 @@ public class CmsElementUtil {
         m_req = req;
         m_res = res;
         m_cntPageUri = cntPageUri;
-    }
-
-    /**
-     * Converts a map of properties from server format to client format.<p>
-     * 
-     * @param cms the CmsObject to use for VFS operations 
-     * @param props the map of properties 
-     * @param propConfig the property configuration
-     * 
-     * @return the converted property map 
-     */
-    public static Map<String, String> convertPropertiesToClientFormat(
-        CmsObject cms,
-        Map<String, String> props,
-        Map<String, CmsXmlContentProperty> propConfig) {
-
-        return convertProperties(cms, props, propConfig, true);
-    }
-
-    /**
-     * Converts a map of properties from client format to server format.<p>
-     * 
-     * @param cms the CmsObject to use for VFS operations 
-     * @param props the map of properties 
-     * @param propConfig the property configuration
-     * 
-     * @return the converted property map
-     */
-    public static Map<String, String> convertPropertiesToServerFormat(
-        CmsObject cms,
-        Map<String, String> props,
-        Map<String, CmsXmlContentProperty> propConfig) {
-
-        return convertProperties(cms, props, propConfig, false);
-    }
-
-    /**
-     * Helper method for converting a map of properties from client format to server format or vice versa.<p>
-     * 
-     * @param cms the CmsObject to use for VFS operations 
-     * @param props the map of properties 
-     * @param propConfig the property configuration 
-     * @param toClient if true, convert from server to client, else from client to server
-     *  
-     * @return the converted property map 
-     */
-    private static Map<String, String> convertProperties(
-        CmsObject cms,
-        Map<String, String> props,
-        Map<String, CmsXmlContentProperty> propConfig,
-        boolean toClient) {
-
-        Map<String, String> result = new HashMap<String, String>();
-        for (Map.Entry<String, String> entry : props.entrySet()) {
-            String propName = entry.getKey();
-            String propValue = entry.getValue();
-            CmsXmlContentProperty configEntry = propConfig.get(propName);
-            if (configEntry == null) {
-                continue; // ignore properties which are not configured anymore 
-            }
-            String type = configEntry.getPropertyType();
-            String newValue;
-            if (toClient) {
-                newValue = CmsXmlContentPropertyHelper.getPropValuePaths(cms, type, propValue);
-            } else {
-                newValue = CmsXmlContentPropertyHelper.getPropValueIds(cms, type, propValue);
-            }
-            result.put(propName, newValue);
-        }
-        return result;
     }
 
     /**
@@ -250,7 +180,10 @@ public class CmsElementUtil {
         elementBean.setTitle(resUtil.getTitle());
 
         Map<String, CmsXmlContentProperty> propertyConfig = CmsXmlContentPropertyHelper.getPropertyInfo(m_cms, resource);
-        elementBean.setProperties(convertPropertiesToClientFormat(m_cms, element.getProperties(), propertyConfig));
+        elementBean.setProperties(CmsXmlContentPropertyHelper.convertPropertiesToClientFormat(
+            m_cms,
+            element.getProperties(),
+            propertyConfig));
         elementBean.setPropertyConfig(new HashMap<String, CmsXmlContentProperty>(propertyConfig));
 
         elementBean.setNoEditReason(CmsEncoder.escapeHtml(resUtil.getNoEditReason(OpenCms.getWorkplaceManager().getWorkplaceLocale(

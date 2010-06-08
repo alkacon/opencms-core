@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/rpc/Attic/I_CmsSitemapServiceAsync.java,v $
- * Date   : $Date: 2010/06/08 07:12:45 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2010/06/08 14:42:16 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.ade.sitemap.shared.rpc;
 
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
+import org.opencms.ade.sitemap.shared.CmsSitemapMergeInfo;
 import org.opencms.ade.sitemap.shared.CmsSubSitemapInfo;
 import org.opencms.xml.sitemap.I_CmsSitemapChange;
 
@@ -46,7 +47,7 @@ import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 8.0.0
  * 
@@ -99,7 +100,7 @@ public interface I_CmsSitemapServiceAsync {
      * @param path the starting path
      * @param callback the async callback
      */
-    void mergeSubsitemap(String sitemapUri, String path, AsyncCallback<Void> callback);
+    void mergeSubsitemap(String sitemapUri, String path, AsyncCallback<CmsSitemapMergeInfo> callback);
 
     /**
      * Returns the initialization data for the given sitemap.<p>
@@ -128,4 +129,5 @@ public interface I_CmsSitemapServiceAsync {
      */
     @SynchronizedRpcRequest
     void saveSync(String sitemapUri, List<I_CmsSitemapChange> changes, AsyncCallback<Long> callback);
+
 }
