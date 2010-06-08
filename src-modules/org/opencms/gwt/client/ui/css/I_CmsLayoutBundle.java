@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2010/06/02 05:49:10 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2010/06/08 07:48:34 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import com.google.gwt.resources.client.ImageResource.RepeatStyle;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.34 $
+ * @version $Revision: 1.35 $
  * 
  * @since 8.0.0
  */
@@ -387,14 +387,14 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
-        String dragStarted();
+        String dragPlaceholder();
 
         /** 
          * Access method.<p>
          * 
          * @return the CSS class name
          */
-        String dragPlaceholder();
+        String dragStarted();
     }
 
     /** General CSS, used for general re-occurring styles. */
@@ -598,6 +598,20 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String disabledItem();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String dragging();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String itemActive();
 
         /** 
          * Access method.<p>

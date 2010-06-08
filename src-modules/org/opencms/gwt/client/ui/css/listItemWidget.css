@@ -19,8 +19,15 @@
 	font-size: value("constantsCss.fontSize");
 }
 
-@sprite .itemContent{
+@sprite .itemContent {
     gwt-image: "backgroundDefault";
+    background-position: 50% 50%;
+    height: auto;
+	position: relative;
+}
+
+@sprite .itemContent.itemActive {
+    gwt-image: "backgroundActive";
     background-position: 50% 50%;
     height: auto;
 	position: relative;
@@ -91,6 +98,33 @@
 	margin-left:95px;
 	vertical-align:top;
 }
+
+/** These styles are for dragging. */
+@if user.agent gecko1_8 gecko{
+	.dragging .itemContainer {
+		-moz-box-shadow: 2px 2px 6px #666666;
+	}
+} @elif user.agent safari {
+	.dragging .itemContainer {
+		-webkit-box-shadow: 2px 2px 6px #666666;
+	}
+} @elif user.agent opera {
+	.dragging .itemContainer {
+		box-shadow: 2px 2px 6px #666666;
+	}
+} @elif user.agent ie6 {
+	.dragging .itemContainer {
+		filter: literal("progid:DXImageTransform.Microsoft.DropShadow(color=#999999,offX=2,offY=2)");
+	}
+} @elif user.agent ie8 {
+	.dragging .itemContainer {
+		-ms-filter: "progid:DXImageTransform.Microsoft.DropShadow(color=#999999,offX=2,offY=2)"; 
+	}
+} @else {
+	.dragging .itemContainer {
+		box-shadow: 2px 2px 6px #666666;
+	}
+} 
 
 /** following classes have to be implemented but are not used within this CSS **/
 .cmsState{}

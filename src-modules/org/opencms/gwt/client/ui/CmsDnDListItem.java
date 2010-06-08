@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsDnDListItem.java,v $
- * Date   : $Date: 2010/06/07 14:27:01 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/06/08 07:48:34 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.gwt.client.ui;
 
 import org.opencms.gwt.client.draganddrop.I_CmsDragElement;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsDomUtil;
 
 import java.util.ArrayList;
@@ -66,7 +67,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  *  
  * @since 8.0.0 
  */
@@ -252,6 +253,8 @@ public class CmsDnDListItem extends CmsListItem implements I_CmsDragElement<CmsD
         style.setMargin(0, Unit.PX);
         style.setProperty(CmsDomUtil.Style.width.name(), width);
         style.setZIndex(100);
+
+        element.addClassName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().dragging());
     }
 
     /**
