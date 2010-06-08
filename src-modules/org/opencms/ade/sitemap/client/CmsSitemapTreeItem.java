@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapTreeItem.java,v $
- * Date   : $Date: 2010/06/08 07:12:45 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2010/06/08 09:01:21 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,10 +54,10 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 8.0.0
- *  
+ * 
  * @see org.opencms.gwt.client.ui.tree.CmsLazyTreeItem
  * @see org.opencms.ade.sitemap.shared.CmsClientSitemapEntry
  */
@@ -147,25 +147,37 @@ public class CmsSitemapTreeItem extends CmsDnDLazyTreeItem {
         if (!m_dndEnabled) {
             return false;
         }
-        for (Widget w : getListItemWidget().getContentPanel()) {
-            if (!(w instanceof CmsSitemapHoverbar)) {
+        CmsSitemapHoverbar hoverbar = getHoverbar();
+        if (hoverbar == null) {
+            return false;
+        }
+        for (Widget button : hoverbar) {
+            if (!(button instanceof CmsHoverbarMoveButton)) {
                 continue;
             }
-            for (Widget b : (CmsSitemapHoverbar)w) {
-                if (!(b instanceof CmsHoverbarMoveButton)) {
-                    continue;
-                }
-                if (!((CmsHoverbarMoveButton)b).isEnabled()) {
-                    return false;
-                }
-                EventTarget target = event.getEventTarget();
-                if (com.google.gwt.dom.client.Element.is(target)) {
-                    return b.getElement().isOrHasChild(com.google.gwt.dom.client.Element.as(target));
-                }
+            if (!((CmsHoverbarMoveButton)button).isEnabled()) {
                 return false;
             }
+            EventTarget target = event.getEventTarget();
+            if (com.google.gwt.dom.client.Element.is(target)) {
+                return button.getElement().isOrHasChild(com.google.gwt.dom.client.Element.as(target));
+            }
+            return false;
         }
         return false;
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.CmsDnDListItem#onDrag()
+     */
+    @Override
+    public void onDrag() {
+
+        CmsSitemapHoverbar hoverbar = getHoverbar();
+        if (hoverbar == null) {
+            return;
+        }
+        hoverbar.deattach();
     }
 
     /**
@@ -237,4 +249,19 @@ public class CmsSitemapTreeItem extends CmsDnDLazyTreeItem {
         m_listItemWidget.updateTruncation();
     }
 
+    /**
+     * Retrieves the hoverbar, can be <code>null</code> if not attached.<p>
+     * 
+     * @return the hoverbar, or <code>null</code> if not attached
+     */
+    private CmsSitemapHoverbar getHoverbar() {
+
+        for (Widget w : getListItemWidget().getContentPanel()) {
+            if (!(w instanceof CmsSitemapHoverbar)) {
+                continue;
+            }
+            return (CmsSitemapHoverbar)w;
+        }
+        return null;
+    }
 }
