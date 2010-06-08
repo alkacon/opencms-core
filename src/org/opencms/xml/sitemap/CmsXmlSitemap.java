@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsXmlSitemap.java,v $
- * Date   : $Date: 2010/06/08 07:12:45 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2010/06/08 13:05:33 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.31 $ 
+ * @version $Revision: 1.32 $ 
  * 
  * @since 7.5.2
  * 
@@ -423,7 +423,7 @@ public class CmsXmlSitemap extends CmsXmlContent {
                 entryPoint = "";
             }
         }
-        return entryPoint; 
+        return entryPoint;
     }
 
     /**
@@ -734,6 +734,9 @@ public class CmsXmlSitemap extends CmsXmlContent {
     protected String newEntry(CmsObject cms, CmsSitemapChangeNew change) throws CmsException {
 
         String entryPoint = change.getEntryPoint();
+        if (entryPoint == null) {
+            entryPoint = getEntryPoint(cms);
+        }
         // the entry
         Element entryElement = getElement(cms, change.getSitePath(), entryPoint);
         if (entryElement != null) {
