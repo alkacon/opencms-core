@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2010/06/09 09:06:18 $
- * Version: $Revision: 1.1185 $
+ * Date   : $Date: 2010/06/09 10:52:52 $
+ * Version: $Revision: 1.1186 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -30,6 +30,7 @@ OpenCms x.x.x - Month Day, Year
 - A new created index in the workplace is checked for invalid characters in the index name
 - Remove validations for XML content element actions: add, remove, move up, move down
 - Renamed context menu entry "Comment content" in "Edit metadata"
+- Allow undo changes after changing availability
 
 OpenCms 7.5.2 - January 20, 2010
 - Added additional MIME types
