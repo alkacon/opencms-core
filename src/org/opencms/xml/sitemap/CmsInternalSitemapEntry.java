@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsInternalSitemapEntry.java,v $
- * Date   : $Date: 2010/06/08 07:12:45 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/06/09 06:24:35 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,6 @@ import org.opencms.main.CmsException;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -51,7 +50,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0 
  */
@@ -146,29 +145,6 @@ public class CmsInternalSitemapEntry extends CmsSitemapEntry {
             null,
             null,
             null);
-    }
-
-    /**
-     * Creates a dummy root entry for a sub-sitemap from this entry.<p>
-     * 
-     * @param cms the CmsObject to use for VFS operations 
-
-     * @return a dummy sub-sitemap root
-     */
-    public CmsInternalSitemapEntry copyAsSubSitemapRoot(CmsObject cms) {
-
-        CmsInternalSitemapEntry clone = new CmsInternalSitemapEntry(
-            getId(),
-            "",
-            getResourceId(),
-            "",
-            getTitle(),
-            getProperties(),
-            new ArrayList<CmsInternalSitemapEntry>(),
-            getContentId());
-
-        clone.setRuntimeInfo(getSitePath(cms), 0, new HashMap<String, String>());
-        return clone;
     }
 
     /**
