@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsDnDListHandler.java,v $
- * Date   : $Date: 2010/06/08 14:35:17 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/06/09 11:50:58 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,15 +37,23 @@ import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.MouseDownEvent;
+import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Event.NativePreviewEvent;
+import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.user.client.ui.RootPanel;
 
 /**
@@ -53,14 +61,21 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
-public class CmsDnDListHandler extends A_CmsSortingDragHandler<CmsDnDListItem, CmsDnDList<CmsDnDListItem>> {
+public class CmsDnDListHandler extends A_CmsSortingDragHandler<CmsDnDListItem, CmsDnDList<CmsDnDListItem>>
+implements NativePreviewHandler {
 
     /** The handler manager. */
     protected HandlerManager m_handlerManager;
+
+    /** Mouse handler registrations. */
+    protected Map<CmsDnDListItem, List<HandlerRegistration>> m_handlerRegs;
+
+    /** The key event handler registration. */
+    private HandlerRegistration m_handleReg;
 
     /** The provisional drag parent. */
     private CmsDnDList<? extends CmsDnDListItem> m_provisionalParent;
@@ -71,6 +86,9 @@ public class CmsDnDListHandler extends A_CmsSortingDragHandler<CmsDnDListItem, C
     /** The source list of the draggable element. */
     private CmsDnDList<CmsDnDListItem> m_srcList;
 
+    /** The source position of the draggable element. */
+    private int m_srcPos;
+
     /**
      * Constructor.<p>
      */
@@ -79,8 +97,9 @@ public class CmsDnDListHandler extends A_CmsSortingDragHandler<CmsDnDListItem, C
         super();
         m_handlerManager = new HandlerManager(this);
         m_animationEnabled = true;
-        // TODO: the abstract generic dnd handler should not clear the targets every time!!! see #clearDrag
+        // the abstract generic dnd handler should not clear the targets every time!!! see #clearDrag
         m_targets = new ArrayList<CmsDnDList<CmsDnDListItem>>();
+        m_handlerRegs = new HashMap<CmsDnDListItem, List<HandlerRegistration>>();
     }
 
     /**
@@ -113,6 +132,99 @@ public class CmsDnDListHandler extends A_CmsSortingDragHandler<CmsDnDListItem, C
     }
 
     /**
+     * @see com.google.gwt.event.dom.client.MouseDownHandler#onMouseDown(com.google.gwt.event.dom.client.MouseDownEvent)
+     */
+    @Override
+    public void onMouseDown(MouseDownEvent event) {
+
+        if (event.getNativeButton() != NativeEvent.BUTTON_LEFT) {
+            // only act on left button down, ignore right click
+            return;
+        }
+        try {
+            m_dragElement = (CmsDnDListItem)event.getSource();
+        } catch (Exception e) {
+            // TODO: add logging
+        }
+        if ((m_dragElement == null) || !m_dragElement.isHandleEvent(event.getNativeEvent())) {
+            // drag element is not listening
+            return;
+        }
+
+        // let's drag
+        DOM.setCapture(m_dragElement.getElement());
+        m_dragging = true;
+        Document.get().getBody().addClassName(
+            org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.dragdropCss().dragStarted());
+        m_currentEvent = event;
+        m_cursorOffsetLeft = m_currentEvent.getRelativeX(m_dragElement.getElement());
+        m_cursorOffsetTop = m_currentEvent.getRelativeY(m_dragElement.getElement());
+
+        prepareElementForDrag();
+
+        positionElement();
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        // start key events handling
+        m_handleReg = Event.addNativePreviewHandler(this);
+    }
+
+    /**
+     * @see org.opencms.gwt.client.draganddrop.A_CmsDragHandler#onMouseUp(com.google.gwt.event.dom.client.MouseUpEvent)
+     */
+    @Override
+    public void onMouseUp(MouseUpEvent event) {
+
+        m_currentEvent = event;
+
+        if (!m_dragging) {
+            return;
+        }
+
+        switch (event.getNativeButton()) {
+            case NativeEvent.BUTTON_LEFT:
+                // try to execute the drop
+                stopDragging(event);
+                break;
+            default:
+                // otherwise cancel
+                cancelDragging();
+        }
+    }
+
+    /**
+     * @see com.google.gwt.user.client.Event.NativePreviewHandler#onPreviewNativeEvent(com.google.gwt.user.client.Event.NativePreviewEvent)
+     */
+    public void onPreviewNativeEvent(NativePreviewEvent event) {
+
+        Event nativeEvent;
+        try {
+            nativeEvent = Event.as(event.getNativeEvent());
+        } catch (Exception e) {
+            // sometimes in dev mode, and only in dev mode, we get
+            // "Found interface com.google.gwt.user.client.Event, but class was expected"
+            return;
+        }
+        if (event.getTypeInt() != Event.ONKEYUP) {
+            return;
+        }
+        if (m_dragging && (nativeEvent.getKeyCode() == 27)) {
+            cancelDragging();
+        }
+    }
+
+    /**
+     * @see org.opencms.gwt.client.draganddrop.I_CmsDragHandler#registerMouseHandler(org.opencms.gwt.client.draganddrop.I_CmsDragElement)
+     */
+    @Override
+    public void registerMouseHandler(CmsDnDListItem element) {
+
+        element.addMouseDownHandler(this);
+    }
+
+    /**
      * Removes the given target.<p>
      * 
      * @param target the target to remove
@@ -120,6 +232,20 @@ public class CmsDnDListHandler extends A_CmsSortingDragHandler<CmsDnDListItem, C
     public void removeDragTarget(CmsDnDList<CmsDnDListItem> target) {
 
         m_targets.remove(target);
+    }
+
+    /**
+     * Cancels dragging.<p>
+     */
+    protected void cancelDragging() {
+
+        // put the widget back to the source position
+        m_placeholder.removeFromParent();
+        m_srcList.insert(m_placeholder, m_srcPos);
+        // prevent drop action
+        m_currentTarget = null;
+        // update status and animate
+        stopDragging(null);
     }
 
     /**
@@ -139,7 +265,7 @@ public class CmsDnDListHandler extends A_CmsSortingDragHandler<CmsDnDListItem, C
             org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.dragdropCss().dragStarted());
         m_dragElement = null;
         m_placeholder = null;
-        // TODO: the abstract generic dnd handler should not clear the targets every time!!!, see ctor
+        // the abstract generic dnd handler should not clear the targets every time!!!, see ctor
         // m_targets = null;
         m_currentTarget = null;
     }
@@ -169,7 +295,8 @@ public class CmsDnDListHandler extends A_CmsSortingDragHandler<CmsDnDListItem, C
             elem.removeFromParent();
         }
 
-        registerMouseHandler(dragElement);
+        registerHandlersForDrag(dragElement);
+
         return dragElement;
     }
 
@@ -230,8 +357,12 @@ public class CmsDnDListHandler extends A_CmsSortingDragHandler<CmsDnDListItem, C
     protected void prepareElementForDrag() {
 
         m_currentTarget = (CmsDnDList<CmsDnDListItem>)m_dragElement.getDragParent();
+
+        // keep track of the drag source
         m_srcId = m_dragElement.getId();
         m_srcList = m_currentTarget;
+        m_srcPos = m_currentTarget.getWidgetIndex(m_dragElement);
+        // create the drag helper
         CmsDnDListItem clone = createDragClone(m_dragElement.getElement(), m_currentTarget);
 
         // we append the drag element to the body to prevent any kind of issues 
@@ -268,6 +399,38 @@ public class CmsDnDListHandler extends A_CmsSortingDragHandler<CmsDnDListItem, C
         m_placeholder.removeStyleName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragPlaceholder());
         m_provisionalParent.removeFromParent();
         m_provisionalParent = null;
+        m_handleReg.removeHandler();
+    }
+
+    /**
+     * Stops dragging.<p>
+     * 
+     * @param event the mouse up event, or <code>null</code> 
+     */
+    protected void stopDragging(MouseUpEvent event) {
+
+        m_dragging = false;
+        if (m_scrollTimer != null) {
+            m_scrollTimer.cancel();
+            m_scrollTimer = null;
+        }
+        List<HandlerRegistration> regList = m_handlerRegs.get(m_dragElement);
+        if (regList != null) {
+            for (HandlerRegistration reg : regList) {
+                reg.removeHandler();
+            }
+            regList.clear();
+        }
+        DOM.releaseCapture(m_dragElement.getElement());
+        if (event != null) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        if (m_animationEnabled) {
+            animateClear();
+        } else {
+            clearDrag();
+        }
     }
 
     /**
@@ -277,5 +440,27 @@ public class CmsDnDListHandler extends A_CmsSortingDragHandler<CmsDnDListItem, C
     protected void targetSortChangeAction() {
 
         // nothing to do
+    }
+
+    /**
+     * Registers the mouse handling on the helper for dragging.<p>
+     */
+    private void registerHandlersForDrag(CmsDnDListItem dragElement) {
+
+        List<HandlerRegistration> regList = m_handlerRegs.get(dragElement);
+        if (regList != null) {
+            for (HandlerRegistration reg : regList) {
+                reg.removeHandler();
+            }
+            regList.clear();
+        } else {
+            regList = new ArrayList<HandlerRegistration>();
+            m_handlerRegs.put(dragElement, regList);
+        }
+        regList.add(dragElement.addMouseMoveHandler(this));
+        regList.add(dragElement.addMouseUpHandler(this));
+        regList.add(dragElement.addMouseOutHandler(this));
+        regList.add(dragElement.addMouseOverHandler(this));
+        regList.add(dragElement.addContextMenuHandler(this));
     }
 }

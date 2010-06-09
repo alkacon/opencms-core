@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/tree/Attic/CmsDnDTreeHandler.java,v $
- * Date   : $Date: 2010/06/08 14:35:17 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/06/09 11:50:58 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,6 +38,7 @@ import org.opencms.gwt.client.ui.CmsDnDListItem;
 import java.util.Iterator;
 
 import com.google.gwt.dom.client.Style.Position;
+import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -46,7 +47,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -225,6 +226,19 @@ public class CmsDnDTreeHandler extends CmsDnDListHandler {
             return;
         }
         resetItemOver();
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.CmsDnDListHandler#stopDragging(com.google.gwt.event.dom.client.MouseUpEvent)
+     */
+    @Override
+    protected void stopDragging(MouseUpEvent event) {
+
+        if ((event == null) && (m_overItem != null)) {
+            // if canceled, reset the hovering item 
+            resetItemOver();
+        }
+        super.stopDragging(event);
     }
 
     /**
