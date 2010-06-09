@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/tree/Attic/CmsDnDTreeHandler.java,v $
- * Date   : $Date: 2010/06/09 11:50:58 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/06/09 13:19:35 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -215,13 +215,18 @@ public class CmsDnDTreeHandler extends CmsDnDListHandler {
                 }
             } else {
                 // the mouse pointer is within the middle section of the element
-                if (m_overItem != child) {
-                    // only act if the place-holder index has to be changed
-                    targetSortChangeAction();
-                    m_placeholder.setVisible(false);
-                    m_overItem = item;
-                    m_overItem.onDragOverIn();
+                if (m_overItem == child) {
+                    // is the same
+                    return;
                 }
+                if (!item.onDragOverIn()) {
+                    // we are not allowed to drag over the item
+                    return;
+                }
+                // we will be dropping on an item
+                targetSortChangeAction();
+                m_placeholder.setVisible(false);
+                m_overItem = item;
             }
             return;
         }

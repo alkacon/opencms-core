@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsDnDListHandler.java,v $
- * Date   : $Date: 2010/06/09 11:50:58 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/06/09 13:19:35 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -150,6 +150,10 @@ implements NativePreviewHandler {
             // drag element is not listening
             return;
         }
+        if (!canDragNow()) {
+            m_dragElement = null;
+            return;
+        }
 
         // let's drag
         DOM.setCapture(m_dragElement.getElement());
@@ -180,6 +184,11 @@ implements NativePreviewHandler {
         m_currentEvent = event;
 
         if (!m_dragging) {
+            return;
+        }
+        if (!canDropNow()) {
+            // cancel we are not allowed drop now
+            cancelDragging();
             return;
         }
 
@@ -246,6 +255,26 @@ implements NativePreviewHandler {
         m_currentTarget = null;
         // update status and animate
         stopDragging(null);
+    }
+
+    /**
+     * Checks if the current drag element can be dragged at all before starting.<p>
+     * 
+     * @return <code>true</code> if the current drag element can be dragged now
+     */
+    protected boolean canDragNow() {
+
+        return true;
+    }
+
+    /**
+     * Checks if the current dragged element can be dropped at all.<p>
+     * 
+     * @return <code>true</code> if the current dragged element can be dropped now
+     */
+    protected boolean canDropNow() {
+
+        return true;
     }
 
     /**

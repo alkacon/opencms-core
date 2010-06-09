@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/tree/Attic/CmsDnDTreeItem.java,v $
- * Date   : $Date: 2010/06/08 14:35:17 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/06/09 13:19:35 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,7 +69,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Georg Westenberger
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  */
@@ -406,12 +406,16 @@ public class CmsDnDTreeItem extends CmsDnDListItem {
 
     /**
      * Will be executed when the user drags something over this item.<p>
+     * 
+     * Will also check that drop over is allowed
+     * 
+     * @return <code>true</code> if drop over is allowed
      */
-    public void onDragOverIn() {
+    public boolean onDragOverIn() {
 
         getListItemWidget().getContentPanel().addStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().itemActive());
         if (isOpen()) {
-            return;
+            return true;
         }
         m_timer = new Timer() {
 
@@ -426,6 +430,7 @@ public class CmsDnDTreeItem extends CmsDnDListItem {
             }
         };
         m_timer.schedule(1000);
+        return true;
     }
 
     /**

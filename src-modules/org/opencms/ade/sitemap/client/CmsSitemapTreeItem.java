@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapTreeItem.java,v $
- * Date   : $Date: 2010/06/08 09:01:21 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2010/06/09 13:19:35 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 8.0.0
  * 
@@ -66,33 +66,32 @@ public class CmsSitemapTreeItem extends CmsDnDLazyTreeItem {
     /** The CSS bundle used by this widget. */
     private static final I_CmsSitemapItemCss CSS = I_CmsLayoutBundle.INSTANCE.sitemapItemCss();
 
+    /** The current sitemap entry. */
+    private CmsClientSitemapEntry m_entry;
+
     /** The list item widget of this item. */
     private CmsListItemWidget m_listItemWidget;
 
     /** The original site path. */
     private String m_originalPath;
 
-    /** The current site path. */
-    private String m_sitePath;
-
     /**
      * Default constructor.<p>
      * 
      * @param widget the widget to use
-     * @param sitePath the site path
+     * @param entry the sitemap entry
+     * @param oriSitePath the original site path
      */
-    public CmsSitemapTreeItem(CmsListItemWidget widget, String sitePath) {
+    public CmsSitemapTreeItem(CmsListItemWidget widget, CmsClientSitemapEntry entry, String oriSitePath) {
 
         super(widget);
-        String name = CmsResource.getName(sitePath);
-        if (name.endsWith("/")) {
-            name = name.substring(0, name.length() - 1);
-        }
-        setId(name);
         m_decoratedPanel.addDecorationBoxStyle(CSS.sitemapEntryDecoration());
         m_listItemWidget = widget;
-        m_originalPath = sitePath;
-        m_sitePath = sitePath;
+        m_originalPath = oriSitePath;
+        m_entry = entry;
+        setId(getName(entry.getSitePath()));
+        updateSitePath(entry.getSitePath());
+        updateSitemapReferenceStatus(entry);
     }
 
     /**
@@ -135,7 +134,7 @@ public class CmsSitemapTreeItem extends CmsDnDLazyTreeItem {
      */
     public String getSitePath() {
 
-        return m_sitePath;
+        return m_entry.getSitePath();
     }
 
     /**
@@ -181,15 +180,31 @@ public class CmsSitemapTreeItem extends CmsDnDLazyTreeItem {
     }
 
     /**
+     * @see org.opencms.gwt.client.ui.tree.CmsDnDTreeItem#onDragOverIn()
+     */
+    @Override
+    public boolean onDragOverIn() {
+
+        if (m_entry.getProperties().containsKey(CmsSitemapManager.Property.sitemap)) {
+            // prevent dropping into a subsitemap driven entry
+            return false;
+        }
+        return super.onDragOverIn();
+    }
+
+    /**
      * @see com.google.gwt.user.client.ui.UIObject#toString()
      */
     @Override
     public String toString() {
 
         StringBuffer sb = new StringBuffer();
-        sb.append(m_sitePath).append("\n");
+        sb.append(m_entry.getSitePath()).append("\n");
         for (int i = 0; i < getChildCount(); i++) {
             CmsDnDTreeItem child = getChild(i);
+            if (child instanceof CmsDnDLazyTreeItem.LoadingItem) {
+                continue;
+            }
             sb.append(child.toString());
         }
         return sb.toString();
@@ -202,23 +217,11 @@ public class CmsSitemapTreeItem extends CmsDnDLazyTreeItem {
      */
     public void updateEntry(CmsClientSitemapEntry entry) {
 
+        // since we keep a reference to the same entry we do not have to update it
         m_listItemWidget.setTitleLabel(entry.getTitle());
         m_listItemWidget.setAdditionalInfoValue(1, entry.getVfsPath());
         m_listItemWidget.updateTruncation();
         updateSitemapReferenceStatus(entry);
-    }
-
-    /**
-     * Changes the look of this widget if the entry passed as a parameter has a reference to a sub-sitemap.<p>
-     * 
-     * @param entry the entry which should be checked 
-     */
-    public void updateSitemapReferenceStatus(CmsClientSitemapEntry entry) {
-
-        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(entry.getProperties().get(CmsSitemapManager.Property.sitemap.name()))) {
-            String style = CSS.subSitemapRef();
-            m_listItemWidget.getContentPanel().addStyleName(style);
-        }
     }
 
     /**
@@ -228,16 +231,12 @@ public class CmsSitemapTreeItem extends CmsDnDLazyTreeItem {
      */
     public void updateSitePath(String sitePath) {
 
-        if (m_sitePath.equals(sitePath)) {
+        if (m_listItemWidget.getSubtitleLabel().equals(sitePath)) {
             // nothing to do
             return;
         }
-        m_sitePath = sitePath;
         m_listItemWidget.setSubtitleLabel(sitePath);
-        String name = CmsResource.getName(sitePath);
-        if (name.endsWith("/")) {
-            name = name.substring(0, name.length() - 1);
-        }
+        String name = getName(sitePath);
         setId(name);
         m_listItemWidget.setAdditionalInfoValue(0, name);
         if (getLoadState() == LoadState.LOADED) {
@@ -247,6 +246,36 @@ public class CmsSitemapTreeItem extends CmsDnDLazyTreeItem {
             }
         }
         m_listItemWidget.updateTruncation();
+    }
+
+    /**
+     * Return the name of this item, which can differ from the entry name for root nodes.<p>
+     * 
+     * @param sitePath the sitemap entry's site path 
+     * 
+     * @return the name
+     */
+    protected String getName(String sitePath) {
+
+        String name = CmsResource.getName(sitePath);
+        if (name.endsWith("/")) {
+            name = name.substring(0, name.length() - 1);
+        }
+        return name;
+    }
+
+    /**
+     * Changes the look of this widget if the entry passed as a parameter has a reference to a sub-sitemap.<p>
+     * 
+     * @param entry the entry which should be checked 
+     */
+    protected void updateSitemapReferenceStatus(CmsClientSitemapEntry entry) {
+
+        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(entry.getProperties().get(CmsSitemapManager.Property.sitemap.name()))) {
+            m_listItemWidget.getContentPanel().addStyleName(CSS.subSitemapRef());
+        } else {
+            m_listItemWidget.getContentPanel().removeStyleName(CSS.subSitemapRef());
+        }
     }
 
     /**

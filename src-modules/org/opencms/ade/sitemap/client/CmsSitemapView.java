@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapView.java,v $
- * Date   : $Date: 2010/06/08 14:35:17 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2010/06/09 13:19:35 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,6 +53,7 @@ import org.opencms.gwt.client.ui.CmsToolbarPlaceHolder;
 import org.opencms.gwt.client.ui.tree.A_CmsDnDDeepLazyOpenHandler;
 import org.opencms.gwt.client.ui.tree.CmsDnDLazyTree;
 import org.opencms.gwt.client.ui.tree.CmsDnDTreeDropEvent;
+import org.opencms.gwt.client.ui.tree.CmsDnDTreeHandler;
 import org.opencms.gwt.client.ui.tree.CmsDnDTreeItem;
 import org.opencms.gwt.client.ui.tree.I_CmsDnDTreeDropHandler;
 import org.opencms.gwt.client.util.CmsDomUtil;
@@ -73,7 +74,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 8.0.0
  */
@@ -111,15 +112,13 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler, NativePreviewHand
         infoBean.addAdditionalInfo(Messages.get().key(Messages.GUI_NAME_0), entry.getName());
         infoBean.addAdditionalInfo(Messages.get().key(Messages.GUI_VFS_PATH_0), entry.getVfsPath());
         CmsListItemWidget itemWidget = new CmsListItemWidget(infoBean);
-        CmsSitemapTreeItem treeItem = new CmsSitemapTreeItem(itemWidget, originalPath);
-        treeItem.updateSitePath(entry.getSitePath());
+        CmsSitemapTreeItem treeItem = new CmsSitemapTreeItem(itemWidget, entry, originalPath);
         if (m_controller.isEditable()) {
             if (m_hoverbar == null) {
                 m_hoverbar = new CmsSitemapHoverbar(m_controller);
             }
             m_hoverbar.installOn(m_controller, treeItem);
         }
-        treeItem.updateSitemapReferenceStatus(entry);
         return treeItem;
     }
 
@@ -268,6 +267,21 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler, NativePreviewHand
                     m_controller.getEntry(e.getSrcPath()),
                     item.getPath(),
                     item.getParentItem().getItemPosition(item));
+            }
+        });
+        m_tree.setDnDHandler(new CmsDnDTreeHandler() {
+
+            /**
+             * @see org.opencms.gwt.client.ui.CmsDnDListHandler#canDropNow()
+             */
+            @Override
+            protected boolean canDropNow() {
+
+                boolean cancel = !m_controller.isDirty();
+                cancel &= !CmsCoreProvider.get().lockAndCheckModification(
+                    CmsCoreProvider.get().getUri(),
+                    m_controller.getData().getTimestamp());
+                return !cancel;
             }
         });
         m_tree.setDnDEnabled(true);
