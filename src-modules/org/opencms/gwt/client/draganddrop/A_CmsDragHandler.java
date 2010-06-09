@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/draganddrop/Attic/A_CmsDragHandler.java,v $
- * Date   : $Date: 2010/06/01 12:08:52 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2010/06/09 09:52:40 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,6 @@ import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.event.shared.EventHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Timer;
@@ -66,7 +65,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * 
  * @since 8.0.0
  */
@@ -213,9 +212,6 @@ implements I_CmsDragHandler<E, T> {
     /** Flag to indicate if the dragging has started. */
     protected boolean m_dragging;
 
-    /** List of handler registrations. */
-    protected List<HandlerRegistration> m_handlerRegistrations;
-
     /** Flag if automatic scrolling is enabled. */
     protected boolean m_isScrollEnabled;
 
@@ -339,7 +335,6 @@ implements I_CmsDragHandler<E, T> {
 
         m_currentEvent = event;
         if (m_dragging) {
-
             checkTargets();
             positionElement();
             event.preventDefault();
@@ -347,7 +342,6 @@ implements I_CmsDragHandler<E, T> {
 
             scrollAction();
         }
-
     }
 
     /**
@@ -462,7 +456,7 @@ implements I_CmsDragHandler<E, T> {
     }
 
     /**
-     * Method will check all registered drag targets if the element is positioned over one of them. 
+     * Method will check all registered drag targets if the element is positioned over one of them.<p>
      */
     protected void checkTargets() {
 
