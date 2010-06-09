@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/rpc/Attic/I_CmsSitemapServiceAsync.java,v $
- * Date   : $Date: 2010/06/08 14:42:16 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2010/06/09 12:13:03 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 8.0.0
  * 
@@ -56,15 +56,6 @@ import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
  * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapServiceAsync
  */
 public interface I_CmsSitemapServiceAsync {
-
-    /**
-     * Creates a new sub-sitemap resource from the given sitemap and path.<p>
-     * 
-     * @param sitemapUri the super sitemap URI
-     * @param path the starting path
-     * @param callback the async callback
-     */
-    void createSubsitemap(String sitemapUri, String path, AsyncCallback<CmsSubSitemapInfo> callback);
 
     /**
      * Executed when leaving the page.<p>
@@ -115,10 +106,23 @@ public interface I_CmsSitemapServiceAsync {
      * 
      * @param sitemapUri the sitemap URI 
      * @param changes the changes to save
-     * @param unlockAfterSave if true, unlocks the sitemap after saving it 
      * @param callback the async callback
      */
-    void save(String sitemapUri, List<I_CmsSitemapChange> changes, boolean unlockAfterSave, AsyncCallback<Long> callback);
+    void save(String sitemapUri, List<I_CmsSitemapChange> changes, AsyncCallback<Long> callback);
+
+    /**
+     * Saves a list of changes to a sitemap and then creates a sub-sitemap of the given sitemap starting from a path.<p>
+     * 
+     * @param sitemapUri the URI of the parent sitemap 
+     * @param changes the changes which should be applied to the parent sitemap 
+     * @param path the path in the parent sitemap from which the sub-sitemap should be created
+     * @param callback the async callback  
+     */
+    void saveAndCreateSubSitemap(
+        String sitemapUri,
+        List<I_CmsSitemapChange> changes,
+        String path,
+        AsyncCallback<CmsSubSitemapInfo> callback);
 
     /**
      * Saves the changes to the given sitemap.<p>

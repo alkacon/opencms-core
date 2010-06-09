@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsSitemapService.java,v $
- * Date   : $Date: 2010/06/08 14:42:15 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2010/06/09 12:13:03 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -83,7 +83,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 8.0.0
  * 
@@ -112,42 +112,6 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
         srv.setCms(CmsFlexController.getCmsObject(request));
         srv.setRequest(request);
         return srv;
-    }
-
-    /**
-     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#createSubsitemap(java.lang.String, java.lang.String)
-     */
-    public CmsSubSitemapInfo createSubsitemap(String sitemapUri, String path) throws CmsRpcException {
-
-        try {
-            CmsObject cms = getCmsObject();
-            // TODO: what about historical requests?
-            CmsInternalSitemapEntry entry = (CmsInternalSitemapEntry)OpenCms.getSitemapManager().getEntryForUri(
-                getCmsObject(),
-                path);
-
-            // get the content of the sub sitemap in the form of a list of changes 
-            List<I_CmsSitemapChange> subSitemapChanges = getChangesForSubSitemap(entry);
-
-            // create the actual sub-sitemap and fill it
-            CmsResource subSitemapRes = createNewSitemap(sitemapUri);
-            String subSitemapUri = cms.getSitePath(subSitemapRes);
-            save(subSitemapUri, subSitemapChanges, true);
-
-            // remove the entries which now belong to the sub-sitemap from the parent sitemap, 
-            // and update the sub-sitemap's parent element in the parent sitemap by setting its
-            // sitemap property to the resource id of the sub-sitemap 
-            List<I_CmsSitemapChange> parentSitemapChanges = getChangesForParentOfSubSitemap(entry, subSitemapRes);
-            long timestamp = save(sitemapUri, parentSitemapChanges, true);
-
-            String sitemapVfsPath = cms.getRequestContext().removeSiteRoot(subSitemapRes.getRootPath());
-            return new CmsSubSitemapInfo(sitemapVfsPath, timestamp);
-
-        } catch (Throwable e) {
-            error(e);
-        }
-        // we can never reach this point
-        return null;
     }
 
     /**
@@ -284,31 +248,41 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
     }
 
     /**
-     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#save(java.lang.String, java.util.List, boolean)
+     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#save(java.lang.String, java.util.List)
      */
-    public long save(String sitemapUri, List<I_CmsSitemapChange> changes, boolean unlockAfterSave)
-    throws CmsRpcException {
+    public long save(String sitemapUri, List<I_CmsSitemapChange> changes) throws CmsRpcException {
 
-        long timestamp = 0;
-        CmsObject cms = getCmsObject();
         try {
-            // TODO: what's about historical requests?
-            CmsResource sitemap = cms.readResource(sitemapUri);
-            CmsXmlSitemap xml = CmsXmlSitemapFactory.unmarshal(cms, sitemap);
-            // apply changes
-            xml.applyChanges(cms, changes);
-            // write to VFS
-            xml.getFile().setContents(xml.marshal());
-            cms.writeFile(xml.getFile());
-            // and unlock
-            if (unlockAfterSave) {
-                cms.unlockResource(sitemapUri);
-            }
-            timestamp = cms.readResource(sitemap.getStructureId()).getDateLastModified();
+            return saveInternal(sitemapUri, changes, true);
         } catch (Throwable e) {
             error(e);
         }
-        return timestamp;
+        return 0;
+    }
+
+    /**
+     * Saves a list of changes to a sitemap and then creates a sub-sitemap of the given sitemap starting from a path.<p>
+     * 
+     * @param sitemapUri the URI of the parent sitemap 
+     * @param changes the changes which should be applied to the parent sitemap 
+     * @param path the path in the parent sitemap from which the sub-sitemap should be created 
+     * 
+     * @return the sub-sitemap creation result 
+     * 
+     * @throws CmsRpcException if something goes wrong 
+     */
+    public CmsSubSitemapInfo saveAndCreateSubSitemap(String sitemapUri, List<I_CmsSitemapChange> changes, String path)
+    throws CmsRpcException {
+
+        try {
+            // don't unlock the sitemap because createSubSitemap still needs to modify it  
+            saveInternal(sitemapUri, changes, false);
+
+            return createSubSitemap(sitemapUri, path);
+        } catch (Throwable e) {
+            error(e);
+        }
+        return null; // we never reach this line 
     }
 
     /**
@@ -316,7 +290,40 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
      */
     public long saveSync(String sitemapUri, List<I_CmsSitemapChange> changes) throws CmsRpcException {
 
-        return save(sitemapUri, changes, true);
+        return save(sitemapUri, changes);
+    }
+
+    /**
+     * Internal method for saving a sitemap.<p>
+     * 
+     * @param sitemapUri the URI of the sitemap to save
+     * @param changes the changes which should be saved
+     * @param unlockAfterSave if true, the sitemap will be unlocked after saving
+     * 
+     * @return the timestamp of the time when the sitemap was saved 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    protected long saveInternal(String sitemapUri, List<I_CmsSitemapChange> changes, boolean unlockAfterSave)
+    throws CmsException {
+
+        long timestamp = 0;
+        CmsObject cms = getCmsObject();
+
+        // TODO: what's about historical requests?
+        CmsResource sitemap = cms.readResource(sitemapUri);
+        CmsXmlSitemap xml = CmsXmlSitemapFactory.unmarshal(cms, sitemap);
+        // apply changes
+        xml.applyChanges(cms, changes);
+        // write to VFS
+        xml.getFile().setContents(xml.marshal());
+        cms.writeFile(xml.getFile());
+        // and unlock
+        if (unlockAfterSave) {
+            cms.unlockResource(sitemapUri);
+        }
+        timestamp = cms.readResource(sitemap.getStructureId()).getDateLastModified();
+        return timestamp;
     }
 
     /**
@@ -378,6 +385,49 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
         CmsObject cms = getCmsObject();
         CmsSitemapManager manager = OpenCms.getSitemapManager();
         return manager.createNewElement(cms, sitemapUri, getRequest(), CmsResourceTypeXmlSitemap.getStaticTypeName());
+    }
+
+    /**
+     * Creates a new sub-sitemap resource from the given sitemap and path.<p>
+     * 
+     * @param sitemapUri the super sitemap URI
+     * @param path the starting path
+     * 
+     * @return the sub-sitemap creation result 
+     * 
+     * @throws CmsRpcException if something goes wrong 
+     */
+    private CmsSubSitemapInfo createSubSitemap(String sitemapUri, String path) throws CmsRpcException {
+
+        try {
+            CmsObject cms = getCmsObject();
+            // TODO: what about historical requests?
+            CmsInternalSitemapEntry entry = (CmsInternalSitemapEntry)OpenCms.getSitemapManager().getEntryForUri(
+                getCmsObject(),
+                path);
+
+            // get the content of the sub sitemap in the form of a list of changes 
+            List<I_CmsSitemapChange> subSitemapChanges = getChangesForSubSitemap(entry);
+
+            // create the actual sub-sitemap and fill it
+            CmsResource subSitemapRes = createNewSitemap(sitemapUri);
+            String subSitemapUri = cms.getSitePath(subSitemapRes);
+            saveInternal(subSitemapUri, subSitemapChanges, true);
+
+            // remove the entries which now belong to the sub-sitemap from the parent sitemap, 
+            // and update the sub-sitemap's parent element in the parent sitemap by setting its
+            // sitemap property to the resource id of the sub-sitemap 
+            List<I_CmsSitemapChange> parentSitemapChanges = getChangesForParentOfSubSitemap(entry, subSitemapRes);
+            long timestamp = saveInternal(sitemapUri, parentSitemapChanges, true);
+
+            String sitemapVfsPath = cms.getRequestContext().removeSiteRoot(subSitemapRes.getRootPath());
+            return new CmsSubSitemapInfo(sitemapVfsPath, timestamp);
+
+        } catch (Throwable e) {
+            error(e);
+        }
+        // we can never reach this point
+        return null;
     }
 
     /**

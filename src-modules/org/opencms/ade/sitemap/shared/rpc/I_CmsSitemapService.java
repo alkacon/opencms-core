@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/rpc/Attic/I_CmsSitemapService.java,v $
- * Date   : $Date: 2010/06/08 14:42:16 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2010/06/09 12:13:03 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 8.0.0
  * 
@@ -59,18 +59,6 @@ import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
  */
 @RemoteServiceRelativePath("org.opencms.ade.sitemap.CmsSitemapService.gwt")
 public interface I_CmsSitemapService extends RemoteService {
-
-    /**
-     * Creates a new sub-sitemap resource from the given sitemap and path.<p>
-     * 
-     * @param sitemapUri the super sitemap URI
-     * @param path the starting path
-     * 
-     * @return the new created sub-sitemap URI
-     * 
-     * @throws CmsRpcException if something goes wrong 
-     */
-    CmsSubSitemapInfo createSubsitemap(String sitemapUri, String path) throws CmsRpcException;
 
     /**
      * Executed when leaving the page.<p>
@@ -133,13 +121,26 @@ public interface I_CmsSitemapService extends RemoteService {
      * 
      * @param sitemapUri the sitemap URI 
      * @param changes the changes to save
-     * @param unlockAfterSave if true, unlocks the sitemap after saving it 
      * 
      * @return the new timestamp
      * 
      * @throws CmsRpcException if something goes wrong 
      */
-    long save(String sitemapUri, List<I_CmsSitemapChange> changes, boolean unlockAfterSave) throws CmsRpcException;
+    long save(String sitemapUri, List<I_CmsSitemapChange> changes) throws CmsRpcException;
+
+    /**
+     * Saves a list of changes to a sitemap and then creates a sub-sitemap of the given sitemap starting from a path.<p>
+     * 
+     * @param sitemapUri the URI of the parent sitemap 
+     * @param changes the changes which should be applied to the parent sitemap 
+     * @param path the path in the parent sitemap from which the sub-sitemap should be created 
+     * 
+     * @return the sub-sitemap creation result 
+     * 
+     * @throws CmsRpcException if something goes wrong 
+     */
+    CmsSubSitemapInfo saveAndCreateSubSitemap(String sitemapUri, List<I_CmsSitemapChange> changes, String path)
+    throws CmsRpcException;
 
     /**
      * Saves the changes to the given sitemap.<p>
