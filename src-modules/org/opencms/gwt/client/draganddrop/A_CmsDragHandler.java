@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/draganddrop/Attic/A_CmsDragHandler.java,v $
- * Date   : $Date: 2010/06/09 09:52:40 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2010/06/10 12:56:28 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,6 @@ import com.google.gwt.event.dom.client.MouseMoveEvent;
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseUpEvent;
-import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Timer;
@@ -65,7 +64,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * 
  * @since 8.0.0
  */
@@ -194,9 +193,6 @@ implements I_CmsDragHandler<E, T> {
     /** Animation enabled flag. */
     protected boolean m_animationEnabled;
 
-    /** The current mouse event. */
-    protected MouseEvent<? extends EventHandler> m_currentEvent;
-
     /** The current drag target. */
     protected T m_currentTarget;
 
@@ -227,6 +223,10 @@ implements I_CmsDragHandler<E, T> {
     /** The list of all registered targets. */
     protected List<T> m_targets;
 
+    private int m_clientX;
+
+    private int m_clientY;
+
     /**
      * @see org.opencms.gwt.client.draganddrop.I_CmsDragHandler#addDragTarget(org.opencms.gwt.client.draganddrop.I_CmsDragTarget)
      */
@@ -234,14 +234,6 @@ implements I_CmsDragHandler<E, T> {
 
         m_targets.add(target);
 
-    }
-
-    /**
-     * @see org.opencms.gwt.client.draganddrop.I_CmsDragHandler#getCurrentMouseEvent()
-     */
-    public MouseEvent<? extends EventHandler> getCurrentMouseEvent() {
-
-        return m_currentEvent;
     }
 
     /**
@@ -258,6 +250,37 @@ implements I_CmsDragHandler<E, T> {
     public E getDragElement() {
 
         return m_dragElement;
+    }
+
+    /**
+     * Gets the mouse x-position relative to a given element.<p>
+     * 
+     * @param target the element whose coordinate system is to be used
+     * 
+     * @return the relative x-position
+     * 
+     * @see MouseEvent#getRelativeX(com.google.gwt.dom.client.Element)
+     */
+    public int getRelativeX(Element target) {
+
+        return m_clientX
+            - target.getAbsoluteLeft()
+            + target.getScrollLeft()
+            + target.getOwnerDocument().getScrollLeft();
+    }
+
+    /**
+     * Gets the mouse y-position relative to a given element.<p>
+     * 
+     * @param target the element whose coordinate system is to be used
+     * 
+     * @return the relative y-position
+     * 
+     * @see MouseEvent#getRelativeY(com.google.gwt.dom.client.Element)
+     */
+    public int getRelativeY(Element target) {
+
+        return m_clientY - target.getAbsoluteTop() + target.getScrollTop() + target.getOwnerDocument().getScrollTop();
     }
 
     /**
@@ -316,9 +339,9 @@ implements I_CmsDragHandler<E, T> {
         m_dragging = true;
         Document.get().getBody().addClassName(
             org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.dragdropCss().dragStarted());
-        m_currentEvent = event;
-        m_cursorOffsetLeft = m_currentEvent.getRelativeX(m_dragElement.getElement());
-        m_cursorOffsetTop = m_currentEvent.getRelativeY(m_dragElement.getElement());
+        storeEventPos(event);
+        m_cursorOffsetLeft = getRelativeX(m_dragElement.getElement());
+        m_cursorOffsetTop = getRelativeY(m_dragElement.getElement());
 
         prepareElementForDrag();
 
@@ -333,7 +356,7 @@ implements I_CmsDragHandler<E, T> {
      */
     public void onMouseMove(MouseMoveEvent event) {
 
-        m_currentEvent = event;
+        storeEventPos(event);
         if (m_dragging) {
             checkTargets();
             positionElement();
@@ -371,7 +394,7 @@ implements I_CmsDragHandler<E, T> {
      */
     public void onMouseUp(MouseUpEvent event) {
 
-        m_currentEvent = event;
+        storeEventPos(event);
 
         // only act on left button up, ignore right click
         if (m_dragging && (event.getNativeButton() == NativeEvent.BUTTON_LEFT)) {
@@ -469,13 +492,13 @@ implements I_CmsDragHandler<E, T> {
             Element element = target.getElement();
 
             // check if the mouse pointer is within the width of the target 
-            int left = m_currentEvent.getRelativeX(element);
+            int left = getRelativeX(element);
             if ((left <= 0) || (left >= element.getOffsetWidth())) {
                 continue;
             }
 
             // check if the mouse pointer is within the height of the target 
-            int top = m_currentEvent.getRelativeY(element);
+            int top = getRelativeY(element);
             if ((top <= 0) || (top >= element.getOffsetHeight())) {
                 continue;
             }
@@ -544,8 +567,8 @@ implements I_CmsDragHandler<E, T> {
     protected void positionElement() {
 
         Element parentElement = (Element)m_dragElement.getElement().getParentElement();
-        int left = m_currentEvent.getRelativeX(parentElement) - m_cursorOffsetLeft;
-        int top = m_currentEvent.getRelativeY(parentElement) - m_cursorOffsetTop;
+        int left = getRelativeX(parentElement) - m_cursorOffsetLeft;
+        int top = getRelativeY(parentElement) - m_cursorOffsetTop;
         DOM.setStyleAttribute(m_dragElement.getElement(), "left", left + "px");
         DOM.setStyleAttribute(m_dragElement.getElement(), "top", top + "px");
     }
@@ -569,7 +592,7 @@ implements I_CmsDragHandler<E, T> {
 
         if (m_isScrollEnabled) {
 
-            Direction direction = getScrollDirection(m_currentEvent, 100);
+            Direction direction = getScrollDirection(100);
             if ((m_scrollTimer != null) && (m_scrollDirection != direction)) {
                 m_scrollTimer.cancel();
                 m_scrollTimer = null;
@@ -589,6 +612,17 @@ implements I_CmsDragHandler<E, T> {
     protected abstract void sortTarget();
 
     /**
+     * Stores the event position.<p>
+     * 
+     * @param event the event to store the position for
+     */
+    protected void storeEventPos(MouseEvent<?> event) {
+
+        m_clientX = event.getClientX();
+        m_clientY = event.getClientY();
+    }
+
+    /**
      * Method executed when the widget order within the current target has been changed.<p> 
      */
     protected abstract void targetSortChangeAction();
@@ -596,21 +630,20 @@ implements I_CmsDragHandler<E, T> {
     /**
      * Convenience method to get the appropriate scroll direction.<p>
      * 
-     * @param event the mouse event indicating the cursor position
      * @param offset the scroll parent border offset, if the cursor is within the border offset, scrolling should be triggered
      * 
      * @return the scroll direction
      */
-    private Direction getScrollDirection(MouseEvent<?> event, int offset) {
+    private Direction getScrollDirection(int offset) {
 
         Element body = RootPanel.getBodyElement();
         int windowHeight = Window.getClientHeight();
         int bodyHeight = body.getClientHeight();
         if (windowHeight < bodyHeight) {
-            if ((windowHeight - event.getClientY() < offset) && (Window.getScrollTop() < bodyHeight - windowHeight)) {
+            if ((windowHeight - m_clientY < offset) && (Window.getScrollTop() < bodyHeight - windowHeight)) {
                 return Direction.down;
             }
-            if ((event.getClientY() < offset) && (Window.getScrollTop() > 0)) {
+            if ((m_clientY < offset) && (Window.getScrollTop() > 0)) {
                 return Direction.up;
             }
         }
@@ -618,10 +651,10 @@ implements I_CmsDragHandler<E, T> {
         int windowWidth = Window.getClientWidth();
         int bodyWidth = body.getClientWidth();
         if (windowWidth < bodyWidth) {
-            if ((windowWidth - event.getClientX() < offset) && (Window.getScrollLeft() < bodyWidth - windowWidth)) {
+            if ((windowWidth - m_clientX < offset) && (Window.getScrollLeft() < bodyWidth - windowWidth)) {
                 return Direction.right;
             }
-            if ((event.getClientX() < offset) && (Window.getScrollLeft() > 0)) {
+            if ((m_clientX < offset) && (Window.getScrollLeft() > 0)) {
                 return Direction.left;
             }
         }

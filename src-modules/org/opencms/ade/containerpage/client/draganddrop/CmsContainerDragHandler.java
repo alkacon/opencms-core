@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsContainerDragHandler.java,v $
- * Date   : $Date: 2010/06/01 12:08:21 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2010/06/10 12:56:28 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,7 +68,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  * 
  * @since 8.0.0
  */
@@ -430,11 +430,10 @@ extends A_CmsSortingDragHandler<I_CmsDragContainerElement<I_CmsDragTargetContain
 
         Element element = m_current.getDraggable().getElement();
         Element parentElement = (Element)element.getParentElement();
-        int left = m_currentEvent.getRelativeX(parentElement) - m_current.getOffsetLeft();
-        int top = m_currentEvent.getRelativeY(parentElement) - m_current.getOffsetTop();
+        int left = getRelativeX(parentElement) - m_current.getOffsetLeft();
+        int top = getRelativeY(parentElement) - m_current.getOffsetTop();
         DOM.setStyleAttribute(element, "left", left + "px");
         DOM.setStyleAttribute(element, "top", top + "px");
-
     }
 
     /**

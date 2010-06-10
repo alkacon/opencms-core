@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/draganddrop/Attic/A_CmsSortingDragHandler.java,v $
- * Date   : $Date: 2010/05/05 09:19:16 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/06/10 12:56:28 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -72,13 +72,13 @@ extends A_CmsDragHandler<E, T> {
             }
 
             // check if the mouse pointer is within the width of the element 
-            int left = m_currentEvent.getRelativeX(element);
+            int left = getRelativeX(element);
             if ((left <= 0) || (left >= element.getOffsetWidth())) {
                 continue;
             }
 
             // check if the mouse pointer is within the height of the element 
-            int top = m_currentEvent.getRelativeY(element);
+            int top = getRelativeY(element);
             int height = element.getOffsetHeight();
             if ((top <= 0) || (top >= height)) {
                 continue;

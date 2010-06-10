@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/draganddrop/Attic/I_CmsDragHandler.java,v $
- * Date   : $Date: 2010/05/05 09:19:16 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/06/10 12:56:28 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,12 +38,10 @@ import java.util.List;
 
 import com.google.gwt.event.dom.client.ContextMenuHandler;
 import com.google.gwt.event.dom.client.MouseDownHandler;
-import com.google.gwt.event.dom.client.MouseEvent;
 import com.google.gwt.event.dom.client.MouseMoveHandler;
 import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.event.dom.client.MouseUpHandler;
-import com.google.gwt.event.shared.EventHandler;
 
 /**
  * Interface to be implemented by drag and drop handlers.<p>
@@ -53,7 +51,7 @@ import com.google.gwt.event.shared.EventHandler;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -66,13 +64,6 @@ extends MouseDownHandler, MouseUpHandler, MouseMoveHandler, MouseOverHandler, Mo
      * @param target a drag and drop target 
      */
     void addDragTarget(T target);
-
-    /**
-     * Returns the current mouse event.<p>
-     * 
-     * @return the mouse event
-     */
-    MouseEvent<? extends EventHandler> getCurrentMouseEvent();
 
     /**
      * Returns the current target, the target the dragged element is currently over and the placeholder is shown in.<p>
