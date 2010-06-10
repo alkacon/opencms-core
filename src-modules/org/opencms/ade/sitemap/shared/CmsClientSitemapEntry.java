@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsClientSitemapEntry.java,v $
- * Date   : $Date: 2010/05/31 10:21:09 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/06/10 12:56:38 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 8.0.0
  */
@@ -111,6 +111,7 @@ public class CmsClientSitemapEntry implements IsSerializable {
     public void addSubEntry(CmsClientSitemapEntry entry) {
 
         entry.setPosition(m_subEntries.size());
+        entry.updateSitePath(m_sitePath + entry.getName() + "/");
         m_subEntries.add(entry);
     }
 
@@ -202,6 +203,7 @@ public class CmsClientSitemapEntry implements IsSerializable {
      */
     public void insertSubEntry(CmsClientSitemapEntry entry, int position) {
 
+        entry.updateSitePath(m_sitePath + entry.getName() + "/");
         m_subEntries.add(position, entry);
         updatePositions(position);
     }
@@ -288,6 +290,9 @@ public class CmsClientSitemapEntry implements IsSerializable {
     public void setSubEntries(List<CmsClientSitemapEntry> children) {
 
         m_subEntries.clear();
+        for (CmsClientSitemapEntry child : children) {
+            child.updateSitePath(m_sitePath + child.getName() + "/");
+        }
         m_subEntries.addAll(children);
     }
 

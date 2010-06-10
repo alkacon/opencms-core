@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsDnDListHandler.java,v $
- * Date   : $Date: 2010/06/09 13:19:35 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/06/10 12:56:38 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,6 +54,7 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.RootPanel;
 
 /**
@@ -61,12 +62,18 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
 public class CmsDnDListHandler extends A_CmsSortingDragHandler<CmsDnDListItem, CmsDnDList<CmsDnDListItem>>
 implements NativePreviewHandler {
+
+    /** The collision handler. */
+    protected I_CmsDnDListCollisionResolutionHandler m_collisionHandler;
+
+    /** The key event handler registration. */
+    protected HandlerRegistration m_handleReg;
 
     /** The handler manager. */
     protected HandlerManager m_handlerManager;
@@ -74,20 +81,17 @@ implements NativePreviewHandler {
     /** Mouse handler registrations. */
     protected Map<CmsDnDListItem, List<HandlerRegistration>> m_handlerRegs;
 
-    /** The key event handler registration. */
-    private HandlerRegistration m_handleReg;
-
     /** The provisional drag parent. */
-    private CmsDnDList<? extends CmsDnDListItem> m_provisionalParent;
+    protected CmsDnDList<? extends CmsDnDListItem> m_provisionalParent;
 
     /** The original ID of the draggable element. */
-    private String m_srcId;
+    protected String m_srcId;
 
     /** The source list of the draggable element. */
-    private CmsDnDList<CmsDnDListItem> m_srcList;
+    protected CmsDnDList<CmsDnDListItem> m_srcList;
 
     /** The source position of the draggable element. */
-    private int m_srcPos;
+    protected int m_srcPos;
 
     /**
      * Constructor.<p>
@@ -100,6 +104,7 @@ implements NativePreviewHandler {
         // the abstract generic dnd handler should not clear the targets every time!!! see #clearDrag
         m_targets = new ArrayList<CmsDnDList<CmsDnDListItem>>();
         m_handlerRegs = new HashMap<CmsDnDListItem, List<HandlerRegistration>>();
+        m_collisionHandler = new CmsDnDListCollisionResolutionHandler();
     }
 
     /**
@@ -160,9 +165,9 @@ implements NativePreviewHandler {
         m_dragging = true;
         Document.get().getBody().addClassName(
             org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.dragdropCss().dragStarted());
-        m_currentEvent = event;
-        m_cursorOffsetLeft = m_currentEvent.getRelativeX(m_dragElement.getElement());
-        m_cursorOffsetTop = m_currentEvent.getRelativeY(m_dragElement.getElement());
+        storeEventPos(event);
+        m_cursorOffsetLeft = getRelativeX(m_dragElement.getElement());
+        m_cursorOffsetTop = getRelativeY(m_dragElement.getElement());
 
         prepareElementForDrag();
 
@@ -181,7 +186,7 @@ implements NativePreviewHandler {
     @Override
     public void onMouseUp(MouseUpEvent event) {
 
-        m_currentEvent = event;
+        storeEventPos(event);
 
         if (!m_dragging) {
             return;
@@ -244,6 +249,16 @@ implements NativePreviewHandler {
     }
 
     /**
+     * Sets the collision handler.<p>
+     *
+     * @param collisionHandler the handler to set
+     */
+    public void setCollisionHandler(I_CmsDnDListCollisionResolutionHandler collisionHandler) {
+
+        m_collisionHandler = collisionHandler;
+    }
+
+    /**
      * Cancels dragging.<p>
      */
     protected void cancelDragging() {
@@ -290,30 +305,29 @@ implements NativePreviewHandler {
             elementCancelAction();
         }
         restoreElementAfterDrag();
-        Document.get().getBody().removeClassName(
-            org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.dragdropCss().dragStarted());
+        Document.get().getBody().removeClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragStarted());
         m_dragElement = null;
         m_placeholder = null;
         // the abstract generic dnd handler should not clear the targets every time!!!, see ctor
         // m_targets = null;
         m_currentTarget = null;
+        m_srcId = null;
+        m_srcList = null;
     }
 
     /**
      * Creates a clone of element to be dragged around.<p>
      * 
      * @param element the element to clone
-     * @param dragParent the drag parent
      * 
      * @return the generated clone
      */
-    protected CmsDnDListItem createDragClone(Element element, CmsDnDList<? extends CmsDnDListItem> dragParent) {
+    protected CmsDnDListItem createDragClone(Element element) {
 
         Element elementClone = DOM.createDiv();
         elementClone.setInnerHTML(element.getInnerHTML());
         elementClone.setClassName(element.getClassName());
         CmsDnDListItem dragElement = new CmsDnDListItem(elementClone);
-        dragElement.setDragParent(dragParent);
 
         // remove all decorations
         List<com.google.gwt.dom.client.Element> elems = CmsDomUtil.getElementsByClass(
@@ -344,7 +358,7 @@ implements NativePreviewHandler {
     @Override
     protected void elementDropAction() {
 
-        fireEvent(m_currentTarget, ((CmsDnDListItem)m_placeholder).getId());
+        fireEvent(m_currentTarget);
     }
 
     /**
@@ -366,16 +380,61 @@ implements NativePreviewHandler {
     }
 
     /**
-     * Fires the drop event for the given target list and dropped item id.<p>
+     * Fires the drop event for the given target list.<p>
      * 
      * @param targetList the target list
-     * @param droppedItemId the dropped item id
      */
-    protected void fireEvent(CmsDnDList<CmsDnDListItem> targetList, String droppedItemId) {
+    protected void fireEvent(final CmsDnDList<CmsDnDListItem> targetList) {
 
-        CmsDnDListDropEvent event = new CmsDnDListDropEvent(m_srcList, m_srcId, targetList, droppedItemId);
-        m_handlerManager.fireEvent(event);
-        targetList.fireDropEvent(event);
+        final CmsDnDList<CmsDnDListItem> srcList = m_srcList;
+        final CmsDnDListItem placeholder = (CmsDnDListItem)m_placeholder;
+        final int srcPos = m_srcPos;
+        final String srcId = m_srcId;
+        if ((srcList == targetList) && (srcPos == targetList.getWidgetIndex(placeholder))) {
+            // nothing changed
+            return;
+        }
+        CmsDnDListDropEvent event = new CmsDnDListDropEvent(srcList, srcId, targetList, srcId);
+        if ((srcList != targetList) && (targetList.getItem(srcId) != null)) {
+            // collision detected
+            if (m_collisionHandler != null) {
+                m_collisionHandler.checkCollision(event, new AsyncCallback<String>() {
+
+                    /**
+                     * @see com.google.gwt.user.client.rpc.AsyncCallback#onFailure(java.lang.Throwable)
+                     */
+                    public void onFailure(Throwable caught) {
+
+                        // cancel after dropping
+                        placeholder.onDragStop();
+                        srcList.insert(placeholder, srcPos);
+                    }
+
+                    /**
+                     * @see com.google.gwt.user.client.rpc.AsyncCallback#onSuccess(java.lang.Object)
+                     */
+                    public void onSuccess(String result) {
+
+                        placeholder.onDragStop();
+                        CmsDnDListDropEvent resolutionEvent = new CmsDnDListDropEvent(
+                            srcList,
+                            srcId,
+                            targetList,
+                            result);
+                        m_handlerManager.fireEvent(resolutionEvent);
+                        targetList.fireDropEvent(resolutionEvent);
+                    }
+                });
+            } else {
+                // cancel now
+                placeholder.onDragStop();
+                srcList.insert(m_placeholder, srcPos);
+            }
+        } else {
+            placeholder.onDragStop();
+            m_handlerManager.fireEvent(event);
+            targetList.fireDropEvent(event);
+        }
     }
 
     /**
@@ -385,14 +444,15 @@ implements NativePreviewHandler {
     @Override
     protected void prepareElementForDrag() {
 
-        m_currentTarget = (CmsDnDList<CmsDnDListItem>)m_dragElement.getDragParent();
+        CmsDnDList<? extends CmsListItem> parentList = (CmsDnDList<? extends CmsListItem>)m_dragElement.getParentList();
+        m_currentTarget = (CmsDnDList<CmsDnDListItem>)parentList;
 
         // keep track of the drag source
         m_srcId = m_dragElement.getId();
         m_srcList = m_currentTarget;
         m_srcPos = m_currentTarget.getWidgetIndex(m_dragElement);
         // create the drag helper
-        CmsDnDListItem clone = createDragClone(m_dragElement.getElement(), m_currentTarget);
+        CmsDnDListItem clone = createDragClone(m_dragElement.getElement());
 
         // we append the drag element to the body to prevent any kind of issues 
         // (ie when the parent is styled with overflow:hidden)
@@ -407,10 +467,13 @@ implements NativePreviewHandler {
         m_provisionalParent.getElement().getStyle().setZIndex(99999);
         RootPanel.get().add(m_provisionalParent);
 
-        m_placeholder = m_dragElement;
-        m_placeholder.addStyleName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragPlaceholder());
-        ((CmsDnDListItem)m_placeholder).onDrag();
+        // tell the drag element that it is going to be dragged and that it has to be converted into a placeholder
+        m_dragElement.onDragStart();
 
+        // drag element becomes the place holder
+        m_placeholder = m_dragElement;
+
+        // drag helper becomes the drag element
         m_dragElement = clone;
 
         // important: capture all mouse events and dispatch them to this element until released
@@ -425,7 +488,6 @@ implements NativePreviewHandler {
     @Override
     protected void restoreElementAfterDrag() {
 
-        m_placeholder.removeStyleName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragPlaceholder());
         m_provisionalParent.removeFromParent();
         m_provisionalParent = null;
         m_handleReg.removeHandler();

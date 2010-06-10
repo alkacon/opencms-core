@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/tree/Attic/CmsDnDTreeHandler.java,v $
- * Date   : $Date: 2010/06/09 13:19:35 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/06/10 12:56:38 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -94,7 +94,7 @@ public class CmsDnDTreeHandler extends CmsDnDListHandler {
         CmsDnDList<? extends CmsDnDListItem> list = m_overItem.m_children;
         list.insert(m_placeholder, list.getWidgetCount());
         m_placeholder.setVisible(true);
-        fireEvent((CmsDnDList<CmsDnDListItem>)list, ((CmsDnDListItem)m_placeholder).getId());
+        fireEvent((CmsDnDList<CmsDnDListItem>)list);
         m_overItem.setOpen(true);
         resetItemOver();
     }
@@ -143,13 +143,13 @@ public class CmsDnDTreeHandler extends CmsDnDListHandler {
             }
 
             // check if the mouse pointer is within the width of the element 
-            int left = m_currentEvent.getRelativeX(element);
+            int left = getRelativeX(element);
             if ((left <= 0) || (left >= element.getOffsetWidth())) {
                 continue;
             }
 
             // check if the mouse pointer is within the height of the element 
-            int top = m_currentEvent.getRelativeY(element);
+            int top = getRelativeY(element);
             int height = element.getOffsetHeight();
             if ((top <= 0) || (top >= height)) {
                 continue;

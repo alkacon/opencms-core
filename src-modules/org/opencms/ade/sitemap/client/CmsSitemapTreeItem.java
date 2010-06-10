@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapTreeItem.java,v $
- * Date   : $Date: 2010/06/09 13:19:35 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2010/06/10 12:56:38 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 8.0.0
  * 
@@ -167,11 +167,12 @@ public class CmsSitemapTreeItem extends CmsDnDLazyTreeItem {
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.CmsDnDListItem#onDrag()
+     * @see org.opencms.gwt.client.ui.CmsDnDListItem#onDragStart()
      */
     @Override
-    public void onDrag() {
+    public void onDragStart() {
 
+        super.onDragStart();
         CmsSitemapHoverbar hoverbar = getHoverbar();
         if (hoverbar == null) {
             return;

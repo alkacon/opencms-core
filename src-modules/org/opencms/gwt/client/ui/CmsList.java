@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsList.java,v $
- * Date   : $Date: 2010/05/25 12:36:33 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2010/06/10 12:56:38 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 8.0.0
  */
@@ -99,19 +99,6 @@ public class CmsList<I extends I_CmsListItem> extends ComplexPanel implements I_
     public void addItem(I item) {
 
         add((Widget)item);
-    }
-
-    /**
-     * Changes the id for the given item.<p>
-     * 
-     * @param item the item to change the id for
-     * @param id the new id
-     */
-    public void changeId(I item, String id) {
-
-        if (m_items.remove(item.getId()) != null) {
-            m_items.put(id, item);
-        }
     }
 
     /**
@@ -221,6 +208,19 @@ public class CmsList<I extends I_CmsListItem> extends ComplexPanel implements I_
             item.truncate(textMetricsPrefix, widgetWidth);
         }
         m_tmPrefix = textMetricsPrefix;
+    }
+
+    /**
+     * Changes the id for the given item.<p>
+     * 
+     * @param item the item to change the id for
+     * @param id the new id
+     */
+    protected void changeId(I item, String id) {
+
+        if (m_items.remove(item.getId()) != null) {
+            m_items.put(id, item);
+        }
     }
 
     /**

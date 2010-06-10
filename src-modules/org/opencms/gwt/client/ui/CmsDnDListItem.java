@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsDnDListItem.java,v $
- * Date   : $Date: 2010/06/08 09:01:21 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/06/10 12:56:38 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -67,23 +67,26 @@ import com.google.gwt.event.shared.HandlerRegistration;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  *  
  * @since 8.0.0 
  */
 public class CmsDnDListItem extends CmsListItem implements I_CmsDragElement<CmsDnDList<CmsDnDListItem>> {
 
+    /** The placeholder id, to be sure that there won't be any conflict. */
+    public static final String DRAGGED_PLACEHOLDER_ID = "_cms_dragged_placeholder_";
+
     /** Flag to indicate if drag'n drop is enabled. */
     protected boolean m_dndEnabled;
-
-    /** The drag parent. */
-    private CmsDnDList<? extends CmsDnDListItem> m_dragParent;
 
     /** The event handler registrations. */
     private List<HandlerRegistration> m_handlerRegistrations;
 
     /** The move handle element. */
     private CmsPushButton m_moveHandle;
+
+    /** The original id while dragging. */
+    private String m_originalId;
 
     /**
      * Constructor.<p>
@@ -208,13 +211,13 @@ public class CmsDnDListItem extends CmsListItem implements I_CmsDragElement<CmsD
     }
 
     /**
-     * Returns the parent drag target.<p>
+     * Returns the original id while dragging.<p>
      * 
-     * @return the parent drag target
+     * @return the original id
      */
-    public CmsDnDList<? extends CmsDnDListItem> getDragParent() {
+    public String getOriginalId() {
 
-        return m_dragParent;
+        return m_originalId == null ? getId() : m_originalId;
     }
 
     /**
@@ -242,15 +245,29 @@ public class CmsDnDListItem extends CmsListItem implements I_CmsDragElement<CmsD
     }
 
     /**
-     * Will be executed when starting dragging.<p>
+     * Will be executed when starting dragging, so that this item will be used as place holder.<p>
      */
-    public void onDrag() {
+    public void onDragStart() {
 
-        // empty
+        addStyleName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragPlaceholder());
+        String originalId = getId();
+        setId(DRAGGED_PLACEHOLDER_ID);
+        m_originalId = originalId;
     }
 
     /**
-     * Prepares the element for dragging.<p>
+     * Will be executed when stopping dragging, so that this item will not be anymore used as place holder.<p>
+     */
+    public void onDragStop() {
+
+        removeStyleName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragPlaceholder());
+        if (m_originalId != null) {
+            setId(m_originalId);
+        }
+    }
+
+    /**
+     * Prepares the element for dragging, will be executed on the drag helper.<p>
      */
     public void prepareDrag() {
 
@@ -266,13 +283,13 @@ public class CmsDnDListItem extends CmsListItem implements I_CmsDragElement<CmsD
     }
 
     /**
-     * Registers a new drag parent.<p>
-     * 
-     * @param target the new drag parent
+     * @see org.opencms.gwt.client.ui.CmsListItem#setId(java.lang.String)
      */
-    public void setDragParent(CmsDnDList<? extends CmsDnDListItem> target) {
+    @Override
+    public void setId(String id) {
 
-        m_dragParent = target;
+        super.setId(id);
+        m_originalId = null;
     }
 
     /**

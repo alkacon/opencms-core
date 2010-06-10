@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/tree/Attic/CmsDnDTreeItem.java,v $
- * Date   : $Date: 2010/06/09 13:19:35 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/06/10 12:56:38 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,7 +69,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Georg Westenberger
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  */
@@ -174,7 +174,7 @@ public class CmsDnDTreeItem extends CmsDnDListItem {
                 // this can not be done later because the most likely srcItem == destItem
                 // since the inconsistency we are fixing here
                 // and since we manipulate destItem (to fix it) we will loose info on srcItem
-                CmsDnDListItem srcItem = dropEvent.getSrcList().getItem(dropEvent.getSrcPath());
+                CmsDnDListItem srcItem = dropEvent.getSrcList().getItem(DRAGGED_PLACEHOLDER_ID);
                 CmsDnDTreeItem srcTreeItem = (CmsDnDTreeItem)srcItem;
                 CmsDnDList<? extends CmsDnDListItem> srcList = dropEvent.getSrcList();
                 String srcPath = dropEvent.getSrcPath();
@@ -182,6 +182,12 @@ public class CmsDnDTreeItem extends CmsDnDListItem {
                     // event is coming from a tree
                     srcList = srcTreeItem.getTree();
                     srcPath = srcTreeItem.getPath();
+                    if (!dropEvent.getSrcPath().equals(dropEvent.getDestPath())
+                        && srcPath.endsWith(dropEvent.getDestPath() + "/")) {
+                        // we need to fix this
+                        srcPath = srcPath.substring(0, srcPath.length() - dropEvent.getDestPath().length() - 1);
+                        srcPath += dropEvent.getSrcPath() + "/";
+                    }
                 }
 
                 // remove item from old position
@@ -517,20 +523,6 @@ public class CmsDnDTreeItem extends CmsDnDListItem {
     public CmsDnDTreeItem removeChild(String itemId) {
 
         return removeChild(m_children.getItem(itemId));
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.CmsListItem#setId(java.lang.String)
-     */
-    @Override
-    public void setId(String id) {
-
-        if (m_parentItem != null) {
-            m_parentItem.m_children.changeId(this, id);
-        } else if (m_tree != null) {
-            m_tree.changeId(this, id);
-        }
-        m_id = id;
     }
 
     /**

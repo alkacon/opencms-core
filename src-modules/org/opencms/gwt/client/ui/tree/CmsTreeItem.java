@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/tree/Attic/CmsTreeItem.java,v $
- * Date   : $Date: 2010/05/28 14:00:43 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2010/06/10 12:56:38 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,7 +65,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Georg Westenberger
  * @author Michael Moossen
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 8.0.0
  */
@@ -353,20 +353,6 @@ public class CmsTreeItem extends CmsListItem {
     public CmsTreeItem removeChild(String itemId) {
 
         return removeChild(m_children.getItem(itemId));
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.CmsListItem#setId(java.lang.String)
-     */
-    @Override
-    public void setId(String id) {
-
-        if (m_parentItem != null) {
-            m_parentItem.m_children.changeId(this, id);
-        } else if (m_tree != null) {
-            m_tree.changeId(this, id);
-        }
-        m_id = id;
     }
 
     /**

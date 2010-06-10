@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsDnDList.java,v $
- * Date   : $Date: 2010/06/08 14:35:17 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/06/10 12:56:38 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -178,7 +178,6 @@ public class CmsDnDList<I extends CmsDnDListItem> extends CmsList<I> implements 
     protected void registerItem(I item) {
 
         super.registerItem(item);
-        item.setDragParent(this);
         if (getDnDHandler() != null) {
             if (isDndEnabled()) {
                 item.enableDnD(getDnDHandler());

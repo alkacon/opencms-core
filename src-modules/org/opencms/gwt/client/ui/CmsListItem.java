@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItem.java,v $
- * Date   : $Date: 2010/06/07 14:27:01 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2010/06/10 12:56:38 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  *  
  * @since 8.0.0 
  */
@@ -59,6 +59,21 @@ public class CmsListItem extends Composite implements I_CmsListItem {
      */
     protected interface I_CmsSimpleListItemUiBinder extends UiBinder<CmsFlowPanel, CmsListItem> {
         // GWT interface, nothing to do here
+    }
+
+    /**
+     * Returns the parent list.<p>
+     * 
+     * @return the parent list
+     */
+    @SuppressWarnings("unchecked")
+    public CmsList<CmsListItem> getParentList() {
+
+        Widget parent = getParent();
+        if (parent == null) {
+            return null;
+        }
+        return (CmsList<CmsListItem>)parent;
     }
 
     /** The width of a checkbox. */
@@ -160,6 +175,10 @@ public class CmsListItem extends Composite implements I_CmsListItem {
      */
     public void setId(String id) {
 
+        CmsList<CmsListItem> parentList = getParentList();
+        if (parentList != null) {
+            parentList.changeId(this, id);
+        }
         m_id = id;
     }
 
