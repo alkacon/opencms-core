@@ -32,6 +32,9 @@
 			<pathelement location="${opencms.input.libs.runtime}/commons-logging-1.1.1.jar" />
 			<pathelement location="${opencms.input.libs.runtime}/commons-collections-3.2.1.jar" />
 			<pathelement location="${opencms.input.libs.runtime}/commons-beanutils-1.8.0.jar" />
+			<pathelement location="${opencms.input.libs.runtime}/gwt-dev-2.0.3.jar" />
+			<pathelement location="${opencms.input.libs.runtime}/gwt-opencms-1.0.jar" />
+			<pathelement location="${opencms.input.libs.runtime}/gwt-user-2.0.3.jar" />
 			<pathelement location="${opencms.input.libs.runtime}/dom4j-1.6.1.jar" />
 			<pathelement location="${opencms.input.libs.runtime}/jaxen-1.1.1.jar" />
 			<pathelement location="${opencms.input.libs.runtime}/jug-lgpl-2.0.0.jar" />
