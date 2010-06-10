@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeEdit.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeMergeSitemap.java,v $
  * Date   : $Date: 2010/06/10 13:27:41 $
- * Version: $Revision: 1.5 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,44 +31,56 @@
 
 package org.opencms.ade.sitemap.client.model;
 
-import org.opencms.ade.sitemap.client.CmsSitemapTreeItem;
 import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
+import org.opencms.ade.sitemap.client.control.CmsSitemapLoadEvent;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
-import org.opencms.xml.sitemap.CmsSitemapChangeEdit;
+import org.opencms.ade.sitemap.shared.CmsSitemapMergeInfo;
+import org.opencms.xml.sitemap.CmsSitemapManager;
 import org.opencms.xml.sitemap.I_CmsSitemapChange;
 import org.opencms.xml.sitemap.I_CmsSitemapChange.Type;
 
 /**
- * Stores one edition change to the sitemap.<p> 
+ * This class represents the change of merging a sub-sitemap back into a parent sitemap.<p>
  * 
- * @author Michael Moossen
+ * @author Georg Westenberger
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  */
-public class CmsClientSitemapChangeEdit implements I_CmsClientSitemapChange {
+public class CmsClientSitemapChangeMergeSitemap implements I_CmsClientSitemapChange {
 
-    /** If true, tell the view to ensure that the affected  item is visible. */
-    private boolean m_ensureVisible = true;
+    /** The entry whose children should be merged back into the parent sitemap. */
+    private CmsClientSitemapEntry m_entry;
 
-    /** The new entry without children. */
-    private CmsClientSitemapEntry m_newEntry;
+    /** The internal change object represents the removal of the 'sitemap' property. */
+    private I_CmsClientSitemapChange m_internalChange;
 
-    /** The old entry without children. */
-    private CmsClientSitemapEntry m_oldEntry;
+    /** The result of the merge operation. */
+    private CmsSitemapMergeInfo m_mergeInfo;
+
+    /** The path at which the sitemap has been merged into the parent sitemap. */
+    private String m_path;
 
     /**
      * Constructor.<p>
      * 
-     * @param oldEntry the old entry
-     * @param newEntry the new entry
+     * @param path the path at which the sub-sitemap should be merged into the parent sitemap
+     * @param entry the entry which references the sub-sitemap
+     * @param mergeInfo the result of the server-side merge operation 
      */
-    public CmsClientSitemapChangeEdit(CmsClientSitemapEntry oldEntry, CmsClientSitemapEntry newEntry) {
+    public CmsClientSitemapChangeMergeSitemap(String path, CmsClientSitemapEntry entry, CmsSitemapMergeInfo mergeInfo) {
 
-        m_oldEntry = new CmsClientSitemapEntry(oldEntry);
-        m_newEntry = newEntry;
+        m_path = path;
+        m_entry = entry;
+        m_mergeInfo = mergeInfo;
+
+        CmsClientSitemapEntry changedEntry = new CmsClientSitemapEntry(m_entry);
+        changedEntry.getProperties().remove(CmsSitemapManager.Property.sitemap.name());
+        m_internalChange = new CmsClientSitemapChangeEdit(m_entry, changedEntry);
+        m_internalChange.setEnsureVisible(false);
+
     }
 
     /**
@@ -76,10 +88,10 @@ public class CmsClientSitemapChangeEdit implements I_CmsClientSitemapChange {
      */
     public void applyToModel(CmsSitemapController controller) {
 
-        CmsClientSitemapEntry editEntry = controller.getEntry(getOldEntry().getSitePath());
-        editEntry.setTitle(getNewEntry().getTitle());
-        editEntry.setVfsPath(getNewEntry().getVfsPath());
-        editEntry.setProperties(getNewEntry().getProperties());
+        m_entry.setSubEntries(m_mergeInfo.getMergedEntries());
+        m_internalChange.applyToModel(controller);
+        controller.getData().setTimestamp(m_mergeInfo.getTimestamp());
+
     }
 
     /**
@@ -87,11 +99,8 @@ public class CmsClientSitemapChangeEdit implements I_CmsClientSitemapChange {
      */
     public void applyToView(CmsSitemapView view) {
 
-        CmsSitemapTreeItem editEntry = view.getTreeItem(getOldEntry().getSitePath());
-        if (m_ensureVisible) {
-            view.ensureVisible(editEntry);
-        }
-        editEntry.updateEntry(getNewEntry());
+        m_internalChange.applyToView(view);
+        view.onLoad(new CmsSitemapLoadEvent(m_entry, m_path));
     }
 
     /**
@@ -99,11 +108,7 @@ public class CmsClientSitemapChangeEdit implements I_CmsClientSitemapChange {
      */
     public I_CmsSitemapChange getChangeForCommit() {
 
-        return new CmsSitemapChangeEdit(
-            getNewEntry().getSitePath(),
-            getNewEntry().getTitle(),
-            getNewEntry().getVfsPath(),
-            getNewEntry().getProperties());
+        throw new UnsupportedOperationException();
     }
 
     /**
@@ -111,27 +116,7 @@ public class CmsClientSitemapChangeEdit implements I_CmsClientSitemapChange {
      */
     public I_CmsClientSitemapChange getChangeForUndo() {
 
-        return this;
-    }
-
-    /**
-     * Returns the new entry.<p>
-     *
-     * @return the new entry
-     */
-    public CmsClientSitemapEntry getNewEntry() {
-
-        return m_newEntry;
-    }
-
-    /**
-     * Returns the old entry.<p>
-     *
-     * @return the old entry
-     */
-    public CmsClientSitemapEntry getOldEntry() {
-
-        return m_oldEntry;
+        throw new UnsupportedOperationException();
     }
 
     /**
@@ -139,7 +124,7 @@ public class CmsClientSitemapChangeEdit implements I_CmsClientSitemapChange {
      */
     public Type getType() {
 
-        return Type.EDIT;
+        throw new UnsupportedOperationException();
     }
 
     /**
@@ -147,7 +132,7 @@ public class CmsClientSitemapChangeEdit implements I_CmsClientSitemapChange {
      */
     public I_CmsClientSitemapChange revert() {
 
-        return new CmsClientSitemapChangeEdit(getNewEntry(), getOldEntry());
+        throw new UnsupportedOperationException();
     }
 
     /**
@@ -155,6 +140,7 @@ public class CmsClientSitemapChangeEdit implements I_CmsClientSitemapChange {
      */
     public void setEnsureVisible(boolean ensureVisible) {
 
-        m_ensureVisible = ensureVisible;
+        throw new UnsupportedOperationException();
     }
+
 }

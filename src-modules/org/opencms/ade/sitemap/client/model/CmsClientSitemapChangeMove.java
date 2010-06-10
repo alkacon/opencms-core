@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeMove.java,v $
- * Date   : $Date: 2010/06/08 14:35:17 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/06/10 13:27:41 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,11 +45,14 @@ import org.opencms.xml.sitemap.I_CmsSitemapChange.Type;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
 public class CmsClientSitemapChangeMove implements I_CmsClientSitemapChange {
+
+    /** If true, tell the view to ensure that the affected  item is visible. */
+    protected boolean m_ensureVisible = true;
 
     /** The destination path. */
     private String m_destinationPath;
@@ -107,7 +110,9 @@ public class CmsClientSitemapChangeMove implements I_CmsClientSitemapChange {
         CmsSitemapTreeItem destParent = view.getTreeItem(CmsResource.getParentFolder(getDestinationPath()));
         destParent.insertChild(moved, getDestinationPosition());
         moved.updateSitePath(getDestinationPath());
-        view.ensureVisible(moved);
+        if (m_ensureVisible) {
+            view.ensureVisible(moved);
+        }
     }
 
     /**
@@ -184,5 +189,13 @@ public class CmsClientSitemapChangeMove implements I_CmsClientSitemapChange {
             getDestinationPosition(),
             getSourcePath(),
             getSourcePosition());
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#setEnsureVisible(boolean)
+     */
+    public void setEnsureVisible(boolean ensureVisible) {
+
+        m_ensureVisible = ensureVisible;
     }
 }

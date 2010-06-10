@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/I_CmsClientSitemapChange.java,v $
- * Date   : $Date: 2010/06/08 14:35:17 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/06/10 13:27:41 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import org.opencms.xml.sitemap.I_CmsSitemapChange.Type;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -88,4 +88,17 @@ public interface I_CmsClientSitemapChange {
      * @return the revert change
      */
     I_CmsClientSitemapChange revert();
+
+    /**
+     * Sets the 'ensure visible' flag of this sitemap change.<p>
+     * 
+     * When the change is applied to the view, the view makes sure that the affected item is visible
+     * when this flag is set to true (it is set to true by default). This can lead to undesirable side effects if the 
+     * change was not made directly by the user, but generated automatically; for example, additional requests
+     * could be made to the server to load more elements of the sitemap tree. If you want to avoid these side effects,
+     * set the flag to false.<p>
+     *  
+     * @param ensureVisible if false, the view won't ensure that the affected item is visible
+     */
+    void setEnsureVisible(boolean ensureVisible);
 }

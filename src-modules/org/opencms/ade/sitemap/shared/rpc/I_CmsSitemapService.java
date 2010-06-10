@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/rpc/Attic/I_CmsSitemapService.java,v $
- * Date   : $Date: 2010/06/09 12:13:03 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2010/06/10 13:27:41 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 8.0.0
  * 
@@ -94,18 +94,6 @@ public interface I_CmsSitemapService extends RemoteService {
     CmsClientSitemapEntry getEntry(String sitemapUri, String root) throws CmsRpcException;
 
     /**
-     * Merges the given super sitemap with the sub-sitemap at the given path.<p>
-     * 
-     * @param sitemapUri the super sitemap URI
-     * @param path the starting path
-     * 
-     * @return the result of the merge operation 
-     * 
-     * @throws CmsRpcException if something goes wrong 
-     */
-    CmsSitemapMergeInfo mergeSubsitemap(String sitemapUri, String path) throws CmsRpcException;
-
-    /**
      * Returns the initialization data for the given sitemap.<p>
      * 
      * @param sitemapUri the site relative path
@@ -140,6 +128,20 @@ public interface I_CmsSitemapService extends RemoteService {
      * @throws CmsRpcException if something goes wrong 
      */
     CmsSubSitemapInfo saveAndCreateSubSitemap(String sitemapUri, List<I_CmsSitemapChange> changes, String path)
+    throws CmsRpcException;
+
+    /**
+     * Saves the current sitemap and merges one of its sub-sitemaps into it.<p>
+     * 
+     * @param sitemapUri the URI of the current sitemap
+     * @param changes the changes to the parent sitemap which should be saved 
+     * @param path the path at which the sub-sitemap should be merged into the parent sitemap 
+     * 
+     * @return the result of the merge operation
+     * 
+     * @throws CmsRpcException if something goes wrong 
+     */
+    CmsSitemapMergeInfo saveAndMergeSubSitemap(String sitemapUri, List<I_CmsSitemapChange> changes, String path)
     throws CmsRpcException;
 
     /**

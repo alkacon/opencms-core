@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeMoveDnD.java,v $
- * Date   : $Date: 2010/06/08 14:35:17 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/06/10 13:27:41 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.ade.sitemap.client.CmsSitemapView;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -70,7 +70,9 @@ public class CmsClientSitemapChangeMoveDnD extends CmsClientSitemapChangeMove {
 
         CmsSitemapTreeItem destItem = view.getTreeItem(getDestinationPath());
         destItem.updateSitePath(getDestinationPath());
-        view.ensureVisible(destItem);
+        if (m_ensureVisible) {
+            view.ensureVisible(destItem);
+        }
     }
 
     /**

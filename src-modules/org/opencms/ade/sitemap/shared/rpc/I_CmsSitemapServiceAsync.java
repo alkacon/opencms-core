@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/rpc/Attic/I_CmsSitemapServiceAsync.java,v $
- * Date   : $Date: 2010/06/09 12:13:03 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2010/06/10 13:27:41 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 8.0.0
  * 
@@ -85,15 +85,6 @@ public interface I_CmsSitemapServiceAsync {
     void getEntry(String sitemapUri, String root, AsyncCallback<CmsClientSitemapEntry> callback);
 
     /**
-     * Merges the given super sitemap with the sub-sitemap at the given path.<p>
-     * 
-     * @param sitemapUri the super sitemap URI
-     * @param path the starting path
-     * @param callback the async callback
-     */
-    void mergeSubsitemap(String sitemapUri, String path, AsyncCallback<CmsSitemapMergeInfo> callback);
-
-    /**
      * Returns the initialization data for the given sitemap.<p>
      * 
      * @param sitemapUri the site relative path
@@ -123,6 +114,21 @@ public interface I_CmsSitemapServiceAsync {
         List<I_CmsSitemapChange> changes,
         String path,
         AsyncCallback<CmsSubSitemapInfo> callback);
+
+    /**
+     * Saves the current sitemap and merges one of its sub-sitemaps into it.<p>
+     * 
+     * @param sitemapUri the super sitemap URI
+     * @param changes the list of changes to be saved 
+     * @param path the path at which the sub-sitemap should be merged into the parent sitemap 
+     * 
+     * @param callback the async callback
+     */
+    void saveAndMergeSubSitemap(
+        String sitemapUri,
+        List<I_CmsSitemapChange> changes,
+        String path,
+        AsyncCallback<CmsSitemapMergeInfo> callback);
 
     /**
      * Saves the changes to the given sitemap.<p>

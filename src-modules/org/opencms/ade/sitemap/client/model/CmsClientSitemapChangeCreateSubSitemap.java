@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeCreateSubSitemap.java,v $
- * Date   : $Date: 2010/06/09 12:13:03 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/06/10 13:27:41 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import java.util.List;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -74,11 +74,13 @@ public class CmsClientSitemapChangeCreateSubSitemap implements I_CmsClientSitema
         List<I_CmsClientSitemapChange> changes = new ArrayList<I_CmsClientSitemapChange>();
         for (CmsClientSitemapEntry childEntry : entry.getSubEntries()) {
             CmsClientSitemapChangeDelete deleteAction = new CmsClientSitemapChangeDelete(childEntry);
+            deleteAction.setEnsureVisible(false);
             changes.add(deleteAction);
         }
         CmsClientSitemapEntry newEntry = new CmsClientSitemapEntry(entry);
         newEntry.getProperties().put(CmsSitemapManager.Property.sitemap.name(), subSitemapPath);
         CmsClientSitemapChangeEdit editAction = new CmsClientSitemapChangeEdit(entry, newEntry);
+        editAction.setEnsureVisible(false);
         changes.add(editAction);
         m_internalChanges = changes;
         m_subSitemapInfo = info;
@@ -134,6 +136,14 @@ public class CmsClientSitemapChangeCreateSubSitemap implements I_CmsClientSitema
      * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#revert()
      */
     public I_CmsClientSitemapChange revert() {
+
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#setEnsureVisible(boolean)
+     */
+    public void setEnsureVisible(boolean ensureVisible) {
 
         throw new UnsupportedOperationException();
     }

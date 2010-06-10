@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsSitemapService.java,v $
- * Date   : $Date: 2010/06/09 12:13:03 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2010/06/10 13:27:40 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -83,7 +83,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 8.0.0
  * 
@@ -209,12 +209,39 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
     }
 
     /**
-     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#mergeSubsitemap(java.lang.String, java.lang.String)
+     * Merges a sub-sitemap back into its parent sitemap.<p>
+     * 
+     * @param sitemapUri the URI of the parent sitemap
+     * @param path the path in the parent sitemap at which the sub-sitemap should be merged into it 
+     * 
+     * @return the result of the merge operation
+     * 
+     * @throws CmsRpcException if something goes wrong 
      */
-    public CmsSitemapMergeInfo mergeSubsitemap(String sitemapUri, String path) {
+    public CmsSitemapMergeInfo mergeSubSitemap(String sitemapUri, String path) throws CmsRpcException {
 
+        try {
+            CmsObject cms = getCmsObject();
+            Map<String, CmsXmlContentProperty> propertyConfig = OpenCms.getSitemapManager().getElementPropertyConfiguration(
+                cms,
+                cms.readResource(sitemapUri));
+            // TODO: what about historical requests?
+            CmsInternalSitemapEntry entry = (CmsInternalSitemapEntry)OpenCms.getSitemapManager().getEntryForUri(
+                getCmsObject(),
+                path);
+            List<I_CmsSitemapChange> parentChanges = getChangesForMergingSubSitemap(entry);
+            long timestamp = saveInternal(sitemapUri, parentChanges, true);
+            List<CmsClientSitemapEntry> mergedClientEntries = getChildren(path, 2, propertyConfig);
+            String subSitemapId = entry.getProperties().get(CmsSitemapManager.Property.sitemap.name());
+            CmsResource subSitemapRes = cms.readResource(new CmsUUID(subSitemapId));
+            String subSitemapUri = cms.getSitePath(subSitemapRes);
+            cms.deleteResource(subSitemapUri, CmsResource.DELETE_PRESERVE_SIBLINGS);
+            return new CmsSitemapMergeInfo(mergedClientEntries, timestamp);
+        } catch (Throwable e) {
+            error(e);
+        }
+        // we can never reach this point
         return null;
-        //TODO: implement this 
     }
 
     /**
@@ -283,6 +310,21 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
             error(e);
         }
         return null; // we never reach this line 
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#saveAndMergeSubSitemap(java.lang.String, java.util.List, java.lang.String)
+     */
+    public CmsSitemapMergeInfo saveAndMergeSubSitemap(String sitemapUri, List<I_CmsSitemapChange> changes, String path)
+    throws CmsRpcException {
+
+        try {
+            saveInternal(sitemapUri, changes, false);
+            return mergeSubSitemap(sitemapUri, path);
+        } catch (Throwable e) {
+            error(e);
+        }
+        return null;
     }
 
     /**
@@ -449,6 +491,48 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
     }
 
     /**
+     * Helper method for getting the list of changes to apply to a parent sitemap to merge it with a sub-sitemap.<p>
+     * 
+     * @param rootEntry the entry of the parent sitemap which has a reference to the sub-sitemap
+     *  
+     * @return the list of necessary changes
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    private List<I_CmsSitemapChange> getChangesForMergingSubSitemap(CmsInternalSitemapEntry rootEntry)
+    throws CmsException {
+
+        CmsObject cms = getCmsObject();
+
+        List<I_CmsSitemapChange> changes = new ArrayList<I_CmsSitemapChange>();
+
+        // insert sub-sitemap entries into parent sitemap 
+        for (CmsInternalSitemapEntry entry : getDescendants(rootEntry)) {
+            CmsResource childRes = cms.readResource(entry.getResourceId());
+            CmsSitemapChangeNew newChildChange = new CmsSitemapChangeNew(
+                entry.getSitePath(cms),
+                entry.getPosition(),
+                entry.getTitle(),
+                cms.getSitePath(childRes),
+                entry.getProperties());
+            changes.add(newChildChange);
+        }
+
+        // remove sitemap property from the parent entry of the sub-sitemap 
+        CmsResource resource = cms.readResource(rootEntry.getResourceId());
+        Map<String, String> newProps = new HashMap<String, String>(rootEntry.getProperties());
+        newProps.remove(CmsSitemapManager.Property.sitemap.name());
+        CmsSitemapChangeEdit editParentChange = new CmsSitemapChangeEdit(
+            rootEntry.getSitePath(getCmsObject()),
+            rootEntry.getTitle(),
+            cms.getSitePath(resource),
+            newProps);
+        changes.add(editParentChange);
+
+        return changes;
+    }
+
+    /**
      * When a subtree of a sitemap is going to be converted to a sub-sitemap, this helper method will return the list 
      * of necessary changes in the parent sitemap.<p>
      * 
@@ -494,13 +578,10 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
     private List<I_CmsSitemapChange> getChangesForSubSitemap(CmsInternalSitemapEntry entry) throws CmsException {
 
         List<I_CmsSitemapChange> result = new ArrayList<I_CmsSitemapChange>();
-        LinkedList<CmsInternalSitemapEntry> entriesToProcess = new LinkedList<CmsInternalSitemapEntry>();
         assert entry.getSubEntries().size() > 0;
-        entriesToProcess.addAll(entry.getSubEntries());
-        while (!entriesToProcess.isEmpty()) {
-            CmsInternalSitemapEntry currentEntry = entriesToProcess.removeFirst();
-            I_CmsSitemapChange change = createChangeForNewSitemapEntry(currentEntry, entry.getSitePath(getCmsObject()));
-            entriesToProcess.addAll(currentEntry.getSubEntries());
+        String entryPoint = entry.getSitePath(getCmsObject());
+        for (CmsInternalSitemapEntry descendant : getDescendants(entry)) {
+            I_CmsSitemapChange change = createChangeForNewSitemapEntry(descendant, entryPoint);
             result.add(change);
         }
         return result;
@@ -556,6 +637,28 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
             result = getTemplateBean(cms, OpenCms.getSitemapManager().getDefaultTemplate(cms, sitemapUri, getRequest()));
         } catch (Throwable e) {
             error(e);
+        }
+        return result;
+    }
+
+    /**
+     * Helper function for collecting all descendants of a sitemap entry, not including the sitemap entry itself.<p>
+     * 
+     * In the resulting list, entries will always appear before their sub-entries.<p>
+     * 
+     * @param rootEntry the entry whose descendants should be collected
+     *  
+     * @return the descendants of <code>rootEntry</code>
+     */
+    private List<CmsInternalSitemapEntry> getDescendants(CmsInternalSitemapEntry rootEntry) {
+
+        List<CmsInternalSitemapEntry> result = new ArrayList<CmsInternalSitemapEntry>();
+        LinkedList<CmsInternalSitemapEntry> entriesToProcess = new LinkedList<CmsInternalSitemapEntry>();
+        entriesToProcess.addAll(rootEntry.getSubEntries());
+        while (!entriesToProcess.isEmpty()) {
+            CmsInternalSitemapEntry currentEntry = entriesToProcess.removeFirst();
+            result.add(currentEntry);
+            entriesToProcess.addAll(currentEntry.getSubEntries());
         }
         return result;
     }

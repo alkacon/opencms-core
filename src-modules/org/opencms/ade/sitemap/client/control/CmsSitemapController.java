@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2010/06/09 12:13:03 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/06/10 13:27:41 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,12 +35,14 @@ import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeCreateSubSitemap;
 import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeDelete;
 import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeEdit;
+import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeMergeSitemap;
 import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeMove;
 import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeMoveDnD;
 import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeNew;
 import org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
+import org.opencms.ade.sitemap.shared.CmsSitemapMergeInfo;
 import org.opencms.ade.sitemap.shared.CmsSitemapTemplate;
 import org.opencms.ade.sitemap.shared.CmsSubSitemapInfo;
 import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService;
@@ -70,7 +72,7 @@ import com.google.gwt.user.client.Window;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 8.0.0
  */
@@ -126,7 +128,7 @@ public class CmsSitemapController {
      * 
      * @param handler the handler to add
      * 
-     * @return the handler registration
+     * @return the handler registration 
      */
     public HandlerRegistration addChangeHandler(I_CmsSitemapChangeHandler handler) {
 
@@ -629,6 +631,48 @@ public class CmsSitemapController {
     }
 
     /**
+     * Merges a subsitemap at the given path back into this sitemap.<p>
+     * 
+     * @param path the path at which the sitemap should be merged into the current sitemap 
+     */
+    public void saveAndMergeSubSitemap(final String path) {
+
+        CmsRpcAction<CmsSitemapMergeInfo> mergeAction = new CmsRpcAction<CmsSitemapMergeInfo>() {
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+             */
+            @Override
+            public void execute() {
+
+                start(0);
+                List<I_CmsSitemapChange> changes = getChangesToSave();
+                getService().saveAndMergeSubSitemap(getSitemapUri(), changes, path, this);
+            }
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+             */
+            @Override
+            protected void onResponse(CmsSitemapMergeInfo result) {
+
+                stop(false);
+                resetChanges();
+                CmsClientSitemapEntry target = getEntry(path);
+                I_CmsClientSitemapChange change = new CmsClientSitemapChangeMergeSitemap(path, target, result);
+                executeChange(change);
+
+            }
+        };
+        CmsClientSitemapEntry entry = getEntry(path);
+        String sitemapProp = entry.getProperties().get(CmsSitemapManager.Property.sitemap.name());
+        if (CmsCoreProvider.get().lockAndCheckModification(getSitemapUri(), m_data.getTimestamp())
+            && CmsCoreProvider.get().lock(sitemapProp)) {
+            mergeAction.execute();
+        }
+    }
+
+    /**
      * Undoes the last change.<p>
      */
     public void undo() {
@@ -658,6 +702,19 @@ public class CmsSitemapController {
             m_handlerManager.fireEvent(new CmsSitemapLastUndoEvent());
             CmsCoreProvider.get().unlock();
         }
+    }
+
+    /**
+     * Internal method which updates the model with a single change.<p>
+     * 
+     * @param change the change 
+     */
+    protected void executeChange(I_CmsClientSitemapChange change) {
+
+        // apply change to the model
+        change.applyToModel(this);
+        // refresh view
+        m_handlerManager.fireEvent(new CmsSitemapChangeEvent(change));
     }
 
     /**
@@ -743,19 +800,6 @@ public class CmsSitemapController {
         change.applyToModel(this);
 
         // refresh view, in dnd mode view already ok
-        m_handlerManager.fireEvent(new CmsSitemapChangeEvent(change));
-    }
-
-    /**
-     * Internal method which updates the model with a single change.<p>
-     * 
-     * @param change the change 
-     */
-    private void executeChange(I_CmsClientSitemapChange change) {
-
-        // apply change to the model
-        change.applyToModel(this);
-        // refresh view
         m_handlerManager.fireEvent(new CmsSitemapChangeEvent(change));
     }
 

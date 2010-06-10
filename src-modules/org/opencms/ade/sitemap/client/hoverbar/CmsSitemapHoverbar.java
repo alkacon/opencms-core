@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsSitemapHoverbar.java,v $
- * Date   : $Date: 2010/06/08 07:12:45 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/06/10 13:27:41 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  */
@@ -81,6 +81,7 @@ public class CmsSitemapHoverbar extends FlowPanel {
         add(new CmsHoverbarDeleteButton(this));
         add(new CmsHoverbarEditButton(this));
         add(new CmsHoverbarNewButton(this));
+        add(new CmsHoverbarMergeButton(this));
         add(new CmsHoverbarMoveButton(this));
         add(new CmsHoverbarParentButton(this));
 

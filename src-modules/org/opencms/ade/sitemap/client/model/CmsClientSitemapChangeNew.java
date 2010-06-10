@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeNew.java,v $
- * Date   : $Date: 2010/06/08 14:35:17 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/06/10 13:27:41 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,11 +45,14 @@ import org.opencms.xml.sitemap.I_CmsSitemapChange.Type;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
 public class CmsClientSitemapChangeNew implements I_CmsClientSitemapChange {
+
+    /** If true, tell the view to ensure that the affected  item is visible. */
+    private boolean m_ensureVisible = true;
 
     /** The new entry with children. */
     private CmsClientSitemapEntry m_entry;
@@ -98,7 +101,9 @@ public class CmsClientSitemapChangeNew implements I_CmsClientSitemapChange {
         } else {
             newParent.addChild(newChild);
         }
-        view.ensureVisible(newChild);
+        if (m_ensureVisible) {
+            view.ensureVisible(newChild);
+        }
     }
 
     /**
@@ -122,7 +127,7 @@ public class CmsClientSitemapChangeNew implements I_CmsClientSitemapChange {
         return this;
     }
 
-    /**
+    /** 
      * Returns the new entry.<p>
      *
      * @return the new entry
@@ -148,6 +153,14 @@ public class CmsClientSitemapChangeNew implements I_CmsClientSitemapChange {
         CmsClientSitemapChangeDelete change = new CmsClientSitemapChangeDelete(getEntry());
         change.setTreeItem(m_treeItem);
         return change;
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#setEnsureVisible(boolean)
+     */
+    public void setEnsureVisible(boolean ensureVisible) {
+
+        m_ensureVisible = ensureVisible;
     }
 
     /**
