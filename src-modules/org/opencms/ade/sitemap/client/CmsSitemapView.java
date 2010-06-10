@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapView.java,v $
- * Date   : $Date: 2010/06/09 13:19:35 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2010/06/10 13:15:39 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,15 +45,17 @@ import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.gwt.client.A_CmsEntryPoint;
 import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.ui.CmsDnDList;
+import org.opencms.gwt.client.ui.CmsDnDListItem;
 import org.opencms.gwt.client.ui.CmsHeader;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.CmsToolbar;
 import org.opencms.gwt.client.ui.CmsToolbarPlaceHolder;
+import org.opencms.gwt.client.ui.I_CmsDnDListStatusHandler;
 import org.opencms.gwt.client.ui.tree.A_CmsDnDDeepLazyOpenHandler;
 import org.opencms.gwt.client.ui.tree.CmsDnDLazyTree;
 import org.opencms.gwt.client.ui.tree.CmsDnDTreeDropEvent;
-import org.opencms.gwt.client.ui.tree.CmsDnDTreeHandler;
 import org.opencms.gwt.client.ui.tree.CmsDnDTreeItem;
 import org.opencms.gwt.client.ui.tree.I_CmsDnDTreeDropHandler;
 import org.opencms.gwt.client.util.CmsDomUtil;
@@ -74,12 +76,13 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 8.0.0
  */
 public class CmsSitemapView extends A_CmsEntryPoint
-implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler, NativePreviewHandler, ClosingHandler {
+implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler, NativePreviewHandler, ClosingHandler,
+I_CmsDnDTreeDropHandler, I_CmsDnDListStatusHandler {
 
     /** Text metrics key. */
     private static final String TM_SITEMAP = "Sitemap";
@@ -95,6 +98,27 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler, NativePreviewHand
 
     /** The displayed sitemap tree. */
     private CmsDnDLazyTree<CmsSitemapTreeItem> m_tree;
+
+    /**
+     * @see org.opencms.gwt.client.ui.I_CmsDnDListStatusHandler#canDragNow(org.opencms.gwt.client.ui.CmsDnDListItem)
+     */
+    public boolean canDragNow(CmsDnDListItem dragElement) {
+
+        // we allow always to drag
+        return true;
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.I_CmsDnDListStatusHandler#canDropNow(org.opencms.gwt.client.ui.CmsDnDList, org.opencms.gwt.client.ui.CmsDnDListItem)
+     */
+    public boolean canDropNow(CmsDnDList<CmsDnDListItem> target, CmsDnDListItem dragElement) {
+
+        boolean cancel = !m_controller.isDirty();
+        cancel &= !CmsCoreProvider.get().lockAndCheckModification(
+            CmsCoreProvider.get().getUri(),
+            m_controller.getData().getTimestamp());
+        return !cancel;
+    }
 
     /**
      * Creates a new tree item from the given sitemap entry.<p>
@@ -172,6 +196,18 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler, NativePreviewHand
     public void onChange(CmsSitemapChangeEvent changeEvent) {
 
         changeEvent.getChange().applyToView(this);
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.tree.I_CmsDnDTreeDropHandler#onDrop(org.opencms.gwt.client.ui.tree.CmsDnDTreeDropEvent)
+     */
+    public void onDrop(CmsDnDTreeDropEvent e) {
+
+        CmsDnDTreeItem item = e.getDestTree().getItemByPath(e.getDestPath());
+        m_controller.moveDnd(
+            m_controller.getEntry(e.getSrcPath()),
+            item.getPath(),
+            item.getParentItem().getItemPosition(item));
     }
 
     /**
@@ -255,41 +291,15 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler, NativePreviewHand
                 m_controller.getChildren(target.getOriginalPath(), target.getSitePath());
             }
         });
-        m_tree.addTreeDropHandler(new I_CmsDnDTreeDropHandler() {
-
-            /**
-            * @see org.opencms.gwt.client.ui.tree.I_CmsDnDTreeDropHandler#onDrop(org.opencms.gwt.client.ui.tree.CmsDnDTreeDropEvent)
-            */
-            public void onDrop(CmsDnDTreeDropEvent e) {
-
-                CmsDnDTreeItem item = e.getDestTree().getItemByPath(e.getDestPath());
-                m_controller.moveDnd(
-                    m_controller.getEntry(e.getSrcPath()),
-                    item.getPath(),
-                    item.getParentItem().getItemPosition(item));
-            }
-        });
-        m_tree.setDnDHandler(new CmsDnDTreeHandler() {
-
-            /**
-             * @see org.opencms.gwt.client.ui.CmsDnDListHandler#canDropNow()
-             */
-            @Override
-            protected boolean canDropNow() {
-
-                boolean cancel = !m_controller.isDirty();
-                cancel &= !CmsCoreProvider.get().lockAndCheckModification(
-                    CmsCoreProvider.get().getUri(),
-                    m_controller.getData().getTimestamp());
-                return !cancel;
-            }
-        });
+        m_tree.addTreeDropHandler(this);
         m_tree.setDnDEnabled(true);
         m_tree.truncate(TM_SITEMAP, 920);
         m_tree.setAnimationEnabled(true);
         m_tree.addItem(rootItem);
         // prevent drop on root level
         m_tree.enableDropTarget(false);
+        // prevent dropping if we can not lock the resource 
+        m_tree.getDnDHandler().setStatusHandler(this);
 
         // paint
         page.remove(loadingLabel);

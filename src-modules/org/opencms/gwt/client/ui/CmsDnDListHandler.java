@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsDnDListHandler.java,v $
- * Date   : $Date: 2010/06/10 12:56:38 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/06/10 13:15:39 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -93,6 +93,9 @@ implements NativePreviewHandler {
     /** The source position of the draggable element. */
     protected int m_srcPos;
 
+    /** The status handler. */
+    protected I_CmsDnDListStatusHandler m_statusHandler;
+
     /**
      * Constructor.<p>
      */
@@ -105,6 +108,7 @@ implements NativePreviewHandler {
         m_targets = new ArrayList<CmsDnDList<CmsDnDListItem>>();
         m_handlerRegs = new HashMap<CmsDnDListItem, List<HandlerRegistration>>();
         m_collisionHandler = new CmsDnDListCollisionResolutionHandler();
+        m_statusHandler = null;
     }
 
     /**
@@ -155,7 +159,7 @@ implements NativePreviewHandler {
             // drag element is not listening
             return;
         }
-        if (!canDragNow()) {
+        if ((m_statusHandler != null) && !m_statusHandler.canDragNow(m_dragElement)) {
             m_dragElement = null;
             return;
         }
@@ -191,7 +195,7 @@ implements NativePreviewHandler {
         if (!m_dragging) {
             return;
         }
-        if (!canDropNow()) {
+        if ((m_statusHandler != null) && !m_statusHandler.canDropNow(m_currentTarget, m_dragElement)) {
             // cancel we are not allowed drop now
             cancelDragging();
             return;
@@ -259,6 +263,16 @@ implements NativePreviewHandler {
     }
 
     /**
+     * Sets the status handler.<p>
+     *
+     * @param statusHandler the handler to set
+     */
+    public void setStatusHandler(I_CmsDnDListStatusHandler statusHandler) {
+
+        m_statusHandler = statusHandler;
+    }
+
+    /**
      * Cancels dragging.<p>
      */
     protected void cancelDragging() {
@@ -270,26 +284,6 @@ implements NativePreviewHandler {
         m_currentTarget = null;
         // update status and animate
         stopDragging(null);
-    }
-
-    /**
-     * Checks if the current drag element can be dragged at all before starting.<p>
-     * 
-     * @return <code>true</code> if the current drag element can be dragged now
-     */
-    protected boolean canDragNow() {
-
-        return true;
-    }
-
-    /**
-     * Checks if the current dragged element can be dropped at all.<p>
-     * 
-     * @return <code>true</code> if the current dragged element can be dropped now
-     */
-    protected boolean canDropNow() {
-
-        return true;
     }
 
     /**
