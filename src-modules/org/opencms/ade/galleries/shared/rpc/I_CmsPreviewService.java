@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/rpc/Attic/I_CmsPreviewService.java,v $
- * Date   : $Date: 2010/06/02 14:46:36 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/06/10 08:45:04 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,7 @@
 
 package org.opencms.ade.galleries.shared.rpc;
 
-import org.opencms.ade.galleries.shared.CmsPreviewInfoBean;
+import org.opencms.ade.galleries.shared.CmsResourceInfoBean;
 import org.opencms.gwt.CmsRpcException;
 
 import java.util.Map;
@@ -44,7 +44,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  * 
@@ -64,17 +64,18 @@ public interface I_CmsPreviewService extends RemoteService {
      *   
      * @throws CmsRpcException if something goes wrong
      */
-    CmsPreviewInfoBean getPreview(String resourcePath) throws CmsRpcException;
+    CmsResourceInfoBean getResourceInfo(String resourcePath) throws CmsRpcException;
 
     /**
      * Returns the data to be displayed in the preview dialog.<p>
      * 
+     * @param resourcePath the path to the selected resource
      * @param properties a map with the key/value pairs of the properties to be updated
      * 
      * @return the updates preview data
      *   
      * @throws CmsRpcException if something goes wrong
      */
-    CmsPreviewInfoBean updateProperties(Map<String, String> properties) throws CmsRpcException;
+    CmsResourceInfoBean updateProperties(String resourcePath, Map<String, String> properties) throws CmsRpcException;
 
 }

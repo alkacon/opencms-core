@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleryController.java,v $
- * Date   : $Date: 2010/05/28 09:31:39 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2010/06/10 08:45:04 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,7 +37,6 @@ import org.opencms.ade.galleries.shared.CmsGalleryFolderBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.CmsResourceTypeBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
-import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
 import org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService;
 import org.opencms.ade.galleries.shared.rpc.I_CmsGalleryServiceAsync;
@@ -65,7 +64,7 @@ import com.google.gwt.core.client.GWT;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 8.0.0
  */
@@ -99,95 +98,16 @@ public class CmsGalleryController {
         m_searchObject = (CmsGallerySearchBean)CmsRpcPrefetcher.getSerializedObject(
             getGalleryService(),
             CmsGallerySearchBean.DICT_NAME);
-        //        m_searchObject = null;
         m_dialogBean = (CmsGalleryDataBean)CmsRpcPrefetcher.getSerializedObject(
             getGalleryService(),
             CmsGalleryDataBean.DICT_NAME);
-        //        m_dialogBean = new CmsGalleryDataBean();
-        //        m_dialogBean.setMode(GalleryMode.view);
-
-        // set tabs config
-        //        String[] tabs = CmsStringUtil.splitAsArray(CmsGalleryProvider.get().getTabs(), ",");
-        //        final ArrayList<String> tabsConfig = new ArrayList<String>();
-        //        for (int i = 0; tabs.length > i; i++) {
-        //            tabsConfig.add(tabs[i]);
-        //        }
-        //        m_dialogBean.setTabs(tabsConfig);
-
-        m_dialogMode = GalleryMode.view;
-        // m_dialogBean.getMode();
+        m_dialogMode = m_dialogBean.getMode();
 
         if (m_searchObject == null) {
             m_searchObject = new CmsGallerySearchBean();
         }
         m_handler.onInitialSearch(m_searchObject, m_dialogBean, this);
-
-        // TODO: move to an extra initialize method
-        /** The RPC action to get the initial gallery info object. */
-        //        CmsRpcAction<CmsGalleryInfoBean> initialAction = new CmsRpcAction<CmsGalleryInfoBean>() {
-        //
-        //            /**
-        //            * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
-        //            */
-        //            @Override
-        //            public void execute() {
-        //
-        //                // TODO: first search, there are no explicit types set!!! the prepareSearch cannot be call at this moment
-        //                getGalleryService().getInitialSettings(tabsConfig, m_searchObject, this);
-        //            }
-        //
-        //            /**
-        //            * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
-        //            */
-        //            @Override
-        //            public void onResponse(CmsGalleryInfoBean infoBean) {
-        //
-        //                m_dialogBean = infoBean.getDialogInfo();
-        //                m_searchObject = infoBean.getSearchObject();
-        //                m_handler.onInitialSearch(m_searchObject, m_dialogBean, getGalleryTabIdIndex(), isOpenInResults());
-        //            }
-        //        };
-        //        initialAction.execute();
-
     }
-
-    /**
-     * Opens the resource preview for the given resource.<p>
-     * 
-     * @param previewName the name of the preview provider
-     * @param galleryMode the gallery mode
-     * @param resourcePath the resource path
-     * @param parentElement the dialog element to insert the preview into
-     * 
-     * @return debug message
-     */
-    private static native String openPreview(
-        String previewName,
-        String galleryMode,
-        String resourcePath,
-        String parentElementId)/*-{
-        var providerList=$wnd[@org.opencms.ade.galleries.client.preview.I_CmsResourcePreview::KEY_PREVIEW_PROVIDER_LIST];
-        if (providerList){
-        var provider=providerList[previewName];
-        if (provider){
-        var openPreview=provider[@org.opencms.ade.galleries.client.preview.I_CmsResourcePreview::KEY_OPEN_PREVIEW_FUNCTION];
-        if (openPreview){
-        try{
-        openPreview(galleryMode, resourcePath, parentElementId);
-        }catch(err){
-        return err.description;
-        }
-        return "Opened preview";
-        }else{
-        return "Open function not available";
-        }
-        }else{
-        return "Provider "+previewName+" not available";
-        }
-        }else{
-        return "Provider list not available";
-        }
-    }-*/;
 
     /**
      * Add category to search object.<p>
@@ -267,43 +187,6 @@ public class CmsGalleryController {
     }
 
     /**
-     * Opens the preview for the selected item.<p>
-     * 
-     * @param id the item to select
-     */
-    //TODO: remove function
-    //    public void openPreview(final String id) {
-    //
-    //        // TODO: replace dummy with data from rpc call
-    //        CmsPreviewInfoBean dummyBean = new CmsPreviewInfoBean();
-    //        dummyBean.setPreviewHtml(new String("/opencms/opencms/demo_t3/images/Strelitzie.JPG"));
-    //        Map<String, String> dummyProps = new LinkedHashMap<String, String>();
-    //        dummyProps.put("Title", "Mein Title");
-    //        dummyProps.put("Description", "Mein Title");
-    //        dummyProps.put("Groesse", "Mein Title");
-    //        dummyProps.put("Groesse und sehr lang und so", "Mein Title");
-    //        dummyProps.put("Groesse", "Mein Title und hier auch etwas länger");
-    //        dummyProps.put("Groesse", "Mein Title");
-    //        dummyProps.put("Groesse und alles durcheinander", "Mein Title und auch enen langen Text");
-    //        dummyProps.put("Groesse", "Mein Title");
-    //        dummyProps.put("Groesse", "Mein Title");
-    //        dummyProps.put("Groesse", "Mein Title udn am Ende auch");
-    //        dummyBean.setPropeties(dummyProps);
-    //
-    //        Map<String, String> dummyInfos = new LinkedHashMap<String, String>();
-    //        dummyInfos.put(I_CmsGalleryProviderConstants.ImageParams.title.name(), "");
-    //        dummyInfos.put(I_CmsGalleryProviderConstants.ImageParams.file_name.name(), "");
-    //        dummyInfos.put(I_CmsGalleryProviderConstants.ImageParams.file_size.name(), "");
-    //        dummyInfos.put(I_CmsGalleryProviderConstants.ImageParams.file_type.name(), "Mein Title");
-    //        dummyInfos.put(I_CmsGalleryProviderConstants.ImageParams.height.name(), "");
-    //        dummyInfos.put(I_CmsGalleryProviderConstants.ImageParams.width.name(), "");
-    //        dummyInfos.put(I_CmsGalleryProviderConstants.ImageParams.path.name(), "");
-    //        dummyBean.setImageInfos(dummyInfos);
-    //        m_handler.onOpenPreview(m_dialogMode, dummyBean);
-    //        //TODO: call the rpc action and open the preview dialog in the callback
-    //    }
-
-    /**
      * Opens the preview for the given resource by the given resource type.<p>
      * 
      * @param resourcePath the resource path
@@ -311,20 +194,17 @@ public class CmsGalleryController {
      */
     public void openPreview(String resourcePath, String resourceType) {
 
-        CmsDebugLog.getInstance().printLine("Opening preview for path: " + resourcePath + " type: " + resourceType);
-        for (CmsResourceTypeBean typeBean : m_dialogBean.getTypes()) {
-            CmsDebugLog.getInstance().printLine("Checking type: " + typeBean.getType());
-            if (typeBean.getType().equals(resourceType)) {
-                CmsDebugLog.getInstance().printLine(
-                    openPreview(
-                        typeBean.getPreviewProviderName(),
-                        m_dialogMode.name(),
-                        resourcePath,
-                        m_handler.getDialogElementId()));
-                return;
+        String provider = getProviderName(resourceType);
+        if (provider != null) {
+            String message = openPreview(provider, m_dialogMode.name(), resourcePath, m_handler.getDialogElementId());
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(message)) {
+                //TODO: improve handling
+                CmsDebugLog.getInstance().printLine(message);
             }
+            return;
         }
-        CmsDebugLog.getInstance().printLine("Could not open preview.");
+        //TODO: improve handling
+        CmsDebugLog.getInstance().printLine("No provider available");
     }
 
     /**
@@ -355,6 +235,28 @@ public class CmsGalleryController {
     public void removeType(String resourceType) {
 
         m_searchObject.removeType(resourceType);
+    }
+
+    /**
+     * Selects the given resource and sets its path into the xml-content field or editor link.<p>
+     * 
+     * @param resourcePath the resource path
+     * @param title the resource title
+     * @param resourceType the resource type
+     */
+    public void selectResource(String resourcePath, String title, String resourceType) {
+
+        String provider = getProviderName(resourceType);
+        if (provider != null) {
+            String message = selectResource(provider, m_dialogMode.name(), resourcePath, title);
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(message)) {
+                //TODO: improve handling
+                CmsDebugLog.getInstance().printLine(message);
+            }
+            return;
+        }
+        //TODO: improve handling
+        CmsDebugLog.getInstance().printLine("No provider available");
     }
 
     /**
@@ -681,6 +583,23 @@ public class CmsGalleryController {
     }
 
     /**
+     * Returns the preview provider name for the given resource type, or <code>null</code> if none available.<p>
+     * 
+     * @param resourceType the resource type
+     * 
+     * @return the preview provider name
+     */
+    private String getProviderName(String resourceType) {
+
+        for (CmsResourceTypeBean typeBean : m_dialogBean.getTypes()) {
+            if (typeBean.getType().equals(resourceType)) {
+                return typeBean.getPreviewProviderName();
+            }
+        }
+        return null;
+    }
+
+    /**
      * Loading all available categories.<p>
      */
     private void loadCategories() {
@@ -744,4 +663,75 @@ public class CmsGalleryController {
         };
         action.execute();
     }
+
+    /**
+     * Opens the resource preview for the given resource.<p>
+     * 
+     * @param previewName the name of the preview provider
+     * @param galleryMode the gallery mode
+     * @param resourcePath the resource path
+     * @param parentElement the dialog element to insert the preview into
+     * 
+     * @return debug message
+     */
+    private native String openPreview(
+        String previewName,
+        String galleryMode,
+        String resourcePath,
+        String parentElementId)/*-{
+        var openPreview=null;
+        var providerList=$wnd[@org.opencms.ade.galleries.client.preview.I_CmsResourcePreview::KEY_PREVIEW_PROVIDER_LIST];
+        if (providerList){
+        var provider=providerList[previewName];
+        if (provider){
+        openPreview=provider[@org.opencms.ade.galleries.client.preview.I_CmsResourcePreview::KEY_OPEN_PREVIEW_FUNCTION];
+        if (openPreview){
+        try{
+        openPreview(galleryMode, resourcePath, parentElementId);
+        }catch(err){
+        return err.description;
+        }
+        return null;
+        }else{
+        return "Open function not available";
+        }
+        }else{
+        return "Provider "+previewName+" not available";
+        }
+        }else{
+        return "Provider list not available";
+        }
+    }-*/;
+
+    /**
+     * Selects the given resource and sets its path into the xml-content field or editor link.<p>
+     * 
+     * @param previewName the name of the preview provider
+     * @param galleryMode the gallery mode
+     * @param resourcePath the resource path
+     * @param title the resource title
+     */
+    private native String selectResource(String previewName, String galleryMode, String resourcePath, String title)/*-{
+        var providerList=$wnd[@org.opencms.ade.galleries.client.preview.I_CmsResourcePreview::KEY_PREVIEW_PROVIDER_LIST];
+        if (providerList){
+        var provider=providerList[previewName];
+        if (provider){
+        var selectResource=provider[@org.opencms.ade.galleries.client.preview.I_CmsResourcePreview::KEY_SELECT_RESOURCE_FUNCTION];
+        if (selectResource){
+        try{
+        selectResource(galleryMode, resourcePath, title);
+        }catch(err){
+        return err.description;
+        }
+        return null;
+        }else{
+        return "Select function not available";
+        }
+        }else{
+        return "Provider "+previewName+" not available";
+        }
+        }else{
+        return "Provider list not available";
+        }
+    }-*/;
 }

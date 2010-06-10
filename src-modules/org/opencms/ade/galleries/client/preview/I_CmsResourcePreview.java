@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/Attic/I_CmsResourcePreview.java,v $
- * Date   : $Date: 2010/06/07 08:07:40 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/06/10 08:45:04 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,7 @@ package org.opencms.ade.galleries.client.preview;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -50,14 +50,6 @@ public interface I_CmsResourcePreview {
 
     /** The select resource function key. */
     String KEY_SELECT_RESOURCE_FUNCTION = "selectResource";
-
-    /**
-     * Checks if further user input is required and other wise sets the selected resource via the provided integrator functions <code>setLink</code> and <code>setImage</code>.
-     * Returning <code>true</code> when all data has been set and the dialog should be closed.
-     * 
-     * @return <code>true</code> when all data has been set and the dialog should be closed
-     */
-    boolean closeGalleryDialog();
 
     /**
      * Returns the preview name, should return the same as in {@link org.opencms.ade.galleries.I_CmsPreviewProvider#getPreviewName()}.<p>
@@ -80,6 +72,17 @@ public interface I_CmsResourcePreview {
      * 
      * @param galleryMode the gallery mode
      * @param resourcePath the resource path
+     * @param title the resource title
      */
-    void selectResource(String galleryMode, String resourcePath);
+    void selectResource(String galleryMode, String resourcePath, String title);
+
+    /**
+     * Checks if further user input is required and other wise sets the selected resource
+     * via the provided integrator functions <code>setLink</code> and <code>setImage</code>.<p>
+     * Returning <code>true</code> when all data has been. 
+     * If there are any changes, the user will be requested to save those and the editor OK function will be called again.<p>
+     * 
+     * @return <code>true</code> when all data has been set, <code>false</code> if there were any changes that need saving
+     */
+    boolean setDataInEditor();
 }

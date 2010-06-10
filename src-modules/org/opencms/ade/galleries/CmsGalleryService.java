@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/Attic/CmsGalleryService.java,v $
- * Date   : $Date: 2010/06/07 08:07:40 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2010/06/10 08:45:04 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -81,7 +81,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 8.0.0
  * 
@@ -377,6 +377,12 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 }
                 String currentelement = getRequest().getParameter(ReqParam.currentelement.name());
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(currentelement)) {
+                    log("looking up:" + currentelement);
+                    // removing the servlet context if present
+                    if (currentelement.startsWith(OpenCms.getSystemInfo().getOpenCmsContext())) {
+                        currentelement = currentelement.substring(OpenCms.getSystemInfo().getOpenCmsContext().length());
+                        log("removed context - result: " + currentelement);
+                    }
                     CmsSitemapEntry entry = null;
                     try {
                         entry = OpenCms.getSitemapManager().getEntryForUri(getCmsObject(), currentelement);
@@ -384,8 +390,10 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                         logError(e);
                     }
                     if ((entry != null) && entry.isSitemap()) {
-                        //TODO: handle sitemap entries
+                        log("is sitemap entry");
+                        result = findResourceInGallery(entry.getSitePath(getCmsObject()), result);
                     } else {
+                        log("is vfs path");
                         // get search results given resource path
                         result = findResourceInGallery(currentelement, result);
                     }
@@ -603,6 +611,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         CmsResource resource = null;
         CmsProperty locale = CmsProperty.getNullProperty();
         try {
+            log("reading resource: " + resourceName);
             resource = getCmsObject().readResource(resourceName);
             locale = getCmsObject().readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_LOCALE, true);
         } catch (CmsException e) {
@@ -610,13 +619,16 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         }
         CmsGallerySearchBean searchObj = new CmsGallerySearchBean(initialSearchObj);
         if (resource == null) {
+            log("resource not found");
+            searchObj.setResourcePath(resourceName);
             return searchObj;
         }
 
         // prepare the search object
         String rootPath = resource.getRootPath();
         ArrayList<String> types = new ArrayList<String>();
-        types.add(String.valueOf(resource.getTypeId()));
+        String resType = OpenCms.getResourceManager().getResourceType(resource).getTypeName();
+        types.add(resType);
         searchObj.setTypes(types);
 
         ArrayList<String> galleries = new ArrayList<String>();
@@ -641,6 +653,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             Iterator<CmsGallerySearchResult> resultsIt = searchResults.listIterator();
             while (resultsIt.hasNext()) {
                 CmsGallerySearchResult searchResult = resultsIt.next();
+                log("comparing: " + searchResult.getPath() + " with " + rootPath);
                 if (searchResult.getPath().equals(rootPath)) {
                     found = true;
                     break;
@@ -660,6 +673,10 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             searchResultsObj.setResults(buildSearchResultList(searchResults));
             searchResultsObj.setPage(currentPage);
             searchResultsObj.setTabId(I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_results.name());
+            searchResultsObj.setResourcePath(resourceName);
+            searchResultsObj.setResourceType(resType);
+        } else {
+            log("could not find selected resource");
         }
         return searchResultsObj;
     }

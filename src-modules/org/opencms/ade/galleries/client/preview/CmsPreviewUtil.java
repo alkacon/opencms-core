@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/Attic/CmsPreviewUtil.java,v $
- * Date   : $Date: 2010/06/07 08:07:40 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/06/10 08:45:03 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,17 +42,20 @@ import java.util.Map.Entry;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
 public final class CmsPreviewUtil {
 
-    /** The close gallery dialog function key. */
-    static final String KEY_CLOSE_GALLERY_DIALOG_FUNCTION = "closeGalleryDialog";
+    /** The dialog OK function key. */
+    static final String KEY_DIALOG_OK_FUNCTION = "dialogOk";
 
-    /** The set link function key. */
-    static final String KEY_SET_LINK_FUNCTION = "setLink";
+    /** The enable dialog OK function key. */
+    static final String KEY_ENABLE_DIALOG_OK_FUNCTION = "enableDialogOk";
+
+    /** The close gallery dialog function key. */
+    static final String KEY_SET_DATA_IN_EDITOR_FUNCTION = "setDataInEditor";
 
     /** The set image function key. */
     static final String KEY_SET_IMAGE_FUNCTION = "setImage";
@@ -60,8 +63,8 @@ public final class CmsPreviewUtil {
     /** The set image link function key. */
     static final String KEY_SET_IMAGE_LINK_FUNCTION = "setImageLink";
 
-    /** The dialog OK function key. */
-    static final String KEY_DIALOG_OK_FUNCTION = "dialogOk";
+    /** The set link function key. */
+    static final String KEY_SET_LINK_FUNCTION = "setLink";
 
     /**
      * Constructor.<p>
@@ -76,6 +79,15 @@ public final class CmsPreviewUtil {
      */
     public static native void closeDialog() /*-{
         $wnd[@org.opencms.ade.galleries.client.preview.CmsPreviewUtil::KEY_DIALOG_OK_FUNCTION]();
+    }-*/;
+
+    /**
+     * Enables the dialog OK button within the rich text editor (FCKEditor, CKEditor, ...).<p>
+     * 
+     * @param enabled <code>true</code> to enable the button
+     */
+    public static native void enableEditorOk(boolean enabled)/*-{
+        $wnd[@org.opencms.ade.galleries.client.preview.CmsPreviewUtil::KEY_ENABLE_DIALOG_OK_FUNCTION](enabled);
     }-*/;
 
     /**
@@ -94,13 +106,24 @@ public final class CmsPreviewUtil {
         $wnd[listKey][previewName][@org.opencms.ade.galleries.client.preview.I_CmsResourcePreview::KEY_OPEN_PREVIEW_FUNCTION]=function(mode, path, parentElementId){
         preview.@org.opencms.ade.galleries.client.preview.I_CmsResourcePreview::openPreview(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(mode, path, parentElementId);
         };
-        $wnd[listKey][previewName][@org.opencms.ade.galleries.client.preview.I_CmsResourcePreview::KEY_SELECT_RESOURCE_FUNCTION]=function(mode, path){
-        preview.@org.opencms.ade.galleries.client.preview.I_CmsResourcePreview::selectResource(Ljava/lang/String;Ljava/lang/String;)(mode, path);
+        $wnd[listKey][previewName][@org.opencms.ade.galleries.client.preview.I_CmsResourcePreview::KEY_SELECT_RESOURCE_FUNCTION]=function(mode, path, title){
+        preview.@org.opencms.ade.galleries.client.preview.I_CmsResourcePreview::selectResource(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(mode, path, title);
         };
-        $wnd[@org.opencms.ade.galleries.client.preview.CmsPreviewUtil::KEY_CLOSE_GALLERY_DIALOG_FUNCTION]=function(){
-        return preview.@org.opencms.ade.galleries.client.preview.I_CmsResourcePreview::closeGalleryDialog()();
+        $wnd[@org.opencms.ade.galleries.client.preview.CmsPreviewUtil::KEY_SET_DATA_IN_EDITOR_FUNCTION]=function(){
+        return preview.@org.opencms.ade.galleries.client.preview.I_CmsResourcePreview::setDataInEditor()();
         };
     }-*/;
+
+    /**
+     * Returns the xml-content field id.<p>
+     * 
+     * @return the field id
+     */
+    public static String getFieldId() {
+
+        //TODO: implement
+        return null;
+    }
 
     /**
      * Sets the image tag within the rich text editor (FCKEditor, CKEditor, ...).<p>

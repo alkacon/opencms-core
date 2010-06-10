@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/preview/binary/client/Attic/CmsBinaryPreviewController.java,v $
- * Date   : $Date: 2010/06/07 08:07:40 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/06/10 08:45:04 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,11 +31,15 @@
 
 package org.opencms.ade.galleries.preview.binary.client;
 
-import org.opencms.ade.galleries.client.preview.CmsPreviewUtil;
-import org.opencms.ade.galleries.client.preview.I_CmsPreviewController;
-import org.opencms.ade.galleries.shared.CmsPreviewInfoBean;
-import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
-import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.ade.galleries.client.preview.A_CmsPreviewController;
+import org.opencms.ade.galleries.shared.CmsResourceInfoBean;
+import org.opencms.ade.galleries.shared.rpc.I_CmsPreviewService;
+import org.opencms.ade.galleries.shared.rpc.I_CmsPreviewServiceAsync;
+import org.opencms.gwt.client.rpc.CmsRpcAction;
+
+import java.util.Map;
+
+import com.google.gwt.core.client.GWT;
 
 /**
  * Binary preview dialog controller.<p>
@@ -43,115 +47,97 @@ import org.opencms.gwt.client.CmsCoreProvider;
  * This class handles the communication between preview dialog and the server.  
  * 
  * @author Polina Smagina
+ * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  */
-public final class CmsBinaryPreviewController implements I_CmsPreviewController {
+public final class CmsBinaryPreviewController extends A_CmsPreviewController<CmsResourceInfoBean> {
 
-    /** The dialog instance. */
-    private static CmsBinaryPreviewController INSTANCE;
-
-    /** The field id of the input field in the xmlcontent. */
-    private String m_fieldId;
-
-    /** The binary preview handler. */
-    private CmsBinaryPreviewControllerHandler m_handler;
-
-    /** The info bean of the binary preview dialog. */
-    private CmsPreviewInfoBean m_infoBean;
-
-    /** The binary preview dialog. */
-    private CmsBinaryPreview m_previewDialog;
+    /** The preview service. */
+    private I_CmsPreviewServiceAsync m_previewService;
 
     /**
      * Hiding constructor.<p>
      * 
      * @param handler the preview controller handler
-     * @param previewDialog the preview dialog
      */
-    private CmsBinaryPreviewController(CmsBinaryPreviewControllerHandler handler, CmsBinaryPreview previewDialog) {
+    public CmsBinaryPreviewController(CmsBinaryPreviewHandler handler) {
 
-        m_handler = handler;
-        m_previewDialog = previewDialog;
-        // TODO: set the fieldId, set over request params
-
+        super(handler);
+        handler.init(this);
     }
 
     /**
-     * Returns the dialogs instance.<p>
+     * Loads the resource info and displays the retrieved data.<p>
      * 
-     * @return the dialog instance
+     * @param resourcePath the resource path
      */
-    public static CmsBinaryPreviewController get() {
+    public void loadResourceInfo(final String resourcePath) {
 
-        return INSTANCE;
-    }
+        CmsRpcAction<CmsResourceInfoBean> action = new CmsRpcAction<CmsResourceInfoBean>() {
 
-    /**
-     * Initializes the dialog.<p>
-     * 
-     * @param handler the preview controller handler
-     * @param previewDialog the preview dialog
-     */
-    public static void init(CmsBinaryPreviewControllerHandler handler, CmsBinaryPreview previewDialog) {
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+             */
+            @Override
+            public void execute() {
 
-        if (INSTANCE == null) {
-            INSTANCE = new CmsBinaryPreviewController(handler, previewDialog);
-        }
-    }
-
-    /**
-     * @see org.opencms.ade.galleries.client.preview.I_CmsPreviewController#closeGalleryDialog()
-     */
-    public boolean closeGalleryDialog() {
-
-        if (m_previewDialog.getGalleryMode() == GalleryMode.editor) {
-            if (m_previewDialog.hasChangedProperties()) {
-                //TODO: Save properties
-                return false;
-            } else {
-                CmsPreviewUtil.setLink(
-                    CmsCoreProvider.get().link(m_infoBean.getResourcePath()),
-                    m_infoBean.getTitle(),
-                    "");
-                return true;
+                getService().getResourceInfo(resourcePath, this);
             }
-        } else {
-            throw new UnsupportedOperationException();
-        }
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+             */
+            @Override
+            protected void onResponse(CmsResourceInfoBean result) {
+
+                showData(result);
+            }
+        };
+        action.execute();
     }
 
     /**
-     * Saves the changed properties.<p>
+     * @see org.opencms.ade.galleries.client.preview.I_CmsPreviewController#saveProperties(java.util.Map)
      */
-    public void saveProperties() {
+    public void saveProperties(final Map<String, String> properties) {
 
-        // TODO: rpc call to save properties
-        m_handler.onSaveProperties();
+        CmsRpcAction<CmsResourceInfoBean> action = new CmsRpcAction<CmsResourceInfoBean>() {
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+             */
+            @Override
+            public void execute() {
+
+                getService().updateProperties(getResourcePath(), properties, this);
+            }
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+             */
+            @Override
+            protected void onResponse(CmsResourceInfoBean result) {
+
+                showData(result);
+            }
+        };
+        action.execute();
+
     }
 
     /**
-     * Selects the resource.<p>
+     * Returns the preview service.<p>
      * 
-     * @param dialogMode the gallery mode 
+     * @return the preview service
      */
-    // TODO: add parameters if necessary
-    public void select(GalleryMode dialogMode) {
+    protected I_CmsPreviewServiceAsync getService() {
 
-        switch (dialogMode) {
-            case widget:
-
-                break;
-            case sitemap:
-                break;
-            case ade:
-            case view:
-            default:
-                break;
+        if (m_previewService == null) {
+            m_previewService = GWT.create(I_CmsPreviewService.class);
         }
-
-        m_handler.onSelect(dialogMode);
+        return m_previewService;
     }
 }

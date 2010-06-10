@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleryControllerHandler.java,v $
- * Date   : $Date: 2010/05/28 09:31:39 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2010/06/10 08:45:04 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,8 +39,11 @@ import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.CmsResourceTypeBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.List;
+
+import com.google.gwt.user.client.Command;
 
 /**
  * Gallery dialog controller handler.<p>
@@ -49,7 +52,7 @@ import java.util.List;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 8.0.0
 
@@ -146,9 +149,9 @@ public class CmsGalleryControllerHandler {
      * @param controller the dialog controller
      */
     public void onInitialSearch(
-        CmsGallerySearchBean searchObj,
+        final CmsGallerySearchBean searchObj,
         CmsGalleryDataBean dialogBean,
-        CmsGalleryController controller) {
+        final CmsGalleryController controller) {
 
         m_galleryDialog.fillTabs(dialogBean.getMode().getTabs(), controller);
         if ((m_galleryDialog.getGalleriesTab() != null) && (dialogBean.getGalleries() != null)) {
@@ -168,34 +171,25 @@ public class CmsGalleryControllerHandler {
                 m_galleryDialog.getCategoriesTab().getCategoriesParamsPanel(searchObj.getCategories()));
         }
         m_galleryDialog.selectTab(dialogBean.getStartTab());
-    }
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(searchObj.getResourcePath())
+            && CmsStringUtil.isNotEmptyOrWhitespaceOnly(searchObj.getResourceType())) {
+            if (m_galleryDialog.isAttached()) {
+                controller.openPreview(searchObj.getResourcePath(), searchObj.getResourceType());
+            } else {
+                // gallery dialog has to be attached to open the preview
+                m_galleryDialog.setOnAttachCommand(new Command() {
 
-    /**
-     * Will be triggered when the preview is opened.<p>
-     * 
-     * @param previewBean the preview bean
-     */
-    // TODO: open the right pewview depending on the resource type
-    // TODO: move to the preview handler
-    //    public void onOpenPreview(GalleryMode dialogMode, CmsPreviewInfoBean previewBean) {
-    //
-    //        // 
-    //        int dialogHeight = m_galleryDialog.getParentPanel().getOffsetHeight();
-    //        int dialogWidth = m_galleryDialog.getParentPanel().getOffsetWidth();
-    //        // TODO: the preview dialog should exists already, only the new size should be updated and the new content filled
-    //        // TODO: do not create new dialog
-    //        /*A_CmsPreview preview = new CmsPreviewDefault(
-    //            dialogMode,
-    //            dialogHeight,
-    //            dialogWidth);
-    //        preview.fillPreviewPanel(dialogHeight, dialogWidth, previewBean.getPreviewHtml());
-    //        preview.fillTabs(dialogHeight, dialogWidth, previewBean);*/
-    //
-    //        A_CmsPreview preview = new CmsImagePreview(dialogMode, dialogHeight, dialogWidth);
-    //        preview.fillPreviewPanel(dialogHeight, dialogWidth, previewBean.getPreviewHtml());
-    //        preview.fillTabs(dialogHeight, dialogWidth, previewBean);
-    //        m_galleryDialog.getParentPanel().add(preview);
-    //    }
+                    /**
+                     * @see com.google.gwt.user.client.Command#execute()
+                     */
+                    public void execute() {
+
+                        controller.openPreview(searchObj.getResourcePath(), searchObj.getResourceType());
+                    }
+                });
+            }
+        }
+    }
 
     /**
      * Will be triggered when the results tab is selected.<p>

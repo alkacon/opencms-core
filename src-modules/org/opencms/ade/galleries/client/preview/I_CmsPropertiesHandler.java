@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/Attic/CmsPropertiesTabHandler.java,v $
- * Date   : $Date: 2010/06/02 14:46:36 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/Attic/I_CmsPropertiesHandler.java,v $
+ * Date   : $Date: 2010/06/10 08:45:03 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -31,7 +31,7 @@
 
 package org.opencms.ade.galleries.client.preview;
 
-import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
+import java.util.Map;
 
 /**
  * The properties tab handler of the preview dialog.<p>
@@ -45,28 +45,18 @@ import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMod
  * 
  * @since 8.0.0
  */
-public class CmsPropertiesTabHandler {
-
-    /** The preview controller. */
-    protected I_CmsPreviewController m_controller;
+public interface I_CmsPropertiesHandler {
 
     /**
-     * Constructor.<p>
+     * Saves the properties.<p>
      * 
-     * @param controller the controller
+     * @param properties the properties to save 
      */
-    public CmsPropertiesTabHandler(I_CmsPreviewController controller) {
-
-        m_controller = controller;
-    }
+    void saveProperties(Map<String, String> properties);
 
     /**
-     * Will be triggered when the ok button is clicked.<p>
-     * 
-     * @param dialogMode the mode of the gallery
+     * Selects the current resource and sets its path into the xml-content field or editor link, depending on the gallery mode.<p>
      */
-    public void onSelect(GalleryMode dialogMode) {
+    void selectResource();
 
-        m_controller.select(dialogMode);
-    }
 }

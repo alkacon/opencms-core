@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/preview/binary/client/Attic/CmsBinaryPreview.java,v $
- * Date   : $Date: 2010/06/07 08:07:40 $
- * Version: $Revision: 1.2 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/preview/binary/client/Attic/CmsBinaryPreviewDialog.java,v $
+ * Date   : $Date: 2010/06/10 08:45:04 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,28 +31,25 @@
 
 package org.opencms.ade.galleries.preview.binary.client;
 
-import org.opencms.ade.galleries.client.preview.CmsPropertiesTabHandler;
-import org.opencms.ade.galleries.client.preview.I_CmsPreviewController;
-import org.opencms.ade.galleries.client.preview.ui.A_CmsPreview;
+import org.opencms.ade.galleries.client.preview.ui.A_CmsPreviewDialog;
 import org.opencms.ade.galleries.client.preview.ui.CmsPropertiesTab;
-import org.opencms.ade.galleries.shared.CmsPreviewInfoBean;
+import org.opencms.ade.galleries.shared.CmsResourceInfoBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
-import org.opencms.gwt.client.ui.CmsTabbedPanel;
-import org.opencms.gwt.client.ui.CmsTabbedPanel.CmsTabLayout;
 
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Provides a widget for the binary preview dialog .<p>
  *  
  * @author Polina Smagina
+ * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.
  */
-public class CmsBinaryPreview extends A_CmsPreview {
+public class CmsBinaryPreviewDialog extends A_CmsPreviewDialog<CmsResourceInfoBean> {
 
     /** The properties tab. */
     private CmsPropertiesTab m_propertiesTab;
@@ -64,36 +61,39 @@ public class CmsBinaryPreview extends A_CmsPreview {
      * @param dialogHeight the dialog height to set
      * @param dialogWidth the dialog width to set     
      */
-    public CmsBinaryPreview(GalleryMode dialogMode, int dialogHeight, int dialogWidth) {
+    public CmsBinaryPreviewDialog(GalleryMode dialogMode, int dialogHeight, int dialogWidth) {
 
         super(dialogMode, dialogHeight, dialogWidth);
     }
 
     /**
-     * @see org.opencms.ade.galleries.client.preview.ui.A_CmsPreview#fillPreviewPanel(int, int, String)
+     * @see org.opencms.ade.galleries.client.preview.ui.A_CmsPreviewDialog#confirmSaveChanges(java.lang.String, com.google.gwt.user.client.Command, com.google.gwt.user.client.Command)
      */
     @Override
-    public void fillPreviewPanel(int height, int width, String html) {
+    public void confirmSaveChanges(String message, Command onConfirm, Command onCancel) {
 
-        m_previewPanel.add(new HTML(html));
+        //TODO: implement
     }
 
     /**
-     * @see org.opencms.ade.galleries.client.preview.ui.A_CmsPreview#fillTabs(int, int, CmsPreviewInfoBean, I_CmsPreviewController)
+     * @see org.opencms.ade.galleries.client.preview.ui.A_CmsPreviewDialog#fillContent(org.opencms.ade.galleries.shared.CmsResourceInfoBean)
      */
     @Override
-    public void fillTabs(int height, int width, CmsPreviewInfoBean infoBean, I_CmsPreviewController controller) {
+    public void fillContent(CmsResourceInfoBean infoBean) {
 
-        m_tabbedPanel = new CmsTabbedPanel<Widget>(CmsTabLayout.small, false);
-        m_propertiesTab = new CmsPropertiesTab(
-            m_galleryMode,
-            height,
-            width,
-            infoBean.getPropeties(),
-            new CmsPropertiesTabHandler(controller));
-        m_tabbedPanel.add(m_propertiesTab, m_propertiesTab.getTabName());
+        //TODO: use proper preview content
+        fillPreviewPanel("<p>" + m_galleryMode.name() + "</p>");
+        m_propertiesTab.fillProperties(infoBean.getProperties());
+    }
 
-        m_tabsHolder.add(m_tabbedPanel);
+    /**
+     * Fills the content of the preview panel part.<p>
+     * 
+     * @param html the content html
+     */
+    public void fillPreviewPanel(String html) {
+
+        m_previewPanel.add(new HTML(html));
     }
 
     /**
@@ -104,5 +104,26 @@ public class CmsBinaryPreview extends A_CmsPreview {
     public boolean hasChangedProperties() {
 
         return m_propertiesTab.isChanged();
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.preview.ui.A_CmsPreviewDialog#hasChanges()
+     */
+    @Override
+    public boolean hasChanges() {
+
+        return m_propertiesTab.isChanged();
+    }
+
+    /**
+     * Initializes the preview.<p>
+     * 
+     * @param handler the preview handler
+     */
+    public void init(CmsBinaryPreviewHandler handler) {
+
+        m_handler = handler;
+        m_propertiesTab = new CmsPropertiesTab(m_galleryMode, m_dialogHeight, m_dialogWidth, m_handler);
+        m_tabbedPanel.add(m_propertiesTab, m_propertiesTab.getTabName());
     }
 }

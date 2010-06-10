@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsSearchTab.java,v $
- * Date   : $Date: 2010/05/25 12:36:33 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/06/10 08:45:04 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,32 +33,56 @@ package org.opencms.ade.galleries.client.ui;
 
 import org.opencms.ade.galleries.client.CmsSearchTabHandler;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.ui.input.CmsTextBox;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.Label;
 
 /**
  * Provides the widget for the full text search tab.<p>
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.
  */
 public class CmsSearchTab extends A_CmsTab {
 
     /** The ui-binder interface. */
-    interface I_CmsSearchTabUiBinder extends UiBinder<FlowPanel, CmsSearchTab> {
+    interface I_CmsSearchTabUiBinder extends UiBinder<HTMLPanel, CmsSearchTab> {
         // GWT interface, nothing to do here
     }
+
+    @UiField
+    protected Label m_descriptionLabel;
+
+    @UiField
+    protected Label m_searchLabel;
+
+    @UiField
+    protected Label m_dateLabel;
+
+    @UiField
+    protected Label m_dateField;
+
+    @UiField
+    protected CmsTextBox m_searchInput;
+
+    //    @UiField
+    //    protected DateBox m_datePicker;
 
     /** The ui-binder instance. */
     private static I_CmsSearchTabUiBinder uiBinder = GWT.create(I_CmsSearchTabUiBinder.class);
 
     /** The tab panel. */
-    private FlowPanel m_tab;
+    private HTMLPanel m_tab;
 
     /** The tab handler. */
     private CmsSearchTabHandler m_tabHandler;
@@ -74,6 +98,31 @@ public class CmsSearchTab extends A_CmsTab {
         m_tab = uiBinder.createAndBindUi(this);
         initWidget(m_tab);
         m_tabHandler = tabHandler;
+        // TODO: add localization
+        m_descriptionLabel.setText("Search for resources");
+        m_searchLabel.setText("Seach:");
+        m_dateLabel.setText("Date:");
+        Element ins = DOM.createDiv();
+        ins.addClassName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll()
+            + " "
+            + I_CmsLayoutBundle.INSTANCE.dialogCss().popupShadow());
+        //        m_datePicker.getDatePicker().getParent().getElement().insertFirst(ins);
+        //        m_datePicker.getDatePicker().addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
+        //        CmsDebugLog.getInstance().printLine(
+        //            "datepicker class:" + m_datePicker.getDatePicker().getElement().getClassName());
+        //        CmsDebugLog.getInstance().printLine(
+        //            "datepicker parent class:" + m_datePicker.getDatePicker().getElement().getParentElement().getClassName());
+        //        m_datePicker.getDatePicker().getElement().getParentElement().addClassName(
+        //            I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
+        //        m_datePicker.addValueChangeHandler(new ValueChangeHandler<Date>() {
+        //
+        //            public void onValueChange(ValueChangeEvent<Date> event) {
+        //
+        //                Date date = event.getValue();
+        //                String dateString = DateTimeFormat.getMediumDateFormat().format(date);
+        //                m_dateField.setText(dateString);
+        //            }
+        //        });
     }
 
     /**

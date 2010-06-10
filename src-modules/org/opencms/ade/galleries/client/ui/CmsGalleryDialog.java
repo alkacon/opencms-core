@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsGalleryDialog.java,v $
- * Date   : $Date: 2010/06/02 14:46:36 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2010/06/10 08:45:04 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,6 +54,7 @@ import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
@@ -63,7 +64,7 @@ import com.google.gwt.user.client.ui.HTMLPanel;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * 
  * @since 8.0.
  */
@@ -102,6 +103,8 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
 
     /** The types tab. */
     private CmsTypesTab m_typesTab;
+
+    private Command m_onAttachCommand;
 
     /**
      * The default constructor for the gallery dialog.<p> 
@@ -304,7 +307,7 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
         Iterator<A_CmsTab> it = m_tabbedPanel.iterator();
         while (it.hasNext()) {
             A_CmsTab tab = it.next();
-            if (tabId == tab.getTabId()) {
+            if (tabId.equals(tab.getTabId())) {
                 m_tabbedPanel.selectTab(tab);
                 break;
             }
@@ -337,4 +340,28 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
             ResizeEvent.fire(this, width, height);
         }
     }
+
+    /**
+     * Sets the on attach command.<p>
+     *
+     * @param onAttachCommand the on attach command to set
+     */
+    public void setOnAttachCommand(Command onAttachCommand) {
+
+        m_onAttachCommand = onAttachCommand;
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.Composite#onAttach()
+     */
+    @Override
+    protected void onAttach() {
+
+        super.onAttach();
+        if (m_onAttachCommand != null) {
+            m_onAttachCommand.execute();
+            m_onAttachCommand = null;
+        }
+    }
+
 }

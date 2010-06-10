@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/rpc/Attic/I_CmsPreviewServiceAsync.java,v $
- * Date   : $Date: 2010/06/02 14:46:36 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/06/10 08:45:04 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,7 @@
 
 package org.opencms.ade.galleries.shared.rpc;
 
-import org.opencms.ade.galleries.shared.CmsPreviewInfoBean;
+import org.opencms.ade.galleries.shared.CmsResourceInfoBean;
 
 import java.util.Map;
 
@@ -42,7 +42,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  * 
@@ -57,17 +57,21 @@ public interface I_CmsPreviewServiceAsync {
      * 
      * @param resourcePath the path to the selected resource
      * 
-     * @param callback the callback 
+     * @param callback the call-back 
      */
-    void getPreview(String resourcePath, AsyncCallback<CmsPreviewInfoBean> callback);
+    void getResourceInfo(String resourcePath, AsyncCallback<CmsResourceInfoBean> callback);
 
     /**
      * Returns the data to be displayed in the preview dialog.<p>
      * 
+     * @param resourcePath the path to the selected resource
      * @param properties a map with the key/value pairs of the properties to be updated
      * 
-     * @param callback the callback 
+     * @param callback the call-back 
      */
-    void updateProperties(Map<String, String> properties, AsyncCallback<CmsPreviewInfoBean> callback);
+    void updateProperties(
+        String resourcePath,
+        Map<String, String> properties,
+        AsyncCallback<CmsResourceInfoBean> callback);
 
 }

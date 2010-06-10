@@ -11,8 +11,28 @@
 %><fmt:setLocale value="${locale}" />
 <fmt:bundle basename="org.opencms.workplace.editors.ade.messagesADE">
 // nesting a FCKDialogCommand to use dynamic the dialog URLs
-var dialogCommand = function() { this.Name = "OcmsDownloadGallery"; }
-dialogCommand.prototype.GetState = function() { return FCK_TRISTATE_OFF; }
+
+/**
+ * The dialog command constructor.<p>
+ */
+var dialogCommand = function() {
+	this.Name = "OcmsDownloadGallery";
+}
+
+/**
+ * Returns the command state.<p>
+ * 
+ * @return the state
+ */
+dialogCommand.prototype.GetState = function() { 
+	return FCK_TRISTATE_OFF;
+}
+
+/**
+ * Executes the command.<p>
+ * 
+ * @return void
+ */
 dialogCommand.prototype.Execute = function() {
 	var command=new FCKDialogCommand(
 			"OcmsDownloadGallery",
@@ -23,12 +43,25 @@ dialogCommand.prototype.Execute = function() {
 		);
 	command.Execute();
 }
+
 //register the related commands
 FCKCommands.RegisterCommand(
 		"OcmsDownloadGallery",
 		new dialogCommand());
 
-//checks if a text part has been selected by the user
+//create the "OcmsDownloadGallery" toolbar button
+//syntax: FCKToolbarButton(commandName, label, tooltip, style, sourceView, contextSensitive) 
+var opencmsDownloadGalleryItem = new FCKToolbarButton("OcmsDownloadGallery", "<fmt:message key="GUI_EDITOR_TITLE_DOWNLOADGALLERY_0" />", "<fmt:message key="GUI_EDITOR_TOOLTIP_DOWNLOADGALLERY_0" />", null, false, true);
+opencmsDownloadGalleryItem.IconPath = FCKConfig.SkinPath + "toolbar/oc-downloadgallery.gif";
+
+//"OcmsDownloadGallery" is the name that is used in the toolbar configuration
+FCKToolbarItems.RegisterItem("OcmsDownloadGallery", opencmsDownloadGalleryItem);
+
+/**
+ * Returns if there is text selected within the FCKEditor.<p>
+ * 
+ * @return <code>boolean</code> <code>true</code> if text is selected
+ */
 function hasSelectedText() {
 	 var sel;
 	 if (FCKBrowserInfo.IsIE) {
@@ -42,7 +75,11 @@ function hasSelectedText() {
 	 return false; 
 }
 
-// Searches for a frame by the specified name. Will only return siblings or ancestors.
+/**
+ * Searches for a frame by the specified name. Will only return siblings or ancestors.<p>
+ * 
+ * @return <code>Frame</code> the frame or <code>null</code> if no matching frame is found
+ */ 
 function getFrame(startFrame, frameName){
     if (startFrame == top){
         if (startFrame.name == frameName){
@@ -58,9 +95,13 @@ function getFrame(startFrame, frameName){
     return getFrame(startFrame.parent, frameName);
 }
 
-// create the path to the image gallery dialog with some request parameters for the dialog
+/**
+ * Returns the path to the image gallery dialog with some request parameters for the dialog.<p>
+ * 
+ * @return <code>String</code> the dialog URL
+ */ 
 function downloadGalleryDialogUrl() {
-	var path="";
+	var path=null;
 	if (hasSelectedText() == true) {
 		var a = FCK.Selection.MoveToAncestorNode('A') ;
     	if (a) {
@@ -68,7 +109,12 @@ function downloadGalleryDialogUrl() {
     		FCK.Selection.SelectNode(a);
         	//path to resource
     		path = a.getAttribute("_fcksavedurl");
-        }	
+    		
+    		// in case of a newly created link, use the href attribute
+    		if (path == null || path==""){
+    			path=a.getAttribute("href");
+    		}
+        }
 	}
 	var resParam = "";
     var editFrame=getFrame(self, 'edit');
@@ -77,16 +123,7 @@ function downloadGalleryDialogUrl() {
 	} else {
 		resParam = "&resource=" + editFrame.editform.editedResource;
 	}
-	var searchParam = "&types=<%=itemResType %>&currentelement="+path;
+	var searchParam = "&types=<%=itemResType %>&currentelement="+ ( path==null ? "" : path);
 	return "<%= cms.link("/system/modules/org.opencms.ade.galleries/gallery.jsp") %>?dialogmode=editor" + searchParam + resParam;
 }
-
-
-// create the "OcmsDownloadGallery" toolbar button
-// syntax: FCKToolbarButton(commandName, label, tooltip, style, sourceView, contextSensitive) 
-var opencmsDownloadGalleryItem = new FCKToolbarButton("OcmsDownloadGallery", "<fmt:message key="GUI_EDITOR_TITLE_DOWNLOADGALLERY_0" />", "<fmt:message key="GUI_EDITOR_TOOLTIP_DOWNLOADGALLERY_0" />", null, false, true);
-opencmsDownloadGalleryItem.IconPath = FCKConfig.SkinPath + "toolbar/oc-downloadgallery.gif";
-
-// "OcmsDownloadGallery" is the name that is used in the toolbar configuration
-FCKToolbarItems.RegisterItem("OcmsDownloadGallery", opencmsDownloadGalleryItem);
 </fmt:bundle>

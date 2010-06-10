@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/ui/Attic/A_CmsPreview.java,v $
- * Date   : $Date: 2010/06/07 08:07:40 $
- * Version: $Revision: 1.6 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/ui/Attic/A_CmsPreviewDialog.java,v $
+ * Date   : $Date: 2010/06/10 08:45:03 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,13 +31,14 @@
 
 package org.opencms.ade.galleries.client.preview.ui;
 
-import org.opencms.ade.galleries.client.preview.I_CmsPreviewController;
+import org.opencms.ade.galleries.client.preview.I_CmsPreviewHandler;
 import org.opencms.ade.galleries.client.ui.CmsGalleryDialog;
-import org.opencms.ade.galleries.shared.CmsPreviewInfoBean;
+import org.opencms.ade.galleries.shared.CmsResourceInfoBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
 import org.opencms.gwt.client.ui.I_CmsButton;
+import org.opencms.gwt.client.ui.CmsTabbedPanel.CmsTabLayout;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsDomUtil.Style;
 
@@ -47,6 +48,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -55,32 +57,44 @@ import com.google.gwt.user.client.ui.Widget;
  * Provides a widget skeleton for the preview dialog.<p>
  * 
  * This widget contains a panel with the resource preview and
- * a set of tabs with resource information under the preview panel.
+ * a set of tabs with resource information under the preview panel.<p>
+ * 
+ * @param <T> the resource info bean type
  *  
  * @author Polina Smagina
+ * @author Tobias Herrmann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.
  */
-public abstract class A_CmsPreview extends Composite {
+public abstract class A_CmsPreviewDialog<T extends CmsResourceInfoBean> extends Composite {
 
     /**
      * @see com.google.gwt.uibinder.client.UiBinder
      */
-    /* default */interface I_CmsPreviewUiBinder extends UiBinder<Widget, A_CmsPreview> {
+    protected interface I_CmsPreviewDialogUiBinder extends UiBinder<Widget, A_CmsPreviewDialog<?>> {
         // GWT interface, nothing to do here
     }
 
     /** The ui-binder instance for this class. */
-    private static I_CmsPreviewUiBinder uiBinder = GWT.create(I_CmsPreviewUiBinder.class);
+    private static I_CmsPreviewDialogUiBinder uiBinder = GWT.create(I_CmsPreviewDialogUiBinder.class);
 
     /** The close button of the preview dialog. */
     @UiField
     protected CmsPushButton m_closeButton;
 
+    /** The dialog height. */
+    protected int m_dialogHeight;
+
+    /** The dialog width. */
+    protected int m_dialogWidth;
+
     /** The dialog mode of the gallery. */
     protected GalleryMode m_galleryMode;
+
+    /** The preview handler. */
+    protected I_CmsPreviewHandler<T> m_handler;
 
     /** The parent panel of the preview dialog. */
     @UiField
@@ -94,7 +108,6 @@ public abstract class A_CmsPreview extends Composite {
     @UiField
     protected FlowPanel m_previewPanel;
 
-    // TODO: set the right generic type
     /** The tabbed panel of the preview dialog. */
     protected CmsTabbedPanel<Widget> m_tabbedPanel;
 
@@ -105,8 +118,6 @@ public abstract class A_CmsPreview extends Composite {
     /** The min height for the preview panel. */
     private final int m_minPreviewHeight = 364;
 
-    private CmsPropertiesTab m_propertiesTab;
-
     /**
      * The constructor.<p>
      * 
@@ -114,8 +125,7 @@ public abstract class A_CmsPreview extends Composite {
      * @param dialogHeight the dialog height to set
      * @param dialogWidth the dialog width to set
      */
-    // TODO: this contrustor should be called only once, when the gallery dialog is opened and set to invisible
-    public A_CmsPreview(GalleryMode dialogMode, int dialogHeight, int dialogWidth) {
+    public A_CmsPreviewDialog(GalleryMode dialogMode, int dialogHeight, int dialogWidth) {
 
         // TODO: to remove, if a better way is found, so the css is only loaded once
         CmsGalleryDialog.initCss();
@@ -124,28 +134,34 @@ public abstract class A_CmsPreview extends Composite {
 
         m_galleryMode = dialogMode;
 
-        // height of the preview dialog
-        m_parentPanel.getElement().getStyle().setHeight(dialogHeight, Unit.PX);
-        m_parentPanel.getElement().getStyle().setWidth((dialogWidth - 2), Unit.PX);
+        m_dialogHeight = dialogHeight;
+        m_dialogWidth = dialogWidth;
 
-        int previewHeght = m_minPreviewHeight;
-        int detailsHeight = dialogHeight - previewHeght;
+        // height of the preview dialog
+        m_parentPanel.getElement().getStyle().setHeight(m_dialogHeight, Unit.PX);
+        m_parentPanel.getElement().getStyle().setWidth((m_dialogWidth - 2), Unit.PX);
+
+        int previewHeight = m_minPreviewHeight;
+        int detailsHeight = m_dialogHeight - previewHeight;
 
         // height of the preview and tabs part
-        previewHeght = previewHeght
+        previewHeight = previewHeight
             - CmsDomUtil.getCurrentStyleInt(m_previewHolder.getElement(), Style.marginBottom)
             - CmsDomUtil.getCurrentStyleInt(m_previewHolder.getElement(), Style.marginTop)
             - 1;
         // FF: -1;
         // IE7 -2;
-        m_previewHolder.getElement().getStyle().setHeight(previewHeght, Unit.PX);
+        m_previewHolder.getElement().getStyle().setHeight(previewHeight, Unit.PX);
 
         detailsHeight = detailsHeight
             - CmsDomUtil.getCurrentStyleInt(m_tabsHolder.getElement(), Style.marginBottom)
             - CmsDomUtil.getCurrentStyleInt(m_tabsHolder.getElement(), Style.marginTop)
             - 2;
         m_tabsHolder.getElement().getStyle().setHeight(detailsHeight, Unit.PX);
-        m_tabsHolder.getElement().getStyle().setWidth((dialogWidth - 4), Unit.PX);
+        m_tabsHolder.getElement().getStyle().setWidth((m_dialogWidth - 4), Unit.PX);
+
+        m_tabbedPanel = new CmsTabbedPanel<Widget>(CmsTabLayout.small, false);
+        m_tabsHolder.add(m_tabbedPanel);
 
         // close button        
         m_closeButton.setUiIcon(I_CmsButton.UiIcon.closethick);
@@ -153,23 +169,22 @@ public abstract class A_CmsPreview extends Composite {
     }
 
     /**
-     * Fills the content of the preview panel part.<p>
+     * Displays a confirm save changes dialog with the given message.
+     * May insert individual message before the given one for further information.<p> 
+     * Will call the appropriate command after saving/cancel.<p>
      * 
-     * @param height the 
-     * @param width 
-     * @param html the content html
+     * @param message the message to display
+     * @param onConfirm the command executed after saving
+     * @param onCancel the command executed on cancel
      */
-    public abstract void fillPreviewPanel(int height, int width, String html);
+    public abstract void confirmSaveChanges(String message, Command onConfirm, Command onCancel);
 
     /**
      * Fills the content of the tabs panel.<p>
      * 
-     * @param height the tab height 
-     * @param width the tab width
-     * @param infoBean the bean containing the parameter 
-     * @param controller the preview controller
+     * @param resourceInfo the bean containing the parameter 
      */
-    public abstract void fillTabs(int height, int width, CmsPreviewInfoBean infoBean, I_CmsPreviewController controller);
+    public abstract void fillContent(T resourceInfo);
 
     /**
      * Returns the gallery mode.<p>
@@ -182,13 +197,19 @@ public abstract class A_CmsPreview extends Composite {
     }
 
     /**
-     * Returns the properties tab.<p>
-     *
-     * @return the properties tab
+     * Returns if there are any changes that need saving, before the preview may be closed.<p>
+     * 
+     * @return <code>true</code> if changed
      */
-    public CmsPropertiesTab getPropertiesTab() {
+    public abstract boolean hasChanges();
 
-        return m_propertiesTab;
+    /**
+     * Removes the preview.<p>
+     */
+    public void removePreview() {
+
+        m_parentPanel.setVisible(false);
+        m_parentPanel.removeFromParent();
     }
 
     /**
@@ -199,9 +220,8 @@ public abstract class A_CmsPreview extends Composite {
      * @param event the click event
      */
     @UiHandler("m_closeButton")
-    void onCloseClick(ClickEvent event) {
+    protected void onCloseClick(ClickEvent event) {
 
-        m_parentPanel.setVisible(false);
-        m_parentPanel.removeFromParent();
+        m_handler.closePreview();
     }
 }

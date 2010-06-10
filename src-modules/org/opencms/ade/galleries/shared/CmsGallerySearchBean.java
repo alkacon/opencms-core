@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/Attic/CmsGallerySearchBean.java,v $
- * Date   : $Date: 2010/05/19 09:02:51 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/06/10 08:45:04 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  */
@@ -80,6 +80,9 @@ public class CmsGallerySearchBean implements IsSerializable {
 
     /** The path to the selected resource. */
     private String m_resourcePath;
+
+    /** The type of the selected resource. */
+    private String m_resourceType;
 
     /** The number of all search results. */
     private int m_resultCount;
@@ -268,6 +271,16 @@ public class CmsGallerySearchBean implements IsSerializable {
     }
 
     /**
+     * Returns the resource type of the selected resource.<p>
+     *
+     * @return the resource type
+     */
+    public String getResourceType() {
+
+        return m_resourceType;
+    }
+
+    /**
      * Returns the resultCount.<p>
      *
      * @return the resultCount
@@ -438,6 +451,16 @@ public class CmsGallerySearchBean implements IsSerializable {
     public void setResourcePath(String resourcePath) {
 
         m_resourcePath = resourcePath;
+    }
+
+    /**
+     * Sets the resource type of the selected resource.<p>
+     *
+     * @param resourceType the resource type to set
+     */
+    public void setResourceType(String resourceType) {
+
+        m_resourceType = resourceType;
     }
 
     /**

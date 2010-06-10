@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/ui/Attic/CmsPropertyForm.java,v $
- * Date   : $Date: 2010/06/01 08:21:17 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/06/10 08:45:03 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
  *  
  * @author Polina Smagina
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.
  */
@@ -67,7 +67,7 @@ public class CmsPropertyForm extends Composite {
     /** The label. */
     private CmsLabel m_label;
 
-    /** The papanel. */
+    /** The parent panel. */
     private FlowPanel m_parent;
 
     /** The width of the parent panel. */
@@ -78,11 +78,10 @@ public class CmsPropertyForm extends Composite {
      * 
      * @param id the id of the property from
      * @param width the property from width
-     * @param label the property label
      * @param value the property value
      * @param textMetricsKey the key identifying the text metrics to use 
      */
-    public CmsPropertyForm(String id, int width, String label, String value, String textMetricsKey) {
+    public CmsPropertyForm(String id, int width, String value, String textMetricsKey) {
 
         m_id = id;
         m_isChanged = false;
@@ -90,7 +89,7 @@ public class CmsPropertyForm extends Composite {
         m_parent = new FlowPanel();
         m_parent.getElement().getStyle().setWidth(m_parentWidth, Unit.PX);
         // set form label
-        m_label = new CmsLabel(label);
+        m_label = new CmsLabel(m_id);
         m_label.addStyleName(I_CmsLayoutBundle.INSTANCE.previewDialogCss().labelField());
         m_label.getElement().getStyle().setWidth(getLabelWidth(), Unit.PX);
         m_label.truncate(textMetricsKey, getLabelWidth());
@@ -126,6 +125,16 @@ public class CmsPropertyForm extends Composite {
     public String getId() {
 
         return m_id;
+    }
+
+    /**
+     * Returns the field value.<p>
+     * 
+     * @return the field value
+     */
+    public String getValue() {
+
+        return m_textBox.getFormValueAsString();
     }
 
     /**

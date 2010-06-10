@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/preview/image/client/Attic/CmsImagePreviewControllerHandler.java,v $
- * Date   : $Date: 2010/06/02 14:46:36 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/preview/image/client/Attic/CmsImagePreviewHandler.java,v $
+ * Date   : $Date: 2010/06/10 08:45:04 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -31,7 +31,8 @@
 
 package org.opencms.ade.galleries.preview.image.client;
 
-import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
+import org.opencms.ade.galleries.client.preview.A_CmsPreviewHandler;
+import org.opencms.ade.galleries.preview.image.shared.CmsImageInfoBean;
 
 /**
  * Image preview dialog controller handler.<p>
@@ -44,55 +45,26 @@ import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMod
  * 
  * @since 8.0.0
  */
-public class CmsImagePreviewControllerHandler {
-
-    /** The reference to the preview dialog. */
-    private CmsImagePreview m_previewDialog;
+public class CmsImagePreviewHandler extends A_CmsPreviewHandler<CmsImageInfoBean> {
 
     /**
      * Constructor.<p>
      * 
      * @param previewDialog the reference to the preview dialog 
      */
-    public CmsImagePreviewControllerHandler(CmsImagePreview previewDialog) {
+    public CmsImagePreviewHandler(CmsImagePreviewDialog previewDialog) {
 
-        m_previewDialog = previewDialog;
+        super(previewDialog);
+        previewDialog.init(this);
     }
 
     /**
-     * Returns the reference to the preview dialog.<p>
-     *
-     * @return the preview dialog
-     */
-    public CmsImagePreview getPreviewDialog() {
-
-        return m_previewDialog;
-    }
-
-    /**
-     * Will be triggered when the save button is clicked.<p>
-     */
-    public void onSaveProperties() {
-
-        //TODO: update properties fields layout , color
-    }
-
-    /**
-     * Will be triggered when the select button is clicked.<p>
+     * Initializes the preview handler.<p>
      * 
-     * @param dialogMode the gallery dialog mode
+     * @param controller the preview controller
      */
-    public void onSelect(GalleryMode dialogMode) {
+    public void init(CmsImagePreviewController controller) {
 
-        switch (dialogMode) {
-
-            case editor:
-            case sitemap:
-            case ade:
-            case view:
-            case widget:
-            default:
-                break;
-        }
+        m_controller = controller;
     }
 }

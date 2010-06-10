@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/Attic/I_CmsPreviewController.java,v $
- * Date   : $Date: 2010/06/10 08:45:04 $
- * Version: $Revision: 1.3 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/Attic/I_CmsPreviewHandler.java,v $
+ * Date   : $Date: 2010/06/10 08:45:03 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,57 +32,39 @@
 package org.opencms.ade.galleries.client.preview;
 
 import org.opencms.ade.galleries.shared.CmsResourceInfoBean;
-import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
-
-import java.util.Map;
 
 /**
- * Interface for the preview controller.<p>
+ * Preview dialog handler interface.<p>
+ * 
+ * Delegates the actions of the preview controller to the preview dialog.<p>
  * 
  * @param <T> the resource info bean type
  * 
- * @author Polina Smagina
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.1 $ 
  * 
  * @since 8.0.0
  */
-public interface I_CmsPreviewController<T extends CmsResourceInfoBean> {
+public interface I_CmsPreviewHandler<T extends CmsResourceInfoBean> extends I_CmsPropertiesHandler {
 
     /**
-     * Checks if further user input is required and other wise sets the selected resource via the provided integrator functions <code>setLink</code> and <code>setImage</code>.
-     * Returning <code>true</code> when all data has been set and the dialog should be closed.
-     * 
-     * @return <code>true</code> when all data has been set and the dialog should be closed
+     * Closes the preview.<p>
      */
-    boolean closeGalleryDialog();
+    void closePreview();
 
     /**
-     * Loads the resource info and displays the retrieved data.<p>
+     * Returns false, if the dialog may not be closed due to unsaved properties.<p>
      * 
-     * @param resourcePath the resource path
+     * @return <code>true</code> if the dialog may be closed
      */
-    void loadResourceInfo(String resourcePath);
+    boolean setDataInEditor();
 
     /**
-     * Saves the changed properties.<p>
-     * 
-     * @param properties the changed properties 
-     */
-    void saveProperties(Map<String, String> properties);
-
-    /**
-     * Sets the current resource within the editor or xml-content.<p>
-     * 
-     * @param galleryMode the gallery mode
-     */
-    void setResource(GalleryMode galleryMode);
-
-    /**
-     * Calls the preview handler to display the given data.<p>
+     * Displays the given resource info data.<p>
      * 
      * @param resourceInfo the resource info data
      */
     void showData(T resourceInfo);
+
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/ui/Attic/CmsPropertiesTab.java,v $
- * Date   : $Date: 2010/06/02 14:46:36 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/06/10 08:45:03 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,12 +31,13 @@
 
 package org.opencms.ade.galleries.client.preview.ui;
 
-import org.opencms.ade.galleries.client.preview.CmsPropertiesTabHandler;
+import org.opencms.ade.galleries.client.preview.I_CmsPropertiesHandler;
 import org.opencms.ade.galleries.client.ui.Messages;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 import org.opencms.gwt.client.ui.CmsPushButton;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -55,7 +56,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.
  */
@@ -90,7 +91,13 @@ public class CmsPropertiesTab extends Composite {
     private GalleryMode m_dialogMode;
 
     /** The tab handler. */
-    private CmsPropertiesTabHandler m_handler;
+    private I_CmsPropertiesHandler m_handler;
+
+    /** The tab height. */
+    private int m_tabHeight;
+
+    /** The tab width. */
+    private int m_tabWidth;
 
     /**
      * The constructor.<p>
@@ -98,22 +105,16 @@ public class CmsPropertiesTab extends Composite {
      * @param dialogMode the dialog mode
      * @param height the properties tab height
      * @param width the properties tab width
-     * @param properties the properties to display
      * @param handler tha tab handler to set
      */
-    public CmsPropertiesTab(
-        GalleryMode dialogMode,
-        int height,
-        int width,
-        Map<String, String> properties,
-        CmsPropertiesTabHandler handler) {
+    public CmsPropertiesTab(GalleryMode dialogMode, int height, int width, I_CmsPropertiesHandler handler) {
 
         initWidget(uiBinder.createAndBindUi(this));
 
         m_dialogMode = dialogMode;
         m_handler = handler;
-
-        fillProperties(height, width, properties);
+        m_tabHeight = height;
+        m_tabWidth = width;
 
         // buttons
         switch (m_dialogMode) {
@@ -132,6 +133,39 @@ public class CmsPropertiesTab extends Composite {
 
         m_saveButton.setText(Messages.get().key(Messages.GUI_PREVIEW_BUTTON_SAVE_0));
 
+    }
+
+    /**
+     * The generic function to display the resource properties.<p>
+     * 
+     * @param properties the properties values
+     */
+    public void fillProperties(Map<String, String> properties) {
+
+        // width of a property form
+        int pannelWidth = calculateWidth(m_tabWidth);
+        m_properties.clear();
+        Iterator<Entry<String, String>> it = properties.entrySet().iterator();
+        boolean isLeft = true;
+        while (it.hasNext()) {
+
+            Entry<String, String> entry = it.next();
+            CmsPropertyForm property = new CmsPropertyForm(
+                entry.getKey(),
+                pannelWidth,
+                entry.getValue(),
+                TM_PREVIEW_TAB_PROPERTIES);
+            if (isLeft) {
+                property.setFormStyle(I_CmsLayoutBundle.INSTANCE.previewDialogCss().propertyLeft());
+                isLeft = false;
+            } else {
+                property.setFormStyle(I_CmsLayoutBundle.INSTANCE.previewDialogCss().propertyRight());
+                isLeft = true;
+            }
+            m_properties.add(property);
+
+            // TODO: set the calculated height of the scrolled panel with properties
+        }
     }
 
     /**
@@ -178,7 +212,14 @@ public class CmsPropertiesTab extends Composite {
     @UiHandler("m_saveButton")
     public void onSaveClick(ClickEvent event) {
 
-        // TODO: implement
+        Map<String, String> properties = new HashMap<String, String>();
+        for (Widget property : m_properties) {
+            CmsPropertyForm form = ((CmsPropertyForm)property);
+            if (form.isChanged()) {
+                properties.put(form.getId(), form.getValue());
+            }
+        }
+        m_handler.saveProperties(properties);
     }
 
     /**
@@ -189,7 +230,7 @@ public class CmsPropertiesTab extends Composite {
     @UiHandler("m_selectButton")
     public void onSelectClick(ClickEvent event) {
 
-        m_handler.onSelect(m_dialogMode);
+        m_handler.selectResource();
     }
 
     /**
@@ -198,8 +239,10 @@ public class CmsPropertiesTab extends Composite {
      * @param width the new width
      * @param height the new height
      */
-    public void updateHeight(int width, int height) {
+    public void updateSize(int width, int height) {
 
+        m_tabHeight = height;
+        m_tabWidth = width;
         // TODO: implement
     }
 
@@ -216,40 +259,5 @@ public class CmsPropertiesTab extends Composite {
     private int calculateWidth(int width) {
 
         return ((width - 13) / 2) - 18;
-    }
-
-    /**
-     * The generic function to display the resource properties.<p>
-     * 
-     * @param height the height of the properties panel
-     * @param width the width of the properties panel
-     * @param properties the properties values
-     */
-    private void fillProperties(int height, int width, Map<String, String> properties) {
-
-        // width of a property form
-        int pannelWidth = calculateWidth(width);
-        Iterator<Entry<String, String>> it = properties.entrySet().iterator();
-        boolean isLeft = true;
-        while (it.hasNext()) {
-
-            Entry<String, String> entry = it.next();
-            CmsPropertyForm property = new CmsPropertyForm(
-                "id",
-                pannelWidth,
-                entry.getKey(),
-                entry.getValue(),
-                TM_PREVIEW_TAB_PROPERTIES);
-            if (isLeft) {
-                property.setFormStyle(I_CmsLayoutBundle.INSTANCE.previewDialogCss().propertyLeft());
-                isLeft = false;
-            } else {
-                property.setFormStyle(I_CmsLayoutBundle.INSTANCE.previewDialogCss().propertyRight());
-                isLeft = true;
-            }
-            m_properties.add(property);
-
-            // TODO: set the calculated height of the scrolled panel with properties
-        }
     }
 }

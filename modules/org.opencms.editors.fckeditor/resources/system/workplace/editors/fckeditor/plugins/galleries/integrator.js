@@ -25,7 +25,7 @@ var fckEditor= parentDialog.InnerDialogLoaded();
  * @return <code>true</code> to close the dialog
  */
 function Ok(){
-	return closeGalleryDialog();
+	return setDataInEditor();
 }
 
 /**
@@ -35,6 +35,17 @@ function Ok(){
  */
 function dialogOk(){
 	parentDialog.Ok();
+}
+
+/**
+ * Enables the dialog OK button.<p>
+ * 
+ * @param enabled <code>boolean</code> <code>true</code> to enable the button
+ * 
+ * @return void
+ */
+function enableDialogOk(enabled){
+	parentDialog.SetOkButton(enabled);
 }
 
 /**
@@ -119,7 +130,7 @@ function setLink(path, title, target){
 		}
 	    a.title = title;
 	}else{
-		var result = "<a href=\"" + uri + "\" title=\"" + title;
+		var result = "<a href=\"" + path + "\" title=\"" + title;
 		result += (target!=null && target!="") ? ("\" target=\"" + target) : "";
 		result += "\">" + title + "<\/a>";
 		fckEditor.FCK.InsertHtml(result);
