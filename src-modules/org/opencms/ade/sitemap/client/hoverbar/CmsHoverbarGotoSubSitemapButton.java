@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsHoverbarGotoSubSitemapButton.java,v $
- * Date   : $Date: 2010/06/08 07:12:45 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/06/10 13:03:06 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import com.google.gwt.user.client.Window;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -62,7 +62,6 @@ public class CmsHoverbarGotoSubSitemapButton extends CmsPushButton {
     public CmsHoverbarGotoSubSitemapButton(final CmsSitemapHoverbar hoverbar) {
 
         setImageClass(I_CmsImageBundle.INSTANCE.buttonCss().hoverbarGotoSub());
-        //TODO: change title 
         setTitle(Messages.get().key(Messages.GUI_HOVERBAR_GOTO_SUB_0));
         setShowBorder(false);
         setVisible(false);
