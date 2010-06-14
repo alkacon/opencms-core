@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsCategoriesTab.java,v $
- * Date   : $Date: 2010/05/25 12:36:33 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/06/14 06:09:19 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,12 +35,10 @@ import org.opencms.ade.galleries.client.CmsCategoriesTabHandler;
 import org.opencms.ade.galleries.shared.CmsCategoryBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
-import org.opencms.gwt.client.ui.CmsFloatDecoratedPanel;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.I_CmsListItem;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
-import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsPair;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.gwt.shared.CmsIconUtil;
@@ -52,7 +50,6 @@ import java.util.List;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.HTMLPanel;
 
 /**
  * Provides the widget for the categories tab.<p>
@@ -61,7 +58,7 @@ import com.google.gwt.user.client.ui.HTMLPanel;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 8.0.
  */
@@ -80,7 +77,6 @@ public class CmsCategoriesTab extends A_CmsListTab {
         /** The reference to the checkbox. */
         private CmsCheckBox m_checkBox;
 
-        // TODO: remove the reference to the checkbox when the event source is clicked checkBox and not the toogleButton
         /**
          * Constructor.<p>
          * 
@@ -144,32 +140,29 @@ public class CmsCategoriesTab extends A_CmsListTab {
     }
 
     /**
-     * Returns the panel with the content of the categories search parameter.<p>
+     * Returns the content of the categories search parameter.<p>
      *  
      * @param selectedCategories the list of selected categories by the user
-     * @return the panel showing the selected categories
+     * 
+     * @return the selected categories
      */
-    // TODO: handle the case the selected item is not found 
-    public CmsFloatDecoratedPanel getCategoriesParamsPanel(List<String> selectedCategories) {
+    public String getCategoriesParams(List<String> selectedCategories) {
 
         if ((selectedCategories == null) || (selectedCategories.size() == 0)) {
             return null;
         }
-        CmsFloatDecoratedPanel categoriesPanel = new CmsFloatDecoratedPanel();
-        String panelText = CmsDomUtil.enclose(CmsDomUtil.Tag.b, Messages.get().key(
-            Messages.GUI_PARAMS_LABEL_CATEGORIES_0));
+        StringBuffer result = new StringBuffer(128);
         for (String categoryPath : selectedCategories) {
             CmsCategoryTreeItem categoryItem = searchCategoryItem(m_scrollList, categoryPath);
             String title = categoryItem.getItemTitle();
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
                 title = categoryItem.getSubTitle();
             }
-            panelText += " " + title + ",";
+            result.append(title).append(", ");
         }
-        panelText = panelText.substring(0, panelText.length() - 1);
-        categoriesPanel.add(new HTMLPanel(CmsDomUtil.Tag.div.name(), panelText));
+        result.delete(result.length() - 2, result.length());
 
-        return categoriesPanel;
+        return result.toString();
     }
 
     /**
@@ -246,35 +239,6 @@ public class CmsCategoriesTab extends A_CmsListTab {
     }
 
     /**
-     * Updates the content of the categories list.<p>
-     * 
-     * @param categoriesBeans the updates list of categories tree item beans
-     * @param selectedCategories the categories to select in the list by update
-     */
-    public void updateContent(List<CmsCategoryBean> categoriesBeans, List<String> selectedCategories) {
-
-        clearList();
-        for (CmsCategoryBean categoryBean : categoriesBeans) {
-            // set the list item widget
-            CmsListItemWidget listItemWidget = new CmsListItemWidget(new CmsListInfoBean(
-                categoryBean.getTitle(),
-                categoryBean.getDescription(),
-                null));
-            listItemWidget.setIcon(CATEGORY_ICON_CLASSES);
-            // the checkbox
-            CmsCheckBox checkBox = new CmsCheckBox();
-            if ((selectedCategories != null) && selectedCategories.contains(categoryBean.getPath())) {
-                checkBox.setChecked(true);
-            }
-            checkBox.addClickHandler(new CheckboxHandler(categoryBean.getPath(), checkBox));
-            // set the category list item and add to list 
-            CmsCategoryTreeItem listItem = new CmsCategoryTreeItem(false, checkBox, listItemWidget);
-            listItem.init(categoryBean.getPath(), categoryBean.getTitle(), categoryBean.getDescription());
-            addWidgetToList(listItem);
-        }
-    }
-
-    /**
      * Updates the content of th categories tree.<p>
      * 
      * @param treeEntry the root category entry
@@ -306,6 +270,35 @@ public class CmsCategoriesTab extends A_CmsListTab {
                 addWidgetToList(treeItem);
                 treeItem.setOpen(true);
             }
+        }
+    }
+
+    /**
+     * Updates the content of the categories list.<p>
+     * 
+     * @param categoriesBeans the updates list of categories tree item beans
+     * @param selectedCategories the categories to select in the list by update
+     */
+    public void updateContent(List<CmsCategoryBean> categoriesBeans, List<String> selectedCategories) {
+
+        clearList();
+        for (CmsCategoryBean categoryBean : categoriesBeans) {
+            // set the list item widget
+            CmsListItemWidget listItemWidget = new CmsListItemWidget(new CmsListInfoBean(
+                categoryBean.getTitle(),
+                categoryBean.getDescription(),
+                null));
+            listItemWidget.setIcon(CATEGORY_ICON_CLASSES);
+            // the checkbox
+            CmsCheckBox checkBox = new CmsCheckBox();
+            if ((selectedCategories != null) && selectedCategories.contains(categoryBean.getPath())) {
+                checkBox.setChecked(true);
+            }
+            checkBox.addClickHandler(new CheckboxHandler(categoryBean.getPath(), checkBox));
+            // set the category list item and add to list 
+            CmsCategoryTreeItem listItem = new CmsCategoryTreeItem(false, checkBox, listItemWidget);
+            listItem.init(categoryBean.getPath(), categoryBean.getTitle(), categoryBean.getDescription());
+            addWidgetToList(listItem);
         }
     }
 

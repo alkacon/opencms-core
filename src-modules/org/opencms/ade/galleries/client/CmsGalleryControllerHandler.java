@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleryControllerHandler.java,v $
- * Date   : $Date: 2010/06/10 08:45:04 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2010/06/14 06:09:19 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import com.google.gwt.user.client.Command;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 8.0.0
 
@@ -166,9 +166,9 @@ public class CmsGalleryControllerHandler {
         if (dialogBean.getStartTab() == GalleryTabId.cms_tab_results) {
             m_galleryDialog.getResultsTab().fillContent(
                 searchObj,
-                m_galleryDialog.getTypesTab().getTypesParamsPanel(searchObj.getTypes()),
-                m_galleryDialog.getGalleriesTab().getGallerisParamsPanel(searchObj.getGalleries()),
-                m_galleryDialog.getCategoriesTab().getCategoriesParamsPanel(searchObj.getCategories()));
+                m_galleryDialog.getTypesTab().getTypesParams(searchObj.getTypes()),
+                m_galleryDialog.getGalleriesTab().getGalleriesParams(searchObj.getGalleries()),
+                m_galleryDialog.getCategoriesTab().getCategoriesParams(searchObj.getCategories()));
         }
         m_galleryDialog.selectTab(dialogBean.getStartTab());
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(searchObj.getResourcePath())
@@ -200,9 +200,9 @@ public class CmsGalleryControllerHandler {
 
         m_galleryDialog.getResultsTab().updateContent(
             searchObj,
-            m_galleryDialog.getTypesTab().getTypesParamsPanel(searchObj.getTypes()),
-            m_galleryDialog.getGalleriesTab().getGallerisParamsPanel(searchObj.getGalleries()),
-            m_galleryDialog.getCategoriesTab().getCategoriesParamsPanel(searchObj.getCategories()));
+            m_galleryDialog.getTypesTab().getTypesParams(searchObj.getTypes()),
+            m_galleryDialog.getGalleriesTab().getGalleriesParams(searchObj.getGalleries()),
+            m_galleryDialog.getCategoriesTab().getCategoriesParams(searchObj.getCategories()));
     }
 
     /**

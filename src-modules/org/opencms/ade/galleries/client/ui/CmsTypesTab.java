@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsTypesTab.java,v $
- * Date   : $Date: 2010/05/25 12:36:33 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/06/14 06:09:19 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,10 +36,8 @@ import org.opencms.ade.galleries.shared.CmsResourceTypeBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
 import org.opencms.gwt.client.draganddrop.I_CmsDragHandler;
-import org.opencms.gwt.client.ui.CmsFloatDecoratedPanel;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
-import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsPair;
 import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
@@ -48,10 +46,8 @@ import org.opencms.util.CmsStringUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.HTMLPanel;
 
 /**
  * Provides the widget for the types tab.<p>
@@ -60,7 +56,7 @@ import com.google.gwt.user.client.ui.HTMLPanel;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 8.0.
  */
@@ -79,7 +75,6 @@ public class CmsTypesTab extends A_CmsListTab {
         /** The resource type (name/id?) as id for the selected type. */
         private String m_resourceType;
 
-        // TODO: remove when the event source is clicked checkBox and not the toogleButton
         /**
          * Constructor.<p>
          * 
@@ -140,7 +135,6 @@ public class CmsTypesTab extends A_CmsListTab {
             CmsListItemWidget listItemWidget;
             CmsListInfoBean infoBean = new CmsListInfoBean(typeBean.getTitle(), typeBean.getDescription(), null);
             if (m_dragHandler != null) {
-                // TODO: check if this is working
                 listItemWidget = m_dragHandler.createDraggableListItemWidget(infoBean, typeBean.getType());
             } else {
                 listItemWidget = new CmsListItemWidget(infoBean);
@@ -160,18 +154,18 @@ public class CmsTypesTab extends A_CmsListTab {
     }
 
     /**
-     * Returns the panel with the content of the types search parameter.<p>
+     * Returns the content of the types search parameter.<p>
      *  
      * @param selectedTypes the list of selected resource types
-     * @return the panel showing the selected types
+     * 
+     * @return the selected types
      */
-    public CmsFloatDecoratedPanel getTypesParamsPanel(List<String> selectedTypes) {
+    public String getTypesParams(List<String> selectedTypes) {
 
         if ((selectedTypes == null) || (selectedTypes.size() == 0)) {
             return null;
         }
-        CmsFloatDecoratedPanel typesPanel = new CmsFloatDecoratedPanel();
-        String panelText = CmsDomUtil.enclose(CmsDomUtil.Tag.b, Messages.get().key(Messages.GUI_PARAMS_LABEL_TYPES_0));
+        StringBuffer result = new StringBuffer();
         for (String type : selectedTypes) {
 
             CmsTypeListItem galleryItem = (CmsTypeListItem)m_scrollList.getItem(type);
@@ -179,15 +173,10 @@ public class CmsTypesTab extends A_CmsListTab {
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
                 title = galleryItem.getSubTitle();
             }
-            panelText += " " + title + ",";
-
+            result.append(title).append(", ");
         }
-        panelText = panelText.substring(0, panelText.length() - 1);
-        HTMLPanel test = new HTMLPanel(CmsDomUtil.Tag.div.name(), panelText);
-        test.getElement().getStyle().setDisplay(Display.INLINE_BLOCK);
-        typesPanel.add(test);
-
-        return typesPanel;
+        result.delete(result.length() - 2, result.length());
+        return result.toString();
     }
 
     /**

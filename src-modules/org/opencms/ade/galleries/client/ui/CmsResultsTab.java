@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsResultsTab.java,v $
- * Date   : $Date: 2010/06/07 08:07:40 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2010/06/14 06:09:19 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,12 +38,11 @@ import org.opencms.ade.galleries.shared.CmsResultItemBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
 import org.opencms.gwt.client.draganddrop.I_CmsDragHandler;
-import org.opencms.gwt.client.ui.CmsFlowPanel;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsPushButton;
-import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.util.CmsClientStringUtil;
+import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsPair;
 import org.opencms.gwt.shared.CmsIconUtil;
@@ -53,12 +52,10 @@ import org.opencms.util.CmsStringUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Provides the widget for the results tab.<p>
@@ -68,16 +65,16 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 8.0.
  */
-public class CmsResultsTab extends A_CmsListTab implements ClickHandler {
+public class CmsResultsTab extends A_CmsListTab {
 
     /**
      * Special click handler to use with push button.<p>
      */
-    private class CmsPushButtonHandler implements ClickHandler {
+    private class CmsPreviewButtonHandler implements ClickHandler {
 
         /** The id of the selected item. */
         private String m_resourcePath;
@@ -90,7 +87,7 @@ public class CmsResultsTab extends A_CmsListTab implements ClickHandler {
          * @param resourcePath the item resource path 
          * @param resourceType the item resource type
          */
-        public CmsPushButtonHandler(String resourcePath, String resourceType) {
+        public CmsPreviewButtonHandler(String resourcePath, String resourceType) {
 
             m_resourcePath = resourcePath;
             m_resourceType = resourceType;
@@ -101,7 +98,7 @@ public class CmsResultsTab extends A_CmsListTab implements ClickHandler {
          */
         public void onClick(ClickEvent event) {
 
-            getTabHandler().onClick(m_resourcePath, m_resourceType);
+            getTabHandler().openPreview(m_resourcePath, m_resourceType);
 
         }
     }
@@ -110,25 +107,13 @@ public class CmsResultsTab extends A_CmsListTab implements ClickHandler {
     private static final String TM_RESULT_TAB = "ResultTab";
 
     /** The categories parameter panel. */
-    private CmsFlowPanel m_categories;
-
-    /** Button to remove the selected categories. */
-    private CmsPushButton m_closeCategoriesBtn;
-
-    /** Button to remove the selected galleries. */
-    private CmsPushButton m_closeGalleriesBtn;
-
-    /** Button to remove the selected types. */
-    private CmsPushButton m_closeTypesBtn;
+    private CmsSearchParamPanel m_categories;
 
     /** The reference to the drag handler for the list elements. */
     private I_CmsDragHandler<?, ?> m_dragHandler;
 
     /** The galleries parameter panel. */
-    private CmsFlowPanel m_galleries;
-
-    /** Button to remove the full text search. */
-    //private CmsImageButton m_closeSearchBtn;
+    private CmsSearchParamPanel m_galleries;
 
     /** The panel showing the search parameters. */
     private FlowPanel m_params;
@@ -137,7 +122,7 @@ public class CmsResultsTab extends A_CmsListTab implements ClickHandler {
     private CmsResultsTabHandler m_tabHandler;
 
     /** The types parameter panel panel. */
-    private CmsFlowPanel m_types;
+    private CmsSearchParamPanel m_types;
 
     /**
      * The constructor.<p>
@@ -152,15 +137,13 @@ public class CmsResultsTab extends A_CmsListTab implements ClickHandler {
         m_tabHandler = tabHandler;
         m_scrollList.truncate(TM_RESULT_TAB, CmsGalleryDialog.DIALOG_WIDTH);
         m_params = new FlowPanel();
-        m_categories = new CmsFlowPanel(CmsDomUtil.Tag.span.name());
-        m_categories.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
-        m_galleries = new CmsFlowPanel(CmsDomUtil.Tag.span.name());
-        m_galleries.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
-        m_types = new CmsFlowPanel(CmsDomUtil.Tag.span.name());
-        m_types.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
-        m_params.add(m_types);
-        m_params.add(m_galleries);
-        m_params.add(m_categories);
+        m_params.setStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().tabOptions());
+        m_categories = new CmsSearchParamPanel(GalleryTabId.cms_tab_categories, Messages.get().key(
+            Messages.GUI_PARAMS_LABEL_CATEGORIES_0), this);
+        m_galleries = new CmsSearchParamPanel(GalleryTabId.cms_tab_galleries, Messages.get().key(
+            Messages.GUI_PARAMS_LABEL_GALLERIES_0), this);
+        m_types = new CmsSearchParamPanel(GalleryTabId.cms_tab_types, Messages.get().key(
+            Messages.GUI_PARAMS_LABEL_TYPES_0), this);
         m_tab.insert(m_params, 0);
     }
 
@@ -174,19 +157,18 @@ public class CmsResultsTab extends A_CmsListTab implements ClickHandler {
      */
     public void fillContent(
         CmsGallerySearchBean searchObj,
-        Widget typesParams,
-        Widget galleriesParams,
-        Widget categoriesParams) {
+        String typesParams,
+        String galleriesParams,
+        String categoriesParams) {
 
         showParams(searchObj, typesParams, galleriesParams, categoriesParams);
-        //updateListSize();
+
         List<CmsResultItemBean> list = searchObj.getResults();
         for (CmsResultItemBean resultItem : list) {
 
             CmsListItemWidget resultItemWidget;
             CmsListInfoBean infoBean = new CmsListInfoBean(resultItem.getTitle(), resultItem.getDescription(), null);
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(resultItem.getExcerpt())) {
-                //TODO: add localization
                 infoBean.addAdditionalInfo(
                     Messages.get().key(Messages.GUI_RESULT_LABEL_EXCERPT_0),
                     resultItem.getExcerpt());
@@ -201,7 +183,7 @@ public class CmsResultsTab extends A_CmsListTab implements ClickHandler {
             previewButton.setImageClass(I_CmsImageBundle.INSTANCE.style().magnifierIcon());
             previewButton.setShowBorder(false);
             previewButton.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
-            previewButton.addClickHandler(new CmsPushButtonHandler(resultItem.getPath(), resultItem.getType()));
+            previewButton.addClickHandler(new CmsPreviewButtonHandler(resultItem.getPath(), resultItem.getType()));
             resultItemWidget.addButton(previewButton);
             // add file icon
             resultItemWidget.setIcon(CmsIconUtil.getResourceIconClasses(resultItem.getType(), resultItem.getPath()));
@@ -212,19 +194,13 @@ public class CmsResultsTab extends A_CmsListTab implements ClickHandler {
     }
 
     /**
-     * Callback to handle click events on the close button of the selected parameters.<p>
-     * 
-     * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
+     * @see org.opencms.ade.galleries.client.ui.A_CmsTab#onSelection()
      */
-    public void onClick(ClickEvent event) {
+    @Override
+    public void onSelection() {
 
-        if (event.getSource() == m_closeTypesBtn) {
-            m_tabHandler.onRemoveTypes();
-        } else if (event.getSource() == m_closeGalleriesBtn) {
-            m_tabHandler.onRemoveGalleries();
-        } else if (event.getSource() == m_closeCategoriesBtn) {
-            m_tabHandler.onRemoveCategories();
-        } // TODO: add search params panel
+        super.onSelection();
+        updateListSize();
     }
 
     /**
@@ -232,8 +208,7 @@ public class CmsResultsTab extends A_CmsListTab implements ClickHandler {
      */
     public void removeCategories() {
 
-        m_categories.clear();
-        m_categories.removeStyleName(org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle.INSTANCE.galleryDialogCss().showParams());
+        m_categories.removeFromParent();
     }
 
     /**
@@ -241,8 +216,41 @@ public class CmsResultsTab extends A_CmsListTab implements ClickHandler {
      */
     public void removeGalleries() {
 
-        m_galleries.clear();
-        m_galleries.removeStyleName(org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle.INSTANCE.galleryDialogCss().showParams());
+        m_galleries.removeFromParent();
+    }
+
+    /**
+     * Removes the search parameters associated with the given tab id.<p>
+     * 
+     * @param tabId the tab id
+     */
+    public void removeParams(GalleryTabId tabId) {
+
+        switch (tabId) {
+            case cms_tab_categories:
+                m_tabHandler.onRemoveCategories();
+                break;
+            case cms_tab_containerpage:
+                break;
+            case cms_tab_galleries:
+                m_tabHandler.onRemoveGalleries();
+                break;
+            case cms_tab_results:
+                break;
+            case cms_tab_search:
+                m_tabHandler.onRemoveTextSearch();
+                break;
+            case cms_tab_sitemap:
+                break;
+            case cms_tab_types:
+                m_tabHandler.onRemoveTypes();
+                break;
+            case cms_tab_vfstree:
+                break;
+            default:
+                break;
+        }
+        updateListSize();
     }
 
     /**
@@ -250,8 +258,7 @@ public class CmsResultsTab extends A_CmsListTab implements ClickHandler {
      */
     public void removeTypes() {
 
-        m_types.clear();
-        m_types.removeStyleName(org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle.INSTANCE.galleryDialogCss().showParams());
+        m_types.removeFromParent();
     }
 
     /**
@@ -264,12 +271,10 @@ public class CmsResultsTab extends A_CmsListTab implements ClickHandler {
      */
     public void updateContent(
         CmsGallerySearchBean searchObj,
-        Widget typesParams,
-        Widget galleriesParams,
-        Widget categoriesParams) {
+        String typesParams,
+        String galleriesParams,
+        String categoriesParams) {
 
-        //update the search params
-        clearParams();
         clearList();
         fillContent(searchObj, typesParams, galleriesParams, categoriesParams);
     }
@@ -279,10 +284,7 @@ public class CmsResultsTab extends A_CmsListTab implements ClickHandler {
      */
     protected void clearParams() {
 
-        m_types.clear();
-        m_galleries.clear();
-        m_categories.clear();
-        //        m_text.clear();
+        m_params.clear();
     }
 
     /**
@@ -322,75 +324,38 @@ public class CmsResultsTab extends A_CmsListTab implements ClickHandler {
     }
 
     /**
-     * Displays the selected search parameters above the result list.<p>
-     * 
-     * @param searchObj the current search object containing search results
-     * @param typesParams the widget to display the selected types
-     * @param galleriesParams the widget to display the selected galleries 
-     * @param categoriesParams the widget to display the selected categories
+     * @see com.google.gwt.user.client.ui.Composite#onAttach()
      */
+    @Override
+    protected void onAttach() {
+
+        super.onAttach();
+        updateListSize();
+    }
+
     private void showParams(
         CmsGallerySearchBean searchObj,
-        Widget typesParams,
-        Widget galleriesParams,
-        Widget categoriesParams) {
+        String typesParams,
+        String galleriesParams,
+        String categoriesParams) {
 
-        if (searchObj.isNotEmpty()) {
-            m_params.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().marginBottom());
-            // selected types           
-            // only show params, if any selected
-            if (typesParams != null) {
-                typesParams.getElement().getStyle().setDisplay(Display.INLINE);
-                m_types.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().showParams());
-                m_types.add(typesParams);
-                typesParams.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().paramsText());
-                m_closeTypesBtn = new CmsPushButton(I_CmsButton.UiIcon.close);
-                m_closeTypesBtn.setShowBorder(false);
-                m_types.add(m_closeTypesBtn);
-                m_closeTypesBtn.addClickHandler(this);
-
-                // otherwise remove border
-            } else {
-                m_types.removeStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().showParams());
-            }
-
-            // selected galleries
-            // only show params, if any selected
-            if (galleriesParams != null) {
-                m_galleries.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().showParams());
-                m_galleries.add(galleriesParams);
-                galleriesParams.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().paramsText());
-                m_closeGalleriesBtn = new CmsPushButton(I_CmsButton.UiIcon.close);
-                m_closeGalleriesBtn.setShowBorder(false);
-                m_closeGalleriesBtn.addClickHandler(this);
-                m_galleries.add(m_closeGalleriesBtn);
-                // otherwise remove border
-            } else {
-                m_galleries.removeStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().showParams());
-            }
-
-            // selected categories        
-            // only show params, if any selected
-            if (categoriesParams != null) {
-                m_categories.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().showParams());
-                m_categories.add(categoriesParams);
-                categoriesParams.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().paramsText());
-                m_closeCategoriesBtn = new CmsPushButton(I_CmsButton.UiIcon.close);
-                m_closeCategoriesBtn.setShowBorder(false);
-                m_closeCategoriesBtn.addClickHandler(this);
-                m_categories.add(m_closeCategoriesBtn);
-                // otherwise remove border
-            } else {
-                m_categories.removeStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().showParams());
-            }
-
-            // TODO: full text search
-        } else {
-            // remove margin and border
-            m_params.removeStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().marginBottom());
-            m_types.removeStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().showParams());
-            m_galleries.removeStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().showParams());
-            m_categories.removeStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().showParams());
+        m_params.clear();
+        if (!searchObj.isNotEmpty()) {
+            m_params.setVisible(false);
+            return;
+        }
+        m_params.setVisible(true);
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(typesParams)) {
+            m_types.setContent(typesParams);
+            m_params.add(m_types);
+        }
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(galleriesParams)) {
+            m_galleries.setContent(galleriesParams);
+            m_params.add(m_galleries);
+        }
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(categoriesParams)) {
+            m_categories.setContent(categoriesParams);
+            m_params.add(m_categories);
         }
     }
 
@@ -400,6 +365,9 @@ public class CmsResultsTab extends A_CmsListTab implements ClickHandler {
     private void updateListSize() {
 
         int tabHeight = m_tab.getElement().getClientHeight();
+        CmsDebugLog.getInstance().printLine("updating size, tabHeight: " + tabHeight);
+        // sanity check on tab height
+        tabHeight = tabHeight > 0 ? tabHeight : 450;
 
         int marginValueParams = 0;
         String marginBottomPrams = CmsDomUtil.getCurrentStyle(m_params.getElement(), CmsDomUtil.Style.marginBottom);
@@ -417,7 +385,10 @@ public class CmsResultsTab extends A_CmsListTab implements ClickHandler {
 
         // 3 is some offset, because of the list border
         int newListSize = tabHeight - paramsHeight - optionsHeight - 4;
-
-        m_list.getElement().getStyle().setHeight(newListSize, Unit.PX);
+        CmsDebugLog.getInstance().printLine(" paramsHeight: " + paramsHeight + " optionsHeight: " + optionsHeight);
+        // another sanity check, don't set any negative height 
+        if (newListSize > 0) {
+            m_list.getElement().getStyle().setHeight(newListSize, Unit.PX);
+        }
     }
 }

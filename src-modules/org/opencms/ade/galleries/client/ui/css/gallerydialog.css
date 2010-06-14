@@ -28,10 +28,6 @@
 	margin:10px 8px 8px;
 }
 
-.marginBottom {
-	margin-bottom:5px;
-}
-
 .listIcon {
 	margin:7px;
 }
@@ -42,15 +38,31 @@
 	height: auto;
 	color:value("constantsCss.color");
 	border:1px solid value("constantsCss.borderColor");
-	display:inline-block;
 	margin-right:1px;
 	margin-bottom:1px;
 	padding:2px;
 }
 
+.tabOptions {
+	margin-bottom:5px;
+}
+
+.showParams div, .showParams div span{
+	vertical-align: top !important;
+}
+
 .paramsText {
-	dispaly:inline-block;
-	float:left;
 	margin-right:5px;
 	max-width: 600px;
+}
+
+@if user.agent ie6 {
+	.showParams, .paramsText {
+		display: inline;
+		zoom: 1;
+	}
+} @else {
+	.showParams, .paramsText {
+		display: inline-block;
+	}
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsPushButton.java,v $
- * Date   : $Date: 2010/05/11 10:43:31 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/06/14 06:09:19 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import com.google.gwt.user.client.ui.PushButton;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -343,6 +343,16 @@ public class CmsPushButton extends PushButton implements HasHorizontalAlignment 
     public void setUiIcon(I_CmsButton.UiIcon icon) {
 
         setImageClass(I_CmsLayoutBundle.INSTANCE.iconsCss().uiIcon() + " " + icon.name());
+    }
+
+    /**
+     * Setting the image class of this button using the provided icon. Use this method from UiBinder only.<p>
+     * 
+     * @param iconName the icon name
+     */
+    public void setUiIconName(String iconName) {
+
+        setUiIcon(I_CmsButton.UiIcon.valueOf(iconName));
     }
 
     /**

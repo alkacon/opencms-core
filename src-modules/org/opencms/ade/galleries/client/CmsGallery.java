@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleriesVfs.java,v $
- * Date   : $Date: 2010/05/27 09:42:23 $
- * Version: $Revision: 1.12 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGallery.java,v $
+ * Date   : $Date: 2010/06/14 06:09:19 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,9 +35,6 @@ import org.opencms.ade.galleries.client.ui.CmsGalleryDialog;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.A_CmsEntryPoint;
 
-import com.google.gwt.event.logical.shared.ResizeEvent;
-import com.google.gwt.event.logical.shared.ResizeHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
 
 /**
@@ -45,11 +42,11 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.1 $ 
  * 
  * @since 8.0.0
  */
-public class CmsGalleriesVfs extends A_CmsEntryPoint implements ResizeHandler {
+public class CmsGallery extends A_CmsEntryPoint {
 
     private CmsGalleryDialog m_galleryDialog;
 
@@ -60,19 +57,10 @@ public class CmsGalleriesVfs extends A_CmsEntryPoint implements ResizeHandler {
     public void onModuleLoad() {
 
         super.onModuleLoad();
-        Window.addResizeHandler(this);
         RootPanel.getBodyElement().addClassName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().galleryBody());
         m_galleryDialog = CmsGalleryFactory.createDialog();
         // add the gallery dialog to dom
         RootPanel.get().add(m_galleryDialog);
 
-    }
-
-    /**
-     * @see com.google.gwt.event.logical.shared.ResizeHandler#onResize(com.google.gwt.event.logical.shared.ResizeEvent)
-     */
-    public void onResize(ResizeEvent event) {
-
-        //m_galleryDialog.setDialogSize(event.getWidth(), event.getHeight());
     }
 }

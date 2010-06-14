@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsGalleriesTab.java,v $
- * Date   : $Date: 2010/05/25 12:36:33 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/06/14 06:09:19 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,7 +37,6 @@ import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTab
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
-import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsPair;
 import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
@@ -48,7 +47,6 @@ import java.util.List;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.HTMLPanel;
 
 /**
  * Provides the widget for the galleries(folder) tab.<p>
@@ -57,7 +55,7 @@ import com.google.gwt.user.client.ui.HTMLPanel;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 8.0.
  */
@@ -76,7 +74,6 @@ public class CmsGalleriesTab extends A_CmsListTab {
         /** The gallery path as id for the selected gallery. */
         private String m_galleryPath;
 
-        // TODO: remove the reference to the checkbox when the event source is clicked checkBox and not the toogleButton
         /**
          * Constructor.<p>
          * 
@@ -149,31 +146,29 @@ public class CmsGalleriesTab extends A_CmsListTab {
     }
 
     /**
-     * Returns the panel with the content of the galleries search parameter.<p>
+     * Returns the content of the galleries search parameter.<p>
      *  
      * @param selectedGalleries the list of selected galleries by the user
-     * @return the panel showing the selected galleries
+     * 
+     * @return the selected galleries
      */
-    public HTMLPanel getGallerisParamsPanel(List<String> selectedGalleries) {
+    public String getGalleriesParams(List<String> selectedGalleries) {
 
         if ((selectedGalleries == null) || (selectedGalleries.size() == 0)) {
             return null;
         }
-        HTMLPanel galleriesPanel;
-        String panelText = CmsDomUtil.enclose(CmsDomUtil.Tag.b, Messages.get().key(
-            Messages.GUI_PARAMS_LABEL_GALLERIES_0));
+        StringBuffer result = new StringBuffer(128);
         for (String galleryPath : selectedGalleries) {
             CmsGalleryListItem galleryBean = (CmsGalleryListItem)m_scrollList.getItem(galleryPath);
             String title = galleryBean.getItemTitle();
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
                 title = galleryBean.getSubTitle();
             }
-            panelText += " " + title + ",";
+            result.append(title).append(", ");
         }
-        panelText = panelText.substring(0, panelText.length() - 1);
-        galleriesPanel = new HTMLPanel(CmsDomUtil.Tag.div.name(), panelText);
+        result.delete(result.length() - 2, result.length());
 
-        return galleriesPanel;
+        return result.toString();
     }
 
     /**

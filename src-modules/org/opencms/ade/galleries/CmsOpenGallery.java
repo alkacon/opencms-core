@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/Attic/CmsOpenVfsGallery.java,v $
- * Date   : $Date: 2010/05/25 09:26:06 $
- * Version: $Revision: 1.5 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/Attic/CmsOpenGallery.java,v $
+ * Date   : $Date: 2010/06/14 06:09:19 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,17 +54,17 @@ import org.apache.commons.logging.Log;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.1 $ 
  * 
  * @since 8.0
  */
-public class CmsOpenVfsGallery extends CmsDialog {
+public class CmsOpenGallery extends CmsDialog {
 
     /** The dialog type. */
     public static final String DIALOG_TYPE = "opengallery";
 
     /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsOpenVfsGallery.class);
+    private static final Log LOG = CmsLog.getLog(CmsOpenGallery.class);
 
     /** Path to the host page. */
     public static final String VFS_OPEN_GALLERY_PATH = "/system/modules/org.opencms.ade.galleries/gallery.jsp";
@@ -74,10 +74,9 @@ public class CmsOpenVfsGallery extends CmsDialog {
      * 
      * @param jsp an initialized JSP action element
      */
-    public CmsOpenVfsGallery(CmsJspActionElement jsp) {
+    public CmsOpenGallery(CmsJspActionElement jsp) {
 
         super(jsp);
-
     }
 
     /**
@@ -87,10 +86,9 @@ public class CmsOpenVfsGallery extends CmsDialog {
      * @param req the JSP request
      * @param res the JSP response
      */
-    public CmsOpenVfsGallery(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+    public CmsOpenGallery(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
-
     }
 
     /**
@@ -142,7 +140,7 @@ public class CmsOpenVfsGallery extends CmsDialog {
                 jsOpener.append(width);
                 jsOpener.append(", height=");
                 jsOpener.append(height);
-                jsOpener.append(", resizable=yes, top=100, left=270, status=yes, toolbar=yes');");
+                jsOpener.append(", resizable=yes, top=100, left=270, status=yes, toolbar=no');");
             }
         } catch (CmsException e) {
             // requested type is not configured

@@ -3,7 +3,7 @@
 <module rename-to="resources">
 	<inherits name="com.google.gwt.user.User" />
 	<inherits name="org.opencms.ade.publish.Dialog" />
-	<inherits name="org.opencms.ade.galleries.CmsGalleriesADE" />
+	<inherits name="org.opencms.ade.galleries.GalleryHeadless" />
 	
 	<source path="client" />
 	<source path="shared" />

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleryController.java,v $
- * Date   : $Date: 2010/06/10 08:45:04 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2010/06/14 06:09:19 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import com.google.gwt.core.client.GWT;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 8.0.0
  */
@@ -134,7 +134,6 @@ public class CmsGalleryController {
      * 
      * @param resourceType the id(name?) of the resource type to add
      */
-    //TODO: is resource type id or name used?
     public void addType(String resourceType) {
 
         m_searchObject.addType(resourceType);
@@ -160,6 +159,11 @@ public class CmsGalleryController {
         m_handler.onClearGalleries(selectedGalleries);
         m_searchObject.clearGalleries();
         updateResultsTab();
+    }
+
+    public void clearTextSearch() {
+
+        //TODO: implement
     }
 
     /**
@@ -497,7 +501,6 @@ public class CmsGalleryController {
         return m_gallerySvc;
     }
 
-    //TODO: which modifier to use
     /**
      * Returns a consistent search object to be used for the search.<p>
      * 

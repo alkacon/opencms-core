@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsResultsTabHandler.java,v $
- * Date   : $Date: 2010/05/27 10:28:29 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/06/14 06:09:19 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ package org.opencms.ade.galleries.client;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 8.0.0
  */
@@ -61,7 +61,7 @@ public class CmsResultsTabHandler extends A_CmsTabHandler {
      * @param resourcePath the resource path of the result
      * @param resourceType 
      */
-    public void onClick(String resourcePath, String resourceType) {
+    public void openPreview(String resourcePath, String resourceType) {
 
         m_controller.openPreview(resourcePath, resourceType);
 
@@ -81,6 +81,14 @@ public class CmsResultsTabHandler extends A_CmsTabHandler {
     public void onRemoveGalleries() {
 
         m_controller.clearGalleries();
+    }
+
+    /**
+     * Will be triggered when text search parameter are removed.<p>
+     */
+    public void onRemoveTextSearch() {
+
+        m_controller.clearTextSearch();
     }
 
     /**
