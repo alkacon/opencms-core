@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsDnDListHandler.java,v $
- * Date   : $Date: 2010/06/14 12:52:21 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/06/14 13:25:16 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
@@ -303,11 +303,13 @@ implements NativePreviewHandler {
     @Override
     protected void clearDrag() {
 
-        if (m_currentTarget != null) {
+        if ((m_currentTarget != null) && (m_currentTarget.getWidgetIndex(m_placeholder) != m_srcPos)) {
             elementDropAction();
             m_currentTarget = null;
         } else {
             elementCancelAction();
+            // elementDropAction will also trigger this but maybe async, 
+            // this is why we can not do it more general
             ((CmsDnDListItem)m_placeholder).onDragStop();
         }
         restoreElementAfterDrag();

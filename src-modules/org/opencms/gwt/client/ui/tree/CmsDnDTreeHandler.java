@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/tree/Attic/CmsDnDTreeHandler.java,v $
- * Date   : $Date: 2010/06/10 12:56:38 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/06/14 13:25:16 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -78,6 +78,15 @@ public class CmsDnDTreeHandler extends CmsDnDListHandler {
         super.animateClear();
         // restore the place holder for #elementDropAction()
         m_placeholder = placeHolder;
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.CmsDnDListHandler#elementCancelAction()
+     */
+    @Override
+    protected void elementCancelAction() {
+
+        resetItemOver();
     }
 
     /**
