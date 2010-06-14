@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageController.java,v $
- * Date   : $Date: 2010/05/31 14:18:53 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/06/14 14:32:42 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -79,7 +79,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 8.0.0
  */
@@ -651,6 +651,7 @@ public final class CmsContainerpageController {
             @Override
             protected void onResponse(CmsContainerElementData result) {
 
+                stop(false);
                 callback.execute(result);
             }
 
