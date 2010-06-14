@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsSitemapHoverbar.java,v $
- * Date   : $Date: 2010/06/10 13:27:41 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/06/14 12:52:21 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.ade.sitemap.client.hoverbar;
 import org.opencms.ade.sitemap.client.CmsSitemapTreeItem;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.gwt.client.ui.A_CmsHoverHandler;
+import org.opencms.gwt.client.ui.CmsDnDListHandler;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 
@@ -48,7 +49,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  */
@@ -84,7 +85,6 @@ public class CmsSitemapHoverbar extends FlowPanel {
         add(new CmsHoverbarMergeButton(this));
         add(new CmsHoverbarMoveButton(this));
         add(new CmsHoverbarParentButton(this));
-
     }
 
     /**
@@ -100,11 +100,24 @@ public class CmsSitemapHoverbar extends FlowPanel {
     }
 
     /**
-     * Deattaches the hoverbar.<p>
+     * Adds a new detach event handler.<p>
+     * 
+     * @param handler the handler to add
+     * 
+     * @return the handler registration
+     */
+    public HandlerRegistration addDetachHandler(I_CmsHoverbarDetachHandler handler) {
+
+        return m_handlerManager.addHandler(CmsHoverbarDetachEvent.getType(), handler);
+    }
+
+    /**
+     * Detaches the hoverbar.<p>
      */
     public void deattach() {
 
         removeFromParent();
+        m_handlerManager.fireEvent(new CmsHoverbarDetachEvent());
     }
 
     /**
@@ -125,6 +138,19 @@ public class CmsSitemapHoverbar extends FlowPanel {
     public String getSitePath() {
 
         return m_sitePath;
+    }
+
+    /** The drag'n drop handler. */
+    protected CmsDnDListHandler m_handler;
+
+    /**
+     * Sets the drag'n drop handler.<p>
+     *
+     * @param handler the handler to set
+     */
+    public void setDnDHandler(CmsDnDListHandler handler) {
+
+        m_handler = handler;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/tree/Attic/CmsDnDTreeItem.java,v $
- * Date   : $Date: 2010/06/14 08:41:33 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/06/14 12:52:21 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Georg Westenberger
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 8.0.0
  */
@@ -258,6 +258,7 @@ public class CmsDnDTreeItem extends CmsDnDListItem {
     @Override
     public void disableDnD() {
 
+        super.disableDnD();
         m_children.setDnDEnabled(false);
     }
 

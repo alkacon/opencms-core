@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsDnDListHandler.java,v $
- * Date   : $Date: 2010/06/14 08:08:41 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/06/14 12:52:21 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -308,6 +308,7 @@ implements NativePreviewHandler {
             m_currentTarget = null;
         } else {
             elementCancelAction();
+            ((CmsDnDListItem)m_placeholder).onDragStop();
         }
         restoreElementAfterDrag();
         Document.get().getBody().removeClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragStarted());
@@ -327,25 +328,23 @@ implements NativePreviewHandler {
      * 
      * @return the generated clone
      */
-    protected CmsDnDListItem createDragClone(Element element) {
+    protected CmsDnDListItem createDragHelper(Element element) {
 
-        Element elementClone = DOM.createDiv();
-        elementClone.setInnerHTML(element.getInnerHTML());
-        elementClone.setClassName(element.getClassName());
-        CmsDnDListItem dragElement = new CmsDnDListItem(elementClone);
+        Element elementClone = CmsDomUtil.clone(element);
+        CmsDnDListItem dragHelper = new CmsDnDListItem(elementClone);
 
         // remove all decorations
         List<com.google.gwt.dom.client.Element> elems = CmsDomUtil.getElementsByClass(
             I_CmsLayoutBundle.INSTANCE.floatDecoratedPanelCss().decorationBox(),
             CmsDomUtil.Tag.div,
-            dragElement.getElement());
+            dragHelper.getElement());
         for (com.google.gwt.dom.client.Element elem : elems) {
             elem.removeFromParent();
         }
 
-        registerHandlersForDrag(dragElement);
+        registerHandlersForDrag(dragHelper);
 
-        return dragElement;
+        return dragHelper;
     }
 
     /**
@@ -458,7 +457,7 @@ implements NativePreviewHandler {
         m_srcList = m_currentTarget;
         m_srcPos = m_currentTarget.getWidgetIndex(m_dragElement);
         // create the drag helper
-        CmsDnDListItem clone = createDragClone(m_dragElement.getElement());
+        CmsDnDListItem clone = createDragHelper(m_dragElement.getElement());
 
         // we append the drag element to the body to prevent any kind of issues 
         // (ie when the parent is styled with overflow:hidden)

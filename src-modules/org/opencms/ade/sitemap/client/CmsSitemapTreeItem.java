@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapTreeItem.java,v $
- * Date   : $Date: 2010/06/10 12:56:38 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2010/06/14 12:52:21 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,7 +37,6 @@ import org.opencms.ade.sitemap.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsSitemapItemCss;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.file.CmsResource;
-import org.opencms.gwt.client.ui.CmsDnDListHandler;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.tree.CmsDnDLazyTreeItem;
 import org.opencms.gwt.client.ui.tree.CmsDnDTreeItem;
@@ -45,8 +44,7 @@ import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem.LoadState;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.sitemap.CmsSitemapManager;
 
-import com.google.gwt.dom.client.EventTarget;
-import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -54,7 +52,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 8.0.0
  * 
@@ -95,29 +93,6 @@ public class CmsSitemapTreeItem extends CmsDnDLazyTreeItem {
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.CmsDnDListItem#disableDnD()
-     */
-    @Override
-    public void disableDnD() {
-
-        m_children.setDnDEnabled(false);
-        m_dndEnabled = false;
-        removeDndMouseHandlers();
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.CmsDnDListItem#enableDnD(org.opencms.gwt.client.ui.CmsDnDListHandler)
-     */
-    @Override
-    public void enableDnD(CmsDnDListHandler handler) {
-
-        m_dndEnabled = true;
-        handler.registerMouseHandler(this);
-        m_children.setDnDHandler(handler);
-        m_children.setDnDEnabled(true);
-    }
-
-    /**
      * Returns the original site path, in case this entry has been moved or renamed.<p>
      *
      * @return the original site path
@@ -138,49 +113,6 @@ public class CmsSitemapTreeItem extends CmsDnDLazyTreeItem {
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.CmsDnDListItem#isHandleEvent(com.google.gwt.dom.client.NativeEvent)
-     */
-    @Override
-    public boolean isHandleEvent(NativeEvent event) {
-
-        if (!m_dndEnabled) {
-            return false;
-        }
-        CmsSitemapHoverbar hoverbar = getHoverbar();
-        if (hoverbar == null) {
-            return false;
-        }
-        for (Widget button : hoverbar) {
-            if (!(button instanceof CmsHoverbarMoveButton)) {
-                continue;
-            }
-            if (!((CmsHoverbarMoveButton)button).isEnabled()) {
-                return false;
-            }
-            EventTarget target = event.getEventTarget();
-            if (com.google.gwt.dom.client.Element.is(target)) {
-                return button.getElement().isOrHasChild(com.google.gwt.dom.client.Element.as(target));
-            }
-            return false;
-        }
-        return false;
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.CmsDnDListItem#onDragStart()
-     */
-    @Override
-    public void onDragStart() {
-
-        super.onDragStart();
-        CmsSitemapHoverbar hoverbar = getHoverbar();
-        if (hoverbar == null) {
-            return;
-        }
-        hoverbar.deattach();
-    }
-
-    /**
      * @see org.opencms.gwt.client.ui.tree.CmsDnDTreeItem#onDragOverIn()
      */
     @Override
@@ -191,6 +123,19 @@ public class CmsSitemapTreeItem extends CmsDnDLazyTreeItem {
             return false;
         }
         return super.onDragOverIn();
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.CmsDnDListItem#onDragStart()
+     */
+    @Override
+    public void onDragStart() {
+
+        CmsSitemapHoverbar hoverbar = getHoverbar();
+        if (hoverbar != null) {
+            hoverbar.deattach();
+        }
+        super.onDragStart();
     }
 
     /**
@@ -247,6 +192,31 @@ public class CmsSitemapTreeItem extends CmsDnDLazyTreeItem {
             }
         }
         m_listItemWidget.updateTruncation();
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.CmsDnDListItem#getDragHandle()
+     */
+    @Override
+    protected Element getDragHandle() {
+
+        if (!m_dndEnabled) {
+            return null;
+        }
+        CmsSitemapHoverbar hoverbar = getHoverbar();
+        if (hoverbar == null) {
+            return null;
+        }
+        for (Widget button : hoverbar) {
+            if (!(button instanceof CmsHoverbarMoveButton)) {
+                continue;
+            }
+            if (!((CmsHoverbarMoveButton)button).isEnabled()) {
+                return null;
+            }
+            return button.getElement();
+        }
+        return null;
     }
 
     /**

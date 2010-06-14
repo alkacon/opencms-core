@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsDnDListItem.java,v $
- * Date   : $Date: 2010/06/10 12:56:38 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/06/14 12:52:21 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,7 +32,6 @@
 package org.opencms.gwt.client.ui;
 
 import org.opencms.gwt.client.draganddrop.I_CmsDragElement;
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsDomUtil;
 
@@ -67,7 +66,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  *  
  * @since 8.0.0 
  */
@@ -81,9 +80,6 @@ public class CmsDnDListItem extends CmsListItem implements I_CmsDragElement<CmsD
 
     /** The event handler registrations. */
     private List<HandlerRegistration> m_handlerRegistrations;
-
-    /** The move handle element. */
-    private CmsPushButton m_moveHandle;
 
     /** The original id while dragging. */
     private String m_originalId;
@@ -187,10 +183,6 @@ public class CmsDnDListItem extends CmsListItem implements I_CmsDragElement<CmsD
     public void disableDnD() {
 
         m_dndEnabled = false;
-        removeDndMouseHandlers();
-        if (m_moveHandle != null) {
-            getListItemWidget().removeButton(m_moveHandle);
-        }
     }
 
     /**
@@ -201,13 +193,6 @@ public class CmsDnDListItem extends CmsListItem implements I_CmsDragElement<CmsD
     public void enableDnD(CmsDnDListHandler handler) {
 
         m_dndEnabled = true;
-        handler.registerMouseHandler(this);
-        // add move handle
-        CmsPushButton moveHandle = new CmsPushButton();
-        moveHandle.setImageClass(I_CmsImageBundle.INSTANCE.style().moveIcon());
-        moveHandle.setShowBorder(false);
-        getListItemWidget().addButton(moveHandle);
-        m_moveHandle = moveHandle;
     }
 
     /**
@@ -235,10 +220,11 @@ public class CmsDnDListItem extends CmsListItem implements I_CmsDragElement<CmsD
      */
     public boolean isHandleEvent(NativeEvent event) {
 
-        if (m_dndEnabled && (m_moveHandle != null)) {
+        Element dragHandle = getDragHandle();
+        if (m_dndEnabled && (dragHandle != null)) {
             EventTarget target = event.getEventTarget();
             if (Element.is(target)) {
-                return m_moveHandle.getElement().isOrHasChild(Element.as(target));
+                return dragHandle.isOrHasChild(Element.as(target));
             }
         }
         return false;
@@ -283,6 +269,18 @@ public class CmsDnDListItem extends CmsListItem implements I_CmsDragElement<CmsD
     }
 
     /**
+     * Removes all for drag and drop registered mouse event handlers.<p>
+     */
+    public void removeDndMouseHandlers() {
+
+        Iterator<HandlerRegistration> it = m_handlerRegistrations.iterator();
+        while (it.hasNext()) {
+            it.next().removeHandler();
+        }
+        m_handlerRegistrations.clear();
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.CmsListItem#setId(java.lang.String)
      */
     @Override
@@ -293,14 +291,12 @@ public class CmsDnDListItem extends CmsListItem implements I_CmsDragElement<CmsD
     }
 
     /**
-     * Removes all for drag and drop registered mouse event handlers.<p>
+     * Returns the drag handle.<p>
+     * 
+     * @return the drag handle, or <code>null</code> if none
      */
-    protected void removeDndMouseHandlers() {
+    protected Element getDragHandle() {
 
-        Iterator<HandlerRegistration> it = m_handlerRegistrations.iterator();
-        while (it.hasNext()) {
-            it.next().removeHandler();
-        }
-        m_handlerRegistrations.clear();
+        return null;
     }
 }
