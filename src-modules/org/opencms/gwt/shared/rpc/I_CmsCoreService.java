@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/rpc/Attic/I_CmsCoreService.java,v $
- * Date   : $Date: 2010/05/20 11:41:39 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/06/14 15:07:18 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,8 +34,11 @@ package org.opencms.gwt.shared.rpc;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.gwt.shared.CmsCoreData;
+import org.opencms.gwt.shared.CmsValidationQuery;
+import org.opencms.gwt.shared.CmsValidationResult;
 
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
@@ -45,7 +48,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 8.0.0
  * 
@@ -135,4 +138,16 @@ public interface I_CmsCoreService extends RemoteService {
      * @throws CmsRpcException if something goes wrong 
      */
     String unlock(String uri) throws CmsRpcException;
+
+    /**
+     * Performs a batch of validations and returns the results.<p>
+     * 
+     * @param validationQueries a map from field names to validation queries
+     * 
+     * @return a map from field names to validation results
+     *  
+     * @throws CmsRpcException if something goes wrong 
+     */
+    Map<String, CmsValidationResult> validate(Map<String, CmsValidationQuery> validationQueries) throws CmsRpcException;
+
 }

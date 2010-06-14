@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsCoreService.java,v $
- * Date   : $Date: 2010/05/20 11:41:39 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/06/14 15:07:17 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,14 +36,19 @@ import org.opencms.file.CmsResource;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.gwt.shared.CmsCoreData;
+import org.opencms.gwt.shared.CmsValidationQuery;
+import org.opencms.gwt.shared.CmsValidationResult;
 import org.opencms.gwt.shared.rpc.I_CmsCoreService;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsCategory;
 import org.opencms.relations.CmsCategoryService;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -52,7 +57,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 8.0.0
  * 
@@ -78,6 +83,34 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         srv.setCms(CmsFlexController.getCmsObject(request));
         srv.setRequest(request);
         return srv;
+    }
+
+    /**
+     * Internal helper method for getting a validation service.<p>
+     * 
+     * @param name the class name of the validation service
+     *  
+     * @return the validation service 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    private static I_CmsValidationService getValidationService(String name) throws CmsException {
+
+        try {
+            Class<?> cls = Class.forName(name, false, I_CmsValidationService.class.getClassLoader());
+            if (!I_CmsValidationService.class.isAssignableFrom(cls)) {
+                throw new CmsIllegalArgumentException(Messages.get().container(
+                    Messages.ERR_VALIDATOR_INCORRECT_TYPE_1,
+                    name));
+            }
+            return (I_CmsValidationService)cls.newInstance();
+        } catch (ClassNotFoundException e) {
+            throw new CmsException(Messages.get().container(Messages.ERR_VALIDATOR_INSTANTIATION_FAILED_1, name), e);
+        } catch (InstantiationException e) {
+            throw new CmsException(Messages.get().container(Messages.ERR_VALIDATOR_INSTANTIATION_FAILED_1, name), e);
+        } catch (IllegalAccessException e) {
+            throw new CmsException(Messages.get().container(Messages.ERR_VALIDATOR_INSTANTIATION_FAILED_1, name), e);
+        }
     }
 
     /**
@@ -215,6 +248,32 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     }
 
     /**
+     * Performs a batch of validations and returns the results.<p>
+     * 
+     * @param validationQueries a map from field names to validation queries
+     * 
+     * @return a map from field names to validation results
+     *  
+     * @throws CmsRpcException if something goes wrong 
+     */
+    public Map<String, CmsValidationResult> validate(Map<String, CmsValidationQuery> validationQueries)
+    throws CmsRpcException {
+
+        try {
+            Map<String, CmsValidationResult> result = new HashMap<String, CmsValidationResult>();
+            for (Map.Entry<String, CmsValidationQuery> queryEntry : validationQueries.entrySet()) {
+                String fieldName = queryEntry.getKey();
+                CmsValidationQuery query = queryEntry.getValue();
+                result.put(fieldName, validate(query.getValidatorId(), query.getValue(), query.getConfig()));
+            }
+            return result;
+        } catch (Throwable e) {
+            error(e);
+        }
+        return null;
+    }
+
+    /**
      * FInds a category in the given tree.<p>
      * 
      * @param tree the the tree to search in
@@ -251,4 +310,22 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         }
         return null;
     }
+
+    /**
+     * Internal helper method for validating a single value.<p>
+     * 
+     * @param validator the class name of the validation service 
+     * @param value the value to validate 
+     * @param config the configuration for the validation service
+     *  
+     * @return the result of the validation 
+     * 
+     * @throws Exception if something goes wrong 
+     */
+    private CmsValidationResult validate(String validator, String value, String config) throws Exception {
+
+        I_CmsValidationService validationService = getValidationService(validator);
+        return validationService.validate(getCmsObject(), value, config);
+    }
+
 }

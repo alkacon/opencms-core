@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/form/Attic/CmsForm.java,v $
- * Date   : $Date: 2010/06/08 07:12:45 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/06/14 15:07:18 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,17 +35,20 @@ import org.opencms.gwt.client.ui.css.I_CmsInputCss;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.input.I_CmsFormField;
 import org.opencms.gwt.client.ui.input.I_CmsFormWidget;
-import org.opencms.gwt.client.ui.input.I_CmsValidationHandler;
+import org.opencms.gwt.client.validation.CmsValidationController;
+import org.opencms.gwt.client.validation.I_CmsValidationHandler;
+import org.opencms.gwt.shared.CmsValidationResult;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.google.gwt.event.dom.client.BlurEvent;
-import com.google.gwt.event.dom.client.BlurHandler;
-import com.google.gwt.event.dom.client.HasBlurHandlers;
+import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -59,7 +62,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.0
  * 
@@ -70,7 +73,10 @@ public class CmsForm extends Composite {
     private static final I_CmsInputCss CSS = I_CmsInputLayoutBundle.INSTANCE.inputCss();
 
     /** A map from field ids to the corresponding widgets. */
-    private Map<String, I_CmsFormField> m_fields = new LinkedHashMap<String, I_CmsFormField>();
+    protected Map<String, I_CmsFormField> m_fields = new LinkedHashMap<String, I_CmsFormField>();
+
+    /** A reference to the dialog this form is contained in. */
+    protected I_CmsFormDialog m_formDialog;
 
     /** The initial values of the form fields. */
     private Map<String, String> m_initialValues = new HashMap<String, String>();
@@ -78,11 +84,11 @@ public class CmsForm extends Composite {
     /** The main panel for this widget. */
     private FlowPanel m_panel = new FlowPanel();
 
+    /** 
+    private boolean m_isSubmittable;
+
     /** The list of form reset handlers. */
     private List<I_CmsFormResetHandler> m_resetHandlers = new ArrayList<I_CmsFormResetHandler>();
-
-    /** The internal list of validation handlers. */
-    private List<I_CmsValidationHandler> m_validationHandlers = new ArrayList<I_CmsValidationHandler>();
 
     /**
      * The default constructor.<p>
@@ -100,6 +106,7 @@ public class CmsForm extends Composite {
      * 
      * @param formField the form field which should be added
      */
+    @SuppressWarnings("unchecked")
     public void addField(final I_CmsFormField formField) {
 
         String initialValue = formField.getWidget().getFormValueAsString();
@@ -107,21 +114,22 @@ public class CmsForm extends Composite {
         String description = formField.getDescription();
         String labelText = formField.getLabel();
         I_CmsFormWidget widget = formField.getWidget();
-        if (widget instanceof HasBlurHandlers) {
-            ((HasBlurHandlers)widget).addBlurHandler(new BlurHandler() {
+        if (widget instanceof HasValueChangeHandlers) {
+            ((HasValueChangeHandlers<String>)widget).addValueChangeHandler(new ValueChangeHandler<String>() {
 
                 /**
-                 * @see com.google.gwt.event.dom.client.BlurHandler#onBlur(com.google.gwt.event.dom.client.BlurEvent)
+                 * @see com.google.gwt.event.logical.shared.ValueChangeHandler#onValueChange(ValueChangeEvent event) 
                  */
-                public void onBlur(BlurEvent event) {
+                public void onValueChange(ValueChangeEvent<String> event) {
 
-                    formField.validate();
+                    formField.setValidationStatus(I_CmsFormField.ValidationStatus.unknown);
+                    validateField(formField);
                 }
             });
         }
+
         m_fields.put(formField.getId(), formField);
         addRow(labelText, description, (Widget)widget);
-
     }
 
     /**
@@ -192,16 +200,6 @@ public class CmsForm extends Composite {
     }
 
     /**
-     * Adds a new validation handler to the form.<p>
-     * 
-     * @param handler the validation handler that should be added 
-     */
-    public void addValidationHandler(I_CmsValidationHandler handler) {
-
-        m_validationHandlers.add(handler);
-    }
-
-    /**
      * Collects all values from the form fields.<p>
      * 
      * This method omits form fields whose values are null.
@@ -223,6 +221,17 @@ public class CmsForm extends Composite {
     }
 
     /**
+     * Performs an initial validation of all form fields.<p>
+     */
+    public void doInitialValidation() {
+
+        CmsValidationController validationController = new CmsValidationController(
+            m_fields.values(),
+            createValidationHandler());
+        validationController.startValidation();
+    }
+
+    /**
      * Returns the form field with a given id.<p>
      * 
      * @param id the id of the form field 
@@ -235,6 +244,23 @@ public class CmsForm extends Composite {
     }
 
     /**
+     * Returns true if none of the fields in a collection are marked as invalid.<p>
+     *
+     * @param fields the form fields
+     * 
+     * @return true if none of the fields are invalid 
+     */
+    public boolean noFieldsInvalid(Collection<I_CmsFormField> fields) {
+
+        for (I_CmsFormField field : fields) {
+            if (field.getValidationStatus().equals(I_CmsFormField.ValidationStatus.invalid)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
      * Resets all form fields to their initial values.<p>
      */
     public void reset() {
@@ -242,44 +268,119 @@ public class CmsForm extends Composite {
         for (Map.Entry<String, I_CmsFormField> entry : m_fields.entrySet()) {
             String id = entry.getKey();
             I_CmsFormField field = entry.getValue();
+            field.setValidationStatus(I_CmsFormField.ValidationStatus.unknown);
             field.getWidget().setFormValueAsString(m_initialValues.get(id));
+            field.getWidget().setErrorMessage(null);
         }
-        validateFields();
+        m_formDialog.setOkButtonEnabled(noFieldsInvalid(m_fields.values()));
         for (I_CmsFormResetHandler resetHandler : m_resetHandlers) {
             resetHandler.onResetForm();
         }
     }
 
     /**
-     * Validates all fields in the form.<p>
+     * Sets the form dialog in which this form is being used.<p>
      * 
-     * When the validation is completed, the validation handler passed as a parameter
-     * is notified, unless it's null.
-     * 
-     * @param handler the object which should handle the result of the validation
+     * @param dialog the form dialog 
      */
-    public void validate(I_CmsValidationHandler handler) {
+    public void setFormDialog(I_CmsFormDialog dialog) {
 
-        boolean validationSucceeded = validateFields();
-        if (handler != null) {
-            handler.onValidationComplete(validationSucceeded);
-        }
+        m_formDialog = dialog;
     }
 
     /**
-     * Validates all fields in the form and returns the result.<p>
+     * Validates the form fields and submits their values if the validation was successful.<p>
      * 
-     * @return true if the validation was successful 
+     * @param formHandler the form handler to which the values should be submitted 
      */
-    protected boolean validateFields() {
+    public void validateAndSubmit(final I_CmsFormHandler formHandler) {
 
-        boolean validationSucceeded = true;
-        for (Map.Entry<String, I_CmsFormField> entry : m_fields.entrySet()) {
-            I_CmsFormField field = entry.getValue();
-            if (!field.validate()) {
-                validationSucceeded = false;
-            }
+        CmsValidationController validationController = new CmsValidationController(
+            m_fields.values(),
+            new I_CmsValidationHandler() {
+
+                /**
+                 * @see org.opencms.gwt.client.validation.I_CmsValidationHandler#onValidationFinished(boolean)
+                 */
+                public void onValidationFinished(boolean ok) {
+
+                    if (ok) {
+                        m_formDialog.closeDialog();
+                        formHandler.onSubmitForm(collectValues());
+
+                    } else {
+                        m_formDialog.setOkButtonEnabled(noFieldsInvalid(m_fields.values()));
+                    }
+                }
+
+                /**
+                 * @see org.opencms.gwt.client.validation.I_CmsValidationHandler#onValidationResult(java.lang.String, org.opencms.gwt.shared.CmsValidationResult)
+                 */
+                public void onValidationResult(String field, CmsValidationResult result) {
+
+                    updateFieldValidationStatus(field, result);
+
+                }
+
+            });
+        validationController.startValidation();
+
+    }
+
+    /**
+     * Validates a single field.<p>
+     * 
+     * @param field the field to validate 
+     */
+    public void validateField(final I_CmsFormField field) {
+
+        CmsValidationController validationController = new CmsValidationController(field, createValidationHandler());
+        validationController.startValidation();
+    }
+
+    /**
+     * Applies a validation result to a form field.<p>
+     * 
+     * @param fieldId the field id to which the validation result should be applied 
+     * @param result the result of the validation operation 
+     */
+    protected void updateFieldValidationStatus(String fieldId, CmsValidationResult result) {
+
+        I_CmsFormField field = m_fields.get(fieldId);
+        if (result.hasNewValue()) {
+            field.getWidget().setFormValueAsString(result.getNewValue());
         }
-        return validationSucceeded;
+        String errorMessage = result.getErrorMessage();
+        field.getWidget().setErrorMessage(result.getErrorMessage());
+        field.setValidationStatus(errorMessage == null
+        ? I_CmsFormField.ValidationStatus.valid
+        : I_CmsFormField.ValidationStatus.invalid);
+    }
+
+    /**
+     * Creates a validation handler which updates the OK button state when validation results come in.<p>
+     * 
+     * @return a validation handler 
+     */
+    private I_CmsValidationHandler createValidationHandler() {
+
+        return new I_CmsValidationHandler() {
+
+            /**
+             * @see org.opencms.gwt.client.validation.I_CmsValidationHandler#onValidationFinished(boolean)
+             */
+            public void onValidationFinished(boolean ok) {
+
+                m_formDialog.setOkButtonEnabled(noFieldsInvalid(m_fields.values()));
+            }
+
+            /**
+             * @see org.opencms.gwt.client.validation.I_CmsValidationHandler#onValidationResult(java.lang.String, org.opencms.gwt.shared.CmsValidationResult)
+             */
+            public void onValidationResult(String fieldId, CmsValidationResult result) {
+
+                updateFieldValidationStatus(fieldId, result);
+            }
+        };
     }
 }

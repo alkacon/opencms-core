@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsNonEmptyValidator.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/edit/Attic/CmsUrlNameValidator.java,v $
  * Date   : $Date: 2010/06/14 15:07:18 $
- * Version: $Revision: 1.2 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,35 +29,43 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.gwt.client.ui.input;
+package org.opencms.ade.sitemap.client.edit;
 
+import org.opencms.ade.sitemap.client.Messages;
+import org.opencms.gwt.client.ui.input.I_CmsFormField;
 import org.opencms.gwt.client.validation.I_CmsValidationController;
 import org.opencms.gwt.client.validation.I_CmsValidator;
 import org.opencms.gwt.shared.CmsValidationResult;
 import org.opencms.util.CmsStringUtil;
 
+import java.util.List;
+
 /**
- * A validator that checks whether a field is not empty.<p>
+ * Validator class for the URL name field in the sitemap entry editor.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  */
-public class CmsNonEmptyValidator implements I_CmsValidator {
+public class CmsUrlNameValidator implements I_CmsValidator {
 
-    /** The error message to display if the validation fails. */
-    private String m_errorMessage;
+    /** The server-side validator class. */
+    private static final String SERVER_VALIDATOR = "org.opencms.ade.sitemap.CmsUrlNameValidationService";
 
-    /** 
-     * Constructs a new validator with a given error message.<p>
+    /** The other url names which the URL name should not be equal to. */
+    private List<String> m_otherUrlNames;
+
+    /**
+     * Creates a new URL name validator which checks that the translated URL name does not already exist
+     * in a list of URL names.<p>
      * 
-     * @param errorMessage the error message to use when the validated field is empty 
+     * @param otherUrlNames the URL names which the URL name which is validated should not equal 
      */
-    public CmsNonEmptyValidator(String errorMessage) {
+    public CmsUrlNameValidator(List<String> otherUrlNames) {
 
-        m_errorMessage = errorMessage;
+        m_otherUrlNames = otherUrlNames;
     }
 
     /**
@@ -66,12 +74,15 @@ public class CmsNonEmptyValidator implements I_CmsValidator {
     public void validate(I_CmsFormField field, I_CmsValidationController controller) {
 
         String value = field.getWidget().getFormValueAsString();
-        CmsValidationResult result;
+
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(value)) {
-            result = new CmsValidationResult(m_errorMessage);
-        } else {
-            result = CmsValidationResult.VALIDATION_OK;
+            String message = Messages.get().key(Messages.GUI_URLNAME_CANT_BE_EMPTY_0);
+            controller.provideValidationResult(field.getId(), new CmsValidationResult(message));
+            return;
         }
-        controller.provideValidationResult(field.getId(), result);
+        controller.validateAsync(field.getId(), value, SERVER_VALIDATOR, CmsStringUtil.listAsString(
+            m_otherUrlNames,
+            "|"));
     }
+
 }

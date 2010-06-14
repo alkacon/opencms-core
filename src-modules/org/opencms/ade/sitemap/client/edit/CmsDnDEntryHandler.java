@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/edit/Attic/CmsDnDEntryHandler.java,v $
- * Date   : $Date: 2010/06/14 08:41:25 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/06/14 15:07:18 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,8 @@ import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.file.CmsResource;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -45,7 +47,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -61,8 +63,8 @@ public class CmsDnDEntryHandler extends A_CmsSitemapEntryEditorHandler {
      * Creates a new instance of this class.<p>
      * 
      * @param controller the sitemap controller for this mode 
-     * @param entry the sitemap entry for this mode 
-     * @param destPath 
+     * @param entry the sitemap entry for this handler (in this case, the entry which has been dragged) 
+     * @param destPath the path to which the entry has been dragged 
      * @param callback the callback
      */
     public CmsDnDEntryHandler(
@@ -82,6 +84,21 @@ public class CmsDnDEntryHandler extends A_CmsSitemapEntryEditorHandler {
     public String getDescriptionText() {
 
         return Messages.get().key(Messages.GUI_PROPERTY_EDITOR_TEXT_0);
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.client.edit.I_CmsSitemapEntryEditorHandler#getForbiddenUrlNames()
+     */
+    public List<String> getForbiddenUrlNames() {
+
+        List<String> result = new ArrayList<String>();
+        CmsClientSitemapEntry parent = m_controller.getEntry(m_destPath);
+        for (CmsClientSitemapEntry child : parent.getSubEntries()) {
+            if (child != m_entry) {
+                result.add(child.getName());
+            }
+        }
+        return result;
     }
 
     /**
@@ -107,14 +124,6 @@ public class CmsDnDEntryHandler extends A_CmsSitemapEntryEditorHandler {
     }
 
     /**
-     * @see org.opencms.ade.sitemap.client.edit.I_CmsSitemapEntryEditorHandler#isPathAllowed(java.lang.String)
-     */
-    public boolean isPathAllowed(String urlName) {
-
-        return (getController().getEntry(getPath(urlName)) == null);
-    }
-
-    /**
      * Returns the path for the given URL name.<p>
      * 
      * @param urlName the URL name to create the path for
@@ -125,4 +134,5 @@ public class CmsDnDEntryHandler extends A_CmsSitemapEntryEditorHandler {
 
         return CmsResource.getParentFolder(m_destPath) + urlName + "/";
     }
+
 }

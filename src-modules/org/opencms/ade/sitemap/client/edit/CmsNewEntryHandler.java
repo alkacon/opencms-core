@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/edit/Attic/CmsNewEntryHandler.java,v $
- * Date   : $Date: 2010/06/14 08:08:41 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/06/14 15:07:18 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,8 @@ import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -42,7 +44,7 @@ import java.util.Map;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  * 
@@ -70,6 +72,18 @@ public class CmsNewEntryHandler extends A_CmsSitemapEntryEditorHandler {
     public String getDescriptionText() {
 
         return Messages.get().key(Messages.GUI_PROPERTY_EDITOR_TEXT_NEW_0);
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.client.edit.I_CmsSitemapEntryEditorHandler#getForbiddenUrlNames()
+     */
+    public List<String> getForbiddenUrlNames() {
+
+        List<String> result = new ArrayList<String>();
+        for (CmsClientSitemapEntry child : m_entry.getSubEntries()) {
+            result.add(child.getName());
+        }
+        return result;
     }
 
     /**
@@ -107,14 +121,6 @@ public class CmsNewEntryHandler extends A_CmsSitemapEntryEditorHandler {
     }
 
     /**
-     * @see org.opencms.ade.sitemap.client.edit.I_CmsSitemapEntryEditorHandler#isPathAllowed(java.lang.String)
-     */
-    public boolean isPathAllowed(String urlName) {
-
-        return m_controller.getEntry(getPath(urlName)) == null;
-    }
-
-    /**
      * Returns the path for the given URL name.<p>
      * 
      * @param urlName the URL name to create the path for
@@ -125,4 +131,5 @@ public class CmsNewEntryHandler extends A_CmsSitemapEntryEditorHandler {
 
         return m_entry.getSitePath() + urlName + "/";
     }
+
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/edit/Attic/I_CmsSitemapEntryEditorHandler.java,v $
- * Date   : $Date: 2010/06/14 08:08:41 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/06/14 15:07:18 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.ade.sitemap.client.edit;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -41,7 +42,7 @@ import java.util.Map;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -67,6 +68,13 @@ public interface I_CmsSitemapEntryEditorHandler {
      * @return the current entry
      */
     CmsClientSitemapEntry getEntry();
+
+    /**
+     * Returns the URL names which the new URL name of the entry must not be equal to.<p>
+     * 
+     * @return a list of forbidden URL names 
+     */
+    List<String> getForbiddenUrlNames();
 
     /**
      * Returns the URL name with which the sitemap entry editor should be initialized.<p>
@@ -96,14 +104,5 @@ public interface I_CmsSitemapEntryEditorHandler {
      * @param properties the new properties 
      */
     void handleSubmit(String newTitle, String newUrlName, String vfsPath, Map<String, String> properties);
-
-    /**
-     * Checks whether the new path of the edited sitemap entry is allowed.<p>
-     * 
-     * @param urlName the URL name to check
-     * 
-     * @return true if it is allowed to set the path of the edited entry to the argument 
-     */
-    boolean isPathAllowed(String urlName);
 
 }

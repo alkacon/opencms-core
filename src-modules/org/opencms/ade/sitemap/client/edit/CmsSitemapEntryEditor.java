@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/edit/Attic/CmsSitemapEntryEditor.java,v $
- * Date   : $Date: 2010/06/14 08:08:41 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/06/14 15:07:18 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,34 +37,28 @@ import org.opencms.ade.sitemap.client.ui.CmsTemplateSelectBox;
 import org.opencms.ade.sitemap.client.ui.CmsTemplateSelectCell;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsSitemapTemplate;
-import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.CmsNonEmptyValidator;
 import org.opencms.gwt.client.ui.input.CmsTextBox;
 import org.opencms.gwt.client.ui.input.I_CmsFormField;
-import org.opencms.gwt.client.ui.input.I_CmsValidationHandler;
 import org.opencms.gwt.client.ui.input.form.CmsBasicFormField;
 import org.opencms.gwt.client.ui.input.form.CmsForm;
 import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
-import org.opencms.gwt.client.ui.input.form.I_CmsFormResetHandler;
+import org.opencms.gwt.client.ui.input.form.I_CmsFormHandler;
 import org.opencms.gwt.client.util.CmsPair;
-import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.sitemap.CmsSitemapManager;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-
-import com.google.gwt.event.dom.client.BlurEvent;
-import com.google.gwt.event.dom.client.BlurHandler;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * A dialog for editing the properties, title, url name and template of a sitemap entry.<p>
  * 
  *  @author Georg Westenberger
  *  
- *  @version $Revision: 1.5 $
+ *  @version $Revision: 1.6 $
  *  
  *  @since 8.0.0
  */
@@ -121,6 +115,27 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
         m_controller = handler.getController();
         m_propertyConfig = removeHiddenProperties(m_controller.getData().getProperties());
         m_handler = handler;
+        setFormHandler(new I_CmsFormHandler() {
+
+            /**
+             * @see org.opencms.gwt.client.ui.input.form.I_CmsFormHandler#onSubmitForm(java.util.Map)
+             */
+            public void onSubmitForm(Map<String, String> fieldValues) {
+
+                final String titleValue = getAndRemoveValue(fieldValues, FIELD_TITLE);
+                CmsPair<String, String> templateProps = getTemplateProperties(fieldValues);
+                fieldValues.put(CmsSitemapManager.Property.template.toString(), templateProps.getFirst());
+                fieldValues.put(CmsSitemapManager.Property.templateInherited.toString(), templateProps.getSecond());
+                if (m_handler.getEntry().isRoot()) {
+                    // The root element's name can't be edited 
+                    hide();
+                    m_handler.handleSubmit(titleValue, "", null, fieldValues);
+                    return;
+                }
+                final String urlNameValue = getAndRemoveValue(fieldValues, FIELD_URLNAME);
+                m_handler.handleSubmit(titleValue, urlNameValue, null, fieldValues);
+            }
+        });
     }
 
     /**
@@ -138,16 +153,6 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
             CmsBasicFormField urlNameField = createUrlNameField(entry);
             form.addField(urlNameField);
         }
-        form.addResetHandler(new I_CmsFormResetHandler() {
-
-            /**
-             * @see org.opencms.gwt.client.ui.input.form.I_CmsFormResetHandler#onResetForm()
-             */
-            public void onResetForm() {
-
-                showUrlNameError(null);
-            }
-        });
 
         CmsBasicFormField titleField = createTitleField(entry);
         form.addField(titleField);
@@ -173,6 +178,15 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
     }
 
     /**
+     * Starts the sitemap entry editor and validates all form fields.<p>
+     */
+    public void startAndValidate() {
+
+        start();
+        getForm().doInitialValidation();
+    }
+
+    /** 
      * Helper method which retrieves a value for a given key from a map and then deletes the entry for the key.<p>
      * 
      * @param map the map from which to retrieve the value 
@@ -189,43 +203,26 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
         return value;
     }
 
-    /** 
-     * Handles a form submit after the normal fields have already been validated successfully.<p>
+    /**
+     * Helper method for extracting new values for the 'template' and 'template-inherited' properties from the
+     * raw form data.<p>
+     * 
+     * @param fieldValues the string map produced by the form 
+     * 
+     * @return a pair containing the 'template' and 'template-inherit' property, in that order
      */
-    protected void handleSubmit() {
+    protected CmsPair<String, String> getTemplateProperties(Map<String, String> fieldValues) {
 
-        final Map<String, String> fieldValues = getForm().collectValues();
-        final String titleValue = getAndRemoveValue(fieldValues, FIELD_TITLE);
-
-        CmsPair<String, String> templateProps = getTemplateProperties(fieldValues);
-        fieldValues.put(CmsSitemapManager.Property.template.toString(), templateProps.getFirst());
-        fieldValues.put(CmsSitemapManager.Property.templateInherited.toString(), templateProps.getSecond());
-        if (m_handler.getEntry().isRoot()) {
-            // The root element's name can't be edited 
-            hide();
-            m_handler.handleSubmit(titleValue, "", null, fieldValues);
-            return;
+        String shouldInheritTemplateStr = getAndRemoveValue(fieldValues, FIELD_TEMPLATE_INHERIT_CHECKBOX);
+        String template = fieldValues.get(CmsSitemapManager.Property.template.toString());
+        if (template.equals(DEFAULT_TEMPLATE_VALUE)) {
+            // return nulls to cause the properties to be deleted  
+            return new CmsPair<String, String>(null, null);
         }
-        final String urlNameValue = getAndRemoveValue(fieldValues, FIELD_URLNAME);
-        validateUrlName(urlNameValue, new AsyncCallback<String>() {
 
-            /**
-             * @see com.google.gwt.user.client.rpc.AsyncCallback#onFailure(java.lang.Throwable)
-             */
-            public void onFailure(Throwable caught) {
-
-                // do nothing, this will never be called 
-            }
-
-            /**
-             * @see com.google.gwt.user.client.rpc.AsyncCallback#onSuccess(java.lang.Object) 
-             */
-            public void onSuccess(String newUrlName) {
-
-                hide();
-                m_handler.handleSubmit(titleValue, newUrlName, null, fieldValues);
-            }
-        });
+        // only inherit the template if checkbox is checked 
+        String templateInherited = Boolean.parseBoolean(shouldInheritTemplateStr) ? template : null;
+        return new CmsPair<String, String>(template, templateInherited);
     }
 
     /**
@@ -252,26 +249,6 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.input.form.CmsFormDialog#onClickOk()
-     */
-    @Override
-    protected void onClickOk() {
-
-        m_form.validate(new I_CmsValidationHandler() {
-
-            /**
-             * @see org.opencms.gwt.client.ui.input.I_CmsValidationHandler#onValidationComplete(boolean)
-             */
-            public void onValidationComplete(boolean validationSucceeded) {
-
-                if (validationSucceeded) {
-                    handleSubmit();
-                }
-            }
-        });
-    }
-
-    /**
      * Sets the contents of the URL name field in the form.<p>
      * 
      * @param urlName the new URL name
@@ -289,47 +266,6 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
     protected void showUrlNameError(String message) {
 
         getForm().getField(FIELD_URLNAME).getWidget().setErrorMessage(message);
-    }
-
-    /**
-     * Validates the url name, and if it is ok, executes another action and passes the translated url
-     * name to it.<p>
-     * 
-     * @param urlName the url name to validate 
-     * @param nextAction the action which should be executed if the validation turns out ok
-     */
-    protected void validateUrlName(String urlName, final AsyncCallback<String> nextAction) {
-
-        showUrlNameError(null);
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(urlName)) {
-            // empty url name; don't bother with translating it
-            showUrlNameError(message(Messages.GUI_URLNAME_CANT_BE_EMPTY_0));
-            return;
-        }
-        CmsCoreProvider.get().translateUrlName(urlName, new AsyncCallback<String>() {
-
-            /**
-             * @see com.google.gwt.user.client.rpc.AsyncCallback#onFailure(java.lang.Throwable)
-             */
-            public void onFailure(Throwable caught) {
-
-                // will never be executed; do nothing 
-            }
-
-            /**
-             * @see com.google.gwt.user.client.rpc.AsyncCallback#onSuccess(java.lang.Object)
-             */
-            public void onSuccess(String newUrlName) {
-
-                setUrlNameField(newUrlName);
-                if (!m_handler.isPathAllowed(newUrlName)) {
-                    showUrlNameError(message(Messages.GUI_URLNAME_ALREADY_EXISTS_0));
-                } else if (nextAction != null) {
-                    nextAction.onSuccess(newUrlName);
-                }
-            }
-        });
-
     }
 
     /**
@@ -420,22 +356,15 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
         String description = message(Messages.GUI_URLNAME_PROPERTY_DESC_0);
         String label = message(Messages.GUI_URLNAME_PROPERTY_0);
         final CmsTextBox textbox = new CmsTextBox();
-        textbox.addBlurHandler(new BlurHandler() {
 
-            /**
-             * @see com.google.gwt.event.dom.client.BlurHandler#onBlur(com.google.gwt.event.dom.client.BlurEvent)
-             */
-            public void onBlur(BlurEvent event) {
-
-                validateUrlName(textbox.getText(), null);
-            }
-        });
         CmsBasicFormField result = new CmsBasicFormField(FIELD_URLNAME, description, label, null, textbox);
         String urlName = m_handler.getName();
         if (urlName == null) {
             urlName = "";
         }
         result.getWidget().setFormValueAsString(urlName);
+        List<String> forbiddenUrlNames = m_handler.getForbiddenUrlNames();
+        result.setValidator(new CmsUrlNameValidator(forbiddenUrlNames));
         return result;
     }
 
@@ -454,28 +383,6 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
             template.getDescription(),
             DEFAULT_TEMPLATE_VALUE,
             template.getImgPath());
-    }
-
-    /**
-     * Helper method for extracting new values for the 'template' and 'template-inherited' properties from the
-     * raw form data.<p>
-     * 
-     * @param fieldValues the string map produced by the form 
-     * 
-     * @return a pair containing the 'template' and 'template-inherit' property, in that order
-     */
-    private CmsPair<String, String> getTemplateProperties(Map<String, String> fieldValues) {
-
-        String shouldInheritTemplateStr = getAndRemoveValue(fieldValues, FIELD_TEMPLATE_INHERIT_CHECKBOX);
-        String template = fieldValues.get(CmsSitemapManager.Property.template.toString());
-        if (template.equals(DEFAULT_TEMPLATE_VALUE)) {
-            // return nulls to cause the properties to be deleted  
-            return new CmsPair<String, String>(null, null);
-        }
-
-        // only inherit the template if checkbox is checked 
-        String templateInherited = Boolean.parseBoolean(shouldInheritTemplateStr) ? template : null;
-        return new CmsPair<String, String>(template, templateInherited);
     }
 
     /**

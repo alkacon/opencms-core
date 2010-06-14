@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/rpc/Attic/I_CmsCoreServiceAsync.java,v $
- * Date   : $Date: 2010/05/20 11:41:39 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/06/14 15:07:18 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,8 +33,11 @@ package org.opencms.gwt.shared.rpc;
 
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.gwt.shared.CmsCoreData;
+import org.opencms.gwt.shared.CmsValidationQuery;
+import org.opencms.gwt.shared.CmsValidationResult;
 
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
@@ -44,7 +47,7 @@ import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 8.0.0
  * 
@@ -120,5 +123,15 @@ public interface I_CmsCoreServiceAsync {
      */
     @SynchronizedRpcRequest
     void unlock(String uri, AsyncCallback<String> callback);
+
+    /**
+     * Performs a batch of validations and returns the results.<p>
+     * 
+     * @param validationQueries a map from field names to validation queries
+     * @param callback the asynchronous callback 
+     */
+    void validate(
+        Map<String, CmsValidationQuery> validationQueries,
+        AsyncCallback<Map<String, CmsValidationResult>> callback);
 
 }

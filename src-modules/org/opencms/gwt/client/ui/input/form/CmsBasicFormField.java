@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/form/Attic/CmsBasicFormField.java,v $
- * Date   : $Date: 2010/05/06 09:51:37 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/06/14 15:07:18 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,7 +34,7 @@ package org.opencms.gwt.client.ui.input.form;
 import org.opencms.gwt.client.ui.input.CmsRegexValidator;
 import org.opencms.gwt.client.ui.input.I_CmsFormField;
 import org.opencms.gwt.client.ui.input.I_CmsFormWidget;
-import org.opencms.gwt.client.ui.input.I_CmsValidator;
+import org.opencms.gwt.client.validation.I_CmsValidator;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
@@ -47,7 +47,7 @@ import java.util.Map;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0 
  */
@@ -64,6 +64,9 @@ public class CmsBasicFormField implements I_CmsFormField {
 
     /** Label of the form field. */
     private String m_label;
+
+    /** The current validation status (only used if the field has a validator). */
+    private I_CmsFormField.ValidationStatus m_validationStatus = I_CmsFormField.ValidationStatus.unknown;
 
     /** Validator of the form field. */
     private I_CmsValidator m_validator;
@@ -177,6 +180,22 @@ public class CmsBasicFormField implements I_CmsFormField {
     }
 
     /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormField#getValidationStatus()
+     */
+    public I_CmsFormField.ValidationStatus getValidationStatus() {
+
+        return m_validator != null ? m_validationStatus : I_CmsFormField.ValidationStatus.valid;
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormField#getValidator()
+     */
+    public I_CmsValidator getValidator() {
+
+        return m_validator;
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.input.I_CmsFormField#getWidget()
      */
     public I_CmsFormWidget getWidget() {
@@ -193,21 +212,21 @@ public class CmsBasicFormField implements I_CmsFormField {
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsFormField#setValidator(org.opencms.gwt.client.ui.input.I_CmsValidator)
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormField#setValidationStatus(org.opencms.gwt.client.ui.input.I_CmsFormField.ValidationStatus)
+     */
+    public void setValidationStatus(I_CmsFormField.ValidationStatus validationStatus) {
+
+        if (m_validator != null) {
+            m_validationStatus = validationStatus;
+        }
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormField#setValidator(org.opencms.gwt.client.validation.I_CmsValidator)
      */
     public void setValidator(I_CmsValidator validator) {
 
         m_validator = validator;
     }
 
-    /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsFormField#validate()
-     */
-    public boolean validate() {
-
-        if (m_validator != null) {
-            return m_validator.validate(this);
-        }
-        return true;
-    }
 }

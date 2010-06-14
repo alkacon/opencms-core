@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapView.java,v $
- * Date   : $Date: 2010/06/14 12:52:21 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2010/06/14 15:07:18 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -86,7 +86,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.27 $ 
  * 
  * @since 8.0.0
  */
@@ -160,7 +160,7 @@ I_CmsDnDTreeDropHandler, I_CmsDnDListStatusHandler, I_CmsDnDListCollisionResolut
                     item.setId(newName);
                     asyncCallback.onSuccess(newName);
                 }
-            }))).start();
+            }))).startAndValidate();
     }
 
     /**
@@ -287,6 +287,7 @@ I_CmsDnDTreeDropHandler, I_CmsDnDListStatusHandler, I_CmsDnDListCollisionResolut
 
         // toolbar
         m_toolbar = new CmsSitemapToolbar(m_controller);
+
         RootPanel.get().add(m_toolbar);
         RootPanel.get().add(new CmsToolbarPlaceHolder());
 
@@ -335,19 +336,19 @@ I_CmsDnDTreeDropHandler, I_CmsDnDListStatusHandler, I_CmsDnDListCollisionResolut
             }
         });
         if (m_controller.isEditable()) {
-            m_tree.addTreeDropHandler(this);
-            m_tree.setDnDEnabled(true);
+        m_tree.addTreeDropHandler(this);
+        m_tree.setDnDEnabled(true);
         }
         m_tree.truncate(TM_SITEMAP, 920);
         m_tree.setAnimationEnabled(true);
         m_tree.addItem(rootItem);
         if (m_controller.isEditable()) {
-            // prevent drop on root level
-            m_tree.enableDropTarget(false);
-            // prevent dropping if we can not lock the resource 
-            m_tree.getDnDHandler().setStatusHandler(this);
-            // open edit dialog for collisions while dropping
-            m_tree.getDnDHandler().setCollisionHandler(this);
+        // prevent drop on root level
+        m_tree.enableDropTarget(false);
+        // prevent dropping if we can not lock the resource 
+        m_tree.getDnDHandler().setStatusHandler(this);
+        // open edit dialog for collisions while dropping
+        m_tree.getDnDHandler().setCollisionHandler(this);
         }
 
         // paint
@@ -393,7 +394,7 @@ I_CmsDnDTreeDropHandler, I_CmsDnDListStatusHandler, I_CmsDnDListCollisionResolut
                         + "/");
                 }
                 treeItem.removeDndMouseHandlers();
-            }
+        }
         });
     }
 

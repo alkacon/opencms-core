@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/I_CmsValidationHandler.java,v $
- * Date   : $Date: 2010/05/06 09:51:37 $
- * Version: $Revision: 1.3 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/form/Attic/I_CmsFormDialog.java,v $
+ * Date   : $Date: 2010/06/14 15:07:18 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,27 +29,28 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.gwt.client.ui.input;
+package org.opencms.gwt.client.ui.input.form;
 
 /**
- * Interface for notifying an object about a form validation failure or success.<p>
+ * An interface which the {@link CmsForm} class uses to access the form dialog.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
- * 
  */
-public interface I_CmsValidationHandler {
+public interface I_CmsFormDialog {
 
     /**
-     * This method is called when a form validation has been completed.<p>
-     * 
-     * The boolean parameter passed to this method indicates whether there have been validation errors or not.
-     * 
-     * @param validationSucceeded if true, there were no validation errors
+     * Closes the form dialog.<p>
      */
-    void onValidationComplete(boolean validationSucceeded);
+    void closeDialog();
 
+    /** 
+     * Enables or disables the OK button in the form dialog.<p>
+     * 
+     * @param enabled if true, the button will be enabled, else disabled 
+     */
+    void setOkButtonEnabled(boolean enabled);
 }

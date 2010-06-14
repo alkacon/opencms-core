@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/form/Attic/CmsFormDialog.java,v $
- * Date   : $Date: 2010/06/14 08:08:41 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/06/14 15:07:18 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,31 +35,34 @@ import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.CmsPopupDialog;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.input.I_CmsFormField;
-import org.opencms.gwt.client.ui.input.I_CmsValidationHandler;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.util.Map;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * A dialog containing a form.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
-public class CmsFormDialog extends CmsPopupDialog {
+public class CmsFormDialog extends CmsPopupDialog implements I_CmsFormDialog {
 
     /** The widget containing the form fields. */
     protected CmsForm m_form;
 
     /** The form handler for this dialog. */
     protected I_CmsFormHandler m_formHandler;
+
+    /** The OK button of this dialog. */
+    protected CmsPushButton m_okButton;
 
     /** 
      * Constructs a new form dialog with a given title.<p>
@@ -73,10 +76,12 @@ public class CmsFormDialog extends CmsPopupDialog {
         setAutoHideEnabled(false);
         setModal(true);
         m_form = (CmsForm)getContent();
-        setWidth("520px");
         addButton(createCancelButton());
         addButton(createResetButton());
-        addButton(createOkButton());
+        m_okButton = createOkButton();
+        m_form.setFormDialog(this);
+        addButton(m_okButton);
+
     }
 
     /**
@@ -106,6 +111,14 @@ public class CmsFormDialog extends CmsPopupDialog {
     }
 
     /**
+     * @see org.opencms.gwt.client.ui.input.form.I_CmsFormDialog#closeDialog()
+     */
+    public void closeDialog() {
+
+        hide();
+    }
+
+    /**
      * Gets the form of this dialog.<p>
      * 
      * @return the form of this dialog 
@@ -126,6 +139,26 @@ public class CmsFormDialog extends CmsPopupDialog {
     }
 
     /**
+     * @see org.opencms.gwt.client.ui.input.form.I_CmsFormDialog#setOkButtonEnabled(boolean)
+     */
+    public void setOkButtonEnabled(final boolean enabled) {
+
+        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
+            /**
+             * @see com.google.gwt.core.client.Scheduler.ScheduledCommand#execute()
+             */
+            public void execute() {
+
+                // The event handling of GWT gets confused if we don't execute this as a scheduled command 
+                m_okButton.setDown(false);
+                m_okButton.setEnabled(enabled);
+            }
+        });
+
+    }
+
+    /**
      * The method which should be called when the user clicks on the cancel button of the dialog.<p>
      */
     protected void onClickCancel() {
@@ -138,19 +171,7 @@ public class CmsFormDialog extends CmsPopupDialog {
      */
     protected void onClickOk() {
 
-        m_form.validate(new I_CmsValidationHandler() {
-
-            public void onValidationComplete(boolean validationSucceeded) {
-
-                if (validationSucceeded) {
-                    hide();
-                    if (m_formHandler != null) {
-                        Map<String, String> fieldValues = m_form.collectValues();
-                        m_formHandler.onSubmitForm(fieldValues);
-                    }
-                }
-            }
-        });
+        m_form.validateAndSubmit(m_formHandler);
     }
 
     /**
@@ -158,7 +179,7 @@ public class CmsFormDialog extends CmsPopupDialog {
      * 
      * @return the cancel button
      */
-    private Widget createCancelButton() {
+    private CmsPushButton createCancelButton() {
 
         CmsPushButton button = new CmsPushButton();
         button.setText(Messages.get().key(Messages.GUI_CANCEL_0));
@@ -181,7 +202,7 @@ public class CmsFormDialog extends CmsPopupDialog {
      * 
      * @return the OK button
      */
-    private Widget createOkButton() {
+    private CmsPushButton createOkButton() {
 
         CmsPushButton button = new CmsPushButton();
         button.setText(Messages.get().key(Messages.GUI_OK_0));
@@ -193,7 +214,7 @@ public class CmsFormDialog extends CmsPopupDialog {
              */
             public void onClick(ClickEvent event) {
 
-                onClickOk();
+                m_form.validateAndSubmit(m_formHandler);
             }
         });
         return button;
@@ -204,7 +225,7 @@ public class CmsFormDialog extends CmsPopupDialog {
      * 
      * @return the Reset button
      */
-    private Widget createResetButton() {
+    private CmsPushButton createResetButton() {
 
         CmsPushButton button = new CmsPushButton();
         button.setText(Messages.get().key(Messages.GUI_RESET_0));
@@ -220,7 +241,6 @@ public class CmsFormDialog extends CmsPopupDialog {
             }
         });
         return button;
-
     }
 
 }

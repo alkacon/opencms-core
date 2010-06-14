@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/gwt/Messages.java,v $
- * Date   : $Date: 2010/05/20 11:41:39 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/06/14 15:07:18 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -47,6 +47,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_RESOURCE_MODIFIED_AFTER_OPEN_1 = "ERR_RESOURCE_MODIFIED_AFTER_OPEN_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_VALIDATOR_INCORRECT_TYPE_1 = "ERR_VALIDATOR_INCORRECT_TYPE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_VALIDATOR_INSTANTIATION_FAILED_1 = "ERR_VALIDATOR_INSTANTIATION_FAILED_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_CLIENT_WITH_TICKET_4 = "LOG_CLIENT_WITH_TICKET_4";

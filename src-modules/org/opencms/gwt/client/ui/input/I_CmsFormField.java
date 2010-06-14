@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/I_CmsFormField.java,v $
- * Date   : $Date: 2010/05/06 09:51:37 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/06/14 15:07:18 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,8 @@
 
 package org.opencms.gwt.client.ui.input;
 
+import org.opencms.gwt.client.validation.I_CmsValidator;
+
 /**
  * The interface for a form field.<p>
  * 
@@ -39,12 +41,24 @@ package org.opencms.gwt.client.ui.input;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  * 
  */
 public interface I_CmsFormField {
+
+    /** 
+     * An enum which represents the validation status of a field.<p>
+     */
+    enum ValidationStatus {
+        /** The field's content is invalid. */
+        invalid,
+        /** It is unknown whether the field's content is valid. */
+        unknown,
+        /** The field's content is valid. */
+        valid
+    }
 
     /**
      * Returns the default value for the form field.<p>
@@ -77,6 +91,22 @@ public interface I_CmsFormField {
     String getLabel();
 
     /**
+     * Returns the validation status of this form field.<p>
+     * 
+     * If the field has no validator, this should always return <code>valid</code>.
+     * 
+     * @return the validation status 
+     */
+    ValidationStatus getValidationStatus();
+
+    /**
+     * Returns the validator for this form field, or null if the field has no validator.<p>
+     * 
+     * @return a validator or null
+     */
+    I_CmsValidator getValidator();
+
+    /**
      * Returns the widget used by this form field.<p>
      * 
      * @return a widget
@@ -91,16 +121,19 @@ public interface I_CmsFormField {
     void setId(String id);
 
     /**
+     * Updates the validation status of this form field.<p>
+     * 
+     * This will only have an effect if the field has a validator.<p>
+     *  
+     * @param status the new validation status 
+     */
+    void setValidationStatus(ValidationStatus status);
+
+    /**
      * Sets the validator for this form field.<p>
      * 
      * @param validator the new validator
      */
     void setValidator(I_CmsValidator validator);
 
-    /**
-     * Validates this form field and informs the validation handler if it failed.<p>
-     * 
-     * @return true if the validation has succeeded 
-     */
-    boolean validate();
 }

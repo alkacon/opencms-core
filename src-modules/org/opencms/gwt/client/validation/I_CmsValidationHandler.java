@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/I_CmsValidator.java,v $
- * Date   : $Date: 2010/05/06 09:51:37 $
- * Version: $Revision: 1.3 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/validation/Attic/I_CmsValidationHandler.java,v $
+ * Date   : $Date: 2010/06/14 15:07:18 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,27 +29,34 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.gwt.client.ui.input;
+package org.opencms.gwt.client.validation;
+
+import org.opencms.gwt.shared.CmsValidationResult;
 
 /**
- * The interface for form widget validators.<p>
+ * This interface is used to receive notifications about the status of the validation.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  */
-public interface I_CmsValidator {
+public interface I_CmsValidationHandler {
 
     /**
-     * Validates a form field synchronously, and returns the result.<p>
+     * This method is called when the validation has been completed.<p>
      * 
-     * Implementations of this method are also responsible for displaying error messages.
-     * 
-     * @param field the field which should be validated 
-     * 
-     * @return true if the validation was successful
+     * @param ok true if all fields have been successfully validated 
      */
-    boolean validate(I_CmsFormField field);
+    void onValidationFinished(boolean ok);
+
+    /**
+     * This method is called when a single field has been validated.<p>
+     * 
+     * @param fieldId the field which has been validated 
+     * @param result the result of the validation 
+     */
+    void onValidationResult(String fieldId, CmsValidationResult result);
+
 }

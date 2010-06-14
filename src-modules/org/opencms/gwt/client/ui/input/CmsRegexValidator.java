@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsRegexValidator.java,v $
- * Date   : $Date: 2010/05/10 06:54:24 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/06/14 15:07:18 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,12 +31,16 @@
 
 package org.opencms.gwt.client.ui.input;
 
+import org.opencms.gwt.client.validation.I_CmsValidationController;
+import org.opencms.gwt.client.validation.I_CmsValidator;
+import org.opencms.gwt.shared.CmsValidationResult;
+
 /**
  * Basic regular expression validator for widgets of field type string.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
  */
@@ -61,6 +65,7 @@ public class CmsRegexValidator implements I_CmsValidator {
      */
     public CmsRegexValidator(String regex, String message) {
 
+        assert message != null;
         m_regex = regex;
         m_message = message;
     }
@@ -86,22 +91,20 @@ public class CmsRegexValidator implements I_CmsValidator {
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsValidator#validate(org.opencms.gwt.client.ui.input.I_CmsFormField)
+     * @see org.opencms.gwt.client.validation.I_CmsValidator#validate(org.opencms.gwt.client.ui.input.I_CmsFormField, org.opencms.gwt.client.validation.I_CmsValidationController)
      */
-    public boolean validate(I_CmsFormField field) {
+    public void validate(I_CmsFormField field, I_CmsValidationController controller) {
 
         I_CmsFormWidget widget = field.getWidget();
         if (widget.getFieldType() == I_CmsFormWidget.FieldType.STRING) {
             String value = widget.getFormValueAsString();
+            CmsValidationResult result;
             if (!matchRuleRegex(m_regex, value)) {
-                widget.setErrorMessage(m_message);
-                return false;
+                result = new CmsValidationResult(m_message);
             } else {
-                widget.setErrorMessage(null);
-                return true;
+                result = CmsValidationResult.VALIDATION_OK;
             }
-
+            controller.provideValidationResult(field.getId(), result);
         }
-        return false;
     }
 }
