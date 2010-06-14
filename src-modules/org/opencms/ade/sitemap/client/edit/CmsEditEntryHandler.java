@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/edit/Attic/CmsEditEntryMode.java,v $
- * Date   : $Date: 2010/05/31 11:43:34 $
- * Version: $Revision: 1.2 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/edit/Attic/CmsEditEntryHandler.java,v $
+ * Date   : $Date: 2010/06/14 08:08:41 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,18 +43,11 @@ import java.util.Map;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
- * 
  */
-public class CmsEditEntryMode implements I_CmsSitemapEntryEditorModeHandler {
-
-    /** The sitemap controller for this mode handler. */
-    private CmsSitemapController m_controller;
-
-    /** The sitemap entry for this mode handler. */
-    private CmsClientSitemapEntry m_entry;
+public class CmsEditEntryHandler extends A_CmsSitemapEntryEditorHandler {
 
     /**
      * Creates a new instance of this class.<p>
@@ -62,68 +55,51 @@ public class CmsEditEntryMode implements I_CmsSitemapEntryEditorModeHandler {
      * @param controller the sitemap controller for this mode 
      * @param entry the sitemap entry for this mode 
      */
-    public CmsEditEntryMode(CmsSitemapController controller, CmsClientSitemapEntry entry) {
+    public CmsEditEntryHandler(CmsSitemapController controller, CmsClientSitemapEntry entry) {
 
-        m_controller = controller;
-        m_entry = entry;
-
+        super(controller, entry);
     }
 
     /**
-     * @see org.opencms.ade.sitemap.client.edit.I_CmsSitemapEntryEditorModeHandler#createPath(java.lang.String)
+     * @see org.opencms.ade.sitemap.client.edit.I_CmsSitemapEntryEditorHandler#getDescriptionText()
      */
-    public String createPath(String urlName) {
+    public String getDescriptionText() {
+
+        return Messages.get().key(Messages.GUI_PROPERTY_EDITOR_TEXT_0);
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.client.edit.I_CmsSitemapEntryEditorHandler#handleSubmit(java.lang.String, java.lang.String, java.lang.String, java.util.Map)
+     */
+    public void handleSubmit(String newTitle, String newUrlName, String vfsPath, Map<String, String> fieldValues) {
+
+        // edit
+        m_controller.edit(m_entry, newTitle, vfsPath, fieldValues);
+        // move
+        m_controller.move(m_entry, getPath(newUrlName), m_entry.getPosition());
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.client.edit.I_CmsSitemapEntryEditorHandler#isPathAllowed(java.lang.String)
+     */
+    public boolean isPathAllowed(String urlName) {
+
+        String path = getPath(urlName);
+        return path.equals(m_entry.getSitePath()) || (m_controller.getEntry(path) == null);
+    }
+
+    /**
+     * Returns the path for the given URL name.<p>
+     * 
+     * @param urlName the URL name to create the path for
+     * 
+     * @return the new path for the given URL name
+     */
+    protected String getPath(String urlName) {
 
         if (urlName.equals("")) {
             return m_entry.getSitePath();
         }
         return CmsResource.getParentFolder(m_entry.getSitePath()) + urlName + "/";
     }
-
-    /**
-     * @see org.opencms.ade.sitemap.client.edit.I_CmsSitemapEntryEditorModeHandler#getDescriptionText()
-     */
-    public String getDescriptionText() {
-
-        return Messages.get().key(Messages.GUI_PROPERTY_EDITOR_TEXT_0);
-
-    }
-
-    /**
-     * @see org.opencms.ade.sitemap.client.edit.I_CmsSitemapEntryEditorModeHandler#getName()
-     */
-    public String getName() {
-
-        return m_entry.getName();
-    }
-
-    /**
-     * @see org.opencms.ade.sitemap.client.edit.I_CmsSitemapEntryEditorModeHandler#getTitle()
-     */
-    public String getTitle() {
-
-        return m_entry.getTitle();
-    }
-
-    /**
-     * @see org.opencms.ade.sitemap.client.edit.I_CmsSitemapEntryEditorModeHandler#handleSubmit(java.lang.String, java.lang.String, java.lang.String, java.util.Map)
-     */
-    public void handleSubmit(String newTitle, String newUrlName, String vfsPath, Map<String, String> fieldValues) {
-
-        String newPath = createPath(newUrlName);
-        // edit
-        // TODO: handle VFS path
-        m_controller.edit(m_entry, newTitle, null, fieldValues);
-        // move
-        m_controller.move(m_entry, newPath, m_entry.getPosition());
-    }
-
-    /**
-     * @see org.opencms.ade.sitemap.client.edit.I_CmsSitemapEntryEditorModeHandler#isPathAllowed(java.lang.String)
-     */
-    public boolean isPathAllowed(String path) {
-
-        return path.equals(m_entry.getSitePath()) || (m_controller.getEntry(path) == null);
-    }
-
 }

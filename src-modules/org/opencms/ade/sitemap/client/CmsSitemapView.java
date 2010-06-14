@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapView.java,v $
- * Date   : $Date: 2010/06/10 13:15:39 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2010/06/14 08:08:41 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,8 @@ import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.client.control.CmsSitemapLoadEvent;
 import org.opencms.ade.sitemap.client.control.I_CmsSitemapChangeHandler;
 import org.opencms.ade.sitemap.client.control.I_CmsSitemapLoadHandler;
+import org.opencms.ade.sitemap.client.edit.CmsDnDEntryHandler;
+import org.opencms.ade.sitemap.client.edit.CmsSitemapEntryEditor;
 import org.opencms.ade.sitemap.client.hoverbar.CmsSitemapHoverbar;
 import org.opencms.ade.sitemap.client.toolbar.CmsSitemapToolbar;
 import org.opencms.ade.sitemap.client.ui.CmsPage;
@@ -46,12 +48,14 @@ import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.gwt.client.A_CmsEntryPoint;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.CmsDnDList;
+import org.opencms.gwt.client.ui.CmsDnDListDropEvent;
 import org.opencms.gwt.client.ui.CmsDnDListItem;
 import org.opencms.gwt.client.ui.CmsHeader;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.CmsToolbar;
 import org.opencms.gwt.client.ui.CmsToolbarPlaceHolder;
+import org.opencms.gwt.client.ui.I_CmsDnDListCollisionResolutionHandler;
 import org.opencms.gwt.client.ui.I_CmsDnDListStatusHandler;
 import org.opencms.gwt.client.ui.tree.A_CmsDnDDeepLazyOpenHandler;
 import org.opencms.gwt.client.ui.tree.CmsDnDLazyTree;
@@ -68,6 +72,7 @@ import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.Window.ClosingHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 
@@ -76,13 +81,13 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 8.0.0
  */
 public class CmsSitemapView extends A_CmsEntryPoint
 implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler, NativePreviewHandler, ClosingHandler,
-I_CmsDnDTreeDropHandler, I_CmsDnDListStatusHandler {
+I_CmsDnDTreeDropHandler, I_CmsDnDListStatusHandler, I_CmsDnDListCollisionResolutionHandler {
 
     /** Text metrics key. */
     private static final String TM_SITEMAP = "Sitemap";
@@ -300,6 +305,8 @@ I_CmsDnDTreeDropHandler, I_CmsDnDListStatusHandler {
         m_tree.enableDropTarget(false);
         // prevent dropping if we can not lock the resource 
         m_tree.getDnDHandler().setStatusHandler(this);
+        // open edit dialog for collisions while dropping
+        m_tree.getDnDHandler().setCollisionHandler(this);
 
         // paint
         page.remove(loadingLabel);
@@ -367,5 +374,38 @@ I_CmsDnDTreeDropHandler, I_CmsDnDListStatusHandler {
     protected CmsSitemapTreeItem getRootItem() {
 
         return (CmsSitemapTreeItem)(m_tree.getWidget(0));
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.I_CmsDnDListCollisionResolutionHandler#checkCollision(org.opencms.gwt.client.ui.CmsDnDListDropEvent, com.google.gwt.user.client.rpc.AsyncCallback)
+     */
+    public void checkCollision(final CmsDnDListDropEvent dropEvent, final AsyncCallback<String> asyncCallback) {
+
+        final CmsDnDListItem item = dropEvent.getDestList().getItem(CmsDnDListItem.DRAGGED_PLACEHOLDER_ID);
+        (new CmsSitemapEntryEditor(new CmsDnDEntryHandler(
+            m_controller,
+            m_controller.getEntry(dropEvent.getSrcPath()),
+            dropEvent.getDestPath(),
+            new AsyncCallback<String>() {
+
+                /**
+                 * @see com.google.gwt.user.client.rpc.AsyncCallback#onFailure(java.lang.Throwable)
+                 */
+                public void onFailure(Throwable caught) {
+
+                    // cancel drag'n drop action
+                    asyncCallback.onFailure(null);
+                }
+
+                /**
+                 * @see com.google.gwt.user.client.rpc.AsyncCallback#onSuccess(java.lang.Object)
+                 */
+                public void onSuccess(String newName) {
+
+                    // finalize dnd action
+                    item.setId(newName);
+                    asyncCallback.onSuccess(newName);
+                }
+            }))).start();
     }
 }

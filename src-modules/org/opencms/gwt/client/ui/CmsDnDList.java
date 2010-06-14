@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsDnDList.java,v $
- * Date   : $Date: 2010/06/10 12:56:38 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/06/14 08:08:41 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -134,6 +134,7 @@ public class CmsDnDList<I extends CmsDnDListItem> extends CmsList<I> implements 
         }
         m_dndEnabled = enabled;
         if (m_handler == null) {
+            // set default DnD handler
             m_handler = new CmsDnDListHandler();
             if (m_dropTargetEnabled) {
                 m_dropTargetEnabled = false;
@@ -159,6 +160,19 @@ public class CmsDnDList<I extends CmsDnDListItem> extends CmsList<I> implements 
     public void setDnDHandler(CmsDnDListHandler handler) {
 
         m_handler = handler;
+    }
+
+    /**
+     * Called just when about to drop an item.<p>
+     * 
+     * @param event the potential drop event
+     * 
+     * @return the enhanced event
+     */
+    protected CmsDnDListDropEvent enhanceEvent(CmsDnDListDropEvent event) {
+
+        // nothing to do here
+        return event;
     }
 
     /**

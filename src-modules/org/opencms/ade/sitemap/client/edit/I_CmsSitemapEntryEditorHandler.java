@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/edit/Attic/I_CmsSitemapEntryEditorModeHandler.java,v $
- * Date   : $Date: 2010/05/27 11:13:51 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/edit/Attic/I_CmsSitemapEntryEditorHandler.java,v $
+ * Date   : $Date: 2010/06/14 08:08:41 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -31,6 +31,9 @@
 
 package org.opencms.ade.sitemap.client.edit;
 
+import org.opencms.ade.sitemap.client.control.CmsSitemapController;
+import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
+
 import java.util.Map;
 
 /**
@@ -42,15 +45,14 @@ import java.util.Map;
  * 
  * @since 8.0.0
  */
-public interface I_CmsSitemapEntryEditorModeHandler {
+public interface I_CmsSitemapEntryEditorHandler {
 
     /**
-     * Creates the full path for a given url name.
-     *  
-     * @param urlName the url name for which the full path should be returned 
-     * @return the full path 
+     * Returns the sitemap controller.<p>
+     * 
+     * @return the sitemap controller
      */
-    String createPath(String urlName);
+    CmsSitemapController getController();
 
     /**
      * Returns the description text which will be displayed in the sitemap entry editor.<p>
@@ -58,6 +60,13 @@ public interface I_CmsSitemapEntryEditorModeHandler {
      * @return a description text 
      */
     String getDescriptionText();
+
+    /**
+     * Returns the current entry.<p>
+     * 
+     * @return the current entry
+     */
+    CmsClientSitemapEntry getEntry();
 
     /**
      * Returns the URL name with which the sitemap entry editor should be initialized.<p>
@@ -74,6 +83,11 @@ public interface I_CmsSitemapEntryEditorModeHandler {
     String getTitle();
 
     /**
+     * Handles the cancel action for the sitemap entry editor.<p>
+     */
+    void handleCancel();
+
+    /**
      * Handles the submit action for the sitemap entry editor.<p>
      * 
      * @param newTitle the new title 
@@ -86,10 +100,10 @@ public interface I_CmsSitemapEntryEditorModeHandler {
     /**
      * Checks whether the new path of the edited sitemap entry is allowed.<p>
      * 
-     * @param path the path which should be checked 
+     * @param urlName the URL name to check
      * 
      * @return true if it is allowed to set the path of the edited entry to the argument 
      */
-    boolean isPathAllowed(String path);
+    boolean isPathAllowed(String urlName);
 
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/tree/Attic/CmsDnDTreeItem.java,v $
- * Date   : $Date: 2010/06/10 12:56:38 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/06/14 08:08:41 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,7 +69,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Georg Westenberger
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
  */
@@ -155,40 +155,31 @@ public class CmsDnDTreeItem extends CmsDnDListItem {
         m_leafStyleVar = new CmsStyleVariable(this);
         m_opener = createOpener();
         addDecoration(m_opener, showOpeners ? OPENER_WIDTH : 0, true);
-        m_children = new CmsDnDList<CmsDnDTreeItem>();
+        m_children = new CmsDnDList<CmsDnDTreeItem>() {
+
+            /**
+             * @see org.opencms.gwt.client.ui.CmsDnDList#enhanceEvent(org.opencms.gwt.client.ui.CmsDnDListDropEvent)
+             */
+            @Override
+            protected CmsDnDListDropEvent enhanceEvent(CmsDnDListDropEvent event) {
+
+                return CmsDnDTreeItem.this.enhanceEvent(event);
+            }
+        };
         m_children.addListDropHandler(new I_CmsDnDListDropHandler() {
 
             /**
              * @see org.opencms.gwt.client.ui.I_CmsDnDListDropHandler#onDrop(org.opencms.gwt.client.ui.CmsDnDListDropEvent)
              */
-            @SuppressWarnings("unchecked")
-            public void onDrop(CmsDnDListDropEvent dropEvent) {
+            public void onDrop(CmsDnDListDropEvent event) {
 
-                CmsDnDListItem destItem = dropEvent.getDestList().getItem(dropEvent.getDestPath());
-                if (!(destItem instanceof CmsDnDTreeItem)) {
-                    // do nothing
+                CmsDnDListItem item = event.getDestList().getItem(0);
+                if (!(item instanceof CmsDnDTreeItem)) {
+                    // not a tree target, do nothing
                     return;
                 }
-                CmsDnDTreeItem destTreeItem = (CmsDnDTreeItem)destItem;
 
-                // this can not be done later because the most likely srcItem == destItem
-                // since the inconsistency we are fixing here
-                // and since we manipulate destItem (to fix it) we will loose info on srcItem
-                CmsDnDListItem srcItem = dropEvent.getSrcList().getItem(DRAGGED_PLACEHOLDER_ID);
-                CmsDnDTreeItem srcTreeItem = (CmsDnDTreeItem)srcItem;
-                CmsDnDList<? extends CmsDnDListItem> srcList = dropEvent.getSrcList();
-                String srcPath = dropEvent.getSrcPath();
-                if (srcTreeItem.getTree() != null) {
-                    // event is coming from a tree
-                    srcList = srcTreeItem.getTree();
-                    srcPath = srcTreeItem.getPath();
-                    if (!dropEvent.getSrcPath().equals(dropEvent.getDestPath())
-                        && srcPath.endsWith(dropEvent.getDestPath() + "/")) {
-                        // we need to fix this
-                        srcPath = srcPath.substring(0, srcPath.length() - dropEvent.getDestPath().length() - 1);
-                        srcPath += dropEvent.getSrcPath() + "/";
-                    }
-                }
+                CmsDnDTreeItem destTreeItem = ((CmsDnDTreeItem)item).getTree().getItemByPath(event.getDestPath());
 
                 // remove item from old position
                 CmsDnDTreeItem oldParent = destTreeItem.getParentItem();
@@ -201,24 +192,9 @@ public class CmsDnDTreeItem extends CmsDnDListItem {
                 destTreeItem.setTree(getTree());
                 onChangeChildren();
 
-                if (!(srcItem instanceof CmsDnDTreeItem)) {
-                    // event is coming from a list not a tree, forward event
-                    getTree().fireDropEvent(
-                        new CmsDnDTreeDropEvent(
-                            dropEvent.getSrcList(),
-                            dropEvent.getSrcPath(),
-                            getTree(),
-                            destTreeItem.getPath()));
-                    return;
-                }
-
                 // forward event
                 getTree().fireDropEvent(
-                    new CmsDnDTreeDropEvent(
-                        (CmsDnDList<CmsDnDListItem>)srcList,
-                        srcPath,
-                        getTree(),
-                        destTreeItem.getPath()));
+                    new CmsDnDTreeDropEvent(event.getSrcList(), event.getSrcPath(), getTree(), event.getDestPath()));
             }
         });
         m_children.setStyleName(CSS.listTreeItemChildren());
@@ -633,6 +609,50 @@ public class CmsDnDTreeItem extends CmsDnDListItem {
             }
         });
         return opener;
+    }
+
+    /**
+     * Will convert the source and destination paths, matching the current tree.<p>
+     * 
+     * @param dropEvent the event to convert
+     * 
+     * @return the converted event
+     */
+    protected CmsDnDListDropEvent enhanceEvent(CmsDnDListDropEvent dropEvent) {
+
+        CmsDnDListItem destItem = dropEvent.getDestList().getItem(dropEvent.getDestPath());
+        if (!(destItem instanceof CmsDnDTreeItem)) {
+            // do nothing
+            return dropEvent;
+        }
+        String destPath = getPath() + dropEvent.getDestPath() + "/";
+
+        CmsDnDListItem srcItem = dropEvent.getSrcList().getItem(DRAGGED_PLACEHOLDER_ID);
+        if (!(srcItem instanceof CmsDnDTreeItem)) {
+            // event is coming from a list not a tree, forward event
+            return new CmsDnDListDropEvent(
+                dropEvent.getSrcList(),
+                dropEvent.getSrcPath(),
+                dropEvent.getDestList(),
+                destPath);
+        }
+
+        // event is coming from a tree
+        CmsDnDTreeItem srcTreeItem = (CmsDnDTreeItem)srcItem;
+        String srcPath = srcTreeItem.getPath();
+        if (!dropEvent.getSrcPath().equals(dropEvent.getDestPath()) && srcPath.endsWith(dropEvent.getDestPath() + "/")) {
+            // we need to fix this
+            srcPath = srcPath.substring(0, srcPath.length() - dropEvent.getDestPath().length() - 1);
+            srcPath += dropEvent.getSrcPath() + "/";
+        }
+        if (srcPath.endsWith(DRAGGED_PLACEHOLDER_ID + "/")) {
+            // we need to fix this
+            srcPath = srcPath.substring(0, srcPath.length() - DRAGGED_PLACEHOLDER_ID.length() - 1);
+            srcPath += dropEvent.getSrcPath() + "/";
+        }
+
+        // forward event
+        return new CmsDnDListDropEvent(dropEvent.getSrcList(), srcPath, dropEvent.getDestList(), destPath);
     }
 
     /** 

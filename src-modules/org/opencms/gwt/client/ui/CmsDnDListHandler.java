@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsDnDListHandler.java,v $
- * Date   : $Date: 2010/06/10 13:15:39 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/06/14 08:08:41 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -107,8 +107,9 @@ implements NativePreviewHandler {
         // the abstract generic dnd handler should not clear the targets every time!!! see #clearDrag
         m_targets = new ArrayList<CmsDnDList<CmsDnDListItem>>();
         m_handlerRegs = new HashMap<CmsDnDListItem, List<HandlerRegistration>>();
-        m_collisionHandler = new CmsDnDListCollisionResolutionHandler();
         m_statusHandler = null;
+        // set default collision handler
+        m_collisionHandler = new CmsDnDListCollisionResolutionHandler();
     }
 
     /**
@@ -138,6 +139,16 @@ implements NativePreviewHandler {
     public CmsListItemWidget createDraggableListItemWidget(CmsListInfoBean infoBean, String id) {
 
         throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Returns the collision handler.<p>
+     *
+     * @return the collision handler
+     */
+    public I_CmsDnDListCollisionResolutionHandler getCollisionHandler() {
+
+        return m_collisionHandler;
     }
 
     /**
@@ -389,6 +400,7 @@ implements NativePreviewHandler {
             return;
         }
         CmsDnDListDropEvent event = new CmsDnDListDropEvent(srcList, srcId, targetList, srcId);
+        event = targetList.enhanceEvent(event);
         if ((srcList != targetList) && (targetList.getItem(srcId) != null)) {
             // collision detected
             if (m_collisionHandler != null) {

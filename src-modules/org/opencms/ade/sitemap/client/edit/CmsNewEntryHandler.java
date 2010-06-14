@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/edit/Attic/CmsNewEntryMode.java,v $
- * Date   : $Date: 2010/05/27 11:13:52 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/edit/Attic/CmsNewEntryHandler.java,v $
+ * Date   : $Date: 2010/06/14 08:08:41 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -47,16 +47,10 @@ import java.util.Map;
  * @since 8.0.0
  * 
  */
-public class CmsNewEntryMode implements I_CmsSitemapEntryEditorModeHandler {
+public class CmsNewEntryHandler extends A_CmsSitemapEntryEditorHandler {
 
     /** Default name for new entries. */
     private static final String NEW_NAME = "new";
-
-    /** The sitemap controller for this mode handler. */
-    private CmsSitemapController m_controller;
-
-    /** The sitemap entry for this mode handler. */
-    private CmsClientSitemapEntry m_entry;
 
     /** 
      * Creates a new instance of this mode handler class.<p>
@@ -65,22 +59,13 @@ public class CmsNewEntryMode implements I_CmsSitemapEntryEditorModeHandler {
      * 
      * @param entry the sitemap entry for this mode handler 
      */
-    public CmsNewEntryMode(CmsSitemapController controller, CmsClientSitemapEntry entry) {
+    public CmsNewEntryHandler(CmsSitemapController controller, CmsClientSitemapEntry entry) {
 
-        m_controller = controller;
-        m_entry = entry;
+        super(controller, entry);
     }
 
     /**
-     * @see org.opencms.ade.sitemap.client.edit.I_CmsSitemapEntryEditorModeHandler#createPath(java.lang.String)
-     */
-    public String createPath(String urlName) {
-
-        return m_entry.getSitePath() + urlName + "/";
-    }
-
-    /**
-     * @see org.opencms.ade.sitemap.client.edit.I_CmsSitemapEntryEditorModeHandler#getDescriptionText()
+     * @see org.opencms.ade.sitemap.client.edit.I_CmsSitemapEntryEditorHandler#getDescriptionText()
      */
     public String getDescriptionText() {
 
@@ -88,44 +73,56 @@ public class CmsNewEntryMode implements I_CmsSitemapEntryEditorModeHandler {
     }
 
     /**
-     * @see org.opencms.ade.sitemap.client.edit.I_CmsSitemapEntryEditorModeHandler#getName()
+     * @see org.opencms.ade.sitemap.client.edit.I_CmsSitemapEntryEditorHandler#getName()
      */
+    @Override
     public String getName() {
 
         return NEW_NAME;
     }
 
     /**
-     * @see org.opencms.ade.sitemap.client.edit.I_CmsSitemapEntryEditorModeHandler#getTitle()
+     * @see org.opencms.ade.sitemap.client.edit.I_CmsSitemapEntryEditorHandler#getTitle()
      */
+    @Override
     public String getTitle() {
 
         return "";
     }
 
     /**
-     * @see org.opencms.ade.sitemap.client.edit.I_CmsSitemapEntryEditorModeHandler#handleSubmit(java.lang.String, java.lang.String, java.lang.String, java.util.Map)
+     * @see org.opencms.ade.sitemap.client.edit.I_CmsSitemapEntryEditorHandler#handleSubmit(java.lang.String, java.lang.String, java.lang.String, java.util.Map)
      */
     public void handleSubmit(String newTitle, String newUrlName, String vfsPath, Map<String, String> fieldValues) {
 
         // create
-        String path = createPath(newUrlName);
+        String path = getPath(newUrlName);
         CmsClientSitemapEntry entry = new CmsClientSitemapEntry();
         entry.setName(newUrlName);
         entry.setSitePath(path);
         entry.setTitle(newTitle);
-        // TODO: handle VFS path
-        entry.setVfsPath("/");
+        entry.setVfsPath(vfsPath);
         entry.getProperties().putAll(fieldValues);
         m_controller.create(entry);
-
     }
 
     /**
-     * @see org.opencms.ade.sitemap.client.edit.I_CmsSitemapEntryEditorModeHandler#isPathAllowed(java.lang.String)
+     * @see org.opencms.ade.sitemap.client.edit.I_CmsSitemapEntryEditorHandler#isPathAllowed(java.lang.String)
      */
-    public boolean isPathAllowed(String path) {
+    public boolean isPathAllowed(String urlName) {
 
-        return m_controller.getEntry(path) == null;
+        return m_controller.getEntry(getPath(urlName)) == null;
+    }
+
+    /**
+     * Returns the path for the given URL name.<p>
+     * 
+     * @param urlName the URL name to create the path for
+     * 
+     * @return the new path for the given URL name
+     */
+    protected String getPath(String urlName) {
+
+        return m_entry.getSitePath() + urlName + "/";
     }
 }

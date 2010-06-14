@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/form/Attic/CmsFormDialog.java,v $
- * Date   : $Date: 2010/06/08 07:12:45 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/06/14 08:08:41 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -126,6 +126,14 @@ public class CmsFormDialog extends CmsPopupDialog {
     }
 
     /**
+     * The method which should be called when the user clicks on the cancel button of the dialog.<p>
+     */
+    protected void onClickCancel() {
+
+        hide();
+    }
+
+    /**
      * The method which should be called when the user clicks on the OK button of the dialog.<p>
      */
     protected void onClickOk() {
@@ -162,7 +170,7 @@ public class CmsFormDialog extends CmsPopupDialog {
              */
             public void onClick(ClickEvent event) {
 
-                hide();
+                onClickCancel();
             }
         });
         return button;
