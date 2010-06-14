@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageHandler.java,v $
- * Date   : $Date: 2010/05/28 13:37:47 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2010/06/14 14:32:57 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -78,7 +78,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 8.0.0
  */
@@ -172,6 +172,9 @@ public class CmsContainerpageHandler {
                 }
                 I_CmsFormHandler formHandler = new I_CmsFormHandler() {
 
+                    /**
+                     * @see org.opencms.gwt.client.ui.input.form.I_CmsFormHandler#onSubmitForm(java.util.Map)
+                     */
                     public void onSubmitForm(Map<String, String> fieldValues) {
 
                         m_controller.reloadElementWithProperties(
