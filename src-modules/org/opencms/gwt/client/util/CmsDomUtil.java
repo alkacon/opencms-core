@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsDomUtil.java,v $
- * Date   : $Date: 2010/05/19 10:17:38 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2010/06/14 12:52:05 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentC
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * 
  * @since 8.0.0
  */
@@ -81,44 +81,6 @@ public final class CmsDomUtil {
 
         /** title. */
         title;
-    }
-
-    /**
-     * Ensures that the given element is visible.<p>
-     * 
-     * Assuming the scrollbars are on the container element, and that the element is a child of the container element.<p>
-     * 
-     * @param containerElement the container element, has to be parent of the element
-     * @param element the element to be seen
-     * @param animationTime the animation time for scrolling, use zero for no animation
-     */
-    public static void ensureVisible(final Element containerElement, Element element, int animationTime) {
-
-        Element item = element;
-        int realOffset = 0;
-        while ((item != null) && (item != containerElement)) {
-            realOffset += element.getOffsetTop();
-            item = item.getOffsetParent();
-        }
-        final int endScrollTop = realOffset - containerElement.getOffsetHeight() / 2;
-
-        if (animationTime <= 0) {
-            // no animation
-            containerElement.setScrollTop(endScrollTop);
-            return;
-        }
-        final int startScrollTop = containerElement.getScrollTop();
-        (new Animation() {
-
-            /**
-             * @see com.google.gwt.animation.client.Animation#onUpdate(double)
-             */
-            @Override
-            protected void onUpdate(double progress) {
-
-                containerElement.setScrollTop(startScrollTop + (int)((endScrollTop - startScrollTop) * progress));
-            }
-        }).run(animationTime);
     }
 
     /**
@@ -448,6 +410,24 @@ public final class CmsDomUtil {
     }
 
     /**
+     * Clones the given element.<p>
+     * 
+     * It creates a new element with the same tag, and sets the class attribute, 
+     * and sets the innerHTML.<p>
+     * 
+     * @param element the element to clone
+     * 
+     * @return the cloned element
+     */
+    public static com.google.gwt.user.client.Element clone(Element element) {
+
+        com.google.gwt.user.client.Element elementClone = DOM.createElement(element.getTagName());
+        elementClone.setClassName(element.getClassName());
+        elementClone.setInnerHTML(element.getInnerHTML());
+        return elementClone;
+    }
+
+    /**
      * Generates a closing tag.<p>
      * 
      * @param tag the tag to use
@@ -565,6 +545,44 @@ public final class CmsDomUtil {
 
         NativeEvent nativeEvent = Document.get().createMouseOutEvent(0, 0, 0, 0, 0, false, false, false, false, 0, null);
         element.dispatchEvent(nativeEvent);
+    }
+
+    /**
+     * Ensures that the given element is visible.<p>
+     * 
+     * Assuming the scrollbars are on the container element, and that the element is a child of the container element.<p>
+     * 
+     * @param containerElement the container element, has to be parent of the element
+     * @param element the element to be seen
+     * @param animationTime the animation time for scrolling, use zero for no animation
+     */
+    public static void ensureVisible(final Element containerElement, Element element, int animationTime) {
+
+        Element item = element;
+        int realOffset = 0;
+        while ((item != null) && (item != containerElement)) {
+            realOffset += element.getOffsetTop();
+            item = item.getOffsetParent();
+        }
+        final int endScrollTop = realOffset - containerElement.getOffsetHeight() / 2;
+
+        if (animationTime <= 0) {
+            // no animation
+            containerElement.setScrollTop(endScrollTop);
+            return;
+        }
+        final int startScrollTop = containerElement.getScrollTop();
+        (new Animation() {
+
+            /**
+             * @see com.google.gwt.animation.client.Animation#onUpdate(double)
+             */
+            @Override
+            protected void onUpdate(double progress) {
+
+                containerElement.setScrollTop(startScrollTop + (int)((endScrollTop - startScrollTop) * progress));
+            }
+        }).run(animationTime);
     }
 
     /**
