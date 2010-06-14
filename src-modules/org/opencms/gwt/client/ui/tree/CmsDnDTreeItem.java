@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/tree/Attic/CmsDnDTreeItem.java,v $
- * Date   : $Date: 2010/06/14 08:08:41 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/06/14 08:41:33 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,6 +47,7 @@ import com.google.gwt.animation.client.Animation;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -69,7 +70,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Georg Westenberger
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 8.0.0
  */
@@ -180,6 +181,11 @@ public class CmsDnDTreeItem extends CmsDnDListItem {
                 }
 
                 CmsDnDTreeItem destTreeItem = ((CmsDnDTreeItem)item).getTree().getItemByPath(event.getDestPath());
+                if (destTreeItem == null) {
+                    // TODO:  this happened once, and NOT while dragging!?
+                    Window.alert("wtf!");
+                    return;
+                }
 
                 // remove item from old position
                 CmsDnDTreeItem oldParent = destTreeItem.getParentItem();
@@ -620,7 +626,7 @@ public class CmsDnDTreeItem extends CmsDnDListItem {
      */
     protected CmsDnDListDropEvent enhanceEvent(CmsDnDListDropEvent dropEvent) {
 
-        CmsDnDListItem destItem = dropEvent.getDestList().getItem(dropEvent.getDestPath());
+        CmsDnDListItem destItem = dropEvent.getDestList().getItem(DRAGGED_PLACEHOLDER_ID);
         if (!(destItem instanceof CmsDnDTreeItem)) {
             // do nothing
             return dropEvent;

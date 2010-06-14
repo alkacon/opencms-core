@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/edit/Attic/CmsDnDEntryHandler.java,v $
- * Date   : $Date: 2010/06/14 08:08:41 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/06/14 08:41:25 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -111,9 +111,7 @@ public class CmsDnDEntryHandler extends A_CmsSitemapEntryEditorHandler {
      */
     public boolean isPathAllowed(String urlName) {
 
-        String path = getPath(urlName);
-        return path.equals(getController().getEntry(m_destPath).getSitePath())
-            || (getController().getEntry(path) == null);
+        return (getController().getEntry(getPath(urlName)) == null);
     }
 
     /**

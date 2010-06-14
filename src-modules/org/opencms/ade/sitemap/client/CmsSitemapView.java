@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapView.java,v $
- * Date   : $Date: 2010/06/14 08:08:41 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2010/06/14 08:41:25 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -81,7 +81,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 8.0.0
  */
@@ -335,7 +335,7 @@ I_CmsDnDTreeDropHandler, I_CmsDnDListStatusHandler, I_CmsDnDListCollisionResolut
         Event nativeEvent;
         try {
             nativeEvent = Event.as(event.getNativeEvent());
-        } catch (Exception e) {
+        } catch (Throwable e) {
             // sometimes in dev mode, and only in dev mode, we get
             // "Found interface com.google.gwt.user.client.Event, but class was expected"
             return;
