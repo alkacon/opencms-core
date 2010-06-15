@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsScrollToBottomHandler.java,v $
- * Date   : $Date: 2010/04/26 08:38:16 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/06/15 12:14:05 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -117,6 +117,9 @@ public class CmsScrollToBottomHandler implements ScrollHandler {
             scrollPanel.setScrollPosition(scrollPos);
             Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 
+                /**
+                 * @see com.google.gwt.core.client.Scheduler.ScheduledCommand#execute()
+                 */
                 public void execute() {
 
                     scrollPanel.setScrollPosition(scrollPos);
