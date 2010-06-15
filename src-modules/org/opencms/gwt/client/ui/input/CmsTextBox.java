@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsTextBox.java,v $
- * Date   : $Date: 2010/06/01 08:21:17 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/06/15 12:28:31 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,6 +42,8 @@ import java.util.Map;
 
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.HasBlurHandlers;
+import com.google.gwt.event.dom.client.HasKeyPressHandlers;
+import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -55,13 +57,14 @@ import com.google.gwt.user.client.ui.TextBox;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 8.0.0
  * 
  */
 public class CmsTextBox extends Composite
-implements I_CmsFormWidget, I_CmsHasInit, HasBlurHandlers, HasValueChangeHandlers<String> {
+implements I_CmsFormWidget, I_CmsHasInit, HasBlurHandlers, HasValueChangeHandlers<String>, HasKeyPressHandlers,
+I_CmsHasBlur {
 
     /** The CSS bundle used for this widget. */
     public static final I_CmsInputCss CSS = I_CmsInputLayoutBundle.INSTANCE.inputCss();
@@ -77,9 +80,6 @@ implements I_CmsFormWidget, I_CmsHasInit, HasBlurHandlers, HasValueChangeHandler
 
     /** The error display for this widget. */
     private CmsErrorWidget m_error = new CmsErrorWidget();
-
-    //    /** The horizontal "padding" for the text box. */
-    //    private int m_paddingX;
 
     /** The container for the textbox container and error widget. */
     private FlowPanel m_panel = new FlowPanel();
@@ -140,12 +140,28 @@ implements I_CmsFormWidget, I_CmsHasInit, HasBlurHandlers, HasValueChangeHandler
     }
 
     /**
+     * @see com.google.gwt.event.dom.client.HasKeyPressHandlers#addKeyPressHandler(com.google.gwt.event.dom.client.KeyPressHandler)
+     */
+    public HandlerRegistration addKeyPressHandler(KeyPressHandler handler) {
+
+        return m_textbox.addKeyPressHandler(handler);
+    }
+
+    /**
      * @see com.google.gwt.event.logical.shared.HasValueChangeHandlers#addValueChangeHandler(com.google.gwt.event.logical.shared.ValueChangeHandler)
      */
     public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler) {
 
         return addHandler(handler, ValueChangeEvent.getType());
 
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsHasBlur#blur()
+     */
+    public void blur() {
+
+        m_textbox.getElement().blur();
     }
 
     /**
