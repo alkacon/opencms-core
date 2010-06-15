@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/form/Attic/CmsFormDialog.java,v $
- * Date   : $Date: 2010/06/14 15:07:18 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/06/15 12:34:30 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -135,7 +135,7 @@ public class CmsFormDialog extends CmsPopupDialog implements I_CmsFormDialog {
      */
     public void setFormHandler(I_CmsFormHandler formHandler) {
 
-        m_formHandler = formHandler;
+        m_form.setFormHandler(formHandler);
     }
 
     /**
@@ -171,7 +171,7 @@ public class CmsFormDialog extends CmsPopupDialog implements I_CmsFormDialog {
      */
     protected void onClickOk() {
 
-        m_form.validateAndSubmit(m_formHandler);
+        m_form.validateAndSubmit();
     }
 
     /**
@@ -214,7 +214,7 @@ public class CmsFormDialog extends CmsPopupDialog implements I_CmsFormDialog {
              */
             public void onClick(ClickEvent event) {
 
-                m_form.validateAndSubmit(m_formHandler);
+                m_form.validateAndSubmit();
             }
         });
         return button;

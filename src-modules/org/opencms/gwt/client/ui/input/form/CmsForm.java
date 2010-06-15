@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/form/Attic/CmsForm.java,v $
- * Date   : $Date: 2010/06/14 15:07:18 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/06/15 12:34:30 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ import org.opencms.gwt.client.ui.css.I_CmsInputCss;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.input.I_CmsFormField;
 import org.opencms.gwt.client.ui.input.I_CmsFormWidget;
+import org.opencms.gwt.client.ui.input.I_CmsHasBlur;
 import org.opencms.gwt.client.validation.CmsValidationController;
 import org.opencms.gwt.client.validation.I_CmsValidationHandler;
 import org.opencms.gwt.shared.CmsValidationResult;
@@ -46,6 +47,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.event.dom.client.HasKeyPressHandlers;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -62,7 +69,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 8.0.0
  * 
@@ -77,6 +84,12 @@ public class CmsForm extends Composite {
 
     /** A reference to the dialog this form is contained in. */
     protected I_CmsFormDialog m_formDialog;
+
+    /** The form handler. */
+    protected I_CmsFormHandler m_formHandler;
+
+    /** A flag which indicates whether the user has pressed enter in a widget. */
+    protected boolean m_pressedEnter;
 
     /** The initial values of the form fields. */
     private Map<String, String> m_initialValues = new HashMap<String, String>();
@@ -113,7 +126,7 @@ public class CmsForm extends Composite {
         m_initialValues.put(formField.getId(), initialValue);
         String description = formField.getDescription();
         String labelText = formField.getLabel();
-        I_CmsFormWidget widget = formField.getWidget();
+        final I_CmsFormWidget widget = formField.getWidget();
         if (widget instanceof HasValueChangeHandlers) {
             ((HasValueChangeHandlers<String>)widget).addValueChangeHandler(new ValueChangeHandler<String>() {
 
@@ -123,8 +136,48 @@ public class CmsForm extends Composite {
                 public void onValueChange(ValueChangeEvent<String> event) {
 
                     formField.setValidationStatus(I_CmsFormField.ValidationStatus.unknown);
-                    validateField(formField);
+
+                    // if the user presses enter, the keypressed event is fired before the change event,
+                    // so we use a flag to keep track of whether enter was pressed.
+                    if (!m_pressedEnter) {
+                        validateField(formField);
+                    } else {
+                        validateAndSubmit();
+                    }
                 }
+            });
+        }
+
+        if (widget instanceof HasKeyPressHandlers) {
+            ((HasKeyPressHandlers)widget).addKeyPressHandler(new KeyPressHandler() {
+
+                /**
+                 * @see com.google.gwt.event.dom.client.KeyPressHandler#onKeyPress(com.google.gwt.event.dom.client.KeyPressEvent)
+                 */
+                public void onKeyPress(KeyPressEvent event) {
+
+                    int keyCode = event.getNativeEvent().getKeyCode();
+                    if (keyCode == KeyCodes.KEY_ENTER) {
+                        m_pressedEnter = true;
+                        if (widget instanceof I_CmsHasBlur) {
+                            // force a blur because not all browsers send a change event if the user just presses enter in a field
+                            ((I_CmsHasBlur)widget).blur();
+
+                        }
+                        // make sure that the flag is set to false again after the other events have been processed 
+                        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
+                            /**
+                             * @see com.google.gwt.core.client.Scheduler.ScheduledCommand#execute()
+                             */
+                            public void execute() {
+
+                                m_pressedEnter = false;
+                            }
+                        });
+                    }
+                }
+
             });
         }
 
@@ -289,11 +342,19 @@ public class CmsForm extends Composite {
     }
 
     /**
-     * Validates the form fields and submits their values if the validation was successful.<p>
+     * Sets the form handler for this form.<p>
      * 
-     * @param formHandler the form handler to which the values should be submitted 
+     * @param handler the form handler 
      */
-    public void validateAndSubmit(final I_CmsFormHandler formHandler) {
+    public void setFormHandler(I_CmsFormHandler handler) {
+
+        m_formHandler = handler;
+    }
+
+    /**
+     * Validates the form fields and submits their values if the validation was successful.<p>
+     */
+    public void validateAndSubmit() {
 
         CmsValidationController validationController = new CmsValidationController(
             m_fields.values(),
@@ -306,7 +367,7 @@ public class CmsForm extends Composite {
 
                     if (ok) {
                         m_formDialog.closeDialog();
-                        formHandler.onSubmitForm(collectValues());
+                        m_formHandler.onSubmitForm(collectValues());
 
                     } else {
                         m_formDialog.setOkButtonEnabled(noFieldsInvalid(m_fields.values()));
