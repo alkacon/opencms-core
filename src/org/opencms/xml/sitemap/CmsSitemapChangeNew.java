@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapChangeNew.java,v $
- * Date   : $Date: 2010/06/08 14:42:16 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/06/15 13:49:53 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,8 @@
 
 package org.opencms.xml.sitemap;
 
+import org.opencms.util.CmsUUID;
+
 import java.util.Map;
 
 /**
@@ -38,7 +40,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -46,6 +48,9 @@ public class CmsSitemapChangeNew implements I_CmsSitemapChange {
 
     /** Serialization unique id. */
     private static final long serialVersionUID = -3407815812421655807L;
+
+    /** The id of the new sitemap entry (may be null). */
+    private CmsUUID m_id;
 
     /** The entry's position. */
     private int m_position;
@@ -86,11 +91,49 @@ public class CmsSitemapChangeNew implements I_CmsSitemapChange {
     }
 
     /**
+     * Constructor.<p>
+     * 
+     * @param sitePath the entry's site path
+     * @param position the entry's position
+     * @param title the entry's title
+     * @param vfsPath the entry's VFS path
+     * @param properties the entry's properties
+     * @param id the UUID of the sitemap entry 
+     */
+    public CmsSitemapChangeNew(
+        String sitePath,
+        int position,
+        String title,
+        String vfsPath,
+        Map<String, String> properties,
+        CmsUUID id) {
+
+        m_sitePath = sitePath;
+        m_position = position;
+        m_title = title;
+        m_vfsPath = vfsPath;
+        m_properties = properties;
+        m_id = id;
+    }
+
+    /**
      * Serialization constructor.<p>
      */
     protected CmsSitemapChangeNew() {
 
         // empty
+    }
+
+    /**
+     * Gets the id of the new sitemap entry.<p>
+     * 
+     * If this is null, the sitemap entry will receive a freshly generated id.<p>
+     * 
+     * @return the id of the new sitemap entry 
+     */
+    public CmsUUID getId() {
+
+        return m_id;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/super_src/org/opencms/xml/sitemap/Attic/CmsSitemapChangeNewSubSitemapEntry.java,v $
- * Date   : $Date: 2010/06/08 14:42:16 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/06/15 13:49:53 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,8 @@
 
 package org.opencms.xml.sitemap;
 
+import org.opencms.util.CmsUUID;
+
 import java.util.Map;
 
 /**
@@ -38,7 +40,7 @@ import java.util.Map;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -58,7 +60,8 @@ public class CmsSitemapChangeNewSubSitemapEntry extends CmsSitemapChangeNew {
      * @param title the entry's title
      * @param vfsPath the entry's VFS path
      * @param properties the entry's properties
-     * @param entryPoint the entry point of the sitemap in which the entry should be inserted 
+     * @param entryPoint the entry point of the sitemap in which the entry should be inserted
+     * @param id the id of the new sub-sitemap entry 
      */
     public CmsSitemapChangeNewSubSitemapEntry(
         String sitePath,
@@ -66,9 +69,10 @@ public class CmsSitemapChangeNewSubSitemapEntry extends CmsSitemapChangeNew {
         String title,
         String vfsPath,
         Map<String, String> properties,
-        String entryPoint) {
+        String entryPoint,
+        CmsUUID id) {
 
-        super(sitePath, position, title, vfsPath, properties);
+        super(sitePath, position, title, vfsPath, properties, id);
         m_entryPoint = entryPoint;
     }
 

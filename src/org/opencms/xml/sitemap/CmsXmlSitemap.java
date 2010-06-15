@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsXmlSitemap.java,v $
- * Date   : $Date: 2010/06/08 14:42:16 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2010/06/15 13:49:53 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.33 $ 
+ * @version $Revision: 1.34 $ 
  * 
  * @since 7.5.2
  * 
@@ -754,7 +754,11 @@ public class CmsXmlSitemap extends CmsXmlContent {
             throw createEntryNotFoundException(cms, parentPath);
         }
         entryElement = parent.addElement(XmlNode.SiteEntry.name());
-        entryElement.addElement(XmlNode.Id.name()).addCDATA(new CmsUUID().toString());
+        CmsUUID id = change.getId();
+        if (id == null) {
+            id = new CmsUUID();
+        }
+        entryElement.addElement(XmlNode.Id.name()).addCDATA(id.toString());
         String name = CmsResource.getName(change.getSitePath());
         if (name.endsWith("/")) {
             name = name.substring(0, name.length() - 1);
