@@ -41,6 +41,14 @@
     position:relative;
 }
 
+
+@if user.agent ie6 {
+.popup, .popup * {
+    /* fixes a glitch with relatively positioned elements in dialogs which sometimes vanish */
+	zoom:1;
+}
+}
+
 @sprite .popupHead, .Caption{
     font-size: value("constantsCss.fontSizeBig");
     font-weight: bold;
