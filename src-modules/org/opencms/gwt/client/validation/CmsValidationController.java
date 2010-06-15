@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/validation/Attic/CmsValidationController.java,v $
- * Date   : $Date: 2010/06/14 15:07:18 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/06/15 12:18:20 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import java.util.Map;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  *
  * @since 8.0.0
  */
@@ -116,9 +116,17 @@ public class CmsValidationController implements I_CmsValidationController {
 
         m_validationOk = true;
         for (I_CmsFormField field : m_fields) {
-            if (field.getValidationStatus().equals(I_CmsFormField.ValidationStatus.unknown)) {
-                I_CmsValidator validator = field.getValidator();
-                validator.validate(field, this);
+            I_CmsFormField.ValidationStatus status = field.getValidationStatus();
+            switch (status) {
+                case unknown:
+                    I_CmsValidator validator = field.getValidator();
+                    validator.validate(field, this);
+                    break;
+                case invalid:
+                    m_validationOk = false;
+                    break;
+                default:
+                    break;
             }
         }
         if (m_validationQueries.isEmpty()) {
