@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/edit/Attic/CmsSitemapEntryEditor.java,v $
- * Date   : $Date: 2010/06/14 15:07:18 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/06/15 13:19:25 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import java.util.Map;
  * 
  *  @author Georg Westenberger
  *  
- *  @version $Revision: 1.6 $
+ *  @version $Revision: 1.7 $
  *  
  *  @since 8.0.0
  */
@@ -110,7 +110,7 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
      */
     public CmsSitemapEntryEditor(I_CmsSitemapEntryEditorHandler handler) {
 
-        super(Messages.get().key(Messages.GUI_PROPERTY_EDITOR_TITLE_0));
+        super(handler.getDialogTitle());
 
         m_controller = handler.getController();
         m_propertyConfig = removeHiddenProperties(m_controller.getData().getProperties());

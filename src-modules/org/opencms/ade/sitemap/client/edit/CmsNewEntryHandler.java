@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/edit/Attic/CmsNewEntryHandler.java,v $
- * Date   : $Date: 2010/06/14 15:07:18 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/06/15 13:19:25 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import java.util.Map;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  * 
@@ -72,6 +72,14 @@ public class CmsNewEntryHandler extends A_CmsSitemapEntryEditorHandler {
     public String getDescriptionText() {
 
         return Messages.get().key(Messages.GUI_PROPERTY_EDITOR_TEXT_NEW_0);
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.client.edit.I_CmsSitemapEntryEditorHandler#getDialogTitle()
+     */
+    public String getDialogTitle() {
+
+        return Messages.get().key(Messages.GUI_NEW_ENTRY_TITLE_0);
     }
 
     /**

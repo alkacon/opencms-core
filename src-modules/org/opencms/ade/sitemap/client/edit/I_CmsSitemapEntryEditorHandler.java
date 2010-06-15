@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/edit/Attic/I_CmsSitemapEntryEditorHandler.java,v $
- * Date   : $Date: 2010/06/14 15:07:18 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/06/15 13:19:25 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import java.util.Map;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -61,6 +61,13 @@ public interface I_CmsSitemapEntryEditorHandler {
      * @return a description text 
      */
     String getDescriptionText();
+
+    /**
+     * Returns the text which should be used for the title of the sitemap entry editor dialog.
+     *  
+     * @return the dialog title for the sitemap entry editor 
+     */
+    String getDialogTitle();
 
     /**
      * Returns the current entry.<p>
