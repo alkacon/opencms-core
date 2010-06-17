@@ -643,6 +643,7 @@
 				<schematype class="org.opencms.xml.types.CmsXmlHtmlValue" defaultwidget="org.opencms.widgets.CmsHtmlWidget" />
 				<schematype class="org.opencms.xml.types.CmsXmlLocaleValue" defaultwidget="org.opencms.widgets.CmsInputWidget" />
 				<schematype class="org.opencms.xml.types.CmsXmlStringValue" defaultwidget="org.opencms.widgets.CmsInputWidget" />
+				<schematype class="org.opencms.xml.types.CmsXmlPlainTextStringValue" defaultwidget="org.opencms.widgets.CmsInputWidget" />
 				<schematype class="org.opencms.xml.types.CmsXmlVfsFileValue" defaultwidget="org.opencms.widgets.CmsVfsFileWidget" />
 				<schematype class="org.opencms.xml.types.CmsXmlVarLinkValue" defaultwidget="org.opencms.widgets.CmsVfsFileWidget" />
 				<schematype class="org.opencms.xml.types.CmsXmlVfsImageValue" defaultwidget="org.opencms.widgets.CmsVfsImageWidget" />
