@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsSitemapService.java,v $
- * Date   : $Date: 2010/06/15 13:49:53 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2010/06/18 07:29:54 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -83,7 +83,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.28 $ 
  * 
  * @since 8.0.0
  * 
@@ -112,6 +112,30 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
         srv.setCms(CmsFlexController.getCmsObject(request));
         srv.setRequest(request);
         return srv;
+    }
+
+    /**
+     * Helper method to check whether a client sitemap entry has a reference to a sub-sitemap.<p>
+     * 
+     * @param entry the entry to check
+     * 
+     * @return true if the entry has a reference to a sub-sitemap 
+     */
+    private static boolean hasReferenceToSitemap(CmsClientSitemapEntry entry) {
+
+        return entry.getProperties().get(CmsSitemapManager.Property.sitemap.name()) != null;
+    }
+
+    /**
+     * Helper method to check whether a sitemap entry has a reference to a sub-sitemap.<p>
+     * 
+     * @param entry the entry to check
+     * 
+     * @return true if the entry has a reference to a sub-sitemap 
+     */
+    private static boolean hasReferenceToSitemap(CmsSitemapEntry entry) {
+
+        return entry.getProperties().get(CmsSitemapManager.Property.sitemap.name()) != null;
     }
 
     /**
@@ -257,6 +281,7 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
                 cms,
                 sitemap);
             String parentSitemap = OpenCms.getSitemapManager().getParentSitemap(cms, sitemapUri);
+            String openPath = getRequest().getParameter("path");
             result = new CmsSitemapData(
                 getDefaultTemplate(sitemapUri),
                 getTemplates(),
@@ -266,8 +291,9 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
                 isDisplayToolbar(getRequest()),
                 OpenCms.getResourceManager().getResourceType(CmsResourceTypeXmlContainerPage.getStaticTypeName()).getTypeId(),
                 parentSitemap,
-                getRoot(sitemap, parentSitemap, propertyConfig),
-                sitemap.getDateLastModified());
+                getRoot(sitemap, parentSitemap, openPath, propertyConfig),
+                sitemap.getDateLastModified(),
+                openPath);
         } catch (Throwable e) {
             error(e);
         }
@@ -366,6 +392,45 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
         }
         timestamp = cms.readResource(sitemap.getStructureId()).getDateLastModified();
         return timestamp;
+    }
+
+    /**
+     * Recursively adds child entries to a client sitemap entry, whose depth is either below a maximum value or which lie along a given path.<p>
+     * 
+     * @param entry the entry to which child entries should be added 
+     * @param root the root entry of the sitemap
+     * @param path the path along which child entries should be added 
+     * @param propConfig the property configuration for converting entries to client entries
+     * @param depth the depth up to which children should be added
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    private void addChildrenRecursively(
+        CmsClientSitemapEntry entry,
+        CmsClientSitemapEntry root,
+        String path,
+        Map<String, CmsXmlContentProperty> propConfig,
+        int depth) throws CmsException {
+
+        CmsObject cms = getCmsObject();
+        if (hasReferenceToSitemap(entry) && (entry != root)) {
+            return;
+        }
+        List<CmsClientSitemapEntry> children = new ArrayList<CmsClientSitemapEntry>();
+        for (CmsSitemapEntry subEntry : OpenCms.getSitemapManager().getSubEntries(cms, entry.getSitePath())) {
+            CmsInternalSitemapEntry internalEntry = (CmsInternalSitemapEntry)subEntry;
+            CmsClientSitemapEntry child = toClientEntry(subEntry, propConfig);
+            children.add(child);
+            if (internalEntry.getSubEntries().isEmpty() || hasReferenceToSitemap(internalEntry)) {
+                child.setChildrenLoadedInitially();
+            }
+            if ((depth > 1) || ((path != null) && path.startsWith(subEntry.getSitePath(cms)))) {
+                addChildrenRecursively(child, root, path, propConfig, depth - 1);
+            }
+        }
+        entry.setSubEntries(children);
+        //entry.setLoaded(true);
+
     }
 
     /**
@@ -702,8 +767,10 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
 
     /**
      * Returns the root sitemap entry for the given sitemap.<p>
+     * 
      * @param sitemapRes the sitemap resource
      * @param parent the uri of the parent sitemap 
+     * @param path the path on which the sitemap should be opened (may be null) 
      * @param propertyConfig the property configuration for sitemaps  
      *
      * @return root sitemap entry
@@ -713,28 +780,29 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
     private CmsClientSitemapEntry getRoot(
         CmsResource sitemapRes,
         String parent,
+        String path,
         Map<String, CmsXmlContentProperty> propertyConfig) throws Exception {
 
         CmsObject cms = getCmsObject();
         // TODO: what's about historical requests?
         CmsXmlSitemap xml = CmsXmlSitemapFactory.unmarshal(cms, sitemapRes);
         CmsSitemapBean sitemap = xml.getSitemap(cms, cms.getRequestContext().getLocale());
+
+        CmsClientSitemapEntry root = null;
         if (parent == null) {
-            CmsClientSitemapEntry root = toClientEntry(sitemap.getSiteEntries().get(0), propertyConfig);
-            root.setSubEntries(getChildren(root.getSitePath(), 2, propertyConfig));
-            return root;
+            root = toClientEntry(sitemap.getSiteEntries().get(0), propertyConfig);
         } else {
+            // TODO: check if this really loads enough entries 
             String entryPoint = xml.getEntryPoint(cms);
             // get the entry in the parent sitemap which references the current sitemap 
             CmsInternalSitemapEntry referencingEntry = (CmsInternalSitemapEntry)OpenCms.getSitemapManager().getEntryForUri(
                 cms,
                 entryPoint);
-            CmsClientSitemapEntry root = createDummySubSitemapRoot(referencingEntry, propertyConfig);
-            for (CmsInternalSitemapEntry topLevelEntry : sitemap.getSiteEntries()) {
-                root.addSubEntry(toClientEntry(topLevelEntry, propertyConfig));
-            }
-            return root;
+            root = createDummySubSitemapRoot(referencingEntry, propertyConfig);
         }
+        addChildrenRecursively(root, root, path, propertyConfig, 2);
+        return root;
+
     }
 
     /**

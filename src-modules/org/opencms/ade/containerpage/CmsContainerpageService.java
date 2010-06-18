@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsContainerpageService.java,v $
- * Date   : $Date: 2010/05/26 12:11:40 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2010/06/18 07:29:54 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -66,6 +66,7 @@ import org.opencms.xml.containerpage.CmsXmlSubContainerFactory;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.content.CmsXmlContentPropertyHelper;
 import org.opencms.xml.sitemap.CmsSitemapEntry;
+import org.opencms.xml.sitemap.CmsSitemapManager;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -85,7 +86,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 8.0.0
  */
@@ -261,14 +262,19 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
         CmsCntPageData data = null;
         CmsObject cms = getCmsObject();
+
         HttpServletRequest request = getRequest();
         try {
             CmsResource cntPage = getContainerpage(cms);
+            String cntPageUri = cms.getSitePath(cntPage);
+            CmsSitemapLocation sitemapLocation = getSitemapLocation(cms, cntPageUri, request);
+
             data = new CmsCntPageData(
                 cms.getSitePath(cntPage),
                 getNoEditReason(cms, cntPage),
                 CmsRequestUtil.encodeParams(request),
-                getSitemapUri(cms, request),
+                sitemapLocation.getSitemapUri(),
+                sitemapLocation.getSitePath(),
                 getNewTypes(cms, request),
                 getSessionCache().isToolbarVisible());
         } catch (Throwable e) {
@@ -427,6 +433,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
      * Helper method for converting a CmsContainer to a CmsContainerBean when saving a container page.<p>
      * 
      * @param container the container for which the CmsContainerBean should be created
+     * @param containerpageUri the URI of the container page 
      *  
      * @return a container bean
      */
@@ -669,19 +676,36 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
      * Returns the sitemap URI of this request.<p>
      * 
      * @param cms the current cms object
+     * @param cntPageUri the URI of the container page 
      * @param request the current request
      * 
      * @return the sitemap URI, empty if none available
      * 
      * @throws CmsException if something goes wrong
      */
-    private String getSitemapUri(CmsObject cms, HttpServletRequest request) throws CmsException {
+    private CmsSitemapLocation getSitemapLocation(CmsObject cms, String cntPageUri, HttpServletRequest request)
+    throws CmsException {
 
         String sitemap = null;
-        CmsSitemapEntry sitemapInfo = OpenCms.getSitemapManager().getRuntimeInfo(request);
+        String sitePath = cntPageUri;
+        CmsResource cntPageRes = cms.readResource(cntPageUri);
+        CmsSitemapManager manager = OpenCms.getSitemapManager();
+        CmsSitemapEntry sitemapInfo = manager.getRuntimeInfo(request);
         if (sitemapInfo != null) {
-            sitemap = OpenCms.getSitemapManager().getSitemapForUri(cms, sitemapInfo.getSitePath(cms), false);
+            sitemap = manager.getSitemapForUri(cms, sitemapInfo.getSitePath(cms));
+            sitePath = CmsSitemapManager.getNavigationUri(cms, request);
         }
-        return (sitemap == null) ? "" : OpenCms.getLinkManager().substituteLink(cms, sitemap);
+        if (sitemap == null) {
+            List<CmsResource> sitemaps = manager.getSitemapsForResource(cms, cntPageRes);
+            if (sitemaps.size() > 0) {
+                CmsResource sitemapRes = sitemaps.get(0);
+                sitemap = cms.getSitePath(sitemapRes);
+                sitePath = manager.getSitePathForResource(cms, cntPageRes, sitemapRes);
+            }
+        }
+        sitemap = (sitemap == null) ? "" : OpenCms.getLinkManager().substituteLink(cms, sitemap);
+        return new CmsSitemapLocation(sitemap, sitePath);
+
     }
+
 }

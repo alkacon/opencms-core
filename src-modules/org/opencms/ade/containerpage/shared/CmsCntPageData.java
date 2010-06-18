@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/shared/Attic/CmsCntPageData.java,v $
- * Date   : $Date: 2010/05/21 13:20:08 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/06/18 07:29:54 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -70,6 +70,9 @@ public final class CmsCntPageData implements IsSerializable {
     /** The current sitemap URI. */
     private String m_sitemapUri;
 
+    /** The current site path. */
+    private String m_sitePath;
+
     /** Flag to indicate if the toolbar is visible. */
     private boolean m_toolbarVisible;
 
@@ -80,6 +83,7 @@ public final class CmsCntPageData implements IsSerializable {
      * @param noEditReason the reason why the current user is not allowed to edit the current container page
      * @param requestParams the original request parameters
      * @param sitemapUri the current sitemap URI
+     * @param sitePath a sitemap path (null if this container page isn't reachable through the sitemap)
      * @param newTypes the map of available types and their new resource id's
      * @param toolbarVisible if the toolbar is visible
      */
@@ -88,6 +92,7 @@ public final class CmsCntPageData implements IsSerializable {
         String noEditReason,
         String requestParams,
         String sitemapUri,
+        String sitePath,
         Map<String, String> newTypes,
         boolean toolbarVisible) {
 
@@ -95,6 +100,7 @@ public final class CmsCntPageData implements IsSerializable {
         m_noEditReason = noEditReason;
         m_requestParams = requestParams;
         m_sitemapUri = sitemapUri;
+        m_sitePath = sitePath;
         m_newTypes = newTypes;
         m_toolbarVisible = toolbarVisible;
     }
@@ -175,6 +181,16 @@ public final class CmsCntPageData implements IsSerializable {
     public String getSitemapUri() {
 
         return m_sitemapUri;
+    }
+
+    /**
+     * Returns the sitemap path of the current container page, or null if the page is not reachable via the sitemap.<p>
+     * 
+     * @return the sitemap path 
+     */
+    public String getSitePath() {
+
+        return m_sitePath;
     }
 
     /**

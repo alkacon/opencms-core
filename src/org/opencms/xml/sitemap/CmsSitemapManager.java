@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2010/06/08 14:42:16 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2010/06/18 07:29:54 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlSitemap;
 import org.opencms.file.types.I_CmsResourceType;
@@ -45,6 +46,9 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsResourceInit;
 import org.opencms.main.OpenCms;
 import org.opencms.monitor.CmsMemoryMonitor;
+import org.opencms.relations.CmsRelation;
+import org.opencms.relations.CmsRelationFilter;
+import org.opencms.relations.CmsRelationType;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.xml.CmsXmlContentDefinition;
@@ -52,10 +56,13 @@ import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 
@@ -66,7 +73,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.42 $
+ * @version $Revision: 1.43 $
  * 
  * @since 7.9.2
  */
@@ -184,6 +191,23 @@ public class CmsSitemapManager {
 
         clone.setRuntimeInfo(entry.getSitePath(cms), 0, new HashMap<String, String>());
         return clone;
+    }
+
+    /**
+     * Returns the navigation URI from a given request.<p>
+     * 
+     * @param cms the current CMS context
+     * @param request the current request 
+     *  
+     * @return the current uri for the navigation
+     */
+    public static String getNavigationUri(CmsObject cms, HttpServletRequest request) {
+
+        CmsSitemapEntry sitemap = OpenCms.getSitemapManager().getRuntimeInfo(request);
+        if (sitemap == null) {
+            return cms.getRequestContext().getUri();
+        }
+        return sitemap.getSitePath(cms);
     }
 
     /**
@@ -476,6 +500,30 @@ public class CmsSitemapManager {
     }
 
     /**
+     * Gets the URI of the root sitemap for a given site path.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param uri the URI for which the root sitemap should be retrieved 
+     * 
+     * @return the root sitemap URI for a given site path
+     *  
+     * @throws CmsException if something goes wrong 
+     */
+    @SuppressWarnings("null")
+    public String getRootSitemapForUri(CmsObject cms, String uri) throws CmsException {
+
+        Map<String, String> sitemaps = getActiveSitemapsAboveUri(cms, uri);
+        Map.Entry<String, String> bestMatch = null;
+        for (Map.Entry<String, String> entry : sitemaps.entrySet()) {
+            String key = entry.getKey();
+            if ((bestMatch == null) || bestMatch.getKey().startsWith(key)) {
+                bestMatch = entry;
+            }
+        }
+        return cms.getRequestContext().removeSiteRoot(bestMatch.getValue());
+    }
+
+    /**
      * Reads the current sitemap URI bean from the request.<p>
      * 
      * @param req the servlet request
@@ -511,36 +559,73 @@ public class CmsSitemapManager {
      * 
      * @param cms the current CMS context
      * @param uri the sitemap entry URI to get the sitemap URI for
-     * @param findRoot if <code>true</code> it will find a root sitemap URI, and not also sub-sitemaps
      * 
      * @return the sitemap URI for the given sitemap entry URI
      * 
      * @throws CmsException if something goes wrong
      */
-    public String getSitemapForUri(CmsObject cms, String uri, boolean findRoot) throws CmsException {
+    @SuppressWarnings("null")
+    public String getSitemapForUri(CmsObject cms, String uri) throws CmsException {
 
-        Map<String, String> active = m_cache.getActiveSitemaps(cms);
-        // always use locale prefixed root paths for the entry point
-        String entryPoint = cms.getRequestContext().getLocale().toString() + cms.getRequestContext().addSiteRoot(uri);
+        Map<String, String> sitemaps = getActiveSitemapsAboveUri(cms, uri);
         Map.Entry<String, String> bestMatch = null;
-        for (Map.Entry<String, String> entry : active.entrySet()) {
+        for (Map.Entry<String, String> entry : sitemaps.entrySet()) {
             String key = entry.getKey();
-            if (!key.startsWith(entryPoint)) {
-                // not matching
-                continue;
-            }
-            if ((bestMatch == null)
-                || (!findRoot && key.startsWith(bestMatch.getKey()) && (key.length() != bestMatch.getKey().length()))
-                || (findRoot && bestMatch.getKey().startsWith(key))) {
-                // a better match found
+            if ((bestMatch == null) || key.startsWith(bestMatch.getKey())) {
                 bestMatch = entry;
             }
         }
-        if (bestMatch == null) {
-            return null;
-        }
-        // and return the site path
         return cms.getRequestContext().removeSiteRoot(bestMatch.getValue());
+    }
+
+    /**
+     * Returns the resources for sitemaps which reference a given resource.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param resource sitemaps which reference this resource should be returned 
+     * @return the sitemaps which reference the resource 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public List<CmsResource> getSitemapsForResource(CmsObject cms, CmsResource resource) throws CmsException {
+
+        List<CmsRelation> relations = cms.readRelations(CmsRelationFilter.TARGETS.filterResource(resource).filterType(
+            CmsRelationType.XML_STRONG));
+        List<CmsResource> sitemaps = new ArrayList<CmsResource>();
+        for (CmsRelation relation : relations) {
+
+            CmsResource source = relation.getSource(cms, CmsResourceFilter.ALL);
+            if (cms.existsResource(source.getStructureId(), CmsResourceFilter.DEFAULT)
+                && CmsResourceTypeXmlSitemap.isSitemap(source)) {
+                sitemaps.add(source);
+            }
+        }
+        return sitemaps;
+    }
+
+    /**
+     * Tries to find a sitem path for a resource in a given sitemap.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param resource the resource for which the site path should be retrieved 
+     * @param sitemapRes the sitemap in which
+     *  
+     * @return the site path in the sitemap
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public String getSitePathForResource(CmsObject cms, CmsResource resource, CmsResource sitemapRes)
+    throws CmsException {
+
+        m_cache.getActiveSitemaps(cms);
+        CmsXmlSitemap xmlSitemap = CmsXmlSitemapFactory.unmarshal(cms, sitemapRes);
+        //TODO: is this really the right locale?
+        Locale locale = cms.getRequestContext().getLocale();
+        CmsSitemapBean sitemapBean = xmlSitemap.getSitemap(cms, locale);
+        CmsInternalSitemapEntry entry = getSitemapEntryByStructureId(
+            sitemapBean.getSiteEntries(),
+            resource.getStructureId());
+        return entry.getSitePath(cms);
     }
 
     /**
@@ -599,6 +684,59 @@ public class CmsSitemapManager {
                 CmsResourceTypeXmlSitemap.getStaticTypeName()).getTypeId();
         }
         return m_sitemapTypeId;
+    }
+
+    /**
+     * Helper method for retrieving the active sitemaps which lie 'above' a given URI,
+     * i.e. the sitemap for the given uri and all of its ancestor sitemaps.<p>
+     * 
+     * @param cms the CMS context 
+     * @param uri the uri for which the sitemaps should be retrieved
+     *  
+     * @return the map of sitemaps above the URI
+     *  
+     * @throws CmsException if something goes wrong 
+     */
+    private Map<String, String> getActiveSitemapsAboveUri(CmsObject cms, String uri) throws CmsException {
+
+        Map<String, String> active = m_cache.getActiveSitemaps(cms);
+        Map<String, String> result = new HashMap<String, String>();
+        String uriKey = cms.getRequestContext().getLocale().toString() + cms.getRequestContext().addSiteRoot(uri);
+        for (Map.Entry<String, String> entry : active.entrySet()) {
+            String key = entry.getKey();
+            if (uriKey.startsWith(key)) {
+                result.put(entry.getKey(), entry.getValue());
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Searches a sitemap entry with a given resource structure id.<p>
+     * 
+     * The search starts from a list of sitemap entries passed as an argument, and does not follow references to sub-sitemaps.<p>
+     * 
+     * @param rootEntries the entries from which the search should be started 
+     * @param resourceId the structure id to search for 
+     * 
+     * @return a sitemap entry with the given structure id, or null if none were found 
+     */
+    private CmsInternalSitemapEntry getSitemapEntryByStructureId(
+        List<CmsInternalSitemapEntry> rootEntries,
+        CmsUUID resourceId) {
+
+        LinkedList<CmsInternalSitemapEntry> entriesToProcess = new LinkedList<CmsInternalSitemapEntry>();
+        entriesToProcess.addAll(rootEntries);
+        while (!entriesToProcess.isEmpty()) {
+            CmsInternalSitemapEntry currentEntry = entriesToProcess.removeFirst();
+            if (currentEntry.getResourceId().equals(resourceId)) {
+                return currentEntry;
+            }
+            if (currentEntry.getProperties().get(CmsSitemapManager.Property.sitemap.name()) == null) {
+                entriesToProcess.addAll(currentEntry.getSubEntries());
+            }
+        }
+        return null;
     }
 
 }

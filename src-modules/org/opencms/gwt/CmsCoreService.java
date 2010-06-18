@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsCoreService.java,v $
- * Date   : $Date: 2010/06/14 15:07:17 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/06/18 07:29:54 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,11 +39,13 @@ import org.opencms.gwt.shared.CmsCoreData;
 import org.opencms.gwt.shared.CmsValidationQuery;
 import org.opencms.gwt.shared.CmsValidationResult;
 import org.opencms.gwt.shared.rpc.I_CmsCoreService;
+import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsCategory;
 import org.opencms.relations.CmsCategoryService;
+import org.opencms.xml.sitemap.CmsSitemapManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -57,7 +59,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 8.0.0
  * 
@@ -212,12 +214,14 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     public CmsCoreData prefetch() {
 
         CmsObject cms = getCmsObject();
+        String navigationUri = CmsSitemapManager.getNavigationUri(cms, getRequest());
         CmsCoreData data = new CmsCoreData(
             OpenCms.getSystemInfo().getOpenCmsContext(),
             cms.getRequestContext().getSiteRoot(),
             cms.getRequestContext().getLocale().toString(),
             OpenCms.getWorkplaceManager().getWorkplaceLocale(cms).toString(),
-            cms.getRequestContext().getUri());
+            cms.getRequestContext().getUri(),
+            navigationUri);
         return data;
     }
 
@@ -238,6 +242,11 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
 
         CmsObject cms = getCmsObject();
         try {
+            CmsResource resource = cms.readResource(uri);
+            CmsLock lock = cms.getLock(resource);
+            if (lock.isUnlocked()) {
+                return null;
+            }
             cms.unlockResource(uri);
         } catch (CmsException e) {
             return e.getLocalizedMessage(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms));

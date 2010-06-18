@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/Attic/CmsCoreData.java,v $
- * Date   : $Date: 2010/05/03 14:33:05 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/06/18 07:29:54 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -52,6 +52,9 @@ public class CmsCoreData implements IsSerializable {
 
     /** The current request locale. */
     private String m_locale;
+
+    /** The current navigation URI. */
+    private String m_navigationUri;
 
     /** The current site root. */
     private String m_siteRoot;
@@ -77,7 +80,13 @@ public class CmsCoreData implements IsSerializable {
      */
     public CmsCoreData(CmsCoreData clone) {
 
-        this(clone.getContext(), clone.getSiteRoot(), clone.getLocale(), clone.getWpLocale(), clone.getUri());
+        this(
+            clone.getContext(),
+            clone.getSiteRoot(),
+            clone.getLocale(),
+            clone.getWpLocale(),
+            clone.getUri(),
+            clone.getNavigationUri());
     }
 
     /**
@@ -88,14 +97,16 @@ public class CmsCoreData implements IsSerializable {
      * @param locale the current request locale
      * @param wpLocale the workplace locale
      * @param uri the current uri
+     * @param navigationUri the current navigation URI 
      */
-    public CmsCoreData(String context, String siteRoot, String locale, String wpLocale, String uri) {
+    public CmsCoreData(String context, String siteRoot, String locale, String wpLocale, String uri, String navigationUri) {
 
         m_context = context;
         m_siteRoot = siteRoot;
         m_locale = locale;
         m_wpLocale = wpLocale;
         m_uri = uri;
+        m_navigationUri = navigationUri;
     }
 
     /**
@@ -116,6 +127,16 @@ public class CmsCoreData implements IsSerializable {
     public String getLocale() {
 
         return m_locale;
+    }
+
+    /**
+     * Returns the current navigation (sitemap) URI.<p>
+     *  
+     * @return the current navigation URI 
+     */
+    public String getNavigationUri() {
+
+        return m_navigationUri;
     }
 
     /**

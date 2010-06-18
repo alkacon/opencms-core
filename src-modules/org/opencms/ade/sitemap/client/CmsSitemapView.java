@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapView.java,v $
- * Date   : $Date: 2010/06/14 15:07:18 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2010/06/18 07:29:54 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,6 +71,9 @@ import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsStringUtil;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
@@ -86,7 +89,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.28 $ 
  * 
  * @since 8.0.0
  */
@@ -309,21 +312,11 @@ I_CmsDnDTreeDropHandler, I_CmsDnDListStatusHandler, I_CmsDnDListCollisionResolut
         page.add(loadingLabel);
 
         // read pre-fetched data
+
         CmsClientSitemapEntry root = m_controller.getData().getRoot();
-        CmsSitemapTreeItem rootItem = create(root, root.getSitePath());
-        rootItem.clearChildren();
-        for (CmsClientSitemapEntry child : root.getSubEntries()) {
-            CmsSitemapTreeItem childItem = create(child, child.getSitePath());
-            rootItem.addChild(childItem);
-            childItem.clearChildren();
-            for (CmsClientSitemapEntry grandchild : child.getSubEntries()) {
-                childItem.addChild(create(grandchild, grandchild.getSitePath()));
-            }
-            childItem.onFinishLoading();
-        }
+        CmsSitemapTreeItem rootItem = createSitemapItem(root);
         rootItem.onFinishLoading();
         rootItem.setOpen(true);
-
         // starting rendering
         m_tree = new CmsDnDLazyTree<CmsSitemapTreeItem>(new A_CmsDnDDeepLazyOpenHandler<CmsSitemapTreeItem>() {
 
@@ -336,19 +329,19 @@ I_CmsDnDTreeDropHandler, I_CmsDnDListStatusHandler, I_CmsDnDListCollisionResolut
             }
         });
         if (m_controller.isEditable()) {
-        m_tree.addTreeDropHandler(this);
-        m_tree.setDnDEnabled(true);
+            m_tree.addTreeDropHandler(this);
+            m_tree.setDnDEnabled(true);
         }
         m_tree.truncate(TM_SITEMAP, 920);
         m_tree.setAnimationEnabled(true);
         m_tree.addItem(rootItem);
         if (m_controller.isEditable()) {
-        // prevent drop on root level
-        m_tree.enableDropTarget(false);
-        // prevent dropping if we can not lock the resource 
-        m_tree.getDnDHandler().setStatusHandler(this);
-        // open edit dialog for collisions while dropping
-        m_tree.getDnDHandler().setCollisionHandler(this);
+            // prevent drop on root level
+            m_tree.enableDropTarget(false);
+            // prevent dropping if we can not lock the resource 
+            m_tree.getDnDHandler().setStatusHandler(this);
+            // open edit dialog for collisions while dropping
+            m_tree.getDnDHandler().setCollisionHandler(this);
         }
 
         // paint
@@ -394,8 +387,15 @@ I_CmsDnDTreeDropHandler, I_CmsDnDListStatusHandler, I_CmsDnDListCollisionResolut
                         + "/");
                 }
                 treeItem.removeDndMouseHandlers();
-        }
+            }
         });
+        String openPath = m_controller.getData().getOpenPath();
+        if (openPath != null) {
+            openItemsOnPath(openPath);
+            CmsSitemapTreeItem item = getTreeItem(openPath);
+            item.highlightTemporarily(1500);
+        }
+
     }
 
     /**
@@ -438,6 +438,27 @@ I_CmsDnDTreeDropHandler, I_CmsDnDListStatusHandler, I_CmsDnDListCollisionResolut
     }
 
     /**
+     * Creates a sitemap tree item from a client sitemap entry.<p>
+     * 
+     * @param entry the entry from which the sitemap tree item should be created 
+     * 
+     * @return the new sitemap tree item 
+     */
+    protected CmsSitemapTreeItem createSitemapItem(CmsClientSitemapEntry entry) {
+
+        CmsSitemapTreeItem result = create(entry, entry.getSitePath());
+        result.clearChildren();
+        for (CmsClientSitemapEntry child : entry.getSubEntries()) {
+            CmsSitemapTreeItem childItem = createSitemapItem(child);
+            result.addChild(childItem);
+        }
+        if (entry.getChildrenLoadedInitially()) {
+            result.onFinishLoading();
+        }
+        return result;
+    }
+
+    /**
      * Gets the sitemap tree item widget which represents the root of the current sitemap.<p>
      * 
      * @return the root sitemap tree item widget 
@@ -445,5 +466,54 @@ I_CmsDnDTreeDropHandler, I_CmsDnDListStatusHandler, I_CmsDnDListCollisionResolut
     protected CmsSitemapTreeItem getRootItem() {
 
         return (CmsSitemapTreeItem)(m_tree.getWidget(0));
+    }
+
+    /**
+     * Helper method to get all sitemap tree items from the root to a given path.<p>
+     * 
+     * For example, if the root item has the site path '/root/', and the value of path is
+     * '/root/a/b/', the sitemap tree items corresponding to '/root/', '/root/a/' and '/root/a/b'
+     * will be returned (in that order).<p>
+     * 
+     * @param path the path for which the sitemap tree items should be returned 
+     *  
+     * @return the sitemap tree items on the path
+     */
+    private List<CmsSitemapTreeItem> getItemsOnPath(String path) {
+
+        List<CmsSitemapTreeItem> result = new ArrayList<CmsSitemapTreeItem>();
+
+        CmsSitemapData data = m_controller.getData();
+        CmsClientSitemapEntry root = data.getRoot();
+        String rootSitePath = root.getSitePath();
+        String remainingPath = path.substring(rootSitePath.length());
+
+        CmsSitemapTreeItem currentItem = getRootItem();
+        result.add(currentItem);
+
+        String[] names = CmsStringUtil.splitAsArray(remainingPath, "/");
+        for (String name : names) {
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(name)) {
+                continue;
+            }
+            currentItem = (CmsSitemapTreeItem)currentItem.getChild(name);
+            result.add(currentItem);
+        }
+        return result;
+    }
+
+    /**
+     * Opens all sitemap tree items on a path, except the last one.<p>
+     * 
+     * @param path the path for which all intermediate sitemap items should be opened 
+     */
+    private void openItemsOnPath(String path) {
+
+        List<CmsSitemapTreeItem> itemsOnPath = getItemsOnPath(path);
+        // the last item on the path shouldn't be opened 
+        itemsOnPath.remove(itemsOnPath.size() - 1);
+        for (CmsSitemapTreeItem item : itemsOnPath) {
+            item.setOpen(true);
+        }
     }
 }

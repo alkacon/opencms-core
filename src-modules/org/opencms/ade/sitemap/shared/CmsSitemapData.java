@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsSitemapData.java,v $
- * Date   : $Date: 2010/06/07 13:37:20 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/06/18 07:29:54 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0
  */
@@ -63,6 +63,9 @@ public class CmsSitemapData implements IsSerializable {
 
     /** The reason why the current sitemap is not editable. */
     private String m_noEditReason;
+
+    /** The path at which the sitemap should be opened, or null. */
+    private String m_openPath;
 
     /** The path to the parent sitemap or <code>null</code>. */
     private String m_parentSitemap;
@@ -103,6 +106,7 @@ public class CmsSitemapData implements IsSerializable {
      * @param parentSitemap the path to the parent sitemap or <code>null</code>
      * @param root the sitemap root
      * @param timestamp the sitemap resource last modification date
+     * @param openPath the path at which the sitemap should be opened 
      */
     public CmsSitemapData(
         CmsSitemapTemplate defaultTemplate,
@@ -114,7 +118,8 @@ public class CmsSitemapData implements IsSerializable {
         int cntPageType,
         String parentSitemap,
         CmsClientSitemapEntry root,
-        long timestamp) {
+        long timestamp,
+        String openPath) {
 
         m_defaultTemplate = defaultTemplate;
         m_templates = templates;
@@ -126,6 +131,8 @@ public class CmsSitemapData implements IsSerializable {
         m_parentSitemap = parentSitemap;
         m_root = root;
         m_timestamp = timestamp;
+        m_openPath = openPath;
+
     }
 
     /**
@@ -156,6 +163,16 @@ public class CmsSitemapData implements IsSerializable {
     public String getNoEditReason() {
 
         return m_noEditReason;
+    }
+
+    /**
+     * Gets the path at which the sitemap should be opened (may be null).<p>
+     * 
+     * @return the path at which the sitemap should be opened 
+     */
+    public String getOpenPath() {
+
+        return m_openPath;
     }
 
     /**

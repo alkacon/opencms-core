@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsClientSitemapEntry.java,v $
- * Date   : $Date: 2010/06/10 12:56:38 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/06/24 09:05:27 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,11 +47,14 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.14 $
  * 
  * @since 8.0.0
  */
 public class CmsClientSitemapEntry implements IsSerializable {
+
+    /** True if the children of this entry have initially been loaded. */
+    private boolean m_childrenLoadedInitially;
 
     /** The entry id. */
     private CmsUUID m_id;
@@ -113,6 +116,16 @@ public class CmsClientSitemapEntry implements IsSerializable {
         entry.setPosition(m_subEntries.size());
         entry.updateSitePath(m_sitePath + entry.getName() + "/");
         m_subEntries.add(entry);
+    }
+
+    /**
+     * Returns true if this item's children have been loaded initially.<p>
+     * 
+     * @return true if this item's children have been loaded initially
+     */
+    public boolean getChildrenLoadedInitially() {
+
+        return m_childrenLoadedInitially;
     }
 
     /**
@@ -233,6 +246,14 @@ public class CmsClientSitemapEntry implements IsSerializable {
     }
 
     /**
+     * Sets the 'children loaded initially' flag to true.<p>
+     */
+    public void setChildrenLoadedInitially() {
+
+        m_childrenLoadedInitially = true;
+    }
+
+    /**
      * Sets the id.<p>
      *
      * @param id the id to set
@@ -288,6 +309,8 @@ public class CmsClientSitemapEntry implements IsSerializable {
      * @param children the children to set
      */
     public void setSubEntries(List<CmsClientSitemapEntry> children) {
+
+        m_childrenLoadedInitially = true;
 
         m_subEntries.clear();
         for (CmsClientSitemapEntry child : children) {

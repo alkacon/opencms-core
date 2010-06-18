@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapTreeItem.java,v $
- * Date   : $Date: 2010/06/14 12:52:21 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2010/06/18 07:29:54 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,6 +44,8 @@ import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem.LoadState;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.sitemap.CmsSitemapManager;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -52,7 +54,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 8.0.0
  * 
@@ -110,6 +112,48 @@ public class CmsSitemapTreeItem extends CmsDnDLazyTreeItem {
     public String getSitePath() {
 
         return m_entry.getSitePath();
+    }
+
+    /**
+     * Turns the highlighting for this item on or off.<p>
+     * 
+     * @param highlightOn if true, the highlighting is turned on, else off
+     */
+    public void highlight(boolean highlightOn) {
+
+        if (highlightOn) {
+            m_listItemWidget.getContentPanel().addStyleName(CSS.highlight());
+        } else {
+            m_listItemWidget.getContentPanel().removeStyleName(CSS.highlight());
+
+        }
+    }
+
+    /**
+     * Temporarily highlights an item.<p>
+     * 
+     * @param duration the duration for which  
+     */
+    public void highlightTemporarily(int duration) {
+
+        int blinkInterval = 300;
+        final int blinkCount = duration / blinkInterval;
+
+        Scheduler.get().scheduleFixedPeriod(new RepeatingCommand() {
+
+            private int m_counter;
+
+            /**
+             * @see com.google.gwt.core.client.Scheduler.RepeatingCommand#execute()
+             */
+            public boolean execute() {
+
+                boolean finish = m_counter > blinkCount;
+                highlight((m_counter % 2 == 0) && !finish);
+                m_counter += 1;
+                return !finish;
+            }
+        }, blinkInterval);
     }
 
     /**
@@ -264,4 +308,5 @@ public class CmsSitemapTreeItem extends CmsDnDLazyTreeItem {
         }
         return null;
     }
+
 }
