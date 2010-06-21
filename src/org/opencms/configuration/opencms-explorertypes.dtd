@@ -15,8 +15,18 @@
 <!ELEMENT explorertype (
 	newresource,
 	accesscontrol?,
-	editoptions?)>
-<!ATTLIST explorertype name CDATA #REQUIRED key CDATA #REQUIRED icon CDATA #REQUIRED reference CDATA #IMPLIED>
+	editoptions?, iconrules?)>
+<!ATTLIST explorertype name CDATA #REQUIRED key CDATA #REQUIRED icon CDATA #REQUIRED bigicon CDATA #IMPLIED reference CDATA #IMPLIED>
+
+
+<!--
+# A list of icon rules which map file extensions (e.g. 'doc') to icon file names.
+# The normal icon file name is required, while the file name for the big icon is optional.
+#
+-->
+<!ELEMENT iconrules (iconrule*)>
+<!ELEMENT iconrule EMPTY>
+<!ATTLIST iconrule extension CDATA #REQUIRED icon CDATA #REQUIRED bigicon CDATA #IMPLIED> 
 
 <!--
 # The URI for the new resource dialog and the ranking is required.

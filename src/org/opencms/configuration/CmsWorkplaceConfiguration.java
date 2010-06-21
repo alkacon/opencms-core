@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2009/07/08 09:27:11 $
- * Version: $Revision: 1.57 $
+ * Date   : $Date: 2010/06/21 10:01:40 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,7 +72,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.57 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.0.0
  */
@@ -83,6 +83,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
 
     /** The "autosettitle" attribute. */
     public static final String A_AUTOSETTITLE = "autosettitle";
+
+    /** The name of the attribute for file extensions in icon rules. */
+    public static final String A_EXTENSION = "extension";
 
     /** The "info" attribute. */
     public static final String A_INFO = "info";
@@ -243,15 +246,6 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
     /** The node name of the editors preferred editors node. */
     public static final String N_EDITORPREFERREDEDITORS = "editors-preferrededitors";
 
-    /** The node name of the gallery preferences node. */
-    public static final String N_GALLERIESPREFERENCES = "galleries-preferences";
-
-    /** The node name of the galleries start setting node. */
-    public static final String N_STARTGALLERIES = "startgalleries";
-
-    /** The node name of the start gallery node. */
-    public static final String N_STARTGALLERY = "startgallery";
-
     /** The name of the "enable advanced property tabs" node. */
     public static final String N_ENABLEADVANCEDPROPERTYTABS = "enableadvancedpropertytabs";
 
@@ -309,8 +303,17 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
     /** The node name of the folder copy node. */
     public static final String N_FOLDERCOPY = "foldercopy";
 
+    /** The node name of the gallery preferences node. */
+    public static final String N_GALLERIESPREFERENCES = "galleries-preferences";
+
     /** The node name of the helptext node. */
     public static final String N_HELPTEXT = "helptext";
+
+    /** The name of the icon rule node. */
+    public static final String N_ICONRULE = "iconrule";
+
+    /** The name of the icon rules node. */
+    public static final String N_ICONRULES = "iconrules";
 
     /** The node name of the info-block node. */
     public static final String N_INFOBLOCK = "info-block";
@@ -323,6 +326,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
 
     /** The name of the "labeled folders" node. */
     public static final String N_LABELEDFOLDERS = "labeledfolders";
+
+    /** The node name of the list all projects node. */
+    public static final String N_LISTALLPROJECTS = "listallprojects";
 
     /** The node name of the locale node. */
     public static final String N_LOCALE = "locale";
@@ -371,9 +377,6 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
 
     /** The node name of the publish button appearance node. */
     public static final String N_PUBLISHBUTTONAPPEARANCE = "publishbuttonappearance";
-
-    /** The node name of the list all projects node. */
-    public static final String N_LISTALLPROJECTS = "listallprojects";
 
     /** The node name of the publish notification node. */
     public static final String N_PUBLISHNOTIFICATION = "publishnotification";
@@ -425,6 +428,12 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
 
     /** The node name of the size column node. */
     public static final String N_SIZE = "show-size";
+
+    /** The node name of the galleries start setting node. */
+    public static final String N_STARTGALLERIES = "startgalleries";
+
+    /** The node name of the start gallery node. */
+    public static final String N_STARTGALLERY = "startgallery";
 
     /** The node name of the state column node. */
     public static final String N_STATE = "show-state";
@@ -486,6 +495,23 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
     /** The name of the xmlcontentautocorrection node. */
     public static final String N_XMLCONTENTAUTOCORRECTION = "xmlcontentautocorrection";
 
+    /** The name of the attribute containing the name of the big icon. */
+    private static final String A_BIGICON = "bigicon";
+
+    /** The configured workplace manager. */
+    private CmsWorkplaceManager m_workplaceManager;
+
+    /**
+     * Public constructor, will be called by configuration manager.<p> 
+     */
+    public CmsWorkplaceConfiguration() {
+
+        setXmlFileName(DEFAULT_XML_FILE_NAME);
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_WORKPLACE_INIT_0));
+        }
+    }
+
     /**
      * Adds the explorer type rules to the given digester.<p>
      * 
@@ -500,11 +526,17 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         digester.addObjectCreate("*/" + N_EXPLORERTYPE, CmsExplorerTypeSettings.class);
         digester.addSetNext("*/" + N_EXPLORERTYPE, "addExplorerTypeSetting");
 
-        digester.addCallMethod("*/" + N_EXPLORERTYPE, "setTypeAttributes", 4);
+        digester.addCallMethod("*/" + N_EXPLORERTYPE, "setTypeAttributes", 5);
         digester.addCallParam("*/" + N_EXPLORERTYPE, 0, A_NAME);
         digester.addCallParam("*/" + N_EXPLORERTYPE, 1, A_KEY);
         digester.addCallParam("*/" + N_EXPLORERTYPE, 2, A_ICON);
-        digester.addCallParam("*/" + N_EXPLORERTYPE, 3, A_REFERENCE);
+        digester.addCallParam("*/" + N_EXPLORERTYPE, 3, A_BIGICON);
+        digester.addCallParam("*/" + N_EXPLORERTYPE, 4, A_REFERENCE);
+
+        digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_ICONRULES + "/" + N_ICONRULE, "addIconRule", 3);
+        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_ICONRULES + "/" + N_ICONRULE, 0, A_EXTENSION);
+        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_ICONRULES + "/" + N_ICONRULE, 1, A_ICON);
+        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_ICONRULES + "/" + N_ICONRULE, 2, A_BIGICON);
 
         digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, "setNewResourceHandlerClassName", 1);
         digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, 0, A_HANDLER);
@@ -736,20 +768,6 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         } else {
             // create a <separator> node
             parentElement.addElement(N_SEPARATOR);
-        }
-    }
-
-    /** The configured workplace manager. */
-    private CmsWorkplaceManager m_workplaceManager;
-
-    /**
-     * Public constructor, will be called by configuration manager.<p> 
-     */
-    public CmsWorkplaceConfiguration() {
-
-        setXmlFileName(DEFAULT_XML_FILE_NAME);
-        if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_WORKPLACE_INIT_0));
         }
     }
 

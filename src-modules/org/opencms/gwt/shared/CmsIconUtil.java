@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/Attic/CmsIconUtil.java,v $
- * Date   : $Date: 2010/05/18 12:31:13 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/06/21 10:01:40 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,11 +36,14 @@ package org.opencms.gwt.shared;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
 public class CmsIconUtil {
+
+    /** The resource icon CSS class prefix. */
+    protected static final String TYPE_ICON_CLASS = "cms_type_icon";
 
     /**
      * Constructor.<p>
@@ -49,9 +52,6 @@ public class CmsIconUtil {
 
         // empty
     }
-
-    /** The resource icon CSS class prefix. */
-    protected static final String TYPE_ICON_CLASS = "cms_type_icon";
 
     /**
      * Returns the CSS classes of the resource icon for the given resource type name.<p>
@@ -101,13 +101,26 @@ public class CmsIconUtil {
             int last = fileName.lastIndexOf(".");
             if (fileName.length() > last + 1) {
                 String suffix = fileName.substring(fileName.lastIndexOf(".") + 1);
-                StringBuffer sb = new StringBuffer(TYPE_ICON_CLASS).append("_").append(resourceTypeName.hashCode()).append(
-                    "_").append(suffix);
-                return sb.toString();
+                return getResourceSubTypeIconClass(resourceTypeName, suffix);
             }
         }
         return "";
 
+    }
+
+    /**
+     * Returns the CSS class for a given resource type name and file name extension.<p>
+     * 
+     * @param resourceTypeName the resource type name 
+     * @param suffix the file name extension 
+     * 
+     * @return the CSS class for the type and extension 
+     */
+    protected static String getResourceSubTypeIconClass(String resourceTypeName, String suffix) {
+
+        StringBuffer buffer = new StringBuffer(TYPE_ICON_CLASS).append("_").append(resourceTypeName.hashCode()).append(
+            "_").append(suffix);
+        return buffer.toString();
     }
 
     /**
