@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerTypeSettings.java,v $
- * Date   : $Date: 2010/06/21 10:01:40 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/06/21 10:02:54 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -815,6 +815,7 @@ public class CmsExplorerTypeSettings implements Comparable {
      * @param name the name of the type setting
      * @param key the key name of the explorer type setting 
      * @param icon the icon path and file name of the explorer type setting
+     * @param bigIcon the file name of the big icon
      * @param reference the reference of the explorer type setting
      */
     public void setTypeAttributes(String name, String key, String icon, String bigIcon, String reference) {
