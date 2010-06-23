@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2010/02/11 10:20:31 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/06/23 06:43:12 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,6 +56,7 @@ import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsHtmlConverter;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 import org.opencms.widgets.CmsCategoryWidget;
 import org.opencms.widgets.CmsDisplayWidget;
 import org.opencms.widgets.I_CmsWidget;
@@ -66,6 +67,7 @@ import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.CmsXmlGenericWrapper;
 import org.opencms.xml.CmsXmlUtils;
+import org.opencms.xml.sitemap.CmsSitemapEntry;
 import org.opencms.xml.types.CmsXmlNestedContentDefinition;
 import org.opencms.xml.types.CmsXmlVarLinkValue;
 import org.opencms.xml.types.CmsXmlVfsFileValue;
@@ -94,7 +96,7 @@ import org.dom4j.Element;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -1995,8 +1997,12 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             return false;
         }
         try {
+            String sitePath = cms.getRequestContext().removeSiteRoot(link.getTarget());
+            CmsSitemapEntry entry = OpenCms.getSitemapManager().getEntryForUri(cms, sitePath);
+            CmsUUID structureId = entry.getResourceId();
+
             // validate the link for error
-            CmsResource res = cms.readResource(link.getStructureId(), CmsResourceFilter.IGNORE_EXPIRATION);
+            CmsResource res = cms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
 
             // check the time range 
             if (res != null) {
