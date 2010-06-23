@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsRadioButtonGroup.java,v $
- * Date   : $Date: 2010/05/11 15:49:06 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/06/23 10:01:02 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,286 +31,75 @@
 
 package org.opencms.gwt.client.ui.input;
 
-import org.opencms.gwt.client.I_CmsHasInit;
-import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
-import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
-import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
-import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
-import org.opencms.gwt.client.util.CmsPair;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.event.shared.GwtEvent;
-import com.google.gwt.event.shared.HandlerManager;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Panel;
 
 /**
- * Widget class consisting of a group of radio buttons, of which at most one may be active.<p>
+ * This class coordinates multiple radio buttons and makes sure that when a radio button of a group is
+ * selected, no other radio button of the same group is selected.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.0
- * 
  */
-public class CmsRadioButtonGroup extends Composite
-implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsHasInit {
+public class CmsRadioButtonGroup {
 
-    /** The widget type identifier. */
-    public static final String WIDGET_TYPE = "radio";
+    /** The currently selected radio button (null if none is selected). */
+    private CmsRadioButton m_selectedButton;
 
-    /** A collection of event handlers for this widget. */
-    HandlerManager m_handlers = new HandlerManager(this);
+    /** The object to which value change events should be fired. */
+    private HasValueChangeHandlers<String> m_target;
 
-    /** The error display used by this widget. */
-    private CmsErrorWidget m_error = new CmsErrorWidget();
-
-    /** The root panel containing all other components of this widget. */
-    private Panel m_panel = new FlowPanel();
-
-    /** A map which stores all radio buttons using their value as keys. */
-    private Map<String, CmsRadioButton> m_radioButtons;
-
-    /** The value of the selected radio button, or null. */
-    private String m_selected;
-
-    /**
-     * Creates a new instance from a list of key/value pairs.<p>
-     * 
-     * The first component of each pair is the value of the radio buttons, the second component is used as the label.
-     * 
-     * @param items a list of pairs of strings 
+    /** 
+     * Deselects a selected radio button (if one is selected).<p>
      */
-    public CmsRadioButtonGroup(List<CmsPair<String, String>> items) {
+    public void deselectButton() {
 
-        init(CmsPair.pairsToMap(items));
-    }
-
-    /**
-     * Creates a new instance from a map of strings.<p>
-     * 
-     * The keys of the map are used as the values of the radio buttons, and the values of the map are used as labels 
-     * for the radio buttons.
-     *  
-     * @param items the string map containing the select options 
-     */
-    public CmsRadioButtonGroup(Map<String, String> items) {
-
-        List<CmsPair<String, String>> pairs = new ArrayList<CmsPair<String, String>>();
-        for (Map.Entry<String, String> entry : items.entrySet()) {
-            pairs.add(new CmsPair<String, String>(entry.getKey(), entry.getValue()));
+        if (m_selectedButton != null) {
+            m_selectedButton.setChecked(false);
+            m_selectedButton = null;
         }
-        init(CmsPair.pairsToMap(pairs));
-
     }
 
     /**
-     * Initializes this class.<p>
+     * Returns the currently selected button, or null if none is selected.<p>
+     * 
+     * @return the selected button or null
      */
-    public static void initClass() {
+    public CmsRadioButton getSelectedButton() {
 
-        // registers a factory for creating new instances of this widget
-        CmsWidgetFactoryRegistry.instance().registerFactory(WIDGET_TYPE, new I_CmsFormWidgetFactory() {
+        return m_selectedButton;
+    }
 
-            /**
-             * @see org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory#createWidget(java.util.Map)
-             */
-            public I_CmsFormWidget createWidget(Map<String, String> widgetParams) {
+    /**
+     * Selects a new button and deselects the previously selected one.<p>
+     * 
+     * @param button the button which should be selected 
+     */
+    public void selectButton(CmsRadioButton button) {
 
-                return new CmsRadioButtonGroup(widgetParams);
+        if (m_selectedButton != button) {
+            if (m_selectedButton != null) {
+                m_selectedButton.setChecked(false);
             }
-        });
-    }
-
-    /**
-     * @see com.google.gwt.event.logical.shared.HasValueChangeHandlers#addValueChangeHandler(com.google.gwt.event.logical.shared.ValueChangeHandler)
-     */
-    public HandlerRegistration addValueChangeHandler(final ValueChangeHandler<String> handler) {
-
-        m_handlers.addHandler(ValueChangeEvent.getType(), handler);
-        return new HandlerRegistration() {
-
-            public void removeHandler() {
-
-                m_handlers.removeHandler(ValueChangeEvent.getType(), handler);
-            }
-        };
-    }
-
-    /**
-     * @see com.google.gwt.user.client.ui.Widget#fireEvent(com.google.gwt.event.shared.GwtEvent)
-     */
-    @Override
-    public void fireEvent(GwtEvent<?> event) {
-
-        m_handlers.fireEvent(event);
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getFieldType()
-     */
-    public FieldType getFieldType() {
-
-        return I_CmsFormWidget.FieldType.STRING;
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getFormValue()
-     */
-    public Object getFormValue() {
-
-        if (m_selected == null) {
-            return "";
-        } else {
-            return m_selected;
-        }
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getFormValueAsString()
-     */
-    public String getFormValueAsString() {
-
-        return (String)getFormValue();
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#reset()
-     */
-    public void reset() {
-
-        if (m_selected != null) {
-            CmsRadioButton button = m_radioButtons.get(m_selected);
-            button.setChecked(false);
-            m_selected = null;
-        }
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setEnabled(boolean)
-     */
-    public void setEnabled(boolean enabled) {
-
-        for (Map.Entry<String, CmsRadioButton> entry : m_radioButtons.entrySet()) {
-            entry.getValue().setEnabled(enabled);
-        }
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setErrorMessage(java.lang.String)
-     */
-    public void setErrorMessage(String errorMessage) {
-
-        m_error.setText(errorMessage);
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setFormValue(java.lang.Object)
-     */
-    public void setFormValue(Object value) {
-
-        if (value == null) {
-            value = "";
-        }
-
-        if (value instanceof String) {
-            String strValue = (String)value;
-            if (strValue.equals("")) {
-                // interpret empty string as "no radio button selected"
-                reset();
-            } else {
-                changeSelectedItem(strValue);
-            }
-        }
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setFormValueAsString(java.lang.String)
-     */
-    public void setFormValueAsString(String formValue) {
-
-        setFormValue(formValue);
-    }
-
-    /**
-     * Internal method for initializing the widget with a list of select options.<p>
-     * 
-     * @param items the list of select options 
-     */
-    protected void init(Map<String, String> items) {
-
-        initWidget(m_panel);
-        m_radioButtons = new HashMap<String, CmsRadioButton>();
-        for (Map.Entry<String, String> entry : items.entrySet()) {
-
-            final CmsRadioButton button = new CmsRadioButton(entry.getKey(), entry.getValue());
-
-            m_radioButtons.put(entry.getKey(), button);
-            button.addClickHandler(new ClickHandler() {
-
-                public void onClick(ClickEvent e) {
-
-                    changeSelectedItem(button.getName());
-                }
-            });
-            FlowPanel wrapper = new FlowPanel();
-            wrapper.add(button);
-            m_panel.add(wrapper);
-        }
-        m_panel.add(m_error);
-        m_panel.setStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().radioButtonGroup());
-        m_panel.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().textMedium());
-    }
-
-    /**
-     * Changes the selected radio button to the one with a given key.<p>
-     * 
-     * @param key the key of the radio button
-     */
-    void changeSelectedItem(String key) {
-
-        if (m_selected != null) {
-            CmsRadioButton selectedButton = m_radioButtons.get(m_selected);
-            selectedButton.setChecked(false);
-        }
-        m_selected = key;
-        CmsRadioButton button = m_radioButtons.get(m_selected);
-        if (button != null) {
             button.setChecked(true);
+            m_selectedButton = button;
+            if (m_target != null) {
+                ValueChangeEvent.fire(m_target, button.getName());
+            }
         }
-        fireValueChangedEvent(getSelected());
     }
 
     /**
-     * Fires a ValueChangedEvent on this widget.<p>
-     *  
-     * @param newValue the new value of this widget
-     */
-    void fireValueChangedEvent(String newValue) {
-
-        ValueChangeEvent.fire(this, newValue);
-
-    }
-
-    /**
-     * Returns the selected value, or null if no value is selected.<p>
+     * Sets the new value change event target for this button group.<p>
      * 
-     * @return the selected value or null
+     * @param target the value change event target 
      */
-    String getSelected() {
+    public void setValueChangeTarget(HasValueChangeHandlers<String> target) {
 
-        return m_selected;
+        m_target = target;
     }
+
 }

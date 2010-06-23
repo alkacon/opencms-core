@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsRadioButton.java,v $
- * Date   : $Date: 2010/05/11 15:49:06 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/06/23 10:01:02 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ import org.opencms.gwt.client.ui.CmsToggleButton;
 import org.opencms.gwt.client.ui.css.I_CmsInputCss;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -44,11 +45,13 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 /**
  * Class representing a single radio button.<p>
  * 
- * This class is a helper class for the CmsRadioButtonGroup class, and is not very useful by itself.
+ * In most cases, you will need to set the group of a radio button, which is a Java object, 
+ * not just a string as in HTML radio buttons. Clicking on a radio button in a group will result
+ * in the radio button being selected, and none of the other buttons in the group being selected.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 8.0.0
  * 
@@ -58,14 +61,46 @@ public class CmsRadioButton extends Composite implements HasHorizontalAlignment,
     /** The CSS bundle instance used for this widget. */
     private static final I_CmsInputCss CSS = I_CmsInputLayoutBundle.INSTANCE.inputCss();
 
+    /** The wigdet used to implement the actual radio button. */
+    protected CmsToggleButton m_button = new CmsToggleButton();
+
+    /** The radio button group. */
+    protected CmsRadioButtonGroup m_group;
+
     /** The current horizontal alignment. */
     private HorizontalAlignmentConstant m_align;
 
-    /** The wigdet used to implement the actual radio button. */
-    private CmsToggleButton m_button = new CmsToggleButton();
-
     /** The value associated with this radio button. */
     private String m_name;
+
+    /**
+     * Creates a new radio button without setting the name and label text.<p>
+     */
+    public CmsRadioButton() {
+
+        m_button.setUseMinWidth(false);
+        m_button.setShowBorder(false);
+        m_button.setImageClass(CSS.radioButtonImage());
+        setHorizontalAlignment(ALIGN_RIGHT);
+
+        initWidget(m_button);
+        addStyleName(CSS.radioButton());
+        addStyleName(CSS.inlineBlock());
+        m_button.addClickHandler(new ClickHandler() {
+
+            /**
+             * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
+             */
+            public void onClick(ClickEvent event) {
+
+                m_button.setDown(true);
+                if (m_group != null) {
+                    m_group.selectButton(CmsRadioButton.this);
+                }
+            }
+        });
+
+    }
 
     /**
      * Creates a new radio button.<p>
@@ -75,19 +110,11 @@ public class CmsRadioButton extends Composite implements HasHorizontalAlignment,
      */
     public CmsRadioButton(String name, String labelText) {
 
+        this();
         m_name = name;
-        m_button.setUseMinWidth(false);
-        m_button.setShowBorder(false);
-        m_button.setImageClass(CSS.radioButtonImage());
         if (labelText != null) {
             m_button.setText(labelText);
         }
-        setHorizontalAlignment(ALIGN_RIGHT);
-
-        initWidget(m_button);
-        addStyleName(CSS.radioButton());
-        addStyleName(CSS.inlineBlock());
-
     }
 
     /**
@@ -151,6 +178,16 @@ public class CmsRadioButton extends Composite implements HasHorizontalAlignment,
     }
 
     /**
+     * Sets the group for this radio button.<p>
+     * 
+     * @param group
+     */
+    public void setGroup(CmsRadioButtonGroup group) {
+
+        m_group = group;
+    }
+
+    /**
      * This is the alignment of the text in reference to the checkbox, possible values are left or right.<p>
      * 
      * @see com.google.gwt.user.client.ui.HasHorizontalAlignment#setHorizontalAlignment(com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant)
@@ -163,6 +200,26 @@ public class CmsRadioButton extends Composite implements HasHorizontalAlignment,
         }
         m_button.setHorizontalAlignment(align);
         m_align = align;
+    }
+
+    /**
+     * Sets the name of this radio button.<p>
+     * 
+     * @param name the new name 
+     */
+    public void setName(String name) {
+
+        m_name = name;
+    }
+
+    /**
+     * Sets the text which is displayed next to the radio button.<p>
+     * 
+     * @param text the new text 
+     */
+    public void setText(String text) {
+
+        m_button.setText(text);
     }
 
 }
