@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsDomUtil.java,v $
- * Date   : $Date: 2010/06/14 12:52:05 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2010/06/24 08:44:01 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,6 +44,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.DOM;
@@ -55,7 +56,7 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentC
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * 
  * @since 8.0.0
  */
@@ -761,6 +762,36 @@ public final class CmsDomUtil {
     }
 
     /**
+     * Gets the horizontal position of the given x-coordinate relative to a given element.<p>
+     * 
+     * @param x the coordinate to use 
+     * @param target the element whose coordinate system is to be used
+     * 
+     * @return the relative horizontal position
+     * 
+     * @see com.google.gwt.event.dom.client.MouseEvent#getRelativeX(com.google.gwt.dom.client.Element)
+     */
+    public static int getRelativeX(int x, Element target) {
+
+        return x - target.getAbsoluteLeft() + target.getScrollLeft() + target.getOwnerDocument().getScrollLeft();
+    }
+
+    /**
+     * Gets the vertical position of the given y-coordinate relative to a given element.<p>
+     * 
+     * @param y the coordinate to use 
+     * @param target the element whose coordinate system is to be used
+     * 
+     * @return the relative vertical position
+     * 
+     * @see com.google.gwt.event.dom.client.MouseEvent#getRelativeY(com.google.gwt.dom.client.Element)
+     */
+    public static int getRelativeY(int y, Element target) {
+
+        return y - target.getAbsoluteTop() + target.getScrollTop() + target.getOwnerDocument().getScrollTop();
+    }
+
+    /**
      * Utility method to determine if the given element has a set background.<p>
      * 
      * @param element the element
@@ -861,6 +892,24 @@ public final class CmsDomUtil {
             domImpl = GWT.create(DOMImpl.class);
         }
         return domImpl;
+    }
+
+    /**
+     * Returns the element position relative to its siblings.<p>
+     * 
+     * @param e the element to get the position for
+     * 
+     * @return the position, or <code>-1</code> if not found
+     */
+    public static int getPosition(Element e) {
+
+        NodeList<Node> childNodes = e.getParentElement().getChildNodes();
+        for (int i = childNodes.getLength(); i >= 0; i--) {
+            if (childNodes.getItem(i) == e) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     /**
