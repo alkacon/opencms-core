@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/draganddrop/Attic/A_CmsDragHandler.java,v $
- * Date   : $Date: 2010/06/10 12:56:28 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2010/06/24 08:41:56 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * 
  * @since 8.0.0
  */
@@ -223,8 +223,10 @@ implements I_CmsDragHandler<E, T> {
     /** The list of all registered targets. */
     protected List<T> m_targets;
 
+    /** The mouse event horizontal position. */
     private int m_clientX;
 
+    /** The mouse event vertical position. */
     private int m_clientY;
 
     /**
