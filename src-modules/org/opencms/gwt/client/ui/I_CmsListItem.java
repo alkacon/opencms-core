@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/I_CmsListItem.java,v $
- * Date   : $Date: 2010/05/06 13:37:38 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/06/24 09:05:26 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,8 @@
 
 package org.opencms.gwt.client.ui;
 
+import org.opencms.gwt.client.ui.dnd.I_CmsDraggable;
+
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -38,11 +40,11 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
-public interface I_CmsListItem extends I_CmsTruncable {
+public interface I_CmsListItem extends I_CmsTruncable, I_CmsDraggable {
 
     /**
      * Adds a widget to this list item.<p>

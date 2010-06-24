@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/toolbar/Attic/CmsToolbarAddButton.java,v $
- * Date   : $Date: 2010/05/27 11:13:52 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/06/24 09:05:26 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import org.opencms.gwt.client.ui.I_CmsButton;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  */
@@ -49,9 +49,10 @@ public class CmsToolbarAddButton extends CmsToggleButton {
     /**
      * Constructor.<p>
      * 
+     * @param toolbar the toolbar instance
      * @param controller the sitemap controller 
      */
-    public CmsToolbarAddButton(final CmsSitemapController controller) {
+    public CmsToolbarAddButton(final CmsSitemapToolbar toolbar, final CmsSitemapController controller) {
 
         setImageClass(I_CmsButton.ButtonData.ADD.getIconClass());
         setTitle(I_CmsButton.ButtonData.ADD.getTitle());

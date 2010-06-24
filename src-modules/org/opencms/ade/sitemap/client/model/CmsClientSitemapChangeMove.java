@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeMove.java,v $
- * Date   : $Date: 2010/06/10 13:27:41 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/06/24 09:05:25 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.ade.sitemap.client.model;
 import org.opencms.ade.sitemap.client.CmsSitemapTreeItem;
 import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
+import org.opencms.ade.sitemap.client.toolbar.CmsToolbarClipboardView;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.file.CmsResource;
 import org.opencms.xml.sitemap.CmsSitemapChangeMove;
@@ -45,7 +46,7 @@ import org.opencms.xml.sitemap.I_CmsSitemapChange.Type;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -87,15 +88,25 @@ public class CmsClientSitemapChangeMove implements I_CmsClientSitemapChange {
     }
 
     /**
+     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#applyToClipboardView(org.opencms.ade.sitemap.client.toolbar.CmsToolbarClipboardView)
+     */
+    public void applyToClipboardView(CmsToolbarClipboardView view) {
+
+        // TODO: Auto-generated method stub
+    }
+
+    /**
      * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#applyToModel(org.opencms.ade.sitemap.client.control.CmsSitemapController)
      */
     public void applyToModel(CmsSitemapController controller) {
 
+        // apply to sitemap model 
         CmsClientSitemapEntry sourceParent = controller.getEntry(CmsResource.getParentFolder(getSourcePath()));
         CmsClientSitemapEntry moved = sourceParent.removeSubEntry(getSourcePosition());
         CmsClientSitemapEntry destParent = controller.getEntry(CmsResource.getParentFolder(getDestinationPath()));
         destParent.insertSubEntry(moved, getDestinationPosition());
         moved.updateSitePath(getDestinationPath());
+        // TODO: apply to clipboard model
     }
 
     /**
@@ -189,13 +200,5 @@ public class CmsClientSitemapChangeMove implements I_CmsClientSitemapChange {
             getDestinationPosition(),
             getSourcePath(),
             getSourcePosition());
-    }
-
-    /**
-     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#setEnsureVisible(boolean)
-     */
-    public void setEnsureVisible(boolean ensureVisible) {
-
-        m_ensureVisible = ensureVisible;
     }
 }

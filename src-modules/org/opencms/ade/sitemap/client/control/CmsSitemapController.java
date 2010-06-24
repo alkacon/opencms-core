@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2010/06/10 13:27:41 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/06/24 09:05:27 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,7 +37,6 @@ import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeDelete;
 import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeEdit;
 import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeMergeSitemap;
 import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeMove;
-import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeMoveDnD;
 import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeNew;
 import org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
@@ -72,7 +71,7 @@ import com.google.gwt.user.client.Window;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 8.0.0
  */
@@ -238,9 +237,9 @@ public class CmsSitemapController {
                 start(0);
                 List<I_CmsSitemapChange> changes = getChangesToSave();
                 if (sync) {
-                    getService().saveSync(getSitemapUri(), changes, this);
+                    getService().saveSync(getSitemapUri(), changes, getData().getClipboardData(), this);
                 } else {
-                    getService().save(getSitemapUri(), changes, this);
+                    getService().save(getSitemapUri(), changes, getData().getClipboardData(), this);
                 }
             }
 
@@ -278,7 +277,6 @@ public class CmsSitemapController {
         assert (getEntry(newEntry.getSitePath()) == null);
         assert (getEntry(CmsResource.getParentFolder(newEntry.getSitePath())) != null);
 
-        newEntry.setPosition(-1); // ensure it will be inserted at the end
         addChange(new CmsClientSitemapChangeNew(newEntry), false);
     }
 
@@ -578,25 +576,6 @@ public class CmsSitemapController {
     }
 
     /**
-     * Moves the given sitemap entry with all its descendants to the new position with drag and drop.<p>
-     * 
-     * @param entry the sitemap entry to move
-     * @param toPath the destination path
-     * @param position the new position between its siblings
-     */
-    public void moveDnd(CmsClientSitemapEntry entry, String toPath, int position) {
-
-        assert (getEntry(entry.getSitePath()) != null);
-        if ((toPath == null) || (entry.getSitePath().equals(toPath) && (entry.getPosition() == position))) {
-            // nothing to do
-            return;
-        }
-        assert (getEntry(CmsResource.getParentFolder(toPath)) != null);
-
-        addChange(new CmsClientSitemapChangeMoveDnD(entry.getSitePath(), entry.getPosition(), toPath, position), false);
-    }
-
-    /**
      * Re-does the last undone change.<p>
      */
     public void redo() {
@@ -802,5 +781,4 @@ public class CmsSitemapController {
         // refresh view, in dnd mode view already ok
         m_handlerManager.fireEvent(new CmsSitemapChangeEvent(change));
     }
-
 }

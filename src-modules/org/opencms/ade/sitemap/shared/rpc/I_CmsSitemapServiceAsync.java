@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/rpc/Attic/I_CmsSitemapServiceAsync.java,v $
- * Date   : $Date: 2010/06/10 13:27:41 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2010/06/24 09:05:26 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.ade.sitemap.shared.rpc;
 
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
+import org.opencms.ade.sitemap.shared.CmsSitemapClipboardData;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.ade.sitemap.shared.CmsSitemapMergeInfo;
 import org.opencms.ade.sitemap.shared.CmsSubSitemapInfo;
@@ -47,7 +48,7 @@ import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 8.0.0
  * 
@@ -56,15 +57,6 @@ import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
  * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapServiceAsync
  */
 public interface I_CmsSitemapServiceAsync {
-
-    /**
-     * Executed when leaving the page.<p>
-     * 
-     * @param recentList the modified recent list, or <code>null</code> if it has not been modified
-     * @param callback the async callback
-     */
-    @SynchronizedRpcRequest
-    void exit(List<CmsClientSitemapEntry> recentList, AsyncCallback<Void> callback);
 
     /**
      * Returns the sitemap children for the given path.<p>
@@ -97,9 +89,14 @@ public interface I_CmsSitemapServiceAsync {
      * 
      * @param sitemapUri the sitemap URI 
      * @param changes the changes to save
+     * @param clipboardData the modified clipboard data, or <code>null</code> if it has not been modified
      * @param callback the async callback
      */
-    void save(String sitemapUri, List<I_CmsSitemapChange> changes, AsyncCallback<Long> callback);
+    void save(
+        String sitemapUri,
+        List<I_CmsSitemapChange> changes,
+        CmsSitemapClipboardData clipboardData,
+        AsyncCallback<Long> callback);
 
     /**
      * Saves a list of changes to a sitemap and then creates a sub-sitemap of the given sitemap starting from a path.<p>
@@ -135,9 +132,14 @@ public interface I_CmsSitemapServiceAsync {
      * 
      * @param sitemapUri the sitemap URI 
      * @param changes the changes to save
+     * @param clipboardData the modified clipboard data, or <code>null</code> if it has not been modified
      * @param callback the async callback
      */
     @SynchronizedRpcRequest
-    void saveSync(String sitemapUri, List<I_CmsSitemapChange> changes, AsyncCallback<Long> callback);
+    void saveSync(
+        String sitemapUri,
+        List<I_CmsSitemapChange> changes,
+        CmsSitemapClipboardData clipboardData,
+        AsyncCallback<Long> callback);
 
 }

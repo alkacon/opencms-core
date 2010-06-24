@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/toolbar/Attic/CmsToolbarPublishButton.java,v $
- * Date   : $Date: 2010/05/31 09:15:22 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/06/24 09:05:26 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  */
@@ -57,9 +57,10 @@ public class CmsToolbarPublishButton extends CmsToggleButton {
     /**
      * Constructor.<p>
      * 
+     * @param toolbar the toolbar instance
      * @param controller the sitemap controller 
      */
-    public CmsToolbarPublishButton(final CmsSitemapController controller) {
+    public CmsToolbarPublishButton(final CmsSitemapToolbar toolbar, final CmsSitemapController controller) {
 
         setImageClass(I_CmsButton.ButtonData.PUBLISH.getIconClass());
         setTitle(I_CmsButton.ButtonData.PUBLISH.getTitle());
@@ -71,6 +72,7 @@ public class CmsToolbarPublishButton extends CmsToggleButton {
              */
             public void onClick(ClickEvent event) {
 
+                toolbar.onButtonActivation(CmsToolbarPublishButton.this);
                 CmsDomUtil.ensureMouseOut(getElement());
                 setDown(false);
                 setEnabled(false);

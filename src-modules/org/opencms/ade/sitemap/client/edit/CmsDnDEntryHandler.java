@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/edit/Attic/CmsDnDEntryHandler.java,v $
- * Date   : $Date: 2010/06/15 13:19:25 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/06/24 09:05:26 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -100,7 +100,7 @@ public class CmsDnDEntryHandler extends A_CmsSitemapEntryEditorHandler {
     public List<String> getForbiddenUrlNames() {
 
         List<String> result = new ArrayList<String>();
-        CmsClientSitemapEntry parent = m_controller.getEntry(m_destPath);
+        CmsClientSitemapEntry parent = m_controller.getEntry(CmsResource.getParentFolder(m_destPath));
         for (CmsClientSitemapEntry child : parent.getSubEntries()) {
             if (child != m_entry) {
                 result.add(child.getName());
@@ -128,7 +128,7 @@ public class CmsDnDEntryHandler extends A_CmsSitemapEntryEditorHandler {
         m_callback.onSuccess(newUrlName);
 
         // commit the rest
-        m_controller.edit(m_controller.getEntry(m_destPath), newTitle, vfsPath, fieldValues);
+        m_controller.edit(m_controller.getEntry(getPath(newUrlName)), newTitle, vfsPath, fieldValues);
     }
 
     /**

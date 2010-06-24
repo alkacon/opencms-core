@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/toolbar/Attic/CmsToolbarResetButton.java,v $
- * Date   : $Date: 2010/05/27 11:13:52 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/06/24 09:05:26 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  */
@@ -61,9 +61,10 @@ public class CmsToolbarResetButton extends CmsToggleButton {
     /**
      * Constructor.<p>
      * 
+     * @param toolbar the toolbar instance
      * @param controller the sitemap controller 
      */
-    public CmsToolbarResetButton(final CmsSitemapController controller) {
+    public CmsToolbarResetButton(final CmsSitemapToolbar toolbar, final CmsSitemapController controller) {
 
         setImageClass(I_CmsButton.ButtonData.RESET.getIconClass());
         setTitle(I_CmsButton.ButtonData.RESET.getTitle());
@@ -75,6 +76,7 @@ public class CmsToolbarResetButton extends CmsToggleButton {
              */
             public void onClick(ClickEvent event) {
 
+                toolbar.onButtonActivation(CmsToolbarResetButton.this);
                 setDown(false);
                 CmsConfirmDialog dialog = new CmsConfirmDialog(
                     org.opencms.gwt.client.Messages.get().key(org.opencms.gwt.client.Messages.GUI_DIALOG_RESET_TITLE_0),

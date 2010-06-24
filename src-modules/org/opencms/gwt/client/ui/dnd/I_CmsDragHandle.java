@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/I_CmsDnDListDropHandler.java,v $
- * Date   : $Date: 2010/06/07 14:27:01 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/dnd/Attic/I_CmsDragHandle.java,v $
+ * Date   : $Date: 2010/06/24 09:05:26 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -29,12 +29,11 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.gwt.client.ui;
+package org.opencms.gwt.client.ui.dnd;
 
-import com.google.gwt.event.shared.EventHandler;
 
 /**
- * Drag and Drop list drop event handler.<p>
+ * Drag'n drop drag handle.<p>
  * 
  * @author Michael Moossen
  * 
@@ -42,12 +41,12 @@ import com.google.gwt.event.shared.EventHandler;
  * 
  * @since 8.0.0
  */
-public interface I_CmsDnDListDropHandler extends EventHandler {
+public interface I_CmsDragHandle {
 
     /**
-     * Will be triggered when an item has been dropped on a list.<p>
+     * Returns the dragged item.<p>
      * 
-     * @param dropEvent the specific drop event
+     * @return the dragged item
      */
-    void onDrop(CmsDnDListDropEvent dropEvent);
+    I_CmsDraggable getDraggable();
 }

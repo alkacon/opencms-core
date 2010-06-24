@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/Messages.java,v $
- * Date   : $Date: 2010/06/15 13:19:25 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2010/06/24 09:05:26 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,11 +38,23 @@ import org.opencms.gwt.client.util.CmsMessages;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 8.0.0
  */
 public final class Messages {
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CLIPBOARD_DELETED_DESC_0 = "GUI_CLIPBOARD_DELETED_DESC_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CLIPBOARD_DELETED_TITLE_0 = "GUI_CLIPBOARD_DELETED_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CLIPBOARD_MODIFIED_DESC_0 = "GUI_CLIPBOARD_MODIFIED_DESC_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CLIPBOARD_MODIFIED_TITLE_0 = "GUI_CLIPBOARD_MODIFIED_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CONFIRM_DIRTY_LEAVING_0 = "GUI_CONFIRM_DIRTY_LEAVING_0";

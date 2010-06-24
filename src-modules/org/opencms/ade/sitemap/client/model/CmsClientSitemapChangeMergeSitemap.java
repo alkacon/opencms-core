@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeMergeSitemap.java,v $
- * Date   : $Date: 2010/06/10 13:27:41 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/06/24 09:05:25 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.ade.sitemap.client.model;
 import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.client.control.CmsSitemapLoadEvent;
+import org.opencms.ade.sitemap.client.toolbar.CmsToolbarClipboardView;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsSitemapMergeInfo;
 import org.opencms.xml.sitemap.CmsSitemapManager;
@@ -45,7 +46,7 @@ import org.opencms.xml.sitemap.I_CmsSitemapChange.Type;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -78,9 +79,15 @@ public class CmsClientSitemapChangeMergeSitemap implements I_CmsClientSitemapCha
 
         CmsClientSitemapEntry changedEntry = new CmsClientSitemapEntry(m_entry);
         changedEntry.getProperties().remove(CmsSitemapManager.Property.sitemap.name());
-        m_internalChange = new CmsClientSitemapChangeEdit(m_entry, changedEntry);
-        m_internalChange.setEnsureVisible(false);
+        m_internalChange = new CmsClientSitemapChangeEdit(m_entry, changedEntry, false);
+    }
 
+    /**
+     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#applyToClipboardView(org.opencms.ade.sitemap.client.toolbar.CmsToolbarClipboardView)
+     */
+    public void applyToClipboardView(CmsToolbarClipboardView view) {
+
+        // TODO: Auto-generated method stub
     }
 
     /**
@@ -88,10 +95,11 @@ public class CmsClientSitemapChangeMergeSitemap implements I_CmsClientSitemapCha
      */
     public void applyToModel(CmsSitemapController controller) {
 
+        // apply to sitemap model 
         m_entry.setSubEntries(m_mergeInfo.getMergedEntries());
         m_internalChange.applyToModel(controller);
         controller.getData().setTimestamp(m_mergeInfo.getTimestamp());
-
+        // TODO: apply to clipboard model
     }
 
     /**
@@ -134,13 +142,4 @@ public class CmsClientSitemapChangeMergeSitemap implements I_CmsClientSitemapCha
 
         throw new UnsupportedOperationException();
     }
-
-    /**
-     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#setEnsureVisible(boolean)
-     */
-    public void setEnsureVisible(boolean ensureVisible) {
-
-        throw new UnsupportedOperationException();
-    }
-
 }

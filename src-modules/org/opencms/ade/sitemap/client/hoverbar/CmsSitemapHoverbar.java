@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsSitemapHoverbar.java,v $
- * Date   : $Date: 2010/06/14 12:52:21 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/06/24 09:05:26 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,7 +34,6 @@ package org.opencms.ade.sitemap.client.hoverbar;
 import org.opencms.ade.sitemap.client.CmsSitemapTreeItem;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.gwt.client.ui.A_CmsHoverHandler;
-import org.opencms.gwt.client.ui.CmsDnDListHandler;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 
@@ -49,7 +48,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
  */
@@ -118,6 +117,7 @@ public class CmsSitemapHoverbar extends FlowPanel {
 
         removeFromParent();
         m_handlerManager.fireEvent(new CmsHoverbarDetachEvent());
+        // CmsDebugLog.getInstance().printLine("detached");
     }
 
     /**
@@ -140,19 +140,6 @@ public class CmsSitemapHoverbar extends FlowPanel {
         return m_sitePath;
     }
 
-    /** The drag'n drop handler. */
-    protected CmsDnDListHandler m_handler;
-
-    /**
-     * Sets the drag'n drop handler.<p>
-     *
-     * @param handler the handler to set
-     */
-    public void setDnDHandler(CmsDnDListHandler handler) {
-
-        m_handler = handler;
-    }
-
     /**
      * Installs this hoverbar for the given item widget.<p>
      * 
@@ -170,9 +157,14 @@ public class CmsSitemapHoverbar extends FlowPanel {
             @Override
             protected void onHoverIn(MouseOverEvent event) {
 
+                if (widget.getContentPanel().getWidgetIndex(CmsSitemapHoverbar.this) > -1) {
+                    // prevent attach when not needed
+                    return;
+                }
                 m_sitePath = treeItem.getSitePath();
                 widget.getContentPanel().add(CmsSitemapHoverbar.this);
                 m_handlerManager.fireEvent(new CmsHoverbarAttachEvent());
+                // CmsDebugLog.getInstance().printLine("attached");
             }
 
             /**

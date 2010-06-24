@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/edit/Attic/CmsNewEntryHandler.java,v $
- * Date   : $Date: 2010/06/15 13:19:25 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/06/24 09:05:26 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import java.util.Map;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  * 
@@ -125,6 +125,7 @@ public class CmsNewEntryHandler extends A_CmsSitemapEntryEditorHandler {
         entry.setTitle(newTitle);
         entry.setVfsPath(vfsPath);
         entry.getProperties().putAll(fieldValues);
+        entry.setPosition(-1);
         m_controller.create(entry);
     }
 

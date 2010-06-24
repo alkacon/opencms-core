@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsSimpleDecoratedPanel.java,v $
- * Date   : $Date: 2010/05/28 14:00:43 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/06/24 09:05:26 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  * 
@@ -94,7 +94,9 @@ public class CmsSimpleDecoratedPanel extends Composite implements I_CmsTruncable
         for (Widget widget : decoration) {
             m_decorationBox.add(widget);
         }
-        m_primary.add(mainWidget);
+        if (mainWidget != null) {
+            m_primary.add(mainWidget);
+        }
         m_decorationWidth = decorationWidth;
         init();
     }

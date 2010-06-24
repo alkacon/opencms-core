@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeEdit.java,v $
- * Date   : $Date: 2010/06/10 13:27:41 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/06/24 09:05:25 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.ade.sitemap.client.model;
 import org.opencms.ade.sitemap.client.CmsSitemapTreeItem;
 import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
+import org.opencms.ade.sitemap.client.toolbar.CmsToolbarClipboardView;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.xml.sitemap.CmsSitemapChangeEdit;
 import org.opencms.xml.sitemap.I_CmsSitemapChange;
@@ -44,14 +45,14 @@ import org.opencms.xml.sitemap.I_CmsSitemapChange.Type;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
 public class CmsClientSitemapChangeEdit implements I_CmsClientSitemapChange {
 
     /** If true, tell the view to ensure that the affected  item is visible. */
-    private boolean m_ensureVisible = true;
+    private boolean m_ensureVisible;
 
     /** The new entry without children. */
     private CmsClientSitemapEntry m_newEntry;
@@ -67,8 +68,34 @@ public class CmsClientSitemapChangeEdit implements I_CmsClientSitemapChange {
      */
     public CmsClientSitemapChangeEdit(CmsClientSitemapEntry oldEntry, CmsClientSitemapEntry newEntry) {
 
+        m_ensureVisible = true;
         m_oldEntry = new CmsClientSitemapEntry(oldEntry);
         m_newEntry = newEntry;
+    }
+
+    /**
+     * Constructor.<p>
+     * 
+     * @param oldEntry the old entry
+     * @param newEntry the new entry
+     * @param ensureVisible the ensure visible flag
+     */
+    public CmsClientSitemapChangeEdit(
+        CmsClientSitemapEntry oldEntry,
+        CmsClientSitemapEntry newEntry,
+        boolean ensureVisible) {
+
+        m_ensureVisible = ensureVisible;
+        m_oldEntry = new CmsClientSitemapEntry(oldEntry);
+        m_newEntry = newEntry;
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#applyToClipboardView(org.opencms.ade.sitemap.client.toolbar.CmsToolbarClipboardView)
+     */
+    public void applyToClipboardView(CmsToolbarClipboardView view) {
+
+        // TODO: Auto-generated method stub
     }
 
     /**
@@ -76,10 +103,12 @@ public class CmsClientSitemapChangeEdit implements I_CmsClientSitemapChange {
      */
     public void applyToModel(CmsSitemapController controller) {
 
+        // apply to sitemap model 
         CmsClientSitemapEntry editEntry = controller.getEntry(getOldEntry().getSitePath());
         editEntry.setTitle(getNewEntry().getTitle());
         editEntry.setVfsPath(getNewEntry().getVfsPath());
         editEntry.setProperties(getNewEntry().getProperties());
+        // TODO: apply to clipboard model
     }
 
     /**
@@ -148,13 +177,5 @@ public class CmsClientSitemapChangeEdit implements I_CmsClientSitemapChange {
     public I_CmsClientSitemapChange revert() {
 
         return new CmsClientSitemapChangeEdit(getNewEntry(), getOldEntry());
-    }
-
-    /**
-     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#setEnsureVisible(boolean)
-     */
-    public void setEnsureVisible(boolean ensureVisible) {
-
-        m_ensureVisible = ensureVisible;
     }
 }

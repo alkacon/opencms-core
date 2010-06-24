@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsSitemapService.java,v $
- * Date   : $Date: 2010/06/18 07:29:54 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2010/06/24 09:05:26 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -10,7 +10,7 @@
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
+ * License as published by the Free Software Foundation; either 
  * version 2.1 of the License, or (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
@@ -32,6 +32,7 @@
 package org.opencms.ade.sitemap;
 
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
+import org.opencms.ade.sitemap.shared.CmsSitemapClipboardData;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.ade.sitemap.shared.CmsSitemapMergeInfo;
 import org.opencms.ade.sitemap.shared.CmsSitemapTemplate;
@@ -83,7 +84,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.29 $ 
  * 
  * @since 8.0.0
  * 
@@ -97,7 +98,7 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
     private static final long serialVersionUID = -7136544324371767330L;
 
     /** Session attribute name constant. */
-    private static final String SESSION_ATTR_ADE_SITEMAP_RECENT_LIST_CACHE = "__OCMS_ADE_SITEMAP_RECENT_LIST_CACHE__";
+    private static final String SESSION_ATTR_ADE_SITEMAP_CLIPBOARD_CACHE = "__OCMS_ADE_SITEMAP_CLIPBOARD_CACHE__";
 
     /**
      * Returns a new configured service instance.<p>
@@ -112,44 +113,6 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
         srv.setCms(CmsFlexController.getCmsObject(request));
         srv.setRequest(request);
         return srv;
-    }
-
-    /**
-     * Helper method to check whether a client sitemap entry has a reference to a sub-sitemap.<p>
-     * 
-     * @param entry the entry to check
-     * 
-     * @return true if the entry has a reference to a sub-sitemap 
-     */
-    private static boolean hasReferenceToSitemap(CmsClientSitemapEntry entry) {
-
-        return entry.getProperties().get(CmsSitemapManager.Property.sitemap.name()) != null;
-    }
-
-    /**
-     * Helper method to check whether a sitemap entry has a reference to a sub-sitemap.<p>
-     * 
-     * @param entry the entry to check
-     * 
-     * @return true if the entry has a reference to a sub-sitemap 
-     */
-    private static boolean hasReferenceToSitemap(CmsSitemapEntry entry) {
-
-        return entry.getProperties().get(CmsSitemapManager.Property.sitemap.name()) != null;
-    }
-
-    /**
-     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#exit(java.util.List)
-     */
-    public void exit(List<CmsClientSitemapEntry> recentList) throws CmsRpcException {
-
-        try {
-            if (recentList != null) {
-                setRecentList(recentList);
-            }
-        } catch (Throwable e) {
-            error(e);
-        }
     }
 
     /**
@@ -286,7 +249,7 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
                 getDefaultTemplate(sitemapUri),
                 getTemplates(),
                 CmsXmlContentPropertyHelper.getPropertyInfo(cms, sitemap),
-                getCachedRecentList(),
+                getClipboardData(),
                 getNoEditReason(cms, getRequest()),
                 isDisplayToolbar(getRequest()),
                 OpenCms.getResourceManager().getResourceType(CmsResourceTypeXmlContainerPage.getStaticTypeName()).getTypeId(),
@@ -301,16 +264,21 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
     }
 
     /**
-     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#save(java.lang.String, java.util.List)
+     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#save(String, List, CmsSitemapClipboardData)
      */
-    public long save(String sitemapUri, List<I_CmsSitemapChange> changes) throws CmsRpcException {
+    public long save(String sitemapUri, List<I_CmsSitemapChange> changes, CmsSitemapClipboardData clipboardData)
+    throws CmsRpcException {
 
+        long timestamp = 0;
         try {
-            return saveInternal(sitemapUri, changes, true);
+            timestamp = saveInternal(sitemapUri, changes, true);
+            if (clipboardData != null) {
+                setClipboardData(clipboardData);
+            }
         } catch (Throwable e) {
             error(e);
         }
-        return 0;
+        return timestamp;
     }
 
     /**
@@ -354,11 +322,36 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
     }
 
     /**
-     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#saveSync(java.lang.String, java.util.List)
+     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#saveSync(String, List, CmsSitemapClipboardData)
      */
-    public long saveSync(String sitemapUri, List<I_CmsSitemapChange> changes) throws CmsRpcException {
+    public long saveSync(String sitemapUri, List<I_CmsSitemapChange> changes, CmsSitemapClipboardData clipboardData)
+    throws CmsRpcException {
 
-        return save(sitemapUri, changes);
+        return save(sitemapUri, changes, clipboardData);
+    }
+
+    /**
+     * Helper method to check whether a client sitemap entry has a reference to a sub-sitemap.<p>
+     * 
+     * @param entry the entry to check
+     * 
+     * @return true if the entry has a reference to a sub-sitemap 
+     */
+    protected boolean hasReferenceToSitemap(CmsClientSitemapEntry entry) {
+
+        return entry.getProperties().get(CmsSitemapManager.Property.sitemap.name()) != null;
+    }
+
+    /**
+     * Helper method to check whether a sitemap entry has a reference to a sub-sitemap.<p>
+     * 
+     * @param entry the entry to check
+     * 
+     * @return true if the entry has a reference to a sub-sitemap 
+     */
+    protected boolean hasReferenceToSitemap(CmsSitemapEntry entry) {
+
+        return entry.getProperties().get(CmsSitemapManager.Property.sitemap.name()) != null;
     }
 
     /**
@@ -539,24 +532,6 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
     }
 
     /**
-     * Returns the cached recent list, creating it if it doesn't already exist.<p>
-     * 
-     * @return the cached recent list
-     */
-    @SuppressWarnings("unchecked")
-    private List<CmsClientSitemapEntry> getCachedRecentList() {
-
-        List<CmsClientSitemapEntry> cache = (List<CmsClientSitemapEntry>)getRequest().getSession().getAttribute(
-            SESSION_ATTR_ADE_SITEMAP_RECENT_LIST_CACHE);
-        if (cache == null) {
-            cache = new ArrayList<CmsClientSitemapEntry>();
-            getRequest().getSession().setAttribute(SESSION_ATTR_ADE_SITEMAP_RECENT_LIST_CACHE, cache);
-        }
-        return cache;
-
-    }
-
-    /**
      * Helper method for getting the list of changes to apply to a parent sitemap to merge it with a sub-sitemap.<p>
      * 
      * @param rootEntry the entry of the parent sitemap which has a reference to the sub-sitemap
@@ -688,6 +663,24 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
     }
 
     /**
+     * Returns the cached clipboard data, creating it if it doesn't already exist.<p>
+     * 
+     * @return the cached clipboard data
+     */
+    private CmsSitemapClipboardData getClipboardData() {
+
+        CmsSitemapClipboardData cache = (CmsSitemapClipboardData)getRequest().getSession().getAttribute(
+            SESSION_ATTR_ADE_SITEMAP_CLIPBOARD_CACHE);
+        if (cache == null) {
+            cache = new CmsSitemapClipboardData();
+            getRequest().getSession().setAttribute(SESSION_ATTR_ADE_SITEMAP_CLIPBOARD_CACHE, cache);
+        } else {
+            // TODO: validate data in case somebody else did change something meanwhile
+        }
+        return cache;
+    }
+
+    /**
      * Returns the default template for the given sitemap.<p>
      * 
      * @param sitemapUri the sitemap URI
@@ -802,7 +795,6 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
         }
         addChildrenRecursively(root, root, path, propertyConfig, 2);
         return root;
-
     }
 
     /**
@@ -849,13 +841,13 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
     }
 
     /**
-     * Saves the given recent list to the session.<p>
+     * Saves the given clipboard data to the session.<p>
      * 
-     * @param recentList the recent list to save
+     * @param recentList the clipboard data to save
      */
-    private void setRecentList(List<CmsClientSitemapEntry> recentList) {
+    private void setClipboardData(CmsSitemapClipboardData clipboardData) {
 
-        getRequest().getSession().setAttribute(SESSION_ATTR_ADE_SITEMAP_RECENT_LIST_CACHE, recentList);
+        getRequest().getSession().setAttribute(SESSION_ATTR_ADE_SITEMAP_CLIPBOARD_CACHE, clipboardData);
     }
 
     /**

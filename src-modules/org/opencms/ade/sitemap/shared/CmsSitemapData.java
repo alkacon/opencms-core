@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsSitemapData.java,v $
- * Date   : $Date: 2010/06/18 07:29:54 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/06/24 09:05:27 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,7 +33,6 @@ package org.opencms.ade.sitemap.shared;
 
 import org.opencms.xml.content.CmsXmlContentProperty;
 
-import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
@@ -43,7 +42,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0
  */
@@ -51,6 +50,9 @@ public class CmsSitemapData implements IsSerializable {
 
     /** Name of the used js variable. */
     public static final String DICT_NAME = "org_opencms_ade_sitemap";
+
+    /** The clipboard data. */
+    private CmsSitemapClipboardData m_clipboardData;
 
     /** The type of the container page resource. */
     private int m_cntPageType;
@@ -72,9 +74,6 @@ public class CmsSitemapData implements IsSerializable {
 
     /** The sitemap properties. */
     private Map<String, CmsXmlContentProperty> m_properties;
-
-    /** The recent list. */
-    private List<CmsClientSitemapEntry> m_recentList;
 
     /** The sitemap root. */
     private CmsClientSitemapEntry m_root;
@@ -99,7 +98,7 @@ public class CmsSitemapData implements IsSerializable {
      * @param defaultTemplate the default template
      * @param templates the available templates
      * @param properties the properties
-     * @param recentList the recent list
+     * @param clipboardData the clipboard data
      * @param noEditReason the reason why the current sitemap is not editable
      * @param displayToolbar the flag to control the display of the toolbar
      * @param cntPageType the type of the container page resource
@@ -112,7 +111,7 @@ public class CmsSitemapData implements IsSerializable {
         CmsSitemapTemplate defaultTemplate,
         Map<String, CmsSitemapTemplate> templates,
         Map<String, CmsXmlContentProperty> properties,
-        List<CmsClientSitemapEntry> recentList,
+        CmsSitemapClipboardData clipboardData,
         String noEditReason,
         boolean displayToolbar,
         int cntPageType,
@@ -124,7 +123,7 @@ public class CmsSitemapData implements IsSerializable {
         m_defaultTemplate = defaultTemplate;
         m_templates = templates;
         m_properties = properties;
-        m_recentList = recentList;
+        m_clipboardData = clipboardData;
         m_noEditReason = noEditReason;
         m_displayToolbar = displayToolbar;
         m_cntPageType = cntPageType;
@@ -132,7 +131,16 @@ public class CmsSitemapData implements IsSerializable {
         m_root = root;
         m_timestamp = timestamp;
         m_openPath = openPath;
+    }
 
+    /**
+     * Returns the clipboard data.<p>
+     *
+     * @return the clipboard data
+     */
+    public CmsSitemapClipboardData getClipboardData() {
+
+        return m_clipboardData;
     }
 
     /**
@@ -193,16 +201,6 @@ public class CmsSitemapData implements IsSerializable {
     public Map<String, CmsXmlContentProperty> getProperties() {
 
         return m_properties;
-    }
-
-    /**
-     * Returns the recent list.<p>
-     *
-     * @return the recent list
-     */
-    public List<CmsClientSitemapEntry> getRecentList() {
-
-        return m_recentList;
     }
 
     /**

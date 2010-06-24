@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/I_CmsDnDListCollisionResolutionHandler.java,v $
- * Date   : $Date: 2010/06/10 12:56:38 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/dnd/Attic/I_CmsDropHandler.java,v $
+ * Date   : $Date: 2010/06/24 09:05:26 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -29,12 +29,12 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.gwt.client.ui;
+package org.opencms.gwt.client.ui.dnd;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.event.shared.EventHandler;
 
 /**
- * Drag and Drop list collision resolution handler.<p>
+ * Drag and Drop list drop event handler.<p>
  * 
  * @author Michael Moossen
  * 
@@ -42,22 +42,12 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @since 8.0.0
  */
-public interface I_CmsDnDListCollisionResolutionHandler {
+public interface I_CmsDropHandler extends EventHandler {
 
     /**
-     * Checks if there is any id collision before dropping.<p>
+     * Will be triggered when an item has been dropped on a list.<p>
      * 
-     * At this stage the place holder has still the dragging id, see {@link CmsDnDListItem#DRAGGED_PLACEHOLDER_ID},
-     * but it will change so keep a reference to the place holder for async commands.<p>
-     * 
-     * The drop event will be delayed until you tell the callback to succeed.<p>
-     *  
-     * Tell the callback to fail if the collision can not be resolved.<p>
-     * 
-     * On success, it is also important that you set the new id to the place holder.<p>
-     * 
-     * @param dropEvent the preliminary drop event
-     * @param asyncCallback the callback
+     * @param dropEvent the specific drop event
      */
-    void checkCollision(CmsDnDListDropEvent dropEvent, AsyncCallback<String> asyncCallback);
+    void onDrop(CmsDropEvent dropEvent);
 }

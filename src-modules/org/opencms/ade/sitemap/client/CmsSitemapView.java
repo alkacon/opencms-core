@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapView.java,v $
- * Date   : $Date: 2010/06/18 07:29:54 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2010/06/24 09:05:26 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,37 +36,25 @@ import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.client.control.CmsSitemapLoadEvent;
 import org.opencms.ade.sitemap.client.control.I_CmsSitemapChangeHandler;
 import org.opencms.ade.sitemap.client.control.I_CmsSitemapLoadHandler;
-import org.opencms.ade.sitemap.client.edit.CmsDnDEntryHandler;
-import org.opencms.ade.sitemap.client.edit.CmsSitemapEntryEditor;
-import org.opencms.ade.sitemap.client.hoverbar.CmsHoverbarAttachEvent;
-import org.opencms.ade.sitemap.client.hoverbar.CmsHoverbarDetachEvent;
 import org.opencms.ade.sitemap.client.hoverbar.CmsSitemapHoverbar;
-import org.opencms.ade.sitemap.client.hoverbar.I_CmsHoverbarAttachHandler;
-import org.opencms.ade.sitemap.client.hoverbar.I_CmsHoverbarDetachHandler;
 import org.opencms.ade.sitemap.client.toolbar.CmsSitemapToolbar;
 import org.opencms.ade.sitemap.client.ui.CmsPage;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsImageBundle;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
-import org.opencms.file.CmsResource;
 import org.opencms.gwt.client.A_CmsEntryPoint;
 import org.opencms.gwt.client.CmsCoreProvider;
-import org.opencms.gwt.client.ui.CmsDnDList;
-import org.opencms.gwt.client.ui.CmsDnDListDropEvent;
-import org.opencms.gwt.client.ui.CmsDnDListItem;
 import org.opencms.gwt.client.ui.CmsHeader;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.CmsToolbar;
 import org.opencms.gwt.client.ui.CmsToolbarPlaceHolder;
-import org.opencms.gwt.client.ui.I_CmsDnDListCollisionResolutionHandler;
-import org.opencms.gwt.client.ui.I_CmsDnDListStatusHandler;
-import org.opencms.gwt.client.ui.tree.A_CmsDnDDeepLazyOpenHandler;
-import org.opencms.gwt.client.ui.tree.CmsDnDLazyTree;
-import org.opencms.gwt.client.ui.tree.CmsDnDTreeDropEvent;
-import org.opencms.gwt.client.ui.tree.CmsDnDTreeItem;
-import org.opencms.gwt.client.ui.tree.I_CmsDnDTreeDropHandler;
+import org.opencms.gwt.client.ui.dnd.CmsDropEvent;
+import org.opencms.gwt.client.ui.dnd.I_CmsDropHandler;
+import org.opencms.gwt.client.ui.tree.A_CmsDeepLazyOpenHandler;
+import org.opencms.gwt.client.ui.tree.CmsLazyTree;
+import org.opencms.gwt.client.ui.tree.CmsTreeItem;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsStringUtil;
@@ -80,7 +68,6 @@ import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.Window.ClosingHandler;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 
@@ -89,13 +76,15 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.29 $ 
  * 
  * @since 8.0.0
  */
-public class CmsSitemapView extends A_CmsEntryPoint
-implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler, NativePreviewHandler, ClosingHandler,
-I_CmsDnDTreeDropHandler, I_CmsDnDListStatusHandler, I_CmsDnDListCollisionResolutionHandler {
+public final class CmsSitemapView extends A_CmsEntryPoint
+implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler, NativePreviewHandler, ClosingHandler, I_CmsDropHandler {
+
+    /** The singleton instance. */
+    private static CmsSitemapView m_instance;
 
     /** Text metrics key. */
     private static final String TM_SITEMAP = "Sitemap";
@@ -107,63 +96,19 @@ I_CmsDnDTreeDropHandler, I_CmsDnDListStatusHandler, I_CmsDnDListCollisionResolut
     protected CmsSitemapHoverbar m_hoverbar;
 
     /** The displayed sitemap tree. */
-    protected CmsDnDLazyTree<CmsSitemapTreeItem> m_tree;
+    protected CmsLazyTree<CmsSitemapTreeItem> m_tree;
 
     /** The sitemap toolbar. */
     private CmsToolbar m_toolbar;
 
     /**
-     * @see org.opencms.gwt.client.ui.I_CmsDnDListStatusHandler#canDragNow(org.opencms.gwt.client.ui.CmsDnDListItem)
+     * Returns the instance.<p>
+     *
+     * @return the instance
      */
-    public boolean canDragNow(CmsDnDListItem dragElement) {
+    public static CmsSitemapView getInstance() {
 
-        // we allow always to drag
-        return true;
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.I_CmsDnDListStatusHandler#canDropNow(org.opencms.gwt.client.ui.CmsDnDList, org.opencms.gwt.client.ui.CmsDnDListItem)
-     */
-    public boolean canDropNow(CmsDnDList<CmsDnDListItem> target, CmsDnDListItem dragElement) {
-
-        boolean cancel = !m_controller.isDirty();
-        cancel &= !CmsCoreProvider.get().lockAndCheckModification(
-            CmsCoreProvider.get().getUri(),
-            m_controller.getData().getTimestamp());
-        return !cancel;
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.I_CmsDnDListCollisionResolutionHandler#checkCollision(org.opencms.gwt.client.ui.CmsDnDListDropEvent, com.google.gwt.user.client.rpc.AsyncCallback)
-     */
-    public void checkCollision(final CmsDnDListDropEvent dropEvent, final AsyncCallback<String> asyncCallback) {
-
-        final CmsDnDListItem item = dropEvent.getDestList().getItem(CmsDnDListItem.DRAGGED_PLACEHOLDER_ID);
-        (new CmsSitemapEntryEditor(new CmsDnDEntryHandler(
-            m_controller,
-            m_controller.getEntry(dropEvent.getSrcPath()),
-            dropEvent.getDestPath(),
-            new AsyncCallback<String>() {
-
-                /**
-                 * @see com.google.gwt.user.client.rpc.AsyncCallback#onFailure(java.lang.Throwable)
-                 */
-                public void onFailure(Throwable caught) {
-
-                    // cancel drag'n drop action
-                    asyncCallback.onFailure(null);
-                }
-
-                /**
-                 * @see com.google.gwt.user.client.rpc.AsyncCallback#onSuccess(java.lang.Object)
-                 */
-                public void onSuccess(String newName) {
-
-                    // finalize dnd action
-                    item.setId(newName);
-                    asyncCallback.onSuccess(newName);
-                }
-            }))).startAndValidate();
+        return m_instance;
     }
 
     /**
@@ -197,13 +142,33 @@ I_CmsDnDTreeDropHandler, I_CmsDnDListStatusHandler, I_CmsDnDListCollisionResolut
     public void ensureVisible(CmsSitemapTreeItem item) {
 
         // open the tree
-        CmsDnDTreeItem ti = item.getParentItem();
+        CmsTreeItem ti = item.getParentItem();
         while (ti != null) {
             ti.setOpen(true);
             ti = ti.getParentItem();
         }
         // scroll
         CmsDomUtil.ensureVisible(RootPanel.getBodyElement(), item.getElement(), 200);
+    }
+
+    /**
+     * Returns the controller.<p>
+     *
+     * @return the controller
+     */
+    public CmsSitemapController getController() {
+
+        return m_controller;
+    }
+
+    /**
+     * Returns the tree.<p>
+     * 
+     * @return the tree
+     */
+    public CmsLazyTree<CmsSitemapTreeItem> getTree() {
+
+        return m_tree;
     }
 
     /**
@@ -242,15 +207,23 @@ I_CmsDnDTreeDropHandler, I_CmsDnDListStatusHandler, I_CmsDnDListCollisionResolut
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.tree.I_CmsDnDTreeDropHandler#onDrop(org.opencms.gwt.client.ui.tree.CmsDnDTreeDropEvent)
+     * @see org.opencms.gwt.client.ui.dnd.I_CmsDropHandler#onDrop(org.opencms.gwt.client.ui.dnd.CmsDropEvent)
      */
-    public void onDrop(CmsDnDTreeDropEvent e) {
+    public void onDrop(final CmsDropEvent e) {
 
-        CmsDnDTreeItem item = e.getDestTree().getItemByPath(e.getDestPath());
-        m_controller.moveDnd(
-            m_controller.getEntry(e.getSrcPath()),
-            item.getPath(),
-            item.getParentItem().getItemPosition(item));
+        if (!(e.getDraggable() instanceof CmsSitemapTreeItem)) {
+            // we deal here only with dragged site entries
+            return;
+        }
+        // get the dragged sitemap entry 
+        CmsSitemapTreeItem draggable = (CmsSitemapTreeItem)e.getDraggable();
+        CmsClientSitemapEntry entry = m_controller.getEntry(draggable.getSitePath());
+
+        // perform the move
+        m_controller.move(
+            entry,
+            e.getPosition().getInfo() + e.getPosition().getName() + "/",
+            e.getPosition().getPosition());
     }
 
     /**
@@ -274,10 +247,13 @@ I_CmsDnDTreeDropHandler, I_CmsDnDListStatusHandler, I_CmsDnDListCollisionResolut
     @Override
     public void onModuleLoad() {
 
-        // init
         super.onModuleLoad();
+        m_instance = this;
+
+        // init
         I_CmsLayoutBundle.INSTANCE.rootCss().ensureInjected();
         I_CmsLayoutBundle.INSTANCE.pageCss().ensureInjected();
+        I_CmsLayoutBundle.INSTANCE.clipboardCss().ensureInjected();
         I_CmsLayoutBundle.INSTANCE.sitemapItemCss().ensureInjected();
         I_CmsImageBundle.INSTANCE.buttonCss().ensureInjected();
 
@@ -312,13 +288,13 @@ I_CmsDnDTreeDropHandler, I_CmsDnDListStatusHandler, I_CmsDnDListCollisionResolut
         page.add(loadingLabel);
 
         // read pre-fetched data
-
         CmsClientSitemapEntry root = m_controller.getData().getRoot();
         CmsSitemapTreeItem rootItem = createSitemapItem(root);
         rootItem.onFinishLoading();
         rootItem.setOpen(true);
+
         // starting rendering
-        m_tree = new CmsDnDLazyTree<CmsSitemapTreeItem>(new A_CmsDnDDeepLazyOpenHandler<CmsSitemapTreeItem>() {
+        m_tree = new CmsLazyTree<CmsSitemapTreeItem>(new A_CmsDeepLazyOpenHandler<CmsSitemapTreeItem>() {
 
             /**
              * @see org.opencms.gwt.client.ui.tree.I_CmsLazyOpenHandler#load(org.opencms.gwt.client.ui.tree.CmsLazyTreeItem)
@@ -329,20 +305,16 @@ I_CmsDnDTreeDropHandler, I_CmsDnDListStatusHandler, I_CmsDnDListCollisionResolut
             }
         });
         if (m_controller.isEditable()) {
-            m_tree.addTreeDropHandler(this);
+            // enable drag'n drop 
             m_tree.setDnDEnabled(true);
+            // handle drops
+            m_tree.getDnDManager().addDropHandler(this);
+            // prevent drop on root level
+            m_tree.setDropEnabled(false);
         }
         m_tree.truncate(TM_SITEMAP, 920);
         m_tree.setAnimationEnabled(true);
         m_tree.addItem(rootItem);
-        if (m_controller.isEditable()) {
-            // prevent drop on root level
-            m_tree.enableDropTarget(false);
-            // prevent dropping if we can not lock the resource 
-            m_tree.getDnDHandler().setStatusHandler(this);
-            // open edit dialog for collisions while dropping
-            m_tree.getDnDHandler().setCollisionHandler(this);
-        }
 
         // paint
         page.remove(loadingLabel);
@@ -362,40 +334,12 @@ I_CmsDnDTreeDropHandler, I_CmsDnDListStatusHandler, I_CmsDnDListCollisionResolut
                 Messages.get().key(Messages.GUI_NO_EDIT_NOTIFICATION_1, m_controller.getData().getNoEditReason()));
             return;
         }
-        m_hoverbar.addAttachHandler(new I_CmsHoverbarAttachHandler() {
-
-            /**
-             * @see org.opencms.ade.sitemap.client.hoverbar.I_CmsHoverbarAttachHandler#onAttach(org.opencms.ade.sitemap.client.hoverbar.CmsHoverbarAttachEvent)
-             */
-            public void onAttach(CmsHoverbarAttachEvent event) {
-
-                m_tree.getDnDHandler().registerMouseHandler(getTreeItem(m_hoverbar.getSitePath()));
-            }
-        });
-        m_hoverbar.addDetachHandler(new I_CmsHoverbarDetachHandler() {
-
-            /**
-             * @see org.opencms.ade.sitemap.client.hoverbar.I_CmsHoverbarDetachHandler#onDetach(org.opencms.ade.sitemap.client.hoverbar.CmsHoverbarDetachEvent)
-             */
-            public void onDetach(CmsHoverbarDetachEvent event) {
-
-                CmsSitemapTreeItem treeItem = getTreeItem(m_hoverbar.getSitePath());
-                if (treeItem == null) {
-                    // in case it is triggered while dragging
-                    treeItem = getTreeItem(CmsResource.getParentFolder(m_hoverbar.getSitePath())
-                        + CmsDnDListItem.DRAGGED_PLACEHOLDER_ID
-                        + "/");
-                }
-                treeItem.removeDndMouseHandlers();
-            }
-        });
         String openPath = m_controller.getData().getOpenPath();
         if (openPath != null) {
             openItemsOnPath(openPath);
             CmsSitemapTreeItem item = getTreeItem(openPath);
             item.highlightTemporarily(1500);
         }
-
     }
 
     /**

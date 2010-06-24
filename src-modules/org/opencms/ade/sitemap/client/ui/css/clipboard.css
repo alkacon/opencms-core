@@ -1,0 +1,32 @@
+.clipboardTabPanel{
+	margin:10px 8px 8px;
+}
+
+.clipboardList{
+	overflow: auto;
+	min-height: 38px;
+	border: 1px solid #aaaaaa;
+	padding: 0 2px;
+	background: #FFFFFF;
+}
+
+.itemList{
+	max-height: 412px;
+}
+
+.description{
+	margin-bottom: 4px;
+}
+
+.menuContent{
+	width: 650px;
+	padding: 0px;
+}
+
+.menuTabContainer{
+	height: 486px;
+}
+
+.menuTabContainer > div{
+	border: none;	
+}

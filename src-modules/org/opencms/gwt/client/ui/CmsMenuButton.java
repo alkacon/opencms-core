@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsMenuButton.java,v $
- * Date   : $Date: 2010/05/31 09:15:22 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2010/06/24 09:05:26 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 8.0.0
  */
@@ -200,6 +200,15 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
     }
 
     /**
+     * Hides the menu content as well as the menu connector.<p>
+     */
+    public void hide() {
+
+        m_content.setVisible(false);
+        m_menuConnect.addClassName(m_style.hidden());
+    }
+
+    /**
      * Returns if the menu is open.<p>
      * 
      * @return <code>true</code> if the menu is opened
@@ -263,6 +272,15 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
     }
 
     /**
+     * Shows the menu content as well as the menu connector.<p>
+     */
+    public void show() {
+
+        m_content.setVisible(true);
+        m_menuConnect.removeClassName(m_style.hidden());
+    }
+
+    /**
      * Called on auto close.<p>
      */
     protected void autoClose() {
@@ -292,5 +310,4 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
         m_button.setDown(false);
         m_menuConnect.addClassName(m_style.hidden());
     }
-
 }

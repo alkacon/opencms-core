@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/toolbar/Attic/CmsSitemapToolbar.java,v $
- * Date   : $Date: 2010/05/31 08:54:31 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/06/24 09:05:26 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,12 +34,14 @@ package org.opencms.ade.sitemap.client.toolbar;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.gwt.client.ui.CmsToolbar;
 
+import com.google.gwt.user.client.ui.Widget;
+
 /**
  * Sitemap toolbar.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  */
@@ -52,13 +54,28 @@ public class CmsSitemapToolbar extends CmsToolbar {
      */
     public CmsSitemapToolbar(CmsSitemapController controller) {
 
-        addLeft(new CmsToolbarSaveButton(controller));
-        addLeft(new CmsToolbarUndoButton(controller));
-        addLeft(new CmsToolbarRedoButton(controller));
-        addLeft(new CmsToolbarResetButton(controller));
-        addLeft(new CmsToolbarAddButton(controller));
-        addLeft(new CmsToolbarClipboardButton(controller));
+        addLeft(new CmsToolbarSaveButton(this, controller));
+        addLeft(new CmsToolbarUndoButton(this, controller));
+        addLeft(new CmsToolbarRedoButton(this, controller));
+        addLeft(new CmsToolbarResetButton(this, controller));
+        addLeft(new CmsToolbarAddButton(this, controller));
+        addLeft(new CmsToolbarClipboardButton(this, controller));
 
-        addRight(new CmsToolbarPublishButton(controller));
+        addRight(new CmsToolbarPublishButton(this, controller));
+    }
+
+    /**
+     * Should be executed by every widget when starting an action.<p>
+     * 
+     * @param widget the widget that got activated
+     */
+    public void onButtonActivation(Widget widget) {
+
+        for (Widget w : getAll()) {
+            if (!(w instanceof I_CmsToolbarActivable)) {
+                continue;
+            }
+            ((I_CmsToolbarActivable)w).onActivation(widget);
+        }
     }
 }

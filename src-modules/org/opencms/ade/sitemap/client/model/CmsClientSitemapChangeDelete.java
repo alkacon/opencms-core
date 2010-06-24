@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeDelete.java,v $
- * Date   : $Date: 2010/06/10 13:27:41 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/06/24 09:05:25 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,25 +34,28 @@ package org.opencms.ade.sitemap.client.model;
 import org.opencms.ade.sitemap.client.CmsSitemapTreeItem;
 import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
+import org.opencms.ade.sitemap.client.toolbar.CmsToolbarClipboardView;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.file.CmsResource;
 import org.opencms.xml.sitemap.CmsSitemapChangeDelete;
 import org.opencms.xml.sitemap.I_CmsSitemapChange;
 import org.opencms.xml.sitemap.I_CmsSitemapChange.Type;
 
+import java.util.List;
+
 /**
  * Stores one deletion change to the sitemap.<p>
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
 public class CmsClientSitemapChangeDelete implements I_CmsClientSitemapChange {
 
     /** If true, tell the view to ensure that the affected  item is visible. */
-    private boolean m_ensureVisible = true;
+    private boolean m_ensureVisible;
 
     /** The deleted entry with children. */
     private CmsClientSitemapEntry m_entry;
@@ -67,7 +70,28 @@ public class CmsClientSitemapChangeDelete implements I_CmsClientSitemapChange {
      */
     public CmsClientSitemapChangeDelete(CmsClientSitemapEntry entry) {
 
+        m_ensureVisible = true;
         m_entry = entry;
+    }
+
+    /**
+     * Constructor.<p>
+     * 
+     * @param entry the deleted entry
+     * @param ensureVisible the ensure visible flag
+     */
+    public CmsClientSitemapChangeDelete(CmsClientSitemapEntry entry, boolean ensureVisible) {
+
+        m_ensureVisible = ensureVisible;
+        m_entry = entry;
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#applyToClipboardView(org.opencms.ade.sitemap.client.toolbar.CmsToolbarClipboardView)
+     */
+    public void applyToClipboardView(CmsToolbarClipboardView view) {
+
+        view.addDeleted(getEntry());
     }
 
     /**
@@ -75,8 +99,13 @@ public class CmsClientSitemapChangeDelete implements I_CmsClientSitemapChange {
      */
     public void applyToModel(CmsSitemapController controller) {
 
+        // apply to sitemap model 
         CmsClientSitemapEntry deleteParent = controller.getEntry(CmsResource.getParentFolder(getEntry().getSitePath()));
         deleteParent.removeSubEntry(getEntry().getPosition());
+        // apply to clipboard model
+        List<CmsClientSitemapEntry> deleted = controller.getData().getClipboardData().getDeletions();
+        deleted.remove(deleted);
+        deleted.add(0, getEntry());
     }
 
     /**
@@ -135,14 +164,6 @@ public class CmsClientSitemapChangeDelete implements I_CmsClientSitemapChange {
         CmsClientSitemapChangeNew change = new CmsClientSitemapChangeNew(getEntry());
         change.setTreeItem(m_treeItem);
         return change;
-    }
-
-    /**
-     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#setEnsureVisible(boolean)
-     */
-    public void setEnsureVisible(boolean ensureVisible) {
-
-        m_ensureVisible = ensureVisible;
     }
 
     /**

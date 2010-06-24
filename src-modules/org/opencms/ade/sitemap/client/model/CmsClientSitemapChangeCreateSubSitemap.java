@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeCreateSubSitemap.java,v $
- * Date   : $Date: 2010/06/10 13:27:41 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/06/24 09:05:25 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.ade.sitemap.client.model;
 
 import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
+import org.opencms.ade.sitemap.client.toolbar.CmsToolbarClipboardView;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsSubSitemapInfo;
 import org.opencms.xml.sitemap.CmsSitemapManager;
@@ -50,7 +51,7 @@ import java.util.List;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -73,17 +74,24 @@ public class CmsClientSitemapChangeCreateSubSitemap implements I_CmsClientSitema
         String subSitemapPath = info.getSitemapPath();
         List<I_CmsClientSitemapChange> changes = new ArrayList<I_CmsClientSitemapChange>();
         for (CmsClientSitemapEntry childEntry : entry.getSubEntries()) {
-            CmsClientSitemapChangeDelete deleteAction = new CmsClientSitemapChangeDelete(childEntry);
-            deleteAction.setEnsureVisible(false);
+            CmsClientSitemapChangeDelete deleteAction = new CmsClientSitemapChangeDelete(childEntry, false);
             changes.add(deleteAction);
         }
         CmsClientSitemapEntry newEntry = new CmsClientSitemapEntry(entry);
         newEntry.getProperties().put(CmsSitemapManager.Property.sitemap.name(), subSitemapPath);
-        CmsClientSitemapChangeEdit editAction = new CmsClientSitemapChangeEdit(entry, newEntry);
-        editAction.setEnsureVisible(false);
+        CmsClientSitemapChangeEdit editAction = new CmsClientSitemapChangeEdit(entry, newEntry, false);
         changes.add(editAction);
         m_internalChanges = changes;
         m_subSitemapInfo = info;
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#applyToClipboardView(org.opencms.ade.sitemap.client.toolbar.CmsToolbarClipboardView)
+     */
+    public void applyToClipboardView(CmsToolbarClipboardView view) {
+
+        CmsClientSitemapChangeEdit editAction = (CmsClientSitemapChangeEdit)m_internalChanges.get(m_internalChanges.size() - 1);
+        view.addModified(editAction.getNewEntry());
     }
 
     /**
@@ -91,11 +99,12 @@ public class CmsClientSitemapChangeCreateSubSitemap implements I_CmsClientSitema
      */
     public void applyToModel(CmsSitemapController controller) {
 
+        // apply to sitemap model 
         controller.getData().setTimestamp(m_subSitemapInfo.getParentTimestamp());
-
         for (I_CmsClientSitemapChange change : m_internalChanges) {
             change.applyToModel(controller);
         }
+        // TODO: apply to clipboard model
     }
 
     /**
@@ -136,14 +145,6 @@ public class CmsClientSitemapChangeCreateSubSitemap implements I_CmsClientSitema
      * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#revert()
      */
     public I_CmsClientSitemapChange revert() {
-
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#setEnsureVisible(boolean)
-     */
-    public void setEnsureVisible(boolean ensureVisible) {
 
         throw new UnsupportedOperationException();
     }
