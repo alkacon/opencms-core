@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsClientSitemapEntry.java,v $
- * Date   : $Date: 2010/06/24 09:05:27 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2010/06/29 09:38:46 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,7 +32,7 @@
 package org.opencms.ade.sitemap.shared;
 
 import org.opencms.file.CmsResource;
-import org.opencms.gwt.client.util.CmsMapUtil;
+import org.opencms.gwt.client.util.CmsCollectionUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
@@ -47,7 +47,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 8.0.0
  */
@@ -363,7 +363,7 @@ public class CmsClientSitemapEntry implements IsSerializable {
      */
     public void updateProperties(Map<String, String> newProperties) {
 
-        CmsMapUtil.updateMapAndRemoveNulls(newProperties, m_properties);
+        CmsCollectionUtil.updateMapAndRemoveNulls(newProperties, m_properties);
     }
 
     /**

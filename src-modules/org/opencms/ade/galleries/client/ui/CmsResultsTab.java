@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsResultsTab.java,v $
- * Date   : $Date: 2010/06/14 06:09:19 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2010/06/29 09:38:46 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,7 +65,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 8.0.
  */
@@ -79,6 +79,7 @@ public class CmsResultsTab extends A_CmsListTab {
         /** The id of the selected item. */
         private String m_resourcePath;
 
+        /** The resource type of the selected item. */
         private String m_resourceType;
 
         /**
@@ -112,6 +113,9 @@ public class CmsResultsTab extends A_CmsListTab {
     /** The reference to the drag handler for the list elements. */
     private I_CmsDragHandler<?, ?> m_dragHandler;
 
+    /** The VFS folders parameter panel. */
+    private CmsSearchParamPanel m_folders;
+
     /** The galleries parameter panel. */
     private CmsSearchParamPanel m_galleries;
 
@@ -144,6 +148,8 @@ public class CmsResultsTab extends A_CmsListTab {
             Messages.GUI_PARAMS_LABEL_GALLERIES_0), this);
         m_types = new CmsSearchParamPanel(GalleryTabId.cms_tab_types, Messages.get().key(
             Messages.GUI_PARAMS_LABEL_TYPES_0), this);
+        m_folders = new CmsSearchParamPanel(GalleryTabId.cms_tab_vfstree, Messages.get().key(
+            Messages.GUI_PARAMS_LABEL_VFS_0), this);
         m_tab.insert(m_params, 0);
     }
 
@@ -151,17 +157,19 @@ public class CmsResultsTab extends A_CmsListTab {
      * Fill the content of the results tab.<p>
      * 
      * @param searchObj the current search object containing search results
-     * @param typesParams the widget to display the selected types
-     * @param galleriesParams the widget to display the selected galleries 
-     * @param categoriesParams the widget to display the selected categories
+     * @param typesParams the selected types as a user-readable string
+     * @param galleriesParams the selected galleries as a user-readable string  
+     * @param foldersParams the selected VFS folders as a user-readable string 
+     * @param categoriesParams the selected categories as a user-readable string 
      */
     public void fillContent(
         CmsGallerySearchBean searchObj,
         String typesParams,
         String galleriesParams,
+        String foldersParams,
         String categoriesParams) {
 
-        showParams(searchObj, typesParams, galleriesParams, categoriesParams);
+        showParams(searchObj, typesParams, galleriesParams, foldersParams, categoriesParams);
 
         List<CmsResultItemBean> list = searchObj.getResults();
         for (CmsResultItemBean resultItem : list) {
@@ -246,6 +254,7 @@ public class CmsResultsTab extends A_CmsListTab {
                 m_tabHandler.onRemoveTypes();
                 break;
             case cms_tab_vfstree:
+                m_tabHandler.onRemoveFolders();
                 break;
             default:
                 break;
@@ -265,18 +274,20 @@ public class CmsResultsTab extends A_CmsListTab {
      * Updates the content of the results tab.<p>
      * 
      * @param searchObj the current search object containing search results
-     * @param typesParams the widget to display the selected types
-     * @param galleriesParams the widget to display the selected galleries 
-     * @param categoriesParams the widget to display the selected categories
+     * @param typesParams the selected types as a user-readable string
+     * @param galleriesParams the selected galleries as a user-readable string 
+     * @param foldersParams the  selected VFS folders as a user-readable string
+     * @param categoriesParams the selected categories as a user-readable string 
      */
     public void updateContent(
         CmsGallerySearchBean searchObj,
         String typesParams,
         String galleriesParams,
+        String foldersParams,
         String categoriesParams) {
 
         clearList();
-        fillContent(searchObj, typesParams, galleriesParams, categoriesParams);
+        fillContent(searchObj, typesParams, galleriesParams, foldersParams, categoriesParams);
     }
 
     /**
@@ -333,14 +344,24 @@ public class CmsResultsTab extends A_CmsListTab {
         updateListSize();
     }
 
+    /**
+     * Displays the selected search parameters in the result tab.<p>
+     * 
+     * @param searchObj the bean containing the search parameters 
+     * @param typesParams a user-readable string containing the selected types
+     * @param galleriesParams a user-readable string containing the selected galleries
+     * @param foldersParams a user-readable string containing
+     * @param categoriesParams
+     */
     private void showParams(
         CmsGallerySearchBean searchObj,
         String typesParams,
         String galleriesParams,
+        String foldersParams,
         String categoriesParams) {
 
         m_params.clear();
-        if (!searchObj.isNotEmpty()) {
+        if (searchObj.isEmpty()) {
             m_params.setVisible(false);
             return;
         }
@@ -356,6 +377,10 @@ public class CmsResultsTab extends A_CmsListTab {
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(categoriesParams)) {
             m_categories.setContent(categoriesParams);
             m_params.add(m_categories);
+        }
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(foldersParams)) {
+            m_folders.setContent(foldersParams);
+            m_params.add(m_folders);
         }
     }
 

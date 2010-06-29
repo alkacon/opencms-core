@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsMapUtil.java,v $
- * Date   : $Date: 2010/05/18 13:54:59 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsCollectionUtil.java,v $
+ * Date   : $Date: 2010/06/29 09:38:46 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -31,8 +31,11 @@
 
 package org.opencms.gwt.client.util;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * A utility class with functions for dealing with maps.<p>
@@ -43,14 +46,42 @@ import java.util.Map;
  * 
  * @since 8.0.0
  */
-public final class CmsMapUtil {
+public final class CmsCollectionUtil {
 
     /**
      * Hide default constructor.<p>
      */
-    private CmsMapUtil() {
+    private CmsCollectionUtil() {
 
         // do nothing
+    }
+
+    /**
+     * Returns the intersection of two sets without modifying the original sets.<p>
+     * 
+     * @param <A> the type of objects contained in the sets
+     * 
+     * @param first the first set
+     * @param second the second set
+     * 
+     * @return the intersection of both sets
+     */
+    public static <A> Set<A> intersection(Set<A> first, Set<A> second) {
+
+        HashSet<A> result = new HashSet<A>(first);
+        result.retainAll(second);
+        return result;
+    }
+
+    /**
+     * Checks whether a collection is empty or null.<p>
+     * 
+     * @param collection a collection 
+     * @return true if <code>collection</code> is <code>null</code> or empty.
+     */
+    public static boolean isEmptyOrNull(Collection<?> collection) {
+
+        return (collection == null) || collection.isEmpty();
     }
 
     /**

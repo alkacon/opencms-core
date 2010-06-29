@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsResultsTabHandler.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsVfsTabHandler.java,v $
  * Date   : $Date: 2010/06/29 09:38:45 $
- * Version: $Revision: 1.8 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,69 +31,60 @@
 
 package org.opencms.ade.galleries.client;
 
+import org.opencms.ade.galleries.shared.CmsVfsEntryBean;
+
+import java.util.List;
+
+import com.google.gwt.user.client.rpc.AsyncCallback;
+
 /**
- * The results tab handler.<p>
+ * Handler class for the VFS tree tab.<p>
  * 
- * This class receives event information from the results tab and 
- * delegates it to the gallery controller.
+ * @author Georg Westenberger
  * 
- * @author Polina Smagina
- * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  */
-public class CmsResultsTabHandler extends A_CmsTabHandler {
+public class CmsVfsTabHandler extends A_CmsTabHandler {
 
     /**
-     * Constructor.<p>
+     * Creates a new VFS tab handler.<p>
      * 
      * @param controller the gallery controller
      */
-    public CmsResultsTabHandler(CmsGalleryController controller) {
+    public CmsVfsTabHandler(CmsGalleryController controller) {
 
+        // TODO: Auto-generated constructor stub
         super(controller);
     }
 
     /**
-     * Will be triggered when categories parameter are removed.<p>
+     * Gets the sub-folders of a given folder.<p>
+     * 
+     * @param path the path of the folder whose subfolders should be retrieved
+     * @param callback the callback for processing the subfolders   
      */
-    public void onRemoveCategories() {
+    public void getSubFolders(String path, AsyncCallback<List<CmsVfsEntryBean>> callback) {
 
-        m_controller.clearCategories();
+        m_controller.getSubFolders(path, callback);
     }
 
     /**
-     * Will be triggered when VFS folder parameters are removed.<p>
+     * This method is called when a folder is selected or deselected in the VFS tab.<p>
+     * 
+     * @param folder the folder which is selected or deselected 
+     * 
+     * @param selected true if the folder has been selected, false if it has been deselected 
      */
-    public void onRemoveFolders() {
+    public void onSelectFolder(String folder, boolean selected) {
 
-        m_controller.clearFolders();
+        if (selected) {
+            m_controller.addFolder(folder);
+        } else {
+            m_controller.removeFolder(folder);
+        }
 
-    }
-
-    /**
-     * Will be triggered when galleries parameter are removed.<p>
-     */
-    public void onRemoveGalleries() {
-
-        m_controller.clearGalleries();
-    }
-
-    /**
-     * Will be triggered when text search parameter are removed.<p>
-     */
-    public void onRemoveTextSearch() {
-
-        m_controller.clearTextSearch();
-    }
-
-    /**
-     * Will be triggered when types parameter are removed.<p>
-     */
-    public void onRemoveTypes() {
-
-        m_controller.clearTypes();
     }
 
     /**
@@ -102,7 +93,7 @@ public class CmsResultsTabHandler extends A_CmsTabHandler {
     @Override
     public void onSelection() {
 
-        m_controller.updateResultsTab();
+        // do nothing
     }
 
     /**
@@ -111,18 +102,7 @@ public class CmsResultsTabHandler extends A_CmsTabHandler {
     @Override
     public void onSort(String sortParams) {
 
-        m_controller.sortResults(sortParams);
+        // do nothing
     }
 
-    /**
-     * Will be triggered when the result item is clicked.<p>
-     * 
-     * @param resourcePath the resource path of the result
-     * @param resourceType 
-     */
-    public void openPreview(String resourcePath, String resourceType) {
-
-        m_controller.openPreview(resourcePath, resourceType);
-
-    }
 }

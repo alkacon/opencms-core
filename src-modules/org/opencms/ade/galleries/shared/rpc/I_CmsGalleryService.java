@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/rpc/Attic/I_CmsGalleryService.java,v $
- * Date   : $Date: 2010/06/02 14:46:36 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/06/29 09:38:46 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.ade.galleries.shared.rpc;
 import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
 import org.opencms.ade.galleries.shared.CmsGalleryFolderBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
+import org.opencms.ade.galleries.shared.CmsVfsEntryBean;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 
@@ -48,7 +49,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  * @author Polina Smagina
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 8.0.0
  * 
@@ -122,5 +123,16 @@ public interface I_CmsGalleryService extends RemoteService {
      * @throws CmsRpcException is something goes wrong
      */
     CmsGallerySearchBean getSearch(CmsGallerySearchBean searchObj) throws CmsRpcException;
+
+    /**
+     * Gets the sub-folders of a folder.<p>
+     * 
+     * @param path the path of a folder
+     * 
+     * @return beans representing the sub-folders of the folder
+     *  
+     * @throws CmsRpcException if something goes wrong 
+     */
+    List<CmsVfsEntryBean> getSubFolders(String path) throws CmsRpcException;
 
 }

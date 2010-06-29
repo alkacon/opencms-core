@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/Messages.java,v $
- * Date   : $Date: 2010/06/07 08:07:40 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/06/29 09:38:46 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,32 +38,23 @@ import org.opencms.gwt.client.util.CmsMessages;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 8.0.0
  */
 public final class Messages {
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_TAB_TITLE_GALLERIES_0 = "GUI_TAB_TITLE_GALLERIES_0";
+    public static final String GUI_PARAMS_LABEL_CATEGORIES_0 = "GUI_PARAMS_LABEL_CATEGORIES_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_TAB_TITLE_CATEGORIES_0 = "GUI_TAB_TITLE_CATEGORIES_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_TAB_TITLE_SEARCH_0 = "GUI_TAB_TITLE_SEARCH_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_TAB_TITLE_TYPES_0 = "GUI_TAB_TITLE_TYPES_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_TAB_TITLE_RESULTS_0 = "GUI_TAB_TITLE_RESULTS_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_PARAMS_LABEL_GALLERY_0 = "GUI_PARAMS_LABEL_GALLERY_0";
+    public static final String GUI_PARAMS_LABEL_CATEGORY_0 = "GUI_PARAMS_LABEL_CATEGORY_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PARAMS_LABEL_GALLERIES_0 = "GUI_PARAMS_LABEL_GALLERIES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PARAMS_LABEL_GALLERY_0 = "GUI_PARAMS_LABEL_GALLERY_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PARAMS_LABEL_TYPE_0 = "GUI_PARAMS_LABEL_TYPE_0";
@@ -72,13 +63,58 @@ public final class Messages {
     public static final String GUI_PARAMS_LABEL_TYPES_0 = "GUI_PARAMS_LABEL_TYPES_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_PARAMS_LABEL_CATEGORY_0 = "GUI_PARAMS_LABEL_CATEGORY_0";
+    public static final String GUI_PARAMS_LABEL_VFS_0 = "GUI_PARAMS_LABEL_VFS_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_PARAMS_LABEL_CATEGORIES_0 = "GUI_PARAMS_LABEL_CATEGORIES_0";
+    public static final String GUI_PREVIEW_BUTTON_CROP_0 = "GUI_PREVIEW_BUTTON_CROP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREVIEW_BUTTON_REMOVECROP_0 = "GUI_PREVIEW_BUTTON_REMOVECROP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREVIEW_BUTTON_SAVE_0 = "GUI_PREVIEW_BUTTON_SAVE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREVIEW_BUTTON_SELECT_0 = "GUI_PREVIEW_BUTTON_SELECT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREVIEW_LABEL_FORMAT_0 = "GUI_PREVIEW_LABEL_FORMAT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREVIEW_LABEL_HEIGHT_0 = "GUI_PREVIEW_LABEL_HEIGHT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREVIEW_LABEL_WIDTH_0 = "GUI_PREVIEW_LABEL_WIDTH_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREVIEW_TAB_IMAGEFORMAT_0 = "GUI_PREVIEW_TAB_IMAGEFORMAT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREVIEW_TAB_IMAGEINFOS_0 = "GUI_PREVIEW_TAB_IMAGEINFOS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREVIEW_TAB_PROPERTIES_0 = "GUI_PREVIEW_TAB_PROPERTIES_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_RESULT_LABEL_EXCERPT_0 = "GUI_RESULT_LABEL_EXCERPT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SORT_LABEL_DATELASTMODIFIED_ASC_0 = "GUI_SORT_LABEL_DATELASTMODIFIED_ASC_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SORT_LABEL_DATELASTMODIFIED_DESC_0 = "GUI_SORT_LABEL_DATELASTMODIFIED_DESC_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SORT_LABEL_HIERARCHIC_0 = "GUI_SORT_LABEL_HIERARCHIC_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SORT_LABEL_PATH_ASC_0 = "GUI_SORT_LABEL_PATH_ASC_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SORT_LABEL_PATH_DESC_0 = "GUI_SORT_LABEL_PATH_DESC_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SORT_LABEL_SORT_0 = "GUI_SORT_LABEL_SORT_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SORT_LABEL_TITLE_ASC_0 = "GUI_SORT_LABEL_TITLE_ASC_0";
@@ -93,52 +129,22 @@ public final class Messages {
     public static final String GUI_SORT_LABEL_TYPE_DESC_0 = "GUI_SORT_LABEL_TYPE_DESC_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_SORT_LABEL_HIERARCHIC_0 = "GUI_SORT_LABEL_HIERARCHIC_0";
+    public static final String GUI_TAB_TITLE_CATEGORIES_0 = "GUI_TAB_TITLE_CATEGORIES_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_SORT_LABEL_DATELASTMODIFIED_ASC_0 = "GUI_SORT_LABEL_DATELASTMODIFIED_ASC_0";
+    public static final String GUI_TAB_TITLE_GALLERIES_0 = "GUI_TAB_TITLE_GALLERIES_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_SORT_LABEL_DATELASTMODIFIED_DESC_0 = "GUI_SORT_LABEL_DATELASTMODIFIED_DESC_0";
+    public static final String GUI_TAB_TITLE_RESULTS_0 = "GUI_TAB_TITLE_RESULTS_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_SORT_LABEL_PATH_ASC_0 = "GUI_SORT_LABEL_PATH_ASC_0";
+    public static final String GUI_TAB_TITLE_SEARCH_0 = "GUI_TAB_TITLE_SEARCH_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_SORT_LABEL_PATH_DESC_0 = "GUI_SORT_LABEL_PATH_DESC_0";
+    public static final String GUI_TAB_TITLE_TYPES_0 = "GUI_TAB_TITLE_TYPES_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_SORT_LABEL_SORT_0 = "GUI_SORT_LABEL_SORT_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_PREVIEW_BUTTON_SELECT_0 = "GUI_PREVIEW_BUTTON_SELECT_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_PREVIEW_BUTTON_SAVE_0 = "GUI_PREVIEW_BUTTON_SAVE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_PREVIEW_TAB_PROPERTIES_0 = "GUI_PREVIEW_TAB_PROPERTIES_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_PREVIEW_TAB_IMAGEFORMAT_0 = "GUI_PREVIEW_TAB_IMAGEFORMAT_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_PREVIEW_TAB_IMAGEINFOS_0 = "GUI_PREVIEW_TAB_IMAGEINFOS_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_PREVIEW_LABEL_FORMAT_0 = "GUI_PREVIEW_LABEL_FORMAT_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_PREVIEW_BUTTON_CROP_0 = "GUI_PREVIEW_BUTTON_CROP_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_PREVIEW_BUTTON_REMOVECROP_0 = "GUI_PREVIEW_BUTTON_REMOVECROP_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_PREVIEW_LABEL_WIDTH_0 = "GUI_PREVIEW_LABEL_WIDTH_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_PREVIEW_LABEL_HEIGHT_0 = "GUI_PREVIEW_LABEL_HEIGHT_0";
+    public static final String GUI_TAB_TITLE_VFS_0 = "GUI_TAB_TITLE_VFS_0";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.ade.galleries.clientmessages";

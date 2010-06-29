@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/Attic/CmsGalleryService.java,v $
- * Date   : $Date: 2010/06/10 08:45:04 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2010/06/29 09:38:46 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,11 +36,13 @@ import org.opencms.ade.galleries.shared.CmsGalleryFolderBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.CmsResourceTypeBean;
 import org.opencms.ade.galleries.shared.CmsResultItemBean;
+import org.opencms.ade.galleries.shared.CmsVfsEntryBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.ReqParam;
 import org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService;
+import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
@@ -81,7 +83,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 8.0.0
  * 
@@ -203,13 +205,17 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     /** The instance of the resource manager. */
     CmsResourceManager m_resourceManager;
 
+    /** The gallery mode. */
+    private GalleryMode m_galleryMode;
+
+    /** The preview provider. */
     private Map<String, I_CmsPreviewProvider> m_previewProvider;
 
+    /** The available resource types. */
     private List<I_CmsResourceType> m_resourceTypes;
 
+    /** The map from resource types to preview providers. */
     private Map<I_CmsResourceType, I_CmsPreviewProvider> m_typeProviderMapping;
-
-    private GalleryMode m_galleryMode;
 
     /** The workplace locale from the current user's settings. */
     private Locale m_wpLocale;
@@ -278,6 +284,9 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         CmsGalleryDataBean data = new CmsGalleryDataBean();
         data.setMode(m_galleryMode);
         data.setLocales(buildLocalesMap());
+        List<CmsVfsEntryBean> rootFolders = new ArrayList<CmsVfsEntryBean>();
+        rootFolders.add(new CmsVfsEntryBean("/", true));
+        data.setVfsRootFolders(rootFolders);
         List<I_CmsResourceType> types = getResourceTypes();
         List<CmsResourceTypeBean> typeList = buildTypesList(types);
         switch (m_galleryMode) {
@@ -434,6 +443,26 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             error(e);
         }
         return gSearchObj;
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService#getSubFolders(java.lang.String)
+     */
+    public List<CmsVfsEntryBean> getSubFolders(String path) throws CmsRpcException {
+
+        try {
+            CmsObject cms = getCmsObject();
+            List<CmsResource> resources = cms.getSubFolders(path);
+            List<CmsVfsEntryBean> result = new ArrayList<CmsVfsEntryBean>();
+
+            for (CmsResource res : resources) {
+                result.add(new CmsVfsEntryBean(cms.getSitePath(res), false));
+            }
+            return result;
+        } catch (Throwable e) {
+            error(e);
+        }
+        return null;
     }
 
     /**
@@ -757,8 +786,6 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     /**
      * Reads the preview provider configuration and generates needed type-provider mappings.<p>
      * 
-     * @param galleryMode the current gallery mode
-     * 
      * @throws CmsRpcException if something goes wrong reading the configuration
      */
     private void initPreviewProvider() throws CmsRpcException {
@@ -785,7 +812,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     /**
      * Returns the search parameters for the given query data.<p>
      * 
-     * @param queryData the query data
+     * @param searchData the query data
      * 
      * @return the prepared search parameters
      */
@@ -795,7 +822,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         List<String> galleries = searchData.getGalleries();
         List<String> categories = searchData.getCategories();
         String queryStr = searchData.getQuery();
-        int matches = searchData.getMachesPerPage();
+        int matches = searchData.getMatchesPerPage();
         CmsGallerySearchParameters.CmsGallerySortParam sortOrder;
         String temp = searchData.getSortOrder();
         try {
@@ -818,6 +845,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         params.setSortOrder(sortOrder);
         params.setMatchesPerPage(matches);
         params.setResultPage(page);
+        params.setFolders(searchData.getFolders());
         if (types != null) {
             params.setResourceTypes(types);
         }
@@ -989,6 +1017,8 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
      * Returns the gallery search object containing the results for the current parameter.<p>
      * 
      * @param searchObj the current search object 
+     * 
+     * @return the search result
      */
     private CmsGallerySearchBean search(CmsGallerySearchBean searchObj) {
 

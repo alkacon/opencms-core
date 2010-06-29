@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/rpc/Attic/I_CmsGalleryServiceAsync.java,v $
- * Date   : $Date: 2010/05/27 10:28:29 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/06/29 09:38:46 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.ade.galleries.shared.rpc;
 import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
 import org.opencms.ade.galleries.shared.CmsGalleryFolderBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
+import org.opencms.ade.galleries.shared.CmsVfsEntryBean;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 
 import java.util.List;
@@ -45,7 +46,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 8.0.0
  * 
@@ -103,4 +104,12 @@ public interface I_CmsGalleryServiceAsync {
      * @param callback the callback
      */
     void getSearch(CmsGallerySearchBean searchObj, AsyncCallback<CmsGallerySearchBean> callback);
+
+    /**
+     * Gets the sub-folders of a folder.<p>
+     * 
+     * @param path the path of a folder
+     * @param callback the asynchronous callback 
+     */
+    void getSubFolders(String path, AsyncCallback<List<CmsVfsEntryBean>> callback);
 }

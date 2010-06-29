@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageHandler.java,v $
- * Date   : $Date: 2010/06/18 07:29:54 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2010/06/29 09:38:46 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormHandler;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
-import org.opencms.gwt.client.util.CmsMapUtil;
+import org.opencms.gwt.client.util.CmsCollectionUtil;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.CmsXmlContentProperty;
@@ -78,7 +78,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 8.0.0
  */
@@ -180,7 +180,7 @@ public class CmsContainerpageHandler {
                         m_controller.reloadElementWithProperties(
                             elementWidget,
                             elementBean.getClientId(),
-                            CmsMapUtil.removeNullEntries(fieldValues));
+                            CmsCollectionUtil.removeNullEntries(fieldValues));
                     }
                 };
                 String title = Messages.get().key(Messages.GUI_PROPERTY_DIALOG_TITLE_0);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/tree/Attic/CmsLazyTreeItem.java,v $
- * Date   : $Date: 2010/05/28 14:00:43 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/06/29 09:38:46 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,7 @@ import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsListTreeCss;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 
+import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
@@ -47,7 +48,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Georg Westenberger
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -83,6 +84,9 @@ public class CmsLazyTreeItem extends CmsTreeItem {
     /** The CSS bundle used for this widget. */
     private static final I_CmsListTreeCss CSS = I_CmsLayoutBundle.INSTANCE.listTreeCss();
 
+    /** The loading item. */
+    private LoadingItem m_loadingItem = new LoadingItem();
+
     /** The load state of this tree item. */
     private LoadState m_loadState = LoadState.UNLOADED;
 
@@ -95,7 +99,7 @@ public class CmsLazyTreeItem extends CmsTreeItem {
     public CmsLazyTreeItem(CmsCheckBox checkbox, Widget widget) {
 
         super(true, checkbox, widget);
-        addChild(new LoadingItem());
+        addChild(m_loadingItem);
     }
 
     /**
@@ -106,7 +110,7 @@ public class CmsLazyTreeItem extends CmsTreeItem {
     public CmsLazyTreeItem(Widget widget) {
 
         super(true, widget);
-        addChild(new LoadingItem());
+        addChild(m_loadingItem);
     }
 
     /**
@@ -127,6 +131,10 @@ public class CmsLazyTreeItem extends CmsTreeItem {
         m_opener.setUpFace("", CSS.plus());
         m_opener.setDownFace("", CSS.minus());
         m_loadState = LoadState.LOADED;
+        m_loadingItem.removeFromParent();
+        if (m_children.getWidgetCount() == 0) {
+            m_opener.getElement().getStyle().setVisibility(Visibility.HIDDEN);
+        }
     }
 
     /**

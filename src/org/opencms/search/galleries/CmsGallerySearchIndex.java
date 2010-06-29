@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/galleries/CmsGallerySearchIndex.java,v $
- * Date   : $Date: 2010/01/27 15:14:45 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/06/29 09:38:46 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import org.apache.lucene.util.Version;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0 
  */
@@ -154,7 +154,18 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
             // several search options are searched using filters
             BooleanFilter filter = new BooleanFilter();
             // append root path filter
-            filter = appendPathFilter(searchCms, filter, params.getGalleries());
+            List<String> folders = new ArrayList<String>();
+
+            if (params.getFolders() != null) {
+                folders.addAll(params.getFolders());
+            }
+
+            if (params.getGalleries() != null) {
+                folders.addAll(params.getGalleries());
+            }
+
+            filter = appendPathFilter(searchCms, filter, folders);
+
             // append category filter
             filter = appendCategoryFilter(searchCms, filter, params.getCategories());
             // append container type filter

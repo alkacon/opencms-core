@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/Attic/I_CmsGalleryProviderConstants.java,v $
- * Date   : $Date: 2010/05/27 09:42:23 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/06/29 09:38:46 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,39 +38,34 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Polina Smagina 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 8.0.0
  */
 public interface I_CmsGalleryProviderConstants {
 
-    //TODO: rename interface or consider moving constants elsewhere
-    /** Name of the used dictionary. */
-    String DICT_NAME = "org.opencms.ade.galleries.core";
-
-    /** Path to the host page. */
-    String VFS_OPEN_GALLERY_PATH = "system/modules/org.opencms.ade.galleries/testVfs.jsp";
-
     /** Gallery mode constants. */
     enum GalleryMode implements IsSerializable {
 
         /** The advanced direct edit mode. */
-        ade(GalleryTabId.cms_tab_types, GalleryTabId.cms_tab_galleries, GalleryTabId.cms_tab_categories,
-        GalleryTabId.cms_tab_search),
+        ade(GalleryTabId.cms_tab_types, GalleryTabId.cms_tab_galleries, GalleryTabId.cms_tab_vfstree,
+        GalleryTabId.cms_tab_categories, GalleryTabId.cms_tab_search),
 
         /** The FCKEditor mode. */
-        editor(GalleryTabId.cms_tab_galleries, GalleryTabId.cms_tab_categories, GalleryTabId.cms_tab_search),
-
-        /** The sitemap editor mode. */
-        sitemap(GalleryTabId.cms_tab_galleries, GalleryTabId.cms_tab_categories, GalleryTabId.cms_tab_search,
-        GalleryTabId.cms_tab_sitemap),
-
-        /** The explorer mode. */
-        view(GalleryTabId.cms_tab_types, GalleryTabId.cms_tab_galleries, GalleryTabId.cms_tab_categories,
+        editor(GalleryTabId.cms_tab_galleries, GalleryTabId.cms_tab_vfstree, GalleryTabId.cms_tab_categories,
         GalleryTabId.cms_tab_search),
 
+        /** The sitemap editor mode. */
+        sitemap(GalleryTabId.cms_tab_galleries, GalleryTabId.cms_tab_vfstree, GalleryTabId.cms_tab_categories,
+        GalleryTabId.cms_tab_search, GalleryTabId.cms_tab_sitemap),
+
+        /** The explorer mode. */
+        view(GalleryTabId.cms_tab_types, GalleryTabId.cms_tab_galleries, GalleryTabId.cms_tab_vfstree,
+        GalleryTabId.cms_tab_categories, GalleryTabId.cms_tab_search),
+
         /** The widget mode. */
-        widget(GalleryTabId.cms_tab_galleries, GalleryTabId.cms_tab_categories, GalleryTabId.cms_tab_search);
+        widget(GalleryTabId.cms_tab_galleries, GalleryTabId.cms_tab_vfstree, GalleryTabId.cms_tab_categories,
+        GalleryTabId.cms_tab_search);
 
         /** The configuration. */
         private GalleryTabId[] m_tabs;
@@ -93,6 +88,63 @@ public interface I_CmsGalleryProviderConstants {
 
             return m_tabs;
         }
+
+    }
+
+    /** Tab ids used for tab configuration. */
+    public enum GalleryTabId implements IsSerializable {
+
+        /** The id for categories tab. */
+        cms_tab_categories,
+
+        /** The id for containerpage tab. */
+        cms_tab_containerpage,
+
+        /** The id for galleries tab. */
+        cms_tab_galleries,
+
+        /** The id for types tab. */
+        cms_tab_results,
+
+        /** The id for search tab. */
+        cms_tab_search,
+
+        /** The id for sitemap tab. */
+        cms_tab_sitemap,
+
+        /** The id for types tab. */
+        cms_tab_types,
+
+        /** The id for vfs-tree tab. */
+        cms_tab_vfstree
+    }
+
+    /** Image parameteres. */
+    public enum ImageParams implements IsSerializable {
+
+        /** The last modified date. */
+        dateLastModified,
+
+        /** The image file name. */
+        file_name,
+
+        /** The file size. */
+        file_size,
+
+        /** Image type. */
+        file_type,
+
+        /** The image height. */
+        height,
+
+        /** The image path. */
+        path,
+
+        /** Property title. */
+        title,
+
+        /** The image width. */
+        width;
 
     }
 
@@ -137,34 +189,6 @@ public interface I_CmsGalleryProviderConstants {
 
     }
 
-    /** Tab ids used for tab configuration. */
-    public enum GalleryTabId implements IsSerializable {
-
-        /** The id for categories tab. */
-        cms_tab_categories,
-
-        /** The id for containerpage tab. */
-        cms_tab_containerpage,
-
-        /** The id for galleries tab. */
-        cms_tab_galleries,
-
-        /** The id for types tab. */
-        cms_tab_results,
-
-        /** The id for search tab. */
-        cms_tab_search,
-
-        /** The id for sitemap tab. */
-        cms_tab_sitemap,
-
-        /** The id for types tab. */
-        cms_tab_types,
-
-        /** The id for vfs-tree tab. */
-        cms_tab_vfstree
-    }
-
     /** Sorting parameters. */
     public enum SortParams implements IsSerializable {
 
@@ -174,54 +198,32 @@ public interface I_CmsGalleryProviderConstants {
         /** Date last modified descending. */
         dateLastModified_desc,
 
-        /** Title descending sorting. */
-        title_desc,
-
-        /** Title ascending sorting. */
-        title_asc,
-
-        /** Resource type descending sorting. */
-        type_desc,
-
-        /** Resource type ascending sorting. */
-        type_asc,
-
         /** Resource path ascending sorting. */
         path_asc,
 
         /** Resource path descending sorting.*/
         path_desc,
 
+        /** Title ascending sorting. */
+        title_asc,
+
+        /** Title descending sorting. */
+        title_desc,
+
         /** Tree.*/
-        tree;
+        tree,
+
+        /** Resource type ascending sorting. */
+        type_asc,
+
+        /** Resource type descending sorting. */
+        type_desc;
     }
 
-    /** Image parameteres. */
-    public enum ImageParams implements IsSerializable {
+    //TODO: rename interface or consider moving constants elsewhere
+    /** Name of the used dictionary. */
+    String DICT_NAME = "org.opencms.ade.galleries.core";
 
-        /** The image path. */
-        path,
-
-        /** The image width. */
-        width,
-
-        /** The image height. */
-        height,
-
-        /** The image file name. */
-        file_name,
-
-        /** Property title. */
-        title,
-
-        /** Image type. */
-        file_type,
-
-        /** The last modified date. */
-        dateLastModified,
-
-        /** The file size. */
-        file_size;
-
-    }
+    /** Path to the host page. */
+    String VFS_OPEN_GALLERY_PATH = "system/modules/org.opencms.ade.galleries/testVfs.jsp";
 }

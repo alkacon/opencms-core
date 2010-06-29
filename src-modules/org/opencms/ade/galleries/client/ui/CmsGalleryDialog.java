@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsGalleryDialog.java,v $
- * Date   : $Date: 2010/06/10 08:45:04 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2010/06/29 09:38:46 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,11 +37,13 @@ import org.opencms.ade.galleries.client.CmsGalleryController;
 import org.opencms.ade.galleries.client.CmsResultsTabHandler;
 import org.opencms.ade.galleries.client.CmsSearchTabHandler;
 import org.opencms.ade.galleries.client.CmsTypesTabHandler;
+import org.opencms.ade.galleries.client.CmsVfsTabHandler;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.gwt.client.draganddrop.I_CmsDragHandler;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
 import org.opencms.gwt.client.ui.CmsTabbedPanel.CmsTabLayout;
+import org.opencms.gwt.client.util.CmsDebugLog;
 
 import java.util.Iterator;
 
@@ -64,7 +66,7 @@ import com.google.gwt.user.client.ui.HTMLPanel;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * 
  * @since 8.0.
  */
@@ -92,6 +94,9 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
     /** The flag for the initails search. */
     private boolean m_isInitialSearch;
 
+    /** The command which should be executed when this widget is attached to the DOM. */
+    private Command m_onAttachCommand;
+
     /** The parent panel for the gallery dialog. */
     private FlowPanel m_parentPanel;
 
@@ -104,7 +109,8 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
     /** The types tab. */
     private CmsTypesTab m_typesTab;
 
-    private Command m_onAttachCommand;
+    /** The VFS folder tab. */
+    private CmsVfsTab m_vfsTab;
 
     /**
      * The default constructor for the gallery dialog.<p> 
@@ -169,6 +175,8 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
      */
     public void fillTabs(GalleryTabId[] tabIds, CmsGalleryController controller) {
 
+        CmsDebugLog.getInstance().printLine("fillTabs");
+
         for (int i = 0; i < tabIds.length; i++) {
             //TODO: add missing cases
             switch (tabIds[i]) {
@@ -190,6 +198,12 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
                     break;
                 case cms_tab_sitemap:
                     //TODO: add sitemap tree tab
+                    break;
+                case cms_tab_vfstree:
+                    m_vfsTab = new CmsVfsTab(new CmsVfsTabHandler(controller));
+                    m_tabbedPanel.add(m_vfsTab, Messages.get().key(Messages.GUI_TAB_TITLE_VFS_0));
+                    break;
+
                 default:
                     break;
             }
@@ -258,6 +272,16 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
     public CmsTypesTab getTypesTab() {
 
         return m_typesTab;
+    }
+
+    /**
+     * Returns the VFS tab widget.<p>
+     * 
+     * @return the VFS tab widget 
+     */
+    public CmsVfsTab getVfsTab() {
+
+        return m_vfsTab;
     }
 
     /**

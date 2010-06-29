@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleryController.java,v $
- * Date   : $Date: 2010/06/14 06:09:19 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2010/06/29 09:38:45 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,12 +36,14 @@ import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
 import org.opencms.ade.galleries.shared.CmsGalleryFolderBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.CmsResourceTypeBean;
+import org.opencms.ade.galleries.shared.CmsVfsEntryBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
 import org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService;
 import org.opencms.ade.galleries.shared.rpc.I_CmsGalleryServiceAsync;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.rpc.CmsRpcPrefetcher;
+import org.opencms.gwt.client.util.CmsCollectionUtil;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.gwt.shared.sort.CmsComparatorPath;
@@ -55,6 +57,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * Gallery dialog controller.<p>
@@ -64,7 +67,7 @@ import com.google.gwt.core.client.GWT;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 8.0.0
  */
@@ -83,7 +86,7 @@ public class CmsGalleryController {
     protected CmsGallerySearchBean m_searchObject;
 
     /** The gallery service instance. */
-    private I_CmsGalleryServiceAsync m_gallerySvc;
+    private I_CmsGalleryServiceAsync m_gallerySvc = GWT.create(I_CmsGalleryService.class);
 
     /**
      * Constructor.<p>
@@ -120,6 +123,16 @@ public class CmsGalleryController {
     }
 
     /**
+     * Adds a folder to the current search object.<p>
+     * 
+     * @param folder the folder to add
+     */
+    public void addFolder(String folder) {
+
+        m_searchObject.addFolder(folder);
+    }
+
+    /**
      * Add gallery to search object.<p>
      * 
      * @param galleryPath the id of the gallery to add
@@ -151,6 +164,17 @@ public class CmsGalleryController {
     }
 
     /**
+     * Removes all selected folders from the search object.<p>
+     */
+    public void clearFolders() {
+
+        List<String> selectedFolders = m_searchObject.getFolders();
+        m_handler.onClearFolders(selectedFolders);
+        m_searchObject.clearFolders();
+        updateResultsTab();
+    }
+
+    /**
      * Removes all selected galleries from the search object.<p>
      */
     public void clearGalleries() {
@@ -175,6 +199,34 @@ public class CmsGalleryController {
         m_handler.onClearTypes(selectedTypes);
         m_searchObject.clearTypes();
         updateResultsTab();
+    }
+
+    /**
+     * Retrieves the sub-folders of a given folder.<p>
+     * 
+     * @param folder the folder whose sub-folders should be retrieved 
+     * @param callback the callback for processing the sub-folders
+     */
+    public void getSubFolders(final String folder, final AsyncCallback<List<CmsVfsEntryBean>> callback) {
+
+        CmsRpcAction<List<CmsVfsEntryBean>> action = new CmsRpcAction<List<CmsVfsEntryBean>>() {
+
+            @Override
+            public void execute() {
+
+                start(0);
+                getGalleryService().getSubFolders(folder, this);
+            }
+
+            @Override
+            protected void onResponse(List<CmsVfsEntryBean> result) {
+
+                stop(false);
+                callback.onSuccess(result);
+            }
+
+        };
+        action.execute();
     }
 
     /**
@@ -219,6 +271,16 @@ public class CmsGalleryController {
     public void removeCategory(String categoryPath) {
 
         m_searchObject.removeCategory(categoryPath);
+    }
+
+    /**
+     * Removes a folder from the current search object.<p>
+     * 
+     * @param folder the folder to remove 
+     */
+    public void removeFolder(String folder) {
+
+        m_searchObject.removeFolder(folder);
     }
 
     /**
@@ -374,7 +436,6 @@ public class CmsGalleryController {
             @Override
             public void onResponse(CmsGallerySearchBean searchObj) {
 
-                m_searchObject.setResults(searchObj.getResults());
                 m_searchObject.setResultCount(searchObj.getResultCount());
                 m_searchObject.setSortOrder(searchObj.getSortOrder());
                 m_searchObject.setPage(searchObj.getPage());
@@ -495,9 +556,6 @@ public class CmsGalleryController {
      */
     protected I_CmsGalleryServiceAsync getGalleryService() {
 
-        if (m_gallerySvc == null) {
-            m_gallerySvc = GWT.create(I_CmsGalleryService.class);
-        }
         return m_gallerySvc;
     }
 
@@ -514,9 +572,9 @@ public class CmsGalleryController {
         CmsGallerySearchBean preparedSearchObj = new CmsGallerySearchBean(m_searchObject);
         // add the available types to the search object used for next search, 
         // if the criteria for types are empty
-        if ((m_searchObject.getTypes() == null) || m_searchObject.getTypes().isEmpty()) {
+        if (CmsCollectionUtil.isEmptyOrNull(m_searchObject.getTypes())) {
             // no galleries is selected, provide all available types
-            if ((m_searchObject.getGalleries() == null) || m_searchObject.getGalleries().isEmpty()) {
+            if (CmsCollectionUtil.isEmptyOrNull(m_searchObject.getGalleries())) {
                 // additionally provide all available gallery folders 'widget' and 'editor' dialogmode 
                 if ((m_dialogMode == I_CmsGalleryProviderConstants.GalleryMode.widget)
                     || (m_dialogMode == I_CmsGalleryProviderConstants.GalleryMode.editor)) {
@@ -535,31 +593,25 @@ public class CmsGalleryController {
             } else {
 
                 // get the resource types associated with the selected galleries
-                HashSet<String> contentTypes = new HashSet<String>();
+                HashSet<String> galleryTypes = new HashSet<String>();
                 for (CmsGalleryFolderBean gallery : m_dialogBean.getGalleries()) {
                     if (m_searchObject.getGalleries().contains(gallery.getPath())) {
-                        contentTypes.addAll(gallery.getContentTypes());
+                        galleryTypes.addAll(gallery.getContentTypes());
                     }
                 }
-                // available types
-                ArrayList<String> availableTypes = new ArrayList<String>();
+
+                HashSet<String> availableTypes = new HashSet<String>();
                 for (CmsResourceTypeBean type : m_dialogBean.getTypes()) {
                     availableTypes.add(type.getType());
                 }
-                // check if the associated type is also an available type
-                ArrayList<String> checkedTypes = new ArrayList<String>();
-                for (String type : contentTypes) {
-                    if (availableTypes.contains(type) && !checkedTypes.contains(type)) {
-                        checkedTypes.add(type);
-                    }
-                }
-                preparedSearchObj.setTypes(checkedTypes);
+
+                preparedSearchObj.setTypes(new ArrayList<String>(CmsCollectionUtil.intersection(
+                    availableTypes,
+                    galleryTypes)));
             }
-            return preparedSearchObj;
-            // just use the unchanged search object 
-        } else {
-            return preparedSearchObj;
         }
+        return preparedSearchObj;
+
     }
 
     /**
@@ -673,7 +725,7 @@ public class CmsGalleryController {
      * @param previewName the name of the preview provider
      * @param galleryMode the gallery mode
      * @param resourcePath the resource path
-     * @param parentElement the dialog element to insert the preview into
+     * @param parentElementId the id of the dialog element to insert the preview into
      * 
      * @return debug message
      */
@@ -737,4 +789,5 @@ public class CmsGalleryController {
         return "Provider list not available";
         }
     }-*/;
+
 }

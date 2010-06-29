@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/Attic/CmsGallerySearchBean.java,v $
- * Date   : $Date: 2010/06/10 08:45:04 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/06/29 09:38:46 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,8 @@
 
 package org.opencms.ade.galleries.shared;
 
+import org.opencms.gwt.client.util.CmsCollectionUtil;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,7 +46,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
  */
@@ -60,17 +62,20 @@ public class CmsGallerySearchBean implements IsSerializable {
     public static final String DICT_NAME = "cms_gallery_search_bean";
 
     /** The list of selected categories ids (path). */
-    private List<String> m_categories;
+    private List<String> m_categories = new ArrayList<String>();
+
+    /** The list of selected vfs folders. */
+    private List<String> m_folders = new ArrayList<String>();
 
     /** The list of selected galleries ids (path). */
-    private List<String> m_galleries;
+    private List<String> m_galleries = new ArrayList<String>();
 
     /** The selected locale for search. */
     private String m_locale;
 
     // TODO: define somewhere the default value
     /** The number of search results to be display pro page. */
-    private int m_machesPerPage;
+    private int m_matchesPerPage;
 
     /** The current search result page. */
     private int m_page;
@@ -104,7 +109,7 @@ public class CmsGallerySearchBean implements IsSerializable {
      */
     public CmsGallerySearchBean() {
 
-        m_machesPerPage = DEFAULT_MATCHES_PER_PAGE;
+        m_matchesPerPage = DEFAULT_MATCHES_PER_PAGE;
         m_page = 1;
     }
 
@@ -119,10 +124,11 @@ public class CmsGallerySearchBean implements IsSerializable {
 
         setTypes(searchObj.getTypes());
         setGalleries(searchObj.getGalleries());
+        setFolders(searchObj.getFolders());
         setCategories(searchObj.getCategories());
         setQuery(searchObj.getQuery());
         setLocale(searchObj.getLocale());
-        setMachesPerPage(searchObj.getMachesPerPage());
+        setMatchesPerPage(searchObj.getMatchesPerPage());
         setSortOrder(searchObj.getSortOrder());
         setTabId(searchObj.getTabId());
         setPage(searchObj.getPage());
@@ -135,12 +141,19 @@ public class CmsGallerySearchBean implements IsSerializable {
      */
     public void addCategory(String category) {
 
-        if (m_categories == null) {
-            m_categories = new ArrayList<String>();
-        }
         if (!m_categories.contains(category)) {
             m_categories.add(category);
         }
+    }
+
+    /**
+     * Adds a new VFS folder to search in.<p>
+     * 
+     * @param folder the folder to add 
+     */
+    public void addFolder(String folder) {
+
+        m_folders.add(folder);
     }
 
     /**
@@ -150,9 +163,6 @@ public class CmsGallerySearchBean implements IsSerializable {
      */
     public void addGallery(String gallery) {
 
-        if (m_galleries == null) {
-            m_galleries = new ArrayList<String>();
-        }
         if (!m_galleries.contains(gallery)) {
             m_galleries.add(gallery);
         }
@@ -165,9 +175,6 @@ public class CmsGallerySearchBean implements IsSerializable {
      */
     public void addType(String type) {
 
-        if (m_types == null) {
-            m_types = new ArrayList<String>();
-        }
         if (!m_types.contains(type)) {
             m_types.add(type);
         }
@@ -178,7 +185,15 @@ public class CmsGallerySearchBean implements IsSerializable {
      */
     public void clearCategories() {
 
-        m_categories = null;
+        m_categories.clear();
+    }
+
+    /**
+     * Clears the list of VFS folders.<p>
+     */
+    public void clearFolders() {
+
+        m_folders.clear();
     }
 
     /**
@@ -186,7 +201,7 @@ public class CmsGallerySearchBean implements IsSerializable {
      */
     public void clearGalleries() {
 
-        m_galleries = null;
+        m_galleries.clear();
     }
 
     /**
@@ -194,7 +209,7 @@ public class CmsGallerySearchBean implements IsSerializable {
      */
     public void clearTypes() {
 
-        m_types = null;
+        m_types.clear();
     }
 
     /**
@@ -205,6 +220,16 @@ public class CmsGallerySearchBean implements IsSerializable {
     public List<String> getCategories() {
 
         return m_categories;
+    }
+
+    /**
+     * Returns the list of selected VFS folders.<p>
+     * 
+     * @return the list of selected VFS folders 
+     */
+    public List<String> getFolders() {
+
+        return m_folders;
     }
 
     /**
@@ -228,13 +253,13 @@ public class CmsGallerySearchBean implements IsSerializable {
     }
 
     /**
-     * Returns the number of maches per search page.<p>
+     * Returns the number of matches per search page.<p>
      *
-     * @return the machesPerPage
+     * @return the matchesPerPage
      */
-    public int getMachesPerPage() {
+    public int getMatchesPerPage() {
 
-        return m_machesPerPage;
+        return m_matchesPerPage;
     }
 
     /**
@@ -333,18 +358,19 @@ public class CmsGallerySearchBean implements IsSerializable {
     /**
      * Checks if any search parameter are selected.<p>
      * 
-     * @return true if any search parameter is selected, false if there are no search parameter selected
+     * @return false if any search parameter is selected, true if there are no search parameter selected
      */
-    public boolean isNotEmpty() {
+    @SuppressWarnings("unchecked")
+    public boolean isEmpty() {
 
-        // TODO: add the param for query
-        if (((m_types == null) || m_types.isEmpty())
-            && ((m_galleries == null) || m_galleries.isEmpty())
-            && ((m_categories == null) || m_categories.isEmpty())) {
-            return false;
+        List<String>[] params = new List[] {m_types, m_galleries, m_categories, m_folders};
+        for (List<String> paramList : params) {
+            if (!CmsCollectionUtil.isEmptyOrNull(paramList)) {
+                return false;
+            }
         }
+        //TODO: check search query
         return true;
-
     }
 
     /**
@@ -354,9 +380,17 @@ public class CmsGallerySearchBean implements IsSerializable {
      */
     public void removeCategory(String category) {
 
-        if (m_categories != null) {
-            m_categories.remove(category);
-        }
+        m_categories.remove(category);
+    }
+
+    /**
+     * Removes a folder from the folder list.<p>
+     * 
+     * @param folder the folder to remove
+     */
+    public void removeFolder(String folder) {
+
+        m_folders.remove(folder);
     }
 
     /**
@@ -366,9 +400,7 @@ public class CmsGallerySearchBean implements IsSerializable {
      */
     public void removeGallery(String gallery) {
 
-        if (m_galleries != null) {
-            m_galleries.remove(gallery);
-        }
+        m_galleries.remove(gallery);
     }
 
     /**
@@ -378,9 +410,7 @@ public class CmsGallerySearchBean implements IsSerializable {
      */
     public void removeType(String type) {
 
-        if (m_types != null) {
-            m_types.remove(type);
-        }
+        m_types.remove(type);
     }
 
     /**
@@ -391,6 +421,16 @@ public class CmsGallerySearchBean implements IsSerializable {
     public void setCategories(List<String> categories) {
 
         m_categories = categories;
+    }
+
+    /** 
+     * Sets the folders to search in.<p>
+     * 
+     * @param folders the folders
+     */
+    public void setFolders(List<String> folders) {
+
+        m_folders = folders;
     }
 
     /**
@@ -414,13 +454,13 @@ public class CmsGallerySearchBean implements IsSerializable {
     }
 
     /**
-     * Sets the machesPerPage.<p>
+     * Sets the matchesPerPage.<p>
      *
-     * @param machesPerPage the machesPerPage to set
+     * @param matchesPerPage the matchesPerPage to set
      */
-    public void setMachesPerPage(int machesPerPage) {
+    public void setMatchesPerPage(int matchesPerPage) {
 
-        m_machesPerPage = machesPerPage;
+        m_matchesPerPage = matchesPerPage;
     }
 
     /**

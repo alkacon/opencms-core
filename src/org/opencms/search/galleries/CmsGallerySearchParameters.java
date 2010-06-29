@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/galleries/CmsGallerySearchParameters.java,v $
- * Date   : $Date: 2010/01/27 15:14:45 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/06/29 09:38:46 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import org.apache.lucene.search.SortField;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0 
  */
@@ -317,6 +317,9 @@ public class CmsGallerySearchParameters {
     /** The list of search index fields to search in. */
     private List<String> m_fields;
 
+    /** The list of folders to search in. */
+    private List<String> m_folders;
+
     /** The galleries to search in. */
     private List<String> m_galleries;
 
@@ -415,6 +418,16 @@ public class CmsGallerySearchParameters {
             setFields(Arrays.asList(CmsSearchIndex.DOC_META_FIELDS));
         }
         return m_fields;
+    }
+
+    /**
+     * Returns the list of folders to search in.<p>
+     * 
+     * @return a list of paths of VFS folders
+     */
+    public List<String> getFolders() {
+
+        return m_folders;
     }
 
     /**
@@ -646,6 +659,16 @@ public class CmsGallerySearchParameters {
     public void setFields(List<String> fields) {
 
         m_fields = fields;
+    }
+
+    /**
+     * Sets the folders to search in.<p>
+     * 
+     * @param folders the list of VFS folders
+     */
+    public void setFolders(List<String> folders) {
+
+        m_folders = folders;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/Attic/CmsGalleryDataBean.java,v $
- * Date   : $Date: 2010/06/02 14:46:36 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/06/29 09:38:46 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
  */
@@ -74,6 +74,9 @@ public class CmsGalleryDataBean implements IsSerializable {
     /** The types to display in the list of available categories. */
     private List<CmsResourceTypeBean> m_types;
 
+    /** A list of beans representing the root folders to display in the VFS tab. */
+    private List<CmsVfsEntryBean> m_vfsRootFolders;
+
     /**
      * Returns the categories.<p>
      *
@@ -92,6 +95,7 @@ public class CmsGalleryDataBean implements IsSerializable {
     public List<CmsGalleryFolderBean> getGalleries() {
 
         return m_galleries;
+
     }
 
     /**
@@ -132,6 +136,16 @@ public class CmsGalleryDataBean implements IsSerializable {
     public List<CmsResourceTypeBean> getTypes() {
 
         return m_types;
+    }
+
+    /**
+     * Returns the list of root folders to display in the VFS tab.<p>
+     *
+     * @return the list root folders to display in the VFS tab
+     */
+    public List<CmsVfsEntryBean> getVfsRootFolders() {
+
+        return m_vfsRootFolders;
     }
 
     /**
@@ -192,5 +206,15 @@ public class CmsGalleryDataBean implements IsSerializable {
     public void setTypes(List<CmsResourceTypeBean> types) {
 
         m_types = types;
+    }
+
+    /**
+     * Sets the root folders to be displayed in the VFS folder tab.<p>
+     * 
+     * @param rootFolders beans representing the root folders 
+     */
+    public void setVfsRootFolders(List<CmsVfsEntryBean> rootFolders) {
+
+        m_vfsRootFolders = rootFolders;
     }
 }

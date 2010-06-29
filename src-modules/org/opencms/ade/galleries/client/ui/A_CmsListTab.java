@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/A_CmsListTab.java,v $
- * Date   : $Date: 2010/05/25 12:36:33 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/06/29 09:38:46 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.
  */
@@ -86,7 +86,6 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
     protected FlowPanel m_options;
 
     /** The scrollable list panel. */
-    @UiField
     protected CmsList<? extends I_CmsListItem> m_scrollList;
 
     /** The option panel. */
@@ -110,11 +109,16 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
         CmsGalleryDialog.initCss();
 
         List<CmsPair<String, String>> sortList = getSortList();
-        m_sortSelectBox = new CmsSelectBox(sortList);
-        m_sortSelectBox.addValueChangeHandler(this);
-        m_sortSelectBox.addStyleName(DIALOG_CSS.selectboxWidth());
-        m_sortSelectBox.truncate(TM_GALLERY_SORT, 200);
-        m_options.add(m_sortSelectBox);
+        if (sortList != null) {
+            m_sortSelectBox = new CmsSelectBox(sortList);
+            m_sortSelectBox.addValueChangeHandler(this);
+            m_sortSelectBox.addStyleName(DIALOG_CSS.selectboxWidth());
+            m_sortSelectBox.truncate(TM_GALLERY_SORT, 200);
+            m_options.add(m_sortSelectBox);
+        }
+        m_scrollList = createScrollList();
+        m_list.add(m_scrollList);
+
     }
 
     // TODO: add the search parameter display button
@@ -165,9 +169,22 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
     }
 
     /**
+     * Creates the list which should contain the list items of the tab.<p>
+     * 
+     * @return the newly created list widget 
+     */
+    @SuppressWarnings("unchecked")
+    protected CmsList<? extends I_CmsListItem> createScrollList() {
+
+        return new CmsList();
+
+    }
+
+    /**
      * Returns a list with sort values for this tab.<p>
      * 
      * @return list of sort order value/text pairs
      */
     protected abstract List<CmsPair<String, String>> getSortList();
+
 }

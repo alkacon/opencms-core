@@ -7,8 +7,6 @@
 	<g:FlowPanel ui:field="m_tab" styleName="{galleryResources.galleryDialogCss.tabPanel}">
 		<g:FlowPanel ui:field="m_options" addStyleNames="{galleryResources.galleryDialogCss.tabOptions}" />
 		<g:FlowPanel ui:field="m_list" styleName="{galleryResources.galleryDialogCss.criteriaList}"  addStyleNames="{resources.generalCss.cornerAll}">
-			<cms:CmsList ui:field="m_scrollList" >
-			</cms:CmsList>
 		</g:FlowPanel>			
 	</g:FlowPanel> 
 </ui:UiBinder> 

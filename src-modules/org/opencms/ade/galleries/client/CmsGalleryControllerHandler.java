@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleryControllerHandler.java,v $
- * Date   : $Date: 2010/06/14 06:09:19 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2010/06/29 09:38:45 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import com.google.gwt.user.client.Command;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 8.0.0
 
@@ -105,6 +105,16 @@ public class CmsGalleryControllerHandler {
         if (categories != null) {
             m_galleryDialog.getCategoriesTab().uncheckCategories(categories);
         }
+    }
+
+    /**
+     * The method which is executed when all folders are cleared from the search object.<p>
+     * 
+     * @param folders the folders which have been cleared 
+     */
+    public void onClearFolders(List<String> folders) {
+
+        m_galleryDialog.getVfsTab().uncheckFolders(folders);
     }
 
     /**
@@ -168,8 +178,14 @@ public class CmsGalleryControllerHandler {
                 searchObj,
                 m_galleryDialog.getTypesTab().getTypesParams(searchObj.getTypes()),
                 m_galleryDialog.getGalleriesTab().getGalleriesParams(searchObj.getGalleries()),
+                m_galleryDialog.getVfsTab().getVfsParams(searchObj.getFolders()),
                 m_galleryDialog.getCategoriesTab().getCategoriesParams(searchObj.getCategories()));
         }
+
+        if ((dialogBean.getVfsRootFolders() != null) && (m_galleryDialog.getVfsTab() != null)) {
+            m_galleryDialog.getVfsTab().fillInitially(dialogBean.getVfsRootFolders());
+        }
+
         m_galleryDialog.selectTab(dialogBean.getStartTab());
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(searchObj.getResourcePath())
             && CmsStringUtil.isNotEmptyOrWhitespaceOnly(searchObj.getResourceType())) {
@@ -202,6 +218,7 @@ public class CmsGalleryControllerHandler {
             searchObj,
             m_galleryDialog.getTypesTab().getTypesParams(searchObj.getTypes()),
             m_galleryDialog.getGalleriesTab().getGalleriesParams(searchObj.getGalleries()),
+            m_galleryDialog.getVfsTab().getVfsParams(searchObj.getFolders()),
             m_galleryDialog.getCategoriesTab().getCategoriesParams(searchObj.getCategories()));
     }
 
