@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2010/06/18 07:29:54 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2010/06/29 06:58:34 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.43 $
+ * @version $Revision: 1.44 $
  * 
  * @since 7.9.2
  */
@@ -350,7 +350,10 @@ public class CmsSitemapManager {
     }
 
     /**
-     * Returns the sitemap entry for the given URI, or <code>null</code> if not found.<p> 
+     * Returns the sitemap entry for the given URI, or <code>null</code> if not found.<p>
+     * 
+     * If the URI passed as an argument is a VFS URI instead of a sitemap URI, a dummy sitemap
+     * entry for the VFS location will be returned.<p>
      * 
      * @param cms the current CMS context
      * @param entryUri the sitemap entry URI to look for

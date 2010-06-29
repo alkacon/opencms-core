@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentPropertyHelper.java,v $
- * Date   : $Date: 2010/06/08 14:12:16 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/06/29 06:58:34 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.xml.content;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
@@ -50,6 +51,7 @@ import org.opencms.xml.CmsXmlGenericWrapper;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.content.CmsXmlContentProperty.PropType;
 import org.opencms.xml.page.CmsXmlPage;
+import org.opencms.xml.sitemap.CmsSitemapEntry;
 import org.opencms.xml.types.CmsXmlNestedContentDefinition;
 import org.opencms.xml.types.CmsXmlVfsFileValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
@@ -71,7 +73,7 @@ import org.dom4j.Element;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 7.9.2
  */
@@ -151,6 +153,26 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
         Map<String, CmsXmlContentProperty> propConfig) {
 
         return convertProperties(cms, props, propConfig, false);
+    }
+
+    /**
+     * Looks up an URI in the sitemap and returns either a sitemap entry id (if the URI is a sitemap URI)
+     * or the structure id of a resource (if the URI is a VFS path).<p>
+     * 
+     * @param cms the current CMS context
+     * @param uri the URI to look up
+     * @return a sitemap entry id or a structure id 
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public static CmsUUID getIdForUri(CmsObject cms, String uri) throws CmsException {
+
+        CmsSitemapEntry entry = OpenCms.getSitemapManager().getEntryForUri(cms, uri);
+        if (entry.isSitemap()) {
+            return entry.getId();
+        } else {
+            return entry.getResourceId();
+        }
     }
 
     /**
@@ -285,6 +307,36 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
             return convertIdsToPaths(cms, value);
         }
         return value;
+    }
+
+    /**
+     * Returns a sitemap or VFS path given a sitemap entry id or structure id.<p>
+     * 
+     * This method first tries to read a sitemap entry with the given id. If this succeeds,
+     * the sitemap entry's sitemap path will be returned. If it fails, the method interprets
+     * the id as a structure id and tries to read the corresponding resource, and then returns
+     * its VFS path.<p>
+     * 
+     * @param cms the CMS context 
+     * @param id a sitemap entry id or structure id
+     * 
+     * @return a sitemap or VFS uri 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public static String getUriForId(CmsObject cms, CmsUUID id) throws CmsException {
+
+        String result = null;
+        try {
+            CmsResource res = cms.readResource(id);
+            result = cms.getSitePath(res);
+            return result;
+        } catch (CmsVfsResourceNotFoundException e) {
+            LOG.debug(e.getLocalizedMessage(), e);
+        }
+        CmsSitemapEntry entry = OpenCms.getSitemapManager().getEntryForId(cms, id);
+        result = entry.getSitePath(cms);
+        return result;
     }
 
     /**
@@ -450,8 +502,8 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
                         // it is not dangerous since the link has to be set before saving 
                     } else {
                         fileId = new CmsLink(valueUriLink).getStructureId();
+                        idList.add(fileId);
                     }
-                    idList.add(fileId);
                 }
                 // comma separated list of UUIDs
                 val = CmsStringUtil.listAsString(idList, CmsXmlContentProperty.PROP_SEPARATOR);
@@ -505,33 +557,33 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
                 // string value
                 valueElement.addElement(CmsXmlContentProperty.XmlNode.String.name()).addCDATA(propValue);
             } else {
-                // resource list value
-                Element filelistElem = valueElement.addElement(CmsXmlContentProperty.XmlNode.FileList.name());
-                for (String strId : CmsStringUtil.splitAsList(propValue, CmsXmlContentProperty.PROP_SEPARATOR)) {
-                    try {
-                        Element fileValueElem = filelistElem.addElement(CmsXmlContentProperty.XmlNode.Uri.name());
-                        CmsResource res = null;
-                        if (CmsUUID.isValidUUID(strId)) {
-                            // try as id
-                            try {
-                                res = cms.readResource(new CmsUUID(strId));
-                            } catch (Throwable e) {
-                                // did not work out, try as path
-                                res = cms.readResource(strId);
-                            }
-                        } else {
-                            // try as path
-                            res = cms.readResource(strId);
-                        }
-                        // HACK: here we assume weak relations, but it would be more robust to check it, with smth like:
-                        // type = xmlContent.getContentDefinition().getContentHandler().getRelationType(fileValueElem.getPath());
-                        CmsRelationType type = CmsRelationType.XML_WEAK;
-                        CmsXmlVfsFileValue.fillEntry(fileValueElem, res.getStructureId(), res.getRootPath(), type);
-                    } catch (CmsException e) {
-                        // should never happen
-                        LOG.error(e.getLocalizedMessage(), e);
-                    }
-                }
+                addFileListPropertyValue(cms, valueElement, propValue);
+            }
+        }
+    }
+
+    /**
+     * Adds the XML for a property value of a property of type 'vfslist' to the DOM.<p>
+     * 
+     * @param cms the current CMS context
+     * @param valueElement the element to which the vfslist property value should be added 
+     * @param propValue the property value which should be saved 
+     */
+    protected static void addFileListPropertyValue(CmsObject cms, Element valueElement, String propValue) {
+
+        // resource list value
+        Element filelistElem = valueElement.addElement(CmsXmlContentProperty.XmlNode.FileList.name());
+        for (String strId : CmsStringUtil.splitAsList(propValue, CmsXmlContentProperty.PROP_SEPARATOR)) {
+            try {
+                Element fileValueElem = filelistElem.addElement(CmsXmlContentProperty.XmlNode.Uri.name());
+                CmsVfsFileValueBean fileValue = getFileValueForIdOrUri(cms, strId);
+                // HACK: here we assume weak relations, but it would be more robust to check it, with smth like:
+                // type = xmlContent.getContentDefinition().getContentHandler().getRelationType(fileValueElem.getPath());
+                CmsRelationType type = CmsRelationType.XML_WEAK;
+                CmsXmlVfsFileValue.fillEntry(fileValueElem, fileValue.getId(), fileValue.getPath(), type);
+            } catch (CmsException e) {
+                // should never happen
+                LOG.error(e.getLocalizedMessage(), e);
             }
         }
     }
@@ -544,7 +596,7 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
      * 
      * @return a string representation of a list of paths
      */
-    private static String convertIdsToPaths(CmsObject cms, String value) {
+    protected static String convertIdsToPaths(CmsObject cms, String value) {
 
         if (value == null) {
             return null;
@@ -556,8 +608,8 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
         if (ids.size() > 0) {
             for (String id : ids) {
                 try {
-                    CmsResource propResource = cms.readResource(new CmsUUID(id));
-                    buffer.append(cms.getSitePath(propResource));
+                    String path = getUriForId(cms, new CmsUUID(id));
+                    buffer.append(path);
                 } catch (Exception e) {
                     // should never happen
                     LOG.error(e.getLocalizedMessage(), e);
@@ -569,7 +621,6 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
             result = buffer.substring(0, buffer.length() - CmsXmlContentProperty.PROP_SEPARATOR.length());
         }
         return result;
-
     }
 
     /**
@@ -580,7 +631,7 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
      * 
      * @return a string representation of a list of ids
      */
-    private static String convertPathsToIds(CmsObject cms, String value) {
+    protected static String convertPathsToIds(CmsObject cms, String value) {
 
         if (value == null) {
             return null;
@@ -592,8 +643,8 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
         if (paths.size() > 0) {
             for (String path : paths) {
                 try {
-                    CmsResource propResource = cms.readResource(path);
-                    buffer.append(propResource.getStructureId().toString());
+                    CmsUUID id = getIdForUri(cms, path);
+                    buffer.append(id.toString());
                 } catch (CmsException e) {
                     // should never happen
                     LOG.error(e.getLocalizedMessage(), e);
@@ -617,7 +668,7 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
      *  
      * @return the converted property map 
      */
-    private static Map<String, String> convertProperties(
+    protected static Map<String, String> convertProperties(
         CmsObject cms,
         Map<String, String> props,
         Map<String, CmsXmlContentProperty> propConfig,
@@ -639,6 +690,32 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
                 newValue = CmsXmlContentPropertyHelper.getPropValueIds(cms, type, propValue);
             }
             result.put(propName, newValue);
+        }
+        return result;
+    }
+
+    /**
+     * Given a string which might be a id or a (sitemap or VFS) URI, this method will return 
+     * a bean containing the right (sitemap or vfs) root path and (sitemap entry or structure) id.<p>
+     * 
+     * @param cms the current CMS context
+     * @param idOrUri a string containing an id or an URI 
+     * 
+     * @return a bean containing a root path and an id
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    protected static CmsVfsFileValueBean getFileValueForIdOrUri(CmsObject cms, String idOrUri) throws CmsException {
+
+        CmsVfsFileValueBean result;
+        if (CmsUUID.isValidUUID(idOrUri)) {
+            CmsUUID id = new CmsUUID(idOrUri);
+            String uri = getUriForId(cms, id);
+            result = new CmsVfsFileValueBean(cms.getRequestContext().addSiteRoot(uri), id);
+        } else {
+            String uri = idOrUri;
+            CmsUUID id = getIdForUri(cms, idOrUri);
+            result = new CmsVfsFileValueBean(cms.getRequestContext().addSiteRoot(uri), id);
         }
         return result;
     }
