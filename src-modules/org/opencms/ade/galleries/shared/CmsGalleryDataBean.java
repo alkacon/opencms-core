@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/Attic/CmsGalleryDataBean.java,v $
- * Date   : $Date: 2010/06/29 09:38:46 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/06/30 13:54:43 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 8.0.0
  */
@@ -67,6 +67,9 @@ public class CmsGalleryDataBean implements IsSerializable {
 
     /** The gallery mode. */
     private GalleryMode m_mode;
+
+    /** Beans for the root entries of root sitemaps. */
+    private List<CmsSitemapEntryBean> m_sitemapRoots;
 
     /** The start up tab id. */
     private GalleryTabId m_startTab;
@@ -116,6 +119,16 @@ public class CmsGalleryDataBean implements IsSerializable {
     public GalleryMode getMode() {
 
         return m_mode;
+    }
+
+    /**
+     * Returns a list of beans for the root entries of root sitemaps.<p>
+     * 
+     * @return a list of root sitemap root entry beans 
+     */
+    public List<CmsSitemapEntryBean> getSitemapRootEntries() {
+
+        return m_sitemapRoots;
     }
 
     /**
@@ -186,6 +199,16 @@ public class CmsGalleryDataBean implements IsSerializable {
     public void setMode(GalleryMode mode) {
 
         m_mode = mode;
+    }
+
+    /**
+     * Sets the root sitemap entries.<p>
+     * 
+     * @param roots the root entries 
+     */
+    public void setSitemapRootEntries(List<CmsSitemapEntryBean> roots) {
+
+        m_sitemapRoots = roots;
     }
 
     /**

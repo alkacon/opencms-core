@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleryController.java,v $
- * Date   : $Date: 2010/06/29 09:38:45 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2010/06/30 13:54:43 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,7 @@ import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
 import org.opencms.ade.galleries.shared.CmsGalleryFolderBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.CmsResourceTypeBean;
+import org.opencms.ade.galleries.shared.CmsSitemapEntryBean;
 import org.opencms.ade.galleries.shared.CmsVfsEntryBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
@@ -67,7 +68,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 8.0.0
  */
@@ -199,6 +200,37 @@ public class CmsGalleryController {
         m_handler.onClearTypes(selectedTypes);
         m_searchObject.clearTypes();
         updateResultsTab();
+    }
+
+    /**
+     * Asynchronously retrieves the sub-entries of a sitemap path ands passes them to a callback.<p>
+     * 
+     * @param path the path for which the sub-entries should be retrieved 
+     * 
+     * @param callback the callback to which the sitemap entry beans should be passed 
+     */
+    public void getSitemapSubEntries(final String path, final AsyncCallback<List<CmsSitemapEntryBean>> callback) {
+
+        CmsRpcAction<List<CmsSitemapEntryBean>> action = new CmsRpcAction<List<CmsSitemapEntryBean>>() {
+
+            @Override
+            public void execute() {
+
+                start(0);
+                getGalleryService().getSitemapSubEntries(path, this);
+            }
+
+            @Override
+            protected void onResponse(List<CmsSitemapEntryBean> result) {
+
+                stop(false);
+                callback.onSuccess(result);
+            }
+
+        };
+
+        action.execute();
+
     }
 
     /**

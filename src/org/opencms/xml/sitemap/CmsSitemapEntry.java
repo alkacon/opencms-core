@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapEntry.java,v $
- * Date   : $Date: 2010/05/27 06:52:03 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/06/30 13:54:43 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 7.6 
  */
@@ -70,6 +70,9 @@ public class CmsSitemapEntry {
     /** The entry id. */
     private final CmsUUID m_id;
 
+    /** True if this is a root entry of a root sitemap. */
+    private boolean m_isRootEntry;
+
     /** The file's structure id. */
     private final CmsUUID m_resourceId;
 
@@ -92,6 +95,7 @@ public class CmsSitemapEntry {
             entry.getResourceId(),
             entry.getName(),
             entry.getTitle(),
+            entry.isRootEntry(),
             entry.getProperties(),
             entry.getInheritedProperties(),
             entry.getContentId());
@@ -105,6 +109,7 @@ public class CmsSitemapEntry {
      * @param resourceId the file's structure id
      * @param name the entry's name
      * @param title the entry's title
+     * @param isRoot true if this is the root entry of a root sitemap 
      * @param properties the properties as a map of name/value pairs
      * @param inheritedProperties the properties as a map of name/value pairs
      * @param contentId optional content id
@@ -115,6 +120,7 @@ public class CmsSitemapEntry {
         CmsUUID resourceId,
         String name,
         String title,
+        boolean isRoot,
         Map<String, String> properties,
         Map<String, String> inheritedProperties,
         CmsUUID contentId) {
@@ -123,6 +129,7 @@ public class CmsSitemapEntry {
         m_resourceId = resourceId;
         m_name = name;
         m_title = title;
+        m_isRootEntry = isRoot;
         // do not freeze the properties
         m_properties = new HashMap<String, String>();
         if (properties != null) {
@@ -300,6 +307,16 @@ public class CmsSitemapEntry {
     }
 
     /**
+     * Returns true if this is the root entry of a root sitemap.<p> 
+     * 
+     * @return true if this is the root entry of a root sitemap 
+     */
+    public boolean isRootEntry() {
+
+        return m_isRootEntry;
+    }
+
+    /**
      * Checks if this is a sitemap entry.<p>
      * 
      * @return <code>true</code> if this is a sitemap entry
@@ -317,6 +334,16 @@ public class CmsSitemapEntry {
     public boolean isVfs() {
 
         return !m_sitemap;
+    }
+
+    /**
+     * Sets the 'is root entry of a root sitemap' status to true.<p>
+     * 
+     * @param isRoot true if this is the root entry of a root sitemap 
+     */
+    public void setRootEntry(boolean isRoot) {
+
+        m_isRootEntry = isRoot;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapCache.java,v $
- * Date   : $Date: 2010/06/08 07:12:45 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2010/06/30 13:54:43 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 7.6 
  */
@@ -207,7 +207,7 @@ public final class CmsSitemapCache extends CmsVfsCache {
                 Map<String, String> properties = new HashMap<String, String>();
 
                 // start iterating
-                visitEntry(adminCms, active, startEntry, locale, entryPoint.getRootPath(), 0, properties, online);
+                visitEntry(adminCms, active, startEntry, locale, entryPoint.getRootPath(), true, 0, properties, online);
             }
         }
 
@@ -357,7 +357,6 @@ public final class CmsSitemapCache extends CmsVfsCache {
         // retrieve data
         boolean online = cms.getRequestContext().currentProject().isOnlineProject();
         Map<String, CmsInternalSitemapEntry> entries = online ? m_byUriOnline : m_byUriOffline;
-
         // adjust path
         String path = cms.getRequestContext().getLocale().toString() + cms.getRequestContext().addSiteRoot(uri);
 
@@ -486,6 +485,7 @@ public final class CmsSitemapCache extends CmsVfsCache {
      * @param entry the entry itself
      * @param locale the locale to visit
      * @param entryPoint the entry's point root path
+     * @param isRootEntry true if the entry is a root entry of a root sitemap 
      * @param entryPos the entry's position
      * @param properties the inherited properties
      * @param online if online or offline, should be consistent with the current project
@@ -498,6 +498,7 @@ public final class CmsSitemapCache extends CmsVfsCache {
         CmsInternalSitemapEntry entry,
         Locale locale,
         String entryPoint,
+        boolean isRootEntry,
         int entryPos,
         Map<String, String> properties,
         boolean online) throws CmsException {
@@ -505,6 +506,7 @@ public final class CmsSitemapCache extends CmsVfsCache {
         // set runtime data
         String currentEntryPoint = entryPoint;
         entry.setRuntimeInfo(currentEntryPoint, entryPos, properties);
+        entry.setRootEntry(isRootEntry);
 
         // cache
         Map<CmsUUID, CmsInternalSitemapEntry> byId = online ? m_byIdOnline : m_byIdOffline;
@@ -531,8 +533,8 @@ public final class CmsSitemapCache extends CmsVfsCache {
         for (int position = 0; position < size; position++) {
             // visit sub-entries
             CmsInternalSitemapEntry subEntry = subEntries.get(position);
-            visitEntry(cms, active, subEntry, locale, currentEntryPoint, position, properties, online);
-        } 
+            visitEntry(cms, active, subEntry, locale, currentEntryPoint, false, position, properties, online);
+        }
     }
 
     /**

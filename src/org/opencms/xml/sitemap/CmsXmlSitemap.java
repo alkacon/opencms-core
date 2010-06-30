@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsXmlSitemap.java,v $
- * Date   : $Date: 2010/06/15 13:49:53 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2010/06/30 13:54:43 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.34 $ 
+ * @version $Revision: 1.35 $ 
  * 
  * @since 7.5.2
  * 
@@ -872,6 +872,7 @@ public class CmsXmlSitemap extends CmsXmlContent {
                 uriId,
                 entryName,
                 titleValue,
+                false,
                 propertiesMap,
                 subEntries,
                 null));

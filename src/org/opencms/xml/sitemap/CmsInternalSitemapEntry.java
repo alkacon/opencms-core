@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsInternalSitemapEntry.java,v $
- * Date   : $Date: 2010/06/09 06:24:35 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/06/30 13:54:43 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0 
  */
@@ -75,6 +75,7 @@ public class CmsInternalSitemapEntry extends CmsSitemapEntry {
             entry.getResourceId(),
             entry.getName(),
             entry.getTitle(),
+            entry.isRootEntry(),
             entry.getProperties(),
             entry.getSubEntries(),
             entry.getContentId());
@@ -103,6 +104,7 @@ public class CmsInternalSitemapEntry extends CmsSitemapEntry {
      * @param resourceId the file's structure id
      * @param name the entry's name
      * @param title the entry's title
+     * @param isRootEntry true if this entry is a root entry of a root sitemap 
      * @param properties the properties as a map of name/value pairs
      * @param subEntries the list of sub-entries
      * @param contentId optional content id
@@ -113,11 +115,12 @@ public class CmsInternalSitemapEntry extends CmsSitemapEntry {
         CmsUUID resourceId,
         String name,
         String title,
+        boolean isRootEntry,
         Map<String, String> properties,
         List<CmsInternalSitemapEntry> subEntries,
         CmsUUID contentId) {
 
-        super(id, originalUri, resourceId, name, title, properties, null, contentId);
+        super(id, originalUri, resourceId, name, title, isRootEntry, properties, null, contentId);
         m_subEntries = (subEntries == null
         ? Collections.<CmsInternalSitemapEntry> emptyList()
         : Collections.unmodifiableList(subEntries));
@@ -142,6 +145,7 @@ public class CmsInternalSitemapEntry extends CmsSitemapEntry {
             res.getStructureId(),
             res.getName(),
             null,
+            false,
             null,
             null,
             null);

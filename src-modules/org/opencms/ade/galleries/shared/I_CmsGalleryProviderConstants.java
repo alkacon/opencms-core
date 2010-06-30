@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/Attic/I_CmsGalleryProviderConstants.java,v $
- * Date   : $Date: 2010/06/29 09:38:46 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/06/30 13:54:43 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Polina Smagina 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 8.0.0
  */
@@ -49,7 +49,7 @@ public interface I_CmsGalleryProviderConstants {
 
         /** The advanced direct edit mode. */
         ade(GalleryTabId.cms_tab_types, GalleryTabId.cms_tab_galleries, GalleryTabId.cms_tab_vfstree,
-        GalleryTabId.cms_tab_categories, GalleryTabId.cms_tab_search),
+        GalleryTabId.cms_tab_sitemap, GalleryTabId.cms_tab_categories, GalleryTabId.cms_tab_search),
 
         /** The FCKEditor mode. */
         editor(GalleryTabId.cms_tab_galleries, GalleryTabId.cms_tab_vfstree, GalleryTabId.cms_tab_categories,

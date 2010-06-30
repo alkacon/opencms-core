@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2010/06/29 06:58:34 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2010/06/30 13:54:43 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,6 +49,7 @@ import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.relations.CmsRelationType;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.xml.CmsXmlContentDefinition;
@@ -73,7 +74,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.44 $
+ * @version $Revision: 1.45 $
  * 
  * @since 7.9.2
  */
@@ -155,18 +156,11 @@ public class CmsSitemapManager {
         }
         m_cache = new CmsSitemapCache(adminCms, memoryMonitor, cacheSettings);
 
-        // check for the resource init handler
-        for (I_CmsResourceInit initHandler : systemConfiguration.getResourceInitHandlers()) {
-            if (initHandler instanceof CmsSitemapResourceHandler) {
-                // found
-                return;
-            }
+        if (!isSitemapResourceInitConfigured(systemConfiguration)) {
+            LOG.warn(Messages.get().getBundle().key(
+                Messages.LOG_WARN_SITEMAP_HANDLER_NOT_CONFIGURED_1,
+                CmsSitemapResourceHandler.class.getName()));
         }
-
-        // not found
-        LOG.warn(Messages.get().getBundle().key(
-            Messages.LOG_WARN_SITEMAP_HANDLER_NOT_CONFIGURED_1,
-            CmsSitemapResourceHandler.class.getName()));
     }
 
     /**
@@ -185,6 +179,7 @@ public class CmsSitemapManager {
             entry.getResourceId(),
             "",
             entry.getTitle(),
+            false,
             entry.getProperties(),
             new ArrayList<CmsInternalSitemapEntry>(),
             entry.getContentId());
@@ -255,6 +250,30 @@ public class CmsSitemapManager {
         cms.writePropertyObject(sitemapPath, titleProp);
         cms.unlockResource(sitemapPath);
         return newSitemapRes;
+    }
+
+    /**
+     * Returns the entry points of active sitemaps for the current locale and site.<p>
+     * 
+     * @param cms the CMS context
+     * @return a list of entry points for the active sitemaps 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public List<String> getActiveSitemapsForSiteAndLocale(CmsObject cms) throws CmsException {
+
+        List<String> result = new ArrayList<String>();
+        Locale locale = cms.getRequestContext().getLocale();
+        String site = cms.getRequestContext().getSiteRoot();
+        String prefix = CmsStringUtil.joinPaths(locale.toString(), site, "/");
+        Map<String, String> activeSitemaps = m_cache.getActiveSitemaps(cms);
+        for (Map.Entry<String, String> entry : activeSitemaps.entrySet()) {
+            String key = entry.getKey();
+            if (key.startsWith(prefix)) {
+                result.add(key.substring(prefix.length() - 1));
+            }
+        }
+        return result;
     }
 
     /**
@@ -406,6 +425,7 @@ public class CmsSitemapManager {
             entry.getResourceId(),
             id.toString(),
             title,
+            entry.isRootEntry(),
             entryProps,
             null,
             id);
@@ -460,20 +480,7 @@ public class CmsSitemapManager {
         // always use root paths
         String sitemapPath = cms.getRequestContext().addSiteRoot(sitemapUri);
         // search for the given sitemap's entry point
-        String entryPoint = null;
-        for (Map.Entry<String, String> entry : active.entrySet()) {
-            if (!entry.getValue().equals(sitemapPath)) {
-                // wrong sitemap
-                continue;
-            }
-            if (!entry.getKey().startsWith(cms.getRequestContext().getLocale().toString())) {
-                // wrong locale
-                continue;
-            }
-            // this one!
-            entryPoint = entry.getKey();
-            break;
-        }
+        String entryPoint = getEntryPointKeyForSitemapPath(cms, active, sitemapPath);
         if (entryPoint == null) {
             // not found
             return null;
@@ -524,6 +531,27 @@ public class CmsSitemapManager {
             }
         }
         return cms.getRequestContext().removeSiteRoot(bestMatch.getValue());
+    }
+
+    /**
+     * Returns the root entries of root (non-sub-) sitemaps for the current site and locale.<p>
+     * 
+     * @param cms the CMS context
+     * @return a list of root entries of root sitemaps 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public List<CmsSitemapEntry> getRootSitemapRootEntries(CmsObject cms) throws CmsException {
+
+        List<CmsSitemapEntry> result = new ArrayList<CmsSitemapEntry>();
+        List<String> paths = getActiveSitemapsForSiteAndLocale(cms);
+        for (String path : paths) {
+            CmsSitemapEntry entry = getEntryForUri(cms, path);
+            if (entry.isRootEntry()) {
+                result.add(entry);
+            }
+        }
+        return result;
     }
 
     /**
@@ -674,6 +702,34 @@ public class CmsSitemapManager {
     }
 
     /**
+     * Finds the entry point key (locale + entry point) of a sitemap given its location in the VFS.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param active the map of active sitemaps 
+     * @param sitemapPath the location of the sitemap file 
+     * 
+     * @return the entry point key of the sitemap 
+     */
+    protected String getEntryPointKeyForSitemapPath(CmsObject cms, Map<String, String> active, String sitemapPath) {
+
+        String entryPoint = null;
+        for (Map.Entry<String, String> entry : active.entrySet()) {
+            if (!entry.getValue().equals(sitemapPath)) {
+                // wrong sitemap
+                continue;
+            }
+            if (!entry.getKey().startsWith(cms.getRequestContext().getLocale().toString())) {
+                // wrong locale
+                continue;
+            }
+            // this one!
+            entryPoint = entry.getKey();
+            break;
+        }
+        return entryPoint;
+    }
+
+    /**
      * Returns the sitemap type id.<p>
      * 
      * @return the sitemap type id
@@ -687,6 +743,24 @@ public class CmsSitemapManager {
                 CmsResourceTypeXmlSitemap.getStaticTypeName()).getTypeId();
         }
         return m_sitemapTypeId;
+    }
+
+    /**
+     * Checks whether the sitemap resource init handler is configured.<p>
+     * 
+     * @param systemConfiguration the system configuration
+     *  
+     * @return true if the sitemap resource init handler is configured 
+     */
+    protected boolean isSitemapResourceInitConfigured(CmsSystemConfiguration systemConfiguration) {
+
+        for (I_CmsResourceInit initHandler : systemConfiguration.getResourceInitHandlers()) {
+            if (initHandler instanceof CmsSitemapResourceHandler) {
+                // found
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

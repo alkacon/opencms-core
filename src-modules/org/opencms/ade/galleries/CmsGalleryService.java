@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/Attic/CmsGalleryService.java,v $
- * Date   : $Date: 2010/06/29 09:38:46 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2010/06/30 13:54:43 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,7 @@ import org.opencms.ade.galleries.shared.CmsGalleryFolderBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.CmsResourceTypeBean;
 import org.opencms.ade.galleries.shared.CmsResultItemBean;
+import org.opencms.ade.galleries.shared.CmsSitemapEntryBean;
 import org.opencms.ade.galleries.shared.CmsVfsEntryBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
@@ -64,6 +65,7 @@ import org.opencms.search.galleries.CmsGallerySearchResultList;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceMessages;
+import org.opencms.xml.sitemap.CmsInternalSitemapEntry;
 import org.opencms.xml.sitemap.CmsSitemapEntry;
 
 import java.util.ArrayList;
@@ -83,7 +85,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 8.0.0
  * 
@@ -281,41 +283,48 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
      */
     public CmsGalleryDataBean getInitialSettings() throws CmsRpcException {
 
-        CmsGalleryDataBean data = new CmsGalleryDataBean();
-        data.setMode(m_galleryMode);
-        data.setLocales(buildLocalesMap());
-        List<CmsVfsEntryBean> rootFolders = new ArrayList<CmsVfsEntryBean>();
-        rootFolders.add(new CmsVfsEntryBean("/", true));
-        data.setVfsRootFolders(rootFolders);
-        List<I_CmsResourceType> types = getResourceTypes();
-        List<CmsResourceTypeBean> typeList = buildTypesList(types);
-        switch (m_galleryMode) {
+        try {
 
-            case editor:
-            case view:
-            case widget:
-                data.setTypes(typeList);
-                data.setGalleries(buildGalleriesList(readGalleryTypes(types)));
-                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getRequest().getParameter(ReqParam.gallerypath.name()))
-                    || CmsStringUtil.isNotEmptyOrWhitespaceOnly(getRequest().getParameter(
-                        ReqParam.currentelement.name()))) {
-                    data.setStartTab(GalleryTabId.cms_tab_results);
-                } else {
-                    data.setStartTab(GalleryTabId.cms_tab_galleries);
-                }
-                break;
-            case ade:
-                data.setTypes(typeList);
-                data.setStartTab(GalleryTabId.cms_tab_types);
-                break;
-            case sitemap:
-                data.setTypes(typeList);
-                data.setStartTab(GalleryTabId.cms_tab_search);
-                break;
-            default:
-                break;
+            CmsGalleryDataBean data = new CmsGalleryDataBean();
+            data.setMode(m_galleryMode);
+            data.setLocales(buildLocalesMap());
+            List<CmsVfsEntryBean> rootFolders = new ArrayList<CmsVfsEntryBean>();
+            rootFolders.add(new CmsVfsEntryBean("/", true));
+            data.setVfsRootFolders(rootFolders);
+            data.setSitemapRootEntries(getRootSitemapRootEntries());
+            List<I_CmsResourceType> types = getResourceTypes();
+            List<CmsResourceTypeBean> typeList = buildTypesList(types);
+            switch (m_galleryMode) {
+
+                case editor:
+                case view:
+                case widget:
+                    data.setTypes(typeList);
+                    data.setGalleries(buildGalleriesList(readGalleryTypes(types)));
+                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getRequest().getParameter(ReqParam.gallerypath.name()))
+                        || CmsStringUtil.isNotEmptyOrWhitespaceOnly(getRequest().getParameter(
+                            ReqParam.currentelement.name()))) {
+                        data.setStartTab(GalleryTabId.cms_tab_results);
+                    } else {
+                        data.setStartTab(GalleryTabId.cms_tab_galleries);
+                    }
+                    break;
+                case ade:
+                    data.setTypes(typeList);
+                    data.setStartTab(GalleryTabId.cms_tab_types);
+                    break;
+                case sitemap:
+                    data.setTypes(typeList);
+                    data.setStartTab(GalleryTabId.cms_tab_search);
+                    break;
+                default:
+                    break;
+            }
+            return data;
+        } catch (CmsException e) {
+            error(e);
         }
-        return data;
+        return null;
     }
 
     /**
@@ -446,6 +455,29 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     }
 
     /**
+     * @see org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService#getSitemapSubEntries(java.lang.String)
+     */
+    public List<CmsSitemapEntryBean> getSitemapSubEntries(String path) throws CmsRpcException {
+
+        List<CmsSitemapEntryBean> result = new ArrayList<CmsSitemapEntryBean>();
+        try {
+            CmsObject cms = getCmsObject();
+            CmsInternalSitemapEntry entry = (CmsInternalSitemapEntry)OpenCms.getSitemapManager().getEntryForUri(
+                cms,
+                path);
+            for (CmsInternalSitemapEntry child : entry.getSubEntries()) {
+                result.add(createSitemapEntryBean(child));
+            }
+            return result;
+        } catch (Throwable e) {
+            error(e);
+        }
+        assert false : "should never be executed";
+        return null;
+
+    }
+
+    /**
      * @see org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService#getSubFolders(java.lang.String)
      */
     public List<CmsVfsEntryBean> getSubFolders(String path) throws CmsRpcException {
@@ -462,7 +494,43 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         } catch (Throwable e) {
             error(e);
         }
+        assert false : "should never be executed";
         return null;
+    }
+
+    /**
+     * Creates a sitemap entry bean (used for RPC) from a 'real' sitemap entry.<p>
+     * 
+     * @param entry the sitemap entry
+     * 
+     * @return the sitemap entry bean 
+     */
+    protected CmsSitemapEntryBean createSitemapEntryBean(CmsSitemapEntry entry) {
+
+        CmsObject cms = getCmsObject();
+        String sitePath = entry.getSitePath(cms);
+        String name = entry.getName();
+        String title = entry.getTitle();
+
+        return new CmsSitemapEntryBean(sitePath, name, title);
+    }
+
+    /**
+     * Gets the beans for the root entries of root sitemaps.<p>
+     * 
+     * @return a list of beans for the root entries of root sitemaps 
+
+     * @throws CmsException if something goes wrong 
+     */
+    protected List<CmsSitemapEntryBean> getRootSitemapRootEntries() throws CmsException {
+
+        CmsObject cms = getCmsObject();
+        List<CmsSitemapEntry> entries = OpenCms.getSitemapManager().getRootSitemapRootEntries(cms);
+        List<CmsSitemapEntryBean> result = new ArrayList<CmsSitemapEntryBean>();
+        for (CmsSitemapEntry entry : entries) {
+            result.add(createSitemapEntryBean(entry));
+        }
+        return result;
     }
 
     /**

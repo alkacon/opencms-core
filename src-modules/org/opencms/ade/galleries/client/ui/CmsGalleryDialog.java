@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsGalleryDialog.java,v $
- * Date   : $Date: 2010/06/29 09:38:46 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2010/06/30 13:54:43 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,7 @@ import org.opencms.ade.galleries.client.CmsGalleriesTabHandler;
 import org.opencms.ade.galleries.client.CmsGalleryController;
 import org.opencms.ade.galleries.client.CmsResultsTabHandler;
 import org.opencms.ade.galleries.client.CmsSearchTabHandler;
+import org.opencms.ade.galleries.client.CmsSitemapTabHandler;
 import org.opencms.ade.galleries.client.CmsTypesTabHandler;
 import org.opencms.ade.galleries.client.CmsVfsTabHandler;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
@@ -66,7 +67,7 @@ import com.google.gwt.user.client.ui.HTMLPanel;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * 
  * @since 8.0.
  */
@@ -102,6 +103,9 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
 
     /** The results tab. */
     private CmsResultsTab m_resultsTab;
+
+    /** The sitemap tab. */
+    private CmsSitemapTab m_sitemapTab;
 
     /** The tabbed panel. */
     private CmsTabbedPanel<A_CmsTab> m_tabbedPanel;
@@ -197,7 +201,9 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
                     m_tabbedPanel.add(tabContent, Messages.get().key(Messages.GUI_TAB_TITLE_SEARCH_0));
                     break;
                 case cms_tab_sitemap:
-                    //TODO: add sitemap tree tab
+                    m_sitemapTab = new CmsSitemapTab(new CmsSitemapTabHandler(controller));
+                    m_tabbedPanel.add(m_sitemapTab, Messages.get().key(Messages.GUI_TAB_TITLE_SITEMAP_0));
+
                     break;
                 case cms_tab_vfstree:
                     m_vfsTab = new CmsVfsTab(new CmsVfsTabHandler(controller));
@@ -262,6 +268,16 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
     public CmsResultsTab getResultsTab() {
 
         return m_resultsTab;
+    }
+
+    /**
+     * Returns the sitemap tab widget.<p>
+     * 
+     * @return the sitemap tab widget 
+     */
+    public CmsSitemapTab getSitemapTab() {
+
+        return m_sitemapTab;
     }
 
     /**

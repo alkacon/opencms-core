@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleryControllerHandler.java,v $
- * Date   : $Date: 2010/06/29 09:38:45 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2010/06/30 13:54:43 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import com.google.gwt.user.client.Command;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 8.0.0
 
@@ -184,6 +184,10 @@ public class CmsGalleryControllerHandler {
 
         if ((dialogBean.getVfsRootFolders() != null) && (m_galleryDialog.getVfsTab() != null)) {
             m_galleryDialog.getVfsTab().fillInitially(dialogBean.getVfsRootFolders());
+        }
+
+        if ((dialogBean.getSitemapRootEntries() != null) && (m_galleryDialog.getSitemapTab() != null)) {
+            m_galleryDialog.getSitemapTab().fillInitially(dialogBean.getSitemapRootEntries());
         }
 
         m_galleryDialog.selectTab(dialogBean.getStartTab());

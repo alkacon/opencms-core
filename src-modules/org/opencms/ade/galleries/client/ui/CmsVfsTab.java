@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsVfsTab.java,v $
- * Date   : $Date: 2010/06/29 09:38:46 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/06/30 13:54:43 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -97,8 +97,9 @@ public class CmsVfsTab extends A_CmsListTab {
     }
 
     /**
+     * Sets the initial folders in the VFS tab.<p>
      * 
-     * @param entries
+     * @param entries the root folders to display 
      */
     public void fillInitially(List<CmsVfsEntryBean> entries) {
 
@@ -156,6 +157,9 @@ public class CmsVfsTab extends A_CmsListTab {
         CmsLazyTreeItem result = new CmsLazyTreeItem(checkbox, liWidget);
         checkbox.addClickHandler(new ClickHandler() {
 
+            /**
+             * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
+             */
             public void onClick(ClickEvent event) {
 
                 m_tabHandler.onSelectFolder(vfsEntry.getSitePath(), checkbox.isChecked());
@@ -185,12 +189,18 @@ public class CmsVfsTab extends A_CmsListTab {
                 String path = entry.getSitePath();
                 AsyncCallback<List<CmsVfsEntryBean>> callback = new AsyncCallback<List<CmsVfsEntryBean>>() {
 
+                    /**
+                     * @see com.google.gwt.user.client.rpc.AsyncCallback#onFailure(java.lang.Throwable)
+                     */
                     public void onFailure(Throwable caught) {
 
                         // should never be called 
 
                     }
 
+                    /**
+                     * @see com.google.gwt.user.client.rpc.AsyncCallback#onSuccess(java.lang.Object)
+                     */
                     public void onSuccess(List<CmsVfsEntryBean> result) {
 
                         for (CmsVfsEntryBean childEntry : result) {
