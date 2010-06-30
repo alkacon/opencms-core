@@ -99,12 +99,20 @@ function setList() {
      
    } else {
      showRelatedResources(true);
-     
-     var okButton = document.getElementById("ok-button");
-     if (okButton != null) {
-       okButton.disabled = false;
-     }
+     activateOkButton();
    }
+}
+var buttonCount = 0;
+function activateOkButton() {
+    var okButton = document.getElementById("ok-button");
+    if (okButton != null) {
+        okButton.disabled = false;
+    } else {
+    	if (buttonCount < 20) {
+	        setTimeout("activateOkButton()", 200);
+	        buttonCount++;
+	    }
+    }
 }
 
 function reloadReport() {
@@ -297,12 +305,20 @@ function setList() {
 
      elem.style.display = "block";
      showBrokenLinks(true);
-     
-     var okButton = document.getElementById("ok-button");
-     if (okButton != null) {
-       okButton.disabled = false;
-     }
+     activateOkButton();
    }
+}
+var buttonCount = 0;
+function activateOkButton() {
+    var okButton = document.getElementById("ok-button");
+    if (okButton != null) {
+        okButton.disabled = false;
+    } else {
+    	if (buttonCount < 20) {
+	        setTimeout("activateOkButton()", 200);
+	        buttonCount++;
+	    }
+    }
 }
 
 // -->
