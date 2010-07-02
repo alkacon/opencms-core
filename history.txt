@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2010/06/17 13:06:38 $
- * Version: $Revision: 1.1188 $
+ * Date   : $Date: 2010/07/02 13:09:11 $
+ * Version: $Revision: 1.1189 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -20,6 +20,7 @@ Legend:
 - General comment
 
 OpenCms x.x.x - Month Day, Year
+* fixed issue: anchor of URL being encoded incorrectly (Bug: 1872)
 - Added new CmsShell command to import resources with a third parameter to set if keep permissions
 ! External Links (pointers) now support handling of request parameters (loader parameter in opencms-vfs.xml)
 * Keep browser based authentication text when rewriting the opencms-system.xml

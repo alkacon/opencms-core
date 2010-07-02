@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsLink.java,v $
- * Date   : $Date: 2010/01/18 10:03:51 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/07/02 13:06:38 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import org.dom4j.Element;
  * @author Carsten Weinholz
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -636,7 +636,7 @@ public class CmsLink {
 
         CmsUriSplitter splitter = new CmsUriSplitter(m_uri, true);
         m_target = splitter.getPrefix();
-        m_anchor = splitter.getAnchor();
+        m_anchor = CmsLinkProcessor.unescapeLink(splitter.getAnchor());
         setQuery(splitter.getQuery());
     }
 
