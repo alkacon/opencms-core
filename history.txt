@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2010/06/17 12:32:06 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2010/07/02 12:34:43 $
+ * Version: $Revision: 1.36 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -20,6 +20,7 @@ Legend:
 - General comment
 
 OpenCms x.x.x - Month Day, Year
+* fixed issue: anchor of URL being encoded incorrectly (Bug: 1872)
 * Keep browser based authentication text when rewriting the opencms-system.xml
 - Enhanced english and german dialog text when undo changes inclusive siblings which says that only the content changes are be undone
 - Updated Apache Commons Email to version 1.2
