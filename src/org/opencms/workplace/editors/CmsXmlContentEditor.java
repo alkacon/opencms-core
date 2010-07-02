@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2010/06/02 09:06:33 $
- * Version: $Revision: 1.90 $
+ * Date   : $Date: 2010/07/02 14:15:59 $
+ * Version: $Revision: 1.91 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.90 $ 
+ * @version $Revision: 1.91 $ 
  * 
  * @since 6.0.0 
  */
@@ -166,8 +166,17 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
     /** The content object to edit. */
     private CmsXmlContent m_content;
 
+    /** The currently active tab during form generation. */
+    private CmsXmlContentTab m_currentTab;
+
+    /** The currently active tab index during form generation. */
+    private int m_currentTabIndex;
+
     /** The element locale. */
     private Locale m_elementLocale;
+
+    /** The tabs containing elements with errors. */
+    private List m_errorTabs;
 
     /** File object used to read and write contents. */
     private CmsFile m_file;
@@ -192,6 +201,9 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
 
     /** The error handler for the xml content. */
     private CmsXmlContentErrorHandler m_validationHandler;
+
+    /** The tabs containing elements with warnings. */
+    private List m_warningTabs;
 
     /** Visitor implementation that stored the widgets for the content.  */
     private CmsXmlContentWidgetVisitor m_widgetCollector;
@@ -1477,12 +1489,6 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
         return m_validationHandler;
     }
 
-    private CmsXmlContentTab m_currentTab;
-
-    private List m_errorTabs;
-
-    private List m_warningTabs;
-
     /**
      * Generates the HTML form for the XML content editor.<p>
      * 
@@ -1501,7 +1507,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
         boolean showHelpBubble,
         boolean superTabOpened) {
 
-        StringBuffer result = new StringBuffer(1024);
+        StringBuffer result = new StringBuffer(2048);
         // only show errors if editor is not opened initially
         boolean showErrors = (getAction() != ACTION_NEW)
             && (getAction() != ACTION_DEFAULT)
@@ -1515,7 +1521,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             boolean nested = CmsStringUtil.isNotEmpty(pathPrefix);
             boolean useTabs = false;
             boolean tabOpened = false;
-            int currentTabIndex = 0;
+            StringBuffer selectedTabScript = new StringBuffer(64);
 
             boolean collapseLabel = false;
             boolean firstElement = true;
@@ -1621,9 +1627,9 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             }
 
             // iterate the type sequence        
-            for (Iterator i = contentDefinition.getTypeSequence().iterator(); i.hasNext();) {
+            for (Iterator<I_CmsXmlSchemaType> i = contentDefinition.getTypeSequence().iterator(); i.hasNext();) {
                 // get the type
-                I_CmsXmlSchemaType type = (I_CmsXmlSchemaType)i.next();
+                I_CmsXmlSchemaType type = i.next();
 
                 boolean tabCurrentlyOpened = false;
 
@@ -1645,21 +1651,9 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                             tabCurrentlyOpened = true;
                             collapseLabel = checkTab.isCollapsed();
                             m_currentTab = checkTab;
-                            currentTabIndex = tabIndex;
+                            m_currentTabIndex = tabIndex;
                             // leave loop
                             break;
-                        }
-                    }
-
-                    // check if a tab should be preselected for an added, removed or moved up/down element
-                    if (CmsStringUtil.isNotEmpty(getParamElementName())) {
-                        // an element was modified, add JS to preselect tab
-                        String elemName = CmsXmlUtils.getFirstXpathElement(getParamElementName());
-                        if ((m_currentTab != null)
-                            && (elemName.equals(m_currentTab.getStartName()) || (!CmsXmlUtils.isDeepXpath(getParamElementName()) && type.getName().equals(
-                                elemName)))) {
-                            result.append("<script type=\"text/javascript\">\n\txmlSelectedTab = ").append(
-                                currentTabIndex).append(";\n</script>\n");
                         }
                     }
                 }
@@ -1717,8 +1711,19 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                         widget = contentDefinition.getContentHandler().getWidget(value);
                     }
 
-                    // show errors and/or warnings               
                     String key = value.getPath();
+
+                    // check if a tab should be preselected for an added, removed or moved up/down element
+                    if ((m_currentTab != null) && CmsStringUtil.isNotEmpty(getParamElementName())) {
+                        // an element was modified, add JS to preselect tab
+                        if (key.startsWith(getParamElementName())
+                            && getParamElementIndex().equals(String.valueOf(value.getIndex()))) {
+                            selectedTabScript.append("<script type=\"text/javascript\">\n\txmlSelectedTab = ").append(
+                                m_currentTabIndex).append(";\n</script>\n");
+                        }
+                    }
+
+                    // show errors and/or warnings
                     if (showErrors
                         && getValidationHandler().hasErrors(getElementLocale())
                         && getValidationHandler().getErrors(getElementLocale()).containsKey(key)) {
@@ -1855,6 +1860,9 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                         "\";\n");
                 }
                 result.append("</script>\n");
+            }
+            if (selectedTabScript.length() > 0) {
+                result.append(selectedTabScript);
             }
         } catch (Throwable t) {
             LOG.error(Messages.get().getBundle().key(Messages.ERR_XML_EDITOR_0), t);
