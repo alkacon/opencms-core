@@ -4,15 +4,15 @@
 	xmlns:cms="urn:import:org.opencms.gwt.client.ui" 
 	xmlns:cmsInput="urn:import:org.opencms.gwt.client.ui.input">
 	<ui:with field="resources" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
-	<cms:CmsHTMLHoverPanel styleName="{resources.listItemWidgetCss.itemContainer}" addStyleNames="{resources.generalCss.cornerAll} {resources.generalCss.textMedium}">
-			<cms:CmsSimplePanel ui:field="m_contentPanel" styleName="{resources.listItemWidgetCss.itemContent}" addStyleNames="{resources.generalCss.cornerAll}">
+	<cms:CmsHoverPanel styleName="{resources.listItemWidgetCss.itemContainer}" addStyleNames="{resources.generalCss.cornerAll} {resources.generalCss.textMedium}">
+			<g:FlowPanel ui:field="m_contentPanel" styleName="{resources.listItemWidgetCss.itemContent}" addStyleNames="{resources.generalCss.cornerAll}">
 				<g:FlowPanel ui:field="m_buttonPanel" styleName="{resources.listItemWidgetCss.buttonPanel}"></g:FlowPanel>
-				<g:SimplePanel styleName="{resources.listItemWidgetCss.itemIcon}" ui:field="m_iconPanel"></g:SimplePanel>
+				<g:SimplePanel styleName="{resources.listItemWidgetCss.itemIcon}" ui:field="m_iconPanel" />
 		    	<g:FlowPanel ui:field="m_titleRow" styleName="{resources.listItemWidgetCss.titleRow}" >
 		    	  <cmsInput:CmsLabel ui:field="m_title" styleName="{resources.listItemWidgetCss.itemTitle}"/>
 		    	  <cmsInput:CmsLabel ui:field="m_subtitle" />
 		    	</g:FlowPanel>
-			</cms:CmsSimplePanel>
-			<cms:CmsSimplePanel styleName="{resources.listItemWidgetCss.itemAdditional}" ui:field="m_additionalInfo"></cms:CmsSimplePanel>
-	</cms:CmsHTMLHoverPanel>
+			</g:FlowPanel>
+			<g:FlowPanel styleName="{resources.listItemWidgetCss.itemAdditional}" ui:field="m_additionalInfo"></g:FlowPanel>
+	</cms:CmsHoverPanel>
 </ui:UiBinder> 

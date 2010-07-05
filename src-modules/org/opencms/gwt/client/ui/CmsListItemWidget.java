@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItemWidget.java,v $
- * Date   : $Date: 2010/06/09 13:08:55 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2010/07/05 10:05:44 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,7 +68,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Tobias Herrmann
  * @author Michael Moossen
  * 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * 
  * @since 8.0.0
  */
@@ -76,7 +76,7 @@ public class CmsListItemWidget extends Composite
 implements HasMouseOutHandlers, HasClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
 
     /** Additional info item HTML. */
-    protected static class AdditionalInfoItem extends CmsSimplePanel implements I_CmsTruncable {
+    protected static class AdditionalInfoItem extends Composite implements I_CmsTruncable {
 
         /** Text metrics key. */
         private static final String TMA_TITLE = "AddInfoTitle";
@@ -85,10 +85,10 @@ implements HasMouseOutHandlers, HasClickHandlers, HasMouseOverHandlers, I_CmsTru
         private static final String TMA_VALUE = "AddInfoValue";
 
         /** The title element. */
-        private CmsLabel m_titleElem;
+        private CmsLabel m_titleLabel;
 
         /** The value element. */
-        private CmsLabel m_valueElem;
+        private CmsLabel m_valueLabel;
 
         /**
          * Constructor.<p>
@@ -100,21 +100,23 @@ implements HasMouseOutHandlers, HasClickHandlers, HasMouseOverHandlers, I_CmsTru
         AdditionalInfoItem(String title, String value, String additionalStyle) {
 
             super();
+            FlowPanel panel = new FlowPanel();
+            initWidget(panel);
             I_CmsListItemWidgetCss style = I_CmsLayoutBundle.INSTANCE.listItemWidgetCss();
             // create title
-            m_titleElem = new CmsLabel(title + ":");
-            m_titleElem.addStyleName(style.itemAdditionalTitle());
-            add(m_titleElem);
+            m_titleLabel = new CmsLabel(title + ":");
+            m_titleLabel.addStyleName(style.itemAdditionalTitle());
+            panel.add(m_titleLabel);
             // create value
-            m_valueElem = new CmsLabel(value);
+            m_valueLabel = new CmsLabel(value);
             if ((value == null) || (value.trim().length() == 0)) {
-                m_valueElem.setHTML(CmsDomUtil.Entity.nbsp.html());
+                m_valueLabel.setHTML(CmsDomUtil.Entity.nbsp.html());
             }
-            m_valueElem.addStyleName(style.itemAdditionalValue());
+            m_valueLabel.addStyleName(style.itemAdditionalValue());
             if (additionalStyle != null) {
-                m_valueElem.addStyleName(additionalStyle);
+                m_valueLabel.addStyleName(additionalStyle);
             }
-            add(m_valueElem);
+            panel.add(m_valueLabel);
         }
 
         /**
@@ -122,9 +124,9 @@ implements HasMouseOutHandlers, HasClickHandlers, HasMouseOverHandlers, I_CmsTru
          *
          * @return the title element
          */
-        public CmsLabel getTitleElem() {
+        public CmsLabel getTitleLabel() {
 
-            return m_titleElem;
+            return m_titleLabel;
         }
 
         /**
@@ -132,9 +134,9 @@ implements HasMouseOutHandlers, HasClickHandlers, HasMouseOverHandlers, I_CmsTru
          *
          * @return the value element
          */
-        public CmsLabel getValueElem() {
+        public CmsLabel getValueLabel() {
 
-            return m_valueElem;
+            return m_valueLabel;
         }
 
         /**
@@ -143,16 +145,16 @@ implements HasMouseOutHandlers, HasClickHandlers, HasMouseOverHandlers, I_CmsTru
         public void truncate(String textMetricsPrefix, int widgetWidth) {
 
             // width fixed by css to 90 see I_CmsListItemWidgetCss#itemAdditionalTitle
-            m_titleElem.truncate(textMetricsPrefix + TMA_TITLE, 85);
+            m_titleLabel.truncate(textMetricsPrefix + TMA_TITLE, 85);
             // the rest
-            m_valueElem.truncate(textMetricsPrefix + TMA_VALUE, widgetWidth - 100);
+            m_valueLabel.truncate(textMetricsPrefix + TMA_VALUE, widgetWidth - 100);
         }
     }
 
     /**
      * @see com.google.gwt.uibinder.client.UiBinder
      */
-    protected interface I_CmsListItemWidgetUiBinder extends UiBinder<CmsHTMLHoverPanel, CmsListItemWidget> {
+    protected interface I_CmsListItemWidgetUiBinder extends UiBinder<CmsHoverPanel, CmsListItemWidget> {
         // GWT interface, nothing to do here
     }
 
@@ -170,7 +172,7 @@ implements HasMouseOutHandlers, HasClickHandlers, HasMouseOverHandlers, I_CmsTru
 
     /** DIV for additional item info. */
     @UiField
-    protected CmsSimplePanel m_additionalInfo;
+    protected FlowPanel m_additionalInfo;
 
     /** Panel to hold buttons.*/
     @UiField
@@ -178,7 +180,7 @@ implements HasMouseOutHandlers, HasClickHandlers, HasMouseOverHandlers, I_CmsTru
 
     /** Panel to hold the content.*/
     @UiField
-    protected CmsSimplePanel m_contentPanel;
+    protected FlowPanel m_contentPanel;
 
     /** The DIV showing the list icon. */
     @UiField
@@ -215,6 +217,7 @@ implements HasMouseOutHandlers, HasClickHandlers, HasMouseOverHandlers, I_CmsTru
      */
     public CmsListItemWidget(CmsListInfoBean infoBean) {
 
+        initWidget(uiBinder.createAndBindUi(this));
         m_handlerRegistrations = new ArrayList<HandlerRegistration>();
         init(infoBean);
     }
@@ -285,7 +288,7 @@ implements HasMouseOutHandlers, HasClickHandlers, HasMouseOverHandlers, I_CmsTru
      *
      * @return the content panel
      */
-    public CmsSimplePanel getContentPanel() {
+    public FlowPanel getContentPanel() {
 
         return m_contentPanel;
     }
@@ -350,7 +353,7 @@ implements HasMouseOutHandlers, HasClickHandlers, HasMouseOverHandlers, I_CmsTru
      */
     public void setAdditionalInfoValue(int index, String label) {
 
-        ((AdditionalInfoItem)m_additionalInfo.getWidget(index)).getValueElem().setText(label);
+        ((AdditionalInfoItem)m_additionalInfo.getWidget(index)).getValueLabel().setText(label);
     }
 
     /**
@@ -438,8 +441,6 @@ implements HasMouseOutHandlers, HasClickHandlers, HasMouseOverHandlers, I_CmsTru
      */
     protected void init(CmsListInfoBean infoBean) {
 
-        CmsHTMLHoverPanel itemContent = uiBinder.createAndBindUi(this);
-        initWidget(itemContent);
         m_iconPanel.setVisible(false);
         m_title.setText(infoBean.getTitle());
         m_subtitle.setText(infoBean.getSubTitle());
@@ -464,9 +465,7 @@ implements HasMouseOutHandlers, HasClickHandlers, HasMouseOverHandlers, I_CmsTru
                     }
                 }
             });
-            Iterator<Entry<String, String>> it = infoBean.getAdditionalInfo().entrySet().iterator();
-            while (it.hasNext()) {
-                Entry<String, String> entry = it.next();
+            for (Entry<String, String> entry : infoBean.getAdditionalInfo().entrySet()) {
                 String valueStyle = infoBean.getValueStyle(entry.getKey());
                 AdditionalInfoItem info = new AdditionalInfoItem(entry.getKey(), entry.getValue(), valueStyle);
                 m_additionalInfo.add(info);
