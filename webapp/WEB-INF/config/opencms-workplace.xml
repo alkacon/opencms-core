@@ -201,7 +201,7 @@
           </contextmenu>
         </editoptions>
       </explorertype>
-      <explorertype name="image" key="fileicon.image" icon="image.gif">
+      <explorertype name="image" key="fileicon.image" icon="image.gif" bigicon="image_big.png">
         <newresource uri="" order="40" autosetnavigation="false" autosettitle="false" info="desc.image" />
         <editoptions>
           <defaultproperties enabled="true" shownavigation="false">
@@ -351,6 +351,15 @@
             <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="commons/property.jsp" rule="nondeleted"/>
           </contextmenu>
         </editoptions>
+        <iconrules>
+          <iconrule extension="doc" icon="msword.png" bigicon="msword_big.png" />
+          <iconrule extension="docx" icon="msword.png" bigicon="msword_big.png" />
+          <iconrule extension="xls" icon="excel.png" bigicon="excel_big.png" />
+          <iconrule extension="ppt" icon="powerpoint.png" bigicon="powerpoint_big.png" />
+          <iconrule extension="zip" icon="archive.png" bigicon="archive_big.png" />
+          <iconrule extension="rar" icon="archive.png" bigicon="archive_big.png" />
+          <iconrule extension="pdf" icon="pdf.png" bigicon="pdf_big.png" />
+        </iconrules>
       </explorertype>
       <explorertype name="pointer" key="fileicon.pointer" icon="pointer.gif">
         <newresource uri="newresource_pointer.jsp" order="70" autosetnavigation="false" autosettitle="false" info="desc.pointer" />
