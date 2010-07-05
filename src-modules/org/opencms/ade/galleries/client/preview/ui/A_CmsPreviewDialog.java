@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/ui/Attic/A_CmsPreviewDialog.java,v $
- * Date   : $Date: 2010/06/14 06:09:19 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/07/05 14:48:06 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,11 +32,14 @@
 package org.opencms.ade.galleries.client.preview.ui;
 
 import org.opencms.ade.galleries.client.preview.I_CmsPreviewHandler;
+import org.opencms.ade.galleries.client.ui.CmsGalleryDialog;
 import org.opencms.ade.galleries.shared.CmsResourceInfoBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
+import org.opencms.gwt.client.ui.CmsConfirmDialog;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
 import org.opencms.gwt.client.ui.I_CmsButton;
+import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
 import org.opencms.gwt.client.ui.CmsTabbedPanel.CmsTabLayout;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsDomUtil.Style;
@@ -50,6 +53,8 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -63,7 +68,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Polina Smagina
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.
  */
@@ -105,7 +110,7 @@ public abstract class A_CmsPreviewDialog<T extends CmsResourceInfoBean> extends 
 
     /** The preview panel of preview dialog. */
     @UiField
-    protected FlowPanel m_previewPanel;
+    protected SimplePanel m_previewPanel;
 
     /** The tabbed panel of the preview dialog. */
     protected CmsTabbedPanel<Widget> m_tabbedPanel;
@@ -127,18 +132,18 @@ public abstract class A_CmsPreviewDialog<T extends CmsResourceInfoBean> extends 
     public A_CmsPreviewDialog(GalleryMode dialogMode, int dialogHeight, int dialogWidth) {
 
         // TODO: to remove, if a better way is found, so the css is only loaded once
-        // CmsGalleryDialog.initCss();
+        CmsGalleryDialog.initCss();
 
         initWidget(uiBinder.createAndBindUi(this));
 
         m_galleryMode = dialogMode;
 
-        m_dialogHeight = dialogHeight;
-        m_dialogWidth = dialogWidth;
+        m_dialogHeight = dialogHeight - 4;
+        m_dialogWidth = dialogWidth - 2;
 
         // height of the preview dialog
         m_parentPanel.getElement().getStyle().setHeight(m_dialogHeight, Unit.PX);
-        m_parentPanel.getElement().getStyle().setWidth((m_dialogWidth - 2), Unit.PX);
+        m_parentPanel.getElement().getStyle().setWidth((m_dialogWidth), Unit.PX);
 
         int previewHeight = m_minPreviewHeight;
         int detailsHeight = m_dialogHeight - previewHeight;
@@ -157,7 +162,7 @@ public abstract class A_CmsPreviewDialog<T extends CmsResourceInfoBean> extends 
             - CmsDomUtil.getCurrentStyleInt(m_tabsHolder.getElement(), Style.marginTop)
             - 2;
         m_tabsHolder.getElement().getStyle().setHeight(detailsHeight, Unit.PX);
-        m_tabsHolder.getElement().getStyle().setWidth((m_dialogWidth - 4), Unit.PX);
+        m_tabsHolder.getElement().getStyle().setWidth((m_dialogWidth - 2), Unit.PX);
 
         m_tabbedPanel = new CmsTabbedPanel<Widget>(CmsTabLayout.small, false);
         m_tabsHolder.add(m_tabbedPanel);
@@ -176,7 +181,32 @@ public abstract class A_CmsPreviewDialog<T extends CmsResourceInfoBean> extends 
      * @param onConfirm the command executed after saving
      * @param onCancel the command executed on cancel
      */
-    public abstract void confirmSaveChanges(String message, Command onConfirm, Command onCancel);
+    public void confirmSaveChanges(String message, final Command onConfirm, final Command onCancel) {
+
+        CmsConfirmDialog confirmDialog = new CmsConfirmDialog("Confirm", message);
+        confirmDialog.setHandler(new I_CmsConfirmDialogHandler() {
+
+            /**
+             * @see org.opencms.gwt.client.ui.I_CmsCloseDialogHandler#onClose()
+             */
+            public void onClose() {
+
+                if (onCancel != null) {
+                    onCancel.execute();
+                }
+            }
+
+            /**
+             * @see org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler#onOk()
+             */
+            public void onOk() {
+
+                if (onConfirm != null) {
+                    onConfirm.execute();
+                }
+            }
+        });
+    }
 
     /**
      * Fills the content of the tabs panel.<p>
@@ -207,8 +237,7 @@ public abstract class A_CmsPreviewDialog<T extends CmsResourceInfoBean> extends 
      */
     public void removePreview() {
 
-        m_parentPanel.setVisible(false);
-        m_parentPanel.removeFromParent();
+        removeFromParent();
     }
 
     /**
@@ -221,6 +250,11 @@ public abstract class A_CmsPreviewDialog<T extends CmsResourceInfoBean> extends 
     @UiHandler("m_closeButton")
     protected void onCloseClick(ClickEvent event) {
 
-        m_handler.closePreview();
+        if (m_handler != null) {
+            m_handler.closePreview();
+        } else {
+            m_parentPanel.add(new Label("handler = null"));
+        }
+
     }
 }

@@ -107,41 +107,28 @@
 
 .formatSelectBox {
 	width:150px;
-	display:inline-block;
 	margin-left:5px;
 	vertical-align:middle;		
 }
 
-@if user.agent ie6 {
-	.formatLabel{
-		width:100px;		
-		font-weight:bold;
-		margin-left:5px;
-		display:inline;
-		vertical-align:middle;
-		zoom:1;
-	}
-	
-	.formatText{
-		width:100px;		
-		margin-left:5px;
-		display:inline;
-		zoom:1;
-	}	
+.formatLabel, .formatText{
+	width:100px;
+	margin-left:5px;
+	vertical-align:middle;
+}
 
-} @else {
-	.formatLabel{
-		width:100px;
-		font-weight:bold;
-		margin-left:5px;
-		display:inline-block;
-		vertical-align:top;		
+.formatLabel{
+	font-weight:bold;
+}
+
+@if user.agent ie6 {
+	.formatLabel, .formatText, .formatSelectBox{
+		display:inline;
+		zoom:1;
 	}
-	
-	.formatText{
-		width:100px;		
-		margin-left:5px;
-		display:inline-block;
+} @else {
+	.formatLabel, .formatText, .formatSelectBox{
+		display: inline-block;
 	}	
 }
 	

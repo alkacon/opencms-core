@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/Messages.java,v $
- * Date   : $Date: 2010/06/30 13:54:43 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/07/05 14:48:07 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.client.util.CmsMessages;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 8.0.0
  */
@@ -78,10 +78,19 @@ public final class Messages {
     public static final String GUI_PREVIEW_BUTTON_SELECT_0 = "GUI_PREVIEW_BUTTON_SELECT_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREVIEW_LABEL_DATEMODIFIED_0 = "GUI_PREVIEW_LABEL_DATEMODIFIED_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PREVIEW_LABEL_FORMAT_0 = "GUI_PREVIEW_LABEL_FORMAT_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PREVIEW_LABEL_HEIGHT_0 = "GUI_PREVIEW_LABEL_HEIGHT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREVIEW_LABEL_PATH_0 = "GUI_PREVIEW_LABEL_PATH_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREVIEW_LABEL_SIZE_0 = "GUI_PREVIEW_LABEL_SIZE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PREVIEW_LABEL_WIDTH_0 = "GUI_PREVIEW_LABEL_WIDTH_0";

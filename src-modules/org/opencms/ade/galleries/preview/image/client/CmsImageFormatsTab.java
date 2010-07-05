@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/preview/image/client/Attic/CmsImageFormatsTab.java,v $
- * Date   : $Date: 2010/06/02 14:46:36 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/07/05 14:48:07 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,11 +32,13 @@
 package org.opencms.ade.galleries.preview.image.client;
 
 import org.opencms.ade.galleries.client.ui.Messages;
+import org.opencms.ade.galleries.shared.CmsImageInfoBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.input.CmsLabel;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
+import org.opencms.gwt.client.ui.input.CmsTextBox;
 
 import java.util.Map;
 
@@ -54,7 +56,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.
  */
@@ -78,35 +80,43 @@ public class CmsImageFormatsTab extends Composite {
 
     /** The cropping button. */
     @UiField
-    CmsPushButton m_cropButton;
+    protected CmsPushButton m_cropButton;
 
     /** The height label. */
     @UiField
-    CmsLabel m_heightLabel;
+    protected CmsLabel m_heightLabel;
 
     /** The panel holding the content. */
     @UiField
-    FlowPanel m_panel;
+    protected FlowPanel m_panel;
 
     /** The remove cropping button. */
     @UiField
-    CmsPushButton m_removeCropButton;
+    protected CmsPushButton m_removeCropButton;
 
     /** The select box. */
     @UiField
-    CmsSelectBox m_selectBox;
+    protected CmsSelectBox m_selectBox;
 
     /** The select box label. */
     @UiField
-    CmsLabel m_selectBoxLabel;
+    protected CmsLabel m_selectBoxLabel;
 
     /** The select button. */
     @UiField
-    CmsPushButton m_selectButton;
+    protected CmsPushButton m_selectButton;
 
     /** The width label. */
     @UiField
-    CmsLabel m_widthLabel;
+    protected CmsLabel m_widthLabel;
+
+    /** The width text box. */
+    @UiField
+    protected CmsTextBox m_widthBox;
+
+    /** The height text box. */
+    @UiField
+    protected CmsTextBox m_heightBox;
 
     /** The mode of the gallery. */
     private GalleryMode m_dialogMode;
@@ -147,6 +157,17 @@ public class CmsImageFormatsTab extends Composite {
         // buttons        
         m_selectButton.setText(Messages.get().key(Messages.GUI_PREVIEW_BUTTON_SELECT_0));
 
+    }
+
+    /**
+     * Displays the provided image information.<p>
+     * 
+     * @param imageInfo the image information
+     */
+    public void fillContent(CmsImageInfoBean imageInfo) {
+
+        m_widthBox.setFormValueAsString("" + imageInfo.getWidth());
+        m_heightBox.setFormValueAsString("" + imageInfo.getHeight());
     }
 
     /**

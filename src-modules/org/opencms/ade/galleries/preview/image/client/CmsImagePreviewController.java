@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/preview/image/client/Attic/CmsImagePreviewController.java,v $
- * Date   : $Date: 2010/06/10 08:45:04 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/07/05 14:48:07 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,10 +32,14 @@
 package org.opencms.ade.galleries.preview.image.client;
 
 import org.opencms.ade.galleries.client.preview.A_CmsPreviewController;
-import org.opencms.ade.galleries.preview.image.shared.CmsImageInfoBean;
-import org.opencms.ade.galleries.shared.CmsResourceInfoBean;
+import org.opencms.ade.galleries.shared.CmsImageInfoBean;
+import org.opencms.ade.galleries.shared.rpc.I_CmsPreviewService;
+import org.opencms.ade.galleries.shared.rpc.I_CmsPreviewServiceAsync;
+import org.opencms.gwt.client.rpc.CmsRpcAction;
 
 import java.util.Map;
+
+import com.google.gwt.core.client.GWT;
 
 /**
  * Image preview dialog controller.<p>
@@ -44,17 +48,18 @@ import java.util.Map;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  */
 public class CmsImagePreviewController extends A_CmsPreviewController<CmsImageInfoBean> {
 
+    /** The preview service. */
+    private I_CmsPreviewServiceAsync m_previewService;
+
+    //TODO: verify if necessary
     /** The field id of the input field in the xmlcontent. */
     private String m_fieldId;
-
-    /** The info bean of the preview dialog. */
-    private CmsResourceInfoBean m_infoBean;
 
     /**
      * Constructor.<p>
@@ -70,18 +75,71 @@ public class CmsImagePreviewController extends A_CmsPreviewController<CmsImageIn
     /**
      * @see org.opencms.ade.galleries.client.preview.I_CmsPreviewController#loadResourceInfo(java.lang.String)
      */
-    public void loadResourceInfo(String resourcePath) {
+    public void loadResourceInfo(final String resourcePath) {
 
-        // TODO: Auto-generated method stub
+        CmsRpcAction<CmsImageInfoBean> action = new CmsRpcAction<CmsImageInfoBean>() {
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+             */
+            @Override
+            public void execute() {
+
+                getService().getImageInfo(resourcePath, this);
+            }
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+             */
+            @Override
+            protected void onResponse(CmsImageInfoBean result) {
+
+                showData(result);
+            }
+        };
+        action.execute();
 
     }
 
     /**
      * @see org.opencms.ade.galleries.client.preview.I_CmsPreviewController#saveProperties(java.util.Map)
      */
-    public void saveProperties(Map<String, String> properties) {
+    public void saveProperties(final Map<String, String> properties) {
 
-        // TODO: Auto-generated method stub
+        CmsRpcAction<CmsImageInfoBean> action = new CmsRpcAction<CmsImageInfoBean>() {
 
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+             */
+            @Override
+            public void execute() {
+
+                getService().updateImageProperties(getResourcePath(), properties, this);
+            }
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+             */
+            @Override
+            protected void onResponse(CmsImageInfoBean result) {
+
+                showData(result);
+            }
+        };
+        action.execute();
+
+    }
+
+    /**
+     * Returns the preview service.<p>
+     * 
+     * @return the preview service
+     */
+    protected I_CmsPreviewServiceAsync getService() {
+
+        if (m_previewService == null) {
+            m_previewService = GWT.create(I_CmsPreviewService.class);
+        }
+        return m_previewService;
     }
 }

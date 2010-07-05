@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/rpc/Attic/I_CmsPreviewServiceAsync.java,v $
- * Date   : $Date: 2010/06/10 08:45:04 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/07/05 14:48:06 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.ade.galleries.shared.rpc;
 
+import org.opencms.ade.galleries.shared.CmsImageInfoBean;
 import org.opencms.ade.galleries.shared.CmsResourceInfoBean;
 
 import java.util.Map;
@@ -42,7 +43,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  * 
@@ -51,6 +52,14 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * @see org.opencms.ade.galleries.shared.rpc.I_CmsPreviewServiceAsync
  */
 public interface I_CmsPreviewServiceAsync {
+
+    /**
+     * Returns the image resource data to be displayed in the preview dialog.<p>
+     * 
+     * @param resourcePath the resource path
+     * @param callback the call-back
+     */
+    void getImageInfo(String resourcePath, AsyncCallback<CmsImageInfoBean> callback);
 
     /**
      * Returns the data to be displayed in the preview dialog.<p>
@@ -62,14 +71,27 @@ public interface I_CmsPreviewServiceAsync {
     void getResourceInfo(String resourcePath, AsyncCallback<CmsResourceInfoBean> callback);
 
     /**
-     * Returns the data to be displayed in the preview dialog.<p>
+     * Saves the given properties to the resource and returns the data to be displayed in the preview dialog.<p>
      * 
      * @param resourcePath the path to the selected resource
      * @param properties a map with the key/value pairs of the properties to be updated
      * 
      * @param callback the call-back 
      */
-    void updateProperties(
+    void updateImageProperties(
+        String resourcePath,
+        Map<String, String> properties,
+        AsyncCallback<CmsImageInfoBean> callback);
+
+    /**
+     * Saves the given properties to the resource and returns the data to be displayed in the preview dialog.<p>
+     * 
+     * @param resourcePath the path to the selected resource
+     * @param properties a map with the key/value pairs of the properties to be updated
+     * 
+     * @param callback the call-back 
+     */
+    void updateResourceProperties(
         String resourcePath,
         Map<String, String> properties,
         AsyncCallback<CmsResourceInfoBean> callback);

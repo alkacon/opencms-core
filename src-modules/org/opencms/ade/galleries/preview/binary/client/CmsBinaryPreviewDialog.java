@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/preview/binary/client/Attic/CmsBinaryPreviewDialog.java,v $
- * Date   : $Date: 2010/06/10 08:45:04 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/07/05 14:48:06 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,16 +36,13 @@ import org.opencms.ade.galleries.client.preview.ui.CmsPropertiesTab;
 import org.opencms.ade.galleries.shared.CmsResourceInfoBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.HTML;
-
 /**
  * Provides a widget for the binary preview dialog .<p>
  *  
  * @author Polina Smagina
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.
  */
@@ -67,33 +64,24 @@ public class CmsBinaryPreviewDialog extends A_CmsPreviewDialog<CmsResourceInfoBe
     }
 
     /**
-     * @see org.opencms.ade.galleries.client.preview.ui.A_CmsPreviewDialog#confirmSaveChanges(java.lang.String, com.google.gwt.user.client.Command, com.google.gwt.user.client.Command)
-     */
-    @Override
-    public void confirmSaveChanges(String message, Command onConfirm, Command onCancel) {
-
-        //TODO: implement
-    }
-
-    /**
      * @see org.opencms.ade.galleries.client.preview.ui.A_CmsPreviewDialog#fillContent(org.opencms.ade.galleries.shared.CmsResourceInfoBean)
      */
     @Override
     public void fillContent(CmsResourceInfoBean infoBean) {
 
         //TODO: use proper preview content
-        fillPreviewPanel("<p>" + m_galleryMode.name() + "</p>");
+        fillPreviewPanel(infoBean);
         m_propertiesTab.fillProperties(infoBean.getProperties());
     }
 
     /**
      * Fills the content of the preview panel part.<p>
      * 
-     * @param html the content html
+     * @param infoBean the resource info
      */
-    public void fillPreviewPanel(String html) {
+    public void fillPreviewPanel(CmsResourceInfoBean infoBean) {
 
-        m_previewPanel.add(new HTML(html));
+        m_previewPanel.setWidget(new CmsPreviewContent(infoBean));
     }
 
     /**

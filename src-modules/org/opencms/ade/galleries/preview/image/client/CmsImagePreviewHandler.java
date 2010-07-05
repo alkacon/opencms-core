@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/preview/image/client/Attic/CmsImagePreviewHandler.java,v $
- * Date   : $Date: 2010/06/10 08:45:04 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/07/05 14:48:07 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,7 +32,7 @@
 package org.opencms.ade.galleries.preview.image.client;
 
 import org.opencms.ade.galleries.client.preview.A_CmsPreviewHandler;
-import org.opencms.ade.galleries.preview.image.shared.CmsImageInfoBean;
+import org.opencms.ade.galleries.shared.CmsImageInfoBean;
 
 /**
  * Image preview dialog controller handler.<p>
@@ -41,7 +41,7 @@ import org.opencms.ade.galleries.preview.image.shared.CmsImageInfoBean;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  */

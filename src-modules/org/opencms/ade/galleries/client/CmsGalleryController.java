@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleryController.java,v $
- * Date   : $Date: 2010/06/30 13:54:43 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2010/07/05 14:48:07 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,7 +68,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 8.0.0
  */
@@ -186,6 +186,9 @@ public class CmsGalleryController {
         updateResultsTab();
     }
 
+    /**
+     * Removes text search parameters from search object.<p>
+     */
     public void clearTextSearch() {
 
         //TODO: implement
@@ -379,7 +382,7 @@ public class CmsGalleryController {
         switch (sort) {
             case tree:
                 m_handler.onUpdateCategories(m_dialogBean.getCategories(), m_searchObject.getCategories());
-                return;
+                break;
             case title_asc:
                 categories = new ArrayList<CmsCategoryBean>();
                 categoryTreeToList(categories, m_dialogBean.getCategories());
@@ -398,7 +401,6 @@ public class CmsGalleryController {
             case path_desc:
             case dateLastModified_asc:
             case dateLastModified_desc:
-
             default:
         }
     }

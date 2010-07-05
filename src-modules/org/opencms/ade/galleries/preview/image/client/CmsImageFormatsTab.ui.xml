@@ -7,28 +7,28 @@
 	<g:FlowPanel>
 		<g:FlowPanel ui:field="m_panel" styleName="{galleryResources.previewDialogCss.formatsPanel}" >			
 			<g:FlowPanel addStyleNames="{galleryResources.previewDialogCss.formatsLine}">		 
-			    <cmsinput:CmsLabel ui:field="m_selectBoxLabel" addStyleNames="{galleryResources.previewDialogCss.formatLabel}"></cmsinput:CmsLabel>	 									
-			    <cms:CmsFlowPanel tag='span' addStyleNames="{galleryResources.previewDialogCss.formatSelectBox}">
-			    	<cmsinput:CmsSelectBox ui:field="m_selectBox" ></cmsinput:CmsSelectBox>
-			    </cms:CmsFlowPanel>				 									
-				<cms:CmsPushButton ui:field="m_cropButton" addStyleNames="{galleryResources.previewDialogCss.formatButton}"></cms:CmsPushButton>				 				
-				<cms:CmsPushButton ui:field="m_removeCropButton" addStyleNames="{galleryResources.previewDialogCss.formatButton}"></cms:CmsPushButton> 
+			    <cmsinput:CmsLabel ui:field="m_selectBoxLabel" addStyleNames="{galleryResources.previewDialogCss.formatLabel}" />	 									
+			    <g:SimplePanel styleName="{galleryResources.previewDialogCss.formatSelectBox}">
+			    	<cmsinput:CmsSelectBox ui:field="m_selectBox" />
+			    </g:SimplePanel>				 									
+				<cms:CmsPushButton ui:field="m_cropButton" addStyleNames="{galleryResources.previewDialogCss.formatButton}" />				 				
+				<cms:CmsPushButton ui:field="m_removeCropButton" addStyleNames="{galleryResources.previewDialogCss.formatButton}" /> 
 			</g:FlowPanel>
 			<g:FlowPanel addStyleNames="{galleryResources.previewDialogCss.formatsLineSize}">
-				<cmsinput:CmsLabel ui:field="m_widthLabel" addStyleNames="{galleryResources.previewDialogCss.formatLabel}"></cmsinput:CmsLabel>
+				<cmsinput:CmsLabel ui:field="m_widthLabel" addStyleNames="{galleryResources.previewDialogCss.formatLabel}" />
 				<g:FlowPanel addStyleNames="{galleryResources.previewDialogCss.formatText}">
-					<cmsinput:CmsTextBox ></cmsinput:CmsTextBox>
+					<cmsinput:CmsTextBox ui:field="m_widthBox" />
 				</g:FlowPanel>
 			</g:FlowPanel>
 			<g:FlowPanel addStyleNames="{galleryResources.previewDialogCss.formatsLineSize}">
-				<cmsinput:CmsLabel ui:field="m_heightLabel" addStyleNames="{galleryResources.previewDialogCss.formatLabel}"></cmsinput:CmsLabel>
+				<cmsinput:CmsLabel ui:field="m_heightLabel" addStyleNames="{galleryResources.previewDialogCss.formatLabel}" />
 				<g:FlowPanel addStyleNames="{galleryResources.previewDialogCss.formatText}">
-					<cmsinput:CmsTextBox ></cmsinput:CmsTextBox>
+					<cmsinput:CmsTextBox ui:field="m_heightBox" />
 				</g:FlowPanel>
 			</g:FlowPanel>	
 		</g:FlowPanel>
 		<g:FlowPanel addStyleNames="{galleryResources.previewDialogCss.previewButtonBar}">
-			<cms:CmsPushButton ui:field="m_selectButton" addStyleNames="{galleryResources.previewDialogCss.previewButton}"></cms:CmsPushButton>			
+			<cms:CmsPushButton ui:field="m_selectButton" addStyleNames="{galleryResources.previewDialogCss.previewButton}" />			
 		</g:FlowPanel>
 	</g:FlowPanel>	
 </ui:UiBinder> 

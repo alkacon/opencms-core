@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleryControllerHandler.java,v $
- * Date   : $Date: 2010/06/30 13:54:43 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2010/07/05 14:48:07 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import com.google.gwt.user.client.Command;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 8.0.0
 
@@ -60,7 +60,7 @@ import com.google.gwt.user.client.Command;
 public class CmsGalleryControllerHandler {
 
     /** The reference to the gallery dialog. */
-    private CmsGalleryDialog m_galleryDialog;
+    protected CmsGalleryDialog m_galleryDialog;
 
     /**
      * Constructor.<p>
@@ -160,7 +160,7 @@ public class CmsGalleryControllerHandler {
      */
     public void onInitialSearch(
         final CmsGallerySearchBean searchObj,
-        CmsGalleryDataBean dialogBean,
+        final CmsGalleryDataBean dialogBean,
         final CmsGalleryController controller) {
 
         m_galleryDialog.fillTabs(dialogBean.getMode().getTabs(), controller);

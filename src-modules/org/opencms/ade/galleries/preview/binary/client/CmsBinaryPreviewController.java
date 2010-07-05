@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/preview/binary/client/Attic/CmsBinaryPreviewController.java,v $
- * Date   : $Date: 2010/06/10 08:45:04 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/07/05 14:48:06 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import com.google.gwt.core.client.GWT;
  * @author Polina Smagina
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  */
@@ -112,7 +112,7 @@ public final class CmsBinaryPreviewController extends A_CmsPreviewController<Cms
             @Override
             public void execute() {
 
-                getService().updateProperties(getResourcePath(), properties, this);
+                getService().updateResourceProperties(getResourcePath(), properties, this);
             }
 
             /**

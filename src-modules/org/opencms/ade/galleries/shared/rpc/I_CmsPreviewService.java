@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/rpc/Attic/I_CmsPreviewService.java,v $
- * Date   : $Date: 2010/06/10 08:45:04 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/07/05 14:48:07 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.ade.galleries.shared.rpc;
 
+import org.opencms.ade.galleries.shared.CmsImageInfoBean;
 import org.opencms.ade.galleries.shared.CmsResourceInfoBean;
 import org.opencms.gwt.CmsRpcException;
 
@@ -44,7 +45,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  * 
@@ -54,6 +55,17 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  */
 @RemoteServiceRelativePath("org.opencms.ade.galleries.CmsPreviewService.gwt")
 public interface I_CmsPreviewService extends RemoteService {
+
+    /**
+     * Returns the image resource data to be displayed in the preview dialog.<p>
+     * 
+     * @param resourcePath the resource path
+     * 
+     * @return the image resource data
+     * 
+     * @throws CmsRpcException  if something goes wrong
+     */
+    CmsImageInfoBean getImageInfo(String resourcePath) throws CmsRpcException;
 
     /**
      * Returns the data to be displayed in the preview dialog.<p>
@@ -67,7 +79,7 @@ public interface I_CmsPreviewService extends RemoteService {
     CmsResourceInfoBean getResourceInfo(String resourcePath) throws CmsRpcException;
 
     /**
-     * Returns the data to be displayed in the preview dialog.<p>
+     * Saves the given properties to the resource and returns the data to be displayed in the preview dialog.<p>
      * 
      * @param resourcePath the path to the selected resource
      * @param properties a map with the key/value pairs of the properties to be updated
@@ -76,6 +88,19 @@ public interface I_CmsPreviewService extends RemoteService {
      *   
      * @throws CmsRpcException if something goes wrong
      */
-    CmsResourceInfoBean updateProperties(String resourcePath, Map<String, String> properties) throws CmsRpcException;
+    CmsImageInfoBean updateImageProperties(String resourcePath, Map<String, String> properties) throws CmsRpcException;
+
+    /**
+     * Saves the given properties to the resource and returns the data to be displayed in the preview dialog.<p>
+     * 
+     * @param resourcePath the path to the selected resource
+     * @param properties a map with the key/value pairs of the properties to be updated
+     * 
+     * @return the updates preview data
+     *   
+     * @throws CmsRpcException if something goes wrong
+     */
+    CmsResourceInfoBean updateResourceProperties(String resourcePath, Map<String, String> properties)
+    throws CmsRpcException;
 
 }

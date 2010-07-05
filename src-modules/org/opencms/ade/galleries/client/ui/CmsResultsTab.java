@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsResultsTab.java,v $
- * Date   : $Date: 2010/06/29 09:38:46 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2010/07/05 14:48:07 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,6 @@ import org.opencms.gwt.client.draganddrop.I_CmsDragHandler;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
-import org.opencms.gwt.client.util.CmsClientStringUtil;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsPair;
@@ -65,7 +64,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 8.0.
  */
@@ -335,16 +334,6 @@ public class CmsResultsTab extends A_CmsListTab {
     }
 
     /**
-     * @see com.google.gwt.user.client.ui.Composite#onAttach()
-     */
-    @Override
-    protected void onAttach() {
-
-        super.onAttach();
-        updateListSize();
-    }
-
-    /**
      * Displays the selected search parameters in the result tab.<p>
      * 
      * @param searchObj the bean containing the search parameters 
@@ -392,21 +381,13 @@ public class CmsResultsTab extends A_CmsListTab {
         int tabHeight = m_tab.getElement().getClientHeight();
         CmsDebugLog.getInstance().printLine("updating size, tabHeight: " + tabHeight);
         // sanity check on tab height
-        tabHeight = tabHeight > 0 ? tabHeight : 450;
+        tabHeight = tabHeight > 0 ? tabHeight : 434;
 
-        int marginValueParams = 0;
-        String marginBottomPrams = CmsDomUtil.getCurrentStyle(m_params.getElement(), CmsDomUtil.Style.marginBottom);
-        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(marginBottomPrams)) {
-            marginValueParams = CmsClientStringUtil.parseInt(marginBottomPrams);
-        }
-        int paramsHeight = m_params.getOffsetHeight() + marginValueParams;
+        int paramsHeight = m_params.isVisible() ? m_params.getOffsetHeight()
+            + CmsDomUtil.getCurrentStyleInt(m_params.getElement(), CmsDomUtil.Style.marginBottom) : 0;
 
-        int marginValueOptions = 0;
-        String marginBottomOptions = CmsDomUtil.getCurrentStyle(m_params.getElement(), CmsDomUtil.Style.marginBottom);
-        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(marginBottomOptions)) {
-            marginValueOptions = CmsClientStringUtil.parseInt(marginBottomOptions);
-        }
-        int optionsHeight = m_options.getOffsetHeight() + marginValueOptions;
+        int optionsHeight = m_options.getOffsetHeight()
+            + CmsDomUtil.getCurrentStyleInt(m_options.getElement(), CmsDomUtil.Style.marginBottom);
 
         // 3 is some offset, because of the list border
         int newListSize = tabHeight - paramsHeight - optionsHeight - 4;

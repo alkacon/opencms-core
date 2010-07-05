@@ -1,0 +1,40 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:cms="urn:import:org.opencms.gwt.client.ui.input">
+	<ui:with field="resources" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
+	<ui:style field="m_style" type="org.opencms.ade.galleries.preview.binary.client.CmsPreviewContent.I_CmsPreviewContentStyle">
+		.panel{
+			height: 100%;
+			overflow: auto;
+		}
+		
+		.panel > div{
+			padding: 3px 5px;
+		}
+		.icon{
+			margin-right: 5px;
+		}
+		
+		.icon, .field, .label{
+			display: inline-block;
+		}
+		.row{
+			margin-top: 5px;
+		}
+		.title{
+			font-weight: bold;
+		}
+		.label{
+			margin-right: 5px;
+		}
+		.description{}
+	</ui:style>
+	<g:HTMLPanel styleName="{m_style.panel}">
+		<div><g:InlineLabel styleName="{m_style.icon}" ui:field="m_icon" /><g:InlineLabel styleName="{m_style.title}" addStyleNames="{m_style.field} {resources.generalCss.textBig}" ui:field="m_title" /></div>
+		<g:Label styleName="{m_style.description}" addStyleNames="{resources.generalCss.textMedium}" ui:field="m_description"></g:Label>
+		<div><cms:CmsLabel styleName="{m_style.label}" addStyleNames="{resources.generalCss.textMedium}" ui:field="m_sizeLabel" /><g:InlineLabel styleName="{m_style.field}" addStyleNames="{resources.generalCss.textMedium}" ui:field="m_size" /></div>
+		<div><cms:CmsLabel styleName="{m_style.label}" addStyleNames="{resources.generalCss.textMedium}" ui:field="m_dateModLabel" /><g:InlineLabel styleName="{m_style.field}" addStyleNames="{resources.generalCss.textMedium}" ui:field="m_dateMod" /></div>
+		<div><cms:CmsLabel styleName="{m_style.label}" addStyleNames="{resources.generalCss.textMedium}" ui:field="m_pathLabel" /><g:InlineLabel styleName="{m_style.field}" addStyleNames="{resources.generalCss.textMedium}" ui:field="m_path" /></div>
+	</g:HTMLPanel>
+</ui:UiBinder> 

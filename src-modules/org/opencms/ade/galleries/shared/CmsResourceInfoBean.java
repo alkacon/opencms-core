@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/Attic/CmsResourceInfoBean.java,v $
- * Date   : $Date: 2010/06/10 08:45:04 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/07/05 14:48:07 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  */
@@ -51,20 +51,23 @@ public class CmsResourceInfoBean implements IsSerializable {
     /** The description of the resource. */
     private String m_description;
 
+    /** The last modification date. */
+    private Date m_lastModified;
+
     /** The main properties. */
     private Map<String, String> m_properties;
 
     /** The path to the selected resource. */
     private String m_resourcePath;
 
-    /** The title of the resource. */
-    private String m_title;
-
-    /** The last modification date. */
-    private Date m_lastModified;
+    /** The resource type name. */
+    private String m_resourceType;
 
     /** The file size. */
     private String m_size;
+
+    /** The title of the resource. */
+    private String m_title;
 
     /**
      * The constructor.<p>
@@ -112,6 +115,16 @@ public class CmsResourceInfoBean implements IsSerializable {
     public String getResourcePath() {
 
         return m_resourcePath;
+    }
+
+    /**
+     * Returns the resource type name.<p>
+     *
+     * @return the resource type name
+     */
+    public String getResourceType() {
+
+        return m_resourceType;
     }
 
     /**
@@ -172,6 +185,16 @@ public class CmsResourceInfoBean implements IsSerializable {
     public void setResourcePath(String resourcePath) {
 
         m_resourcePath = resourcePath;
+    }
+
+    /**
+     * Sets the resource type name.<p>
+     *
+     * @param resourceType the resource type name to set
+     */
+    public void setResourceType(String resourceType) {
+
+        m_resourceType = resourceType;
     }
 
     /**

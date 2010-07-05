@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/Attic/A_CmsPreviewHandler.java,v $
- * Date   : $Date: 2010/06/10 08:45:03 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/07/05 14:48:07 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import com.google.gwt.user.client.Command;
  * @author Polina Smagina
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  */
@@ -93,7 +93,7 @@ public abstract class A_CmsPreviewHandler<T extends CmsResourceInfoBean> impleme
             }, null);
             return;
         }
-        if (m_previewDialog.getGalleryMode().equals(GalleryMode.editor)) {
+        if (m_previewDialog.getGalleryMode() == GalleryMode.editor) {
             CmsPreviewUtil.enableEditorOk(false);
         }
         m_previewDialog.removePreview();

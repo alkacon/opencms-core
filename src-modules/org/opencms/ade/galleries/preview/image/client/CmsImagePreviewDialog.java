@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/preview/image/client/Attic/CmsImagePreviewDialog.java,v $
- * Date   : $Date: 2010/06/10 08:45:04 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/07/05 14:48:07 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,10 +35,10 @@ import org.opencms.ade.galleries.client.preview.ui.A_CmsPreviewDialog;
 import org.opencms.ade.galleries.client.preview.ui.CmsPropertiesTab;
 import org.opencms.ade.galleries.client.ui.Messages;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
-import org.opencms.ade.galleries.preview.image.shared.CmsImageInfoBean;
+import org.opencms.ade.galleries.shared.CmsImageInfoBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
+import org.opencms.gwt.client.CmsCoreProvider;
 
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
 
@@ -47,7 +47,7 @@ import com.google.gwt.user.client.ui.Image;
  *  
  * @author Polina Smagina
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.
  */
@@ -56,11 +56,14 @@ public class CmsImagePreviewDialog extends A_CmsPreviewDialog<CmsImageInfoBean> 
     /** The properties tab. */
     private CmsPropertiesTab m_propertiesTab;
 
-    private CmsImagePreviewHandler m_handler;
-
+    /** The format tab. */
     private CmsImageFormatsTab m_imageFormatTab;
 
+    /** The infos tab. */
     private CmsImageInfosTab m_imageInfosTab;
+
+    /** The initial fill flag. */
+    private boolean m_initialFill = true;
 
     /** The default min height of the image. */
     private static final int HEIGHT_MIN = 361;
@@ -81,16 +84,6 @@ public class CmsImagePreviewDialog extends A_CmsPreviewDialog<CmsImageInfoBean> 
     }
 
     /**
-     * @see org.opencms.ade.galleries.client.preview.ui.A_CmsPreviewDialog#confirmSaveChanges(java.lang.String, com.google.gwt.user.client.Command, com.google.gwt.user.client.Command)
-     */
-    @Override
-    public void confirmSaveChanges(String message, Command onConfirm, Command onCancel) {
-
-        // TODO: Auto-generated method stub
-
-    }
-
-    /**
      * Fills the content of the tabs panel.<p>
      * 
      * @param infoBean the bean containing the parameter 
@@ -101,7 +94,10 @@ public class CmsImagePreviewDialog extends A_CmsPreviewDialog<CmsImageInfoBean> 
         fillPreviewPanel(infoBean);
         // properties tab
         m_propertiesTab.fillProperties(infoBean.getProperties());
-
+        if (m_initialFill) {
+            m_imageFormatTab.fillContent(infoBean);
+            m_initialFill = false;
+        }
         //TODO: fill other tabs
 
     }
@@ -118,9 +114,11 @@ public class CmsImagePreviewDialog extends A_CmsPreviewDialog<CmsImageInfoBean> 
         Image image = new Image();
 
         // TODO: set the image scale parameters
-        String urlScaled = ("?__scale=h:").concat(Integer.toString(HEIGHT_MIN)).concat(",w:").concat(
-            Integer.toString(WIDTH_MIN));
-        image.setUrl(urlScaled);
+        StringBuffer urlScaled = new StringBuffer(128);
+        urlScaled.append(CmsCoreProvider.get().link(infoBean.getResourcePath())).append("?__scale=h:").append(
+            HEIGHT_MIN);
+        urlScaled.append(",w:").append(WIDTH_MIN);
+        image.setUrl(urlScaled.toString());
         panel.add(image);
 
         m_previewPanel.add(panel);
@@ -133,7 +131,6 @@ public class CmsImagePreviewDialog extends A_CmsPreviewDialog<CmsImageInfoBean> 
     @Override
     public boolean hasChanges() {
 
-        // TODO: Auto-generated method stub
         return false;
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2010/07/02 15:01:38 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/07/05 14:48:07 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -91,7 +91,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -1039,6 +1039,12 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
         result.append("<script type=\"text/javascript\" src=\"");
         result.append(CmsWorkplace.getSkinUri()).append("jquery/packed/jquery.ui.js");
         result.append("\"></script>\n");
+
+        // including dialog-helper.js to be used by ADE gallery widgets
+        result.append("<script type=\"text/javascript\" src=\"");
+        result.append(CmsWorkplace.getSkinUri()).append("components/widgets/dialog-helper.js");
+        result.append("\"></script>\n");
+
         // import the JavaScript for JSON helper functions
         result.append("<script type=\"text/javascript\" src=\"");
         result.append(CmsWorkplace.getSkinUri()).append("commons/json2.js");
