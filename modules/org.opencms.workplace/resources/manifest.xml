@@ -85,6 +85,8 @@
 			<resource uri="/system/workplace/resources/commons/workplace.png"/>
 			<resource uri="/system/workplace/resources/components/js_calendar/"/>
 			<resource uri="/system/workplace/resources/components/js_colorpicker/"/>
+			<resource uri="/system/workplace/resources/components/galleries/"/>
+			<resource uri="/system/workplace/resources/components/widgets/dialog-helper.js"/>
 			<resource uri="/system/workplace/resources/components/widgets/category.js"/>
 			<resource uri="/system/workplace/resources/components/widgets/colorpicker.js"/>
 			<resource uri="/system/workplace/resources/components/widgets/combo.png"/>
@@ -102,6 +104,17 @@
 			<resource uri="/system/workplace/resources/components/widgets/vfsimage.js"/>
             <resource uri="/system/workplace/resources/components/widgets/defaultadvancedgallery.js"/>
             <resource uri="/system/workplace/resources/components/widgets/advancedvfsimage.js"/>
+            <resource uri="/system/workplace/resources/filetypes/archiv.png"/>
+			<resource uri="/system/workplace/resources/filetypes/archiv_big.png"/>
+			<resource uri="/system/workplace/resources/filetypes/excel.png"/>
+			<resource uri="/system/workplace/resources/filetypes/excel_big.png"/>
+			<resource uri="/system/workplace/resources/filetypes/image_big.png"/>
+			<resource uri="/system/workplace/resources/filetypes/msword.png"/>
+			<resource uri="/system/workplace/resources/filetypes/msword_big.png"/>
+			<resource uri="/system/workplace/resources/filetypes/pdf.png"/>
+			<resource uri="/system/workplace/resources/filetypes/pdf_big.png"/>
+			<resource uri="/system/workplace/resources/filetypes/powerpoint.png"/>
+			<resource uri="/system/workplace/resources/filetypes/powerpoint_big.png"/>
 			<resource uri="/system/workplace/resources/filetypes/binary.gif"/>
 			<resource uri="/system/workplace/resources/filetypes/downloadgallery.gif"/>
 			<resource uri="/system/workplace/resources/filetypes/folder.gif"/>
@@ -129,7 +142,6 @@
 			<resource uri="/system/workplace/views/top_js.jsp"/>
 			<resource uri="/system/workplace/locales/en/readme.txt"/>
 			<resource uri="/system/shared/decoration/"/>
-			<resource uri="/system/workplace/resources/components/galleries/"/>
 		</resources>
 		<parameters/>
 	</module>
@@ -5862,6 +5874,21 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/components/widgets/dialog-helper.js</source>
+			<destination>system/workplace/resources/components/widgets/dialog-helper.js</destination>
+			<type>plain</type>
+			<uuidstructure>06f9b71b-79ee-11df-a814-83befda52004</uuidstructure>
+			<uuidresource>06f9b71c-79ee-11df-a814-83befda52004</uuidresource>
+			<datelastmodified>Fri, 18 Jun 2010 10:37:20 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 17 Jun 2010 08:55:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/resources/components/widgets/downloadgallery.js</source>
 			<destination>system/workplace/resources/components/widgets/downloadgallery.js</destination>
 			<type>plain</type>
@@ -6095,12 +6122,60 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/filetypes/archiv.png</source>
+			<destination>system/workplace/resources/filetypes/archiv.png</destination>
+			<type>image</type>
+			<uuidstructure>027d0139-881d-11df-8611-83befda52004</uuidstructure>
+			<uuidresource>027d013a-881d-11df-8611-83befda52004</uuidresource>
+			<datelastmodified>Mon, 05 Jul 2010 10:06:42 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 05 Jul 2010 10:06:42 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[archiv]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/archiv_big.png</source>
+			<destination>system/workplace/resources/filetypes/archiv_big.png</destination>
+			<type>image</type>
+			<uuidstructure>02711a55-881d-11df-8611-83befda52004</uuidstructure>
+			<uuidresource>02711a56-881d-11df-8611-83befda52004</uuidresource>
+			<datelastmodified>Mon, 05 Jul 2010 10:06:42 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 05 Jul 2010 10:06:42 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[archiv_big]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/resources/filetypes/binary.gif</source>
 			<destination>system/workplace/resources/filetypes/binary.gif</destination>
 			<type>image</type>
 			<uuidstructure>83cc67bd-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>77c21656-f039-11d8-bd02-ddc4b68c493a</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 05 Jul 2010 10:06:42 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -6120,7 +6195,7 @@
 			<type>image</type>
 			<uuidstructure>83d393b6-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>77cbb36a-f039-11d8-bd02-ddc4b68c493a</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 05 Jul 2010 10:06:42 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -6135,12 +6210,60 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/filetypes/excel.png</source>
+			<destination>system/workplace/resources/filetypes/excel.png</destination>
+			<type>image</type>
+			<uuidstructure>02677d61-881d-11df-8611-83befda52004</uuidstructure>
+			<uuidresource>02677d62-881d-11df-8611-83befda52004</uuidresource>
+			<datelastmodified>Mon, 05 Jul 2010 10:06:42 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 05 Jul 2010 10:06:42 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[excel]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/excel_big.png</source>
+			<destination>system/workplace/resources/filetypes/excel_big.png</destination>
+			<type>image</type>
+			<uuidstructure>0260787d-881d-11df-8611-83befda52004</uuidstructure>
+			<uuidresource>0260787e-881d-11df-8611-83befda52004</uuidresource>
+			<datelastmodified>Mon, 05 Jul 2010 10:06:41 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 05 Jul 2010 10:06:41 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[excel_big]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/resources/filetypes/folder.gif</source>
 			<destination>system/workplace/resources/filetypes/folder.gif</destination>
 			<type>image</type>
 			<uuidstructure>83ced8c0-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>77cbb34a-f039-11d8-bd02-ddc4b68c493a</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 05 Jul 2010 10:06:42 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -6160,7 +6283,7 @@
 			<type>image</type>
 			<uuidstructure>83df7aa2-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>77cbb39a-f039-11d8-bd02-ddc4b68c493a</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 05 Jul 2010 10:06:42 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -6180,7 +6303,7 @@
 			<type>image</type>
 			<uuidstructure>83dabfac-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>77cbb38a-f039-11d8-bd02-ddc4b68c493a</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 05 Jul 2010 10:06:42 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -6200,7 +6323,7 @@
 			<type>image</type>
 			<uuidstructure>83e1eba5-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>77d5292e-f039-11d8-bd02-ddc4b68c493a</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 05 Jul 2010 10:06:42 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -6215,12 +6338,36 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/filetypes/image_big.png</source>
+			<destination>system/workplace/resources/filetypes/image_big.png</destination>
+			<type>image</type>
+			<uuidstructure>0256db89-881d-11df-8611-83befda52004</uuidstructure>
+			<uuidresource>0256db8a-881d-11df-8611-83befda52004</uuidresource>
+			<datelastmodified>Mon, 05 Jul 2010 10:06:41 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 05 Jul 2010 10:06:41 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[image_big]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/resources/filetypes/imagegallery.gif</source>
 			<destination>system/workplace/resources/filetypes/imagegallery.gif</destination>
 			<type>image</type>
 			<uuidstructure>83d149c3-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>77cbb35a-f039-11d8-bd02-ddc4b68c493a</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 05 Jul 2010 10:06:42 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -6240,7 +6387,7 @@
 			<type>image</type>
 			<uuidstructure>83e45ca8-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>77dc2e12-f039-11d8-bd02-ddc4b68c493a</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 05 Jul 2010 10:06:42 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -6260,7 +6407,7 @@
 			<type>image</type>
 			<uuidstructure>83e6a69b-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>77e35a06-f039-11d8-bd02-ddc4b68c493a</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 05 Jul 2010 10:06:42 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -6280,7 +6427,7 @@
 			<type>image</type>
 			<uuidstructure>83d604b9-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>77cbb37a-f039-11d8-bd02-ddc4b68c493a</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 05 Jul 2010 10:06:42 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -6295,12 +6442,60 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/filetypes/msword.png</source>
+			<destination>system/workplace/resources/filetypes/msword.png</destination>
+			<type>image</type>
+			<uuidstructure>024faf95-881d-11df-8611-83befda52004</uuidstructure>
+			<uuidresource>024faf96-881d-11df-8611-83befda52004</uuidresource>
+			<datelastmodified>Mon, 05 Jul 2010 10:06:41 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 05 Jul 2010 10:06:41 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[msword]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/msword_big.png</source>
+			<destination>system/workplace/resources/filetypes/msword_big.png</destination>
+			<type>image</type>
+			<uuidstructure>024883a1-881d-11df-8611-83befda52004</uuidstructure>
+			<uuidresource>024883a2-881d-11df-8611-83befda52004</uuidresource>
+			<datelastmodified>Mon, 05 Jul 2010 10:06:41 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 05 Jul 2010 10:06:41 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[msword_big]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/resources/filetypes/othertype.gif</source>
 			<destination>system/workplace/resources/filetypes/othertype.gif</destination>
 			<type>image</type>
 			<uuidstructure>83e9179e-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>77ea85fa-f039-11d8-bd02-ddc4b68c493a</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 05 Jul 2010 10:06:42 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -6320,7 +6515,7 @@
 			<type>image</type>
 			<uuidstructure>83eb88a1-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>4976b5af-b82b-11d7-9da3-90edea408374</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 05 Jul 2010 10:06:42 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -6335,12 +6530,60 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/filetypes/pdf.png</source>
+			<destination>system/workplace/resources/filetypes/pdf.png</destination>
+			<type>image</type>
+			<uuidstructure>0243c8ad-881d-11df-8611-83befda52004</uuidstructure>
+			<uuidresource>0243c8ae-881d-11df-8611-83befda52004</uuidresource>
+			<datelastmodified>Mon, 05 Jul 2010 10:06:41 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 05 Jul 2010 10:06:41 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[pdf]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/pdf_big.png</source>
+			<destination>system/workplace/resources/filetypes/pdf_big.png</destination>
+			<type>image</type>
+			<uuidstructure>023c9cb9-881d-11df-8611-83befda52004</uuidstructure>
+			<uuidresource>023c9cba-881d-11df-8611-83befda52004</uuidresource>
+			<datelastmodified>Mon, 05 Jul 2010 10:06:41 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 05 Jul 2010 10:06:41 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[pdf_big]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/resources/filetypes/plain.gif</source>
 			<destination>system/workplace/resources/filetypes/plain.gif</destination>
 			<type>image</type>
 			<uuidstructure>83edd294-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>77f8b6d0-f039-11d8-bd02-ddc4b68c493a</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 05 Jul 2010 10:06:42 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -6360,7 +6603,7 @@
 			<type>image</type>
 			<uuidstructure>83f04397-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>77ffbbb4-f039-11d8-bd02-ddc4b68c493a</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 05 Jul 2010 10:06:42 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -6375,12 +6618,60 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/filetypes/powerpoint.png</source>
+			<destination>system/workplace/resources/filetypes/powerpoint.png</destination>
+			<type>image</type>
+			<uuidstructure>0230b5d1-881d-11df-8611-83befda52004</uuidstructure>
+			<uuidresource>0230b5d2-881d-11df-8611-83befda52004</uuidresource>
+			<datelastmodified>Mon, 05 Jul 2010 10:06:41 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 05 Jul 2010 10:06:41 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[powerpoint]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/powerpoint_big.png</source>
+			<destination>system/workplace/resources/filetypes/powerpoint_big.png</destination>
+			<type>image</type>
+			<uuidstructure>022989dd-881d-11df-8611-83befda52004</uuidstructure>
+			<uuidresource>022989de-881d-11df-8611-83befda52004</uuidresource>
+			<datelastmodified>Mon, 05 Jul 2010 10:06:41 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 05 Jul 2010 10:06:41 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[powerpoint_big]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/resources/filetypes/tablegallery.gif</source>
 			<destination>system/workplace/resources/filetypes/tablegallery.gif</destination>
 			<type>image</type>
 			<uuidstructure>83dd30af-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>1e6f052d-ac25-11d9-87f9-c958787aaa00</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 05 Jul 2010 10:06:42 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -6400,7 +6691,7 @@
 			<type>image</type>
 			<uuidstructure>fe0ac88c-262f-11dc-bdd7-4d0105ffddc9</uuidstructure>
 			<uuidresource>fe0ac88d-262f-11dc-bdd7-4d0105ffddc9</uuidresource>
-			<datelastmodified>Fri, 29 Jun 2007 14:51:30 GMT</datelastmodified>
+			<datelastmodified>Mon, 05 Jul 2010 10:06:42 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 29 Jun 2007 11:00:48 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -6420,7 +6711,7 @@
 			<type>image</type>
 			<uuidstructure>ee7addb9-262f-11dc-bdd7-4d0105ffddc9</uuidstructure>
 			<uuidresource>ee7addba-262f-11dc-bdd7-4d0105ffddc9</uuidresource>
-			<datelastmodified>Fri, 29 Jun 2007 14:51:52 GMT</datelastmodified>
+			<datelastmodified>Mon, 05 Jul 2010 10:06:42 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 29 Jun 2007 11:00:22 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -6440,7 +6731,7 @@
 			<type>image</type>
 			<uuidstructure>83f4fe8a-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>53ded4cb-d443-11d9-95e4-01ff5ab8f021</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 05 Jul 2010 10:06:42 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -6460,7 +6751,7 @@
 			<type>image</type>
 			<uuidstructure>83f76f8d-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>78105d8c-f039-11d8-bd02-ddc4b68c493a</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 05 Jul 2010 10:06:42 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -6480,7 +6771,7 @@
 			<type>image</type>
 			<uuidstructure>83f9b980-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>78178980-f039-11d8-bd02-ddc4b68c493a</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 05 Jul 2010 10:06:42 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
