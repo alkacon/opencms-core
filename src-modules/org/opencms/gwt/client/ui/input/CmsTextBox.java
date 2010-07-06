@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsTextBox.java,v $
- * Date   : $Date: 2010/06/15 12:28:31 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2010/07/06 12:08:04 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,10 @@ import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
 import java.util.Map;
 
 import com.google.gwt.event.dom.client.BlurHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasBlurHandlers;
+import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.dom.client.HasKeyPressHandlers;
 import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
@@ -56,15 +59,16 @@ import com.google.gwt.user.client.ui.TextBox;
  * Basic text box class for forms.
  * 
  * @author Georg Westenberger
+ * @author Ruediger Kurz
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 8.0.0
  * 
  */
 public class CmsTextBox extends Composite
 implements I_CmsFormWidget, I_CmsHasInit, HasBlurHandlers, HasValueChangeHandlers<String>, HasKeyPressHandlers,
-I_CmsHasBlur {
+HasClickHandlers, I_CmsHasBlur {
 
     /** The CSS bundle used for this widget. */
     public static final I_CmsInputCss CSS = I_CmsInputLayoutBundle.INSTANCE.inputCss();
@@ -137,6 +141,14 @@ I_CmsHasBlur {
     public HandlerRegistration addBlurHandler(BlurHandler handler) {
 
         return m_textbox.addBlurHandler(handler);
+    }
+
+    /**
+     * @see com.google.gwt.event.dom.client.HasClickHandlers#addClickHandler(com.google.gwt.event.dom.client.ClickHandler)
+     */
+    public HandlerRegistration addClickHandler(ClickHandler handler) {
+
+        return addDomHandler(handler, ClickEvent.getType());
     }
 
     /**
@@ -232,6 +244,16 @@ I_CmsHasBlur {
     public void setErrorMessage(String errorMessage) {
 
         m_error.setText(errorMessage);
+    }
+
+    /**
+     * Sets the focus on the text box.<p>
+     * 
+     * @param focused signals if the focus should be set
+     */
+    public void setFocus(boolean focused) {
+
+        m_textbox.setFocus(focused);
     }
 
     /**

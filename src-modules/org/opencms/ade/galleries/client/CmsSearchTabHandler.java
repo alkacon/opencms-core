@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsSearchTabHandler.java,v $
- * Date   : $Date: 2010/05/07 13:59:19 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/07/06 12:08:04 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,14 +32,14 @@
 package org.opencms.ade.galleries.client;
 
 /**
- * The voll text search tab handler.<p>
+ * The full text search tab handler.<p>
  * 
- * This class receives events information from the voll text search tab and 
- * delegates them to the gallery controller.
+ * This class receives events information from the full text search tab and 
+ * delegates them to the gallery search controller.
  * 
- * @author Polina Smagina
+ * @author Ruediger Kurz
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  */
@@ -56,12 +56,20 @@ public class CmsSearchTabHandler extends A_CmsTabHandler {
     }
 
     /**
+     * Delegates the clear input action (click on the clear button) to the controller.<p>
+     */
+    public void clearInput() {
+
+        m_controller.clearTextSearch();
+    }
+
+    /**
      * @see org.opencms.ade.galleries.client.A_CmsTabHandler#onSelection()
      */
     @Override
     public void onSelection() {
 
-        // TODO: Auto-generated method stub
+        // no list present
     }
 
     /**
@@ -71,5 +79,45 @@ public class CmsSearchTabHandler extends A_CmsTabHandler {
     public void onSort(String sortParams) {
 
         // no list present
+    }
+
+    /**
+     * Delegates the value for the created until date to the controller.<p>
+     * 
+     * @param createdEnd the created until date as long
+     */
+    public void setDateCreatedEnd(long createdEnd) {
+
+        m_controller.addDateCreatedEnd(createdEnd);
+    }
+
+    /**
+     * Delegates the value for the created since date to the controller.<p>
+     * 
+     * @param createdStart the created since date as long
+     */
+    public void setDateCreatedStart(long createdStart) {
+
+        m_controller.addDateCreatedStart(createdStart);
+    }
+
+    /**
+     * Delegates the value for the modified until date to the controller.<p>
+     * 
+     * @param modifiedEnd the modified until date as long
+     */
+    public void setDateModifiedEnd(long modifiedEnd) {
+
+        m_controller.addDateModifiedEnd(modifiedEnd);
+    }
+
+    /**
+     * Delegates the value for the modified since date to the controller.<p>
+     * 
+     * @param modifiedStart the modified since date as long
+     */
+    public void setDateModifiedStart(long modifiedStart) {
+
+        m_controller.addDateModifiedStart(modifiedStart);
     }
 }

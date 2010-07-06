@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/preview/binary/client/Attic/CmsPreviewContent.java,v $
- * Date   : $Date: 2010/07/05 14:48:06 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/07/06 12:08:04 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import com.google.gwt.user.client.ui.Label;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -104,7 +104,7 @@ public class CmsPreviewContent extends Composite {
     /**
      * The ui-binder interface.<p>
      */
-    interface I_CmsPreviewContentUiBinder extends UiBinder<HTMLPanel, CmsPreviewContent> {
+    public interface I_CmsPreviewContentUiBinder extends UiBinder<HTMLPanel, CmsPreviewContent> {
         // GWT interface, nothing to do
     }
 

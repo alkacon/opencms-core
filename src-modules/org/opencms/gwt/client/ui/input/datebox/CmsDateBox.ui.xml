@@ -1,0 +1,32 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:h="urn:import:com.google.gwt.user.datepicker.client"
+	xmlns:input="urn:import:org.opencms.gwt.client.ui.input">
+
+	<ui:style>
+		.time {
+			width: 50px;
+			margin: 3px 6px 3px 3px;
+			display: inline-block;
+		}
+		.ampm {
+			margin-top: -7px;
+			margin-right: 3px;
+		}
+		.ampm div span {
+			margin-right: 1px;
+		}
+	</ui:style>
+	
+	<g:FlowPanel ui:field="m_dateBoxPanel">
+		<input:CmsTextBox ui:field="m_box"></input:CmsTextBox>
+		<g:FlowPanel ui:field="m_dateTimePanel">
+			<h:DatePicker ui:field="m_picker"></h:DatePicker>
+			<input:CmsTextBox ui:field="m_time" addStyleNames="{style.time}"></input:CmsTextBox>
+			<input:CmsRadioButton ui:field="m_am" addStyleNames="{style.ampm}"></input:CmsRadioButton>
+			<input:CmsRadioButton ui:field="m_pm" addStyleNames="{style.ampm}"></input:CmsRadioButton>
+			<input:CmsErrorWidget ui:field="m_timeErr"></input:CmsErrorWidget>
+		</g:FlowPanel>
+	</g:FlowPanel>
+</ui:UiBinder> 

@@ -1,9 +1,9 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
-	xmlns:date="urn:import:com.google.gwt.user.datepicker.client"
 	xmlns:cms="urn:import:org.opencms.gwt.client.ui"
-	xmlns:input="urn:import:org.opencms.gwt.client.ui.input">
+	xmlns:input="urn:import:org.opencms.gwt.client.ui.input"
+	xmlns:date="urn:import:org.opencms.gwt.client.ui.input.datebox">
 	<ui:with field="galleryResources" type="org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle" />
 	<ui:with field="resources" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
 	<ui:style>
@@ -16,7 +16,9 @@
 			float: left;
 		}
 		.input{
-			margin-left: 105px;
+			margin: 0px 20px 10px 20px;
+			width:150px;
+			float: left;
 		}
 		.dateField{
 			display: inline-block;
@@ -51,8 +53,9 @@
 			font-weight: bold;
 		}
 		.datePickerDays { /*the portion of the picker that shows the days*/}
-		.datePickerDays td{
-			padding: 2px;
+		.datePickerDays td{ /* the cell for a day */
+			padding: 3px;
+			font-size: 10px;
 		}
 		.datePickerWeekdayLabel { /*the label over weekdays*/ }
 		.datePickerWeekendLabel { /*the label over weekends*/
@@ -70,7 +73,9 @@
 		.datePickerDayIsFiller { /*a day in another month*/
 			color: #666666;
 		}
-		.datePickerDayIsValue { /*the selected day*/ }
+		.datePickerDayIsValue { /*the selected day*/
+			background: #cccccc; 
+		}
 		.datePickerDayIsDisabled { /*a disabled day*/ }
 		.datePickerDayIsHighlighted { /*the currently highlighted day*/ 
 			background: #b9b9b9;
@@ -86,11 +91,27 @@
 			</div>
 		</div>
 		<div class="{style.row}">
-			<g:Label ui:field="m_dateLabel"  addStyleNames="{style.label}"></g:Label>
+			<g:Label ui:field="m_dateCreatedStartLabel"  addStyleNames="{style.label}"></g:Label>
 			<div class="{style.input}">
-				<g:Label ui:field="m_dateField" addStyleNames="{style.dateField}"></g:Label>
-			<!--	<date:DateBox ui:field="m_datePicker"/> -->
+				<date:CmsDateBox ui:field="m_dateCreatedStartDateBox"/>
 			</div>
+			<g:Label ui:field="m_dateCreatedEndLabel"  addStyleNames="{style.label}"></g:Label>
+			<div class="{style.input}">
+				<date:CmsDateBox ui:field="m_dateCreatedEndDateBox"/>
+			</div>
+		</div>
+		<div class="{style.row}">
+			<g:Label ui:field="m_dateModifiedStartLabel"  addStyleNames="{style.label}"></g:Label>
+			<div class="{style.input}">
+				<date:CmsDateBox ui:field="m_dateModifiedStartDateBox"/>
+			</div>
+			<g:Label ui:field="m_dateModifiedEndLabel"  addStyleNames="{style.label}"></g:Label>
+			<div class="{style.input}">
+				<date:CmsDateBox ui:field="m_dateModifiedEndDateBox"/>
+			</div>
+		</div>
+		<div class="{style.row}">
+			<cms:CmsPushButton ui:field="m_clearButton"></cms:CmsPushButton>
 		</div>
 	</g:HTMLPanel> 
 </ui:UiBinder> 

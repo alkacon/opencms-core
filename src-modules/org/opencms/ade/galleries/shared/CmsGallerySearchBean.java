@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/Attic/CmsGallerySearchBean.java,v $
- * Date   : $Date: 2010/06/29 09:38:46 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/07/06 12:08:04 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 8.0.0
  */
@@ -64,9 +64,21 @@ public class CmsGallerySearchBean implements IsSerializable {
     /** The list of selected categories ids (path). */
     private List<String> m_categories = new ArrayList<String>();
 
+    /** The end creation date criteria as long. */
+    private long m_dateCreatedEnd = Long.MAX_VALUE;
+
+    /** The start creation date criteria as long. */
+    private long m_dateCreatedStart = Long.MIN_VALUE;
+
+    /** The end modification date criteria as long. */
+    private long m_dateModifiedEnd = Long.MAX_VALUE;
+
+    /** The start modification date criteria as long. */
+    private long m_dateModifiedStart = Long.MIN_VALUE;
+
     /** The list of selected vfs folders. */
     private List<String> m_folders = new ArrayList<String>();
-
+    
     /** The list of selected galleries ids (path). */
     private List<String> m_galleries = new ArrayList<String>();
 
@@ -132,6 +144,10 @@ public class CmsGallerySearchBean implements IsSerializable {
         setSortOrder(searchObj.getSortOrder());
         setTabId(searchObj.getTabId());
         setPage(searchObj.getPage());
+        setDateCreatedEnd(searchObj.getDateCreatedEnd());
+        setDateCreatedStart(searchObj.getDateCreatedStart());
+        setDateModifiedEnd(searchObj.getDateModifiedEnd());
+        setDateModifiedStart(searchObj.getDateModifiedStart());
     }
 
     /**
@@ -195,6 +211,18 @@ public class CmsGallerySearchBean implements IsSerializable {
 
         m_folders.clear();
     }
+    
+    /**
+     * Clears the full text search.<p>
+     */
+    public void clearFullTextSearch() {
+
+        m_query = null;
+        m_dateCreatedEnd = Long.MAX_VALUE;
+        m_dateCreatedStart = Long.MIN_VALUE;
+        m_dateModifiedEnd = Long.MAX_VALUE;
+        m_dateModifiedStart = Long.MIN_VALUE;
+    }
 
     /**
      * Clears the galleries list.<p>
@@ -223,6 +251,46 @@ public class CmsGallerySearchBean implements IsSerializable {
     }
 
     /**
+     * Returns the dateCreatedEnd.<p>
+     *
+     * @return the dateCreatedEnd
+     */
+    public long getDateCreatedEnd() {
+
+        return m_dateCreatedEnd;
+    }
+
+    /**
+     * Returns the dateCreatedStart.<p>
+     *
+     * @return the dateCreatedStart
+     */
+    public long getDateCreatedStart() {
+
+        return m_dateCreatedStart;
+    }
+
+    /**
+     * Returns the dateModifiedEnd.<p>
+     *
+     * @return the dateModifiedEnd
+     */
+    public long getDateModifiedEnd() {
+
+        return m_dateModifiedEnd;
+    }
+
+    /**
+     * Returns the dateModifiedStart.<p>
+     *
+     * @return the dateModifiedStart
+     */
+    public long getDateModifiedStart() {
+
+        return m_dateModifiedStart;
+    }
+
+    /**
      * Returns the list of selected VFS folders.<p>
      * 
      * @return the list of selected VFS folders 
@@ -231,7 +299,7 @@ public class CmsGallerySearchBean implements IsSerializable {
 
         return m_folders;
     }
-
+    
     /**
      * Returns the list of the available galleries.<p>
      *
@@ -392,7 +460,7 @@ public class CmsGallerySearchBean implements IsSerializable {
 
         m_folders.remove(folder);
     }
-
+    
     /**
      * Removes a gallery folder from the galleries list.<p>
      * 
@@ -423,6 +491,46 @@ public class CmsGallerySearchBean implements IsSerializable {
         m_categories = categories;
     }
 
+    /**
+     * Sets the dateCreatedEnd.<p>
+     *
+     * @param dateCreatedEnd the dateCreatedEnd to set
+     */
+    public void setDateCreatedEnd(long dateCreatedEnd) {
+
+        m_dateCreatedEnd = dateCreatedEnd;
+    }
+
+    /**
+     * Sets the dateCreatedStart.<p>
+     *
+     * @param dateCreatedStart the dateCreatedStart to set
+     */
+    public void setDateCreatedStart(long dateCreatedStart) {
+
+        m_dateCreatedStart = dateCreatedStart;
+    }
+
+    /**
+     * Sets the dateModifiedEnd.<p>
+     *
+     * @param dateModifiedEnd the dateModifiedEnd to set
+     */
+    public void setDateModifiedEnd(long dateModifiedEnd) {
+
+        m_dateModifiedEnd = dateModifiedEnd;
+    }
+
+    /**
+     * Sets the dateModifiedStart.<p>
+     *
+     * @param dateModifiedStart the dateModifiedStart to set
+     */
+    public void setDateModifiedStart(long dateModifiedStart) {
+
+        m_dateModifiedStart = dateModifiedStart;
+    }
+
     /** 
      * Sets the folders to search in.<p>
      * 
@@ -432,7 +540,7 @@ public class CmsGallerySearchBean implements IsSerializable {
 
         m_folders = folders;
     }
-
+    
     /**
      * Sets the galleries.<p>
      *

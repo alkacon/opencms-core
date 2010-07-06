@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/Attic/CmsGalleryService.java,v $
- * Date   : $Date: 2010/06/30 13:54:43 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2010/07/06 12:08:04 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -84,8 +84,9 @@ import javax.servlet.http.HttpServletRequest;
  * Handles all RPC services related to the gallery dialog.<p>
  * 
  * @author Polina Smagina
+ * @author Ruediger Kurz
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 8.0.0
  * 
@@ -890,7 +891,6 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         List<String> galleries = searchData.getGalleries();
         List<String> categories = searchData.getCategories();
         String queryStr = searchData.getQuery();
-        int matches = searchData.getMatchesPerPage();
         CmsGallerySearchParameters.CmsGallerySortParam sortOrder;
         String temp = searchData.getSortOrder();
         try {
@@ -909,6 +909,13 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         if (!CmsStringUtil.isEmptyOrWhitespaceOnly(queryStr)) {
             params.setSearchWords(queryStr);
         }
+        long dateCreatedStart = searchData.getDateCreatedStart();
+        long dateCreatedEnd = searchData.getDateCreatedEnd();
+        long dateModifiedStart = searchData.getDateModifiedStart();
+        long dateModifiedEnd = searchData.getDateModifiedEnd();
+        int matches = searchData.getMatchesPerPage();
+        params.setDateCreatedTimeRange(dateCreatedStart, dateCreatedEnd);
+        params.setDateLastModifiedTimeRange(dateModifiedStart, dateModifiedEnd);
         params.setSearchLocale(locale);
         params.setSortOrder(sortOrder);
         params.setMatchesPerPage(matches);

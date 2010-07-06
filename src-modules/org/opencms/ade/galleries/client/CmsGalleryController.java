@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleryController.java,v $
- * Date   : $Date: 2010/07/05 14:48:07 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2010/07/06 12:08:04 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -67,8 +67,9 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * It contains the gallery data, but no references to the gallery dialog widget.
  * 
  * @author Polina Smagina
+ * @author Ruediger Kurz
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 8.0.0
  */
@@ -124,6 +125,46 @@ public class CmsGalleryController {
     }
 
     /**
+     * Sets the created until date to the search object.<p>
+     * 
+     * @param end the created until date as long
+     */
+    public void addDateCreatedEnd(long end) {
+
+        m_searchObject.setDateCreatedEnd(end);
+    }
+
+    /**
+     * Sets the created since date to the search object.<p>
+     * 
+     * @param start the created since date as long
+     */
+    public void addDateCreatedStart(long start) {
+
+        m_searchObject.setDateCreatedStart(start);
+    }
+
+    /**
+     * Sets the modified until date to the search object.<p>
+     * 
+     * @param end the modified until date as long
+     */
+    public void addDateModifiedEnd(long end) {
+
+        m_searchObject.setDateModifiedEnd(end);
+    }
+
+    /**
+     * Sets the modified since date to the search object.<p>
+     * 
+     * @param start the modified since date as long
+     */
+    public void addDateModifiedStart(long start) {
+
+        m_searchObject.setDateModifiedStart(start);
+    }
+
+    /**
      * Adds a folder to the current search object.<p>
      * 
      * @param folder the folder to add
@@ -132,7 +173,7 @@ public class CmsGalleryController {
 
         m_searchObject.addFolder(folder);
     }
-
+    
     /**
      * Add gallery to search object.<p>
      * 
@@ -174,7 +215,7 @@ public class CmsGalleryController {
         m_searchObject.clearFolders();
         updateResultsTab();
     }
-
+    
     /**
      * Removes all selected galleries from the search object.<p>
      */
@@ -187,11 +228,12 @@ public class CmsGalleryController {
     }
 
     /**
-     * Removes text search parameters from search object.<p>
+     * Removes all full text search criteria from the search object.<p>
      */
     public void clearTextSearch() {
 
-        //TODO: implement
+        m_searchObject.clearFullTextSearch();
+        updateResultsTab();
     }
 
     /**
@@ -401,6 +443,7 @@ public class CmsGalleryController {
             case path_desc:
             case dateLastModified_asc:
             case dateLastModified_desc:
+
             default:
         }
     }
@@ -823,5 +866,4 @@ public class CmsGalleryController {
         return "Provider list not available";
         }
     }-*/;
-
 }
