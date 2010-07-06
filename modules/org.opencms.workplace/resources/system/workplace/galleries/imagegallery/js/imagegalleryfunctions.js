@@ -558,8 +558,8 @@ function markItem(imgIndex, idPrefix) {
 		var hasDirectPublish;	
 		var hasWritePermission;
 		// set permissions on the given resource
-		if (idPrefix == "gallery") {
-			isEditable = galleryItems.items[markedIndex].editable;
+		if (idPrefix == "gallery") {		
+			isEditable = galleryItems.items[markedIndex].editable;			
 			hasDirectPublish = galleryItems.items[markedIndex].directpublish;	
 			hasWritePermission = galleryItems.items[markedIndex].writepermission;
 			state = galleryItems.items[markedIndex].state;
@@ -573,32 +573,31 @@ function markItem(imgIndex, idPrefix) {
 		if (isEditable == true) {
 			// user has write permission for this resource
 			if (hasWritePermission == true) { 
-			$("#" + idPrefix + "itemtitle").attr("class", "editable");
-			$("#" + idPrefix + "itemtitle").editable(function(value, settings) {
-			    setItemTitle(value, idPrefix);
-			    return(value);
-			 }, {
-			    submit   : LANG.BUTTON_OK,
-			    cancel   : LANG.BUTTON_CANCEL,
-			    cssclass : "edittitle",
-			    height   : "none",
-			    select   : true,
-			    tooltip  : LANG.IMGDETAIL_EDIT_HELP
-			});
+				$("#" + idPrefix + "itemtitle").attr("class", "editable");
+				$("#" + idPrefix + "itemtitle").editable(function(value, settings) {
+				    setItemTitle(value, idPrefix);
+				    return(value);
+				 }, {
+				    submit   : LANG.BUTTON_OK,
+				    cancel   : LANG.BUTTON_CANCEL,
+				    cssclass : "edittitle",
+				    height   : "none",
+				    select   : true,
+				    tooltip  : LANG.IMGDETAIL_EDIT_HELP
+				});
 				// Delete
 				$("#" + idPrefix + "itemdeletebutton").fadeIn("fast");	
 
 			} else {
 				$("#" + idPrefix + "itemtitle").unbind();
 				$("#" + idPrefix + "itemtitle").removeClass();
-				$("#" + idPrefix + "itempublishbutton").fadeOut("fast");
 				// Delete
-				$("#" + idPrefix + "itemdeletebutton").fadeOut("fast");
+				$("#" + idPrefix + "itemdeletebutton").show();
 				// Delete
 			}
 			// user has direct publish permission for this resource
 			if (state != 0 && hasDirectPublish == true) {
-				$("#" + idPrefix + "itempublishbutton").fadeIn("fast");
+				$("#" + idPrefix + "itempublishbutton").show();
 			} else {
 				$("#" + idPrefix + "itempublishbutton").fadeOut("fast");
 			}
@@ -610,9 +609,11 @@ function markItem(imgIndex, idPrefix) {
 			$("#" + idPrefix + "itemdeletebutton").fadeOut("fast");
 			// Delete
 		}
+		
 		showItemInfo(markedIndex, idPrefix);
+		
 		if (initValues.viewonly == false) {
-			$("#" + idPrefix + "itemselectbutton").fadeIn("fast");
+			$("#" + idPrefix + "itemselectbutton").show();
 		}
 	} else {
 		$("#" + idPrefix + "itemselectbutton").fadeOut("fast");
@@ -655,7 +656,7 @@ function refreshMarkedItem(data, modeName) {
 		// direct publish permissions for the gallery folder
 		if (galleryItems.directpublish == true) {
 			$("#gallerypublishbutton").removeClass("ui-state-disabled");	
-		$("#gallerypublishbutton").get(0).disabled = false;
+			$("#gallerypublishbutton").get(0).disabled = false;
 		}
 		
 	} else {
@@ -668,7 +669,7 @@ function refreshMarkedItem(data, modeName) {
 	if (state == 1 || state == 2) {
 		// show the resource publish button, if user has direct publish permission
 		if (hasDirectPublish == true) {
-			$("#" + modeName + "itempublishbutton").fadeIn("fast");
+			$("#" + modeName + "itempublishbutton").show();
 		}
 		$("#" + modeName + "itemlayer" + imgIndex).empty();
 		var imgHtml = "";
