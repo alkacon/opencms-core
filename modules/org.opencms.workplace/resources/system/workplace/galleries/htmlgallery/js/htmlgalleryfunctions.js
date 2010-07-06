@@ -33,7 +33,7 @@ function fillItems(data, modeName) {
 		var categorysearchresult = " ";
 		var cTitle = categories[activeCategory].title;
 		if (searchKeyword != null) {
-			if (foundItems.length == 1) {link
+			if (foundItems.length == 1) {
 				categorysearchresult = ": " + foundItems.length + " " + LANG.SEARCH_RESULT + " \""  + searchKeyword + "\"";
 			} else {
 				categorysearchresult = ": " + foundItems.length + " " + LANG.SEARCH_RESULTS + " \""  + searchKeyword + "\"";
