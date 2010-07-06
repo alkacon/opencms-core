@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2010/04/28 15:55:53 $
- * Version: $Revision: 1.292 $
+ * Date   : $Date: 2010/07/06 07:49:55 $
+ * Version: $Revision: 1.293 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -90,7 +90,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.292 $
+ * @version $Revision: 1.293 $
  * 
  * @since 6.0.0 
  */
@@ -539,7 +539,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         try {
             CmsResource existingResource = m_driverManager.getVfsDriver(dbc).readResource(
                 dbc,
-                dbc.getProjectId().isNullUUID() ? projectId : dbc.getProjectId(),
+                ((dbc.getProjectId() == null) || dbc.getProjectId().isNullUUID()) ? projectId : dbc.getProjectId(),
                 resourcePath,
                 true);
             if (existingResource.getState().isDeleted()) {
@@ -1670,6 +1670,10 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     public CmsProperty readPropertyObject(CmsDbContext dbc, String key, CmsProject project, CmsResource resource)
     throws CmsDataAccessException {
 
+        CmsUUID projectId = ((dbc.getProjectId() == null) || dbc.getProjectId().isNullUUID())
+        ? project.getUuid()
+        : dbc.getProjectId();
+
         ResultSet res = null;
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -1680,7 +1684,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
         try {
             conn = m_sqlManager.getConnection(dbc);
-            stmt = m_sqlManager.getPreparedStatement(conn, project.getUuid(), "C_PROPERTIES_READ");
+            stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_PROPERTIES_READ");
 
             stmt.setString(1, key);
             stmt.setString(2, resource.getStructureId().toString());
@@ -1735,6 +1739,10 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     public List readPropertyObjects(CmsDbContext dbc, CmsProject project, CmsResource resource)
     throws CmsDataAccessException {
 
+        CmsUUID projectId = ((dbc.getProjectId() == null) || dbc.getProjectId().isNullUUID())
+        ? project.getUuid()
+        : dbc.getProjectId();
+
         ResultSet res = null;
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -1747,7 +1755,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
         try {
             conn = m_sqlManager.getConnection(dbc);
-            stmt = m_sqlManager.getPreparedStatement(conn, project.getUuid(), "C_PROPERTIES_READALL");
+            stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_PROPERTIES_READALL");
             stmt.setString(1, resource.getStructureId().toString());
             stmt.setString(2, resource.getResourceId().toString());
             res = stmt.executeQuery();
@@ -2704,16 +2712,20 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     public void writePropertyObject(CmsDbContext dbc, CmsProject project, CmsResource resource, CmsProperty property)
     throws CmsDataAccessException {
 
+        CmsUUID projectId = ((dbc.getProjectId() == null) || dbc.getProjectId().isNullUUID())
+        ? project.getUuid()
+        : dbc.getProjectId();
+
         // TODO: check if we need autocreation for link property definition types too
         CmsPropertyDefinition propertyDefinition = null;
         try {
             // read the property definition
-            propertyDefinition = readPropertyDefinition(dbc, property.getName(), project.getUuid());
+            propertyDefinition = readPropertyDefinition(dbc, property.getName(), projectId);
         } catch (CmsDbEntryNotFoundException e) {
             if (property.autoCreatePropertyDefinition()) {
                 propertyDefinition = createPropertyDefinition(
                     dbc,
-                    project.getUuid(),
+                    projectId,
                     property.getName(),
                     CmsPropertyDefinition.TYPE_NORMAL);
                 try {
@@ -2808,14 +2820,14 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                         // insert/update the property value                    
                         if (existsPropertyValue) {
                             // {structure|resource} property value already exists- use update statement
-                            stmt = m_sqlManager.getPreparedStatement(conn, project.getUuid(), "C_PROPERTIES_UPDATE");
+                            stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_PROPERTIES_UPDATE");
                             stmt.setString(1, m_sqlManager.validateEmpty(value));
                             stmt.setString(2, id.toString());
                             stmt.setInt(3, mappingType);
                             stmt.setString(4, propertyDefinition.getId().toString());
                         } else {
                             // {structure|resource} property value doesn't exist- use create statement
-                            stmt = m_sqlManager.getPreparedStatement(conn, project.getUuid(), "C_PROPERTIES_CREATE");
+                            stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_PROPERTIES_CREATE");
                             stmt.setString(1, new CmsUUID().toString());
                             stmt.setString(2, propertyDefinition.getId().toString());
                             stmt.setString(3, id.toString());
@@ -2824,7 +2836,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                         }
                     } else {
                         // {structure|resource} property value marked as deleted- use delete statement
-                        stmt = m_sqlManager.getPreparedStatement(conn, project.getUuid(), "C_PROPERTIES_DELETE");
+                        stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_PROPERTIES_DELETE");
                         stmt.setString(1, propertyDefinition.getId().toString());
                         stmt.setString(2, id.toString());
                         stmt.setInt(3, mappingType);

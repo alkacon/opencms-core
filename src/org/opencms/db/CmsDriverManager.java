@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2010/04/19 15:19:35 $
- * Version: $Revision: 1.649 $
+ * Date   : $Date: 2010/07/06 07:49:55 $
+ * Version: $Revision: 1.650 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.db;
 
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsSystemConfiguration;
+import org.opencms.db.generic.CmsUserDriver;
 import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsFolder;
@@ -1306,7 +1307,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
         m_monitor.flushCache(CmsMemoryMonitor.CacheType.PROPERTY_LIST);
 
         // create a publish list for the 'virtual' publish event
-        CmsResource ouRes = readResource(dbc, orgUnit.getId(), CmsResourceFilter.DEFAULT);
+        CmsResource ouRes = readResource(
+            dbc,
+            CmsUserDriver.ORGUNIT_BASE_FOLDER + orgUnit.getName(),
+            CmsResourceFilter.DEFAULT);
         CmsPublishList pl = new CmsPublishList(ouRes, false);
         pl.add(ouRes, false);
 
@@ -3782,6 +3786,16 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
+     * Returns the history driver.<p>
+     * 
+     * @return the history driver
+     */
+    public I_CmsHistoryDriver getHistoryDriver() {
+
+        return m_historyDriver;
+    }
+
+    /**
      * Returns the history driver for a given database context.<p>
      * 
      * @param dbc the database context 
@@ -3975,6 +3989,16 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
+     * Returns the project driver.<p>
+     *
+     * @return the project driver
+     */
+    public I_CmsProjectDriver getProjectDriver() {
+
+        return m_projectDriver;
+    }
+
+    /**
      * Returns the project driver for a given DB context.<p>
      * 
      * @param dbc the database context
@@ -3988,6 +4012,23 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
         I_CmsProjectDriver driver = dbc.getProjectDriver(dbc.getProjectId());
         return driver != null ? driver : m_projectDriver;
+    }
+
+    /**
+     * Returns either the project driver for the DB context (if it has one) or a default project driver.<p>
+     * 
+     * @param dbc the DB context
+     * @param defaultDriver the driver which should be returned if there is no project driver for the DB context 
+     * 
+     * @return either the project driver for the DB context, or the default driver 
+     */
+    public I_CmsProjectDriver getProjectDriver(CmsDbContext dbc, I_CmsProjectDriver defaultDriver) {
+
+        if ((dbc == null) || (dbc.getProjectId() == null) || dbc.getProjectId().isNullUUID()) {
+            return defaultDriver;
+        }
+        I_CmsProjectDriver driver = dbc.getProjectDriver(dbc.getProjectId());
+        return driver != null ? driver : defaultDriver;
     }
 
     /**
@@ -4372,6 +4413,16 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
+     * Returns the user driver.<p>
+     *
+     * @return the user driver 
+     */
+    public I_CmsUserDriver getUserDriver() {
+
+        return m_userDriver;
+    }
+
+    /**
      * Returns the user driver for a given database context.<p>
      * 
      * @param dbc the database context
@@ -4386,6 +4437,23 @@ public final class CmsDriverManager implements I_CmsEventListener {
         I_CmsUserDriver driver = dbc.getUserDriver(dbc.getProjectId());
         return driver != null ? driver : m_userDriver;
 
+    }
+
+    /**
+     * Returns either the user driver for the given DB context (if it has one) or a default value instead.<p>
+     * 
+     * @param dbc the DB context
+     * @param defaultDriver the driver that should be returned if no driver for the DB context was found
+     * 
+     * @return either the user driver for the DB context, or <code>defaultDriver</code> if none were found 
+     */
+    public I_CmsUserDriver getUserDriver(CmsDbContext dbc, I_CmsUserDriver defaultDriver) {
+
+        if ((dbc == null) || (dbc.getProjectId() == null) || dbc.getProjectId().isNullUUID()) {
+            return defaultDriver;
+        }
+        I_CmsUserDriver driver = dbc.getUserDriver(dbc.getProjectId());
+        return driver != null ? driver : defaultDriver;
     }
 
     /**
@@ -4436,6 +4504,16 @@ public final class CmsDriverManager implements I_CmsEventListener {
             includeOtherOuUsers,
             directUsersOnly,
             readRoles);
+    }
+
+    /**
+     * Returns the VFS driver.<p>
+     * 
+     * @return the VFS driver
+     */
+    public I_CmsVfsDriver getVfsDriver() {
+
+        return m_vfsDriver;
     }
 
     /**
@@ -8425,8 +8503,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         // access was granted - write the resource
         resource.setUserLastModified(dbc.currentUser().getId());
+        CmsUUID projectId = ((dbc.getProjectId() == null) || dbc.getProjectId().isNullUUID())
+        ? dbc.currentProject().getUuid()
+        : dbc.getProjectId();
 
-        getVfsDriver(dbc).writeResource(dbc, dbc.currentProject().getUuid(), resource, UPDATE_RESOURCE_STATE);
+        getVfsDriver(dbc).writeResource(dbc, projectId, resource, UPDATE_RESOURCE_STATE);
 
         // make sure the written resource has the state correctly set
         if (resource.getState().isUnchanged()) {
@@ -9025,26 +9106,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
-     * Returns the history driver.<p>
-     * 
-     * @return the history driver
-     */
-    private I_CmsHistoryDriver getHistoryDriver() {
-
-        return m_historyDriver;
-    }
-
-    /**
-     * Returns the project driver.<p>
-     *
-     * @return the project driver
-     */
-    private I_CmsProjectDriver getProjectDriver() {
-
-        return m_projectDriver;
-    }
-
-    /**
      * Returns the correct project id.<p>
      * 
      * @param dbc the database context
@@ -9122,26 +9183,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
             }
         }
         return updateState;
-    }
-
-    /**
-     * Returns the user driver.<p>
-     *
-     * @return the user driver 
-     */
-    private I_CmsUserDriver getUserDriver() {
-
-        return m_userDriver;
-    }
-
-    /**
-     * Returns the VFS driver.<p>
-     * 
-     * @return the VFS driver
-     */
-    private I_CmsVfsDriver getVfsDriver() {
-
-        return m_vfsDriver;
     }
 
     /**
@@ -9762,13 +9803,16 @@ public final class CmsDriverManager implements I_CmsEventListener {
     private void updateState(CmsDbContext dbc, CmsResource resource, boolean resourceState)
     throws CmsDataAccessException {
 
+        CmsUUID projectId = ((dbc.getProjectId() == null) || dbc.getProjectId().isNullUUID())
+        ? dbc.currentProject().getUuid()
+        : dbc.getProjectId();
         resource.setUserLastModified(dbc.currentUser().getId());
         if (resourceState) {
             // update the whole resource state
-            getVfsDriver(dbc).writeResource(dbc, dbc.currentProject().getUuid(), resource, UPDATE_RESOURCE_STATE);
+            getVfsDriver(dbc).writeResource(dbc, projectId, resource, UPDATE_RESOURCE_STATE);
         } else {
             // update the structure state
-            getVfsDriver(dbc).writeResource(dbc, dbc.currentProject().getUuid(), resource, UPDATE_STRUCTURE_STATE);
+            getVfsDriver(dbc).writeResource(dbc, projectId, resource, UPDATE_STRUCTURE_STATE);
         }
     }
 }

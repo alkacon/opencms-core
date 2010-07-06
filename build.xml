@@ -2,7 +2,7 @@
 
 <project name="OpenCms" default="bindist" basedir=".">
 
-    <property name="version.number"             		value="7.5.2" />
+    <property name="version.number"             		value="7.5.3" />
     <property name="java.target.version"                value="1.5" />
     
 	<property name="app.name" 							value="opencms" />
@@ -68,7 +68,7 @@
 	  -	Checks if all required libraries are available
 	  -->
     <target name="init" >
-    	
+    
         <condition property="tomcat.home" value="${env.TOMCAT_HOME}">
             <available file="${env.TOMCAT_HOME}" type="dir"/>
         </condition>
