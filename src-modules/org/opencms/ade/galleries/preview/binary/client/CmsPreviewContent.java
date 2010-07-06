@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/preview/binary/client/Attic/CmsPreviewContent.java,v $
- * Date   : $Date: 2010/07/06 12:08:04 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/07/06 14:03:50 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,11 +53,18 @@ import com.google.gwt.user.client.ui.Label;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
 public class CmsPreviewContent extends Composite {
+
+    /**
+     * The ui-binder interface.<p>
+     */
+    public interface I_CmsPreviewContentUiBinder extends UiBinder<HTMLPanel, CmsPreviewContent> {
+        // GWT interface, nothing to do
+    }
 
     /**
      * The style interface.<p>
@@ -101,42 +108,11 @@ public class CmsPreviewContent extends Composite {
         String title();
     }
 
-    /**
-     * The ui-binder interface.<p>
-     */
-    public interface I_CmsPreviewContentUiBinder extends UiBinder<HTMLPanel, CmsPreviewContent> {
-        // GWT interface, nothing to do
-    }
-
     private static I_CmsPreviewContentUiBinder uiBinder = GWT.create(I_CmsPreviewContentUiBinder.class);
-
-    /** The title field. */
-    @UiField
-    protected InlineLabel m_title;
-
-    /** The size field. */
-    @UiField
-    protected InlineLabel m_size;
 
     /** The date last modified field. */
     @UiField
     protected InlineLabel m_dateMod;
-
-    /** The path field. */
-    @UiField
-    protected InlineLabel m_path;
-
-    /** The icon. */
-    @UiField
-    protected InlineLabel m_icon;
-
-    /** The size label. */
-    @UiField
-    protected CmsLabel m_sizeLabel;
-
-    /** The path label. */
-    @UiField
-    protected CmsLabel m_pathLabel;
 
     /** The date last modified label. */
     @UiField
@@ -146,9 +122,33 @@ public class CmsPreviewContent extends Composite {
     @UiField
     protected Label m_description;
 
+    /** The icon. */
+    @UiField
+    protected InlineLabel m_icon;
+
+    /** The path field. */
+    @UiField
+    protected InlineLabel m_path;
+
+    /** The path label. */
+    @UiField
+    protected CmsLabel m_pathLabel;
+
+    /** The size field. */
+    @UiField
+    protected InlineLabel m_size;
+
+    /** The size label. */
+    @UiField
+    protected CmsLabel m_sizeLabel;
+
     /** The css for this widget. */
     @UiField
     protected I_CmsPreviewContentStyle m_style;
+
+    /** The title field. */
+    @UiField
+    protected InlineLabel m_title;
 
     /**
      * Constructor.<p>
@@ -214,7 +214,7 @@ public class CmsPreviewContent extends Composite {
      */
     public void setInfo(CmsResourceInfoBean info) {
 
-        setIconClass(CmsIconUtil.getResourceIconClasses(info.getResourceType(), info.getResourcePath()));
+        setIconClass(CmsIconUtil.getResourceIconClasses(info.getResourceType(), info.getResourcePath(), false));
         setTitle(info.getTitle());
         setDescription(info.getDescription());
         setDateModified(info.getLastModified());

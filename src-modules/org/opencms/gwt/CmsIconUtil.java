@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsIconUtil.java,v $
- * Date   : $Date: 2010/06/21 10:01:40 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/07/06 14:03:50 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import java.util.Map;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -67,37 +67,6 @@ public class CmsIconUtil extends org.opencms.gwt.shared.CmsIconUtil {
     }
 
     /**
-     * Builds the CSS for a given combination of resource type and file name extension.<p>
-     * 
-     * @param type the resource type 
-     * @param suffix the file name extension
-     * @param image the icon which should be used for the type/suffix combination 
-     * 
-     * @return the CSS for the type/suffix combination 
-     */
-    public static String buildSubTypeIconCss(String type, String suffix, String image) {
-
-        String template = ".%1$s.%2$s.%3$s {\n  background-image: url(\"%4$s\");\n}\n\n";
-        return String.format(template, TYPE_ICON_CLASS, getResourceTypeIconClass(type), getResourceSubTypeIconClass(
-            type,
-            suffix), image);
-    }
-
-    /**
-     * Returns the default CSS for a given resource type.<p>
-     * 
-     * @param type the resource type 
-     * @param image the icon which should be used for the resource type
-     * 
-     * @return the CSS for the resource type
-     */
-    public static String buildTypeIconCss(String type, String image) {
-
-        String template = ".%1$s.%2$s {\n  background-image: url(\"%3$s\");\n}\n\n";
-        return String.format(template, TYPE_ICON_CLASS, getResourceTypeIconClass(type), image);
-    }
-
-    /**
      * Builds the CSS for the icon for unknown resource types.<p>
      * 
      * @return the CSS for unknown resource type icons
@@ -105,30 +74,77 @@ public class CmsIconUtil extends org.opencms.gwt.shared.CmsIconUtil {
     public static String buildUnknownIconCss() {
 
         String unknown = getIconUri(OpenCms.getWorkplaceManager().getExplorerTypeSetting(
-            CmsResourceTypeUnknownFile.getStaticTypeName()).getBestIcon());
+            CmsResourceTypeUnknownFile.getStaticTypeName()).getBigIconIfAvailable());
         String template = ".%1$s {\n  background: transparent scroll 50%% 50%% no-repeat url(\"%2$s\");\n  width: 16px;\n  height:16px;\n}\n\n";
         return String.format(template, TYPE_ICON_CLASS, unknown);
     }
 
     /**
-     * Adds all the CSS rules for a given resource type to a string buffer.<p>
+     * Writes the CSS for a single icon rule to a buffer.<p>
      * 
-     * @param buffer the string buffer which the CSS should be added to 
+     * @param buffer the buffer to which the generated CSS should be written 
+     * @param typeName the name of the resource type 
+     * @param rule the icon rule 
+     */
+    private static void addCssForIconRule(StringBuffer buffer, String typeName, CmsIconRule rule) {
+
+        String extension = rule.getExtension();
+        if (rule.getBigIcon() != null) {
+            CmsIconCssRuleBuilder cssBig = new CmsIconCssRuleBuilder();
+            cssBig.addSelectorForSubType(typeName, extension, false);
+            cssBig.setImageUri(getIconUri(rule.getBigIcon()));
+            cssBig.writeCss(buffer);
+
+            CmsIconCssRuleBuilder cssSmall = new CmsIconCssRuleBuilder();
+            cssSmall.addSelectorForSubType(typeName, extension, true);
+            cssSmall.setImageUri(getIconUri(rule.getIcon()));
+            cssSmall.writeCss(buffer);
+
+        } else {
+            CmsIconCssRuleBuilder css = new CmsIconCssRuleBuilder();
+            css.addSelectorForSubType(typeName, extension, false);
+            css.addSelectorForSubType(typeName, extension, true);
+            css.setImageUri(getIconUri(rule.getIcon()));
+            css.writeCss(buffer);
+
+        }
+    }
+
+    /**
+     * Helper method for appending the CSS for a single resource type to a buffer.<p>
+     * 
+     * @param buffer the buffer to which the generated CSS should be written 
      * @param type the resource type for which the CSS should be generated 
      */
     private static void addCssForType(StringBuffer buffer, I_CmsResourceType type) {
 
         String typeName = type.getTypeName();
-
         CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(typeName);
-        if (settings != null) {
-            buffer.append(buildTypeIconCss(typeName, getIconUri(settings.getBestIcon())));
-            Map<String, CmsIconRule> iconRules = settings.getIconRules();
-            for (Map.Entry<String, CmsIconRule> entry : iconRules.entrySet()) {
-                String extension = entry.getKey();
-                CmsIconRule rule = entry.getValue();
-                buffer.append(buildSubTypeIconCss(typeName, extension, getIconUri(rule.getBestIcon())));
-            }
+        if (settings == null) {
+            return;
+        }
+        if (settings.getBigIcon() != null) {
+            CmsIconCssRuleBuilder css = new CmsIconCssRuleBuilder();
+            css.setImageUri(getIconUri(settings.getBigIcon()));
+            css.addSelectorForType(typeName, false);
+            css.writeCss(buffer);
+
+            CmsIconCssRuleBuilder cssSmall = new CmsIconCssRuleBuilder();
+            cssSmall.setImageUri(getIconUri(settings.getIcon()));
+            cssSmall.addSelectorForType(typeName, true);
+            cssSmall.writeCss(buffer);
+        } else {
+            CmsIconCssRuleBuilder css = new CmsIconCssRuleBuilder();
+            css.setImageUri(getIconUri(settings.getIcon()));
+            css.addSelectorForType(typeName, true);
+            css.addSelectorForType(typeName, false);
+            css.writeCss(buffer);
+        }
+
+        Map<String, CmsIconRule> iconRules = settings.getIconRules();
+        for (Map.Entry<String, CmsIconRule> entry : iconRules.entrySet()) {
+            CmsIconRule rule = entry.getValue();
+            addCssForIconRule(buffer, typeName, rule);
         }
     }
 

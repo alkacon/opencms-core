@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsTypesTab.java,v $
- * Date   : $Date: 2010/06/29 09:38:46 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2010/07/06 14:03:50 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 8.0.
  */
@@ -140,7 +140,7 @@ public class CmsTypesTab extends A_CmsListTab {
             } else {
                 listItemWidget = new CmsListItemWidget(infoBean);
             }
-            listItemWidget.setIcon(CmsIconUtil.getResourceIconClasses(typeBean.getType()));
+            listItemWidget.setIcon(CmsIconUtil.getResourceIconClasses(typeBean.getType(), false));
             CmsCheckBox checkBox = new CmsCheckBox();
             checkBox.addClickHandler(new CheckboxHandler(typeBean.getType(), checkBox));
             if ((selectedTypes != null) && selectedTypes.contains(typeBean.getType())) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsCategoriesTab.java,v $
- * Date   : $Date: 2010/06/14 06:09:19 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2010/07/06 14:03:50 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 8.0.
  */
@@ -102,11 +102,11 @@ public class CmsCategoriesTab extends A_CmsListTab {
         }
     }
 
+    /** The category icon CSS classes. */
+    private static final String CATEGORY_ICON_CLASSES = CmsIconUtil.getResourceIconClasses("folder", false);
+
     /** Text metrics key. */
     private static final String TM_CATEGORY_TAB = "CategoryTab";
-
-    /** The category icon CSS classes. */
-    private static final String CATEGORY_ICON_CLASSES = CmsIconUtil.getResourceIconClasses("folder");
 
     /** The flag to indicate when the categories are opened for the fist time. */
     private boolean m_isInitOpen;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsVfsTab.java,v $
- * Date   : $Date: 2010/06/30 13:54:43 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/07/06 14:03:50 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -152,7 +152,7 @@ public class CmsVfsTab extends A_CmsListTab {
 
         // info.setSubTitle("...");
         CmsListItemWidget liWidget = new CmsListItemWidget(info);
-        liWidget.setIcon(CmsIconUtil.getResourceIconClasses("folder"));
+        liWidget.setIcon(CmsIconUtil.getResourceIconClasses("folder", false));
         final CmsCheckBox checkbox = new CmsCheckBox();
         CmsLazyTreeItem result = new CmsLazyTreeItem(checkbox, liWidget);
         checkbox.addClickHandler(new ClickHandler() {

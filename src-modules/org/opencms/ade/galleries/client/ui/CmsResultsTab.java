@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsResultsTab.java,v $
- * Date   : $Date: 2010/07/05 14:48:07 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2010/07/06 14:03:50 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 8.0.
  */
@@ -193,7 +193,10 @@ public class CmsResultsTab extends A_CmsListTab {
             previewButton.addClickHandler(new CmsPreviewButtonHandler(resultItem.getPath(), resultItem.getType()));
             resultItemWidget.addButton(previewButton);
             // add file icon
-            resultItemWidget.setIcon(CmsIconUtil.getResourceIconClasses(resultItem.getType(), resultItem.getPath()));
+            resultItemWidget.setIcon(CmsIconUtil.getResourceIconClasses(
+                resultItem.getType(),
+                resultItem.getPath(),
+                false));
             CmsResultListItem listItem = new CmsResultListItem(resultItemWidget);
             listItem.setId(resultItem.getPath());
             addWidgetToList(listItem);

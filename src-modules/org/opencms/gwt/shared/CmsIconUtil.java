@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/Attic/CmsIconUtil.java,v $
- * Date   : $Date: 2010/06/21 10:01:40 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/07/06 14:03:50 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,14 +36,17 @@ package org.opencms.gwt.shared;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
 public class CmsIconUtil {
 
+    /** The suffix for the CSS classes for small icons. */
+    public static final String SMALL_SUFFIX = "_small";
+
     /** The resource icon CSS class prefix. */
-    protected static final String TYPE_ICON_CLASS = "cms_type_icon";
+    public static final String TYPE_ICON_CLASS = "cms_type_icon";
 
     /**
      * Constructor.<p>
@@ -56,34 +59,73 @@ public class CmsIconUtil {
     /**
      * Returns the CSS classes of the resource icon for the given resource type name.<p>
      * 
-     * Use this function, if the resource type is known, but not the filename. If the filename is available use {@link CmsIconUtil#getResourceIconClasses(String, String)}<p>
+     * Use this function, if the resource type is known, but not the filename. If the filename is available use {@link CmsIconUtil#getResourceIconClasses(String, String, boolean)}<p>
      * 
      * @param resourceTypeName the resource type name
+     * @param small if true, get the icon classes for the small icon, else for the biggest one available 
      * 
      * @return the CSS classes
      */
-    public static String getResourceIconClasses(String resourceTypeName) {
+    public static String getResourceIconClasses(String resourceTypeName, boolean small) {
 
         StringBuffer sb = new StringBuffer(TYPE_ICON_CLASS);
-        sb.append(" ").append(getResourceTypeIconClass(resourceTypeName));
+        sb.append(" ").append(getResourceTypeIconClass(resourceTypeName, small));
         return sb.toString();
     }
 
     /**
      * Returns the CSS classes of the resource icon for the given resource type and filename.<p>
      * 
-     * Use this the resource type and filename is known. Otherwise use {@link CmsIconUtil#getResourceIconClasses(String)}<p>
+     * Use this the resource type and filename is known. Otherwise use {@link CmsIconUtil#getResourceIconClasses(String,boolean)}<p>
      * 
      * @param resourceTypeName the resource type name
      * @param fileName the filename
+     * @param small if true, get the icon classes for the small icon, else for the biggest one available 
      * 
      * @return the CSS classes
      */
-    public static String getResourceIconClasses(String resourceTypeName, String fileName) {
+    public static String getResourceIconClasses(String resourceTypeName, String fileName, boolean small) {
 
         StringBuffer sb = new StringBuffer(TYPE_ICON_CLASS);
-        sb.append(" ").append(getResourceTypeIconClass(resourceTypeName)).append(" ").append(
-            getFileTypeIconClass(resourceTypeName, fileName));
+        sb.append(" ").append(getResourceTypeIconClass(resourceTypeName, small)).append(" ").append(
+            getFileTypeIconClass(resourceTypeName, fileName, small));
+        return sb.toString();
+    }
+
+    /**
+     * Returns the CSS class for a given resource type name and file name extension.<p>
+     * 
+     * @param resourceTypeName the resource type name 
+     * @param suffix the file name extension
+     * @param small if true, get the icon class for the small icon, else for the biggest one available   
+     * 
+     * @return the CSS class for the type and extension 
+     */
+    public static String getResourceSubTypeIconClass(String resourceTypeName, String suffix, boolean small) {
+
+        StringBuffer buffer = new StringBuffer(TYPE_ICON_CLASS).append("_").append(resourceTypeName.hashCode()).append(
+            "_").append(suffix);
+        if (small) {
+            buffer.append(SMALL_SUFFIX);
+        }
+        return buffer.toString();
+    }
+
+    /**
+     * Returns the CSS class for the given resource type.<p>
+     * 
+     * @param resourceTypeName the resource type name
+     * @param small if true, get the icon class for the small icon, else for the biggest one available 
+     * 
+     * @return the CSS class
+     */
+    public static String getResourceTypeIconClass(String resourceTypeName, boolean small) {
+
+        StringBuffer sb = new StringBuffer(TYPE_ICON_CLASS);
+        sb.append("_").append(resourceTypeName.hashCode());
+        if (small) {
+            sb.append(SMALL_SUFFIX);
+        }
         return sb.toString();
     }
 
@@ -92,48 +134,20 @@ public class CmsIconUtil {
      * 
      * @param resourceTypeName the resource type name
      * @param fileName the filename
+     * @param small if true, get the CSS class for the small icon, else for the biggest one available 
      * 
      * @return the CSS class
      */
-    protected static String getFileTypeIconClass(String resourceTypeName, String fileName) {
+    protected static String getFileTypeIconClass(String resourceTypeName, String fileName, boolean small) {
 
         if ((fileName != null) && fileName.contains(".")) {
             int last = fileName.lastIndexOf(".");
             if (fileName.length() > last + 1) {
                 String suffix = fileName.substring(fileName.lastIndexOf(".") + 1);
-                return getResourceSubTypeIconClass(resourceTypeName, suffix);
+                return getResourceSubTypeIconClass(resourceTypeName, suffix, small);
             }
         }
         return "";
 
-    }
-
-    /**
-     * Returns the CSS class for a given resource type name and file name extension.<p>
-     * 
-     * @param resourceTypeName the resource type name 
-     * @param suffix the file name extension 
-     * 
-     * @return the CSS class for the type and extension 
-     */
-    protected static String getResourceSubTypeIconClass(String resourceTypeName, String suffix) {
-
-        StringBuffer buffer = new StringBuffer(TYPE_ICON_CLASS).append("_").append(resourceTypeName.hashCode()).append(
-            "_").append(suffix);
-        return buffer.toString();
-    }
-
-    /**
-     * Returns the CSS class for the given resource type.<p>
-     * 
-     * @param resourceTypeName the resource type name
-     * 
-     * @return the CSS class
-     */
-    protected static String getResourceTypeIconClass(String resourceTypeName) {
-
-        StringBuffer sb = new StringBuffer(TYPE_ICON_CLASS);
-        sb.append("_").append(resourceTypeName.hashCode());
-        return sb.toString();
     }
 }

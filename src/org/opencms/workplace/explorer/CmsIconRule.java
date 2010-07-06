@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsIconRule.java,v $
- * Date   : $Date: 2010/06/21 10:01:40 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/07/06 14:03:50 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ package org.opencms.workplace.explorer;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -73,7 +73,7 @@ public class CmsIconRule {
      * 
      * @return the biggest icon available
      */
-    public String getBestIcon() {
+    public String getBigIconIfAvailable() {
 
         return m_bigIcon != null ? m_bigIcon : m_icon;
     }
