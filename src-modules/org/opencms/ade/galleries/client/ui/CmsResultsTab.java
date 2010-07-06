@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsResultsTab.java,v $
- * Date   : $Date: 2010/07/06 14:03:50 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2010/07/06 14:54:45 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,16 +64,16 @@ import com.google.gwt.user.client.ui.FlowPanel;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @since 8.0.
  */
 public class CmsResultsTab extends A_CmsListTab {
 
     /**
-     * Special click handler to use with push button.<p>
+     * Special click handler to use with preview button.<p>
      */
-    private class CmsPreviewButtonHandler implements ClickHandler {
+    private class PreviewHandler implements ClickHandler {
 
         /** The id of the selected item. */
         private String m_resourcePath;
@@ -87,7 +87,7 @@ public class CmsResultsTab extends A_CmsListTab {
          * @param resourcePath the item resource path 
          * @param resourceType the item resource type
          */
-        public CmsPreviewButtonHandler(String resourcePath, String resourceType) {
+        public PreviewHandler(String resourcePath, String resourceType) {
 
             m_resourcePath = resourcePath;
             m_resourceType = resourceType;
@@ -100,6 +100,43 @@ public class CmsResultsTab extends A_CmsListTab {
 
             getTabHandler().openPreview(m_resourcePath, m_resourceType);
 
+        }
+    }
+
+    /**
+     * Special click handler to use with select button.<p>
+     */
+    private class SelectHandler implements ClickHandler {
+
+        /** The id of the selected item. */
+        private String m_resourcePath;
+
+        /** The resource type of the selected item. */
+        private String m_resourceType;
+
+        /** The resource title. */
+        private String m_title;
+
+        /**
+         * Constructor.<p>
+         * 
+         * @param resourcePath the item resource path 
+         * @param title the resource title
+         * @param resourceType the item resource type
+         */
+        public SelectHandler(String resourcePath, String title, String resourceType) {
+
+            m_resourcePath = resourcePath;
+            m_resourceType = resourceType;
+            m_title = title;
+        }
+
+        /**
+         * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
+         */
+        public void onClick(ClickEvent event) {
+
+            getTabHandler().selectResource(m_resourcePath, m_title, m_resourceType);
         }
     }
 
@@ -190,8 +227,20 @@ public class CmsResultsTab extends A_CmsListTab {
             previewButton.setImageClass(I_CmsImageBundle.INSTANCE.style().magnifierIcon());
             previewButton.setShowBorder(false);
             previewButton.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
-            previewButton.addClickHandler(new CmsPreviewButtonHandler(resultItem.getPath(), resultItem.getType()));
+            previewButton.addClickHandler(new PreviewHandler(resultItem.getPath(), resultItem.getType()));
             resultItemWidget.addButton(previewButton);
+            if (m_tabHandler.hasSelectResource()) {
+                CmsPushButton selectButton = new CmsPushButton();
+                // TODO: use different icon
+                selectButton.setImageClass(I_CmsImageBundle.INSTANCE.style().newIcon());
+                selectButton.setShowBorder(false);
+                selectButton.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
+                selectButton.addClickHandler(new SelectHandler(
+                    resultItem.getPath(),
+                    resultItem.getTitle(),
+                    resultItem.getType()));
+                resultItemWidget.addButton(selectButton);
+            }
             // add file icon
             resultItemWidget.setIcon(CmsIconUtil.getResourceIconClasses(
                 resultItem.getType(),

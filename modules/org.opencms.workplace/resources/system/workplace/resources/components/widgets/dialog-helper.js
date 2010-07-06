@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace/resources/system/workplace/resources/components/widgets/dialog-helper.js,v $
- * Date   : $Date: 2010/07/05 15:03:58 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/07/06 14:54:45 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,43 @@
  * Depends on jquery and jquery-ui. Make sure to include both into the page.
  */
 
+function _getScaleParam(sitePath){
+	if (sitePath.indexOf('?')!=-1){
+		var param = sitePath.substr(sitePath.indexOf('?'));
+		var i=param.indexOf("__scale=");
+		if (i!=-1){
+			return (param.indexOf('&')!=-1) ? param.substring(i+8, param.indexOf('&')) : param.substr(i+8);
+		} 
+	}
+	return null;
+}
+
+function _getScaleValue(scale, valueName) {
+	if (scale == null) {
+		return null;
+	}
+	var pos = scale.indexOf(valueName + ":");
+	if (pos != -1) {
+		// found value, return it
+		if (pos > 0 && (valueName == "h" || valueName == "w")) {
+			// special handling for "w" and "h", could also match "cw" and "ch"
+			if (scale.charAt(pos - 1) == "c") {
+				scale = scale.substring(pos + 1);
+			}
+		}
+		var searchVal = new RegExp(valueName + ":\\d+,*", "");
+		var result = scale.match(searchVal);
+		if (result != null && result != "") {
+			result = result.toString().substring(valueName.length + 1);
+			if (result.indexOf(",") != -1) {
+				result = result.substring(0, result.indexOf(","));
+			}
+			return result;
+		}
+	}	
+	return null;
+}
+
 /**
  * Closes the dialog with the given id.<p>
  * 
@@ -41,7 +78,8 @@
  * @return void
  */
 function cmsCloseDialog(fieldId){
-	$("#cms_dialog_"+fieldId).dialog('destroy').remove();
+	
+	$(document.getElementById("cms_dialog_"+fieldId)).dialog('destroy').remove();
 }
 
 /**
@@ -109,7 +147,8 @@ function cmsOpenDialog(title, dialogUrl, fieldId, height, width){
  * 
  * @return void
  */
-function cmsOpenImagePreview(title, context, sitePath){
+function cmsOpenImagePreview(title, context, fieldId){
+	var sitePath=document.getElementById(fieldId).getAttribute('value');
 	if (sitePath && $.trim(sitePath).charAt(0)=='/'){
 		sitePath=$.trim(sitePath);
 		var _dialogWidth=null;
@@ -172,42 +211,7 @@ function cmsOpenImagePreview(title, context, sitePath){
 	}
 }
 
-function _getScaleParam(sitePath){
-	if (sitePath.indexOf('?')!=-1){
-		var param = sitePath.substr(sitePath.indexOf('?'));
-		var i=param.indexOf("__scale=");
-		if (i!=-1){
-			return (param.indexOf('&')!=-1) ? param.substring(i+8, param.indexOf('&')) : param.substr(i+8);
-		} 
-	}
-	return null;
-}
 
-function _getScaleValue(scale, valueName) {
-	if (scale == null) {
-		return null;
-	}
-	var pos = scale.indexOf(valueName + ":");
-	if (pos != -1) {
-		// found value, return it
-		if (pos > 0 && (valueName == "h" || valueName == "w")) {
-			// special handling for "w" and "h", could also match "cw" and "ch"
-			if (scale.charAt(pos - 1) == "c") {
-				scale = scale.substring(pos + 1);
-			}
-		}
-		var searchVal = new RegExp(valueName + ":\\d+,*", "");
-		var result = scale.match(searchVal);
-		if (result != null && result != "") {
-			result = result.toString().substring(valueName.length + 1);
-			if (result.indexOf(",") != -1) {
-				result = result.substring(0, result.indexOf(","));
-			}
-			return result;
-		}
-	}	
-	return null;
-}
 
 /**
  * Opens a modal preview dialog.<p>
@@ -218,8 +222,9 @@ function _getScaleValue(scale, valueName) {
  * 
  * @return void
  */
-function cmsOpenPreview(title, context, sitePath){
+function cmsOpenPreview(title, context,  fieldId){
+	var sitePath=document.getElementById(fieldId).getAttribute('value');
 	if (sitePath && sitePath.trim().charAt(0)=='/'){
-		openCmsDialog(title, context+sitePath.trim(), 'preview', 650, 750);
+		cmsOpenDialog(title, context+sitePath.trim(), 'preview', 650, 750);
 	}
 }

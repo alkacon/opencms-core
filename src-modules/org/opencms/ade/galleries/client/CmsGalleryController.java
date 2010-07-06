@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleryController.java,v $
- * Date   : $Date: 2010/07/06 12:08:04 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2010/07/06 14:54:45 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,6 +39,7 @@ import org.opencms.ade.galleries.shared.CmsResourceTypeBean;
 import org.opencms.ade.galleries.shared.CmsSitemapEntryBean;
 import org.opencms.ade.galleries.shared.CmsVfsEntryBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
+import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
 import org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService;
 import org.opencms.ade.galleries.shared.rpc.I_CmsGalleryServiceAsync;
@@ -69,7 +70,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * @author Polina Smagina
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 8.0.0
  */
@@ -173,7 +174,7 @@ public class CmsGalleryController {
 
         m_searchObject.addFolder(folder);
     }
-    
+
     /**
      * Add gallery to search object.<p>
      * 
@@ -215,7 +216,7 @@ public class CmsGalleryController {
         m_searchObject.clearFolders();
         updateResultsTab();
     }
-    
+
     /**
      * Removes all selected galleries from the search object.<p>
      */
@@ -304,6 +305,16 @@ public class CmsGalleryController {
 
         };
         action.execute();
+    }
+
+    /**
+     * Returns if resource entries in the search result are selectable.<p>
+     * 
+     * @return if resource entries in the search result are selectable
+     */
+    public boolean hasSelectResource() {
+
+        return (m_dialogMode == GalleryMode.editor) || (m_dialogMode == GalleryMode.widget);
     }
 
     /**

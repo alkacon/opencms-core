@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/Attic/I_CmsGalleryProviderConstants.java,v $
- * Date   : $Date: 2010/06/30 13:54:43 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/07/06 14:54:45 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Polina Smagina 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 8.0.0
  */
@@ -150,10 +150,6 @@ public interface I_CmsGalleryProviderConstants {
 
     /** Request parameter name constants. */
     public enum ReqParam {
-        //TODO: clean up the enum, remove not used params
-
-        //        /** The action of execute. */
-        //        action,
 
         /** The current element. */
         currentelement,
@@ -166,17 +162,12 @@ public interface I_CmsGalleryProviderConstants {
 
         /** The gallery path. */
         gallerypath,
-        //        /** The current gallery item parameter. */
-        //        galleryitem,
-
-        //        /** Specific image data parameter. */
-        //        imagedata,
-
-        //        /** The path to the editor plugin script. */
-        //        integrator,
 
         /** The gallery tab id. */
         gallerytabid,
+
+        /** The widget hash id. */
+        fieldid,
 
         /** The current locale. */
         locale,
@@ -186,7 +177,6 @@ public interface I_CmsGalleryProviderConstants {
 
         /** The available types for the gallery dialog. */
         types;
-
     }
 
     /** Sorting parameters. */
@@ -220,10 +210,6 @@ public interface I_CmsGalleryProviderConstants {
         type_desc;
     }
 
-    //TODO: rename interface or consider moving constants elsewhere
-    /** Name of the used dictionary. */
-    String DICT_NAME = "org.opencms.ade.galleries.core";
-
-    /** Path to the host page. */
-    String VFS_OPEN_GALLERY_PATH = "system/modules/org.opencms.ade.galleries/testVfs.jsp";
+    /** The widget field id. */
+    String KEY_FIELD_ID = "fieldId";
 }

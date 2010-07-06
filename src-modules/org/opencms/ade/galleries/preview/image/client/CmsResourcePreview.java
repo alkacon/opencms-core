@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/preview/image/client/Attic/CmsResourcePreview.java,v $
- * Date   : $Date: 2010/06/10 08:45:04 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/07/06 14:54:45 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.ade.galleries.preview.image.client;
 
 import org.opencms.ade.galleries.client.preview.A_CmsResourcePreview;
 import org.opencms.ade.galleries.preview.image.shared.I_CmsImagePreviewProvider;
+import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 
 import com.google.gwt.user.client.ui.RootPanel;
@@ -42,7 +43,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -88,8 +89,8 @@ public class CmsResourcePreview extends A_CmsResourcePreview {
      */
     public void selectResource(String galleryMode, String resourcePath, String title) {
 
-        // TODO: set image
-
+        GalleryMode mode = I_CmsGalleryProviderConstants.GalleryMode.valueOf(galleryMode);
+        CmsImagePreviewController.select(mode, resourcePath, title);
     }
 
     /**

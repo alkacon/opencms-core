@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/Attic/CmsGalleryActionElement.java,v $
- * Date   : $Date: 2010/06/07 08:07:40 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/07/06 14:54:45 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Polina Smagina 
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 8.0.0
  */
@@ -139,6 +139,16 @@ public class CmsGalleryActionElement extends CmsGwtActionElement {
     public boolean isEditorMode() {
 
         return m_galleryMode == GalleryMode.editor;
+    }
+
+    /**
+     * Returns if the current gallery mode is the widget mode (used within xml-content editor etc.).<p>
+     * 
+     * @return <code>true</code> if the gallery was opened as a widget
+     */
+    public boolean isWidgetMode() {
+
+        return m_galleryMode == GalleryMode.widget;
     }
 
     /**

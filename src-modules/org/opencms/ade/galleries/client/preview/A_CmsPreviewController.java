@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/Attic/A_CmsPreviewController.java,v $
- * Date   : $Date: 2010/06/10 08:45:04 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/07/06 14:54:45 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMod
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  */
@@ -76,7 +76,7 @@ public abstract class A_CmsPreviewController<T extends CmsResourceInfoBean> impl
 
         switch (galleryMode) {
             case widget:
-                CmsPreviewUtil.setResourcePath(CmsPreviewUtil.getFieldId(), resourcePath);
+                CmsPreviewUtil.setResourcePath(resourcePath);
                 break;
             case editor:
                 CmsPreviewUtil.setLink(resourcePath, title, null);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/A_CmsAdeGalleryWidget.java,v $
- * Date   : $Date: 2010/07/05 14:48:06 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/07/06 14:54:45 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import org.opencms.workplace.galleries.A_CmsAjaxGallery;
  *
  * @author Tobias Herrmann 
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0 
  */
@@ -237,8 +237,8 @@ public abstract class A_CmsAdeGalleryWidget extends A_CmsWidget {
         StringBuffer sb = new StringBuffer(64);
         sb.append("javascript:cmsOpenPreview('").append(Messages.GUI_BUTTON_PREVIEW_0);
         sb.append("', '").append(OpenCms.getSystemInfo().getOpenCmsContext());
-        sb.append("', document.getElementById('").append(id);
-        sb.append("').getAttribute('value')); return false;");
+        sb.append("', '").append(id);
+        sb.append("'); return false;");
         return sb.toString();
     }
 

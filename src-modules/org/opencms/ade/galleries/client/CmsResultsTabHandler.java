@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsResultsTabHandler.java,v $
- * Date   : $Date: 2010/06/29 09:38:45 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/07/06 14:54:45 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.ade.galleries.client;
 
+
 /**
  * The results tab handler.<p>
  * 
@@ -39,7 +40,7 @@ package org.opencms.ade.galleries.client;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 8.0.0
  */
@@ -53,6 +54,16 @@ public class CmsResultsTabHandler extends A_CmsTabHandler {
     public CmsResultsTabHandler(CmsGalleryController controller) {
 
         super(controller);
+    }
+
+    /**
+     * Returns if resource entries in the search result are selectable.<p>
+     * 
+     * @return if resource entries in the search result are selectable
+     */
+    public boolean hasSelectResource() {
+
+        return m_controller.hasSelectResource();
     }
 
     /**
@@ -124,5 +135,17 @@ public class CmsResultsTabHandler extends A_CmsTabHandler {
 
         m_controller.openPreview(resourcePath, resourceType);
 
+    }
+
+    /**
+     * Selects the given resource and sets its path into the xml-content field or editor link.<p>
+     * 
+     * @param resourcePath the item resource path 
+     * @param title the resource title
+     * @param resourceType the item resource type
+     */
+    public void selectResource(String resourcePath, String title, String resourceType) {
+
+        m_controller.selectResource(resourcePath, title, resourceType);
     }
 }

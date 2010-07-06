@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/Attic/CmsPreviewUtil.java,v $
- * Date   : $Date: 2010/06/10 08:45:03 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/07/06 14:54:45 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import java.util.Map.Entry;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -119,11 +119,9 @@ public final class CmsPreviewUtil {
      * 
      * @return the field id
      */
-    public static String getFieldId() {
-
-        //TODO: implement
-        return null;
-    }
+    public static native String getFieldId() /*-{
+        return $wnd[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::KEY_FIELD_ID];
+    }-*/;
 
     /**
      * Sets the image tag within the rich text editor (FCKEditor, CKEditor, ...).<p>
@@ -174,22 +172,21 @@ public final class CmsPreviewUtil {
      * 
      * Widget mode: Use this function inside the xmlcontent. 
      * 
-     * @param fieldId the field id to identify the input field
      * @param path the path to the selected resource
      */
-    public static native void setResourcePath(String fieldId, String path) /*-{
+    public static native void setResourcePath(String path) /*-{
         //the id of the input field in the xml content
-        var fieldId = fieldId;
+        var fieldId = $wnd[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::KEY_FIELD_ID];
 
         if (fieldId != null && fieldId != "") {
-        var imgField = $wnd.parent.document.getElementById(fieldId);
-        imgField.value = itemId;
+        var inputField = $wnd.parent.document.getElementById(fieldId);
+        inputField.setAttribute('value', path);
         try {
         // toggle preview icon if possible
         $wnd.parent.checkPreview(fieldId);
         } catch (e) {}
         }
-        $wnd.parent.closeGallery($wnd.parent, fieldId);
+        $wnd.parent.cmsCloseDialog(fieldId);
     }-*/;
 
     /**

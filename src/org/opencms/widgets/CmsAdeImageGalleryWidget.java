@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsAdeImageGalleryWidget.java,v $
- * Date   : $Date: 2010/07/05 14:48:06 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/07/06 14:54:45 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import org.opencms.main.OpenCms;
  *
  * @author Tobias Herrmann 
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0 
  */
@@ -118,8 +118,8 @@ public class CmsAdeImageGalleryWidget extends A_CmsAdeGalleryWidget {
         // using the 'cmsOptenImagePreview' function instead of 'cmsOpenPreview'
         sb.append("javascript:cmsOpenImagePreview('").append(Messages.GUI_BUTTON_PREVIEW_0);
         sb.append("', '").append(OpenCms.getSystemInfo().getOpenCmsContext());
-        sb.append("', document.getElementById('").append(id);
-        sb.append("').getAttribute('value')); return false;");
+        sb.append("', '").append(id);
+        sb.append("'); return false;");
         return sb.toString();
     }
 }

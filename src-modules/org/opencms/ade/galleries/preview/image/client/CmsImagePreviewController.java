@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/preview/image/client/Attic/CmsImagePreviewController.java,v $
- * Date   : $Date: 2010/07/05 14:48:07 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/07/06 14:54:45 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,11 +32,14 @@
 package org.opencms.ade.galleries.preview.image.client;
 
 import org.opencms.ade.galleries.client.preview.A_CmsPreviewController;
+import org.opencms.ade.galleries.client.preview.CmsPreviewUtil;
 import org.opencms.ade.galleries.shared.CmsImageInfoBean;
+import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 import org.opencms.ade.galleries.shared.rpc.I_CmsPreviewService;
 import org.opencms.ade.galleries.shared.rpc.I_CmsPreviewServiceAsync;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
@@ -48,7 +51,7 @@ import com.google.gwt.core.client.GWT;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  */
@@ -56,10 +59,6 @@ public class CmsImagePreviewController extends A_CmsPreviewController<CmsImageIn
 
     /** The preview service. */
     private I_CmsPreviewServiceAsync m_previewService;
-
-    //TODO: verify if necessary
-    /** The field id of the input field in the xmlcontent. */
-    private String m_fieldId;
 
     /**
      * Constructor.<p>
@@ -70,6 +69,33 @@ public class CmsImagePreviewController extends A_CmsPreviewController<CmsImageIn
 
         super(handler);
         handler.init(this);
+    }
+
+    /**
+     * Selects the image resource.<p>
+     * 
+     * @param galleryMode
+     * @param resourcePath
+     * @param title
+     */
+    public static void select(GalleryMode galleryMode, String resourcePath, String title) {
+
+        switch (galleryMode) {
+            case widget:
+                CmsPreviewUtil.setResourcePath(resourcePath);
+                break;
+            case editor:
+                Map<String, String> attributes = new HashMap<String, String>();
+                attributes.put("title", title);
+                CmsPreviewUtil.setImage(resourcePath, attributes);
+                break;
+            case sitemap:
+            case ade:
+            case view:
+            default:
+                //nothing to do here, should not be called
+                break;
+        }
     }
 
     /**
