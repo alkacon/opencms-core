@@ -446,18 +446,17 @@ function markItem(itemIndex, idPrefix) {
 				    tooltip  : LANG.DETAIL_EDIT_HELP
 				});
 				// Delete
-				$("#" + idPrefix + "itemdeletebutton").fadeIn("fast");	
+				$("#" + idPrefix + "itemdeletebutton").show();	
 
 			} else {
 				$("#" + idPrefix + "itemtitle").unbind();
 				$("#" + idPrefix + "itemtitle").removeClass();
-				$("#" + idPrefix + "itempublishbutton").fadeOut("fast");
 				// Delete
 				$("#" + idPrefix + "itemdeletebutton").fadeOut("fast");
 			}
 			// user has direct publish permission for this resource		
 			if (state != 0 && hasDirectPublish == true) {
-				$("#" + idPrefix + "itempublishbutton").fadeIn("fast");
+				$("#" + idPrefix + "itempublishbutton").show();
 			} else {
 				$("#" + idPrefix + "itempublishbutton").fadeOut("slow");
 			}			
@@ -471,9 +470,9 @@ function markItem(itemIndex, idPrefix) {
 		}
 		showItemInfo(markedIndex, idPrefix);
 		if (initValues.viewonly == false) {
-			$("#" + idPrefix + "itemselectbutton").fadeIn("fast");
+			$("#" + idPrefix + "itemselectbutton").show();
 			if(initValues.dialogmode == "widget") {
-				$("#" + idPrefix + "okbutton").fadeIn("fast");
+				$("#" + idPrefix + "okbutton").show();
 			}
 			if (initValues.dialogmode == "editor") {
 				try {
@@ -554,7 +553,7 @@ function refreshMarkedItem(data, modeName) {
 		$("#" + modeName + "itemlayer" + itemIndex).empty();
 		// show the resource publish button, if user has direct publish permission
 		if (hasDirectPublish == true) {
-			$("#" + modeName + "itempublishbutton").fadeIn("fast");
+			$("#" + modeName + "itempublishbutton").show();
 		}
 		var imgHtml = "";
 		if (state == 1) {

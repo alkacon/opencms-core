@@ -591,14 +591,13 @@ function markItem(imgIndex, idPrefix) {
 			} else {
 				$("#" + idPrefix + "itemtitle").unbind();
 				$("#" + idPrefix + "itemtitle").removeClass();
-				$("#" + idPrefix + "itempublishbutton").fadeOut("fast");
 				// Delete
-				$("#" + idPrefix + "itemdeletebutton").fadeOut("fast");
+				$("#" + idPrefix + "itemdeletebutton").show();
 				// Delete
 			}
 			// user has direct publish permission for this resource
 			if (state != 0 && hasDirectPublish == true) {
-				$("#" + idPrefix + "itempublishbutton").fadeIn("fast");
+				$("#" + idPrefix + "itempublishbutton").show();
 			} else {
 				$("#" + idPrefix + "itempublishbutton").fadeOut("fast");
 			}
@@ -610,9 +609,11 @@ function markItem(imgIndex, idPrefix) {
 			$("#" + idPrefix + "itemdeletebutton").fadeOut("fast");
 			// Delete
 		}
+		
 		showItemInfo(markedIndex, idPrefix);
+		
 		if (initValues.viewonly == false) {
-			$("#" + idPrefix + "itemselectbutton").fadeIn("fast");
+			$("#" + idPrefix + "itemselectbutton").show();
 		}
 	} else {
 		$("#" + idPrefix + "itemselectbutton").fadeOut("fast");
@@ -668,7 +669,7 @@ function refreshMarkedItem(data, modeName) {
 	if (state == 1 || state == 2) {
 		// show the resource publish button, if user has direct publish permission
 		if (hasDirectPublish == true) {
-			$("#" + modeName + "itempublishbutton").fadeIn("fast");
+			$("#" + modeName + "itempublishbutton").show();
 		}
 		$("#" + modeName + "itemlayer" + imgIndex).empty();
 		var imgHtml = "";
