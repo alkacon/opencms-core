@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2010/04/28 15:25:27 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/07/06 07:18:17 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -102,7 +102,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 6.0.0 
  */
@@ -170,7 +170,10 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             }
 
             // read the resource representing the organizational unit
-            CmsResource ouResource = m_driverManager.readResource(dbc, orgUnit.getId(), CmsResourceFilter.ALL);
+            CmsResource ouResource = m_driverManager.readResource(
+                dbc,
+                ORGUNIT_BASE_FOLDER + orgUnit.getName(),
+                CmsResourceFilter.ALL);
 
             // get the associated resources
             List vfsPaths = new ArrayList(internalResourcesForOrgUnit(dbc, ouResource));
@@ -595,7 +598,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         try {
             CmsResource resource = m_driverManager.readResource(
                 dbc,
-                organizationalUnit.getId(),
+                ORGUNIT_BASE_FOLDER + organizationalUnit.getName(),
                 CmsResourceFilter.DEFAULT);
             internalDeleteOrgUnitResource(dbc, resource);
             if (organizationalUnit.getProjectId() != null) {
@@ -866,7 +869,10 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
         List result = new ArrayList();
         try {
-            CmsResource ouResource = m_driverManager.readResource(dbc, orgUnit.getId(), CmsResourceFilter.ALL);
+            CmsResource ouResource = m_driverManager.readResource(
+                dbc,
+                ORGUNIT_BASE_FOLDER + orgUnit.getName(),
+                CmsResourceFilter.ALL);
             Iterator itPaths = internalResourcesForOrgUnit(dbc, ouResource).iterator();
             while (itPaths.hasNext()) {
                 String path = (String)itPaths.next();
@@ -1655,7 +1661,10 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
         try {
             // read the representing resource
-            CmsResource ouResource = m_driverManager.readResource(dbc, orgUnit.getId(), CmsResourceFilter.ALL);
+            CmsResource ouResource = m_driverManager.readResource(
+                dbc,
+                ORGUNIT_BASE_FOLDER + orgUnit.getName(),
+                CmsResourceFilter.ALL);
 
             // get the associated resources
             List vfsPaths = new ArrayList(internalResourcesForOrgUnit(dbc, ouResource));
@@ -1850,15 +1859,14 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                 organizationalUnit.getDescription(),
                 null));
 
+            CmsUUID projectId = ((dbc.getProjectId() == null) || dbc.getProjectId().isNullUUID())
+            ? dbc.currentProject().getUuid()
+            : dbc.getProjectId();
             // update the resource flags
             resource.setFlags(organizationalUnit.getFlags() | CmsResource.FLAG_INTERNAL);
             m_driverManager.writeResource(dbc, resource);
             resource.setState(CmsResource.STATE_UNCHANGED);
-            m_driverManager.getVfsDriver(dbc).writeResource(
-                dbc,
-                dbc.currentProject().getUuid(),
-                resource,
-                CmsDriverManager.NOTHING_CHANGED);
+            m_driverManager.getVfsDriver(dbc).writeResource(dbc, projectId, resource, CmsDriverManager.NOTHING_CHANGED);
 
             if (!dbc.currentProject().isOnlineProject()) {
                 // online persistence
@@ -2335,7 +2343,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             CmsResource.DATE_EXPIRED_DEFAULT,
             0);
 
-        CmsUUID projectId = dbc.getProjectId().isNullUUID() ? dbc.currentProject().getUuid() : dbc.getProjectId();
+        CmsUUID projectId = (dbc.getProjectId() == null || dbc.getProjectId().isNullUUID()) ? dbc.currentProject().getUuid() : dbc.getProjectId();
 
         m_driverManager.getVfsDriver(dbc).createResource(dbc, projectId, resource, null);
         resource.setState(CmsResource.STATE_UNCHANGED);
@@ -2523,7 +2531,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     protected CmsResource internalOrgUnitFolder(CmsDbContext dbc, CmsOrganizationalUnit orgUnit) throws CmsException {
 
         if (orgUnit != null) {
-            return m_driverManager.readResource(dbc, orgUnit.getId(), CmsResourceFilter.DEFAULT);
+            return m_driverManager.readResource(dbc, ORGUNIT_BASE_FOLDER + orgUnit.getName(), CmsResourceFilter.DEFAULT);
         } else {
             return null;
         }
@@ -2648,7 +2656,10 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     protected void internalValidateResourceForOrgUnit(CmsDbContext dbc, CmsOrganizationalUnit orgUnit, String rootPath)
     throws CmsException {
 
-        CmsResource parentResource = m_driverManager.readResource(dbc, orgUnit.getId(), CmsResourceFilter.ALL);
+        CmsResource parentResource = m_driverManager.readResource(
+            dbc,
+            ORGUNIT_BASE_FOLDER + orgUnit.getName(),
+            CmsResourceFilter.ALL);
         // assume not in scope
         boolean found = false;
         // iterate parent paths
@@ -2725,14 +2736,11 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     protected void internalWriteOrgUnitProperty(CmsDbContext dbc, CmsResource resource, CmsProperty property)
     throws CmsException {
 
+        CmsUUID projectId = (dbc.getProjectId() == null || dbc.getProjectId().isNullUUID()) ? dbc.currentProject().getUuid() : dbc.getProjectId();
         // write the property
         m_driverManager.writePropertyObject(dbc, resource, property);
         resource.setState(CmsResource.STATE_UNCHANGED);
-        m_driverManager.getVfsDriver(dbc).writeResource(
-            dbc,
-            dbc.currentProject().getUuid(),
-            resource,
-            CmsDriverManager.NOTHING_CHANGED);
+        m_driverManager.getVfsDriver(dbc).writeResource(dbc, projectId, resource, CmsDriverManager.NOTHING_CHANGED);
 
         // online persistence
         CmsProject project = dbc.currentProject();
@@ -2740,11 +2748,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         try {
             m_driverManager.writePropertyObject(dbc, resource, property); // assume the resource is identical in both projects
             resource.setState(CmsResource.STATE_UNCHANGED);
-            m_driverManager.getVfsDriver(dbc).writeResource(
-                dbc,
-                dbc.currentProject().getUuid(),
-                resource,
-                CmsDriverManager.NOTHING_CHANGED);
+            m_driverManager.getVfsDriver(dbc).writeResource(dbc, projectId, resource, CmsDriverManager.NOTHING_CHANGED);
         } finally {
             dbc.getRequestContext().setCurrentProject(project);
         }
