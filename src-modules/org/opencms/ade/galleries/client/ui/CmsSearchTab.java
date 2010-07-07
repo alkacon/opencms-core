@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsSearchTab.java,v $
- * Date   : $Date: 2010/07/07 12:42:29 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/07/07 13:47:46 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import com.google.gwt.user.client.ui.Label;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.
  */
@@ -226,21 +226,19 @@ public class CmsSearchTab extends A_CmsTab {
         initWidget(m_tab);
         m_tabHandler = tabHandler;
 
-        // TODO: add localization
-
         // set the description for the search tab
-        m_descriptionLabel.setText("Search for resources");
+        m_descriptionLabel.setText(Messages.get().key(Messages.GUI_TAB_SEARCH_DESCRIPTION_0));
 
         // add the query
-        m_searchLabel.setText("Text search:");
+        m_searchLabel.setText(Messages.get().key(Messages.GUI_TAB_SEARCH_LABEL_TEXT_0));
         QueryChangedHandler queryHandler = new QueryChangedHandler();
         m_searchInput.addValueChangeHandler(queryHandler);
 
         // set the labels for the date box widgets
-        m_dateCreatedStartLabel.setText("Created since:");
-        m_dateCreatedEndLabel.setText("Created until:");
-        m_dateModifiedStartLabel.setText("Modified since:");
-        m_dateModifiedEndLabel.setText("Modified until:");
+        m_dateCreatedStartLabel.setText(Messages.get().key(Messages.GUI_TAB_SEARCH_LABEL_CREATED_SINCE_0));
+        m_dateCreatedEndLabel.setText(Messages.get().key(Messages.GUI_TAB_SEARCH_LABEL_CREATED_UNTIL_0));
+        m_dateModifiedStartLabel.setText(Messages.get().key(Messages.GUI_TAB_SEARCH_LABEL_MODIFIED_SINCE_0));
+        m_dateModifiedEndLabel.setText(Messages.get().key(Messages.GUI_TAB_SEARCH_LABEL_MODIFIED_UNTIL_0));
 
         // add the handler to the according date box widgets
         DateBoxChangeHandler handler = new DateBoxChangeHandler();
@@ -250,7 +248,7 @@ public class CmsSearchTab extends A_CmsTab {
         m_dateModifiedEndDateBox.addValueChangeHandler(handler);
 
         // add the clear button
-        m_clearButton.setText("Clear");
+        m_clearButton.setText(Messages.get().key(Messages.GUI_TAB_SEARCH_BUTTON_CLEAR_0));
         m_clearButton.setUseMinWidth(true);
         ClearButtonClickHandler clearHandler = new ClearButtonClickHandler();
         m_clearButton.addClickHandler(clearHandler);
@@ -294,17 +292,20 @@ public class CmsSearchTab extends A_CmsTab {
 
         // append the search query to the resulting string
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(query)) {
-            result.append("Search Text: ").append(query);
+            result.append(Messages.get().key(Messages.GUI_TAB_SEARCH_LABEL_TEXT_0)).append(" ").append(query);
         }
 
         // append the date created range to the resulting string
         StringBuffer createdResult = new StringBuffer();
         if ((CmsStringUtil.isNotEmptyOrWhitespaceOnly(cStart) && CmsStringUtil.isNotEmptyOrWhitespaceOnly(cEnd))) {
-            createdResult.append("created range: ").append(cStart).append(" - ").append(cEnd);
+            createdResult.append(Messages.get().key(Messages.GUI_TAB_SEARCH_LABEL_CREATED_RANGE_0)).append(" ").append(
+                cStart).append(" - ").append(cEnd);
         } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(cStart)) {
-            createdResult.append("created since: ").append(cStart);
+            createdResult.append(Messages.get().key(Messages.GUI_TAB_SEARCH_LABEL_CREATED_SINCE_0)).append(" ").append(
+                cStart);
         } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(cEnd)) {
-            createdResult.append("created until: ").append(cEnd);
+            createdResult.append(Messages.get().key(Messages.GUI_TAB_SEARCH_LABEL_CREATED_UNTIL_0)).append(" ").append(
+                cEnd);
         }
         if (result.length() != 0) {
             result.append(", ");
@@ -314,11 +315,14 @@ public class CmsSearchTab extends A_CmsTab {
         // append the date modified range to the resulting string
         StringBuffer modifiedResult = new StringBuffer();
         if ((CmsStringUtil.isNotEmptyOrWhitespaceOnly(mStart) && CmsStringUtil.isNotEmptyOrWhitespaceOnly(mEnd))) {
-            modifiedResult.append("modified range: ").append(mStart).append(" - ").append(mEnd);
+            modifiedResult.append(Messages.get().key(Messages.GUI_TAB_SEARCH_LABEL_MODIFIED_RANGE_0)).append(" ").append(
+                mStart).append(" - ").append(mEnd);
         } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(mStart)) {
-            modifiedResult.append("modified since: ").append(mStart);
+            modifiedResult.append(Messages.get().key(Messages.GUI_TAB_SEARCH_LABEL_MODIFIED_SINCE_0)).append(" ").append(
+                mStart);
         } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(mEnd)) {
-            modifiedResult.append("modified until: ").append(mEnd);
+            modifiedResult.append(Messages.get().key(Messages.GUI_TAB_SEARCH_LABEL_MODIFIED_UNTIL_0)).append(" ").append(
+                mEnd);
         }
         if (result.length() != 0) {
             result.append(", ");

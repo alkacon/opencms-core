@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/Messages.java,v $
- * Date   : $Date: 2010/07/05 14:48:07 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/07/07 13:47:46 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.client.util.CmsMessages;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 8.0.0
  */
@@ -136,6 +136,33 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SORT_LABEL_TYPE_DESC_0 = "GUI_SORT_LABEL_TYPE_DESC_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TAB_SEARCH_BUTTON_CLEAR_0 = "GUI_TAB_SEARCH_BUTTON_CLEAR_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TAB_SEARCH_DESCRIPTION_0 = "GUI_TAB_SEARCH_DESCRIPTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TAB_SEARCH_LABEL_CREATED_RANGE_0 = "GUI_TAB_SEARCH_LABEL_CREATED_RANGE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TAB_SEARCH_LABEL_CREATED_SINCE_0 = "GUI_TAB_SEARCH_LABEL_CREATED_SINCE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TAB_SEARCH_LABEL_CREATED_UNTIL_0 = "GUI_TAB_SEARCH_LABEL_CREATED_UNTIL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TAB_SEARCH_LABEL_MODIFIED_RANGE_0 = "GUI_TAB_SEARCH_LABEL_MODIFIED_RANGE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TAB_SEARCH_LABEL_MODIFIED_SINCE_0 = "GUI_TAB_SEARCH_LABEL_MODIFIED_SINCE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TAB_SEARCH_LABEL_MODIFIED_UNTIL_0 = "GUI_TAB_SEARCH_LABEL_MODIFIED_UNTIL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TAB_SEARCH_LABEL_TEXT_0 = "GUI_TAB_SEARCH_LABEL_TEXT_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TAB_TITLE_CATEGORIES_0 = "GUI_TAB_TITLE_CATEGORIES_0";
