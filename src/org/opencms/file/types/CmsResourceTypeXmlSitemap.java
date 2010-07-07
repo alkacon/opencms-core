@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/Attic/CmsResourceTypeXmlSitemap.java,v $
- * Date   : $Date: 2010/05/26 12:11:41 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2010/07/07 14:05:51 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,6 +40,7 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.loader.CmsLoaderException;
 import org.opencms.loader.CmsXmlSitemapLoader;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -63,7 +64,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 7.6 
  */
@@ -87,6 +88,9 @@ public class CmsResourceTypeXmlSitemap extends CmsResourceTypeXmlContent {
     /** The name of this resource type. */
     private static final String RESOURCE_TYPE_NAME = "sitemap";
 
+    /** The real type id of XML sitemaps. */
+    private static int sitemapTypeId;
+
     /**
      * Default constructor that sets the fixed schema for container pages.<p>
      */
@@ -101,6 +105,36 @@ public class CmsResourceTypeXmlSitemap extends CmsResourceTypeXmlContent {
         } catch (CmsConfigurationException e) {
             // should never happen
             LOG.error(e.getLocalizedMessage(), e);
+        }
+    }
+
+    /**
+     * Returns the sitemap type id.<p>
+     * 
+     * @return the sitemap type id
+     * 
+     * @throws CmsLoaderException if the type is not configured
+     */
+    public static int getSitemapTypeId() throws CmsLoaderException {
+
+        if (sitemapTypeId == 0) {
+            sitemapTypeId = OpenCms.getResourceManager().getResourceType(getStaticTypeName()).getTypeId();
+        }
+        return sitemapTypeId;
+    }
+
+    /**
+     * Returns the sitemap type id, but returns -1 instead of throwing an exception when an error happens.<p>
+     * 
+     * @return the sitemap type id 
+     */
+    public static int getSitemapTypeIdSafely() {
+
+        try {
+            return getSitemapTypeId();
+        } catch (CmsLoaderException e) {
+            LOG.warn(e.getLocalizedMessage(), e);
+            return -1;
         }
     }
 
@@ -138,7 +172,7 @@ public class CmsResourceTypeXmlSitemap extends CmsResourceTypeXmlContent {
 
         boolean result = false;
         if (resource != null) {
-            result = (resource.getTypeId() == RESOURCE_TYPE_ID);
+            result = (resource.getTypeId() == getSitemapTypeIdSafely());
         }
         return result;
     }
