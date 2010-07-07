@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2010/07/07 12:42:29 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/07/07 15:19:30 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import com.google.gwt.resources.client.CssResource.Shared;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -54,49 +54,13 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
          * 
          * @return the CSS class name
          */
-        String borderLayer();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
         String criteriaList();
 
         /** Access method.<p>
          * 
          * @return the CSS class name
          */
-        String desMargin();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
         String galleryBody();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String inputLeft();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String inputRight();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String labelLeft();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String labelRight();
 
         /** Access method.<p>
          * 
@@ -120,14 +84,49 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
          * 
          * @return the CSS class name
          */
-        String row();
+        String searchTabBorderLayer();
 
         /** Access method.<p>
          * 
          * @return the CSS class name
          */
+        String searchTabDesMargin();
 
-        String rowRightAlign();
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String searchTabInputLeft();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String searchTabInputRight();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String searchTabLabelLeft();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String searchTabLabelRight();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String searchTabRow();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String searchTabRowRightAlign();
 
         /** Access method.<p>
          * 

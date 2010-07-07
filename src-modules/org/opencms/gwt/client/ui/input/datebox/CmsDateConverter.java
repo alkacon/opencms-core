@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/datebox/Attic/CmsDateConverter.java,v $
- * Date   : $Date: 2010/07/06 12:08:04 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/07/07 15:19:30 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,8 @@
 
 package org.opencms.gwt.client.ui.input.datebox;
 
+import org.opencms.gwt.client.Messages;
+
 import java.util.Date;
 
 import com.google.gwt.i18n.client.DateTimeFormat;
@@ -47,29 +49,20 @@ public final class CmsDateConverter {
     /** A constant for pm. */
     public static final String PM = "pm";
 
-    /** A pattern for date time representation in 12 hour presentation. */
-    private static final String DATETIME_12HOURS_PATTERN = "MM/dd/yyyy hh:mm aa";
-
-    /** A pattern for date time representation in 24 hour presentation. */
-    private static final String DATETIME_24HOURS_PATTERN = "dd.MM.yyyy HH:mm";
-
-    /** A pattern for date time representation in 12 hour presentation. */
-    private static final String DATETIME_PATTERN = DATETIME_12HOURS_PATTERN;
-
-    /** A pattern for date time representation in 12 hour presentation. */
-    private static final String TIME_12HOURS_PATTERN = "hh:mm aa";
-
-    /** A pattern for date time representation in 24 hour presentation. */
-    private static final String TIME_24HOURS_PATTERN = "HH:mm";
-
-    /** A pattern for date time representation in 12 hour presentation. */
-    private static final String TIME_PATTERN = TIME_12HOURS_PATTERN;
-
     /** The part of the 12 hour presentation which signals the am pm. */
     private static final String AMPM_PATTERN_PART = "aa";
 
-    private static final DateTimeFormat DATETIME_FORMAT = DateTimeFormat.getFormat(DATETIME_PATTERN);
-    private static final DateTimeFormat TIME_FORMAT = DateTimeFormat.getFormat(TIME_PATTERN);
+    /** A pattern for date time representation. */
+    private static final String DATETIME_PATTERN = Messages.get().key(Messages.GUI_DATEBOX_DATETIME_PATTERN_0);
+
+    /** A pattern for date time representation in 12 hour presentation. */
+    private static final String TIME_PATTERN = Messages.get().key(Messages.GUI_DATEBOX_TIME_PATTERN_0);
+
+    /** The formatter for the date time format. */
+    private static final DateTimeFormat Z_DATETIME_FORMAT = DateTimeFormat.getFormat(DATETIME_PATTERN);
+
+    /** The formatter for the time format. */
+    private static final DateTimeFormat Z_TIME_FORMAT = DateTimeFormat.getFormat(TIME_PATTERN);
 
     private CmsDateConverter() {
 
@@ -116,7 +109,7 @@ public final class CmsDateConverter {
 
         Date result;
         try {
-            result = TIME_FORMAT.parse(time);
+            result = Z_TIME_FORMAT.parse(time);
             result.setDate(date.getDate());
             result.setMonth(date.getMonth());
             result.setYear(date.getYear());
@@ -135,7 +128,7 @@ public final class CmsDateConverter {
      */
     public static String getTime(Date date) {
 
-        return TIME_FORMAT.format(date);
+        return Z_TIME_FORMAT.format(date);
     }
 
     /**
@@ -160,6 +153,67 @@ public final class CmsDateConverter {
 
         String time = getTime(date);
         return time.toLowerCase().contains(AM);
+    }
+
+    /**
+     * Parses the provided String as a date.<p>
+     * 
+     * First try to parse the String with the given time format.<p>
+     * 
+     * If that fails try to parse the date with the browser settings.<p>
+     * 
+     * @param dateText the string representing a date
+     * 
+     * @return the date created, or null if there was a parse error
+     * 
+     * @throws Exception 
+     */
+    public static Date toDate(final String dateText) throws Exception {
+
+        Date date = null;
+
+        if (dateText.length() > 0) {
+            date = Z_DATETIME_FORMAT.parse(dateText);
+            if (!validateDate(date)) {
+                throw new IllegalArgumentException();
+            }
+        }
+        return date;
+    }
+
+    /**
+     * Formats the provided date. Note, a null date is a possible input.
+     * 
+     * @param date the date to format
+     * 
+     * @return the formatted date as a string
+     */
+    public static String toString(final Date date) {
+
+        String result;
+        if (date == null) {
+            result = "";
+        } else {
+            result = Z_DATETIME_FORMAT.format(date);
+        }
+        return result;
+    }
+
+    /**
+     * Validates a time String if it matches one of the two regular expressions.<p>
+     * 
+     * Returns <code>true</code> if the given date matches to one of the regular 
+     * expressions, <code>false</code> otherwise.<p> 
+     * 
+     * @param date the date String to check
+     * 
+     * @return <code>true</code> if the given time matches to one of the regular expressions, <code>false</code> otherwise
+     */
+    public static boolean validateDate(Date date) {
+
+        String time = getTime(date);
+        return validateTime(time);
+
     }
 
     /**
@@ -189,66 +243,4 @@ public final class CmsDateConverter {
         }
         return true;
     }-*/;
-
-    /**
-     * Validates a time String if it matches one of the two regular expressions.<p>
-     * 
-     * Returns <code>true</code> if the given date matches to one of the regular 
-     * expressions, <code>false</code> otherwise.<p> 
-     * 
-     * @param date the date String to check
-     * 
-     * @return <code>true</code> if the given time matches to one of the regular expressions, <code>false</code> otherwise
-     */
-    public static boolean validateDate(Date date) {
-
-        String time = getTime(date);
-        return validateTime(time);
-
-    }
-
-    /**
-     * Parses the provided String as a date.<p>
-     * 
-     * First try to parse the String with the given time format.<p>
-     * 
-     * If that fails try to parse the date with the browser settings.<p>
-     * 
-     * @param dateText the string representing a date
-     * 
-     * @return the date created, or null if there was a parse error
-     * 
-     * @throws Exception 
-     */
-    public static Date toDate(final String dateText) throws Exception {
-
-        Date date = null;
-
-        if (dateText.length() > 0) {
-            date = DATETIME_FORMAT.parse(dateText);
-            if (!validateDate(date)) {
-                throw new IllegalArgumentException();
-            }
-        }
-
-        return date;
-    }
-
-    /**
-     * Formats the provided date. Note, a null date is a possible input.
-     * 
-     * @param date the date to format
-     * 
-     * @return the formatted date as a string
-     */
-    public static String toString(final Date date) {
-
-        String result;
-        if (date == null) {
-            result = "";
-        } else {
-            result = DATETIME_FORMAT.format(date);
-        }
-        return result;
-    }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/Attic/Messages.java,v $
- * Date   : $Date: 2010/05/18 12:58:02 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/07/07 15:19:30 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.client.util.CmsMessages;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 8.0.0
  */
@@ -130,6 +130,27 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_UNLOCKING_0 = "GUI_UNLOCKING_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATE_AM_0 = "GUI_DATE_AM_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATE_PM_0 = "GUI_DATE_PM_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATEBOX_TITLE_0 = "GUI_DATEBOX_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_DATEBOX_INVALID_TIME_FORMAT_1 = "ERR_DATEBOX_INVALID_TIME_FORMAT_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_DATEBOX_INVALID_DATE_FORMAT_1 = "ERR_DATEBOX_INVALID_DATE_FORMAT_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATEBOX_TIME_PATTERN_0 = "GUI_DATEBOX_TIME_PATTERN_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATEBOX_DATETIME_PATTERN_0 = "GUI_DATEBOX_DATETIME_PATTERN_0";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.gwt.clientmessages";

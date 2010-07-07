@@ -67,34 +67,34 @@
 	}
 }
 
-.row {
+.searchTabRow {
 	clear: both;
 }
-.rowRightAlign {
+.searchTabRowRightAlign {
 	clear: both;
 	text-align: right;
 }
-.labelLeft {
+.searchTabLabelLeft {
 	margin-bottom: 10px;
 	width: 120px;
 	float: left;
 }
-.labelRight {
+.searchTabLabelRight {
 	margin-bottom: 10px;
 	width: 120px;
 	float: right;
 }
-.inputLeft {
+.searchTabInputLeft {
 	margin-bottom: 10px;
 	width: 155px;
 	float: left;
 }
-.inputRight {
+.searchTabInputRight {
 	margin-bottom: 10px;
 	width: 155px;
 	float: right;
 }
-.borderLayer {
+.searchTabBorderLayer {
 	position:absolute; 
 	top:1px; 
 	right:1px; 
@@ -104,6 +104,6 @@
 	border: 1px solid #999999;
 	background: #ffffff;
 }
-.desMargin {
+.searchTabDesMargin {
 	margin-bottom: 10px;
 }

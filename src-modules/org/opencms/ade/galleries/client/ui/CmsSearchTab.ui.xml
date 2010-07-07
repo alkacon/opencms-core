@@ -9,35 +9,35 @@
 	<ui:with field="resources" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
 	
 	<g:HTMLPanel styleName="{galleryResources.galleryDialogCss.tabPanel}">
-		<div class="{resources.generalCss.cornerAll} {galleryResources.galleryDialogCss.borderLayer}">
-			<g:Label ui:field="m_descriptionLabel" addStyleNames="{resources.generalCss.textBig} {galleryResources.galleryDialogCss.desMargin}"></g:Label>
-			<div class="{galleryResources.galleryDialogCss.row}">
-				<g:Label ui:field="m_searchLabel"  addStyleNames="{galleryResources.galleryDialogCss.labelLeft}"></g:Label>
-				<div class="{galleryResources.galleryDialogCss.inputLeft}">
+		<div class="{resources.generalCss.cornerAll} {galleryResources.galleryDialogCss.searchTabBorderLayer}">
+			<g:Label ui:field="m_descriptionLabel" addStyleNames="{resources.generalCss.textBig} {galleryResources.galleryDialogCss.searchTabDesMargin}"></g:Label>
+			<div class="{galleryResources.galleryDialogCss.searchTabRow}">
+				<g:Label ui:field="m_searchLabel"  addStyleNames="{galleryResources.galleryDialogCss.searchTabLabelLeft}"></g:Label>
+				<div class="{galleryResources.galleryDialogCss.searchTabInputLeft}">
 					<input:CmsTextBox ui:field="m_searchInput" />
 				</div>
 			</div>
-			<div class="{galleryResources.galleryDialogCss.row}">
-				<g:Label ui:field="m_dateCreatedStartLabel"  addStyleNames="{galleryResources.galleryDialogCss.labelLeft}"></g:Label>
-				<div class="{galleryResources.galleryDialogCss.inputLeft}">
+			<div class="{galleryResources.galleryDialogCss.searchTabRow}">
+				<g:Label ui:field="m_dateCreatedStartLabel"  addStyleNames="{galleryResources.galleryDialogCss.searchTabLabelLeft}"></g:Label>
+				<div class="{galleryResources.galleryDialogCss.searchTabInputLeft}">
 					<date:CmsDateBox ui:field="m_dateCreatedStartDateBox"/>
 				</div>
-				<div class="{galleryResources.galleryDialogCss.inputRight}">
+				<div class="{galleryResources.galleryDialogCss.searchTabInputRight}">
 					<date:CmsDateBox ui:field="m_dateCreatedEndDateBox"/>
 				</div>
-				<g:Label ui:field="m_dateCreatedEndLabel"  addStyleNames="{galleryResources.galleryDialogCss.labelRight}"></g:Label>
+				<g:Label ui:field="m_dateCreatedEndLabel"  addStyleNames="{galleryResources.galleryDialogCss.searchTabLabelRight}"></g:Label>
 			</div>
-			<div class="{galleryResources.galleryDialogCss.row}">
-				<g:Label ui:field="m_dateModifiedStartLabel"  addStyleNames="{galleryResources.galleryDialogCss.labelLeft}"></g:Label>
-				<div class="{galleryResources.galleryDialogCss.inputLeft}">
+			<div class="{galleryResources.galleryDialogCss.searchTabRow}">
+				<g:Label ui:field="m_dateModifiedStartLabel"  addStyleNames="{galleryResources.galleryDialogCss.searchTabLabelLeft}"></g:Label>
+				<div class="{galleryResources.galleryDialogCss.searchTabInputLeft}">
 					<date:CmsDateBox ui:field="m_dateModifiedStartDateBox"/>
 				</div>
-				<div class="{galleryResources.galleryDialogCss.inputRight}">
+				<div class="{galleryResources.galleryDialogCss.searchTabInputRight}">
 					<date:CmsDateBox ui:field="m_dateModifiedEndDateBox"/>
 				</div>
-				<g:Label ui:field="m_dateModifiedEndLabel"  addStyleNames="{galleryResources.galleryDialogCss.labelRight}"></g:Label>
+				<g:Label ui:field="m_dateModifiedEndLabel"  addStyleNames="{galleryResources.galleryDialogCss.searchTabLabelRight}"></g:Label>
 			</div>
-			<div class="{galleryResources.galleryDialogCss.rowRightAlign}">
+			<div class="{galleryResources.galleryDialogCss.searchTabRowRightAlign}">
 				<cms:CmsPushButton ui:field="m_clearButton"></cms:CmsPushButton>
 			</div>
 		</div>

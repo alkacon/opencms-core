@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/datebox/Attic/CmsDateBox.java,v $
- * Date   : $Date: 2010/07/07 12:42:29 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/07/07 15:19:30 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.gwt.client.ui.input.datebox;
 
 import org.opencms.gwt.client.I_CmsHasInit;
+import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.input.CmsErrorWidget;
 import org.opencms.gwt.client.ui.input.CmsRadioButton;
@@ -258,10 +259,10 @@ implements HasValue<Date>, HasDoubleClickHandlers, I_CmsFormWidget, I_CmsHasInit
         m_box.addClickHandler(dateBoxHandler);
         m_box.addKeyPressHandler(dateBoxHandler);
 
-        m_am.setText("am");
+        m_am.setText(Messages.get().key(Messages.GUI_DATE_AM_0));
         m_am.setGroup(m_ampmGroup);
 
-        m_pm.setText("pm");
+        m_pm.setText(Messages.get().key(Messages.GUI_DATE_PM_0));
         m_pm.setGroup(m_ampmGroup);
 
         DateTimePickerHandler dateTimePickerHandler = new DateTimePickerHandler(pickerHandler);
@@ -280,7 +281,7 @@ implements HasValue<Date>, HasDoubleClickHandlers, I_CmsFormWidget, I_CmsHasInit
         m_popup.setWidth("100px");
         m_popup.addCloseHandler(dateBoxHandler);
         m_popup.setModal(false);
-        m_popup.setText("Select date");
+        m_popup.setText(Messages.get().key(Messages.GUI_DATEBOX_TITLE_0));
         m_popup.addAutoHidePartner(m_box.getElement());
 
     }

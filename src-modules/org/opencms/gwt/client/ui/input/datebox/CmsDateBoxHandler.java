@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/datebox/Attic/CmsDateBoxHandler.java,v $
- * Date   : $Date: 2010/07/07 12:42:29 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/07/07 15:19:30 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -30,6 +30,8 @@
  */
 
 package org.opencms.gwt.client.ui.input.datebox;
+
+import org.opencms.gwt.client.Messages;
 
 import java.util.Date;
 
@@ -222,9 +224,7 @@ public final class CmsDateBoxHandler {
 
         if (!CmsDateConverter.validateTime(time)) {
             m_dateBox.getTimeErr().setText(
-                "Illegal time format entered: "
-                    + CmsDateConverter.cutSuffix(time)
-                    + ". Please insert the time in the format \"HH:mm\"");
+                Messages.get().key(Messages.ERR_DATEBOX_INVALID_TIME_FORMAT_1, CmsDateConverter.cutSuffix(time)));
             m_dateBox.getPopup().setAutoHideEnabled(false);
         } else {
             m_dateBox.getTimeErr().setText(null);
@@ -309,11 +309,13 @@ public final class CmsDateBoxHandler {
         try {
             date = CmsDateConverter.toDate(dateAsString);
             m_dateBox.getBox().setErrorMessage(null);
-            if (isDatePickerShowing()) {
-                m_dateBox.getPopup().showRelativeTo(m_dateBox);
-            }
+            //            if (isDatePickerShowing()) {
+            //                m_dateBox.getPopup().showRelativeTo(m_dateBox);
+            //            }
         } catch (Exception e) {
-            m_dateBox.getBox().setErrorMessage("Error: wrong date format.");
+
+            m_dateBox.getBox().setErrorMessage(
+                Messages.get().key(Messages.ERR_DATEBOX_INVALID_DATE_FORMAT_1, CmsDateConverter.cutSuffix(dateAsString)));
         }
         return date;
     }
