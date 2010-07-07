@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishGroupPanel.java,v $
- * Date   : $Date: 2010/05/25 12:36:33 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2010/07/07 12:40:49 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import com.google.gwt.user.client.ui.Label;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 8.0.0
  */
@@ -169,7 +169,7 @@ public class CmsPublishGroupPanel extends Composite implements I_CmsHasSize {
             warningImage.addStyleName(permaVisible);
             itemWidget.addButton(warningImage);
         }
-        itemWidget.setIcon(CmsIconUtil.getResourceIconClasses(resourceBean.getResourceType()));
+        itemWidget.setIcon(CmsIconUtil.getResourceIconClasses(resourceBean.getResourceType(), false));
         return itemWidget;
     }
 
