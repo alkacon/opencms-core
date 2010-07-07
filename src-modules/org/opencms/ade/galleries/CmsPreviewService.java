@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/Attic/CmsPreviewService.java,v $
- * Date   : $Date: 2010/07/05 14:48:07 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/07/07 09:12:30 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import java.util.Map.Entry;
  * @author Polina Smagina
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  */
@@ -128,7 +128,7 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
         CmsImageInfoBean resInfo = new CmsImageInfoBean();
         try {
             CmsSitemapEntry sitemapEntry = OpenCms.getSitemapManager().getEntryForUri(cms, resourcePath);
-            CmsResource resource = cms.readResource(sitemapEntry.getResourceId());
+            CmsResource resource = cms.readResource(sitemapEntry.getStructureId());
             readResourceInfo(cms, resource, resInfo);
             CmsImageScaler scaler = new CmsImageScaler(cms, resource);
             int height = -1;
@@ -158,7 +158,7 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
         CmsResourceInfoBean resInfo = new CmsResourceInfoBean();
         try {
             CmsSitemapEntry sitemapEntry = OpenCms.getSitemapManager().getEntryForUri(cms, resourcePath);
-            CmsResource resource = cms.readResource(sitemapEntry.getResourceId());
+            CmsResource resource = cms.readResource(sitemapEntry.getStructureId());
             readResourceInfo(cms, resource, resInfo);
         } catch (CmsException e) {
             error(e);
@@ -208,7 +208,7 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
         CmsObject cms = getCmsObject();
 
         CmsSitemapEntry sitemapEntry = OpenCms.getSitemapManager().getEntryForUri(cms, resourcePath);
-        resource = cms.readResource(sitemapEntry.getResourceId());
+        resource = cms.readResource(sitemapEntry.getStructureId());
 
         if (properties != null) {
             for (Entry<String, String> entry : properties.entrySet()) {

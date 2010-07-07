@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2010/06/30 13:54:43 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2010/07/07 09:12:09 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.45 $
+ * @version $Revision: 1.46 $
  * 
  * @since 7.9.2
  */
@@ -176,7 +176,7 @@ public class CmsSitemapManager {
         CmsInternalSitemapEntry clone = new CmsInternalSitemapEntry(
             entry.getId(),
             "",
-            entry.getResourceId(),
+            entry.getStructureId(),
             "",
             entry.getTitle(),
             false,
@@ -363,7 +363,7 @@ public class CmsSitemapManager {
         CmsSitemapEntry entry = m_cache.getEntryById(cms, id);
         if (entry != null) {
             // security check
-            cms.readResource(entry.getResourceId());
+            cms.readResource(entry.getStructureId());
         }
         return entry;
     }
@@ -387,7 +387,7 @@ public class CmsSitemapManager {
         CmsInternalSitemapEntry entry = m_cache.getEntryByUri(cms, entryUri);
         if (entry != null) {
             // check permissions
-            cms.readResource(entry.getResourceId());
+            cms.readResource(entry.getStructureId());
             return entry;
         }
 
@@ -422,7 +422,7 @@ public class CmsSitemapManager {
         CmsInternalSitemapEntry contentEntry = new CmsInternalSitemapEntry(
             entry.getId(),
             entry.getOriginalUri(),
-            entry.getResourceId(),
+            entry.getStructureId(),
             id.toString(),
             title,
             entry.isRootEntry(),
@@ -674,7 +674,7 @@ public class CmsSitemapManager {
         List<CmsSitemapEntry> subEntries = new ArrayList<CmsSitemapEntry>();
         CmsInternalSitemapEntry entry = (CmsInternalSitemapEntry)getEntryForUri(cms, entryUri);
         for (CmsInternalSitemapEntry subEntry : entry.getSubEntries()) {
-            if (cms.existsResource(subEntry.getResourceId())) {
+            if (cms.existsResource(subEntry.getStructureId())) {
                 subEntries.add(subEntry);
             }
         }
@@ -806,7 +806,7 @@ public class CmsSitemapManager {
         entriesToProcess.addAll(rootEntries);
         while (!entriesToProcess.isEmpty()) {
             CmsInternalSitemapEntry currentEntry = entriesToProcess.removeFirst();
-            if (currentEntry.getResourceId().equals(resourceId)) {
+            if (currentEntry.getStructureId().equals(resourceId)) {
                 return currentEntry;
             }
             if (currentEntry.getProperties().get(CmsSitemapManager.Property.sitemap.name()) == null) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2010/03/22 15:47:34 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/07/07 09:12:09 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -89,7 +89,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -1638,7 +1638,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             // let's look up export property in VFS
             CmsSitemapEntry entry = OpenCms.getSitemapManager().getEntryForUri(exportCms, vfsName);
             String exportValue = exportCms.readPropertyObject(
-                exportCms.readResource(entry.getResourceId()),
+                exportCms.readResource(entry.getStructureId()),
                 CmsPropertyDefinition.PROPERTY_EXPORT,
                 true).getValue();
             if (exportValue == null) {
@@ -2438,7 +2438,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             resource = cms.readResource(uri);
         } else {
             // read the resource from the sitemap
-            resource = cms.readResource(entry.getResourceId());
+            resource = cms.readResource(entry.getStructureId());
         }
         return new CmsStaticExportData(uri, null, resource, null);
     }

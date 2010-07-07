@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsSitemapService.java,v $
- * Date   : $Date: 2010/06/24 09:05:26 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2010/07/07 09:12:30 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -84,7 +84,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.29 $ 
+ * @version $Revision: 1.30 $ 
  * 
  * @since 8.0.0
  * 
@@ -440,7 +440,7 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
     throws CmsException {
 
         CmsObject cms = getCmsObject();
-        CmsUUID resourceId = entry.getResourceId();
+        CmsUUID resourceId = entry.getStructureId();
 
         CmsResource resource = cms.readResource(resourceId);
 
@@ -549,7 +549,7 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
 
         // insert sub-sitemap entries into parent sitemap 
         for (CmsInternalSitemapEntry entry : getDescendants(rootEntry)) {
-            CmsResource childRes = cms.readResource(entry.getResourceId());
+            CmsResource childRes = cms.readResource(entry.getStructureId());
             CmsSitemapChangeNew newChildChange = new CmsSitemapChangeNew(
                 entry.getSitePath(cms),
                 entry.getPosition(),
@@ -561,7 +561,7 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
         }
 
         // remove sitemap property from the parent entry of the sub-sitemap 
-        CmsResource resource = cms.readResource(rootEntry.getResourceId());
+        CmsResource resource = cms.readResource(rootEntry.getStructureId());
         Map<String, String> newProps = new HashMap<String, String>(rootEntry.getProperties());
         newProps.remove(CmsSitemapManager.Property.sitemap.name());
         CmsSitemapChangeEdit editParentChange = new CmsSitemapChangeEdit(
@@ -597,7 +597,7 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
         Map<String, String> newProps = new HashMap<String, String>(entry.getProperties());
         newProps.put(CmsSitemapManager.Property.sitemap.getName(), subSitemapRes.getStructureId().toString());
 
-        CmsResource originalResource = cms.readResource(entry.getResourceId());
+        CmsResource originalResource = cms.readResource(entry.getStructureId());
         String originalVfsPath = cms.getRequestContext().removeSiteRoot(originalResource.getRootPath());
         result.add(new CmsSitemapChangeEdit(
             entry.getSitePath(getCmsObject()),
@@ -869,7 +869,7 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
         clientEntry.setTitle(entry.getTitle());
         String vfsPath;
         try {
-            vfsPath = getCmsObject().getSitePath(getCmsObject().readResource(entry.getResourceId()));
+            vfsPath = getCmsObject().getSitePath(getCmsObject().readResource(entry.getStructureId()));
         } catch (CmsVfsResourceNotFoundException e) {
             vfsPath = e.getLocalizedMessage(getCmsObject().getRequestContext().getLocale());
         }

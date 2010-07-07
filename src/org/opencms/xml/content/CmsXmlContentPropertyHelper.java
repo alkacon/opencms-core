@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentPropertyHelper.java,v $
- * Date   : $Date: 2010/06/29 06:58:34 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/07/07 09:12:09 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import org.dom4j.Element;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 7.9.2
  */
@@ -171,7 +171,7 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
         if (entry.isSitemap()) {
             return entry.getId();
         } else {
-            return entry.getResourceId();
+            return entry.getStructureId();
         }
     }
 

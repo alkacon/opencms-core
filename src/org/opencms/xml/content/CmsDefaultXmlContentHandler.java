@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2010/06/23 06:43:12 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/07/07 09:12:09 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -96,7 +96,7 @@ import org.dom4j.Element;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -1999,7 +1999,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         try {
             String sitePath = cms.getRequestContext().removeSiteRoot(link.getTarget());
             CmsSitemapEntry entry = OpenCms.getSitemapManager().getEntryForUri(cms, sitePath);
-            CmsUUID structureId = entry.getResourceId();
+            CmsUUID structureId = entry.getStructureId();
 
             // validate the link for error
             CmsResource res = cms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);

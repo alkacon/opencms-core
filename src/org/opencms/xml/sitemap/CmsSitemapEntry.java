@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapEntry.java,v $
- * Date   : $Date: 2010/06/30 13:54:43 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/07/07 09:12:09 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 7.6 
  */
@@ -74,7 +74,7 @@ public class CmsSitemapEntry {
     private boolean m_isRootEntry;
 
     /** The file's structure id. */
-    private final CmsUUID m_resourceId;
+    private final CmsUUID m_structureId;
 
     /** Flag to indicate if this is a sitemap or a VFS entry. */
     private final boolean m_sitemap;
@@ -92,7 +92,7 @@ public class CmsSitemapEntry {
         this(
             entry.getId(),
             entry.getOriginalUri(),
-            entry.getResourceId(),
+            entry.getStructureId(),
             entry.getName(),
             entry.getTitle(),
             entry.isRootEntry(),
@@ -106,7 +106,7 @@ public class CmsSitemapEntry {
      * 
      * @param id the entry's id
      * @param originalUri the original, sitemap file dependent, uri
-     * @param resourceId the file's structure id
+     * @param structureId the file's structure id
      * @param name the entry's name
      * @param title the entry's title
      * @param isRoot true if this is the root entry of a root sitemap 
@@ -117,7 +117,7 @@ public class CmsSitemapEntry {
     public CmsSitemapEntry(
         CmsUUID id,
         String originalUri,
-        CmsUUID resourceId,
+        CmsUUID structureId,
         String name,
         String title,
         boolean isRoot,
@@ -126,7 +126,7 @@ public class CmsSitemapEntry {
         CmsUUID contentId) {
 
         m_id = id;
-        m_resourceId = resourceId;
+        m_structureId = structureId;
         m_name = name;
         m_title = title;
         m_isRootEntry = isRoot;
@@ -143,7 +143,7 @@ public class CmsSitemapEntry {
         if (m_originalUri.equals("/")) {
             m_originalUri = "";
         }
-        m_sitemap = ((id == null) || !id.equals(resourceId));
+        m_sitemap = ((id == null) || !id.equals(structureId));
         m_contentId = contentId;
     }
 
@@ -238,9 +238,9 @@ public class CmsSitemapEntry {
      *
      * @return the file's structure id
      */
-    public CmsUUID getResourceId() {
+    public CmsUUID getStructureId() {
 
-        return m_resourceId;
+        return m_structureId;
     }
 
     /**

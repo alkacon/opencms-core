@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsGallerySearchServer.java,v $
- * Date   : $Date: 2010/05/27 06:52:03 $
- * Version: $Revision: 1.73 $
+ * Date   : $Date: 2010/07/07 09:12:09 $
+ * Version: $Revision: 1.74 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.73 $
+ * @version $Revision: 1.74 $
  * 
  * @since 7.6
  */
@@ -1282,7 +1282,7 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
         result.put(SitemapKey.title.name(), entry.getTitle());
         result.put(SitemapKey.sitemapUri.name(), entry.getSitePath(cms));
 
-        I_CmsResourceType resType = getResourceManager().getResourceType(cms.readResource(entry.getResourceId()));
+        I_CmsResourceType resType = getResourceManager().getResourceType(cms.readResource(entry.getStructureId()));
         String iconPath = CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES
             + OpenCms.getWorkplaceManager().getExplorerTypeSetting(resType.getTypeName()).getIcon());
 
@@ -1597,7 +1597,7 @@ public class CmsGallerySearchServer extends A_CmsAjaxServer {
         CmsSitemapEntry sitemapEntry = OpenCms.getSitemapManager().getEntryForUri(cms, resourcePath);
         // getting formatted content
         Map<String, Object> reqAttributes = new HashMap<String, Object>();
-        CmsResource resource = getCmsObject().readResource(sitemapEntry.getResourceId());
+        CmsResource resource = getCmsObject().readResource(sitemapEntry.getStructureId());
         I_CmsResourceType type = getResourceManager().getResourceType(resource.getTypeId());
         CmsGalleryItemBean reqItem = new CmsGalleryItemBean(resource);
         reqItem.setTypeId(resource.getTypeId());

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsInternalSitemapEntry.java,v $
- * Date   : $Date: 2010/06/30 13:54:43 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/07/07 09:12:09 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0 
  */
@@ -72,7 +72,7 @@ public class CmsInternalSitemapEntry extends CmsSitemapEntry {
         this(
             entry.getId(),
             entry.getOriginalUri(),
-            entry.getResourceId(),
+            entry.getStructureId(),
             entry.getName(),
             entry.getTitle(),
             entry.isRootEntry(),
