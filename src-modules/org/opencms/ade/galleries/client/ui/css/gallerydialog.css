@@ -66,3 +66,44 @@
 		display: inline-block;
 	}
 }
+
+.row {
+	clear: both;
+}
+.rowRightAlign {
+	clear: both;
+	text-align: right;
+}
+.labelLeft {
+	margin-bottom: 10px;
+	width: 120px;
+	float: left;
+}
+.labelRight {
+	margin-bottom: 10px;
+	width: 120px;
+	float: right;
+}
+.inputLeft {
+	margin-bottom: 10px;
+	width: 155px;
+	float: left;
+}
+.inputRight {
+	margin-bottom: 10px;
+	width: 155px;
+	float: right;
+}
+.borderLayer {
+	position:absolute; 
+	top:1px; 
+	right:1px; 
+	bottom:1px; 
+	left:1px; 
+	padding: 5px 10px;
+	border: 1px solid #999999;
+	background: #ffffff;
+}
+.desMargin {
+	margin-bottom: 10px;
+}

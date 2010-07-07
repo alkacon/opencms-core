@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2010/06/14 06:09:19 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/07/07 12:42:29 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import com.google.gwt.resources.client.CssResource.Shared;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -54,7 +54,19 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
          * 
          * @return the CSS class name
          */
+        String borderLayer();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
         String criteriaList();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String desMargin();
 
         /** Access method.<p>
          * 
@@ -66,13 +78,31 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
          * 
          * @return the CSS class name
          */
-        String listIcon();
+        String inputLeft();
 
         /** Access method.<p>
          * 
          * @return the CSS class name
          */
-        String tabOptions();
+        String inputRight();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String labelLeft();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String labelRight();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String listIcon();
 
         /** Access method.<p>
          * 
@@ -90,6 +120,19 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
          * 
          * @return the CSS class name
          */
+        String row();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+
+        String rowRightAlign();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
         String selectboxWidth();
 
         /** Access method.<p>
@@ -102,8 +145,13 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
          * 
          * @return the CSS class name
          */
-        String tabPanel();
+        String tabOptions();
 
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String tabPanel();
     }
 
     /** Preview dialog CSS. */

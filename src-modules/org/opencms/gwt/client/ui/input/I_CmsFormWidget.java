@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/I_CmsFormWidget.java,v $
- * Date   : $Date: 2010/05/06 09:51:37 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/07/07 12:42:29 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,7 @@ package org.opencms.gwt.client.ui.input;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  */
@@ -62,7 +62,11 @@ public interface I_CmsFormWidget {
         /**
          * Field type constant for lists of strings (Java type: List<String>)
          */
-        STRING_LIST
+        STRING_LIST,
+        /**
+         * Field type constant for dates (Java type: Date)
+         */
+        DATE
     }
 
     /**

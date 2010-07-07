@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/Attic/CmsGalleryService.java,v $
- * Date   : $Date: 2010/07/06 12:08:04 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2010/07/07 12:42:29 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -86,7 +86,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Polina Smagina
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 8.0.0
  * 
@@ -887,10 +887,20 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
      */
     private CmsGallerySearchParameters prepareSearchParams(CmsGallerySearchBean searchData) {
 
-        List<String> types = searchData.getTypes();
-        List<String> galleries = searchData.getGalleries();
-        List<String> categories = searchData.getCategories();
-        String queryStr = searchData.getQuery();
+        // create a new search parameter object
+        CmsGallerySearchParameters params = new CmsGallerySearchParameters();
+
+        // set the selected types to the parameters
+        if (searchData.getTypes() != null) {
+            params.setResourceTypes(searchData.getTypes());
+        }
+
+        // set the selected galleries to the parameters 
+        if (searchData.getGalleries() != null) {
+            params.setGalleries(searchData.getGalleries());
+        }
+
+        // set the sort order for the galleries to the parameters
         CmsGallerySearchParameters.CmsGallerySortParam sortOrder;
         String temp = searchData.getSortOrder();
         try {
@@ -898,38 +908,59 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         } catch (Exception e) {
             sortOrder = CmsGallerySearchParameters.CmsGallerySortParam.DEFAULT;
         }
+        params.setSortOrder(sortOrder);
 
+        // set the selected folders to the parameters
+        params.setFolders(searchData.getFolders());
+
+        // set the categories to the parameters
+        if (searchData.getCategories() != null) {
+            params.setCategories(searchData.getCategories());
+        }
+
+        // set the search query to the parameters
+        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(searchData.getQuery())) {
+            params.setSearchWords(searchData.getQuery());
+        }
+
+        // set the result page to the parameters
         int page = searchData.getPage();
+        params.setResultPage(page);
+
+        // set the locale to the parameters
         String locale = searchData.getLocale();
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(locale)) {
             locale = getCmsObject().getRequestContext().getLocale().toString();
         }
+        params.setSearchLocale(locale);
 
-        CmsGallerySearchParameters params = new CmsGallerySearchParameters();
-        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(queryStr)) {
-            params.setSearchWords(queryStr);
-        }
+        // set the matches per page to the parameters
+        params.setMatchesPerPage(searchData.getMatchesPerPage());
+
+        // get the date range input
         long dateCreatedStart = searchData.getDateCreatedStart();
         long dateCreatedEnd = searchData.getDateCreatedEnd();
         long dateModifiedStart = searchData.getDateModifiedStart();
         long dateModifiedEnd = searchData.getDateModifiedEnd();
-        int matches = searchData.getMatchesPerPage();
-        params.setDateCreatedTimeRange(dateCreatedStart, dateCreatedEnd);
-        params.setDateLastModifiedTimeRange(dateModifiedStart, dateModifiedEnd);
-        params.setSearchLocale(locale);
-        params.setSortOrder(sortOrder);
-        params.setMatchesPerPage(matches);
-        params.setResultPage(page);
-        params.setFolders(searchData.getFolders());
-        if (types != null) {
-            params.setResourceTypes(types);
+
+        // set the date created range to the parameters
+        if ((dateCreatedStart != -1L) && (dateCreatedEnd != -1L)) {
+            params.setDateCreatedTimeRange(dateCreatedStart, dateCreatedEnd);
+        } else if (dateCreatedStart != -1L) {
+            params.setDateCreatedTimeRange(dateCreatedStart, Long.MAX_VALUE);
+        } else if (dateCreatedEnd != -1L) {
+            params.setDateCreatedTimeRange(Long.MIN_VALUE, dateCreatedEnd);
         }
-        if (categories != null) {
-            params.setCategories(categories);
+
+        // set the date modified range to the parameters
+        if ((dateModifiedStart != -1L) && (dateModifiedEnd != -1L)) {
+            params.setDateCreatedTimeRange(dateModifiedStart, dateModifiedEnd);
+        } else if (dateModifiedStart != -1L) {
+            params.setDateCreatedTimeRange(dateModifiedStart, Long.MAX_VALUE);
+        } else if (dateModifiedEnd != -1L) {
+            params.setDateCreatedTimeRange(Long.MIN_VALUE, dateModifiedEnd);
         }
-        if (galleries != null) {
-            params.setGalleries(galleries);
-        }
+
         return params;
     }
 

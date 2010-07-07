@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/Attic/CmsGallerySearchBean.java,v $
- * Date   : $Date: 2010/07/06 12:08:04 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/07/07 12:42:29 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 8.0.0
  */
@@ -65,20 +65,20 @@ public class CmsGallerySearchBean implements IsSerializable {
     private List<String> m_categories = new ArrayList<String>();
 
     /** The end creation date criteria as long. */
-    private long m_dateCreatedEnd = Long.MAX_VALUE;
+    private long m_dateCreatedEnd = -1L;
 
     /** The start creation date criteria as long. */
-    private long m_dateCreatedStart = Long.MIN_VALUE;
+    private long m_dateCreatedStart = -1L;
 
     /** The end modification date criteria as long. */
-    private long m_dateModifiedEnd = Long.MAX_VALUE;
+    private long m_dateModifiedEnd = -1L;
 
     /** The start modification date criteria as long. */
-    private long m_dateModifiedStart = Long.MIN_VALUE;
+    private long m_dateModifiedStart = -1L;
 
     /** The list of selected vfs folders. */
     private List<String> m_folders = new ArrayList<String>();
-    
+
     /** The list of selected galleries ids (path). */
     private List<String> m_galleries = new ArrayList<String>();
 
@@ -211,17 +211,17 @@ public class CmsGallerySearchBean implements IsSerializable {
 
         m_folders.clear();
     }
-    
+
     /**
      * Clears the full text search.<p>
      */
     public void clearFullTextSearch() {
 
         m_query = null;
-        m_dateCreatedEnd = Long.MAX_VALUE;
-        m_dateCreatedStart = Long.MIN_VALUE;
-        m_dateModifiedEnd = Long.MAX_VALUE;
-        m_dateModifiedStart = Long.MIN_VALUE;
+        m_dateCreatedEnd = -1L;
+        m_dateCreatedStart = -1L;
+        m_dateModifiedEnd = -1L;
+        m_dateModifiedStart = -1L;
     }
 
     /**
@@ -299,7 +299,7 @@ public class CmsGallerySearchBean implements IsSerializable {
 
         return m_folders;
     }
-    
+
     /**
      * Returns the list of the available galleries.<p>
      *
@@ -460,7 +460,7 @@ public class CmsGallerySearchBean implements IsSerializable {
 
         m_folders.remove(folder);
     }
-    
+
     /**
      * Removes a gallery folder from the galleries list.<p>
      * 
@@ -540,7 +540,7 @@ public class CmsGallerySearchBean implements IsSerializable {
 
         m_folders = folders;
     }
-    
+
     /**
      * Sets the galleries.<p>
      *

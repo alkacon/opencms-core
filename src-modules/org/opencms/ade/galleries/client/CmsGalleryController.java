@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleryController.java,v $
- * Date   : $Date: 2010/07/06 14:54:45 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2010/07/07 12:42:29 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * @author Polina Smagina
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 8.0.0
  */
@@ -183,6 +183,17 @@ public class CmsGalleryController {
     public void addGallery(String galleryPath) {
 
         m_searchObject.addGallery(galleryPath);
+    }
+
+    /**
+     * Adds the search query from the search tab.<p>
+     * 
+     * @param searchQuery the search query
+     */
+    public void addSearchQuery(String searchQuery) {
+
+        m_searchObject.setQuery(searchQuery);
+
     }
 
     /**

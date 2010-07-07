@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/datebox/Attic/CmsPickerHandler.java,v $
- * Date   : $Date: 2010/07/06 12:08:04 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/datebox/Attic/CmsDateBoxHandler.java,v $
+ * Date   : $Date: 2010/07/07 12:42:29 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -50,7 +50,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * 
  * @author Ruediger Kurz
  */
-public final class CmsPickerHandler {
+public final class CmsDateBoxHandler {
 
     /** The date box. */
     private CmsDateBox m_dateBox;
@@ -62,7 +62,7 @@ public final class CmsPickerHandler {
      * 
      * @param dateBox the date box for this handler
      */
-    public CmsPickerHandler(CmsDateBox dateBox) {
+    public CmsDateBoxHandler(CmsDateBox dateBox) {
 
         m_dateBox = dateBox;
     }

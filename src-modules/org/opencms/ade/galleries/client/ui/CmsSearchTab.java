@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsSearchTab.java,v $
- * Date   : $Date: 2010/07/06 12:08:04 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/07/07 12:42:29 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,10 +32,12 @@
 package org.opencms.ade.galleries.client.ui;
 
 import org.opencms.ade.galleries.client.CmsSearchTabHandler;
+import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.input.CmsTextBox;
 import org.opencms.gwt.client.ui.input.datebox.CmsDateBox;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.Date;
 
@@ -54,64 +56,16 @@ import com.google.gwt.user.client.ui.Label;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.
  */
 public class CmsSearchTab extends A_CmsTab {
 
     /**
-     * The listener for the search tab.<p>
-     * 
-     * Delegates the methods to the search tab handler.<p>
+     * Implements the ClickHandler for the clear button.<p>
      */
-    protected class SearchTabListener implements ValueChangeHandler<Date>, ClickHandler {
-
-        /**
-         * @see com.google.gwt.event.logical.shared.ValueChangeHandler#onValueChange(com.google.gwt.event.logical.shared.ValueChangeEvent)
-         */
-        public void onValueChange(ValueChangeEvent<Date> event) {
-
-            // if the since created date was changed, set it in the tab handler
-            if (event.getSource() == m_dateCreatedStartDateBox) {
-                if (m_dateCreatedStartDateBox.getValue() != null) {
-                    m_tabHandler.setDateCreatedStart(m_dateCreatedStartDateBox.getValue().getTime());
-                } else {
-                    // if the field is empty take the min value
-                    m_tabHandler.setDateCreatedStart(Long.MIN_VALUE);
-                }
-            }
-
-            // if the until created date was changed, set it in the tab handler
-            if (event.getSource() == m_dateCreatedEndDateBox) {
-                if (m_dateCreatedEndDateBox.getValue() != null) {
-                    m_tabHandler.setDateCreatedEnd(m_dateCreatedEndDateBox.getValue().getTime());
-                } else {
-                    // if the field is empty take the max value
-                    m_tabHandler.setDateCreatedEnd(Long.MAX_VALUE);
-                }
-            }
-
-            // if the since modified date was changed, set it in the tab handler
-            if (event.getSource() == m_dateModifiedStartDateBox) {
-                if (m_dateModifiedStartDateBox.getValue() != null) {
-                    m_tabHandler.setDateModifiedStart(m_dateModifiedStartDateBox.getValue().getTime());
-                } else {
-                    // if the field is empty take the min value
-                    m_tabHandler.setDateModifiedStart(Long.MIN_VALUE);
-                }
-            }
-
-            // if the until modified date was changed, set it in the tab handler
-            if (event.getSource() == m_dateModifiedEndDateBox) {
-                if (m_dateModifiedEndDateBox.getValue() != null) {
-                    m_tabHandler.setDateModifiedEnd(m_dateModifiedEndDateBox.getValue().getTime());
-                } else {
-                    // if the field is empty take the max value
-                    m_tabHandler.setDateModifiedEnd(Long.MAX_VALUE);
-                }
-            }
-        }
+    protected class ClearButtonClickHandler implements ClickHandler {
 
         /**
          * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
@@ -124,6 +78,76 @@ public class CmsSearchTab extends A_CmsTab {
             m_dateModifiedStartDateBox.getBox().setText("");
             m_dateModifiedEndDateBox.getBox().setText("");
             m_tabHandler.clearInput();
+        }
+    }
+
+    /**
+     * The listener for the search tab.<p>
+     * 
+     * Delegates the methods to the search tab handler.<p>
+     */
+    protected class DateBoxChangeHandler implements ValueChangeHandler<Date> {
+
+        /**
+         * @see com.google.gwt.event.logical.shared.ValueChangeHandler#onValueChange(com.google.gwt.event.logical.shared.ValueChangeEvent)
+         */
+        public void onValueChange(ValueChangeEvent<Date> event) {
+
+            // if the since created date was changed, set it in the tab handler
+            if (event.getSource() == m_dateCreatedStartDateBox) {
+                if (event.getValue() != null) {
+                    m_tabHandler.setDateCreatedStart(event.getValue().getTime());
+                } else {
+                    // if the field is empty take the min value
+                    m_tabHandler.setDateCreatedStart(-1L);
+                }
+            }
+
+            // if the until created date was changed, set it in the tab handler
+            if (event.getSource() == m_dateCreatedEndDateBox) {
+                if (event.getValue() != null) {
+                    m_tabHandler.setDateCreatedEnd(event.getValue().getTime());
+                } else {
+                    // if the field is empty take the max value
+                    m_tabHandler.setDateCreatedEnd(-1L);
+                }
+            }
+
+            // if the since modified date was changed, set it in the tab handler
+            if (event.getSource() == m_dateModifiedStartDateBox) {
+                if (event.getValue() != null) {
+                    m_tabHandler.setDateModifiedStart(event.getValue().getTime());
+                } else {
+                    // if the field is empty take the min value
+                    m_tabHandler.setDateModifiedStart(-1L);
+                }
+            }
+
+            // if the until modified date was changed, set it in the tab handler
+            if (event.getSource() == m_dateModifiedEndDateBox) {
+                if (event.getValue() != null) {
+                    m_tabHandler.setDateModifiedEnd(event.getValue().getTime());
+                } else {
+                    // if the field is empty take the max value
+                    m_tabHandler.setDateModifiedEnd(-1L);
+                }
+            }
+        }
+
+    }
+
+    /**
+     * Implements the ValueChangeHandler for the query input field.<p>
+     */
+    protected class QueryChangedHandler implements ValueChangeHandler<String> {
+
+        /**
+         * @see com.google.gwt.event.logical.shared.ValueChangeHandler#onValueChange(com.google.gwt.event.logical.shared.ValueChangeEvent)
+         */
+        public void onValueChange(ValueChangeEvent<String> event) {
+
+            m_tabHandler.setSearchQuery(event.getValue());
+
         }
     }
 
@@ -171,7 +195,7 @@ public class CmsSearchTab extends A_CmsTab {
     @UiField
     protected Label m_dateModifiedStartLabel;
 
-    /** The descrition label for this tab. */
+    /** The description label for this tab. */
     @UiField
     protected Label m_descriptionLabel;
 
@@ -202,23 +226,34 @@ public class CmsSearchTab extends A_CmsTab {
         initWidget(m_tab);
         m_tabHandler = tabHandler;
 
-        // add the texts to the labels and to the button
         // TODO: add localization
-        m_descriptionLabel.setText("Search for resources");
-        m_searchLabel.setText("Search:");
-        m_dateCreatedStartLabel.setText("created since:");
-        m_dateCreatedEndLabel.setText("created until:");
-        m_dateModifiedStartLabel.setText("modified since:");
-        m_dateModifiedEndLabel.setText("modified until:");
-        m_clearButton.setText("clear");
 
-        // add the handler to the according components
-        SearchTabListener handler = new SearchTabListener();
+        // set the description for the search tab
+        m_descriptionLabel.setText("Search for resources");
+
+        // add the query
+        m_searchLabel.setText("Text search:");
+        QueryChangedHandler queryHandler = new QueryChangedHandler();
+        m_searchInput.addValueChangeHandler(queryHandler);
+
+        // set the labels for the date box widgets
+        m_dateCreatedStartLabel.setText("Created since:");
+        m_dateCreatedEndLabel.setText("Created until:");
+        m_dateModifiedStartLabel.setText("Modified since:");
+        m_dateModifiedEndLabel.setText("Modified until:");
+
+        // add the handler to the according date box widgets
+        DateBoxChangeHandler handler = new DateBoxChangeHandler();
         m_dateCreatedStartDateBox.addValueChangeHandler(handler);
         m_dateCreatedEndDateBox.addValueChangeHandler(handler);
         m_dateModifiedStartDateBox.addValueChangeHandler(handler);
         m_dateModifiedEndDateBox.addValueChangeHandler(handler);
-        m_clearButton.addClickHandler(handler);
+
+        // add the clear button
+        m_clearButton.setText("Clear");
+        m_clearButton.setUseMinWidth(true);
+        ClearButtonClickHandler clearHandler = new ClearButtonClickHandler();
+        m_clearButton.addClickHandler(clearHandler);
     }
 
     /**
@@ -228,6 +263,69 @@ public class CmsSearchTab extends A_CmsTab {
     public CmsSearchTabHandler getTabHandler() {
 
         return m_tabHandler;
+    }
+
+    /**
+     * 
+     * @param bean
+     * @return
+     */
+    public CmsSearchParamPanel getParamPanel(CmsGallerySearchBean searchObj) {
+
+        CmsSearchParamPanel panel;
+        return null;
+    }
+
+    /**
+     * Returns the content of the full text search parameter.<p>
+     * 
+     * @return the inputs from the search tab
+     */
+    public String getSearchParams() {
+
+        StringBuffer result = new StringBuffer();
+
+        // get the required data
+        String query = m_searchInput.getText();
+        String cStart = m_dateCreatedStartDateBox.getValueAsFormatedString();
+        String cEnd = m_dateCreatedEndDateBox.getValueAsFormatedString();
+        String mStart = m_dateModifiedStartDateBox.getValueAsFormatedString();
+        String mEnd = m_dateModifiedEndDateBox.getValueAsFormatedString();
+
+        // append the search query to the resulting string
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(query)) {
+            result.append("Search Text: ").append(query);
+        }
+
+        // append the date created range to the resulting string
+        StringBuffer createdResult = new StringBuffer();
+        if ((CmsStringUtil.isNotEmptyOrWhitespaceOnly(cStart) && CmsStringUtil.isNotEmptyOrWhitespaceOnly(cEnd))) {
+            createdResult.append("created range: ").append(cStart).append(" - ").append(cEnd);
+        } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(cStart)) {
+            createdResult.append("created since: ").append(cStart);
+        } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(cEnd)) {
+            createdResult.append("created until: ").append(cEnd);
+        }
+        if (result.length() != 0) {
+            result.append(", ");
+        }
+        result.append(createdResult);
+
+        // append the date modified range to the resulting string
+        StringBuffer modifiedResult = new StringBuffer();
+        if ((CmsStringUtil.isNotEmptyOrWhitespaceOnly(mStart) && CmsStringUtil.isNotEmptyOrWhitespaceOnly(mEnd))) {
+            modifiedResult.append("modified range: ").append(mStart).append(" - ").append(mEnd);
+        } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(mStart)) {
+            modifiedResult.append("modified since: ").append(mStart);
+        } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(mEnd)) {
+            modifiedResult.append("modified until: ").append(mEnd);
+        }
+        if (result.length() != 0) {
+            result.append(", ");
+        }
+        result.append(modifiedResult);
+
+        return result.toString();
     }
 
 }

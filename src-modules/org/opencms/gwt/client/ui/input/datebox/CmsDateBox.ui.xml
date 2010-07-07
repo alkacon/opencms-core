@@ -3,15 +3,78 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:h="urn:import:com.google.gwt.user.datepicker.client"
 	xmlns:input="urn:import:org.opencms.gwt.client.ui.input">
-
 	<ui:style>
+	@external html-face, dateBoxPopup, popupContent, gwt-DatePicker, datePickerMonthSelector, datePickerMonth, datePickerPreviousButton, datePickerPreviousButton-up-hovering, datePickerPreviousButton-down-hovering, datePickerNextButton, datePickerNextButton-up-hovering, datePickerNextButton-down-hovering, datePickerDays, datePickerWeekdayLabel, datePickerWeekendLabel, datePickerDay, datePickerDayIsToday, datePickerDayIsWeekend, datePickerDayIsFiller, datePickerDayIsValue, datePickerDayIsDisabled, datePickerDayIsHighlighted, datePickerDayIsValueAndHighlighted;
+
+		.dateField{
+			display: inline-block;
+		}
+		.dateBoxPopup{
+			z-index: 21000;
+		}
+		.dateBoxPopup .popupContent{
+			margin: 3px;
+			background: #ffffff;
+			position: relative;
+		}
+		.gwt-DatePicker {
+			border: #aaaaaa 1px solid;
+		}
+		.gwt-DatePicker td{
+			text-align: center;
+		}
+		.datePickerMonthSelector { /*the month selector widget*/
+			border-bottom: 1px solid #cccccc;
+		}
+		.datePickerMonth { /*the month in the month selector widget*/ } 
+		.datePickerPreviousButton { /*the previous month button*/ 
+			cursor: pointer;
+			width: 16px;
+		} 
+		.datePickerNextButton { /*the next month button*/ 
+			cursor: pointer;
+			width: 16px;
+		} 
+		.datePickerPreviousButton-up-hovering .html-face, .datePickerPreviousButton-down-hovering .html-face, .datePickerNextButton-up-hovering .html-face, .datePickerNextButton-down-hovering .html-face{
+			font-weight: bold;
+		}
+		.datePickerDays { /*the portion of the picker that shows the days*/}
+		.datePickerDays td{ /* the cell for a day */
+			padding: 3px;
+			font-size: 10px;
+		}
+		.datePickerWeekdayLabel { /*the label over weekdays*/ }
+		.datePickerWeekendLabel { /*the label over weekends*/
+			background: #dddddd;
+		}
+		.datePickerDay { /*a single day*/ 
+			cursor: pointer;
+		}
+		.datePickerDayIsToday { /*today's date*/ 
+			color: red;
+		}
+		.datePickerDayIsWeekend { /*a weekend day*/ 
+			background: #dddddd;
+		}
+		.datePickerDayIsFiller { /*a day in another month*/
+			color: #666666;
+		}
+		.datePickerDayIsValue { /*the selected day*/
+			background: #cccccc; 
+		}
+		.datePickerDayIsDisabled { /*a disabled day*/ }
+		.datePickerDayIsHighlighted { /*the currently highlighted day*/ 
+			background: #b9b9b9;
+		}
+		.datePickerDayIsValueAndHighlighted { /*the highlighted day if it is also selected*/ }
+
 		.time {
 			width: 50px;
 			margin: 3px 6px 3px 3px;
 			display: inline-block;
+			vertical-align: middle;
 		}
 		.ampm {
-			margin-top: -7px;
 			margin-right: 3px;
 		}
 		.ampm div span {

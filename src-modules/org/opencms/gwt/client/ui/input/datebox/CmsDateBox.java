@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/datebox/Attic/CmsDateBox.java,v $
- * Date   : $Date: 2010/07/06 12:08:04 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/07/07 12:42:29 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,13 +31,18 @@
 
 package org.opencms.gwt.client.ui.input.datebox;
 
+import org.opencms.gwt.client.I_CmsHasInit;
 import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.input.CmsErrorWidget;
 import org.opencms.gwt.client.ui.input.CmsRadioButton;
 import org.opencms.gwt.client.ui.input.CmsRadioButtonGroup;
 import org.opencms.gwt.client.ui.input.CmsTextBox;
+import org.opencms.gwt.client.ui.input.I_CmsFormWidget;
+import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
+import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
 
 import java.util.Date;
+import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.BlurEvent;
@@ -69,7 +74,8 @@ import com.google.gwt.user.datepicker.client.DatePicker;
  * 
  * @author Ruediger Kurz
  */
-public class CmsDateBox extends Composite implements HasValue<Date>, HasDoubleClickHandlers {
+public class CmsDateBox extends Composite
+implements HasValue<Date>, HasDoubleClickHandlers, I_CmsFormWidget, I_CmsHasInit {
 
     /** The ui-binder interface for this composite. */
     interface CmsDateBoxUiBinder extends UiBinder<FlowPanel, CmsDateBox> {
@@ -88,14 +94,14 @@ public class CmsDateBox extends Composite implements HasValue<Date>, HasDoubleCl
     private class DateBoxHandler implements ClickHandler, BlurHandler, KeyPressHandler, CloseHandler<PopupPanel> {
 
         /** The main handler for this UI. */
-        private CmsPickerHandler m_handler;
+        private CmsDateBoxHandler m_handler;
 
         /**
          * The public constructor.<p>
          * 
          * @param handler the main handler for the UI
          */
-        public DateBoxHandler(CmsPickerHandler handler) {
+        public DateBoxHandler(CmsDateBoxHandler handler) {
 
             m_handler = handler;
         }
@@ -149,14 +155,14 @@ public class CmsDateBox extends Composite implements HasValue<Date>, HasDoubleCl
     private class DateTimePickerHandler implements ClickHandler, ValueChangeHandler<Date>, BlurHandler, KeyPressHandler {
 
         /** The main handler for this UI. */
-        private CmsPickerHandler m_handler;
+        private CmsDateBoxHandler m_handler;
 
         /**
          * The public constructor.<p>
          * 
          * @param handler the main handler for the UI
          */
-        public DateTimePickerHandler(CmsPickerHandler handler) {
+        public DateTimePickerHandler(CmsDateBoxHandler handler) {
 
             m_handler = handler;
         }
@@ -194,6 +200,9 @@ public class CmsDateBox extends Composite implements HasValue<Date>, HasDoubleCl
         }
     }
 
+    /** The widget type identifier for this widget. */
+    public static final String WIDGET_TYPE = "datebox";
+
     /** The ui-binder instance. */
     private static CmsDateBoxUiBinder uiBinder = GWT.create(CmsDateBoxUiBinder.class);
 
@@ -209,6 +218,10 @@ public class CmsDateBox extends Composite implements HasValue<Date>, HasDoubleCl
     @UiField
     FlowPanel m_dateBoxPanel;
 
+    /** The panel for the date time picker. */
+    @UiField
+    FlowPanel m_dateTimePanel;
+
     /** The gwt date picker. */
     @UiField
     DatePicker m_picker;
@@ -221,19 +234,15 @@ public class CmsDateBox extends Composite implements HasValue<Date>, HasDoubleCl
     @UiField
     CmsTextBox m_time;
 
-    /** The panel for the date time picker. */
-    @UiField
-    FlowPanel m_dateTimePanel;
-
     /** The error label for the time input field. */
     @UiField
     CmsErrorWidget m_timeErr;
 
-    /** The popup panel to show the the date time picker widget in. */
-    private CmsPopup m_popup = new CmsPopup();
-
     /** The radio button group for am/pm selection. */
     private CmsRadioButtonGroup m_ampmGroup = new CmsRadioButtonGroup();
+
+    /** The popup panel to show the the date time picker widget in. */
+    private CmsPopup m_popup = new CmsPopup();
 
     /**
      * Create a new date box widget with the date time picker.
@@ -242,7 +251,7 @@ public class CmsDateBox extends Composite implements HasValue<Date>, HasDoubleCl
 
         initWidget(uiBinder.createAndBindUi(this));
 
-        CmsPickerHandler pickerHandler = new CmsPickerHandler(this);
+        CmsDateBoxHandler pickerHandler = new CmsDateBoxHandler(this);
 
         DateBoxHandler dateBoxHandler = new DateBoxHandler(pickerHandler);
         m_box.addBlurHandler(dateBoxHandler);
@@ -271,9 +280,27 @@ public class CmsDateBox extends Composite implements HasValue<Date>, HasDoubleCl
         m_popup.setWidth("100px");
         m_popup.addCloseHandler(dateBoxHandler);
         m_popup.setModal(false);
-        m_popup.setText("Sellect date " + m_popup.isModal());
+        m_popup.setText("Select date");
         m_popup.addAutoHidePartner(m_box.getElement());
 
+    }
+
+    /**
+     * Initializes this class.<p>
+     */
+    public static void initClass() {
+
+        // registers a factory for creating new instances of this widget
+        CmsWidgetFactoryRegistry.instance().registerFactory(WIDGET_TYPE, new I_CmsFormWidgetFactory() {
+
+            /**
+             * @see org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory#createWidget(java.util.Map)
+             */
+            public I_CmsFormWidget createWidget(Map<String, String> widgetParams) {
+
+                return new CmsDateBox();
+            }
+        });
     }
 
     /**
@@ -303,6 +330,50 @@ public class CmsDateBox extends Composite implements HasValue<Date>, HasDoubleCl
     }
 
     /**
+     * Returns the group.<p>
+     *
+     * @return the group
+     */
+    public CmsRadioButtonGroup getAmpmGroup() {
+
+        return m_ampmGroup;
+    }
+
+    /**
+     * Returns the box.<p>
+     *
+     * @return the box
+     */
+    public CmsTextBox getBox() {
+
+        return m_box;
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getFieldType()
+     */
+    public FieldType getFieldType() {
+
+        return I_CmsFormWidget.FieldType.DATE;
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getFormValue()
+     */
+    public Object getFormValue() {
+
+        return getValue();
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getFormValueAsString()
+     */
+    public String getFormValueAsString() {
+
+        return String.valueOf(getValue().getTime());
+    }
+
+    /**
      * Returns the date picker.<p>
      *
      * @return the date picker
@@ -323,6 +394,16 @@ public class CmsDateBox extends Composite implements HasValue<Date>, HasDoubleCl
     }
 
     /**
+     * Returns the popup.<p>
+     *
+     * @return the popup
+     */
+    public CmsPopup getPopup() {
+
+        return m_popup;
+    }
+
+    /**
      * Returns the time text box widget.<p>
      *
      * @return the time text box widget
@@ -331,6 +412,16 @@ public class CmsDateBox extends Composite implements HasValue<Date>, HasDoubleCl
 
         return m_time;
 
+    }
+
+    /**
+     * Returns the timeErr.<p>
+     *
+     * @return the timeErr
+     */
+    public CmsErrorWidget getTimeErr() {
+
+        return m_timeErr;
     }
 
     /**
@@ -345,6 +436,62 @@ public class CmsDateBox extends Composite implements HasValue<Date>, HasDoubleCl
             // should never happen
         }
         return date;
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#reset()
+     */
+    public void reset() {
+
+        setValue(null);
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setEnabled(boolean)
+     */
+    public void setEnabled(boolean enabled) {
+
+        m_box.setEnabled(enabled);
+
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setErrorMessage(java.lang.String)
+     */
+    public void setErrorMessage(String errorMessage) {
+
+        m_box.setErrorMessage(errorMessage);
+
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setFormValue(java.lang.Object)
+     */
+    public void setFormValue(Object value) {
+
+        if (value instanceof Date) {
+            Date dateValue = (Date)value;
+            setValue(dateValue);
+        }
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setFormValueAsString(java.lang.String)
+     */
+    public void setFormValueAsString(String value) {
+
+        if (value != null) {
+            try {
+                long time = Long.parseLong(value);
+                setValue(new Date(time));
+            } catch (NumberFormatException e) {
+                // if the String value is none long number make the field empty
+                setValue(null);
+            }
+        } else {
+            // if the value is <code>null</code> make the field empty
+            setValue(null);
+        }
     }
 
     /**
@@ -368,42 +515,12 @@ public class CmsDateBox extends Composite implements HasValue<Date>, HasDoubleCl
     }
 
     /**
-     * Returns the box.<p>
-     *
-     * @return the box
+     * Returns the date value as formated String or an empty String if the date value is null.<p>
+     * 
+     * @return the date value as formated String
      */
-    public CmsTextBox getBox() {
+    public String getValueAsFormatedString() {
 
-        return m_box;
-    }
-
-    /**
-     * Returns the popup.<p>
-     *
-     * @return the popup
-     */
-    public CmsPopup getPopup() {
-
-        return m_popup;
-    }
-
-    /**
-     * Returns the group.<p>
-     *
-     * @return the group
-     */
-    public CmsRadioButtonGroup getAmpmGroup() {
-
-        return m_ampmGroup;
-    }
-
-    /**
-     * Returns the timeErr.<p>
-     *
-     * @return the timeErr
-     */
-    public CmsErrorWidget getTimeErr() {
-
-        return m_timeErr;
+        return CmsDateConverter.toString(getValue());
     }
 }
