@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/datebox/Attic/CmsDateBox.java,v $
- * Date   : $Date: 2010/07/07 15:19:30 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/07/08 07:27:18 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -79,7 +79,7 @@ public class CmsDateBox extends Composite
 implements HasValue<Date>, HasDoubleClickHandlers, I_CmsFormWidget, I_CmsHasInit {
 
     /** The ui-binder interface for this composite. */
-    interface CmsDateBoxUiBinder extends UiBinder<FlowPanel, CmsDateBox> {
+    interface I_CmsDateBoxUiBinder extends UiBinder<FlowPanel, CmsDateBox> {
         // GWT interface, nothing to do here
     }
 
@@ -205,7 +205,7 @@ implements HasValue<Date>, HasDoubleClickHandlers, I_CmsFormWidget, I_CmsHasInit
     public static final String WIDGET_TYPE = "datebox";
 
     /** The ui-binder instance. */
-    private static CmsDateBoxUiBinder uiBinder = GWT.create(CmsDateBoxUiBinder.class);
+    private static I_CmsDateBoxUiBinder uiBinder = GWT.create(I_CmsDateBoxUiBinder.class);
 
     /** The am radio button. */
     @UiField
