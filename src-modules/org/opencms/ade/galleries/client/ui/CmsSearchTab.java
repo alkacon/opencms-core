@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsSearchTab.java,v $
- * Date   : $Date: 2010/07/08 06:50:25 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/07/08 09:26:45 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import com.google.gwt.user.client.ui.Label;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.
  */
@@ -72,12 +72,7 @@ public class CmsSearchTab extends A_CmsTab {
          */
         public void onClick(ClickEvent event) {
 
-            m_searchInput.setText("");
-            m_dateCreatedStartDateBox.getBox().setText("");
-            m_dateCreatedEndDateBox.getBox().setText("");
-            m_dateModifiedStartDateBox.getBox().setText("");
-            m_dateModifiedEndDateBox.getBox().setText("");
-            m_tabHandler.clearInput();
+            clearInput();
         }
     }
 
@@ -258,6 +253,18 @@ public class CmsSearchTab extends A_CmsTab {
     }
 
     /**
+     * Clears the search tab input.<p>
+     */
+    public void clearInput() {
+
+        m_searchInput.setText("");
+        m_dateCreatedStartDateBox.getBox().setText("");
+        m_dateCreatedEndDateBox.getBox().setText("");
+        m_dateModifiedStartDateBox.getBox().setText("");
+        m_dateModifiedEndDateBox.getBox().setText("");
+    }
+
+    /**
      * @see org.opencms.ade.galleries.client.ui.A_CmsTab#getParamPanel(org.opencms.ade.galleries.shared.CmsGallerySearchBean)
      */
     @Override
@@ -307,7 +314,7 @@ public class CmsSearchTab extends A_CmsTab {
             createdResult.append(Messages.get().key(Messages.GUI_TAB_SEARCH_LABEL_CREATED_UNTIL_0)).append(" ").append(
                 cEnd);
         }
-        if (result.length() != 0) {
+        if ((result.length() > 0) && (createdResult.length() > 0)) {
             result.append(", ");
         }
         result.append(createdResult);
@@ -324,7 +331,7 @@ public class CmsSearchTab extends A_CmsTab {
             modifiedResult.append(Messages.get().key(Messages.GUI_TAB_SEARCH_LABEL_MODIFIED_UNTIL_0)).append(" ").append(
                 mEnd);
         }
-        if (result.length() != 0) {
+        if ((result.length() > 0) && (modifiedResult.length() > 0)) {
             result.append(", ");
         }
         result.append(modifiedResult);

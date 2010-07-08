@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/Attic/CmsGalleryService.java,v $
- * Date   : $Date: 2010/07/08 06:49:42 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2010/07/08 09:26:45 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Polina Smagina
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 8.0.0
  * 
@@ -955,11 +955,11 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
         // set the date modified range to the parameters
         if ((dateModifiedStart != -1L) && (dateModifiedEnd != -1L)) {
-            params.setDateCreatedTimeRange(dateModifiedStart, dateModifiedEnd);
+            params.setDateLastModifiedTimeRange(dateModifiedStart, dateModifiedEnd);
         } else if (dateModifiedStart != -1L) {
-            params.setDateCreatedTimeRange(dateModifiedStart, Long.MAX_VALUE);
+            params.setDateLastModifiedTimeRange(dateModifiedStart, Long.MAX_VALUE);
         } else if (dateModifiedEnd != -1L) {
-            params.setDateCreatedTimeRange(Long.MIN_VALUE, dateModifiedEnd);
+            params.setDateLastModifiedTimeRange(Long.MIN_VALUE, dateModifiedEnd);
         }
 
         return params;

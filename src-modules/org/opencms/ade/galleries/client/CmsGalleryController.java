@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleryController.java,v $
- * Date   : $Date: 2010/07/07 12:42:29 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2010/07/08 09:26:45 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * @author Polina Smagina
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 8.0.0
  */
@@ -245,6 +245,7 @@ public class CmsGalleryController {
     public void clearTextSearch() {
 
         m_searchObject.clearFullTextSearch();
+        m_handler.onClearFullTextSearch();
         updateResultsTab();
     }
 

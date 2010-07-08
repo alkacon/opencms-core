@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/Attic/CmsGallerySearchBean.java,v $
- * Date   : $Date: 2010/07/07 12:42:29 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/07/08 09:26:45 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,8 +32,10 @@
 package org.opencms.ade.galleries.shared;
 
 import org.opencms.gwt.client.util.CmsCollectionUtil;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
@@ -46,7 +48,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 8.0.0
  */
@@ -437,7 +439,19 @@ public class CmsGallerySearchBean implements IsSerializable {
                 return false;
             }
         }
-        //TODO: check search query
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_query)) {
+            return false;
+        }
+        List<Long> dates = Arrays.asList(new Long[] {
+            Long.valueOf(m_dateCreatedEnd),
+            Long.valueOf(m_dateCreatedStart),
+            Long.valueOf(m_dateModifiedEnd),
+            Long.valueOf(m_dateModifiedStart)});
+        for (Long date : dates) {
+            if ((date != null) || (date == Long.valueOf(-1L))) {
+                return false;
+            }
+        }
         return true;
     }
 

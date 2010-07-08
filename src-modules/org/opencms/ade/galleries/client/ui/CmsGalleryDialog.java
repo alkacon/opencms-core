@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsGalleryDialog.java,v $
- * Date   : $Date: 2010/07/08 06:50:24 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2010/07/08 09:26:45 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import com.google.gwt.user.client.ui.HTMLPanel;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * 
  * @since 8.0.
  */
@@ -106,6 +106,9 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
 
     /** The results tab. */
     private CmsResultsTab m_resultsTab;
+
+    /** The Full-text search tab. */
+    private CmsSearchTab m_searchTab;
 
     /** The sitemap tab. */
     private CmsSitemapTab m_sitemapTab;
@@ -221,8 +224,8 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
                     m_tabbedPanel.add(m_categoriesTab, Messages.get().key(Messages.GUI_TAB_TITLE_CATEGORIES_0));
                     break;
                 case cms_tab_search:
-                    CmsSearchTab tabContent = new CmsSearchTab(new CmsSearchTabHandler(controller));
-                    m_tabbedPanel.add(tabContent, Messages.get().key(Messages.GUI_TAB_TITLE_SEARCH_0));
+                    m_searchTab = new CmsSearchTab(new CmsSearchTabHandler(controller));
+                    m_tabbedPanel.add(m_searchTab, Messages.get().key(Messages.GUI_TAB_TITLE_SEARCH_0));
                     break;
                 case cms_tab_sitemap:
                     m_sitemapTab = new CmsSitemapTab(new CmsSitemapTabHandler(controller));
@@ -292,6 +295,16 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
     public CmsResultsTab getResultsTab() {
 
         return m_resultsTab;
+    }
+
+    /**
+     * Returns the searchTab.<p>
+     *
+     * @return the searchTab
+     */
+    public CmsSearchTab getSearchTab() {
+
+        return m_searchTab;
     }
 
     /**
