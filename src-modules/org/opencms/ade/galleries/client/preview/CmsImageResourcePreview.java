@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/preview/binary/client/Attic/CmsResourcePreview.java,v $
- * Date   : $Date: 2010/06/10 08:45:04 $
- * Version: $Revision: 1.5 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/Attic/CmsImageResourcePreview.java,v $
+ * Date   : $Date: 2010/07/08 06:49:42 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,38 +29,67 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.galleries.preview.binary.client;
+package org.opencms.ade.galleries.client.preview;
 
-import org.opencms.ade.galleries.client.preview.A_CmsPreviewController;
-import org.opencms.ade.galleries.client.preview.A_CmsResourcePreview;
-import org.opencms.ade.galleries.preview.binary.shared.I_CmsBinaryPreviewProvider;
+import org.opencms.ade.galleries.client.preview.ui.CmsImagePreviewDialog;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
+import org.opencms.ade.galleries.shared.I_CmsImagePreviewProvider;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
+import org.opencms.gwt.client.I_CmsHasInit;
 
 import com.google.gwt.user.client.ui.RootPanel;
 
 /**
- * The binary resource preview.<p>
+ * The image resource preview.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  */
-public class CmsResourcePreview extends A_CmsResourcePreview {
+public final class CmsImageResourcePreview implements I_CmsResourcePreview, I_CmsHasInit {
 
-    private CmsBinaryPreviewController m_controller;
+    /** The preview controller. */
+    private CmsImagePreviewController m_controller;
+
+    private static CmsImageResourcePreview m_instance;
 
     /**
-     * @see org.opencms.ade.galleries.client.preview.I_CmsResourcePreview#setDataInEditor()
+     * Constructor.<p>
      */
-    public boolean setDataInEditor() {
+    private CmsImageResourcePreview() {
 
-        if (m_controller == null) {
-            return true;
+        // hiding constructor
+    }
+
+    /**
+     * Initializes this class.<p>
+     */
+    public static void initClass() {
+
+        CmsPreviewUtil.exportFunctions(getInstance().getPreviewName(), getInstance());
+    }
+
+    /**
+     * Returns the resource preview instance.<p>
+     * 
+     * @return the resource preview instance
+     */
+    private static CmsImageResourcePreview getInstance() {
+
+        if (m_instance == null) {
+            m_instance = new CmsImageResourcePreview();
         }
-        return m_controller.closeGalleryDialog();
+        return m_instance;
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.preview.I_CmsResourcePreview#clear()
+     */
+    public void clear() {
+
+        m_controller = null;
     }
 
     /**
@@ -68,26 +97,27 @@ public class CmsResourcePreview extends A_CmsResourcePreview {
      */
     public String getPreviewName() {
 
-        return I_CmsBinaryPreviewProvider.PREVIEW_NAME;
+        return I_CmsImagePreviewProvider.PREVIEW_NAME;
     }
 
     /**
-     * @see org.opencms.ade.galleries.client.preview.I_CmsResourcePreview#openPreview(java.lang.String, java.lang.String, java.lang.String)
+     * @see org.opencms.ade.galleries.client.preview.I_CmsResourcePreview#openPreview(String, String, String)
      */
     public void openPreview(String galleryMode, String resourcePath, String parentElementId) {
 
         RootPanel parentPanel = RootPanel.get(parentElementId);
 
         // inserting the preview into the DOM
-        GalleryMode mode = I_CmsGalleryProviderConstants.GalleryMode.valueOf(galleryMode);
+        GalleryMode mode = GalleryMode.valueOf(galleryMode);
 
-        CmsBinaryPreviewDialog preview = new CmsBinaryPreviewDialog(
+        CmsImagePreviewDialog preview = new CmsImagePreviewDialog(
             mode,
             parentPanel.getOffsetHeight(),
             parentPanel.getOffsetWidth());
 
         // initialize the controller and controller handler
-        m_controller = new CmsBinaryPreviewController(new CmsBinaryPreviewHandler(preview));
+        m_controller = new CmsImagePreviewController(new CmsImagePreviewHandler(preview, this));
+
         parentPanel.add(preview);
 
         //load preview data
@@ -100,6 +130,17 @@ public class CmsResourcePreview extends A_CmsResourcePreview {
     public void selectResource(String galleryMode, String resourcePath, String title) {
 
         GalleryMode mode = I_CmsGalleryProviderConstants.GalleryMode.valueOf(galleryMode);
-        A_CmsPreviewController.select(mode, resourcePath, title);
+        CmsImagePreviewController.select(mode, resourcePath, title);
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.preview.I_CmsResourcePreview#setDataInEditor()
+     */
+    public boolean setDataInEditor() {
+
+        if (m_controller == null) {
+            return true;
+        }
+        return m_controller.closeGalleryDialog();
     }
 }

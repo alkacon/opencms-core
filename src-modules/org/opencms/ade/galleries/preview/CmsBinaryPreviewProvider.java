@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/preview/image/shared/Attic/I_CmsImagePreviewProvider.java,v $
- * Date   : $Date: 2010/05/28 09:31:39 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/preview/Attic/CmsBinaryPreviewProvider.java,v $
+ * Date   : $Date: 2010/07/08 06:49:42 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -29,10 +29,16 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.galleries.preview.image.shared;
+package org.opencms.ade.galleries.preview;
+
+import org.opencms.ade.galleries.shared.I_CmsBinaryPreviewProvider;
+import org.opencms.file.CmsObject;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
- * Constants interface for binary resource preview.<p>
+ * The preview provider for binary resources.<p>
  * 
  * @author Tobias Herrmann
  * 
@@ -40,8 +46,22 @@ package org.opencms.ade.galleries.preview.image.shared;
  * 
  * @since 8.0.0
  */
-public interface I_CmsImagePreviewProvider {
+public class CmsBinaryPreviewProvider implements I_CmsPreviewProvider {
 
-    /** The preview name. */
-    String PREVIEW_NAME = "image";
+    /**
+     * @see org.opencms.ade.galleries.preview.I_CmsPreviewProvider#getPreviewInclude(org.opencms.file.CmsObject, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     */
+    public String getPreviewInclude(CmsObject cms, HttpServletRequest request, HttpServletResponse response) {
+
+        return "";
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.preview.I_CmsPreviewProvider#getPreviewName()
+     */
+    public String getPreviewName() {
+
+        return I_CmsBinaryPreviewProvider.PREVIEW_NAME;
+    }
+
 }

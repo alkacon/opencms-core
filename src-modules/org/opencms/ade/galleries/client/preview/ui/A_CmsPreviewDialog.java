@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/ui/Attic/A_CmsPreviewDialog.java,v $
- * Date   : $Date: 2010/07/05 14:48:06 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/07/08 06:49:42 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,6 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -68,7 +67,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Polina Smagina
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.
  */
@@ -250,11 +249,6 @@ public abstract class A_CmsPreviewDialog<T extends CmsResourceInfoBean> extends 
     @UiHandler("m_closeButton")
     protected void onCloseClick(ClickEvent event) {
 
-        if (m_handler != null) {
-            m_handler.closePreview();
-        } else {
-            m_parentPanel.add(new Label("handler = null"));
-        }
-
+        m_handler.closePreview();
     }
 }

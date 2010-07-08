@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/Attic/I_CmsResourcePreview.java,v $
- * Date   : $Date: 2010/06/10 08:45:04 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/07/08 06:49:42 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,7 @@ package org.opencms.ade.galleries.client.preview;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -52,7 +52,12 @@ public interface I_CmsResourcePreview {
     String KEY_SELECT_RESOURCE_FUNCTION = "selectResource";
 
     /**
-     * Returns the preview name, should return the same as in {@link org.opencms.ade.galleries.I_CmsPreviewProvider#getPreviewName()}.<p>
+     * Clears all instance fields.<p>
+     */
+    void clear();
+
+    /**
+     * Returns the preview name, should return the same as in {@link org.opencms.ade.galleries.preview.I_CmsPreviewProvider#getPreviewName()}.<p>
      * 
      * @return the preview name
      */

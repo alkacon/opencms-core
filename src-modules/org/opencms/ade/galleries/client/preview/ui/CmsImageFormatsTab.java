@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/preview/image/client/Attic/CmsImageFormatsTab.java,v $
- * Date   : $Date: 2010/07/05 14:48:07 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/ui/Attic/CmsImageFormatsTab.java,v $
+ * Date   : $Date: 2010/07/08 06:49:42 $
  * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.galleries.preview.image.client;
+package org.opencms.ade.galleries.client.preview.ui;
 
 import org.opencms.ade.galleries.client.ui.Messages;
 import org.opencms.ade.galleries.shared.CmsImageInfoBean;

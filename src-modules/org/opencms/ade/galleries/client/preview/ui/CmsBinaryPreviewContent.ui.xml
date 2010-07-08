@@ -3,7 +3,7 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:cms="urn:import:org.opencms.gwt.client.ui.input">
 	<ui:with field="resources" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
-	<ui:style field="m_style" type="org.opencms.ade.galleries.preview.binary.client.CmsPreviewContent.I_CmsPreviewContentStyle">
+	<ui:style field="m_style" type="org.opencms.ade.galleries.client.preview.ui.CmsBinaryPreviewContent.I_CmsPreviewContentStyle">
 		.panel{
 			height: 100%;
 			overflow: auto;

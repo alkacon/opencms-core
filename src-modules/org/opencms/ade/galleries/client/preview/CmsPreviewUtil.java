@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/Attic/CmsPreviewUtil.java,v $
- * Date   : $Date: 2010/07/06 14:54:45 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/07/08 06:49:42 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import java.util.Map.Entry;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -94,7 +94,7 @@ public final class CmsPreviewUtil {
      * Exports the functions of {@link org.opencms.ade.galleries.client.preview.I_CmsResourcePreview}
      * to the window object for use via JSNI.<p> 
      * 
-     * @param previewName the name of the preview
+     * @param previewName the preview name 
      * @param preview the preview
      */
     public static native void exportFunctions(String previewName, I_CmsResourcePreview preview) /*-{

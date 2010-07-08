@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/preview/image/Attic/CmsPreviewProvider.java,v $
- * Date   : $Date: 2010/05/28 09:31:39 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/preview/Attic/CmsImagePreviewProvider.java,v $
+ * Date   : $Date: 2010/07/08 06:49:42 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -29,12 +29,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.galleries.preview.image;
+package org.opencms.ade.galleries.preview;
 
-import org.opencms.ade.galleries.I_CmsPreviewProvider;
-import org.opencms.ade.galleries.preview.image.shared.I_CmsImagePreviewProvider;
+import org.opencms.ade.galleries.shared.I_CmsImagePreviewProvider;
 import org.opencms.file.CmsObject;
-import org.opencms.main.OpenCms;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -48,25 +46,18 @@ import javax.servlet.http.HttpServletResponse;
  * 
  * @since 8.0.0
  */
-public class CmsPreviewProvider implements I_CmsPreviewProvider {
-
-    /** The JS resource URI. */
-    private static final String NO_CACHE_URI = "/system/modules/org.opencms.ade.galleries.preview.image/image_preview/image_preview.nocache.js";
+public class CmsImagePreviewProvider implements I_CmsPreviewProvider {
 
     /**
-     * @see org.opencms.ade.galleries.I_CmsPreviewProvider#getPreviewInclude(org.opencms.file.CmsObject, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     * @see org.opencms.ade.galleries.preview.I_CmsPreviewProvider#getPreviewInclude(org.opencms.file.CmsObject, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
     public String getPreviewInclude(CmsObject cms, HttpServletRequest request, HttpServletResponse response) {
 
-        // include the script tag to load module resources
-        StringBuffer sb = new StringBuffer();
-        sb.append("<script type=\"text/javascript\" src=\"").append(
-            OpenCms.getLinkManager().substituteLink(cms, NO_CACHE_URI)).append("\"></script>").append("\n");
-        return sb.toString();
+        return "";
     }
 
     /**
-     * @see org.opencms.ade.galleries.I_CmsPreviewProvider#getPreviewName()
+     * @see org.opencms.ade.galleries.preview.I_CmsPreviewProvider#getPreviewName()
      */
     public String getPreviewName() {
 

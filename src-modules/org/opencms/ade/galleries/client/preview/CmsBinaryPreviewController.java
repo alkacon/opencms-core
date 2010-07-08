@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/preview/binary/client/Attic/CmsBinaryPreviewController.java,v $
- * Date   : $Date: 2010/07/05 14:48:06 $
- * Version: $Revision: 1.4 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/Attic/CmsBinaryPreviewController.java,v $
+ * Date   : $Date: 2010/07/08 06:49:42 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,9 +29,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.galleries.preview.binary.client;
+package org.opencms.ade.galleries.client.preview;
 
-import org.opencms.ade.galleries.client.preview.A_CmsPreviewController;
 import org.opencms.ade.galleries.shared.CmsResourceInfoBean;
 import org.opencms.ade.galleries.shared.rpc.I_CmsPreviewService;
 import org.opencms.ade.galleries.shared.rpc.I_CmsPreviewServiceAsync;
@@ -49,7 +48,7 @@ import com.google.gwt.core.client.GWT;
  * @author Polina Smagina
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.1 $ 
  * 
  * @since 8.0.0
  */

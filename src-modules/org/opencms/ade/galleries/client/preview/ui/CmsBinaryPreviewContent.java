@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/preview/binary/client/Attic/CmsPreviewContent.java,v $
- * Date   : $Date: 2010/07/06 14:03:50 $
- * Version: $Revision: 1.3 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/ui/Attic/CmsBinaryPreviewContent.java,v $
+ * Date   : $Date: 2010/07/08 06:49:42 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.galleries.preview.binary.client;
+package org.opencms.ade.galleries.client.preview.ui;
 
 import org.opencms.ade.galleries.client.ui.Messages;
 import org.opencms.ade.galleries.shared.CmsResourceInfoBean;
@@ -53,16 +53,16 @@ import com.google.gwt.user.client.ui.Label;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  */
-public class CmsPreviewContent extends Composite {
+public class CmsBinaryPreviewContent extends Composite {
 
     /**
      * The ui-binder interface.<p>
      */
-    public interface I_CmsPreviewContentUiBinder extends UiBinder<HTMLPanel, CmsPreviewContent> {
+    public interface I_CmsPreviewContentUiBinder extends UiBinder<HTMLPanel, CmsBinaryPreviewContent> {
         // GWT interface, nothing to do
     }
 
@@ -153,7 +153,7 @@ public class CmsPreviewContent extends Composite {
     /**
      * Constructor.<p>
      */
-    public CmsPreviewContent() {
+    public CmsBinaryPreviewContent() {
 
         initWidget(uiBinder.createAndBindUi(this));
         m_sizeLabel.setText(Messages.get().key(Messages.GUI_PREVIEW_LABEL_SIZE_0) + ":");
@@ -166,7 +166,7 @@ public class CmsPreviewContent extends Composite {
      * 
      * @param info the resource info to display
      */
-    public CmsPreviewContent(CmsResourceInfoBean info) {
+    public CmsBinaryPreviewContent(CmsResourceInfoBean info) {
 
         this();
         setInfo(info);

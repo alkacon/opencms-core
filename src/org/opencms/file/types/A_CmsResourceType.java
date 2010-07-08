@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2010/05/31 05:55:35 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2010/07/08 06:49:43 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -81,7 +81,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  */
@@ -100,7 +100,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     public static final String CONFIGURATION_INTERNAL = "resource.flag.internal";
 
     /** The default gallery preview provider. */
-    public static final String DEFAULT_GALLERY_PREVIEW_PROVIDER = "org.opencms.ade.galleries.preview.binary.CmsPreviewProvider";
+    public static final String DEFAULT_GALLERY_PREVIEW_PROVIDER = "org.opencms.ade.galleries.preview.CmsBinaryPreviewProvider";
 
     /** Macro for the folder path of the current resource. */
     public static final String MACRO_RESOURCE_FOLDER_PATH = "resource.folder.path";

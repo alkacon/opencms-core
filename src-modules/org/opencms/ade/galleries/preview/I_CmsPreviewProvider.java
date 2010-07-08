@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/preview/binary/client/Attic/CmsBinaryPreviewHandler.java,v $
- * Date   : $Date: 2010/06/10 08:45:04 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/preview/Attic/I_CmsPreviewProvider.java,v $
+ * Date   : $Date: 2010/07/08 06:49:42 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -29,44 +29,40 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.galleries.preview.binary.client;
+package org.opencms.ade.galleries.preview;
 
-import org.opencms.ade.galleries.client.preview.A_CmsPreviewHandler;
-import org.opencms.ade.galleries.shared.CmsResourceInfoBean;
+import org.opencms.file.CmsObject;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
- * Binary preview dialog controller handler.<p>
+ * Interface for all resource preview provider.<p>
  * 
- * Delegates the actions of the preview controller to the preview dialog.
- * 
- * @author Polina Smagina
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  */
-public class CmsBinaryPreviewHandler extends A_CmsPreviewHandler<CmsResourceInfoBean> {
+public interface I_CmsPreviewProvider {
 
-    /**
-     * Constructor.<p>
+    /** 
+     * Returns the name of the preview.<p>
      * 
-     * @param previewDialog the reference to the preview dialog 
+     * @return the name of the preview
      */
-    public CmsBinaryPreviewHandler(CmsBinaryPreviewDialog previewDialog) {
+    String getPreviewName();
 
-        super(previewDialog);
-        previewDialog.init(this);
-    }
-
-    /**
-     * Initializes the preview handler.<p>
+    /** 
+     * Returns the preview include.<p>
      * 
-     * @param controller the preview controller
+     * @param cms the cms object instance
+     * @param request the current request
+     * @param response the current response
+     * 
+     * @return the preview include 
+     *  
      */
-    public void init(CmsBinaryPreviewController controller) {
-
-        m_controller = controller;
-    }
-
+    String getPreviewInclude(CmsObject cms, HttpServletRequest request, HttpServletResponse response);
 }

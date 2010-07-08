@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/Attic/A_CmsPreviewHandler.java,v $
- * Date   : $Date: 2010/07/05 14:48:07 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/07/08 06:49:42 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import com.google.gwt.user.client.Command;
  * @author Polina Smagina
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  */
@@ -61,14 +61,19 @@ public abstract class A_CmsPreviewHandler<T extends CmsResourceInfoBean> impleme
     /** The preview controller. */
     protected A_CmsPreviewController<T> m_controller;
 
+    /** The resource preview instance. */
+    protected I_CmsResourcePreview m_resourcePreview;
+
     /**
      * Constructor.<p>
      * 
      * @param previewDialog the reference to the preview dialog 
+     * @param resourcePreview the resource preview instance
      */
-    public A_CmsPreviewHandler(A_CmsPreviewDialog<T> previewDialog) {
+    public A_CmsPreviewHandler(A_CmsPreviewDialog<T> previewDialog, I_CmsResourcePreview resourcePreview) {
 
         m_previewDialog = previewDialog;
+        m_resourcePreview = resourcePreview;
     }
 
     /**
@@ -89,6 +94,7 @@ public abstract class A_CmsPreviewHandler<T extends CmsResourceInfoBean> impleme
                         CmsPreviewUtil.enableEditorOk(false);
                     }
                     m_previewDialog.removePreview();
+                    m_resourcePreview.clear();
                 }
             }, null);
             return;
@@ -97,6 +103,7 @@ public abstract class A_CmsPreviewHandler<T extends CmsResourceInfoBean> impleme
             CmsPreviewUtil.enableEditorOk(false);
         }
         m_previewDialog.removePreview();
+        m_resourcePreview.clear();
     }
 
     /**

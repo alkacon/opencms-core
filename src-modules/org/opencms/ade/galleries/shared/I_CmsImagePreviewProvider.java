@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/preview/binary/shared/Attic/I_CmsBinaryPreviewProvider.java,v $
- * Date   : $Date: 2010/05/27 10:28:29 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/Attic/I_CmsImagePreviewProvider.java,v $
+ * Date   : $Date: 2010/07/08 06:49:42 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.galleries.preview.binary.shared;
+package org.opencms.ade.galleries.shared;
 
 /**
  * Constants interface for binary resource preview.<p>
@@ -40,8 +40,8 @@ package org.opencms.ade.galleries.preview.binary.shared;
  * 
  * @since 8.0.0
  */
-public interface I_CmsBinaryPreviewProvider {
+public interface I_CmsImagePreviewProvider {
 
     /** The preview name. */
-    String PREVIEW_NAME = "binary";
+    String PREVIEW_NAME = "image";
 }

@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/preview/image/client/Attic/CmsImagePreviewController.java,v $
- * Date   : $Date: 2010/07/06 14:54:45 $
- * Version: $Revision: 1.3 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/Attic/CmsImagePreviewController.java,v $
+ * Date   : $Date: 2010/07/08 06:49:42 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,10 +29,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.galleries.preview.image.client;
+package org.opencms.ade.galleries.client.preview;
 
-import org.opencms.ade.galleries.client.preview.A_CmsPreviewController;
-import org.opencms.ade.galleries.client.preview.CmsPreviewUtil;
 import org.opencms.ade.galleries.shared.CmsImageInfoBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 import org.opencms.ade.galleries.shared.rpc.I_CmsPreviewService;
@@ -51,7 +49,7 @@ import com.google.gwt.core.client.GWT;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.1 $ 
  * 
  * @since 8.0.0
  */
