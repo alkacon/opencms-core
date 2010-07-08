@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsResultsTabHandler.java,v $
- * Date   : $Date: 2010/07/08 06:50:25 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/07/08 16:45:59 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,8 +38,9 @@ package org.opencms.ade.galleries.client;
  * delegates it to the gallery controller.
  * 
  * @author Polina Smagina
+ * @author Ruediger Kurz
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 8.0.0
  */
@@ -75,12 +76,21 @@ public class CmsResultsTabHandler extends A_CmsTabHandler {
     }
 
     /**
+     * Will be triggered when the bottom of the result list is reached by scrolling.<p>
+     */
+    public void onScrollToBottom() {
+
+        m_controller.updateResultsTab(true);
+
+    }
+
+    /**
      * @see org.opencms.ade.galleries.client.A_CmsTabHandler#onSelection()
      */
     @Override
     public void onSelection() {
 
-        m_controller.updateResultsTab();
+        m_controller.updateResultsTab(false);
     }
 
     /**

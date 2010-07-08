@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleryController.java,v $
- * Date   : $Date: 2010/07/08 09:26:45 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2010/07/08 16:45:59 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * @author Polina Smagina
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 8.0.0
  */
@@ -214,7 +214,7 @@ public class CmsGalleryController {
         List<String> selectedCategories = m_searchObject.getCategories();
         m_handler.onClearCategories(selectedCategories);
         m_searchObject.clearCategories();
-        updateResultsTab();
+        updateResultsTab(false);
     }
 
     /**
@@ -225,7 +225,7 @@ public class CmsGalleryController {
         List<String> selectedFolders = m_searchObject.getFolders();
         m_handler.onClearFolders(selectedFolders);
         m_searchObject.clearFolders();
-        updateResultsTab();
+        updateResultsTab(false);
     }
 
     /**
@@ -236,7 +236,7 @@ public class CmsGalleryController {
         List<String> selectedGalleries = m_searchObject.getGalleries();
         m_handler.onClearGalleries(selectedGalleries);
         m_searchObject.clearGalleries();
-        updateResultsTab();
+        updateResultsTab(false);
     }
 
     /**
@@ -246,7 +246,7 @@ public class CmsGalleryController {
 
         m_searchObject.clearFullTextSearch();
         m_handler.onClearFullTextSearch();
-        updateResultsTab();
+        updateResultsTab(false);
     }
 
     /**
@@ -257,7 +257,7 @@ public class CmsGalleryController {
         List<String> selectedTypes = m_searchObject.getTypes();
         m_handler.onClearTypes(selectedTypes);
         m_searchObject.clearTypes();
-        updateResultsTab();
+        updateResultsTab(false);
     }
 
     /**
@@ -516,35 +516,8 @@ public class CmsGalleryController {
      */
     public void sortResults(final String sortParams) {
 
-        /** The RPC search action for the gallery dialog. */
-        CmsRpcAction<CmsGallerySearchBean> sortAction = new CmsRpcAction<CmsGallerySearchBean>() {
-
-            /**
-            * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
-            */
-            @Override
-            public void execute() {
-
-                m_searchObject.setSortOrder(sortParams);
-                CmsGallerySearchBean preparedObject = prepareSearchObject();
-                getGalleryService().getSearch(preparedObject, this);
-            }
-
-            /**
-            * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
-            */
-            @Override
-            public void onResponse(CmsGallerySearchBean searchObj) {
-
-                m_searchObject.setResultCount(searchObj.getResultCount());
-                m_searchObject.setSortOrder(searchObj.getSortOrder());
-                m_searchObject.setPage(searchObj.getPage());
-
-                m_handler.onResultTabSelection(m_searchObject);
-            }
-
-        };
-        sortAction.execute();
+        m_searchObject.setSortOrder(sortParams);
+        updateResultsTab(false);
     }
 
     /**
@@ -607,8 +580,10 @@ public class CmsGalleryController {
 
     /**
      * Updates the content of the results tab.<p>
+     * 
+     * @param isNextPage signals if the next page should be loaded
      */
-    public void updateResultsTab() {
+    public void updateResultsTab(final boolean isNextPage) {
 
         /** The RPC search action for the gallery dialog. */
         CmsRpcAction<CmsGallerySearchBean> searchAction = new CmsRpcAction<CmsGallerySearchBean>() {
@@ -620,6 +595,11 @@ public class CmsGalleryController {
             public void execute() {
 
                 CmsGallerySearchBean preparedObject = prepareSearchObject();
+                if (isNextPage) {
+                    preparedObject.setPage(preparedObject.getPage() + 1);
+                } else {
+                    preparedObject.setPage(1);
+                }
                 getGalleryService().getSearch(preparedObject, this);
             }
 
@@ -633,10 +613,8 @@ public class CmsGalleryController {
                 m_searchObject.setResultCount(searchObj.getResultCount());
                 m_searchObject.setSortOrder(searchObj.getSortOrder());
                 m_searchObject.setPage(searchObj.getPage());
-
                 m_handler.onResultTabSelection(m_searchObject);
             }
-
         };
         searchAction.execute();
     }

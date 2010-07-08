@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/Attic/CmsGallerySearchBean.java,v $
- * Date   : $Date: 2010/07/08 09:26:45 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/07/08 16:45:59 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 8.0.0
  */
@@ -423,6 +423,16 @@ public class CmsGallerySearchBean implements IsSerializable {
     public List<String> getTypes() {
 
         return m_types;
+    }
+
+    /**
+     * Checks if there are more search items available on the next page.<p>
+     * 
+     * @return <code>true</code> if there are more search results available <code>false</code> otherwise
+     */
+    public boolean hasMore() {
+
+        return (m_resultCount > m_page * m_matchesPerPage);
     }
 
     /**

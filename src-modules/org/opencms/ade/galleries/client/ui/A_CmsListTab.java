@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/A_CmsListTab.java,v $
- * Date   : $Date: 2010/06/29 09:38:46 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/07/08 16:45:59 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,6 +47,7 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -54,7 +55,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.
  */
@@ -79,7 +80,7 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
 
     /** The borded panel to hold the scrollable list. */
     @UiField
-    protected FlowPanel m_list;
+    protected ScrollPanel m_list;
 
     /** The option panel. */
     @UiField
@@ -125,6 +126,16 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
     //    /** The full text search parameter panel. */
     //    @UiField
     //    protected Panel m_text;
+
+    /**
+     * Returns the list.<p>
+     *
+     * @return the list
+     */
+    public ScrollPanel getList() {
+
+        return m_list;
+    }
 
     /**
      * Will be triggered if the value in the select box changes.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsResultsTab.java,v $
- * Date   : $Date: 2010/07/08 06:50:24 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2010/07/08 16:45:59 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,10 +51,17 @@ import org.opencms.util.CmsStringUtil;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.ScrollEvent;
+import com.google.gwt.event.dom.client.ScrollHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Provides the widget for the results tab.<p>
@@ -63,12 +70,65 @@ import com.google.gwt.user.client.ui.FlowPanel;
  * the search results for the current search.
  * 
  * @author Polina Smagina
+ * @author Ruediger Kurz
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * 
  * @since 8.0.
  */
 public class CmsResultsTab extends A_CmsListTab {
+
+    /**
+     * Scroll handler which executes an action when the user has scrolled to the bottom.<p>
+     * 
+     * @author Georg Westenberger
+     * @author Ruediger Kurz
+     * 
+     * @version $Revision: 1.23 $
+     * 
+     * @since 8.0.0
+     */
+    protected class CmsScrollToBottomAsynchronHandler implements ScrollHandler {
+
+        /**
+         * If the lower edge of the content being scrolled is at most this many pixels below the lower
+         * edge of the scrolling viewport, the action is triggered.
+         */
+        public static final int DEFAULT_SCROLL_THRESHOLD = 20;
+
+        /**
+         * Constructs a new scroll handler with a custom scroll threshold.
+         * 
+         * The scroll threshold is the distance from the bottom edge of the scrolled content
+         * such that when the distance from the bottom edge of the scroll viewport to the bottom
+         * edge of the scrolled content becomes lower than the distance, the scroll action is triggered.
+         * 
+         */
+        public CmsScrollToBottomAsynchronHandler() {
+
+            // noop
+        }
+
+        /**
+         * @see com.google.gwt.event.dom.client.ScrollHandler#onScroll(com.google.gwt.event.dom.client.ScrollEvent)
+         */
+        public void onScroll(ScrollEvent event) {
+
+            if (!m_hasMoreResults) {
+                return;
+            }
+            final ScrollPanel scrollPanel = (ScrollPanel)event.getSource();
+            final int scrollPos = scrollPanel.getScrollPosition();
+            Widget child = scrollPanel.getWidget();
+            int childHeight = child.getOffsetHeight();
+            int ownHeight = scrollPanel.getOffsetHeight();
+            boolean isBottom = scrollPos + ownHeight >= childHeight - DEFAULT_SCROLL_THRESHOLD;
+            if (isBottom) {
+                getTabHandler().onScrollToBottom();
+                setScrollPosition(scrollPos);
+            }
+        }
+    }
 
     /**
      * Special click handler to use with preview button.<p>
@@ -143,6 +203,9 @@ public class CmsResultsTab extends A_CmsListTab {
     /** Text metrics key. */
     private static final String TM_RESULT_TAB = "ResultTab";
 
+    /** Stores the information if more results in the search object are available. */
+    protected boolean m_hasMoreResults;
+
     /** The reference to the drag handler for the list elements. */
     private I_CmsDragHandler<?, ?> m_dragHandler;
 
@@ -161,33 +224,22 @@ public class CmsResultsTab extends A_CmsListTab {
     public CmsResultsTab(CmsResultsTabHandler tabHandler, I_CmsDragHandler<?, ?> dragHandler) {
 
         super(GalleryTabId.cms_tab_results);
+        m_hasMoreResults = false;
         m_dragHandler = dragHandler;
         m_tabHandler = tabHandler;
         m_scrollList.truncate(TM_RESULT_TAB, CmsGalleryDialog.DIALOG_WIDTH);
         m_params = new FlowPanel();
         m_params.setStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().tabOptions());
         m_tab.insert(m_params, 0);
+        getList().addScrollHandler(new CmsScrollToBottomAsynchronHandler());
     }
 
     /**
-     * Clears all search parameters.<p>
-     */
-    @Override
-    public void clearParams() {
-
-        CmsDebugLog.getInstance().printLine("Unalowed call to clear params in result tab.");
-    }
-
-    /**
-     * Fill the content of the results tab.<p>
+     * Generates the result list items and adds them to the widget.<p>
      * 
      * @param searchObj the current search object containing search results
-     * @param paramPanels list of search parameter panels to show
      */
-    public void fillContent(CmsGallerySearchBean searchObj, List<CmsSearchParamPanel> paramPanels) {
-
-        clearList();
-        showParams(paramPanels);
+    public void addContent(CmsGallerySearchBean searchObj) {
 
         List<CmsResultItemBean> list = searchObj.getResults();
         for (CmsResultItemBean resultItem : list) {
@@ -231,6 +283,38 @@ public class CmsResultsTab extends A_CmsListTab {
             CmsResultListItem listItem = new CmsResultListItem(resultItemWidget);
             listItem.setId(resultItem.getPath());
             addWidgetToList(listItem);
+        }
+    }
+
+    /**
+     * Clears all search parameters.<p>
+     */
+    @Override
+    public void clearParams() {
+
+        CmsDebugLog.getInstance().printLine("Unalowed call to clear params in result tab.");
+    }
+
+    /**
+     * Fill the content of the results tab.<p>
+     * 
+     * @param searchObj the current search object containing search results
+     * @param paramPanels list of search parameter panels to show
+     */
+    public void fillContent(CmsGallerySearchBean searchObj, List<CmsSearchParamPanel> paramPanels) {
+
+        m_hasMoreResults = searchObj.hasMore();
+        if (searchObj.getPage() == 1) {
+            getList().getElement().getStyle().setDisplay(Display.NONE);
+            clearList();
+            showParams(paramPanels);
+            addContent(searchObj);
+            getList().getElement().getStyle().clearDisplay();
+            setScrollPosition(0);
+
+        } else {
+            showParams(paramPanels);
+            addContent(searchObj);
         }
     }
 
@@ -355,5 +439,27 @@ public class CmsResultsTab extends A_CmsListTab {
         if (newListSize > 0) {
             m_list.getElement().getStyle().setHeight(newListSize, Unit.PX);
         }
+    }
+
+    /**
+     * Helper for setting the scroll position of the scroll panel.<p>
+     * 
+     * @param pos the scroll position
+     */
+    protected void setScrollPosition(final int pos) {
+
+        getList().setScrollPosition(pos);
+        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
+            /**
+             * @see com.google.gwt.core.client.Scheduler.ScheduledCommand#execute()
+             */
+            public void execute() {
+
+                getList().setScrollPosition(pos);
+
+            }
+        });
+
     }
 }
