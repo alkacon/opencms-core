@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsSearchParamPanel.java,v $
- * Date   : $Date: 2010/06/14 06:09:19 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/07/08 06:50:24 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,6 @@
 
 package org.opencms.ade.galleries.client.ui;
 
-import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.gwt.client.ui.CmsPushButton;
 
 import com.google.gwt.core.client.GWT;
@@ -49,7 +48,7 @@ import com.google.gwt.user.client.ui.HTML;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -63,9 +62,6 @@ public class CmsSearchParamPanel extends Composite {
     /** The ui-binder instance. */
     private static I_CmsSearchParamPanelUiBinder uiBinder = GWT.create(I_CmsSearchParamPanelUiBinder.class);
 
-    /** The id of the associated tab. */
-    private GalleryTabId m_tabId;
-
     /** The parameters title. */
     private String m_title;
 
@@ -78,21 +74,19 @@ public class CmsSearchParamPanel extends Composite {
     protected CmsPushButton m_button;
 
     /** The result tab. */
-    private CmsResultsTab m_resultTab;
+    private A_CmsTab m_tab;
 
     /**
      * Constructor.<p>
      * 
-     * @param tabId the id of the associated tab
      * @param title the parameters title
-     * @param resultTab the result tab
+     * @param tab the tab
      */
-    public CmsSearchParamPanel(GalleryTabId tabId, String title, CmsResultsTab resultTab) {
+    public CmsSearchParamPanel(String title, A_CmsTab tab) {
 
         initWidget(uiBinder.createAndBindUi(this));
-        m_tabId = tabId;
         m_title = title;
-        m_resultTab = resultTab;
+        m_tab = tab;
     }
 
     /**
@@ -115,7 +109,8 @@ public class CmsSearchParamPanel extends Composite {
     @UiHandler("m_button")
     protected void onClick(ClickEvent event) {
 
-        m_resultTab.removeParams(m_tabId);
+        m_tab.clearParams();
+        removeFromParent();
     }
 
 }

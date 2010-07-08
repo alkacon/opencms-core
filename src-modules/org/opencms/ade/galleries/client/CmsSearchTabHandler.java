@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsSearchTabHandler.java,v $
- * Date   : $Date: 2010/07/07 12:42:29 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/07/08 06:50:25 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ package org.opencms.ade.galleries.client;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
  */
@@ -64,13 +64,12 @@ public class CmsSearchTabHandler extends A_CmsTabHandler {
     }
 
     /**
-     * Delegates the clear input action (click on the clear button) to the controller.<p>
-     * 
-     * @param searchQuery the search query
+     * @see org.opencms.ade.galleries.client.A_CmsTabHandler#clearParams()
      */
-    public void setSearchQuery(String searchQuery) {
+    @Override
+    public void clearParams() {
 
-        m_controller.addSearchQuery(searchQuery);
+        m_controller.clearTextSearch();
     }
 
     /**
@@ -129,5 +128,15 @@ public class CmsSearchTabHandler extends A_CmsTabHandler {
     public void setDateModifiedStart(long modifiedStart) {
 
         m_controller.addDateModifiedStart(modifiedStart);
+    }
+
+    /**
+     * Delegates the clear input action (click on the clear button) to the controller.<p>
+     * 
+     * @param searchQuery the search query
+     */
+    public void setSearchQuery(String searchQuery) {
+
+        m_controller.addSearchQuery(searchQuery);
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/A_CmsTabHandler.java,v $
- * Date   : $Date: 2010/05/21 14:27:40 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/07/08 06:50:25 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ package org.opencms.ade.galleries.client;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  */
@@ -57,6 +57,11 @@ public abstract class A_CmsTabHandler {
 
         m_controller = controller;
     }
+
+    /**
+     * Clears the search parameters of this tab.<p>
+     */
+    public abstract void clearParams();
 
     /**
      * Will be triggered when the tab is selected.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsVfsTab.java,v $
- * Date   : $Date: 2010/07/06 14:03:50 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/07/08 06:50:24 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.ade.galleries.client.ui;
 import org.opencms.ade.galleries.client.A_CmsTabHandler;
 import org.opencms.ade.galleries.client.CmsGalleryController;
 import org.opencms.ade.galleries.client.CmsVfsTabHandler;
+import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.CmsVfsEntryBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.gwt.client.ui.CmsList;
@@ -63,7 +64,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -83,6 +84,9 @@ public class CmsVfsTab extends A_CmsListTab {
 
     /** A map of tree items indexed by VFS path. */
     private Map<String, CmsLazyTreeItem> m_itemsByPath = new HashMap<String, CmsLazyTreeItem>();
+
+    /** The search parameter panel for this tab. */
+    private CmsSearchParamPanel m_paramPanel;
 
     /**
      * Constructor.<p>
@@ -108,6 +112,23 @@ public class CmsVfsTab extends A_CmsListTab {
             CmsLazyTreeItem item = createItem(entry);
             addWidgetToList(item);
         }
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.ui.A_CmsTab#getParamPanel(org.opencms.ade.galleries.shared.CmsGallerySearchBean)
+     */
+    @Override
+    public CmsSearchParamPanel getParamPanel(CmsGallerySearchBean searchObj) {
+
+        if (m_paramPanel == null) {
+            m_paramPanel = new CmsSearchParamPanel(Messages.get().key(Messages.GUI_PARAMS_LABEL_VFS_0), this);
+        }
+        String content = getVfsParams(searchObj.getFolders());
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(content)) {
+            m_paramPanel.setContent(content);
+            return m_paramPanel;
+        }
+        return null;
     }
 
     /**

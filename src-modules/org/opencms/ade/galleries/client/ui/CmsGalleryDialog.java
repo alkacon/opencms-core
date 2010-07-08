@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsGalleryDialog.java,v $
- * Date   : $Date: 2010/06/30 13:54:43 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2010/07/08 06:50:24 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,13 +40,16 @@ import org.opencms.ade.galleries.client.CmsSitemapTabHandler;
 import org.opencms.ade.galleries.client.CmsTypesTabHandler;
 import org.opencms.ade.galleries.client.CmsVfsTabHandler;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.gwt.client.draganddrop.I_CmsDragHandler;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
 import org.opencms.gwt.client.ui.CmsTabbedPanel.CmsTabLayout;
 import org.opencms.gwt.client.util.CmsDebugLog;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
@@ -67,7 +70,7 @@ import com.google.gwt.user.client.ui.HTMLPanel;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * 
  * @since 8.0.
  */
@@ -172,6 +175,28 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
     }
 
     /**
+     * Displays the search result in the result tab.<p>
+     * 
+     * @param searchObj the search object
+     */
+    public void fillResultTab(CmsGallerySearchBean searchObj) {
+
+        List<CmsSearchParamPanel> paramPanels = null;
+        if (!searchObj.isEmpty()) {
+            paramPanels = new ArrayList<CmsSearchParamPanel>();
+            Iterator<A_CmsTab> it = m_tabbedPanel.iterator();
+            while (it.hasNext()) {
+                A_CmsTab tab = it.next();
+                CmsSearchParamPanel panel = tab.getParamPanel(searchObj);
+                if (panel != null) {
+                    paramPanels.add(panel);
+                }
+            }
+        }
+        m_resultsTab.fillContent(searchObj, paramPanels);
+    }
+
+    /**
      * Fill the tabs with the content provided from the info bean. <p>
      * 
      * @param tabIds the tabs to show 
@@ -182,7 +207,6 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
         CmsDebugLog.getInstance().printLine("fillTabs");
 
         for (int i = 0; i < tabIds.length; i++) {
-            //TODO: add missing cases
             switch (tabIds[i]) {
                 case cms_tab_types:
                     m_typesTab = new CmsTypesTab(new CmsTypesTabHandler(controller), m_dragHandler);

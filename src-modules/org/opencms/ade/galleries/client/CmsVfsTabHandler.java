@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsVfsTabHandler.java,v $
- * Date   : $Date: 2010/06/29 09:38:45 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/07/08 06:50:25 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -57,6 +57,15 @@ public class CmsVfsTabHandler extends A_CmsTabHandler {
 
         // TODO: Auto-generated constructor stub
         super(controller);
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.A_CmsTabHandler#clearParams()
+     */
+    @Override
+    public void clearParams() {
+
+        m_controller.clearFolders();
     }
 
     /**

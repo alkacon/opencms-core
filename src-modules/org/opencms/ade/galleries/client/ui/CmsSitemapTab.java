@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsSitemapTab.java,v $
- * Date   : $Date: 2010/07/06 14:03:50 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/07/08 06:50:24 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.ade.galleries.client.ui;
 
 import org.opencms.ade.galleries.client.A_CmsTabHandler;
 import org.opencms.ade.galleries.client.CmsSitemapTabHandler;
+import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.CmsSitemapEntryBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.gwt.client.ui.CmsList;
@@ -55,7 +56,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -91,6 +92,16 @@ public class CmsSitemapTab extends A_CmsListTab {
             CmsLazyTreeItem item = createItem(entry);
             addWidgetToList(item);
         }
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.ui.A_CmsTab#getParamPanel(org.opencms.ade.galleries.shared.CmsGallerySearchBean)
+     */
+    @Override
+    public CmsSearchParamPanel getParamPanel(CmsGallerySearchBean searchObj) {
+
+        // this tab provides no search parameters 
+        return null;
     }
 
     /**

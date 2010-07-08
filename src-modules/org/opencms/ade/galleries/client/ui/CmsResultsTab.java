@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsResultsTab.java,v $
- * Date   : $Date: 2010/07/06 14:54:45 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2010/07/08 06:50:24 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * 
  * @since 8.0.
  */
@@ -143,26 +143,14 @@ public class CmsResultsTab extends A_CmsListTab {
     /** Text metrics key. */
     private static final String TM_RESULT_TAB = "ResultTab";
 
-    /** The categories parameter panel. */
-    private CmsSearchParamPanel m_categories;
-
     /** The reference to the drag handler for the list elements. */
     private I_CmsDragHandler<?, ?> m_dragHandler;
-
-    /** The VFS folders parameter panel. */
-    private CmsSearchParamPanel m_folders;
-
-    /** The galleries parameter panel. */
-    private CmsSearchParamPanel m_galleries;
 
     /** The panel showing the search parameters. */
     private FlowPanel m_params;
 
     /** The reference to the handler of this tab. */
     private CmsResultsTabHandler m_tabHandler;
-
-    /** The types parameter panel panel. */
-    private CmsSearchParamPanel m_types;
 
     /**
      * The constructor.<p>
@@ -178,34 +166,28 @@ public class CmsResultsTab extends A_CmsListTab {
         m_scrollList.truncate(TM_RESULT_TAB, CmsGalleryDialog.DIALOG_WIDTH);
         m_params = new FlowPanel();
         m_params.setStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().tabOptions());
-        m_categories = new CmsSearchParamPanel(GalleryTabId.cms_tab_categories, Messages.get().key(
-            Messages.GUI_PARAMS_LABEL_CATEGORIES_0), this);
-        m_galleries = new CmsSearchParamPanel(GalleryTabId.cms_tab_galleries, Messages.get().key(
-            Messages.GUI_PARAMS_LABEL_GALLERIES_0), this);
-        m_types = new CmsSearchParamPanel(GalleryTabId.cms_tab_types, Messages.get().key(
-            Messages.GUI_PARAMS_LABEL_TYPES_0), this);
-        m_folders = new CmsSearchParamPanel(GalleryTabId.cms_tab_vfstree, Messages.get().key(
-            Messages.GUI_PARAMS_LABEL_VFS_0), this);
         m_tab.insert(m_params, 0);
+    }
+
+    /**
+     * Clears all search parameters.<p>
+     */
+    @Override
+    public void clearParams() {
+
+        CmsDebugLog.getInstance().printLine("Unalowed call to clear params in result tab.");
     }
 
     /**
      * Fill the content of the results tab.<p>
      * 
      * @param searchObj the current search object containing search results
-     * @param typesParams the selected types as a user-readable string
-     * @param galleriesParams the selected galleries as a user-readable string  
-     * @param foldersParams the selected VFS folders as a user-readable string 
-     * @param categoriesParams the selected categories as a user-readable string 
+     * @param paramPanels list of search parameter panels to show
      */
-    public void fillContent(
-        CmsGallerySearchBean searchObj,
-        String typesParams,
-        String galleriesParams,
-        String foldersParams,
-        String categoriesParams) {
+    public void fillContent(CmsGallerySearchBean searchObj, List<CmsSearchParamPanel> paramPanels) {
 
-        showParams(searchObj, typesParams, galleriesParams, foldersParams, categoriesParams);
+        clearList();
+        showParams(paramPanels);
 
         List<CmsResultItemBean> list = searchObj.getResults();
         for (CmsResultItemBean resultItem : list) {
@@ -253,6 +235,16 @@ public class CmsResultsTab extends A_CmsListTab {
     }
 
     /**
+     * @see org.opencms.ade.galleries.client.ui.A_CmsTab#getParamPanel(org.opencms.ade.galleries.shared.CmsGallerySearchBean)
+     */
+    @Override
+    public CmsSearchParamPanel getParamPanel(CmsGallerySearchBean searchObj) {
+
+        // not available for this tab
+        return null;
+    }
+
+    /**
      * @see org.opencms.ade.galleries.client.ui.A_CmsTab#onSelection()
      */
     @Override
@@ -262,92 +254,25 @@ public class CmsResultsTab extends A_CmsListTab {
         updateListSize();
     }
 
-    /**
-     * Removes the categories parameter display button.<p>
-     */
-    public void removeCategories() {
-
-        m_categories.removeFromParent();
-    }
-
-    /**
-     * Removes the galleries parameter display button.<p>
-     */
-    public void removeGalleries() {
-
-        m_galleries.removeFromParent();
-    }
-
-    /**
-     * Removes the search parameters associated with the given tab id.<p>
-     * 
-     * @param tabId the tab id
-     */
-    public void removeParams(GalleryTabId tabId) {
-
-        switch (tabId) {
-            case cms_tab_categories:
-                m_tabHandler.onRemoveCategories();
-                break;
-            case cms_tab_containerpage:
-                break;
-            case cms_tab_galleries:
-                m_tabHandler.onRemoveGalleries();
-                break;
-            case cms_tab_results:
-                break;
-            case cms_tab_search:
-                m_tabHandler.onRemoveTextSearch();
-                break;
-            case cms_tab_sitemap:
-                break;
-            case cms_tab_types:
-                m_tabHandler.onRemoveTypes();
-                break;
-            case cms_tab_vfstree:
-                m_tabHandler.onRemoveFolders();
-                break;
-            default:
-                break;
-        }
-        updateListSize();
-    }
-
-    /**
-     * Removes the types parameter display button.<p>
-     */
-    public void removeTypes() {
-
-        m_types.removeFromParent();
-    }
-
-    /**
-     * Updates the content of the results tab.<p>
-     * 
-     * @param searchObj the current search object containing search results
-     * @param typesParams the selected types as a user-readable string
-     * @param galleriesParams the selected galleries as a user-readable string 
-     * @param foldersParams the  selected VFS folders as a user-readable string
-     * @param categoriesParams the selected categories as a user-readable string 
-     */
-    public void updateContent(
-        CmsGallerySearchBean searchObj,
-        String typesParams,
-        String galleriesParams,
-        String foldersParams,
-        String categoriesParams) {
-
-        clearList();
-        fillContent(searchObj, typesParams, galleriesParams, foldersParams, categoriesParams);
-    }
-
-    /**
-     * Clears all search parameters.<p>
-     */
-    protected void clearParams() {
-
-        m_params.clear();
-    }
+    //    /**
+    //     * Updates the content of the results tab.<p>
+    //     * 
+    //     * @param searchObj the current search object containing search results
+    //     * @param typesParams the selected types as a user-readable string
+    //     * @param galleriesParams the selected galleries as a user-readable string 
+    //     * @param foldersParams the  selected VFS folders as a user-readable string
+    //     * @param categoriesParams the selected categories as a user-readable string 
+    //     */
+    //    public void updateContent(
+    //        CmsGallerySearchBean searchObj,
+    //        String typesParams,
+    //        String galleriesParams,
+    //        String foldersParams,
+    //        String categoriesParams) {
+    //
+    //        clearList();
+    //        fillContent(searchObj, typesParams, galleriesParams, foldersParams, categoriesParams);
+    //    }
 
     /**
      * @see org.opencms.ade.galleries.client.ui.A_CmsListTab#getSortList()
@@ -394,34 +319,16 @@ public class CmsResultsTab extends A_CmsListTab {
      * @param foldersParams a user-readable string containing
      * @param categoriesParams
      */
-    private void showParams(
-        CmsGallerySearchBean searchObj,
-        String typesParams,
-        String galleriesParams,
-        String foldersParams,
-        String categoriesParams) {
+    private void showParams(List<CmsSearchParamPanel> paramPanels) {
 
         m_params.clear();
-        if (searchObj.isEmpty()) {
+        if ((paramPanels == null) || (paramPanels.size() == 0)) {
             m_params.setVisible(false);
             return;
         }
         m_params.setVisible(true);
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(typesParams)) {
-            m_types.setContent(typesParams);
-            m_params.add(m_types);
-        }
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(galleriesParams)) {
-            m_galleries.setContent(galleriesParams);
-            m_params.add(m_galleries);
-        }
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(categoriesParams)) {
-            m_categories.setContent(categoriesParams);
-            m_params.add(m_categories);
-        }
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(foldersParams)) {
-            m_folders.setContent(foldersParams);
-            m_params.add(m_folders);
+        for (CmsSearchParamPanel panel : paramPanels) {
+            m_params.add(panel);
         }
     }
 

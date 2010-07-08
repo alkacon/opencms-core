@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsGalleriesTab.java,v $
- * Date   : $Date: 2010/07/06 14:03:50 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2010/07/08 06:50:24 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.ade.galleries.client.ui;
 
 import org.opencms.ade.galleries.client.CmsGalleriesTabHandler;
 import org.opencms.ade.galleries.shared.CmsGalleryFolderBean;
+import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
@@ -55,7 +56,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 8.0.
  */
@@ -102,6 +103,9 @@ public class CmsGalleriesTab extends A_CmsListTab {
 
     /** Text metrics key. */
     private static final String TM_GALLERY_TAB = "GalleryTab";
+
+    /** The search parameter panel for this tab. */
+    private CmsSearchParamPanel m_paramPanel;
 
     /** The tab handler. */
     private CmsGalleriesTabHandler m_tabHandler;
@@ -169,6 +173,23 @@ public class CmsGalleriesTab extends A_CmsListTab {
         result.delete(result.length() - 2, result.length());
 
         return result.toString();
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.ui.A_CmsTab#getParamPanel(org.opencms.ade.galleries.shared.CmsGallerySearchBean)
+     */
+    @Override
+    public CmsSearchParamPanel getParamPanel(CmsGallerySearchBean searchObj) {
+
+        if (m_paramPanel == null) {
+            m_paramPanel = new CmsSearchParamPanel(Messages.get().key(Messages.GUI_PARAMS_LABEL_GALLERIES_0), this);
+        }
+        String content = getGalleriesParams(searchObj.getGalleries());
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(content)) {
+            m_paramPanel.setContent(content);
+            return m_paramPanel;
+        }
+        return null;
     }
 
     /**

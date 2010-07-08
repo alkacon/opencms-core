@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/A_CmsTab.java,v $
- * Date   : $Date: 2010/05/25 12:36:33 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/07/08 06:50:25 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.ade.galleries.client.ui;
 
 import org.opencms.ade.galleries.client.A_CmsTabHandler;
+import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 
 import com.google.gwt.user.client.ui.Composite;
@@ -41,7 +42,7 @@ import com.google.gwt.user.client.ui.Composite;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -58,6 +59,23 @@ public abstract class A_CmsTab extends Composite {
 
         m_tabId = tabId;
     }
+
+    /**
+     * Clears the selected search parameters on this tab.<p>
+     */
+    public void clearParams() {
+
+        getTabHandler().clearParams();
+    }
+
+    /**
+     * Returns the search parameters to display within the result tab.<p>
+     * 
+     * @param searchObj the current search object
+     * 
+     * @return the parameter panel
+     */
+    public abstract CmsSearchParamPanel getParamPanel(CmsGallerySearchBean searchObj);
 
     /**
      * Returns the tab id.<p>

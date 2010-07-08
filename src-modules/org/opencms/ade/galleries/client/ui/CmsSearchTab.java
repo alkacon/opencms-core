@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsSearchTab.java,v $
- * Date   : $Date: 2010/07/07 13:47:46 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/07/08 06:50:25 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import com.google.gwt.user.client.ui.Label;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.
  */
@@ -210,6 +210,9 @@ public class CmsSearchTab extends A_CmsTab {
     /** The tab handler. */
     CmsSearchTabHandler m_tabHandler;
 
+    /** The search parameter panel for this tab. */
+    private CmsSearchParamPanel m_paramPanel;
+
     /** The tab panel. */
     private HTMLPanel m_tab;
 
@@ -255,22 +258,19 @@ public class CmsSearchTab extends A_CmsTab {
     }
 
     /**
-     * @see org.opencms.ade.galleries.client.ui.A_CmsTab#getTabHandler()
+     * @see org.opencms.ade.galleries.client.ui.A_CmsTab#getParamPanel(org.opencms.ade.galleries.shared.CmsGallerySearchBean)
      */
     @Override
-    public CmsSearchTabHandler getTabHandler() {
-
-        return m_tabHandler;
-    }
-
-    /**
-     * 
-     * @param bean
-     * @return
-     */
     public CmsSearchParamPanel getParamPanel(CmsGallerySearchBean searchObj) {
 
-        CmsSearchParamPanel panel;
+        if (m_paramPanel == null) {
+            m_paramPanel = new CmsSearchParamPanel(Messages.get().key(Messages.GUI_PARAMS_LABEL_SEARCH_0), this);
+        }
+        String content = getSearchParams();
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(content)) {
+            m_paramPanel.setContent(content);
+            return m_paramPanel;
+        }
         return null;
     }
 
@@ -332,4 +332,12 @@ public class CmsSearchTab extends A_CmsTab {
         return result.toString();
     }
 
+    /**
+     * @see org.opencms.ade.galleries.client.ui.A_CmsTab#getTabHandler()
+     */
+    @Override
+    public CmsSearchTabHandler getTabHandler() {
+
+        return m_tabHandler;
+    }
 }

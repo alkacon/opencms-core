@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleryControllerHandler.java,v $
- * Date   : $Date: 2010/07/05 14:48:07 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2010/07/08 06:50:25 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import com.google.gwt.user.client.Command;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 8.0.0
 
@@ -101,7 +101,6 @@ public class CmsGalleryControllerHandler {
      */
     public void onClearCategories(List<String> categories) {
 
-        m_galleryDialog.getResultsTab().removeCategories();
         if (categories != null) {
             m_galleryDialog.getCategoriesTab().uncheckCategories(categories);
         }
@@ -124,7 +123,6 @@ public class CmsGalleryControllerHandler {
      */
     public void onClearGalleries(List<String> galleries) {
 
-        m_galleryDialog.getResultsTab().removeGalleries();
         if (galleries != null) {
             m_galleryDialog.getGalleriesTab().uncheckGalleries(galleries);
         }
@@ -137,7 +135,6 @@ public class CmsGalleryControllerHandler {
      */
     public void onClearTypes(List<String> types) {
 
-        m_galleryDialog.getResultsTab().removeTypes();
         if (types != null) {
             m_galleryDialog.getTypesTab().uncheckTypes(types);
         }
@@ -174,12 +171,7 @@ public class CmsGalleryControllerHandler {
             setCategoriesTabContent(dialogBean.getCategories());
         }
         if (dialogBean.getStartTab() == GalleryTabId.cms_tab_results) {
-            m_galleryDialog.getResultsTab().fillContent(
-                searchObj,
-                m_galleryDialog.getTypesTab().getTypesParams(searchObj.getTypes()),
-                m_galleryDialog.getGalleriesTab().getGalleriesParams(searchObj.getGalleries()),
-                m_galleryDialog.getVfsTab().getVfsParams(searchObj.getFolders()),
-                m_galleryDialog.getCategoriesTab().getCategoriesParams(searchObj.getCategories()));
+            m_galleryDialog.fillResultTab(searchObj);
         }
 
         if ((dialogBean.getVfsRootFolders() != null) && (m_galleryDialog.getVfsTab() != null)) {
@@ -218,12 +210,7 @@ public class CmsGalleryControllerHandler {
      */
     public void onResultTabSelection(CmsGallerySearchBean searchObj) {
 
-        m_galleryDialog.getResultsTab().updateContent(
-            searchObj,
-            m_galleryDialog.getTypesTab().getTypesParams(searchObj.getTypes()),
-            m_galleryDialog.getGalleriesTab().getGalleriesParams(searchObj.getGalleries()),
-            m_galleryDialog.getVfsTab().getVfsParams(searchObj.getFolders()),
-            m_galleryDialog.getCategoriesTab().getCategoriesParams(searchObj.getCategories()));
+        m_galleryDialog.fillResultTab(searchObj);
     }
 
     /**
