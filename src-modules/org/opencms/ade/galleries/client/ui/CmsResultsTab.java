@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsResultsTab.java,v $
- * Date   : $Date: 2010/07/08 16:45:59 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2010/07/08 17:24:58 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,7 +72,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Polina Smagina
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * 
  * @since 8.0.
  */
@@ -84,7 +84,7 @@ public class CmsResultsTab extends A_CmsListTab {
      * @author Georg Westenberger
      * @author Ruediger Kurz
      * 
-     * @version $Revision: 1.23 $
+     * @version $Revision: 1.24 $
      * 
      * @since 8.0.0
      */
@@ -112,6 +112,7 @@ public class CmsResultsTab extends A_CmsListTab {
         /**
          * @see com.google.gwt.event.dom.client.ScrollHandler#onScroll(com.google.gwt.event.dom.client.ScrollEvent)
          */
+        @Override
         public void onScroll(ScrollEvent event) {
 
             if (!m_hasMoreResults) {
@@ -156,6 +157,7 @@ public class CmsResultsTab extends A_CmsListTab {
         /**
          * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
          */
+        @Override
         public void onClick(ClickEvent event) {
 
             getTabHandler().openPreview(m_resourcePath, m_resourceType);
@@ -194,6 +196,7 @@ public class CmsResultsTab extends A_CmsListTab {
         /**
          * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
          */
+        @Override
         public void onClick(ClickEvent event) {
 
             getTabHandler().selectResource(m_resourcePath, m_title, m_resourceType);
@@ -305,13 +308,12 @@ public class CmsResultsTab extends A_CmsListTab {
 
         m_hasMoreResults = searchObj.hasMore();
         if (searchObj.getPage() == 1) {
+            getList().scrollToTop();
             getList().getElement().getStyle().setDisplay(Display.NONE);
             clearList();
             showParams(paramPanels);
             addContent(searchObj);
             getList().getElement().getStyle().clearDisplay();
-            setScrollPosition(0);
-
         } else {
             showParams(paramPanels);
             addContent(searchObj);
@@ -454,9 +456,12 @@ public class CmsResultsTab extends A_CmsListTab {
             /**
              * @see com.google.gwt.core.client.Scheduler.ScheduledCommand#execute()
              */
+            @Override
             public void execute() {
 
-                getList().setScrollPosition(pos);
+                if (getList().getScrollPosition() != pos) {
+                    getList().setScrollPosition(pos);
+                }
 
             }
         });
