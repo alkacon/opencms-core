@@ -20,6 +20,10 @@
 	padding:0 2px;
 }
 
+.listOnlyTab .criteriaList{
+	height: 432px;
+}
+
 .selectboxWidth {
 	width: 200px;
 }
@@ -45,6 +49,10 @@
 
 .tabOptions {
 	margin-bottom: 5px;
+}
+
+.listOnlyTab .tabOptions{
+	display: none;
 }
 
 .showParams div, .showParams div span{
@@ -96,10 +104,10 @@
 }
 .searchTabBorderLayer {
 	position:absolute; 
-	top:1px; 
-	right:1px; 
-	bottom:1px; 
-	left:1px; 
+	top:0px; 
+	right:0px; 
+	bottom:0px; 
+	left:0px; 
 	padding: 5px 10px;
 	border: 1px solid #999999;
 	background: #ffffff;

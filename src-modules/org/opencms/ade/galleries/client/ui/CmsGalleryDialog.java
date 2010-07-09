@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsGalleryDialog.java,v $
- * Date   : $Date: 2010/07/08 09:26:45 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2010/07/09 07:04:03 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import com.google.gwt.user.client.ui.HTMLPanel;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  * 
  * @since 8.0.
  */
@@ -78,7 +78,7 @@ public class CmsGalleryDialog extends Composite
 implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHandler, HasResizeHandlers {
 
     /** The initial dialog width. */
-    public static final int DIALOG_HIGHT = 486;
+    public static final int DIALOG_HEIGHT = 486;
 
     /** The initial dialog width. */
     public static final int DIALOG_WIDTH = 600;
@@ -137,7 +137,7 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
         m_dialogElementId = HTMLPanel.createUniqueId();
         m_parentPanel.getElement().setId(m_dialogElementId);
         // set the default hight of the dialog
-        m_parentPanel.getElement().getStyle().setHeight((DIALOG_HIGHT - 2), Unit.PX);
+        m_parentPanel.getElement().getStyle().setHeight((DIALOG_HEIGHT - 2), Unit.PX);
         // tabs
         m_tabbedPanel = new CmsTabbedPanel<A_CmsTab>(CmsTabLayout.standard, false);
         // add tabs to parent widget        
@@ -411,7 +411,7 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
      */
     public void setDialogSize(int width, int height) {
 
-        if (height > DIALOG_HIGHT) {
+        if (height > DIALOG_HEIGHT) {
             m_parentPanel.setHeight(Integer.toString(height - 2));
             m_parentPanel.setWidth(Integer.toString(width - 2));
             ResizeEvent.fire(this, width, height);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsResultsTab.java,v $
- * Date   : $Date: 2010/07/08 17:24:58 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2010/07/09 07:04:03 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,7 +72,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Polina Smagina
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * 
  * @since 8.0.
  */
@@ -84,7 +84,7 @@ public class CmsResultsTab extends A_CmsListTab {
      * @author Georg Westenberger
      * @author Ruediger Kurz
      * 
-     * @version $Revision: 1.24 $
+     * @version $Revision: 1.25 $
      * 
      * @since 8.0.0
      */
@@ -112,7 +112,6 @@ public class CmsResultsTab extends A_CmsListTab {
         /**
          * @see com.google.gwt.event.dom.client.ScrollHandler#onScroll(com.google.gwt.event.dom.client.ScrollEvent)
          */
-        @Override
         public void onScroll(ScrollEvent event) {
 
             if (!m_hasMoreResults) {
@@ -157,7 +156,6 @@ public class CmsResultsTab extends A_CmsListTab {
         /**
          * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
          */
-        @Override
         public void onClick(ClickEvent event) {
 
             getTabHandler().openPreview(m_resourcePath, m_resourceType);
@@ -196,7 +194,6 @@ public class CmsResultsTab extends A_CmsListTab {
         /**
          * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
          */
-        @Override
         public void onClick(ClickEvent event) {
 
             getTabHandler().selectResource(m_resourcePath, m_title, m_resourceType);
@@ -397,6 +394,30 @@ public class CmsResultsTab extends A_CmsListTab {
     }
 
     /**
+     * Helper for setting the scroll position of the scroll panel.<p>
+     * 
+     * @param pos the scroll position
+     */
+    protected void setScrollPosition(final int pos) {
+
+        getList().setScrollPosition(pos);
+        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
+            /**
+             * @see com.google.gwt.core.client.Scheduler.ScheduledCommand#execute()
+             */
+            public void execute() {
+
+                if (getList().getScrollPosition() != pos) {
+                    getList().setScrollPosition(pos);
+                }
+
+            }
+        });
+
+    }
+
+    /**
      * Displays the selected search parameters in the result tab.<p>
      * 
      * @param searchObj the bean containing the search parameters 
@@ -410,16 +431,18 @@ public class CmsResultsTab extends A_CmsListTab {
         m_params.clear();
         if ((paramPanels == null) || (paramPanels.size() == 0)) {
             m_params.setVisible(false);
+            updateListSize();
             return;
         }
         m_params.setVisible(true);
         for (CmsSearchParamPanel panel : paramPanels) {
             m_params.add(panel);
         }
+        updateListSize();
     }
 
     /**
-     * Updates the height (with border) of the params 'div' panel.<p>    
+     * Updates the height (with border) of the result list panel according to the search parameter panels shown.<p>    
      */
     private void updateListSize() {
 
@@ -435,36 +458,11 @@ public class CmsResultsTab extends A_CmsListTab {
             + CmsDomUtil.getCurrentStyleInt(m_options.getElement(), CmsDomUtil.Style.marginBottom);
 
         // 3 is some offset, because of the list border
-        int newListSize = tabHeight - paramsHeight - optionsHeight - 4;
+        int newListSize = tabHeight - paramsHeight - optionsHeight - 2;
         CmsDebugLog.getInstance().printLine(" paramsHeight: " + paramsHeight + " optionsHeight: " + optionsHeight);
         // another sanity check, don't set any negative height 
         if (newListSize > 0) {
             m_list.getElement().getStyle().setHeight(newListSize, Unit.PX);
         }
-    }
-
-    /**
-     * Helper for setting the scroll position of the scroll panel.<p>
-     * 
-     * @param pos the scroll position
-     */
-    protected void setScrollPosition(final int pos) {
-
-        getList().setScrollPosition(pos);
-        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-
-            /**
-             * @see com.google.gwt.core.client.Scheduler.ScheduledCommand#execute()
-             */
-            @Override
-            public void execute() {
-
-                if (getList().getScrollPosition() != pos) {
-                    getList().setScrollPosition(pos);
-                }
-
-            }
-        });
-
     }
 }

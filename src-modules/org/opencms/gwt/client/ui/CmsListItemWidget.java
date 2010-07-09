@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItemWidget.java,v $
- * Date   : $Date: 2010/07/05 10:05:44 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2010/07/09 07:04:03 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,6 +43,7 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -68,7 +69,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Tobias Herrmann
  * @author Michael Moossen
  * 
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * 
  * @since 8.0.0
  */
@@ -417,8 +418,9 @@ implements HasMouseOutHandlers, HasClickHandlers, HasMouseOverHandlers, I_CmsTru
         if (m_iconPanel.isVisible()) {
             width -= 32;
         }
-        m_title.truncate(textMetricsPrefix + TM_TITLE, width);
-        m_subtitle.truncate(textMetricsPrefix + TM_SUBTITLE, width);
+        m_titleRow.getElement().getStyle().setWidth(width, Unit.PX);
+        m_title.truncate(textMetricsPrefix + TM_TITLE, width - 10);
+        m_subtitle.truncate(textMetricsPrefix + TM_SUBTITLE, width - 10);
         for (Widget addInfo : m_additionalInfo) {
             ((AdditionalInfoItem)addInfo).truncate(textMetricsPrefix, widgetWidth - 10);
         }
