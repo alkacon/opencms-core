@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsResultsTabHandler.java,v $
- * Date   : $Date: 2010/07/08 16:45:59 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/07/09 07:44:02 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ package org.opencms.ade.galleries.client;
  * @author Polina Smagina
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 8.0.0
  */
@@ -90,7 +90,9 @@ public class CmsResultsTabHandler extends A_CmsTabHandler {
     @Override
     public void onSelection() {
 
-        m_controller.updateResultsTab(false);
+        if (m_controller.isSearchObjectChanged()) {
+            m_controller.updateResultsTab(false);
+        }
     }
 
     /**

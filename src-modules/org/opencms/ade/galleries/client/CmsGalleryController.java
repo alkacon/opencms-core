@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleryController.java,v $
- * Date   : $Date: 2010/07/08 16:45:59 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2010/07/09 07:44:02 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * @author Polina Smagina
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 8.0.0
  */
@@ -90,6 +90,9 @@ public class CmsGalleryController {
 
     /** The gallery service instance. */
     private I_CmsGalleryServiceAsync m_gallerySvc = GWT.create(I_CmsGalleryService.class);
+
+    /** If <code>true</code> the search object is changed <code>false</code> otherwise.  */
+    private boolean m_searchObjectChanged = true;
 
     /**
      * Constructor.<p>
@@ -123,6 +126,7 @@ public class CmsGalleryController {
     public void addCategory(String categoryPath) {
 
         m_searchObject.addCategory(categoryPath);
+        m_searchObjectChanged = true;
     }
 
     /**
@@ -133,6 +137,7 @@ public class CmsGalleryController {
     public void addDateCreatedEnd(long end) {
 
         m_searchObject.setDateCreatedEnd(end);
+        m_searchObjectChanged = true;
     }
 
     /**
@@ -143,6 +148,7 @@ public class CmsGalleryController {
     public void addDateCreatedStart(long start) {
 
         m_searchObject.setDateCreatedStart(start);
+        m_searchObjectChanged = true;
     }
 
     /**
@@ -153,6 +159,7 @@ public class CmsGalleryController {
     public void addDateModifiedEnd(long end) {
 
         m_searchObject.setDateModifiedEnd(end);
+        m_searchObjectChanged = true;
     }
 
     /**
@@ -163,6 +170,7 @@ public class CmsGalleryController {
     public void addDateModifiedStart(long start) {
 
         m_searchObject.setDateModifiedStart(start);
+        m_searchObjectChanged = true;
     }
 
     /**
@@ -173,6 +181,7 @@ public class CmsGalleryController {
     public void addFolder(String folder) {
 
         m_searchObject.addFolder(folder);
+        m_searchObjectChanged = true;
     }
 
     /**
@@ -183,6 +192,7 @@ public class CmsGalleryController {
     public void addGallery(String galleryPath) {
 
         m_searchObject.addGallery(galleryPath);
+        m_searchObjectChanged = true;
     }
 
     /**
@@ -193,7 +203,7 @@ public class CmsGalleryController {
     public void addSearchQuery(String searchQuery) {
 
         m_searchObject.setQuery(searchQuery);
-
+        m_searchObjectChanged = true;
     }
 
     /**
@@ -204,6 +214,7 @@ public class CmsGalleryController {
     public void addType(String resourceType) {
 
         m_searchObject.addType(resourceType);
+        m_searchObjectChanged = true;
     }
 
     /**
@@ -343,6 +354,17 @@ public class CmsGalleryController {
     }
 
     /**
+     * Returns <code>true</code>, if the search object was manipulated by the controller
+     * <code>false</code> otherwise.<p>
+     *  
+     * @return the search object changed flag
+     */
+    public boolean isSearchObjectChanged() {
+
+        return m_searchObjectChanged;
+    }
+
+    /**
      * Opens the preview for the given resource by the given resource type.<p>
      * 
      * @param resourcePath the resource path
@@ -371,6 +393,7 @@ public class CmsGalleryController {
     public void removeCategory(String categoryPath) {
 
         m_searchObject.removeCategory(categoryPath);
+        m_searchObjectChanged = true;
     }
 
     /**
@@ -381,6 +404,7 @@ public class CmsGalleryController {
     public void removeFolder(String folder) {
 
         m_searchObject.removeFolder(folder);
+        m_searchObjectChanged = true;
     }
 
     /**
@@ -391,6 +415,7 @@ public class CmsGalleryController {
     public void removeGallery(String galleryPath) {
 
         m_searchObject.removeGallery(galleryPath);
+        m_searchObjectChanged = true;
     }
 
     /**
@@ -401,6 +426,7 @@ public class CmsGalleryController {
     public void removeType(String resourceType) {
 
         m_searchObject.removeType(resourceType);
+        m_searchObjectChanged = true;
     }
 
     /**
@@ -584,6 +610,9 @@ public class CmsGalleryController {
      * @param isNextPage signals if the next page should be loaded
      */
     public void updateResultsTab(final boolean isNextPage) {
+
+        // if the RPC call will be sent the search object is in a unchanged state
+        m_searchObjectChanged = false;
 
         /** The RPC search action for the gallery dialog. */
         CmsRpcAction<CmsGallerySearchBean> searchAction = new CmsRpcAction<CmsGallerySearchBean>() {
