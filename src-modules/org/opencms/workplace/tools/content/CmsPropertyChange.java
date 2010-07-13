@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsPropertyChange.java,v $
- * Date   : $Date: 2010/01/18 10:01:10 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2010/07/13 16:11:43 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 6.0.0 
  */
@@ -201,7 +201,7 @@ public class CmsPropertyChange extends CmsDialog {
     public String buildResultList() {
 
         StringBuffer result = new StringBuffer(16);
-        if (getChangedResources() != null && getChangedResources().size() > 0) {
+        if ((getChangedResources() != null) && (getChangedResources().size() > 0)) {
             // at least one resource property value has been changed, show list
             for (int i = 0; i < getChangedResources().size(); i++) {
                 CmsResource res = (CmsResource)getChangedResources().get(i);
@@ -296,7 +296,7 @@ public class CmsPropertyChange extends CmsDialog {
      */
     public String getResultListHeight() {
 
-        if (getChangedResources() != null && getChangedResources().size() > 0) {
+        if ((getChangedResources() != null) && (getChangedResources().size() > 0)) {
             int height = getChangedResources().size() * 14;
             if (height > 300) {
                 height = 300;
@@ -453,7 +453,7 @@ public class CmsPropertyChange extends CmsDialog {
         setChangedResources(changedResources);
         return true;
     }
-    
+
     /**
      * Sets the given property with the given value to the given resource 
      * (potentially recursiv) if it has not been set before.<p>
@@ -505,7 +505,7 @@ public class CmsPropertyChange extends CmsDialog {
         }
         return changedResources;
     }
-    
+
     /**
      * Sets the changed resources that were affected by the property change action.<p>
      *
@@ -549,8 +549,16 @@ public class CmsPropertyChange extends CmsDialog {
             validationErrors.append(messages.key(Messages.GUI_PROP_CHANGE_VALIDATE_OLD_PROP_VALUE_0)).append("<br>");
         } else {
             try {
+                // check if there is a place holder in the expression pattern
+                // remove it here, because otherwise this is no valid expression pattern
+                String oldValue = getParamOldValue();
+                if (oldValue.contains(CmsStringUtil.PLACEHOLDER_START)
+                    && oldValue.contains(CmsStringUtil.PLACEHOLDER_END)) {
+                    oldValue = oldValue.replace(CmsStringUtil.PLACEHOLDER_START, "");
+                    oldValue = oldValue.replace(CmsStringUtil.PLACEHOLDER_END, "");
+                }
                 // compile regular expression pattern
-                Pattern.compile(getParamOldValue());
+                Pattern.compile(oldValue);
             } catch (PatternSyntaxException e) {
                 allOk = false;
                 validationErrors.append(messages.key(Messages.GUI_PROP_CHANGE_VALIDATE_OLD_PROP_PATTERN_0)).append(

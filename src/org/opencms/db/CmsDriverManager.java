@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2010/07/06 07:49:55 $
- * Version: $Revision: 1.650 $
+ * Date   : $Date: 2010/07/13 16:11:42 $
+ * Version: $Revision: 1.651 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -777,15 +777,25 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // collect the resources to look up
         List resources = new ArrayList();
         if (recursive) {
+            // read the files in the folder
             resources = readResourcesWithProperty(dbc, resource, propertyDefinition, null, filter);
+            // add the folder itself
+            resources.add(resource);
         } else {
             resources.add(resource);
         }
 
         Pattern oldPattern;
         try {
+            // remove the place holder if available
+            String tmpOldValue = oldValue;
+            if (tmpOldValue.contains(CmsStringUtil.PLACEHOLDER_START)
+                && tmpOldValue.contains(CmsStringUtil.PLACEHOLDER_END)) {
+                tmpOldValue = tmpOldValue.replace(CmsStringUtil.PLACEHOLDER_START, "");
+                tmpOldValue = tmpOldValue.replace(CmsStringUtil.PLACEHOLDER_END, "");
+            }
             // compile regular expression pattern
-            oldPattern = Pattern.compile(oldValue);
+            oldPattern = Pattern.compile(tmpOldValue);
         } catch (PatternSyntaxException e) {
             throw new CmsVfsException(Messages.get().container(
                 Messages.ERR_CHANGE_RESOURCES_IN_FOLDER_WITH_PROP_4,
@@ -810,13 +820,17 @@ public final class CmsDriverManager implements I_CmsEventListener {
             String resourceValue = property.getResourceValue();
             boolean changed = false;
             if ((structureValue != null) && oldPattern.matcher(structureValue).matches()) {
+                // apply the place holder content
+                String tmpNewValue = CmsStringUtil.transformValue(oldValue, newValue, structureValue);
                 // change structure value
-                property.setStructureValue(newValue);
+                property.setStructureValue(tmpNewValue);
                 changed = true;
             }
             if ((resourceValue != null) && oldPattern.matcher(resourceValue).matches()) {
+                // apply the place holder content
+                String tmpNewValue = CmsStringUtil.transformValue(oldValue, newValue, structureValue);
                 // change resource value
-                property.setResourceValue(newValue);
+                property.setResourceValue(tmpNewValue);
                 changed = true;
             }
             if (changed) {

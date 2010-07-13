@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
- * Date   : $Date: 2010/01/18 10:00:48 $
- * Version: $Revision: 1.54 $
+ * Date   : $Date: 2010/07/13 16:11:43 $
+ * Version: $Revision: 1.55 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * @author  Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.54 $ 
+ * @version $Revision: 1.55 $ 
  * 
  * @since 6.0.0 
  */
@@ -78,6 +78,12 @@ public final class CmsStringUtil {
 
     /** Context macro. */
     public static final String MACRO_OPENCMS_CONTEXT = "${OpenCmsContext}";
+
+    /** The place holder end sign in the pattern. */
+    public static final String PLACEHOLDER_END = "}";
+
+    /** The place holder start sign in the pattern. */
+    public static final String PLACEHOLDER_START = "{";
 
     /** Contains all chars that end a sentence in the {@link #trimToSize(String, int, int, String)} method. */
     public static final char[] SENTENCE_ENDING_CHARS = {'.', '!', '?'};
@@ -1130,6 +1136,88 @@ public final class CmsStringUtil {
             result.append(unicode);
         }
         return result.toString();
+    }
+
+    /**
+     * This method transformes a string which matched a format with a place holder into another format. The other format 
+     * also includes place holders. Place holders start with {@link org.opencms.util.CmsStringUtil#PLACEHOLDER_START} 
+     * and end with {@link org.opencms.util.CmsStringUtil#PLACEHOLDER_END}.<p>
+     *
+     * @param oldFormat the original format
+     * @param newFormat the new format
+     * @param value the value which matched the original format and which shall be transformed into the new format
+     * 
+     * @return the new value with the filled place holder with the information in the parameter value
+     */
+    public static String transformValue(String oldFormat, String newFormat, String value) {
+
+        if (!oldFormat.contains(CmsStringUtil.PLACEHOLDER_START)
+            || !oldFormat.contains(CmsStringUtil.PLACEHOLDER_END)
+            || !newFormat.contains(CmsStringUtil.PLACEHOLDER_START)
+            || !newFormat.contains(CmsStringUtil.PLACEHOLDER_END)) {
+            // no place holders are set in correct format
+            // that is why there is nothing to calculate and the value is the new format
+            return newFormat;
+        }
+        // example for an old format: <b>{.*}</b>
+        // example for a value which matched the old format: <b>Hallo</b>
+        //                                                   012345678901
+        // example for a new format: <strong>{}</strong>
+        // the transformed value is: <strong>Hallo</strong>
+
+        // the place holder content in the value is to calculate to fill in the new format 
+        // thereto at first the contents before and after the place holder in the old format is to calculate
+        // then these contents are matched against the value - between is the place holder content
+        // then the place holder content is filled into the new format
+
+        // get the contents before and after the place holder
+        // at first get the content before the place holder 
+        // in this example: <b>
+        // thereto get the index of the place holder start sign in the old format
+        int indexPlaceHolderStart = oldFormat.indexOf(CmsStringUtil.PLACEHOLDER_START);
+        // get the content before the place holder
+        String placeHolderStart = "";
+        if (indexPlaceHolderStart > 0) {
+            placeHolderStart = oldFormat.substring(0, indexPlaceHolderStart);
+        }
+        // then get the content after the place holder in the old format
+        // in this example: </b>
+        // thereto get the index of the place holder end sign
+        int indexPlaceHolderEnd = oldFormat.indexOf(CmsStringUtil.PLACEHOLDER_END) + 1;
+        // get the content after the place holder
+        String placeHolderEnd = oldFormat.substring(indexPlaceHolderEnd);
+
+        // get the place holder content
+        // thereto the contents before and after the place holders are matched against the value
+        // the signs between are the place holder content
+        // get the index of the value of the last sign which matches the content before the place holder
+        int indexValueStart = 0;
+        if (CmsStringUtil.isNotEmpty(placeHolderStart)) {
+            indexValueStart = value.lastIndexOf(placeHolderStart);
+            indexValueStart = indexValueStart + placeHolderStart.length();
+        }
+        // get the index of the value of the first sign which matches the content after the place holder
+        int indexValueEnd = value.indexOf(placeHolderEnd);
+        // if there is no sign after the place holder, then take the full length of the value
+        if (indexValueEnd == 0) {
+            indexValueEnd = value.length();
+        }
+        // the place holder content in this example: Hallo
+        String placeHolderContent = value.substring(indexValueStart, indexValueEnd);
+
+        // now the value is transformed into the new format
+        // the transforming appends the content before the place holder, then the place holder content and then the content
+        // after the place holder
+        // in this example the content before the place holder in the new format: <strong>
+        int newValueStart = newFormat.indexOf(CmsStringUtil.PLACEHOLDER_START);
+        // in the new value, the index of the last sign which matches the content before the place holder
+        // in this example the content after the place holder in the new format: </strong>
+        int newValueEnd = newFormat.indexOf(CmsStringUtil.PLACEHOLDER_END) + 1;
+        // transform the value into the new format
+        newFormat = newFormat.substring(0, newValueStart).concat(placeHolderContent).concat(
+            newFormat.substring(newValueEnd));
+        // return the transformed value
+        return newFormat;
     }
 
     /**
