@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2010/07/13 15:36:42 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2010/07/14 06:54:51 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -754,8 +754,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @param propertyDefinition the name of the propertydefinition to change the value
      * @param oldValue the old value of the propertydefinition
      * @param newValue the new value of the propertydefinition
-     * @param recursive if true, change recursively all property values on sub-resources (only for folders)
-     * 
+     * @param recursive if true, change the property value on the resource and recursively all property values on 
+     *                     sub-resources (only for folders)
      * @return a list with the <code>{@link CmsResource}</code>'s where the property value has been changed
      *
      * @throws CmsVfsException for now only when the search for the oldvalue failed. 
