@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2010/07/13 15:36:42 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2010/07/14 13:22:52 $
+ * Version: $Revision: 1.38 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -20,6 +20,7 @@ Legend:
 - General comment
 
 OpenCms x.x.x - Month Day, Year
+* Fixed issue displaying HTML in "Title" "and NavText" column of explorer view
 * fixed issue: anchor of URL being encoded incorrectly (Bug: 1872)
 * Keep browser based authentication text when rewriting the opencms-system.xml
 - Enhanced english and german dialog text when undo changes inclusive siblings which says that only the content changes are be undone

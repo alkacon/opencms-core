@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorer.java,v $
- * Date   : $Date: 2010/03/01 10:21:47 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/07/14 13:21:43 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -76,7 +76,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -368,7 +368,7 @@ public class CmsExplorer extends CmsWorkplace {
         if (showTitle) {
             String title = resUtil.getTitle();
             content.append("\"");
-            content.append(CmsEncoder.escapeWBlanks(title, CmsEncoder.ENCODING_UTF_8));
+            content.append(CmsEncoder.escapeWBlanks(CmsEncoder.escapeXml(title), CmsEncoder.ENCODING_UTF_8));
             content.append("\",");
         } else {
             content.append("\"\",");
@@ -378,7 +378,7 @@ public class CmsExplorer extends CmsWorkplace {
         if (showNavText) {
             String navText = resUtil.getNavText();
             content.append("\"");
-            content.append(CmsEncoder.escapeWBlanks(navText, CmsEncoder.ENCODING_UTF_8));
+            content.append(CmsEncoder.escapeWBlanks(CmsEncoder.escapeXml(navText), CmsEncoder.ENCODING_UTF_8));
             content.append("\",");
         } else {
             content.append("\"\",");
