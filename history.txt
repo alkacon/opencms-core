@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2010/07/13 16:11:43 $
- * Version: $Revision: 1.1190 $
+ * Date   : $Date: 2010/07/14 13:44:28 $
+ * Version: $Revision: 1.1191 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -20,6 +20,7 @@ Legend:
 - General comment
 
 OpenCms x.x.x - Month Day, Year
+* Fixed issue displaying HTML in "Title" "and NavText" column of explorer view
 * fixed issue: anchor of URL being encoded incorrectly (Bug: 1872)
 - Added new CmsShell command to import resources with a third parameter to set if keep permissions
 ! External Links (pointers) now support handling of request parameters (loader parameter in opencms-vfs.xml)
