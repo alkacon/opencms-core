@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsImageBundle.java,v $
- * Date   : $Date: 2010/05/27 09:42:23 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/07/14 12:42:17 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,9 +34,9 @@ package org.opencms.gwt.client.ui.css;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
-import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.resources.client.CssResource.NotStrict;
 import com.google.gwt.resources.client.CssResource.Shared;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.resources.client.ImageResource.ImageOptions;
 import com.google.gwt.resources.client.ImageResource.RepeatStyle;
 
@@ -45,7 +45,7 @@ import com.google.gwt.resources.client.ImageResource.RepeatStyle;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
@@ -529,6 +529,24 @@ public interface I_CmsImageBundle extends ClientBundle {
      */
     @Source("images/toolbaricons/ade_add.png")
     ImageResource toolbarAdd();
+
+    /** 
+     * Access method.<p>
+     * @return an image resource
+     * 
+     * TODO: change the image
+     */
+    @Source("images/toolbaricons/ade_add_sw.png")
+    ImageResource toolbarContextSW();
+
+    /** 
+     * Access method.<p>
+     * @return an image resource
+     * 
+     * TODO: change the image
+     */
+    @Source("images/toolbaricons/ade_add.png")
+    ImageResource toolbarContext();
 
     /** 
      * Access method.<p>

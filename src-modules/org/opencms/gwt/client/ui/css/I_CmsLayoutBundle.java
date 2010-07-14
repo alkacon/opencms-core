@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2010/06/08 07:48:34 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2010/07/14 12:42:17 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,8 +34,8 @@ package org.opencms.gwt.client.ui.css;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
-import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.resources.client.CssResource.Shared;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.resources.client.ImageResource.ImageOptions;
 import com.google.gwt.resources.client.ImageResource.RepeatStyle;
 
@@ -44,14 +44,14 @@ import com.google.gwt.resources.client.ImageResource.RepeatStyle;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.35 $
+ * @version $Revision: 1.36 $
  * 
  * @since 8.0.0
  */
 public interface I_CmsLayoutBundle extends ClientBundle {
 
     /** Button CSS. */
-    interface I_CmsButtonCss extends CssResource, I_CmsStateCss {
+    interface I_CmsButtonCss extends I_CmsStateCss {
 
         /**
          *  Access method.<p>
@@ -259,6 +259,66 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String toolbarHeight();
+    }
+
+    /** The context menu CSS classes. */
+    public interface I_CmsContextmenuCss extends CssResource {
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String cmsMenuBar();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String selected();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String cmsMenuItem();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String arrow();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String label();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String menuItemSeparator();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String cmsContextMenuPopup();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String menuPanel();
     }
 
     /** Dialog CSS. */
@@ -558,7 +618,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     }
 
     /** Icons CSS, making available a fixed set of icons. */
-    interface I_CmsIconsCss extends CssResource, I_CmsStateCss {
+    interface I_CmsIconsCss extends I_CmsStateCss {
 
         /** 
          * Access method.<p>
@@ -1076,6 +1136,14 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      */
     @Source("constants.css")
     I_CmsConstantsCss constantsCss();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the constants CSS
+     */
+    @Source("contextmenu.css")
+    I_CmsContextmenuCss contextmenuCss();
 
     /**
      * Access method.<p>

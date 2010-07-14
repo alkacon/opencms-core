@@ -1,8 +1,11 @@
 @external popupContent, Caption;
 .popup{
     z-index: 20000;
+    padding: 3px;
 }
-
+.popup.menuPopup{
+	padding-top:0px;
+}
 .dragOverlay{
 	display: none;
 }
@@ -16,7 +19,7 @@
 	z-index: 10;
 }
 .popup .popupContent{
-    margin: 3px;
+   
     position: relative;
     background: #ffffff;
     border: solid 1px value("constantsCss.borderColor");
@@ -68,7 +71,6 @@
 }
 
 .popup.menuPopup .popupContent{
-    margin-top: 0px;
     /** removing rounded corner top-left **/
     -moz-border-radius-topleft: 0px;
     -webkit-border-radius-topleft: 0px;

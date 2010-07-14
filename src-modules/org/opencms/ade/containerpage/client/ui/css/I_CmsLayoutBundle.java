@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2010/06/02 05:49:10 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/07/14 12:42:17 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import com.google.gwt.resources.client.CssResource.Shared;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 8.0.0
  */
@@ -121,6 +121,12 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsIm
          * @return the CSS class name
          */
         String subcontainerPlaceholder();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String toolbarContext();
     }
 
     /** The content editor dialog CSS. */

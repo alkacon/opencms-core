@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/I_CmsButton.java,v $
- * Date   : $Date: 2010/04/28 13:03:39 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/07/14 12:42:17 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -89,6 +89,10 @@ public interface I_CmsButton {
         /** Toolbar button. */
         ADD(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarAdd(), Messages.get().key(
             Messages.GUI_TOOLBAR_ADD_0)),
+
+        /** Toolbar button. */
+        CONTEXT(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarContext(), Messages.get().key(
+            Messages.GUI_TOOLBAR_CONTEXT_0)),
 
         /** Toolbar button. */
         CLIPBOARD(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarClipboard(), Messages.get().key(

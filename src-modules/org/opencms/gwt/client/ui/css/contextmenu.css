@@ -1,0 +1,103 @@
+/* This is needed since there is a bug in GWT that obfuscates the primary style name but not the secondary :( */
+@external dialogTop, dialogBottom;
+
+.menuPanel{ /* the panel (table) the context menu is set as widget. */
+	background: #F9F9F9;
+	border-collapse:collapse;
+}
+.cmsMenuBar { /* the outer menu bar */
+	background: #F9F9F9;
+}
+.cmsMenuBar .cmsMenuItem { /* menu items */
+	padding:4px 0px;
+	cursor: pointer;
+	clear: both;
+}
+.cmsMenuBar .cmsMenuItem .label { /* menu item label */
+	padding: 0px 4px 0px 8px;
+	margin-right: 20px;
+}
+.cmsMenuBar .cmsMenuItem .arrow { /* menu items */
+	float: right;
+	margin-right: 2px;
+	height: 14px;
+	width: 14px;
+}
+.cmsMenuBar .selected { /* selected menu items */ 
+	background: #E0EDFE;
+}
+.cmsMenuBar .menuItemSeparator { /* section breaks between menu items */ 
+	height: 1px;
+	line-height: 0px;
+	margin: 0px;
+	padding: 0px;
+	border: none;
+	background-color: #777777;
+	zoom: 1;
+	overflow: hidden;
+	clear: both;
+}
+.cmsContextMenuPopup .dialogTop {
+	display: none;
+}
+.cmsContextMenuPopup .dialogBottom {
+	display: none;
+}
+
+
+@if user.agent ie6 { /* IE6 HACK for the separator */
+	.cmsMenuBar .menuItemSeparator {
+		margin-top: -1px;
+	}
+}
+
+/** browser specific styles **/
+@if user.agent gecko1_8 gecko{
+	/** firefox **/
+	.cmsMenuBar, .menuPanel{
+		-moz-border-radius: value("constantsCss.borderRadius");
+	}
+	.cmsMenuBar .cmsMenuItem:last-child{
+		-moz-border-radius-bottomleft: value("constantsCss.borderRadius");
+		-moz-border-radius-bottomright: value("constantsCss.borderRadius");
+	}
+	.cmsMenuBar .cmsMenuItem:first-child{
+		-moz-border-radius-topleft: value("constantsCss.borderRadius");
+		-moz-border-radius-topright: value("constantsCss.borderRadius");
+	}
+	.menuPanel {
+	    -moz-border-radius-topleft: 0px;
+	}
+} @elif user.agent safari {
+	/** chrome, safari etc. **/
+	.cmsMenuBar, .menuPanel{
+		-webkit-border-radius: value("constantsCss.borderRadius");
+	}
+	.cmsMenuBar .cmsMenuItem:last-child{
+		-webkit-border-bottom-left-radius: value("constantsCss.borderRadius");
+		-webkit-border-bottom-right-radius: value("constantsCss.borderRadius");
+	}
+	.cmsMenuBar .cmsMenuItem:first-child{
+		-webkit-border-top-left-radius: value("constantsCss.borderRadius");
+		-webkit-border-top-right-radius: value("constantsCss.borderRadius");
+	}
+	.menuPanel {
+    	-webkit-border-radius-topleft: 0px;
+	}
+} @elif user.agent opera {
+	/** opera */
+	.cmsMenuBar, .menuPanel{
+		border-radius: value("constantsCss.borderRadius");
+	}
+	.cmsMenuBar .cmsMenuItem:last-child{
+		border-bottom-left-radius: value("constantsCss.borderRadius");
+		border-bottom-right-radius: value("constantsCss.borderRadius");
+	}
+	.cmsMenuBar .cmsMenuItem:first-child{
+		border-top-left-radius: value("constantsCss.borderRadius");
+		border-top-right-radius: value("constantsCss.borderRadius");
+	}
+	.menuPanel {
+		border-top-left-radius: 0px;
+	}
+}

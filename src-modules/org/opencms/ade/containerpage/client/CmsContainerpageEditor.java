@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageEditor.java,v $
- * Date   : $Date: 2010/06/18 07:29:54 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2010/07/14 12:42:17 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.ade.containerpage.client;
 import org.opencms.ade.containerpage.client.draganddrop.CmsContainerDragHandler;
 import org.opencms.ade.containerpage.client.ui.CmsContentEditorDialog;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarClipboardMenu;
+import org.opencms.ade.containerpage.client.ui.CmsToolbarContextButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarEditButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarGalleryMenu;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarMoveButton;
@@ -66,7 +67,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 8.0.0
  */
@@ -110,6 +111,8 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
 
     /** The tool-bar. */
     private CmsToolbar m_toolbar;
+
+    private CmsToolbarContextButton m_context;
 
     /**
      * Returns the add gallery menu.<p>
@@ -277,6 +280,10 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         if (controller.getData().getSitemapUri().equals("")) {
             m_sitemap.setEnabled(false);
         }
+
+        m_context = new CmsToolbarContextButton(containerpageHandler);
+        m_context.addClickHandler(clickHandler);
+        m_toolbar.addRight(m_context);
 
         m_reset = new CmsToolbarResetButton(containerpageHandler);
         m_reset.addClickHandler(clickHandler);

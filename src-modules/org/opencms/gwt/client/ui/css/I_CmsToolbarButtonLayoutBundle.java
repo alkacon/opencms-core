@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsToolbarButtonLayoutBundle.java,v $
- * Date   : $Date: 2010/04/12 12:00:29 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/07/14 12:42:17 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import com.google.gwt.resources.client.CssResource.Shared;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -54,6 +54,12 @@ public interface I_CmsToolbarButtonLayoutBundle extends I_CmsImageBundle {
          * @return the CSS class name
          */
         String toolbarAdd();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String toolbarContext();
 
         /** Access method.<p>
          * 

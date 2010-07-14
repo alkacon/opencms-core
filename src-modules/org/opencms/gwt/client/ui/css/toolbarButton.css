@@ -41,6 +41,16 @@
     gwt-image: "toolbarAdd";
 }
 
+@sprite .cmsState-up-disabled .toolbarContext, .cmsState-down-disabled .toolbarContext{
+	gwt-image: "toolbarContextSW";
+}
+@sprite .cmsState-up .toolbarContext{
+	gwt-image: "toolbarContextSW";
+}
+@sprite .cmsState-up-hovering .toolbarContext, .cmsState-down-hovering .toolbarContext, .cmsState-down .toolbarContext{
+    gwt-image: "toolbarContext";
+}
+
 @sprite .cmsState-up-disabled .toolbarClipboard, .cmsState-down-disabled .toolbarClipboard{
 	gwt-image: "toolbarClipboardSW";
 }

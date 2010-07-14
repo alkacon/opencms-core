@@ -3,6 +3,7 @@
 .cmsState, .cmsHovering, .toolbarAdd, .toolbarSitemap,
 .toolbarReset, .toolbarExit, .toolbarPublish, .toolbarClipboard, .toolbarRecent, .toolbarSave{}
 
+.toolbarContext{}
 .menuContent{
 	width: 650px;
 	padding: 0px;
