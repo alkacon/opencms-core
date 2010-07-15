@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsResourceComparisonDialog.java,v $
- * Date   : $Date: 2010/01/18 10:02:28 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2010/07/15 09:33:41 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -89,7 +89,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -220,7 +220,7 @@ public class CmsResourceComparisonDialog extends CmsDialog {
 
         if (Integer.parseInt(version) == CmsHistoryResourceHandler.PROJECT_OFFLINE_VERSION) {
             // offline
-            CmsResource resource = cms.readResource(structureId);
+            CmsResource resource = cms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
             return cms.readFile(resource);
         } else {
             int ver = Integer.parseInt(version);
@@ -229,7 +229,7 @@ public class CmsResourceComparisonDialog extends CmsDialog {
                 CmsProject project = cms.getRequestContext().currentProject();
                 try {
                     cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
-                    CmsResource resource = cms.readResource(structureId);
+                    CmsResource resource = cms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
                     return cms.readFile(resource);
                 } finally {
                     cms.getRequestContext().setCurrentProject(project);

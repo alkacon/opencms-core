@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/history/CmsHistoryResourceHandler.java,v $
- * Date   : $Date: 2010/01/18 10:03:53 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/07/15 09:33:41 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.file.history;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.Messages;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -51,7 +52,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 6.9.1
  */
@@ -127,9 +128,11 @@ public class CmsHistoryResourceHandler implements I_CmsResourceInit {
                             uri = uri.substring(HISTORY_HANDLER.length(), uri.length());
                             int id = new Integer(version).intValue();
                             if (id == CmsHistoryResourceHandler.PROJECT_OFFLINE_VERSION) {
-                                resource = new CmsHistoryFile(cms.readFile(uri));
+                                resource = new CmsHistoryFile(cms.readFile(uri, CmsResourceFilter.IGNORE_EXPIRATION));
                             } else {
-                                resource = (CmsResource)cms.readResource(cms.readResource(uri).getStructureId(), id);
+                                resource = (CmsResource)cms.readResource(cms.readResource(
+                                    uri,
+                                    CmsResourceFilter.IGNORE_EXPIRATION).getStructureId(), id);
                             }
                             if (res != null) {
                                 // store a request attribute to indicate that this is in fact a historical version
