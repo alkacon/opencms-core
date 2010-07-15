@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2010/07/14 13:22:52 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2010/07/15 09:00:23 $
+ * Version: $Revision: 1.39 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ OpenCms x.x.x - Month Day, Year
 ! New XML content element type "CmsXmlPlainTextStringValue" with no HTML code in the search results
 ! In workplace content tool "Change Property Values" it is possible to use a place holder in the old and the change property value
 * In workplace content tool "Change Property Values" and selected checkbox "Include all subfolders" also the folder itself is changed
+* History version functionality also works for files with expired date now
 
 OpenCms 7.9.2 - February 24th, 2010
 ! Added support for xsd:choice in XML content API and editor
