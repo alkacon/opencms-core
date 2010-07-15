@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/datebox/Attic/CmsDateBoxHandler.java,v $
- * Date   : $Date: 2010/07/07 15:19:30 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/07/15 17:13:12 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -136,7 +136,7 @@ public final class CmsDateBoxHandler {
                 showDatePicker();
                 break;
             default:
-                break;
+                hideDatePicker();
         }
 
     }

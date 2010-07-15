@@ -3,9 +3,9 @@
 			xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	<ui:with field="style" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
 	<g:HTMLPanel>
-		<div class="{style.dialogCss.notificationOverlay}" />
-		<div ui:field="m_container" class="{style.dialogCss.notificationContainer}" >
-			<span ui:field="m_message" class="{style.dialogCss.notificationMessage} {style.generalCss.cornerAll}"></span>
+		<div class="{style.notificationCss.notificationOverlay}" />
+		<div ui:field="m_container" class="{style.notificationCss.notificationContainer}" >
+			<span ui:field="m_message" class="{style.notificationCss.notificationMessage} {style.generalCss.cornerAll}"></span>
 		</div>
 	</g:HTMLPanel>
 </ui:UiBinder> 

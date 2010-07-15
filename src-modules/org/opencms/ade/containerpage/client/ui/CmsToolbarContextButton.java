@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsToolbarContextButton.java,v $
- * Date   : $Date: 2010/07/14 12:42:17 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/07/15 17:13:12 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,12 +34,13 @@ package org.opencms.ade.containerpage.client.ui;
 import org.opencms.ade.containerpage.client.CmsContainerpageHandler;
 import org.opencms.gwt.client.ui.CmsContextMenu;
 import org.opencms.gwt.client.ui.CmsContextMenuHandler;
+import org.opencms.gwt.client.ui.CmsContextMenuItem;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlexTable;
 
@@ -48,7 +49,7 @@ import com.google.gwt.user.client.ui.FlexTable;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -57,7 +58,14 @@ public class CmsToolbarContextButton extends A_CmsToolbarMenu {
     /** The main content widget. */
     private FlexTable m_menuPanel;
 
+    /** The handler resize registration. */
+    private HandlerRegistration m_resizeRegistration;
+
+    /** Signals whether the widget has been initialized or not.  */
     private boolean m_initialized;
+
+    /** The menu. */
+    private CmsContextMenu m_menu = new CmsContextMenu(true);
 
     /**
      * Constructor.<p>
@@ -81,75 +89,91 @@ public class CmsToolbarContextButton extends A_CmsToolbarMenu {
 
                 public void execute() {
 
-                    Window.alert("Menu item have been selected");
+                    Window.alert("Menu item has been selected");
                 }
             };
+
+            String imageClass = I_CmsLayoutBundle.INSTANCE.contextmenuCss().image()
+                + " "
+                + I_CmsLayoutBundle.INSTANCE.iconsCss().uiIcon()
+                + " "
+                + I_CmsButton.UiIcon.bookmark.name();
+
+            String imagePath = "/opencms/opencms/system/workplace/resources/filetypes/xmlcontent.gif";
+
             CmsContextMenu relations = new CmsContextMenu(true);
-            relations.addItem("Link relation to ...", cmd);
-            relations.addItem("Link relation from ...", cmd);
+            relations.addItem(CmsContextMenuItem.createItemWithImageClass("Link relation to ...", cmd, imageClass));
+            relations.addItem(CmsContextMenuItem.createItemWithoutImage("Link relation from ...", cmd));
             relations.addSeparator();
-            relations.addItem("Asign Categories", cmd);
+            relations.addItem(CmsContextMenuItem.createItemWithoutImage("Asign Categories", cmd));
 
             CmsContextMenu test = new CmsContextMenu(true);
-            test.addItem("Touch", cmd);
-            test.addItem("Availability", cmd);
+            test.addItem(CmsContextMenuItem.createItemWithoutImage("Touch", cmd));
+            test.addItem(CmsContextMenuItem.createItemWithoutImage("Availability", cmd));
             test.addSeparator();
-            test.addItem("Secure/Export", cmd);
-            test.addItem("Change type", cmd);
+            test.addItem(CmsContextMenuItem.createItemWithoutImage("Secure/Export", cmd));
+            test.addItem(CmsContextMenuItem.createItemWithoutImage("Change type", cmd));
             test.addSeparator();
-            test.addItem("Restore deleted", cmd);
+            test.addItem(CmsContextMenuItem.createItemWithoutImage("Restore deleted", cmd));
 
             CmsContextMenu advanced = new CmsContextMenu(true);
-            advanced.addItem("test", test);
+            advanced.addItem(CmsContextMenuItem.createItemWithoutImage("test", test));
             advanced.addSeparator();
-            advanced.addItem("Touch", cmd);
-            advanced.addItem("Availability", cmd);
+            advanced.addItem(CmsContextMenuItem.createItemWithoutImage("Touch", cmd));
+            advanced.addItem(CmsContextMenuItem.createItemWithoutImage("Availability", cmd));
             advanced.addSeparator();
-            advanced.addItem("Secure/Export", cmd);
-            advanced.addItem("Change type", cmd);
+            advanced.addItem(CmsContextMenuItem.createItemWithoutImage("Secure/Export", cmd));
+            advanced.addItem(CmsContextMenuItem.createItemWithoutImage("Change type", cmd));
             advanced.addSeparator();
-            advanced.addItem("Restore deleted", cmd);
+            advanced.addItem(CmsContextMenuItem.createItemWithoutImage("Restore deleted", cmd));
 
-            CmsContextMenu menu = new CmsContextMenu(true);
-            menu.addItem("Lock", cmd);
-            menu.addItem("Locked resources", cmd);
-            menu.addSeparator();
-            menu.addItem("Publish directly", cmd);
-            menu.addSeparator();
-            menu.addItem("Edit Metadata", cmd);
-            menu.addSeparator();
-            menu.addItem("Copy", cmd);
-            menu.addItem("Rename/Move", cmd);
-            menu.addItem("Delete", cmd);
-            menu.addItem("Undo changes", cmd);
-            menu.addSeparator();
-            menu.addItem("Relations", relations);
-            menu.addSeparator();
-            menu.addItem("Permissions", cmd);
-            menu.addItem("Change navigation", cmd);
-            menu.addSeparator();
-            menu.addItem("Advanced", advanced);
-            menu.addSeparator();
-            menu.addItem("History", cmd);
-            menu.addItem("Properties", cmd);
-            getPopupContent().addCloseHandler(new CmsContextMenuHandler(menu));
+            CmsContextMenuItem item = CmsContextMenuItem.createItemWithoutImage("Lock", cmd);
+            item.setEnabled(false, "can't touch this!");
+            m_menu.addItem(item);
+            m_menu.addItem(CmsContextMenuItem.createItemWithoutImage("Locked resources", cmd));
+            m_menu.addSeparator();
+            m_menu.addItem(CmsContextMenuItem.createItemWithoutImage("Publish directly", cmd));
+            m_menu.addSeparator();
+            m_menu.addItem(CmsContextMenuItem.createItemWithImagePath("Edit Metadata", cmd, imagePath));
+            m_menu.addSeparator();
+            m_menu.addItem(CmsContextMenuItem.createItemWithoutImage("Copy", cmd));
+            m_menu.addItem(CmsContextMenuItem.createItemWithoutImage("Rename/Move", cmd));
+            m_menu.addItem(CmsContextMenuItem.createItemWithoutImage("Delete", cmd));
+            m_menu.addItem(CmsContextMenuItem.createItemWithoutImage("Undo changes", cmd));
+            m_menu.addSeparator();
+            m_menu.addItem(CmsContextMenuItem.createItemWithoutImage("Relations", relations));
+            m_menu.addSeparator();
+            m_menu.addItem(CmsContextMenuItem.createItemWithoutImage("Permissions", cmd));
+            m_menu.addItem(CmsContextMenuItem.createItemWithoutImage("Change navigation", cmd));
+            m_menu.addSeparator();
+            m_menu.addItem(CmsContextMenuItem.createItemWithoutImage("Advanced", advanced));
+            m_menu.addSeparator();
+            m_menu.addItem(CmsContextMenuItem.createItemWithoutImage("History", cmd));
+            m_menu.addItem(CmsContextMenuItem.createItemWithoutImage("Properties", cmd));
 
-            Element e = getPopupContent().getWidget().getElement();
-            DOM.removeElementAttribute(e, "style");
+            getPopupContent().addCloseHandler(new CmsContextMenuHandler(m_menu));
 
+            DOM.removeElementAttribute(getPopupContent().getWidget().getElement(), "style");
             m_menuPanel.getElement().addClassName(I_CmsLayoutBundle.INSTANCE.contextmenuCss().menuPanel());
-            m_menuPanel.setWidget(0, 0, menu);
+            m_menuPanel.setWidget(0, 0, m_menu);
+
             m_initialized = true;
         }
 
+        m_resizeRegistration = Window.addResizeHandler(m_menu);
     }
 
     /**
+     * Unregister the resize handler.<p>
+     * 
      * @see org.opencms.ade.containerpage.client.ui.I_CmsToolbarButton#onToolbarDeactivate()
      */
     public void onToolbarDeactivate() {
 
-        // nothing to do
+        if (m_resizeRegistration != null) {
+            m_resizeRegistration.removeHandler();
+            m_resizeRegistration = null;
+        }
     }
 
 }

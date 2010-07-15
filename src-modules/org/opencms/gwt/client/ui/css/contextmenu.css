@@ -1,6 +1,8 @@
 /* This is needed since there is a bug in GWT that obfuscates the primary style name but not the secondary :( */
 @external dialogTop, dialogBottom;
 
+.dragging, .dragOverlay, .menuPopup, .popup, .popupButtonPanel, .popupContent, .popupHead, .popupMainContent, .popupOverlay, .popupShadow{}
+
 .menuPanel{ /* the panel (table) the context menu is set as widget. */
 	background: #F9F9F9;
 	border-collapse:collapse;
@@ -9,22 +11,31 @@
 	background: #F9F9F9;
 }
 .cmsMenuBar .cmsMenuItem { /* menu items */
-	padding:4px 0px;
 	cursor: pointer;
 	clear: both;
 }
-.cmsMenuBar .cmsMenuItem .label { /* menu item label */
-	padding: 0px 4px 0px 8px;
-	margin-right: 20px;
+.cmsMenuBar .cmsMenuItem.selected { /* selected menu items */ 
+	background: #E0EDFE;
 }
-.cmsMenuBar .cmsMenuItem .arrow { /* menu items */
+.cmsMenuBar .cmsMenuItem.disabled { /* menu item disabled */
+	color: gray;
+	cursor: default;
+}
+.cmsMenuBar .cmsMenuItem .image { /* image for a menu item */
+	float: left;
+	margin: 3px 0px 3px 2px;
+	height: 16px;
+	width: 16px;
+	overflow: hidden;
+}
+.cmsMenuBar .cmsMenuItem .label { /* menu item label */
+	padding: 4px 4px 4px 0px;
+	margin: 0px 20px;
+}
+.cmsMenuBar .cmsMenuItem .arrow { /* symbol for sub menus */
 	float: right;
 	margin-right: 2px;
-	height: 14px;
-	width: 14px;
-}
-.cmsMenuBar .selected { /* selected menu items */ 
-	background: #E0EDFE;
+	margin: 3px 0px;
 }
 .cmsMenuBar .menuItemSeparator { /* section breaks between menu items */ 
 	height: 1px;
@@ -65,7 +76,7 @@
 		-moz-border-radius-topleft: value("constantsCss.borderRadius");
 		-moz-border-radius-topright: value("constantsCss.borderRadius");
 	}
-	.menuPanel {
+	.menuPanel, .menuPopup .cmsMenuBar .cmsMenuItem:first-child {
 	    -moz-border-radius-topleft: 0px;
 	}
 } @elif user.agent safari {
@@ -81,7 +92,7 @@
 		-webkit-border-top-left-radius: value("constantsCss.borderRadius");
 		-webkit-border-top-right-radius: value("constantsCss.borderRadius");
 	}
-	.menuPanel {
+	.menuPanel, .menuPopup .cmsMenuBar .cmsMenuItem:first-child {
     	-webkit-border-radius-topleft: 0px;
 	}
 } @elif user.agent opera {
@@ -97,7 +108,7 @@
 		border-top-left-radius: value("constantsCss.borderRadius");
 		border-top-right-radius: value("constantsCss.borderRadius");
 	}
-	.menuPanel {
+	.menuPanel, .menuPopup .cmsMenuBar .cmsMenuItem:first-child {
 		border-top-left-radius: 0px;
 	}
 }

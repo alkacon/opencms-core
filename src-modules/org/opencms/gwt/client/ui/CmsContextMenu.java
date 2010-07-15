@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsContextMenu.java,v $
- * Date   : $Date: 2010/07/14 12:42:17 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/07/15 17:13:12 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,8 +35,11 @@ import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsLabel;
 
 import com.google.gwt.dom.client.Style.Position;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
@@ -46,20 +49,24 @@ import com.google.gwt.user.client.ui.FlowPanel;
  * A implementation for a context menu.<p>
  * 
  * @author Ruediger Kurz
+ * 
+ * @version $Revision: 1.2 $
+ * 
+ * @since version 8.0.0
  */
-public class CmsContextMenu extends Composite {
+public class CmsContextMenu extends Composite implements ResizeHandler {
 
     /** Stores the selected item. */
-    protected CmsContextMenuItem m_selectedItem;
+    protected A_CmsContextMenuItem m_selectedItem;
+
+    /** A Flag indicating if the position of the menu should be fixed. */
+    private boolean m_isFixed;
 
     /** The panel for the menu items. */
     private FlowPanel m_panel = new FlowPanel();
 
     /** The popup for a sub menu. */
     private CmsPopup m_popup = new CmsPopup();
-
-    /** A Flag indicating if the position of the menu should be fixed. */
-    private boolean m_isFixed;
 
     /**
      * Constructor.<p>
@@ -76,42 +83,14 @@ public class CmsContextMenu extends Composite {
     }
 
     /**
-     * Adds a menu item to the bar.
+     * Adds a menu item to this menu.
      * 
      * @param item the item to be added
-     * @return the {@link CmsContextMenuItem} object
      */
-    public CmsContextMenuItem addItem(CmsContextMenuItem item) {
+    public void addItem(A_CmsContextMenuItem item) {
 
         m_panel.add(item);
         item.setParentMenu(this);
-        return item;
-    }
-
-    /**
-     * Adds a menu item with a sub menu to this menu.<p>
-     * 
-     * @param text the text for the menu item
-     * @param subMenu the sub menu to set
-     * 
-     * @return the new context menu item
-     */
-    public CmsContextMenuItem addItem(String text, CmsContextMenu subMenu) {
-
-        return addItem(new CmsContextMenuItem(text, subMenu));
-    }
-
-    /**
-     * Adds a menu item with a command to this menu.<p>
-     * 
-     * @param text the text for the menu item
-     * @param cmd the command for the menu item
-     * 
-     * @return the new context menu item
-     */
-    public CmsContextMenuItem addItem(String text, Command cmd) {
-
-        return addItem(new CmsContextMenuItem(text, cmd));
     }
 
     /**
@@ -125,17 +104,20 @@ public class CmsContextMenu extends Composite {
     }
 
     /**
-     * Returns the selected item.<p>
+     * Returns the selected item of this menu.<p>
      * 
-     * @return the selected item
+     * @return the selected item of this menu
      */
-    public CmsContextMenuItem getSelectedItem() {
+    public A_CmsContextMenuItem getSelectedItem() {
 
         return m_selectedItem;
     }
 
     /**
      * Action on close.<p>
+     * 
+     * On close all sub menus should be hidden, the currently selected item should be deselected 
+     * and the popup will be closed.<p>  
      */
     public void onClose() {
 
@@ -147,11 +129,34 @@ public class CmsContextMenu extends Composite {
     }
 
     /**
+     * If the browser's window is resized this method rearranges the sub menus of the selected item.<p>
+     * 
+     * @see com.google.gwt.event.logical.shared.ResizeHandler#onResize(com.google.gwt.event.logical.shared.ResizeEvent)
+     */
+    public void onResize(final ResizeEvent event) {
+
+        if ((m_selectedItem != null) && m_selectedItem.hasSubmenu()) {
+
+            DeferredCommand.addCommand(new Command() {
+
+                /**
+                 * @see com.google.gwt.user.client.Command#execute()
+                 */
+                public void execute() {
+
+                    m_selectedItem.getSubMenu().setSubMenuPosition(m_selectedItem);
+                    m_selectedItem.getSubMenu().onResize(event);
+                }
+            });
+        }
+    }
+
+    /**
      * Opens a sub menu and sets its position.<p>
      * 
      * @param item the item to show the sub menu of
      */
-    public void openPopup(final CmsContextMenuItem item) {
+    public void openPopup(final A_CmsContextMenuItem item) {
 
         m_popup.add(item.getSubMenu());
         m_popup.addAutoHidePartner(item.getElement());
@@ -159,44 +164,8 @@ public class CmsContextMenu extends Composite {
         m_popup.getDialog().getElement().addClassName(I_CmsLayoutBundle.INSTANCE.contextmenuCss().cmsContextMenuPopup());
         m_popup.show();
 
-        int leftSpace = item.getAbsoluteLeft() - Window.getScrollLeft() - 5;
-        int rightSpace = Window.getClientWidth() - (item.getAbsoluteLeft() + item.getOffsetWidth() - 5);
-        boolean showRight = item.getSubMenu().getOffsetWidth() < rightSpace;
-        if (!showRight) {
-            showRight = leftSpace < rightSpace;
-        }
+        setSubMenuPosition(item);
 
-        int topSpace = item.getAbsoluteTop() - Window.getScrollTop() + 4;
-        int bottomSpace = Window.getClientHeight() + Window.getScrollTop() - (item.getAbsoluteTop() + 4);
-        boolean showBottom = item.getSubMenu().getOffsetHeight() < bottomSpace;
-        if (!showBottom) {
-            showBottom = topSpace < bottomSpace;
-        }
-
-        int left;
-        int top;
-        if (showRight && showBottom) {
-            left = item.getAbsoluteLeft() + item.getOffsetWidth() - 4;
-            top = item.getAbsoluteTop() - Window.getScrollTop() - 4;
-        } else if (showRight && !showBottom) {
-            left = item.getAbsoluteLeft() + item.getOffsetWidth() - 4;
-            top = item.getAbsoluteTop()
-                - Window.getScrollTop()
-                - item.getSubMenu().getOffsetHeight()
-                + item.getOffsetHeight()
-                - 4;
-        } else if (!showRight && showBottom) {
-            left = item.getAbsoluteLeft() - Window.getScrollLeft() - item.getSubMenu().getOffsetWidth() - 3;
-            top = item.getAbsoluteTop() - Window.getScrollTop() - 4;
-        } else {
-            left = item.getAbsoluteLeft() - Window.getScrollLeft() - item.getSubMenu().getOffsetWidth() - 3;
-            top = item.getAbsoluteTop()
-                - Window.getScrollTop()
-                - item.getSubMenu().getOffsetHeight()
-                + item.getOffsetHeight()
-                - 4;
-        }
-        m_popup.setPosition(left, top);
         if (m_isFixed) {
             m_popup.getDialog().getElement().getStyle().setPosition(Position.FIXED);
         }
@@ -207,9 +176,111 @@ public class CmsContextMenu extends Composite {
      * 
      * @param selectedItem the item to select
      */
-    public void setSelectedItem(CmsContextMenuItem selectedItem) {
+    public void setSelectedItem(A_CmsContextMenuItem selectedItem) {
 
         m_selectedItem = selectedItem;
     }
 
+    /**
+     * Sets the position of the sub menu popup.<p>
+     * 
+     * First calculates the best space where to show the popup.<p>
+     * 
+     * The following list shows the possibilities, beginning
+     * with the best and ending with the worst.<p>
+     * 
+     * <ul>
+     * <li>bottom-right</li>
+     * <li>bottom-left</li>
+     * <li>top-right</li>
+     * <li>top-left</li>
+     * </ul>
+     * 
+     * Then the position (top and left coordinate) are calculated.<p>
+     * 
+     * Finally the position of the sub menu popup is set to the calculated values.<p>
+     *  
+     * @param item the item to show the sub menu of
+     */
+    protected void setSubMenuPosition(final A_CmsContextMenuItem item) {
+
+        // calculate the left space 
+        // add 10 because of the shadow and for avoiding that the browser's right window border touches the sub menu
+        int leftSpace = item.getAbsoluteLeft() - (Window.getScrollLeft() + 10);
+        // calculate the right space
+        // add 10 because of the shadow and for avoiding that the browser's left window border touches the sub menu
+        int rightSpace = Window.getClientWidth() - (item.getAbsoluteLeft() + item.getOffsetWidth() + 10);
+        // if the width of the sub menu is smaller than the right space, show the sub menu on the right
+        boolean showRight = item.getSubMenu().getOffsetWidth() < rightSpace;
+        if (!showRight) {
+            // if the width of the sub menu is larger than the right space, compare the left space with the right space
+            // and show the sub menu on the right if on the right is more space than on the left
+            showRight = leftSpace < rightSpace;
+        }
+
+        // calculate the top space
+        // add 10 because of the shadow and for avoiding that the browser's top window border touches the sub menu
+        int topSpace = item.getAbsoluteTop() - Window.getScrollTop() + 10;
+        // calculate the bottom space
+        // add 10 because of the shadow and for avoiding that the browser's bottom window border touches the sub menu
+        int bottomSpace = Window.getClientHeight() + Window.getScrollTop() - (item.getAbsoluteTop() + 10);
+        // if the height of the sub menu is smaller than the bottom space, show the sub menu on the bottom
+        boolean showBottom = item.getSubMenu().getOffsetHeight() < bottomSpace;
+        if (!showBottom) {
+            // if the height of the sub menu is larger than the bottom space, compare the top space with 
+            // the bottom space and show the sub menu on the bottom if on the bottom is more space than on the top
+            showBottom = topSpace < bottomSpace;
+        }
+
+        int left;
+        int top;
+        if (showRight && showBottom) {
+            // bottom-right
+            // if to show the sub menu on the right the left coordinate is on the right end of the item, so take the 
+            // item's absolute left and add the width of the item / by subtracting 4 the overlay it created
+            left = item.getAbsoluteLeft() + item.getOffsetWidth() - 4;
+            // if to show the sub menu on the bottom the top coordinate is on the top end of the item, so take the 
+            // item's absolute top and subtract the scroll top of Window / by subtracting 4 the shadow is balanced
+            top = item.getAbsoluteTop() - Window.getScrollTop() - 4;
+        } else if (!showRight && showBottom) {
+            // bottom-left
+            // if to show the sub menu on the left, the left coordinate is on the left end of the item plus the width 
+            // of the sub menu, so take the item's absolute left, subtract the sub menu's width and the scroll left
+            // by subtracting 4 the overlay it created
+            left = item.getAbsoluteLeft() - item.getSubMenu().getOffsetWidth() - Window.getScrollLeft() - 4;
+            // if to show the sub menu on the bottom the top coordinate is on the top end of the item, so take the 
+            // item's absolute top and subtract the scroll top of Window / by subtracting 4 the shadow is balanced
+            top = item.getAbsoluteTop() - Window.getScrollTop() - 4;
+        } else if (showRight && !showBottom) {
+            // top-right
+            // if to show the sub menu on the right the left coordinate is on the right end of the item, so take the 
+            // item's absolute left and add the width of the item / by subtracting 4 the overlay it created
+            left = item.getAbsoluteLeft() + item.getOffsetWidth() - 4;
+            // if to show the sub menu on the top, the bottom-left corner of the item plus the height of the sub menu
+            // is the top coordinate, so take the item's absolute top subtract the scroll top and the height of the sub
+            // menu and add the height of the item / by subtracting 4 the shadow is balanced
+            top = item.getAbsoluteTop()
+                - Window.getScrollTop()
+                - item.getSubMenu().getOffsetHeight()
+                + item.getOffsetHeight()
+                - 4;
+        } else {
+            // top-left
+            // if to show the sub menu on the left, the left coordinate is on the left end of the item plus the width 
+            // of the sub menu, so take the item's absolute left, subtract the sub menu's width and the scroll left
+            // by subtracting 4 the overlay it created
+            left = item.getAbsoluteLeft() - Window.getScrollLeft() - item.getSubMenu().getOffsetWidth() - 4;
+            // if to show the sub menu on the top, the bottom-left corner of the item plus the height of the sub menu
+            // is the top coordinate, so take the item's absolute top subtract the scroll top and the height of the sub
+            // menu and add the height of the item / by subtracting 4 the shadow is balanced
+            top = item.getAbsoluteTop()
+                - Window.getScrollTop()
+                - item.getSubMenu().getOffsetHeight()
+                + item.getOffsetHeight()
+                - 4;
+        }
+
+        // finally set the position of the popup
+        m_popup.setPosition(left, top);
+    }
 }

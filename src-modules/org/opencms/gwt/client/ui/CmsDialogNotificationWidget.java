@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsDialogNotificationWidget.java,v $
- * Date   : $Date: 2010/06/01 09:29:08 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/07/15 17:13:12 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -299,11 +299,11 @@ public class CmsDialogNotificationWidget extends Composite implements I_CmsNotif
 
         switch (type) {
             case ERROR:
-                return I_CmsLayoutBundle.INSTANCE.dialogCss().notificationError();
+                return I_CmsLayoutBundle.INSTANCE.notificationCss().notificationError();
             case NORMAL:
-                return I_CmsLayoutBundle.INSTANCE.dialogCss().notificationNormal();
+                return I_CmsLayoutBundle.INSTANCE.notificationCss().notificationNormal();
             case WARNING:
-                return I_CmsLayoutBundle.INSTANCE.dialogCss().notificationWarning();
+                return I_CmsLayoutBundle.INSTANCE.notificationCss().notificationWarning();
             default:
                 return null;
         }
@@ -359,6 +359,6 @@ public class CmsDialogNotificationWidget extends Composite implements I_CmsNotif
 
         setVisible(false);
         // back to plain style without error or warning
-        m_container.setClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().notificationContainer());
+        m_container.setClassName(I_CmsLayoutBundle.INSTANCE.notificationCss().notificationContainer());
     }
 }

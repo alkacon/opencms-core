@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2010/07/14 12:42:17 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2010/07/15 17:13:12 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import com.google.gwt.resources.client.ImageResource.RepeatStyle;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.36 $
+ * @version $Revision: 1.37 $
  * 
  * @since 8.0.0
  */
@@ -262,7 +262,21 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     }
 
     /** The context menu CSS classes. */
-    public interface I_CmsContextmenuCss extends CssResource {
+    public interface I_CmsContextmenuCss extends I_CmsDialogCss {
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String arrow();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String cmsContextMenuPopup();
 
         /** 
          * Access method.<p>
@@ -276,13 +290,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
-        String selected();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
         String cmsMenuItem();
 
         /** 
@@ -290,7 +297,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
-        String arrow();
+        String image();
 
         /** 
          * Access method.<p>
@@ -311,14 +318,21 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
-        String cmsContextMenuPopup();
+        String menuPanel();
 
         /** 
          * Access method.<p>
          * 
          * @return the CSS class name
          */
-        String menuPanel();
+        String selected();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String disabled();
     }
 
     /** Dialog CSS. */
@@ -345,48 +359,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String menuPopup();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String notificationContainer();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String notificationError();
-
-        /**
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String notificationMessage();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String notificationNormal();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String notificationOverlay();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String notificationWarning();
 
         /** 
          * Access method.<p>
@@ -838,6 +810,53 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String plus();
+    }
+
+    /** Notification CSS. */
+    @Shared
+    interface I_CmsNotificationCss extends CssResource {
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String notificationContainer();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String notificationError();
+
+        /**
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String notificationMessage();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String notificationNormal();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String notificationOverlay();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String notificationWarning();
     }
 
     /** Page CSS. */
@@ -1322,6 +1341,14 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      */
     @Source("images/minus.png")
     ImageResource minus();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the list item CSS
+     */
+    @Source("notification.css")
+    I_CmsNotificationCss notificationCss();
 
     /**
      * Access method.<p>
