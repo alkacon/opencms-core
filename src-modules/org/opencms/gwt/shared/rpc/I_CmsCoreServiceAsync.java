@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/rpc/Attic/I_CmsCoreServiceAsync.java,v $
- * Date   : $Date: 2010/06/14 15:07:18 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/07/19 14:11:43 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.gwt.shared.rpc;
 
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
+import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData;
 import org.opencms.gwt.shared.CmsValidationQuery;
 import org.opencms.gwt.shared.CmsValidationResult;
@@ -47,7 +48,7 @@ import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 8.0.0
  * 
@@ -134,4 +135,11 @@ public interface I_CmsCoreServiceAsync {
         Map<String, CmsValidationQuery> validationQueries,
         AsyncCallback<Map<String, CmsValidationResult>> callback);
 
+    /**
+     * Returns a list of menu entry beans for the context menu.<p>
+     * 
+     * @param uri the URI to the resource to get the context menu for
+     * @param callback the asynchronous callback
+     */
+    void getContextMenuEntries(String uri, AsyncCallback<List<CmsContextMenuEntryBean>> callback);
 }

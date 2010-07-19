@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsResourceUtil.java,v $
- * Date   : $Date: 2009/11/24 13:48:15 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/07/19 14:11:43 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,7 +71,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -94,6 +94,7 @@ public final class CmsResourceUtil {
         /** Constant for the project state locked in other project. */
         protected static final CmsResourceProjectState MODIFIED_IN_OTHER_PROJECT = new CmsResourceProjectState(2);
 
+        /** serial version UID. */
         private static final long serialVersionUID = 4580450220255428716L;
 
         /**
@@ -210,7 +211,7 @@ public final class CmsResourceUtil {
     private CmsMessages m_messages;
 
     /** Reference project resources cache. */
-    private List m_projectResources;
+    private List<String> m_projectResources;
 
     /** The project to use to check project state, if <code>null</code> the current project will be used. */
     private CmsProject m_referenceProject;
@@ -1304,7 +1305,7 @@ public final class CmsResourceUtil {
      * 
      * @return the reference project resources
      */
-    private List getProjectResources() {
+    private List<String> getProjectResources() {
 
         if (m_projectResources == null) {
             try {
@@ -1312,7 +1313,7 @@ public final class CmsResourceUtil {
             } catch (Throwable e) {
                 LOG.error(e.getLocalizedMessage(), e);
                 // use an empty list (all resources are "outside")
-                m_projectResources = new ArrayList();
+                m_projectResources = new ArrayList<String>();
             }
         }
         return m_projectResources;

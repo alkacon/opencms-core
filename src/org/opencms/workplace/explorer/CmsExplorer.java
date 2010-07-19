@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorer.java,v $
- * Date   : $Date: 2010/07/14 13:21:43 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/07/19 14:11:43 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -76,7 +76,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -235,7 +235,7 @@ public class CmsExplorer extends CmsWorkplace {
         content.append(getInitializationHeader());
 
         // now get the entries for the file list
-        List resources = getResources(getSettings().getExplorerResource());
+        List<CmsResource> resources = getResources(getSettings().getExplorerResource());
 
         // if a folder contains to much entries we split them to pages of C_ENTRYS_PER_PAGE length
         int startat = 0;
@@ -290,7 +290,7 @@ public class CmsExplorer extends CmsWorkplace {
         resUtil.setReferenceProject(referenceProject);
 
         for (int i = startat; i < stopat; i++) {
-            CmsResource res = (CmsResource)resources.get(i);
+            CmsResource res = resources.get(i);
             resUtil.setResource(res);
             content.append(getInitializationEntry(
                 resUtil,
@@ -644,7 +644,7 @@ public class CmsExplorer extends CmsWorkplace {
             currentResource.getRootPath())));
         content.append("\");\n");
         content.append("top.rD();\n");
-        List reloadTreeFolders = (List)getJsp().getRequest().getAttribute(REQUEST_ATTRIBUTE_RELOADTREE);
+        List<?> reloadTreeFolders = (List<?>)getJsp().getRequest().getAttribute(REQUEST_ATTRIBUTE_RELOADTREE);
         if (reloadTreeFolders != null) {
             // folder tree has to be reloaded after copy, delete, move, rename operation
             String reloadFolder = "";
@@ -690,6 +690,7 @@ public class CmsExplorer extends CmsWorkplace {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         String currentResource = request.getParameter(PARAMETER_RESOURCE);
@@ -786,7 +787,7 @@ public class CmsExplorer extends CmsWorkplace {
      * @param resource the resource to read the files from (usually a folder)
      * @return a list of resources to display
      */
-    private List getResources(String resource) {
+    private List<CmsResource> getResources(String resource) {
 
         if (VIEW_LIST.equals(getSettings().getExplorerMode())) {
             // check if the list must show the list view or the check content view
@@ -804,7 +805,7 @@ public class CmsExplorer extends CmsWorkplace {
                     }
                 }
             }
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         } else if (VIEW_GALLERY.equals(getSettings().getExplorerMode())) {
             // select galleries
             A_CmsAjaxGallery gallery = A_CmsAjaxGallery.createInstance(getSettings().getGalleryType(), getJsp());
@@ -818,7 +819,7 @@ public class CmsExplorer extends CmsWorkplace {
                 if (LOG.isInfoEnabled()) {
                     LOG.info(e);
                 }
-                return Collections.EMPTY_LIST;
+                return Collections.emptyList();
             }
         }
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerInit.java,v $
- * Date   : $Date: 2009/06/04 14:29:45 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/07/19 14:11:43 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,6 +40,7 @@ import org.opencms.workplace.CmsWorkplaceSettings;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -54,14 +55,14 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author  Andreas Zahner
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.2.0 
  */
 public class CmsExplorerInit extends CmsWorkplace {
 
     /** Stores already generated javascript menu outputs with a Locale object as key. */
-    private HashMap m_generatedScripts;
+    private HashMap<Locale, String> m_generatedScripts;
 
     /**
      * Public constructor.<p>
@@ -71,7 +72,7 @@ public class CmsExplorerInit extends CmsWorkplace {
     public CmsExplorerInit(CmsJspActionElement jsp) {
 
         super(jsp);
-        m_generatedScripts = new HashMap();
+        m_generatedScripts = new HashMap<Locale, String>();
     }
 
     /**
@@ -82,12 +83,12 @@ public class CmsExplorerInit extends CmsWorkplace {
     public String buildContextMenues() {
 
         // try to get the stored entries from the Map
-        String entries = (String)m_generatedScripts.get(getMessages().getLocale());
+        String entries = m_generatedScripts.get(getMessages().getLocale());
 
         if (entries == null) {
             StringBuffer result = new StringBuffer();
             // get all available resource types
-            List allResTypes = OpenCms.getResourceManager().getResourceTypesWithUnknown();
+            List<?> allResTypes = OpenCms.getResourceManager().getResourceTypesWithUnknown();
             for (int i = 0; i < allResTypes.size(); i++) {
                 // loop through all types
                 I_CmsResourceType type = (I_CmsResourceType)allResTypes.get(i);
@@ -161,6 +162,7 @@ public class CmsExplorerInit extends CmsWorkplace {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // nothing to do for JS creation

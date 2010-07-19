@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerContextMenuBuilder.java,v $
- * Date   : $Date: 2009/11/16 17:04:04 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/07/19 14:11:43 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,6 @@ import org.opencms.workplace.explorer.menu.I_CmsMenuItemRule;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -61,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * @author Michael Moossen  
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.5.6 
  */
@@ -106,14 +105,14 @@ public class CmsExplorerContextMenuBuilder extends CmsWorkplace {
     public String contextMenu() {
 
         // get the resource path list
-        List resourceList = CmsStringUtil.splitAsList(getParamResourcelist(), "|");
+        List<String> resourceList = CmsStringUtil.splitAsList(getParamResourcelist(), "|");
 
         // create a resource util object for the first resource in the list
         CmsResourceUtil[] resUtil = new CmsResourceUtil[resourceList.size()];
         for (int i = 0; i < resourceList.size(); i++) {
             try {
                 resUtil[i] = new CmsResourceUtil(getCms(), getCms().readResource(
-                    (String)resourceList.get(i),
+                    resourceList.get(i),
                     CmsResourceFilter.ALL));
             } catch (CmsException e) {
                 // fatal error
@@ -156,7 +155,7 @@ public class CmsExplorerContextMenuBuilder extends CmsWorkplace {
         CmsMenuRuleTranslator menuRuleTranslator = new CmsMenuRuleTranslator();
 
         // store the mode results in a Map to optimize performance
-        Map storedModes = new HashMap();
+        Map<String, CmsMenuItemVisibilityMode> storedModes = new HashMap<String, CmsMenuItemVisibilityMode>();
 
         StringBuffer menu = new StringBuffer(4096);
 
@@ -225,13 +224,13 @@ public class CmsExplorerContextMenuBuilder extends CmsWorkplace {
      * @param storedModes caches the mode for the item rules
      */
     protected void buildHtmlContextMenu(
-        List contextMenuEntries,
+        List<CmsExplorerContextMenuItem> contextMenuEntries,
         CmsExplorerContextMenuItem parent,
         StringBuffer menu,
         CmsResourceUtil[] resUtil,
         CmsMenuRuleTranslator menuRuleTranslator,
         boolean isSingleSelection,
-        Map storedModes) {
+        Map<String, CmsMenuItemVisibilityMode> storedModes) {
 
         boolean insertSeparator = false;
         boolean firstEntryWritten = false;
@@ -247,9 +246,7 @@ public class CmsExplorerContextMenuBuilder extends CmsWorkplace {
         menu.append(">");
 
         // loop the menu items
-        Iterator it = contextMenuEntries.iterator();
-        while (it.hasNext()) {
-            CmsExplorerContextMenuItem item = (CmsExplorerContextMenuItem)it.next();
+        for (CmsExplorerContextMenuItem item : contextMenuEntries) {
             // check if the current item is a sub item and collect the parent IDs
             StringBuffer parentIdsBuffer = new StringBuffer(64);
             CmsExplorerContextMenuItem pItem = item;
@@ -282,14 +279,12 @@ public class CmsExplorerContextMenuBuilder extends CmsWorkplace {
                         I_CmsMenuItemRule itemRule = rule.getMatchingRule(getCms(), resUtil);
                         if (itemRule != null) {
                             // found a rule, now get the rules for all sub items
-                            List itemRules = new ArrayList(item.getSubItems().size());
+                            List<I_CmsMenuItemRule> itemRules = new ArrayList<I_CmsMenuItemRule>(
+                                item.getSubItems().size());
                             getSubItemRules(item, itemRules, resUtil);
                             I_CmsMenuItemRule[] itemRulesArray = new I_CmsMenuItemRule[itemRules.size()];
                             // determine the visibility for the parent item
-                            mode = itemRule.getVisibility(
-                                getCms(),
-                                resUtil,
-                                (I_CmsMenuItemRule[])itemRules.toArray(itemRulesArray));
+                            mode = itemRule.getVisibility(getCms(), resUtil, itemRules.toArray(itemRulesArray));
                         }
                     }
                 }
@@ -371,7 +366,7 @@ public class CmsExplorerContextMenuBuilder extends CmsWorkplace {
                 }
 
                 // first try to get the mode from the previously stored modes
-                CmsMenuItemVisibilityMode mode = (CmsMenuItemVisibilityMode)storedModes.get(itemRuleName);
+                CmsMenuItemVisibilityMode mode = storedModes.get(itemRuleName);
 
                 // no mode found in stored modes
                 if (mode == null) {
@@ -464,6 +459,7 @@ public class CmsExplorerContextMenuBuilder extends CmsWorkplace {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         fillParamValues(request);
@@ -476,11 +472,13 @@ public class CmsExplorerContextMenuBuilder extends CmsWorkplace {
      * @param itemRules the collected rules for the sub items
      * @param resourceUtil the resources to be checked against the rules
      */
-    private void getSubItemRules(CmsExplorerContextMenuItem item, List itemRules, CmsResourceUtil[] resourceUtil) {
+    private void getSubItemRules(
+        CmsExplorerContextMenuItem item,
+        List<I_CmsMenuItemRule> itemRules,
+        CmsResourceUtil[] resourceUtil) {
 
-        Iterator i = item.getSubItems().iterator();
-        while (i.hasNext()) {
-            CmsExplorerContextMenuItem subItem = (CmsExplorerContextMenuItem)i.next();
+        for (CmsExplorerContextMenuItem subItem : item.getSubItems()) {
+
             if (subItem.isParentItem()) {
                 // this is a parent item, recurse into sub items
                 getSubItemRules(subItem, itemRules, resourceUtil);

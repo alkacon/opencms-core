@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/rpc/Attic/I_CmsCoreService.java,v $
- * Date   : $Date: 2010/06/14 15:07:18 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/07/19 14:11:43 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.gwt.shared.rpc;
 
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
+import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData;
 import org.opencms.gwt.shared.CmsValidationQuery;
 import org.opencms.gwt.shared.CmsValidationResult;
@@ -48,7 +49,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 8.0.0
  * 
@@ -150,4 +151,14 @@ public interface I_CmsCoreService extends RemoteService {
      */
     Map<String, CmsValidationResult> validate(Map<String, CmsValidationQuery> validationQueries) throws CmsRpcException;
 
+    /**
+     * Returns the context menu entries for the given URI.<p>
+     * 
+     * @param uri the current requested URI
+     * 
+     * @return the context menu entries 
+     * 
+     * @throws CmsRpcException if something goes wrong
+     */
+    List<CmsContextMenuEntryBean> getContextMenuEntries(String uri) throws CmsRpcException;
 }

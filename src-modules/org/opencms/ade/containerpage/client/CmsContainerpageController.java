@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageController.java,v $
- * Date   : $Date: 2010/06/14 14:32:42 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2010/07/19 14:11:43 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,6 +49,9 @@ import org.opencms.gwt.client.rpc.CmsRpcPrefetcher;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
+import org.opencms.gwt.shared.CmsContextMenuEntryBean;
+import org.opencms.gwt.shared.rpc.I_CmsCoreService;
+import org.opencms.gwt.shared.rpc.I_CmsCoreServiceAsync;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
@@ -57,8 +60,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JsArray;
@@ -67,9 +70,9 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.Window.ClosingHandler;
 import com.google.gwt.user.client.ui.Widget;
@@ -79,7 +82,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 8.0.0
  */
@@ -304,6 +307,9 @@ public final class CmsContainerpageController {
     /** The container-page RPC service. */
     private I_CmsContainerpageServiceAsync m_containerpageService;
 
+    /** The core RPC service instance. */
+    private I_CmsCoreServiceAsync m_coreSvc;
+
     /** The container-page util instance. */
     private CmsContainerpageUtil m_containerpageUtil;
 
@@ -317,7 +323,7 @@ public final class CmsContainerpageController {
     private CmsDragSubcontainer m_editingSubcontainer;
 
     /** The container-page handler. */
-    private CmsContainerpageHandler m_handler;
+    CmsContainerpageHandler m_handler;
 
     /** The drag targets within this page. */
     private Map<String, CmsDragTargetContainer> m_targetContainers;
@@ -769,6 +775,38 @@ public final class CmsContainerpageController {
     }
 
     /**
+     * Loads the context menu entries.<p>
+     * 
+     * @param uri the URI to get the context menu entries for 
+     */
+    public void loadContextMenu(final String uri) {
+
+        /** The RPC menu action for the container page dialog. */
+        CmsRpcAction<List<CmsContextMenuEntryBean>> menuAction = new CmsRpcAction<List<CmsContextMenuEntryBean>>() {
+
+            /**
+            * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+            */
+            @Override
+            public void execute() {
+
+                getCoreService().getContextMenuEntries(uri, this);
+            }
+
+            /**
+            * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+            */
+            @Override
+            public void onResponse(List<CmsContextMenuEntryBean> menuBeans) {
+
+                m_handler.insertContextMenu(menuBeans);
+            }
+        };
+        menuAction.execute();
+
+    }
+
+    /**
      * Loads the favorite list and adds the elements to the favorite list widget of the tool-bar menu.<p>
      * 
      * @param callback the call-back to execute with the result data 
@@ -1101,6 +1139,19 @@ public final class CmsContainerpageController {
     protected void addElements(Map<String, CmsContainerElementData> elements) {
 
         m_elements.putAll(elements);
+    }
+
+    /**
+     * Returns the core RPC service.<p>
+     * 
+     * @return the core service
+     */
+    protected I_CmsCoreServiceAsync getCoreService() {
+
+        if (m_coreSvc == null) {
+            m_coreSvc = GWT.create(I_CmsCoreService.class);
+        }
+        return m_coreSvc;
     }
 
     /**

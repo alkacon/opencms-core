@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsCoreService.java,v $
- * Date   : $Date: 2010/06/18 07:29:54 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2010/07/19 14:11:43 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,17 +34,30 @@ package org.opencms.gwt;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.flex.CmsFlexController;
+import org.opencms.gwt.client.util.CmsCollectionUtil;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
+import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData;
 import org.opencms.gwt.shared.CmsValidationQuery;
 import org.opencms.gwt.shared.CmsValidationResult;
 import org.opencms.gwt.shared.rpc.I_CmsCoreService;
+import org.opencms.i18n.CmsEncoder;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsCategory;
 import org.opencms.relations.CmsCategoryService;
+import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.CmsWorkplace;
+import org.opencms.workplace.explorer.CmsExplorerContextMenu;
+import org.opencms.workplace.explorer.CmsExplorerContextMenuItem;
+import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
+import org.opencms.workplace.explorer.CmsResourceUtil;
+import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
+import org.opencms.workplace.explorer.menu.CmsMenuRule;
+import org.opencms.workplace.explorer.menu.I_CmsMenuItemRule;
 import org.opencms.xml.sitemap.CmsSitemapManager;
 
 import java.util.ArrayList;
@@ -59,7 +72,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 8.0.0
  * 
@@ -152,6 +165,48 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
                 }
                 parent.addChild(current);
             }
+        } catch (Throwable e) {
+            error(e);
+        }
+        return result;
+    }
+
+    /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#getContextMenuEntries(java.lang.String)
+     */
+    public List<CmsContextMenuEntryBean> getContextMenuEntries(String uri) throws CmsRpcException {
+
+        List<CmsContextMenuEntryBean> result = null;
+        CmsObject cms = getCmsObject();
+        try {
+            CmsResourceUtil[] resUtil = new CmsResourceUtil[1];
+            resUtil[0] = new CmsResourceUtil(cms, cms.readResource(uri));
+
+            // the explorer type settings
+            CmsExplorerTypeSettings settings = null;
+
+            // get the context menu configuration for the given selection mode
+            CmsExplorerContextMenu contextMenu;
+
+            // get the explorer type setting for the first resource
+            try {
+                settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(resUtil[0].getResourceTypeName());
+            } catch (Throwable e) {
+                return null;
+            }
+            if ((settings == null) || !settings.isEditable(cms, resUtil[0].getResource())) {
+                // the user has no access to this resource type
+                return null;
+            }
+            // get the context menu
+            contextMenu = settings.getContextMenu();
+
+            // transform the context menu into beans
+            List<CmsContextMenuEntryBean> allEntries = transformToMenuEntries(contextMenu.getAllEntries(), resUtil);
+
+            // filter the result
+            result = filterEntries(allEntries);
+
         } catch (Throwable e) {
             error(e);
         }
@@ -283,6 +338,58 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     }
 
     /**
+     * Filters the collection of menu entry beans.<p>
+     * 
+     * <ul>
+     * <li>removes unnecessary separators</li>
+     * <li>filters sub menus also</li>
+     * <li>adds visible entries to the result</li>
+     * </ul>
+     * 
+     * @see org.opencms.gwt.shared.CmsContextMenuEntryBean
+     * 
+     * @param allEntries the entries to filter
+     * 
+     * @return the filtered list of menu entries
+     */
+    private List<CmsContextMenuEntryBean> filterEntries(List<CmsContextMenuEntryBean> allEntries) {
+
+        // the resulting list
+        List<CmsContextMenuEntryBean> result = new ArrayList<CmsContextMenuEntryBean>();
+        CmsContextMenuEntryBean lastBean = null;
+
+        // iterate over the list of collected menu entries to do the filtering
+        for (CmsContextMenuEntryBean entry : allEntries) {
+            if (entry.isVisible()) {
+                // only if the entry is enabled
+                if (entry.isSeparator() && !result.isEmpty()) {
+                    // the entry is a separator and it isn't the first entry in the menu
+                    if ((lastBean != null) && !lastBean.isSeparator()) {
+                        // and there are no two separators behind each other
+                        // add the separator
+                        result.add(entry);
+                    }
+                } else if (!CmsCollectionUtil.isEmptyOrNull(entry.getSubMenu())) {
+                    // the entry has a sub menu, so filter the entries of the sub menu
+                    entry.setSubMenu(filterEntries(entry.getSubMenu()));
+                    // add the entry with sub menu
+                    result.add(entry);
+                } else {
+                    // it's a common entry, so add it
+                    result.add(entry);
+                }
+                // store the last entry to check the separator
+                lastBean = entry;
+            }
+        }
+        // after the filtering is finished, remove the last separator if it is existent
+        if (result.get(result.size() - 1).isSeparator()) {
+            result.remove(result.size() - 1);
+        }
+        return result;
+    }
+
+    /**
      * FInds a category in the given tree.<p>
      * 
      * @param tree the the tree to search in
@@ -321,6 +428,89 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     }
 
     /**
+     * Returns a list of menu entry beans.<p>
+     * 
+     * Takes the given List of explorer context menu items and converts them to context menu entry beans.<p>
+     * 
+     * @see org.opencms.gwt.shared.CmsContextMenuEntryBean
+     * @see org.opencms.workplace.explorer.CmsExplorerContextMenuItem
+     * 
+     * @param items the menu items 
+     * @param resUtil a resource utility array
+     * 
+     * @return a list of menu entries
+     */
+    private List<CmsContextMenuEntryBean> transformToMenuEntries(
+        List<CmsExplorerContextMenuItem> items,
+        CmsResourceUtil[] resUtil) {
+
+        // the resulting list
+        List<CmsContextMenuEntryBean> result = new ArrayList<CmsContextMenuEntryBean>();
+
+        // get the workplace message bundle
+        CmsMessages messages = OpenCms.getWorkplaceManager().getMessages(getCmsObject().getRequestContext().getLocale());
+
+        for (CmsExplorerContextMenuItem item : items) {
+
+            CmsContextMenuEntryBean bean = new CmsContextMenuEntryBean();
+
+            if (!CmsExplorerContextMenuItem.TYPE_SEPARATOR.equals(item.getType())) {
+                // this item is no separator (common entry or sub menu entry)
+
+                // set the label to the bean
+                if (item.getKey() != null) {
+                    bean.setLabel(messages.key(item.getKey()));
+                }
+
+                // get the mode and set the bean
+                CmsMenuItemVisibilityMode mode = CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+                String itemRuleName = item.getRule();
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(itemRuleName)) {
+                    CmsMenuRule rule = OpenCms.getWorkplaceManager().getMenuRule(itemRuleName);
+                    if (rule != null) {
+                        // get the first matching rule to apply for visibility
+                        I_CmsMenuItemRule itemRule = rule.getMatchingRule(getCmsObject(), resUtil);
+                        mode = itemRule.getVisibility(getCmsObject(), resUtil);
+                    }
+                }
+                bean.setVisible(!mode.isInVisible());
+                bean.setActive(mode.isActive());
+                if (CmsStringUtil.isNotEmpty(mode.getMessageKey())) {
+                    bean.setReason(messages.key(CmsEncoder.escapeXml(mode.getMessageKey())));
+                }
+
+                // get the JSP-URI and set it to the bean
+                String jspPath = item.getUri();
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(jspPath)) {
+                    if (item.getUri().startsWith("/")) {
+                        jspPath = OpenCms.getLinkManager().substituteLink(getCmsObject(), item.getUri());
+                    } else {
+                        jspPath = OpenCms.getLinkManager().substituteLink(
+                            getCmsObject(),
+                            CmsWorkplace.PATH_WORKPLACE + item.getUri());
+                    }
+                }
+                bean.setJspPath(jspPath);
+            }
+
+            if (item.isParentItem()) {
+                // this item has a sub menu
+                List<CmsContextMenuEntryBean> subMenu = transformToMenuEntries(item.getSubItems(), resUtil);
+                bean.setSubMenu(subMenu);
+            }
+
+            if (CmsExplorerContextMenuItem.TYPE_SEPARATOR.equals(item.getType())) {
+                // this item is a separator
+                bean.setVisible(true);
+                bean.setSeparator(true);
+            }
+
+            result.add(bean);
+        }
+        return result;
+    }
+
+    /**
      * Internal helper method for validating a single value.<p>
      * 
      * @param validator the class name of the validation service 
@@ -336,5 +526,4 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         I_CmsValidationService validationService = getValidationService(validator);
         return validationService.validate(getCmsObject(), value, config);
     }
-
 }

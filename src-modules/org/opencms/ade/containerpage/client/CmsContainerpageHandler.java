@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageHandler.java,v $
- * Date   : $Date: 2010/06/29 09:38:46 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2010/07/19 14:11:43 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,22 +43,26 @@ import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.ade.publish.client.CmsPublishDialog;
 import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.gwt.client.ui.CmsConfirmDialog;
+import org.opencms.gwt.client.ui.CmsContextMenuEntry;
 import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.CmsSimpleListItem;
 import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
+import org.opencms.gwt.client.ui.I_CmsContextMenuEntry;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.I_CmsFormField;
 import org.opencms.gwt.client.ui.input.form.CmsBasicFormField;
 import org.opencms.gwt.client.ui.input.form.CmsForm;
 import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormHandler;
+import org.opencms.gwt.client.util.CmsCollectionUtil;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
-import org.opencms.gwt.client.util.CmsCollectionUtil;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
+import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -68,7 +72,9 @@ import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -78,7 +84,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 8.0.0
  */
@@ -259,6 +265,27 @@ public class CmsContainerpageHandler {
         if (m_overlay != null) {
             m_overlay.removeFromParent();
         }
+    }
+
+    /**
+     * Inserts the context menu.<p>
+     *  
+     * @param menuBeans the menu beans from the server
+     */
+    public void insertContextMenu(List<CmsContextMenuEntryBean> menuBeans) {
+
+        List<I_CmsContextMenuEntry> menuEntries = transformEntries(menuBeans);
+        m_editor.getContext().showMenu(menuEntries);
+    }
+
+    /**
+     * Loads the context menu entries for a given URI.<p>
+     * 
+     * @param uri the URI to get the context menu entries for 
+     */
+    public void loadContextMenu(final String uri) {
+
+        m_controller.loadContextMenu(uri);
     }
 
     /**
@@ -506,5 +533,35 @@ public class CmsContainerpageHandler {
     private void openSubcontainerEditor(CmsDragSubcontainer subContainer) {
 
         CmsSubcontainerEditor.openSubcontainerEditor(subContainer, m_controller, this);
+    }
+
+    /**
+     * Transforms a list of context menu entry beans to a list of context menu entries.<p>
+     * 
+     * @param menuBeans the list of context menu entry beans
+     * 
+     * @return a list of context menu entries 
+     */
+    private List<I_CmsContextMenuEntry> transformEntries(List<CmsContextMenuEntryBean> menuBeans) {
+
+        Command cmd = new Command() {
+
+            public void execute() {
+
+                Window.alert("Menu item has been selected");
+            }
+        };
+
+        List<I_CmsContextMenuEntry> menuEntries = new ArrayList<I_CmsContextMenuEntry>();
+        for (CmsContextMenuEntryBean bean : menuBeans) {
+            CmsContextMenuEntry entry = new CmsContextMenuEntry();
+            entry.setBean(bean);
+            entry.setCommand(cmd);
+            if (bean.hasSubMenu()) {
+                entry.setSubMenu(transformEntries(bean.getSubMenu()));
+            }
+            menuEntries.add(entry);
+        }
+        return menuEntries;
     }
 }

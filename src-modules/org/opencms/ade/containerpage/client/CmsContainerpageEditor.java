@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageEditor.java,v $
- * Date   : $Date: 2010/07/14 12:42:17 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2010/07/19 14:11:43 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -67,7 +67,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 8.0.0
  */
@@ -81,6 +81,9 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
 
     /** Clip-board menu. */
     private CmsToolbarClipboardMenu m_clipboard;
+
+    /** The Button for the context menu. */
+    private CmsToolbarContextButton m_context;
 
     /** Edit button. */
     private CmsToolbarEditButton m_edit;
@@ -112,8 +115,6 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
     /** The tool-bar. */
     private CmsToolbar m_toolbar;
 
-    private CmsToolbarContextButton m_context;
-
     /**
      * Returns the add gallery menu.<p>
      *
@@ -132,6 +133,16 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
     public CmsToolbarClipboardMenu getClipboard() {
 
         return m_clipboard;
+    }
+
+    /**
+     * Returns the context menu.<p>
+     *
+     * @return the context menu
+     */
+    public CmsToolbarContextButton getContext() {
+
+        return m_context;
     }
 
     /**

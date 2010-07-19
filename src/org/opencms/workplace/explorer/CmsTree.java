@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsTree.java,v $
- * Date   : $Date: 2009/11/12 13:29:40 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/07/19 14:11:43 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -186,10 +186,10 @@ public class CmsTree extends CmsWorkplace {
         retValue.append("\");\n");
 
         // get all available resource types
-        List allResTypes = OpenCms.getResourceManager().getResourceTypes();
+        List<I_CmsResourceType> allResTypes = OpenCms.getResourceManager().getResourceTypes();
         for (int i = 0; i < allResTypes.size(); i++) {
             // loop through all types
-            I_CmsResourceType type = (I_CmsResourceType)allResTypes.get(i);
+            I_CmsResourceType type = allResTypes.get(i);
             int curTypeId = type.getTypeId();
             String curTypeName = type.getTypeName();
             // get the settings for the resource type
@@ -251,8 +251,8 @@ public class CmsTree extends CmsWorkplace {
      */
     public String getSiteSelector(String htmlAttributes) {
 
-        List options = new ArrayList();
-        List values = new ArrayList();
+        List<String> options = new ArrayList<String>();
+        List<String> values = new ArrayList<String>();
         int selectedIndex = 0;
         String preSelection = getSettings().getTreeSite(getTreeType());
         if (preSelection == null) {
@@ -274,12 +274,12 @@ public class CmsTree extends CmsWorkplace {
             includeRootSite = false;
             showSiteUrls = true;
         }
-        List sites = OpenCms.getSiteManager().getAvailableSites(getCms(), includeRootSite);
+        List<CmsSite> sites = OpenCms.getSiteManager().getAvailableSites(getCms(), includeRootSite);
 
-        Iterator i = sites.iterator();
+        Iterator<CmsSite> i = sites.iterator();
         int pos = 0;
         while (i.hasNext()) {
-            CmsSite site = (CmsSite)i.next();
+            CmsSite site = i.next();
             values.add(site.getSiteRoot());
             String curOption = site.getTitle();
             if (showSiteUrls) {
@@ -311,7 +311,7 @@ public class CmsTree extends CmsWorkplace {
 
         StringBuffer result = new StringBuffer(2048);
 
-        List targetFolderList = new ArrayList();
+        List<String> targetFolderList = new ArrayList<String>();
         if (getTargetFolder() != null) {
             // check if there is more than one folder to update (e.g. move operation)
             StringTokenizer T = new StringTokenizer(getTargetFolder(), "|");
@@ -326,13 +326,13 @@ public class CmsTree extends CmsWorkplace {
         String storedSiteRoot = null;
         try {
             CmsFolder folder = null;
-            List resources = new ArrayList();
+            List<CmsResource> resources = new ArrayList<CmsResource>();
             String oldSiteRoot = getCms().getRequestContext().getSiteRoot();
 
-            Iterator targets = targetFolderList.iterator();
+            Iterator<String> targets = targetFolderList.iterator();
             while (targets.hasNext()) {
                 // iterate over all given target folders
-                String currentTargetFolder = (String)targets.next();
+                String currentTargetFolder = targets.next();
 
                 if (getSettings().getTreeSite(getTreeType()) != null) {
                     // change the site root for popup window with site selector
@@ -421,7 +421,7 @@ public class CmsTree extends CmsWorkplace {
             }
 
             // read the list of project resource to select which resource is "inside" or "outside" 
-            List projectResources = new ArrayList();
+            List<String> projectResources = new ArrayList<String>();
             if (isProjectAware()) {
                 try {
                     projectResources = getCms().readProjectResources(getCms().getRequestContext().currentProject());
@@ -434,9 +434,9 @@ public class CmsTree extends CmsWorkplace {
             }
 
             // now output all the tree nodes
-            Iterator i = resources.iterator();
+            Iterator<CmsResource> i = resources.iterator();
             while (i.hasNext()) {
-                CmsResource resource = (CmsResource)i.next();
+                CmsResource resource = i.next();
                 boolean grey = false;
                 if (isProjectAware()) {
                     grey = !CmsProject.isInsideProject(projectResources, resource);
@@ -574,6 +574,7 @@ public class CmsTree extends CmsWorkplace {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         setIncludeFiles(Boolean.valueOf(request.getParameter(PARAM_INCLUDEFILES)).booleanValue());

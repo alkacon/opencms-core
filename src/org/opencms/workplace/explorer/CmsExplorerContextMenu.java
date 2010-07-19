@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerContextMenu.java,v $
- * Date   : $Date: 2009/06/04 14:29:45 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2010/07/19 14:11:43 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,8 +44,9 @@ import org.apache.commons.logging.Log;
  * This object stores all entries which are displayed in a context menu in a sorted list.<p> 
  * 
  * @author Andreas Zahner 
+ * @author Ruediger Kurz
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -55,7 +56,7 @@ public class CmsExplorerContextMenu {
     private static final Log LOG = CmsLog.getLog(CmsExplorerContextMenu.class);
 
     /** All context menu entries. */
-    private List m_allEntries;
+    private List<CmsExplorerContextMenuItem> m_allEntries;
 
     /** Indicated if this is a multi context menu. */
     private boolean m_multiMenu;
@@ -65,7 +66,7 @@ public class CmsExplorerContextMenu {
      */
     public CmsExplorerContextMenu() {
 
-        m_allEntries = new ArrayList();
+        m_allEntries = new ArrayList<CmsExplorerContextMenuItem>();
     }
 
     /**
@@ -103,7 +104,7 @@ public class CmsExplorerContextMenu {
      * 
      * @param entries a list of initialized context menu items
      */
-    public void addEntries(List entries) {
+    public void addEntries(List<CmsExplorerContextMenuItem> entries) {
 
         m_allEntries.addAll(entries);
     }
@@ -111,6 +112,7 @@ public class CmsExplorerContextMenu {
     /**
      * @see java.lang.Object#clone()
      */
+    @Override
     public Object clone() {
 
         CmsExplorerContextMenu objectClone = new CmsExplorerContextMenu();
@@ -124,7 +126,7 @@ public class CmsExplorerContextMenu {
      * 
      * @return all entries of the context menu
      */
-    public List getAllEntries() {
+    public List<CmsExplorerContextMenuItem> getAllEntries() {
 
         return m_allEntries;
     }
@@ -154,7 +156,7 @@ public class CmsExplorerContextMenu {
      * 
      * @param entries all entries of the context menu
      */
-    public void setAllEntries(List entries) {
+    public void setAllEntries(List<CmsExplorerContextMenuItem> entries) {
 
         m_allEntries = entries;
     }

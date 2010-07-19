@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsToolbarContextButton.java,v $
- * Date   : $Date: 2010/07/15 17:13:12 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/07/19 14:11:43 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,14 +32,16 @@
 package org.opencms.ade.containerpage.client.ui;
 
 import org.opencms.ade.containerpage.client.CmsContainerpageHandler;
+import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.CmsContextMenu;
 import org.opencms.gwt.client.ui.CmsContextMenuHandler;
-import org.opencms.gwt.client.ui.CmsContextMenuItem;
 import org.opencms.gwt.client.ui.I_CmsButton;
+import org.opencms.gwt.client.ui.I_CmsContextMenuEntry;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 
+import java.util.List;
+
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -49,23 +51,23 @@ import com.google.gwt.user.client.ui.FlexTable;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
 public class CmsToolbarContextButton extends A_CmsToolbarMenu {
+
+    /** The menu. */
+    protected CmsContextMenu m_menu;
+
+    /** Signals whether the widget has been initialized or not. */
+    private boolean m_initialized;
 
     /** The main content widget. */
     private FlexTable m_menuPanel;
 
     /** The handler resize registration. */
     private HandlerRegistration m_resizeRegistration;
-
-    /** Signals whether the widget has been initialized or not.  */
-    private boolean m_initialized;
-
-    /** The menu. */
-    private CmsContextMenu m_menu = new CmsContextMenu(true);
 
     /**
      * Constructor.<p>
@@ -85,82 +87,10 @@ public class CmsToolbarContextButton extends A_CmsToolbarMenu {
     public void onToolbarActivate() {
 
         if (!m_initialized) {
-            Command cmd = new Command() {
-
-                public void execute() {
-
-                    Window.alert("Menu item has been selected");
-                }
-            };
-
-            String imageClass = I_CmsLayoutBundle.INSTANCE.contextmenuCss().image()
-                + " "
-                + I_CmsLayoutBundle.INSTANCE.iconsCss().uiIcon()
-                + " "
-                + I_CmsButton.UiIcon.bookmark.name();
-
-            String imagePath = "/opencms/opencms/system/workplace/resources/filetypes/xmlcontent.gif";
-
-            CmsContextMenu relations = new CmsContextMenu(true);
-            relations.addItem(CmsContextMenuItem.createItemWithImageClass("Link relation to ...", cmd, imageClass));
-            relations.addItem(CmsContextMenuItem.createItemWithoutImage("Link relation from ...", cmd));
-            relations.addSeparator();
-            relations.addItem(CmsContextMenuItem.createItemWithoutImage("Asign Categories", cmd));
-
-            CmsContextMenu test = new CmsContextMenu(true);
-            test.addItem(CmsContextMenuItem.createItemWithoutImage("Touch", cmd));
-            test.addItem(CmsContextMenuItem.createItemWithoutImage("Availability", cmd));
-            test.addSeparator();
-            test.addItem(CmsContextMenuItem.createItemWithoutImage("Secure/Export", cmd));
-            test.addItem(CmsContextMenuItem.createItemWithoutImage("Change type", cmd));
-            test.addSeparator();
-            test.addItem(CmsContextMenuItem.createItemWithoutImage("Restore deleted", cmd));
-
-            CmsContextMenu advanced = new CmsContextMenu(true);
-            advanced.addItem(CmsContextMenuItem.createItemWithoutImage("test", test));
-            advanced.addSeparator();
-            advanced.addItem(CmsContextMenuItem.createItemWithoutImage("Touch", cmd));
-            advanced.addItem(CmsContextMenuItem.createItemWithoutImage("Availability", cmd));
-            advanced.addSeparator();
-            advanced.addItem(CmsContextMenuItem.createItemWithoutImage("Secure/Export", cmd));
-            advanced.addItem(CmsContextMenuItem.createItemWithoutImage("Change type", cmd));
-            advanced.addSeparator();
-            advanced.addItem(CmsContextMenuItem.createItemWithoutImage("Restore deleted", cmd));
-
-            CmsContextMenuItem item = CmsContextMenuItem.createItemWithoutImage("Lock", cmd);
-            item.setEnabled(false, "can't touch this!");
-            m_menu.addItem(item);
-            m_menu.addItem(CmsContextMenuItem.createItemWithoutImage("Locked resources", cmd));
-            m_menu.addSeparator();
-            m_menu.addItem(CmsContextMenuItem.createItemWithoutImage("Publish directly", cmd));
-            m_menu.addSeparator();
-            m_menu.addItem(CmsContextMenuItem.createItemWithImagePath("Edit Metadata", cmd, imagePath));
-            m_menu.addSeparator();
-            m_menu.addItem(CmsContextMenuItem.createItemWithoutImage("Copy", cmd));
-            m_menu.addItem(CmsContextMenuItem.createItemWithoutImage("Rename/Move", cmd));
-            m_menu.addItem(CmsContextMenuItem.createItemWithoutImage("Delete", cmd));
-            m_menu.addItem(CmsContextMenuItem.createItemWithoutImage("Undo changes", cmd));
-            m_menu.addSeparator();
-            m_menu.addItem(CmsContextMenuItem.createItemWithoutImage("Relations", relations));
-            m_menu.addSeparator();
-            m_menu.addItem(CmsContextMenuItem.createItemWithoutImage("Permissions", cmd));
-            m_menu.addItem(CmsContextMenuItem.createItemWithoutImage("Change navigation", cmd));
-            m_menu.addSeparator();
-            m_menu.addItem(CmsContextMenuItem.createItemWithoutImage("Advanced", advanced));
-            m_menu.addSeparator();
-            m_menu.addItem(CmsContextMenuItem.createItemWithoutImage("History", cmd));
-            m_menu.addItem(CmsContextMenuItem.createItemWithoutImage("Properties", cmd));
-
-            getPopupContent().addCloseHandler(new CmsContextMenuHandler(m_menu));
-
-            DOM.removeElementAttribute(getPopupContent().getWidget().getElement(), "style");
-            m_menuPanel.getElement().addClassName(I_CmsLayoutBundle.INSTANCE.contextmenuCss().menuPanel());
-            m_menuPanel.setWidget(0, 0, m_menu);
-
+            getHandler().loadContextMenu(CmsCoreProvider.get().getUri());
             m_initialized = true;
         }
 
-        m_resizeRegistration = Window.addResizeHandler(m_menu);
     }
 
     /**
@@ -176,4 +106,21 @@ public class CmsToolbarContextButton extends A_CmsToolbarMenu {
         }
     }
 
+    /**
+     * Creates the menu and adds it to the panel.<p>
+     * 
+     * @param menuEntries the menu entries 
+     */
+    public void showMenu(List<I_CmsContextMenuEntry> menuEntries) {
+
+        if ((menuEntries != null) && !menuEntries.isEmpty()) {
+            m_menu = new CmsContextMenu(menuEntries, true);
+            m_resizeRegistration = Window.addResizeHandler(m_menu);
+        }
+        getPopupContent().addCloseHandler(new CmsContextMenuHandler(m_menu));
+
+        DOM.removeElementAttribute(getPopupContent().getWidget().getElement(), "style");
+        m_menuPanel.getElement().addClassName(I_CmsLayoutBundle.INSTANCE.contextmenuCss().menuPanel());
+        m_menuPanel.setWidget(0, 0, m_menu);
+    }
 }

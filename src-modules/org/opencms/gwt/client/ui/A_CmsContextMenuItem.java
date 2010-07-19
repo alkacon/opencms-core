@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/A_CmsContextMenuItem.java,v $
- * Date   : $Date: 2010/07/15 17:13:12 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/07/19 14:11:43 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since version 8.0.0
  */
@@ -248,9 +248,11 @@ implements ClickHandler, MouseOutHandler, MouseOverHandler, HasClickHandlers, Ha
     /**
      * Generates the HTML for a menu item.<p>
      * 
+     * @param hasSubMenu signals if this menu has a sub menu
+     * 
      * @return the HTML for the menu item
      */
-    protected abstract String getMenuItemHtml();
+    protected abstract String getMenuItemHtml(boolean hasSubMenu);
 
     /**
      * @see com.google.gwt.user.client.ui.Composite#initWidget(com.google.gwt.user.client.ui.Widget)

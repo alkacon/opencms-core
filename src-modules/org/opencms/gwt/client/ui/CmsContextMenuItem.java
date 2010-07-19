@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsContextMenuItem.java,v $
- * Date   : $Date: 2010/07/15 17:13:12 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/07/19 14:11:43 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import com.google.gwt.user.client.ui.HTML;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since version 8.0.0
  */
@@ -68,143 +68,26 @@ public final class CmsContextMenuItem extends A_CmsContextMenuItem {
     private String m_imagePath;
 
     /**
-     * Constructs a new menu item that cascades to a sub-menu when it is selected.<p>
-     * 
-     * @param text the item's text
-     * @param subMenu the sub-menu to be displayed when it is selected
+     * @param entry
      */
-    private CmsContextMenuItem(String text, CmsContextMenu subMenu) {
+    public CmsContextMenuItem(I_CmsContextMenuEntry entry) {
 
-        super(text);
-        setSubMenu(subMenu);
-    }
-
-    /**
-     * Constructs a new menu item that fires a command when it is selected.<p>
-     * 
-     * @param text the item's text
-     * @param cmd the command to be fired when it is selected
-     */
-    private CmsContextMenuItem(String text, Command cmd) {
-
-        super(text);
-        m_command = cmd;
-    }
-
-    /**
-     * Creates a item with an image in front of it and sets sub menu which opens on hover.<p>
-     * 
-     * Takes the given image class to create the image.<p>
-     *   
-     * @param text the text for the item
-     * @param subMenu the sub menu for the item
-     * @param imageClass the image path
-     * 
-     * @return the new menu item
-     */
-    public static CmsContextMenuItem createItemWithImageClass(String text, CmsContextMenu subMenu, String imageClass) {
-
-        CmsContextMenuItem item = new CmsContextMenuItem(text, subMenu);
-        item.setImageClass(imageClass);
-        item.init();
-        return item;
-    }
-
-    /**
-     * Creates a item with an image in front of the item and sets command which will be executed on click.<p>
-     * 
-     * Takes the given image class to create the image.<p>
-     *   
-     * @param text the text for the item
-     * @param cmd the command for the item
-     * @param imageClass the image path
-     * 
-     * @return the new menu item
-     */
-    public static CmsContextMenuItem createItemWithImageClass(String text, Command cmd, String imageClass) {
-
-        CmsContextMenuItem item = new CmsContextMenuItem(text, cmd);
-        item.setImageClass(imageClass);
-        item.init();
-        return item;
-    }
-
-    /**
-     * Creates a item with an image in front of it and sets sub menu which opens on hover.<p>
-     * 
-     * Takes the given image path to create the image.<p>
-     *   
-     * @param text the text for the item
-     * @param subMenu the sub menu for the item
-     * @param imagePath the image path
-     * 
-     * @return the new menu item
-     */
-    public static CmsContextMenuItem createItemWithImagePath(String text, CmsContextMenu subMenu, String imagePath) {
-
-        CmsContextMenuItem item = new CmsContextMenuItem(text, subMenu);
-        item.setImagePath(imagePath);
-        item.init();
-        return item;
-    }
-
-    /**
-     * Creates a item with an image in front of the item and sets command which will be executed on click.<p>
-     * 
-     * Takes the given image path to create the image.<p>
-     *   
-     * @param text the text for the item
-     * @param cmd the command for the item
-     * @param imagePath the image path
-     * 
-     * @return the new menu item
-     */
-    public static CmsContextMenuItem createItemWithImagePath(String text, Command cmd, String imagePath) {
-
-        CmsContextMenuItem item = new CmsContextMenuItem(text, cmd);
-        item.setImagePath(imagePath);
-        item.init();
-        return item;
-    }
-
-    /**
-     * Creates a item and sets the sub menu which will be opened on hover.<p>
-     * 
-     * @param text the text for the item
-     * @param subMenu the sub menu for the item
-     * 
-     * @return the new menu item
-     */
-    public static CmsContextMenuItem createItemWithoutImage(String text, CmsContextMenu subMenu) {
-
-        CmsContextMenuItem item = new CmsContextMenuItem(text, subMenu);
-        item.init();
-        return item;
-    }
-
-    /**
-     * Creates a item and sets command which will be executed on click.<p>
-     * 
-     * @param text the text for the item
-     * @param cmd the command for the item
-     * 
-     * @return the new menu item
-     */
-    public static CmsContextMenuItem createItemWithoutImage(String text, Command cmd) {
-
-        CmsContextMenuItem item = new CmsContextMenuItem(text, cmd);
-        item.init();
-        return item;
-    }
-
-    /**
-     * Initializes the item with its HTML.<p>
-     */
-    public void init() {
-
-        m_panel = new HTML(getMenuItemHtml());
+        super(entry.getLabel());
+        m_panel = new HTML(getMenuItemHtml(entry.hasSubMenu()));
         initWidget(m_panel);
         setStyleName(I_CmsLayoutBundle.INSTANCE.contextmenuCss().cmsMenuItem());
+
+        setImagePath(entry.getImagePath());
+        setImageClass(entry.getImageClass());
+        setCommand(entry.getCommand());
+
+        if (!entry.isActive()) {
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(entry.getReason())) {
+                setEnabled(entry.isActive(), entry.getReason());
+            } else {
+                setEnabled(entry.isActive(), "");
+            }
+        }
     }
 
     /**
@@ -219,33 +102,13 @@ public final class CmsContextMenuItem extends A_CmsContextMenuItem {
     }
 
     /**
-     * Sets the image class.<p>
-     * 
-     * @param imageClass the image class to set
-     */
-    private void setImageClass(String imageClass) {
-
-        m_imageClass = imageClass;
-    }
-
-    /**
-     * Sets the image path.<p>
-     * 
-     * @param imagePath the path to set
-     */
-    private void setImagePath(String imagePath) {
-
-        m_imagePath = imagePath;
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.A_CmsContextMenuItem#getMenuItemHtml()
+     * @see org.opencms.gwt.client.ui.A_CmsContextMenuItem#getMenuItemHtml(boolean)
      */
     @Override
-    protected String getMenuItemHtml() {
+    protected String getMenuItemHtml(boolean hasSubMenu) {
 
         StringBuffer html = new StringBuffer();
-        if (hasSubmenu()) {
+        if (hasSubMenu) {
             // if this menu item has a sub menu show the arrow-icon behind the text of the icon
             html.append("<div class=\"");
             html.append(I_CmsLayoutBundle.INSTANCE.contextmenuCss().arrow()
@@ -277,4 +140,34 @@ public final class CmsContextMenuItem extends A_CmsContextMenuItem {
         return html.toString();
     }
 
+    /**
+     * Sets the command.<p>
+     * 
+     * @param command the command to set
+     */
+    private void setCommand(Command command) {
+
+        m_command = command;
+
+    }
+
+    /**
+     * Sets the image class.<p>
+     * 
+     * @param imageClass the image class to set
+     */
+    private void setImageClass(String imageClass) {
+
+        m_imageClass = imageClass;
+    }
+
+    /**
+     * Sets the image path.<p>
+     * 
+     * @param imagePath the path to set
+     */
+    private void setImagePath(String imagePath) {
+
+        m_imagePath = imagePath;
+    }
 }

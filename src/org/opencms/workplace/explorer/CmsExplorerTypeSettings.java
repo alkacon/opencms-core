@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerTypeSettings.java,v $
- * Date   : $Date: 2010/07/06 14:03:50 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/07/19 14:11:43 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,11 +58,11 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsExplorerTypeSettings implements Comparable {
+public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettings> {
 
     /** The default order start value for context menu entries. */
     public static final int ORDER_VALUE_DEFAULT_START = 100000;
@@ -187,13 +187,13 @@ public class CmsExplorerTypeSettings implements Comparable {
     /**
      * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
-    public int compareTo(Object obj) {
+    @Override
+    public int compareTo(CmsExplorerTypeSettings other) {
 
-        if (obj == this) {
+        if (other == this) {
             return 0;
         }
-        if (obj instanceof CmsExplorerTypeSettings) {
-            CmsExplorerTypeSettings other = (CmsExplorerTypeSettings)obj;
+        if (other != null) {
             String myPage = getNewResourcePage();
             String otherPage = other.getNewResourcePage();
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(myPage)) {

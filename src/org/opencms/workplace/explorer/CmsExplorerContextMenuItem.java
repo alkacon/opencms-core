@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerContextMenuItem.java,v $
- * Date   : $Date: 2009/06/04 14:29:45 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/07/19 14:11:43 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import java.util.List;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -53,13 +53,28 @@ public class CmsExplorerContextMenuItem {
     /** The name for a separator type. */
     public static final String TYPE_SEPARATOR = "sep";
 
+    /** The key (label) for the menu item. */
     private String m_key;
+
+    /** The parent menu item. */
     private CmsExplorerContextMenuItem m_parent;
+
+    /** The name of the rule for the menu item. */
     private String m_rule;
+
+    /** A list of rules. */
     private String m_rules;
-    private List m_subItems;
+
+    /** The sub items of this item. */
+    private List<CmsExplorerContextMenuItem> m_subItems;
+
+    /** The frame target of the current item. */
     private String m_target;
+
+    /** The type of the current item. */
     private String m_type;
+
+    /** The dialog URI of the current item. */
     private String m_uri;
 
     /**
@@ -135,7 +150,7 @@ public class CmsExplorerContextMenuItem {
      * 
      * @return the sub item entries of this context menu item
      */
-    public List getSubItems() {
+    public List<CmsExplorerContextMenuItem> getSubItems() {
 
         return m_subItems;
     }
@@ -259,7 +274,7 @@ public class CmsExplorerContextMenuItem {
     protected void addSubItem(CmsExplorerContextMenuItem item, String type) {
 
         if (m_subItems == null) {
-            m_subItems = new ArrayList();
+            m_subItems = new ArrayList<CmsExplorerContextMenuItem>();
         }
         item.setType(type);
         m_subItems.add(item);

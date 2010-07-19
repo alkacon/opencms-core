@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsContextMenu.java,v $
- * Date   : $Date: 2010/07/15 17:13:12 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/07/19 14:11:43 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,8 @@ package org.opencms.gwt.client.ui;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsLabel;
 
+import java.util.List;
+
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
@@ -50,7 +52,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since version 8.0.0
  */
@@ -71,12 +73,14 @@ public class CmsContextMenu extends Composite implements ResizeHandler {
     /**
      * Constructor.<p>
      * 
+     * @param menuData the data structure for the context menu 
      * @param isFixed indicating if the position of the menu should be fixed.
      */
-    public CmsContextMenu(boolean isFixed) {
+    public CmsContextMenu(List<I_CmsContextMenuEntry> menuData, boolean isFixed) {
 
         initWidget(m_panel);
         m_isFixed = isFixed;
+        createContextMenu(menuData);
         setStyleName(I_CmsLayoutBundle.INSTANCE.contextmenuCss().cmsMenuBar());
         Element e = m_popup.getDialog().getWidget().getParent().getElement();
         DOM.removeElementAttribute(e, "style");
@@ -282,5 +286,28 @@ public class CmsContextMenu extends Composite implements ResizeHandler {
 
         // finally set the position of the popup
         m_popup.setPosition(left, top);
+    }
+
+    /**
+     * Creates the context menu.<p>
+     * 
+     * @param entries a list with all entries for the context menu
+     */
+    private void createContextMenu(List<I_CmsContextMenuEntry> entries) {
+
+        for (I_CmsContextMenuEntry entry : entries) {
+            CmsContextMenuItem item = null;
+            if (entry.isSeparator()) {
+                addSeparator();
+            } else {
+                if (entry.hasSubMenu()) {
+                    item = new CmsContextMenuItem(entry);
+                    item.setSubMenu(new CmsContextMenu(entry.getSubMenu(), m_isFixed));
+                    addItem(item);
+                } else {
+                    addItem(new CmsContextMenuItem(entry));
+                }
+            }
+        }
     }
 }
