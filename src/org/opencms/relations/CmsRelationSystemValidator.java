@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsRelationSystemValidator.java,v $
- * Date   : $Date: 2010/04/20 13:44:58 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/07/19 12:35:35 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,6 +46,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.commons.CmsProgressThread;
+import org.opencms.xml.sitemap.CmsPublishSitemapCache;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -68,7 +69,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert
  * @author Michael Moossen
  *   
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.3.0 
  */
@@ -106,11 +107,13 @@ public class CmsRelationSystemValidator {
      * @return a map with lists of invalid links 
      *          (<code>{@link org.opencms.relations.CmsRelation}}</code> objects) 
      *          keyed by root paths
+     *          
+     * @throws Exception if something goes wrong          
      */
     public Map<String, List<CmsRelation>> validateResources(
         CmsDbContext dbc,
         CmsPublishList publishList,
-        I_CmsReport report) {
+        I_CmsReport report) throws Exception {
 
         // check if progress should be set in the thread
         CmsProgressThread thread = null;
@@ -194,6 +197,11 @@ public class CmsRelationSystemValidator {
                 LOG.error(e.getLocalizedMessage(), e);
             }
         }
+        String name = publishList == null ? "CmsPublishSitemapCache(null)" : "CmsPublishSitemapCache(pubHistId="
+            + publishList.getPublishHistoryId().toString()
+            + ")";
+        CmsPublishSitemapCache sitemapCache = OpenCms.getSitemapManager().createPublishSitemapCache(name);
+        sitemapCache.init(dbc.currentProject(), project, offlineFilesLookup);
 
         boolean foundBrokenLinks = false;
         for (int index = 0, size = resources.size(); index < size; index++) {
@@ -222,7 +230,13 @@ public class CmsRelationSystemValidator {
                     dbc.removeSiteRoot(resourceName)));
                 report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
             }
-            List<CmsRelation> brokenLinks = validateLinks(dbc, resource, offlineFilesLookup, project, report);
+            List<CmsRelation> brokenLinks = validateLinks(
+                dbc,
+                resource,
+                offlineFilesLookup,
+                sitemapCache,
+                project,
+                report);
             if (brokenLinks.size() > 0) {
                 // the resource contains broken links
                 invalidResources.put(resourceName, brokenLinks);
@@ -252,11 +266,169 @@ public class CmsRelationSystemValidator {
     }
 
     /**
+     * Checks a link to a resource which has been deleted.<p>
+     * 
+     * @param link the URI of the resource which has a link to the deleted resource  
+     * @param fileLookup a lookup table of files to be published  
+     * 
+     * @return true if the resource which has a link to the deleted resource is also going to be deleted  
+     */
+    protected boolean checkLinkForDeletedLinkTarget(String link, Map<String, CmsResource> fileLookup) {
+
+        boolean isValidLink = false;
+        // since we are going to delete the resource
+        // check if the linked resource is also to be deleted
+        if (fileLookup.containsKey(link)) {
+            CmsResource offlineResource = fileLookup.get(link);
+            isValidLink = offlineResource.getState().isDeleted();
+        }
+        return isValidLink;
+    }
+
+    /**
+     * Checks a link from a resource which has changed.<p>
+     * 
+     * @param resource the link source 
+     * @param relation the relation 
+     * @param link the link target 
+     * @param project the current project 
+     * @param fileLookup a lookup table which contains the files which are going to be published 
+     * @param sitemapCache
+     *  
+     * @return true if the link will be valid after publishing 
+     */
+    protected boolean checkLinkForNewOrChangedLinkSource(
+        CmsResource resource,
+        CmsRelation relation,
+        String link,
+        CmsProject project,
+        Map<String, CmsResource> fileLookup,
+        CmsPublishSitemapCache sitemapCache) {
+
+        boolean isValidLink = true;
+        // the link is valid...
+        try {
+            // ... if the linked resource exists in the online project
+            // search the target of link in the online project
+            try {
+                CmsDbContext newDbc = new CmsDbContext();
+                link = m_driverManager.getVfsDriver(newDbc).readResource(
+                    newDbc,
+                    project.getUuid(),
+                    relation.getTargetId(),
+                    true).getRootPath();
+            } catch (CmsVfsResourceNotFoundException e) {
+                // reading by id failed, this means that the link variable still equals relation.getTargetPath() 
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(Messages.get().getBundle().key(
+                        Messages.LOG_LINK_VALIDATION_READBYID_FAILED_2,
+                        relation.getTargetId().toString(),
+                        project.getName()), e);
+                }
+                CmsDbContext newDbc = new CmsDbContext();
+                m_driverManager.getVfsDriver(newDbc).readResource(
+                    newDbc,
+                    project.getUuid(),
+                    relation.getTargetPath(),
+                    true);
+            }
+        } catch (CmsException e) {
+            // ... or if the linked resource is a resource that gets actually published
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().getBundle().key(
+                    Messages.LOG_LINK_VALIDATION_READBYPATH_FAILED_2,
+                    relation.getTargetPath(),
+                    project.getName()), e);
+            }
+            if (!fileLookup.containsKey(link)) {
+                // isValidLink = false;
+                isValidLink = sitemapCache.checkLink(relation.getTargetId(), relation.getTargetPath());
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(Messages.get().getBundle().key(Messages.LOG_LINK_VALIDATION_RESOURCENOTINLOOKUP_1, link));
+                }
+            }
+        } finally {
+            // ... and if the linked resource to be published get deleted
+            if (fileLookup.containsKey(link)) {
+                CmsResource offlineResource = fileLookup.get(link);
+                if (offlineResource.getState().isDeleted()) {
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(Messages.get().getBundle().key(Messages.LOG_LINK_VALIDATION_RESOURCEDELETED_1, link));
+                    }
+                    isValidLink = sitemapCache.checkLink(relation.getTargetId(), relation.getTargetPath());
+                }
+            }
+        }
+        return isValidLink;
+    }
+
+    /**
+     * Checks whether publishing will not invalidate a link.<p>
+     * 
+     * @param resource the target resource of the link if it is going to be deleted, else the source of the link 
+     * @param relation the relation which should be checked 
+     * @param link the link URI 
+     * @param project the current project 
+     * @param fileLookup a lookup table which contains the files which are going to be published 
+     * @param sitemapCache 
+     * 
+     * @return true if there will be no invalid link after publishing 
+     */
+    protected boolean checkLinkValid(
+        CmsResource resource,
+        CmsRelation relation,
+        String link,
+        CmsProject project,
+        Map<String, CmsResource> fileLookup,
+        CmsPublishSitemapCache sitemapCache) {
+
+        if (resource.getState().isDeleted()) {
+            return checkLinkForDeletedLinkTarget(link, fileLookup);
+        } else {
+            return checkLinkForNewOrChangedLinkSource(resource, relation, link, project, fileLookup, sitemapCache);
+        }
+    }
+
+    /**
+     * Returns the list of link relations for a resource.<p>
+     * 
+     * If the resource is going to be deleted, the ingoing relations will be collected, else the outgoing relations.<p>
+     * 
+     * @param dbc the current database context 
+     * @param project the project to use 
+     * @param resource the resource for which the relations should be collected 
+     * 
+     * @return a list of relations 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    protected List<CmsRelation> getLinkRelations(CmsDbContext dbc, CmsProject project, CmsResource resource)
+    throws CmsException {
+
+        List<CmsRelation> relations;
+        if (!resource.getState().isDeleted()) {
+            // search the target of links in the current (offline) project
+            relations = m_driverManager.getRelationsForResource(dbc, resource, CmsRelationFilter.TARGETS);
+        } else {
+            // search the source of links in the online project
+            CmsProject currentProject = dbc.currentProject();
+            dbc.getRequestContext().setCurrentProject(project);
+            try {
+                relations = m_driverManager.getRelationsForResource(dbc, resource, CmsRelationFilter.SOURCES);
+            } finally {
+                dbc.getRequestContext().setCurrentProject(currentProject);
+            }
+        }
+        return relations;
+    }
+
+    /**
      * Validates the links for the specified resource.<p>
      * 
      * @param dbc the database context
      * @param resource the resource that will be validated
      * @param fileLookup a map for faster lookup with all resources keyed by their rootpath
+     * @param sitemapCache the sitemap cache for checking sitemap links 
      * @param project the project to validate
      * @param report the report to write to
      * 
@@ -267,6 +439,7 @@ public class CmsRelationSystemValidator {
         CmsDbContext dbc,
         CmsResource resource,
         Map<String, CmsResource> fileLookup,
+        CmsPublishSitemapCache sitemapCache,
         CmsProject project,
         I_CmsReport report) {
 
@@ -276,19 +449,7 @@ public class CmsRelationSystemValidator {
         // get the relations
         List<CmsRelation> relations = null;
         try {
-            if (!resource.getState().isDeleted()) {
-                // search the target of links in the current (offline) project
-                relations = m_driverManager.getRelationsForResource(dbc, resource, CmsRelationFilter.TARGETS);
-            } else {
-                // search the source of links in the online project
-                CmsProject currentProject = dbc.currentProject();
-                dbc.getRequestContext().setCurrentProject(project);
-                try {
-                    relations = m_driverManager.getRelationsForResource(dbc, resource, CmsRelationFilter.SOURCES);
-                } finally {
-                    dbc.getRequestContext().setCurrentProject(currentProject);
-                }
-            }
+            relations = getLinkRelations(dbc, project, resource);
         } catch (CmsException e) {
             LOG.error(Messages.get().getBundle().key(Messages.LOG_LINK_SEARCH_1, resource), e);
             if (report != null) {
@@ -310,7 +471,6 @@ public class CmsRelationSystemValidator {
             } else {
                 link = relation.getSourcePath();
             }
-            boolean isValidLink = true;
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(link)) {
                 // skip empty links
                 continue;
@@ -323,73 +483,7 @@ public class CmsRelationSystemValidator {
                 }
                 continue;
             }
-            // the link is valid...
-            try {
-                // ... if the linked resource exists in the online project
-                if (!resource.getState().isDeleted()) {
-                    // search the target of link in the online project
-                    try {
-                        CmsDbContext newDbc = new CmsDbContext();
-                        link = m_driverManager.getVfsDriver(newDbc).readResource(
-                            newDbc,
-                            project.getUuid(),
-                            relation.getTargetId(),
-                            true).getRootPath();
-                    } catch (CmsVfsResourceNotFoundException e) {
-                        if (LOG.isDebugEnabled()) {
-                            LOG.debug(Messages.get().getBundle().key(
-                                Messages.LOG_LINK_VALIDATION_READBYID_FAILED_2,
-                                relation.getTargetId().toString(),
-                                project.getName()), e);
-                        }
-                        CmsDbContext newDbc = new CmsDbContext();
-                        m_driverManager.getVfsDriver(newDbc).readResource(
-                            newDbc,
-                            project.getUuid(),
-                            relation.getTargetPath(),
-                            true);
-                    }
-                } else {
-                    // since we are going to delete the resource
-                    // check if the linked resource is also to be deleted
-                    isValidLink = false;
-                    if (fileLookup.containsKey(link)) {
-                        CmsResource offlineResource = fileLookup.get(link);
-                        if (offlineResource.getState().isDeleted()) {
-                            isValidLink = true;
-                        }
-                    }
-                }
-            } catch (CmsException e) {
-                // ... or if the linked resource is a resource that gets actually published
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().getBundle().key(
-                        Messages.LOG_LINK_VALIDATION_READBYPATH_FAILED_2,
-                        relation.getTargetPath(),
-                        project.getName()), e);
-                }
-                if (!fileLookup.containsKey(link)) {
-                    isValidLink = false;
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug(Messages.get().getBundle().key(
-                            Messages.LOG_LINK_VALIDATION_RESOURCENOTINLOOKUP_1,
-                            link));
-                    }
-                }
-            } finally {
-                // ... and if the linked resource to be published get deleted
-                if (!resource.getState().isDeleted() && fileLookup.containsKey(link)) {
-                    CmsResource offlineResource = fileLookup.get(link);
-                    if (offlineResource.getState().isDeleted()) {
-                        if (LOG.isDebugEnabled()) {
-                            LOG.debug(Messages.get().getBundle().key(
-                                Messages.LOG_LINK_VALIDATION_RESOURCEDELETED_1,
-                                link));
-                        }
-                        isValidLink = false;
-                    }
-                }
-            }
+            boolean isValidLink = checkLinkValid(resource, relation, link, project, fileLookup, sitemapCache);
             if (!isValidLink) {
                 if (first) {
                     if (report != null) {
@@ -418,4 +512,5 @@ public class CmsRelationSystemValidator {
         }
         return brokenRelations;
     }
+
 }

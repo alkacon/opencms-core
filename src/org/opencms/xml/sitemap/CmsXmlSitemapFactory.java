@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsXmlSitemapFactory.java,v $
- * Date   : $Date: 2010/01/18 14:14:32 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/07/19 12:35:34 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,14 +61,11 @@ import org.xml.sax.EntityResolver;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 7.5.2
  */
 public final class CmsXmlSitemapFactory {
-
-    /** The sitemap cache. */
-    private static CmsSitemapCache m_cache = OpenCms.getSitemapManager().getCache();
 
     /**
      * No instances of this class should be created.<p> 
@@ -394,9 +391,10 @@ public final class CmsXmlSitemapFactory {
         if (resource instanceof I_CmsHistoryResource) {
             return null;
         }
-        return m_cache.getDocument(
-            m_cache.getCacheKey(resource.getStructureId(), keepEncoding),
-            cms.getRequestContext().currentProject().isOnlineProject());
+        boolean online = cms.getRequestContext().currentProject().isOnlineProject();
+        CmsSitemapXmlCache cache = OpenCms.getSitemapManager().getSitemapXmlCache(online);
+        String key = cache.getCacheKey(resource.getStructureId(), keepEncoding);
+        return cache.getDocument(key);
     }
 
     /**
@@ -412,9 +410,8 @@ public final class CmsXmlSitemapFactory {
             return;
         }
         boolean online = cms.getRequestContext().currentProject().isOnlineProject();
-        m_cache.setDocument(
-            m_cache.getCacheKey(xmlSitemap.getFile().getStructureId(), keepEncoding),
-            xmlSitemap,
-            online);
+        CmsSitemapXmlCache cache = OpenCms.getSitemapManager().getSitemapXmlCache(online);
+        String key = cache.getCacheKey(xmlSitemap.getFile().getStructureId(), keepEncoding);
+        cache.setDocument(key, xmlSitemap);
     }
 }

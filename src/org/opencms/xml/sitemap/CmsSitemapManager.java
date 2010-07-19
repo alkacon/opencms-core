@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2010/07/07 09:12:09 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2010/07/19 12:35:34 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.46 $
+ * @version $Revision: 1.47 $
  * 
  * @since 7.9.2
  */
@@ -131,11 +131,17 @@ public class CmsSitemapManager {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSitemapManager.class);
 
+    /** The internal admin CmsObject. */
+    private CmsObject m_adminCms;
+
     /** The cache instance. */
-    private CmsSitemapCache m_cache;
+    private I_CmsSitemapCache m_cache;
 
     /** Lazy initialized sitemap type id. */
     private int m_sitemapTypeId;
+
+    /** The caches for XML sitemaps. */
+    private Map<Boolean, CmsSitemapXmlCache> m_sitemapXmlCaches;
 
     /**
      * Creates a new sitemap manager.<p>
@@ -149,12 +155,26 @@ public class CmsSitemapManager {
         CmsMemoryMonitor memoryMonitor,
         CmsSystemConfiguration systemConfiguration) {
 
+        m_adminCms = adminCms;
         // initialize the sitemap cache
         CmsSitemapCacheSettings cacheSettings = systemConfiguration.getSitemapCacheSettings();
         if (cacheSettings == null) {
             cacheSettings = new CmsSitemapCacheSettings();
         }
-        m_cache = new CmsSitemapCache(adminCms, memoryMonitor, cacheSettings);
+        //m_cache = new CmsSitemapCache(adminCms, memoryMonitor, cacheSettings);
+        m_cache = new CmsOnlineAndOfflineSitemapCache(adminCms, memoryMonitor);
+
+        m_sitemapXmlCaches = new HashMap<Boolean, CmsSitemapXmlCache>();
+        CmsSitemapXmlCache onlineXmlCache = new CmsSitemapXmlCache(
+            "Online",
+            true,
+            cacheSettings.getDocumentOnlineSize());
+        CmsSitemapXmlCache offlineXmlCache = new CmsSitemapXmlCache(
+            "Offline",
+            false,
+            cacheSettings.getDocumentOfflineSize());
+        m_sitemapXmlCaches.put(Boolean.TRUE, onlineXmlCache);
+        m_sitemapXmlCaches.put(Boolean.FALSE, offlineXmlCache);
 
         if (!isSitemapResourceInitConfigured(systemConfiguration)) {
             LOG.warn(Messages.get().getBundle().key(
@@ -223,6 +243,18 @@ public class CmsSitemapManager {
         // TODO: implement this
         int todo;
         return OpenCms.getADEManager().createNewElement(cms, sitemapUri, request, type);
+    }
+
+    /** 
+     * Creates a special sitemap cache for checking sitemap links when publishing.<p>
+     * 
+     * @param name the name for the sitemap cache 
+     * @return the created publish sitemap cache
+     * 
+     */
+    public CmsPublishSitemapCache createPublishSitemapCache(String name) {
+
+        return new CmsPublishSitemapCache(m_adminCms, name);
     }
 
     /**
@@ -383,8 +415,27 @@ public class CmsSitemapManager {
      */
     public CmsSitemapEntry getEntryForUri(CmsObject cms, String entryUri) throws CmsException {
 
+        return getEntryForUri(cms, entryUri, m_cache);
+    }
+
+    /**
+     * Returns the sitemap entry for the given URI, or <code>null</code> if not found.<p>
+     * 
+     * If the URI passed as an argument is a VFS URI instead of a sitemap URI, a dummy sitemap
+     * entry for the VFS location will be returned.<p>
+     * 
+     * @param cms the current CMS context
+     * @param entryUri the sitemap entry URI to look for
+     * @param cache the sitemap cache which should be used for the lookup 
+     * 
+     * @return the sitemap entry for the given URI, or <code>null</code> if not found
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public CmsSitemapEntry getEntryForUri(CmsObject cms, String entryUri, I_CmsSitemapCache cache) throws CmsException {
+
         // get the entry for the given path
-        CmsInternalSitemapEntry entry = m_cache.getEntryByUri(cms, entryUri);
+        CmsInternalSitemapEntry entry = cache.getEntryByUri(cms, entryUri);
         if (entry != null) {
             // check permissions
             cms.readResource(entry.getStructureId());
@@ -401,7 +452,7 @@ public class CmsSitemapManager {
             // not a detail page URI
             return new CmsInternalSitemapEntry(cms, entryUri);
         }
-        entry = m_cache.getEntryByUri(cms, CmsResource.getParentFolder(entryUri));
+        entry = cache.getEntryByUri(cms, CmsResource.getParentFolder(entryUri));
         if (entry == null) {
             // not a detail page URI
             return new CmsInternalSitemapEntry(cms, entryUri);
@@ -635,6 +686,18 @@ public class CmsSitemapManager {
     }
 
     /**
+     * Returns the cache for {@link CmsXmlSitemap} instances for the online or offline projects depending on a flag.
+     * 
+     * @param online if true, the online sitemap XML cache will be returned, else the offline cache
+     *  
+     * @return either the online or offline sitemap XML cache depending on the value of <code>online</code>
+     */
+    public CmsSitemapXmlCache getSitemapXmlCache(boolean online) {
+
+        return m_sitemapXmlCaches.get(new Boolean(online));
+    }
+
+    /**
      * Tries to find a sitem path for a resource in a given sitemap.<p>
      * 
      * @param cms the current CMS context 
@@ -689,6 +752,8 @@ public class CmsSitemapManager {
     public void shutdown() {
 
         m_cache.shutdown();
+        getSitemapXmlCache(true).shutdown();
+        getSitemapXmlCache(false).shutdown();
     }
 
     /**
@@ -696,7 +761,7 @@ public class CmsSitemapManager {
      *
      * @return the cache
      */
-    protected CmsSitemapCache getCache() {
+    protected I_CmsSitemapCache getCache() {
 
         return m_cache;
     }
