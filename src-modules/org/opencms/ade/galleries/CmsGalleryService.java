@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/Attic/CmsGalleryService.java,v $
- * Date   : $Date: 2010/07/08 09:26:45 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2010/07/19 07:45:28 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -76,8 +76,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -87,7 +87,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Polina Smagina
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.27 $ 
  * 
  * @since 8.0.0
  * 
@@ -417,7 +417,8 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                         // get search results given resource path
                         result = findResourceInGallery(currentelement, result);
                     }
-                } else {
+                }
+                if ((result.getResults() == null) || result.getResults().isEmpty()) {
                     result = search(result);
                 }
                 // remove all types
@@ -689,7 +690,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             bean.setGalleryTypeNames(galleryNames);
             I_CmsPreviewProvider preview = typeMapping.get(type);
             if (preview != null) {
-                bean.setPreviewProviderName(typeMapping.get(type).getPreviewName());
+                bean.setPreviewProviderName(preview.getPreviewName());
             }
             list.add(bean);
 
@@ -709,9 +710,14 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
         CmsResource resource = null;
         CmsProperty locale = CmsProperty.getNullProperty();
+        int pos = resourceName.indexOf("?");
+        String resName = resourceName;
+        if (pos > -1) {
+            resName = resourceName.substring(0, pos);
+        }
         try {
-            log("reading resource: " + resourceName);
-            resource = getCmsObject().readResource(resourceName);
+            log("reading resource: " + resName);
+            resource = getCmsObject().readResource(resName);
             locale = getCmsObject().readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_LOCALE, true);
         } catch (CmsException e) {
             logError(e);

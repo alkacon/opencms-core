@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/ui/Attic/CmsImageFormatsTab.java,v $
- * Date   : $Date: 2010/07/08 06:49:42 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/07/19 07:45:28 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,95 +31,28 @@
 
 package org.opencms.ade.galleries.client.preview.ui;
 
-import org.opencms.ade.galleries.client.ui.Messages;
+import org.opencms.ade.galleries.client.preview.CmsImageFormatHandler;
+import org.opencms.ade.galleries.client.preview.CmsImagePreviewHandler;
+import org.opencms.ade.galleries.client.preview.I_CmsPreviewHandler;
+import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.shared.CmsImageInfoBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
-import org.opencms.gwt.client.ui.CmsPushButton;
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
-import org.opencms.gwt.client.ui.input.CmsLabel;
-import org.opencms.gwt.client.ui.input.CmsSelectBox;
-import org.opencms.gwt.client.ui.input.CmsTextBox;
 
 import java.util.Map;
-
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * The widget to display the format information of the selected image.<p>
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.
  */
-public class CmsImageFormatsTab extends Composite {
-
-    /**
-     * @see com.google.gwt.uibinder.client.UiBinder
-     */
-    /* default */interface I_CmsImageFormatsTabUiBinder extends UiBinder<Widget, CmsImageFormatsTab> {
-        // GWT interface, nothing to do here
-    }
-
-    /** The label width. */
-    private static final int LABEL_WIDTH = 80;
-
-    /** Text metrics key. */
-    private static final String TM_PREVIEW_TAB_IMAGEFORMATS = "ImageFormatsTab";
-
-    /** The ui-binder instance for this class. */
-    private static I_CmsImageFormatsTabUiBinder uiBinder = GWT.create(I_CmsImageFormatsTabUiBinder.class);
-
-    /** The cropping button. */
-    @UiField
-    protected CmsPushButton m_cropButton;
-
-    /** The height label. */
-    @UiField
-    protected CmsLabel m_heightLabel;
-
-    /** The panel holding the content. */
-    @UiField
-    protected FlowPanel m_panel;
-
-    /** The remove cropping button. */
-    @UiField
-    protected CmsPushButton m_removeCropButton;
-
-    /** The select box. */
-    @UiField
-    protected CmsSelectBox m_selectBox;
-
-    /** The select box label. */
-    @UiField
-    protected CmsLabel m_selectBoxLabel;
-
-    /** The select button. */
-    @UiField
-    protected CmsPushButton m_selectButton;
-
-    /** The width label. */
-    @UiField
-    protected CmsLabel m_widthLabel;
-
-    /** The width text box. */
-    @UiField
-    protected CmsTextBox m_widthBox;
-
-    /** The height text box. */
-    @UiField
-    protected CmsTextBox m_heightBox;
+public class CmsImageFormatsTab extends A_CmsPreviewDetailTab {
 
     /** The mode of the gallery. */
-    private GalleryMode m_dialogMode;
+    private CmsImagePreviewHandler m_handler;
 
     /**
      * The constructor.<p>
@@ -127,35 +60,20 @@ public class CmsImageFormatsTab extends Composite {
      * @param dialogMode the mode of the gallery
      * @param height the height of the tab
      * @param width the width of the height
+     * @param handler the preview handler
      * @param formats the map with format values for the select box
      */
-    public CmsImageFormatsTab(GalleryMode dialogMode, int height, int width, Map<String, String> formats) {
+    public CmsImageFormatsTab(
+        GalleryMode dialogMode,
+        int height,
+        int width,
+        CmsImagePreviewHandler handler,
+        Map<String, String> formats) {
 
-        initWidget(uiBinder.createAndBindUi(this));
-
-        m_dialogMode = dialogMode;
-
-        m_selectBoxLabel.setText(Messages.get().key(Messages.GUI_PREVIEW_LABEL_FORMAT_0));
-        m_selectBoxLabel.truncate(TM_PREVIEW_TAB_IMAGEFORMATS, LABEL_WIDTH);
-
-        // TODO: set the select box values
-        m_selectBox.addOption("original", "original");
-        m_selectBox.addOption("user", "user");
-
-        // set localized values of the labels
-        m_cropButton.setText(Messages.get().key(Messages.GUI_PREVIEW_BUTTON_CROP_0));
-        m_cropButton.setImageClass(I_CmsImageBundle.INSTANCE.style().croppingIcon());
-
-        m_removeCropButton.setText(Messages.get().key(Messages.GUI_PREVIEW_BUTTON_REMOVECROP_0));
-        m_removeCropButton.setImageClass(I_CmsImageBundle.INSTANCE.style().removeCroppingIcon());
-
-        m_widthLabel.setText(Messages.get().key(Messages.GUI_PREVIEW_LABEL_WIDTH_0));
-        m_widthLabel.truncate(TM_PREVIEW_TAB_IMAGEFORMATS, LABEL_WIDTH);
-        m_heightLabel.setText(Messages.get().key(Messages.GUI_PREVIEW_LABEL_HEIGHT_0));
-        m_heightLabel.truncate(TM_PREVIEW_TAB_IMAGEFORMATS, LABEL_WIDTH);
-
-        // buttons        
-        m_selectButton.setText(Messages.get().key(Messages.GUI_PREVIEW_BUTTON_SELECT_0));
+        super(dialogMode, height, width);
+        m_content.removeStyleName(I_CmsLayoutBundle.INSTANCE.previewDialogCss().clearFix());
+        m_content.addStyleName(I_CmsLayoutBundle.INSTANCE.previewDialogCss().formatsPanel());
+        m_handler = handler;
 
     }
 
@@ -166,29 +84,25 @@ public class CmsImageFormatsTab extends Composite {
      */
     public void fillContent(CmsImageInfoBean imageInfo) {
 
-        m_widthBox.setFormValueAsString("" + imageInfo.getWidth());
-        m_heightBox.setFormValueAsString("" + imageInfo.getHeight());
+        CmsImageFormatHandler formatHandler = new CmsImageFormatHandler(
+            getDialogMode(),
+            imageInfo.getSelectedPath(),
+            imageInfo.getHeight(),
+            imageInfo.getWidth());
+        CmsImageFormatsForm formatsForm = new CmsImageFormatsForm(formatHandler);
+        formatHandler.init(formatsForm);
+        m_handler.setFormatHandler(formatHandler);
+        m_content.clear();
+        m_content.add(formatsForm);
     }
 
     /**
-     * Returns the gallery dialog mode.<p>
-     *
-     * @return the gallery dialog mode
+     * @see org.opencms.ade.galleries.client.preview.ui.A_CmsPreviewDetailTab#getHandler()
      */
-    public GalleryMode getDialogMode() {
+    @Override
+    protected I_CmsPreviewHandler<?> getHandler() {
 
-        return m_dialogMode;
+        return m_handler;
     }
 
-    /**
-     * Will be triggered when the select button is clicked.<p>
-     * 
-     * @param event the clicked event
-     */
-    @UiHandler("m_selectButton")
-    public void onSelectClick(ClickEvent event) {
-
-        // TODO:implement
-
-    }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/Attic/A_CmsPreviewHandler.java,v $
- * Date   : $Date: 2010/07/08 06:49:42 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/07/19 07:45:28 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,17 +49,11 @@ import com.google.gwt.user.client.Command;
  * @author Polina Smagina
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  */
 public abstract class A_CmsPreviewHandler<T extends CmsResourceInfoBean> implements I_CmsPreviewHandler<T> {
-
-    /** The reference to the preview dialog. */
-    protected A_CmsPreviewDialog<T> m_previewDialog;
-
-    /** The preview controller. */
-    protected A_CmsPreviewController<T> m_controller;
 
     /** The resource preview instance. */
     protected I_CmsResourcePreview m_resourcePreview;
@@ -67,12 +61,10 @@ public abstract class A_CmsPreviewHandler<T extends CmsResourceInfoBean> impleme
     /**
      * Constructor.<p>
      * 
-     * @param previewDialog the reference to the preview dialog 
      * @param resourcePreview the resource preview instance
      */
-    public A_CmsPreviewHandler(A_CmsPreviewDialog<T> previewDialog, I_CmsResourcePreview resourcePreview) {
+    public A_CmsPreviewHandler(I_CmsResourcePreview resourcePreview) {
 
-        m_previewDialog = previewDialog;
         m_resourcePreview = resourcePreview;
     }
 
@@ -81,47 +73,51 @@ public abstract class A_CmsPreviewHandler<T extends CmsResourceInfoBean> impleme
      */
     public void closePreview() {
 
-        if (m_previewDialog.hasChanges()) {
+        if (getDialog().hasChanges()) {
             //TODO: localization
-            m_previewDialog.confirmSaveChanges("Do you want to save before leaving the preview?", new Command() {
+            getDialog().confirmSaveChanges("Do you want to save before leaving the preview?", new Command() {
 
                 /**
                  * @see com.google.gwt.user.client.Command#execute()
                  */
                 public void execute() {
 
-                    if (m_previewDialog.getGalleryMode().equals(GalleryMode.editor)) {
+                    if (getDialog().getGalleryMode().equals(GalleryMode.editor)) {
                         CmsPreviewUtil.enableEditorOk(false);
                     }
-                    m_previewDialog.removePreview();
+                    getDialog().removePreview();
                     m_resourcePreview.clear();
                 }
             }, null);
             return;
         }
-        if (m_previewDialog.getGalleryMode() == GalleryMode.editor) {
+        if (getDialog().getGalleryMode() == GalleryMode.editor) {
             CmsPreviewUtil.enableEditorOk(false);
         }
-        m_previewDialog.removePreview();
+        getDialog().removePreview();
         m_resourcePreview.clear();
     }
 
     /**
-     * Returns the reference to the preview dialog.<p>
-     *
-     * @return the preview dialog
+     *  Returns the controller.<p>
+     *  
+     * @return the controller
      */
-    public A_CmsPreviewDialog<T> getPreviewDialog() {
+    public abstract A_CmsPreviewController<T> getController();
 
-        return m_previewDialog;
-    }
+    /**
+     * Returns the dialog.<p>
+     * 
+     * @return the dialog
+     */
+    public abstract A_CmsPreviewDialog<T> getDialog();
 
     /**
      * @see org.opencms.ade.galleries.client.preview.I_CmsPropertiesHandler#saveProperties(java.util.Map)
      */
     public void saveProperties(Map<String, String> properties) {
 
-        m_controller.saveProperties(properties);
+        getController().saveProperties(properties);
     }
 
     /**
@@ -129,7 +125,7 @@ public abstract class A_CmsPreviewHandler<T extends CmsResourceInfoBean> impleme
      */
     public void selectResource() {
 
-        m_controller.setResource(m_previewDialog.getGalleryMode());
+        getController().setResource(getDialog().getGalleryMode());
     }
 
     /**
@@ -137,10 +133,10 @@ public abstract class A_CmsPreviewHandler<T extends CmsResourceInfoBean> impleme
      */
     public boolean setDataInEditor() {
 
-        if (m_previewDialog.getGalleryMode() == GalleryMode.editor) {
-            if (m_previewDialog.hasChanges()) {
+        if (getDialog().getGalleryMode() == GalleryMode.editor) {
+            if (getDialog().hasChanges()) {
                 //TODO: localization
-                m_previewDialog.confirmSaveChanges("Do you want to save before leaving the dialog?", new Command() {
+                getDialog().confirmSaveChanges("Do you want to save before leaving the dialog?", new Command() {
 
                     /**
                      * @see com.google.gwt.user.client.Command#execute()
@@ -152,7 +148,7 @@ public abstract class A_CmsPreviewHandler<T extends CmsResourceInfoBean> impleme
                 }, null);
                 return false;
             } else {
-                m_controller.setResource(m_previewDialog.getGalleryMode());
+                getController().setResource(getDialog().getGalleryMode());
                 return true;
             }
         } else {
@@ -166,9 +162,9 @@ public abstract class A_CmsPreviewHandler<T extends CmsResourceInfoBean> impleme
     public void showData(T resourceInfo) {
 
         // once the resource info is displayed, enable the OK button for editor mode
-        if (m_previewDialog.getGalleryMode().equals(GalleryMode.editor)) {
+        if (getDialog().getGalleryMode().equals(GalleryMode.editor)) {
             CmsPreviewUtil.enableEditorOk(true);
         }
-        m_previewDialog.fillContent(resourceInfo);
+        getDialog().fillContent(resourceInfo);
     }
 }

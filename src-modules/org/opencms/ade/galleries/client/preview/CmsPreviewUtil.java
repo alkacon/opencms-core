@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/Attic/CmsPreviewUtil.java,v $
- * Date   : $Date: 2010/07/08 06:49:42 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/07/19 07:45:28 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,12 +37,14 @@ import org.opencms.util.CmsStringUtil;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.google.gwt.core.client.JsArrayString;
+
 /**
  * Utility class for resource preview.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -65,6 +67,9 @@ public final class CmsPreviewUtil {
 
     /** The set link function key. */
     static final String KEY_SET_LINK_FUNCTION = "setLink";
+
+    /** The get image info function key. */
+    static final String KEY_GET_IMAGE_INFO_FUNCTION = "getImageInfo";
 
     /**
      * Constructor.<p>
@@ -121,6 +126,66 @@ public final class CmsPreviewUtil {
      */
     public static native String getFieldId() /*-{
         return $wnd[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::KEY_FIELD_ID];
+    }-*/;
+
+    /**
+     * Returns the available image format names for gallery widget mode.<p>
+     * 
+     * @return the available image formats
+     */
+    public static native String getFormatNames()/*-{
+        var id=$wnd[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::KEY_HASH_ID];
+        var additional=$wnd.parent['cms_additional_'+id];
+        if (additional){ 
+        return additional['imageFormatNames'];
+        }
+        return null;
+    }-*/;
+
+    /**
+     * Returns the available image formats for gallery widget mode.<p>
+     * 
+     * @return the available image formats
+     */
+    public static String[] getFormats() {
+
+        JsArrayString tempArr = nativeGetFormats();
+        if ((tempArr == null) || (tempArr.length() == 0)) {
+            return null;
+        }
+        String[] result = new String[tempArr.length()];
+        for (int i = 0; i < tempArr.length(); i++) {
+            result[i] = tempArr.get(i);
+        }
+        return result;
+    }
+
+    /**
+     * Returns the available image formats for gallery widget mode.<p>
+     * 
+     * @return the available image formats
+     */
+    public static native JsArrayString nativeGetFormats()/*-{
+        var id=$wnd[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::KEY_HASH_ID];
+        var additional=$wnd.parent['cms_additional_'+id];
+        if (additional){ 
+        return additional['imageFormats'];
+        }
+        return null;
+    }-*/;
+
+    /**
+     * Returns if the image format selector should be shown within gallery widget mode.<p>
+     * 
+     * @return <code>true</code> if format selector should be shown
+     */
+    public static native boolean isShowFormats()/*-{
+        var id=$wnd[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::KEY_HASH_ID];
+        var additional=$wnd.parent['cms_additional_'+id];
+        if (additional){ 
+        return additional['useFormats'];
+        }
+        return false;
     }-*/;
 
     /**

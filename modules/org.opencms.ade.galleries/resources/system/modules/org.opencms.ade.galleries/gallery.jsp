@@ -13,6 +13,7 @@
     <% } else if (gallery.isWidgetMode()){ /* opened as widget include necessary scripts */ %>
     <script type="text/javascript">
     	var <%= I_CmsGalleryProviderConstants.KEY_FIELD_ID %> = '<%= request.getParameter(I_CmsGalleryProviderConstants.ReqParam.fieldid.name())%>';
+    	var <%= I_CmsGalleryProviderConstants.KEY_HASH_ID %> = '<%= request.getParameter(I_CmsGalleryProviderConstants.ReqParam.hashid.name())%>';
     </script>
     <% } %>
   </head>

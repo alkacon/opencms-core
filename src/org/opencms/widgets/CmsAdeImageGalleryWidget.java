@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsAdeImageGalleryWidget.java,v $
- * Date   : $Date: 2010/07/06 14:54:45 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/07/19 07:45:28 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,9 @@ package org.opencms.widgets;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.types.CmsResourceTypeImage;
+import org.opencms.i18n.CmsEncoder;
+import org.opencms.json.JSONArray;
+import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
 import org.opencms.main.OpenCms;
 
@@ -41,11 +44,15 @@ import org.opencms.main.OpenCms;
  *
  * @author Tobias Herrmann 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0 
  */
 public class CmsAdeImageGalleryWidget extends A_CmsAdeGalleryWidget {
+
+    private enum ImageWidgetInfo {
+        imageFormatNames, imageFormats, useFormats
+    }
 
     /** The gallery name. */
     private static final String GALLERY_NAME = "image";
@@ -86,16 +93,28 @@ public class CmsAdeImageGalleryWidget extends A_CmsAdeGalleryWidget {
     }
 
     /**
-     * @see org.opencms.widgets.A_CmsAdeGalleryWidget#getAdditionalGalleryInfo(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
+     * @throws JSONException 
+     * @see org.opencms.widgets.A_CmsAdeGalleryWidget#getAdditionalGalleryInfo(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter, java.lang.String)
      */
     @Override
     protected JSONObject getAdditionalGalleryInfo(
         CmsObject cms,
         I_CmsWidgetDialog widgetDialog,
-        I_CmsWidgetParameter param) {
+        I_CmsWidgetParameter param,
+        String configurationParam) throws JSONException {
 
-        // no additional info needed
-        return null;
+        CmsVfsImageWidgetConfiguration config = new CmsVfsImageWidgetConfiguration(
+            cms,
+            widgetDialog,
+            param,
+            configurationParam);
+        JSONObject result = new JSONObject();
+        result.put(ImageWidgetInfo.useFormats.name(), config.isShowFormat());
+        result.put(ImageWidgetInfo.imageFormats.name(), new JSONArray(config.getFormatValues()));
+        result.put(
+            ImageWidgetInfo.imageFormatNames.name(),
+            CmsEncoder.escape(config.getSelectFormatString(), CmsEncoder.ENCODING_UTF_8));
+        return result;
     }
 
     /**

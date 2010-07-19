@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/ui/Attic/CmsPropertiesTab.java,v $
- * Date   : $Date: 2010/06/10 08:45:03 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/07/19 07:45:28 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,7 @@
 
 package org.opencms.ade.galleries.client.preview.ui;
 
-import org.opencms.ade.galleries.client.preview.I_CmsPropertiesHandler;
+import org.opencms.ade.galleries.client.preview.I_CmsPreviewHandler;
 import org.opencms.ade.galleries.client.ui.Messages;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
@@ -42,13 +42,10 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -56,48 +53,20 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.
  */
-public class CmsPropertiesTab extends Composite {
-
-    /**
-     * @see com.google.gwt.uibinder.client.UiBinder
-     */
-    /* default */interface I_CmsPropertiesTabUiBinder extends UiBinder<Widget, CmsPropertiesTab> {
-        // GWT interface, nothing to do here
-    }
+public class CmsPropertiesTab extends A_CmsPreviewDetailTab implements ValueChangeHandler<String> {
 
     /** Text metrics key. */
     private static final String TM_PREVIEW_TAB_PROPERTIES = "PropertiesTab";
 
-    /** The ui-binder instance for this class. */
-    private static I_CmsPropertiesTabUiBinder uiBinder = GWT.create(I_CmsPropertiesTabUiBinder.class);
-
-    /** The properties panel. */
-    @UiField
-    FlowPanel m_properties;
-
     /** The save button. */
-    @UiField
-    CmsPushButton m_saveButton;
-
-    /** The select button. */
-    @UiField
-    CmsPushButton m_selectButton;
-
-    /** The mode of the gallery. */
-    private GalleryMode m_dialogMode;
+    private CmsPushButton m_saveButton;
 
     /** The tab handler. */
-    private I_CmsPropertiesHandler m_handler;
-
-    /** The tab height. */
-    private int m_tabHeight;
-
-    /** The tab width. */
-    private int m_tabWidth;
+    private I_CmsPreviewHandler<?> m_handler;
 
     /**
      * The constructor.<p>
@@ -107,32 +76,27 @@ public class CmsPropertiesTab extends Composite {
      * @param width the properties tab width
      * @param handler tha tab handler to set
      */
-    public CmsPropertiesTab(GalleryMode dialogMode, int height, int width, I_CmsPropertiesHandler handler) {
+    public CmsPropertiesTab(GalleryMode dialogMode, int height, int width, I_CmsPreviewHandler<?> handler) {
 
-        initWidget(uiBinder.createAndBindUi(this));
-
-        m_dialogMode = dialogMode;
+        super(dialogMode, height, width);
         m_handler = handler;
-        m_tabHeight = height;
-        m_tabWidth = width;
-
         // buttons
-        switch (m_dialogMode) {
-            case widget:
-                m_selectButton.setText(Messages.get().key(Messages.GUI_PREVIEW_BUTTON_SELECT_0));
-                break;
-            case editor:
-            case sitemap:
-            case ade:
-            case view:
-            default:
-                m_selectButton.setVisible(false);
-                break;
-
-        }
-
+        m_saveButton = new CmsPushButton();
+        m_saveButton.addStyleName(org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle.INSTANCE.previewDialogCss().previewButton());
         m_saveButton.setText(Messages.get().key(Messages.GUI_PREVIEW_BUTTON_SAVE_0));
+        m_saveButton.disable("nothing changed");
+        m_saveButton.addClickHandler(new ClickHandler() {
 
+            /**
+             * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
+             */
+            public void onClick(ClickEvent event) {
+
+                onSaveClick(event);
+            }
+        });
+
+        m_buttonBar.add(m_saveButton);
     }
 
     /**
@@ -144,7 +108,7 @@ public class CmsPropertiesTab extends Composite {
 
         // width of a property form
         int pannelWidth = calculateWidth(m_tabWidth);
-        m_properties.clear();
+        m_content.clear();
         Iterator<Entry<String, String>> it = properties.entrySet().iterator();
         boolean isLeft = true;
         while (it.hasNext()) {
@@ -162,20 +126,13 @@ public class CmsPropertiesTab extends Composite {
                 property.setFormStyle(I_CmsLayoutBundle.INSTANCE.previewDialogCss().propertyRight());
                 isLeft = true;
             }
-            m_properties.add(property);
+            property.addValueChangeHandler(this);
+            m_content.add(property);
 
             // TODO: set the calculated height of the scrolled panel with properties
         }
-    }
-
-    /**
-     * Returns the dialogMode.<p>
-     *
-     * @return the dialogMode
-     */
-    public GalleryMode getDialogMode() {
-
-        return m_dialogMode;
+        setChanged(false);
+        m_saveButton.disable("nothing changed");
     }
 
     /**
@@ -189,48 +146,20 @@ public class CmsPropertiesTab extends Composite {
     }
 
     /**
-     * Return true is at least one property is changed.<p>
-     * 
-     * @return true, if property is changed, false otherwise
-     */
-    public boolean isChanged() {
-
-        for (Widget property : m_properties) {
-            CmsPropertyForm form = ((CmsPropertyForm)property);
-            if (form.isChanged()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
      * Will be triggered, when the save button is clicked.<p>
      * 
      * @param event the click event
      */
-    @UiHandler("m_saveButton")
     public void onSaveClick(ClickEvent event) {
 
         Map<String, String> properties = new HashMap<String, String>();
-        for (Widget property : m_properties) {
+        for (Widget property : m_content) {
             CmsPropertyForm form = ((CmsPropertyForm)property);
             if (form.isChanged()) {
                 properties.put(form.getId(), form.getValue());
             }
         }
         m_handler.saveProperties(properties);
-    }
-
-    /**
-     * Will be triggered, when the select button is clicked.<p>
-     * 
-     * @param event the click event
-     */
-    @UiHandler("m_selectButton")
-    public void onSelectClick(ClickEvent event) {
-
-        m_handler.selectResource();
     }
 
     /**
@@ -259,5 +188,23 @@ public class CmsPropertiesTab extends Composite {
     private int calculateWidth(int width) {
 
         return ((width - 13) / 2) - 18;
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.preview.ui.A_CmsPreviewDetailTab#getHandler()
+     */
+    @Override
+    protected I_CmsPreviewHandler<?> getHandler() {
+
+        return m_handler;
+    }
+
+    /**
+     * @see com.google.gwt.event.logical.shared.ValueChangeHandler#onValueChange(com.google.gwt.event.logical.shared.ValueChangeEvent)
+     */
+    public void onValueChange(ValueChangeEvent<String> event) {
+
+        setChanged(true);
+        m_saveButton.enable();
     }
 }

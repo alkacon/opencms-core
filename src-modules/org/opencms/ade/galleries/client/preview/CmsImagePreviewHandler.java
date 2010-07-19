@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/Attic/CmsImagePreviewHandler.java,v $
- * Date   : $Date: 2010/07/08 06:49:42 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/07/19 07:45:28 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.ade.galleries.client.preview;
 
+import org.opencms.ade.galleries.client.preview.ui.A_CmsPreviewDialog;
 import org.opencms.ade.galleries.client.preview.ui.CmsImagePreviewDialog;
 import org.opencms.ade.galleries.shared.CmsImageInfoBean;
 
@@ -39,13 +40,22 @@ import org.opencms.ade.galleries.shared.CmsImageInfoBean;
  * 
  * Delegates the actions of the preview controller to the preview dialog.
  * 
- * @author Polina Smagina
+ * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  */
 public class CmsImagePreviewHandler extends A_CmsPreviewHandler<CmsImageInfoBean> {
+
+    /** The controller. */
+    private CmsImagePreviewController m_controller;
+
+    /** The image format handler. */
+    private CmsImageFormatHandler m_formatHandler;
+
+    /** The dialog. */
+    private CmsImagePreviewDialog m_previewDialog;
 
     /**
      * Constructor.<p>
@@ -55,8 +65,37 @@ public class CmsImagePreviewHandler extends A_CmsPreviewHandler<CmsImageInfoBean
      */
     public CmsImagePreviewHandler(CmsImagePreviewDialog previewDialog, I_CmsResourcePreview resourcePreview) {
 
-        super(previewDialog, resourcePreview);
-        previewDialog.init(this);
+        super(resourcePreview);
+        m_previewDialog = previewDialog;
+        m_previewDialog.init(this);
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.preview.A_CmsPreviewHandler#getController()
+     */
+    @Override
+    public A_CmsPreviewController<CmsImageInfoBean> getController() {
+
+        return m_controller;
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.preview.A_CmsPreviewHandler#getDialog()
+     */
+    @Override
+    public A_CmsPreviewDialog<CmsImageInfoBean> getDialog() {
+
+        return m_previewDialog;
+    }
+
+    /**
+     * Returns the image scaling parameter.<p>
+     * 
+     * @return the image scaling parameter
+     */
+    public String getScaleParam() {
+
+        return m_formatHandler != null ? m_formatHandler.getScaleParam() : "";
     }
 
     /**
@@ -67,5 +106,15 @@ public class CmsImagePreviewHandler extends A_CmsPreviewHandler<CmsImageInfoBean
     public void init(CmsImagePreviewController controller) {
 
         m_controller = controller;
+    }
+
+    /**
+     * Sets the image format handler.<p>
+     * 
+     * @param formatHandler the format handler
+     */
+    public void setFormatHandler(CmsImageFormatHandler formatHandler) {
+
+        m_formatHandler = formatHandler;
     }
 }

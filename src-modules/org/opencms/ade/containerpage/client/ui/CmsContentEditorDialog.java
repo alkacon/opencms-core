@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsContentEditorDialog.java,v $
- * Date   : $Date: 2010/05/04 09:45:21 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/07/19 07:45:28 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,14 +48,13 @@ import com.google.gwt.user.client.Window;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
 public final class CmsContentEditorDialog {
 
     /** Name of exported dialog close function. */
-    @SuppressWarnings("unused")
     private static final String CLOSING_METHOD_NAME = "cms_ade_containerpage_closeEditorDialog";
 
     /** Name attribute value for editor iFrame. */

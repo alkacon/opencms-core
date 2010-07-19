@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/ui/Attic/A_CmsPreviewDialog.java,v $
- * Date   : $Date: 2010/07/08 06:49:42 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/07/19 07:45:28 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,9 +38,9 @@ import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMod
 import org.opencms.gwt.client.ui.CmsConfirmDialog;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
+import org.opencms.gwt.client.ui.CmsTabbedPanel.CmsTabLayout;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
-import org.opencms.gwt.client.ui.CmsTabbedPanel.CmsTabLayout;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsDomUtil.Style;
 
@@ -67,7 +67,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Polina Smagina
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.
  */
@@ -137,7 +137,7 @@ public abstract class A_CmsPreviewDialog<T extends CmsResourceInfoBean> extends 
 
         m_galleryMode = dialogMode;
 
-        m_dialogHeight = dialogHeight - 4;
+        m_dialogHeight = dialogHeight;
         m_dialogWidth = dialogWidth - 2;
 
         // height of the preview dialog
@@ -161,7 +161,7 @@ public abstract class A_CmsPreviewDialog<T extends CmsResourceInfoBean> extends 
             - CmsDomUtil.getCurrentStyleInt(m_tabsHolder.getElement(), Style.marginTop)
             - 2;
         m_tabsHolder.getElement().getStyle().setHeight(detailsHeight, Unit.PX);
-        m_tabsHolder.getElement().getStyle().setWidth((m_dialogWidth - 2), Unit.PX);
+        // m_tabsHolder.getElement().getStyle().setWidth((m_dialogWidth - 2), Unit.PX);
 
         m_tabbedPanel = new CmsTabbedPanel<Widget>(CmsTabLayout.small, false);
         m_tabsHolder.add(m_tabbedPanel);

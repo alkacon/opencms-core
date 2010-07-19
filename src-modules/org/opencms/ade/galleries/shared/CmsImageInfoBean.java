@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/Attic/CmsImageInfoBean.java,v $
- * Date   : $Date: 2010/07/05 14:48:07 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/07/19 07:45:28 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,7 @@ package org.opencms.ade.galleries.shared;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.
  */
@@ -47,6 +47,9 @@ public class CmsImageInfoBean extends CmsResourceInfoBean {
 
     /** The image height. */
     private int m_height;
+
+    /** The selected image path (used for editor and widget mode). */
+    private String m_selectedPath;
 
     /** The image width. */
     private int m_width;
@@ -69,6 +72,16 @@ public class CmsImageInfoBean extends CmsResourceInfoBean {
     public int getHeight() {
 
         return m_height;
+    }
+
+    /**
+     * Returns the selected path.<p>
+     *
+     * @return the selected path
+     */
+    public String getSelectedPath() {
+
+        return m_selectedPath;
     }
 
     /**
@@ -99,6 +112,16 @@ public class CmsImageInfoBean extends CmsResourceInfoBean {
     public void setHeight(int height) {
 
         m_height = height;
+    }
+
+    /**
+     * Sets the selected path.<p>
+     *
+     * @param selectedPath the selected path to set
+     */
+    public void setSelectedPath(String selectedPath) {
+
+        m_selectedPath = selectedPath;
     }
 
     /**

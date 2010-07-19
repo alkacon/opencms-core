@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/Attic/CmsBinaryPreviewController.java,v $
- * Date   : $Date: 2010/07/08 06:49:42 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/07/19 07:45:28 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import com.google.gwt.core.client.GWT;
  * @author Polina Smagina
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  */
@@ -57,6 +57,8 @@ public final class CmsBinaryPreviewController extends A_CmsPreviewController<Cms
     /** The preview service. */
     private I_CmsPreviewServiceAsync m_previewService;
 
+    private CmsBinaryPreviewHandler m_handler;
+
     /**
      * Hiding constructor.<p>
      * 
@@ -64,8 +66,8 @@ public final class CmsBinaryPreviewController extends A_CmsPreviewController<Cms
      */
     public CmsBinaryPreviewController(CmsBinaryPreviewHandler handler) {
 
-        super(handler);
-        handler.init(this);
+        m_handler = handler;
+        m_handler.init(this);
     }
 
     /**
@@ -138,5 +140,14 @@ public final class CmsBinaryPreviewController extends A_CmsPreviewController<Cms
             m_previewService = GWT.create(I_CmsPreviewService.class);
         }
         return m_previewService;
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.preview.A_CmsPreviewController#getHandler()
+     */
+    @Override
+    public I_CmsPreviewHandler<CmsResourceInfoBean> getHandler() {
+
+        return m_handler;
     }
 }

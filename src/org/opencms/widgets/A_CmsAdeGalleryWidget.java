@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/A_CmsAdeGalleryWidget.java,v $
- * Date   : $Date: 2010/07/06 14:54:45 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/07/19 07:45:28 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,18 +32,22 @@
 package org.opencms.widgets;
 
 import org.opencms.file.CmsObject;
+import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.galleries.A_CmsAjaxGallery;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Base class for all ADE gallery widget implementations.<p>
  *
  * @author Tobias Herrmann 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0 
  */
@@ -51,6 +55,9 @@ public abstract class A_CmsAdeGalleryWidget extends A_CmsWidget {
 
     /** The gallery JSP path. */
     protected static final String PATH_GALLERY_JSP = "/system/modules/org.opencms.ade.galleries/gallery.jsp";
+
+    /** The static log object for this class. */
+    private static final Log LOG = CmsLog.getLog(A_CmsAdeGalleryWidget.class);
 
     /**
      * Constructor.<p>
@@ -131,7 +138,12 @@ public abstract class A_CmsAdeGalleryWidget extends A_CmsWidget {
 
         result.append("</td>");
 
-        JSONObject additional = getAdditionalGalleryInfo(cms, widgetDialog, param);
+        JSONObject additional = null;
+        try {
+            additional = getAdditionalGalleryInfo(cms, widgetDialog, param, getConfiguration());
+        } catch (JSONException e) {
+            LOG.error("Error parsing widget configuration", e);
+        }
         if (additional != null) {
             result.append("\n<script type=\"text/javascript\">\n");
             result.append("var cms_additional_").append(idHash).append("=");
@@ -156,13 +168,16 @@ public abstract class A_CmsAdeGalleryWidget extends A_CmsWidget {
      * @param cms an initialized instance of a CmsObject
      * @param widgetDialog the dialog where the widget is used on
      * @param param the widget parameter to generate the widget for
+     * @param configurationParam the widget configuration string
      * 
      * @return additional widget information
+     * @throws JSONException 
      */
     protected abstract JSONObject getAdditionalGalleryInfo(
         CmsObject cms,
         I_CmsWidgetDialog widgetDialog,
-        I_CmsWidgetParameter param);
+        I_CmsWidgetParameter param,
+        String configurationParam) throws JSONException;
 
     /**
      * Returns the resource type names available within this gallery widget.<p>

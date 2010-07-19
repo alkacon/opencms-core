@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/Attic/CmsBinaryPreviewHandler.java,v $
- * Date   : $Date: 2010/07/08 06:49:42 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/07/19 07:45:28 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.ade.galleries.client.preview;
 
+import org.opencms.ade.galleries.client.preview.ui.A_CmsPreviewDialog;
 import org.opencms.ade.galleries.client.preview.ui.CmsBinaryPreviewDialog;
 import org.opencms.ade.galleries.shared.CmsResourceInfoBean;
 
@@ -42,11 +43,17 @@ import org.opencms.ade.galleries.shared.CmsResourceInfoBean;
  * @author Polina Smagina
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  */
 public class CmsBinaryPreviewHandler extends A_CmsPreviewHandler<CmsResourceInfoBean> {
+
+    /** The dialog. */
+    private CmsBinaryPreviewDialog m_previewDialog;
+
+    /** The controller. */
+    private CmsBinaryPreviewController m_controller;
 
     /**
      * Constructor.<p>
@@ -56,8 +63,9 @@ public class CmsBinaryPreviewHandler extends A_CmsPreviewHandler<CmsResourceInfo
      */
     public CmsBinaryPreviewHandler(CmsBinaryPreviewDialog previewDialog, I_CmsResourcePreview resourcePreview) {
 
-        super(previewDialog, resourcePreview);
-        previewDialog.init(this);
+        super(resourcePreview);
+        m_previewDialog = previewDialog;
+        m_previewDialog.init(this);
     }
 
     /**
@@ -68,6 +76,24 @@ public class CmsBinaryPreviewHandler extends A_CmsPreviewHandler<CmsResourceInfo
     public void init(CmsBinaryPreviewController controller) {
 
         m_controller = controller;
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.preview.A_CmsPreviewHandler#getController()
+     */
+    @Override
+    public A_CmsPreviewController<CmsResourceInfoBean> getController() {
+
+        return m_controller;
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.preview.A_CmsPreviewHandler#getDialog()
+     */
+    @Override
+    public A_CmsPreviewDialog<CmsResourceInfoBean> getDialog() {
+
+        return m_previewDialog;
     }
 
 }

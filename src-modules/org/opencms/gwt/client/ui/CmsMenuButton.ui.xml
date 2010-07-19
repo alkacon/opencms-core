@@ -13,10 +13,17 @@
     		.menu{
 		        display: inline;
 		    }
+		    .menu .button{
+				min-width: 60px;
+        		overflow: visible !important;
+    		}
 		} @else {
 		    .menu{
 		        display: inline-block;
 		    }
+		    .menu .button{
+				min-width: 60px;
+			}
 		}
 		.menu .connect{
 			background: #CFCFCF;
@@ -33,6 +40,7 @@
 		}
 		.menu .button{
 			position: relative;
+			min-width: 60px;
 		}
 	</ui:style>
 	<ui:with field="main" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />

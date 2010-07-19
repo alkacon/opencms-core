@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/A_CmsListTab.java,v $
- * Date   : $Date: 2010/07/08 16:45:59 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/07/19 07:45:28 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.
  */
@@ -184,10 +184,9 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
      * 
      * @return the newly created list widget 
      */
-    @SuppressWarnings("unchecked")
     protected CmsList<? extends I_CmsListItem> createScrollList() {
 
-        return new CmsList();
+        return new CmsList<I_CmsListItem>();
 
     }
 

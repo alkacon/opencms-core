@@ -87,13 +87,14 @@
 }
 
 /* Image format tab. */
-.formatsPanel{
-	padding-top:5px;
+.formatsPanel.propertiesList{
+	padding-top:3px;
+	height: auto;
 }
 
 /* Line with format select box. */
 .formatsLine {
-	margin:0 0 12px;
+	margin:0 0 8px;
 }
 
 /** Line with size infos. */

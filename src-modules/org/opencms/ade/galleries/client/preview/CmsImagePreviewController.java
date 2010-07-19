@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/Attic/CmsImagePreviewController.java,v $
- * Date   : $Date: 2010/07/08 06:49:42 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/07/19 07:45:28 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import com.google.gwt.core.client.GWT;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  */
@@ -58,6 +58,8 @@ public class CmsImagePreviewController extends A_CmsPreviewController<CmsImageIn
     /** The preview service. */
     private I_CmsPreviewServiceAsync m_previewService;
 
+    private CmsImagePreviewHandler m_handler;
+
     /**
      * Constructor.<p>
      * 
@@ -65,8 +67,8 @@ public class CmsImagePreviewController extends A_CmsPreviewController<CmsImageIn
      */
     public CmsImagePreviewController(CmsImagePreviewHandler handler) {
 
-        super(handler);
-        handler.init(this);
+        m_handler = handler;
+        m_handler.init(this);
     }
 
     /**
@@ -97,6 +99,15 @@ public class CmsImagePreviewController extends A_CmsPreviewController<CmsImageIn
     }
 
     /**
+     * @see org.opencms.ade.galleries.client.preview.A_CmsPreviewController#setResource(org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode)
+     */
+    @Override
+    public void setResource(GalleryMode galleryMode) {
+
+        select(galleryMode, m_infoBean.getResourcePath() + m_handler.getScaleParam(), m_infoBean.getTitle());
+    }
+
+    /**
      * @see org.opencms.ade.galleries.client.preview.I_CmsPreviewController#loadResourceInfo(java.lang.String)
      */
     public void loadResourceInfo(final String resourcePath) {
@@ -118,6 +129,7 @@ public class CmsImagePreviewController extends A_CmsPreviewController<CmsImageIn
             @Override
             protected void onResponse(CmsImageInfoBean result) {
 
+                result.setSelectedPath(resourcePath);
                 showData(result);
             }
         };
@@ -165,5 +177,14 @@ public class CmsImagePreviewController extends A_CmsPreviewController<CmsImageIn
             m_previewService = GWT.create(I_CmsPreviewService.class);
         }
         return m_previewService;
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.preview.A_CmsPreviewController#getHandler()
+     */
+    @Override
+    public I_CmsPreviewHandler<CmsImageInfoBean> getHandler() {
+
+        return m_handler;
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/ui/Attic/CmsPropertyForm.java,v $
- * Date   : $Date: 2010/06/10 08:45:03 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/07/19 07:45:28 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,8 +36,10 @@ import org.opencms.gwt.client.ui.input.CmsLabel;
 import org.opencms.gwt.client.ui.input.CmsTextBox;
 
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 
@@ -46,11 +48,11 @@ import com.google.gwt.user.client.ui.FlowPanel;
  *  
  * @author Polina Smagina
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.
  */
-public class CmsPropertyForm extends Composite {
+public class CmsPropertyForm extends Composite implements HasValueChangeHandlers<String> {
 
     /** The flag to indicate if the text box value is changed. */
     protected boolean m_isChanged;
@@ -176,5 +178,13 @@ public class CmsPropertyForm extends Composite {
 
         // 2px: margin-left
         return (m_parentWidth / 3) - 2;
+    }
+
+    /**
+     * @see com.google.gwt.event.logical.shared.HasValueChangeHandlers#addValueChangeHandler(com.google.gwt.event.logical.shared.ValueChangeHandler)
+     */
+    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler) {
+
+        return m_textBox.addValueChangeHandler(handler);
     }
 }

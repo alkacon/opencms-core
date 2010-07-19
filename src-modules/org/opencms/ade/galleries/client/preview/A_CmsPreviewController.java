@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/Attic/A_CmsPreviewController.java,v $
- * Date   : $Date: 2010/07/06 14:54:45 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/07/19 07:45:28 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,27 +43,21 @@ import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMod
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  */
 public abstract class A_CmsPreviewController<T extends CmsResourceInfoBean> implements I_CmsPreviewController<T> {
 
-    /** The binary preview handler. */
-    protected I_CmsPreviewHandler<T> m_handler;
-
     /** The info bean of the binary preview dialog. */
     protected T m_infoBean;
 
     /**
-     * Hiding constructor.<p>
+     * Returns the preview handler.<p>
      * 
-     * @param handler the preview controller handler
+     * @return the preview handler
      */
-    public A_CmsPreviewController(I_CmsPreviewHandler<T> handler) {
-
-        m_handler = handler;
-    }
+    public abstract I_CmsPreviewHandler<T> getHandler();
 
     /**
      * Selects the resource.<p>
@@ -97,7 +91,7 @@ public abstract class A_CmsPreviewController<T extends CmsResourceInfoBean> impl
      */
     public boolean closeGalleryDialog() {
 
-        return m_handler.setDataInEditor();
+        return getHandler().setDataInEditor();
     }
 
     /**
@@ -128,7 +122,7 @@ public abstract class A_CmsPreviewController<T extends CmsResourceInfoBean> impl
     public void showData(T resourceInfo) {
 
         m_infoBean = resourceInfo;
-        m_handler.showData(resourceInfo);
+        getHandler().showData(resourceInfo);
 
     }
 }

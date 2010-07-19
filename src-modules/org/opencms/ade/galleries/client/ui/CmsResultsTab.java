@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsResultsTab.java,v $
- * Date   : $Date: 2010/07/09 07:04:03 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2010/07/19 07:45:28 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,7 +72,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Polina Smagina
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * 
  * @since 8.0.
  */
@@ -84,7 +84,7 @@ public class CmsResultsTab extends A_CmsListTab {
      * @author Georg Westenberger
      * @author Ruediger Kurz
      * 
-     * @version $Revision: 1.25 $
+     * @version $Revision: 1.26 $
      * 
      * @since 8.0.0
      */
@@ -239,9 +239,12 @@ public class CmsResultsTab extends A_CmsListTab {
      * 
      * @param searchObj the current search object containing search results
      */
-    public void addContent(CmsGallerySearchBean searchObj) {
+    private void addContent(CmsGallerySearchBean searchObj) {
 
         List<CmsResultItemBean> list = searchObj.getResults();
+        if (list == null) {
+            return;
+        }
         for (CmsResultItemBean resultItem : list) {
 
             CmsListItemWidget resultItemWidget;
