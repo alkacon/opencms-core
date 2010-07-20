@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlContainerPage.java,v $
- * Date   : $Date: 2010/05/28 12:29:08 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/07/20 13:10:09 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,6 +39,7 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.loader.CmsLoaderException;
 import org.opencms.loader.CmsXmlContainerPageLoader;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -69,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 7.6 
  */
@@ -86,6 +87,9 @@ public class CmsResourceTypeXmlContainerPage extends CmsResourceTypeXmlContent {
 
     /** The sub container resource type name. */
     public static final String SUB_CONTAINER_TYPE_NAME = "subcontainer";
+
+    /** A variable containing the actual configured type id of container pages. */
+    private static int containerPageTypeId;
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsResourceTypeXmlContainerPage.class);
@@ -111,6 +115,36 @@ public class CmsResourceTypeXmlContainerPage extends CmsResourceTypeXmlContent {
         m_typeName = RESOURCE_TYPE_NAME;
         m_typeId = CmsResourceTypeXmlContainerPage.RESOURCE_TYPE_ID;
         addConfigurationParameter(CONFIGURATION_SCHEMA, SCHEMA);
+    }
+
+    /**
+     * Returns the sitemap type id.<p>
+     * 
+     * @return the sitemap type id
+     * 
+     * @throws CmsLoaderException if the type is not configured
+     */
+    public static int getContainerPageTypeId() throws CmsLoaderException {
+
+        if (containerPageTypeId == 0) {
+            containerPageTypeId = OpenCms.getResourceManager().getResourceType(getStaticTypeName()).getTypeId();
+        }
+        return containerPageTypeId;
+    }
+
+    /**
+     * Returns the sitemap type id, but returns -1 instead of throwing an exception when an error happens.<p>
+     * 
+     * @return the sitemap type id 
+     */
+    public static int getContainerPageTypeIdSafely() {
+
+        try {
+            return getContainerPageTypeId();
+        } catch (CmsLoaderException e) {
+            LOG.warn(e.getLocalizedMessage(), e);
+            return -1;
+        }
     }
 
     /**
@@ -147,9 +181,11 @@ public class CmsResourceTypeXmlContainerPage extends CmsResourceTypeXmlContent {
 
         boolean result = false;
         if (resource != null) {
-            result = (resource.getTypeId() == RESOURCE_TYPE_ID);
+            result = (resource.getTypeId() == getContainerPageTypeIdSafely());
         }
+
         return result;
+
     }
 
     /**
