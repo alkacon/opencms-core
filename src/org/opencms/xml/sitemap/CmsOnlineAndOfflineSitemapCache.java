@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsOnlineAndOfflineSitemapCache.java,v $
- * Date   : $Date: 2010/07/19 12:35:34 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/07/20 11:50:24 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,7 @@ import org.opencms.main.CmsException;
 import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.util.CmsUUID;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -45,7 +46,7 @@ import java.util.Map;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -64,9 +65,7 @@ public class CmsOnlineAndOfflineSitemapCache implements I_CmsSitemapCache {
      * @param memMonitor the memory monitor instance
      * @see org.opencms.main.OpenCmsCore#initConfiguration
      */
-    public CmsOnlineAndOfflineSitemapCache(
-        CmsObject adminCms,
-        CmsMemoryMonitor memMonitor) {
+    public CmsOnlineAndOfflineSitemapCache(CmsObject adminCms, CmsMemoryMonitor memMonitor) {
 
         m_offlineCache = new CmsSitemapStructureCache(adminCms, memMonitor, true, false, "Offline");
         m_onlineCache = new CmsSitemapStructureCache(adminCms, memMonitor, true, true, "Online");
@@ -80,13 +79,21 @@ public class CmsOnlineAndOfflineSitemapCache implements I_CmsSitemapCache {
         return getInternalCache(cms).getActiveSitemaps(cms);
     }
 
-
     /**
      * @see org.opencms.xml.sitemap.I_CmsSitemapCache#getDefaultProperties(org.opencms.file.CmsObject)
      */
     public Map<String, String> getDefaultProperties(CmsObject cms) {
 
         return getInternalCache(cms).getDefaultProperties(cms);
+    }
+
+    /**
+     * @see org.opencms.xml.sitemap.I_CmsSitemapCache#getEntriesByStructureId(org.opencms.file.CmsObject, org.opencms.util.CmsUUID)
+     */
+    public List<CmsInternalSitemapEntry> getEntriesByStructureId(CmsObject cms, CmsUUID structureId)
+    throws CmsException {
+
+        return getInternalCache(cms).getEntriesByStructureId(cms, structureId);
     }
 
     /**

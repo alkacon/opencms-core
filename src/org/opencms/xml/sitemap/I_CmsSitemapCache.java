@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/I_CmsSitemapCache.java,v $
- * Date   : $Date: 2010/07/19 12:35:34 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/07/20 11:50:24 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.util.CmsUUID;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -70,6 +71,18 @@ public interface I_CmsSitemapCache {
      * @return the default sitemap properties
      */
     Map<String, String> getDefaultProperties(CmsObject cms);
+
+    /**
+     * Gets the entries of the sitemap which refer to a resource with a given structure id.<p>
+     * 
+     * @param cms the CMS context 
+     * @param structureId the structure id 
+     * 
+     * @return the sitemap entries whi
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    List<CmsInternalSitemapEntry> getEntriesByStructureId(CmsObject cms, CmsUUID structureId) throws CmsException;
 
     /**
      * Returns the sitemap entry for the given id and current project.<p>

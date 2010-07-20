@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapStructureCache.java,v $
- * Date   : $Date: 2010/07/19 12:35:34 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/07/20 11:50:24 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,6 +43,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.monitor.CmsMemoryMonitor;
+import org.opencms.util.CmsPair;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.content.CmsXmlContentPropertyHelper;
@@ -64,7 +65,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Moossen
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -84,6 +85,9 @@ public class CmsSitemapStructureCache extends CmsVfsCache implements I_CmsSitema
 
     /** Cache for active sitemaps, as localized entry point root path vs sitemap resource root path. */
     private Map<String, String> m_active;
+
+    /** A map from structure ids to sets of corresponding sitemap paths. */
+    private Map<CmsPair<CmsUUID, Locale>, List<CmsInternalSitemapEntry>> m_byStructureId;
 
     /** Sitemap entries by path. */
     private Map<String, CmsInternalSitemapEntry> m_byUri;
@@ -161,6 +165,7 @@ public class CmsSitemapStructureCache extends CmsVfsCache implements I_CmsSitema
         m_byId.clear();
         m_byUri.clear();
         m_pathSet.clear();
+        m_byStructureId.clear();
 
         // iterate sitemap entry points (system wide)
         List<CmsResource> entryPoints = internalGetEntryPointResources(adminCms);
@@ -246,6 +251,21 @@ public class CmsSitemapStructureCache extends CmsVfsCache implements I_CmsSitema
     }
 
     /**
+     * @see org.opencms.xml.sitemap.I_CmsSitemapCache#getEntriesByStructureId(org.opencms.file.CmsObject, org.opencms.util.CmsUUID)
+     */
+    public List<CmsInternalSitemapEntry> getEntriesByStructureId(CmsObject cms, CmsUUID id) throws CmsException {
+
+        getActiveSitemaps(cms);
+        Locale locale = cms.getRequestContext().getLocale();
+        List<CmsInternalSitemapEntry> entries = m_byStructureId.get(new CmsPair<CmsUUID, Locale>(id, locale));
+        if (entries == null) {
+            return Collections.<CmsInternalSitemapEntry> emptyList();
+        } else {
+            return Collections.unmodifiableList(entries);
+        }
+    }
+
+    /**
      * Returns the sitemap entry for the given id and current project.<p>
      *
      * @param cms the current CMS context
@@ -300,6 +320,25 @@ public class CmsSitemapStructureCache extends CmsVfsCache implements I_CmsSitema
     public String toString() {
 
         return getClass().getName() + " (" + m_name + ")";
+    }
+
+    /**
+     * Adds a sitemap entry to the map which indexes sitemap entries by their structure id (and locale).<p>
+     * 
+     * @param structureId the structure id of the resource (first part of the key)  
+     * @param locale the locale  (second part of the key) 
+     * @param entry the entry to add 
+     */
+    protected void addEntryForStructureId(CmsUUID structureId, Locale locale, CmsInternalSitemapEntry entry) {
+
+        CmsPair<CmsUUID, Locale> key = new CmsPair<CmsUUID, Locale>(structureId, locale);
+
+        List<CmsInternalSitemapEntry> entries = m_byStructureId.get(key);
+        if (entries == null) {
+            entries = new ArrayList<CmsInternalSitemapEntry>();
+            m_byStructureId.put(key, entries);
+        }
+        entries.add(entry);
     }
 
     /**
@@ -579,6 +618,7 @@ public class CmsSitemapStructureCache extends CmsVfsCache implements I_CmsSitema
         // collect the inherited properties
         properties.putAll(entry.getProperties());
 
+        addEntryForStructureId(entry.getStructureId(), locale, entry);
         // get sub-entries
         List<CmsInternalSitemapEntry> subEntries = getSubEntries(cms, locale, entry);
         String sitemapUuid = properties.get(CmsSitemapManager.Property.sitemap.name());
@@ -614,6 +654,9 @@ public class CmsSitemapStructureCache extends CmsVfsCache implements I_CmsSitema
 
         m_pathSet = new HashSet<String>();
         register("pathSet", m_pathSet);
+
+        m_byStructureId = new HashMap<CmsPair<CmsUUID, Locale>, List<CmsInternalSitemapEntry>>();
+        register("structIds", m_byStructureId);
     }
 
 }

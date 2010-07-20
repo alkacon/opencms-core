@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2010/07/19 12:35:34 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2010/07/20 11:50:24 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.47 $
+ * @version $Revision: 1.48 $
  * 
  * @since 7.9.2
  */
@@ -309,6 +309,62 @@ public class CmsSitemapManager {
     }
 
     /**
+     * Gets the sitemap entry for a structure id which has a root path closest to a root path passed in as a parameter.<p>
+     * 
+     * If there is no sitemap entry which references the resource with the given structure id, null will be returned.<p>
+     * 
+     * @param cms the CMS context 
+     * @param structureId the structure id 
+     * @param otherRootPath the root path such that the closest sitemap entry to it should be returned 
+     * 
+     * @return the sitemap entry whose root path is closest to the path passed as a parameter 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public CmsSitemapEntry getClosestEntryForStructureId(CmsObject cms, CmsUUID structureId, String otherRootPath)
+    throws CmsException {
+
+        List<CmsInternalSitemapEntry> entries = getEntriesForStructureId(cms, structureId);
+        if (entries.isEmpty()) {
+            return null;
+        }
+        Map<String, CmsInternalSitemapEntry> entriesByString = new HashMap<String, CmsInternalSitemapEntry>();
+        for (CmsInternalSitemapEntry entry : entries) {
+            entriesByString.put(entry.getRootPath(), entry);
+        }
+        CmsClosestPathFinder closestPathFinder = new CmsClosestPathFinder();
+        closestPathFinder.addPaths(entriesByString.keySet());
+        String closestPath = closestPathFinder.getClosestPath(otherRootPath);
+        return entriesByString.get(closestPath);
+    }
+
+    /**
+     * Given the structure id of a resource, this method tries to find the sitemap site path referring to the resource
+     * which is most similar to another path passed as a parameter.<p>
+     * 
+     * If no site path is found, the VFS path will be returned.<p>
+     *  
+     * @param cms the CMS context 
+     * @param structureId the structure id of the resource 
+     * @param otherSitePath the site path to which the other site paths should be compared 
+     * 
+     * @return a sitemap path or a VFS path 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public String getClosestSitePathForStructureId(CmsObject cms, CmsUUID structureId, String otherSitePath)
+    throws CmsException {
+
+        String otherRootPath = cms.getRequestContext().addSiteRoot(otherSitePath);
+        CmsSitemapEntry entry = getClosestEntryForStructureId(cms, structureId, otherRootPath);
+        if (entry == null) {
+            CmsResource resource = cms.readResource(structureId);
+            return cms.getSitePath(resource);
+        }
+        return entry.getSitePath(cms);
+    }
+
+    /**
      * Returns the list of creatable elements.<p>
      * 
      * @param cms the current opencms context
@@ -377,6 +433,23 @@ public class CmsSitemapManager {
     throws CmsException {
 
         return CmsXmlContentDefinition.getContentHandlerForResource(cms, resource).getProperties();
+    }
+
+    /**
+     * Returns the sitemap entries which reference a resource with a given structure id.<p>
+     * 
+     * @param cms the CMS context 
+     * @param structureId the structure id of the resource
+     *  
+     * @return a list of sitemap entries which reference the resource with the structure id 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public List<CmsInternalSitemapEntry> getEntriesForStructureId(CmsObject cms, CmsUUID structureId)
+    throws CmsException {
+
+        return m_cache.getEntriesByStructureId(cms, structureId);
+
     }
 
     /**
