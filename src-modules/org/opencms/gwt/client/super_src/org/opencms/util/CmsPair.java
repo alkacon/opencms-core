@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsPair.java,v $
- * Date   : $Date: 2010/05/11 15:49:06 $
- * Version: $Revision: 1.3 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/super_src/org/opencms/util/Attic/CmsPair.java,v $
+ * Date   : $Date: 2010/07/20 10:28:08 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,8 +29,9 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.gwt.client.util;
+package org.opencms.util;
 
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,7 +44,7 @@ import java.util.Map;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  */
@@ -68,6 +69,36 @@ public class CmsPair<A, B> {
     }
 
     /**
+     * Utility method which creates a new comparator for lexically ordering pairs.<p>
+     * 
+     * Lexical ordering means that a pair is considered "less" than another if either its
+     * first component is less than that of the other one, or their first components are equal
+     * and the second component of the first pair is less than that of the other one.<p>
+     * 
+     * @param <A> the type parameter for the first pair component
+     * @param <B> the type parameter for the second pair component
+     * 
+     * @return a new comparator for lexically ordering pairs 
+     */
+    public static <A extends Comparable<A>, B extends Comparable<B>> Comparator<CmsPair<A, B>> getLexicalComparator() {
+
+        return new Comparator<CmsPair<A, B>>() {
+
+            /**
+             * @see java.util.Comparator#compare(Object,Object)
+             */
+            public int compare(CmsPair<A, B> pair1, CmsPair<A, B> pair2) {
+
+                int c = pair1.getFirst().compareTo(pair2.getFirst());
+                if (c != 0) {
+                    return c;
+                }
+                return pair1.getSecond().compareTo(pair2.getSecond());
+            }
+        };
+    }
+
+    /**
      * Helper method for converting a list of string pairs to a string map.<p>
      * 
      * The first component of each pair is used as a map key, the second component as the 
@@ -84,6 +115,20 @@ public class CmsPair<A, B> {
             result.put(pair.getFirst(), pair.getSecond());
         }
         return result;
+    }
+
+    /**
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public boolean equals(Object o) {
+
+        if (!(o instanceof CmsPair)) {
+            return false;
+        }
+        CmsPair otherPair = (CmsPair)o;
+        return getFirst().equals(otherPair.getFirst()) && getSecond().equals(otherPair.getSecond());
     }
 
     /**
@@ -104,6 +149,15 @@ public class CmsPair<A, B> {
     public B getSecond() {
 
         return m_second;
+    }
+
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+
+        return 50000429 * getFirst().hashCode() + getSecond().hashCode();
     }
 
 }

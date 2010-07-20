@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsResultsTab.java,v $
- * Date   : $Date: 2010/07/19 07:45:28 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2010/07/20 10:28:08 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,9 +43,9 @@ import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
-import org.opencms.gwt.client.util.CmsPair;
 import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
+import org.opencms.util.CmsPair;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
@@ -72,7 +72,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Polina Smagina
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  * 
  * @since 8.0.
  */
@@ -84,7 +84,7 @@ public class CmsResultsTab extends A_CmsListTab {
      * @author Georg Westenberger
      * @author Ruediger Kurz
      * 
-     * @version $Revision: 1.26 $
+     * @version $Revision: 1.27 $
      * 
      * @since 8.0.0
      */
@@ -235,6 +235,137 @@ public class CmsResultsTab extends A_CmsListTab {
     }
 
     /**
+     * Clears all search parameters.<p>
+     */
+    @Override
+    public void clearParams() {
+
+        CmsDebugLog.getInstance().printLine("Unalowed call to clear params in result tab.");
+    }
+
+    /**
+     * Fill the content of the results tab.<p>
+     * 
+     * @param searchObj the current search object containing search results
+     * @param paramPanels list of search parameter panels to show
+     */
+    public void fillContent(CmsGallerySearchBean searchObj, List<CmsSearchParamPanel> paramPanels) {
+
+        m_hasMoreResults = searchObj.hasMore();
+        if (searchObj.getPage() == 1) {
+            getList().scrollToTop();
+            getList().getElement().getStyle().setDisplay(Display.NONE);
+            clearList();
+            showParams(paramPanels);
+            addContent(searchObj);
+            getList().getElement().getStyle().clearDisplay();
+        } else {
+            showParams(paramPanels);
+            addContent(searchObj);
+        }
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.ui.A_CmsTab#getParamPanel(org.opencms.ade.galleries.shared.CmsGallerySearchBean)
+     */
+    @Override
+    public CmsSearchParamPanel getParamPanel(CmsGallerySearchBean searchObj) {
+
+        // not available for this tab
+        return null;
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.ui.A_CmsTab#onSelection()
+     */
+    @Override
+    public void onSelection() {
+
+        super.onSelection();
+        updateListSize();
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.ui.A_CmsListTab#getSortList()
+     */
+    @Override
+    protected ArrayList<CmsPair<String, String>> getSortList() {
+
+        ArrayList<CmsPair<String, String>> list = new ArrayList<CmsPair<String, String>>();
+        list.add(new CmsPair<String, String>(SortParams.title_asc.name(), Messages.get().key(
+            Messages.GUI_SORT_LABEL_TITLE_ASC_0)));
+        list.add(new CmsPair<String, String>(SortParams.title_desc.name(), Messages.get().key(
+            Messages.GUI_SORT_LABEL_TITLE_DECS_0)));
+        list.add(new CmsPair<String, String>(SortParams.type_asc.name(), Messages.get().key(
+            Messages.GUI_SORT_LABEL_TYPE_ASC_0)));
+        list.add(new CmsPair<String, String>(SortParams.type_desc.name(), Messages.get().key(
+            Messages.GUI_SORT_LABEL_TYPE_DESC_0)));
+        list.add(new CmsPair<String, String>(SortParams.dateLastModified_asc.name(), Messages.get().key(
+            Messages.GUI_SORT_LABEL_DATELASTMODIFIED_ASC_0)));
+        list.add(new CmsPair<String, String>(SortParams.dateLastModified_desc.name(), Messages.get().key(
+            Messages.GUI_SORT_LABEL_DATELASTMODIFIED_DESC_0)));
+        list.add(new CmsPair<String, String>(SortParams.path_asc.name(), Messages.get().key(
+            Messages.GUI_SORT_LABEL_PATH_ASC_0)));
+        list.add(new CmsPair<String, String>(SortParams.path_desc.name(), Messages.get().key(
+            Messages.GUI_SORT_LABEL_PATH_DESC_0)));
+
+        return list;
+    }
+
+    //    /**
+    //     * Updates the content of the results tab.<p>
+    //     * 
+    //     * @param searchObj the current search object containing search results
+    //     * @param typesParams the selected types as a user-readable string
+    //     * @param galleriesParams the selected galleries as a user-readable string 
+    //     * @param foldersParams the  selected VFS folders as a user-readable string
+    //     * @param categoriesParams the selected categories as a user-readable string 
+    //     */
+    //    public void updateContent(
+    //        CmsGallerySearchBean searchObj,
+    //        String typesParams,
+    //        String galleriesParams,
+    //        String foldersParams,
+    //        String categoriesParams) {
+    //
+    //        clearList();
+    //        fillContent(searchObj, typesParams, galleriesParams, foldersParams, categoriesParams);
+    //    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.ui.A_CmsListTab#getTabHandler()
+     */
+    @Override
+    protected CmsResultsTabHandler getTabHandler() {
+
+        return m_tabHandler;
+    }
+
+    /**
+     * Helper for setting the scroll position of the scroll panel.<p>
+     * 
+     * @param pos the scroll position
+     */
+    protected void setScrollPosition(final int pos) {
+
+        getList().setScrollPosition(pos);
+        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
+            /**
+             * @see com.google.gwt.core.client.Scheduler.ScheduledCommand#execute()
+             */
+            public void execute() {
+
+                if (getList().getScrollPosition() != pos) {
+                    getList().setScrollPosition(pos);
+                }
+
+            }
+        });
+
+    }
+
+    /**
      * Generates the result list items and adds them to the widget.<p>
      * 
      * @param searchObj the current search object containing search results
@@ -287,137 +418,6 @@ public class CmsResultsTab extends A_CmsListTab {
             listItem.setId(resultItem.getPath());
             addWidgetToList(listItem);
         }
-    }
-
-    /**
-     * Clears all search parameters.<p>
-     */
-    @Override
-    public void clearParams() {
-
-        CmsDebugLog.getInstance().printLine("Unalowed call to clear params in result tab.");
-    }
-
-    /**
-     * Fill the content of the results tab.<p>
-     * 
-     * @param searchObj the current search object containing search results
-     * @param paramPanels list of search parameter panels to show
-     */
-    public void fillContent(CmsGallerySearchBean searchObj, List<CmsSearchParamPanel> paramPanels) {
-
-        m_hasMoreResults = searchObj.hasMore();
-        if (searchObj.getPage() == 1) {
-            getList().scrollToTop();
-            getList().getElement().getStyle().setDisplay(Display.NONE);
-            clearList();
-            showParams(paramPanels);
-            addContent(searchObj);
-            getList().getElement().getStyle().clearDisplay();
-        } else {
-            showParams(paramPanels);
-            addContent(searchObj);
-        }
-    }
-
-    /**
-     * @see org.opencms.ade.galleries.client.ui.A_CmsTab#getParamPanel(org.opencms.ade.galleries.shared.CmsGallerySearchBean)
-     */
-    @Override
-    public CmsSearchParamPanel getParamPanel(CmsGallerySearchBean searchObj) {
-
-        // not available for this tab
-        return null;
-    }
-
-    /**
-     * @see org.opencms.ade.galleries.client.ui.A_CmsTab#onSelection()
-     */
-    @Override
-    public void onSelection() {
-
-        super.onSelection();
-        updateListSize();
-    }
-
-    //    /**
-    //     * Updates the content of the results tab.<p>
-    //     * 
-    //     * @param searchObj the current search object containing search results
-    //     * @param typesParams the selected types as a user-readable string
-    //     * @param galleriesParams the selected galleries as a user-readable string 
-    //     * @param foldersParams the  selected VFS folders as a user-readable string
-    //     * @param categoriesParams the selected categories as a user-readable string 
-    //     */
-    //    public void updateContent(
-    //        CmsGallerySearchBean searchObj,
-    //        String typesParams,
-    //        String galleriesParams,
-    //        String foldersParams,
-    //        String categoriesParams) {
-    //
-    //        clearList();
-    //        fillContent(searchObj, typesParams, galleriesParams, foldersParams, categoriesParams);
-    //    }
-
-    /**
-     * @see org.opencms.ade.galleries.client.ui.A_CmsListTab#getSortList()
-     */
-    @Override
-    protected ArrayList<CmsPair<String, String>> getSortList() {
-
-        ArrayList<CmsPair<String, String>> list = new ArrayList<CmsPair<String, String>>();
-        list.add(new CmsPair<String, String>(SortParams.title_asc.name(), Messages.get().key(
-            Messages.GUI_SORT_LABEL_TITLE_ASC_0)));
-        list.add(new CmsPair<String, String>(SortParams.title_desc.name(), Messages.get().key(
-            Messages.GUI_SORT_LABEL_TITLE_DECS_0)));
-        list.add(new CmsPair<String, String>(SortParams.type_asc.name(), Messages.get().key(
-            Messages.GUI_SORT_LABEL_TYPE_ASC_0)));
-        list.add(new CmsPair<String, String>(SortParams.type_desc.name(), Messages.get().key(
-            Messages.GUI_SORT_LABEL_TYPE_DESC_0)));
-        list.add(new CmsPair<String, String>(SortParams.dateLastModified_asc.name(), Messages.get().key(
-            Messages.GUI_SORT_LABEL_DATELASTMODIFIED_ASC_0)));
-        list.add(new CmsPair<String, String>(SortParams.dateLastModified_desc.name(), Messages.get().key(
-            Messages.GUI_SORT_LABEL_DATELASTMODIFIED_DESC_0)));
-        list.add(new CmsPair<String, String>(SortParams.path_asc.name(), Messages.get().key(
-            Messages.GUI_SORT_LABEL_PATH_ASC_0)));
-        list.add(new CmsPair<String, String>(SortParams.path_desc.name(), Messages.get().key(
-            Messages.GUI_SORT_LABEL_PATH_DESC_0)));
-
-        return list;
-    }
-
-    /**
-     * @see org.opencms.ade.galleries.client.ui.A_CmsListTab#getTabHandler()
-     */
-    @Override
-    protected CmsResultsTabHandler getTabHandler() {
-
-        return m_tabHandler;
-    }
-
-    /**
-     * Helper for setting the scroll position of the scroll panel.<p>
-     * 
-     * @param pos the scroll position
-     */
-    protected void setScrollPosition(final int pos) {
-
-        getList().setScrollPosition(pos);
-        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-
-            /**
-             * @see com.google.gwt.core.client.Scheduler.ScheduledCommand#execute()
-             */
-            public void execute() {
-
-                if (getList().getScrollPosition() != pos) {
-                    getList().setScrollPosition(pos);
-                }
-
-            }
-        });
-
     }
 
     /**

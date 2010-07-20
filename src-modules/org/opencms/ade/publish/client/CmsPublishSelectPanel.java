@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishSelectPanel.java,v $
- * Date   : $Date: 2010/06/01 07:25:25 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2010/07/20 10:28:08 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,8 +43,8 @@ import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.util.CmsListSplitter;
 import org.opencms.gwt.client.util.CmsMessages;
-import org.opencms.gwt.client.util.CmsPair;
 import org.opencms.gwt.client.util.CmsScrollToBottomHandler;
+import org.opencms.util.CmsPair;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
@@ -79,7 +79,7 @@ import com.google.gwt.user.client.ui.Widget;
  *  
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * 
  * @since 8.0.0
  */

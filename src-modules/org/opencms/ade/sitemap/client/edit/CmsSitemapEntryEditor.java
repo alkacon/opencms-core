@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/edit/Attic/CmsSitemapEntryEditor.java,v $
- * Date   : $Date: 2010/06/15 13:19:25 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/07/20 10:28:08 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import org.opencms.gwt.client.ui.input.form.CmsBasicFormField;
 import org.opencms.gwt.client.ui.input.form.CmsForm;
 import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormHandler;
-import org.opencms.gwt.client.util.CmsPair;
+import org.opencms.util.CmsPair;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.sitemap.CmsSitemapManager;
 
@@ -58,7 +58,7 @@ import java.util.Map;
  * 
  *  @author Georg Westenberger
  *  
- *  @version $Revision: 1.7 $
+ *  @version $Revision: 1.8 $
  *  
  *  @since 8.0.0
  */
