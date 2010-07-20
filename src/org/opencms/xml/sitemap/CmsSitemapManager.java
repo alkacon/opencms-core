@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2010/07/20 11:50:24 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2010/07/20 13:25:51 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.48 $
+ * @version $Revision: 1.49 $
  * 
  * @since 7.9.2
  */
@@ -707,6 +707,42 @@ public class CmsSitemapManager {
             }
         }
         return types;
+    }
+
+    /**
+     * Tries to find the "best" URI for a search result given as a structure id.<p>
+     * 
+     * If the search result is a container page, the method tries to find a sitemap URI
+     * which references the resource and is closest to a given site path.<p>
+     * 
+     * If the search result is not a container page and has a detail view page, the result 
+     * is the concatenation of the detail view page and the structure id of the search result.<p>
+     * 
+     * If the search result is not a container page and has no detail view page, its VFS uri is returned.<p>
+     * 
+     * @param cms the CMS context 
+     * @param searchResultStructureId the structure id of the search result 
+     * @param otherSitePath the site path such that if the structure id belongs to a container page, the closest sitemap entry URI to that site path is returned
+     *   
+     * @return the search result URI
+     *   
+     * @throws CmsException if something goes wrong 
+     */
+    public String getSearchResultUri(CmsObject cms, CmsUUID searchResultStructureId, String otherSitePath)
+    throws CmsException {
+
+        CmsResource resource = cms.readResource(searchResultStructureId);
+        if (CmsResourceTypeXmlContainerPage.isContainerPage(resource)) {
+            return getClosestSitePathForStructureId(cms, searchResultStructureId, otherSitePath);
+        }
+        String detailView = cms.readPropertyObject(
+            resource,
+            CmsPropertyDefinition.PROPERTY_ADE_SITEMAP_DETAILVIEW,
+            true).getValue("");
+        if (detailView.equals("")) {
+            return cms.getSitePath(resource);
+        }
+        return CmsStringUtil.joinPaths(detailView, "/", searchResultStructureId.toString(), "/");
     }
 
     /**
