@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsPair.java,v $
- * Date   : $Date: 2010/07/20 10:28:08 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/07/20 13:29:22 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import java.util.Map;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -124,7 +124,7 @@ public class CmsPair<A, B> {
     @Override
     public boolean equals(Object o) {
 
-        if (!(o instanceof CmsPair)) {
+        if ((o == null) || !(o instanceof CmsPair)) {
             return false;
         }
         CmsPair otherPair = (CmsPair)o;
