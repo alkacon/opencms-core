@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorer.java,v $
- * Date   : $Date: 2010/07/19 14:11:43 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/07/21 07:57:27 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -76,7 +76,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -644,12 +644,16 @@ public class CmsExplorer extends CmsWorkplace {
             currentResource.getRootPath())));
         content.append("\");\n");
         content.append("top.rD();\n");
-        List<?> reloadTreeFolders = (List<?>)getJsp().getRequest().getAttribute(REQUEST_ATTRIBUTE_RELOADTREE);
+
+        //unchecked cast to List<String>
+        @SuppressWarnings("unchecked")
+        List<String> reloadTreeFolders = (List<String>)getJsp().getRequest().getAttribute(REQUEST_ATTRIBUTE_RELOADTREE);
+
         if (reloadTreeFolders != null) {
             // folder tree has to be reloaded after copy, delete, move, rename operation
             String reloadFolder = "";
             for (int i = 0; i < reloadTreeFolders.size(); i++) {
-                reloadFolder = (String)reloadTreeFolders.get(i);
+                reloadFolder = reloadTreeFolders.get(i);
                 if (getSettings().getUserSettings().getRestrictExplorerView()) {
                     // in restricted view, adjust folder path to reload: remove restricted folder name
                     if (reloadFolder.length() >= rootFolder.length()) {

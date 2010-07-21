@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerInit.java,v $
- * Date   : $Date: 2010/07/19 14:11:43 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/07/21 07:57:27 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author  Andreas Zahner
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.2.0 
  */
@@ -88,10 +88,10 @@ public class CmsExplorerInit extends CmsWorkplace {
         if (entries == null) {
             StringBuffer result = new StringBuffer();
             // get all available resource types
-            List<?> allResTypes = OpenCms.getResourceManager().getResourceTypesWithUnknown();
+            List<I_CmsResourceType> allResTypes = OpenCms.getResourceManager().getResourceTypesWithUnknown();
             for (int i = 0; i < allResTypes.size(); i++) {
                 // loop through all types
-                I_CmsResourceType type = (I_CmsResourceType)allResTypes.get(i);
+                I_CmsResourceType type = allResTypes.get(i);
                 // get explorer type settings for current resource type
                 CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
                     type.getTypeName());

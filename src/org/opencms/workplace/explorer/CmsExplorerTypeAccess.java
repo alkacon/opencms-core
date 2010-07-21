@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerTypeAccess.java,v $
- * Date   : $Date: 2010/07/19 14:11:43 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/07/21 07:57:27 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -79,7 +79,7 @@ public class CmsExplorerTypeAccess {
     private CmsAccessControlList m_accessControlList;
 
     /** Cached permissions based on roles. */
-    private Map<Object, CmsPermissionSetCustom> m_permissionsCache;
+    private Map<String, CmsPermissionSetCustom> m_permissionsCache;
 
     /**
      * Constructor, creates an empty, CmsExplorerTypeAccess object.<p>
@@ -120,7 +120,7 @@ public class CmsExplorerTypeAccess {
             return;
         }
         if (m_permissionsCache == null) {
-            Map<Object, CmsPermissionSetCustom> lruMap = CmsCollectionsGenericWrapper.createLRUMap(2048);
+            Map<String, CmsPermissionSetCustom> lruMap = CmsCollectionsGenericWrapper.createLRUMap(2048);
             m_permissionsCache = Collections.synchronizedMap(lruMap);
             OpenCms.getMemoryMonitor().register(this.getClass().getName() + "." + resourceType, lruMap);
         } else {
@@ -209,7 +209,7 @@ public class CmsExplorerTypeAccess {
      */
     public CmsPermissionSet getPermissions(CmsObject cms, CmsResource resource) {
 
-        Object cacheKey = getPermissionsCacheKey(cms, resource);
+        String cacheKey = getPermissionsCacheKey(cms, resource);
         CmsPermissionSetCustom permissions;
         if (cacheKey != null) {
             permissions = m_permissionsCache.get(cacheKey);
