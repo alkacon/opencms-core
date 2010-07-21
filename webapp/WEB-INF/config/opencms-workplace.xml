@@ -711,6 +711,8 @@
     	<menurule name="standard">
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOnlineInvisible" />
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOtherInvisible" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirContainerpageInvisible" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirSitemapInvisible" />
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameUnlockedInactiveNoAl" />
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameLockedActiveNotDeletedAlPermW" />
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameOtherlockInvisible" />
@@ -718,18 +720,24 @@
     	<menurule name="copy">
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOnlineInvisible" />
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOtherInvisible" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirContainerpageInvisible" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirSitemapInvisible" />
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameUnlockedActiveNotDeletedNoAl" />
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameLockedActiveNotDeletedAlPermW" />
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameOtherlockInvisible" />
     	</menurule>
     	<menurule name="copytoproject">
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOnlineInvisible" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirContainerpageInvisible" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirSitemapInvisible" />
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOtherActive" />
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirAlwaysInvisible" />
     	</menurule>
     	<menurule name="undelete">
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOnlineInvisible" />
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOtherInvisible" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirContainerpageInvisible" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirSitemapInvisible" />
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameUnlockedActiveDeletedNoAl" />
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameLockedActiveDeletedAl" />
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameOtherlockInvisible" />
@@ -737,11 +745,15 @@
     	<menurule name="undochanges">
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOnlineInvisible" />
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOtherInvisible" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirContainerpageInvisible" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirSitemapInvisible" />
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameUnlockedInactiveNotDeletedNoAl" />
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameLockedActiveChangedAl" />
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameOtherlockInvisible" />
     	</menurule>
     	<menurule name="permissions">
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirContainerpageInvisible" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirSitemapInvisible" />
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOnlineActive" />
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOtherActive" />
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameUnlockedInactiveNoAl" />
@@ -751,17 +763,23 @@
     	<menurule name="directpublish">
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOnlineInvisible" />
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOtherInvisible" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirContainerpageInvisible" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirSitemapInvisible" />
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirDirectPublish" />
     	</menurule>
     	<menurule name="lock">
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOnlineInvisible" />
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOtherInvisible" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirContainerpageInvisible" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirSitemapInvisible" />
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameUnlockedActive" />
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirAlwaysInvisible" />
     	</menurule>
     	<menurule name="unlock">
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOnlineInvisible" />
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOtherInvisible" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirContainerpageInvisible" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirSitemapInvisible" />
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameUnlockedInvisible" />
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameLockedActive" />
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirAlwaysInvisible" />
@@ -769,6 +787,8 @@
     	<menurule name="changelock">
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOnlineInvisible" />
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOtherInvisible" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirContainerpageInvisible" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirSitemapInvisible" />
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameUnlockedInvisible" />
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameLockedInvisible" />
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameOtherlockActiveNoPublish" />
@@ -776,21 +796,33 @@
     	<menurule name="showlocks">
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOnlineInvisible" />
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOtherInvisible" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirContainerpageInvisible" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirSitemapInvisible" />
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirAlwaysActive" />
     	</menurule>
     	<menurule name="editcontrolcode">
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirContainerpageInvisible" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirSitemapInvisible" />
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirEditControlcode" />
     	</menurule>
     	<menurule name="showsiblings">
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirContainerpageInvisible" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirSitemapInvisible" />
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirShowSiblings" />
     	</menurule>
     	<menurule name="nondeleted">
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirContainerpageInvisible" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirSitemapInvisible" />
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirActiveNonDeleted" />
     	</menurule>
     	<menurule name="multistandard">
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirContainerpageInvisible" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirSitemapInvisible" />
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirMultiStandard" />
     	</menurule>
     	<menurule name="multipubstandard">
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirContainerpageInvisible" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirSitemapInvisible" />
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirMultiDirPublishStandard" />
     	</menurule>
     	<menurule name="substandard">
@@ -799,6 +831,8 @@
     	<menurule name="publishscheduled">
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOnlineInvisible" />
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOtherInvisible" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirContainerpageInvisible" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirSitemapInvisible" />
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirDirectPublish" />
     	</menurule>
    	  </menurules>
