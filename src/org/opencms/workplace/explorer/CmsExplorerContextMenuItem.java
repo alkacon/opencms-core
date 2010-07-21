@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerContextMenuItem.java,v $
- * Date   : $Date: 2010/07/19 14:11:43 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/07/21 11:02:34 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import java.util.List;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -52,6 +52,9 @@ public class CmsExplorerContextMenuItem {
 
     /** The name for a separator type. */
     public static final String TYPE_SEPARATOR = "sep";
+
+    /** The icon path for a menu entry. */
+    private String m_icon;
 
     /** The key (label) for the menu item. */
     private String m_key;
@@ -103,6 +106,16 @@ public class CmsExplorerContextMenuItem {
     public void addContextMenuSeparator(CmsExplorerContextMenuItem item) {
 
         addSubItem(item, TYPE_SEPARATOR);
+    }
+
+    /**
+     * Returns the icon.<p>
+     *
+     * @return the icon
+     */
+    public String getIcon() {
+
+        return m_icon;
     }
 
     /**
@@ -203,6 +216,16 @@ public class CmsExplorerContextMenuItem {
     public boolean isSubItem() {
 
         return m_parent != null;
+    }
+
+    /**
+     * Sets the icon path.<p>
+     * 
+     * @param iconPath the icon path for a menu entry
+     */
+    public void setIcon(String iconPath) {
+
+        m_icon = iconPath;
     }
 
     /**

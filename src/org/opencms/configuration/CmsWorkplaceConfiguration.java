@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2010/06/21 10:01:40 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/07/21 11:02:34 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,7 +72,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 6.0.0
  */
@@ -669,7 +669,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
                         Iterator k = accessEntries.iterator();
                         while (k.hasNext()) {
                             String key = (String)k.next();
-                            String value = (String)settings.getAccess().getAccessEntries().get(key);
+                            String value = settings.getAccess().getAccessEntries().get(key);
                             Element accessEntryElement = accessControlElement.addElement(N_ACCESSENTRY);
                             accessEntryElement.addAttribute(A_PRINCIPAL, key);
                             accessEntryElement.addAttribute(A_PERMISSIONS, value);
@@ -718,6 +718,8 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         digester.addCallParam(xPath, 0, A_RULE);
         digester.addCallMethod(xPath, "setTarget", 1);
         digester.addCallParam(xPath, 0, A_TARGET);
+        digester.addCallMethod(xPath, "setIcon", 1);
+        digester.addCallParam(xPath, 0, A_ICON);
         digester.addSetNext(xPath, "addContextMenuEntry");
 
         // add the rules for a separator item
@@ -1089,7 +1091,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
 
             while (k.hasNext()) {
                 String key = (String)k.next();
-                String value = (String)m_workplaceManager.getDefaultAccess().getAccessEntries().get(key);
+                String value = m_workplaceManager.getDefaultAccess().getAccessEntries().get(key);
                 Element accessEntryElement = accessControlElement.addElement(N_ACCESSENTRY);
                 accessEntryElement.addAttribute(A_PRINCIPAL, key);
                 accessEntryElement.addAttribute(A_PERMISSIONS, value);

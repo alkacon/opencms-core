@@ -54,7 +54,10 @@
 .cmsContextMenuPopup .dialogBottom {
 	display: none;
 }
-
+.menuInfoLabel {
+	padding: 4px;
+	cursor: default;
+}
 
 @if user.agent ie6 { /* IE6 HACK for the separator */
 	.cmsMenuBar .menuItemSeparator {

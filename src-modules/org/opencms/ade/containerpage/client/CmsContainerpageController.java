@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageController.java,v $
- * Date   : $Date: 2010/07/19 14:11:43 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2010/07/21 11:02:34 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,6 +50,7 @@ import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
+import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.rpc.I_CmsCoreService;
 import org.opencms.gwt.shared.rpc.I_CmsCoreServiceAsync;
 import org.opencms.util.CmsStringUtil;
@@ -82,7 +83,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 8.0.0
  */
@@ -301,14 +302,14 @@ public final class CmsContainerpageController {
     /** The container element data. All requested elements will be cached here.*/
     /*DEFAULT*/Map<String, CmsContainerElementData> m_elements;
 
+    /** The container-page handler. */
+    CmsContainerpageHandler m_handler;
+
     /** Flag if the container-page has changed. */
     /*DEFAULT*/boolean m_pageChanged;
 
     /** The container-page RPC service. */
     private I_CmsContainerpageServiceAsync m_containerpageService;
-
-    /** The core RPC service instance. */
-    private I_CmsCoreServiceAsync m_coreSvc;
 
     /** The container-page util instance. */
     private CmsContainerpageUtil m_containerpageUtil;
@@ -316,14 +317,14 @@ public final class CmsContainerpageController {
     /** The container data. */
     private Map<String, CmsContainerJso> m_containers;
 
+    /** The core RPC service instance. */
+    private I_CmsCoreServiceAsync m_coreSvc;
+
     /** The prefetched data. */
     private CmsCntPageData m_data;
 
     /** The currently edited sub-container element. */
     private CmsDragSubcontainer m_editingSubcontainer;
-
-    /** The container-page handler. */
-    CmsContainerpageHandler m_handler;
 
     /** The drag targets within this page. */
     private Map<String, CmsDragTargetContainer> m_targetContainers;
@@ -778,8 +779,9 @@ public final class CmsContainerpageController {
      * Loads the context menu entries.<p>
      * 
      * @param uri the URI to get the context menu entries for 
+     * @param context the ade context (sitemap or containerpae)
      */
-    public void loadContextMenu(final String uri) {
+    public void loadContextMenu(final String uri, final AdeContext context) {
 
         /** The RPC menu action for the container page dialog. */
         CmsRpcAction<List<CmsContextMenuEntryBean>> menuAction = new CmsRpcAction<List<CmsContextMenuEntryBean>>() {
@@ -790,7 +792,7 @@ public final class CmsContainerpageController {
             @Override
             public void execute() {
 
-                getCoreService().getContextMenuEntries(uri, this);
+                getCoreService().getContextMenuEntries(uri, context, this);
             }
 
             /**
@@ -1142,19 +1144,6 @@ public final class CmsContainerpageController {
     }
 
     /**
-     * Returns the core RPC service.<p>
-     * 
-     * @return the core service
-     */
-    protected I_CmsCoreServiceAsync getCoreService() {
-
-        if (m_coreSvc == null) {
-            m_coreSvc = GWT.create(I_CmsCoreService.class);
-        }
-        return m_coreSvc;
-    }
-
-    /**
      * Returns the container-page RPC service.<p>
      * 
      * @return the container-page service
@@ -1165,6 +1154,19 @@ public final class CmsContainerpageController {
             m_containerpageService = GWT.create(I_CmsContainerpageService.class);
         }
         return m_containerpageService;
+    }
+
+    /**
+     * Returns the core RPC service.<p>
+     * 
+     * @return the core service
+     */
+    protected I_CmsCoreServiceAsync getCoreService() {
+
+        if (m_coreSvc == null) {
+            m_coreSvc = GWT.create(I_CmsCoreService.class);
+        }
+        return m_coreSvc;
     }
 
     /**

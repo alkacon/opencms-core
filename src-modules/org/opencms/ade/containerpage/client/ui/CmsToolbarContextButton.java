@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsToolbarContextButton.java,v $
- * Date   : $Date: 2010/07/19 14:11:43 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/07/21 11:02:34 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,6 +38,9 @@ import org.opencms.gwt.client.ui.CmsContextMenuHandler;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsContextMenuEntry;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.ui.input.CmsLabel;
+import org.opencms.gwt.client.util.CmsCollectionUtil;
+import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 
 import java.util.List;
 
@@ -47,18 +50,15 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlexTable;
 
 /**
- * The gallery tool-bar menu.<p>
+ * The context tool-bar menu.<p>
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
 public class CmsToolbarContextButton extends A_CmsToolbarMenu {
-
-    /** The menu. */
-    protected CmsContextMenu m_menu;
 
     /** Signals whether the widget has been initialized or not. */
     private boolean m_initialized;
@@ -77,8 +77,18 @@ public class CmsToolbarContextButton extends A_CmsToolbarMenu {
     public CmsToolbarContextButton(CmsContainerpageHandler handler) {
 
         super(I_CmsButton.ButtonData.CONTEXT, handler);
+
+        // create the menu panel (it's a table because of ie6)
         m_menuPanel = new FlexTable();
+        // set a style name for the menu table
+        m_menuPanel.getElement().addClassName(I_CmsLayoutBundle.INSTANCE.contextmenuCss().menuPanel());
+
+        // set the widget
         setMenuWidget(m_menuPanel);
+
+        // remove the style attribute of the popup because its width is set to 100%
+        DOM.removeElementAttribute(getPopupContent().getWidget().getElement(), "style");
+
     }
 
     /**
@@ -87,10 +97,9 @@ public class CmsToolbarContextButton extends A_CmsToolbarMenu {
     public void onToolbarActivate() {
 
         if (!m_initialized) {
-            getHandler().loadContextMenu(CmsCoreProvider.get().getUri());
+            getHandler().loadContextMenu(CmsCoreProvider.get().getUri(), AdeContext.containerpage);
             m_initialized = true;
         }
-
     }
 
     /**
@@ -113,14 +122,20 @@ public class CmsToolbarContextButton extends A_CmsToolbarMenu {
      */
     public void showMenu(List<I_CmsContextMenuEntry> menuEntries) {
 
-        if ((menuEntries != null) && !menuEntries.isEmpty()) {
-            m_menu = new CmsContextMenu(menuEntries, true);
-            m_resizeRegistration = Window.addResizeHandler(m_menu);
+        if (!CmsCollectionUtil.isEmptyOrNull(menuEntries)) {
+            // if there were entries found for the menu, create the menu
+            CmsContextMenu menu = new CmsContextMenu(menuEntries, true);
+            // add the resize handler for the menu
+            m_resizeRegistration = Window.addResizeHandler(menu);
+            // set the menu as widget for the panel 
+            m_menuPanel.setWidget(0, 0, menu);
+            // add the close handler for the menu
+            getPopupContent().addCloseHandler(new CmsContextMenuHandler(menu));
+        } else {
+            // if no entries were found, inform the user 
+            CmsLabel label = new CmsLabel("No entries found for this resource type!");
+            label.addStyleName(I_CmsLayoutBundle.INSTANCE.contextmenuCss().menuInfoLabel());
+            m_menuPanel.setWidget(0, 0, label);
         }
-        getPopupContent().addCloseHandler(new CmsContextMenuHandler(m_menu));
-
-        DOM.removeElementAttribute(getPopupContent().getWidget().getElement(), "style");
-        m_menuPanel.getElement().addClassName(I_CmsLayoutBundle.INSTANCE.contextmenuCss().menuPanel());
-        m_menuPanel.setWidget(0, 0, m_menu);
     }
 }

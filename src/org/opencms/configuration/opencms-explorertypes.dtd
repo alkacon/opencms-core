@@ -107,6 +107,7 @@
 #
 # rule: the name of the menu rule that should be used to display the entry, this replaces the legacy rules attribute.
 # order: the order of the entry (display position in the menu), not used anymore.
+# icon: the icon in front of the context menu entry (max. 16px * 16px)
 # isxml: optional, if the URI leads to a legacy XMLTemplate based dialog, set this attribute to true.
 # A separator node only needs the order attribute to be displayed properly.
 -->
@@ -127,6 +128,7 @@
 	target CDATA #IMPLIED
 	name CDATA #IMPLIED
 	parent CDATA #IMPLIED
+	icon CDATA #IMPLIED
 	isxml (true|false|TRUE|FALSE) #IMPLIED>
 	
 <!ELEMENT separator EMPTY>

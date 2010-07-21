@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsContextMenuItem.java,v $
- * Date   : $Date: 2010/07/19 14:11:43 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/07/21 11:02:34 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import com.google.gwt.user.client.ui.HTML;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since version 8.0.0
  */
@@ -68,24 +68,34 @@ public final class CmsContextMenuItem extends A_CmsContextMenuItem {
     private String m_imagePath;
 
     /**
-     * @param entry
+     * Constructs a context menu item.<p>
+     * 
+     * @param entry the information for this item
      */
     public CmsContextMenuItem(I_CmsContextMenuEntry entry) {
 
+        // call the super constructor
         super(entry.getLabel());
+
+        // set the privates
+        m_command = entry.getCommand();
+        m_imageClass = entry.getImageClass();
+        m_imagePath = entry.getImagePath();
+
+        // get the HTML for the menu item
         m_panel = new HTML(getMenuItemHtml(entry.hasSubMenu()));
+
+        // initialize the widget with the panel and set the style name for the menu item       
         initWidget(m_panel);
         setStyleName(I_CmsLayoutBundle.INSTANCE.contextmenuCss().cmsMenuItem());
 
-        setImagePath(entry.getImagePath());
-        setImageClass(entry.getImageClass());
-        setCommand(entry.getCommand());
-
+        // now, if the widget is initialized, it's possible to set the item active or inactive,
+        // because the mouse handlers for the item are added or removed
         if (!entry.isActive()) {
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(entry.getReason())) {
-                setEnabled(entry.isActive(), entry.getReason());
+                setActive(entry.isActive(), entry.getReason());
             } else {
-                setEnabled(entry.isActive(), "");
+                setActive(entry.isActive(), "");
             }
         }
     }
@@ -138,36 +148,5 @@ public final class CmsContextMenuItem extends A_CmsContextMenuItem {
         html.append("\">" + getText() + "</div>");
 
         return html.toString();
-    }
-
-    /**
-     * Sets the command.<p>
-     * 
-     * @param command the command to set
-     */
-    private void setCommand(Command command) {
-
-        m_command = command;
-
-    }
-
-    /**
-     * Sets the image class.<p>
-     * 
-     * @param imageClass the image class to set
-     */
-    private void setImageClass(String imageClass) {
-
-        m_imageClass = imageClass;
-    }
-
-    /**
-     * Sets the image path.<p>
-     * 
-     * @param imagePath the path to set
-     */
-    private void setImagePath(String imagePath) {
-
-        m_imagePath = imagePath;
     }
 }

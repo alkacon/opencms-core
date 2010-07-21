@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/Attic/CmsCoreData.java,v $
- * Date   : $Date: 2010/06/18 07:29:54 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/07/21 11:02:34 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,11 +38,21 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
 public class CmsCoreData implements IsSerializable {
+
+    /** A enumeration for the ADE context. */
+    public enum AdeContext {
+
+        /** Context for container page. */
+        containerpage,
+
+        /** Context for sitemap. */
+        sitemap
+    }
 
     /** Name of the used js variable. */
     public static final String DICT_NAME = "org_opencms_gwt";

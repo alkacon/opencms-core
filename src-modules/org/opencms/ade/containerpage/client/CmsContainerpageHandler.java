@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageHandler.java,v $
- * Date   : $Date: 2010/07/19 14:11:43 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2010/07/21 11:02:34 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,6 +59,7 @@ import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
+import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
@@ -84,7 +85,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 8.0.0
  */
@@ -282,10 +283,11 @@ public class CmsContainerpageHandler {
      * Loads the context menu entries for a given URI.<p>
      * 
      * @param uri the URI to get the context menu entries for 
+     * @param context the ade context (sitemap or containerpage)
      */
-    public void loadContextMenu(final String uri) {
+    public void loadContextMenu(final String uri, final AdeContext context) {
 
-        m_controller.loadContextMenu(uri);
+        m_controller.loadContextMenu(uri, context);
     }
 
     /**

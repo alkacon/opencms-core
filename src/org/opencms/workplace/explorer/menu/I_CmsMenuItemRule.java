@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/menu/I_CmsMenuItemRule.java,v $
- * Date   : $Date: 2009/06/04 14:29:07 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/07/21 11:02:34 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,11 +39,20 @@ import org.opencms.workplace.explorer.CmsResourceUtil;
  * 
  * @author Andreas Zahner  
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.5.6 
  */
 public interface I_CmsMenuItemRule {
+
+    /** The request attribute name for the context information. */
+    String ATTR_CONTEXT_INFO = "__contextInfo";
+
+    /** A constant that signals that we are in the container page context. */
+    String CONTEXT_CONTAINERPAGE = "containerpage";
+
+    /** A constant that signals that we are in the sitemap context. */
+    String CONTEXT_SITEMAP = "sitemap";
 
     /**
      * Returns the visibility for the menu item.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/rpc/Attic/I_CmsCoreService.java,v $
- * Date   : $Date: 2010/07/19 14:11:43 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/07/21 11:02:34 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ import org.opencms.gwt.CmsRpcException;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData;
+import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.CmsValidationQuery;
 import org.opencms.gwt.shared.CmsValidationResult;
 
@@ -49,7 +50,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 8.0.0
  * 
@@ -59,6 +60,12 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  */
 @RemoteServiceRelativePath("org.opencms.gwt.CmsCoreService.gwt")
 public interface I_CmsCoreService extends RemoteService {
+
+    /** A constant that signals that we are in the container page context. */
+    String CONTEXT_CONTAINERPAGE = "containerpage";
+
+    /** A constant that signals that we are in the sitemap context. */
+    String CONTEXT_SITEMAP = "sitemap";
 
     /**
      * Returns the categories for the given search parameters.<p>
@@ -73,6 +80,18 @@ public interface I_CmsCoreService extends RemoteService {
      */
     CmsCategoryTreeEntry getCategories(String fromCatPath, boolean includeSubCats, List<String> refVfsPaths)
     throws CmsRpcException;
+
+    /**
+     * Returns the context menu entries for the given URI.<p>
+     * 
+     * @param uri the current requested URI
+     * @param context the ade context (sitemap or containerpage)
+     * 
+     * @return the context menu entries 
+     * 
+     * @throws CmsRpcException if something goes wrong
+     */
+    List<CmsContextMenuEntryBean> getContextMenuEntries(String uri, AdeContext context) throws CmsRpcException;
 
     /**
      * Locks the given resource.<p>
@@ -150,15 +169,4 @@ public interface I_CmsCoreService extends RemoteService {
      * @throws CmsRpcException if something goes wrong 
      */
     Map<String, CmsValidationResult> validate(Map<String, CmsValidationQuery> validationQueries) throws CmsRpcException;
-
-    /**
-     * Returns the context menu entries for the given URI.<p>
-     * 
-     * @param uri the current requested URI
-     * 
-     * @return the context menu entries 
-     * 
-     * @throws CmsRpcException if something goes wrong
-     */
-    List<CmsContextMenuEntryBean> getContextMenuEntries(String uri) throws CmsRpcException;
 }

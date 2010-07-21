@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/A_CmsContextMenuItem.java,v $
- * Date   : $Date: 2010/07/19 14:11:43 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/07/21 11:02:34 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,18 +51,18 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since version 8.0.0
  */
 public abstract class A_CmsContextMenuItem extends Composite
 implements ClickHandler, MouseOutHandler, MouseOverHandler, HasClickHandlers, HasMouseOutHandlers, HasMouseOverHandlers {
 
+    /** Signals if the item should be disabled. */
+    private boolean m_active;
+
     /** The handler registration for the click handler. */
     private HandlerRegistration m_clickRegistration;
-
-    /** Signals if the item should be disabled. */
-    private boolean m_enabled;
 
     /** The handler registration for the click handler. */
     private HandlerRegistration m_mouseOutRegistration;
@@ -86,7 +86,7 @@ implements ClickHandler, MouseOutHandler, MouseOverHandler, HasClickHandlers, Ha
      */
     protected A_CmsContextMenuItem(String text) {
 
-        m_enabled = true;
+        m_active = true;
         m_text = text;
     }
 
@@ -170,13 +170,13 @@ implements ClickHandler, MouseOutHandler, MouseOverHandler, HasClickHandlers, Ha
     }
 
     /**
-     * Returns <code>true</code> if the item is enabled <code>false</code> otherwise.<p>
+     * Returns <code>true</code> if the item is active <code>false</code> otherwise.<p>
      * 
-     * @return <code>true</code> if the item is enabled <code>false</code> otherwise
+     * @return <code>true</code> if the item is active <code>false</code> otherwise
      */
-    public boolean isEnabled() {
+    public boolean isActive() {
 
-        return m_enabled;
+        return m_active;
     }
 
     /**
@@ -213,14 +213,16 @@ implements ClickHandler, MouseOutHandler, MouseOverHandler, HasClickHandlers, Ha
     }
 
     /**
-     * Makes the menu item enable or disable.<p>
+     * Makes the menu item active or inactive.<p>
      * 
-     * @param enabled <code>true</code> if the item should be enabled, <code>false</code> otherwise
-     * @param reason the reason for deactivation
+     * If the item is inactive all handlers are removed.<p>
+     * 
+     * @param active <code>true</code> if the item should be active, <code>false</code> otherwise
+     * @param reason the reason for de-activation
      */
-    public void setEnabled(boolean enabled, String reason) {
+    public void setActive(boolean active, String reason) {
 
-        if (!enabled) {
+        if (!active) {
             m_clickRegistration.removeHandler();
             m_mouseOutRegistration.removeHandler();
             m_mouseOverRegistration.removeHandler();
@@ -232,7 +234,7 @@ implements ClickHandler, MouseOutHandler, MouseOverHandler, HasClickHandlers, Ha
             addClickHandler(this);
             getElement().removeClassName(I_CmsLayoutBundle.INSTANCE.contextmenuCss().disabled());
         }
-        m_enabled = enabled;
+        m_active = active;
     }
 
     /**
