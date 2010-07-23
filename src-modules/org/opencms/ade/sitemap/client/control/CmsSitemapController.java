@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2010/06/24 09:05:27 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/07/23 11:38:26 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,6 +40,7 @@ import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeMove;
 import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeNew;
 import org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
+import org.opencms.ade.sitemap.shared.CmsSitemapBrokenLinkBean;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.ade.sitemap.shared.CmsSitemapMergeInfo;
 import org.opencms.ade.sitemap.shared.CmsSitemapTemplate;
@@ -52,11 +53,13 @@ import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.rpc.CmsRpcPrefetcher;
 import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 import org.opencms.xml.sitemap.CmsSitemapManager;
 import org.opencms.xml.sitemap.I_CmsSitemapChange;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -65,13 +68,14 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * Sitemap editor controller.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 8.0.0
  */
@@ -387,6 +391,46 @@ public class CmsSitemapController {
     }
 
     /**
+     * Fetches a list of beans from the server which represent the links which would be broken if the sitemap entries
+     * in the "open" list and the descendants of the sitemap entries in the "closed" list were deleted.<p>
+     * 
+     * @param open the list of sitemap entry ids which should be considered without their descendants  
+     * @param closed the list of sitemap entry ids which should be considered with their descendantw 
+     * 
+     * @param callback the callback which will be called with the results 
+     */
+    public void getBrokenLinks(
+        final List<CmsUUID> open,
+        final List<CmsUUID> closed,
+        final AsyncCallback<List<CmsSitemapBrokenLinkBean>> callback) {
+
+        CmsRpcAction<List<CmsSitemapBrokenLinkBean>> action = new CmsRpcAction<List<CmsSitemapBrokenLinkBean>>() {
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+             */
+            @Override
+            public void execute() {
+
+                start(0);
+                getService().getBrokenLinksToSitemapEntries(open, closed, this);
+            }
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+             */
+            @Override
+            protected void onResponse(List<CmsSitemapBrokenLinkBean> result) {
+
+                stop(false);
+                callback.onSuccess(result);
+            }
+        };
+        action.execute();
+
+    }
+
+    /**
      * Retrieves the children entries of the given node from the server.<p>
      * 
      * @param originalPath the original site path of the sitemap entry to get the children for
@@ -507,6 +551,31 @@ public class CmsSitemapController {
             }
         }
         return result;
+    }
+
+    /**
+     * Returns a list of all descendant sitemap entries of a given path which have already been loaded on the client.<p>
+     * 
+     * @param path the path for which the descendants should be collected 
+     * 
+     * @return the list of descendant sitemap entries 
+     */
+    public List<CmsClientSitemapEntry> getLoadedDescendants(String path) {
+
+        LinkedList<CmsClientSitemapEntry> remainingEntries = new LinkedList<CmsClientSitemapEntry>();
+        List<CmsClientSitemapEntry> result = new ArrayList<CmsClientSitemapEntry>();
+        CmsClientSitemapEntry entry = getEntry(path);
+        remainingEntries.add(entry);
+        while (remainingEntries.size() > 0) {
+            CmsClientSitemapEntry currentEntry = remainingEntries.removeFirst();
+            result.add(currentEntry);
+            for (CmsClientSitemapEntry subEntry : currentEntry.getSubEntries()) {
+                remainingEntries.add(subEntry);
+            }
+        }
+
+        return result;
+
     }
 
     /**

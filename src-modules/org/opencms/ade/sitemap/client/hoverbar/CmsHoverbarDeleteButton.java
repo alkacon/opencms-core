@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsHoverbarDeleteButton.java,v $
- * Date   : $Date: 2010/05/27 11:13:52 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/07/23 11:38:25 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,23 +31,33 @@
 
 package org.opencms.ade.sitemap.client.hoverbar;
 
+import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
+import org.opencms.ade.sitemap.client.ui.CmsLinkWarningDialog;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsImageBundle;
+import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
+import org.opencms.ade.sitemap.shared.CmsSitemapBrokenLinkBean;
 import org.opencms.gwt.client.ui.CmsConfirmDialog;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
 import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.util.CmsPair;
+import org.opencms.util.CmsUUID;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * Sitemap hoverbar delete button.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  */
@@ -74,33 +84,82 @@ public class CmsHoverbarDeleteButton extends CmsPushButton {
                 CmsDomUtil.ensureMouseOut(getElement());
                 final String sitePath = hoverbar.getSitePath();
                 final CmsSitemapController controller = hoverbar.getController();
-                if (controller.getEntry(sitePath).getSubEntries().isEmpty()) {
-                    controller.delete(sitePath);
-                    return;
-                }
-                // show the dialog only if the entry has children 
-                CmsConfirmDialog dialog = new CmsConfirmDialog(
-                    Messages.get().key(Messages.GUI_DIALOG_DELETE_TITLE_0),
-                    Messages.get().key(Messages.GUI_DIALOG_DELETE_TEXT_0));
-                dialog.setHandler(new I_CmsConfirmDialogHandler() {
+                CmsPair<List<CmsClientSitemapEntry>, List<CmsClientSitemapEntry>> openAndClosed = CmsSitemapView.getInstance().getOpenAndClosedDescendants(
+                    sitePath);
+                List<CmsClientSitemapEntry> openEntries = openAndClosed.getFirst();
+                List<CmsClientSitemapEntry> closedEntries = openAndClosed.getSecond();
+                List<CmsUUID> open = getIds(openEntries);
+                List<CmsUUID> closed = getIds(closedEntries);
+                controller.getBrokenLinks(open, closed, new AsyncCallback<List<CmsSitemapBrokenLinkBean>>() {
 
                     /**
-                     * @see org.opencms.gwt.client.ui.I_CmsCloseDialogHandler#onClose()
+                     * @see com.google.gwt.user.client.rpc.AsyncCallback#onFailure(java.lang.Throwable)
                      */
-                    public void onClose() {
+                    public void onFailure(Throwable caught) {
 
-                        // do nothing
+                        // do nothing; will never be called
                     }
 
                     /**
-                     * @see org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler#onOk()
+                     * @see com.google.gwt.user.client.rpc.AsyncCallback#onSuccess(java.lang.Object)
                      */
-                    public void onOk() {
+                    public void onSuccess(List<CmsSitemapBrokenLinkBean> result) {
 
-                        controller.delete(sitePath);
+                        if (result.size() > 0) {
+                            I_CmsConfirmDialogHandler handler = new I_CmsConfirmDialogHandler() {
+
+                                /**
+                                 * @see org.opencms.gwt.client.ui.I_CmsCloseDialogHandler#onClose()
+                                 */
+                                public void onClose() {
+
+                                    // do nothing 
+                                }
+
+                                /**
+                                 * @see org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler#onOk()
+                                 */
+                                public void onOk() {
+
+                                    controller.delete(sitePath);
+                                }
+                            };
+                            CmsLinkWarningDialog dialog = new CmsLinkWarningDialog(handler, result);
+                            dialog.center();
+
+                        } else {
+
+                            if (controller.getEntry(sitePath).getSubEntries().isEmpty()) {
+                                controller.delete(sitePath);
+                                return;
+                            }
+                            // show the dialog only if the entry has children 
+                            CmsConfirmDialog dialog = new CmsConfirmDialog(Messages.get().key(
+                                Messages.GUI_DIALOG_DELETE_TITLE_0), Messages.get().key(
+                                Messages.GUI_DIALOG_DELETE_TEXT_0));
+                            dialog.setHandler(new I_CmsConfirmDialogHandler() {
+
+                                /**
+                                 * @see org.opencms.gwt.client.ui.I_CmsCloseDialogHandler#onClose()
+                                 */
+                                public void onClose() {
+
+                                    // do nothing
+                                }
+
+                                /**
+                                 * @see org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler#onOk()
+                                 */
+                                public void onOk() {
+
+                                    controller.delete(sitePath);
+                                }
+                            });
+                            dialog.center();
+                        }
                     }
+
                 });
-                dialog.center();
             }
         });
         hoverbar.addAttachHandler(new I_CmsHoverbarAttachHandler() {
@@ -120,4 +179,21 @@ public class CmsHoverbarDeleteButton extends CmsPushButton {
             }
         });
     }
+
+    /**
+     * Extracts the ids from a list of client sitemap entries.<p>
+     * 
+     * @param entries the sitemap entries
+     * 
+     * @return the ids of the sitemap entries 
+     */
+    protected List<CmsUUID> getIds(List<CmsClientSitemapEntry> entries) {
+
+        List<CmsUUID> result = new ArrayList<CmsUUID>();
+        for (CmsClientSitemapEntry entry : entries) {
+            result.add(entry.getId());
+        }
+        return result;
+    }
+
 }

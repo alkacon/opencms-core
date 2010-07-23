@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/tree/Attic/CmsTreeItem.java,v $
- * Date   : $Date: 2010/06/24 09:05:26 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2010/07/23 11:38:25 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,6 +55,7 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -76,7 +77,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Georg Westenberger
  * @author Michael Moossen
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 8.0.0
  */
@@ -150,7 +151,26 @@ public class CmsTreeItem extends CmsListItem {
         if (!showOpeners) {
             hideOpeners();
         }
+    }
 
+    /**
+     * Creates a new tree item with a 24px wide icon.<p>
+     *  
+     * @param showOpeners
+     * @param mainWidget
+     * @param icon
+     */
+    public CmsTreeItem(boolean showOpeners, Widget mainWidget, String icon) {
+
+        this(showOpeners);
+        addMainWidget(mainWidget);
+        Label label = new Label();
+        label.addStyleName(icon);
+        addDecoration(label, 28, true);
+        initContent();
+        if (!showOpeners) {
+            hideOpeners();
+        }
     }
 
     /** 

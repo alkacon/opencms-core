@@ -17,6 +17,11 @@
 	font-family: value("constantsCss.fontFamily");
 	font-size: value("constantsCss.fontSizeBig");
 }
+
+.border {
+	border: 1px solid value("constantsCss.borderColor");
+}
+	
 .cmsState-up, .cmsState-up-hovering, .cmsState-up-disabled, .cmsState-down, .cmsState-down-hovering, .cmsState-down-disabled, .cmsHovering{};
 
 /** browser specific styles **/

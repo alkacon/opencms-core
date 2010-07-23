@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsSitemapService.java,v $
- * Date   : $Date: 2010/07/07 09:12:30 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2010/07/23 11:38:25 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.ade.sitemap;
 
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
+import org.opencms.ade.sitemap.shared.CmsSitemapBrokenLinkBean;
 import org.opencms.ade.sitemap.shared.CmsSitemapClipboardData;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.ade.sitemap.shared.CmsSitemapMergeInfo;
@@ -53,6 +54,8 @@ import org.opencms.gwt.CmsGwtService;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.relations.CmsRelation;
+import org.opencms.relations.CmsRelationFilter;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
@@ -72,19 +75,25 @@ import org.opencms.xml.sitemap.CmsXmlSitemapFactory;
 import org.opencms.xml.sitemap.I_CmsSitemapChange;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.collections.FactoryUtils;
+import org.apache.commons.collections.map.MultiValueMap;
 
 /**
  * Handles all RPC services related to the sitemap.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.30 $ 
+ * @version $Revision: 1.31 $ 
  * 
  * @since 8.0.0
  * 
@@ -113,6 +122,38 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
         srv.setCms(CmsFlexController.getCmsObject(request));
         srv.setRequest(request);
         return srv;
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#getBrokenLinksToSitemapEntries(java.util.List, java.util.List)
+     */
+    @SuppressWarnings("unchecked")
+    public List<CmsSitemapBrokenLinkBean> getBrokenLinksToSitemapEntries(List<CmsUUID> open, List<CmsUUID> closed)
+    throws CmsRpcException {
+
+        try {
+            CmsObject cms = getCmsObject();
+            List<CmsInternalSitemapEntry> entries = getEntriesForIds(cms, open);
+            List<CmsInternalSitemapEntry> closedEntries = getEntriesForIds(cms, closed);
+            CmsSitemapManager sitemapManager = OpenCms.getSitemapManager();
+            List<CmsInternalSitemapEntry> descendants = sitemapManager.getDescendants(closedEntries, true);
+            entries.addAll(descendants);
+
+            // multimap from resources to (sets of) sitemap entries 
+            MultiValueMap linkMap = MultiValueMap.decorate(
+                new HashMap(),
+                FactoryUtils.instantiateFactory(HashSet.class));
+            for (CmsInternalSitemapEntry entry : entries) {
+                List<CmsResource> linkSources = getLinkSources(cms, entry.getId());
+                for (CmsResource source : linkSources) {
+                    linkMap.put(entry, source);
+                }
+            }
+            return getBrokenLinkBeans(linkMap);
+        } catch (Throwable e) {
+            error(e);
+        }
+        return null;
     }
 
     /**
@@ -331,6 +372,87 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
     }
 
     /**
+     * Creates a "broken link" bean based on a sitemap entry.<p>
+     * 
+     * @param entry a sitemap entry 
+     * 
+     * @return a "broken link" bean with the data from the sitemap entry 
+     * 
+     */
+    protected CmsSitemapBrokenLinkBean createSitemapBrokenLinkBean(CmsInternalSitemapEntry entry) {
+
+        CmsObject cms = getCmsObject();
+        String title = entry.getTitle();
+        String path = entry.getSitePath(cms);
+        String subtitle = path;
+        return new CmsSitemapBrokenLinkBean(title, subtitle);
+    }
+
+    /**
+     * Creates a "broken link" bean based on a resource.<p>
+     * 
+     * @param resource the resource 
+     * 
+     * @return the "broken link" bean with the data from the resource 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    protected CmsSitemapBrokenLinkBean createSitemapBrokenLinkBean(CmsResource resource) throws CmsException {
+
+        CmsObject cms = getCmsObject();
+        CmsProperty titleProp = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_TITLE, true);
+        String defaultTitle = "";
+        String title = titleProp.getValue(defaultTitle);
+        String path = cms.getSitePath(resource);
+        String subtitle = path;
+        return new CmsSitemapBrokenLinkBean(title, subtitle);
+    }
+
+    /**
+     * Retrieves a list of sitemap entries for a list of sitemap entry ids.<p>
+     * 
+     * @param cms the CMS context 
+     * @param ids the list of sitemap entry ids 
+     * 
+     * @return the list of sitemap entries 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    protected List<CmsInternalSitemapEntry> getEntriesForIds(CmsObject cms, List<CmsUUID> ids) throws CmsException {
+
+        List<CmsInternalSitemapEntry> entries = new ArrayList<CmsInternalSitemapEntry>();
+        for (CmsUUID id : ids) {
+            CmsInternalSitemapEntry entry = (CmsInternalSitemapEntry)OpenCms.getSitemapManager().getEntryForId(cms, id);
+            // ignore entries which haven't been saved 
+            if (entry != null) {
+                entries.add(entry);
+            }
+        }
+        return entries;
+    }
+
+    /**
+     * Gets the resources which link to a given (sitemap or structure) id.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param targetId the relation target id
+     *  
+     * @return the list of resources which link to the given id
+     *  
+     * @throws CmsException
+     */
+    protected List<CmsResource> getLinkSources(CmsObject cms, CmsUUID targetId) throws CmsException {
+
+        CmsRelationFilter filter = CmsRelationFilter.TARGETS.filterStructureId(targetId);
+        List<CmsRelation> relations = cms.readRelations(filter);
+        List<CmsResource> result = new ArrayList<CmsResource>();
+        for (CmsRelation relation : relations) {
+            result.add(relation.getSource(cms, CmsResourceFilter.DEFAULT));
+        }
+        return result;
+    }
+
+    /**
      * Helper method to check whether a client sitemap entry has a reference to a sub-sitemap.<p>
      * 
      * @param entry the entry to check
@@ -529,6 +651,32 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
         }
         // we can never reach this point
         return null;
+    }
+
+    /**
+     * Helper method for converting a map which maps sitemap entries to resources to a list of "broken link" beans,
+     * which have beans representing the source of the corresponding link as children.<p>  
+     * 
+     * @param linkMap a multimap from sitemap entries to resources  
+     * 
+     * @return a list of beans representing links which will be broken 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    @SuppressWarnings("unchecked")
+    private List<CmsSitemapBrokenLinkBean> getBrokenLinkBeans(MultiValueMap linkMap) throws CmsException {
+
+        List<CmsSitemapBrokenLinkBean> result = new ArrayList<CmsSitemapBrokenLinkBean>();
+        for (CmsInternalSitemapEntry entry : (Set<CmsInternalSitemapEntry>)linkMap.keySet()) {
+            CmsSitemapBrokenLinkBean parentBean = createSitemapBrokenLinkBean(entry);
+            result.add(parentBean);
+            Collection values = linkMap.getCollection(entry);
+            for (CmsResource resource : (Collection<CmsResource>)values) {
+                CmsSitemapBrokenLinkBean childBean = createSitemapBrokenLinkBean(resource);
+                parentBean.addChild(childBean);
+            }
+        }
+        return result;
     }
 
     /**
@@ -843,7 +991,7 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
     /**
      * Saves the given clipboard data to the session.<p>
      * 
-     * @param recentList the clipboard data to save
+     * @param clipboardData the clipboard data to save
      */
     private void setClipboardData(CmsSitemapClipboardData clipboardData) {
 

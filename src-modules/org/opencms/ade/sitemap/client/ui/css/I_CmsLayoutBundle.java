@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2010/06/24 09:05:26 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/07/23 11:38:26 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import com.google.gwt.resources.client.CssResource;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -76,13 +76,13 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
          * 
          * @return the CSS class name
          */
-        String menuTabContainer();
+        String menuContent();
 
         /** Access method.<p>
          * 
          * @return the CSS class name
          */
-        String menuContent();
+        String menuTabContainer();
     }
 
     /** Page CSS. */
@@ -121,6 +121,13 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
      **/
     @Source("clipboard.css")
     I_CmsClipboardCss clipboardCss();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image bundle for the sitemap
+     */
+    I_CmsImageBundle images();
 
     /**
      * Access method.<p>

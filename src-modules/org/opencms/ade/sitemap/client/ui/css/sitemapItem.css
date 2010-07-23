@@ -19,3 +19,13 @@
 }
 
 
+
+@sprite .brokenLink {
+    gwt-image: "images.brokenLink";
+    margin-right: 4px;
+}
+
+.deletedEntryLabel {
+	text-decoration: line-through;
+}
+

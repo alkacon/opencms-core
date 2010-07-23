@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapEntry.java,v $
- * Date   : $Date: 2010/07/07 09:12:09 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/07/23 11:38:25 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 7.6 
  */
@@ -73,11 +73,11 @@ public class CmsSitemapEntry {
     /** True if this is a root entry of a root sitemap. */
     private boolean m_isRootEntry;
 
-    /** The file's structure id. */
-    private final CmsUUID m_structureId;
-
     /** Flag to indicate if this is a sitemap or a VFS entry. */
     private final boolean m_sitemap;
+
+    /** The file's structure id. */
+    private final CmsUUID m_structureId;
 
     /** The entry title. */
     private final String m_title;
@@ -145,6 +145,18 @@ public class CmsSitemapEntry {
         }
         m_sitemap = ((id == null) || !id.equals(structureId));
         m_contentId = contentId;
+    }
+
+    /**
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object o) {
+
+        if ((o == null) || !(o instanceof CmsSitemapEntry)) {
+            return false;
+        }
+        return m_id.equals(((CmsSitemapEntry)o).getId());
     }
 
     /**
@@ -234,16 +246,6 @@ public class CmsSitemapEntry {
     }
 
     /**
-     * Returns the file's structure id.<p>
-     *
-     * @return the file's structure id
-     */
-    public CmsUUID getStructureId() {
-
-        return m_structureId;
-    }
-
-    /**
      * Returns the current root uri.<p>
      * 
      * @return the current root uri
@@ -269,6 +271,16 @@ public class CmsSitemapEntry {
     public String getSitePath(CmsObject cms) {
 
         return cms.getRequestContext().removeSiteRoot(getRootPath());
+    }
+
+    /**
+     * Returns the file's structure id.<p>
+     *
+     * @return the file's structure id
+     */
+    public CmsUUID getStructureId() {
+
+        return m_structureId;
     }
 
     /**
@@ -304,6 +316,15 @@ public class CmsSitemapEntry {
     public String getTitle() {
 
         return m_title;
+    }
+
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+
+        return m_id.hashCode();
     }
 
     /**

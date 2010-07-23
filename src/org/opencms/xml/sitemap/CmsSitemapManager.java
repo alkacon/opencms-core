@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2010/07/20 13:25:51 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2010/07/23 11:38:25 $
+ * Version: $Revision: 1.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.49 $
+ * @version $Revision: 1.50 $
  * 
  * @since 7.9.2
  */
@@ -417,6 +417,53 @@ public class CmsSitemapManager {
             LOG.debug(e.getLocalizedMessage(), e);
             return null;
         }
+    }
+
+    /**
+     * Returns a list of the descendants of a given sitemap entry.<p>
+     * 
+     * Whether the list includes the entry itself can be controlled by a boolean parameter.<p>
+     * 
+     * @param rootEntry the root entry whose descendants should be found
+     * @param includeRoot if true, the root entry will be included in the resulting list 
+     * 
+     * @return a list of descendant sitemap entries 
+     */
+    public List<CmsInternalSitemapEntry> getDescendants(CmsInternalSitemapEntry rootEntry, boolean includeRoot) {
+
+        List<CmsInternalSitemapEntry> result = new ArrayList<CmsInternalSitemapEntry>();
+        LinkedList<CmsInternalSitemapEntry> entriesToProcess = new LinkedList<CmsInternalSitemapEntry>();
+        if (includeRoot) {
+            entriesToProcess.add(rootEntry);
+
+        } else {
+            entriesToProcess.addAll(rootEntry.getSubEntries());
+        }
+        while (!entriesToProcess.isEmpty()) {
+            CmsInternalSitemapEntry currentEntry = entriesToProcess.removeFirst();
+            result.add(currentEntry);
+            entriesToProcess.addAll(currentEntry.getSubEntries());
+        }
+        return result;
+    }
+
+    /**
+     * Returns the descendants of a list of sitemap entries.<p>
+     * 
+     * Whether the resulting list includes the root entries can be controlled with a boolean parameter.<p>
+     * 
+     * @param rootEntries the root entries whose descendants should be found 
+     * @param includeRoots if true, the original root entries will be included in the result list 
+     * 
+     * @return the list of descendants of the root entries 
+     */
+    public List<CmsInternalSitemapEntry> getDescendants(List<CmsInternalSitemapEntry> rootEntries, boolean includeRoots) {
+
+        List<CmsInternalSitemapEntry> result = new ArrayList<CmsInternalSitemapEntry>();
+        for (CmsInternalSitemapEntry entry : rootEntries) {
+            result.addAll(getDescendants(entry, includeRoots));
+        }
+        return result;
     }
 
     /**

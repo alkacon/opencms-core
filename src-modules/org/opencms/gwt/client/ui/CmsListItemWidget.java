@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItemWidget.java,v $
- * Date   : $Date: 2010/07/09 07:04:03 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2010/07/23 11:38:26 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,7 +69,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Tobias Herrmann
  * @author Michael Moossen
  * 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * 
  * @since 8.0.0
  */
@@ -270,6 +270,26 @@ implements HasMouseOutHandlers, HasClickHandlers, HasMouseOverHandlers, I_CmsTru
         HandlerRegistration req = addDomHandler(handler, MouseOverEvent.getType());
         m_handlerRegistrations.add(req);
         return req;
+    }
+
+    /**
+     * Adds a style name to the subtitle label.<p>
+     * 
+     * @param styleName the style name to add 
+     */
+    public void addSubtitleStyleName(String styleName) {
+
+        m_subtitle.addStyleName(styleName);
+    }
+
+    /**
+     * Adds a style name to the title label.<p> 
+     * 
+     * @param styleName the style name to add 
+     */
+    public void addTitleStyleName(String styleName) {
+
+        m_title.addStyleName(styleName);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/rpc/Attic/I_CmsSitemapService.java,v $
- * Date   : $Date: 2010/06/24 09:05:26 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2010/07/23 11:38:26 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,11 +32,13 @@
 package org.opencms.ade.sitemap.shared.rpc;
 
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
+import org.opencms.ade.sitemap.shared.CmsSitemapBrokenLinkBean;
 import org.opencms.ade.sitemap.shared.CmsSitemapClipboardData;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.ade.sitemap.shared.CmsSitemapMergeInfo;
 import org.opencms.ade.sitemap.shared.CmsSubSitemapInfo;
 import org.opencms.gwt.CmsRpcException;
+import org.opencms.util.CmsUUID;
 import org.opencms.xml.sitemap.I_CmsSitemapChange;
 
 import java.util.List;
@@ -50,7 +52,7 @@ import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 8.0.0
  * 
@@ -60,6 +62,26 @@ import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
  */
 @RemoteServiceRelativePath("org.opencms.ade.sitemap.CmsSitemapService.gwt")
 public interface I_CmsSitemapService extends RemoteService {
+
+    /**
+     * Returns a list of beans which represent the links which would be broken if the sitemap entries
+     * passed as parameters were deleted.<p>
+     * 
+     * The "open" list entries will only be considered by themselves, while the sitemap entries with ids
+     * in the "closed" list will be processed together with their descendants.<p>
+     * 
+     * This is necessary because the sitemap editor client code uses a lazily-loaded tree and thus does 
+     * not have the full list of sitemap entries which are going to be deleted.<p>
+     * 
+     * @param open the list of sitemap entry ids which should be considered by themselves 
+     * @param closed the list of sitemap entry ids which should be considedered together with their descendants 
+     * 
+     * @return a list of beans representing links which will be broken by deleting the sitemap entries 
+     * 
+     * @throws CmsRpcException if something goes wrong 
+     */
+    List<CmsSitemapBrokenLinkBean> getBrokenLinksToSitemapEntries(List<CmsUUID> open, List<CmsUUID> closed)
+    throws CmsRpcException;
 
     /**
      * Returns the sitemap children for the given path.<p>

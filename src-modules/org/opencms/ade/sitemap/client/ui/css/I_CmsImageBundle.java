@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/ui/css/Attic/I_CmsImageBundle.java,v $
- * Date   : $Date: 2010/06/10 13:27:41 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/07/23 11:38:26 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import com.google.gwt.resources.client.ImageResource;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -130,6 +130,14 @@ public interface I_CmsImageBundle extends ClientBundle {
 
     /** The bundle instance. */
     I_CmsImageBundle INSTANCE = GWT.create(I_CmsImageBundle.class);
+
+    /** 
+     * Access method.<p>
+     * 
+     * @return an image resource
+     */
+    @Source("images/broken_link.png")
+    ImageResource brokenLink();
 
     /**
      * Access method.<p>

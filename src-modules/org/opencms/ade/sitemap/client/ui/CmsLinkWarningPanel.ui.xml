@@ -1,0 +1,31 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:cms="urn:import:org.opencms.gwt.client.ui">
+	<ui:with field="resources" type="org.opencms.ade.sitemap.client.ui.css.I_CmsLayoutBundle" />
+	<ui:with field="baseRes" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
+	<ui:style>
+		.scrollPanel {
+			height: 450x;
+			width: 600px;
+			border: 1px solid;
+			padding-left: 7px;
+			padding-right: 7px;
+			padding-top: 4px;
+			padding-bottom: 4px;
+		}
+		.root * {
+			zoom: 1;
+		}
+		.label {
+			margin-top: 10px;
+			margin-bottom: 10px;
+		} 
+	</ui:style>
+	<g:FlowPanel styleName="{style.root}">
+		<g:Label ui:field="m_label"  styleName="{resources.generalCss.textMedium}"  addStyleNames="{style.label}" />
+		<g:ScrollPanel styleName="{style.scrollPanel}"  addStyleNames="{baseRes.generalCss.border} {baseRes.generalCss.cornerAll}" >
+		<cms:CmsList ui:field="m_linkPanel" />
+		</g:ScrollPanel>
+	</g:FlowPanel>
+</ui:UiBinder> 

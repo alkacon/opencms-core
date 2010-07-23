@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapView.java,v $
- * Date   : $Date: 2010/06/24 09:05:26 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2010/07/23 11:38:26 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,8 +55,10 @@ import org.opencms.gwt.client.ui.dnd.I_CmsDropHandler;
 import org.opencms.gwt.client.ui.tree.A_CmsDeepLazyOpenHandler;
 import org.opencms.gwt.client.ui.tree.CmsLazyTree;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
+import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem.LoadState;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
+import org.opencms.util.CmsPair;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
@@ -76,7 +78,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.29 $ 
+ * @version $Revision: 1.30 $ 
  * 
  * @since 8.0.0
  */
@@ -159,6 +161,31 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler, NativePreviewHand
     public CmsSitemapController getController() {
 
         return m_controller;
+    }
+
+    /**
+     * Gets the list of descendants of a path and splits it into two lists, one containing the sitemap entries whose children have 
+     * already been loaded, and those whose children haven't been loaded.<p>
+     * 
+     * @param path the path for which the open and closed descendants should be returned 
+     * 
+     * @return a pair whose first and second components are lists of open and closed descendant entries of the path, respectively 
+     */
+    public CmsPair<List<CmsClientSitemapEntry>, List<CmsClientSitemapEntry>> getOpenAndClosedDescendants(String path) {
+
+        List<CmsClientSitemapEntry> descendants = m_controller.getLoadedDescendants(path);
+        List<CmsClientSitemapEntry> openDescendants = new ArrayList<CmsClientSitemapEntry>();
+        List<CmsClientSitemapEntry> closedDescendants = new ArrayList<CmsClientSitemapEntry>();
+        for (CmsClientSitemapEntry entry : descendants) {
+            CmsSitemapTreeItem treeItem = getTreeItem(entry.getSitePath());
+            LoadState loadState = treeItem.getLoadState();
+            List<CmsClientSitemapEntry> listToAddTo = loadState.equals(LoadState.LOADED)
+            ? openDescendants
+            : closedDescendants;
+            listToAddTo.add(entry);
+        }
+        return new CmsPair<List<CmsClientSitemapEntry>, List<CmsClientSitemapEntry>>(openDescendants, closedDescendants);
+
     }
 
     /**
