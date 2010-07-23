@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/menu/CmsMirExplorerInvisible.java,v $
- * Date   : $Date: 2010/07/21 11:02:34 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/07/23 08:29:34 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import org.opencms.workplace.explorer.CmsResourceUtil;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  */
@@ -59,7 +59,6 @@ public class CmsMirExplorerInvisible extends A_CmsMenuItemRule {
     /**
      * @see org.opencms.workplace.explorer.menu.I_CmsMenuItemRule#matches(org.opencms.file.CmsObject, org.opencms.workplace.explorer.CmsResourceUtil[])
      */
-    @Override
     public boolean matches(CmsObject cms, CmsResourceUtil[] resourceUtil) {
 
         String context = (String)cms.getRequestContext().getAttribute(I_CmsMenuItemRule.ATTR_CONTEXT_INFO);

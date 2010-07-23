@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2010/04/26 07:54:46 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/07/23 08:29:33 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -79,6 +79,7 @@ import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsPermissionSetCustom;
 import org.opencms.security.CmsPermissionViolationException;
+import org.opencms.security.CmsPrincipal;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.security.CmsSecurityException;
@@ -1848,6 +1849,36 @@ public final class CmsSecurityManager {
     }
 
     /**
+     * Returns the date when the resource was last visited by the user.<p>
+     * 
+     * @param context the request context
+     * @param poolName the name of the database pool to use
+     * @param user the user to check the date
+     * @param resource the resource to check the date
+     * 
+     * @return the date when the resource was last visited by the user
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public long getDateLastVisitedBy(CmsRequestContext context, String poolName, CmsUser user, CmsResource resource)
+    throws CmsException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        long result = 0;
+        try {
+            result = m_driverManager.getDateLastVisitedBy(dbc, poolName, user, resource);
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(
+                Messages.ERR_GET_DATE_LASTVISITED_2,
+                user.getName(),
+                context.getSitePath(resource)), e);
+        } finally {
+            dbc.clear();
+        }
+        return result;
+    }
+
+    /**
      * Returns all groups of the given organizational unit.<p>
      *
      * @param context the current request context
@@ -3087,6 +3118,32 @@ public final class CmsSecurityManager {
     }
 
     /**
+     * Mark the given resource as visited by the user.<p>
+     * 
+     * @param context the request context
+     * @param poolName the name of the database pool to use
+     * @param resource the resource to mark as visited
+     * @param user the user that visited the resource
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void markResourceAsVisitedBy(CmsRequestContext context, String poolName, CmsResource resource, CmsUser user)
+    throws CmsException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            m_driverManager.markResourceAsVisitedBy(dbc, poolName, resource, user);
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(
+                Messages.ERR_MARK_RESOURCE_AS_VISITED_2,
+                context.getSitePath(resource),
+                user.getName()), e);
+        } finally {
+            dbc.clear();
+        }
+    }
+
+    /**
      * Returns a new publish list that contains all resources of both given publish lists.<p>
      * 
      * @param context the current request context
@@ -3308,6 +3365,42 @@ public final class CmsSecurityManager {
             result = m_driverManager.readAllPropertyDefinitions(dbc);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_READ_ALL_PROPDEF_0), e);
+        } finally {
+            dbc.clear();
+        }
+        return result;
+    }
+
+    /**
+     * Returns all resources subscribed by the given user or group.<p>
+     * 
+     * @param context the request context
+     * @param poolName the name of the database pool to use
+     * @param principal the principal to read the subscribed resources
+     * 
+     * @return all resources subscribed by the given user or group
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public List<CmsResource> readAllSubscribedResources(
+        CmsRequestContext context,
+        String poolName,
+        CmsPrincipal principal) throws CmsException {
+
+        List<CmsResource> result = null;
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            result = m_driverManager.readAllSubscribedResources(dbc, poolName, principal);
+        } catch (Exception e) {
+            if (principal instanceof CmsUser) {
+                dbc.report(null, Messages.get().container(
+                    Messages.ERR_READ_SUBSCRIBED_RESOURCES_ALL_USER_1,
+                    principal.getName()), e);
+            } else {
+                dbc.report(null, Messages.get().container(
+                    Messages.ERR_READ_SUBSCRIBED_RESOURCES_ALL_GROUP_1,
+                    principal.getName()), e);
+            }
         } finally {
             dbc.clear();
         }
@@ -4241,6 +4334,34 @@ public final class CmsSecurityManager {
     }
 
     /**
+     * Returns the resources that were visited by a user set in the filter.<p>
+     * 
+     * @param context the request context
+     * @param poolName the name of the database pool to use
+     * @param filter the filter that is used to get the visited resources
+     * 
+     * @return the resources that were visited by a user set in the filter
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public List<CmsResource> readResourcesVisitedBy(
+        CmsRequestContext context,
+        String poolName,
+        CmsVisitedByFilter filter) throws CmsException {
+
+        List<CmsResource> result = null;
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            result = m_driverManager.readResourcesVisitedBy(dbc, poolName, filter);
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(Messages.ERR_READ_VISITED_RESOURCES_1, filter.toString()), e);
+        } finally {
+            dbc.clear();
+        }
+        return result;
+    }
+
+    /**
      * Reads all resources that have a value (containing the specified value) set 
      * for the specified property (definition) in the given path.<p>
      * 
@@ -4409,6 +4530,80 @@ public final class CmsSecurityManager {
             result = m_driverManager.readStaticExportResources(dbc, parameterResources, timestamp);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_READ_STATEXP_RESOURCES_1, new Date(timestamp)), e);
+        } finally {
+            dbc.clear();
+        }
+        return result;
+    }
+
+    /**
+     * Returns the subscribed history resources that were deleted.<p>
+     * 
+     * @param context the request context
+     * @param poolName the name of the database pool to use
+     * @param user the user that subscribed to the resource
+     * @param groups the groups to check subscribed resources for
+     * @param parent the parent resource (folder) of the deleted resources, if <code>null</code> all deleted resources will be returned
+     * @param includeSubFolders indicates if the sub folders of the specified folder path should be considered, too
+     * @param deletedFrom the time stamp from which the resources should have been deleted 
+     * 
+     * @return the subscribed history resources that were deleted
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public List<I_CmsHistoryResource> readSubscribedDeletedResources(
+        CmsRequestContext context,
+        String poolName,
+        CmsUser user,
+        List<CmsGroup> groups,
+        CmsResource parent,
+        boolean includeSubFolders,
+        long deletedFrom) throws CmsException {
+
+        List<I_CmsHistoryResource> result = null;
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            result = m_driverManager.readSubscribedDeletedResources(
+                dbc,
+                poolName,
+                user,
+                groups,
+                parent,
+                includeSubFolders,
+                deletedFrom);
+        } catch (Exception e) {
+            dbc.report(
+                null,
+                Messages.get().container(Messages.ERR_READ_SUBSCRIBED_DELETED_RESOURCES_1, user.getName()),
+                e);
+        } finally {
+            dbc.clear();
+        }
+        return result;
+    }
+
+    /**
+     * Returns the resources that were subscribed by a user or group set in the filter.<p>
+     * 
+     * @param context the request context
+     * @param poolName the name of the database pool to use
+     * @param filter the filter that is used to get the subscribed resources
+     * 
+     * @return the resources that were subscribed by a user or group set in the filter
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public List<CmsResource> readSubscribedResources(
+        CmsRequestContext context,
+        String poolName,
+        CmsSubscriptionFilter filter) throws CmsException {
+
+        List<CmsResource> result = null;
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            result = m_driverManager.readSubscribedResources(dbc, poolName, filter);
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(Messages.ERR_READ_SUBSCRIBED_RESOURCES_1, filter.toString()), e);
         } finally {
             dbc.clear();
         }
@@ -4970,6 +5165,42 @@ public final class CmsSecurityManager {
     }
 
     /**
+     * Subscribes the user or group to the resource.<p>
+     * 
+     * @param context the request context
+     * @param poolName the name of the database pool to use
+     * @param principal the principal that subscribes to the resource
+     * @param resource the resource to subscribe to
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void subscribeResourceFor(
+        CmsRequestContext context,
+        String poolName,
+        CmsPrincipal principal,
+        CmsResource resource) throws CmsException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            m_driverManager.subscribeResourceFor(dbc, poolName, principal, resource);
+        } catch (Exception e) {
+            if (principal instanceof CmsUser) {
+                dbc.report(null, Messages.get().container(
+                    Messages.ERR_SUBSCRIBE_RESOURCE_FOR_USER_2,
+                    context.getSitePath(resource),
+                    principal.getName()), e);
+            } else {
+                dbc.report(null, Messages.get().container(
+                    Messages.ERR_SUBSCRIBE_RESOURCE_FOR_GROUP_2,
+                    context.getSitePath(resource),
+                    principal.getName()), e);
+            }
+        } finally {
+            dbc.clear();
+        }
+    }
+
+    /**
      * Undelete the resource by resetting it's state.<p>
      * 
      * @param context the current request context
@@ -5085,6 +5316,139 @@ public final class CmsSecurityManager {
                 context.getSitePath(resource),
                 dbc.currentUser().getName(),
                 e.getLocalizedMessage(dbc.getRequestContext().getLocale())), e);
+        } finally {
+            dbc.clear();
+        }
+    }
+
+    /**
+     * Marks a subscribed resource as deleted.<p>
+     * 
+     * @param context the request context
+     * @param poolName the name of the database pool to use
+     * @param resource the subscribed resource to mark as deleted
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void setSubscribedResourceAsDeleted(CmsRequestContext context, String poolName, CmsResource resource)
+    throws CmsException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            m_driverManager.setSubscribedResourceAsDeleted(dbc, poolName, resource);
+        } catch (Exception e) {
+
+            dbc.report(null, Messages.get().container(
+                Messages.ERR_SET_SUBSCRIBED_RESOURCE_AS_DELETED_1,
+                context.getSitePath(resource)), e);
+
+        } finally {
+            dbc.clear();
+        }
+    }
+
+    /**
+     * Unsubscribes all deleted resources that were deleted before the specified time stamp.<p>
+     * 
+     * @param context the request context
+     * @param poolName the name of the database pool to use
+     * @param deletedTo the time stamp to which the resources have been deleted
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void unsubscribeAllDeletedResources(CmsRequestContext context, String poolName, long deletedTo)
+    throws CmsException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            m_driverManager.unsubscribeAllDeletedResources(dbc, poolName, deletedTo);
+        } catch (Exception e) {
+
+            dbc.report(null, Messages.get().container(Messages.ERR_UNSUBSCRIBE_ALL_DELETED_RESOURCES_USER_0), e);
+
+        } finally {
+            dbc.clear();
+        }
+    }
+
+    /**
+     * Unsubscribes the user or group from all resources.<p>
+     * 
+     * @param context the request context
+     * @param poolName the name of the database pool to use
+     * @param principal the principal that unsubscribes from all resources
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void unsubscribeAllResourcesFor(CmsRequestContext context, String poolName, CmsPrincipal principal)
+    throws CmsException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            m_driverManager.unsubscribeAllResourcesFor(dbc, poolName, principal);
+        } catch (Exception e) {
+            if (principal instanceof CmsUser) {
+                dbc.report(null, Messages.get().container(
+                    Messages.ERR_UNSUBSCRIBE_ALL_RESOURCES_USER_1,
+                    principal.getName()), e);
+            } else {
+                dbc.report(null, Messages.get().container(
+                    Messages.ERR_UNSUBSCRIBE_ALL_RESOURCES_GROUP_1,
+                    principal.getName()), e);
+            }
+        } finally {
+            dbc.clear();
+        }
+    }
+
+    /**
+     * Unsubscribes the principal from the resource.<p>
+     * 
+     * @param context the request context
+     * @param poolName the name of the database pool to use
+     * @param principal the principal that unsubscribes from the resource
+     * @param resource the resource to unsubscribe from
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void unsubscribeResourceFor(
+        CmsRequestContext context,
+        String poolName,
+        CmsPrincipal principal,
+        CmsResource resource) throws CmsException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            m_driverManager.unsubscribeResourceFor(dbc, poolName, principal, resource);
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(
+                Messages.ERR_UNSUBSCRIBE_RESOURCE_FOR_GROUP_2,
+                context.getSitePath(resource),
+                principal.getName()), e);
+        } finally {
+            dbc.clear();
+        }
+    }
+
+    /**
+     * Unsubscribes all groups and users from the resource.<p>
+     * 
+     * @param context the request context
+     * @param poolName the name of the database pool to use
+     * @param resource the resource to unsubscribe all groups and users from
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void unsubscribeResourceForAll(CmsRequestContext context, String poolName, CmsResource resource)
+    throws CmsException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            m_driverManager.unsubscribeResourceForAll(dbc, poolName, resource);
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(
+                Messages.ERR_UNSUBSCRIBE_RESOURCE_ALL_1,
+                context.getSitePath(resource)), e);
         } finally {
             dbc.clear();
         }

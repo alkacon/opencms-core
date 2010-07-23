@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2010/07/06 07:18:17 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/07/23 08:29:34 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -92,7 +92,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 6.0.0 
  */
@@ -113,6 +113,25 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
     /** The sql manager. */
     protected org.opencms.db.generic.CmsSqlManager m_sqlManager;
+
+    /**
+     * Escapes the database wildcards within the resource path.<p>
+     * 
+     * This method is required to ensure chars in the resource path that have a special 
+     * meaning in SQL (for example "_", which is the "any char" operator) are escaped.<p>
+     * 
+     * It will escape the following chars: 
+     * <ul>
+     * <li>"_" to "|_"</li>
+     * </ul>
+     * 
+     * @param path the resource path
+     * @return the escaped resource path
+     */
+    protected static String escapeDbWildcard(String path) {
+
+        return CmsStringUtil.substitute(path, "_", "|_");
+    }
 
     /**
      * Counts the number of siblings of a resource.<p>
@@ -3177,25 +3196,6 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 throw new CmsDataAccessException(e.getMessageContainer(), e);
             }
         }
-    }
-
-    /**
-     * Escapes the database wildcards within the resource path.<p>
-     * 
-     * This method is required to ensure chars in the resource path that have a special 
-     * meaning in SQL (for example "_", which is the "any char" operator) are escaped.<p>
-     * 
-     * It will escape the following chars: 
-     * <ul>
-     * <li>"_" to "|_"</li>
-     * </ul>
-     * 
-     * @param path the resource path
-     * @return the escaped resource path
-     */
-    protected String escapeDbWildcard(String path) {
-
-        return CmsStringUtil.substitute(path, "_", "|_");
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/log/CmsLogEntry.java,v $
- * Date   : $Date: 2009/12/16 15:06:42 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/07/23 08:29:34 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 7.9.2
  */
@@ -55,11 +55,11 @@ public class CmsLogEntry {
     /** The additional data. */
     private final String[] m_data;
 
-    /** The entry's date in millisecs. */
+    /** The entry's date in milliseconds. */
     private final long m_date;
 
-    /** The resource id. */
-    private final CmsUUID m_resourceId;
+    /** The structure id. */
+    private final CmsUUID m_structureId;
 
     /** The type. */
     private final CmsLogEntryType m_type;
@@ -71,15 +71,15 @@ public class CmsLogEntry {
      * Public constructor, will use the current time for time stamp.<p>
      * 
      * @param dbc the current database context with the current user
-     * @param resourceId the resource id
+     * @param structureId the structure id
      * @param type the entry type
      * @param data the additional data to be parsed as a map
      */
-    public CmsLogEntry(CmsDbContext dbc, CmsUUID resourceId, CmsLogEntryType type, String[] data) {
+    public CmsLogEntry(CmsDbContext dbc, CmsUUID structureId, CmsLogEntryType type, String[] data) {
 
         m_userId = dbc.currentUser().getId();
         m_date = System.currentTimeMillis();
-        m_resourceId = resourceId;
+        m_structureId = structureId;
         m_data = (data == null ? new String[0] : data);
         m_type = type;
     }
@@ -88,16 +88,16 @@ public class CmsLogEntry {
      * Public constructor.<p>
      * 
      * @param userId the user id
-     * @param date the date in millisecs
-     * @param resourceId the resource id
+     * @param date the date in milliseconds
+     * @param structureId the structure id
      * @param type the entry type
      * @param data the optional additional data
      */
-    public CmsLogEntry(CmsUUID userId, long date, CmsUUID resourceId, CmsLogEntryType type, String[] data) {
+    public CmsLogEntry(CmsUUID userId, long date, CmsUUID structureId, CmsLogEntryType type, String[] data) {
 
         m_userId = userId;
         m_date = date;
-        m_resourceId = resourceId;
+        m_structureId = structureId;
         m_data = (data == null ? new String[0] : data);
         m_type = type;
     }
@@ -135,13 +135,13 @@ public class CmsLogEntry {
     }
 
     /**
-     * Returns the resource id.<p>
+     * Returns the structure id.<p>
      *
-     * @return the resource id
+     * @return the structure id
      */
-    public CmsUUID getResourceId() {
+    public CmsUUID getStructureId() {
 
-        return m_resourceId;
+        return m_structureId;
     }
 
     /**
@@ -174,7 +174,7 @@ public class CmsLogEntry {
         sb.append("[").append(getClass().getName()).append(":");
         sb.append("user=").append(m_userId).append(",");
         sb.append("date=").append(new Date(m_date)).append(",");
-        sb.append("resource=").append(m_resourceId).append(",");
+        sb.append("structure=").append(m_structureId).append(",");
         sb.append("type=").append(m_type.getLocalizedName(Locale.ENGLISH)).append(",");
         sb.append("data=").append(Arrays.toString(m_data)).append(",");
         return sb.append("]").toString();

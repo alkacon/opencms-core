@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResourceFilter.java,v $
- * Date   : $Date: 2009/09/07 12:41:39 $
- * Version: $Revision: 1.29.2.1 $
+ * Date   : $Date: 2010/07/23 08:29:34 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import org.opencms.db.CmsResourceState;
  * @author Carsten Weinholz 
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.29.2.1 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.0.0 
  */
@@ -484,18 +484,23 @@ public final class CmsResourceFilter {
     /**
      * Returns an extended filter to guarantee a distinct resource type of the filtered resources.<p>
      * 
+     * If <code>-1</code> is given as type, the filter will not be extended to require a resource type
+     * 
      * @param type the required resource type
      * @return a filter requiring the given resource type
      */
     public CmsResourceFilter addRequireType(int type) {
 
-        CmsResourceFilter extendedFilter = (CmsResourceFilter)clone();
+        if (type != -1) {
+            CmsResourceFilter extendedFilter = (CmsResourceFilter)clone();
 
-        extendedFilter.m_type = type;
-        extendedFilter.m_filterType = REQUIRED;
-        extendedFilter.updateCacheId();
+            extendedFilter.m_type = type;
+            extendedFilter.m_filterType = REQUIRED;
+            extendedFilter.updateCacheId();
+            return extendedFilter;
+        }
 
-        return extendedFilter;
+        return this;
     }
 
     /**

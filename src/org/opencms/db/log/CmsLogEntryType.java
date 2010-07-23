@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/log/CmsLogEntryType.java,v $
- * Date   : $Date: 2009/12/16 15:06:42 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/07/23 08:29:34 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,8 +44,8 @@ import org.apache.commons.logging.Log;
  * 
  * The IDs are organized as following:
  * <dl>
- *   <dt>1-2</dt>
- *   <dd>user actions (login successful, login failed)</dd>
+ *   <dt>1-3</dt>
+ *   <dd>user actions (login successful, login failed, resource visited)</dd>
  *   <dt>11-13</dt>
  *   <dd>publish actions (modified, new, deleted)</dd>
  *   <dt>15</dt>
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 7.9.2
  */
@@ -120,10 +120,12 @@ public enum CmsLogEntryType {
     RESOURCE_TYPE(34, LogLevel.INFO, true, Messages.GUI_LOG_ENTRY_DETAIL_PATH_1),
     /** Resource undeleted entry. */
     RESOURCE_UNDELETED(52, LogLevel.INFO, true, Messages.GUI_LOG_ENTRY_DETAIL_PATH_1),
+    /** User login failed entry. */
+    USER_LOGIN_FAILED(2, LogLevel.DEBUG, false, Messages.GUI_LOG_ENTRY_DETAIL_NAME_AND_ADDRESS_2),
     /** User login successful entry. */
     USER_LOGIN_SUCCESSFUL(1, LogLevel.TRACE, false, Messages.GUI_LOG_ENTRY_DETAIL_NAME_AND_ADDRESS_2),
-    /** User login failed entry. */
-    USER_LOGIN_FAILED(2, LogLevel.DEBUG, false, Messages.GUI_LOG_ENTRY_DETAIL_NAME_AND_ADDRESS_2);
+    /** User resource visited entry. */
+    USER_RESOURCE_VISITED(3, LogLevel.DEBUG, false, Messages.GUI_LOG_ENTRY_DETAIL_NAME_AND_PATH_2);
 
     /**
      * Log level.<p>

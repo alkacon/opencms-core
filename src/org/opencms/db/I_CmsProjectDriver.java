@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsProjectDriver.java,v $
- * Date   : $Date: 2010/04/20 13:44:57 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/07/23 08:29:33 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import java.util.Set;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 6.0.0 
  */
@@ -135,11 +135,12 @@ public interface I_CmsProjectDriver {
      * Deletes log entries matching the given filter.<p>
      * 
      * @param dbc the database context
+     * @param poolName the name of the database pool to use, if <code>null</code>, the default pool is used
      * @param filter the log entry filter
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    void deleteLog(CmsDbContext dbc, CmsLogFilter filter) throws CmsDataAccessException;
+    void deleteLog(CmsDbContext dbc, String poolName, CmsLogFilter filter) throws CmsDataAccessException;
 
     /**
      * Deletes a project from the cms.<p>
@@ -278,11 +279,12 @@ public interface I_CmsProjectDriver {
      * Logs the given log entries.<p>
      * 
      * @param dbc the database context
+     * @param poolName the name of the database pool to use, if <code>null</code>, the default pool is used
      * @param logEntries the log entries to write
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    void log(CmsDbContext dbc, List<CmsLogEntry> logEntries) throws CmsDataAccessException;
+    void log(CmsDbContext dbc, String poolName, List<CmsLogEntry> logEntries) throws CmsDataAccessException;
 
     /**
      * Publishes a deleted folder.<p>
@@ -425,13 +427,14 @@ public interface I_CmsProjectDriver {
      * Reads log entries matching the given filter.<p>
      * 
      * @param dbc the database context
+     * @param poolName the name of the database pool to use, if <code>null</code>, the default pool is used
      * @param filter the log entry filter
      * 
      * @return the list of log entries 
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    List<CmsLogEntry> readLog(CmsDbContext dbc, CmsLogFilter filter) throws CmsDataAccessException;
+    List<CmsLogEntry> readLog(CmsDbContext dbc, String poolName, CmsLogFilter filter) throws CmsDataAccessException;
 
     /**
      * Reads a project given the projects id.<p>

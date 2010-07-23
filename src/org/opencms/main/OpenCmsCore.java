@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2010/05/12 09:38:51 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2010/07/23 08:29:34 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,6 +45,7 @@ import org.opencms.db.CmsExportPoint;
 import org.opencms.db.CmsLoginManager;
 import org.opencms.db.CmsSecurityManager;
 import org.opencms.db.CmsSqlManager;
+import org.opencms.db.CmsSubscriptionManager;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
@@ -145,7 +146,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -258,6 +259,9 @@ public final class OpenCmsCore {
 
     /** The static export manager. */
     private CmsStaticExportManager m_staticExportManager;
+
+    /** The subscription manager. */
+    private CmsSubscriptionManager m_subscriptionManager;
 
     /** The system information container for "read only" system settings. */
     private CmsSystemInfo m_systemInfo;
@@ -732,6 +736,16 @@ public final class OpenCmsCore {
     }
 
     /**
+     * Returns the subscription manager.<p>
+     * 
+     * @return the subscription manager
+     */
+    protected CmsSubscriptionManager getSubscriptionManager() {
+
+        return m_subscriptionManager;
+    }
+
+    /**
      * Returns the system information storage.<p> 
      * 
      * @return the system information storage
@@ -1166,6 +1180,9 @@ public final class OpenCmsCore {
         // get the publish manager
         m_publishManager = systemConfiguration.getPublishManager();
 
+        // get the subscription manager
+        m_subscriptionManager = systemConfiguration.getSubscriptionManager();
+
         // initialize the role manager
         m_roleManager = new CmsRoleManager(m_securityManager);
 
@@ -1229,6 +1246,10 @@ public final class OpenCmsCore {
 
             // initialize the session manager
             m_sessionManager.initialize(sessionStorageProvider);
+
+            // initialize the subscription manager
+            m_subscriptionManager.setSecurityManager(m_securityManager);
+            m_subscriptionManager.initialize(adminCms);
 
             // initialize ade manager
             m_adeManager = new CmsADEManager(m_memoryMonitor, systemConfiguration);

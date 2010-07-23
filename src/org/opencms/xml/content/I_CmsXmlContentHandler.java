@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/I_CmsXmlContentHandler.java,v $
- * Date   : $Date: 2010/01/27 15:14:45 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/07/23 08:29:33 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -67,6 +67,9 @@ public interface I_CmsXmlContentHandler {
 
     /** Prefix for attribute mappings. */
     String MAPTO_ATTRIBUTE = "attribute:";
+
+    /** Prefix for permission mappings. */
+    String MAPTO_PERMISSION = "permission:";
 
     /** Prefix for property mappings. */
     String MAPTO_PROPERTY = "property:";

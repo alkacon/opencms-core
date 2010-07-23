@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/I_CmsXmlContentContainer.java,v $
- * Date   : $Date: 2009/06/04 14:29:02 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/07/23 08:29:34 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,47 +33,16 @@ package org.opencms.jsp;
 
 import org.opencms.xml.I_CmsXmlDocument;
 
-import java.util.List;
 import java.util.Locale;
-
-import javax.servlet.jsp.JspException;
 
 /**
  * Provides access to a <code>{@link org.opencms.xml.I_CmsXmlDocument}</code> document that was previously loaded by a parent tag.<p> 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.2.0 
  */
-public interface I_CmsXmlContentContainer {
-
-    /**
-     * Returns the name of the currently used XML content collector.<p>
-     * 
-     * @return the name of the currently used XML content collector
-     */
-    String getCollectorName();
-
-    /**
-     * Returns the parameters of the currently used XML content collector.<p>
-     * 
-     * @return the parameters of the currently used XML content collector
-     */
-    String getCollectorParam();
-
-    /**
-     * Returns the list of all currently loaded XML content documents (instances of <code>{@link I_CmsXmlDocument}</code>).<p>
-     * 
-     * @return the list of all currently loaded XML content documents
-     */
-    List getCollectorResult();
-
-    /**
-     * Returns the resource name in the VFS for the currently loaded XML content document.<p>
-     *
-     * @return the resource name in the VFS for the currently loaded XML content document
-     */
-    String getResourceName();
+public interface I_CmsXmlContentContainer extends I_CmsResourceContainer {
 
     /**
      * Returns the currently loaded OpenCms XML content document.<p>
@@ -95,24 +64,4 @@ public interface I_CmsXmlContentContainer {
      * @return the currently selected locale used for acessing the content in the loaded XML content document
      */
     Locale getXmlDocumentLocale();
-
-    /**
-     * Content iteration method to be used by JSP scriptlet code.<p>
-     * 
-     * Calling this method will insert "direct edit" HTML to the output page (if required).<p>
-     * 
-     * @return <code>true</code> if more content is to be iterated
-     * 
-     * @throws JspException in case something goes wrong
-     */
-    boolean hasMoreContent() throws JspException;
-
-    /**
-     * Returns <code>true</code> if this container is used as a content preloader.<p> 
-     * 
-     * A content preloader is used to load content without looping through it.<p> 
-     * 
-     * @return <code>true</code> if this container is used as a content preloader
-     */
-    boolean isPreloader();
 }

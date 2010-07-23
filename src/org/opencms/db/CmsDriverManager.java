@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2010/07/14 06:54:51 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2010/07/23 08:29:33 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -99,6 +99,7 @@ import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsPasswordEncryptionException;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsPermissionSetCustom;
+import org.opencms.security.CmsPrincipal;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.security.I_CmsPermissionHandler;
@@ -2263,6 +2264,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
         getUserDriver(dbc).deleteGroup(dbc, group.getName());
         // backup the group
         getHistoryDriver(dbc).writePrincipal(dbc, group);
+        if (OpenCms.getSubscriptionManager().isEnabled()) {
+            // delete all subscribed resources for group
+            unsubscribeAllResourcesFor(dbc, OpenCms.getSubscriptionManager().getPoolName(), group);
+        }
 
         // clear the relevant caches
         m_monitor.uncacheGroup(group);
@@ -2427,7 +2432,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public void deleteLogEntries(CmsDbContext dbc, CmsLogFilter filter) throws CmsException {
 
         updateLog(dbc);
-        m_projectDriver.deleteLog(dbc, filter);
+        m_projectDriver.deleteLog(dbc, null, filter);
     }
 
     /**
@@ -3754,6 +3759,30 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
+     * Returns the date when the resource was last visited by the user.<p>
+     * 
+     * @param dbc the database context
+     * @param poolName the name of the database pool to use
+     * @param user the user to check the date
+     * @param resource the resource to check the date
+     * 
+     * @return the date when the resource was last visited by the user
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public long getDateLastVisitedBy(CmsDbContext dbc, String poolName, CmsUser user, CmsResource resource)
+    throws CmsException {
+
+        CmsLogFilter filter = CmsLogFilter.ALL.filterResource(resource.getStructureId()).filterUser(user.getId()).includeType(
+            CmsLogEntryType.USER_RESOURCE_VISITED);
+        List<CmsLogEntry> entries = getProjectDriver(dbc).readLog(dbc, poolName, filter);
+        if (!entries.isEmpty()) {
+            return entries.get(0).getDate();
+        }
+        return 0;
+    }
+
+    /**
      * Returns all groups of the given organizational unit.<p>
      *
      * @param dbc the current db context
@@ -4038,7 +4067,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public List<CmsLogEntry> getLogEntries(CmsDbContext dbc, CmsLogFilter filter) throws CmsException {
 
         updateLog(dbc);
-        return m_projectDriver.readLog(dbc, filter);
+        return m_projectDriver.readLog(dbc, null, filter);
     }
 
     /**
@@ -5310,6 +5339,22 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
+     * Mark the given resource as visited by the user.<p>
+     * 
+     * @param dbc the database context
+     * @param poolName the name of the database pool to use
+     * @param resource the resource to mark as visited
+     * @param user the user that visited the resource
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void markResourceAsVisitedBy(CmsDbContext dbc, String poolName, CmsResource resource, CmsUser user)
+    throws CmsException {
+
+        getUserDriver(dbc).markResourceAsVisitedBy(dbc, poolName, resource, user);
+    }
+
+    /**
      * Moves a resource.<p>
      * 
      * You must ensure that the parent of the destination path is an absolute, valid and
@@ -5885,6 +5930,25 @@ public final class CmsDriverManager implements I_CmsEventListener {
             dbc,
             dbc.currentProject().getUuid());
         Collections.sort(result);
+        return result;
+    }
+
+    /**
+     * Returns all resources subscribed by the given user or group.<p>
+     * 
+     * @param dbc the database context
+     * @param poolName the name of the database pool to use
+     * @param principal the principal to read the subscribed resources
+     * 
+     * @return all resources subscribed by the given user or group
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public List<CmsResource> readAllSubscribedResources(CmsDbContext dbc, String poolName, CmsPrincipal principal)
+    throws CmsException {
+
+        List<CmsResource> result = getUserDriver(dbc).readAllSubscribedResources(dbc, poolName, principal);
+        result = filterPermissions(dbc, result, CmsResourceFilter.DEFAULT);
         return result;
     }
 
@@ -7029,6 +7093,25 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
+     * Returns the resources that were visited by a user set in the filter.<p>
+     * 
+     * @param dbc the database context
+     * @param poolName the name of the database pool to use
+     * @param filter the filter that is used to get the visited resources
+     * 
+     * @return the resources that were visited by a user set in the filter
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public List<CmsResource> readResourcesVisitedBy(CmsDbContext dbc, String poolName, CmsVisitedByFilter filter)
+    throws CmsException {
+
+        List<CmsResource> result = getUserDriver(dbc).readResourcesVisitedBy(dbc, poolName, filter);
+        result = filterPermissions(dbc, result, CmsResourceFilter.DEFAULT);
+        return result;
+    }
+
+    /**
      * Reads all resources that have a value (containing the given value string) set 
      * for the specified property (definition) in the given path.<p>
      * 
@@ -7211,6 +7294,60 @@ public final class CmsDriverManager implements I_CmsEventListener {
     throws CmsException {
 
         return getProjectDriver(dbc).readStaticExportResources(dbc, parameterResources, timestamp);
+    }
+
+    /**
+     * Returns the subscribed history resources that were deleted.<p>
+     * 
+     * @param dbc the database context
+     * @param poolName the name of the database pool to use
+     * @param user the user that subscribed to the resource
+     * @param groups the groups to check subscribed resources for
+     * @param parent the parent resource (folder) of the deleted resources, if <code>null</code> all deleted resources will be returned
+     * @param includeSubFolders indicates if the sub folders of the specified folder path should be considered, too
+     * @param deletedFrom the time stamp from which the resources should have been deleted 
+     * 
+     * @return the subscribed history resources that were deleted
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public List<I_CmsHistoryResource> readSubscribedDeletedResources(
+        CmsDbContext dbc,
+        String poolName,
+        CmsUser user,
+        List<CmsGroup> groups,
+        CmsResource parent,
+        boolean includeSubFolders,
+        long deletedFrom) throws CmsException {
+
+        List<I_CmsHistoryResource> result = getUserDriver(dbc).readSubscribedDeletedResources(
+            dbc,
+            poolName,
+            user,
+            groups,
+            parent,
+            includeSubFolders,
+            deletedFrom);
+        return result;
+    }
+
+    /**
+     * Returns the resources that were subscribed by a user or group set in the filter.<p>
+     * 
+     * @param dbc the database context
+     * @param poolName the name of the database pool to use
+     * @param filter the filter that is used to get the subscribed resources
+     * 
+     * @return the resources that were subscribed by a user or group set in the filter
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public List<CmsResource> readSubscribedResources(CmsDbContext dbc, String poolName, CmsSubscriptionFilter filter)
+    throws CmsException {
+
+        List<CmsResource> result = getUserDriver(dbc).readSubscribedResources(dbc, poolName, filter);
+        result = filterPermissions(dbc, result, CmsResourceFilter.DEFAULT);
+        return result;
     }
 
     /**
@@ -8033,6 +8170,21 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
+     * Marks a subscribed resource as deleted.<p>
+     * 
+     * @param dbc the database context
+     * @param poolName the name of the database pool to use
+     * @param resource the subscribed resource to mark as deleted
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void setSubscribedResourceAsDeleted(CmsDbContext dbc, String poolName, CmsResource resource)
+    throws CmsException {
+
+        getUserDriver(dbc).setSubscribedResourceAsDeleted(dbc, poolName, resource);
+    }
+
+    /**
      * Moves an user to the given organizational unit.<p>
      * 
      * @param dbc the current db context
@@ -8068,6 +8220,22 @@ public final class CmsDriverManager implements I_CmsEventListener {
         eventData.put(I_CmsEventListener.KEY_OU_NAME, user.getOuFqn());
         eventData.put(I_CmsEventListener.KEY_USER_ACTION, I_CmsEventListener.VALUE_USER_MODIFIED_ACTION_SET_OU);
         OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_USER_MODIFIED, eventData));
+    }
+
+    /**
+     * Subscribes the user or group to the resource.<p>
+     * 
+     * @param dbc the database context
+     * @param poolName the name of the database pool to use
+     * @param principal the principal that subscribes to the resource
+     * @param resource the resource to subscribe to
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void subscribeResourceFor(CmsDbContext dbc, String poolName, CmsPrincipal principal, CmsResource resource)
+    throws CmsException {
+
+        getUserDriver(dbc).subscribeResourceFor(dbc, poolName, principal, resource);
     }
 
     /**
@@ -8221,6 +8389,65 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
+     * Unsubscribes all deleted resources that were deleted before the specified time stamp.<p>
+     * 
+     * @param dbc the database context
+     * @param poolName the name of the database pool to use
+     * @param deletedTo the time stamp to which the resources have been deleted
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void unsubscribeAllDeletedResources(CmsDbContext dbc, String poolName, long deletedTo) throws CmsException {
+
+        getUserDriver(dbc).unsubscribeAllDeletedResources(dbc, poolName, deletedTo);
+    }
+
+    /**
+     * Unsubscribes the principal from all resources.<p>
+     * 
+     * @param dbc the database context
+     * @param poolName the name of the database pool to use
+     * @param principal the principal that unsubscribes from all resources
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void unsubscribeAllResourcesFor(CmsDbContext dbc, String poolName, CmsPrincipal principal)
+    throws CmsException {
+
+        getUserDriver(dbc).unsubscribeAllResourcesFor(dbc, poolName, principal);
+    }
+
+    /**
+     * Unsubscribes the principal from the resource.<p>
+     * 
+     * @param dbc the database context
+     * @param poolName the name of the database pool to use
+     * @param principal the principal that unsubscribes from the resource
+     * @param resource the resource to unsubscribe from
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void unsubscribeResourceFor(CmsDbContext dbc, String poolName, CmsPrincipal principal, CmsResource resource)
+    throws CmsException {
+
+        getUserDriver(dbc).unsubscribeResourceFor(dbc, poolName, principal, resource);
+    }
+
+    /**
+     * Unsubscribes all groups and users from the resource.<p>
+     * 
+     * @param dbc the database context
+     * @param poolName the name of the database pool to use
+     * @param resource the resource to unsubscribe all groups and users from
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void unsubscribeResourceForAll(CmsDbContext dbc, String poolName, CmsResource resource) throws CmsException {
+
+        getUserDriver(dbc).unsubscribeResourceForAll(dbc, poolName, resource);
+    }
+
+    /**
      * Update the export points.<p>
      * 
      * All files and folders "inside" an export point are written.<p>
@@ -8325,7 +8552,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
         List<CmsLogEntry> log = new ArrayList<CmsLogEntry>(m_log);
         m_log.clear();
-        m_projectDriver.log(dbc, log);
+        m_projectDriver.log(dbc, null, log);
     }
 
     /**

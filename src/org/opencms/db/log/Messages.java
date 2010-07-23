@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/log/Messages.java,v $
- * Date   : $Date: 2009/12/16 15:06:42 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/07/23 08:29:34 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 6.3.0 
  */
@@ -50,6 +50,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOG_ENTRY_DETAIL_NAME_AND_ADDRESS_2 = "GUI_LOG_ENTRY_DETAIL_NAME_AND_ADDRESS_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOG_ENTRY_DETAIL_NAME_AND_PATH_2 = "GUI_LOG_ENTRY_DETAIL_NAME_AND_PATH_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOG_ENTRY_DETAIL_PATH_1 = "GUI_LOG_ENTRY_DETAIL_PATH_1";
@@ -134,6 +137,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOG_ENTRY_TYPE_USER_LOGIN_SUCCESSFUL_0 = "GUI_LOG_ENTRY_TYPE_USER_LOGIN_SUCCESSFUL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOG_ENTRY_TYPE_USER_RESOURCE_VISITED_0 = "GUI_LOG_ENTRY_TYPE_USER_RESOURCE_VISITED_0";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.db.log.messages";

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/Messages.java,v $
- * Date   : $Date: 2009/09/14 16:24:20 $
- * Version: $Revision: 1.31.2.1 $
+ * Date   : $Date: 2010/07/23 08:29:34 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Thomas Weckert 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.31.2.1 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.0.0 
  */
@@ -48,6 +48,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_COUNTING_PROPERTIES_1 = "ERR_COUNTING_PROPERTIES_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_COUNTING_VISITED_RESOURCES_1 = "ERR_COUNTING_VISITED_RESOURCES_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CREATE_SIBLING_FILE_NOT_FOUND_1 = "ERR_CREATE_SIBLING_FILE_NOT_FOUND_1";
@@ -332,13 +335,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_DBG_CREATE_USER_1 = "LOG_DBG_CREATE_USER_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_DBG_UPDATE_ROLEGROUP_1 = "LOG_DBG_UPDATE_ROLEGROUP_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String LOG_DBG_UPDATE_ROLEGROUP_2 = "LOG_DBG_UPDATE_ROLEGROUP_2";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String LOG_DBG_UPDATE_ROLEGROUP_USER_1 = "LOG_DBG_UPDATE_ROLEGROUP_USER_1";
+    public static final String LOG_DBG_READ_LOCKS_1 = "LOG_DBG_READ_LOCKS_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_DBG_READUSERINFO_2 = "LOG_DBG_READUSERINFO_2";
@@ -347,7 +344,13 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_DBG_READUSERINFO_VALUE_1 = "LOG_DBG_READUSERINFO_VALUE_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_DBG_READ_LOCKS_1 = "LOG_DBG_READ_LOCKS_1";
+    public static final String LOG_DBG_UPDATE_ROLEGROUP_1 = "LOG_DBG_UPDATE_ROLEGROUP_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DBG_UPDATE_ROLEGROUP_2 = "LOG_DBG_UPDATE_ROLEGROUP_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DBG_UPDATE_ROLEGROUP_USER_1 = "LOG_DBG_UPDATE_ROLEGROUP_USER_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_DBG_WRITE_LOCKS_1 = "LOG_DBG_WRITE_LOCKS_1";
@@ -402,6 +405,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_REMOVING_RESOURCE_1 = "LOG_REMOVING_RESOURCE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_REMOVING_SUBSCRIPTIONS_1 = "LOG_REMOVING_SUBSCRIPTIONS_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_REMOVING_VISITEDLOG_1 = "LOG_REMOVING_VISITEDLOG_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_SQL_MANAGER_INIT_FAILED_1 = "LOG_SQL_MANAGER_INIT_FAILED_1";

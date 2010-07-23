@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/Messages.java,v $
- * Date   : $Date: 2009/06/04 14:29:11 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2010/07/23 08:29:34 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,7 +37,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
 /**
  * Convenience class to access the localized messages of this OpenCms package.<p> 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -132,6 +132,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_ERR_WIDGET_PLAINTEXT_EXTRACT_HTML_1 = "LOG_ERR_WIDGET_PLAINTEXT_EXTRACT_HTML_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_ERR_WIDGET_SELECTGROUP_PATTERN_1 = "LOG_ERR_WIDGET_SELECTGROUP_PATTERN_1";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.widgets.messages";

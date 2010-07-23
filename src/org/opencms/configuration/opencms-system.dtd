@@ -36,7 +36,8 @@
 	permissionhandler?,
 	servletcontainer-settings?,
 	ade?,
-	sitemap?)>
+	sitemap?,
+	subscriptionmanager?)>
 
 <!--
 # Version history settings.
@@ -611,3 +612,11 @@ Each job can have an optional list of parameters.
 <!ELEMENT documents EMPTY >
 <!ATTLIST documents offline CDATA #REQUIRED>
 <!ATTLIST documents online CDATA #REQUIRED>
+
+<!--
+# Subscription manager:
+# Configures the options of the subscription manager:
+# is it enabled, the database pool name to use and the maximum number of visited resources to store per user.
+-->
+<!ELEMENT subscriptionmanager EMPTY>
+<!ATTLIST subscriptionmanager enabled (true|false|TRUE|FALSE) "false" poolname CDATA #REQUIRED maxvisited CDATA #IMPLIED>

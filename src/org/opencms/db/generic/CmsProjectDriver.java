@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2010/04/28 13:39:30 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/07/23 08:29:34 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -104,7 +104,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 6.0.0 
  */
@@ -313,15 +313,19 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsProjectDriver#deleteLog(org.opencms.db.CmsDbContext, org.opencms.db.log.CmsLogFilter)
+     * @see org.opencms.db.I_CmsProjectDriver#deleteLog(org.opencms.db.CmsDbContext, java.lang.String, org.opencms.db.log.CmsLogFilter)
      */
-    public void deleteLog(CmsDbContext dbc, CmsLogFilter filter) throws CmsDataAccessException {
+    public void deleteLog(CmsDbContext dbc, String poolName, CmsLogFilter filter) throws CmsDataAccessException {
 
         Connection conn = null;
         PreparedStatement stmt = null;
 
         try {
-            conn = m_sqlManager.getConnection(dbc);
+            if (CmsStringUtil.isNotEmpty(poolName)) {
+                conn = m_sqlManager.getConnection(poolName);
+            } else {
+                conn = m_sqlManager.getConnection(dbc);
+            }
 
             // compose statement 
             List<String> params = new ArrayList<String>(6);
@@ -789,21 +793,26 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsProjectDriver#log(CmsDbContext, List)
+     * @see org.opencms.db.I_CmsProjectDriver#log(org.opencms.db.CmsDbContext, java.lang.String, java.util.List)
      */
-    public void log(CmsDbContext dbc, List<CmsLogEntry> logEntries) throws CmsDbSqlException {
+    public void log(CmsDbContext dbc, String poolName, List<CmsLogEntry> logEntries) throws CmsDbSqlException {
 
         Connection conn = null;
         PreparedStatement stmt = null;
 
         try {
-            conn = m_sqlManager.getConnection(dbc);
+            if (CmsStringUtil.isNotEmpty(poolName)) {
+                conn = m_sqlManager.getConnection(poolName);
+            } else {
+                conn = m_sqlManager.getConnection(dbc);
+            }
+
             stmt = m_sqlManager.getPreparedStatement(conn, "C_LOG_CREATE_5");
 
             for (CmsLogEntry logEntry : logEntries) {
                 stmt.setString(1, logEntry.getUserId().toString());
                 stmt.setLong(2, logEntry.getDate());
-                stmt.setString(3, logEntry.getResourceId() == null ? null : logEntry.getResourceId().toString());
+                stmt.setString(3, logEntry.getStructureId() == null ? null : logEntry.getStructureId().toString());
                 stmt.setInt(4, logEntry.getType().getId());
                 stmt.setString(5, CmsStringUtil.arrayAsString(logEntry.getData(), "|"));
                 try {
@@ -1768,9 +1777,10 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsProjectDriver#readLog(org.opencms.db.CmsDbContext, org.opencms.db.log.CmsLogFilter)
+     * @see org.opencms.db.I_CmsProjectDriver#readLog(org.opencms.db.CmsDbContext, java.lang.String, org.opencms.db.log.CmsLogFilter)
      */
-    public List<CmsLogEntry> readLog(CmsDbContext dbc, CmsLogFilter filter) throws CmsDataAccessException {
+    public List<CmsLogEntry> readLog(CmsDbContext dbc, String poolName, CmsLogFilter filter)
+    throws CmsDataAccessException {
 
         List<CmsLogEntry> entries = new ArrayList<CmsLogEntry>();
 
@@ -1779,7 +1789,11 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         ResultSet res = null;
 
         try {
-            conn = m_sqlManager.getConnection(dbc);
+            if (CmsStringUtil.isNotEmpty(poolName)) {
+                conn = m_sqlManager.getConnection(poolName);
+            } else {
+                conn = m_sqlManager.getConnection(dbc);
+            }
 
             // compose statement 
             List<String> params = new ArrayList<String>(6);
@@ -2839,11 +2853,11 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
     protected CmsLogEntry internalReadLogEntry(ResultSet res) throws SQLException {
 
         CmsUUID userId = new CmsUUID(res.getString(m_sqlManager.readQuery("C_LOG_USER_ID")));
-        long date = res.getLong(res.getString(m_sqlManager.readQuery("C_LOG_DATE")));
-        CmsUUID resourceId = new CmsUUID(res.getString(m_sqlManager.readQuery("C_LOG_RESOURCE_ID")));
+        long date = res.getLong(m_sqlManager.readQuery("C_LOG_DATE"));
+        CmsUUID structureId = new CmsUUID(res.getString(m_sqlManager.readQuery("C_LOG_STRUCTURE_ID")));
         CmsLogEntryType type = CmsLogEntryType.valueOf(res.getInt(m_sqlManager.readQuery("C_LOG_TYPE")));
         String[] data = CmsStringUtil.splitAsArray(res.getString(m_sqlManager.readQuery("C_LOG_DATA")), '|');
-        return new CmsLogEntry(userId, date, resourceId, type, data);
+        return new CmsLogEntry(userId, date, structureId, type, data);
     }
 
     /**
@@ -2972,18 +2986,6 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             }
             conditions.append(m_sqlManager.readQuery("C_LOG_FILTER_RESOURCE_ID"));
             params.add(filter.getStructureId().toString());
-            conditions.append(END_CONDITION);
-        }
-
-        // user id filter
-        if (filter.getUserId() != null) {
-            if (conditions.length() == 0) {
-                conditions.append(BEGIN_CONDITION);
-            } else {
-                conditions.append(BEGIN_INCLUDE_CONDITION);
-            }
-            conditions.append(m_sqlManager.readQuery("C_LOG_FILTER_USER_ID"));
-            params.add(filter.getUserId().toString());
             conditions.append(END_CONDITION);
         }
 
@@ -3372,6 +3374,37 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                     e);
             }
             throw e;
+        }
+
+        if (OpenCms.getSubscriptionManager().isEnabled()) {
+            try {
+                // delete visited information for resource from log
+                CmsLogFilter filter = CmsLogFilter.ALL.includeType(CmsLogEntryType.USER_RESOURCE_VISITED).filterResource(
+                    offlineResource.getStructureId());
+                deleteLog(dbc, OpenCms.getSubscriptionManager().getPoolName(), filter);
+            } catch (CmsDataAccessException e) {
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(Messages.get().getBundle().key(
+                        Messages.LOG_REMOVING_VISITEDLOG_1,
+                        offlineResource.toString()), e);
+                }
+                throw e;
+            }
+
+            try {
+                // mark the subscribed resource as deleted
+                m_driverManager.getUserDriver(dbc).setSubscribedResourceAsDeleted(
+                    dbc,
+                    OpenCms.getSubscriptionManager().getPoolName(),
+                    offlineResource);
+            } catch (CmsDataAccessException e) {
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(Messages.get().getBundle().key(
+                        Messages.LOG_REMOVING_SUBSCRIPTIONS_1,
+                        offlineResource.toString()), e);
+                }
+                throw e;
+            }
         }
     }
 

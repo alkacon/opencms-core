@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsContextMenuEntry.java,v $
- * Date   : $Date: 2010/07/19 14:11:43 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/07/23 08:29:34 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import com.google.gwt.user.client.Command;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since version 8.0.0
  */
@@ -74,7 +74,6 @@ public class CmsContextMenuEntry implements I_CmsContextMenuEntry {
     /**
      * @see org.opencms.gwt.client.ui.I_CmsContextMenuEntry#getCommand()
      */
-    @Override
     public Command getCommand() {
 
         return m_command;
@@ -93,7 +92,6 @@ public class CmsContextMenuEntry implements I_CmsContextMenuEntry {
     /**
      * @see org.opencms.gwt.client.ui.I_CmsContextMenuEntry#getImagePath()
      */
-    @Override
     public String getImagePath() {
 
         return m_bean.getImagePath();
@@ -102,7 +100,7 @@ public class CmsContextMenuEntry implements I_CmsContextMenuEntry {
     /**
      * @see org.opencms.gwt.client.ui.I_CmsContextMenuEntry#getJspPath()
      */
-    @Override
+
     public String getJspPath() {
 
         return m_bean.getJspPath();
@@ -111,7 +109,6 @@ public class CmsContextMenuEntry implements I_CmsContextMenuEntry {
     /**
      * @see org.opencms.gwt.client.ui.I_CmsContextMenuEntry#getLabel()
      */
-    @Override
     public String getLabel() {
 
         return m_bean.getLabel();
@@ -120,7 +117,6 @@ public class CmsContextMenuEntry implements I_CmsContextMenuEntry {
     /**
      * @see org.opencms.gwt.client.ui.I_CmsContextMenuEntry#getReason()
      */
-    @Override
     public String getReason() {
 
         return m_bean.getReason();
@@ -129,7 +125,6 @@ public class CmsContextMenuEntry implements I_CmsContextMenuEntry {
     /**
      * @see org.opencms.gwt.client.ui.I_CmsContextMenuEntry#getSubMenu()
      */
-    @Override
     public List<I_CmsContextMenuEntry> getSubMenu() {
 
         return m_subMenu;
@@ -138,7 +133,6 @@ public class CmsContextMenuEntry implements I_CmsContextMenuEntry {
     /**
      * @see org.opencms.gwt.client.ui.I_CmsContextMenuEntry#hasSubMenu()
      */
-    @Override
     public boolean hasSubMenu() {
 
         if (!CmsCollectionUtil.isEmptyOrNull(getSubMenu())) {
@@ -150,7 +144,6 @@ public class CmsContextMenuEntry implements I_CmsContextMenuEntry {
     /**
      * @see org.opencms.gwt.client.ui.I_CmsContextMenuEntry#isActive()
      */
-    @Override
     public boolean isActive() {
 
         return m_bean.isActive();
@@ -159,7 +152,6 @@ public class CmsContextMenuEntry implements I_CmsContextMenuEntry {
     /**
      * @see org.opencms.gwt.client.ui.I_CmsContextMenuEntry#isSeparator()
      */
-    @Override
     public boolean isSeparator() {
 
         return m_bean.isSeparator();
@@ -168,7 +160,6 @@ public class CmsContextMenuEntry implements I_CmsContextMenuEntry {
     /**
      * @see org.opencms.gwt.client.ui.I_CmsContextMenuEntry#isVisible()
      */
-    @Override
     public boolean isVisible() {
 
         return m_bean.isVisible();

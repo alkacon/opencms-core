@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2010/07/07 09:12:09 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/07/23 08:29:33 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,6 +51,9 @@ import org.opencms.relations.CmsCategory;
 import org.opencms.relations.CmsCategoryService;
 import org.opencms.relations.CmsLink;
 import org.opencms.relations.CmsRelationType;
+import org.opencms.security.CmsAccessControlEntry;
+import org.opencms.security.CmsPrincipal;
+import org.opencms.security.I_CmsPrincipal;
 import org.opencms.site.CmsSite;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsHtmlConverter;
@@ -96,7 +99,7 @@ import org.dom4j.Element;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -748,7 +751,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         content.setFile(file);
         // resolve the file mappings
         content.resolveMappings(cms);
-        // ensure all property mappings of deleted optional values are removed
+        // ensure all property or permission mappings of deleted optional values are removed
         removeEmptyMappings(cms, content);
         // write categories (if there is a category widget present)
         file = writeCategories(cms, file, content);
@@ -820,7 +823,90 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
                     // get the string value of the current node
                     String stringValue = value.getStringValue(rootCms);
-                    if (mapping.startsWith(MAPTO_PROPERTY_LIST) && (value.getIndex() == 0)) {
+                    if (mapping.startsWith(MAPTO_PERMISSION) && (value.getIndex() == 0)) {
+
+                        // map value to a permission
+                        // example of a mapping: mapto="permission:GROUP:+r+v|GROUP.ALL_OTHERS:|GROUP.Projectmanagers:+r+v+w+c"
+
+                        // get permission(s) to set
+                        String permissionMappings = mapping.substring(MAPTO_PERMISSION.length());
+                        String mainMapping = permissionMappings;
+                        Map<String, String> permissionsToSet = new HashMap<String, String>();
+
+                        // separate permission to set for element value from other permissions to set
+                        int sepIndex = permissionMappings.indexOf('|');
+                        if (sepIndex != -1) {
+                            mainMapping = permissionMappings.substring(0, sepIndex);
+                            permissionMappings = permissionMappings.substring(sepIndex + 1);
+                            permissionsToSet = CmsStringUtil.splitAsMap(permissionMappings, "|", ":");
+                        }
+
+                        // determine principal type and permission string to set
+                        String principalType = I_CmsPrincipal.PRINCIPAL_GROUP;
+                        String permissionString = mainMapping;
+                        sepIndex = mainMapping.indexOf(':');
+                        if (sepIndex != -1) {
+                            principalType = mainMapping.substring(0, sepIndex);
+                            permissionString = mainMapping.substring(sepIndex + 1);
+                        }
+                        if (permissionString.toLowerCase().indexOf('o') == -1) {
+                            permissionString += "+o";
+                        }
+
+                        // remove all existing permissions from the file
+                        List<CmsAccessControlEntry> aces = rootCms.getAccessControlEntries(filename, false);
+                        for (Iterator<CmsAccessControlEntry> j = aces.iterator(); j.hasNext();) {
+                            CmsAccessControlEntry ace = j.next();
+                            if (ace.getPrincipal().equals(CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_ID)) {
+                                // remove the entry "All others", which has to be treated in a special way
+                                rootCms.rmacc(
+                                    filename,
+                                    CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_NAME,
+                                    CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_ID.toString());
+                            } else {
+                                // this is a group or user principal
+                                I_CmsPrincipal principal = CmsPrincipal.readPrincipal(rootCms, ace.getPrincipal());
+                                if (principal.isGroup()) {
+                                    rootCms.rmacc(filename, I_CmsPrincipal.PRINCIPAL_GROUP, principal.getName());
+                                } else if (principal.isUser()) {
+                                    rootCms.rmacc(filename, I_CmsPrincipal.PRINCIPAL_USER, principal.getName());
+                                }
+                            }
+                        }
+
+                        // set additional permissions that are defined in mapping
+                        for (Iterator<Map.Entry<String, String>> j = permissionsToSet.entrySet().iterator(); j.hasNext();) {
+                            Map.Entry<String, String> entry = j.next();
+                            sepIndex = entry.getKey().indexOf('.');
+                            if (sepIndex != -1) {
+                                String type = entry.getKey().substring(0, sepIndex);
+                                String name = entry.getKey().substring(sepIndex + 1);
+                                String permissions = entry.getValue();
+                                if (permissions.toLowerCase().indexOf('o') == -1) {
+                                    permissions += "+o";
+                                }
+                                try {
+                                    rootCms.chacc(filename, type, name, permissions);
+                                } catch (CmsException e) {
+                                    // setting permission did not work
+                                    LOG.error(e);
+                                }
+                            }
+                        }
+
+                        // set permission(s) using the element value(s)
+                        String path = CmsXmlUtils.removeXpathIndex(value.getPath());
+                        List<I_CmsXmlContentValue> values = content.getValues(path, locale);
+                        Iterator<I_CmsXmlContentValue> j = values.iterator();
+                        while (j.hasNext()) {
+                            I_CmsXmlContentValue val = j.next();
+                            String principalName = val.getStringValue(rootCms);
+                            rootCms.chacc(filename, principalType, principalName, permissionString);
+
+                        }
+                        // special case: permissions are written only to one sibling, end loop
+                        i = 0;
+                    } else if (mapping.startsWith(MAPTO_PROPERTY_LIST) && (value.getIndex() == 0)) {
 
                         boolean mapToShared;
                         int prefixLength;
@@ -1883,6 +1969,42 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                         }
                         // delete the property value for the not existing node
                         rootCms.writePropertyObject(filename, new CmsProperty(property, CmsProperty.DELETE_VALUE, null));
+                    }
+                } else if (mapping.startsWith(MAPTO_PERMISSION)) {
+                    for (int i = 0; i < siblings.size(); i++) {
+
+                        // get siblings filename and locale
+                        String filename = siblings.get(i).getRootPath();
+                        Locale locale = OpenCms.getLocaleManager().getDefaultLocale(rootCms, filename);
+
+                        if (!content.hasLocale(locale)) {
+                            // only remove property if the locale fits
+                            continue;
+                        }
+                        if (content.hasValue(path, locale)) {
+                            // value is available, property must be kept
+                            continue;
+                        }
+                        // remove all existing permissions from the file
+                        List<CmsAccessControlEntry> aces = rootCms.getAccessControlEntries(filename, false);
+                        for (Iterator<CmsAccessControlEntry> j = aces.iterator(); j.hasNext();) {
+                            CmsAccessControlEntry ace = j.next();
+                            if (ace.getPrincipal().equals(CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_ID)) {
+                                // remove the entry "All others", which has to be treated in a special way
+                                rootCms.rmacc(
+                                    filename,
+                                    CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_NAME,
+                                    CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_ID.toString());
+                            } else {
+                                // this is a group or user principal
+                                I_CmsPrincipal principal = CmsPrincipal.readPrincipal(rootCms, ace.getPrincipal());
+                                if (principal.isGroup()) {
+                                    rootCms.rmacc(filename, I_CmsPrincipal.PRINCIPAL_GROUP, principal.getName());
+                                } else if (principal.isUser()) {
+                                    rootCms.rmacc(filename, I_CmsPrincipal.PRINCIPAL_USER, principal.getName());
+                                }
+                            }
+                        }
                     }
                 }
             }

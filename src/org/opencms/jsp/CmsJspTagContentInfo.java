@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentInfo.java,v $
- * Date   : $Date: 2009/06/04 14:29:02 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2010/07/23 08:29:34 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -102,7 +102,7 @@ public class CmsJspTagContentInfo extends CmsJspScopedVarBodyTagSuport implement
     public int doStartTag() throws JspException {
 
         // get a reference to the parent "content container" class
-        Tag ancestor = findAncestorWithClass(this, I_CmsXmlContentContainer.class);
+        Tag ancestor = findAncestorWithClass(this, I_CmsResourceContainer.class);
         if (ancestor == null) {
             // build a container
             CmsMessageContainer container = Messages.get().container(Messages.ERR_PARENTLESS_TAG_1, "contentinfo");
@@ -110,12 +110,16 @@ public class CmsJspTagContentInfo extends CmsJspScopedVarBodyTagSuport implement
             throw new JspTagException(msg);
         }
 
-        I_CmsXmlContentContainer contentContainer = (I_CmsXmlContentContainer)ancestor;
+        I_CmsResourceContainer contentContainer = (I_CmsResourceContainer)ancestor;
 
         String tagContent = "";
 
         if (isScopeVarSet()) {
-            storeContentInfoBean((CmsJspTagContentLoad)contentContainer);
+            if (contentContainer instanceof CmsJspTagContentLoad) {
+                storeContentInfoBean((CmsJspTagContentLoad)contentContainer);
+            } else if (contentContainer instanceof CmsJspTagResourceLoad) {
+                storeContentInfoBean((CmsJspTagResourceLoad)contentContainer);
+            }
         }
 
         if (CmsStringUtil.isNotEmpty(m_value)) {
@@ -249,7 +253,7 @@ public class CmsJspTagContentInfo extends CmsJspScopedVarBodyTagSuport implement
      * 
      * @param container the parent container
      */
-    protected void storeContentInfoBean(CmsJspTagContentLoad container) {
+    protected void storeContentInfoBean(CmsJspTagResourceLoad container) {
 
         CmsContentInfoBean contentInfoBean = container.getContentInfoBean();
 

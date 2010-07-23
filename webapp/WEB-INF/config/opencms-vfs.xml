@@ -116,6 +116,8 @@
 				<collector class="org.opencms.file.collectors.CmsDateResourceCollector" order="120" />
 				<collector class="org.opencms.file.collectors.CmsTimeFrameCategoryCollector" order="130" />
 				<collector class="org.opencms.file.collectors.CmsCategoryResourceCollector" order="140" />
+				<collector class="org.opencms.file.collectors.CmsSubscriptionCollector" order="150" />
+				<collector class="org.opencms.file.collectors.CmsChangedResourceCollector" order="160" />
 			</collectors>		
 			<mimetypes>
 			    <mimetype extension=".ez" type="application/andrew-inset" />
@@ -687,7 +689,8 @@
 				<widget class="org.opencms.widgets.CmsMultiSelectWidget" alias="MultiSelectWidget" />
 				<widget class="org.opencms.widgets.CmsOrgUnitWidget" alias="OrgUnitWidget" />
 				<widget class="org.opencms.widgets.CmsPrincipalWidget" alias="PrincipalWidget" />
-				<widget class="org.opencms.widgets.CmsRadioSelectWidget" alias="RadioSelectWidget" />				
+				<widget class="org.opencms.widgets.CmsRadioSelectWidget" alias="RadioSelectWidget" />
+				<widget class="org.opencms.widgets.CmsSelectGroupWidget" alias="GroupSelectorWidget" />				
 				<widget class="org.opencms.widgets.CmsSelectWidget" alias="SelectorWidget" />				
 				<widget class="org.opencms.widgets.CmsTableGalleryWidget" alias="TableGalleryWidget" />				
 				<widget class="org.opencms.widgets.CmsTextareaWidget" alias="TextareaWidget" />

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/Messages.java,v $
- * Date   : $Date: 2009/06/04 14:29:24 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/07/23 08:29:34 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -68,6 +68,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_COLLECTOR_PARAM_SINGLE_FILE_0 = "ERR_COLLECTOR_PARAM_SINGLE_FILE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_COLLECTOR_PARAM_USER_1 = "ERR_COLLECTOR_PARAM_USER_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_UNKNOWN_RESTYPE_1 = "ERR_UNKNOWN_RESTYPE_1";

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspVfsAccessBean.java,v $
- * Date   : $Date: 2009/11/03 13:30:13 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/07/23 08:29:34 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,12 +32,15 @@
 package org.opencms.jsp.util;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsUser;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsPermissionSet;
 import org.opencms.staticexport.CmsLinkManager;
 
 import java.util.Collections;
@@ -53,7 +56,7 @@ import org.apache.commons.collections.map.LazyMap;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 7.0.2
  * 
@@ -92,6 +95,29 @@ public final class CmsJspVfsAccessBean {
             CmsResource resource = (CmsResource)getReadResource().get(input);
             return Boolean.valueOf((resource != null)
                 && (CmsResourceTypeXmlPage.isXmlPage(resource) || CmsResourceTypeXmlContent.isXmlContent(resource)));
+        }
+    }
+
+    /**
+     * Transformer that loads a resource permission from the OpenCms VFS, 
+     * the input is used as String for the resource name to read the permissions for.<p>
+     */
+    public class CmsPermissionsLoaderTransformer implements Transformer {
+
+        /**
+         * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
+         */
+        public Object transform(Object input) {
+
+            CmsPermissionSet result;
+            try {
+                // read the requested resource permissions
+                result = getCmsObject().getPermissions((String)input);
+            } catch (CmsException e) {
+                // unable to read resource, return null
+                result = null;
+            }
+            return result;
         }
     }
 
@@ -251,6 +277,9 @@ public final class CmsJspVfsAccessBean {
     /** Links calculated for the OpenCms VFS. */
     private Map m_links;
 
+    /** Resource permissions loaded from the OpenCms VFS. */
+    private Map m_permissions;
+
     /** Properties loaded from the OpenCms VFS. */
     private Map m_properties;
 
@@ -313,13 +342,41 @@ public final class CmsJspVfsAccessBean {
      * The current URI is: ${cms:vfs(pageContext).context.uri}
      * </pre>
      * 
-     * @return the OpenCms request context the current user this bean was initialized with
+     * @return the OpenCms request context of the current user this bean was initialized with
      * 
      * @see #getRequestContext()
      */
     public CmsRequestContext getContext() {
 
         return getRequestContext();
+    }
+
+    /**
+     * Returns the current project from the context.<p>
+     * 
+     * Usage example on a JSP with the EL:<pre>
+     * The current project name is: ${cms:vfs(pageContext).currentProject.name}
+     * </pre>
+     * 
+     * @return the current project
+     */
+    public CmsProject getCurrentProject() {
+
+        return m_cms.getRequestContext().currentProject();
+    }
+
+    /**
+     * Returns the current user from the context.<p>
+     * 
+     * Usage example on a JSP with the EL:<pre>
+     * The current user name is: ${cms:vfs(pageContext).currentUser.name}
+     * </pre>
+     * 
+     * @return the current user
+     */
+    public CmsUser getCurrentUser() {
+
+        return m_cms.getRequestContext().currentUser();
     }
 
     /**
@@ -453,6 +510,28 @@ public final class CmsJspVfsAccessBean {
     }
 
     /**
+     * Short form for {@link #getReadPermissions()}.<p>
+     * 
+     * Usage example on a JSP with the EL:<pre>
+     * Permission string of the "/index.html" resource: ${cms:vfs(pageContext).readPermissions['/index.html'].permissionString}
+     * </pre>
+     * 
+     * Usage example on a JSP with the <code>&lt;cms:contentaccess&gt;</code> tag:<pre>
+     * &lt;cms:contentload ... &gt;
+     *     &lt;cms:contentaccess var="content" /&gt;
+     *     Permission string of the "/index.html" resource: ${content.vfs.readPermissions['/index.html'].permissionString}
+     * &lt;/cms:contentload&gt;</pre>
+     * 
+     * @return a map that lazily reads resource permissions from the OpenCms VFS
+     * 
+     * @see #getReadPermissions()
+     */
+    public Map getPermissions() {
+
+        return getReadPermissions();
+    }
+
+    /**
      * Short form for {@link #getReadProperties()}.<p>
      * 
      * Usage example on a JSP with the EL:<pre>
@@ -482,6 +561,32 @@ public final class CmsJspVfsAccessBean {
     public Map getPropertySearch() {
 
         return getReadPropertiesSearch();
+    }
+
+    /**
+     * Returns a map that lazily reads resource permissions from the OpenCms VFS.<p>
+     * 
+     * Usage example on a JSP with the EL:<pre>
+     * Permission string of the "/index.html" resource: ${cms:vfs(pageContext).readPermissions['/index.html'].permissionString}
+     * </pre>
+     * 
+     * Usage example on a JSP with the <code>&lt;cms:contentaccess&gt;</code> tag:<pre>
+     * &lt;cms:contentload ... &gt;
+     *     &lt;cms:contentaccess var="content" /&gt;
+     *     Permission string of the "/index.html" resource: ${content.vfs.readPermissions['/index.html'].permissionString}
+     * &lt;/cms:contentload&gt;</pre>
+     * 
+     * @return a map that lazily reads resource permissions from the OpenCms VFS
+     * 
+     * @see #getPermissions() for a short form of this method
+     */
+    public Map getReadPermissions() {
+
+        if (m_permissions == null) {
+            // create lazy map only on demand
+            m_permissions = LazyMap.decorate(new HashMap(), new CmsPermissionsLoaderTransformer());
+        }
+        return m_permissions;
     }
 
     /**

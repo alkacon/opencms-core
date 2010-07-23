@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2010/05/12 09:19:10 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/07/23 08:29:33 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ import org.opencms.db.CmsCacheSettings;
 import org.opencms.db.CmsDefaultUsers;
 import org.opencms.db.CmsLoginManager;
 import org.opencms.db.CmsLoginMessage;
+import org.opencms.db.CmsSubscriptionManager;
 import org.opencms.db.I_CmsDbContextFactory;
 import org.opencms.flex.CmsFlexCacheConfiguration;
 import org.opencms.i18n.CmsLocaleManager;
@@ -86,7 +87,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 6.0.0
  */
@@ -101,6 +102,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The "exclusive" attribute. */
     public static final String A_EXCLUSIVE = "exclusive";
 
+    /** The "maxvisited" attribute. */
+    public static final String A_MAXVISITED = "maxvisited";
+
     /** The "mode" attribute. */
     public static final String A_MODE = "mode";
 
@@ -112,6 +116,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
     /** The "online" attribute. */
     public static final String A_ONLINE = "online";
+
+    /** The "poolname" attribute. */
+    public static final String A_POOLNAME = "poolname";
 
     /** The "server" attribute. */
     public static final String A_SERVER = "server";
@@ -443,6 +450,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The subcontainers node name. */
     public static final String N_SUBCONTAINERS = "subcontainers";
 
+    /** The subscriptionmanager node name. */
+    public static final String N_SUBSCRIPTIONMANAGER = "subscriptionmanager";
+
     /** The main system configuration node name. */
     public static final String N_SYSTEM = "system";
 
@@ -578,6 +588,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
     /** The sitemap cache settings. */
     private CmsSitemapCacheSettings m_sitemapCacheSettings;
+
+    /** The subscription manager. */
+    private CmsSubscriptionManager m_subscriptionManager;
 
     /** The temporary file project id. */
     private int m_tempFileProjectId;
@@ -1147,6 +1160,16 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         digester.addCallParam(sitemapCachePath + "/" + N_DOCUMENTS, 0, A_ONLINE);
         // set the settings
         digester.addSetNext(sitemapCachePath, "setSitemapCacheSettings");
+
+        // add rule for subscription manager settings
+        digester.addObjectCreate("*/" + N_SYSTEM + "/" + N_SUBSCRIPTIONMANAGER, CmsSubscriptionManager.class);
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_SUBSCRIPTIONMANAGER, "setEnabled", 1);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_SUBSCRIPTIONMANAGER, 0, A_ENABLED);
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_SUBSCRIPTIONMANAGER, "setPoolName", 1);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_SUBSCRIPTIONMANAGER, 0, A_POOLNAME);
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_SUBSCRIPTIONMANAGER, "setMaxVisitedCount", 1);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_SUBSCRIPTIONMANAGER, 0, A_MAXVISITED);
+        digester.addSetNext("*/" + N_SYSTEM + "/" + N_SUBSCRIPTIONMANAGER, "setSubscriptionManager");
     }
 
     /**
@@ -1567,6 +1590,14 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             docsCacheElem.addAttribute(A_ONLINE, "" + getSitemapCacheSettings().getDocumentOnlineSize());
         }
 
+        // subscription manager settings
+        if (getSubscriptionManager() != null) {
+            Element subscrManElem = systemElement.addElement(N_SUBSCRIPTIONMANAGER);
+            subscrManElem.addAttribute(A_ENABLED, Boolean.toString(getSubscriptionManager().isEnabled()));
+            subscrManElem.addAttribute(A_POOLNAME, getSubscriptionManager().getPoolName());
+            subscrManElem.addAttribute(A_MAXVISITED, String.valueOf(getSubscriptionManager().getMaxVisitedCount()));
+        }
+
         // return the system node
         return systemElement;
     }
@@ -1925,6 +1956,20 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     public CmsSitemapCacheSettings getSitemapCacheSettings() {
 
         return m_sitemapCacheSettings;
+    }
+
+    /**
+     * Returns the configured subscription manager.<p>
+     * 
+     * @return the configured subscription manager
+     */
+    public CmsSubscriptionManager getSubscriptionManager() {
+
+        if (m_subscriptionManager == null) {
+            // no subscription manager configured, create default
+            m_subscriptionManager = new CmsSubscriptionManager();
+        }
+        return m_subscriptionManager;
     }
 
     /**
@@ -2390,6 +2435,16 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     public void setSitemapCacheSettings(CmsSitemapCacheSettings settings) {
 
         m_sitemapCacheSettings = settings;
+    }
+
+    /**
+     * Sets the subscription manager.<p>
+     * 
+     * @param subscriptionManager the subscription manager
+     */
+    public void setSubscriptionManager(CmsSubscriptionManager subscriptionManager) {
+
+        m_subscriptionManager = subscriptionManager;
     }
 
     /**

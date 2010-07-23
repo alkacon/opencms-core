@@ -312,8 +312,123 @@
             <name>locale</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>
-    </tag>   
+    </tag>
     
+    <tag>
+        <description>
+            This tag loads resources from the OpenCms VFS.
+        </description> 
+        <name>resourceload</name>
+        <tag-class>org.opencms.jsp.CmsJspTagResourceLoad</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <name>collector</name>
+            <rtexprvalue>true</rtexprvalue>            
+        </attribute>    
+        <attribute>
+            <name>param</name>
+            <rtexprvalue>true</rtexprvalue>            
+        </attribute>
+        <attribute>
+            <name>property</name>
+            <rtexprvalue>true</rtexprvalue>            
+        </attribute>   
+        <attribute>
+            <name>pageIndex</name>
+            <rtexprvalue>true</rtexprvalue>            
+        </attribute> 
+        <attribute>
+            <name>pageSize</name>
+            <rtexprvalue>true</rtexprvalue>            
+        </attribute>  
+        <attribute>
+            <name>pageNavLength</name>
+            <rtexprvalue>true</rtexprvalue>            
+        </attribute>        
+        <attribute>
+            <name>preload</name>
+            <rtexprvalue>true</rtexprvalue>            
+        </attribute>
+        <attribute>
+            <name>var</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>            
+        </attribute>
+        <attribute>
+            <name>scope</name>
+            <required>false</required>            
+            <rtexprvalue>true</rtexprvalue>            
+        </attribute>        
+    </tag>
+    
+    <tag>
+        <description>
+            This tag provides access the the resources for the JSP EL.
+        </description>              
+        <name>resourceaccess</name>
+        <tag-class>org.opencms.jsp.CmsJspTagResourceAccess</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>var</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>            
+        </attribute>
+        <attribute>
+            <name>scope</name>
+            <required>false</required>            
+            <rtexprvalue>true</rtexprvalue>            
+        </attribute>       
+    </tag>
+
+    <tag>
+        <description>
+            This tag performs user tracking actions like visit resources or subscribe/unsubscribe.
+        </description>
+        <name>usertracking</name>
+        <tag-class>org.opencms.jsp.CmsJspTagUserTracking</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>action</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>            
+        </attribute>
+        <attribute>
+            <name>currentuser</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>            
+        </attribute>
+        <attribute>
+            <name>file</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>            
+        </attribute>
+        <attribute>
+            <name>group</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>            
+        </attribute>
+        <attribute>
+            <name>includegroups</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>            
+        </attribute>
+        <attribute>
+            <name>online</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>            
+        </attribute>
+        <attribute>
+            <name>subfolder</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>            
+        </attribute>
+        <attribute>
+            <name>user</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>            
+        </attribute>
+    </tag>
+
     <tag>
         <description>
             This tag is used to read values from the OpenCms workplace language files.

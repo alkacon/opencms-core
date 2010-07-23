@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/Messages.java,v $
- * Date   : $Date: 2009/12/16 13:22:04 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/07/23 08:29:34 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,7 +69,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 6.0.0
  */
@@ -116,6 +116,15 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_TAG_CONTENTLOAD_MISSING_PARAM_0 = "ERR_TAG_CONTENTLOAD_MISSING_PARAM_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_TAG_RESOURCELOAD_INDEX_SIZE_0 = "ERR_TAG_RESOURCELOAD_INDEX_SIZE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_TAG_RESOURCELOAD_MISSING_COLLECTOR_0 = "ERR_TAG_RESOURCELOAD_MISSING_COLLECTOR_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_TAG_RESOURCELOAD_MISSING_PARAM_0 = "ERR_TAG_RESOURCELOAD_MISSING_PARAM_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_XML_DOCUMENT_UNMARSHAL_1 = "ERR_XML_DOCUMENT_UNMARSHAL_1";

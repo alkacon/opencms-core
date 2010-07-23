@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentLoop.java,v $
- * Date   : $Date: 2009/06/04 14:29:03 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2010/07/23 08:29:34 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.jsp;
 
+import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.OpenCms;
 import org.opencms.xml.CmsXmlUtils;
@@ -49,7 +50,7 @@ import javax.servlet.jsp.tagext.TagSupport;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -76,7 +77,7 @@ public class CmsJspTagContentLoop extends TagSupport implements I_CmsXmlContentC
     /** Index of the content node element to show. */
     private int m_index = -1;
 
-    /** Refenence to the currently selected locale. */
+    /** Reference to the currently selected locale. */
     private Locale m_locale;
 
     /**
@@ -104,7 +105,7 @@ public class CmsJspTagContentLoop extends TagSupport implements I_CmsXmlContentC
      */
     public int doAfterBody() {
 
-        if (hasMoreContent()) {
+        if (hasMoreResources()) {
             // one more element with the same name is available, loop again
             return EVAL_BODY_AGAIN;
         }
@@ -141,7 +142,7 @@ public class CmsJspTagContentLoop extends TagSupport implements I_CmsXmlContentC
         // initialize the content 
         init(container);
 
-        if (hasMoreContent()) {
+        if (hasMoreResources()) {
             // selected element is available at last once in content
             return EVAL_BODY_INCLUDE;
         } else {
@@ -185,6 +186,14 @@ public class CmsJspTagContentLoop extends TagSupport implements I_CmsXmlContentC
     }
 
     /**
+     * @see org.opencms.jsp.I_CmsResourceContainer#getResource()
+     */
+    public CmsResource getResource() {
+
+        return m_content.getFile();
+    }
+
+    /**
      * @see org.opencms.jsp.I_CmsXmlContentContainer#getResourceName()
      */
     public String getResourceName() {
@@ -217,9 +226,9 @@ public class CmsJspTagContentLoop extends TagSupport implements I_CmsXmlContentC
     }
 
     /**
-     * @see org.opencms.jsp.I_CmsXmlContentContainer#hasMoreContent()
+     * @see org.opencms.jsp.I_CmsXmlContentContainer#hasMoreResources()
      */
-    public boolean hasMoreContent() {
+    public boolean hasMoreResources() {
 
         if (m_firstLoop) {
             m_firstLoop = false;

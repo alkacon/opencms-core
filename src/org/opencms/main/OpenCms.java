@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCms.java,v $
- * Date   : $Date: 2009/12/17 13:10:17 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/07/23 08:29:34 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ import org.opencms.db.CmsDefaultUsers;
 import org.opencms.db.CmsExportPoint;
 import org.opencms.db.CmsLoginManager;
 import org.opencms.db.CmsSqlManager;
+import org.opencms.db.CmsSubscriptionManager;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsLocaleManager;
@@ -99,7 +100,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -484,6 +485,16 @@ public final class OpenCms {
     public static CmsStaticExportManager getStaticExportManager() {
 
         return OpenCmsCore.getInstance().getStaticExportManager();
+    }
+
+    /**
+     * Returns the subscription manager.<p>
+     * 
+     * @return the subscription manager
+     */
+    public static CmsSubscriptionManager getSubscriptionManager() {
+
+        return OpenCmsCore.getInstance().getSubscriptionManager();
     }
 
     /**

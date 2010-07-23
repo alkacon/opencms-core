@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2010/07/15 09:00:23 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2010/07/23 08:29:34 $
+ * Version: $Revision: 1.40 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -20,6 +20,7 @@ Legend:
 - General comment
 
 OpenCms x.x.x - Month Day, Year
+! New user tracking allows subscription of files, tracking of visited resources, listing subsribed resources and many more
 * Fixed issue displaying HTML in "Title" "and NavText" column of explorer view
 * fixed issue: anchor of URL being encoded incorrectly (Bug: 1872)
 * Keep browser based authentication text when rewriting the opencms-system.xml

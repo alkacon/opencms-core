@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Messages.java,v $
- * Date   : $Date: 2009/12/16 15:06:42 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/07/23 08:29:34 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Achim Westermann
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 6.0.0 
  */
@@ -113,6 +113,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CLOSE_VFS_DRIVER_0 = "ERR_CLOSE_VFS_DRIVER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_CONFIG_SUBSCRIPTIONMANAGER_FROZEN_0 = "ERR_CONFIG_SUBSCRIPTIONMANAGER_FROZEN_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_COPY_ACE_2 = "ERR_COPY_ACE_2";
@@ -241,6 +244,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_GET_CONNECTION_1 = "ERR_GET_CONNECTION_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_GET_DATE_LASTVISITED_2 = "ERR_GET_DATE_LASTVISITED_2";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_GET_GROUPS_OF_USER_2 = "ERR_GET_GROUPS_OF_USER_2";
 
     /** Message constant for key in the resource bundle. */
@@ -323,6 +329,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_LOGIN_MESSAGE_FROZEN_0 = "ERR_LOGIN_MESSAGE_FROZEN_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_MARK_RESOURCE_AS_VISITED_2 = "ERR_MARK_RESOURCE_AS_VISITED_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_MERGING_PUBLISH_LISTS_0 = "ERR_MERGING_PUBLISH_LISTS_0";
@@ -514,6 +523,18 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_READ_STATEXP_RESOURCES_1 = "ERR_READ_STATEXP_RESOURCES_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_READ_SUBSCRIBED_DELETED_RESOURCES_1 = "ERR_READ_SUBSCRIBED_DELETED_RESOURCES_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_READ_SUBSCRIBED_RESOURCES_1 = "ERR_READ_SUBSCRIBED_RESOURCES_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_READ_SUBSCRIBED_RESOURCES_ALL_GROUP_1 = "ERR_READ_SUBSCRIBED_RESOURCES_ALL_GROUP_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_READ_SUBSCRIBED_RESOURCES_ALL_USER_1 = "ERR_READ_SUBSCRIBED_RESOURCES_ALL_USER_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_READ_USER_FOR_ID_1 = "ERR_READ_USER_FOR_ID_1";
 
     /** Message constant for key in the resource bundle. */
@@ -527,6 +548,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_READ_USERS_NO_PERMISSION_0 = "ERR_READ_USERS_NO_PERMISSION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_READ_VISITED_RESOURCES_1 = "ERR_READ_VISITED_RESOURCES_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_READING_DELETED_RESOURCES_1 = "ERR_READING_DELETED_RESOURCES_1";
@@ -589,7 +613,19 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_SET_PROJECT_LAST_MODIFIED_2 = "ERR_SET_PROJECT_LAST_MODIFIED_2";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_SET_SUBSCRIBED_RESOURCE_AS_DELETED_1 = "ERR_SET_SUBSCRIBED_RESOURCE_AS_DELETED_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_SET_USERS_ORGUNIT_2 = "ERR_SET_USERS_ORGUNIT_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_SUBSCRIBE_RESOURCE_FOR_GROUP_2 = "ERR_SUBSCRIBE_RESOURCE_FOR_GROUP_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_SUBSCRIBE_RESOURCE_FOR_USER_2 = "ERR_SUBSCRIBE_RESOURCE_FOR_USER_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_SUBSCRIPTION_MANAGER_DISABLED_0 = "ERR_SUBSCRIPTION_MANAGER_DISABLED_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_TEST_CHANGED_CONTENT_1 = "ERR_TEST_CHANGED_CONTENT_1";
@@ -626,6 +662,24 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_UNLOCK_RESOURCE_3 = "ERR_UNLOCK_RESOURCE_3";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_UNSUBSCRIBE_ALL_DELETED_RESOURCES_USER_0 = "ERR_UNSUBSCRIBE_ALL_DELETED_RESOURCES_USER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_UNSUBSCRIBE_ALL_RESOURCES_GROUP_1 = "ERR_UNSUBSCRIBE_ALL_RESOURCES_GROUP_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_UNSUBSCRIBE_ALL_RESOURCES_USER_1 = "ERR_UNSUBSCRIBE_ALL_RESOURCES_USER_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_UNSUBSCRIBE_RESOURCE_ALL_1 = "ERR_UNSUBSCRIBE_RESOURCE_ALL_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_UNSUBSCRIBE_RESOURCE_FOR_GROUP_2 = "ERR_UNSUBSCRIBE_RESOURCE_FOR_GROUP_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_UNSUBSCRIBE_RESOURCE_FOR_USER_2 = "ERR_UNSUBSCRIBE_RESOURCE_FOR_USER_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_UNSUPPORTED_OPERATION_2 = "ERR_UNSUPPORTED_OPERATION_2";
