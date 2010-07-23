@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsPublishSitemapCache.java,v $
- * Date   : $Date: 2010/07/19 12:35:34 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/07/23 11:51:59 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,9 +59,13 @@ import org.apache.commons.logging.Log;
  * now depends on the *contents* of sitemap resources which are in the same publish list. We thus need to build a sitemap cache
  * that reflects the sitemap structure after publishing before we actually publish the resources.<p>
  * 
+ * Rather than just store only the offline sitemap or only the online sitemap, this cache, using data from the publish list,
+ * tries to build a sitemap structure that reflects the online sitemap after publishing. It uses both data from online and offline
+ * sitemaps to construct this.<p>
+ * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
