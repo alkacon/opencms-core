@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentPropertyHelper.java,v $
- * Date   : $Date: 2010/07/07 09:12:09 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/07/23 13:20:39 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import org.dom4j.Element;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 7.9.2
  */
@@ -335,6 +335,11 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
             LOG.debug(e.getLocalizedMessage(), e);
         }
         CmsSitemapEntry entry = OpenCms.getSitemapManager().getEntryForId(cms, id);
+        if (entry == null) {
+            throw new CmsVfsResourceNotFoundException(Messages.get().container(
+                Messages.ERR_COULD_NOT_RESOLVE_ID_1,
+                id.toString()));
+        }
         result = entry.getSitePath(cms);
         return result;
     }
@@ -601,26 +606,20 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
         if (value == null) {
             return null;
         }
-        String result = "";
         // represent vfslists as lists of path in JSON
         List<String> ids = CmsStringUtil.splitAsList(value, CmsXmlContentProperty.PROP_SEPARATOR);
-        StringBuffer buffer = new StringBuffer();
-        if (ids.size() > 0) {
-            for (String id : ids) {
-                try {
-                    String path = getUriForId(cms, new CmsUUID(id));
-                    buffer.append(path);
-                } catch (Exception e) {
-                    // should never happen
-                    LOG.error(e.getLocalizedMessage(), e);
-                    continue;
-                }
-                buffer.append(CmsXmlContentProperty.PROP_SEPARATOR);
+        List<String> paths = new ArrayList<String>();
+        for (String id : ids) {
+            try {
+                String path = getUriForId(cms, new CmsUUID(id));
+                paths.add(path);
+            } catch (Exception e) {
+                // should never happen
+                LOG.error(e.getLocalizedMessage(), e);
+                continue;
             }
-            // don't include last comma (which exists since ids.size() isn't zero)  
-            result = buffer.substring(0, buffer.length() - CmsXmlContentProperty.PROP_SEPARATOR.length());
         }
-        return result;
+        return CmsStringUtil.listAsString(paths, CmsXmlContentProperty.PROP_SEPARATOR);
     }
 
     /**
@@ -636,26 +635,20 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
         if (value == null) {
             return null;
         }
-        String result = "";
         // represent vfslists as lists of path in JSON
         List<String> paths = CmsStringUtil.splitAsList(value, CmsXmlContentProperty.PROP_SEPARATOR);
-        StringBuffer buffer = new StringBuffer();
-        if (paths.size() > 0) {
-            for (String path : paths) {
-                try {
-                    CmsUUID id = getIdForUri(cms, path);
-                    buffer.append(id.toString());
-                } catch (CmsException e) {
-                    // should never happen
-                    LOG.error(e.getLocalizedMessage(), e);
-                    continue;
-                }
-                buffer.append(CmsXmlContentProperty.PROP_SEPARATOR);
+        List<String> ids = new ArrayList<String>();
+        for (String path : paths) {
+            try {
+                CmsUUID id = getIdForUri(cms, path);
+                ids.add(id.toString());
+            } catch (CmsException e) {
+                // should never happen
+                LOG.error(e.getLocalizedMessage(), e);
+                continue;
             }
-            // don't include last comma (which exists since ids.size() isn't zero)  
-            result = buffer.substring(0, buffer.length() - CmsXmlContentProperty.PROP_SEPARATOR.length());
         }
-        return result;
+        return CmsStringUtil.listAsString(ids, CmsXmlContentProperty.PROP_SEPARATOR);
     }
 
     /**

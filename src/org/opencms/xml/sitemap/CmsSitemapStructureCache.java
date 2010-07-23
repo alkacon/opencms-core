@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapStructureCache.java,v $
- * Date   : $Date: 2010/07/20 11:50:24 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/07/23 13:20:40 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Moossen
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -171,24 +171,14 @@ public class CmsSitemapStructureCache extends CmsVfsCache implements I_CmsSitema
         List<CmsResource> entryPoints = internalGetEntryPointResources(adminCms);
         for (CmsResource entryPoint : entryPoints) {
             String sitemapPath = internalReadSitemapProperty(adminCms, entryPoint);
-            CmsFile sitemapFile = internalReadSitemapFile(adminCms, entryPoint, sitemapPath);
-            CmsXmlSitemap xmlSitemap = internalUnmarshalSitemapFile(adminCms, sitemapFile);
-            for (Locale locale : xmlSitemap.getLocales()) {
-                // entry point sitemaps can have several locales
-                active.put(locale.toString() + entryPoint.getRootPath(), sitemapFile.getRootPath());
-                CmsSitemapBean locSitemap = internalGetSitemap(adminCms, xmlSitemap, locale);
-                // root sitemaps must have one and only one root entry
-                CmsInternalSitemapEntry startEntry = locSitemap.getSiteEntries().get(0);
-                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(startEntry.getName())) {
-                    // Root entries of root sitemaps HAVE to have an empty name
-                    startEntry.removeName();
-                }
-                // inherited properties 
-                // we can safely use one reference, since CmsSiteEntryBean#setRuntimeInfo(...) will clone it      
-                Map<String, String> properties = new HashMap<String, String>();
-
-                // start iterating
-                visitEntry(adminCms, active, startEntry, locale, entryPoint.getRootPath(), true, 0, properties);
+            try {
+                CmsFile sitemapFile = internalReadSitemapFile(adminCms, entryPoint, sitemapPath);
+                CmsXmlSitemap xmlSitemap = internalUnmarshalSitemapFile(adminCms, sitemapFile);
+                visitRootSitemap(adminCms, active, entryPoint, sitemapFile, xmlSitemap);
+            } catch (CmsException e) {
+                //It's an error if a root sitemap can't be read, but we still want to process the other root sitemaps
+                LOG.error("Can't read root sitemap: ");
+                LOG.error(e.getLocalizedMessage(), e);
             }
         }
 
@@ -364,30 +354,33 @@ public class CmsSitemapStructureCache extends CmsVfsCache implements I_CmsSitema
      * @param entry the entry to get the subentries for
      * 
      * @return a list of subentries
-     * 
-     * @throws CmsException if something goes wrong
      */
-    protected List<CmsInternalSitemapEntry> getSubEntries(CmsObject cms, Locale locale, CmsInternalSitemapEntry entry)
-    throws CmsException {
+    protected List<CmsInternalSitemapEntry> getSubEntries(CmsObject cms, Locale locale, CmsInternalSitemapEntry entry) {
 
         // check sitemap property
         String subSitemapId = entry.getProperties().get(CmsSitemapManager.Property.sitemap.name());
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(subSitemapId)) {
             return entry.getSubEntries();
         }
-        // switch to sub-sitemap
-        CmsResource subSitemap = internalReadResource(cms, subSitemapId);
-        CmsXmlSitemap sitemapXml = internalUnmarshalSitemapResource(cms, subSitemap);
-        CmsSitemapBean sitemap = internalGetSitemap(cms, sitemapXml, locale);
-        if (sitemap == null) {
-            // be sure the entry has no sub-entries
-            entry.setSubEntries(new ArrayList<CmsInternalSitemapEntry>());
-            // no sitemap found
-            return entry.getSubEntries();
+        try {
+            // switch to sub-sitemap
+            CmsResource subSitemap = internalReadResource(cms, subSitemapId);
+            CmsXmlSitemap sitemapXml = internalUnmarshalSitemapResource(cms, subSitemap);
+            CmsSitemapBean sitemap = internalGetSitemap(cms, sitemapXml, locale);
+            if (sitemap == null) {
+                // be sure the entry has no sub-entries
+                entry.setSubEntries(new ArrayList<CmsInternalSitemapEntry>());
+                // no sitemap found
+                return entry.getSubEntries();
+            }
+            // set the sub-entries
+            entry.setSubEntries(sitemap.getSiteEntries());
+            // continue with the sub-sitemap
+
+        } catch (CmsException e) {
+            LOG.error("Can't read sub-sitemap:");
+            LOG.error(e.getLocalizedMessage(), e);
         }
-        // set the sub-entries
-        entry.setSubEntries(sitemap.getSiteEntries());
-        // continue with the sub-sitemap
         return entry.getSubEntries();
     }
 
@@ -622,20 +615,63 @@ public class CmsSitemapStructureCache extends CmsVfsCache implements I_CmsSitema
         // get sub-entries
         List<CmsInternalSitemapEntry> subEntries = getSubEntries(cms, locale, entry);
         String sitemapUuid = properties.get(CmsSitemapManager.Property.sitemap.name());
-        if (sitemapUuid != null) {
-            CmsResource sitemapResource = internalReadResource(cms, sitemapUuid);
-            // collect sitemap
-            active.put(locale.toString() + entry.getRootPath(), sitemapResource.getRootPath());
-            // be sure the sub-entries do not inherit the sitemap property
-            properties.remove(CmsSitemapManager.Property.sitemap.name());
-            // be sure to set the right entry point
-            currentEntryPoint = entry.getRootPath();
+        try {
+            if (sitemapUuid != null) {
+                CmsResource sitemapResource = internalReadResource(cms, sitemapUuid);
+                // collect sitemap
+                active.put(locale.toString() + entry.getRootPath(), sitemapResource.getRootPath());
+                // be sure the sub-entries do not inherit the sitemap property
+                properties.remove(CmsSitemapManager.Property.sitemap.name());
+                // be sure to set the right entry point
+                currentEntryPoint = entry.getRootPath();
+            }
+        } catch (CmsException e) {
+            // Sub-sitemap couldn't be read, but we want to proceed with reading the rest of the sitemap
+            LOG.error("Can't read sub-sitemap: ");
+            LOG.error(e.getLocalizedMessage(), e);
         }
         int size = subEntries.size();
         for (int position = 0; position < size; position++) {
             // visit sub-entries
             CmsInternalSitemapEntry subEntry = subEntries.get(position);
             visitEntry(cms, active, subEntry, locale, currentEntryPoint, false, position, properties);
+        }
+    }
+
+    /**
+     * Visits a root sitemap.<p>
+     * 
+     * @param cms the CMS context 
+     * @param active the map of active sitemaps 
+     * @param entryPoint the entry point resource 
+     * @param sitemapFile the file containing the sitemap 
+     * @param xmlSitemap the sitemap XML structure 
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    protected void visitRootSitemap(
+        CmsObject cms,
+        Map<String, String> active,
+        CmsResource entryPoint,
+        CmsFile sitemapFile,
+        CmsXmlSitemap xmlSitemap) throws CmsException {
+
+        for (Locale locale : xmlSitemap.getLocales()) {
+            // entry point sitemaps can have several locales
+            active.put(locale.toString() + entryPoint.getRootPath(), sitemapFile.getRootPath());
+            CmsSitemapBean locSitemap = internalGetSitemap(cms, xmlSitemap, locale);
+            // root sitemaps must have one and only one root entry
+            CmsInternalSitemapEntry startEntry = locSitemap.getSiteEntries().get(0);
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(startEntry.getName())) {
+                // Root entries of root sitemaps HAVE to have an empty name
+                startEntry.removeName();
+            }
+            // inherited properties 
+            // we can safely use one reference, since CmsSiteEntryBean#setRuntimeInfo(...) will clone it      
+            Map<String, String> properties = new HashMap<String, String>();
+
+            // start iterating
+            visitEntry(cms, active, startEntry, locale, entryPoint.getRootPath(), true, 0, properties);
         }
     }
 
