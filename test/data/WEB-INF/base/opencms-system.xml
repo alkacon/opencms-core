@@ -117,5 +117,6 @@
                 <documents offline="32" online="32" />
             </sitemap-cache>
         </sitemap>
+        <subscriptionmanager enabled="true" poolname="default" maxvisited="5" />
 	</system>
 </opencms>

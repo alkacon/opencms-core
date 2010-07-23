@@ -682,6 +682,7 @@
 				<widget class="org.opencms.widgets.CmsLinkGalleryWidget" alias="LinkGalleryWidget"/>
 				<widget class="org.opencms.widgets.CmsLocalizationWidget" alias="LocalizationWidget"/>
 				<widget class="org.opencms.widgets.CmsMultiSelectWidget" alias="MultiSelectWidget" />
+				<widget class="org.opencms.widgets.CmsSelectGroupWidget" alias="GroupSelectorWidget" />
 				<widget class="org.opencms.widgets.CmsSelectWidget" alias="SelectorWidget" />				
 				<widget class="org.opencms.widgets.CmsTableGalleryWidget" alias="TableGalleryWidget" />				
 				<widget class="org.opencms.widgets.CmsTextareaWidget" alias="TextareaWidget" configuration="8" />

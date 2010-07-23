@@ -643,6 +643,7 @@
 				<widget class="org.opencms.widgets.CmsDownloadGalleryWidget" alias="DownloadGalleryWidget" />
 				<widget class="org.opencms.widgets.CmsLinkGalleryWidget" alias="LinkGalleryWidget" />
 				<widget class="org.opencms.widgets.CmsHtmlGalleryWidget" alias="HtmlGalleryWidget" />
+				<widget class="org.opencms.widgets.CmsSelectGroupWidget" alias="GroupSelectorWidget" />				
 				<widget class="org.opencms.widgets.CmsTableGalleryWidget" alias="TableGalleryWidget" />
 				<widget class="org.opencms.widgets.CmsTextareaWidget" alias="TextareaWidget" />
 				<widget class="org.opencms.widgets.CmsTextareaWidgetPlaintext" alias="TextareaWidgetPlaintext" />
