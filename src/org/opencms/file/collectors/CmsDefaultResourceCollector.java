@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/CmsDefaultResourceCollector.java,v $
- * Date   : $Date: 2009/11/26 11:36:19 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/07/23 13:04:50 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 6.0.0 
  */
@@ -217,7 +217,7 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
         CmsCollectorData data = new CmsCollectorData(param);
         String foldername = CmsResource.getFolderPath(data.getFileName());
 
-        CmsResourceFilter filter = CmsResourceFilter.DEFAULT.addRequireType(data.getType()).addExcludeFlags(
+        CmsResourceFilter filter = CmsResourceFilter.DEFAULT_FILES.addRequireType(data.getType()).addExcludeFlags(
             CmsResource.FLAG_TEMPFILE);
         List<CmsResource> result = cms.readResources(foldername, filter, tree);
 
@@ -241,7 +241,7 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
         CmsCollectorData data = new CmsCollectorData(param);
         String foldername = CmsResource.getFolderPath(data.getFileName());
 
-        CmsResourceFilter filter = CmsResourceFilter.DEFAULT.addRequireType(data.getType()).addExcludeFlags(
+        CmsResourceFilter filter = CmsResourceFilter.DEFAULT_FILES.addRequireType(data.getType()).addExcludeFlags(
             CmsResource.FLAG_TEMPFILE);
         List<CmsResource> foundResources = cms.readResources(foldername, filter, readSubTree);
 
@@ -309,7 +309,7 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
         CmsCollectorData data = new CmsCollectorData(param);
         String foldername = CmsResource.getFolderPath(data.getFileName());
 
-        CmsResourceFilter filter = CmsResourceFilter.DEFAULT.addRequireType(data.getType()).addExcludeFlags(
+        CmsResourceFilter filter = CmsResourceFilter.DEFAULT_FILES.addRequireType(data.getType()).addExcludeFlags(
             CmsResource.FLAG_TEMPFILE);
         List<CmsResource> result = cms.readResources(foldername, filter, tree);
 
