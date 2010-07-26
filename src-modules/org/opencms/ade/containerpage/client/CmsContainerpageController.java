@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageController.java,v $
- * Date   : $Date: 2010/07/21 11:02:34 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2010/07/26 06:30:01 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -83,7 +83,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 8.0.0
  */
@@ -801,7 +801,7 @@ public final class CmsContainerpageController {
             @Override
             public void onResponse(List<CmsContextMenuEntryBean> menuBeans) {
 
-                m_handler.insertContextMenu(menuBeans);
+                m_handler.insertContextMenu(menuBeans, uri);
             }
         };
         menuAction.execute();

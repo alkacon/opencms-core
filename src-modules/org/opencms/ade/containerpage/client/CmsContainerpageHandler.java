@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageHandler.java,v $
- * Date   : $Date: 2010/07/21 11:02:34 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2010/07/26 06:30:01 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,6 +44,7 @@ import org.opencms.ade.publish.client.CmsPublishDialog;
 import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.gwt.client.ui.CmsConfirmDialog;
 import org.opencms.gwt.client.ui.CmsContextMenuEntry;
+import org.opencms.gwt.client.ui.CmsIFrameDialog;
 import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.CmsSimpleListItem;
 import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
@@ -75,7 +76,6 @@ import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -85,7 +85,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 8.0.0
  */
@@ -272,10 +272,11 @@ public class CmsContainerpageHandler {
      * Inserts the context menu.<p>
      *  
      * @param menuBeans the menu beans from the server
+     * @param uri the called uri
      */
-    public void insertContextMenu(List<CmsContextMenuEntryBean> menuBeans) {
+    public void insertContextMenu(List<CmsContextMenuEntryBean> menuBeans, String uri) {
 
-        List<I_CmsContextMenuEntry> menuEntries = transformEntries(menuBeans);
+        List<I_CmsContextMenuEntry> menuEntries = transformEntries(menuBeans, uri);
         m_editor.getContext().showMenu(menuEntries);
     }
 
@@ -544,24 +545,27 @@ public class CmsContainerpageHandler {
      * 
      * @return a list of context menu entries 
      */
-    private List<I_CmsContextMenuEntry> transformEntries(List<CmsContextMenuEntryBean> menuBeans) {
-
-        Command cmd = new Command() {
-
-            public void execute() {
-
-                Window.alert("Menu item has been selected");
-            }
-        };
+    private List<I_CmsContextMenuEntry> transformEntries(List<CmsContextMenuEntryBean> menuBeans, final String uri) {
 
         List<I_CmsContextMenuEntry> menuEntries = new ArrayList<I_CmsContextMenuEntry>();
         for (CmsContextMenuEntryBean bean : menuBeans) {
-            CmsContextMenuEntry entry = new CmsContextMenuEntry();
+            final CmsContextMenuEntry entry = new CmsContextMenuEntry();
+
             entry.setBean(bean);
-            entry.setCommand(cmd);
+
             if (bean.hasSubMenu()) {
-                entry.setSubMenu(transformEntries(bean.getSubMenu()));
+                entry.setSubMenu(transformEntries(bean.getSubMenu(), uri));
             }
+
+            Command cmd = new Command() {
+
+                public void execute() {
+
+                    CmsIFrameDialog.init(CmsContainerpageHandler.this);
+                    CmsIFrameDialog.get().openDialog(entry.getJspPath(), uri, m_controller.getData().getBacklinkUri());
+                }
+            };
+            entry.setCommand(cmd);
             menuEntries.add(entry);
         }
         return menuEntries;
