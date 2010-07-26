@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2010/07/23 11:38:26 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/07/26 06:27:59 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,12 +52,14 @@ import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.rpc.CmsRpcPrefetcher;
 import org.opencms.gwt.client.ui.CmsNotification;
+import org.opencms.gwt.client.util.CmsCollectionUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.sitemap.CmsSitemapManager;
 import org.opencms.xml.sitemap.I_CmsSitemapChange;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -75,7 +77,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 8.0.0
  */
@@ -346,28 +348,10 @@ public class CmsSitemapController {
         // check changes
         boolean changedTitle = ((title != null) && !title.trim().equals(entry.getTitle()));
         boolean changedVfsRef = ((vfsReference != null) && !vfsReference.trim().equals(entry.getVfsPath()));
-        boolean changedProperties = false;
-        if (properties != null) {
-            for (Map.Entry<String, String> prop : properties.entrySet()) {
-                String newValue = prop.getValue();
-                String value = entry.getProperties().get(prop.getKey());
-                if (newValue == null) {
-                    if (value != null) {
-                        changedProperties = true;
-                        break;
-                    }
-                } else {
-                    if (value == null) {
-                        // check default value
-                        value = m_data.getProperties().get(prop.getKey()).getDefault();
-                    }
-                    if (!newValue.equals(value)) {
-                        changedProperties = true;
-                        break;
-                    }
-                }
-            }
-        }
+        Map<String, String> oldProps = new HashMap<String, String>(entry.getProperties());
+        Map<String, String> newProps = new HashMap<String, String>(entry.getProperties());
+        CmsCollectionUtil.updateMapAndRemoveNulls(properties, newProps);
+        boolean changedProperties = !oldProps.equals(newProps);
         if (!changedTitle && !changedVfsRef && !changedProperties) {
             // nothing to do
             return;
@@ -382,8 +366,7 @@ public class CmsSitemapController {
             newEntry.setVfsPath(vfsReference);
         }
         if (changedProperties) {
-            // to preserve the hidden properties (navigation, sitemap...), we only copy the new property values
-            newEntry.getProperties().putAll(properties);
+            newEntry.setProperties(newProps);
         }
 
         // apply changes
