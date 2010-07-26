@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/ui/Attic/CmsImageFormatsTab.java,v $
- * Date   : $Date: 2010/07/19 07:45:28 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/07/26 06:40:50 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,7 @@ import org.opencms.ade.galleries.client.preview.I_CmsPreviewHandler;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.shared.CmsImageInfoBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
+import org.opencms.gwt.client.CmsCoreProvider;
 
 import java.util.Map;
 
@@ -45,7 +46,7 @@ import java.util.Map;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.
  */
@@ -84,13 +85,16 @@ public class CmsImageFormatsTab extends A_CmsPreviewDetailTab {
      */
     public void fillContent(CmsImageInfoBean imageInfo) {
 
+        CmsCroppingDialog croppingDialog = new CmsCroppingDialog(
+            CmsCoreProvider.get().link(imageInfo.getResourcePath()));
+        m_handler.getDialog().m_parentPanel.add(croppingDialog);
         CmsImageFormatHandler formatHandler = new CmsImageFormatHandler(
             getDialogMode(),
             imageInfo.getSelectedPath(),
             imageInfo.getHeight(),
             imageInfo.getWidth());
         CmsImageFormatsForm formatsForm = new CmsImageFormatsForm(formatHandler);
-        formatHandler.init(formatsForm);
+        formatHandler.init(formatsForm, croppingDialog);
         m_handler.setFormatHandler(formatHandler);
         m_content.clear();
         m_content.add(formatsForm);

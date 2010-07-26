@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/ui/Attic/CmsImagePreviewDialog.java,v $
- * Date   : $Date: 2010/07/19 07:45:28 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/07/26 06:40:50 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.ade.galleries.client.preview.ui;
 
 import org.opencms.ade.galleries.client.preview.CmsImagePreviewHandler;
+import org.opencms.ade.galleries.client.preview.I_CmsPreviewHandler;
 import org.opencms.ade.galleries.client.ui.Messages;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.shared.CmsImageInfoBean;
@@ -46,14 +47,20 @@ import com.google.gwt.user.client.ui.Image;
  *  
  * @author Polina Smagina
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.
  */
 public class CmsImagePreviewDialog extends A_CmsPreviewDialog<CmsImageInfoBean> {
 
-    /** The properties tab. */
-    private CmsPropertiesTab m_propertiesTab;
+    /** The default min height of the image. */
+    public static final int IMAGE_HEIGHT_MAX = 361;
+
+    /** The default min width of the image. */
+    public static final int IMAGE_WIDTH_MAX = 640;
+
+    /** The preview handler. */
+    private CmsImagePreviewHandler m_handler;
 
     /** The format tab. */
     private CmsImageFormatsTab m_imageFormatTab;
@@ -64,11 +71,10 @@ public class CmsImagePreviewDialog extends A_CmsPreviewDialog<CmsImageInfoBean> 
     /** The initial fill flag. */
     private boolean m_initialFill = true;
 
-    /** The default min height of the image. */
-    private static final int HEIGHT_MIN = 361;
+    private Image m_previewImage;
 
-    /** The default min width of the image. */
-    private static final int WIDTH_MIN = 640;
+    /** The properties tab. */
+    private CmsPropertiesTab m_propertiesTab;
 
     /**
      * The constructor.<p>
@@ -90,7 +96,6 @@ public class CmsImagePreviewDialog extends A_CmsPreviewDialog<CmsImageInfoBean> 
     @Override
     public void fillContent(CmsImageInfoBean infoBean) {
 
-        fillPreviewPanel(infoBean);
         // properties tab
         m_propertiesTab.fillProperties(infoBean.getProperties());
         if (m_initialFill) {
@@ -99,6 +104,7 @@ public class CmsImagePreviewDialog extends A_CmsPreviewDialog<CmsImageInfoBean> 
         }
         //TODO: fill other tabs
 
+        fillPreviewPanel(infoBean);
     }
 
     /**
@@ -110,17 +116,16 @@ public class CmsImagePreviewDialog extends A_CmsPreviewDialog<CmsImageInfoBean> 
 
         FlowPanel panel = new FlowPanel();
         panel.addStyleName(I_CmsLayoutBundle.INSTANCE.previewDialogCss().imagePanel());
-        Image image = new Image();
+        m_previewImage = new Image();
 
         // TODO: set the image scale parameters
         StringBuffer urlScaled = new StringBuffer(128);
-        urlScaled.append(CmsCoreProvider.get().link(infoBean.getResourcePath())).append("?__scale=h:").append(
-            HEIGHT_MIN);
-        urlScaled.append(",w:").append(WIDTH_MIN);
-        image.setUrl(urlScaled.toString());
-        panel.add(image);
+        urlScaled.append(CmsCoreProvider.get().link(infoBean.getResourcePath())).append("?").append(
+            m_handler.getPreviewScaleParam());
+        m_previewImage.setUrl(urlScaled.toString());
+        panel.add(m_previewImage);
 
-        m_previewPanel.add(panel);
+        m_previewPanel.setWidget(panel);
 
     }
 
@@ -149,5 +154,24 @@ public class CmsImagePreviewDialog extends A_CmsPreviewDialog<CmsImageInfoBean> 
 
         m_imageInfosTab = new CmsImageInfosTab(m_galleryMode, m_dialogHeight, m_dialogWidth, null);
         m_tabbedPanel.add(m_imageInfosTab, Messages.get().key(Messages.GUI_PREVIEW_TAB_IMAGEFORMAT_0));
+    }
+
+    /**
+     * Resets the image displayed in the preview.<p>
+     * 
+     * @param path the image path including scale parameter
+     */
+    public void resetPreviewImage(String path) {
+
+        m_previewImage.setUrl(path);
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.preview.ui.A_CmsPreviewDialog#getHandler()
+     */
+    @Override
+    protected I_CmsPreviewHandler<CmsImageInfoBean> getHandler() {
+
+        return m_handler;
     }
 }

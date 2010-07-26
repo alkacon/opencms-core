@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/Attic/CmsCroppingParamBean.java,v $
- * Date   : $Date: 2010/07/19 07:45:28 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/07/26 06:40:50 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,11 +38,14 @@ import org.opencms.util.CmsStringUtil;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
 public class CmsCroppingParamBean {
+
+    /** The scale parameter colon. */
+    private static final String SCALE_PARAM_COLON = ":";
 
     /** Scale parameter name. */
     private static final String SCALE_PARAM_CROP_HEIGHT = "ch";
@@ -61,9 +64,6 @@ public class CmsCroppingParamBean {
 
     /** The scale parameter equal. */
     private static final String SCALE_PARAM_EQ = "=";
-
-    /** The scale parameter colon. */
-    private static final String SCALE_PARAM_COLON = ":";
 
     /** Scale parameter name. */
     private static final String SCALE_PARAM_NAME = "__scale";
@@ -93,6 +93,29 @@ public class CmsCroppingParamBean {
     private int m_targetWidth = -1;
 
     /**
+     * Constructor.<p>
+     */
+    public CmsCroppingParamBean() {
+
+        // nothing to do here
+    }
+
+    /**
+     * Copy constructor.<p>
+     * 
+     * @param copy the copy values to use
+     */
+    public CmsCroppingParamBean(CmsCroppingParamBean copy) {
+
+        m_cropHeight = copy.getCropHeight();
+        m_cropWidth = copy.getCropWidth();
+        m_cropX = copy.getCropX();
+        m_cropY = copy.getCropY();
+        m_targetHeight = copy.getTargetHeight();
+        m_targetWidth = copy.getTargetWidth();
+    }
+
+    /**
      * Parses an image scale parameter and returns the parsed data.<p>
      * 
      * @param selectedPath the image path including the scale parameter
@@ -101,13 +124,15 @@ public class CmsCroppingParamBean {
      */
     public static CmsCroppingParamBean parseImagePath(String selectedPath) {
 
-        if (selectedPath.contains(SCALE_PARAM_NAME + SCALE_PARAM_EQ)) {
+        int pos = selectedPath.indexOf(SCALE_PARAM_NAME + SCALE_PARAM_EQ);
+        if (pos > -1) {
             // removing string part before the scaling parameter
-            String param = selectedPath.substring(SCALE_PARAM_NAME.length() + SCALE_PARAM_EQ.length());
+            String param = selectedPath.substring(pos + SCALE_PARAM_NAME.length() + SCALE_PARAM_EQ.length());
 
             // removing string part after the scaling parameter
-            if (param.contains("&")) {
-                param = param.substring(0, param.indexOf("&"));
+            pos = param.indexOf("&");
+            if (pos > -1) {
+                param = param.substring(0, pos);
             }
             return parseScaleParam(param);
         }
@@ -167,7 +192,7 @@ public class CmsCroppingParamBean {
      * @return the value
      */
     private static native int parseValue(String paramName, String param)/*-{
-        param=param.substr(paramName.length+2);
+        param=param.substr(paramName.length+1);
         var result=parseInt(param);
         if (isNaN(result)){
         return -1;
@@ -216,6 +241,54 @@ public class CmsCroppingParamBean {
     }
 
     /**
+     * Returns a cropping bean with a restricted maximum target size.<p>
+     * 
+     * @param maxHeight the max height
+     * @param maxWidth the max width
+     * 
+     * @return the cropping bean
+     */
+    public CmsCroppingParamBean getRestrictedSizeParam(int maxHeight, int maxWidth) {
+
+        CmsCroppingParamBean result = new CmsCroppingParamBean(this);
+        if ((getTargetHeight() <= maxHeight) && (getTargetWidth() <= maxWidth)) {
+            return result;
+        }
+
+        if (1.00 * getTargetHeight() / getTargetWidth() > 1.00 * maxHeight / maxWidth) {
+            result.setTargetHeight(maxHeight);
+            double width = 1.00 * getTargetWidth() * maxHeight / getTargetHeight();
+            result.setTargetWidth((int)Math.floor(width));
+            return result;
+        }
+        double height = 1.00 * getTargetHeight() * maxWidth / getTargetWidth();
+        result.setTargetHeight((int)Math.floor(height));
+        result.setTargetWidth(maxWidth);
+        return result;
+    }
+
+    /**
+     * Returns the scale parameter to this bean for a restricted maximum target size.<p>
+     * 
+     * @param maxHeight the max height
+     * @param maxWidth the max width
+     * 
+     * @return the scale parameter
+     */
+    public String getRestrictedSizeScaleParam(int maxHeight, int maxWidth) {
+
+        String result = toString();
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(result)) {
+            return getRestrictedSizeParam(maxHeight, maxWidth).toString();
+        }
+
+        CmsCroppingParamBean restricted = new CmsCroppingParamBean();
+        restricted.setTargetHeight(maxHeight);
+        restricted.setTargetWidth(maxWidth);
+        return restricted.toString();
+    }
+
+    /**
      * Returns the target height.<p>
      *
      * @return the target height
@@ -243,6 +316,19 @@ public class CmsCroppingParamBean {
     public boolean isCropped() {
 
         return m_cropX > -1;
+    }
+
+    /**
+     * Resets the cropping parameters to no cropping.<p>
+     */
+    public void reset() {
+
+        m_cropHeight = -1;
+        m_cropWidth = -1;
+        m_cropX = -1;
+        m_cropY = -1;
+        m_targetHeight = -1;
+        m_targetWidth = -1;
     }
 
     /**

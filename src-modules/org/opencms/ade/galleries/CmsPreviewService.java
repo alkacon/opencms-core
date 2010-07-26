@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/Attic/CmsPreviewService.java,v $
- * Date   : $Date: 2010/07/07 09:12:30 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/07/26 06:40:50 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import java.util.Map.Entry;
  * @author Polina Smagina
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
  */
@@ -127,7 +127,12 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
         CmsObject cms = getCmsObject();
         CmsImageInfoBean resInfo = new CmsImageInfoBean();
         try {
-            CmsSitemapEntry sitemapEntry = OpenCms.getSitemapManager().getEntryForUri(cms, resourcePath);
+            int pos = resourcePath.indexOf("?");
+            String resName = resourcePath;
+            if (pos > -1) {
+                resName = resourcePath.substring(0, pos);
+            }
+            CmsSitemapEntry sitemapEntry = OpenCms.getSitemapManager().getEntryForUri(cms, resName);
             CmsResource resource = cms.readResource(sitemapEntry.getStructureId());
             readResourceInfo(cms, resource, resInfo);
             CmsImageScaler scaler = new CmsImageScaler(cms, resource);
@@ -157,7 +162,12 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
         CmsObject cms = getCmsObject();
         CmsResourceInfoBean resInfo = new CmsResourceInfoBean();
         try {
-            CmsSitemapEntry sitemapEntry = OpenCms.getSitemapManager().getEntryForUri(cms, resourcePath);
+            int pos = resourcePath.indexOf("?");
+            String resName = resourcePath;
+            if (pos > -1) {
+                resName = resourcePath.substring(0, pos);
+            }
+            CmsSitemapEntry sitemapEntry = OpenCms.getSitemapManager().getEntryForUri(cms, resName);
             CmsResource resource = cms.readResource(sitemapEntry.getStructureId());
             readResourceInfo(cms, resource, resInfo);
         } catch (CmsException e) {
@@ -206,8 +216,12 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
 
         CmsResource resource;
         CmsObject cms = getCmsObject();
-
-        CmsSitemapEntry sitemapEntry = OpenCms.getSitemapManager().getEntryForUri(cms, resourcePath);
+        int pos = resourcePath.indexOf("?");
+        String resName = resourcePath;
+        if (pos > -1) {
+            resName = resourcePath.substring(0, pos);
+        }
+        CmsSitemapEntry sitemapEntry = OpenCms.getSitemapManager().getEntryForUri(cms, resName);
         resource = cms.readResource(sitemapEntry.getStructureId());
 
         if (properties != null) {
@@ -245,12 +259,12 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
                     CmsLock lock = getCmsObject().getLock(resource);
                     if (lock.isUnlocked()) {
                         // lock resource before operation
-                        cms.lockResource(resourcePath);
+                        cms.lockResource(resName);
                     }
                     // write the property to the resource
-                    cms.writePropertyObject(resourcePath, currentProperty);
+                    cms.writePropertyObject(resName, currentProperty);
                     // unlock the resource
-                    cms.unlockResource(resourcePath);
+                    cms.unlockResource(resName);
                 } catch (CmsException e) {
                     // writing the property failed, log error
                     log(e.getLocalizedMessage());

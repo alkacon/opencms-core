@@ -15,7 +15,7 @@
 	height: 486px;
 }
 
-.menuTabContainer .gwt-TabLayoutPanel{
+.menuTabContainer > div >.gwt-TabLayoutPanel{
 	border: none;
 }
 

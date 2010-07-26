@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsImageBundle.java,v $
- * Date   : $Date: 2010/07/14 12:42:17 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/07/26 06:40:50 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import com.google.gwt.resources.client.ImageResource.RepeatStyle;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.0
  */
@@ -108,6 +108,12 @@ public interface I_CmsImageBundle extends ClientBundle {
          * @return the CSS class name
          */
         String editorIconInactive();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String lockedIcon();
 
         /** Access method.<p>
          * 
@@ -215,6 +221,12 @@ public interface I_CmsImageBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
+        String resetIcon();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
         String toolbarAdd();
 
         /** Access method.<p>
@@ -282,6 +294,12 @@ public interface I_CmsImageBundle extends ClientBundle {
          * @return the CSS class name
          */
         String toolbarSitemap();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String unlockedIcon();
 
     }
 
@@ -360,6 +378,14 @@ public interface I_CmsImageBundle extends ClientBundle {
      */
     @Source("images/loading.gif")
     ImageResource loading();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/locked.gif")
+    ImageResource locked();
 
     /**
      * Access method.<p>
@@ -495,6 +521,14 @@ public interface I_CmsImageBundle extends ClientBundle {
      * 
      * @return the image resource
      */
+    @Source("images/reset.gif")
+    ImageResource reset();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
     @Source("images/ocms_de_selection_a.png")
     ImageResource selectionIconActive();
 
@@ -533,24 +567,6 @@ public interface I_CmsImageBundle extends ClientBundle {
     /** 
      * Access method.<p>
      * @return an image resource
-     * 
-     * TODO: change the image
-     */
-    @Source("images/toolbaricons/ade_add_sw.png")
-    ImageResource toolbarContextSW();
-
-    /** 
-     * Access method.<p>
-     * @return an image resource
-     * 
-     * TODO: change the image
-     */
-    @Source("images/toolbaricons/ade_add.png")
-    ImageResource toolbarContext();
-
-    /** 
-     * Access method.<p>
-     * @return an image resource
      */
     @Source("images/toolbaricons/ade_add_sw.png")
     ImageResource toolbarAddSW();
@@ -568,6 +584,24 @@ public interface I_CmsImageBundle extends ClientBundle {
      */
     @Source("images/toolbaricons/ade_favorites_sw.png")
     ImageResource toolbarClipboardSW();
+
+    /** 
+     * Access method.<p>
+     * @return an image resource
+     * 
+     * TODO: change the image
+     */
+    @Source("images/toolbaricons/ade_add.png")
+    ImageResource toolbarContext();
+
+    /** 
+     * Access method.<p>
+     * @return an image resource
+     * 
+     * TODO: change the image
+     */
+    @Source("images/toolbaricons/ade_add_sw.png")
+    ImageResource toolbarContextSW();
 
     /** 
      * Access method.<p>
@@ -736,5 +770,13 @@ public interface I_CmsImageBundle extends ClientBundle {
      */
     @Source("images/toolbaricons/ade_sitemap_sw.png")
     ImageResource toolbarSitemapSW();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/unlocked.gif")
+    ImageResource unlocked();
 
 }

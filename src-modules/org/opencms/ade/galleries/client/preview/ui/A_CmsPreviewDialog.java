@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/ui/Attic/A_CmsPreviewDialog.java,v $
- * Date   : $Date: 2010/07/19 07:45:28 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/07/26 06:40:50 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -67,7 +67,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Polina Smagina
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.
  */
@@ -95,9 +95,6 @@ public abstract class A_CmsPreviewDialog<T extends CmsResourceInfoBean> extends 
 
     /** The dialog mode of the gallery. */
     protected GalleryMode m_galleryMode;
-
-    /** The preview handler. */
-    protected I_CmsPreviewHandler<T> m_handler;
 
     /** The parent panel of the preview dialog. */
     @UiField
@@ -138,11 +135,11 @@ public abstract class A_CmsPreviewDialog<T extends CmsResourceInfoBean> extends 
         m_galleryMode = dialogMode;
 
         m_dialogHeight = dialogHeight;
-        m_dialogWidth = dialogWidth - 2;
+        m_dialogWidth = dialogWidth;
 
         // height of the preview dialog
-        m_parentPanel.getElement().getStyle().setHeight(m_dialogHeight, Unit.PX);
-        m_parentPanel.getElement().getStyle().setWidth((m_dialogWidth), Unit.PX);
+        //        getElement().getStyle().setHeight(m_dialogHeight, Unit.PX);
+        //        getElement().getStyle().setWidth((m_dialogWidth), Unit.PX);
 
         int previewHeight = m_minPreviewHeight;
         int detailsHeight = m_dialogHeight - previewHeight;
@@ -240,6 +237,13 @@ public abstract class A_CmsPreviewDialog<T extends CmsResourceInfoBean> extends 
     }
 
     /**
+     * Returns the preview handler.<p>
+     * 
+     * @return the preview handler
+     */
+    protected abstract I_CmsPreviewHandler<T> getHandler();
+
+    /**
      * Will be triggered, when the close button of the preview dialog is clicked.<p>
      * 
      * The preview dialog is set invisible and removed from parent.
@@ -249,6 +253,6 @@ public abstract class A_CmsPreviewDialog<T extends CmsResourceInfoBean> extends 
     @UiHandler("m_closeButton")
     protected void onCloseClick(ClickEvent event) {
 
-        m_handler.closePreview();
+        getHandler().closePreview();
     }
 }

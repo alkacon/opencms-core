@@ -370,6 +370,23 @@
 	cursor: pointer;
 }
 
+@sprite .lockedIcon{
+	gwt-image: "locked";
+	cursor: pointer;
+	width: 12px;
+}
+
+@sprite .unlockedIcon{
+	gwt-image: "unlocked";
+	cursor: pointer;
+	width: 12px;
+}
+
+@sprite .resetIcon{
+	gwt-image: "reset";
+	cursor: pointer;
+}
+
 @sprite .croppingIcon{
 	gwt-image: "croppingIcon";
 	display: inline-block;

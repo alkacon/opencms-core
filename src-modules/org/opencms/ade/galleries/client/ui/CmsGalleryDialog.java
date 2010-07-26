@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsGalleryDialog.java,v $
- * Date   : $Date: 2010/07/09 07:04:03 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2010/07/26 06:40:50 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,6 @@ import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTab
 import org.opencms.gwt.client.draganddrop.I_CmsDragHandler;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
 import org.opencms.gwt.client.ui.CmsTabbedPanel.CmsTabLayout;
-import org.opencms.gwt.client.util.CmsDebugLog;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -70,7 +69,7 @@ import com.google.gwt.user.client.ui.HTMLPanel;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  * 
  * @since 8.0.
  */
@@ -136,8 +135,8 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
         m_parentPanel.setStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().parentPanel());
         m_dialogElementId = HTMLPanel.createUniqueId();
         m_parentPanel.getElement().setId(m_dialogElementId);
-        // set the default hight of the dialog
-        m_parentPanel.getElement().getStyle().setHeight((DIALOG_HEIGHT - 2), Unit.PX);
+        // set the default height of the dialog
+        m_parentPanel.getElement().getStyle().setHeight((DIALOG_HEIGHT), Unit.PX);
         // tabs
         m_tabbedPanel = new CmsTabbedPanel<A_CmsTab>(CmsTabLayout.standard, false);
         // add tabs to parent widget        
@@ -206,8 +205,6 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
      * @param controller the reference to the gallery controller
      */
     public void fillTabs(GalleryTabId[] tabIds, CmsGalleryController controller) {
-
-        CmsDebugLog.getInstance().printLine("fillTabs");
 
         for (int i = 0; i < tabIds.length; i++) {
             switch (tabIds[i]) {

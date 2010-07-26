@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsDebugLog.java,v $
- * Date   : $Date: 2010/04/16 13:54:15 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/07/26 06:40:50 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -84,7 +84,7 @@ public final class CmsDebugLog extends Composite {
         style.setTop(50, Unit.PX);
         style.setRight(50, Unit.PX);
         style.setBackgroundColor("#ffffff");
-
+        style.setZIndex(10);
     }
 
     /**

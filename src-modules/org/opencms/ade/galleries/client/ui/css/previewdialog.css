@@ -3,11 +3,14 @@
 	position:absolute;
 	top:0px;
 	left:0px;
-	min-height:483px;
-	min-width:648px;	
+	right: 0px;
+	bottom: 0px;
+/*	min-height:483px;
+	min-width:648px;
+	border:1px solid value("constantsCss.borderColor");  */	
 	display: block;
 	background-color: value("constantsCss.backgroundColorList");
-	border:1px solid value("constantsCss.borderColor");
+	
 }
 
 .previewCloseButton{
@@ -57,7 +60,7 @@
 	padding-top:2px;	
 }
 
-.propertiesList.clearFix:after {
+.clearFix:after {
     content: ".";
     display: block;
     height: 0;
@@ -100,6 +103,21 @@
 /** Line with size infos. */
 .formatsLineSize {
 	margin:0 0 3px;
+}
+
+.formatsLineSize .formatButton{
+	padding-bottom:1px;
+	line-height: 12px;
+}
+
+.formatsLineSize .formatButton div{
+	line-height: 12px;
+	height: 12px;
+	vertical-align: baseline;
+}
+
+.formatsLineSize .formatButton div span{
+	vertical-align: baseline;
 }
 
 .formatButton{

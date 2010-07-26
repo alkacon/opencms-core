@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/ui/Attic/CmsBinaryPreviewDialog.java,v $
- * Date   : $Date: 2010/07/08 06:49:42 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/07/26 06:40:50 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.ade.galleries.client.preview.ui;
 
 import org.opencms.ade.galleries.client.preview.CmsBinaryPreviewHandler;
+import org.opencms.ade.galleries.client.preview.I_CmsPreviewHandler;
 import org.opencms.ade.galleries.shared.CmsResourceInfoBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 
@@ -41,11 +42,14 @@ import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMod
  * @author Polina Smagina
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.
  */
 public class CmsBinaryPreviewDialog extends A_CmsPreviewDialog<CmsResourceInfoBean> {
+
+    /** The preview handler. */
+    private CmsBinaryPreviewHandler m_handler;
 
     /** The properties tab. */
     private CmsPropertiesTab m_propertiesTab;
@@ -112,5 +116,14 @@ public class CmsBinaryPreviewDialog extends A_CmsPreviewDialog<CmsResourceInfoBe
         m_handler = handler;
         m_propertiesTab = new CmsPropertiesTab(m_galleryMode, m_dialogHeight, m_dialogWidth, m_handler);
         m_tabbedPanel.add(m_propertiesTab, m_propertiesTab.getTabName());
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.preview.ui.A_CmsPreviewDialog#getHandler()
+     */
+    @Override
+    protected I_CmsPreviewHandler<CmsResourceInfoBean> getHandler() {
+
+        return m_handler;
     }
 }

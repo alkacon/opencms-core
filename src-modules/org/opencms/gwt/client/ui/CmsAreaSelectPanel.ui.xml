@@ -1,0 +1,46 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:style field="m_style" type="org.opencms.gwt.client.ui.CmsAreaSelectPanel.I_CmsSelectStyle">
+		.main{
+			position: relative;
+			overflow: hidden;
+		}
+		.main .overlay, .main .marker, .main .markerBorder{
+			display: none;
+		}
+		.main.showSelect .overlay, .main.showSelect .marker, .main.showSelect .markerBorder{
+			display: block;
+		}
+		.markerBlackBorder, .markerWhiteBorder{
+			position: absolute;
+			right: 0px;
+			top: 0px;
+			bottom: 0px;
+			left: 0px;
+		}
+		.markerBlackBorder{
+			position: absolute;
+			border: 1px solid #000000;
+		}
+		.markerWhiteBorder{
+			border: 1px dashed #FFFFFF;
+		}
+		.marker{
+			position:absolute;
+		}
+		.overlay{
+			position: absolute;
+			background: #000000;
+			opacity: 0.4;
+		}
+	</ui:style>
+	<g:HTMLPanel styleName="{m_style.main}">
+				<g:FlowPanel ui:field="m_panel" />
+				<div ui:field="m_overlayTop" class="{m_style.overlay}" style="top: 0px; left: 0px;" />
+				<div ui:field="m_overlayRight" class="{m_style.overlay}" style="right: 0px; top: 0px; bottom: 0px;" />
+				<div ui:field="m_overlayBottom" class="{m_style.overlay}" style="bottom: 0px; left: 0px;" />
+				<div ui:field="m_overlayLeft" class="{m_style.overlay}" style="top: 0px; left: 0px; bottom: 0px;" />
+				<div ui:field="m_marker" class="{m_style.marker}"><div class="{m_style.markerBlackBorder}" /><div class="{m_style.markerWhiteBorder}" /></div>
+	</g:HTMLPanel>
+</ui:UiBinder> 

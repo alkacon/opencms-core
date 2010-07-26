@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsAdeImageGalleryWidget.java,v $
- * Date   : $Date: 2010/07/19 07:45:28 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/07/26 06:40:50 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import org.opencms.main.OpenCms;
  *
  * @author Tobias Herrmann 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0 
  */
@@ -127,15 +127,16 @@ public class CmsAdeImageGalleryWidget extends A_CmsAdeGalleryWidget {
     }
 
     /**
-     * @see org.opencms.widgets.A_CmsAdeGalleryWidget#getOpenPreviewCall(java.lang.String)
+     * @see org.opencms.widgets.A_CmsAdeGalleryWidget#getOpenPreviewCall(org.opencms.widgets.I_CmsWidgetDialog, java.lang.String)
      */
     @Override
-    protected String getOpenPreviewCall(String id) {
+    protected String getOpenPreviewCall(I_CmsWidgetDialog widgetDialog, String id) {
 
         // using the 'cmsOptenImagePreview' function instead of 'cmsOpenPreview'
         StringBuffer sb = new StringBuffer(64);
         // using the 'cmsOptenImagePreview' function instead of 'cmsOpenPreview'
-        sb.append("javascript:cmsOpenImagePreview('").append(Messages.GUI_BUTTON_PREVIEW_0);
+        sb.append("javascript:cmsOpenImagePreview('").append(
+            widgetDialog.getMessages().key(Messages.GUI_BUTTON_PREVIEW_0));
         sb.append("', '").append(OpenCms.getSystemInfo().getOpenCmsContext());
         sb.append("', '").append(id);
         sb.append("'); return false;");

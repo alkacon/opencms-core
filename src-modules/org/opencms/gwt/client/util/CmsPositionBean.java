@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsPositionBean.java,v $
- * Date   : $Date: 2010/05/04 06:58:13 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/07/26 06:40:50 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,11 +43,42 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
 public class CmsPositionBean {
+
+    /** Position area. */
+    public static enum Area {
+
+        /** Top border. */
+        BORDER_TOP,
+
+        /** Bottom border. */
+        BORDER_BOTTOM,
+
+        /** Left border. */
+        BORDER_LEFT,
+
+        /** Right border. */
+        BORDER_RIGHT,
+
+        /** Top left corner. */
+        CORNER_TOP_LEFT,
+
+        /** Top right corner. */
+        CORNER_TOP_RIGHT,
+
+        /** Bottom left corner. */
+        CORNER_BOTTOM_LEFT,
+
+        /** Bottom right corner. */
+        CORNER_BOTTOM_RIGHT,
+
+        /** The center. */
+        CENTER
+    }
 
     /** Element height. */
     private int m_height;
@@ -67,6 +98,19 @@ public class CmsPositionBean {
     public CmsPositionBean() {
 
         // default constructor
+    }
+
+    /**
+     * Copy constructor. Generating a copy of the given model.<p>
+     * 
+     * @param model the model to copy
+     */
+    public CmsPositionBean(CmsPositionBean model) {
+
+        m_height = model.getHeight();
+        m_left = model.getLeft();
+        m_top = model.getTop();
+        m_width = model.getWidth();
     }
 
     /**
@@ -255,6 +299,54 @@ public class CmsPositionBean {
     public String toString() {
 
         return "top: " + m_top + "   left: " + m_left + "   height: " + m_height + "   width: " + m_width;
+    }
+
+    /**
+     * Returns over which area of this the given position is. Will return <code>null</code> if the provided position is not within this position.<p>
+     *  
+     * @param absLeft the left position
+     * @param absTop the right position
+     * @param offset the border offset
+     * 
+     * @return the area
+     */
+    public Area getArea(int absLeft, int absTop, int offset) {
+
+        if (isOverElement(absLeft, absTop)) {
+            if (absLeft < m_left + 10) {
+                // left border
+                if (absTop < m_top + offset) {
+                    // top left corner
+                    return Area.CORNER_TOP_LEFT;
+                } else if (absTop > m_top + m_height - offset) {
+                    // bottom left corner
+                    return Area.CORNER_BOTTOM_LEFT;
+                }
+                return Area.BORDER_LEFT;
+            }
+            if (absLeft > m_left + m_width - offset) {
+                // right border
+                if (absTop < m_top + offset) {
+                    // top right corner
+                    return Area.CORNER_TOP_RIGHT;
+                    // fixing opposite corner
+                } else if (absTop > m_top + m_height - offset) {
+                    // bottom right corner
+                    return Area.CORNER_BOTTOM_RIGHT;
+                    // fixing opposite corner
+                }
+                return Area.BORDER_RIGHT;
+            }
+            if (absTop < m_top + offset) {
+                // border top
+                return Area.BORDER_TOP;
+            } else if (absTop > m_top + m_height - offset) {
+                // border bottom
+                return Area.BORDER_BOTTOM;
+            }
+            return Area.CENTER;
+        }
+        return null;
     }
 
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/A_CmsAdeGalleryWidget.java,v $
- * Date   : $Date: 2010/07/19 07:45:28 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/07/26 06:40:50 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Tobias Herrmann 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0 
  */
@@ -124,11 +124,12 @@ public abstract class A_CmsAdeGalleryWidget extends A_CmsWidget {
         result.append("\">");
         result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
         result.append(widgetDialog.button(
-            getOpenPreviewCall(param.getId()),
+            getOpenPreviewCall(widgetDialog, param.getId()),
             null,
             "preview.png",
             Messages.GUI_BUTTON_PREVIEW_0,
             widgetDialog.getButtonStyle()));
+
         result.append("</tr></table>");
 
         result.append("</td></tr></table>");
@@ -223,7 +224,7 @@ public abstract class A_CmsAdeGalleryWidget extends A_CmsWidget {
         sb.append("javascript:cmsOpenDialog('");
 
         // the gallery title
-        sb.append(Messages.getButtonName(getGalleryName())).append("', '");
+        sb.append(widgetDialog.getMessages().key(Messages.getButtonName(getGalleryName()))).append("', '");
 
         // the gallery path
         sb.append(OpenCms.getSystemInfo().getOpenCmsContext()).append(PATH_GALLERY_JSP);
@@ -236,21 +237,22 @@ public abstract class A_CmsAdeGalleryWidget extends A_CmsWidget {
         sb.append("').getAttribute('value')+'");
         sb.append(paramResource).append(paramGalleryPath);
         sb.append("&fieldid=").append(param.getId()).append("&hashid=").append(hashId);
-        sb.append("', '").append(param.getId()).append("', 490, 650); return false;");
+        sb.append("', '").append(param.getId()).append("', 488, 650); return false;");
         return sb.toString();
     }
 
     /**
      * Returns the javascript call to open the preview dialog.<p>
      * 
+     * @param widgetDialog the dialog where the widget is used on
      * @param id the field id
      * 
      * @return the javascript call to open the preview dialog
      */
-    protected String getOpenPreviewCall(String id) {
+    protected String getOpenPreviewCall(I_CmsWidgetDialog widgetDialog, String id) {
 
         StringBuffer sb = new StringBuffer(64);
-        sb.append("javascript:cmsOpenPreview('").append(Messages.GUI_BUTTON_PREVIEW_0);
+        sb.append("javascript:cmsOpenPreview('").append(widgetDialog.getMessages().key(Messages.GUI_BUTTON_PREVIEW_0));
         sb.append("', '").append(OpenCms.getSystemInfo().getOpenCmsContext());
         sb.append("', '").append(id);
         sb.append("'); return false;");

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsResultsTab.java,v $
- * Date   : $Date: 2010/07/20 10:28:08 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2010/07/26 06:40:50 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,7 +72,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Polina Smagina
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  * 
  * @since 8.0.
  */
@@ -84,7 +84,7 @@ public class CmsResultsTab extends A_CmsListTab {
      * @author Georg Westenberger
      * @author Ruediger Kurz
      * 
-     * @version $Revision: 1.27 $
+     * @version $Revision: 1.28 $
      * 
      * @since 8.0.0
      */
@@ -450,7 +450,6 @@ public class CmsResultsTab extends A_CmsListTab {
     private void updateListSize() {
 
         int tabHeight = m_tab.getElement().getClientHeight();
-        CmsDebugLog.getInstance().printLine("updating size, tabHeight: " + tabHeight);
         // sanity check on tab height
         tabHeight = tabHeight > 0 ? tabHeight : 434;
 
@@ -462,7 +461,6 @@ public class CmsResultsTab extends A_CmsListTab {
 
         // 3 is some offset, because of the list border
         int newListSize = tabHeight - paramsHeight - optionsHeight - 2;
-        CmsDebugLog.getInstance().printLine(" paramsHeight: " + paramsHeight + " optionsHeight: " + optionsHeight);
         // another sanity check, don't set any negative height 
         if (newListSize > 0) {
             m_list.getElement().getStyle().setHeight(newListSize, Unit.PX);

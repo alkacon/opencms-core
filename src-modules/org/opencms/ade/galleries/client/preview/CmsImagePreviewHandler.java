@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/Attic/CmsImagePreviewHandler.java,v $
- * Date   : $Date: 2010/07/19 07:45:28 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/07/26 06:40:50 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,10 @@ package org.opencms.ade.galleries.client.preview;
 import org.opencms.ade.galleries.client.preview.ui.A_CmsPreviewDialog;
 import org.opencms.ade.galleries.client.preview.ui.CmsImagePreviewDialog;
 import org.opencms.ade.galleries.shared.CmsImageInfoBean;
+import org.opencms.gwt.client.CmsCoreProvider;
+
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 
 /**
  * Image preview dialog controller handler.<p>
@@ -42,14 +46,18 @@ import org.opencms.ade.galleries.shared.CmsImageInfoBean;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  */
-public class CmsImagePreviewHandler extends A_CmsPreviewHandler<CmsImageInfoBean> {
+public class CmsImagePreviewHandler extends A_CmsPreviewHandler<CmsImageInfoBean>
+implements ValueChangeHandler<CmsCroppingParamBean> {
 
     /** The controller. */
     private CmsImagePreviewController m_controller;
+
+    /** The cropping parameter. */
+    private CmsCroppingParamBean m_croppingParam;
 
     /** The image format handler. */
     private CmsImageFormatHandler m_formatHandler;
@@ -89,13 +97,25 @@ public class CmsImagePreviewHandler extends A_CmsPreviewHandler<CmsImageInfoBean
     }
 
     /**
+     * Returns the cropping parameter.<p>
+     * 
+     * @return the cropping parameter
+     */
+    public String getPreviewScaleParam() {
+
+        return m_croppingParam != null ? m_croppingParam.getRestrictedSizeScaleParam(
+            CmsImagePreviewDialog.IMAGE_HEIGHT_MAX,
+            CmsImagePreviewDialog.IMAGE_WIDTH_MAX) : "";
+    }
+
+    /**
      * Returns the image scaling parameter.<p>
      * 
      * @return the image scaling parameter
      */
     public String getScaleParam() {
 
-        return m_formatHandler != null ? m_formatHandler.getScaleParam() : "";
+        return m_croppingParam != null ? m_croppingParam.toString() : "";
     }
 
     /**
@@ -109,6 +129,17 @@ public class CmsImagePreviewHandler extends A_CmsPreviewHandler<CmsImageInfoBean
     }
 
     /**
+     * @see com.google.gwt.event.logical.shared.ValueChangeHandler#onValueChange(com.google.gwt.event.logical.shared.ValueChangeEvent)
+     */
+    public void onValueChange(ValueChangeEvent<CmsCroppingParamBean> event) {
+
+        m_croppingParam = event.getValue();
+        m_previewDialog.resetPreviewImage(CmsCoreProvider.get().link(m_controller.getResourcePath())
+            + "?"
+            + getPreviewScaleParam());
+    }
+
+    /**
      * Sets the image format handler.<p>
      * 
      * @param formatHandler the format handler
@@ -116,5 +147,7 @@ public class CmsImagePreviewHandler extends A_CmsPreviewHandler<CmsImageInfoBean
     public void setFormatHandler(CmsImageFormatHandler formatHandler) {
 
         m_formatHandler = formatHandler;
+        m_croppingParam = m_formatHandler.getCroppingParam();
+        m_formatHandler.addValueChangeHandler(this);
     }
 }
