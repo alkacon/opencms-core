@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/Messages.java,v $
- * Date   : $Date: 2009/10/14 11:03:13 $
- * Version: $Revision: 1.18.2.1 $
+ * Date   : $Date: 2010/07/28 12:08:14 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.18.2.1 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.0.0
  */
@@ -126,7 +126,7 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CONTENTTOOLS_ADMIN_TOOL_NAME_0 = "GUI_CONTENTTOOLS_ADMIN_TOOL_NAME_0";
 
-	/** Message constant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_CONVERTXML_ADMIN_TOOL_GROUP_0 = "GUI_CONVERTXML_ADMIN_TOOL_GROUP_0";
 
     /** Message constant for key in the resource bundle. */
@@ -249,7 +249,7 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_INPUT_TYPE_0 = "GUI_INPUT_TYPE_0";
 
-	/** Message constant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_LANGUAGECOPY_ADMIN_TOOL_BLOCK_0 = "GUI_LANGUAGECOPY_ADMIN_TOOL_BLOCK_0";
 
     /** Message constant for key in the resource bundle. */
@@ -309,7 +309,7 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PROP_CHANGE_VALIDATE_VFS_RESOURCE_0 = "GUI_PROP_CHANGE_VALIDATE_VFS_RESOURCE_0";
 
-	/** Message constant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROPERTYVIEW_ADMIN_TOOL_BLOCK_0 = "GUI_PROPERTYVIEW_ADMIN_TOOL_BLOCK_0";
 
     /** Message constant for key in the resource bundle. */
@@ -359,6 +359,18 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TITLE_PROPERTYDELETE_0 = "GUI_TITLE_PROPERTYDELETE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UPDATEXML_ADMIN_TOOL_GROUP_0 = "GUI_UPDATEXML_ADMIN_TOOL_GROUP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UPDATEXML_ADMIN_TOOL_HELP_0 = "GUI_UPDATEXML_ADMIN_TOOL_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UPDATEXML_ADMIN_TOOL_NAME_0 = "GUI_UPDATEXML_ADMIN_TOOL_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UPDATEXML_DIALOG_BLOCK_SETTINGS_0 = "GUI_UPDATEXML_DIALOG_BLOCK_SETTINGS_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_XMLCONTENTREPAIR_ADMIN_TOOL_GROUP_0 = "GUI_XMLCONTENTREPAIR_ADMIN_TOOL_GROUP_0";
