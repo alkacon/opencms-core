@@ -45,6 +45,7 @@
 			<resource uri="/system/workplace/admin/contenttools/check/result.jsp"/>
 			<resource uri="/system/workplace/admin/contenttools/propertyviewer.jsp"/>
 			<resource uri="/system/workplace/admin/contenttools/propertyviewer-list.jsp"/>
+			<resource uri="/system/workplace/admin/contenttools/updatexml.jsp"/>
 			<resource uri="/system/workplace/admin/contenttools/check/plugin/propertycheck/"/>
 			<resource uri="/system/workplace/resources/tools/contenttools/icons/small/"/>
 			<resource uri="/system/workplace/resources/tools/contenttools/icons/big/change_elementlocale.png"/>
@@ -56,6 +57,7 @@
 			<resource uri="/system/workplace/resources/tools/contenttools/icons/big/contenttools.png"/>
 			<resource uri="/system/workplace/resources/tools/contenttools/icons/big/contenttools_disabled.png"/>
 			<resource uri="/system/workplace/resources/tools/contenttools/icons/big/contenttools_xmlcontent_convert.png"/>
+			<resource uri="/system/workplace/resources/tools/contenttools/icons/big/contenttools_xmlcontent_update.png"/>
 			<resource uri="/system/workplace/resources/tools/contenttools/icons/big/elements_rename.png"/>
 			<resource uri="/system/workplace/resources/tools/contenttools/icons/big/elements_rename_disabled.png"/>
 			<resource uri="/system/workplace/resources/tools/contenttools/icons/big/properties_change.png"/>
@@ -897,6 +899,30 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/admin/contenttools/reports/updatexml.jsp</source>
+			<destination>system/workplace/admin/contenttools/reports/updatexml.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>961fa162-98b2-11df-8a19-00144f45afea</uuidstructure>
+			<uuidresource>961fa163-98b2-11df-8a19-00144f45afea</uuidresource>
+			<datelastmodified>Mon, 26 Jul 2010 12:39:46 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 26 Jul 2010 12:37:43 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Report for updating Xml contents]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/admin/contenttools/reports/xmlcontentrepair.jsp</source>
 			<destination>system/workplace/admin/contenttools/reports/xmlcontentrepair.jsp</destination>
 			<type>jsp</type>
@@ -1362,6 +1388,58 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/admin/contenttools/updatexml.jsp</source>
+			<destination>system/workplace/admin/contenttools/updatexml.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>06811ea9-98b2-11df-8a19-00144f45afea</uuidstructure>
+			<uuidresource>06811eaa-98b2-11df-8a19-00144f45afea</uuidresource>
+			<datelastmodified>Mon, 26 Jul 2010 12:37:29 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 26 Jul 2010 12:33:42 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_UPDATEXML_ADMIN_TOOL_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[tools/contenttools/icons/big/contenttools_xmlcontent_update.png]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_CONVERTXML_ADMIN_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[25]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_UPDATEXML_ADMIN_TOOL_NAME_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Update XML contents]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[path:/contenttools/updatexml]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.content.CmsElementContentToolHandler]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/admin/contenttools/xmlcontentrepair.jsp</source>
 			<destination>system/workplace/admin/contenttools/xmlcontentrepair.jsp</destination>
 			<type>jsp</type>
@@ -1595,6 +1673,26 @@
 			<datelastmodified>Mon, 05 Jan 2009 15:32:16 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 05 Jan 2009 15:32:02 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/contenttools/icons/big/contenttools_xmlcontent_update.png</source>
+			<destination>system/workplace/resources/tools/contenttools/icons/big/contenttools_xmlcontent_update.png</destination>
+			<type>image</type>
+			<uuidstructure>772f76c9-998a-11df-8911-00144f45afea</uuidstructure>
+			<uuidresource>772f76ca-998a-11df-8911-00144f45afea</uuidresource>
+			<datelastmodified>Mon, 05 Jan 2009 15:32:16 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 27 Jul 2010 14:23:02 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>

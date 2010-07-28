@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/Messages.java,v $
- * Date   : $Date: 2010/01/18 10:01:08 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2010/07/28 12:37:03 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * 
  * @since 6.0.0
  */
@@ -361,6 +361,18 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_TITLE_PROPERTYDELETE_0 = "GUI_TITLE_PROPERTYDELETE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_UPDATEXML_ADMIN_TOOL_GROUP_0 = "GUI_UPDATEXML_ADMIN_TOOL_GROUP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UPDATEXML_ADMIN_TOOL_HELP_0 = "GUI_UPDATEXML_ADMIN_TOOL_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UPDATEXML_ADMIN_TOOL_NAME_0 = "GUI_UPDATEXML_ADMIN_TOOL_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UPDATEXML_DIALOG_BLOCK_SETTINGS_0 = "GUI_UPDATEXML_DIALOG_BLOCK_SETTINGS_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_XMLCONTENTREPAIR_ADMIN_TOOL_GROUP_0 = "GUI_XMLCONTENTREPAIR_ADMIN_TOOL_GROUP_0";
 
     /** Message constant for key in the resource bundle. */
@@ -572,11 +584,11 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_TAGREPLACE_SKIP_REASON_ERR_LOCK_0 = "RPT_TAGREPLACE_SKIP_REASON_ERR_LOCK_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String RPT_TAGREPLACE_SKIP_REASON_LOCKED_0 = "RPT_TAGREPLACE_SKIP_REASON_LOCKED_0";
     /** Message constant for key in the resource bundle. */
     public static final String RPT_TAGREPLACE_SKIP_REASON_LOCKED_1 = "RPT_TAGREPLACE_SKIP_REASON_LOCKED_1";
+
     /** Message constant for key in the resource bundle. */
     public static final String RPT_TAGREPLACE_SKIP_REASON_PROPERTY_0 = "RPT_TAGREPLACE_SKIP_REASON_PROPERTY_0";
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2010/07/15 09:33:41 $
- * Version: $Revision: 1.1192 $
+ * Date   : $Date: 2010/07/28 12:37:03 $
+ * Version: $Revision: 1.1193 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -38,6 +38,7 @@ OpenCms x.x.x - Month Day, Year
 ! In workplace content tool "Change Property Values" it is possible to use a place holder in the old and the change property value
 * In workplace content tool "Change Property Values" and selected checkbox "Include all subfolders" also the folder itself is changed
 * History version functionality also works for files with expired date now
+! New workplace content tool to update Xml contents
 
 OpenCms 7.5.2 - January 20, 2010
 - Added additional MIME types

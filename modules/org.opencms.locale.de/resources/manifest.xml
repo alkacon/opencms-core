@@ -2137,6 +2137,34 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<destination>system/workplace/locales/de/messages/org/opencms/workplace/tools/content/updatexml</destination>
+			<type>folder</type>
+			<uuidstructure>8a8a8cc6-9985-11df-b3ed-00144f45afea</uuidstructure>
+			<datelastmodified>Tue, 27 Jul 2010 13:47:47 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 27 Jul 2010 13:47:47 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/de/messages/org/opencms/workplace/tools/content/updatexml/messages_de.properties</source>
+			<destination>system/workplace/locales/de/messages/org/opencms/workplace/tools/content/updatexml/messages_de.properties</destination>
+			<type>plain</type>
+			<uuidstructure>94f1aa98-9985-11df-b3ed-00144f45afea</uuidstructure>
+			<uuidresource>94f1aa99-9985-11df-b3ed-00144f45afea</uuidresource>
+			<datelastmodified>Tue, 27 Jul 2010 13:48:05 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 27 Jul 2010 13:48:05 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>system/workplace/locales/de/messages/org/opencms/workplace/tools/database</destination>
 			<type>folder</type>
 			<uuidstructure>14268a56-700c-11db-85b5-e907d95948a7</uuidstructure>
