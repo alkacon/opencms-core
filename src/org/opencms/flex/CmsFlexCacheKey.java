@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCacheKey.java,v $
- * Date   : $Date: 2010/01/18 10:01:19 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2010/07/29 14:04:13 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.34 $ 
+ * @version $Revision: 1.35 $ 
  * 
  * @since 6.0.0 
  */
@@ -427,7 +427,7 @@ public class CmsFlexCacheKey {
 
         if (m_ports != null) {
             Integer i = key.getPort();
-            if ((m_ports.size() > 0) && (!m_ports.contains(i))) {
+            if ((m_ports.size() > 0) && (!m_ports.contains(i.toString()))) {
                 return null;
             }
             str.append(CACHE_09_PORTS);
