@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2010/07/23 08:29:33 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2010/08/05 12:55:10 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -197,6 +197,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
     /** "driver.project" string in the configuration-file. */
     public static final String CONFIGURATION_PROJECT = "driver.project";
 
+    /** "subscription.vfs" string in the configuration file. */
+    public static final String CONFIGURATION_SUBSCRIPTION = "driver.subscription";
+
     /** "driver.user" string in the configuration-file. */
     public static final String CONFIGURATION_USER = "driver.user";
 
@@ -323,6 +326,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
     /** The sql manager. */
     private CmsSqlManager m_sqlManager;
 
+    /** The subscription driver. */
+    private I_CmsSubscriptionDriver m_subscriptionDriver;
+
     /** The user driver. */
     private I_CmsUserDriver m_userDriver;
 
@@ -367,14 +373,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         // read the opencms.properties from the configuration
         ExtendedProperties config = (ExtendedProperties)configurationManager.getConfiguration();
-
-        List<String> drivers = null;
-        String driverName = null;
-
-        I_CmsVfsDriver vfsDriver = null;
-        I_CmsUserDriver userDriver = null;
-        I_CmsProjectDriver projectDriver = null;
-        I_CmsHistoryDriver historyDriver = null;
 
         CmsDriverManager driverManager = null;
         try {
@@ -437,51 +435,33 @@ public final class CmsDriverManager implements I_CmsEventListener {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DRIVER_MANAGER_START_PHASE3_0));
         }
 
-        // read the vfs driver class properties and initialize a new instance 
-        drivers = Arrays.asList(config.getStringArray(CmsDriverManager.CONFIGURATION_VFS));
-        String driverKey = drivers.get(0) + ".vfs.driver";
-        driverName = config.getString(driverKey);
-        drivers = (drivers.size() > 1) ? drivers.subList(1, drivers.size()) : null;
-        if (driverName == null) {
-            CmsLog.INIT.error(Messages.get().getBundle().key(Messages.INIT_DRIVER_FAILED_1, driverKey));
-        }
-        vfsDriver = (I_CmsVfsDriver)driverManager.newDriverInstance(configurationManager, driverName, drivers);
-
-        // read the user driver class properties and initialize a new instance 
-        drivers = Arrays.asList(config.getStringArray(CmsDriverManager.CONFIGURATION_USER));
-        driverKey = drivers.get(0) + ".user.driver";
-        driverName = config.getString(driverKey);
-        drivers = (drivers.size() > 1) ? drivers.subList(1, drivers.size()) : null;
-        if (driverName == null) {
-            CmsLog.INIT.error(Messages.get().getBundle().key(Messages.INIT_DRIVER_FAILED_1, driverKey));
-        }
-        userDriver = (I_CmsUserDriver)driverManager.newDriverInstance(configurationManager, driverName, drivers);
-
-        // read the project driver class properties and initialize a new instance 
-        drivers = Arrays.asList(config.getStringArray(CmsDriverManager.CONFIGURATION_PROJECT));
-        driverKey = drivers.get(0) + ".project.driver";
-        driverName = config.getString(driverKey);
-        drivers = (drivers.size() > 1) ? drivers.subList(1, drivers.size()) : null;
-        if (driverName == null) {
-            CmsLog.INIT.error(Messages.get().getBundle().key(Messages.INIT_DRIVER_FAILED_1, driverKey));
-        }
-        projectDriver = (I_CmsProjectDriver)driverManager.newDriverInstance(configurationManager, driverName, drivers);
-
-        // read the history driver class properties and initialize a new instance 
-        drivers = Arrays.asList(config.getStringArray(CmsDriverManager.CONFIGURATION_HISTORY));
-        driverKey = drivers.get(0) + ".history.driver";
-        driverName = config.getString(driverKey);
-        drivers = (drivers.size() > 1) ? drivers.subList(1, drivers.size()) : null;
-        if (driverName == null) {
-            CmsLog.INIT.error(Messages.get().getBundle().key(Messages.INIT_DRIVER_FAILED_1, driverKey));
-        }
-        historyDriver = (I_CmsHistoryDriver)driverManager.newDriverInstance(configurationManager, driverName, drivers);
-
         // store the access objects
-        driverManager.m_vfsDriver = vfsDriver;
-        driverManager.m_userDriver = userDriver;
-        driverManager.m_projectDriver = projectDriver;
-        driverManager.m_historyDriver = historyDriver;
+        driverManager.m_vfsDriver = (I_CmsVfsDriver)driverManager.createDriver(
+            configurationManager,
+            config,
+            CONFIGURATION_VFS,
+            ".vfs.driver");
+        driverManager.m_userDriver = (I_CmsUserDriver)driverManager.createDriver(
+            configurationManager,
+            config,
+            CONFIGURATION_USER,
+            ".user.driver");
+        driverManager.m_projectDriver = (I_CmsProjectDriver)driverManager.createDriver(
+            configurationManager,
+            config,
+            CONFIGURATION_PROJECT,
+            ".project.driver");
+        driverManager.m_historyDriver = (I_CmsHistoryDriver)driverManager.createDriver(
+            configurationManager,
+            config,
+            CONFIGURATION_HISTORY,
+            ".history.driver");
+
+        driverManager.m_subscriptionDriver = (I_CmsSubscriptionDriver)driverManager.createDriver(
+            configurationManager,
+            config,
+            CONFIGURATION_SUBSCRIPTION,
+            ".subscription.driver");
 
         // store the configuration
         driverManager.m_propertyConfiguration = config;
@@ -2432,7 +2412,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public void deleteLogEntries(CmsDbContext dbc, CmsLogFilter filter) throws CmsException {
 
         updateLog(dbc);
-        m_projectDriver.deleteLog(dbc, null, filter);
+        m_projectDriver.deleteLog(dbc, filter);
     }
 
     /**
@@ -3773,13 +3753,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public long getDateLastVisitedBy(CmsDbContext dbc, String poolName, CmsUser user, CmsResource resource)
     throws CmsException {
 
-        CmsLogFilter filter = CmsLogFilter.ALL.filterResource(resource.getStructureId()).filterUser(user.getId()).includeType(
-            CmsLogEntryType.USER_RESOURCE_VISITED);
-        List<CmsLogEntry> entries = getProjectDriver(dbc).readLog(dbc, poolName, filter);
-        if (!entries.isEmpty()) {
-            return entries.get(0).getDate();
-        }
-        return 0;
+        return m_subscriptionDriver.getDateLastVisitedBy(dbc, poolName, user, resource);
     }
 
     /**
@@ -4067,7 +4041,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public List<CmsLogEntry> getLogEntries(CmsDbContext dbc, CmsLogFilter filter) throws CmsException {
 
         updateLog(dbc);
-        return m_projectDriver.readLog(dbc, null, filter);
+        return m_projectDriver.readLog(dbc, filter);
     }
 
     /**
@@ -4609,6 +4583,16 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public CmsSqlManager getSqlManager() {
 
         return m_sqlManager;
+    }
+
+    /**
+     * Returns the subscription driver of this driver manager.<p>
+     * 
+     * @return a subscription driver 
+     */
+    public I_CmsSubscriptionDriver getSubscriptionDriver() {
+
+        return m_subscriptionDriver;
     }
 
     /**
@@ -5351,7 +5335,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public void markResourceAsVisitedBy(CmsDbContext dbc, String poolName, CmsResource resource, CmsUser user)
     throws CmsException {
 
-        getUserDriver(dbc).markResourceAsVisitedBy(dbc, poolName, resource, user);
+        /* changed to subscription driver */
+        //getUserDriver(dbc).markResourceAsVisitedBy(dbc, poolName, resource, user);
+        getSubscriptionDriver().markResourceAsVisitedBy(dbc, poolName, resource, user);
     }
 
     /**
@@ -5947,7 +5933,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public List<CmsResource> readAllSubscribedResources(CmsDbContext dbc, String poolName, CmsPrincipal principal)
     throws CmsException {
 
-        List<CmsResource> result = getUserDriver(dbc).readAllSubscribedResources(dbc, poolName, principal);
+        /* changed to subscription driver */
+        //List<CmsResource> result = getUserDriver(dbc).readAllSubscribedResources(dbc, poolName, principal);
+        List<CmsResource> result = getSubscriptionDriver().readAllSubscribedResources(dbc, poolName, principal);
         result = filterPermissions(dbc, result, CmsResourceFilter.DEFAULT);
         return result;
     }
@@ -7106,7 +7094,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public List<CmsResource> readResourcesVisitedBy(CmsDbContext dbc, String poolName, CmsVisitedByFilter filter)
     throws CmsException {
 
-        List<CmsResource> result = getUserDriver(dbc).readResourcesVisitedBy(dbc, poolName, filter);
+        /* changed to subscription driver */
+        //List<CmsResource> result = getUserDriver(dbc).readResourcesVisitedBy(dbc, poolName, filter);
+        List<CmsResource> result = getSubscriptionDriver().readResourcesVisitedBy(dbc, poolName, filter);
         result = filterPermissions(dbc, result, CmsResourceFilter.DEFAULT);
         return result;
     }
@@ -7320,7 +7310,17 @@ public final class CmsDriverManager implements I_CmsEventListener {
         boolean includeSubFolders,
         long deletedFrom) throws CmsException {
 
-        List<I_CmsHistoryResource> result = getUserDriver(dbc).readSubscribedDeletedResources(
+        /* changed to subscription driver */
+        //        List<I_CmsHistoryResource> result = getUserDriver(dbc).readSubscribedDeletedResources(
+        //            dbc,
+        //            poolName,
+        //            user,
+        //            groups,
+        //            parent,
+        //            includeSubFolders,
+        //            deletedFrom);
+
+        List<I_CmsHistoryResource> result = getSubscriptionDriver().readSubscribedDeletedResources(
             dbc,
             poolName,
             user,
@@ -7328,6 +7328,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             parent,
             includeSubFolders,
             deletedFrom);
+
         return result;
     }
 
@@ -7345,7 +7346,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public List<CmsResource> readSubscribedResources(CmsDbContext dbc, String poolName, CmsSubscriptionFilter filter)
     throws CmsException {
 
-        List<CmsResource> result = getUserDriver(dbc).readSubscribedResources(dbc, poolName, filter);
+        /* changed to subscription driver */
+        //List<CmsResource> result = getUserDriver(dbc).readSubscribedResources(dbc, poolName, filter);
+        List<CmsResource> result = getSubscriptionDriver().readSubscribedResources(dbc, poolName, filter);
+
         result = filterPermissions(dbc, result, CmsResourceFilter.DEFAULT);
         return result;
     }
@@ -8181,7 +8185,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public void setSubscribedResourceAsDeleted(CmsDbContext dbc, String poolName, CmsResource resource)
     throws CmsException {
 
-        getUserDriver(dbc).setSubscribedResourceAsDeleted(dbc, poolName, resource);
+        /* changed to subscription driver */
+        //getUserDriver(dbc).setSubscribedResourceAsDeleted(dbc, poolName, resource);
+        getSubscriptionDriver().setSubscribedResourceAsDeleted(dbc, poolName, resource);
     }
 
     /**
@@ -8235,7 +8241,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public void subscribeResourceFor(CmsDbContext dbc, String poolName, CmsPrincipal principal, CmsResource resource)
     throws CmsException {
 
-        getUserDriver(dbc).subscribeResourceFor(dbc, poolName, principal, resource);
+        /* changed to subscription driver */
+        //getUserDriver(dbc).subscribeResourceFor(dbc, poolName, principal, resource);
+        getSubscriptionDriver().subscribeResourceFor(dbc, poolName, principal, resource);
     }
 
     /**
@@ -8399,7 +8407,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public void unsubscribeAllDeletedResources(CmsDbContext dbc, String poolName, long deletedTo) throws CmsException {
 
-        getUserDriver(dbc).unsubscribeAllDeletedResources(dbc, poolName, deletedTo);
+        /* changed to subscription driver */
+        //getUserDriver(dbc).unsubscribeAllDeletedResources(dbc, poolName, deletedTo);
+        getSubscriptionDriver().unsubscribeAllDeletedResources(dbc, poolName, deletedTo);
     }
 
     /**
@@ -8414,7 +8424,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public void unsubscribeAllResourcesFor(CmsDbContext dbc, String poolName, CmsPrincipal principal)
     throws CmsException {
 
-        getUserDriver(dbc).unsubscribeAllResourcesFor(dbc, poolName, principal);
+        /* changed to subscription driver */
+        //getUserDriver(dbc).unsubscribeAllResourcesFor(dbc, poolName, principal);
+        getSubscriptionDriver().unsubscribeAllResourcesFor(dbc, poolName, principal);
+
     }
 
     /**
@@ -8425,12 +8438,14 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @param principal the principal that unsubscribes from the resource
      * @param resource the resource to unsubscribe from
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsException if something goes wrong 
      */
     public void unsubscribeResourceFor(CmsDbContext dbc, String poolName, CmsPrincipal principal, CmsResource resource)
     throws CmsException {
 
-        getUserDriver(dbc).unsubscribeResourceFor(dbc, poolName, principal, resource);
+        /* changed to subscription driver */
+        //getUserDriver(dbc).unsubscribeResourceFor(dbc, poolName, principal, resource);
+        getSubscriptionDriver().unsubscribeResourceFor(dbc, poolName, principal, resource);
     }
 
     /**
@@ -8444,7 +8459,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public void unsubscribeResourceForAll(CmsDbContext dbc, String poolName, CmsResource resource) throws CmsException {
 
-        getUserDriver(dbc).unsubscribeResourceForAll(dbc, poolName, resource);
+        /* changed to subscription driver */
+        //getUserDriver(dbc).unsubscribeResourceForAll(dbc, poolName, resource);
+        getSubscriptionDriver().unsubscribeResourceForAll(dbc, poolName, resource);
     }
 
     /**
@@ -8552,7 +8569,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
         List<CmsLogEntry> log = new ArrayList<CmsLogEntry>(m_log);
         m_log.clear();
-        m_projectDriver.log(dbc, null, log);
+        m_projectDriver.log(dbc, log);
     }
 
     /**
@@ -9284,6 +9301,33 @@ public final class CmsDriverManager implements I_CmsEventListener {
         throw new CmsVfsResourceNotFoundException(Messages.get().container(
             Messages.ERR_ACCESS_FILE_AS_FOLDER_1,
             resource.getRootPath()));
+    }
+
+    /**
+     * Helper method for creating a driver from configuration data.<p>
+     * 
+     * @param configManager the configuration manager 
+     * @param config the configuration
+     * @param driverChainKey the configuration key under which the driver chain is stored  
+     * @param suffix the suffix to append to a driver chain entry to get the key for the driver class
+     *  
+     * @return the newly created driver 
+     */
+    protected Object createDriver(
+        CmsConfigurationManager configManager,
+        ExtendedProperties config,
+        String driverChainKey,
+        String suffix) {
+
+        // read the vfs driver class properties and initialize a new instance 
+        List<String> drivers = Arrays.asList(config.getStringArray(driverChainKey));
+        String driverKey = drivers.get(0) + suffix;
+        String driverName = config.getString(driverKey);
+        drivers = (drivers.size() > 1) ? drivers.subList(1, drivers.size()) : null;
+        if (driverName == null) {
+            CmsLog.INIT.error(Messages.get().getBundle().key(Messages.INIT_DRIVER_FAILED_1, driverKey));
+        }
+        return newDriverInstance(configManager, driverName, drivers);
     }
 
     /**

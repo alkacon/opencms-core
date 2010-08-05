@@ -1,12 +1,12 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/CmsUserDriver.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/db2/CmsSubscriptionDriver.java,v $
  * Date   : $Date: 2010/08/05 12:55:10 $
- * Version: $Revision: 1.4 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) 2002 - 2009 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (C) 2002 - 2009 Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -18,7 +18,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH, please see the
+ * For further information about Alkacon Software, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -29,29 +29,27 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.db.mysql;
+package org.opencms.db.db2;
 
 import org.opencms.db.generic.CmsSqlManager;
 
 /**
- * MySQL implementation of the user driver methods.<p>
+ * DB2 implementation of the subscription driver.<p>
  * 
- * @author Thomas Weckert 
- * @author Carsten Weinholz 
- * @author Michael Emmerich 
+ * @author Georg Westenberger
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.1 $
  * 
- * @since 6.0.0 
+ *  @since 8.0.0
  */
-public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
+public class CmsSubscriptionDriver extends org.opencms.db.generic.CmsSubscriptionDriver {
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#initSqlManager(String)
+     * @see org.opencms.db.generic.CmsSubscriptionDriver#initSqlManager(java.lang.String)
      */
+    @Override
     public org.opencms.db.generic.CmsSqlManager initSqlManager(String classname) {
 
         return CmsSqlManager.getInstance(classname);
     }
-
 }

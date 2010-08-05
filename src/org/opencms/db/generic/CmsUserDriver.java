@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2010/07/23 08:29:34 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/08/05 12:55:10 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,21 +32,16 @@
 package org.opencms.db.generic;
 
 import org.opencms.configuration.CmsConfigurationManager;
-import org.opencms.db.CmsDbConsistencyException;
 import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDbEntryAlreadyExistsException;
 import org.opencms.db.CmsDbEntryNotFoundException;
 import org.opencms.db.CmsDbIoException;
 import org.opencms.db.CmsDbSqlException;
 import org.opencms.db.CmsDriverManager;
-import org.opencms.db.CmsSubscriptionFilter;
-import org.opencms.db.CmsSubscriptionReadMode;
 import org.opencms.db.CmsUserSettings;
-import org.opencms.db.CmsVisitedByFilter;
 import org.opencms.db.I_CmsDriver;
 import org.opencms.db.I_CmsProjectDriver;
 import org.opencms.db.I_CmsUserDriver;
-import org.opencms.db.log.CmsLogEntry;
 import org.opencms.db.log.CmsLogEntryType;
 import org.opencms.db.log.CmsLogFilter;
 import org.opencms.file.CmsDataAccessException;
@@ -59,7 +54,6 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsResourceNotFoundException;
-import org.opencms.file.history.I_CmsHistoryResource;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
@@ -77,11 +71,9 @@ import org.opencms.relations.CmsRelationType;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsPasswordEncryptionException;
-import org.opencms.security.CmsPrincipal;
 import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsDataTypeUtil;
-import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -96,12 +88,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.logging.Log;
@@ -114,7 +104,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 6.0.0 
  */
@@ -659,10 +649,16 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             // delete visited resource information from log
             CmsLogFilter filter = CmsLogFilter.ALL.includeType(CmsLogEntryType.USER_RESOURCE_VISITED).filterUser(
                 user.getId());
-            m_driverManager.getProjectDriver(dbc).deleteLog(dbc, OpenCms.getSubscriptionManager().getPoolName(), filter);
+            m_driverManager.getSubscriptionDriver().deleteLog(
+                dbc,
+                OpenCms.getSubscriptionManager().getPoolName(),
+                filter);
 
             // delete all subscribed resources for user
-            unsubscribeAllResourcesFor(dbc, OpenCms.getSubscriptionManager().getPoolName(), user);
+            m_driverManager.getSubscriptionDriver().unsubscribeAllResourcesFor(
+                dbc,
+                OpenCms.getSubscriptionManager().getPoolName(),
+                user);
         }
     }
 
@@ -1032,94 +1028,96 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         return CmsSqlManager.getInstance(classname);
     }
 
-    /**
-     * @see org.opencms.db.I_CmsUserDriver#markResourceAsVisitedBy(org.opencms.db.CmsDbContext, java.lang.String, org.opencms.file.CmsResource, org.opencms.file.CmsUser)
-     */
-    public void markResourceAsVisitedBy(CmsDbContext dbc, String poolName, CmsResource resource, CmsUser user)
-    throws CmsDataAccessException {
-
-        boolean entryExists = false;
-        CmsLogFilter filter = CmsLogFilter.ALL.includeType(CmsLogEntryType.USER_RESOURCE_VISITED).filterResource(
-            resource.getStructureId()).filterUser(user.getId());
-        // delete existing visited entry for the resource
-        if (m_driverManager.getProjectDriver(dbc).readLog(dbc, OpenCms.getSubscriptionManager().getPoolName(), filter).size() > 0) {
-            entryExists = true;
-            m_driverManager.getProjectDriver(dbc).deleteLog(dbc, OpenCms.getSubscriptionManager().getPoolName(), filter);
-        }
-
-        // create new entry
-        List<CmsLogEntry> newEntries = new ArrayList<CmsLogEntry>(1);
-        CmsLogEntry entry = new CmsLogEntry(
-            user.getId(),
-            System.currentTimeMillis(),
-            resource.getStructureId(),
-            CmsLogEntryType.USER_RESOURCE_VISITED,
-            new String[] {user.getName(), resource.getRootPath()});
-        newEntries.add(entry);
-        m_driverManager.getProjectDriver(dbc).log(dbc, poolName, newEntries);
-
-        if (!entryExists) {
-            // new entry, check if maximum number of stored visited resources is exceeded
-            PreparedStatement stmt = null;
-            Connection conn = null;
-            ResultSet res = null;
-            int count = 0;
-
-            try {
-                conn = m_sqlManager.getConnection(poolName);
-                stmt = m_sqlManager.getPreparedStatement(conn, dbc.currentProject(), "C_VISITED_USER_COUNT_2");
-
-                stmt.setString(1, user.getId().toString());
-                stmt.setInt(2, CmsLogEntryType.USER_RESOURCE_VISITED.getId());
-                res = stmt.executeQuery();
-
-                if (res.next()) {
-                    count = res.getInt(1);
-                    while (res.next()) {
-                        // do nothing only move through all rows because of mssql odbc driver
-                    }
-                } else {
-                    throw new CmsDbConsistencyException(Messages.get().container(
-                        Messages.ERR_COUNTING_VISITED_RESOURCES_1,
-                        user.getName()));
-                }
-
-                int maxCount = OpenCms.getSubscriptionManager().getMaxVisitedCount();
-                if (count > maxCount) {
-                    // delete old visited log entries
-                    m_sqlManager.closeAll(dbc, null, stmt, res);
-                    stmt = m_sqlManager.getPreparedStatement(
-                        conn,
-                        dbc.currentProject(),
-                        "C_VISITED_USER_DELETE_GETDATE_3");
-
-                    stmt.setString(1, user.getId().toString());
-                    stmt.setInt(2, CmsLogEntryType.USER_RESOURCE_VISITED.getId());
-                    stmt.setInt(3, count - maxCount);
-                    res = stmt.executeQuery();
-                    long deleteDate = 0;
-                    while (res.next()) {
-                        // get last date of result set
-                        deleteDate = res.getLong(1);
-                    }
-                    if (deleteDate > 0) {
-                        filter = CmsLogFilter.ALL.includeType(CmsLogEntryType.USER_RESOURCE_VISITED).filterUser(
-                            user.getId()).filterTo(deleteDate);
-                        m_driverManager.getProjectDriver(dbc).deleteLog(
-                            dbc,
-                            OpenCms.getSubscriptionManager().getPoolName(),
-                            filter);
-                    }
-                }
-            } catch (SQLException e) {
-                throw new CmsDbSqlException(Messages.get().container(
-                    Messages.ERR_GENERIC_SQL_1,
-                    CmsDbSqlException.getErrorQuery(stmt)), e);
-            } finally {
-                m_sqlManager.closeAll(dbc, conn, stmt, res);
-            }
-        }
-    }
+    //    /**
+    //     * @see org.opencms.db.I_CmsUserDriver#markResourceAsVisitedBy(org.opencms.db.CmsDbContext, java.lang.String, org.opencms.file.CmsResource, org.opencms.file.CmsUser)
+    //     * @deprecated
+    //     * @see org.opencms.db.generic.CmsSubscriptionDriver
+    //     */
+    //    public void markResourceAsVisitedBy(CmsDbContext dbc, String poolName, CmsResource resource, CmsUser user)
+    //    throws CmsDataAccessException {
+    //
+    //        boolean entryExists = false;
+    //        CmsLogFilter filter = CmsLogFilter.ALL.includeType(CmsLogEntryType.USER_RESOURCE_VISITED).filterResource(
+    //            resource.getStructureId()).filterUser(user.getId());
+    //        // delete existing visited entry for the resource
+    //        if (m_driverManager.getProjectDriver(dbc).readLog(dbc, OpenCms.getSubscriptionManager().getPoolName(), filter).size() > 0) {
+    //            entryExists = true;
+    //            m_driverManager.getProjectDriver(dbc).deleteLog(dbc, OpenCms.getSubscriptionManager().getPoolName(), filter);
+    //        }
+    //
+    //        // create new entry
+    //        List<CmsLogEntry> newEntries = new ArrayList<CmsLogEntry>(1);
+    //        CmsLogEntry entry = new CmsLogEntry(
+    //            user.getId(),
+    //            System.currentTimeMillis(),
+    //            resource.getStructureId(),
+    //            CmsLogEntryType.USER_RESOURCE_VISITED,
+    //            new String[] {user.getName(), resource.getRootPath()});
+    //        newEntries.add(entry);
+    //        m_driverManager.getProjectDriver(dbc).log(dbc, poolName, newEntries);
+    //
+    //        if (!entryExists) {
+    //            // new entry, check if maximum number of stored visited resources is exceeded
+    //            PreparedStatement stmt = null;
+    //            Connection conn = null;
+    //            ResultSet res = null;
+    //            int count = 0;
+    //
+    //            try {
+    //                conn = m_sqlManager.getConnection(poolName);
+    //                stmt = m_sqlManager.getPreparedStatement(conn, dbc.currentProject(), "C_VISITED_USER_COUNT_2");
+    //
+    //                stmt.setString(1, user.getId().toString());
+    //                stmt.setInt(2, CmsLogEntryType.USER_RESOURCE_VISITED.getId());
+    //                res = stmt.executeQuery();
+    //
+    //                if (res.next()) {
+    //                    count = res.getInt(1);
+    //                    while (res.next()) {
+    //                        // do nothing only move through all rows because of mssql odbc driver
+    //                    }
+    //                } else {
+    //                    throw new CmsDbConsistencyException(Messages.get().container(
+    //                        Messages.ERR_COUNTING_VISITED_RESOURCES_1,
+    //                        user.getName()));
+    //                }
+    //
+    //                int maxCount = OpenCms.getSubscriptionManager().getMaxVisitedCount();
+    //                if (count > maxCount) {
+    //                    // delete old visited log entries
+    //                    m_sqlManager.closeAll(dbc, null, stmt, res);
+    //                    stmt = m_sqlManager.getPreparedStatement(
+    //                        conn,
+    //                        dbc.currentProject(),
+    //                        "C_VISITED_USER_DELETE_GETDATE_3");
+    //
+    //                    stmt.setString(1, user.getId().toString());
+    //                    stmt.setInt(2, CmsLogEntryType.USER_RESOURCE_VISITED.getId());
+    //                    stmt.setInt(3, count - maxCount);
+    //                    res = stmt.executeQuery();
+    //                    long deleteDate = 0;
+    //                    while (res.next()) {
+    //                        // get last date of result set
+    //                        deleteDate = res.getLong(1);
+    //                    }
+    //                    if (deleteDate > 0) {
+    //                        filter = CmsLogFilter.ALL.includeType(CmsLogEntryType.USER_RESOURCE_VISITED).filterUser(
+    //                            user.getId()).filterTo(deleteDate);
+    //                        m_driverManager.getProjectDriver(dbc).deleteLog(
+    //                            dbc,
+    //                            OpenCms.getSubscriptionManager().getPoolName(),
+    //                            filter);
+    //                    }
+    //                }
+    //            } catch (SQLException e) {
+    //                throw new CmsDbSqlException(Messages.get().container(
+    //                    Messages.ERR_GENERIC_SQL_1,
+    //                    CmsDbSqlException.getErrorQuery(stmt)), e);
+    //            } finally {
+    //                m_sqlManager.closeAll(dbc, conn, stmt, res);
+    //            }
+    //        }
+    //    }
 
     /**
      * @see org.opencms.db.I_CmsUserDriver#publishAccessControlEntries(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, org.opencms.file.CmsProject, org.opencms.util.CmsUUID, org.opencms.util.CmsUUID)
@@ -1243,41 +1241,43 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         }
     }
 
-    /**
-     * @see org.opencms.db.I_CmsUserDriver#readAllSubscribedResources(org.opencms.db.CmsDbContext, java.lang.String, org.opencms.security.CmsPrincipal)
-     */
-    public List<CmsResource> readAllSubscribedResources(CmsDbContext dbc, String poolName, CmsPrincipal principal)
-    throws CmsDataAccessException {
-
-        PreparedStatement stmt = null;
-        Connection conn = null;
-        ResultSet res = null;
-        CmsResource currentResource = null;
-        List<CmsResource> resources = new ArrayList<CmsResource>();
-
-        try {
-            conn = m_sqlManager.getConnection(poolName);
-            stmt = m_sqlManager.getPreparedStatement(conn, dbc.currentProject(), "C_SUBSCRIPTION_READ_ALL_1");
-
-            stmt.setString(1, principal.getId().toString());
-            res = stmt.executeQuery();
-
-            while (res.next()) {
-                currentResource = m_driverManager.getVfsDriver(dbc).createFile(
-                    res,
-                    dbc.currentProject().getUuid(),
-                    false);
-                resources.add(currentResource);
-            }
-        } catch (SQLException e) {
-            throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1,
-                CmsDbSqlException.getErrorQuery(stmt)), e);
-        } finally {
-            m_sqlManager.closeAll(dbc, conn, stmt, res);
-        }
-        return resources;
-    }
+    //    /**
+    //     * @see org.opencms.db.I_CmsUserDriver#readAllSubscribedResources(org.opencms.db.CmsDbContext, java.lang.String, org.opencms.security.CmsPrincipal)
+    //     * @deprecated
+    //     * @see org.opencms.db.generic.CmsSubscriptionDriver
+    //     */
+    //    public List<CmsResource> readAllSubscribedResources(CmsDbContext dbc, String poolName, CmsPrincipal principal)
+    //    throws CmsDataAccessException {
+    //
+    //        PreparedStatement stmt = null;
+    //        Connection conn = null;
+    //        ResultSet res = null;
+    //        CmsResource currentResource = null;
+    //        List<CmsResource> resources = new ArrayList<CmsResource>();
+    //
+    //        try {
+    //            conn = m_sqlManager.getConnection(poolName);
+    //            stmt = m_sqlManager.getPreparedStatement(conn, dbc.currentProject(), "C_SUBSCRIPTION_READ_ALL_1");
+    //
+    //            stmt.setString(1, principal.getId().toString());
+    //            res = stmt.executeQuery();
+    //
+    //            while (res.next()) {
+    //                currentResource = m_driverManager.getVfsDriver(dbc).createFile(
+    //                    res,
+    //                    dbc.currentProject().getUuid(),
+    //                    false);
+    //                resources.add(currentResource);
+    //            }
+    //        } catch (SQLException e) {
+    //            throw new CmsDbSqlException(Messages.get().container(
+    //                Messages.ERR_GENERIC_SQL_1,
+    //                CmsDbSqlException.getErrorQuery(stmt)), e);
+    //        } finally {
+    //            m_sqlManager.closeAll(dbc, conn, stmt, res);
+    //        }
+    //        return resources;
+    //    }
 
     /**
      * @see org.opencms.db.I_CmsUserDriver#readChildGroups(org.opencms.db.CmsDbContext, java.lang.String)
@@ -1468,328 +1468,334 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         }
     }
 
-    /**
-     * @see org.opencms.db.I_CmsUserDriver#readResourcesVisitedBy(org.opencms.db.CmsDbContext, java.lang.String, org.opencms.db.CmsVisitedByFilter)
-     */
-    public List<CmsResource> readResourcesVisitedBy(CmsDbContext dbc, String poolName, CmsVisitedByFilter filter)
-    throws CmsDataAccessException {
+    //    /**
+    //     * @see org.opencms.db.I_CmsUserDriver#readResourcesVisitedBy(org.opencms.db.CmsDbContext, java.lang.String, org.opencms.db.CmsVisitedByFilter)
+    //     * @deprecated
+    //     * @see org.opencms.db.generic.CmsSubscriptionDriver
+    //     */
+    //    public List<CmsResource> readResourcesVisitedBy(CmsDbContext dbc, String poolName, CmsVisitedByFilter filter)
+    //    throws CmsDataAccessException {
+    //
+    //        PreparedStatement stmt = null;
+    //        Connection conn = null;
+    //        ResultSet res = null;
+    //        CmsResource currentResource = null;
+    //        StringBuffer conditions = new StringBuffer(256);
+    //        List<String> params = new ArrayList<String>(1);
+    //        List<CmsResource> resources = new ArrayList<CmsResource>();
+    //
+    //        try {
+    //            conn = m_sqlManager.getConnection(poolName);
+    //
+    //            // path filter
+    //            if (CmsStringUtil.isNotEmpty(filter.getParentPath())) {
+    //                CmsResource parent = m_driverManager.getVfsDriver(dbc).readResource(
+    //                    dbc,
+    //                    dbc.currentProject().getUuid(),
+    //                    filter.getParentPath(),
+    //                    false);
+    //                conditions.append(BEGIN_INCLUDE_CONDITION);
+    //                if (filter.isIncludeSubFolders()) {
+    //                    conditions.append(m_sqlManager.readQuery(dbc.currentProject(), "C_RESOURCES_SELECT_BY_PATH_PREFIX"));
+    //                    params.add(CmsFileUtil.addTrailingSeparator(CmsVfsDriver.escapeDbWildcard(filter.getParentPath()))
+    //                        + "%");
+    //                } else {
+    //                    conditions.append(m_sqlManager.readQuery(dbc.currentProject(), "C_RESOURCES_SELECT_BY_PARENT_UUID"));
+    //                    params.add(parent.getStructureId().toString());
+    //                }
+    //                conditions.append(END_CONDITION);
+    //            }
+    //
+    //            String query = m_sqlManager.readQuery(dbc.currentProject(), "C_VISITED_USER_READ_4");
+    //            query = CmsStringUtil.substitute(query, "%(CONDITIONS)", conditions.toString());
+    //            stmt = m_sqlManager.getPreparedStatementForSql(conn, query);
+    //
+    //            stmt.setString(1, filter.getUser().getId().toString());
+    //            stmt.setInt(2, CmsLogEntryType.USER_RESOURCE_VISITED.getId());
+    //            stmt.setLong(3, filter.getFromDate());
+    //            stmt.setLong(4, filter.getToDate());
+    //            for (int i = 0; i < params.size(); i++) {
+    //                stmt.setString(i + 5, params.get(i));
+    //            }
+    //
+    //            res = stmt.executeQuery();
+    //
+    //            while (res.next()) {
+    //                currentResource = m_driverManager.getVfsDriver(dbc).createFile(
+    //                    res,
+    //                    dbc.currentProject().getUuid(),
+    //                    false);
+    //                resources.add(currentResource);
+    //            }
+    //        } catch (SQLException e) {
+    //            throw new CmsDbSqlException(Messages.get().container(
+    //                Messages.ERR_GENERIC_SQL_1,
+    //                CmsDbSqlException.getErrorQuery(stmt)), e);
+    //        } finally {
+    //            m_sqlManager.closeAll(dbc, conn, stmt, res);
+    //        }
+    //        return resources;
+    //    }
 
-        PreparedStatement stmt = null;
-        Connection conn = null;
-        ResultSet res = null;
-        CmsResource currentResource = null;
-        StringBuffer conditions = new StringBuffer(256);
-        List<String> params = new ArrayList<String>(1);
-        List<CmsResource> resources = new ArrayList<CmsResource>();
+    //    /**
+    //     * @see org.opencms.db.I_CmsUserDriver#readSubscribedDeletedResources(org.opencms.db.CmsDbContext, java.lang.String, org.opencms.file.CmsUser, java.util.List, org.opencms.file.CmsResource, boolean, long)
+    //     * @deprecated
+    //     * @see org.opencms.db.generic.CmsSubscriptionDriver
+    //     */
+    //    public List<I_CmsHistoryResource> readSubscribedDeletedResources(
+    //        CmsDbContext dbc,
+    //        String poolName,
+    //        CmsUser user,
+    //        List<CmsGroup> groups,
+    //        CmsResource parent,
+    //        boolean includeSubFolders,
+    //        long deletedFrom) throws CmsDataAccessException {
+    //
+    //        PreparedStatement stmt = null;
+    //        Connection conn = null;
+    //        ResultSet res = null;
+    //        List<I_CmsHistoryResource> resources = new ArrayList<I_CmsHistoryResource>();
+    //        Set<CmsUUID> historyIDs = new HashSet<CmsUUID>();
+    //
+    //        List<String> principalIds = new ArrayList<String>();
+    //        // add user ID
+    //        principalIds.add(user.getId().toString());
+    //        // add group IDs
+    //        if ((groups != null) && !groups.isEmpty()) {
+    //            Iterator<CmsGroup> it = groups.iterator();
+    //            while (it.hasNext()) {
+    //                principalIds.add(it.next().getId().toString());
+    //            }
+    //        }
+    //
+    //        StringBuffer conditions = new StringBuffer(256);
+    //        List<String> params = new ArrayList<String>();
+    //        conditions.append(m_sqlManager.readQuery("C_SUBSCRIPTION_DELETED"));
+    //
+    //        if (principalIds.size() == 1) {
+    //            // single principal filter
+    //            conditions.append(BEGIN_INCLUDE_CONDITION);
+    //            conditions.append(m_sqlManager.readQuery("C_SUBSCRIPTION_DELETED_FILTER_PRINCIPAL_SINGLE"));
+    //            params.add(principalIds.get(0));
+    //            conditions.append(END_CONDITION);
+    //        } else {
+    //            // multiple principals filter
+    //            conditions.append(BEGIN_INCLUDE_CONDITION);
+    //            conditions.append(m_sqlManager.readQuery("C_SUBSCRIPTION_DELETED_FILTER_PRINCIPALS"));
+    //            conditions.append(BEGIN_CONDITION);
+    //            Iterator<String> it = principalIds.iterator();
+    //            while (it.hasNext()) {
+    //                params.add(it.next());
+    //                conditions.append("?");
+    //                if (it.hasNext()) {
+    //                    conditions.append(", ");
+    //                }
+    //            }
+    //            conditions.append(END_CONDITION);
+    //            conditions.append(END_CONDITION);
+    //        }
+    //
+    //        try {
+    //            conn = m_sqlManager.getConnection(poolName);
+    //            stmt = m_sqlManager.getPreparedStatementForSql(conn, conditions.toString());
+    //
+    //            // set parameters
+    //            stmt.setLong(1, deletedFrom);
+    //            for (int i = 0; i < params.size(); i++) {
+    //                stmt.setString(i + 2, params.get(i));
+    //            }
+    //            res = stmt.executeQuery();
+    //            while (res.next()) {
+    //                historyIDs.add(new CmsUUID(res.getString(1)));
+    //            }
+    //        } catch (SQLException e) {
+    //            throw new CmsDbSqlException(Messages.get().container(
+    //                Messages.ERR_GENERIC_SQL_1,
+    //                CmsDbSqlException.getErrorQuery(stmt)), e);
+    //        } finally {
+    //            m_sqlManager.closeAll(dbc, conn, stmt, res);
+    //        }
+    //
+    //        // get the matching history resources from the found structure IDs
+    //        String parentFolderPath = "";
+    //        if (parent != null) {
+    //            parentFolderPath = CmsResource.getFolderPath(parent.getRootPath());
+    //        }
+    //        for (Iterator<CmsUUID> i = historyIDs.iterator(); i.hasNext();) {
+    //            CmsUUID id = i.next();
+    //            int version = m_driverManager.getHistoryDriver(dbc).readLastVersion(dbc, id);
+    //            if (version > 0) {
+    //                I_CmsHistoryResource histRes = m_driverManager.getHistoryDriver(dbc).readResource(dbc, id, version);
+    //                if (parent != null) {
+    //                    if (!includeSubFolders
+    //                        && !parentFolderPath.equals(CmsResource.getFolderPath(histRes.getRootPath()))) {
+    //                        // deleted history resource is not in the specified parent folder, skip it
+    //                        continue;
+    //                    } else if (includeSubFolders && !histRes.getRootPath().startsWith(parentFolderPath)) {
+    //                        // deleted history resource is not in the specified parent folder or sub folder, skip it
+    //                        continue;
+    //                    }
+    //                }
+    //                resources.add(histRes);
+    //            }
+    //        }
+    //
+    //        return resources;
+    //    }
 
-        try {
-            conn = m_sqlManager.getConnection(poolName);
-
-            // path filter
-            if (CmsStringUtil.isNotEmpty(filter.getParentPath())) {
-                CmsResource parent = m_driverManager.getVfsDriver(dbc).readResource(
-                    dbc,
-                    dbc.currentProject().getUuid(),
-                    filter.getParentPath(),
-                    false);
-                conditions.append(BEGIN_INCLUDE_CONDITION);
-                if (filter.isIncludeSubFolders()) {
-                    conditions.append(m_sqlManager.readQuery(dbc.currentProject(), "C_RESOURCES_SELECT_BY_PATH_PREFIX"));
-                    params.add(CmsFileUtil.addTrailingSeparator(CmsVfsDriver.escapeDbWildcard(filter.getParentPath()))
-                        + "%");
-                } else {
-                    conditions.append(m_sqlManager.readQuery(dbc.currentProject(), "C_RESOURCES_SELECT_BY_PARENT_UUID"));
-                    params.add(parent.getStructureId().toString());
-                }
-                conditions.append(END_CONDITION);
-            }
-
-            String query = m_sqlManager.readQuery(dbc.currentProject(), "C_VISITED_USER_READ_4");
-            query = CmsStringUtil.substitute(query, "%(CONDITIONS)", conditions.toString());
-            stmt = m_sqlManager.getPreparedStatementForSql(conn, query);
-
-            stmt.setString(1, filter.getUser().getId().toString());
-            stmt.setInt(2, CmsLogEntryType.USER_RESOURCE_VISITED.getId());
-            stmt.setLong(3, filter.getFromDate());
-            stmt.setLong(4, filter.getToDate());
-            for (int i = 0; i < params.size(); i++) {
-                stmt.setString(i + 5, params.get(i));
-            }
-
-            res = stmt.executeQuery();
-
-            while (res.next()) {
-                currentResource = m_driverManager.getVfsDriver(dbc).createFile(
-                    res,
-                    dbc.currentProject().getUuid(),
-                    false);
-                resources.add(currentResource);
-            }
-        } catch (SQLException e) {
-            throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1,
-                CmsDbSqlException.getErrorQuery(stmt)), e);
-        } finally {
-            m_sqlManager.closeAll(dbc, conn, stmt, res);
-        }
-        return resources;
-    }
-
-    /**
-     * @see org.opencms.db.I_CmsUserDriver#readSubscribedDeletedResources(org.opencms.db.CmsDbContext, java.lang.String, org.opencms.file.CmsUser, java.util.List, org.opencms.file.CmsResource, boolean, long)
-     */
-    public List<I_CmsHistoryResource> readSubscribedDeletedResources(
-        CmsDbContext dbc,
-        String poolName,
-        CmsUser user,
-        List<CmsGroup> groups,
-        CmsResource parent,
-        boolean includeSubFolders,
-        long deletedFrom) throws CmsDataAccessException {
-
-        PreparedStatement stmt = null;
-        Connection conn = null;
-        ResultSet res = null;
-        List<I_CmsHistoryResource> resources = new ArrayList<I_CmsHistoryResource>();
-        Set<CmsUUID> historyIDs = new HashSet<CmsUUID>();
-
-        List<String> principalIds = new ArrayList<String>();
-        // add user ID
-        principalIds.add(user.getId().toString());
-        // add group IDs
-        if ((groups != null) && !groups.isEmpty()) {
-            Iterator<CmsGroup> it = groups.iterator();
-            while (it.hasNext()) {
-                principalIds.add(it.next().getId().toString());
-            }
-        }
-
-        StringBuffer conditions = new StringBuffer(256);
-        List<String> params = new ArrayList<String>();
-        conditions.append(m_sqlManager.readQuery("C_SUBSCRIPTION_DELETED"));
-
-        if (principalIds.size() == 1) {
-            // single principal filter
-            conditions.append(BEGIN_INCLUDE_CONDITION);
-            conditions.append(m_sqlManager.readQuery("C_SUBSCRIPTION_DELETED_FILTER_PRINCIPAL_SINGLE"));
-            params.add(principalIds.get(0));
-            conditions.append(END_CONDITION);
-        } else {
-            // multiple principals filter
-            conditions.append(BEGIN_INCLUDE_CONDITION);
-            conditions.append(m_sqlManager.readQuery("C_SUBSCRIPTION_DELETED_FILTER_PRINCIPALS"));
-            conditions.append(BEGIN_CONDITION);
-            Iterator<String> it = principalIds.iterator();
-            while (it.hasNext()) {
-                params.add(it.next());
-                conditions.append("?");
-                if (it.hasNext()) {
-                    conditions.append(", ");
-                }
-            }
-            conditions.append(END_CONDITION);
-            conditions.append(END_CONDITION);
-        }
-
-        try {
-            conn = m_sqlManager.getConnection(poolName);
-            stmt = m_sqlManager.getPreparedStatementForSql(conn, conditions.toString());
-
-            // set parameters
-            stmt.setLong(1, deletedFrom);
-            for (int i = 0; i < params.size(); i++) {
-                stmt.setString(i + 2, params.get(i));
-            }
-            res = stmt.executeQuery();
-            while (res.next()) {
-                historyIDs.add(new CmsUUID(res.getString(1)));
-            }
-        } catch (SQLException e) {
-            throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1,
-                CmsDbSqlException.getErrorQuery(stmt)), e);
-        } finally {
-            m_sqlManager.closeAll(dbc, conn, stmt, res);
-        }
-
-        // get the matching history resources from the found structure IDs
-        String parentFolderPath = "";
-        if (parent != null) {
-            parentFolderPath = CmsResource.getFolderPath(parent.getRootPath());
-        }
-        for (Iterator<CmsUUID> i = historyIDs.iterator(); i.hasNext();) {
-            CmsUUID id = i.next();
-            int version = m_driverManager.getHistoryDriver(dbc).readLastVersion(dbc, id);
-            if (version > 0) {
-                I_CmsHistoryResource histRes = m_driverManager.getHistoryDriver(dbc).readResource(dbc, id, version);
-                if (parent != null) {
-                    if (!includeSubFolders
-                        && !parentFolderPath.equals(CmsResource.getFolderPath(histRes.getRootPath()))) {
-                        // deleted history resource is not in the specified parent folder, skip it
-                        continue;
-                    } else if (includeSubFolders && !histRes.getRootPath().startsWith(parentFolderPath)) {
-                        // deleted history resource is not in the specified parent folder or sub folder, skip it
-                        continue;
-                    }
-                }
-                resources.add(histRes);
-            }
-        }
-
-        return resources;
-    }
-
-    /**
-     * @see org.opencms.db.I_CmsUserDriver#readSubscribedResources(org.opencms.db.CmsDbContext, java.lang.String, org.opencms.db.CmsSubscriptionFilter)
-     */
-    public List<CmsResource> readSubscribedResources(CmsDbContext dbc, String poolName, CmsSubscriptionFilter filter)
-    throws CmsDataAccessException {
-
-        PreparedStatement stmt = null;
-        Connection conn = null;
-        ResultSet res = null;
-        CmsResource currentResource = null;
-        List<CmsResource> resources = new ArrayList<CmsResource>();
-
-        String queryBuf = m_sqlManager.readQuery(dbc.currentProject(), "C_SUBSCRIPTION_FILTER_READ");
-
-        StringBuffer conditions = new StringBuffer(256);
-        List<String> params = new ArrayList<String>();
-
-        boolean userDefined = filter.getUser() != null;
-        boolean groupsDefined = !filter.getGroups().isEmpty();
-        if (!groupsDefined && !userDefined) {
-            filter.setUser(dbc.currentUser());
-            userDefined = true;
-        }
-        // check if a user has been set for the "visited" and "unvisited" mode
-        if (!filter.getMode().isAll() && (filter.getUser() == null)) {
-            // change the mode, without user the other modes are not applicable
-            filter.setMode(CmsSubscriptionReadMode.ALL);
-        }
-
-        List<String> principalIds = new ArrayList<String>();
-        // add user ID
-        if (userDefined) {
-            principalIds.add(filter.getUser().getId().toString());
-        }
-        // add group IDs
-        if (groupsDefined) {
-            Iterator<CmsGroup> it = filter.getGroups().iterator();
-            while (it.hasNext()) {
-                principalIds.add(it.next().getId().toString());
-            }
-        }
-
-        if (principalIds.size() == 1) {
-            // single principal filter
-            conditions.append(BEGIN_CONDITION);
-            conditions.append(m_sqlManager.readQuery(dbc.currentProject(), "C_SUBSCRIPTION_FILTER_PRINCIPAL_SINGLE"));
-            params.add(principalIds.get(0));
-            conditions.append(END_CONDITION);
-        } else {
-            // multiple principals filter
-            conditions.append(BEGIN_CONDITION);
-            conditions.append(m_sqlManager.readQuery("C_SUBSCRIPTION_FILTER_PRINCIPALS"));
-            conditions.append(BEGIN_CONDITION);
-            Iterator<String> it = principalIds.iterator();
-            while (it.hasNext()) {
-                params.add(it.next());
-                conditions.append("?");
-                if (it.hasNext()) {
-                    conditions.append(", ");
-                }
-            }
-            conditions.append(END_CONDITION);
-            conditions.append(m_sqlManager.readQuery(dbc.currentProject(), "C_SUBSCRIPTION_FILTER_PRINCIPALS_END"));
-            conditions.append(END_CONDITION);
-        }
-
-        // path filter
-        if (CmsStringUtil.isNotEmpty(filter.getParentPath())) {
-            CmsResource parent = m_driverManager.getVfsDriver(dbc).readResource(
-                dbc,
-                dbc.currentProject().getUuid(),
-                filter.getParentPath(),
-                false);
-            conditions.append(BEGIN_INCLUDE_CONDITION);
-            if (filter.isIncludeSubFolders()) {
-                conditions.append(m_sqlManager.readQuery(dbc.currentProject(), "C_RESOURCES_SELECT_BY_PATH_PREFIX"));
-                params.add(CmsFileUtil.addTrailingSeparator(CmsVfsDriver.escapeDbWildcard(filter.getParentPath()))
-                    + "%");
-            } else {
-                conditions.append(m_sqlManager.readQuery(dbc.currentProject(), "C_RESOURCES_SELECT_BY_PARENT_UUID"));
-                params.add(parent.getStructureId().toString());
-            }
-            conditions.append(END_CONDITION);
-        }
-
-        // check from and to date
-        if ((filter.getFromDate() > 0) || (filter.getToDate() < Long.MAX_VALUE)) {
-            conditions.append(BEGIN_INCLUDE_CONDITION);
-            conditions.append(m_sqlManager.readQuery(
-                dbc.currentProject(),
-                "C_SUBSCRIPTION_FILTER_RESOURCES_DATE_MODIFIED"));
-            params.add(String.valueOf(filter.getFromDate()));
-            params.add(String.valueOf(filter.getToDate()));
-            conditions.append(END_CONDITION);
-        }
-
-        try {
-            conn = m_sqlManager.getConnection(poolName);
-            queryBuf = CmsStringUtil.substitute(queryBuf, "%(CONDITIONS)", conditions.toString());
-            if (LOG.isDebugEnabled()) {
-                LOG.debug(queryBuf.toString());
-            }
-            stmt = m_sqlManager.getPreparedStatementForSql(conn, queryBuf);
-
-            // set parameters
-            for (int i = 0; i < params.size(); i++) {
-                stmt.setString(i + 1, params.get(i));
-            }
-            res = stmt.executeQuery();
-
-            while (res.next()) {
-                currentResource = m_driverManager.getVfsDriver(dbc).createFile(
-                    res,
-                    dbc.currentProject().getUuid(),
-                    false);
-                resources.add(currentResource);
-            }
-
-            // filter the result if in visited/unvisited mode (faster as creating a query with even more joined tables)
-            if (!filter.getMode().isAll()) {
-                List<CmsResource> result = new ArrayList<CmsResource>(resources.size());
-                for (Iterator<CmsResource> i = resources.iterator(); i.hasNext();) {
-                    CmsResource resource = i.next();
-                    long visitedDate = 0;
-                    try {
-                        visitedDate = m_driverManager.getDateLastVisitedBy(dbc, poolName, filter.getUser(), resource);
-                    } catch (CmsException e) {
-                        throw new CmsDbSqlException(Messages.get().container(Messages.ERR_GENERIC_SQL_0), e);
-                    }
-                    if (filter.getMode().isUnVisited() && (visitedDate >= resource.getDateLastModified())) {
-                        // unvisited mode: resource was visited after the last modification, skip it
-                        continue;
-                    }
-                    if (filter.getMode().isVisited() && (resource.getDateLastModified() > visitedDate)) {
-                        // visited mode: resource was not visited after last modification, skip it
-                        continue;
-                    }
-                    // add the current resource to the result
-                    result.add(resource);
-                }
-                resources = result;
-            }
-        } catch (SQLException e) {
-            throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1,
-                CmsDbSqlException.getErrorQuery(stmt)), e);
-        } finally {
-            m_sqlManager.closeAll(dbc, conn, stmt, res);
-        }
-        return resources;
-    }
+    //    /**
+    //     * @see org.opencms.db.I_CmsUserDriver#readSubscribedResources(org.opencms.db.CmsDbContext, java.lang.String, org.opencms.db.CmsSubscriptionFilter)
+    //     * @deprecated
+    //     * @see org.opencms.db.generic.CmsSubscriptionDriver
+    //     */
+    //    public List<CmsResource> readSubscribedResources(CmsDbContext dbc, String poolName, CmsSubscriptionFilter filter)
+    //    throws CmsDataAccessException {
+    //
+    //        PreparedStatement stmt = null;
+    //        Connection conn = null;
+    //        ResultSet res = null;
+    //        CmsResource currentResource = null;
+    //        List<CmsResource> resources = new ArrayList<CmsResource>();
+    //
+    //        String queryBuf = m_sqlManager.readQuery(dbc.currentProject(), "C_SUBSCRIPTION_FILTER_READ");
+    //
+    //        StringBuffer conditions = new StringBuffer(256);
+    //        List<String> params = new ArrayList<String>();
+    //
+    //        boolean userDefined = filter.getUser() != null;
+    //        boolean groupsDefined = !filter.getGroups().isEmpty();
+    //        if (!groupsDefined && !userDefined) {
+    //            filter.setUser(dbc.currentUser());
+    //            userDefined = true;
+    //        }
+    //        // check if a user has been set for the "visited" and "unvisited" mode
+    //        if (!filter.getMode().isAll() && (filter.getUser() == null)) {
+    //            // change the mode, without user the other modes are not applicable
+    //            filter.setMode(CmsSubscriptionReadMode.ALL);
+    //        }
+    //
+    //        List<String> principalIds = new ArrayList<String>();
+    //        // add user ID
+    //        if (userDefined) {
+    //            principalIds.add(filter.getUser().getId().toString());
+    //        }
+    //        // add group IDs
+    //        if (groupsDefined) {
+    //            Iterator<CmsGroup> it = filter.getGroups().iterator();
+    //            while (it.hasNext()) {
+    //                principalIds.add(it.next().getId().toString());
+    //            }
+    //        }
+    //
+    //        if (principalIds.size() == 1) {
+    //            // single principal filter
+    //            conditions.append(BEGIN_CONDITION);
+    //            conditions.append(m_sqlManager.readQuery(dbc.currentProject(), "C_SUBSCRIPTION_FILTER_PRINCIPAL_SINGLE"));
+    //            params.add(principalIds.get(0));
+    //            conditions.append(END_CONDITION);
+    //        } else {
+    //            // multiple principals filter
+    //            conditions.append(BEGIN_CONDITION);
+    //            conditions.append(m_sqlManager.readQuery("C_SUBSCRIPTION_FILTER_PRINCIPALS"));
+    //            conditions.append(BEGIN_CONDITION);
+    //            Iterator<String> it = principalIds.iterator();
+    //            while (it.hasNext()) {
+    //                params.add(it.next());
+    //                conditions.append("?");
+    //                if (it.hasNext()) {
+    //                    conditions.append(", ");
+    //                }
+    //            }
+    //            conditions.append(END_CONDITION);
+    //            conditions.append(m_sqlManager.readQuery(dbc.currentProject(), "C_SUBSCRIPTION_FILTER_PRINCIPALS_END"));
+    //            conditions.append(END_CONDITION);
+    //        }
+    //
+    //        // path filter
+    //        if (CmsStringUtil.isNotEmpty(filter.getParentPath())) {
+    //            CmsResource parent = m_driverManager.getVfsDriver(dbc).readResource(
+    //                dbc,
+    //                dbc.currentProject().getUuid(),
+    //                filter.getParentPath(),
+    //                false);
+    //            conditions.append(BEGIN_INCLUDE_CONDITION);
+    //            if (filter.isIncludeSubFolders()) {
+    //                conditions.append(m_sqlManager.readQuery(dbc.currentProject(), "C_RESOURCES_SELECT_BY_PATH_PREFIX"));
+    //                params.add(CmsFileUtil.addTrailingSeparator(CmsVfsDriver.escapeDbWildcard(filter.getParentPath()))
+    //                    + "%");
+    //            } else {
+    //                conditions.append(m_sqlManager.readQuery(dbc.currentProject(), "C_RESOURCES_SELECT_BY_PARENT_UUID"));
+    //                params.add(parent.getStructureId().toString());
+    //            }
+    //            conditions.append(END_CONDITION);
+    //        }
+    //
+    //        // check from and to date
+    //        if ((filter.getFromDate() > 0) || (filter.getToDate() < Long.MAX_VALUE)) {
+    //            conditions.append(BEGIN_INCLUDE_CONDITION);
+    //            conditions.append(m_sqlManager.readQuery(
+    //                dbc.currentProject(),
+    //                "C_SUBSCRIPTION_FILTER_RESOURCES_DATE_MODIFIED"));
+    //            params.add(String.valueOf(filter.getFromDate()));
+    //            params.add(String.valueOf(filter.getToDate()));
+    //            conditions.append(END_CONDITION);
+    //        }
+    //
+    //        try {
+    //            conn = m_sqlManager.getConnection(poolName);
+    //            queryBuf = CmsStringUtil.substitute(queryBuf, "%(CONDITIONS)", conditions.toString());
+    //            if (LOG.isDebugEnabled()) {
+    //                LOG.debug(queryBuf.toString());
+    //            }
+    //            stmt = m_sqlManager.getPreparedStatementForSql(conn, queryBuf);
+    //
+    //            // set parameters
+    //            for (int i = 0; i < params.size(); i++) {
+    //                stmt.setString(i + 1, params.get(i));
+    //            }
+    //            res = stmt.executeQuery();
+    //
+    //            while (res.next()) {
+    //                currentResource = m_driverManager.getVfsDriver(dbc).createFile(
+    //                    res,
+    //                    dbc.currentProject().getUuid(),
+    //                    false);
+    //                resources.add(currentResource);
+    //            }
+    //
+    //            // filter the result if in visited/unvisited mode (faster as creating a query with even more joined tables)
+    //            if (!filter.getMode().isAll()) {
+    //                List<CmsResource> result = new ArrayList<CmsResource>(resources.size());
+    //                for (Iterator<CmsResource> i = resources.iterator(); i.hasNext();) {
+    //                    CmsResource resource = i.next();
+    //                    long visitedDate = 0;
+    //                    try {
+    //                        visitedDate = m_driverManager.getDateLastVisitedBy(dbc, poolName, filter.getUser(), resource);
+    //                    } catch (CmsException e) {
+    //                        throw new CmsDbSqlException(Messages.get().container(Messages.ERR_GENERIC_SQL_0), e);
+    //                    }
+    //                    if (filter.getMode().isUnVisited() && (visitedDate >= resource.getDateLastModified())) {
+    //                        // unvisited mode: resource was visited after the last modification, skip it
+    //                        continue;
+    //                    }
+    //                    if (filter.getMode().isVisited() && (resource.getDateLastModified() > visitedDate)) {
+    //                        // visited mode: resource was not visited after last modification, skip it
+    //                        continue;
+    //                    }
+    //                    // add the current resource to the result
+    //                    result.add(resource);
+    //                }
+    //                resources = result;
+    //            }
+    //        } catch (SQLException e) {
+    //            throw new CmsDbSqlException(Messages.get().container(
+    //                Messages.ERR_GENERIC_SQL_1,
+    //                CmsDbSqlException.getErrorQuery(stmt)), e);
+    //        } finally {
+    //            m_sqlManager.closeAll(dbc, conn, stmt, res);
+    //        }
+    //        return resources;
+    //    }
 
     /**
      * @see org.opencms.db.I_CmsUserDriver#readUser(org.opencms.db.CmsDbContext, org.opencms.util.CmsUUID)
@@ -2200,32 +2206,34 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         m_sqlManager = sqlManager;
     }
 
-    /**
-     * @see org.opencms.db.I_CmsUserDriver#setSubscribedResourceAsDeleted(org.opencms.db.CmsDbContext, java.lang.String, org.opencms.file.CmsResource)
-     */
-    public void setSubscribedResourceAsDeleted(CmsDbContext dbc, String poolName, CmsResource resource)
-    throws CmsDataAccessException {
-
-        PreparedStatement stmt = null;
-        Connection conn = null;
-        long deletedTime = System.currentTimeMillis();
-
-        try {
-            conn = getSqlManager().getConnection(poolName);
-            // set resource as deleted for all users and groups
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_SUBSCRIPTION_UPDATE_DATE_2");
-            stmt.setLong(1, deletedTime);
-            stmt.setString(2, resource.getStructureId().toString());
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1,
-                CmsDbSqlException.getErrorQuery(stmt)), e);
-        } finally {
-            m_sqlManager.closeAll(dbc, conn, stmt, null);
-        }
-
-    }
+    //    /**
+    //     * @see org.opencms.db.I_CmsUserDriver#setSubscribedResourceAsDeleted(org.opencms.db.CmsDbContext, java.lang.String, org.opencms.file.CmsResource)
+    //     * @deprecated
+    //     * @see org.opencms.db.generic.CmsSubscriptionDriver
+    //     */
+    //    public void setSubscribedResourceAsDeleted(CmsDbContext dbc, String poolName, CmsResource resource)
+    //    throws CmsDataAccessException {
+    //
+    //        PreparedStatement stmt = null;
+    //        Connection conn = null;
+    //        long deletedTime = System.currentTimeMillis();
+    //
+    //        try {
+    //            conn = getSqlManager().getConnection(poolName);
+    //            // set resource as deleted for all users and groups
+    //            stmt = m_sqlManager.getPreparedStatement(conn, "C_SUBSCRIPTION_UPDATE_DATE_2");
+    //            stmt.setLong(1, deletedTime);
+    //            stmt.setString(2, resource.getStructureId().toString());
+    //            stmt.executeUpdate();
+    //        } catch (SQLException e) {
+    //            throw new CmsDbSqlException(Messages.get().container(
+    //                Messages.ERR_GENERIC_SQL_1,
+    //                CmsDbSqlException.getErrorQuery(stmt)), e);
+    //        } finally {
+    //            m_sqlManager.closeAll(dbc, conn, stmt, null);
+    //        }
+    //
+    //    }
 
     /**
      * @see org.opencms.db.I_CmsUserDriver#setUsersOrganizationalUnit(org.opencms.db.CmsDbContext, org.opencms.security.CmsOrganizationalUnit, org.opencms.file.CmsUser)
@@ -2257,168 +2265,178 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         }
     }
 
-    /**
-     * @see org.opencms.db.I_CmsUserDriver#subscribeResourceFor(org.opencms.db.CmsDbContext, java.lang.String, org.opencms.security.CmsPrincipal, org.opencms.file.CmsResource)
-     */
-    public void subscribeResourceFor(CmsDbContext dbc, String poolName, CmsPrincipal principal, CmsResource resource)
-    throws CmsDataAccessException {
+    //    /**
+    //     * @see org.opencms.db.I_CmsUserDriver#subscribeResourceFor(org.opencms.db.CmsDbContext, java.lang.String, org.opencms.security.CmsPrincipal, org.opencms.file.CmsResource)
+    //     * @deprecated
+    //     * @see org.opencms.db.generic.CmsSubscriptionDriver 
+    //     */
+    //    public void subscribeResourceFor(CmsDbContext dbc, String poolName, CmsPrincipal principal, CmsResource resource)
+    //    throws CmsDataAccessException {
+    //
+    //        ResultSet res = null;
+    //        PreparedStatement stmt = null;
+    //        Connection conn = null;
+    //
+    //        try {
+    //            conn = getSqlManager().getConnection(poolName);
+    //            stmt = m_sqlManager.getPreparedStatement(conn, "C_SUBSCRIPTION_CHECK_2");
+    //            stmt.setString(1, principal.getId().toString());
+    //            stmt.setString(2, resource.getStructureId().toString());
+    //            res = stmt.executeQuery();
+    //
+    //            // only create subscription entry if principal is not subscribed to resource
+    //            if (res.next()) {
+    //                while (res.next()) {
+    //                    // do nothing only move through all rows because of mssql odbc driver
+    //                }
+    //            } else {
+    //                // subscribe principal
+    //                m_sqlManager.closeAll(dbc, null, stmt, null);
+    //                stmt = m_sqlManager.getPreparedStatement(conn, "C_SUBSCRIPTION_CREATE_2");
+    //                stmt.setString(1, principal.getId().toString());
+    //                stmt.setString(2, resource.getStructureId().toString());
+    //                stmt.executeUpdate();
+    //            }
+    //        } catch (SQLException e) {
+    //            throw new CmsDbSqlException(Messages.get().container(
+    //                Messages.ERR_GENERIC_SQL_1,
+    //                CmsDbSqlException.getErrorQuery(stmt)), e);
+    //        } finally {
+    //            m_sqlManager.closeAll(dbc, conn, stmt, res);
+    //        }
+    //    }
 
-        ResultSet res = null;
-        PreparedStatement stmt = null;
-        Connection conn = null;
+    //    /**
+    //     * @see org.opencms.db.I_CmsUserDriver#unsubscribeAllDeletedResources(org.opencms.db.CmsDbContext, java.lang.String, long)
+    //     * @deprecated
+    //     * @see org.opencms.db.generic.CmsSubscriptionDriver
+    //     */
+    //    public void unsubscribeAllDeletedResources(CmsDbContext dbc, String poolName, long deletedTo)
+    //    throws CmsDataAccessException {
+    //
+    //        PreparedStatement stmt = null;
+    //        Connection conn = null;
+    //
+    //        try {
+    //            conn = getSqlManager().getConnection(poolName);
+    //            StringBuffer conditions = new StringBuffer(256);
+    //
+    //            // unsubscribe all deleted resources
+    //            conditions.append(m_sqlManager.readQuery("C_SUBSCRIPTION_DELETE"));
+    //            conditions.append(BEGIN_CONDITION);
+    //            conditions.append(m_sqlManager.readQuery("C_SUBSCRIPTION_DELETE_FILTER_DATE"));
+    //            conditions.append(END_CONDITION);
+    //            stmt = m_sqlManager.getPreparedStatementForSql(conn, conditions.toString());
+    //            stmt.setLong(1, deletedTo);
+    //            stmt.executeUpdate();
+    //
+    //        } catch (SQLException e) {
+    //            throw new CmsDbSqlException(Messages.get().container(
+    //                Messages.ERR_GENERIC_SQL_1,
+    //                CmsDbSqlException.getErrorQuery(stmt)), e);
+    //        } finally {
+    //            m_sqlManager.closeAll(dbc, conn, stmt, null);
+    //        }
+    //    }
 
-        try {
-            conn = getSqlManager().getConnection(poolName);
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_SUBSCRIPTION_CHECK_2");
-            stmt.setString(1, principal.getId().toString());
-            stmt.setString(2, resource.getStructureId().toString());
-            res = stmt.executeQuery();
+    //    /**
+    //     * @see org.opencms.db.I_CmsUserDriver#unsubscribeAllResourcesFor(org.opencms.db.CmsDbContext, java.lang.String, org.opencms.security.CmsPrincipal)
+    //     * @deprecated
+    //     * @see org.opencms.db.generic.CmsSubscriptionDriver
+    //     */
+    //    public void unsubscribeAllResourcesFor(CmsDbContext dbc, String poolName, CmsPrincipal principal)
+    //    throws CmsDataAccessException {
+    //
+    //        PreparedStatement stmt = null;
+    //        Connection conn = null;
+    //
+    //        try {
+    //            if (principal != null) {
+    //                conn = getSqlManager().getConnection(poolName);
+    //                StringBuffer conditions = new StringBuffer(256);
+    //
+    //                conditions.append(m_sqlManager.readQuery("C_SUBSCRIPTION_DELETE"));
+    //                conditions.append(BEGIN_CONDITION);
+    //                conditions.append(m_sqlManager.readQuery("C_SUBSCRIPTION_DELETE_FILTER_PRINCIPAL"));
+    //                conditions.append(END_CONDITION);
+    //                stmt = m_sqlManager.getPreparedStatementForSql(conn, conditions.toString());
+    //                stmt.setString(1, principal.getId().toString());
+    //                stmt.executeUpdate();
+    //            }
+    //        } catch (SQLException e) {
+    //            throw new CmsDbSqlException(Messages.get().container(
+    //                Messages.ERR_GENERIC_SQL_1,
+    //                CmsDbSqlException.getErrorQuery(stmt)), e);
+    //        } finally {
+    //            m_sqlManager.closeAll(dbc, conn, stmt, null);
+    //        }
+    //    }
 
-            // only create subscription entry if principal is not subscribed to resource
-            if (res.next()) {
-                while (res.next()) {
-                    // do nothing only move through all rows because of mssql odbc driver
-                }
-            } else {
-                // subscribe principal
-                m_sqlManager.closeAll(dbc, null, stmt, null);
-                stmt = m_sqlManager.getPreparedStatement(conn, "C_SUBSCRIPTION_CREATE_2");
-                stmt.setString(1, principal.getId().toString());
-                stmt.setString(2, resource.getStructureId().toString());
-                stmt.executeUpdate();
-            }
-        } catch (SQLException e) {
-            throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1,
-                CmsDbSqlException.getErrorQuery(stmt)), e);
-        } finally {
-            m_sqlManager.closeAll(dbc, conn, stmt, res);
-        }
-    }
+    //    /**
+    //     * @see org.opencms.db.I_CmsUserDriver#unsubscribeResourceFor(org.opencms.db.CmsDbContext, java.lang.String, org.opencms.security.CmsPrincipal, org.opencms.file.CmsResource)
+    //     * @deprecated
+    //     * @see org.opencms.db.generic.CmsSubscriptionDriver
+    //     */
+    //    public void unsubscribeResourceFor(CmsDbContext dbc, String poolName, CmsPrincipal principal, CmsResource resource)
+    //    throws CmsDataAccessException {
+    //
+    //        PreparedStatement stmt = null;
+    //        Connection conn = null;
+    //
+    //        try {
+    //            conn = getSqlManager().getConnection(poolName);
+    //            StringBuffer conditions = new StringBuffer(256);
+    //            conditions.append(m_sqlManager.readQuery("C_SUBSCRIPTION_DELETE"));
+    //            conditions.append(BEGIN_CONDITION);
+    //            conditions.append(m_sqlManager.readQuery("C_SUBSCRIPTION_DELETE_FILTER_PRINCIPAL"));
+    //            conditions.append(END_CONDITION);
+    //            conditions.append(BEGIN_INCLUDE_CONDITION);
+    //            conditions.append(m_sqlManager.readQuery("C_SUBSCRIPTION_DELETE_FILTER_STRUCTURE"));
+    //            conditions.append(END_CONDITION);
+    //            stmt = m_sqlManager.getPreparedStatementForSql(conn, conditions.toString());
+    //            stmt.setString(1, principal.getId().toString());
+    //            stmt.setString(2, resource.getStructureId().toString());
+    //            stmt.executeUpdate();
+    //        } catch (SQLException e) {
+    //            throw new CmsDbSqlException(Messages.get().container(
+    //                Messages.ERR_GENERIC_SQL_1,
+    //                CmsDbSqlException.getErrorQuery(stmt)), e);
+    //        } finally {
+    //            m_sqlManager.closeAll(dbc, conn, stmt, null);
+    //        }
+    //    }
 
-    /**
-     * @see org.opencms.db.I_CmsUserDriver#unsubscribeAllDeletedResources(org.opencms.db.CmsDbContext, java.lang.String, long)
-     */
-    public void unsubscribeAllDeletedResources(CmsDbContext dbc, String poolName, long deletedTo)
-    throws CmsDataAccessException {
-
-        PreparedStatement stmt = null;
-        Connection conn = null;
-
-        try {
-            conn = getSqlManager().getConnection(poolName);
-            StringBuffer conditions = new StringBuffer(256);
-
-            // unsubscribe all deleted resources
-            conditions.append(m_sqlManager.readQuery("C_SUBSCRIPTION_DELETE"));
-            conditions.append(BEGIN_CONDITION);
-            conditions.append(m_sqlManager.readQuery("C_SUBSCRIPTION_DELETE_FILTER_DATE"));
-            conditions.append(END_CONDITION);
-            stmt = m_sqlManager.getPreparedStatementForSql(conn, conditions.toString());
-            stmt.setLong(1, deletedTo);
-            stmt.executeUpdate();
-
-        } catch (SQLException e) {
-            throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1,
-                CmsDbSqlException.getErrorQuery(stmt)), e);
-        } finally {
-            m_sqlManager.closeAll(dbc, conn, stmt, null);
-        }
-    }
-
-    /**
-     * @see org.opencms.db.I_CmsUserDriver#unsubscribeAllResourcesFor(org.opencms.db.CmsDbContext, java.lang.String, org.opencms.security.CmsPrincipal)
-     */
-    public void unsubscribeAllResourcesFor(CmsDbContext dbc, String poolName, CmsPrincipal principal)
-    throws CmsDataAccessException {
-
-        PreparedStatement stmt = null;
-        Connection conn = null;
-
-        try {
-            if (principal != null) {
-                conn = getSqlManager().getConnection(poolName);
-                StringBuffer conditions = new StringBuffer(256);
-
-                conditions.append(m_sqlManager.readQuery("C_SUBSCRIPTION_DELETE"));
-                conditions.append(BEGIN_CONDITION);
-                conditions.append(m_sqlManager.readQuery("C_SUBSCRIPTION_DELETE_FILTER_PRINCIPAL"));
-                conditions.append(END_CONDITION);
-                stmt = m_sqlManager.getPreparedStatementForSql(conn, conditions.toString());
-                stmt.setString(1, principal.getId().toString());
-                stmt.executeUpdate();
-            }
-        } catch (SQLException e) {
-            throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1,
-                CmsDbSqlException.getErrorQuery(stmt)), e);
-        } finally {
-            m_sqlManager.closeAll(dbc, conn, stmt, null);
-        }
-    }
-
-    /**
-     * @see org.opencms.db.I_CmsUserDriver#unsubscribeResourceFor(org.opencms.db.CmsDbContext, java.lang.String, org.opencms.security.CmsPrincipal, org.opencms.file.CmsResource)
-     */
-    public void unsubscribeResourceFor(CmsDbContext dbc, String poolName, CmsPrincipal principal, CmsResource resource)
-    throws CmsDataAccessException {
-
-        PreparedStatement stmt = null;
-        Connection conn = null;
-
-        try {
-            conn = getSqlManager().getConnection(poolName);
-            StringBuffer conditions = new StringBuffer(256);
-            conditions.append(m_sqlManager.readQuery("C_SUBSCRIPTION_DELETE"));
-            conditions.append(BEGIN_CONDITION);
-            conditions.append(m_sqlManager.readQuery("C_SUBSCRIPTION_DELETE_FILTER_PRINCIPAL"));
-            conditions.append(END_CONDITION);
-            conditions.append(BEGIN_INCLUDE_CONDITION);
-            conditions.append(m_sqlManager.readQuery("C_SUBSCRIPTION_DELETE_FILTER_STRUCTURE"));
-            conditions.append(END_CONDITION);
-            stmt = m_sqlManager.getPreparedStatementForSql(conn, conditions.toString());
-            stmt.setString(1, principal.getId().toString());
-            stmt.setString(2, resource.getStructureId().toString());
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1,
-                CmsDbSqlException.getErrorQuery(stmt)), e);
-        } finally {
-            m_sqlManager.closeAll(dbc, conn, stmt, null);
-        }
-    }
-
-    /**
-     * @see org.opencms.db.I_CmsUserDriver#unsubscribeResourceForAll(org.opencms.db.CmsDbContext, java.lang.String, org.opencms.file.CmsResource)
-     */
-    public void unsubscribeResourceForAll(CmsDbContext dbc, String poolName, CmsResource resource)
-    throws CmsDataAccessException {
-
-        PreparedStatement stmt = null;
-        Connection conn = null;
-
-        try {
-            conn = getSqlManager().getConnection(poolName);
-            StringBuffer conditions = new StringBuffer(256);
-
-            // unsubscribe resource for all principals
-            conditions.append(m_sqlManager.readQuery("C_SUBSCRIPTION_DELETE"));
-            conditions.append(BEGIN_CONDITION);
-            conditions.append(m_sqlManager.readQuery("C_SUBSCRIPTION_DELETE_FILTER_STRUCTURE"));
-            conditions.append(END_CONDITION);
-            stmt = m_sqlManager.getPreparedStatementForSql(conn, conditions.toString());
-            stmt.setString(1, resource.getStructureId().toString());
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1,
-                CmsDbSqlException.getErrorQuery(stmt)), e);
-        } finally {
-            m_sqlManager.closeAll(dbc, conn, stmt, null);
-        }
-    }
+    //    /**
+    //     * @see org.opencms.db.I_CmsUserDriver#unsubscribeResourceForAll(org.opencms.db.CmsDbContext, java.lang.String, org.opencms.file.CmsResource)
+    //     * @deprecated
+    //     * @see org.opencms.db.generic.CmsSubscriptionDriver
+    //     */
+    //    public void unsubscribeResourceForAll(CmsDbContext dbc, String poolName, CmsResource resource)
+    //    throws CmsDataAccessException {
+    //
+    //        PreparedStatement stmt = null;
+    //        Connection conn = null;
+    //
+    //        try {
+    //            conn = getSqlManager().getConnection(poolName);
+    //            StringBuffer conditions = new StringBuffer(256);
+    //
+    //            // unsubscribe resource for all principals
+    //            conditions.append(m_sqlManager.readQuery("C_SUBSCRIPTION_DELETE"));
+    //            conditions.append(BEGIN_CONDITION);
+    //            conditions.append(m_sqlManager.readQuery("C_SUBSCRIPTION_DELETE_FILTER_STRUCTURE"));
+    //            conditions.append(END_CONDITION);
+    //            stmt = m_sqlManager.getPreparedStatementForSql(conn, conditions.toString());
+    //            stmt.setString(1, resource.getStructureId().toString());
+    //            stmt.executeUpdate();
+    //        } catch (SQLException e) {
+    //            throw new CmsDbSqlException(Messages.get().container(
+    //                Messages.ERR_GENERIC_SQL_1,
+    //                CmsDbSqlException.getErrorQuery(stmt)), e);
+    //        } finally {
+    //            m_sqlManager.closeAll(dbc, conn, stmt, null);
+    //        }
+    //    }
 
     /**
      * @see org.opencms.db.I_CmsUserDriver#writeAccessControlEntry(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, org.opencms.security.CmsAccessControlEntry)

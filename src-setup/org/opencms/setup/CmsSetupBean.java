@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/CmsSetupBean.java,v $
- * Date   : $Date: 2010/02/24 12:44:23 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/08/05 12:55:10 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -118,7 +118,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -1694,6 +1694,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
         String userDriver = getDbProperty(m_databaseKey + ".user.driver");
         String projectDriver = getDbProperty(m_databaseKey + ".project.driver");
         String historyDriver = getDbProperty(m_databaseKey + ".history.driver");
+        String subscriptionDriver = getDbProperty(m_databaseKey + ".subscription.driver");
         String sqlManager = getDbProperty(m_databaseKey + ".sqlmanager");
 
         setExtProperty("db.name", m_databaseKey);
@@ -1705,6 +1706,9 @@ public class CmsSetupBean implements I_CmsShellCommands {
         setExtProperty("db.project.sqlmanager", sqlManager);
         setExtProperty("db.history.driver", historyDriver);
         setExtProperty("db.history.sqlmanager", sqlManager);
+        setExtProperty("db.subscription.driver", subscriptionDriver);
+        setExtProperty("db.subscription.sqlmanager", sqlManager);
+
     }
 
     /**

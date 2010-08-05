@@ -33,6 +33,7 @@
 	<property name="drivers.project"					value="db" />
 	<property name="drivers.user"						value="db" />
 	<property name="drivers.history"					value="db" />
+	<property name="drivers.subscription"				value="db" />
 	<property name="db.additional.pools" 				value="" />
 	<property name="drivers.configuration"				value="" />
 	<property name="registry.configuration"				value="" />
@@ -183,6 +184,7 @@
       			<filter token="DRIVERS_USER" value="${drivers.user}"/>
       			<filter token="DRIVERS_HISTORY" value="${drivers.history}"/>    			
       			<filter token="DRIVERS_CONFIGURATION" value="${drivers.configuration}"/>
+    			<filter token="DRIVERS_SUBSCRIPTION" value="${drivers.subscription}" />
     			<filter token="ADDITIONAL_DB_POOLS" value="${db.additional.pools}"/>
     		</filterset>
 	   	</copy>       	  
