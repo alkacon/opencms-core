@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/CmsSubscriptionDriver.java,v $
- * Date   : $Date: 2010/08/05 12:55:10 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/08/06 14:07:18 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,11 +34,10 @@ package org.opencms.db.mysql;
 import org.opencms.db.CmsDbConsistencyException;
 import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDbSqlException;
+import org.opencms.db.CmsVisitEntry;
+import org.opencms.db.CmsVisitEntryFilter;
 import org.opencms.db.generic.CmsSqlManager;
 import org.opencms.db.generic.Messages;
-import org.opencms.db.log.CmsLogEntry;
-import org.opencms.db.log.CmsLogEntryType;
-import org.opencms.db.log.CmsLogFilter;
 import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
@@ -48,15 +47,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * MySQL implementation of the subscription driver.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  *  @since 8.0.0
  */
@@ -79,24 +76,17 @@ public class CmsSubscriptionDriver extends org.opencms.db.generic.CmsSubscriptio
     throws CmsDataAccessException {
 
         boolean entryExists = false;
-        CmsLogFilter filter = CmsLogFilter.ALL.includeType(CmsLogEntryType.USER_RESOURCE_VISITED).filterResource(
-            resource.getStructureId()).filterUser(user.getId());
+        CmsVisitEntryFilter filter = CmsVisitEntryFilter.ALL.filterResource(resource.getStructureId()).filterUser(
+            user.getId());
         // delete existing visited entry for the resource
-        if (readLog(dbc, OpenCms.getSubscriptionManager().getPoolName(), filter).size() > 0) {
+        if (readVisits(dbc, OpenCms.getSubscriptionManager().getPoolName(), filter).size() > 0) {
             entryExists = true;
-            deleteLog(dbc, OpenCms.getSubscriptionManager().getPoolName(), filter);
+            deleteVisits(dbc, OpenCms.getSubscriptionManager().getPoolName(), filter);
         }
 
-        // create new entry
-        List<CmsLogEntry> newEntries = new ArrayList<CmsLogEntry>(1);
-        CmsLogEntry entry = new CmsLogEntry(
-            user.getId(),
-            System.currentTimeMillis(),
-            resource.getStructureId(),
-            CmsLogEntryType.USER_RESOURCE_VISITED,
-            new String[] {user.getName(), resource.getRootPath()});
-        newEntries.add(entry);
-        log(dbc, poolName, newEntries);
+        CmsVisitEntry entry = new CmsVisitEntry(user.getId(), System.currentTimeMillis(), resource.getStructureId());
+
+        addVisit(dbc, poolName, entry);
 
         if (!entryExists) {
             // new entry, check if maximum number of stored visited resources is exceeded
@@ -107,10 +97,9 @@ public class CmsSubscriptionDriver extends org.opencms.db.generic.CmsSubscriptio
 
             try {
                 conn = m_sqlManager.getConnection(poolName);
-                stmt = m_sqlManager.getPreparedStatement(conn, dbc.currentProject(), "C_VISITED_USER_COUNT_2");
+                stmt = m_sqlManager.getPreparedStatement(conn, dbc.currentProject(), "C_VISITED_USER_COUNT_1");
 
                 stmt.setString(1, user.getId().toString());
-                stmt.setInt(2, CmsLogEntryType.USER_RESOURCE_VISITED.getId());
                 res = stmt.executeQuery();
 
                 if (res.next()) {
@@ -131,11 +120,10 @@ public class CmsSubscriptionDriver extends org.opencms.db.generic.CmsSubscriptio
                     stmt = m_sqlManager.getPreparedStatement(
                         conn,
                         dbc.currentProject(),
-                        "C_MYSQL_VISITED_USER_DELETE_3");
+                        "C_MYSQL_VISITED_USER_DELETE_2");
 
                     stmt.setString(1, user.getId().toString());
-                    stmt.setInt(2, CmsLogEntryType.USER_RESOURCE_VISITED.getId());
-                    stmt.setInt(3, count - maxCount);
+                    stmt.setInt(2, count - maxCount);
                     stmt.executeUpdate();
                 }
             } catch (SQLException e) {

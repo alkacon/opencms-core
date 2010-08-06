@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2010/08/05 12:55:10 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/08/06 14:07:18 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,6 +43,7 @@ import org.opencms.db.CmsPreparedStatementStringParameter;
 import org.opencms.db.CmsPublishList;
 import org.opencms.db.CmsPublishedResource;
 import org.opencms.db.CmsResourceState;
+import org.opencms.db.CmsVisitEntryFilter;
 import org.opencms.db.I_CmsDriver;
 import org.opencms.db.I_CmsHistoryDriver;
 import org.opencms.db.I_CmsPreparedStatementParameter;
@@ -109,7 +110,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 6.0.0 
  */
@@ -3048,8 +3049,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             conditions.append(END_CONDITION);
             conditions.append(END_CONDITION);
         }
-        return new CmsPair<String, List<I_CmsPreparedStatementParameter>>(conditions.toString(), params);
-
+        return CmsPair.create(conditions.toString(), params);
     }
 
     /**
@@ -3370,9 +3370,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         if (OpenCms.getSubscriptionManager().isEnabled()) {
             try {
                 // delete visited information for resource from log
-                CmsLogFilter filter = CmsLogFilter.ALL.includeType(CmsLogEntryType.USER_RESOURCE_VISITED).filterResource(
-                    offlineResource.getStructureId());
-                m_driverManager.getSubscriptionDriver().deleteLog(
+                CmsVisitEntryFilter filter = CmsVisitEntryFilter.ALL.filterResource(offlineResource.getStructureId());
+                m_driverManager.getSubscriptionDriver().deleteVisits(
                     dbc,
                     OpenCms.getSubscriptionManager().getPoolName(),
                     filter);

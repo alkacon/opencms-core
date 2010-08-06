@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsSubscriptionDriver.java,v $
- * Date   : $Date: 2010/08/05 12:55:10 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/08/06 14:07:18 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,8 +32,6 @@
 package org.opencms.db;
 
 import org.opencms.db.generic.CmsSqlManager;
-import org.opencms.db.log.CmsLogEntry;
-import org.opencms.db.log.CmsLogFilter;
 import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsResource;
@@ -49,7 +47,7 @@ import java.util.List;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -59,7 +57,7 @@ public interface I_CmsSubscriptionDriver {
     int DRIVER_TYPE_ID = 4;
 
     /**
-     * Deletes log entries matching the given filter.<p>
+     * Deletes visit entries matching the given filter.<p>
      * 
      * @param dbc the database context
      * @param poolName the name of the database pool to use, if <code>null</code>, the default pool is used
@@ -67,7 +65,7 @@ public interface I_CmsSubscriptionDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    void deleteLog(CmsDbContext dbc, String poolName, CmsLogFilter filter) throws CmsDataAccessException;
+    void deleteVisits(CmsDbContext dbc, String poolName, CmsVisitEntryFilter filter) throws CmsDataAccessException;
 
     /**
      * Returns the date when the resource was last visited by the user.<p>
@@ -129,19 +127,6 @@ public interface I_CmsSubscriptionDriver {
      */
     List<CmsResource> readAllSubscribedResources(CmsDbContext dbc, String poolName, CmsPrincipal principal)
     throws CmsDataAccessException;
-
-    /**
-     * Reads log entries matching the given filter.<p>
-     * 
-     * @param dbc the database context
-     * @param poolName the name of the database pool to use, if <code>null</code>, the default pool is used
-     * @param filter the log entry filter
-     * 
-     * @return the list of log entries 
-     * 
-     * @throws CmsDataAccessException if something goes wrong
-     */
-    List<CmsLogEntry> readLog(CmsDbContext dbc, String poolName, CmsLogFilter filter) throws CmsDataAccessException;
 
     /**
      * Returns the resources that were visited by a user set in the filter.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSubscriptionDriver.java,v $
- * Date   : $Date: 2010/08/05 12:55:10 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/08/06 14:07:18 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,18 +36,17 @@ import org.opencms.db.CmsDbConsistencyException;
 import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDbSqlException;
 import org.opencms.db.CmsDriverManager;
-import org.opencms.db.CmsPreparedStatementIntParameter;
 import org.opencms.db.CmsPreparedStatementLongParameter;
 import org.opencms.db.CmsPreparedStatementStringParameter;
 import org.opencms.db.CmsSubscriptionFilter;
 import org.opencms.db.CmsSubscriptionReadMode;
+import org.opencms.db.CmsVisitEntry;
+import org.opencms.db.CmsVisitEntryFilter;
 import org.opencms.db.CmsVisitedByFilter;
 import org.opencms.db.I_CmsDriver;
 import org.opencms.db.I_CmsPreparedStatementParameter;
 import org.opencms.db.I_CmsSubscriptionDriver;
-import org.opencms.db.log.CmsLogEntry;
 import org.opencms.db.log.CmsLogEntryType;
-import org.opencms.db.log.CmsLogFilter;
 import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsResource;
@@ -82,7 +81,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -98,9 +97,10 @@ public class CmsSubscriptionDriver implements I_CmsDriver, I_CmsSubscriptionDriv
     protected CmsSqlManager m_sqlManager;
 
     /**
-     * @see org.opencms.db.I_CmsSubscriptionDriver#deleteLog(org.opencms.db.CmsDbContext, java.lang.String, org.opencms.db.log.CmsLogFilter)
+     * @see org.opencms.db.I_CmsSubscriptionDriver#deleteVisits(org.opencms.db.CmsDbContext, java.lang.String, org.opencms.db.CmsVisitEntryFilter)
      */
-    public void deleteLog(CmsDbContext dbc, String poolName, CmsLogFilter filter) throws CmsDataAccessException {
+    public void deleteVisits(CmsDbContext dbc, String poolName, CmsVisitEntryFilter filter)
+    throws CmsDataAccessException {
 
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -114,9 +114,9 @@ public class CmsSubscriptionDriver implements I_CmsDriver, I_CmsSubscriptionDriv
 
             // compose statement 
             StringBuffer queryBuf = new StringBuffer(256);
-            queryBuf.append(m_sqlManager.readQuery("C_LOG_DELETE_ENTRIES"));
+            queryBuf.append(m_sqlManager.readQuery("C_VISIT_DELETE_ENTRIES"));
 
-            CmsPair<String, List<I_CmsPreparedStatementParameter>> conditionsAndParams = prepareLogConditions(filter);
+            CmsPair<String, List<I_CmsPreparedStatementParameter>> conditionsAndParams = prepareVisitConditions(filter);
             queryBuf.append(conditionsAndParams.getFirst());
             if (LOG.isDebugEnabled()) {
                 LOG.debug(queryBuf.toString());
@@ -145,9 +145,9 @@ public class CmsSubscriptionDriver implements I_CmsDriver, I_CmsSubscriptionDriv
     public long getDateLastVisitedBy(CmsDbContext dbc, String poolName, CmsUser user, CmsResource resource)
     throws CmsException {
 
-        CmsLogFilter filter = CmsLogFilter.ALL.filterResource(resource.getStructureId()).filterUser(user.getId()).includeType(
-            CmsLogEntryType.USER_RESOURCE_VISITED);
-        List<CmsLogEntry> entries = readLog(dbc, poolName, filter);
+        CmsVisitEntryFilter filter = CmsVisitEntryFilter.ALL.filterResource(resource.getStructureId()).filterUser(
+            user.getId());
+        List<CmsVisitEntry> entries = readVisits(dbc, poolName, filter);
         if (!entries.isEmpty()) {
             return entries.get(0).getDate();
         }
@@ -219,24 +219,16 @@ public class CmsSubscriptionDriver implements I_CmsDriver, I_CmsSubscriptionDriv
     throws CmsDataAccessException {
 
         boolean entryExists = false;
-        CmsLogFilter filter = CmsLogFilter.ALL.includeType(CmsLogEntryType.USER_RESOURCE_VISITED).filterResource(
-            resource.getStructureId()).filterUser(user.getId());
+        CmsVisitEntryFilter filter = CmsVisitEntryFilter.ALL.filterResource(resource.getStructureId()).filterUser(
+            user.getId());
         // delete existing visited entry for the resource
-        if (readLog(dbc, OpenCms.getSubscriptionManager().getPoolName(), filter).size() > 0) {
+        if (readVisits(dbc, OpenCms.getSubscriptionManager().getPoolName(), filter).size() > 0) {
             entryExists = true;
-            deleteLog(dbc, OpenCms.getSubscriptionManager().getPoolName(), filter);
+            deleteVisits(dbc, OpenCms.getSubscriptionManager().getPoolName(), filter);
         }
 
-        // create new entry
-        List<CmsLogEntry> newEntries = new ArrayList<CmsLogEntry>(1);
-        CmsLogEntry entry = new CmsLogEntry(
-            user.getId(),
-            System.currentTimeMillis(),
-            resource.getStructureId(),
-            CmsLogEntryType.USER_RESOURCE_VISITED,
-            new String[] {user.getName(), resource.getRootPath()});
-        newEntries.add(entry);
-        log(dbc, poolName, newEntries);
+        CmsVisitEntry entry = new CmsVisitEntry(user.getId(), System.currentTimeMillis(), resource.getStructureId());
+        addVisit(dbc, poolName, entry);
 
         if (!entryExists) {
             // new entry, check if maximum number of stored visited resources is exceeded
@@ -247,10 +239,9 @@ public class CmsSubscriptionDriver implements I_CmsDriver, I_CmsSubscriptionDriv
 
             try {
                 conn = m_sqlManager.getConnection(poolName);
-                stmt = m_sqlManager.getPreparedStatement(conn, dbc.currentProject(), "C_VISITED_USER_COUNT_2");
+                stmt = m_sqlManager.getPreparedStatement(conn, dbc.currentProject(), "C_VISITED_USER_COUNT_1");
 
                 stmt.setString(1, user.getId().toString());
-                stmt.setInt(2, CmsLogEntryType.USER_RESOURCE_VISITED.getId());
                 res = stmt.executeQuery();
 
                 if (res.next()) {
@@ -271,11 +262,10 @@ public class CmsSubscriptionDriver implements I_CmsDriver, I_CmsSubscriptionDriv
                     stmt = m_sqlManager.getPreparedStatement(
                         conn,
                         dbc.currentProject(),
-                        "C_VISITED_USER_DELETE_GETDATE_3");
+                        "C_VISITED_USER_DELETE_GETDATE_2");
 
                     stmt.setString(1, user.getId().toString());
-                    stmt.setInt(2, CmsLogEntryType.USER_RESOURCE_VISITED.getId());
-                    stmt.setInt(3, count - maxCount);
+                    stmt.setInt(2, count - maxCount);
                     res = stmt.executeQuery();
                     long deleteDate = 0;
                     while (res.next()) {
@@ -283,9 +273,8 @@ public class CmsSubscriptionDriver implements I_CmsDriver, I_CmsSubscriptionDriv
                         deleteDate = res.getLong(1);
                     }
                     if (deleteDate > 0) {
-                        filter = CmsLogFilter.ALL.includeType(CmsLogEntryType.USER_RESOURCE_VISITED).filterUser(
-                            user.getId()).filterTo(deleteDate);
-                        deleteLog(dbc, OpenCms.getSubscriptionManager().getPoolName(), filter);
+                        filter = CmsVisitEntryFilter.ALL.filterUser(user.getId()).filterTo(deleteDate);
+                        deleteVisits(dbc, OpenCms.getSubscriptionManager().getPoolName(), filter);
                     }
                 }
             } catch (SQLException e) {
@@ -332,57 +321,6 @@ public class CmsSubscriptionDriver implements I_CmsDriver, I_CmsSubscriptionDriv
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
         return resources;
-    }
-
-    /**
-     * @see org.opencms.db.I_CmsSubscriptionDriver#readLog(org.opencms.db.CmsDbContext, java.lang.String, org.opencms.db.log.CmsLogFilter)
-     */
-    public List<CmsLogEntry> readLog(CmsDbContext dbc, String poolName, CmsLogFilter filter)
-    throws CmsDataAccessException {
-
-        List<CmsLogEntry> entries = new ArrayList<CmsLogEntry>();
-
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet res = null;
-
-        try {
-            if (CmsStringUtil.isNotEmpty(poolName)) {
-                conn = m_sqlManager.getConnection(poolName);
-            } else {
-                conn = m_sqlManager.getConnection(dbc);
-            }
-
-            // compose statement 
-            StringBuffer queryBuf = new StringBuffer(256);
-            queryBuf.append(m_sqlManager.readQuery("C_LOG_READ_ENTRIES"));
-            CmsPair<String, List<I_CmsPreparedStatementParameter>> conditionsAndParameters = prepareLogConditions(filter);
-            List<I_CmsPreparedStatementParameter> params = conditionsAndParameters.getSecond();
-            queryBuf.append(conditionsAndParameters.getFirst());
-
-            if (LOG.isDebugEnabled()) {
-                LOG.debug(queryBuf.toString());
-            }
-            stmt = m_sqlManager.getPreparedStatementForSql(conn, queryBuf.toString());
-            for (int i = 0; i < params.size(); i++) {
-                I_CmsPreparedStatementParameter param = params.get(i);
-                param.insertIntoStatement(stmt, i + 1);
-            }
-
-            // execute
-            res = stmt.executeQuery();
-            while (res.next()) {
-                // get results
-                entries.add(internalReadLogEntry(res));
-            }
-        } catch (SQLException e) {
-            throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1,
-                CmsDbSqlException.getErrorQuery(stmt)), e);
-        } finally {
-            m_sqlManager.closeAll(dbc, conn, stmt, res);
-        }
-        return entries;
     }
 
     /**
@@ -571,7 +509,7 @@ public class CmsSubscriptionDriver implements I_CmsDriver, I_CmsSubscriptionDriv
         String queryBuf = m_sqlManager.readQuery(dbc.currentProject(), "C_SUBSCRIPTION_FILTER_READ");
 
         StringBuffer conditions = new StringBuffer(256);
-        List<String> params = new ArrayList<String>();
+        List<I_CmsPreparedStatementParameter> params = new ArrayList<I_CmsPreparedStatementParameter>();
 
         boolean userDefined = filter.getUser() != null;
         boolean groupsDefined = !filter.getGroups().isEmpty();
@@ -602,7 +540,7 @@ public class CmsSubscriptionDriver implements I_CmsDriver, I_CmsSubscriptionDriv
             // single principal filter
             conditions.append(BEGIN_CONDITION);
             conditions.append(m_sqlManager.readQuery(dbc.currentProject(), "C_SUBSCRIPTION_FILTER_PRINCIPAL_SINGLE"));
-            params.add(principalIds.get(0));
+            params.add(new CmsPreparedStatementStringParameter(principalIds.get(0)));
             conditions.append(END_CONDITION);
         } else {
             // multiple principals filter
@@ -611,7 +549,7 @@ public class CmsSubscriptionDriver implements I_CmsDriver, I_CmsSubscriptionDriv
             conditions.append(BEGIN_CONDITION);
             Iterator<String> it = principalIds.iterator();
             while (it.hasNext()) {
-                params.add(it.next());
+                params.add(new CmsPreparedStatementStringParameter(it.next()));
                 conditions.append("?");
                 if (it.hasNext()) {
                     conditions.append(", ");
@@ -632,11 +570,11 @@ public class CmsSubscriptionDriver implements I_CmsDriver, I_CmsSubscriptionDriv
             conditions.append(BEGIN_INCLUDE_CONDITION);
             if (filter.isIncludeSubFolders()) {
                 conditions.append(m_sqlManager.readQuery(dbc.currentProject(), "C_RESOURCES_SELECT_BY_PATH_PREFIX"));
-                params.add(CmsFileUtil.addTrailingSeparator(CmsVfsDriver.escapeDbWildcard(filter.getParentPath()))
-                    + "%");
+                params.add(new CmsPreparedStatementStringParameter(
+                    CmsFileUtil.addTrailingSeparator(CmsVfsDriver.escapeDbWildcard(filter.getParentPath())) + "%"));
             } else {
                 conditions.append(m_sqlManager.readQuery(dbc.currentProject(), "C_RESOURCES_SELECT_BY_PARENT_UUID"));
-                params.add(parent.getStructureId().toString());
+                params.add(new CmsPreparedStatementStringParameter(parent.getStructureId().toString()));
             }
             conditions.append(END_CONDITION);
         }
@@ -647,8 +585,8 @@ public class CmsSubscriptionDriver implements I_CmsDriver, I_CmsSubscriptionDriv
             conditions.append(m_sqlManager.readQuery(
                 dbc.currentProject(),
                 "C_SUBSCRIPTION_FILTER_RESOURCES_DATE_MODIFIED"));
-            params.add(String.valueOf(filter.getFromDate()));
-            params.add(String.valueOf(filter.getToDate()));
+            params.add(new CmsPreparedStatementLongParameter(filter.getFromDate()));
+            params.add(new CmsPreparedStatementLongParameter(filter.getToDate()));
             conditions.append(END_CONDITION);
         }
 
@@ -662,7 +600,8 @@ public class CmsSubscriptionDriver implements I_CmsDriver, I_CmsSubscriptionDriv
 
             // set parameters
             for (int i = 0; i < params.size(); i++) {
-                stmt.setString(i + 1, params.get(i));
+                I_CmsPreparedStatementParameter param = params.get(i);
+                param.insertIntoStatement(stmt, i + 1);
             }
             res = stmt.executeQuery();
 
@@ -706,6 +645,65 @@ public class CmsSubscriptionDriver implements I_CmsDriver, I_CmsSubscriptionDriv
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
         return resources;
+    }
+
+    /**
+     * Reads {@link CmsVisitEntry} objects from the database.<p>
+     * 
+     * @param dbc the database context to use 
+     * @param poolName the name of the pool which should be used for the database operation 
+     * @param filter a filter for constraining the list of results
+     *  
+     * @return a list of visit entries 
+     * 
+     * @throws CmsDataAccessException if the database operation fails 
+     */
+    public List<CmsVisitEntry> readVisits(CmsDbContext dbc, String poolName, CmsVisitEntryFilter filter)
+    throws CmsDataAccessException {
+
+        List<CmsVisitEntry> entries = new ArrayList<CmsVisitEntry>();
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet res = null;
+
+        try {
+            if (CmsStringUtil.isNotEmpty(poolName)) {
+                conn = m_sqlManager.getConnection(poolName);
+            } else {
+                conn = m_sqlManager.getConnection(dbc);
+            }
+
+            // compose statement 
+            StringBuffer queryBuf = new StringBuffer(256);
+            queryBuf.append(m_sqlManager.readQuery("C_VISIT_READ_ENTRIES"));
+            CmsPair<String, List<I_CmsPreparedStatementParameter>> conditionsAndParameters = prepareVisitConditions(filter);
+            List<I_CmsPreparedStatementParameter> params = conditionsAndParameters.getSecond();
+            queryBuf.append(conditionsAndParameters.getFirst());
+
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(queryBuf.toString());
+            }
+            stmt = m_sqlManager.getPreparedStatementForSql(conn, queryBuf.toString());
+            for (int i = 0; i < params.size(); i++) {
+                I_CmsPreparedStatementParameter param = params.get(i);
+                param.insertIntoStatement(stmt, i + 1);
+            }
+
+            // execute
+            res = stmt.executeQuery();
+            while (res.next()) {
+                // get results
+                entries.add(internalReadVisitEntry(res));
+            }
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, res);
+        }
+        return entries;
     }
 
     /**
@@ -899,34 +897,15 @@ public class CmsSubscriptionDriver implements I_CmsDriver, I_CmsSubscriptionDriv
     }
 
     /**
-     * Creates a new {@link CmsLogEntry} object from the given result set entry.<p>
+     * Adds an entry to the table of visits.<p>
      * 
-     * @param res the result set 
+     * @param dbc the database context to use 
+     * @param poolName the name of the database pool to use 
+     * @param visit the visit bean
      *  
-     * @return the new {@link CmsLogEntry} object
-     * 
-     * @throws SQLException if something goes wrong
+     * @throws CmsDbSqlException if the database operation fails  
      */
-    protected CmsLogEntry internalReadLogEntry(ResultSet res) throws SQLException {
-
-        CmsUUID userId = new CmsUUID(res.getString(m_sqlManager.readQuery("C_LOG_USER_ID")));
-        long date = res.getLong(m_sqlManager.readQuery("C_LOG_DATE"));
-        CmsUUID structureId = new CmsUUID(res.getString(m_sqlManager.readQuery("C_LOG_STRUCTURE_ID")));
-        CmsLogEntryType type = CmsLogEntryType.valueOf(res.getInt(m_sqlManager.readQuery("C_LOG_TYPE")));
-        String[] data = CmsStringUtil.splitAsArray(res.getString(m_sqlManager.readQuery("C_LOG_DATA")), '|');
-        return new CmsLogEntry(userId, date, structureId, type, data);
-    }
-
-    /**
-     * Logs the given log entries.<p>
-     * 
-     * @param dbc the database context
-     * @param poolName the name of the database pool to use, if <code>null</code>, the default pool is used
-     * @param logEntries the log entries to write
-     * 
-     * @throws CmsDbSqlException if something goes wrong
-     */
-    protected void log(CmsDbContext dbc, String poolName, List<CmsLogEntry> logEntries) throws CmsDbSqlException {
+    protected void addVisit(CmsDbContext dbc, String poolName, CmsVisitEntry visit) throws CmsDbSqlException {
 
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -938,23 +917,20 @@ public class CmsSubscriptionDriver implements I_CmsDriver, I_CmsSubscriptionDriv
                 conn = m_sqlManager.getConnection(dbc);
             }
 
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_LOG_CREATE_5");
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_VISIT_CREATE_3");
 
-            for (CmsLogEntry logEntry : logEntries) {
-                stmt.setString(1, logEntry.getUserId().toString());
-                stmt.setLong(2, logEntry.getDate());
-                stmt.setString(3, logEntry.getStructureId() == null ? null : logEntry.getStructureId().toString());
-                stmt.setInt(4, logEntry.getType().getId());
-                stmt.setString(5, CmsStringUtil.arrayAsString(logEntry.getData(), "|"));
-                try {
-                    stmt.executeUpdate();
-                } catch (SQLException e) {
-                    // ignore, most likely a duplicate entry
-                    LOG.debug(Messages.get().container(
-                        Messages.ERR_GENERIC_SQL_1,
-                        CmsDbSqlException.getErrorQuery(stmt)).key(), e);
-                }
+            stmt.setString(1, visit.getUserId().toString());
+            stmt.setLong(2, visit.getDate());
+            stmt.setString(3, visit.getStructureId() == null ? null : visit.getStructureId().toString());
+            try {
+                stmt.executeUpdate();
+            } catch (SQLException e) {
+                // ignore, most likely a duplicate entry
+                LOG.debug(
+                    Messages.get().container(Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)).key(),
+                    e);
             }
+
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
                 Messages.ERR_GENERIC_SQL_1,
@@ -970,13 +946,30 @@ public class CmsSubscriptionDriver implements I_CmsDriver, I_CmsSubscriptionDriv
     }
 
     /**
-     * Build the whole WHERE SQL statement part for the given log entry filter.<p>
+     * Creates a new {@link CmsVisitEntry} object from the given result set entry.<p>
+     * 
+     * @param res the result set 
+     *  
+     * @return the new {@link CmsVisitEntry} object
+     * 
+     * @throws SQLException if something goes wrong
+     */
+    protected CmsVisitEntry internalReadVisitEntry(ResultSet res) throws SQLException {
+
+        CmsUUID userId = new CmsUUID(res.getString(m_sqlManager.readQuery("C_VISIT_USER_ID")));
+        long date = res.getLong(m_sqlManager.readQuery("C_VISIT_DATE"));
+        CmsUUID structureId = new CmsUUID(res.getString(m_sqlManager.readQuery("C_VISIT_STRUCTURE_ID")));
+        return new CmsVisitEntry(userId, date, structureId);
+    }
+
+    /**
+     * Build the whole WHERE SQL statement part for the given visit entry filter.<p>
      * 
      * @param filter the filter
      * 
      * @return a pair containing both the SQL and the parameters for it
      */
-    protected CmsPair<String, List<I_CmsPreparedStatementParameter>> prepareLogConditions(CmsLogFilter filter) {
+    protected CmsPair<String, List<I_CmsPreparedStatementParameter>> prepareVisitConditions(CmsVisitEntryFilter filter) {
 
         List<I_CmsPreparedStatementParameter> params = new ArrayList<I_CmsPreparedStatementParameter>();
         StringBuffer conditions = new StringBuffer();
@@ -988,7 +981,7 @@ public class CmsSubscriptionDriver implements I_CmsDriver, I_CmsSubscriptionDriv
             } else {
                 conditions.append(BEGIN_INCLUDE_CONDITION);
             }
-            conditions.append(m_sqlManager.readQuery("C_LOG_FILTER_USER_ID"));
+            conditions.append(m_sqlManager.readQuery("C_VISIT_FILTER_USER_ID"));
             params.add(new CmsPreparedStatementStringParameter(filter.getUserId().toString()));
             conditions.append(END_CONDITION);
         }
@@ -1000,7 +993,7 @@ public class CmsSubscriptionDriver implements I_CmsDriver, I_CmsSubscriptionDriv
             } else {
                 conditions.append(BEGIN_INCLUDE_CONDITION);
             }
-            conditions.append(m_sqlManager.readQuery("C_LOG_FILTER_RESOURCE_ID"));
+            conditions.append(m_sqlManager.readQuery("C_VISIT_FILTER_STRUCTURE_ID"));
             params.add(new CmsPreparedStatementStringParameter(filter.getStructureId().toString()));
             conditions.append(END_CONDITION);
         }
@@ -1012,7 +1005,7 @@ public class CmsSubscriptionDriver implements I_CmsDriver, I_CmsSubscriptionDriv
             } else {
                 conditions.append(BEGIN_INCLUDE_CONDITION);
             }
-            conditions.append(m_sqlManager.readQuery("C_LOG_FILTER_DATE_FROM"));
+            conditions.append(m_sqlManager.readQuery("C_VISIT_FILTER_DATE_FROM"));
             params.add(new CmsPreparedStatementLongParameter(filter.getDateFrom()));
             conditions.append(END_CONDITION);
         }
@@ -1024,58 +1017,11 @@ public class CmsSubscriptionDriver implements I_CmsDriver, I_CmsSubscriptionDriv
             } else {
                 conditions.append(BEGIN_INCLUDE_CONDITION);
             }
-            conditions.append(m_sqlManager.readQuery("C_LOG_FILTER_DATE_TO"));
+            conditions.append(m_sqlManager.readQuery("C_VISIT_FILTER_DATE_TO"));
             params.add(new CmsPreparedStatementLongParameter(filter.getDateTo()));
             conditions.append(END_CONDITION);
         }
-
-        // include type filter
-        Set<CmsLogEntryType> includeTypes = filter.getIncludeTypes();
-        if (!includeTypes.isEmpty()) {
-            if (conditions.length() == 0) {
-                conditions.append(BEGIN_CONDITION);
-            } else {
-                conditions.append(BEGIN_INCLUDE_CONDITION);
-            }
-            conditions.append(m_sqlManager.readQuery("C_LOG_FILTER_INCLUDE_TYPE"));
-            conditions.append(BEGIN_CONDITION);
-            Iterator<CmsLogEntryType> it = includeTypes.iterator();
-            while (it.hasNext()) {
-                CmsLogEntryType type = it.next();
-                conditions.append("?");
-                params.add(new CmsPreparedStatementIntParameter(type.getId()));
-                if (it.hasNext()) {
-                    conditions.append(", ");
-                }
-            }
-            conditions.append(END_CONDITION);
-            conditions.append(END_CONDITION);
-        }
-
-        // exclude type filter
-        Set<CmsLogEntryType> excludeTypes = filter.getExcludeTypes();
-        if (!excludeTypes.isEmpty()) {
-            if (conditions.length() == 0) {
-                conditions.append(BEGIN_CONDITION);
-            } else {
-                conditions.append(BEGIN_INCLUDE_CONDITION);
-            }
-            conditions.append(m_sqlManager.readQuery("C_LOG_FILTER_EXCLUDE_TYPE"));
-            conditions.append(BEGIN_CONDITION);
-            Iterator<CmsLogEntryType> it = excludeTypes.iterator();
-            while (it.hasNext()) {
-                CmsLogEntryType type = it.next();
-                conditions.append("?");
-                params.add(new CmsPreparedStatementIntParameter(type.getId()));
-                if (it.hasNext()) {
-                    conditions.append(", ");
-                }
-            }
-            conditions.append(END_CONDITION);
-            conditions.append(END_CONDITION);
-        }
-        return new CmsPair<String, List<I_CmsPreparedStatementParameter>>(conditions.toString(), params);
-
+        return CmsPair.create(conditions.toString(), params);
     }
 
 }

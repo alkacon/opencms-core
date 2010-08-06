@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2010/08/05 12:55:10 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/08/06 14:07:18 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,11 +39,10 @@ import org.opencms.db.CmsDbIoException;
 import org.opencms.db.CmsDbSqlException;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.db.CmsUserSettings;
+import org.opencms.db.CmsVisitEntryFilter;
 import org.opencms.db.I_CmsDriver;
 import org.opencms.db.I_CmsProjectDriver;
 import org.opencms.db.I_CmsUserDriver;
-import org.opencms.db.log.CmsLogEntryType;
-import org.opencms.db.log.CmsLogFilter;
 import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsGroup;
@@ -104,7 +103,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 6.0.0 
  */
@@ -647,9 +646,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
         if (OpenCms.getSubscriptionManager().isEnabled()) {
             // delete visited resource information from log
-            CmsLogFilter filter = CmsLogFilter.ALL.includeType(CmsLogEntryType.USER_RESOURCE_VISITED).filterUser(
-                user.getId());
-            m_driverManager.getSubscriptionDriver().deleteLog(
+            CmsVisitEntryFilter filter = CmsVisitEntryFilter.ALL.filterUser(user.getId());
+            m_driverManager.getSubscriptionDriver().deleteVisits(
                 dbc,
                 OpenCms.getSubscriptionManager().getPoolName(),
                 filter);
