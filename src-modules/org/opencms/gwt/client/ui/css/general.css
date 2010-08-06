@@ -21,6 +21,10 @@
 .border {
 	border: 1px solid value("constantsCss.borderColor");
 }
+
+.cellpadding {
+	padding: 2px 0px;
+}
 	
 .cmsState-up, .cmsState-up-hovering, .cmsState-up-disabled, .cmsState-down, .cmsState-down-hovering, .cmsState-down-disabled, .cmsHovering{};
 

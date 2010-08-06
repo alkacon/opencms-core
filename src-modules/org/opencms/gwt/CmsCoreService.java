@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsCoreService.java,v $
- * Date   : $Date: 2010/07/21 11:02:34 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2010/08/06 14:08:15 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 8.0.0
  * 
@@ -402,8 +402,10 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             }
         }
         // after the filtering is finished, remove the last separator if it is existent
-        if (result.get(result.size() - 1).isSeparator()) {
-            result.remove(result.size() - 1);
+        if (result.size() > 1) {
+            if (result.get(result.size() - 1).isSeparator()) {
+                result.remove(result.size() - 1);
+            }
         }
         return result;
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/datebox/Attic/CmsDateBoxHandler.java,v $
- * Date   : $Date: 2010/07/15 17:13:12 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/08/06 14:08:14 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,11 +39,9 @@ import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyPressEvent;
-import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
-import com.google.gwt.user.client.ui.PopupPanel;
 
 /**
  * This singleton implements the handler for the whole date time piker.<p>
@@ -57,6 +55,7 @@ public final class CmsDateBoxHandler {
     /** The date box. */
     private CmsDateBox m_dateBox;
 
+    /** The old value for fire event decision. */
     private Date m_oldValue;
 
     /**
@@ -152,11 +151,19 @@ public final class CmsDateBoxHandler {
     }
 
     /**
-     * If the popup closes the new value is fixed and a event should be fired.<p>
+     * If the value of the picker changes, the value of the date time picker should be updated.<p> 
      * 
-     * @param event the close event
+     * @param value the new date selected from the picker
      */
-    public void onPopupClose(CloseEvent<PopupPanel> event) {
+    public void onPickerValueChanged(Date value) {
+
+        updateFromDateTimePicker(value);
+    }
+
+    /**
+     * If the popup closes the new value is fixed and a event should be fired.<p>
+     */
+    public void onPopupClose() {
 
         CmsDateChangeEvent.fireIfNotEqualDates(m_dateBox, m_oldValue, m_dateBox.getValue());
     }
@@ -207,10 +214,10 @@ public final class CmsDateBoxHandler {
 
         String timeAsString = getCurrentTimeFieldValue();
         if (!CmsDateConverter.validateTime(timeAsString)) {
-            m_dateBox.getPopup().setAutoHideEnabled(false);
+            m_dateBox.getPopup().setAutoHide(false);
         } else {
             m_dateBox.getBox().setText(CmsDateConverter.toString(getValueFromDateTimePicker()));
-            m_dateBox.getPopup().setAutoHideEnabled(true);
+            m_dateBox.getPopup().setAutoHide(true);
             m_dateBox.getTimeErr().setText(null);
         }
     }
@@ -225,11 +232,11 @@ public final class CmsDateBoxHandler {
         if (!CmsDateConverter.validateTime(time)) {
             m_dateBox.getTimeErr().setText(
                 Messages.get().key(Messages.ERR_DATEBOX_INVALID_TIME_FORMAT_1, CmsDateConverter.cutSuffix(time)));
-            m_dateBox.getPopup().setAutoHideEnabled(false);
+            m_dateBox.getPopup().setAutoHide(false);
         } else {
             m_dateBox.getTimeErr().setText(null);
             m_dateBox.getBox().setErrorMessage(null);
-            m_dateBox.getPopup().showRelativeTo(m_dateBox);
+            m_dateBox.getPopup().show(m_dateBox.getBox().getElement(), "bl");
         }
     }
 
@@ -294,7 +301,7 @@ public final class CmsDateBoxHandler {
      */
     private boolean isDatePickerShowing() {
 
-        return m_dateBox.getPopup().isShowing();
+        return m_dateBox.getPopup().isVisible();
     }
 
     /**
@@ -309,9 +316,6 @@ public final class CmsDateBoxHandler {
         try {
             date = CmsDateConverter.toDate(dateAsString);
             m_dateBox.getBox().setErrorMessage(null);
-            //            if (isDatePickerShowing()) {
-            //                m_dateBox.getPopup().showRelativeTo(m_dateBox);
-            //            }
         } catch (Exception e) {
 
             m_dateBox.getBox().setErrorMessage(
@@ -365,12 +369,11 @@ public final class CmsDateBoxHandler {
         Date date = m_dateBox.getPicker().getValue();
         if (date == null) {
             Date tmpDate = new Date();
-            m_dateBox.getPicker().setCurrentMonth(tmpDate);
             m_dateBox.getPicker().setValue(tmpDate, false);
         }
         updateDateFromTextBox();
         m_oldValue = m_dateBox.getValue();
-        m_dateBox.getPopup().showRelativeTo(m_dateBox);
+        m_dateBox.getPopup().show(m_dateBox.getBox().getElement(), "bl");
     }
 
     /**
@@ -380,13 +383,12 @@ public final class CmsDateBoxHandler {
 
         Date parsedDate = parseToDate();
         if (parsedDate != null) {
-            m_dateBox.getPicker().setValue(parsedDate);
-            m_dateBox.getPicker().setCurrentMonth(parsedDate);
+            m_dateBox.getPicker().setValue(parsedDate, true);
         }
         setTime(parsedDate);
         setAmPmFromBox(parsedDate);
         m_dateBox.getTimeErr().setText(null);
-        m_dateBox.getPopup().setAutoHideEnabled(true);
+        m_dateBox.getPopup().setAutoHide(true);
     }
 
     /**
@@ -398,7 +400,6 @@ public final class CmsDateBoxHandler {
 
         if (date == null) {
             Date tmpDate = new Date();
-            m_dateBox.getPicker().setCurrentMonth(tmpDate);
             m_dateBox.getPicker().setValue(tmpDate, false);
         }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageHandler.java,v $
- * Date   : $Date: 2010/07/26 06:30:01 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2010/08/06 14:08:14 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,6 @@ import org.opencms.ade.publish.client.CmsPublishDialog;
 import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.gwt.client.ui.CmsConfirmDialog;
 import org.opencms.gwt.client.ui.CmsContextMenuEntry;
-import org.opencms.gwt.client.ui.CmsIFrameDialog;
 import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.CmsSimpleListItem;
 import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
@@ -76,6 +75,7 @@ import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -85,7 +85,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @since 8.0.0
  */
@@ -561,8 +561,7 @@ public class CmsContainerpageHandler {
 
                 public void execute() {
 
-                    CmsIFrameDialog.init(CmsContainerpageHandler.this);
-                    CmsIFrameDialog.get().openDialog(entry.getJspPath(), uri, m_controller.getData().getBacklinkUri());
+                    Window.alert(entry.getJspPath());
                 }
             };
             entry.setCommand(cmd);

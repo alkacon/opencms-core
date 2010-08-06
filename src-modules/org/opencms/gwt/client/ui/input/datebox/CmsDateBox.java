@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/datebox/Attic/CmsDateBox.java,v $
- * Date   : $Date: 2010/07/08 07:27:18 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/08/06 14:08:14 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,7 +33,6 @@ package org.opencms.gwt.client.ui.input.datebox;
 
 import org.opencms.gwt.client.I_CmsHasInit;
 import org.opencms.gwt.client.Messages;
-import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.input.CmsErrorWidget;
 import org.opencms.gwt.client.ui.input.CmsRadioButton;
 import org.opencms.gwt.client.ui.input.CmsRadioButtonGroup;
@@ -45,6 +44,11 @@ import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
 import java.util.Date;
 import java.util.Map;
 
+import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.widget.DatePicker;
+import com.extjs.gxt.ui.client.widget.Popup;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
@@ -55,8 +59,6 @@ import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.event.dom.client.HasDoubleClickHandlers;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
-import com.google.gwt.event.logical.shared.CloseEvent;
-import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -65,13 +67,11 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
-import com.google.gwt.user.client.ui.PopupPanel;
-import com.google.gwt.user.datepicker.client.DatePicker;
 
 /**
  * A text box that shows a date time picker widget when the user clicks on it.
  * 
- * @version 0.1
+ * @version $Revision: 1.5 $
  * 
  * @author Ruediger Kurz
  */
@@ -86,13 +86,13 @@ implements HasValue<Date>, HasDoubleClickHandlers, I_CmsFormWidget, I_CmsHasInit
     /**
      * This inner Class implements the handlers for the date box widget.<p>
      * 
-     * @version 0.1
+     * @version $Revision: 1.5 $
      * 
      * @author Ruediger Kurz
      * 
-     * @see {@link ClickHandler}, {@link BlurHandler}, {@link KeyPressHandler}, {@link CloseHandler}
+     * @see {@link ClickHandler}, {@link BlurHandler}, {@link KeyPressHandler}
      */
-    private class DateBoxHandler implements ClickHandler, BlurHandler, KeyPressHandler, CloseHandler<PopupPanel> {
+    private class DateBoxHandler implements ClickHandler, BlurHandler, KeyPressHandler {
 
         /** The main handler for this UI. */
         private CmsDateBoxHandler m_handler;
@@ -126,15 +126,6 @@ implements HasValue<Date>, HasDoubleClickHandlers, I_CmsFormWidget, I_CmsHasInit
         }
 
         /**
-         * @see com.google.gwt.event.logical.shared.CloseHandler#onClose(com.google.gwt.event.logical.shared.CloseEvent)
-         */
-        public void onClose(CloseEvent<PopupPanel> event) {
-
-            m_handler.onPopupClose(event);
-
-        }
-
-        /**
          * @see com.google.gwt.event.dom.client.KeyPressHandler#onKeyPress(com.google.gwt.event.dom.client.KeyPressEvent)
          */
         public void onKeyPress(KeyPressEvent event) {
@@ -145,15 +136,48 @@ implements HasValue<Date>, HasDoubleClickHandlers, I_CmsFormWidget, I_CmsHasInit
     }
 
     /**
+     * This inner Class implements the listeners for the date box.<p>
+     * 
+     * @version $Revision: 1.5 $
+     * 
+     * @author Ruediger Kurz
+     */
+    private class DateBoxListener implements Listener<ComponentEvent> {
+
+        /** The main handler for this UI. */
+        private CmsDateBoxHandler m_handler;
+
+        /**
+         * The public constructor.<p>
+         * 
+         * @param handler the main handler for the UI
+         */
+        public DateBoxListener(CmsDateBoxHandler handler) {
+
+            m_handler = handler;
+        }
+
+        /**
+         * @see com.extjs.gxt.ui.client.event.Listener#handleEvent(com.extjs.gxt.ui.client.event.BaseEvent)
+         */
+        @Override
+        public void handleEvent(ComponentEvent be) {
+
+            m_handler.onPopupClose();
+
+        }
+    }
+
+    /**
      * This inner Class implements the handlers for the date box widget.<p>
      * 
-     * @version 0.1
+     * @version $Revision: 1.5 $
      * 
      * @author Ruediger Kurz
      * 
      * @see {@link ClickHandler}, {@link ValueChangeHandler}, {@link BlurHandler}, {@link KeyPressHandler}
      */
-    private class DateTimePickerHandler implements ClickHandler, ValueChangeHandler<Date>, BlurHandler, KeyPressHandler {
+    private class DateTimePickerHandler implements ClickHandler, BlurHandler, KeyPressHandler {
 
         /** The main handler for this UI. */
         private CmsDateBoxHandler m_handler;
@@ -192,12 +216,38 @@ implements HasValue<Date>, HasDoubleClickHandlers, I_CmsFormWidget, I_CmsHasInit
             m_handler.onTimeKeyPressed(event);
         }
 
-        /**
-         * @see com.google.gwt.event.logical.shared.ValueChangeHandler#onValueChange(com.google.gwt.event.logical.shared.ValueChangeEvent)
-         */
-        public void onValueChange(ValueChangeEvent<Date> event) {
+    }
 
-            m_handler.onPickerValueChanged(event);
+    /**
+     * This inner Class implements the listeners for the date time picker.<p>
+     * 
+     * @version $Revision: 1.5 $
+     * 
+     * @author Ruediger Kurz
+     */
+    private class DateTimePickerListener implements Listener<ComponentEvent> {
+
+        /** The main handler for this UI. */
+        private CmsDateBoxHandler m_handler;
+
+        /**
+         * The public constructor.<p>
+         * 
+         * @param handler the main handler for the UI
+         */
+        public DateTimePickerListener(CmsDateBoxHandler handler) {
+
+            m_handler = handler;
+        }
+
+        /**
+         * @see com.extjs.gxt.ui.client.event.Listener#handleEvent(com.extjs.gxt.ui.client.event.BaseEvent)
+         */
+        @Override
+        public void handleEvent(ComponentEvent be) {
+
+            m_handler.onPickerValueChanged(m_picker.getValue());
+
         }
     }
 
@@ -243,7 +293,8 @@ implements HasValue<Date>, HasDoubleClickHandlers, I_CmsFormWidget, I_CmsHasInit
     private CmsRadioButtonGroup m_ampmGroup = new CmsRadioButtonGroup();
 
     /** The popup panel to show the the date time picker widget in. */
-    private CmsPopup m_popup = new CmsPopup();
+    //private CmsPopup m_popup = new CmsPopup();
+    private Popup m_popup = new Popup();
 
     /**
      * Create a new date box widget with the date time picker.
@@ -270,7 +321,10 @@ implements HasValue<Date>, HasDoubleClickHandlers, I_CmsFormWidget, I_CmsHasInit
         m_pm.addClickHandler(dateTimePickerHandler);
         m_time.addBlurHandler(dateTimePickerHandler);
         m_time.addKeyPressHandler(dateTimePickerHandler);
-        m_picker.addValueChangeHandler(dateTimePickerHandler);
+
+        DateTimePickerListener dateTimePickerListener = new DateTimePickerListener(pickerHandler);
+
+        m_picker.addListener(Events.Select, dateTimePickerListener);
 
         if (!CmsDateConverter.is12HourPresentation()) {
             m_pm.setVisible(false);
@@ -278,11 +332,11 @@ implements HasValue<Date>, HasDoubleClickHandlers, I_CmsFormWidget, I_CmsHasInit
         }
 
         m_popup.add(m_dateTimePanel);
-        m_popup.setWidth("100px");
-        m_popup.addCloseHandler(dateBoxHandler);
-        m_popup.setModal(false);
-        m_popup.setText(Messages.get().key(Messages.GUI_DATEBOX_TITLE_0));
-        m_popup.addAutoHidePartner(m_box.getElement());
+        m_popup.setShadow(true);
+
+        DateBoxListener dateBoxListener = new DateBoxListener(pickerHandler);
+        m_popup.addListener(Events.Close, dateBoxListener);
+        m_popup.getIgnoreList().add(m_box.getElement());
 
     }
 
@@ -351,6 +405,16 @@ implements HasValue<Date>, HasDoubleClickHandlers, I_CmsFormWidget, I_CmsHasInit
     }
 
     /**
+     * Returns the dateBoxPanel.<p>
+     *
+     * @return the dateBoxPanel
+     */
+    public FlowPanel getDateBoxPanel() {
+
+        return m_dateBoxPanel;
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getFieldType()
      */
     public FieldType getFieldType() {
@@ -399,7 +463,7 @@ implements HasValue<Date>, HasDoubleClickHandlers, I_CmsFormWidget, I_CmsHasInit
      *
      * @return the popup
      */
-    public CmsPopup getPopup() {
+    public Popup getPopup() {
 
         return m_popup;
     }
@@ -437,6 +501,16 @@ implements HasValue<Date>, HasDoubleClickHandlers, I_CmsFormWidget, I_CmsHasInit
             // should never happen
         }
         return date;
+    }
+
+    /**
+     * Returns the date value as formated String or an empty String if the date value is null.<p>
+     * 
+     * @return the date value as formated String
+     */
+    public String getValueAsFormatedString() {
+
+        return CmsDateConverter.toString(getValue());
     }
 
     /**
@@ -513,15 +587,5 @@ implements HasValue<Date>, HasDoubleClickHandlers, I_CmsFormWidget, I_CmsHasInit
             CmsDateChangeEvent.fireIfNotEqualDates(this, getValue(), value);
         }
 
-    }
-
-    /**
-     * Returns the date value as formated String or an empty String if the date value is null.<p>
-     * 
-     * @return the date value as formated String
-     */
-    public String getValueAsFormatedString() {
-
-        return CmsDateConverter.toString(getValue());
     }
 }

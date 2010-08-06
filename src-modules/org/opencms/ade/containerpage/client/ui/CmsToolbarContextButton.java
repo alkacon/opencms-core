@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsToolbarContextButton.java,v $
- * Date   : $Date: 2010/07/21 11:02:34 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/08/06 14:08:15 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,51 +33,64 @@ package org.opencms.ade.containerpage.client.ui;
 
 import org.opencms.ade.containerpage.client.CmsContainerpageHandler;
 import org.opencms.gwt.client.CmsCoreProvider;
-import org.opencms.gwt.client.ui.CmsContextMenu;
-import org.opencms.gwt.client.ui.CmsContextMenuHandler;
+import org.opencms.gwt.client.ui.CmsContextMenuGXT;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsContextMenuEntry;
+import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
-import org.opencms.gwt.client.ui.input.CmsLabel;
 import org.opencms.gwt.client.util.CmsCollectionUtil;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 
 import java.util.List;
 
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.FlexTable;
+import com.extjs.gxt.ui.client.Style.ButtonScale;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.widget.Label;
+import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.menu.Menu;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.impl.ClippedImagePrototype;
 
 /**
- * The context tool-bar menu.<p>
+ * The context tool-bar menu button.<p>
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
-public class CmsToolbarContextButton extends A_CmsToolbarMenu {
+public class CmsToolbarContextButton extends Button {
 
-    /** Signals whether the widget has been initialized or not. */
-    private boolean m_initialized;
-
-    /** The main content widget. */
-    private FlexTable m_menuPanel;
-
-    /** The handler resize registration. */
-    private HandlerRegistration m_resizeRegistration;
+    /** The menu data. */
+    protected List<I_CmsContextMenuEntry> m_menuEntries;
 
     /**
      * Constructor.<p>
      * 
      * @param handler the container-page handler
      */
-    public CmsToolbarContextButton(CmsContainerpageHandler handler) {
+    public CmsToolbarContextButton(final CmsContainerpageHandler handler) {
 
-        super(I_CmsButton.ButtonData.CONTEXT, handler);
+        super(I_CmsButton.ButtonData.CONTEXT.getTitle());
 
+        addStyleName(I_CmsLayoutBundle.INSTANCE.contextmenuCss().cmsContextMenu());
+        setScale(ButtonScale.MEDIUM);
+        setIcon(new ClippedImagePrototype(I_CmsImageBundle.INSTANCE.toolbarContext().getURL(), 0, -1, 24, 24));
+
+        addHandler(new ClickHandler() {
+
+            @Override
+            public void onClick(ClickEvent event) {
+
+                if (m_menuEntries == null) {
+                    handler.loadContextMenu(CmsCoreProvider.get().getUri(), AdeContext.containerpage);
+                }
+            }
+        }, ClickEvent.getType());
+
+        /*
         // create the menu panel (it's a table because of ie6)
         m_menuPanel = new FlexTable();
         // set a style name for the menu table
@@ -88,30 +101,28 @@ public class CmsToolbarContextButton extends A_CmsToolbarMenu {
 
         // remove the style attribute of the popup because its width is set to 100%
         DOM.removeElementAttribute(getPopupContent().getWidget().getElement(), "style");
+        */
 
     }
 
     /**
-     * @see org.opencms.ade.containerpage.client.ui.I_CmsToolbarButton#onToolbarActivate()
-     */
-    public void onToolbarActivate() {
-
-        if (!m_initialized) {
-            getHandler().loadContextMenu(CmsCoreProvider.get().getUri(), AdeContext.containerpage);
-            m_initialized = true;
-        }
-    }
-
-    /**
-     * Unregister the resize handler.<p>
+     * Creates the menu and adds it to the panel.<p>
      * 
-     * @see org.opencms.ade.containerpage.client.ui.I_CmsToolbarButton#onToolbarDeactivate()
+     * @param menuEntries the menu entries 
      */
-    public void onToolbarDeactivate() {
+    public void showMenu(List<I_CmsContextMenuEntry> menuEntries) {
 
-        if (m_resizeRegistration != null) {
-            m_resizeRegistration.removeHandler();
-            m_resizeRegistration = null;
+        if (!CmsCollectionUtil.isEmptyOrNull(menuEntries)) {
+            m_menuEntries = menuEntries;
+            CmsContextMenuGXT buttonMenu = new CmsContextMenuGXT(menuEntries);
+            setMenu(buttonMenu);
+            onClick(new ComponentEvent(this));
+        } else {
+            // if no entries were found, inform the user 
+            Menu buttonMenu = new Menu();
+            buttonMenu.add(new Label("No entries found for this resource type!"));
+            setMenu(buttonMenu);
+            onClick(new ComponentEvent(this));
         }
     }
 
@@ -120,6 +131,7 @@ public class CmsToolbarContextButton extends A_CmsToolbarMenu {
      * 
      * @param menuEntries the menu entries 
      */
+    /*
     public void showMenu(List<I_CmsContextMenuEntry> menuEntries) {
 
         if (!CmsCollectionUtil.isEmptyOrNull(menuEntries)) {
@@ -138,4 +150,5 @@ public class CmsToolbarContextButton extends A_CmsToolbarMenu {
             m_menuPanel.setWidget(0, 0, label);
         }
     }
+    */
 }

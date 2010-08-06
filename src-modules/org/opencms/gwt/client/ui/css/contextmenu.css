@@ -1,7 +1,17 @@
 /* This is needed since there is a bug in GWT that obfuscates the primary style name but not the secondary :( */
-@external dialogTop, dialogBottom;
+@external dialogTop, dialogBottom, x-btn-text;
 
 .dragging, .dragOverlay, .menuPopup, .popup, .popupButtonPanel, .popupContent, .popupHead, .popupMainContent, .popupOverlay, .popupShadow{}
+
+.cmsContextMenu {
+	display: inline-block;
+	vertical-align: middle;
+	margin-left: 5px;
+}
+
+.cmsContextMenu .x-btn-text {
+	font-size: 14px;
+}
 
 .menuPanel{ /* the panel (table) the context menu is set as widget. */
 	background: #F9F9F9;
