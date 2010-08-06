@@ -6339,10 +6339,10 @@ ul.x-tab-strip-bottom{
 .x-spinner-field .x-form-spinner-down {
   background-image: url('../images/default/form/spinner.gif');
 }.x-btn{
-	font:normal 11px tahoma, verdana, helvetica;
+	font:normal 100.01% tahoma, verdana, helvetica;
 }
 .x-btn button{
-    font:normal 11px arial,tahoma,verdana,helvetica;
+    font:normal 100.01% arial,tahoma,verdana,helvetica;
     color:#333;
 }
 .x-btn em {
