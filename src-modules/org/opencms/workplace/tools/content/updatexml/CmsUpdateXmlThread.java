@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/updatexml/CmsUpdateXmlThread.java,v $
- * Date   : $Date: 2010/07/28 12:37:02 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/08/09 17:06:28 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
+import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -55,7 +56,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Mario Jaeger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 7.0.5
  */
@@ -233,7 +234,8 @@ public class CmsUpdateXmlThread extends A_CmsReportThread {
         while (iter.hasNext()) {
             CmsResource cmsResource = iter.next();
             // only update Xml contents
-            if (cmsResource.isFile() && CmsResourceTypeXmlContent.isXmlContent(cmsResource)) {
+            if (cmsResource.isFile()
+                && (CmsResourceTypeXmlContent.isXmlContent(cmsResource) || CmsResourceTypeXmlPage.isXmlPage(cmsResource))) {
                 files2Update.add(cmsResource);
             }
         }
