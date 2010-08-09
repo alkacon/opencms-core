@@ -1409,7 +1409,7 @@
 				</property>
 				<property>
 					<name>NavInfo</name>
-					<value><![CDATA[${key.GUI_CONVERTXML_ADMIN_TOOL_GROUP_0}]]></value>
+					<value><![CDATA[${key.GUI_UPDATEXML_ADMIN_TOOL_GROUP_0}]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>
