@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsAvailabilityWindow.java,v $
- * Date   : $Date: 2010/08/06 14:08:14 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/08/10 13:01:47 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,7 @@
 
 package org.opencms.gwt.client.ui;
 
-import org.opencms.ade.containerpage.client.Messages;
+import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.CmsLabel;
@@ -57,7 +57,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since version 8.0.0
  */
@@ -204,22 +204,22 @@ public class CmsAvailabilityWindow extends Window {
         buttonPanel.setStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupButtonPanel());
 
         CmsPushButton saveButton = new CmsPushButton();
-        saveButton.setTitle(Messages.get().key(Messages.GUI_BUTTON_SAVE_TEXT_0));
-        saveButton.setText(Messages.get().key(Messages.GUI_BUTTON_SAVE_TEXT_0));
+        saveButton.setTitle(Messages.get().key(Messages.GUI_OK_0));
+        saveButton.setText(Messages.get().key(Messages.GUI_OK_0));
         saveButton.setSize(I_CmsButton.Size.medium);
         saveButton.setUseMinWidth(true);
         saveButton.addClickHandler(m_closeHandler);
 
         CmsPushButton cancelButton = new CmsPushButton();
-        cancelButton.setTitle(Messages.get().key(Messages.GUI_BUTTON_CANCEL_TEXT_0));
-        cancelButton.setText(Messages.get().key(Messages.GUI_BUTTON_CANCEL_TEXT_0));
+        cancelButton.setTitle(Messages.get().key(Messages.GUI_CANCEL_0));
+        cancelButton.setText(Messages.get().key(Messages.GUI_CANCEL_0));
         cancelButton.setSize(I_CmsButton.Size.medium);
         cancelButton.setUseMinWidth(true);
         cancelButton.addClickHandler(m_closeHandler);
 
         CmsPushButton resetButton = new CmsPushButton();
-        resetButton.setTitle(Messages.get().key(Messages.GUI_BUTTON_RESET_TEXT_0));
-        resetButton.setText(Messages.get().key(Messages.GUI_BUTTON_RESET_TEXT_0));
+        resetButton.setTitle(Messages.get().key(Messages.GUI_RESET_0));
+        resetButton.setText(Messages.get().key(Messages.GUI_RESET_0));
         resetButton.setSize(I_CmsButton.Size.medium);
         resetButton.setUseMinWidth(true);
         resetButton.addClickHandler(m_closeHandler);
