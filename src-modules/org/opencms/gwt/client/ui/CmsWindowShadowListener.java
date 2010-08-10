@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsWindowShadowListener.java,v $
- * Date   : $Date: 2010/08/06 14:08:14 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/08/10 07:02:03 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since version 8.0.0
  */
@@ -64,7 +64,6 @@ public class CmsWindowShadowListener implements Listener<FieldSetEvent>, ClickHa
     /**
      * @see com.extjs.gxt.ui.client.event.Listener#handleEvent(com.extjs.gxt.ui.client.event.BaseEvent)
      */
-    @Override
     public void handleEvent(FieldSetEvent be) {
 
         m_window.sync(true);
@@ -74,7 +73,6 @@ public class CmsWindowShadowListener implements Listener<FieldSetEvent>, ClickHa
     /**
      * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
      */
-    @Override
     public void onClick(ClickEvent event) {
 
         m_window.sync(true);

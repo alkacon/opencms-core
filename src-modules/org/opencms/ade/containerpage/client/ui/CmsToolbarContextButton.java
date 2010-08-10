@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsToolbarContextButton.java,v $
- * Date   : $Date: 2010/08/06 14:08:15 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/08/10 07:02:03 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import com.google.gwt.user.client.ui.impl.ClippedImagePrototype;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -81,7 +81,9 @@ public class CmsToolbarContextButton extends Button {
 
         addHandler(new ClickHandler() {
 
-            @Override
+            /**
+             * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
+             */
             public void onClick(ClickEvent event) {
 
                 if (m_menuEntries == null) {

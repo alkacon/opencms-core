@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/datebox/Attic/CmsDateBox.java,v $
- * Date   : $Date: 2010/08/06 14:08:14 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/08/10 07:02:03 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,7 +71,7 @@ import com.google.gwt.user.client.ui.HasValue;
 /**
  * A text box that shows a date time picker widget when the user clicks on it.
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @author Ruediger Kurz
  */
@@ -86,7 +86,7 @@ implements HasValue<Date>, HasDoubleClickHandlers, I_CmsFormWidget, I_CmsHasInit
     /**
      * This inner Class implements the handlers for the date box widget.<p>
      * 
-     * @version $Revision: 1.5 $
+     * @version $Revision: 1.6 $
      * 
      * @author Ruediger Kurz
      * 
@@ -138,7 +138,7 @@ implements HasValue<Date>, HasDoubleClickHandlers, I_CmsFormWidget, I_CmsHasInit
     /**
      * This inner Class implements the listeners for the date box.<p>
      * 
-     * @version $Revision: 1.5 $
+     * @version $Revision: 1.6 $
      * 
      * @author Ruediger Kurz
      */
@@ -160,7 +160,6 @@ implements HasValue<Date>, HasDoubleClickHandlers, I_CmsFormWidget, I_CmsHasInit
         /**
          * @see com.extjs.gxt.ui.client.event.Listener#handleEvent(com.extjs.gxt.ui.client.event.BaseEvent)
          */
-        @Override
         public void handleEvent(ComponentEvent be) {
 
             m_handler.onPopupClose();
@@ -171,7 +170,7 @@ implements HasValue<Date>, HasDoubleClickHandlers, I_CmsFormWidget, I_CmsHasInit
     /**
      * This inner Class implements the handlers for the date box widget.<p>
      * 
-     * @version $Revision: 1.5 $
+     * @version $Revision: 1.6 $
      * 
      * @author Ruediger Kurz
      * 
@@ -221,7 +220,7 @@ implements HasValue<Date>, HasDoubleClickHandlers, I_CmsFormWidget, I_CmsHasInit
     /**
      * This inner Class implements the listeners for the date time picker.<p>
      * 
-     * @version $Revision: 1.5 $
+     * @version $Revision: 1.6 $
      * 
      * @author Ruediger Kurz
      */
@@ -243,7 +242,6 @@ implements HasValue<Date>, HasDoubleClickHandlers, I_CmsFormWidget, I_CmsHasInit
         /**
          * @see com.extjs.gxt.ui.client.event.Listener#handleEvent(com.extjs.gxt.ui.client.event.BaseEvent)
          */
-        @Override
         public void handleEvent(ComponentEvent be) {
 
             m_handler.onPickerValueChanged(m_picker.getValue());
