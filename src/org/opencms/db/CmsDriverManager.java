@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2010/07/14 07:28:07 $
- * Version: $Revision: 1.652 $
+ * Date   : $Date: 2010/08/11 10:48:44 $
+ * Version: $Revision: 1.653 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -154,6 +154,21 @@ public final class CmsDriverManager implements I_CmsEventListener {
             // noop
         }
     }
+
+    /** Attribute login. */
+    public static final String ATTRIBUTE_LOGIN = "A_LOGIN";
+
+    /** Attribute WRITE USER_ADDINFO. */
+    public static final String ATTRIBUTE_USERADDINFO = "A_USERADDINFO";
+
+    /** Attribute WRITE USER_ADDINFO value delete. */
+    public static final String ATTRIBUTE_USERADDINFO_VALUE_DELETE = "delete";
+
+    /** Attribute WRITE USER_ADDINFO value insert. */
+    public static final String ATTRIBUTE_USERADDINFO_VALUE_INSERT = "insert";
+
+    /** Attribute WRITE USER_ADDINFO value insert. */
+    public static final String ATTRIBUTE_USERADDINFO_VALUE_UPDATE = "update";
 
     /** Cache key for all properties. */
     public static final String CACHE_ALL_PROPERTIES = "_CAP_";
