@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsVisitEntryFilter.java,v $
- * Date   : $Date: 2010/08/06 14:07:18 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/08/11 06:47:55 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import java.util.Date;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -190,7 +190,7 @@ public final class CmsVisitEntryFilter implements Cloneable {
         str.append("resource").append("=").append(m_structureId).append(", ");
         str.append("user").append("=").append(m_userId).append(", ");
         str.append("from").append("=").append(new Date(m_dateFrom)).append(", ");
-        str.append("to").append("=").append(new Date(m_dateTo)).append(", ");
+        str.append("to").append("=").append(new Date(m_dateTo));
         str.append("]");
         return str.toString();
     }

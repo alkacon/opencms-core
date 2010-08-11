@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2010/08/05 12:55:10 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2010/08/11 06:47:55 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -5335,8 +5335,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public void markResourceAsVisitedBy(CmsDbContext dbc, String poolName, CmsResource resource, CmsUser user)
     throws CmsException {
 
-        /* changed to subscription driver */
-        //getUserDriver(dbc).markResourceAsVisitedBy(dbc, poolName, resource, user);
         getSubscriptionDriver().markResourceAsVisitedBy(dbc, poolName, resource, user);
     }
 
@@ -5933,8 +5931,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public List<CmsResource> readAllSubscribedResources(CmsDbContext dbc, String poolName, CmsPrincipal principal)
     throws CmsException {
 
-        /* changed to subscription driver */
-        //List<CmsResource> result = getUserDriver(dbc).readAllSubscribedResources(dbc, poolName, principal);
         List<CmsResource> result = getSubscriptionDriver().readAllSubscribedResources(dbc, poolName, principal);
         result = filterPermissions(dbc, result, CmsResourceFilter.DEFAULT);
         return result;
@@ -7094,8 +7090,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public List<CmsResource> readResourcesVisitedBy(CmsDbContext dbc, String poolName, CmsVisitedByFilter filter)
     throws CmsException {
 
-        /* changed to subscription driver */
-        //List<CmsResource> result = getUserDriver(dbc).readResourcesVisitedBy(dbc, poolName, filter);
         List<CmsResource> result = getSubscriptionDriver().readResourcesVisitedBy(dbc, poolName, filter);
         result = filterPermissions(dbc, result, CmsResourceFilter.DEFAULT);
         return result;
@@ -7310,16 +7304,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
         boolean includeSubFolders,
         long deletedFrom) throws CmsException {
 
-        /* changed to subscription driver */
-        //        List<I_CmsHistoryResource> result = getUserDriver(dbc).readSubscribedDeletedResources(
-        //            dbc,
-        //            poolName,
-        //            user,
-        //            groups,
-        //            parent,
-        //            includeSubFolders,
-        //            deletedFrom);
-
         List<I_CmsHistoryResource> result = getSubscriptionDriver().readSubscribedDeletedResources(
             dbc,
             poolName,
@@ -7346,8 +7330,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public List<CmsResource> readSubscribedResources(CmsDbContext dbc, String poolName, CmsSubscriptionFilter filter)
     throws CmsException {
 
-        /* changed to subscription driver */
-        //List<CmsResource> result = getUserDriver(dbc).readSubscribedResources(dbc, poolName, filter);
         List<CmsResource> result = getSubscriptionDriver().readSubscribedResources(dbc, poolName, filter);
 
         result = filterPermissions(dbc, result, CmsResourceFilter.DEFAULT);
@@ -8185,8 +8167,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public void setSubscribedResourceAsDeleted(CmsDbContext dbc, String poolName, CmsResource resource)
     throws CmsException {
 
-        /* changed to subscription driver */
-        //getUserDriver(dbc).setSubscribedResourceAsDeleted(dbc, poolName, resource);
         getSubscriptionDriver().setSubscribedResourceAsDeleted(dbc, poolName, resource);
     }
 
@@ -8241,8 +8221,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public void subscribeResourceFor(CmsDbContext dbc, String poolName, CmsPrincipal principal, CmsResource resource)
     throws CmsException {
 
-        /* changed to subscription driver */
-        //getUserDriver(dbc).subscribeResourceFor(dbc, poolName, principal, resource);
         getSubscriptionDriver().subscribeResourceFor(dbc, poolName, principal, resource);
     }
 
@@ -8407,8 +8385,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public void unsubscribeAllDeletedResources(CmsDbContext dbc, String poolName, long deletedTo) throws CmsException {
 
-        /* changed to subscription driver */
-        //getUserDriver(dbc).unsubscribeAllDeletedResources(dbc, poolName, deletedTo);
         getSubscriptionDriver().unsubscribeAllDeletedResources(dbc, poolName, deletedTo);
     }
 
@@ -8424,8 +8400,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public void unsubscribeAllResourcesFor(CmsDbContext dbc, String poolName, CmsPrincipal principal)
     throws CmsException {
 
-        /* changed to subscription driver */
-        //getUserDriver(dbc).unsubscribeAllResourcesFor(dbc, poolName, principal);
         getSubscriptionDriver().unsubscribeAllResourcesFor(dbc, poolName, principal);
 
     }
@@ -8443,8 +8417,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public void unsubscribeResourceFor(CmsDbContext dbc, String poolName, CmsPrincipal principal, CmsResource resource)
     throws CmsException {
 
-        /* changed to subscription driver */
-        //getUserDriver(dbc).unsubscribeResourceFor(dbc, poolName, principal, resource);
         getSubscriptionDriver().unsubscribeResourceFor(dbc, poolName, principal, resource);
     }
 
@@ -8459,8 +8431,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public void unsubscribeResourceForAll(CmsDbContext dbc, String poolName, CmsResource resource) throws CmsException {
 
-        /* changed to subscription driver */
-        //getUserDriver(dbc).unsubscribeResourceForAll(dbc, poolName, resource);
         getSubscriptionDriver().unsubscribeResourceForAll(dbc, poolName, resource);
     }
 

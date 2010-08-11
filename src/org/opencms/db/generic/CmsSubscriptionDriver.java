@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSubscriptionDriver.java,v $
- * Date   : $Date: 2010/08/06 14:07:18 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/08/11 06:47:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,6 @@ import org.opencms.db.CmsVisitedByFilter;
 import org.opencms.db.I_CmsDriver;
 import org.opencms.db.I_CmsPreparedStatementParameter;
 import org.opencms.db.I_CmsSubscriptionDriver;
-import org.opencms.db.log.CmsLogEntryType;
 import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsResource;
@@ -81,7 +80,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -257,7 +256,7 @@ public class CmsSubscriptionDriver implements I_CmsDriver, I_CmsSubscriptionDriv
 
                 int maxCount = OpenCms.getSubscriptionManager().getMaxVisitedCount();
                 if (count > maxCount) {
-                    // delete old visited log entries
+                    // delete old visited entries
                     m_sqlManager.closeAll(dbc, null, stmt, res);
                     stmt = m_sqlManager.getPreparedStatement(
                         conn,
@@ -364,11 +363,10 @@ public class CmsSubscriptionDriver implements I_CmsDriver, I_CmsSubscriptionDriv
             stmt = m_sqlManager.getPreparedStatementForSql(conn, query);
 
             stmt.setString(1, filter.getUser().getId().toString());
-            stmt.setInt(2, CmsLogEntryType.USER_RESOURCE_VISITED.getId());
-            stmt.setLong(3, filter.getFromDate());
-            stmt.setLong(4, filter.getToDate());
+            stmt.setLong(2, filter.getFromDate());
+            stmt.setLong(3, filter.getToDate());
             for (int i = 0; i < params.size(); i++) {
-                stmt.setString(i + 5, params.get(i));
+                stmt.setString(i + 4, params.get(i));
             }
 
             res = stmt.executeQuery();

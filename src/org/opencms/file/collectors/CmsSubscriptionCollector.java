@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/CmsSubscriptionCollector.java,v $
- * Date   : $Date: 2010/07/23 08:29:34 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/08/11 06:47:55 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,6 +39,7 @@ import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
+import org.opencms.file.I_CmsResource;
 import org.opencms.file.history.I_CmsHistoryResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -79,7 +80,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0
  */
@@ -231,7 +232,11 @@ public class CmsSubscriptionCollector extends A_CmsResourceCollector {
      */
     protected List<CmsResource> getSubscribedResources(CmsObject cms, String param) throws CmsException {
 
-        return OpenCms.getSubscriptionManager().readSubscribedResources(cms, getSubscriptionFilter(cms, param));
+        List<CmsResource> result = OpenCms.getSubscriptionManager().readSubscribedResources(
+            cms,
+            getSubscriptionFilter(cms, param));
+        Collections.sort(result, I_CmsResource.COMPARE_DATE_LAST_MODIFIED);
+        return result;
     }
 
     /**
@@ -340,7 +345,11 @@ public class CmsSubscriptionCollector extends A_CmsResourceCollector {
      */
     protected List<CmsResource> getVisitedResources(CmsObject cms, String param) throws CmsException {
 
-        return OpenCms.getSubscriptionManager().readResourcesVisitedBy(cms, getVisitedByFilter(cms, param));
+        List<CmsResource> result = OpenCms.getSubscriptionManager().readResourcesVisitedBy(
+            cms,
+            getVisitedByFilter(cms, param));
+        Collections.sort(result, I_CmsResource.COMPARE_DATE_LAST_MODIFIED);
+        return result;
     }
 
     /**

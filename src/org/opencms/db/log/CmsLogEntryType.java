@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/log/CmsLogEntryType.java,v $
- * Date   : $Date: 2010/07/23 08:29:34 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/08/11 06:47:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 7.9.2
  */
@@ -123,9 +123,7 @@ public enum CmsLogEntryType {
     /** User login failed entry. */
     USER_LOGIN_FAILED(2, LogLevel.DEBUG, false, Messages.GUI_LOG_ENTRY_DETAIL_NAME_AND_ADDRESS_2),
     /** User login successful entry. */
-    USER_LOGIN_SUCCESSFUL(1, LogLevel.TRACE, false, Messages.GUI_LOG_ENTRY_DETAIL_NAME_AND_ADDRESS_2),
-    /** User resource visited entry. */
-    USER_RESOURCE_VISITED(3, LogLevel.DEBUG, false, Messages.GUI_LOG_ENTRY_DETAIL_NAME_AND_PATH_2);
+    USER_LOGIN_SUCCESSFUL(1, LogLevel.TRACE, false, Messages.GUI_LOG_ENTRY_DETAIL_NAME_AND_ADDRESS_2);
 
     /**
      * Log level.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsVisitEntry.java,v $
- * Date   : $Date: 2010/08/06 14:07:18 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/08/11 06:47:55 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import java.util.Date;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -122,7 +122,7 @@ public class CmsVisitEntry {
         sb.append("[").append(getClass().getName()).append(":");
         sb.append("user=").append(m_userId).append(",");
         sb.append("date=").append(new Date(m_date)).append(",");
-        sb.append("structure=").append(m_structureId).append(",");
+        sb.append("structure=").append(m_structureId);
         return sb.append("]").toString();
     }
 
