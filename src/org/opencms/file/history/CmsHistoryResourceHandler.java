@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/history/CmsHistoryResourceHandler.java,v $
- * Date   : $Date: 2010/07/15 09:33:41 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/08/11 10:51:16 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 6.9.1
  */
@@ -130,9 +130,42 @@ public class CmsHistoryResourceHandler implements I_CmsResourceInit {
                             if (id == CmsHistoryResourceHandler.PROJECT_OFFLINE_VERSION) {
                                 resource = new CmsHistoryFile(cms.readFile(uri, CmsResourceFilter.IGNORE_EXPIRATION));
                             } else {
-                                resource = (CmsResource)cms.readResource(cms.readResource(
+                                // get the current resource
+                                CmsResource currRes = cms.readResource(uri, CmsResourceFilter.IGNORE_EXPIRATION);
+                                // get the historical version of the resource
+                                CmsHistoryFile hisRes = (CmsHistoryFile)cms.readResource(cms.readResource(
                                     uri,
                                     CmsResourceFilter.IGNORE_EXPIRATION).getStructureId(), id);
+
+                                // the resource root path is not changed after the resource is moved or renamed
+                                // change the resource root path to current root path, so e.g. properties can be read if necessary
+                                if (!currRes.getRootPath().equals(hisRes.getRootPath())) {
+
+                                    resource = new CmsHistoryFile(
+                                        hisRes.getPublishTag(),
+                                        hisRes.getStructureId(),
+                                        hisRes.getResourceId(),
+                                        currRes.getRootPath(),
+                                        hisRes.getTypeId(),
+                                        hisRes.getFlags(),
+                                        hisRes.getProjectLastModified(),
+                                        hisRes.getState(),
+                                        hisRes.getDateCreated(),
+                                        hisRes.getUserCreated(),
+                                        hisRes.getDateLastModified(),
+                                        hisRes.getUserLastModified(),
+                                        hisRes.getDateReleased(),
+                                        hisRes.getDateExpired(),
+                                        hisRes.getLength(),
+                                        hisRes.getDateContent(),
+                                        hisRes.getVersion(),
+                                        hisRes.getParentId(),
+                                        null,
+                                        hisRes.getResourceVersion(),
+                                        hisRes.getStructureVersion());
+                                } else {
+                                    resource = hisRes;
+                                }
                             }
                             if (res != null) {
                                 // store a request attribute to indicate that this is in fact a historical version
