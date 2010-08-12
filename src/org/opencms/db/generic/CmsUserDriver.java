@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2010/08/11 10:48:44 $
- * Version: $Revision: 1.139 $
+ * Date   : $Date: 2010/08/12 10:19:01 $
+ * Version: $Revision: 1.140 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -99,7 +99,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.139 $
+ * @version $Revision: 1.140 $
  * 
  * @since 6.0.0  
  */
@@ -1943,102 +1943,6 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     }
 
     /**
-     * Deletes an additional user info.<p>
-     * @param dbc the current dbc
-     * @param userId the user to delete additional info from
-     * @param key the additional info to delete 
-     * @throws CmsDataAccessException if something goes wrong
-     */
-    protected void internalDeleteUserInfo(CmsDbContext dbc, CmsUUID userId, String key) throws CmsDataAccessException {
-
-        PreparedStatement stmt = null;
-        Connection conn = null;
-
-        try {
-            conn = getSqlManager().getConnection(dbc);
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_USERDATA_DELETE_2");
-            // write data to database
-            stmt.setString(1, userId.toString());
-            stmt.setString(2, key);
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1,
-                CmsDbSqlException.getErrorQuery(stmt)), e);
-        } finally {
-            m_sqlManager.closeAll(dbc, conn, stmt, null);
-        }
-    }
-
-    /**
-     * Updates additional user info.<p>
-     * @param dbc the current dbc
-     * @param userId the user id to add the user info for
-     * @param key the name of the additional user info
-     * @param value the value of the additional user info
-     * @throws CmsDataAccessException if something goes wrong
-     */
-    protected void internalUpdateUserInfo(CmsDbContext dbc, CmsUUID userId, String key, Object value)
-    throws CmsDataAccessException {
-
-        PreparedStatement stmt = null;
-        Connection conn = null;
-
-        try {
-            conn = getSqlManager().getConnection(dbc);
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_USERDATA_UPDATE_4");
-            // write data to database
-            m_sqlManager.setBytes(stmt, 1, CmsDataTypeUtil.dataSerialize(value));
-            stmt.setString(2, value.getClass().getName());
-            stmt.setString(3, userId.toString());
-            stmt.setString(4, key);
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1,
-                CmsDbSqlException.getErrorQuery(stmt)), e);
-        } catch (IOException e) {
-            throw new CmsDbIoException(Messages.get().container(Messages.ERR_SERIALIZING_USER_DATA_1, userId), e);
-        } finally {
-            m_sqlManager.closeAll(dbc, conn, stmt, null);
-        }
-    }
-
-    /**
-     * Writes a new additional user info.<p>
-     * @param dbc the current dbc
-     * @param userId the user id to add the user info for
-     * @param key the name of the additional user info
-     * @param value the value of the additional user info
-     * @throws CmsDataAccessException if something goes wrong
-     */
-    protected void internalWriteUserInfo(CmsDbContext dbc, CmsUUID userId, String key, Object value)
-    throws CmsDataAccessException {
-
-        PreparedStatement stmt = null;
-        Connection conn = null;
-
-        try {
-            conn = getSqlManager().getConnection(dbc);
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_USERDATA_WRITE_4");
-            // write data to database
-            stmt.setString(1, userId.toString());
-            stmt.setString(2, key);
-            m_sqlManager.setBytes(stmt, 3, CmsDataTypeUtil.dataSerialize(value));
-            stmt.setString(4, value.getClass().getName());
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1,
-                CmsDbSqlException.getErrorQuery(stmt)), e);
-        } catch (IOException e) {
-            throw new CmsDbIoException(Messages.get().container(Messages.ERR_SERIALIZING_USER_DATA_1, userId), e);
-        } finally {
-            m_sqlManager.closeAll(dbc, conn, stmt, null);
-        }
-    }
-
-    /**
      * Returns a sql query to select groups.<p>
      * 
      * @param mainQuery the main select sql query
@@ -2533,6 +2437,34 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     }
 
     /**
+     * Deletes an additional user info.<p>
+     * @param dbc the current dbc
+     * @param userId the user to delete additional info from
+     * @param key the additional info to delete 
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    protected void internalDeleteUserInfo(CmsDbContext dbc, CmsUUID userId, String key) throws CmsDataAccessException {
+
+        PreparedStatement stmt = null;
+        Connection conn = null;
+
+        try {
+            conn = getSqlManager().getConnection(dbc);
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_USERDATA_DELETE_2");
+            // write data to database
+            stmt.setString(1, userId.toString());
+            stmt.setString(2, key);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, null);
+        }
+    }
+
+    /**
      * Returns the folder for the given organizational units, or the base folder if <code>null</code>.<p>
      * 
      * The base folder will be created if it does not exist.<p> 
@@ -2620,6 +2552,40 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             }
             // set the right flags
             group.setFlags(role.getVirtualGroupFlags());
+        }
+    }
+
+    /**
+     * Updates additional user info.<p>
+     * @param dbc the current dbc
+     * @param userId the user id to add the user info for
+     * @param key the name of the additional user info
+     * @param value the value of the additional user info
+     * @throws CmsDataAccessException if something goes wrong 
+     */
+    protected void internalUpdateUserInfo(CmsDbContext dbc, CmsUUID userId, String key, Object value)
+    throws CmsDataAccessException {
+
+        PreparedStatement stmt = null;
+        Connection conn = null;
+
+        try {
+            conn = getSqlManager().getConnection(dbc);
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_USERDATA_UPDATE_4");
+            // write data to database
+            m_sqlManager.setBytes(stmt, 1, CmsDataTypeUtil.dataSerialize(value));
+            stmt.setString(2, value.getClass().getName());
+            stmt.setString(3, userId.toString());
+            stmt.setString(4, key);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
+        } catch (IOException e) {
+            throw new CmsDbIoException(Messages.get().container(Messages.ERR_SERIALIZING_USER_DATA_1, userId), e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
     }
 
@@ -2729,9 +2695,47 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         try {
             m_driverManager.writePropertyObject(dbc, resource, property); // assume the resource is identical in both projects
             resource.setState(CmsResource.STATE_UNCHANGED);
-            m_driverManager.getVfsDriver(dbc).writeResource(dbc, projectId, resource, CmsDriverManager.NOTHING_CHANGED);
+            m_driverManager.getVfsDriver(dbc).writeResource(
+                dbc,
+                dbc.currentProject().getUuid(),
+                resource,
+                CmsDriverManager.NOTHING_CHANGED);
         } finally {
             dbc.getRequestContext().setCurrentProject(project);
+        }
+    }
+
+    /**
+     * Writes a new additional user info.<p>
+     * @param dbc the current dbc
+     * @param userId the user id to add the user info for
+     * @param key the name of the additional user info
+     * @param value the value of the additional user info
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    protected void internalWriteUserInfo(CmsDbContext dbc, CmsUUID userId, String key, Object value)
+    throws CmsDataAccessException {
+
+        PreparedStatement stmt = null;
+        Connection conn = null;
+
+        try {
+            conn = getSqlManager().getConnection(dbc);
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_USERDATA_WRITE_4");
+            // write data to database
+            stmt.setString(1, userId.toString());
+            stmt.setString(2, key);
+            m_sqlManager.setBytes(stmt, 3, CmsDataTypeUtil.dataSerialize(value));
+            stmt.setString(4, value.getClass().getName());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
+        } catch (IOException e) {
+            throw new CmsDbIoException(Messages.get().container(Messages.ERR_SERIALIZING_USER_DATA_1, userId), e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
     }
 
