@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsCategoryWidget.java,v $
- * Date   : $Date: 2010/01/18 10:01:01 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/08/12 09:33:51 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 7.0.3 
  */
@@ -174,7 +174,13 @@ public class CmsCategoryWidget extends A_CmsWidget {
         }
         try {
             CmsCategory cat = CmsCategoryService.getInstance().getCategory(cms, cms.readResource(new CmsUUID(id)));
-            if (cat.getPath().startsWith(getStartingCategory(cms, cms.getSitePath(getResource(cms, param))))) {
+            String referencePath = null;
+            try {
+                referencePath = cms.getSitePath(getResource(cms, param));
+            } catch (Exception e) {
+                // ignore, this can happen if a new resource is edited using direct edit
+            }
+            if (cat.getPath().startsWith(getStartingCategory(cms, referencePath))) {
                 param.setStringValue(cms, cat.getRootPath());
             } else {
                 param.setStringValue(cms, "");
@@ -204,7 +210,12 @@ public class CmsCategoryWidget extends A_CmsWidget {
         try {
             // write arrays of categories
             result.append("<script language='javascript'>\n");
-            String referencePath = cms.getSitePath(getResource(cms, param));
+            String referencePath = null;
+            try {
+                referencePath = cms.getSitePath(getResource(cms, param));
+            } catch (Exception e) {
+                // ignore, this can happen if a new resource is edited using direct edit
+            }
             String startingCat = getStartingCategory(cms, referencePath);
             List cats = CmsCategoryService.getInstance().readCategories(cms, startingCat, true, referencePath);
             int baseLevel;
@@ -288,16 +299,12 @@ public class CmsCategoryWidget extends A_CmsWidget {
                         Messages.get().getBundle(widgetDialog.getLocale()).key(Messages.GUI_CATEGORY_SELECT_0)));
                 }
                 result.append(">");
-                result.append(buildSelectBox(
-                    param.getId(),
-                    i,
-                    options,
-                    (selected != null ? CmsCategoryService.getInstance().readCategory(
-                        cms,
-                        CmsResource.getPathPart(selected.getPath(), i + baseLevel),
-                        referencePath).getId().toString() : ""),
-                    param.hasError(),
-                    (i == (level - baseLevel - 1))));
+                result.append(buildSelectBox(param.getId(), i, options, (selected != null
+                ? CmsCategoryService.getInstance().readCategory(
+                    cms,
+                    CmsResource.getPathPart(selected.getPath(), i + baseLevel),
+                    referencePath).getId().toString()
+                : ""), param.hasError(), (i == (level - baseLevel - 1))));
                 result.append("</span>&nbsp;");
             }
             result.append("</td>");
@@ -503,12 +510,14 @@ public class CmsCategoryWidget extends A_CmsWidget {
             ret = m_category;
         } else {
             // use the given property from the right file
-            try {
-                ret = cms.readPropertyObject(referencePath, m_property, true).getValue("/");
-            } catch (CmsException ex) {
-                // should never happen
-                if (LOG.isErrorEnabled()) {
-                    LOG.error(ex.getLocalizedMessage(), ex);
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(referencePath)) {
+                try {
+                    ret = cms.readPropertyObject(referencePath, m_property, true).getValue("/");
+                } catch (CmsException ex) {
+                    // should never happen
+                    if (LOG.isErrorEnabled()) {
+                        LOG.error(ex.getLocalizedMessage(), ex);
+                    }
                 }
             }
         }
