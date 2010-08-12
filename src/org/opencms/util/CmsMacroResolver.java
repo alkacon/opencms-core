@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsMacroResolver.java,v $
- * Date   : $Date: 2010/02/03 15:10:54 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/08/12 07:21:24 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -66,7 +66,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -755,6 +755,29 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
         if (CmsMacroResolver.KEY_CURRENT_TIME.equals(macro)) {
             // the key is the current system time
             return String.valueOf(System.currentTimeMillis());
+        } else if (macro.startsWith(CmsMacroResolver.KEY_CURRENT_TIME)) {
+            // the key starts with the current system time
+            macro = macro.substring(CmsMacroResolver.KEY_CURRENT_TIME.length()).trim();
+            char operator = macro.charAt(0);
+            macro = macro.substring(1).trim();
+            long delta = 0;
+            try {
+                delta = Long.parseLong(macro);
+            } catch (NumberFormatException e) {
+                // ignore, there will be no delta
+            }
+            long resultTime = System.currentTimeMillis();
+            switch (operator) {
+                case '+':
+                    // add delta to current time
+                    resultTime += delta;
+                    break;
+                case '-':
+                    // subtract delta from current time
+                    resultTime -= delta;
+                    break;
+            }
+            return String.valueOf(resultTime);
         }
 
         if (m_additionalMacros != null) {
