@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2010/08/06 14:07:18 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/08/12 12:45:33 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -103,7 +103,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 6.0.0 
  */
@@ -3428,7 +3428,11 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         try {
             m_driverManager.writePropertyObject(dbc, resource, property); // assume the resource is identical in both projects
             resource.setState(CmsResource.STATE_UNCHANGED);
-            m_driverManager.getVfsDriver(dbc).writeResource(dbc, projectId, resource, CmsDriverManager.NOTHING_CHANGED);
+            m_driverManager.getVfsDriver(dbc).writeResource(
+                dbc,
+                dbc.currentProject().getUuid(),
+                resource,
+                CmsDriverManager.NOTHING_CHANGED);
         } finally {
             dbc.getRequestContext().setCurrentProject(project);
         }
