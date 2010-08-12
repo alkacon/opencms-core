@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/scheduler/TestCmsScheduler.java,v $
- * Date   : $Date: 2010/01/18 10:03:14 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2010/08/12 07:43:53 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,7 +32,6 @@
 package org.opencms.scheduler;
 
 import org.opencms.main.CmsContextInfo;
-import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -57,7 +56,7 @@ import org.quartz.impl.StdSchedulerFactory;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * 
  * @since 6.0.0
  */
@@ -312,6 +311,9 @@ public class TestCmsScheduler extends TestCase {
         // change cron expression to something invalid
         newInfo = (CmsScheduledJobInfo)jobInfo.clone();
         newInfo.setActive(true);
+
+        // uncomment because of rolled back quartz due to bugs in version 1.6.x
+        /**
         CmsIllegalArgumentException ex = null;
         try {
             newInfo.setCronExpression("* * * * * *");
@@ -320,6 +322,8 @@ public class TestCmsScheduler extends TestCase {
             ex = e;
         }
         assertNotNull("Expected exception not thrown when using invalid CRON expression", ex);
+        */
+        newInfo.setCronExpression("* * * * * *");
         assertEquals(1, scheduler.getJobs().size());
 
         // shutdown the scheduler
