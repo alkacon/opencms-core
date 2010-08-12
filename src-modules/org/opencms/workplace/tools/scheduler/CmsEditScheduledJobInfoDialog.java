@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/CmsEditScheduledJobInfoDialog.java,v $
- * Date   : $Date: 2009/06/04 14:33:48 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2010/08/12 09:50:58 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,6 +46,7 @@ import org.opencms.scheduler.jobs.CmsHistoryClearJob;
 import org.opencms.scheduler.jobs.CmsImageCacheCleanupJob;
 import org.opencms.scheduler.jobs.CmsPublishJob;
 import org.opencms.scheduler.jobs.CmsStaticExportJob;
+import org.opencms.scheduler.jobs.CmsUnsubscribeDeletedResourcesJob;
 import org.opencms.search.CmsSearchManager;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsStringUtil;
@@ -76,7 +77,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.35 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -309,7 +310,7 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
      */
     protected List getComboClasses() {
 
-        List result = new ArrayList();
+        List result = new ArrayList(16);
         result.add(new CmsSelectWidgetOption(
             CmsInternalRelationsValidationJob.class.getName(),
             false,
@@ -365,6 +366,11 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
             false,
             null,
             key(Messages.GUI_EDITOR_CRONCLASS_DELETEEXPIRED_0)));
+        result.add(new CmsSelectWidgetOption(
+            CmsUnsubscribeDeletedResourcesJob.class.getName(),
+            false,
+            null,
+            key(Messages.GUI_EDITOR_CRONCLASS_UNSUBSCRIBEDELETED_0)));
         return result;
     }
 
