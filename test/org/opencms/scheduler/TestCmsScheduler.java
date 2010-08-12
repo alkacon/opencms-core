@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/scheduler/TestCmsScheduler.java,v $
- * Date   : $Date: 2009/06/04 14:35:34 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2010/08/12 07:09:07 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,7 +32,6 @@
 package org.opencms.scheduler;
 
 import org.opencms.main.CmsContextInfo;
-import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -57,7 +56,7 @@ import org.quartz.impl.StdSchedulerFactory;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.0.0
  */
@@ -124,7 +123,7 @@ public class TestCmsScheduler extends TestCase {
             fail("Test job was incorrectly run '" + TestScheduledJob.m_runCount + "' times in OpenCms scheduler.");
         }
         assertEquals(1, scheduler.getJobs().size());
-        CmsScheduledJobInfo info = (CmsScheduledJobInfo)scheduler.getJobs().get(0);
+        CmsScheduledJobInfo info = scheduler.getJobs().get(0);
         assertEquals(jobInfo.getId(), info.getId());
         assertEquals(jobInfo.getClassName(), info.getClassName());
         assertEquals(false, info.isActive());
@@ -152,7 +151,7 @@ public class TestCmsScheduler extends TestCase {
         }
 
         assertEquals(1, scheduler.getJobs().size());
-        info = (CmsScheduledJobInfo)scheduler.getJobs().get(0);
+        info = scheduler.getJobs().get(0);
         assertEquals(jobInfo.getId(), info.getId());
         assertEquals(jobInfo.getClassName(), info.getClassName());
         assertEquals(true, info.isActive());
@@ -181,7 +180,7 @@ public class TestCmsScheduler extends TestCase {
             fail("Test job was incorrectly run '" + TestScheduledJob.m_runCount + "' times in OpenCms scheduler.");
         }
         assertEquals(1, scheduler.getJobs().size());
-        info = (CmsScheduledJobInfo)scheduler.getJobs().get(0);
+        info = scheduler.getJobs().get(0);
         assertEquals(jobInfo.getId(), info.getId());
         assertEquals(jobInfo.getClassName(), info.getClassName());
         assertEquals(false, info.isActive());
@@ -312,6 +311,9 @@ public class TestCmsScheduler extends TestCase {
         // change cron expression to something invalid
         newInfo = (CmsScheduledJobInfo)jobInfo.clone();
         newInfo.setActive(true);
+
+        // uncomment because of rolled back quartz due to bugs in version 1.6.x
+        /**
         CmsIllegalArgumentException ex = null;
         try {
             newInfo.setCronExpression("* * * * * *");
@@ -320,6 +322,8 @@ public class TestCmsScheduler extends TestCase {
             ex = e;
         }
         assertNotNull("Expected exception not thrown when using invalid CRON expression", ex);
+        */
+        newInfo.setCronExpression("* * * * * *");
         assertEquals(1, scheduler.getJobs().size());
 
         // shutdown the scheduler
