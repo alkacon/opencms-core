@@ -35,15 +35,5 @@
 oder Beratungsoptionen. Wir von Alkacon Software stellen uns täglich den Anforderungen unserer Kunden und realisieren mit OpenCms auch anspruchsvollste
 und zeitkritische Projekte.]]></Description>
     </Links>
-    <Links>
-      <Title><![CDATA[OpenCms Days 2008]]></Title>
-      <Link>
-        <link internal="true" type="WEAK">
-          <target><![CDATA[/sites/default/demo_de/extra/extranet/dokumente/opencms-days.pdf]]></target>
-          <uuid>15eee7d5-e543-11dc-8457-51cb880fd12a</uuid>
-        </link>
-      </Link>
-      <Description><![CDATA[For the first time, OpenCms users and developers gather for a 2 day conference and expo. Meet and mingle with OpenCms experts such as core developers, experienced consultants, independent CMS analysts, executive decision makers and other OpenCms users.]]></Description>
-    </Links>
   </LinkBox>
 </LinkBoxes>

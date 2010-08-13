@@ -3,8 +3,8 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>7.5.0</opencms_version>
-		<createdate>Mon, 03 Aug 2009 13:01:33 GMT</createdate>
+		<opencms_version>7.5.3</opencms_version>
+		<createdate>Fri, 13 Aug 2010 09:40:24 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
 	</info>
@@ -14,7 +14,7 @@
 		<group>Template Two</group>
 		<class/>
 		<description><![CDATA[This module contains contents for the Template Two Demo Site.]]></description>
-		<version>7.5.2</version>
+		<version>7.5.3</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated/>
@@ -1105,7 +1105,7 @@
 			<type>ttevent</type>
 			<uuidstructure>f5ef9326-df92-11dc-b0b0-9f7a6a6ce285</uuidstructure>
 			<uuidresource>f5ef9327-df92-11dc-b0b0-9f7a6a6ce285</uuidresource>
-			<datelastmodified>Wed, 29 Apr 2009 11:55:27 GMT</datelastmodified>
+			<datelastmodified>Fri, 13 Aug 2010 09:33:28 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 20 Feb 2008 09:05:19 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1114,15 +1114,15 @@
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Floristika 2008 in Dresden]]></value>
+					<value><![CDATA[Floristika 2010 in Dresden]]></value>
 				</property>
 				<property>
 					<name>calendar.enddate</name>
-					<value><![CDATA[1215360000000]]></value>
+					<value><![CDATA[1278432000000]]></value>
 				</property>
 				<property>
 					<name>collector.date</name>
-					<value><![CDATA[1215244800000]]></value>
+					<value><![CDATA[1278316800000]]></value>
 				</property>
 				<property type="shared">
 					<name>template-elements</name>
@@ -1138,7 +1138,7 @@
 			<type>ttevent</type>
 			<uuidstructure>b59cac8e-e171-11dc-b389-9f7a6a6ce285</uuidstructure>
 			<uuidresource>b59cac8f-e171-11dc-b389-9f7a6a6ce285</uuidresource>
-			<datelastmodified>Wed, 29 Apr 2009 12:12:22 GMT</datelastmodified>
+			<datelastmodified>Fri, 13 Aug 2010 09:33:50 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 22 Feb 2008 18:12:20 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1151,11 +1151,11 @@
 				</property>
 				<property>
 					<name>calendar.enddate</name>
-					<value><![CDATA[1218362400000]]></value>
+					<value><![CDATA[1281434400000]]></value>
 				</property>
 				<property>
 					<name>collector.date</name>
-					<value><![CDATA[1217628000000]]></value>
+					<value><![CDATA[1280700000000]]></value>
 				</property>
 				<property type="shared">
 					<name>template-elements</name>
@@ -1171,7 +1171,7 @@
 			<type>ttevent</type>
 			<uuidstructure>34712e39-c1ef-11dd-971c-bb58e5a148ea</uuidstructure>
 			<uuidresource>34712e3a-c1ef-11dd-971c-bb58e5a148ea</uuidresource>
-			<datelastmodified>Tue, 05 May 2009 09:45:55 GMT</datelastmodified>
+			<datelastmodified>Fri, 13 Aug 2010 09:15:31 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 04 Dec 2008 10:35:01 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1183,7 +1183,7 @@
 				</property>
 				<property>
 					<name>collector.date</name>
-					<value><![CDATA[1244280720000]]></value>
+					<value><![CDATA[1275816720000]]></value>
 				</property>
 				<property type="shared">
 					<name>template-elements</name>
@@ -1199,7 +1199,7 @@
 			<type>ttevent</type>
 			<uuidstructure>936917c1-c1f1-11dd-971c-bb58e5a148ea</uuidstructure>
 			<uuidresource>936917c2-c1f1-11dd-971c-bb58e5a148ea</uuidresource>
-			<datelastmodified>Tue, 05 May 2009 10:10:03 GMT</datelastmodified>
+			<datelastmodified>Fri, 13 Aug 2010 09:16:17 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 04 Dec 2008 10:51:59 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1211,11 +1211,11 @@
 				</property>
 				<property>
 					<name>calendar.enddate</name>
-					<value><![CDATA[1227996000000]]></value>
+					<value><![CDATA[1291068000000]]></value>
 				</property>
 				<property>
 					<name>collector.date</name>
-					<value><![CDATA[1227987000000]]></value>
+					<value><![CDATA[1291059000000]]></value>
 				</property>
 				<property type="shared">
 					<name>template-elements</name>
@@ -1231,7 +1231,7 @@
 			<type>ttevent</type>
 			<uuidstructure>7e2ae6f3-c1f2-11dd-971c-bb58e5a148ea</uuidstructure>
 			<uuidresource>7e2ae6f4-c1f2-11dd-971c-bb58e5a148ea</uuidresource>
-			<datelastmodified>Tue, 05 May 2009 09:43:46 GMT</datelastmodified>
+			<datelastmodified>Fri, 13 Aug 2010 09:17:16 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 04 Dec 2008 10:58:33 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1243,11 +1243,11 @@
 				</property>
 				<property>
 					<name>calendar.enddate</name>
-					<value><![CDATA[1250438400000]]></value>
+					<value><![CDATA[1281974400000]]></value>
 				</property>
 				<property>
 					<name>collector.date</name>
-					<value><![CDATA[1250409600000]]></value>
+					<value><![CDATA[1281945600000]]></value>
 				</property>
 				<property type="shared">
 					<name>template-elements</name>
@@ -1295,7 +1295,7 @@
 			<type>ttevent</type>
 			<uuidstructure>6cf17859-c1f7-11dd-971c-bb58e5a148ea</uuidstructure>
 			<uuidresource>6cf1785a-c1f7-11dd-971c-bb58e5a148ea</uuidresource>
-			<datelastmodified>Fri, 08 May 2009 10:23:42 GMT</datelastmodified>
+			<datelastmodified>Fri, 13 Aug 2010 09:19:03 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 04 Dec 2008 11:33:51 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1307,11 +1307,11 @@
 				</property>
 				<property>
 					<name>calendar.enddate</name>
-					<value><![CDATA[1226854800000]]></value>
+					<value><![CDATA[1289926800000]]></value>
 				</property>
 				<property>
 					<name>collector.date</name>
-					<value><![CDATA[1226653200000]]></value>
+					<value><![CDATA[1289725200000]]></value>
 				</property>
 				<property type="shared">
 					<name>template-elements</name>
@@ -1327,7 +1327,7 @@
 			<type>ttevent</type>
 			<uuidstructure>94d785f5-c1fa-11dd-971c-bb58e5a148ea</uuidstructure>
 			<uuidresource>94d785f6-c1fa-11dd-971c-bb58e5a148ea</uuidresource>
-			<datelastmodified>Tue, 05 May 2009 10:05:48 GMT</datelastmodified>
+			<datelastmodified>Fri, 13 Aug 2010 09:19:47 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 04 Dec 2008 11:56:27 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1339,11 +1339,11 @@
 				</property>
 				<property>
 					<name>calendar.enddate</name>
-					<value><![CDATA[1237136400000]]></value>
+					<value><![CDATA[1268672400000]]></value>
 				</property>
 				<property>
 					<name>collector.date</name>
-					<value><![CDATA[1236416400000]]></value>
+					<value><![CDATA[1267952400000]]></value>
 				</property>
 				<property type="shared">
 					<name>template-elements</name>
@@ -1359,7 +1359,7 @@
 			<type>ttevent</type>
 			<uuidstructure>63a42b5b-c1fe-11dd-971c-bb58e5a148ea</uuidstructure>
 			<uuidresource>63a42b5c-c1fe-11dd-971c-bb58e5a148ea</uuidresource>
-			<datelastmodified>Fri, 08 May 2009 10:24:33 GMT</datelastmodified>
+			<datelastmodified>Fri, 13 Aug 2010 09:20:28 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 04 Dec 2008 12:23:42 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1371,7 +1371,7 @@
 				</property>
 				<property>
 					<name>collector.date</name>
-					<value><![CDATA[1222341780000]]></value>
+					<value><![CDATA[1285413780000]]></value>
 				</property>
 				<property type="shared">
 					<name>template-elements</name>
@@ -1485,7 +1485,7 @@
 			<type>ttnews</type>
 			<uuidstructure>84f82417-c1ec-11dd-971c-bb58e5a148ea</uuidstructure>
 			<uuidresource>84f82418-c1ec-11dd-971c-bb58e5a148ea</uuidresource>
-			<datelastmodified>Wed, 29 Apr 2009 10:13:44 GMT</datelastmodified>
+			<datelastmodified>Fri, 13 Aug 2010 09:34:25 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 04 Dec 2008 10:15:47 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1493,11 +1493,11 @@
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Blume des Jahres 2009]]></value>
+					<value><![CDATA[Blume des Jahres 2010]]></value>
 				</property>
 				<property>
 					<name>collector.date</name>
-					<value><![CDATA[1223543640000]]></value>
+					<value><![CDATA[1286615640000]]></value>
 				</property>
 				<property type="shared">
 					<name>template-elements</name>
@@ -1513,11 +1513,11 @@
 			<type>ttnews</type>
 			<uuidstructure>ca4ac782-db05-11dc-99f5-9f7a6a6ce285</uuidstructure>
 			<uuidresource>ca4ac783-db05-11dc-99f5-9f7a6a6ce285</uuidresource>
-			<datelastmodified>Wed, 06 May 2009 08:04:28 GMT</datelastmodified>
+			<datelastmodified>Fri, 13 Aug 2010 09:34:44 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 14 Feb 2008 14:04:42 GMT</datecreated>
 			<usercreated>Admin</usercreated>
-			<datereleased>Thu, 04 Dec 2008 23:00:00 GMT</datereleased>
+			<datereleased>Sat, 04 Dec 2010 23:00:00 GMT</datereleased>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -1526,7 +1526,7 @@
 				</property>
 				<property>
 					<name>collector.date</name>
-					<value><![CDATA[1231023600000]]></value>
+					<value><![CDATA[1262559600000]]></value>
 				</property>
 				<property>
 					<name>collector.priority</name>
@@ -1546,11 +1546,11 @@
 			<type>ttnews</type>
 			<uuidstructure>a364eeff-da4d-11dc-82a7-9f7a6a6ce285</uuidstructure>
 			<uuidresource>a364ef00-da4d-11dc-82a7-9f7a6a6ce285</uuidresource>
-			<datelastmodified>Thu, 30 Apr 2009 10:42:51 GMT</datelastmodified>
+			<datelastmodified>Fri, 13 Aug 2010 09:35:05 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 13 Feb 2008 16:06:30 GMT</datecreated>
 			<usercreated>Admin</usercreated>
-			<datereleased>Tue, 01 Jan 2008 23:00:00 GMT</datereleased>
+			<datereleased>Fri, 01 Jan 2010 23:00:00 GMT</datereleased>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -1559,7 +1559,7 @@
 				</property>
 				<property>
 					<name>collector.date</name>
-					<value><![CDATA[1230850800000]]></value>
+					<value><![CDATA[1262386800000]]></value>
 				</property>
 				<property>
 					<name>collector.priority</name>
@@ -1579,7 +1579,7 @@
 			<type>ttnews</type>
 			<uuidstructure>641de18e-c1ee-11dd-971c-bb58e5a148ea</uuidstructure>
 			<uuidresource>641de18f-c1ee-11dd-971c-bb58e5a148ea</uuidresource>
-			<datelastmodified>Wed, 29 Apr 2009 10:15:21 GMT</datelastmodified>
+			<datelastmodified>Fri, 13 Aug 2010 09:35:19 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 04 Dec 2008 10:29:11 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1591,7 +1591,7 @@
 				</property>
 				<property>
 					<name>collector.date</name>
-					<value><![CDATA[1216113840000]]></value>
+					<value><![CDATA[1279185840000]]></value>
 				</property>
 				<property type="shared">
 					<name>template-elements</name>
@@ -1607,7 +1607,7 @@
 			<type>ttnews</type>
 			<uuidstructure>b76fb5a8-c1f6-11dd-971c-bb58e5a148ea</uuidstructure>
 			<uuidresource>b76fb5a9-c1f6-11dd-971c-bb58e5a148ea</uuidresource>
-			<datelastmodified>Tue, 05 May 2009 08:59:21 GMT</datelastmodified>
+			<datelastmodified>Fri, 13 Aug 2010 09:35:35 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 04 Dec 2008 11:28:47 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1619,7 +1619,7 @@
 				</property>
 				<property>
 					<name>collector.date</name>
-					<value><![CDATA[1231154760000]]></value>
+					<value><![CDATA[1262690760000]]></value>
 				</property>
 				<property type="shared">
 					<name>template-elements</name>
@@ -1635,7 +1635,7 @@
 			<type>ttnews</type>
 			<uuidstructure>8ab97a44-c201-11dd-971c-bb58e5a148ea</uuidstructure>
 			<uuidresource>8ab97a45-c201-11dd-971c-bb58e5a148ea</uuidresource>
-			<datelastmodified>Tue, 05 May 2009 09:31:19 GMT</datelastmodified>
+			<datelastmodified>Fri, 13 Aug 2010 09:32:03 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 04 Dec 2008 12:46:16 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1647,7 +1647,7 @@
 				</property>
 				<property>
 					<name>collector.date</name>
-					<value><![CDATA[1224503100000]]></value>
+					<value><![CDATA[1287575100000]]></value>
 				</property>
 				<property type="shared">
 					<name>template-elements</name>
@@ -1663,7 +1663,7 @@
 			<type>ttnews</type>
 			<uuidstructure>3ffff6c5-c204-11dd-971c-bb58e5a148ea</uuidstructure>
 			<uuidresource>3ffff6c6-c204-11dd-971c-bb58e5a148ea</uuidresource>
-			<datelastmodified>Fri, 08 May 2009 10:31:12 GMT</datelastmodified>
+			<datelastmodified>Fri, 13 Aug 2010 09:32:19 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 04 Dec 2008 13:05:40 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1675,7 +1675,7 @@
 				</property>
 				<property>
 					<name>collector.date</name>
-					<value><![CDATA[1228914240000]]></value>
+					<value><![CDATA[1291986240000]]></value>
 				</property>
 				<property type="shared">
 					<name>template-elements</name>
@@ -1691,7 +1691,7 @@
 			<type>ttnews</type>
 			<uuidstructure>4285b2b8-c20b-11dd-971c-bb58e5a148ea</uuidstructure>
 			<uuidresource>4285b2b9-c20b-11dd-971c-bb58e5a148ea</uuidresource>
-			<datelastmodified>Tue, 05 May 2009 09:32:03 GMT</datelastmodified>
+			<datelastmodified>Fri, 13 Aug 2010 09:32:56 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 04 Dec 2008 13:55:50 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1703,7 +1703,7 @@
 				</property>
 				<property>
 					<name>collector.date</name>
-					<value><![CDATA[1219755240000]]></value>
+					<value><![CDATA[1282827240000]]></value>
 				</property>
 				<property type="shared">
 					<name>template-elements</name>
@@ -3026,7 +3026,7 @@
 			<type>ttlinkbox</type>
 			<uuidstructure>1b3cdd77-e45c-11dc-ac58-51cb880fd12a</uuidstructure>
 			<uuidresource>1b3cdd78-e45c-11dc-ac58-51cb880fd12a</uuidresource>
-			<datelastmodified>Mon, 01 Dec 2008 09:02:19 GMT</datelastmodified>
+			<datelastmodified>Fri, 13 Aug 2010 09:38:08 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 26 Feb 2008 11:15:15 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -5544,7 +5544,7 @@
 			<type>ttlinkbox</type>
 			<uuidstructure>2fb8da4c-e545-11dc-8457-51cb880fd12a</uuidstructure>
 			<uuidresource>2fb8da4d-e545-11dc-8457-51cb880fd12a</uuidresource>
-			<datelastmodified>Fri, 28 Nov 2008 09:27:05 GMT</datelastmodified>
+			<datelastmodified>Fri, 13 Aug 2010 09:39:19 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 27 Feb 2008 15:03:43 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -7162,7 +7162,7 @@
 			<type>ttevent</type>
 			<uuidstructure>28fddc77-e542-11dc-8457-51cb880fd12a</uuidstructure>
 			<uuidresource>28fddc78-e542-11dc-8457-51cb880fd12a</uuidresource>
-			<datelastmodified>Wed, 26 Nov 2008 13:38:24 GMT</datelastmodified>
+			<datelastmodified>Fri, 13 Aug 2010 09:14:10 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 27 Feb 2008 14:42:03 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -7171,15 +7171,15 @@
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Floristika 2008 in Dresden]]></value>
+					<value><![CDATA[Floristika 2010 in Dresden]]></value>
 				</property>
 				<property>
 					<name>calendar.enddate</name>
-					<value><![CDATA[1215360000000]]></value>
+					<value><![CDATA[1278432000000]]></value>
 				</property>
 				<property>
 					<name>collector.date</name>
-					<value><![CDATA[1215244800000]]></value>
+					<value><![CDATA[1278316800000]]></value>
 				</property>
 				<property type="shared">
 					<name>template-elements</name>
@@ -7195,7 +7195,7 @@
 			<type>ttevent</type>
 			<uuidstructure>b4fd0e69-e44d-11dc-add5-9f7a6a6ce285</uuidstructure>
 			<uuidresource>b4fd0e6a-e44d-11dc-add5-9f7a6a6ce285</uuidresource>
-			<datelastmodified>Tue, 05 May 2009 10:14:00 GMT</datelastmodified>
+			<datelastmodified>Fri, 13 Aug 2010 09:14:32 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 26 Feb 2008 09:32:11 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -7208,11 +7208,11 @@
 				</property>
 				<property>
 					<name>calendar.enddate</name>
-					<value><![CDATA[1218362400000]]></value>
+					<value><![CDATA[1281434400000]]></value>
 				</property>
 				<property>
 					<name>collector.date</name>
-					<value><![CDATA[1217628000000]]></value>
+					<value><![CDATA[1280700000000]]></value>
 				</property>
 				<property type="shared">
 					<name>template-elements</name>
@@ -7227,7 +7227,7 @@
 			<type>ttevent</type>
 			<uuidstructure>98631817-c20c-11dd-971c-bb58e5a148ea</uuidstructure>
 			<uuidresource>34712e3a-c1ef-11dd-971c-bb58e5a148ea</uuidresource>
-			<datelastmodified>Tue, 05 May 2009 09:45:55 GMT</datelastmodified>
+			<datelastmodified>Fri, 13 Aug 2010 09:15:31 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 04 Dec 2008 10:35:01 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -7239,7 +7239,7 @@
 				</property>
 				<property>
 					<name>collector.date</name>
-					<value><![CDATA[1244280720000]]></value>
+					<value><![CDATA[1275816720000]]></value>
 				</property>
 				<property type="shared">
 					<name>template-elements</name>
@@ -7254,7 +7254,7 @@
 			<type>ttevent</type>
 			<uuidstructure>a457daca-c20c-11dd-971c-bb58e5a148ea</uuidstructure>
 			<uuidresource>936917c2-c1f1-11dd-971c-bb58e5a148ea</uuidresource>
-			<datelastmodified>Tue, 05 May 2009 10:10:03 GMT</datelastmodified>
+			<datelastmodified>Fri, 13 Aug 2010 09:16:17 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 04 Dec 2008 10:51:59 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -7266,11 +7266,11 @@
 				</property>
 				<property>
 					<name>calendar.enddate</name>
-					<value><![CDATA[1227996000000]]></value>
+					<value><![CDATA[1291068000000]]></value>
 				</property>
 				<property>
 					<name>collector.date</name>
-					<value><![CDATA[1227987000000]]></value>
+					<value><![CDATA[1291059000000]]></value>
 				</property>
 				<property type="shared">
 					<name>template-elements</name>
@@ -7285,7 +7285,7 @@
 			<type>ttevent</type>
 			<uuidstructure>b0bf356e-c20c-11dd-971c-bb58e5a148ea</uuidstructure>
 			<uuidresource>7e2ae6f4-c1f2-11dd-971c-bb58e5a148ea</uuidresource>
-			<datelastmodified>Tue, 05 May 2009 09:43:46 GMT</datelastmodified>
+			<datelastmodified>Fri, 13 Aug 2010 09:17:16 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 04 Dec 2008 10:58:33 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -7297,11 +7297,11 @@
 				</property>
 				<property>
 					<name>calendar.enddate</name>
-					<value><![CDATA[1250438400000]]></value>
+					<value><![CDATA[1281974400000]]></value>
 				</property>
 				<property>
 					<name>collector.date</name>
-					<value><![CDATA[1250409600000]]></value>
+					<value><![CDATA[1281945600000]]></value>
 				</property>
 				<property type="shared">
 					<name>template-elements</name>
@@ -7347,7 +7347,7 @@
 			<type>ttevent</type>
 			<uuidstructure>c008a166-c20c-11dd-971c-bb58e5a148ea</uuidstructure>
 			<uuidresource>6cf1785a-c1f7-11dd-971c-bb58e5a148ea</uuidresource>
-			<datelastmodified>Fri, 08 May 2009 10:23:42 GMT</datelastmodified>
+			<datelastmodified>Fri, 13 Aug 2010 09:19:03 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 04 Dec 2008 11:33:51 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -7359,11 +7359,11 @@
 				</property>
 				<property>
 					<name>calendar.enddate</name>
-					<value><![CDATA[1226824980000]]></value>
+					<value><![CDATA[1289896980000]]></value>
 				</property>
 				<property>
 					<name>collector.date</name>
-					<value><![CDATA[1226652180000]]></value>
+					<value><![CDATA[1289724180000]]></value>
 				</property>
 				<property type="shared">
 					<name>template-elements</name>
@@ -7378,7 +7378,7 @@
 			<type>ttevent</type>
 			<uuidstructure>c7865aea-c20c-11dd-971c-bb58e5a148ea</uuidstructure>
 			<uuidresource>94d785f6-c1fa-11dd-971c-bb58e5a148ea</uuidresource>
-			<datelastmodified>Tue, 05 May 2009 10:05:48 GMT</datelastmodified>
+			<datelastmodified>Fri, 13 Aug 2010 09:19:47 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 04 Dec 2008 11:56:27 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -7390,11 +7390,11 @@
 				</property>
 				<property>
 					<name>calendar.enddate</name>
-					<value><![CDATA[1237136400000]]></value>
+					<value><![CDATA[1268672400000]]></value>
 				</property>
 				<property>
 					<name>collector.date</name>
-					<value><![CDATA[1236416400000]]></value>
+					<value><![CDATA[1267952400000]]></value>
 				</property>
 				<property type="shared">
 					<name>template-elements</name>
@@ -7409,7 +7409,7 @@
 			<type>ttevent</type>
 			<uuidstructure>cebde3ae-c20c-11dd-971c-bb58e5a148ea</uuidstructure>
 			<uuidresource>63a42b5c-c1fe-11dd-971c-bb58e5a148ea</uuidresource>
-			<datelastmodified>Fri, 08 May 2009 10:24:33 GMT</datelastmodified>
+			<datelastmodified>Fri, 13 Aug 2010 09:20:28 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 04 Dec 2008 12:23:42 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -7421,7 +7421,7 @@
 				</property>
 				<property>
 					<name>collector.date</name>
-					<value><![CDATA[1222341780000]]></value>
+					<value><![CDATA[1285413780000]]></value>
 				</property>
 				<property type="shared">
 					<name>template-elements</name>
@@ -7535,7 +7535,7 @@
 			<type>ttnews</type>
 			<uuidstructure>cefd9ee8-e534-11dc-8457-51cb880fd12a</uuidstructure>
 			<uuidresource>cefd9ee9-e534-11dc-8457-51cb880fd12a</uuidresource>
-			<datelastmodified>Tue, 05 May 2009 09:33:01 GMT</datelastmodified>
+			<datelastmodified>Fri, 13 Aug 2010 09:30:12 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 27 Feb 2008 13:06:28 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -7547,7 +7547,7 @@
 				</property>
 				<property>
 					<name>collector.date</name>
-					<value><![CDATA[1199487600000]]></value>
+					<value><![CDATA[1262646000000]]></value>
 				</property>
 				<property>
 					<name>style.preset</name>
@@ -7567,7 +7567,7 @@
 			<type>ttnews</type>
 			<uuidstructure>f41e7008-c2b4-11dd-a943-bb58e5a148ea</uuidstructure>
 			<uuidresource>f41e7009-c2b4-11dd-a943-bb58e5a148ea</uuidresource>
-			<datelastmodified>Tue, 05 May 2009 09:28:00 GMT</datelastmodified>
+			<datelastmodified>Fri, 13 Aug 2010 09:30:31 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 05 Dec 2008 10:10:33 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -7575,11 +7575,11 @@
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Flower of the year 2009]]></value>
+					<value><![CDATA[Flower of the year 2010]]></value>
 				</property>
 				<property>
 					<name>collector.date</name>
-					<value><![CDATA[1228471800000]]></value>
+					<value><![CDATA[1291543800000]]></value>
 				</property>
 				<property type="shared">
 					<name>template-elements</name>
@@ -7595,7 +7595,7 @@
 			<type>ttnews</type>
 			<uuidstructure>26270325-c2b6-11dd-a943-bb58e5a148ea</uuidstructure>
 			<uuidresource>26270326-c2b6-11dd-a943-bb58e5a148ea</uuidresource>
-			<datelastmodified>Tue, 05 May 2009 09:30:43 GMT</datelastmodified>
+			<datelastmodified>Fri, 13 Aug 2010 09:30:54 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 05 Dec 2008 10:19:07 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -7607,7 +7607,7 @@
 				</property>
 				<property>
 					<name>collector.date</name>
-					<value><![CDATA[1228472220000]]></value>
+					<value><![CDATA[1291544220000]]></value>
 				</property>
 				<property type="shared">
 					<name>template-elements</name>
@@ -7623,11 +7623,11 @@
 			<type>ttnews</type>
 			<uuidstructure>2fa708ed-e44e-11dc-add5-9f7a6a6ce285</uuidstructure>
 			<uuidresource>2fa708ee-e44e-11dc-add5-9f7a6a6ce285</uuidresource>
-			<datelastmodified>Tue, 05 May 2009 09:35:58 GMT</datelastmodified>
+			<datelastmodified>Fri, 13 Aug 2010 09:31:18 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 26 Feb 2008 09:35:37 GMT</datecreated>
 			<usercreated>Admin</usercreated>
-			<datereleased>Thu, 03 Jan 2008 23:00:00 GMT</datereleased>
+			<datereleased>Sun, 03 Jan 2010 23:00:00 GMT</datereleased>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -7636,7 +7636,7 @@
 				</property>
 				<property>
 					<name>collector.date</name>
-					<value><![CDATA[1199401200000]]></value>
+					<value><![CDATA[1262559600000]]></value>
 				</property>
 				<property>
 					<name>collector.priority</name>
@@ -7656,7 +7656,7 @@
 			<type>ttnews</type>
 			<uuidstructure>b1447eaa-c2b8-11dd-a943-bb58e5a148ea</uuidstructure>
 			<uuidresource>b1447eab-c2b8-11dd-a943-bb58e5a148ea</uuidresource>
-			<datelastmodified>Fri, 08 May 2009 10:23:00 GMT</datelastmodified>
+			<datelastmodified>Fri, 13 Aug 2010 09:31:40 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 05 Dec 2008 10:37:19 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -7668,7 +7668,7 @@
 				</property>
 				<property>
 					<name>collector.date</name>
-					<value><![CDATA[1231151580000]]></value>
+					<value><![CDATA[1262687580000]]></value>
 				</property>
 				<property type="shared">
 					<name>template-elements</name>
@@ -7683,7 +7683,7 @@
 			<type>ttnews</type>
 			<uuidstructure>72650819-c20d-11dd-971c-bb58e5a148ea</uuidstructure>
 			<uuidresource>8ab97a45-c201-11dd-971c-bb58e5a148ea</uuidresource>
-			<datelastmodified>Tue, 05 May 2009 09:31:19 GMT</datelastmodified>
+			<datelastmodified>Fri, 13 Aug 2010 09:32:03 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 04 Dec 2008 12:46:16 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -7695,7 +7695,7 @@
 				</property>
 				<property>
 					<name>collector.date</name>
-					<value><![CDATA[1224503100000]]></value>
+					<value><![CDATA[1287575100000]]></value>
 				</property>
 				<property type="shared">
 					<name>template-elements</name>
@@ -7710,7 +7710,7 @@
 			<type>ttnews</type>
 			<uuidstructure>7869680c-c20d-11dd-971c-bb58e5a148ea</uuidstructure>
 			<uuidresource>3ffff6c6-c204-11dd-971c-bb58e5a148ea</uuidresource>
-			<datelastmodified>Fri, 08 May 2009 10:31:12 GMT</datelastmodified>
+			<datelastmodified>Fri, 13 Aug 2010 09:32:19 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 04 Dec 2008 13:05:40 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -7722,7 +7722,7 @@
 				</property>
 				<property>
 					<name>collector.date</name>
-					<value><![CDATA[1228914240000]]></value>
+					<value><![CDATA[1291986240000]]></value>
 				</property>
 				<property type="shared">
 					<name>template-elements</name>
@@ -7737,7 +7737,7 @@
 			<type>ttnews</type>
 			<uuidstructure>7e08c49f-c20d-11dd-971c-bb58e5a148ea</uuidstructure>
 			<uuidresource>4285b2b9-c20b-11dd-971c-bb58e5a148ea</uuidresource>
-			<datelastmodified>Tue, 05 May 2009 09:32:03 GMT</datelastmodified>
+			<datelastmodified>Fri, 13 Aug 2010 09:32:56 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 04 Dec 2008 13:55:50 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -7749,7 +7749,7 @@
 				</property>
 				<property>
 					<name>collector.date</name>
-					<value><![CDATA[1219755240000]]></value>
+					<value><![CDATA[1282827240000]]></value>
 				</property>
 				<property type="shared">
 					<name>template-elements</name>
@@ -8152,10 +8152,10 @@
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<uuidstructure>872e522c-7cdd-11de-8e2f-e92aaf3d04db</uuidstructure>
-			<datelastmodified>Thu, 30 Jul 2009 07:49:36 GMT</datelastmodified>
+			<uuidstructure>a71fa2af-a6af-11df-b53a-3d3ecfb3f842</uuidstructure>
+			<datelastmodified>Fri, 13 Aug 2010 07:51:59 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 30 Jul 2009 07:49:36 GMT</datecreated>
+			<datecreated>Fri, 13 Aug 2010 07:51:59 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
