@@ -28,10 +28,12 @@
 	<taskdef resource="org/opencms/util/ant/taskdefs.properties" loaderref="opencms">
 		<classpath>
 			<pathelement location="${opencms.input.libs.compile}/ant-opencms-1.1.jar" />
-			<pathelement location="${opencms.input.libs.runtime}/commons-digester-1.8.jar" />
+			<pathelement location="${opencms.input.libs.runtime}/commons-beanutils-1.8.0.jar" />
 			<pathelement location="${opencms.input.libs.runtime}/commons-collections-3.2.1.jar" />
 			<pathelement location="${opencms.input.libs.runtime}/commons-logging-1.1.1.jar" />
-			<pathelement location="${opencms.input.libs.runtime}/commons-beanutils-1.8.0.jar" />
+			<pathelement location="${opencms.input.libs.runtime}/commons-dbcp-1.2.2.jar" />
+			<pathelement location="${opencms.input.libs.runtime}/commons-digester-1.8.jar" />
+			<pathelement location="${opencms.input.libs.runtime}/commons-email-1.2.jar" />
 		</classpath>
 	</taskdef>
 	
