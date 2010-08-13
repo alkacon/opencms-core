@@ -1,4 +1,4 @@
-d<%@ page session="true" %><%--
+<%@ page session="true" %><%--
 --%><jsp:useBean id="Bean" class="org.opencms.setup.CmsUpdateBean" scope="session" /><%--
 --%><jsp:useBean id="dbBean" class="org.opencms.setup.update6to7.CmsUpdateDBManager" scope="page" /><%--
 --%><jsp:setProperty name="Bean" property="*" /><%
