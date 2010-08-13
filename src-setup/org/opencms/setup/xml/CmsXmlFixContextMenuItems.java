@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/CmsXmlFixContextMenuItems.java,v $
- * Date   : $Date: 2010/01/18 10:01:00 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/08/13 14:30:59 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import org.dom4j.Node;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.5.1
  */
@@ -74,7 +74,8 @@ public class CmsXmlFixContextMenuItems extends A_CmsXmlWorkplace {
         Node node = document.selectSingleNode(xpath);
         if (node != null) {
             String xp = xpath + "/@" + CmsWorkplaceConfiguration.A_RULE;
-            if (!document.selectSingleNode(xp).getText().equals("nondeleted")) {
+            if ((document.selectSingleNode(xp) != null)
+                && !document.selectSingleNode(xp).getText().equals("nondeleted")) {
                 CmsSetupXmlHelper.setValue(document, xp, "nondeleted");
                 modified = true;
             }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2010/08/13 12:53:18 $
- * Version: $Revision: 1.1198 $
+ * Date   : $Date: 2010/08/13 14:30:59 $
+ * Version: $Revision: 1.1199 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ OpenCms 7.5.3 - Month Day, 2010
 * Fixed issue with broken dialog when trying to edit a group that is part of an organizational unit
 * Fixed issue with displaying HTML in "Title" "and NavText" column of explorer view
 * Fixed with the locale calculation in the publish scheduled procedure
-* Fixed issue with malformated encoding in workplace property files
+* Fixed issue with malformed encoding in workplace property files
 
 OpenCms 7.5.2 - January 20, 2010
 - Added additional MIME types
