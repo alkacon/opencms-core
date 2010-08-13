@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsMessages.java,v $
- * Date   : $Date: 2010/01/18 10:01:49 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2010/08/13 12:53:18 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.i18n;
 
+import org.opencms.main.CmsLog;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsStringUtil;
 
@@ -40,6 +41,8 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Reads localized resource Strings from a <code>java.util.ResourceBundle</code> 
@@ -52,7 +55,7 @@ import java.util.ResourceBundle;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.29 $ 
  * 
  * @since 6.0.0 
  */
@@ -63,6 +66,9 @@ public class CmsMessages {
 
     /** Prefix / Suffix for unknown keys. */
     public static final String UNKNOWN_KEY_EXTENSION = "???";
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsMessages.class);
 
     /** The resource bundle base name this object was initialized with. */
     private String m_bundleName;
@@ -87,6 +93,10 @@ public class CmsMessages {
             m_resourceBundle = CmsResourceBundleLoader.getBundle(bundleName, m_locale);
         } catch (MissingResourceException e) {
             m_resourceBundle = null;
+        } catch (Exception e) {
+            m_resourceBundle = null;
+            LOG.error(Messages.get().getBundle().key(Messages.ERR_CREATING_MESSAGES_2, bundleName, m_locale), e);
+
         }
     }
 
