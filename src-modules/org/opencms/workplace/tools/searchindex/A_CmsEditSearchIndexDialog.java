@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/A_CmsEditSearchIndexDialog.java,v $
- * Date   : $Date: 2010/06/01 09:57:28 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/08/13 14:28:23 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -144,7 +144,7 @@ public abstract class A_CmsEditSearchIndexDialog extends CmsWidgetDialog {
                 CmsStringUtil.checkName(
                     m_index.getName(),
                     INDEX_NAME_CONSTRAINTS,
-                    Messages.ERR_SEARCHINDEX_BAD_INDEXNAME,
+                    Messages.ERR_SEARCHINDEX_BAD_INDEXNAME_4,
                     Messages.get());
                 // empty or null name and uniqueness check in add method 
                 m_searchManager.addSearchIndex(m_index);
