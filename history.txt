@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2010/08/13 14:30:59 $
- * Version: $Revision: 1.1199 $
+ * Date   : $Date: 2010/08/16 15:21:57 $
+ * Version: $Revision: 1.1200 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -19,7 +19,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 7.5.3 - Month Day, 2010
+OpenCms 7.5.3 - August 16, 2010
 ! External Links (pointers) now support handling of request parameters (loader parameter in opencms-vfs.xml)
 ! New workplace content tool to update the structure of XML contents without changing the modification date
 ! New XML content element type "CmsXmlPlainTextStringValue" that removes HTML code for the search results
