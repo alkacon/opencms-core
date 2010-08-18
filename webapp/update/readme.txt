@@ -16,9 +16,15 @@ existing OpenCms installation when using this upgrade wizard.
 IMPORTANT: Before using this upgrade wizard, make sure you have a full backup 
 of your OpenCms installation and database.
 
+IMPORTANT: If you are using the Alkacon OCEE modules with your OpenCms installation,
+you MUST make sure the Alkacon OCEE version is compatible with OpenCms 7.5.3 BEFORE 
+you run this upgrade wizard! Alkacon OCEE version 2.1.3 or newer is required for 
+OpenCms 7.5.3. If you have an older version of Alkacon OCEE installed, you need to 
+update the Alkacon OCEE modules first.
+
+
 
 Follow the following steps to update from OpenCms 6.x/7.x to OpenCms 7.5.3:
-
 
 1. Shutdown your OpenCms servlet container
 
