@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsModuleConfiguration.java,v $
- * Date   : $Date: 2010/01/18 10:02:32 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2010/08/18 08:13:29 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 6.0.0
  */
@@ -71,18 +71,6 @@ public class CmsModuleConfiguration extends A_CmsXmlConfiguration {
 
     /** The configured list of module descriptions. */
     private List m_modules;
-
-    /**
-     * Public constructor, will be called by configuration manager.<p> 
-     */
-    public CmsModuleConfiguration() {
-
-        setXmlFileName(DEFAULT_XML_FILE_NAME);
-        m_modules = new ArrayList();
-        if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_MODULE_CONFIG_INIT_0));
-        }
-    }
 
     /**
      * @see org.opencms.configuration.I_CmsXmlConfiguration#addXmlDigesterRules(org.apache.commons.digester.Digester)
@@ -170,5 +158,18 @@ public class CmsModuleConfiguration extends A_CmsXmlConfiguration {
 
         // add the module info to the list of configured modules
         m_modules.add(moduleHandler.getModule());
+    }
+
+    /**
+     * @see org.opencms.configuration.A_CmsXmlConfiguration#initMembers()
+     */
+    @Override
+    protected void initMembers() {
+
+        setXmlFileName(DEFAULT_XML_FILE_NAME);
+        m_modules = new ArrayList();
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_MODULE_CONFIG_INIT_0));
+        }
     }
 }

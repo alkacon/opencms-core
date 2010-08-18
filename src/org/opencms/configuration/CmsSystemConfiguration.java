@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2010/04/08 15:28:08 $
- * Version: $Revision: 1.55 $
+ * Date   : $Date: 2010/08/18 08:13:28 $
+ * Version: $Revision: 1.56 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -84,7 +84,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.55 $
+ * @version $Revision: 1.56 $
  * 
  * @since 6.0.0
  */
@@ -531,25 +531,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
     /** The configured validation handler. */
     private String m_validationHandler;
-
-    /**
-     * Public constructor, will be called by configuration manager.<p> 
-     */
-    public CmsSystemConfiguration() {
-
-        setXmlFileName(DEFAULT_XML_FILE_NAME);
-        m_historyEnabled = true;
-        m_historyVersions = 10;
-        m_historyVersionsAfterDeletion = -1; // use m_historyVersions instead
-        m_resourceInitHandlers = new ArrayList();
-        m_requestHandlers = new ArrayList();
-        m_configuredJobs = new ArrayList();
-        m_runtimeProperties = new HashMap();
-        m_eventManager = new CmsEventManager();
-        if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SYSTEM_CONFIG_INIT_0));
-        }
-    }
 
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#addConfigurationParameter(java.lang.String, java.lang.String)
@@ -2217,5 +2198,25 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     public void setValidationHandler(String validationHandlerClass) {
 
         m_validationHandler = validationHandlerClass;
+    }
+
+    /**
+     * @see org.opencms.configuration.A_CmsXmlConfiguration#initMembers()
+     */
+    @Override
+    protected void initMembers() {
+
+        setXmlFileName(DEFAULT_XML_FILE_NAME);
+        m_historyEnabled = true;
+        m_historyVersions = 10;
+        m_historyVersionsAfterDeletion = -1; // use m_historyVersions instead
+        m_resourceInitHandlers = new ArrayList();
+        m_requestHandlers = new ArrayList();
+        m_configuredJobs = new ArrayList();
+        m_runtimeProperties = new HashMap();
+        m_eventManager = new CmsEventManager();
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SYSTEM_CONFIG_INIT_0));
+        }
     }
 }

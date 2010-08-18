@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSearchConfiguration.java,v $
- * Date   : $Date: 2010/01/18 10:02:34 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2010/08/18 08:13:29 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import org.dom4j.Element;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  * 
  * @since 6.0.0
  */
@@ -210,17 +210,6 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
 
     /** The configured search manager. */
     private CmsSearchManager m_searchManager;
-
-    /**
-     * Public constructor, will be called by configuration manager.<p> 
-     */
-    public CmsSearchConfiguration() {
-
-        setXmlFileName(DEFAULT_XML_FILE_NAME);
-        if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SEARCH_CONFIG_INIT_0));
-        }
-    }
 
     /**
      * @see org.opencms.configuration.I_CmsXmlConfiguration#addXmlDigesterRules(org.apache.commons.digester.Digester)
@@ -651,6 +640,18 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
         m_searchManager = manager;
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SEARCH_MANAGER_FINISHED_0));
+        }
+    }
+
+    /**
+     * @see org.opencms.configuration.A_CmsXmlConfiguration#initMembers()
+     */
+    @Override
+    protected void initMembers() {
+
+        setXmlFileName(DEFAULT_XML_FILE_NAME);
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SEARCH_CONFIG_INIT_0));
         }
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/configuration/CmsTestConfiguration.java,v $
- * Date   : $Date: 2010/01/18 10:04:24 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2010/08/18 08:13:29 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @since 6.0.0
  */
@@ -59,17 +59,6 @@ public class CmsTestConfiguration extends A_CmsXmlConfiguration {
 
     /** Test content 2. */
     private String m_content2;
-
-    /**
-     * The public contructor is hidden to prevent generation of instances of this class.<p> 
-     */
-    public CmsTestConfiguration() {
-
-        setXmlFileName(DEFAULT_XML_FILE_NAME);
-        if (CmsLog.getLog(this).isDebugEnabled()) {
-            CmsLog.getLog(this).debug("Empty constructor called on " + this);
-        }
-    }
 
     /**
      * Test method to add a value.<p>
@@ -119,5 +108,17 @@ public class CmsTestConfiguration extends A_CmsXmlConfiguration {
     public String getDtdFilename() {
 
         return CONFIGURATION_DTD_NAME;
+    }
+
+    /**
+     * @see org.opencms.configuration.A_CmsXmlConfiguration#initMembers()
+     */
+    @Override
+    protected void initMembers() {
+
+        setXmlFileName(DEFAULT_XML_FILE_NAME);
+        if (CmsLog.getLog(this).isDebugEnabled()) {
+            CmsLog.getLog(this).debug("Empty constructor called on " + this);
+        }
     }
 }
