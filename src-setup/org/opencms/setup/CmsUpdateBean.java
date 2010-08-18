@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/CmsUpdateBean.java,v $
- * Date   : $Date: 2010/01/18 10:02:58 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/08/18 08:14:00 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,6 +58,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -75,7 +76,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Michael Moossen
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -152,6 +153,28 @@ public class CmsUpdateBean extends CmsSetupBean {
         super();
         m_modulesFolder = FOLDER_UPDATE + CmsSystemInfo.FOLDER_MODULES;
         m_logFile = CmsSystemInfo.FOLDER_WEBINF + CmsLog.FOLDER_LOGS + "update.log";
+    }
+
+    /**
+     * Compatibility check for OCEE modules.<p>
+     * 
+     * @param version the opencms version
+     * 
+     * @return <code>false</code> if OCEE is present but not compatible with opencms version
+     */
+    public boolean checkOceeVersion(String version) {
+
+        try {
+            Class manager = Class.forName("org.opencms.ocee.base.CmsOceeManager");
+            Method checkVersion = manager.getMethod("checkOceeVersion", String.class);
+            return (Boolean)checkVersion.invoke(manager, version);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     /**
