@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2010/08/18 08:14:33 $
- * Version: $Revision: 1.1201 $
+ * Date   : $Date: 2010/08/20 13:59:39 $
+ * Version: $Revision: 1.1202 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -18,6 +18,9 @@ Legend:
 ! New Feature
 * Bug fixed
 - General comment
+
+OpenCms x.x.x - month day, year
+* Fixed issue #1895: "All others" entry in permission dialog misses summary of permissions
 
 OpenCms 7.5.3 - August 18, 2010
 ! External Links (pointers) now support handling of request parameters (loader parameter in opencms-vfs.xml)
