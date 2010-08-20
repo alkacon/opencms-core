@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2010/08/13 12:39:05 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2010/08/20 13:25:29 $
+ * Version: $Revision: 1.45 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -40,6 +40,7 @@ OpenCms x.x.x - Month Day, Year
 * Fixed issue #1886: Error when displaying historic version after a resource has been moved
 - Improved %(currenttime) macro to be able to set other dates based on the current time by adding/subtracting milliseconds
 * Fixed issue with malformated encoding in workplace property files
+* Fixed issue #1895: "All others" entry in permission dialog misses summary of permissions
 
 OpenCms 7.9.2 - February 24th, 2010
 ! Added support for xsd:choice in XML content API and editor
