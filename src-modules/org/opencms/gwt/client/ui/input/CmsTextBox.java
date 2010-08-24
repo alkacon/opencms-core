@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsTextBox.java,v $
- * Date   : $Date: 2010/07/06 12:08:04 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2010/08/24 15:15:14 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ import org.opencms.gwt.client.I_CmsHasInit;
 import org.opencms.gwt.client.ui.css.I_CmsInputCss;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
 
@@ -61,7 +62,7 @@ import com.google.gwt.user.client.ui.TextBox;
  * @author Georg Westenberger
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 8.0.0
  * 
@@ -215,6 +216,14 @@ HasClickHandlers, I_CmsHasBlur {
     }
 
     /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#onOpenDialog(org.opencms.gwt.client.ui.input.form.CmsFormDialog)
+     */
+    public void onOpenDialog(CmsFormDialog formDialog) {
+
+        // nothing to do
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#reset()
      */
     public void reset() {
@@ -257,7 +266,9 @@ HasClickHandlers, I_CmsHasBlur {
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setFormValue(java.lang.Object)
+     * Sets the value of the widget.<p>
+     * 
+     * @param value the new value 
      */
     public void setFormValue(Object value) {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsPopup.java,v $
- * Date   : $Date: 2010/04/30 06:57:26 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/08/24 15:15:14 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import com.google.gwt.user.client.ui.PopupPanel.PositionCallback;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.0
  */
@@ -682,6 +682,16 @@ public class CmsPopup {
     public void onBrowserEvent(Event event) {
 
         m_dialog.onBrowserEvent(event);
+    }
+
+    /**
+     * Removes an auto-hide partner.<p>
+     * 
+     * @param partner the auto-hide partner to remove
+     */
+    public void removeAutoHidePartner(Element partner) {
+
+        m_dialog.removeAutoHidePartner(partner);
     }
 
     /**

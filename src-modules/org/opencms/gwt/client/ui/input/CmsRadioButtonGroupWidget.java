@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsRadioButtonGroupWidget.java,v $
- * Date   : $Date: 2010/07/20 10:28:08 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/08/24 15:15:14 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.gwt.client.ui.input;
 import org.opencms.gwt.client.I_CmsHasInit;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
 import org.opencms.util.CmsPair;
@@ -61,7 +62,7 @@ import com.google.gwt.user.client.ui.Panel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  * 
@@ -185,6 +186,15 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsHasInit {
     }
 
     /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#onOpenDialog(org.opencms.gwt.client.ui.input.form.CmsFormDialog)
+     */
+    public void onOpenDialog(CmsFormDialog formDialog) {
+
+        // nothing to do 
+
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#reset()
      */
     public void reset() {
@@ -211,7 +221,9 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsHasInit {
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setFormValue(java.lang.Object)
+     * Sets the value of the widget.<p>
+     * 
+     * @param value the new value 
      */
     public void setFormValue(Object value) {
 
@@ -271,7 +283,6 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsHasInit {
     void fireValueChangedEvent(String newValue) {
 
         ValueChangeEvent.fire(this, newValue);
-
     }
 
 }

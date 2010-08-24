@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/Attic/Messages.java,v $
- * Date   : $Date: 2010/07/14 12:42:17 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/08/24 15:15:14 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,11 +38,17 @@ import org.opencms.gwt.client.util.CmsMessages;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 8.0.0
  */
 public final class Messages {
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_DATEBOX_INVALID_DATE_FORMAT_1 = "ERR_DATEBOX_INVALID_DATE_FORMAT_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_DATEBOX_INVALID_TIME_FORMAT_1 = "ERR_DATEBOX_INVALID_TIME_FORMAT_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_INVALID_UUID_1 = "ERR_INVALID_UUID_1";
@@ -51,7 +57,25 @@ public final class Messages {
     public static final String GUI_CANCEL_0 = "GUI_CANCEL_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_CANT_LOAD_TREE_1 = "GUI_CANT_LOAD_TREE_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_CLOSE_0 = "GUI_CLOSE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATE_AM_0 = "GUI_DATE_AM_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATE_PM_0 = "GUI_DATE_PM_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATEBOX_DATETIME_PATTERN_0 = "GUI_DATEBOX_DATETIME_PATTERN_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATEBOX_TIME_PATTERN_0 = "GUI_DATEBOX_TIME_PATTERN_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATEBOX_TITLE_0 = "GUI_DATEBOX_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DIALOG_RESET_TEXT_0 = "GUI_DIALOG_RESET_TEXT_0";
@@ -72,6 +96,9 @@ public final class Messages {
     public static final String GUI_LOCK_NOTIFICATION_2 = "GUI_LOCK_NOTIFICATION_2";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCKING_0 = "GUI_LOCKING_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_OK_0 = "GUI_OK_0";
 
     /** Message constant for key in the resource bundle. */
@@ -87,10 +114,10 @@ public final class Messages {
     public static final String GUI_TOOLBAR_ADD_0 = "GUI_TOOLBAR_ADD_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_TOOLBAR_CONTEXT_0 = "GUI_TOOLBAR_CONTEXT_0";
+    public static final String GUI_TOOLBAR_CLIPBOARD_0 = "GUI_TOOLBAR_CLIPBOARD_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_TOOLBAR_CLIPBOARD_0 = "GUI_TOOLBAR_CLIPBOARD_0";
+    public static final String GUI_TOOLBAR_CONTEXT_0 = "GUI_TOOLBAR_CONTEXT_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TOOLBAR_EDIT_0 = "GUI_TOOLBAR_EDIT_0";
@@ -129,31 +156,7 @@ public final class Messages {
     public static final String GUI_UNLOCK_NOTIFICATION_2 = "GUI_UNLOCK_NOTIFICATION_2";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_LOCKING_0 = "GUI_LOCKING_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_UNLOCKING_0 = "GUI_UNLOCKING_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_DATE_AM_0 = "GUI_DATE_AM_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_DATE_PM_0 = "GUI_DATE_PM_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_DATEBOX_TITLE_0 = "GUI_DATEBOX_TITLE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_DATEBOX_INVALID_TIME_FORMAT_1 = "ERR_DATEBOX_INVALID_TIME_FORMAT_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_DATEBOX_INVALID_DATE_FORMAT_1 = "ERR_DATEBOX_INVALID_DATE_FORMAT_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_DATEBOX_TIME_PATTERN_0 = "GUI_DATEBOX_TIME_PATTERN_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_DATEBOX_DATETIME_PATTERN_0 = "GUI_DATEBOX_DATETIME_PATTERN_0";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.gwt.clientmessages";

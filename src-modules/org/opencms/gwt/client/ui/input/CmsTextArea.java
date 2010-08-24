@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsTextArea.java,v $
- * Date   : $Date: 2010/05/10 06:54:24 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/08/24 15:15:14 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ import org.opencms.gwt.client.I_CmsHasInit;
 import org.opencms.gwt.client.ui.css.I_CmsInputCss;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
 
@@ -50,7 +51,7 @@ import com.google.gwt.user.client.ui.TextArea;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 8.0.0
  * 
@@ -146,6 +147,14 @@ public class CmsTextArea extends Composite implements I_CmsFormWidget, I_CmsHasI
     }
 
     /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#onOpenDialog(org.opencms.gwt.client.ui.input.form.CmsFormDialog)
+     */
+    public void onOpenDialog(CmsFormDialog formDialog) {
+
+        // nothing to do
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#reset()
      */
     public void reset() {
@@ -170,7 +179,9 @@ public class CmsTextArea extends Composite implements I_CmsFormWidget, I_CmsHasI
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setFormValue(java.lang.Object)
+     * Sets the value of the widget.<p>
+     * 
+     * @param value the new value 
      */
     public void setFormValue(Object value) {
 

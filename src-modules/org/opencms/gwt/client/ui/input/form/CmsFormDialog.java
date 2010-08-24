@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/form/Attic/CmsFormDialog.java,v $
- * Date   : $Date: 2010/06/15 12:34:30 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/08/24 15:15:14 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -81,7 +81,6 @@ public class CmsFormDialog extends CmsPopupDialog implements I_CmsFormDialog {
         m_okButton = createOkButton();
         m_form.setFormDialog(this);
         addButton(m_okButton);
-
     }
 
     /**
@@ -108,6 +107,16 @@ public class CmsFormDialog extends CmsPopupDialog implements I_CmsFormDialog {
             form.addField(field, currentValue);
         }
         dialog.center();
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.CmsPopup#center()
+     */
+    @Override
+    public void center() {
+
+        super.center();
+        notifyWidgetsOfOpen();
     }
 
     /**
@@ -156,6 +165,16 @@ public class CmsFormDialog extends CmsPopupDialog implements I_CmsFormDialog {
             }
         });
 
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.CmsPopup#show()
+     */
+    @Override
+    public void show() {
+
+        super.show();
+        notifyWidgetsOfOpen();
     }
 
     /**
@@ -241,6 +260,16 @@ public class CmsFormDialog extends CmsPopupDialog implements I_CmsFormDialog {
             }
         });
         return button;
+    }
+
+    /**
+     * Tells all widgets that the dialog has been opened.<p>
+     */
+    private void notifyWidgetsOfOpen() {
+
+        for (Map.Entry<String, I_CmsFormField> fieldEntry : m_form.getFields().entrySet()) {
+            fieldEntry.getValue().getWidget().onOpenDialog(this);
+        }
     }
 
 }

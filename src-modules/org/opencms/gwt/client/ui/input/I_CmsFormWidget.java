@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/I_CmsFormWidget.java,v $
- * Date   : $Date: 2010/07/07 12:42:29 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/08/24 15:15:14 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,12 +31,14 @@
 
 package org.opencms.gwt.client.ui.input;
 
+import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
+
 /**
  * Basic interface for all widgets that can be used for form fields.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
  */
@@ -52,6 +54,10 @@ public interface I_CmsFormWidget {
          **/
         BOOLEAN,
         /**
+         * Field type constant for dates (Java type: Date)
+         */
+        DATE,
+        /**
          * Field type constant for numbers (Java type: Double)
          */
         NUMBER,
@@ -62,11 +68,7 @@ public interface I_CmsFormWidget {
         /**
          * Field type constant for lists of strings (Java type: List<String>)
          */
-        STRING_LIST,
-        /**
-         * Field type constant for dates (Java type: Date)
-         */
-        DATE
+        STRING_LIST
     }
 
     /**
@@ -90,6 +92,13 @@ public interface I_CmsFormWidget {
     String getFormValueAsString();
 
     /**
+     * This method will be called when the dialog in which the widget appears is opened.<p>
+     * 
+     * @param formDialog the dialog 
+     */
+    void onOpenDialog(CmsFormDialog formDialog);
+
+    /**
      * Resets the widget to its default state.
      */
     void reset();
@@ -109,13 +118,6 @@ public interface I_CmsFormWidget {
      * @param errorMessage an error message or null
      */
     void setErrorMessage(String errorMessage);
-
-    /**
-     * Sets the value of the widget.<p>
-     * 
-     * @param value the new value 
-     */
-    void setFormValue(Object value);
 
     /**
      * Sets the current value of the widget as a string.<p>

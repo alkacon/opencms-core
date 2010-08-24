@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/datebox/Attic/CmsDateBox.java,v $
- * Date   : $Date: 2010/08/10 07:02:03 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/08/24 15:15:14 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,6 +38,7 @@ import org.opencms.gwt.client.ui.input.CmsRadioButton;
 import org.opencms.gwt.client.ui.input.CmsRadioButtonGroup;
 import org.opencms.gwt.client.ui.input.CmsTextBox;
 import org.opencms.gwt.client.ui.input.I_CmsFormWidget;
+import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
 
@@ -71,7 +72,7 @@ import com.google.gwt.user.client.ui.HasValue;
 /**
  * A text box that shows a date time picker widget when the user clicks on it.
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @author Ruediger Kurz
  */
@@ -86,7 +87,7 @@ implements HasValue<Date>, HasDoubleClickHandlers, I_CmsFormWidget, I_CmsHasInit
     /**
      * This inner Class implements the handlers for the date box widget.<p>
      * 
-     * @version $Revision: 1.6 $
+     * @version $Revision: 1.7 $
      * 
      * @author Ruediger Kurz
      * 
@@ -138,7 +139,7 @@ implements HasValue<Date>, HasDoubleClickHandlers, I_CmsFormWidget, I_CmsHasInit
     /**
      * This inner Class implements the listeners for the date box.<p>
      * 
-     * @version $Revision: 1.6 $
+     * @version $Revision: 1.7 $
      * 
      * @author Ruediger Kurz
      */
@@ -170,7 +171,7 @@ implements HasValue<Date>, HasDoubleClickHandlers, I_CmsFormWidget, I_CmsHasInit
     /**
      * This inner Class implements the handlers for the date box widget.<p>
      * 
-     * @version $Revision: 1.6 $
+     * @version $Revision: 1.7 $
      * 
      * @author Ruediger Kurz
      * 
@@ -220,7 +221,7 @@ implements HasValue<Date>, HasDoubleClickHandlers, I_CmsFormWidget, I_CmsHasInit
     /**
      * This inner Class implements the listeners for the date time picker.<p>
      * 
-     * @version $Revision: 1.6 $
+     * @version $Revision: 1.7 $
      * 
      * @author Ruediger Kurz
      */
@@ -433,6 +434,10 @@ implements HasValue<Date>, HasDoubleClickHandlers, I_CmsFormWidget, I_CmsHasInit
      */
     public String getFormValueAsString() {
 
+        Date value = getValue();
+        if (value == null) {
+            return null;
+        }
         return String.valueOf(getValue().getTime());
     }
 
@@ -509,6 +514,14 @@ implements HasValue<Date>, HasDoubleClickHandlers, I_CmsFormWidget, I_CmsHasInit
     public String getValueAsFormatedString() {
 
         return CmsDateConverter.toString(getValue());
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#onOpenDialog(org.opencms.gwt.client.ui.input.form.CmsFormDialog)
+     */
+    public void onOpenDialog(CmsFormDialog formDialog) {
+
+        //TODO: store the dialog in a member variable so that the popup can be set as one of its auto-hide partners 
     }
 
     /**

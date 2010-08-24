@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/ui/Attic/CmsTemplateSelectBox.java,v $
- * Date   : $Date: 2010/05/31 08:15:40 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/08/24 15:15:14 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,13 +32,14 @@
 package org.opencms.ade.sitemap.client.ui;
 
 import org.opencms.gwt.client.ui.input.A_CmsSelectBox;
+import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
 
 /**
  * A widget class for selecting a template for a sitemap entry in the sitemap editor.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  * 
@@ -67,6 +68,14 @@ public class CmsTemplateSelectBox extends A_CmsSelectBox<CmsTemplateSelectCell> 
     public void onLoad() {
 
         truncate("TEMPLATE_SELECT", TRUNCATION_WIDTH);
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#onOpenDialog(org.opencms.gwt.client.ui.input.form.CmsFormDialog)
+     */
+    public void onOpenDialog(CmsFormDialog formDialog) {
+
+        // do nothing
     }
 
     /**

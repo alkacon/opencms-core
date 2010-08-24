@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/form/Attic/CmsForm.java,v $
- * Date   : $Date: 2010/06/15 12:34:30 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/08/24 15:15:14 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,6 +42,7 @@ import org.opencms.gwt.shared.CmsValidationResult;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -69,7 +70,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 8.0.0
  * 
@@ -294,6 +295,16 @@ public class CmsForm extends Composite {
     public I_CmsFormField getField(String id) {
 
         return m_fields.get(id);
+    }
+
+    /** 
+     * Returns a map of this form's field, indexed by their field name.<p>
+     * 
+     * @return a map of form fields 
+     */
+    public Map<String, I_CmsFormField> getFields() {
+
+        return Collections.unmodifiableMap(m_fields);
     }
 
     /**

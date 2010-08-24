@@ -1,6 +1,6 @@
 @external popupContent, Caption;
 .popup{
-    z-index: 20000;
+    z-index: 500;
     padding: 3px;
 }
 .popup.menuPopup{
@@ -27,7 +27,7 @@
 }
 .popupOverlay{
     background: #dddddd;
-    z-index: 19000;
+    z-index: 450;
 }
 .popupShadow{
     width: 100%;
