@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsXmlSitemap.java,v $
- * Date   : $Date: 2010/06/30 13:54:43 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2010/08/25 14:40:14 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,10 +33,14 @@ package org.opencms.xml.sitemap;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
@@ -73,6 +77,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.logging.Log;
 
 import org.dom4j.Document;
@@ -87,7 +93,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.35 $ 
+ * @version $Revision: 1.36 $ 
  * 
  * @since 7.5.2
  * 
@@ -359,7 +365,8 @@ public class CmsXmlSitemap extends CmsXmlContent {
      * 
      * @throws CmsException if something goes wrong
      */
-    public void applyChanges(CmsObject cms, List<I_CmsSitemapChange> changes) throws CmsException {
+    public void applyChanges(CmsObject cms, List<I_CmsSitemapChange> changes, HttpServletRequest req)
+    throws CmsException {
 
         Locale locale = cms.getRequestContext().getLocale();
 
@@ -377,7 +384,7 @@ public class CmsXmlSitemap extends CmsXmlContent {
                     break;
                 case NEW:
                 case SUBSITEMAP_NEW:
-                    modified.add(newEntry(cms, (CmsSitemapChangeNew)change));
+                    modified.add(newEntry(cms, (CmsSitemapChangeNew)change, req));
                     break;
                 case MOVE:
                     modified.addAll(moveEntry(cms, (CmsSitemapChangeMove)change));
@@ -573,7 +580,7 @@ public class CmsXmlSitemap extends CmsXmlContent {
         // the vfs reference
         if (change.getVfsPath() != null) {
             Element vfsElement = entryElement.element(XmlNode.VfsFile.name());
-            fillResource(cms, vfsElement, change.getVfsPath());
+            fillResource(cms, vfsElement, cms.readResource(change.getVfsPath()));
         }
 
         // the properties
@@ -585,17 +592,15 @@ public class CmsXmlSitemap extends CmsXmlContent {
     }
 
     /**
-     * Fills a {@link CmsXmlVfsFileValue} with the resource identified by the given id.<p>
+     * Fills a {@link CmsXmlVfsFileValue} with the resource.<p>
      * 
      * @param cms the current CMS context
      * @param element the XML element to fill
-     * @param resourcePath the site path identifying the resource to use
+     * @param resource the resource to use
      * 
      * @return the resource 
-     * 
-     * @throws CmsException if the resource can not be read
      */
-    protected CmsResource fillResource(CmsObject cms, Element element, String resourcePath) throws CmsException {
+    protected CmsResource fillResource(CmsObject cms, Element element, CmsResource resource) {
 
         String xpath = element.getPath();
         int pos = xpath.lastIndexOf("/" + XmlNode.SiteEntry.name() + "/");
@@ -603,9 +608,8 @@ public class CmsXmlSitemap extends CmsXmlContent {
             xpath = xpath.substring(pos + 1);
         }
         CmsRelationType type = getContentDefinition().getContentHandler().getRelationType(xpath);
-        CmsResource res = cms.readResource(resourcePath);
-        CmsXmlVfsFileValue.fillEntry(element, res.getStructureId(), res.getRootPath(), type);
-        return res;
+        CmsXmlVfsFileValue.fillEntry(element, resource.getStructureId(), resource.getRootPath(), type);
+        return resource;
     }
 
     /**
@@ -657,8 +661,10 @@ public class CmsXmlSitemap extends CmsXmlContent {
                 // create the sitemap
                 m_sitemaps.put(locale, new CmsSitemapBean(locale, entries));
             } catch (NullPointerException e) {
-                LOG.error(org.opencms.xml.content.Messages.get().getBundle().key(
-                    org.opencms.xml.content.Messages.LOG_XMLCONTENT_INIT_BOOKMARKS_0), e);
+                LOG.error(
+                    org.opencms.xml.content.Messages.get().getBundle().key(
+                        org.opencms.xml.content.Messages.LOG_XMLCONTENT_INIT_BOOKMARKS_0),
+                    e);
             }
         }
     }
@@ -693,11 +699,14 @@ public class CmsXmlSitemap extends CmsXmlContent {
         if (!srcParentPath.equals(destParentPath)) {
             // detach from old place
             entryElement.detach();
-            // attach at new place
-            entryElement.setParent(newParent);
             // at the right position
             List<Element> siblings = CmsCollectionsGenericWrapper.list(newParent.elements(XmlNode.SiteEntry.name()));
-            siblings.add(change.getDestinationPosition(), entryElement);
+            if ((change.getDestinationPosition() < 0) || (change.getDestinationPosition() > siblings.size())) {
+                siblings.add(entryElement);
+            } else {
+                siblings.add(change.getDestinationPosition(), entryElement);
+            }
+
         } else {
             // check position
             List<Element> siblings = CmsCollectionsGenericWrapper.list(newParent.elements(XmlNode.SiteEntry.name()));
@@ -733,7 +742,7 @@ public class CmsXmlSitemap extends CmsXmlContent {
      * 
      * @throws CmsException if something goes wrong
      */
-    protected String newEntry(CmsObject cms, CmsSitemapChangeNew change) throws CmsException {
+    protected String newEntry(CmsObject cms, CmsSitemapChangeNew change, HttpServletRequest req) throws CmsException {
 
         String entryPoint;
         if (change instanceof CmsSitemapChangeNewSubSitemapEntry) {
@@ -768,8 +777,19 @@ public class CmsXmlSitemap extends CmsXmlContent {
 
         // the vfs reference
         Element vfsFile = entryElement.addElement(XmlNode.VfsFile.name());
-        fillResource(cms, vfsFile, change.getVfsPath());
-
+        String vfsPath = change.getVfsPath();
+        CmsResource resource = null;
+        if (vfsPath == null) {
+            resource = OpenCms.getSitemapManager().createNewElement(
+                cms,
+                cms.getSitePath(m_file),
+                req,
+                CmsResourceTypeXmlContainerPage.getStaticTypeName());
+            setResourceTitle(cms, resource, change.getTitle());
+        } else {
+            resource = cms.readResource(vfsPath);
+        }
+        fillResource(cms, vfsFile, resource);
         // the properties
         CmsXmlContentPropertyHelper.saveProperties(cms, entryElement, change.getProperties(), getFile());
 
@@ -982,5 +1002,50 @@ public class CmsXmlSitemap extends CmsXmlContent {
             }
         }
         return result;
+    }
+
+    /**
+     * Sets the title property of a given resource.<p>
+     * 
+     * @param cms the CMS context
+     * @param resource the resource
+     * @param title the title
+     * @throws CmsException if something goes wrong
+     */
+    private void setResourceTitle(CmsObject cms, CmsResource resource, String title) throws CmsException {
+
+        CmsProperty currentProperty = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_TITLE, false);
+        // detect if property is a null property or not
+        if (currentProperty.isNullProperty()) {
+            // create new property object and set key and value
+            currentProperty = new CmsProperty();
+            currentProperty.setName(CmsPropertyDefinition.PROPERTY_TITLE);
+            if (OpenCms.getWorkplaceManager().isDefaultPropertiesOnStructure()) {
+                // set structure value
+                currentProperty.setStructureValue(title);
+                currentProperty.setResourceValue(null);
+            } else {
+                // set resource value
+                currentProperty.setStructureValue(null);
+                currentProperty.setResourceValue(title);
+            }
+        } else if (currentProperty.getStructureValue() != null) {
+            // structure value has to be updated
+            currentProperty.setStructureValue(title);
+            currentProperty.setResourceValue(null);
+        } else {
+            // resource value has to be updated
+            currentProperty.setStructureValue(null);
+            currentProperty.setResourceValue(title);
+        }
+        CmsLock lock = cms.getLock(resource);
+        if (lock.isUnlocked()) {
+            // lock resource before operation
+            cms.lockResource(cms.getSitePath(resource));
+        }
+        // write the property to the resource
+        cms.writePropertyObject(cms.getSitePath(resource), currentProperty);
+        // unlock the resource
+        cms.unlockResource(cms.getSitePath(resource));
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsSitemapService.java,v $
- * Date   : $Date: 2010/07/23 11:38:25 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2010/08/25 14:40:14 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -93,7 +93,7 @@ import org.apache.commons.collections.map.MultiValueMap;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.31 $ 
+ * @version $Revision: 1.32 $ 
  * 
  * @since 8.0.0
  * 
@@ -497,7 +497,8 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
         CmsResource sitemap = cms.readResource(sitemapUri);
         CmsXmlSitemap xml = CmsXmlSitemapFactory.unmarshal(cms, sitemap);
         // apply changes
-        xml.applyChanges(cms, changes);
+
+        xml.applyChanges(cms, changes, getRequest());
         // write to VFS
         xml.getFile().setContents(xml.marshal());
         cms.writeFile(xml.getFile());

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeDelete.java,v $
- * Date   : $Date: 2010/06/24 09:05:25 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/08/25 14:40:14 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import java.util.List;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -63,6 +63,9 @@ public class CmsClientSitemapChangeDelete implements I_CmsClientSitemapChange {
     /** The tree item to which the change should be applied. */
     private CmsSitemapTreeItem m_treeItem;
 
+    /** Stores the entries site path at the time of the change event. */
+    private String m_eventSitePath;
+
     /**
      * Constructor.<p>
      * 
@@ -72,6 +75,7 @@ public class CmsClientSitemapChangeDelete implements I_CmsClientSitemapChange {
 
         m_ensureVisible = true;
         m_entry = entry;
+        m_eventSitePath = m_entry.getSitePath();
     }
 
     /**
@@ -127,7 +131,7 @@ public class CmsClientSitemapChangeDelete implements I_CmsClientSitemapChange {
      */
     public I_CmsSitemapChange getChangeForCommit() {
 
-        return new CmsSitemapChangeDelete(getEntry().getSitePath());
+        return new CmsSitemapChangeDelete(m_eventSitePath);
     }
 
     /**

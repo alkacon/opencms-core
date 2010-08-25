@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeNew.java,v $
- * Date   : $Date: 2010/06/24 09:05:25 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/08/25 14:40:14 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import org.opencms.xml.sitemap.I_CmsSitemapChange.Type;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -61,6 +61,9 @@ public class CmsClientSitemapChangeNew implements I_CmsClientSitemapChange {
     /** The corresponding tree item, if available from a delete operation. */
     private CmsSitemapTreeItem m_treeItem;
 
+    /** Stores the entries site path at the time of the change event. */
+    private String m_eventSitePath;
+
     /**
      * Constructor.<p>
      * 
@@ -69,6 +72,7 @@ public class CmsClientSitemapChangeNew implements I_CmsClientSitemapChange {
     public CmsClientSitemapChangeNew(CmsClientSitemapEntry entry) {
 
         m_entry = entry;
+        m_eventSitePath = m_entry.getSitePath();
     }
 
     /**
@@ -122,8 +126,9 @@ public class CmsClientSitemapChangeNew implements I_CmsClientSitemapChange {
      */
     public I_CmsSitemapChange getChangeForCommit() {
 
+        // use the site path stored at the event time, as the entry may have been moved in the mean time
         return new CmsSitemapChangeNew(
-            getEntry().getSitePath(),
+            m_eventSitePath,
             getEntry().getPosition(),
             getEntry().getTitle(),
             getEntry().getVfsPath(),

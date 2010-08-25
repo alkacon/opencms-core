@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/toolbar/Attic/CmsToolbarClipboardButton.java,v $
- * Date   : $Date: 2010/06/24 09:05:26 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/08/25 14:40:14 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -90,9 +90,9 @@ public class CmsToolbarClipboardButton extends CmsMenuButton implements I_CmsToo
                             CmsToolbarClipboardButton.this,
                             controller);
                         CmsTabbedPanel<FlowPanel> tabs = new CmsTabbedPanel<FlowPanel>();
-                        tabs.add(createTab(
-                            Messages.get().key(Messages.GUI_CLIPBOARD_MODIFIED_DESC_0),
-                            view.getModified()), Messages.get().key(Messages.GUI_CLIPBOARD_MODIFIED_TITLE_0));
+                        tabs.add(
+                            createTab(Messages.get().key(Messages.GUI_CLIPBOARD_MODIFIED_DESC_0), view.getModified()),
+                            Messages.get().key(Messages.GUI_CLIPBOARD_MODIFIED_TITLE_0));
                         tabs.add(
                             createTab(Messages.get().key(Messages.GUI_CLIPBOARD_DELETED_DESC_0), view.getDeleted()),
                             Messages.get().key(Messages.GUI_CLIPBOARD_DELETED_TITLE_0));
@@ -105,10 +105,6 @@ public class CmsToolbarClipboardButton extends CmsMenuButton implements I_CmsToo
                         m_content.setStyleName(I_CmsLayoutBundle.INSTANCE.clipboardCss().menuContent());
                         m_content.add(tabsContainer);
                         setMenuWidget(m_content);
-
-                        // TODO: remove this
-                        // add test data
-                        view.getDeleted().addItem(view.createDeletedItem(controller.getEntry("/demo_t3/view/")));
                     }
 
                     openMenu();

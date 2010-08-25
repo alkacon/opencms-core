@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeMove.java,v $
- * Date   : $Date: 2010/06/24 09:05:25 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/08/25 14:40:14 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import org.opencms.xml.sitemap.I_CmsSitemapChange.Type;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -104,7 +104,11 @@ public class CmsClientSitemapChangeMove implements I_CmsClientSitemapChange {
         CmsClientSitemapEntry sourceParent = controller.getEntry(CmsResource.getParentFolder(getSourcePath()));
         CmsClientSitemapEntry moved = sourceParent.removeSubEntry(getSourcePosition());
         CmsClientSitemapEntry destParent = controller.getEntry(CmsResource.getParentFolder(getDestinationPath()));
-        destParent.insertSubEntry(moved, getDestinationPosition());
+        if (getDestinationPosition() < destParent.getSubEntries().size()) {
+            destParent.insertSubEntry(moved, getDestinationPosition());
+        } else {
+            destParent.addSubEntry(moved);
+        }
         moved.updateSitePath(getDestinationPath());
         // TODO: apply to clipboard model
     }
@@ -119,7 +123,11 @@ public class CmsClientSitemapChangeMove implements I_CmsClientSitemapChange {
         CmsSitemapTreeItem moved = (CmsSitemapTreeItem)sourceParent.removeChild(getSourcePosition());
         sourceParent.getTree().setAnimationEnabled(true);
         CmsSitemapTreeItem destParent = view.getTreeItem(CmsResource.getParentFolder(getDestinationPath()));
-        destParent.insertChild(moved, getDestinationPosition());
+        if (getDestinationPosition() < destParent.getChildCount()) {
+            destParent.insertChild(moved, getDestinationPosition());
+        } else {
+            destParent.addChild(moved);
+        }
         moved.updateSitePath(getDestinationPath());
         if (m_ensureVisible) {
             view.ensureVisible(moved);

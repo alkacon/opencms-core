@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsSitemapHoverbar.java,v $
- * Date   : $Date: 2010/06/24 09:05:26 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/08/25 14:40:14 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,20 +35,24 @@ import org.opencms.ade.sitemap.client.CmsSitemapTreeItem;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.gwt.client.ui.A_CmsHoverHandler;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
+import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+
+import java.util.Iterator;
 
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Sitemap tree item hover-bar.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 8.0.0
  */
@@ -63,6 +67,9 @@ public class CmsSitemapHoverbar extends FlowPanel {
     /** The sitemap controller. */
     private CmsSitemapController m_controller;
 
+    /** Flag if hover bar buttons are enabled. */
+    private boolean m_enabled;
+
     /**
      * Constructor.<p>
      * 
@@ -72,7 +79,7 @@ public class CmsSitemapHoverbar extends FlowPanel {
 
         m_controller = controller;
         m_handlerManager = new HandlerManager(this);
-
+        m_enabled = true;
         setStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().buttonPanel());
 
         add(new CmsHoverbarGotoSubSitemapButton(this));
@@ -84,6 +91,33 @@ public class CmsSitemapHoverbar extends FlowPanel {
         add(new CmsHoverbarMergeButton(this));
         add(new CmsHoverbarMoveButton(this));
         add(new CmsHoverbarParentButton(this));
+    }
+
+    /**
+     * Sets the buttons of the hoverbar enabled.<p>
+     * 
+     * @param enable if <code>true</code> the buttons will be enabled
+     * @param disableMessage message for disabling buttons
+     */
+    public void setEnabled(boolean enable, String disableMessage) {
+
+        if (m_enabled && !enable) {
+            Iterator<Widget> it = iterator();
+            while (it.hasNext()) {
+                Widget w = it.next();
+                if (w instanceof CmsPushButton) {
+                    ((CmsPushButton)w).disable(disableMessage);
+                }
+            }
+        } else if (!m_enabled && enable) {
+            Iterator<Widget> it = iterator();
+            while (it.hasNext()) {
+                Widget w = it.next();
+                if (w instanceof CmsPushButton) {
+                    ((CmsPushButton)w).enable();
+                }
+            }
+        }
     }
 
     /**
@@ -162,9 +196,11 @@ public class CmsSitemapHoverbar extends FlowPanel {
                     return;
                 }
                 m_sitePath = treeItem.getSitePath();
-                widget.getContentPanel().add(CmsSitemapHoverbar.this);
-                m_handlerManager.fireEvent(new CmsHoverbarAttachEvent());
-                // CmsDebugLog.getInstance().printLine("attached");
+                if (getController().getEntry(m_sitePath) != null) {
+                    widget.getContentPanel().add(CmsSitemapHoverbar.this);
+                    m_handlerManager.fireEvent(new CmsHoverbarAttachEvent());
+                    // CmsDebugLog.getInstance().printLine("attached");
+                }
             }
 
             /**

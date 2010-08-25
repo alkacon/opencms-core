@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeEdit.java,v $
- * Date   : $Date: 2010/06/24 09:05:25 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/08/25 14:40:14 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import org.opencms.xml.sitemap.I_CmsSitemapChange.Type;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -128,8 +128,9 @@ public class CmsClientSitemapChangeEdit implements I_CmsClientSitemapChange {
      */
     public I_CmsSitemapChange getChangeForCommit() {
 
+        // using the old entries site path, as the new entry may have been moved in the mean time
         return new CmsSitemapChangeEdit(
-            getNewEntry().getSitePath(),
+            getOldEntry().getSitePath(),
             getNewEntry().getTitle(),
             getNewEntry().getVfsPath(),
             getNewEntry().getProperties());
