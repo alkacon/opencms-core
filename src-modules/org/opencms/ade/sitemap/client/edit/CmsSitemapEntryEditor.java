@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/edit/Attic/CmsSitemapEntryEditor.java,v $
- * Date   : $Date: 2010/07/20 10:28:08 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/08/25 15:24:41 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,7 +35,6 @@ import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.client.ui.CmsTemplateSelectBox;
 import org.opencms.ade.sitemap.client.ui.CmsTemplateSelectCell;
-import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsSitemapTemplate;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.CmsNonEmptyValidator;
@@ -58,7 +57,7 @@ import java.util.Map;
  * 
  *  @author Georg Westenberger
  *  
- *  @version $Revision: 1.8 $
+ *  @version $Revision: 1.9 $
  *  
  *  @since 8.0.0
  */
@@ -126,7 +125,7 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
                 CmsPair<String, String> templateProps = getTemplateProperties(fieldValues);
                 fieldValues.put(CmsSitemapManager.Property.template.toString(), templateProps.getFirst());
                 fieldValues.put(CmsSitemapManager.Property.templateInherited.toString(), templateProps.getSecond());
-                if (m_handler.getEntry().isRoot()) {
+                if (!m_handler.hasEditableName()) {
                     // The root element's name can't be edited 
                     hide();
                     m_handler.handleSubmit(titleValue, "", null, fieldValues);
@@ -147,17 +146,16 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
 
         form.addLabel(m_handler.getDescriptionText());
 
-        CmsClientSitemapEntry entry = m_handler.getEntry();
-        if (!entry.isRoot()) {
+        if (m_handler.hasEditableName()) {
             // the root entry name can't be edited 
-            CmsBasicFormField urlNameField = createUrlNameField(entry);
+            CmsBasicFormField urlNameField = createUrlNameField();
             form.addField(urlNameField);
         }
 
-        CmsBasicFormField titleField = createTitleField(entry);
+        CmsBasicFormField titleField = createTitleField();
         form.addField(titleField);
 
-        Map<String, String> properties = entry.getProperties();
+        Map<String, String> properties = m_handler.getEntry().getProperties();
         String propTemplate = properties.get(CmsSitemapManager.Property.template.toString());
         String propTemplateInherited = properties.get(CmsSitemapManager.Property.templateInherited.toString());
         boolean inheritTemplate = (propTemplate != null) && propTemplate.equals(propTemplateInherited);
@@ -325,11 +323,9 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
     /**
      * Creates the text field for editing the title.<p>
      * 
-     * @param entry the entry which is being edited
-     *  
      * @return the newly created form field 
      */
-    private CmsBasicFormField createTitleField(CmsClientSitemapEntry entry) {
+    private CmsBasicFormField createTitleField() {
 
         String description = message(Messages.GUI_TITLE_PROPERTY_DESC_0);
         String label = message(Messages.GUI_TITLE_PROPERTY_0);
@@ -347,11 +343,9 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
     /**
      * Creates the text field for editing the URL name.<p>
      * 
-     * @param entry the entry which is being edited
-     *  
      * @return the newly created form field 
      */
-    private CmsBasicFormField createUrlNameField(CmsClientSitemapEntry entry) {
+    private CmsBasicFormField createUrlNameField() {
 
         String description = message(Messages.GUI_URLNAME_PROPERTY_DESC_0);
         String label = message(Messages.GUI_URLNAME_PROPERTY_0);
