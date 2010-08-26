@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/toolbar/Attic/CmsToolbarClipboardView.java,v $
- * Date   : $Date: 2010/06/24 09:05:26 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/08/26 13:37:49 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,6 @@
 
 package org.opencms.ade.sitemap.client.toolbar;
 
-import org.opencms.ade.sitemap.client.CmsSitemapTreeItem;
 import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapChangeEvent;
@@ -65,7 +64,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -150,6 +149,7 @@ public class CmsToolbarClipboardView {
 
             super.onDragCancel();
             m_clipboardButton.show();
+            m_clipboardButton.openMenu();
         }
 
         /**
@@ -159,8 +159,9 @@ public class CmsToolbarClipboardView {
         public void onDrop() {
 
             super.onDrop();
-            m_clipboardButton.closeMenu();
             m_clipboardButton.show();
+            m_clipboardButton.closeMenu();
+
         }
     }
 
@@ -259,7 +260,7 @@ public class CmsToolbarClipboardView {
                     return;
                 }
                 CmsClientSitemapEntry entry = ((CmsClipboardDeletedItem)dropEvent.getDraggable()).getEntry();
-                entry.updateSitePath(dropEvent.getPosition().getInfo() + dropEvent.getPosition().getName() + "/");
+                entry.updateSitePath(dropEvent.getPosition().getInfo() + entry.getName() + "/");
                 entry.setPosition(dropEvent.getPosition().getPosition());
                 CmsSitemapView.getInstance().getController().create(entry);
             }
@@ -272,16 +273,18 @@ public class CmsToolbarClipboardView {
     public void addDeleted(CmsClientSitemapEntry entry) {
 
         removeDeleted(entry.getSitePath());
-        removeModifiedFor(entry.getSitePath());
+        removeModified(entry.getSitePath());
         getDeleted().insertItem(createDeletedItem(entry), 0);
     }
 
     /**
      * @param entry
+     * @param previousPath 
      */
-    public void addModified(CmsClientSitemapEntry entry) {
+    public void addModified(CmsClientSitemapEntry entry, String previousPath) {
 
-        removeModified(entry.getSitePath());
+        removeDeleted(previousPath);
+        removeModified(previousPath);
         getModified().insertItem(createModifiedItem(entry), 0);
     }
 
@@ -304,7 +307,7 @@ public class CmsToolbarClipboardView {
         itemWidget.addButton(button);
         CmsListItem listItem = new CmsClipboardDeletedItem(itemWidget, entry);
         button.setListItem(listItem);
-
+        listItem.setId(entry.getSitePath());
         return listItem;
     }
 
@@ -323,6 +326,9 @@ public class CmsToolbarClipboardView {
         infoBean.addAdditionalInfo(Messages.get().key(Messages.GUI_NAME_0), entry.getName());
         infoBean.addAdditionalInfo(Messages.get().key(Messages.GUI_VFS_PATH_0), entry.getVfsPath());
         CmsListItemWidget itemWidget = new CmsListItemWidget(infoBean);
+
+        final CmsListItem listItem = new CmsListItem(itemWidget);
+
         CmsPushButton button = new CmsPushButton();
         button.setImageClass(I_CmsImageBundle.INSTANCE.buttonCss().hoverbarGoto());
         button.setTitle(Messages.get().key(Messages.GUI_HOVERBAR_GOTO_0));
@@ -338,9 +344,12 @@ public class CmsToolbarClipboardView {
                 // TODO: check if entry is intern or extern
                 boolean intern = true;
                 if (intern) {
-                    final CmsSitemapTreeItem treeItem = CmsSitemapView.getInstance().getTreeItem(entry.getSitePath());
-                    // TODO: it could be that the item is not yet loaded, so ensure that it is load
-                    CmsSitemapView.getInstance().ensureVisible(treeItem);
+                    //                    final CmsSitemapTreeItem treeItem = CmsSitemapView.getInstance().getTreeItem(entry.getSitePath());
+                    //                    // TODO: it could be that the item is not yet loaded, so ensure that it is load
+                    //                    CmsSitemapView.getInstance().ensureVisible(treeItem);
+                    CmsDomUtil.ensureMouseOut(listItem.getElement());
+                    m_clipboardButton.closeMenu();
+                    CmsSitemapView.getInstance().highlightPath(entry.getSitePath());
                 } else {
                     // TODO: get the file to open
                     // TODO: jump to the right file with the right parameter
@@ -348,7 +357,8 @@ public class CmsToolbarClipboardView {
             }
         });
         itemWidget.addButton(button);
-        return new CmsListItem(itemWidget);
+        listItem.setId(entry.getSitePath());
+        return listItem;
     }
 
     /**
@@ -373,12 +383,10 @@ public class CmsToolbarClipboardView {
 
     /**
      * @param sitePath
-     * @return
      */
-    public void removeDeleted(String sitePath) {
+    protected void removeDeleted(String sitePath) {
 
-        // TODO: find the list item to remove
-        CmsListItem item = null;
+        CmsListItem item = getDeleted().getItem(sitePath);
         if (item != null) {
             // remove
             getDeleted().removeItem(item);
@@ -388,17 +396,12 @@ public class CmsToolbarClipboardView {
     /**
      * @param sitePath
      */
-    public void removeModifiedFor(String sitePath) {
-
-        // TODO: Auto-generated method stub
-    }
-
-    /**
-     * @param sitePath
-     */
     protected void removeModified(String sitePath) {
 
-        // TODO: Auto-generated method stub
-
+        CmsListItem item = getModified().getItem(sitePath);
+        if (item != null) {
+            // remove
+            getModified().removeItem(item);
+        }
     }
 }

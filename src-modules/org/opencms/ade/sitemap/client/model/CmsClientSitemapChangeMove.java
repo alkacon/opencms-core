@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeMove.java,v $
- * Date   : $Date: 2010/08/25 14:40:14 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/08/26 13:37:49 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import org.opencms.xml.sitemap.I_CmsSitemapChange.Type;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -61,6 +61,9 @@ public class CmsClientSitemapChangeMove implements I_CmsClientSitemapChange {
     /** The destination position. */
     private int m_destinationPosition;
 
+    /** The entry to change. */
+    private CmsClientSitemapEntry m_entry;
+
     /** The source path. */
     private String m_sourcePath;
 
@@ -70,20 +73,16 @@ public class CmsClientSitemapChangeMove implements I_CmsClientSitemapChange {
     /**
      * Constructor.<p>
      * 
-     * @param sourcePath the source path
-     * @param sourcePosition the source position
+     * @param entry the entry to change
      * @param destinationPath the destination path
      * @param destinationPosition the destination position
      */
-    public CmsClientSitemapChangeMove(
-        String sourcePath,
-        int sourcePosition,
-        String destinationPath,
-        int destinationPosition) {
+    public CmsClientSitemapChangeMove(CmsClientSitemapEntry entry, String destinationPath, int destinationPosition) {
 
-        m_sourcePath = sourcePath;
+        m_entry = entry;
+        m_sourcePath = m_entry.getSitePath();
         m_destinationPath = destinationPath;
-        m_sourcePosition = sourcePosition;
+        m_sourcePosition = m_entry.getPosition();
         m_destinationPosition = destinationPosition;
     }
 
@@ -92,7 +91,7 @@ public class CmsClientSitemapChangeMove implements I_CmsClientSitemapChange {
      */
     public void applyToClipboardView(CmsToolbarClipboardView view) {
 
-        // TODO: Auto-generated method stub
+        view.addModified(getEntry(), getSourcePath());
     }
 
     /**
@@ -110,7 +109,6 @@ public class CmsClientSitemapChangeMove implements I_CmsClientSitemapChange {
             destParent.addSubEntry(moved);
         }
         moved.updateSitePath(getDestinationPath());
-        // TODO: apply to clipboard model
     }
 
     /**
@@ -203,10 +201,16 @@ public class CmsClientSitemapChangeMove implements I_CmsClientSitemapChange {
      */
     public I_CmsClientSitemapChange revert() {
 
-        return new CmsClientSitemapChangeMove(
-            getDestinationPath(),
-            getDestinationPosition(),
-            getSourcePath(),
-            getSourcePosition());
+        return new CmsClientSitemapChangeMove(getEntry(), getSourcePath(), getSourcePosition());
+    }
+
+    /**
+     * Returns the entry to change.<p>
+     * 
+     * @return the entry
+     */
+    protected CmsClientSitemapEntry getEntry() {
+
+        return m_entry;
     }
 }

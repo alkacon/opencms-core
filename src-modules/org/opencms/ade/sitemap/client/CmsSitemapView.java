@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapView.java,v $
- * Date   : $Date: 2010/07/23 11:38:26 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2010/08/26 13:37:49 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,8 +54,8 @@ import org.opencms.gwt.client.ui.dnd.CmsDropEvent;
 import org.opencms.gwt.client.ui.dnd.I_CmsDropHandler;
 import org.opencms.gwt.client.ui.tree.A_CmsDeepLazyOpenHandler;
 import org.opencms.gwt.client.ui.tree.CmsLazyTree;
-import org.opencms.gwt.client.ui.tree.CmsTreeItem;
 import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem.LoadState;
+import org.opencms.gwt.client.ui.tree.CmsTreeItem;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsPair;
@@ -65,9 +65,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.Window.ClosingHandler;
 import com.google.gwt.user.client.ui.Label;
@@ -78,7 +78,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.30 $ 
+ * @version $Revision: 1.31 $ 
  * 
  * @since 8.0.0
  */
@@ -363,9 +363,7 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler, NativePreviewHand
         }
         String openPath = m_controller.getData().getOpenPath();
         if (openPath != null) {
-            openItemsOnPath(openPath);
-            CmsSitemapTreeItem item = getTreeItem(openPath);
-            item.highlightTemporarily(1500);
+            highlightPath(openPath);
         }
     }
 
@@ -471,6 +469,18 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler, NativePreviewHand
             result.add(currentItem);
         }
         return result;
+    }
+
+    /**
+     * Highlights the sitemap entry with the given path.<p>
+     * 
+     * @param sitePath the sitemap path of the entry to highlight
+     */
+    public void highlightPath(String sitePath) {
+
+        openItemsOnPath(sitePath);
+        CmsSitemapTreeItem item = getTreeItem(sitePath);
+        item.highlightTemporarily(1500);
     }
 
     /**

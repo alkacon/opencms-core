@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeNew.java,v $
- * Date   : $Date: 2010/08/25 14:40:14 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/08/26 13:37:49 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import org.opencms.xml.sitemap.I_CmsSitemapChange.Type;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
@@ -80,7 +80,7 @@ public class CmsClientSitemapChangeNew implements I_CmsClientSitemapChange {
      */
     public void applyToClipboardView(CmsToolbarClipboardView view) {
 
-        // TODO: Auto-generated method stub
+        view.addModified(getEntry(), getEntry().getSitePath());
     }
 
     /**
@@ -95,7 +95,6 @@ public class CmsClientSitemapChangeNew implements I_CmsClientSitemapChange {
         } else {
             newParent.insertSubEntry(getEntry(), getEntry().getPosition());
         }
-        // TODO: apply to clipboard model
     }
 
     /**

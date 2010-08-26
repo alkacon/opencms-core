@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeCreateSubSitemap.java,v $
- * Date   : $Date: 2010/06/24 09:05:25 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/08/26 13:37:49 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import java.util.List;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -91,7 +91,8 @@ public class CmsClientSitemapChangeCreateSubSitemap implements I_CmsClientSitema
     public void applyToClipboardView(CmsToolbarClipboardView view) {
 
         CmsClientSitemapChangeEdit editAction = (CmsClientSitemapChangeEdit)m_internalChanges.get(m_internalChanges.size() - 1);
-        view.addModified(editAction.getNewEntry());
+        CmsClientSitemapEntry entry = editAction.getNewEntry();
+        view.addModified(entry, entry.getSitePath());
     }
 
     /**

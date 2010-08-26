@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2010/07/26 06:27:59 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/08/26 13:37:49 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -77,7 +77,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 8.0.0
  */
@@ -624,7 +624,7 @@ public class CmsSitemapController {
         }
         assert (getEntry(CmsResource.getParentFolder(toPath)) != null);
 
-        addChange(new CmsClientSitemapChangeMove(entry.getSitePath(), entry.getPosition(), toPath, position), false);
+        addChange(new CmsClientSitemapChangeMove(entry, toPath, position), false);
     }
 
     /**

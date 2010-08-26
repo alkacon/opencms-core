@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsSitemapService.java,v $
- * Date   : $Date: 2010/08/25 14:40:14 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2010/08/26 13:37:49 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -78,6 +78,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -93,7 +94,7 @@ import org.apache.commons.collections.map.MultiValueMap;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.32 $ 
+ * @version $Revision: 1.33 $ 
  * 
  * @since 8.0.0
  * 
@@ -127,7 +128,6 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
     /**
      * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#getBrokenLinksToSitemapEntries(java.util.List, java.util.List)
      */
-    @SuppressWarnings("unchecked")
     public List<CmsSitemapBrokenLinkBean> getBrokenLinksToSitemapEntries(List<CmsUUID> open, List<CmsUUID> closed)
     throws CmsRpcException {
 
@@ -140,6 +140,7 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
             entries.addAll(descendants);
 
             // multimap from resources to (sets of) sitemap entries 
+            @SuppressWarnings("rawtypes")
             MultiValueMap linkMap = MultiValueMap.decorate(
                 new HashMap(),
                 FactoryUtils.instantiateFactory(HashSet.class));
@@ -671,8 +672,8 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
         for (CmsInternalSitemapEntry entry : (Set<CmsInternalSitemapEntry>)linkMap.keySet()) {
             CmsSitemapBrokenLinkBean parentBean = createSitemapBrokenLinkBean(entry);
             result.add(parentBean);
-            Collection values = linkMap.getCollection(entry);
-            for (CmsResource resource : (Collection<CmsResource>)values) {
+            Collection<CmsResource> values = linkMap.getCollection(entry);
+            for (CmsResource resource : values) {
                 CmsSitemapBrokenLinkBean childBean = createSitemapBrokenLinkBean(resource);
                 parentBean.addChild(childBean);
             }
@@ -824,7 +825,41 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
             cache = new CmsSitemapClipboardData();
             getRequest().getSession().setAttribute(SESSION_ATTR_ADE_SITEMAP_CLIPBOARD_CACHE, cache);
         } else {
-            // TODO: validate data in case somebody else did change something meanwhile
+            Iterator<CmsClientSitemapEntry> modIt = cache.getModifications().iterator();
+            while (modIt.hasNext()) {
+                CmsClientSitemapEntry modEntry = modIt.next();
+                CmsSitemapEntry sitemapEntry = null;
+                try {
+                    sitemapEntry = OpenCms.getSitemapManager().getEntryForId(getCmsObject(), modEntry.getId());
+                } catch (CmsException e) {
+                    // ignore
+                }
+                if (sitemapEntry != null) {
+                    // make sure to use the correct data
+                    modEntry.setSitePath(sitemapEntry.getSitePath(getCmsObject()));
+                    modEntry.setTitle(sitemapEntry.getTitle());
+                    modEntry.setName(sitemapEntry.getName());
+                } else {
+                    // now sitemap entry with the given id, so remove it from modifications
+                    modIt.remove();
+                }
+            }
+
+            Iterator<CmsClientSitemapEntry> delIt = cache.getDeletions().iterator();
+            while (delIt.hasNext()) {
+                CmsClientSitemapEntry delEntry = delIt.next();
+                CmsSitemapEntry sitemapEntry = null;
+                try {
+                    sitemapEntry = OpenCms.getSitemapManager().getEntryForId(getCmsObject(), delEntry.getId());
+                } catch (CmsException e) {
+                    // ignore
+                }
+                if (sitemapEntry != null) {
+                    // entry must have been restored
+                    delIt.remove();
+                }
+            }
+
         }
         return cache;
     }
@@ -929,7 +964,9 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
         // TODO: what's about historical requests?
         CmsXmlSitemap xml = CmsXmlSitemapFactory.unmarshal(cms, sitemapRes);
         CmsSitemapBean sitemap = xml.getSitemap(cms, cms.getRequestContext().getLocale());
-
+        if (sitemap.getSiteEntries().size() == 0) {
+            return null;
+        }
         CmsClientSitemapEntry root = null;
         if (parent == null) {
             root = toClientEntry(sitemap.getSiteEntries().get(0), propertyConfig);
