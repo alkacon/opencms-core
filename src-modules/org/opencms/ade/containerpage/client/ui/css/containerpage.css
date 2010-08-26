@@ -27,7 +27,7 @@
 	margin:10px 8px 8px;
 }
 
-.clipboardList{
+ul.clipboardList{
 	overflow: auto;
 	min-height: 38px;
 	border: 1px solid #aaaaaa;
