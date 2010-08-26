@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsSitemapActionElement.java,v $
- * Date   : $Date: 2010/05/18 12:31:13 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/08/26 13:02:23 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,8 +34,14 @@ package org.opencms.ade.sitemap;
 import org.opencms.ade.publish.CmsPublishActionElement;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService;
+import org.opencms.file.history.CmsHistoryResourceHandler;
+import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.CmsGwtActionElement;
 import org.opencms.gwt.CmsRpcException;
+import org.opencms.xml.sitemap.CmsXmlSitemap;
+import org.opencms.xml.sitemap.CmsXmlSitemapFactory;
+
+import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -48,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -70,20 +76,21 @@ public class CmsSitemapActionElement extends CmsGwtActionElement {
     }
 
     /**
-     * Returns the needed server data for client-side usage.<p> 
-     *
-     * @return the needed server data for client-side usage
+     * Checks whether the current request has a version parameter, and if so, dumps the raw XML 
+     * to the response.<p>
+     * 
+     * @return true if the raw XML has been dumped 
+     * @throws IOException if writing to the response fails  
      */
-    public CmsSitemapData getSitemapData() {
+    public boolean dumpXml() throws IOException {
 
-        if (m_sitemapData == null) {
-            try {
-                m_sitemapData = CmsSitemapService.newInstance(getRequest()).prefetch(getCoreData().getUri());
-            } catch (CmsRpcException e) {
-                // ignore, should never happen, and it is already logged
-            }
+        if (!hasVersion()) {
+            return false;
         }
-        return m_sitemapData;
+        CmsFlexController.getController(getRequest()).getTopResponse().setContentType("text/plain");
+        CmsXmlSitemap sitemap = (CmsXmlSitemap)(getRequest().getAttribute(CmsXmlSitemapFactory.ATTRIBUTE_XML_SITEMAP));
+        getResponse().getWriter().print(sitemap.toString());
+        return true;
     }
 
     /**
@@ -116,6 +123,23 @@ public class CmsSitemapActionElement extends CmsGwtActionElement {
     }
 
     /**
+     * Returns the needed server data for client-side usage.<p> 
+     *
+     * @return the needed server data for client-side usage
+     */
+    public CmsSitemapData getSitemapData() {
+
+        if (m_sitemapData == null) {
+            try {
+                m_sitemapData = CmsSitemapService.newInstance(getRequest()).prefetch(getCoreData().getUri());
+            } catch (CmsRpcException e) {
+                // ignore, should never happen, and it is already logged
+            }
+        }
+        return m_sitemapData;
+    }
+
+    /**
      * Returns the editor title.<p>
      * 
      * @return the editor title
@@ -123,5 +147,15 @@ public class CmsSitemapActionElement extends CmsGwtActionElement {
     public String getTitle() {
 
         return Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_EDITOR_TITLE_1, getCoreData().getUri());
+    }
+
+    /**
+     * Checks if the current request has a version parameter.<p>
+     * 
+     * @return true if the current request has a version parameter 
+     */
+    private boolean hasVersion() {
+
+        return CmsHistoryResourceHandler.isHistoryRequest(getRequest());
     }
 }

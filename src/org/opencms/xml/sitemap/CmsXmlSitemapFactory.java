@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsXmlSitemapFactory.java,v $
- * Date   : $Date: 2010/07/19 12:35:34 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/08/26 13:02:23 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,11 +61,14 @@ import org.xml.sax.EntityResolver;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 7.5.2
  */
 public final class CmsXmlSitemapFactory {
+
+    /** The name of the attribute in which the sitemap is stored. */
+    public static final String ATTRIBUTE_XML_SITEMAP = "XML_SITEMAP";
 
     /**
      * No instances of this class should be created.<p> 
@@ -320,6 +323,7 @@ public final class CmsXmlSitemapFactory {
             content = unmarshal(cms, resource);
             // store the content as request attribute for future read requests
             req.setAttribute(rootPath, content);
+            req.setAttribute(ATTRIBUTE_XML_SITEMAP, content);
         }
 
         // return the result
