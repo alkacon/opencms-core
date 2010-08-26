@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/rpc/Attic/I_CmsCoreServiceAsync.java,v $
- * Date   : $Date: 2010/07/21 11:02:34 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/08/26 13:34:27 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,7 @@ import org.opencms.gwt.shared.CmsCoreData;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.CmsValidationQuery;
 import org.opencms.gwt.shared.CmsValidationResult;
+import org.opencms.util.CmsUUID;
 
 import java.util.List;
 import java.util.Map;
@@ -49,7 +50,7 @@ import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 8.0.0
  * 
@@ -58,6 +59,13 @@ import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
  * @see org.opencms.gwt.shared.rpc.I_CmsCoreServiceAsync
  */
 public interface I_CmsCoreServiceAsync {
+
+    /**
+     * Creates a new UUID.<p>
+     * 
+     * @param callback the async callback
+     */
+    void createUUID(AsyncCallback<CmsUUID> callback);
 
     /**
      * Returns the categories for the given search parameters.<p>

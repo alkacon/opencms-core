@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2010/07/09 07:04:03 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/08/26 13:34:11 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import com.google.gwt.resources.client.CssResource.Shared;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.0
  */
@@ -159,6 +159,29 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
         String tabPanel();
     }
 
+    /** The result item CSS. */
+    @Shared
+    interface I_CmsGalleryResultItemCss extends I_CmsListItemWidgetCss {
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String imageTile();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String tilingItem();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String tilingList();
+    }
+
     /** Preview dialog CSS. */
     @Shared
     interface I_CmsPreviewDialogCss extends CssResource {
@@ -221,7 +244,19 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
          * 
          * @return the CSS class name
          */
+        String hiding();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
         String imagePanel();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String infoTable();
 
         /** Access method.<p>
          * 
@@ -300,6 +335,14 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
      */
     @Source("gallerydialog.css")
     I_CmsGalleryDialogCss galleryDialogCss();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the gallery result item CSS
+     */
+    @Source("galleryResultItem.css")
+    I_CmsGalleryResultItemCss galleryResultItemCss();
 
     /**
      * Access method.<p>

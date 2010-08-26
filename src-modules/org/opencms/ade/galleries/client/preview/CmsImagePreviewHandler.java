@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/Attic/CmsImagePreviewHandler.java,v $
- * Date   : $Date: 2010/07/26 06:40:50 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/08/26 13:34:11 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,10 @@ import org.opencms.ade.galleries.client.preview.ui.A_CmsPreviewDialog;
 import org.opencms.ade.galleries.client.preview.ui.CmsImagePreviewDialog;
 import org.opencms.ade.galleries.shared.CmsImageInfoBean;
 import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.util.CmsStringUtil;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -46,12 +50,58 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  */
 public class CmsImagePreviewHandler extends A_CmsPreviewHandler<CmsImageInfoBean>
 implements ValueChangeHandler<CmsCroppingParamBean> {
+
+    /** Enumeration of image tag attribute names. */
+    public enum Attribute {
+        /** Image alt attribute. */
+        alt,
+        /** Image align attribute. */
+        align,
+        /** Image copyright info. */
+        copyright,
+        /** Image class attribute. */
+        clazz,
+        /** Image direction attribute. */
+        dir,
+        /** The image hash. */
+        hash,
+        /** Image height attribute. */
+        height,
+        /** Image hspace attribute. */
+        hspace,
+        /** Image id attribute. */
+        id,
+        /** Image copyright flag. */
+        insertCopyright,
+        /** Image link original flag. */
+        insertLinkOrig,
+        /** Image spacing flag. */
+        insertSpacing,
+        /** Image subtitle flag. */
+        insertSubtitle,
+        /** Image language attribute. */
+        lang,
+        /** Image link path. */
+        linkPath,
+        /** Image link target. */
+        linkTarget,
+        /** Image longDesc attribute. */
+        longDesc,
+        /** Image style attribute. */
+        style,
+        /** Image title attribute. */
+        title,
+        /** Image vspace attribute. */
+        vspace,
+        /** Image width attribute. */
+        width
+    }
 
     /** The controller. */
     private CmsImagePreviewController m_controller;
@@ -115,7 +165,11 @@ implements ValueChangeHandler<CmsCroppingParamBean> {
      */
     public String getScaleParam() {
 
-        return m_croppingParam != null ? m_croppingParam.toString() : "";
+        if (m_croppingParam == null) {
+            return "";
+        }
+        String param = m_croppingParam.toString();
+        return CmsStringUtil.isNotEmptyOrWhitespaceOnly(param) ? "?" + param : "";
     }
 
     /**
@@ -150,4 +204,29 @@ implements ValueChangeHandler<CmsCroppingParamBean> {
         m_croppingParam = m_formatHandler.getCroppingParam();
         m_formatHandler.addValueChangeHandler(this);
     }
+
+    /**
+     * Returns image tag attributes to set for editor plugins.<p>
+     * 
+     * @return the attribute map
+     */
+    public Map<String, String> getImageAttributes() {
+
+        Map<String, String> result = new HashMap<String, String>();
+        result.put(Attribute.hash.name(), String.valueOf(getImageIdHash()));
+        m_previewDialog.getImageAttributes(result);
+        m_formatHandler.getImageAttributes(result);
+        return result;
+    }
+
+    /**
+     * Returns the structure id hash of the previewed image.<p>
+     * 
+     * @return the structure id hash
+     */
+    public int getImageIdHash() {
+
+        return m_resourceInfo.getHash();
+    }
+
 }

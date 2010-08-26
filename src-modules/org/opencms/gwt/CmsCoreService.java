@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsCoreService.java,v $
- * Date   : $Date: 2010/08/06 14:08:15 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2010/08/26 13:34:27 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,6 +50,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsCategory;
 import org.opencms.relations.CmsCategoryService;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.explorer.CmsExplorerContextMenu;
 import org.opencms.workplace.explorer.CmsExplorerContextMenuItem;
@@ -73,7 +74,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 8.0.0
  * 
@@ -127,6 +128,14 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         } catch (IllegalAccessException e) {
             throw new CmsException(Messages.get().container(Messages.ERR_VALIDATOR_INSTANTIATION_FAILED_1, name), e);
         }
+    }
+
+    /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#createUUID()
+     */
+    public CmsUUID createUUID() {
+
+        return new CmsUUID();
     }
 
     /**

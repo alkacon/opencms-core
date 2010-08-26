@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/Attic/CmsImageInfoBean.java,v $
- * Date   : $Date: 2010/07/19 07:45:28 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/08/26 13:34:11 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,7 @@ package org.opencms.ade.galleries.shared;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.
  */
@@ -44,6 +44,9 @@ public class CmsImageInfoBean extends CmsResourceInfoBean {
 
     /** The image copyright information. */
     private String m_copyright;
+
+    /** The structure id hash. */
+    private int m_hash;
 
     /** The image height. */
     private int m_height;
@@ -62,6 +65,16 @@ public class CmsImageInfoBean extends CmsResourceInfoBean {
     public String getCopyright() {
 
         return m_copyright;
+    }
+
+    /**
+     * Returns the structure id hash.<p>
+     * 
+     * @return the hash
+     */
+    public int getHash() {
+
+        return m_hash;
     }
 
     /**
@@ -102,6 +115,16 @@ public class CmsImageInfoBean extends CmsResourceInfoBean {
     public void setCopyright(String copyright) {
 
         m_copyright = copyright;
+    }
+
+    /**
+     * Sets the hash.<p>
+     * 
+     * @param hash the hash
+     */
+    public void setHash(int hash) {
+
+        m_hash = hash;
     }
 
     /**

@@ -1,0 +1,21 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui" 	
+	xmlns:cms="urn:import:org.opencms.gwt.client.ui">
+	<ui:with field="resources" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
+	<ui:with field="galleryResources" type="org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle" />
+	<g:HTMLPanel>
+		<table class="{galleryResources.previewDialogCss.infoTable}">
+			<colgroup>
+    			<col width="15%" />
+    			<col width="35%" />
+	  			<col width="15%" />
+	  			<col width="35%" />
+			</colgroup>
+			<tr><td><g:Label styleName="{galleryResources.previewDialogCss.labelField} {resources.generalCss.textMedium}"  ui:field="m_labelPath" /></td><td colspan="3"><g:Label ui:field="m_displayPath" styleName="{resources.generalCss.textMedium}"/></td></tr>
+			<tr><td><g:Label styleName="{galleryResources.previewDialogCss.labelField} {resources.generalCss.textMedium}"  ui:field="m_labelName" /></td><td><g:Label ui:field="m_displayName" styleName="{resources.generalCss.textMedium}" /></td><td><g:Label styleName="{galleryResources.previewDialogCss.labelField} {resources.generalCss.textMedium}"  ui:field="m_labelFormat" /></td><td><g:Label ui:field="m_displayFormat" styleName="{resources.generalCss.textMedium}" /></td></tr>
+			<tr><td><g:Label styleName="{galleryResources.previewDialogCss.labelField} {resources.generalCss.textMedium}"  ui:field="m_labelTitle" /></td><td><g:Label ui:field="m_displayTitle" styleName="{resources.generalCss.textMedium}" /></td><td><g:Label styleName="{galleryResources.previewDialogCss.labelField} {resources.generalCss.textMedium}"  ui:field="m_labelModified" /></td><td><g:Label ui:field="m_displayModified" styleName="{resources.generalCss.textMedium}" /></td></tr>
+			<tr><td><g:Label styleName="{galleryResources.previewDialogCss.labelField} {resources.generalCss.textMedium}"  ui:field="m_labelType" /></td><td><g:Label ui:field="m_displayType" styleName="{resources.generalCss.textMedium}" /></td><td><g:Label styleName="{galleryResources.previewDialogCss.labelField} {resources.generalCss.textMedium}"  ui:field="m_labelSize" /></td><td><g:Label ui:field="m_displaySize" styleName="{resources.generalCss.textMedium}" /></td></tr>
+		</table>
+	</g:HTMLPanel>	
+</ui:UiBinder> 

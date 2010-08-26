@@ -13,6 +13,12 @@
 	
 }
 
+.hiding{}
+
+.hiding .hiding{
+	display: none;	
+}
+
 .previewCloseButton{
 	position: absolute;
 	top:0px;
@@ -68,6 +74,20 @@
     visibility: hidden;
 }
 
+.infoTable{
+	width: 100%;
+	border: none;
+	padding: 3px;
+}
+
+.infoTable td{
+	padding: 1px;
+}
+
+.infoTable tr, .infoTable td{
+	border: none;
+}
+
 /* Form css */
 .propertyLeft {
 	margin:1px 1px 1px 5px;
@@ -82,6 +102,7 @@
 .labelField{
 	float:left;
 	font-weight:bold;
+	white-space: nowrap;
 }
 
 .inputField{

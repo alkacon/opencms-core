@@ -1,0 +1,70 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui" 	
+	xmlns:cms="urn:import:org.opencms.gwt.client.ui"
+	xmlns:input="urn:import:org.opencms.gwt.client.ui.input">
+	<ui:with field="resources" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
+	<ui:with field="galleryResources" type="org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle" />
+	<ui:style>
+		.label{
+			font-weight: bold;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipse;
+		}
+		.inputTextSmall{
+			width: 40px;
+		}
+		.inlineLabel{
+			font-weight: bold;
+			margin-right: 10px;
+		}
+		.inlineLabel, .inputTextSmall{
+			display: inline-block;
+			vertical-align: middle;
+		}
+		.floatCheckbox{
+			float: left;
+		}
+		.selectBox{
+			display: inline-block;
+			width: 70px;
+			vertical-align: middle;
+		}
+		.selectBox *{
+			font-size: 10px;
+			line-height: 12px;
+		}
+		
+	</ui:style>
+	<g:HTMLPanel>
+		<table class="{galleryResources.previewDialogCss.infoTable}">
+			<colgroup>
+    			<col width="15%" />
+    			<col width="35%" />
+	  			<col width="15%" />
+	  			<col width="35%" />
+			</colgroup>
+			<tr>
+				<td><g:Label styleName="{style.label} {resources.generalCss.textMedium}"  ui:field="m_labelAltTitle" /></td>
+				<td><input:CmsTextBox ui:field="m_inputAltTitle" /></td>
+				<td><cms:CmsPushButton ui:field="m_buttonResetTitle" /></td>
+				<td class="{galleryResources.previewDialogCss.hiding}" style="text-align: right;"><g:Label styleName="{style.inlineLabel} {resources.generalCss.textMedium}" ui:field="m_labelInsertSubtitle" /><input:CmsCheckBox ui:field="m_checkboxInsertSubtitle" /></td>
+			</tr>
+			<tr class="{galleryResources.previewDialogCss.hiding}">
+				<td><g:Label styleName="{style.label} {resources.generalCss.textMedium}"  ui:field="m_labelCopyright" /></td>
+				<td><input:CmsTextBox ui:field="m_inputCopyright" /></td>
+				<td><cms:CmsPushButton ui:field="m_buttonResetCopyright" /></td>
+				<td style="text-align: right;"><g:Label styleName="{style.inlineLabel} {resources.generalCss.textMedium}" ui:field="m_labelInsertCopyright" /><input:CmsCheckBox ui:field="m_checkboxInsertCopyright" /></td></tr>
+			<tr>
+				<td><g:Label styleName="{style.label} {resources.generalCss.textMedium}"  ui:field="m_labelImageSpacing" /></td>
+				<td style="text-align: right;"><input:CmsCheckBox styleName="{style.floatCheckbox}" ui:field="m_checkboxSpacing"/><g:Label styleName="{style.inlineLabel}" ui:field="m_labelHSpace"/><input:CmsTextBox styleName="{style.inputTextSmall}" ui:field="m_inputHSpace" /></td>
+				<td class="{galleryResources.previewDialogCss.hiding}" style="text-align: right;" colspan="2"><g:Label styleName="{style.inlineLabel} {resources.generalCss.textMedium}" ui:field="m_labelInsertLinkOrig" /><input:CmsCheckBox ui:field="m_checkboxInsertLinkOrig" /></td>
+			</tr>
+			<tr>
+				<td style="text-align: right;" colspan="2"><g:Label styleName="{style.inlineLabel} {resources.generalCss.textMedium}" ui:field="m_labelVSpace"/><input:CmsTextBox styleName="{style.inputTextSmall}" ui:field="m_inputVSpace" /></td>
+				<td colspan="2"><g:Label styleName="{style.inlineLabel} {resources.generalCss.textMedium}" ui:field="m_labelAlign"/><input:CmsSelectBox addStyleNames="{style.selectBox}" ui:field="m_selectAlign" /></td>
+			</tr>
+		</table>
+	</g:HTMLPanel>	
+</ui:UiBinder> 

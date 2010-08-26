@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/Attic/CmsImageFormatRestriction.java,v $
- * Date   : $Date: 2010/07/19 07:45:28 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/08/26 13:34:11 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.client.util.CmsClientStringUtil;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -122,7 +122,7 @@ public class CmsImageFormatRestriction implements I_CmsFormatRestriction {
     */
     public boolean isFixedRatio() {
 
-        return ((m_height != -1) && (m_width != -1));
+        return true;
     }
 
     /**
@@ -157,25 +157,10 @@ public class CmsImageFormatRestriction implements I_CmsFormatRestriction {
     }
 
     /**
-     * Sets the height.<p>
+     * Parses the the given configuration string.<p>
      * 
-     * @param height the height
+     * @param config the configuration
      */
-    public void setHeight(int height) {
-
-        m_height = height;
-    }
-
-    /**
-     * Sets the width.<p>
-     *
-     * @param width the width to set
-     */
-    public void setWidth(int width) {
-
-        m_width = width;
-    }
-
     private void parseConfig(String config) {
 
         if (isValidConfig(config)) {

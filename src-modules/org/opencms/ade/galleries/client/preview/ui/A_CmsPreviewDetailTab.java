@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/ui/Attic/A_CmsPreviewDetailTab.java,v $
- * Date   : $Date: 2010/07/19 07:45:28 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/08/26 13:34:11 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,14 +43,13 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Basic preview detail tab layout.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.
  */
@@ -59,7 +58,7 @@ public abstract class A_CmsPreviewDetailTab extends Composite {
     /**
      * @see com.google.gwt.uibinder.client.UiBinder
      */
-    protected interface I_CmsPreviewDetailTabUiBinder extends UiBinder<Widget, A_CmsPreviewDetailTab> {
+    protected interface I_CmsPreviewDetailTabUiBinder extends UiBinder<FlowPanel, A_CmsPreviewDetailTab> {
         // gwt interface, nothing to do
     }
 
@@ -70,9 +69,8 @@ public abstract class A_CmsPreviewDetailTab extends Composite {
     @UiField
     protected FlowPanel m_buttonBar;
 
-    /** The content panel. */
-    @UiField
-    protected FlowPanel m_content;
+    /** The main panel. */
+    protected FlowPanel m_main;
 
     /** The select button. */
     @UiField
@@ -99,17 +97,18 @@ public abstract class A_CmsPreviewDetailTab extends Composite {
      */
     public A_CmsPreviewDetailTab(GalleryMode dialogMode, int height, int width) {
 
-        initWidget(uiBinder.createAndBindUi(this));
+        m_main = uiBinder.createAndBindUi(this);
+        initWidget(m_main);
 
         m_dialogMode = dialogMode;
         m_tabHeight = height;
         m_tabWidth = width;
         // buttons        
         switch (m_dialogMode) {
-            case editor:
             case widget:
                 m_selectButton.setText(Messages.get().key(Messages.GUI_PREVIEW_BUTTON_SELECT_0));
                 break;
+            case editor:
             case sitemap:
             case ade:
             case view:

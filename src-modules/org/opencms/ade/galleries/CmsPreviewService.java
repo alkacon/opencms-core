@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/Attic/CmsPreviewService.java,v $
- * Date   : $Date: 2010/07/26 06:40:50 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/08/26 13:34:11 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,6 +50,7 @@ import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.xml.sitemap.CmsSitemapEntry;
 
+import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -62,7 +63,7 @@ import java.util.Map.Entry;
  * @author Polina Smagina
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 8.0.0
  */
@@ -92,6 +93,7 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
         resInfo.setResourcePath(cms.getSitePath(resource));
         resInfo.setResourceType(type.getTypeName());
         resInfo.setSize(resource.getLength() / 1024 + " kb");
+        resInfo.setLastModified(new Date(resource.getDateLastModified()));
 
         // reading default explorer-type properties
         CmsExplorerTypeSettings setting = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName());
@@ -135,6 +137,7 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
             CmsSitemapEntry sitemapEntry = OpenCms.getSitemapManager().getEntryForUri(cms, resName);
             CmsResource resource = cms.readResource(sitemapEntry.getStructureId());
             readResourceInfo(cms, resource, resInfo);
+            resInfo.setHash(resource.getStructureId().hashCode());
             CmsImageScaler scaler = new CmsImageScaler(cms, resource);
             int height = -1;
             int width = -1;
@@ -256,7 +259,7 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
                         currentProperty.setStructureValue(null);
                         currentProperty.setResourceValue(propertyValue);
                     }
-                    CmsLock lock = getCmsObject().getLock(resource);
+                    CmsLock lock = cms.getLock(resource);
                     if (lock.isUnlocked()) {
                         // lock resource before operation
                         cms.lockResource(resName);

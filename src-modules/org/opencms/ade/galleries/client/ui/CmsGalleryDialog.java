@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsGalleryDialog.java,v $
- * Date   : $Date: 2010/07/26 06:40:50 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2010/08/26 13:34:11 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,7 +69,7 @@ import com.google.gwt.user.client.ui.HTMLPanel;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  * 
  * @since 8.0.
  */
@@ -164,6 +164,7 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
     public static void initCss() {
 
         I_CmsLayoutBundle.INSTANCE.galleryDialogCss().ensureInjected();
+        I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().ensureInjected();
         I_CmsLayoutBundle.INSTANCE.listTreeCss().ensureInjected();
         I_CmsLayoutBundle.INSTANCE.previewDialogCss().ensureInjected();
     }

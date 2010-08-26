@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsAreaSelectPanel.java,v $
- * Date   : $Date: 2010/07/26 06:40:50 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/08/26 13:34:27 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -321,6 +321,30 @@ HasClickHandlers, HasMouseMoveHandlers, MouseDownHandler, MouseUpHandler, MouseM
     }
 
     /**
+     * Sets the selection area.<p>
+     * 
+     * @param relative <code>true</code> if provided position is relative to the select area, not absolute to the page
+     * @param pos the area position to select
+     */
+    public void setAreaPosition(boolean relative, CmsPositionBean pos) {
+
+        if (pos == null) {
+            return;
+        }
+        m_state = State.SELECTED;
+        showSelect(true);
+        m_currentSelection = new CmsPositionBean();
+        m_firstX = pos.getLeft();
+        m_firstY = pos.getTop();
+        if (!relative) {
+            m_firstX -= getElement().getAbsoluteLeft();
+            m_firstY -= getElement().getAbsoluteTop();
+        }
+        //        setSelectPosition(m_firstX, m_firstY, 0, 0);
+        setSelectPosition(m_firstX, m_firstY, pos.getHeight(), pos.getWidth());
+    }
+
+    /**
      * @see com.google.gwt.user.client.ui.IndexedPanel#getWidget(int)
      */
     public Widget getWidget(int index) {
@@ -371,7 +395,7 @@ HasClickHandlers, HasMouseMoveHandlers, MouseDownHandler, MouseUpHandler, MouseM
             // only act on left button down, ignore right click
             return;
         }
-
+        cacheElementSize();
         switch (m_state) {
             case EMPTY:
                 DOM.setCapture(getElement());
@@ -478,10 +502,6 @@ HasClickHandlers, HasMouseMoveHandlers, MouseDownHandler, MouseUpHandler, MouseM
                 }
         }
 
-        // cache element size
-        m_elementHeight = getElement().getOffsetHeight();
-        m_elementWidth = getElement().getOffsetWidth();
-
         event.preventDefault();
         event.stopPropagation();
     }
@@ -493,7 +513,7 @@ HasClickHandlers, HasMouseMoveHandlers, MouseDownHandler, MouseUpHandler, MouseM
 
         int secondX = event.getRelativeX(getElement());
         int secondY = event.getRelativeY(getElement());
-
+        cacheElementSize();
         // restricting cursor input to the area of the select panel
         secondX = (secondX < 0) ? 0 : ((secondX > m_elementWidth) ? m_elementWidth : secondX);
         secondY = (secondY < 0) ? 0 : ((secondY > m_elementHeight) ? m_elementHeight : secondY);
@@ -639,6 +659,18 @@ HasClickHandlers, HasMouseMoveHandlers, MouseDownHandler, MouseUpHandler, MouseM
     public void setRatio(double heightToWidth) {
 
         m_heightToWidth = heightToWidth;
+    }
+
+    /**
+     * Caches the select area element size.<p>
+     */
+    private void cacheElementSize() {
+
+        // cache element size if necessary
+        if ((m_elementHeight == 0) && (m_elementWidth == 0)) {
+            m_elementHeight = getElement().getOffsetHeight();
+            m_elementWidth = getElement().getOffsetWidth();
+        }
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/Attic/CmsCroppingParamBean.java,v $
- * Date   : $Date: 2010/07/26 06:40:50 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/08/26 13:34:11 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.util.CmsStringUtil;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -86,6 +86,10 @@ public class CmsCroppingParamBean {
     /** The cropping Y parameter. */
     private int m_cropY = -1;
 
+    private int m_orgHeight = -1;
+
+    private int m_orgWidth = -1;
+
     /** The target height. */
     private int m_targetHeight = -1;
 
@@ -107,12 +111,25 @@ public class CmsCroppingParamBean {
      */
     public CmsCroppingParamBean(CmsCroppingParamBean copy) {
 
+        this(copy.getOrgHeight(), copy.getOrgWidth());
         m_cropHeight = copy.getCropHeight();
         m_cropWidth = copy.getCropWidth();
         m_cropX = copy.getCropX();
         m_cropY = copy.getCropY();
         m_targetHeight = copy.getTargetHeight();
         m_targetWidth = copy.getTargetWidth();
+    }
+
+    /**
+     * Constructor.<p>
+     * 
+     * @param orgHeight the original image height 
+     * @param orgWidth the original image width
+     */
+    public CmsCroppingParamBean(int orgHeight, int orgWidth) {
+
+        m_orgHeight = orgHeight;
+        m_orgWidth = orgWidth;
     }
 
     /**
@@ -238,6 +255,26 @@ public class CmsCroppingParamBean {
     public int getCropY() {
 
         return m_cropY;
+    }
+
+    /**
+     * Returns the original image height.<p>
+     *
+     * @return the original image height
+     */
+    public int getOrgHeight() {
+
+        return m_orgHeight;
+    }
+
+    /**
+     * Returns the original image width.<p>
+     *
+     * @return the original image width
+     */
+    public int getOrgWidth() {
+
+        return m_orgWidth;
     }
 
     /**
@@ -372,6 +409,26 @@ public class CmsCroppingParamBean {
     }
 
     /**
+     * Sets the original image height.<p>
+     *
+     * @param orgHeight the original image height to set
+     */
+    public void setOrgHeight(int orgHeight) {
+
+        m_orgHeight = orgHeight;
+    }
+
+    /**
+     * Sets the original image width.<p>
+     *
+     * @param orgWidth the original image width to set
+     */
+    public void setOrgWidth(int orgWidth) {
+
+        m_orgWidth = orgWidth;
+    }
+
+    /**
      * Sets the target height.<p>
      *
      * @param targetHeight the target height to set
@@ -397,6 +454,10 @@ public class CmsCroppingParamBean {
     @Override
     public String toString() {
 
+        if ((m_targetHeight == m_orgHeight) && (m_targetWidth == m_orgWidth) && !isCropped()) {
+            // the image is not cropped nor scaled, return an empty parameter
+            return "";
+        }
         StringBuffer result = new StringBuffer();
         if (m_targetHeight > -1) {
             result.append(SCALE_PARAM_TARGETHEIGHT).append(SCALE_PARAM_COLON).append(m_targetHeight).append(

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/Attic/CmsImagePreviewController.java,v $
- * Date   : $Date: 2010/07/19 07:45:28 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/08/26 13:34:11 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ import org.opencms.ade.galleries.shared.CmsImageInfoBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 import org.opencms.ade.galleries.shared.rpc.I_CmsPreviewService;
 import org.opencms.ade.galleries.shared.rpc.I_CmsPreviewServiceAsync;
+import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 
 import java.util.HashMap;
@@ -49,7 +50,7 @@ import com.google.gwt.core.client.GWT;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  */
@@ -87,7 +88,7 @@ public class CmsImagePreviewController extends A_CmsPreviewController<CmsImageIn
             case editor:
                 Map<String, String> attributes = new HashMap<String, String>();
                 attributes.put("title", title);
-                CmsPreviewUtil.setImage(resourcePath, attributes);
+                CmsPreviewUtil.setImage(CmsCoreProvider.get().link(resourcePath), attributes);
                 break;
             case sitemap:
             case ade:
@@ -104,7 +105,22 @@ public class CmsImagePreviewController extends A_CmsPreviewController<CmsImageIn
     @Override
     public void setResource(GalleryMode galleryMode) {
 
-        select(galleryMode, m_infoBean.getResourcePath() + m_handler.getScaleParam(), m_infoBean.getTitle());
+        switch (galleryMode) {
+            case widget:
+                CmsPreviewUtil.setResourcePath(m_infoBean.getResourcePath() + m_handler.getScaleParam());
+                break;
+            case editor:
+                CmsPreviewUtil.setImage(
+                    CmsCoreProvider.get().link(m_infoBean.getResourcePath() + m_handler.getScaleParam()),
+                    m_handler.getImageAttributes());
+                break;
+            case sitemap:
+            case ade:
+            case view:
+            default:
+                //nothing to do here, should not be called
+                break;
+        }
     }
 
     /**

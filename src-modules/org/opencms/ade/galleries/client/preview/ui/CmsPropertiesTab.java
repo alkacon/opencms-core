@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/ui/Attic/CmsPropertiesTab.java,v $
- * Date   : $Date: 2010/07/19 07:45:28 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/08/26 13:34:11 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,6 +46,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -53,7 +54,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.
  */
@@ -68,6 +69,8 @@ public class CmsPropertiesTab extends A_CmsPreviewDetailTab implements ValueChan
     /** The tab handler. */
     private I_CmsPreviewHandler<?> m_handler;
 
+    private FlowPanel m_content;
+
     /**
      * The constructor.<p>
      * 
@@ -80,6 +83,10 @@ public class CmsPropertiesTab extends A_CmsPreviewDetailTab implements ValueChan
 
         super(dialogMode, height, width);
         m_handler = handler;
+        m_content = new FlowPanel();
+        m_content.addStyleName(org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle.INSTANCE.previewDialogCss().propertiesList());
+        m_content.addStyleName(org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle.INSTANCE.previewDialogCss().clearFix());
+        m_main.insert(m_content, 0);
         // buttons
         m_saveButton = new CmsPushButton();
         m_saveButton.addStyleName(org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle.INSTANCE.previewDialogCss().previewButton());

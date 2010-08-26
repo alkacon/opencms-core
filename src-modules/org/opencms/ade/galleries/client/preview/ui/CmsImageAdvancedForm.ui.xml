@@ -1,0 +1,88 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui" 	
+	xmlns:cms="urn:import:org.opencms.gwt.client.ui"
+	xmlns:input="urn:import:org.opencms.gwt.client.ui.input">
+	<ui:with field="resources" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
+	<ui:with field="galleryResources" type="org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle" />
+	<ui:style>
+		.main{
+			position: absolute;
+			top: 0; 
+			bottom: 4px; 
+			left: 0; 
+			right: 0; 
+			overflow: auto;
+		}
+		.descriptionLabel{
+			margin: 4px 6px 0px;
+		}
+		.input{
+			display: inline-block;
+			width: 320px;
+			margin-right: 10px;
+			vertical-align: middle;
+		}
+		.selectBox{
+			display: inline-block;
+			width: 150px;
+			vertical-align: middle;
+		}
+		.selectBox *{
+			font-size: 10px;
+			line-height: 12px;
+		}
+	</ui:style>
+	<g:HTMLPanel styleName="{style.main}">
+		<g:Label styleName="{galleryResources.previewDialogCss.labelField}" addStyleNames="{style.descriptionLabel} {resources.generalCss.textMedium}" ui:field="m_labelSetLink" />
+		<table class="{galleryResources.previewDialogCss.infoTable}">
+			<colgroup>
+    			<col width="25%" />
+    			<col width="75%" />
+	  		</colgroup>
+			<tr>
+				<td><g:Label styleName="{galleryResources.previewDialogCss.labelField} {resources.generalCss.textMedium}"  ui:field="m_labelUrl" /></td>
+				<td><input:CmsTextBox addStyleNames="{style.input}" ui:field="m_inputUrl" /><cms:CmsPushButton ui:field="m_buttonBrowse" /></td>
+			</tr>
+			<tr>
+				<td><g:Label styleName="{galleryResources.previewDialogCss.labelField} {resources.generalCss.textMedium}"  ui:field="m_labelTarget" /></td>
+				<td><input:CmsSelectBox addStyleNames="{style.selectBox}" ui:field="m_selectTarget" /></td>
+			</tr>
+		</table>
+		<g:Label styleName="{galleryResources.previewDialogCss.labelField}" addStyleNames="{style.descriptionLabel} {resources.generalCss.textMedium}"  ui:field="m_labelTagAttributes" />
+		<table class="{galleryResources.previewDialogCss.infoTable}">
+			<colgroup>
+    			<col width="25%" />
+    			<col width="75%" />
+	  		</colgroup>
+			<tr>
+				<td><g:Label styleName="{galleryResources.previewDialogCss.labelField} {resources.generalCss.textMedium}"  ui:field="m_labelId" /></td>
+				<td><input:CmsTextBox ui:field="m_inputId" /></td>
+			</tr>
+			<tr>
+			<td><g:Label styleName="{galleryResources.previewDialogCss.labelField} {resources.generalCss.textMedium}"  ui:field="m_labelStyleClasses" /></td>
+				<td><input:CmsTextBox ui:field="m_inputStyleClasses" /></td>
+			</tr>
+			<tr>
+				<td><g:Label styleName="{galleryResources.previewDialogCss.labelField} {resources.generalCss.textMedium}"  ui:field="m_labelStyle" /></td>
+				<td><input:CmsTextBox ui:field="m_inputStyle" /></td>
+			</tr>
+			<tr>
+				<td><g:Label styleName="{galleryResources.previewDialogCss.labelField} {resources.generalCss.textMedium}"  ui:field="m_labelDescription" /></td>
+				<td><input:CmsTextBox ui:field="m_inputDescription" /></td>
+			</tr>
+			<tr>
+				<td><g:Label styleName="{galleryResources.previewDialogCss.labelField} {resources.generalCss.textMedium}"  ui:field="m_labelAdvisoryTitle" /></td>
+				<td><input:CmsTextBox ui:field="m_inputAdvisoryTitle" /></td>
+			</tr>
+			<tr>
+				<td><g:Label styleName="{galleryResources.previewDialogCss.labelField} {resources.generalCss.textMedium}"  ui:field="m_labelLanguageCode" /></td>
+				<td><input:CmsTextBox ui:field="m_inputLanguageCode" /></td>
+			</tr>
+			<tr>
+				<td><g:Label styleName="{galleryResources.previewDialogCss.labelField} {resources.generalCss.textMedium}"  ui:field="m_labelTextDirection" /></td>
+				<td><input:CmsSelectBox addStyleNames="{style.selectBox}" ui:field="m_selectTextDirection" /></td>
+			</tr>
+		</table>
+	</g:HTMLPanel>	
+</ui:UiBinder> 

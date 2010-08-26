@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/ui/Attic/CmsCroppingDialog.java,v $
- * Date   : $Date: 2010/07/26 06:40:50 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/08/26 13:34:11 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,8 +41,10 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -56,11 +58,12 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
-public class CmsCroppingDialog extends Composite implements ValueChangeHandler<CmsPositionBean> {
+public class CmsCroppingDialog extends Composite
+implements ValueChangeHandler<CmsPositionBean>, HasValueChangeHandlers<CmsCroppingParamBean> {
 
     /** The ui-binder for this widget. */
     interface I_CmsCroppingDialogUiBinder extends UiBinder<Widget, CmsCroppingDialog> {
@@ -118,11 +121,11 @@ public class CmsCroppingDialog extends Composite implements ValueChangeHandler<C
     /** The image path. */
     private String m_imagePath;
 
-    /** The original image height. */
-    private int m_orgHeight;
+    /** The ratio from original image height to display height. */
+    private double m_heightRatio;
 
-    /** The original image width. */
-    private int m_orgWidth;
+    /** The ratio from original image width to display width. */
+    private double m_widthRatio;
 
     /**
      * Constructor.<p>
@@ -158,18 +161,38 @@ public class CmsCroppingDialog extends Composite implements ValueChangeHandler<C
 
         CmsPositionBean pos = event.getValue();
         if (pos != null) {
-            CmsCroppingParamBean result = getResultCropping(pos);
-            m_heightDisplay.setText(String.valueOf(result.getCropHeight()));
-            m_widthDisplay.setText(String.valueOf(result.getCropWidth()));
+            calculateCropping(pos);
+            if (m_croppingParam.getTargetWidth() > 0) {
+                if (m_croppingParam.getTargetHeight() > 0) {
+                    m_heightDisplay.setText(String.valueOf(m_croppingParam.getTargetHeight()));
+                    m_widthDisplay.setText(String.valueOf(m_croppingParam.getTargetWidth()));
+                } else {
+                    m_widthDisplay.setText(String.valueOf(m_croppingParam.getTargetWidth()));
+                    m_heightDisplay.setText(String.valueOf((int)Math.floor(100.00
+                        * m_croppingParam.getTargetWidth()
+                        * m_croppingParam.getCropHeight()
+                        / m_croppingParam.getCropWidth())));
+                }
+            } else if (m_croppingParam.getTargetHeight() > 0) {
+                m_heightDisplay.setText(String.valueOf(m_croppingParam.getTargetHeight()));
+                m_widthDisplay.setText(String.valueOf((int)Math.floor(100.00
+                    * m_croppingParam.getTargetHeight()
+                    * m_croppingParam.getCropWidth()
+                    / m_croppingParam.getCropHeight())));
+            } else {
+                m_heightDisplay.setText(String.valueOf(m_croppingParam.getCropHeight()));
+                m_widthDisplay.setText(String.valueOf(m_croppingParam.getCropWidth()));
+            }
+
             String scale = "100%";
             if (m_croppingParam.getTargetHeight() > 0) {
                 scale = String.valueOf((int)Math.floor(100.00
-                    * result.getCropHeight()
+                    * m_croppingParam.getCropHeight()
                     / m_croppingParam.getTargetHeight()))
                     + "%";
             } else if (m_croppingParam.getTargetWidth() > 0) {
                 scale = String.valueOf((int)Math.floor(100.00
-                    * result.getCropWidth()
+                    * m_croppingParam.getCropWidth()
                     / m_croppingParam.getTargetWidth()))
                     + "%";
             }
@@ -188,18 +211,14 @@ public class CmsCroppingDialog extends Composite implements ValueChangeHandler<C
      * Shows the dialog.<p>
      * 
      * @param targetParam the target cropping parameter, containing the target size restriction
-     * @param orgHeight the original image height
-     * @param orgWidth the original image width
      */
-    public void show(CmsCroppingParamBean targetParam, int orgHeight, int orgWidth) {
+    public void show(CmsCroppingParamBean targetParam) {
 
         getElement().getStyle().setDisplay(Display.BLOCK);
         m_croppingParam = targetParam;
-        m_orgHeight = orgHeight;
-        m_orgWidth = orgWidth;
         m_displayCropping = new CmsCroppingParamBean();
-        m_displayCropping.setTargetHeight(m_orgHeight);
-        m_displayCropping.setTargetWidth(m_orgWidth);
+        m_displayCropping.setTargetHeight(m_croppingParam.getOrgHeight());
+        m_displayCropping.setTargetWidth(m_croppingParam.getOrgWidth());
         m_displayCropping = m_displayCropping.getRestrictedSizeParam(
             getElement().getOffsetHeight() - 29,
             getElement().getOffsetWidth() - 4);
@@ -207,6 +226,13 @@ public class CmsCroppingDialog extends Composite implements ValueChangeHandler<C
         m_croppingPanel.getElement().getStyle().setWidth(m_displayCropping.getTargetWidth(), Unit.PX);
         if ((targetParam.getTargetHeight() > 0) && (targetParam.getTargetWidth() > 0)) {
             m_croppingPanel.setRatio(1.00 * targetParam.getTargetHeight() / targetParam.getTargetWidth());
+        }
+
+        m_heightRatio = 1.00 * m_croppingParam.getOrgHeight() / m_displayCropping.getTargetHeight();
+        m_widthRatio = 1.00 * m_croppingParam.getOrgWidth() / m_displayCropping.getTargetWidth();
+
+        if (m_croppingParam.isCropped()) {
+            m_croppingPanel.setAreaPosition(true, calculateSelectPosition());
         }
     }
 
@@ -218,6 +244,42 @@ public class CmsCroppingDialog extends Composite implements ValueChangeHandler<C
     @UiHandler("m_cancelButton")
     protected void onCancel(ClickEvent event) {
 
+        hide();
+    }
+
+    /**
+     * Handles the click event for ok button. Sets the selected cropping parameters.<p>
+     * 
+     * @param event the click event
+     */
+    @UiHandler("m_okButton")
+    protected void onOk(ClickEvent event) {
+
+        if (!((m_croppingParam.getTargetWidth() > 0) && (m_croppingParam.getTargetHeight() > 0))) {
+            if (m_croppingParam.getTargetWidth() > 0) {
+                m_croppingParam.setTargetHeight((int)Math.floor(100.00
+                    * m_croppingParam.getTargetWidth()
+                    * m_croppingParam.getCropHeight()
+                    / m_croppingParam.getCropWidth()));
+            } else if (m_croppingParam.getTargetHeight() > 0) {
+                m_croppingParam.setTargetWidth((int)Math.floor(100.00
+                    * m_croppingParam.getTargetHeight()
+                    * m_croppingParam.getCropWidth()
+                    / m_croppingParam.getCropHeight()));
+            } else {
+                m_croppingParam.setTargetHeight(m_croppingParam.getCropHeight());
+                m_croppingParam.setTargetWidth(m_croppingParam.getCropWidth());
+            }
+        }
+        ValueChangeEvent.fire(this, m_croppingParam);
+        hide();
+    }
+
+    /**
+     * Hides the cropping dialog.<p>
+     */
+    private void hide() {
+
         getElement().getStyle().setDisplay(Display.NONE);
     }
 
@@ -225,20 +287,31 @@ public class CmsCroppingDialog extends Composite implements ValueChangeHandler<C
      * Calculates the resulting cropping parameter from the supplied selection position.<p>
      * 
      * @param position the selection position
-     * 
-     * @return the resulting cropping parameter
      */
-    private CmsCroppingParamBean getResultCropping(CmsPositionBean position) {
+    private void calculateCropping(CmsPositionBean position) {
 
-        double heightRatio = 1.00 * m_orgHeight / m_displayCropping.getTargetHeight();
-        double widthRatio = 1.00 * m_orgWidth / m_displayCropping.getTargetWidth();
-        CmsCroppingParamBean result = new CmsCroppingParamBean();
-        result.setCropHeight((int)Math.round(heightRatio * position.getHeight()));
-        result.setCropWidth((int)Math.round(widthRatio * position.getWidth()));
-        result.setCropY((int)Math.round(heightRatio * position.getTop()));
-        result.setCropX((int)Math.round(widthRatio * position.getLeft()));
+        m_croppingParam.setCropHeight((int)Math.round(m_heightRatio * position.getHeight()));
+        m_croppingParam.setCropWidth((int)Math.round(m_widthRatio * position.getWidth()));
+        m_croppingParam.setCropY((int)Math.round(m_heightRatio * position.getTop()));
+        m_croppingParam.setCropX((int)Math.round(m_widthRatio * position.getLeft()));
+    }
 
+    private CmsPositionBean calculateSelectPosition() {
+
+        CmsPositionBean result = new CmsPositionBean();
+        result.setHeight((int)Math.round(m_croppingParam.getCropHeight() / m_heightRatio));
+        result.setWidth((int)Math.round(m_croppingParam.getCropWidth() / m_widthRatio));
+        result.setTop((int)Math.round(m_croppingParam.getCropY() / m_heightRatio));
+        result.setLeft((int)Math.round(m_croppingParam.getCropX() / m_widthRatio));
         return result;
+    }
+
+    /**
+     * @see com.google.gwt.event.logical.shared.HasValueChangeHandlers#addValueChangeHandler(com.google.gwt.event.logical.shared.ValueChangeHandler)
+     */
+    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<CmsCroppingParamBean> handler) {
+
+        return addHandler(handler, ValueChangeEvent.getType());
     }
 
 }

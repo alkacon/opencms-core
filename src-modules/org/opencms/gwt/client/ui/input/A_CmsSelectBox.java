@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/A_CmsSelectBox.java,v $
- * Date   : $Date: 2010/05/28 09:31:06 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/08/26 13:34:27 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,6 +61,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
@@ -75,7 +76,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  * 
@@ -86,8 +87,7 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
     /**
      * The UI Binder interface for this widget.<p>
      */
-    @SuppressWarnings("unchecked")
-    protected interface I_CmsSelectBoxUiBinder extends UiBinder<Panel, A_CmsSelectBox> {
+    protected interface I_CmsSelectBoxUiBinder extends UiBinder<Panel, A_CmsSelectBox<?>> {
         // binder interface
     }
 
@@ -124,6 +124,9 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
     /** Style of the select box widget. */
     protected final CmsStyleVariable m_selectBoxState;
 
+    /** Style of the select box widget. */
+    protected final CmsStyleVariable m_selectorState;
+
     /** The map of select options. */
     protected Map<String, OPTION> m_selectCells = new HashMap<String, OPTION>();
 
@@ -154,6 +157,9 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
         initWidget(m_panel);
         m_selectBoxState = new CmsStyleVariable(m_opener);
         m_selectBoxState.setValue(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
+
+        m_selectorState = new CmsStyleVariable(m_selector);
+        m_selectorState.setValue(I_CmsLayoutBundle.INSTANCE.generalCss().cornerBottom());
 
         m_opener.addStyleName(CSS.selectBoxSelected());
         addHoverHandlers(m_opener);
@@ -415,10 +421,18 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
         int newWidth = m_opener.getOffsetWidth() - 2 /*border*/;
         m_popup.setWidth(newWidth + "px");
         m_popup.show();
-        CmsDomUtil.positionElement(m_popup.getElement(), m_panel.getElement(), 0, CmsDomUtil.getCurrentStyleFloat(
-            m_opener.getElement(),
-            CmsDomUtil.Style.height));
-        m_selectBoxState.setValue(I_CmsLayoutBundle.INSTANCE.generalCss().cornerTop());
+        int panelTop = m_panel.getElement().getAbsoluteTop();
+        int openerHeight = CmsDomUtil.getCurrentStyleInt(m_opener.getElement(), CmsDomUtil.Style.height);
+        int popupHeight = m_popup.getOffsetHeight();
+        if ((Window.getClientHeight() - (panelTop + openerHeight) < popupHeight) && (panelTop > popupHeight)) {
+            CmsDomUtil.positionElement(m_popup.getElement(), m_panel.getElement(), 0, -(popupHeight - 2));
+            m_selectBoxState.setValue(I_CmsLayoutBundle.INSTANCE.generalCss().cornerBottom());
+            m_selectorState.setValue(I_CmsLayoutBundle.INSTANCE.generalCss().cornerTop());
+        } else {
+            CmsDomUtil.positionElement(m_popup.getElement(), m_panel.getElement(), 0, openerHeight);
+            m_selectBoxState.setValue(I_CmsLayoutBundle.INSTANCE.generalCss().cornerTop());
+            m_selectorState.setValue(I_CmsLayoutBundle.INSTANCE.generalCss().cornerBottom());
+        }
         // m_selectBoxState.setValue(CSS.selectBoxOpen());
     }
 

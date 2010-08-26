@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsDomUtil.java,v $
- * Date   : $Date: 2010/06/24 08:44:01 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2010/08/26 13:34:27 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentC
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  * 
  * @since 8.0.0
  */
@@ -866,17 +866,17 @@ public final class CmsDomUtil {
      * @param dx the x offset relative to the reference element
      * @param dy the y offset relative to the reference element 
      */
-    public static void positionElement(Element elem, Element referenceElement, double dx, double dy) {
+    public static void positionElement(Element elem, Element referenceElement, int dx, int dy) {
 
         com.google.gwt.dom.client.Style style = elem.getStyle();
         style.setLeft(0, Unit.PX);
         style.setTop(0, Unit.PX);
-        double myX = elem.getAbsoluteLeft();
-        double myY = elem.getAbsoluteTop();
-        double refX = referenceElement.getAbsoluteLeft();
-        double refY = referenceElement.getAbsoluteTop();
-        double newX = refX - myX + dx;
-        double newY = refY - myY + dy;
+        int myX = elem.getAbsoluteLeft();
+        int myY = elem.getAbsoluteTop();
+        int refX = referenceElement.getAbsoluteLeft();
+        int refY = referenceElement.getAbsoluteTop();
+        int newX = refX - myX + dx;
+        int newY = refY - myY + dy;
         style.setLeft(newX, Unit.PX);
         style.setTop(newY, Unit.PX);
     }

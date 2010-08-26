@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/Attic/Messages.java,v $
- * Date   : $Date: 2010/03/19 10:11:54 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/08/26 13:34:11 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,14 +39,20 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_DOWNLOAD_GALLERY_TITLE_0="GUI_DOWNLOAD_GALLERY_TITLE_0";
+    
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_GALLERIES_TITLE_0 = "GUI_GALLERIES_TITLE_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGE_GALLERY_TITLE_0="GUI_IMAGE_GALLERY_TITLE_0";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.ade.galleries.messages";

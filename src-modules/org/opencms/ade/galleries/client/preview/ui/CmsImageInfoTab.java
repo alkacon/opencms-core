@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/ui/Attic/CmsImageFormatsTab.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/ui/Attic/CmsImageInfoTab.java,v $
  * Date   : $Date: 2010/08/26 13:34:10 $
- * Version: $Revision: 1.6 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,33 +31,25 @@
 
 package org.opencms.ade.galleries.client.preview.ui;
 
-import org.opencms.ade.galleries.client.preview.CmsImageFormatHandler;
 import org.opencms.ade.galleries.client.preview.CmsImagePreviewHandler;
-import org.opencms.ade.galleries.client.preview.I_CmsPreviewHandler;
-import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.shared.CmsImageInfoBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
-import org.opencms.gwt.client.CmsCoreProvider;
-
-import java.util.Map;
-
-import com.google.gwt.user.client.ui.FlowPanel;
 
 /**
- * The widget to display the format information of the selected image.<p>
+ * Simple image tag properties form, use in editor mode only.<p>
  * 
- * @author Polina Smagina
+ * @author Tobias Herrmann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.
  */
-public class CmsImageFormatsTab extends A_CmsPreviewDetailTab {
+public class CmsImageInfoTab extends A_CmsPreviewDetailTab {
 
     /** The preview handler. */
     private CmsImagePreviewHandler m_handler;
 
-    private FlowPanel m_content;
+    private CmsImageInfoDisplay m_display;
 
     /**
      * The constructor.<p>
@@ -66,22 +58,13 @@ public class CmsImageFormatsTab extends A_CmsPreviewDetailTab {
      * @param height the height of the tab
      * @param width the width of the height
      * @param handler the preview handler
-     * @param formats the map with format values for the select box
      */
-    public CmsImageFormatsTab(
-        GalleryMode dialogMode,
-        int height,
-        int width,
-        CmsImagePreviewHandler handler,
-        Map<String, String> formats) {
+    public CmsImageInfoTab(GalleryMode dialogMode, int height, int width, CmsImagePreviewHandler handler) {
 
         super(dialogMode, height, width);
-        m_content = new FlowPanel();
-        m_content.addStyleName(I_CmsLayoutBundle.INSTANCE.previewDialogCss().propertiesList());
-        m_content.addStyleName(I_CmsLayoutBundle.INSTANCE.previewDialogCss().formatsPanel());
-        m_main.insert(m_content, 0);
         m_handler = handler;
-
+        m_display = new CmsImageInfoDisplay();
+        m_main.insert(m_display, 0);
     }
 
     /**
@@ -91,27 +74,16 @@ public class CmsImageFormatsTab extends A_CmsPreviewDetailTab {
      */
     public void fillContent(CmsImageInfoBean imageInfo) {
 
-        CmsCroppingDialog croppingDialog = new CmsCroppingDialog(
-            CmsCoreProvider.get().link(imageInfo.getResourcePath()));
-        m_handler.getDialog().m_parentPanel.add(croppingDialog);
-        CmsImageFormatHandler formatHandler = new CmsImageFormatHandler(
-            getDialogMode(),
-            imageInfo.getSelectedPath(),
-            imageInfo.getHeight(),
-            imageInfo.getWidth());
-        CmsImageFormatsForm formatsForm = new CmsImageFormatsForm(formatHandler);
-        formatHandler.init(formatsForm, croppingDialog);
-        m_handler.setFormatHandler(formatHandler);
-        m_content.clear();
-        m_content.add(formatsForm);
+        m_display.fillContent(imageInfo);
     }
 
     /**
      * @see org.opencms.ade.galleries.client.preview.ui.A_CmsPreviewDetailTab#getHandler()
      */
     @Override
-    protected I_CmsPreviewHandler<?> getHandler() {
+    protected CmsImagePreviewHandler getHandler() {
 
         return m_handler;
     }
+
 }

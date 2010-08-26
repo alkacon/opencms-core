@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/Attic/A_CmsPreviewHandler.java,v $
- * Date   : $Date: 2010/07/19 07:45:28 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/08/26 13:34:11 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import com.google.gwt.user.client.Command;
  * @author Polina Smagina
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
  */
@@ -57,6 +57,9 @@ public abstract class A_CmsPreviewHandler<T extends CmsResourceInfoBean> impleme
 
     /** The resource preview instance. */
     protected I_CmsResourcePreview m_resourcePreview;
+
+    /** The resource info. */
+    protected T m_resourceInfo;
 
     /**
      * Constructor.<p>
@@ -161,6 +164,7 @@ public abstract class A_CmsPreviewHandler<T extends CmsResourceInfoBean> impleme
      */
     public void showData(T resourceInfo) {
 
+        m_resourceInfo = resourceInfo;
         // once the resource info is displayed, enable the OK button for editor mode
         if (getDialog().getGalleryMode().equals(GalleryMode.editor)) {
             CmsPreviewUtil.enableEditorOk(true);

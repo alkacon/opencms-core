@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/rpc/Attic/I_CmsCoreService.java,v $
- * Date   : $Date: 2010/07/21 11:02:34 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/08/26 13:34:27 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,6 +38,7 @@ import org.opencms.gwt.shared.CmsCoreData;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.CmsValidationQuery;
 import org.opencms.gwt.shared.CmsValidationResult;
+import org.opencms.util.CmsUUID;
 
 import java.util.List;
 import java.util.Map;
@@ -50,7 +51,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 8.0.0
  * 
@@ -66,6 +67,15 @@ public interface I_CmsCoreService extends RemoteService {
 
     /** A constant that signals that we are in the sitemap context. */
     String CONTEXT_SITEMAP = "sitemap";
+
+    /**
+     * Creates a new UUID.<p>
+     * 
+     * @return the created UUID
+     * 
+     * @throws CmsRpcException if something goes wrong 
+     */
+    CmsUUID createUUID() throws CmsRpcException;
 
     /**
      * Returns the categories for the given search parameters.<p>

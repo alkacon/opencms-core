@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsPaddedPanel.java,v $
- * Date   : $Date: 2010/05/27 09:03:42 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/08/26 13:34:27 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  * 
@@ -102,8 +102,10 @@ public class CmsPaddedPanel extends SimplePanel {
         }
 
         int panelWidth = getOffsetWidth();
-
-        getWidget().setWidth((panelWidth - 2 * m_paddingX) + "px");
+        // avoid negative widths
+        if (panelWidth > 2 * m_paddingX) {
+            getWidget().setWidth((panelWidth - 2 * m_paddingX) + "px");
+        }
         getElement().getStyle().setPaddingLeft(m_paddingX, Unit.PX);
         getElement().getStyle().setPaddingRight(m_paddingX, Unit.PX);
     }

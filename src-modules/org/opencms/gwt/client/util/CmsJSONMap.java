@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsJSONMap.java,v $
- * Date   : $Date: 2010/06/07 08:04:00 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/08/26 13:34:27 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import com.google.gwt.core.client.JavaScriptObject;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -59,6 +59,22 @@ public final class CmsJSONMap extends JavaScriptObject {
      */
     public static native CmsJSONMap createJSONMap() /*-{
         return {};
+    }-*/;
+
+    /**
+     * Returns if the given key is present in the map.<p>
+     * 
+     * @param key the key
+     * 
+     * @return <code>true</code> if the map contains the key
+     */
+    public native boolean containsKey(String key) /*-{
+        for (var _key in this){
+        if (_key==key){
+        return true;
+        }
+        }
+        return false;
     }-*/;
 
     /**

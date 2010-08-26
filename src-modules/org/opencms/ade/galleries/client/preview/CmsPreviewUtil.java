@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/Attic/CmsPreviewUtil.java,v $
- * Date   : $Date: 2010/07/19 07:45:28 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/08/26 13:34:11 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import com.google.gwt.core.client.JsArrayString;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -55,6 +55,12 @@ public final class CmsPreviewUtil {
 
     /** The enable dialog OK function key. */
     static final String KEY_ENABLE_DIALOG_OK_FUNCTION = "enableDialogOk";
+
+    /** The get image info function key. */
+    static final String KEY_GET_IMAGE_INFO_FUNCTION = "getImageInfo";
+
+    /** The has enhanced image options function key. */
+    static final String KEY_HAS_ENHANCED_IMAGE_OPTIONS = "hasEnhancedImageOptions";
 
     /** The close gallery dialog function key. */
     static final String KEY_SET_DATA_IN_EDITOR_FUNCTION = "setDataInEditor";
@@ -67,9 +73,6 @@ public final class CmsPreviewUtil {
 
     /** The set link function key. */
     static final String KEY_SET_LINK_FUNCTION = "setLink";
-
-    /** The get image info function key. */
-    static final String KEY_GET_IMAGE_INFO_FUNCTION = "getImageInfo";
 
     /**
      * Constructor.<p>
@@ -161,17 +164,25 @@ public final class CmsPreviewUtil {
     }
 
     /**
-     * Returns the available image formats for gallery widget mode.<p>
+     * Returns all available information of the selected image tag, or null, if no image is selected.<p>
      * 
-     * @return the available image formats
+     * @return a map with the following keys:<p>
+     *          alt, class, height, hspace, linkPath, linkTarget, longDesc, style, title, vspace, width<p>
+     * 
+     *          all keys represent a tag attribute by the same name, only linkPath and linkTarget contain
+     *          information on an surrounding link tag
      */
-    public static native JsArrayString nativeGetFormats()/*-{
-        var id=$wnd[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::KEY_HASH_ID];
-        var additional=$wnd.parent['cms_additional_'+id];
-        if (additional){ 
-        return additional['imageFormats'];
-        }
-        return null;
+    public static native CmsJSONMap getImageInfo() /*-{
+        return $wnd[@org.opencms.ade.galleries.client.preview.CmsPreviewUtil::KEY_GET_IMAGE_INFO_FUNCTION]();
+    }-*/;
+
+    /**
+     * Returns the availability of enhanced image options.<p>
+     * 
+     * @return <code>true</code> if enhanced image options are available
+     */
+    public static native boolean hasEnhancedImageOptions() /*-{
+        return $wnd[@org.opencms.ade.galleries.client.preview.CmsPreviewUtil::KEY_HAS_ENHANCED_IMAGE_OPTIONS]();
     }-*/;
 
     /**
@@ -186,6 +197,20 @@ public final class CmsPreviewUtil {
         return additional['useFormats'];
         }
         return false;
+    }-*/;
+
+    /**
+     * Returns the available image formats for gallery widget mode.<p>
+     * 
+     * @return the available image formats
+     */
+    public static native JsArrayString nativeGetFormats()/*-{
+        var id=$wnd[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::KEY_HASH_ID];
+        var additional=$wnd.parent['cms_additional_'+id];
+        if (additional){ 
+        return additional['imageFormats'];
+        }
+        return null;
     }-*/;
 
     /**

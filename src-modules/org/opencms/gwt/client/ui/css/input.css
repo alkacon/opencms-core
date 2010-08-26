@@ -111,6 +111,31 @@
 	font-size: value("constants.fontSize");
 }
 
+
+
+@if user.agent gecko1_8 gecko{
+	/** firefox **/
+	.selectBoxSelector div{
+		-moz-border-radius: value("constants.borderRadius");
+	}
+} @elif user.agent safari {
+	/** chrome, safari etc. **/
+	.selectBoxSelector div{
+		-webkit-border-radius: value("constants.borderRadius");
+	}
+} @elif user.agent opera {
+	/** opera */
+	.selectBoxSelector div{
+		border-radius: value("constants.borderRadius");
+	}
+} @elif user.agent ie8 {
+	/** ie7, ie8 and the rest, add new @elif block if necessary **/
+	
+	.selectBoxSelector div{
+		border-radius: value("constants.borderRadius");
+	}
+}
+
 .error {
 	color: red;
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/Attic/CmsCoreProvider.java,v $
- * Date   : $Date: 2010/05/20 11:41:39 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/08/26 13:34:27 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,7 @@ import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.shared.CmsCoreData;
 import org.opencms.gwt.shared.rpc.I_CmsCoreService;
 import org.opencms.gwt.shared.rpc.I_CmsCoreServiceAsync;
+import org.opencms.util.CmsUUID;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -46,7 +47,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 8.0.0
  * 
@@ -124,6 +125,37 @@ public final class CmsCoreProvider extends CmsCoreData {
         }
         result.append(sitePath);
         return result.toString();
+    }
+
+    /**
+     * Creates a new CmsUUID.<p>
+     * 
+     * @param callback the callback to execute
+     */
+    public void createUUID(final AsyncCallback<CmsUUID> callback) {
+
+        // do not stop/start since we do not want to give any feedback to the user
+        CmsRpcAction<CmsUUID> action = new CmsRpcAction<CmsUUID>() {
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+             */
+            @Override
+            public void execute() {
+
+                getService().createUUID(this);
+            }
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+             */
+            @Override
+            protected void onResponse(CmsUUID result) {
+
+                callback.onSuccess(result);
+            }
+        };
+        action.execute();
     }
 
     /**

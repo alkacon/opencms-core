@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsResultListItem.java,v $
- * Date   : $Date: 2010/05/25 12:36:33 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/08/26 13:34:11 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,9 +31,19 @@
 
 package org.opencms.ade.galleries.client.ui;
 
+import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.ade.galleries.shared.CmsResultItemBean;
+import org.opencms.gwt.client.draganddrop.I_CmsDragHandler;
 import org.opencms.gwt.client.ui.CmsListItem;
+import org.opencms.gwt.client.ui.CmsListItemWidget;
+import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
+import org.opencms.gwt.shared.CmsIconUtil;
+import org.opencms.gwt.shared.CmsListInfoBean;
+import org.opencms.util.CmsStringUtil;
 
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -41,7 +51,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.
  */
@@ -49,6 +59,10 @@ public class CmsResultListItem extends CmsListItem {
 
     /** The resource type name of the resource. */
     private String m_resourceType;
+
+    private CmsPushButton m_previewButton;
+
+    private CmsPushButton m_selectButton;
 
     /**
      * Creates a new result list item with a main widget and a check box.<p>
@@ -66,9 +80,49 @@ public class CmsResultListItem extends CmsListItem {
      * 
      * @param mainWidget the main widget
      */
-    public CmsResultListItem(Widget mainWidget) {
+    public CmsResultListItem(CmsResultItemBean resultItem, I_CmsDragHandler dragHandler) {
 
-        initContent(mainWidget);
+        CmsListItemWidget resultItemWidget;
+        CmsListInfoBean infoBean = new CmsListInfoBean(resultItem.getTitle(), resultItem.getDescription(), null);
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(resultItem.getExcerpt())) {
+            infoBean.addAdditionalInfo(Messages.get().key(Messages.GUI_RESULT_LABEL_EXCERPT_0), resultItem.getExcerpt());
+        }
+        if (dragHandler != null) {
+            resultItemWidget = dragHandler.createDraggableListItemWidget(infoBean, resultItem.getClientId());
+        } else {
+            resultItemWidget = new CmsResultItemWidget(infoBean, resultItem.getType(), resultItem.getPath());
+            if (((CmsResultItemWidget)resultItemWidget).hasTileView()) {
+                addStyleName(I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().tilingItem());
+            }
+        }
+        // add  preview button
+        m_previewButton = new CmsPushButton();
+        m_previewButton.setImageClass(I_CmsImageBundle.INSTANCE.style().magnifierIcon());
+        m_previewButton.setShowBorder(false);
+        m_previewButton.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
+        resultItemWidget.addButton(m_previewButton);
+        m_selectButton = new CmsPushButton();
+        // TODO: use different icon
+        m_selectButton.setImageClass(I_CmsImageBundle.INSTANCE.style().newIcon());
+        m_selectButton.setShowBorder(false);
+        m_selectButton.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
+        m_selectButton.setVisible(false);
+        resultItemWidget.addButton(m_selectButton);
+
+        // add file icon
+        resultItemWidget.setIcon(CmsIconUtil.getResourceIconClasses(resultItem.getType(), resultItem.getPath(), false));
+        initContent(resultItemWidget);
+    }
+
+    public void addPreviewClickHandler(ClickHandler handler) {
+
+        m_previewButton.addClickHandler(handler);
+    }
+
+    public void addSelectClickHandler(ClickHandler handler) {
+
+        m_selectButton.setVisible(true);
+        m_selectButton.addClickHandler(handler);
     }
 
     /**
