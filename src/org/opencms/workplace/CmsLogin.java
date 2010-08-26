@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsLogin.java,v $
- * Date   : $Date: 2010/08/26 08:48:17 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2010/08/26 09:55:34 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.45 $ 
+ * @version $Revision: 1.46 $ 
  * 
  * @since 6.0.0 
  */
@@ -427,7 +427,14 @@ public class CmsLogin extends CmsJspLoginBean {
         if (getPreDefOuFqn() == null) {
             return super.getFormLink();
         }
-        return link("/system/login" + CmsEncoder.escapeXml((String)getRequest().getAttribute(PARAM_PREDEF_OUFQN)));
+        String preDefOuFqn = (String)getRequest().getAttribute(PARAM_PREDEF_OUFQN);
+        try {
+            OpenCms.getOrgUnitManager().readOrganizationalUnit(getCmsObject(), preDefOuFqn);
+        } catch (CmsException e) {
+            // organizational unit does not exist
+            return super.getFormLink();
+        }
+        return link("/system/login" + CmsEncoder.escapeXml(preDefOuFqn));
     }
 
     /**
