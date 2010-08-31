@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsResultsTab.java,v $
- * Date   : $Date: 2010/08/26 13:34:11 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2010/08/31 07:30:24 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,7 +68,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Polina Smagina
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  * 
  * @since 8.0.
  */
@@ -80,11 +80,11 @@ public class CmsResultsTab extends A_CmsListTab {
      * @author Georg Westenberger
      * @author Ruediger Kurz
      * 
-     * @version $Revision: 1.29 $
+     * @version $Revision: 1.30 $
      * 
      * @since 8.0.0
      */
-    protected class CmsScrollToBottomAsynchronHandler implements ScrollHandler {
+    protected class CmsAsynchronousScrollToBottomHandler implements ScrollHandler {
 
         /**
          * If the lower edge of the content being scrolled is at most this many pixels below the lower
@@ -100,7 +100,7 @@ public class CmsResultsTab extends A_CmsListTab {
          * edge of the scrolled content becomes lower than the distance, the scroll action is triggered.
          * 
          */
-        public CmsScrollToBottomAsynchronHandler() {
+        public CmsAsynchronousScrollToBottomHandler() {
 
             // noop
         }
@@ -230,7 +230,7 @@ public class CmsResultsTab extends A_CmsListTab {
         m_params = new FlowPanel();
         m_params.setStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().tabOptions());
         m_tab.insert(m_params, 0);
-        getList().addScrollHandler(new CmsScrollToBottomAsynchronHandler());
+        getList().addScrollHandler(new CmsAsynchronousScrollToBottomHandler());
     }
 
     /**
@@ -387,11 +387,8 @@ public class CmsResultsTab extends A_CmsListTab {
     /**
      * Displays the selected search parameters in the result tab.<p>
      * 
-     * @param searchObj the bean containing the search parameters 
-     * @param typesParams a user-readable string containing the selected types
-     * @param galleriesParams a user-readable string containing the selected galleries
-     * @param foldersParams a user-readable string containing
-     * @param categoriesParams
+     * @param paramPanels the list of search parameter panels to show 
+     * 
      */
     private void showParams(List<CmsSearchParamPanel> paramPanels) {
 

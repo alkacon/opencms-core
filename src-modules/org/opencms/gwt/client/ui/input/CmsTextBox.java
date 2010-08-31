@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsTextBox.java,v $
- * Date   : $Date: 2010/08/24 15:15:14 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2010/08/31 07:30:24 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import com.google.gwt.user.client.ui.TextBox;
  * @author Georg Westenberger
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 8.0.0
  * 
@@ -79,6 +79,9 @@ HasClickHandlers, I_CmsHasBlur {
 
     /** Default pseudo-padding for text boxes. */
     private static final int DEFAULT_PADDING = 4;
+
+    /** A counter used for giving text box widgets ids. */
+    private static int idCounter;
 
     /** The text box used internally by this widget. */
     protected TextBox m_textbox = new TextBox();
@@ -98,6 +101,7 @@ HasClickHandlers, I_CmsHasBlur {
     public CmsTextBox() {
 
         m_textbox.setStyleName(CSS.textBox());
+        m_textbox.getElement().setId("CmsTextBox_" + (idCounter++));
         m_textboxContainer.setStyleName(CSS.textBoxPanel());
         m_textboxContainer.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
         m_textboxContainer.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().textMedium());
@@ -203,6 +207,16 @@ HasClickHandlers, I_CmsHasBlur {
     public String getFormValueAsString() {
 
         return (String)getFormValue();
+    }
+
+    /** 
+     * Returns the HTML id of the internal textbox used by this widget.<p>
+     * 
+     * @return the HTML id of the internal textbox used by this widget
+     */
+    public String getId() {
+
+        return m_textbox.getElement().getId();
     }
 
     /**
