@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/Attic/CmsPreviewUtil.java,v $
- * Date   : $Date: 2010/08/26 13:34:11 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/08/31 07:02:20 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import com.google.gwt.core.client.JsArrayString;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -271,6 +271,7 @@ public final class CmsPreviewUtil {
         if (fieldId != null && fieldId != "") {
         var inputField = $wnd.parent.document.getElementById(fieldId);
         inputField.setAttribute('value', path);
+        inputField.value = path;
         try {
         // toggle preview icon if possible
         $wnd.parent.checkPreview(fieldId);
