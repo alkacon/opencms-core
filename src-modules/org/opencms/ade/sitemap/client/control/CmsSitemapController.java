@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2010/08/26 13:37:49 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/09/01 10:15:19 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -77,7 +77,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 8.0.0
  */
@@ -126,6 +126,40 @@ public class CmsSitemapController {
 
         return CmsCoreProvider.get().getUri();
 
+    }
+
+    /**
+    * Adds a change to the queue.<p>
+    * 
+    * @param change the change to be added  
+    * @param redo if redoing a change
+    */
+    public void addChange(I_CmsClientSitemapChange change, boolean redo) {
+
+        // state
+        if (!isDirty()) {
+            if (CmsCoreProvider.get().lockAndCheckModification(getSitemapUri(), m_data.getTimestamp())) {
+                m_handlerManager.fireEvent(new CmsSitemapStartEditEvent());
+            } else {
+                // could not lock
+                return;
+            }
+        }
+
+        if (!redo && !m_undone.isEmpty()) {
+            // after a new change no changes can be redone
+            m_undone.clear();
+            m_handlerManager.fireEvent(new CmsSitemapClearUndoEvent());
+        }
+
+        // add it
+        m_changes.add(change);
+
+        // apply change to the model
+        change.applyToModel(this);
+
+        // refresh view, in dnd mode view already ok
+        m_handlerManager.fireEvent(new CmsSitemapChangeEvent(change));
     }
 
     /**
@@ -219,7 +253,7 @@ public class CmsSitemapController {
      * 
      * @return the handler registration
      */
-    public HandlerRegistration addStartEdiHandler(I_CmsSitemapStartEditHandler handler) {
+    public HandlerRegistration addStartEditHandler(I_CmsSitemapStartEditHandler handler) {
 
         return m_handlerManager.addHandler(CmsSitemapStartEditEvent.getType(), handler);
     }
@@ -798,39 +832,5 @@ public class CmsSitemapController {
             changes.add(change.getChangeForCommit());
         }
         return changes;
-    }
-
-    /**
-    * Adds a change to the queue.<p>
-    * 
-    * @param change the change to be added  
-    * @param redo if redoing a change
-    */
-    private void addChange(I_CmsClientSitemapChange change, boolean redo) {
-
-        // state
-        if (!isDirty()) {
-            if (CmsCoreProvider.get().lockAndCheckModification(getSitemapUri(), m_data.getTimestamp())) {
-                m_handlerManager.fireEvent(new CmsSitemapStartEditEvent());
-            } else {
-                // could not lock
-                return;
-            }
-        }
-
-        if (!redo && !m_undone.isEmpty()) {
-            // after a new change no changes can be redone
-            m_undone.clear();
-            m_handlerManager.fireEvent(new CmsSitemapClearUndoEvent());
-        }
-
-        // add it
-        m_changes.add(change);
-
-        // apply change to the model
-        change.applyToModel(this);
-
-        // refresh view, in dnd mode view already ok
-        m_handlerManager.fireEvent(new CmsSitemapChangeEvent(change));
     }
 }

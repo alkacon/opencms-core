@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItemWidget.java,v $
- * Date   : $Date: 2010/07/23 11:38:26 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2010/09/01 10:15:19 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,12 +43,18 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.Style.BorderStyle;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.dom.client.HasMouseOutHandlers;
 import com.google.gwt.event.dom.client.HasMouseOverHandlers;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
@@ -61,6 +67,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -69,12 +76,26 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Tobias Herrmann
  * @author Michael Moossen
  * 
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  * 
  * @since 8.0.0
  */
 public class CmsListItemWidget extends Composite
 implements HasMouseOutHandlers, HasClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
+
+    /**
+     * The interface for handling edits of the title field.<p>
+     */
+    public interface I_CmsTitleEditHandler {
+
+        /** 
+         * This method is called when the user has finished editing the title field.<p>
+         * 
+         * @param title the label containing the title 
+         * @param box the 
+         */
+        void handleEdit(CmsLabel title, TextBox box);
+    }
 
     /** Additional info item HTML. */
     protected static class AdditionalInfoItem extends Composite implements I_CmsTruncable {
@@ -207,6 +228,12 @@ implements HasMouseOutHandlers, HasClickHandlers, HasMouseOverHandlers, I_CmsTru
 
     /** The event handler registrations. */
     private List<HandlerRegistration> m_handlerRegistrations;
+
+    /** The handler registration for the click handler on the title field. */
+    private HandlerRegistration m_titleClickHandlerRegistration;
+
+    /** A handler object for handling editing of the title field. */
+    private I_CmsTitleEditHandler m_titleEditHandler;
 
     /** The text metrics prefix. */
     private String m_tmPrefix;
@@ -415,6 +442,46 @@ implements HasMouseOutHandlers, HasClickHandlers, HasMouseOverHandlers, I_CmsTru
     }
 
     /**
+     * Enables or disabled editing of the title field.<p>
+     * 
+     * @param editable if true, makes the title field editable 
+     */
+    public void setTitleEditable(boolean editable) {
+
+        boolean alreadyEditable = m_titleClickHandlerRegistration != null;
+        if (alreadyEditable == editable) {
+            return;
+        }
+        if (!editable) {
+            m_titleClickHandlerRegistration.removeHandler();
+            m_titleClickHandlerRegistration = null;
+
+        } else {
+            m_title.addClickHandler(new ClickHandler() {
+
+                /**
+                 * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
+                 */
+                public void onClick(ClickEvent event) {
+
+                    editTitle();
+                }
+            });
+        }
+
+    }
+
+    /**
+     * Sets the handler for editing the list item widget's title.
+     * 
+     * @param handler the new title editing handler 
+     */
+    public void setTitleEditHandler(I_CmsTitleEditHandler handler) {
+
+        m_titleEditHandler = handler;
+    }
+
+    /**
      * Sets the title label text.<p>
      * 
      * @param label the new title to set
@@ -457,6 +524,51 @@ implements HasMouseOutHandlers, HasClickHandlers, HasMouseOverHandlers, I_CmsTru
     }
 
     /**
+     * Internal method which is called when the user clicks on an editable title field.<p>
+     */
+    protected void editTitle() {
+
+        m_title.setVisible(false);
+        final TextBox box = new TextBox();
+        box.getElement().setAttribute("size", "45");
+        Style style = box.getElement().getStyle();
+        style.setBackgroundColor("transparent");
+        style.setBorderStyle(BorderStyle.NONE);
+        // wrap the boolean flag in an array so we can change it from the event handlers 
+        final boolean[] checked = new boolean[] {false};
+
+        box.addBlurHandler(new BlurHandler() {
+
+            public void onBlur(BlurEvent event) {
+
+                if (checked[0]) {
+                    return;
+                }
+
+                onEditTitleTextBox(box);
+                checked[0] = true;
+            }
+        });
+
+        box.addKeyPressHandler(new KeyPressHandler() {
+
+            public void onKeyPress(KeyPressEvent event) {
+
+                if (checked[0]) {
+                    return;
+                }
+
+                if ((event.getCharCode() == 10) || (event.getCharCode() == 13)) {
+                    onEditTitleTextBox(box);
+                    checked[0] = true;
+                }
+            }
+        });
+        m_titleRow.insert(box, 1);
+        box.setFocus(true);
+    }
+
+    /**
      * Constructor.<p>
      * 
      * @param infoBean bean holding the item information
@@ -493,5 +605,24 @@ implements HasMouseOutHandlers, HasClickHandlers, HasMouseOverHandlers, I_CmsTru
                 m_additionalInfo.add(info);
             }
         }
+    }
+
+    /**
+     * Internal method which is called when the user has finished editing the title.
+     * 
+     * @param box the text box which has been edited 
+     */
+    protected void onEditTitleTextBox(TextBox box) {
+
+        if (m_titleEditHandler != null) {
+            m_titleEditHandler.handleEdit(m_title, box);
+            return;
+        }
+
+        String text = box.getText();
+        box.removeFromParent();
+        m_title.setVisible(true);
+        m_title.setText(text);
+
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapTreeItem.java,v $
- * Date   : $Date: 2010/06/24 09:05:26 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2010/09/01 10:15:19 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,17 +35,21 @@ import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.client.edit.CmsDnDEntryHandler;
 import org.opencms.ade.sitemap.client.edit.CmsSitemapEntryEditor;
 import org.opencms.ade.sitemap.client.hoverbar.CmsSitemapHoverbar;
+import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeEdit;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsSitemapItemCss;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.file.CmsResource;
 import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
+import org.opencms.gwt.client.ui.CmsListItemWidget.I_CmsTitleEditHandler;
 import org.opencms.gwt.client.ui.dnd.CmsDropEvent;
 import org.opencms.gwt.client.ui.dnd.CmsDropPosition;
 import org.opencms.gwt.client.ui.dnd.I_CmsDraggable;
 import org.opencms.gwt.client.ui.dnd.I_CmsDropTarget;
+import org.opencms.gwt.client.ui.input.CmsLabel;
 import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem;
 import org.opencms.gwt.client.ui.tree.CmsTree;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
@@ -55,6 +59,7 @@ import org.opencms.xml.sitemap.CmsSitemapManager;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -62,7 +67,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 8.0.0
  * 
@@ -75,7 +80,7 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
     private static final I_CmsSitemapItemCss CSS = I_CmsLayoutBundle.INSTANCE.sitemapItemCss();
 
     /** The current sitemap entry. */
-    private CmsClientSitemapEntry m_entry;
+    protected CmsClientSitemapEntry m_entry;
 
     /** The list item widget of this item. */
     private CmsListItemWidget m_listItemWidget;
@@ -101,99 +106,31 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
         updateSitePath(entry.getSitePath());
         updateSitemapReferenceStatus(entry);
         setDropEnabled(!m_entry.getProperties().containsKey(CmsSitemapManager.Property.sitemap));
-    }
-
-    /**
-     * Returns the original site path, in case this entry has been moved or renamed.<p>
-     *
-     * @return the original site path
-     */
-    public String getOriginalPath() {
-
-        return m_originalPath;
-    }
-
-    /**
-     * Returns the site path.<p>
-     *
-     * @return the site path
-     */
-    public String getSitePath() {
-
-        return m_entry.getSitePath();
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.tree.CmsTreeItem#onDragOverIn()
-     */
-    @Override
-    public boolean onDragOverIn() {
-
-        if (m_entry.getProperties().containsKey(CmsSitemapManager.Property.sitemap)) {
-            // prevent dropping into a subsitemap driven entry
-            return false;
-        }
-        return super.onDragOverIn();
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.CmsListItem#canDrop(org.opencms.gwt.client.ui.dnd.I_CmsDropTarget, CmsDropPosition)
-     */
-    @Override
-    public boolean canDrop(I_CmsDropTarget target, CmsDropPosition position) {
-
-        if (!super.canDrop(target, position)) {
-            return false;
-        }
-
-        CmsSitemapController controller = CmsSitemapView.getInstance().getController();
-        boolean cancel = !controller.isDirty();
-        cancel &= !CmsCoreProvider.get().lockAndCheckModification(
-            CmsCoreProvider.get().getUri(),
-            controller.getData().getTimestamp());
-        return !cancel;
-    }
-
-    /**
-     * Turns the highlighting for this item on or off.<p>
-     * 
-     * @param highlightOn if true, the highlighting is turned on, else off
-     */
-    public void highlight(boolean highlightOn) {
-
-        if (highlightOn) {
-            m_listItemWidget.getContentPanel().addStyleName(CSS.highlight());
-        } else {
-            m_listItemWidget.getContentPanel().removeStyleName(CSS.highlight());
-
-        }
-    }
-
-    /**
-     * Temporarily highlights an item.<p>
-     * 
-     * @param duration the duration for which  
-     */
-    public void highlightTemporarily(int duration) {
-
-        int blinkInterval = 300;
-        final int blinkCount = duration / blinkInterval;
-
-        Scheduler.get().scheduleFixedPeriod(new RepeatingCommand() {
-
-            private int m_counter;
+        widget.setTitleEditable(true);
+        widget.setTitleEditHandler(new I_CmsTitleEditHandler() {
 
             /**
-             * @see com.google.gwt.core.client.Scheduler.RepeatingCommand#execute()
+             * @see org.opencms.gwt.client.ui.CmsListItemWidget.I_CmsTitleEditHandler#handleEdit(org.opencms.gwt.client.ui.input.CmsLabel, com.google.gwt.user.client.ui.TextBox)
              */
-            public boolean execute() {
+            public void handleEdit(CmsLabel titleLabel, TextBox box) {
 
-                boolean finish = m_counter > blinkCount;
-                highlight((m_counter % 2 == 0) && !finish);
-                m_counter += 1;
-                return !finish;
+                final String text = box.getText();
+                box.removeFromParent();
+                if (CmsStringUtil.isEmpty(text)) {
+                    titleLabel.setVisible(true);
+                    String dialogTitle = Messages.get().key(Messages.GUI_EDIT_TITLE_ERROR_DIALOG_TITLE_0);
+                    String dialogText = Messages.get().key(Messages.GUI_TITLE_CANT_BE_EMPTY_0);
+                    CmsAlertDialog alert = new CmsAlertDialog(dialogTitle, dialogText);
+                    alert.center();
+                    return;
+                }
+                CmsClientSitemapEntry newEntry = new CmsClientSitemapEntry(m_entry);
+                newEntry.setTitle(text);
+                CmsClientSitemapChangeEdit edit = new CmsClientSitemapChangeEdit(m_entry, newEntry);
+                CmsSitemapView.getInstance().getController().addChange(edit, false);
+                titleLabel.setVisible(true);
             }
-        }, blinkInterval);
+        });
     }
 
     /**
@@ -263,6 +200,99 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
                     callback.onSuccess(e);
                 }
             }))).startAndValidate();
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.CmsListItem#canDrop(org.opencms.gwt.client.ui.dnd.I_CmsDropTarget, CmsDropPosition)
+     */
+    @Override
+    public boolean canDrop(I_CmsDropTarget target, CmsDropPosition position) {
+
+        if (!super.canDrop(target, position)) {
+            return false;
+        }
+
+        CmsSitemapController controller = CmsSitemapView.getInstance().getController();
+        boolean cancel = !controller.isDirty();
+        cancel &= !CmsCoreProvider.get().lockAndCheckModification(
+            CmsCoreProvider.get().getUri(),
+            controller.getData().getTimestamp());
+        return !cancel;
+    }
+
+    /**
+     * Returns the original site path, in case this entry has been moved or renamed.<p>
+     *
+     * @return the original site path
+     */
+    public String getOriginalPath() {
+
+        return m_originalPath;
+    }
+
+    /**
+     * Returns the site path.<p>
+     *
+     * @return the site path
+     */
+    public String getSitePath() {
+
+        return m_entry.getSitePath();
+    }
+
+    /**
+     * Turns the highlighting for this item on or off.<p>
+     * 
+     * @param highlightOn if true, the highlighting is turned on, else off
+     */
+    public void highlight(boolean highlightOn) {
+
+        if (highlightOn) {
+            m_listItemWidget.getContentPanel().addStyleName(CSS.highlight());
+        } else {
+            m_listItemWidget.getContentPanel().removeStyleName(CSS.highlight());
+
+        }
+    }
+
+    /**
+     * Temporarily highlights an item.<p>
+     * 
+     * @param duration the duration for which  
+     */
+    public void highlightTemporarily(int duration) {
+
+        int blinkInterval = 300;
+        final int blinkCount = duration / blinkInterval;
+
+        Scheduler.get().scheduleFixedPeriod(new RepeatingCommand() {
+
+            private int m_counter;
+
+            /**
+             * @see com.google.gwt.core.client.Scheduler.RepeatingCommand#execute()
+             */
+            public boolean execute() {
+
+                boolean finish = m_counter > blinkCount;
+                highlight((m_counter % 2 == 0) && !finish);
+                m_counter += 1;
+                return !finish;
+            }
+        }, blinkInterval);
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.tree.CmsTreeItem#onDragOverIn()
+     */
+    @Override
+    public boolean onDragOverIn() {
+
+        if (m_entry.getProperties().containsKey(CmsSitemapManager.Property.sitemap)) {
+            // prevent dropping into a subsitemap driven entry
+            return false;
+        }
+        return super.onDragOverIn();
     }
 
     /**
