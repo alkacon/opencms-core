@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItemWidget.java,v $
- * Date   : $Date: 2010/09/01 10:15:19 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2010/09/01 10:24:56 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -76,7 +76,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Tobias Herrmann
  * @author Michael Moossen
  * 
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  * 
  * @since 8.0.0
  */
@@ -539,6 +539,9 @@ implements HasMouseOutHandlers, HasClickHandlers, HasMouseOverHandlers, I_CmsTru
 
         box.addBlurHandler(new BlurHandler() {
 
+            /**
+             * @see com.google.gwt.event.dom.client.BlurHandler#onBlur(com.google.gwt.event.dom.client.BlurEvent)
+             */
             public void onBlur(BlurEvent event) {
 
                 if (checked[0]) {
@@ -552,6 +555,9 @@ implements HasMouseOutHandlers, HasClickHandlers, HasMouseOverHandlers, I_CmsTru
 
         box.addKeyPressHandler(new KeyPressHandler() {
 
+            /**
+             * @see com.google.gwt.event.dom.client.KeyPressHandler#onKeyPress(com.google.gwt.event.dom.client.KeyPressEvent)
+             */
             public void onKeyPress(KeyPressEvent event) {
 
                 if (checked[0]) {
