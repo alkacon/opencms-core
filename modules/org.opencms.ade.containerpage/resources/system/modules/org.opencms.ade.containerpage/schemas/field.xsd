@@ -30,7 +30,10 @@
     <xsd:annotation>
         <xsd:appinfo>
 			<resourcebundle name="org.opencms.xml.containerpage.messages"/>
-	        <layouts/>
+	        <layouts>
+	           	<layout element="Advanced" widget="BooleanWidget" />
+	        </layouts>
+	        
         </xsd:appinfo>
     </xsd:annotation>
 </xsd:schema>
