@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/search/CmsSearchResultsList.java,v $
- * Date   : $Date: 2009/06/04 14:29:43 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/09/03 13:10:38 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -67,7 +67,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -160,7 +160,8 @@ public class CmsSearchResultsList extends A_CmsListExplorerDialog {
                 getSearchParams().getMinDateCreated(),
                 getSearchParams().getMaxDateCreated(),
                 getSearchParams().getMinDateLastModified(),
-                getSearchParams().getMaxDateLastModified());
+                getSearchParams().getMaxDateLastModified(),
+                getSearchParams().getIndexName());
 
             // set the right resource util parameters
             CmsResourceUtil resUtil = getResourceUtil();

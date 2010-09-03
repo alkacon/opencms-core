@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/Messages.java,v $
- * Date   : $Date: 2010/06/01 09:28:29 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/09/03 13:10:38 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Jan Baudisch 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -852,6 +852,18 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_SEARCH_CONFIG_NOT_FOUND_0 = "RPT_SEARCH_CONFIG_NOT_FOUND_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SOURCESEARCH_ADMIN_TOOL_NAME_0 = "GUI_SOURCESEARCH_ADMIN_TOOL_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SOURCESEARCH_ADMIN_TOOL_HELP_0 = "GUI_SOURCESEARCH_ADMIN_TOOL_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SOURCESEARCH_ADMIN_TOOL_BLOCK_0 = "GUI_SOURCESEARCH_ADMIN_TOOL_BLOCK_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SOURCESEARCH_ADMIN_TOOL_GROUP_0 = "GUI_SOURCESEARCH_ADMIN_TOOL_GROUP_0";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.workplace.tools.searchindex.messages";

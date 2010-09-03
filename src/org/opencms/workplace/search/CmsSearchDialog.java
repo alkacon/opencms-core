@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/search/CmsSearchDialog.java,v $
- * Date   : $Date: 2009/06/04 14:29:42 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/09/03 13:10:38 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (c) 2002 - 2009 Alkacon Software GmbH (http://www.alkacon.com)
  * All rights reserved.
@@ -39,9 +39,9 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.A_CmsWidget;
 import org.opencms.widgets.CmsCalendarWidget;
 import org.opencms.widgets.CmsCheckboxWidget;
-import org.opencms.widgets.CmsDisplayWidget;
 import org.opencms.widgets.CmsInputWidget;
 import org.opencms.widgets.CmsMultiSelectWidget;
+import org.opencms.widgets.CmsSelectOnChangeReloadWidget;
 import org.opencms.widgets.CmsSelectWidget;
 import org.opencms.widgets.CmsSelectWidgetOption;
 import org.opencms.workplace.CmsDialog;
@@ -68,7 +68,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.2.0 
  */
@@ -76,6 +76,9 @@ public class CmsSearchDialog extends CmsWidgetDialog {
 
     /** Localization key label infix for fields. */
     public static final String LABEL_FIELD_INFIX = "field.";
+
+    /** Request parameter name for the action. */
+    public static final String PARAM_ACTION_VALUE_FOR_CHANGED_INDEX = "index";
 
     /** the dialog type. */
     private static final String DIALOG_TYPE = "search";
@@ -151,9 +154,7 @@ public class CmsSearchDialog extends CmsWidgetDialog {
      */
     public List getFields() {
 
-        CmsSearchIndex index = OpenCms.getSearchManager().getIndex(
-            getSettings().getUserSettings().getWorkplaceSearchIndexName());
-
+        CmsSearchIndex index = getIndex();
         List result = new ArrayList();
         Iterator i = index.getFieldConfiguration().getFields().iterator();
         while (i.hasNext()) {
@@ -177,8 +178,7 @@ public class CmsSearchDialog extends CmsWidgetDialog {
     protected String createDialogHtml(String dialog) {
 
         // check if the configured search index exists
-        CmsSearchIndex index = OpenCms.getSearchManager().getIndex(
-            getSettings().getUserSettings().getWorkplaceSearchIndexName());
+        CmsSearchIndex index = getIndex();
         if (index == null) {
             throw new CmsIllegalStateException(Messages.get().container(
                 Messages.ERR_INDEX_INVALID_1,
@@ -218,11 +218,8 @@ public class CmsSearchDialog extends CmsWidgetDialog {
     protected void defineWidgets() {
 
         initParams();
-        addWidget(new CmsWidgetDialogParameter(
-            this,
-            "settings.userSettings.workplaceSearchIndexName",
-            PAGES[0],
-            new CmsDisplayWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_search, "indexName", PAGES[0], new CmsSelectOnChangeReloadWidget(
+            getSortNamesIndex())));
         addWidget(new CmsWidgetDialogParameter(m_search, "query", PAGES[0], new CmsInputWidget()));
         addWidget(new CmsWidgetDialogParameter(m_search, "sortOrder", PAGES[0], new CmsSelectWidget(getSortNamesConf())));
         addWidget(new CmsWidgetDialogParameter(m_search, "restrictSearch", PAGES[0], new CmsCheckboxWidget()));
@@ -278,13 +275,41 @@ public class CmsSearchDialog extends CmsWidgetDialog {
             Iterator i = getFields().iterator();
             while (i.hasNext()) {
                 CmsSearchField field = (CmsSearchField)i.next();
-                retVal.add(new CmsSelectWidgetOption(field.getName(), true, getMacroResolver().resolveMacros(
-                    field.getDisplayName())));
+                if (isInitialCall()) {
+                    // search form is in the initial state
+                    retVal.add(new CmsSelectWidgetOption(field.getName(), true, getMacroResolver().resolveMacros(
+                        field.getDisplayName())));
+                } else {
+                    // search form is not in the initial state
+                    retVal.add(new CmsSelectWidgetOption(field.getName(), false, getMacroResolver().resolveMacros(
+                        field.getDisplayName())));
+                }
             }
         } catch (Exception e) {
             // noop
         }
         return retVal;
+    }
+
+    /** Gets the index to use in the search.
+     * 
+     * @return  the index to use in the search
+     */
+    private CmsSearchIndex getIndex() {
+
+        CmsSearchIndex index = null;
+        // get the configured index or the selected index
+        if (isInitialCall()) {
+            // the search form is in the initial state
+            // get the configured index
+            index = OpenCms.getSearchManager().getIndex(getSettings().getUserSettings().getWorkplaceSearchIndexName());
+        } else {
+            // the search form is not in the inital state, the submit button was used already or the 
+            // search index was changed already
+            // get the selected index in the search dialog
+            index = OpenCms.getSearchManager().getIndex(getJsp().getRequest().getParameter("indexName.0"));
+        }
+        return index;
     }
 
     /**
@@ -300,6 +325,28 @@ public class CmsSearchDialog extends CmsWidgetDialog {
             for (int i = 0; i < names.length; i++) {
                 retVal.add(new CmsSelectWidgetOption(names[i], (i == 0), key(A_CmsWidget.LABEL_PREFIX
                     + names[i].toLowerCase())));
+            }
+        } catch (Exception e) {
+            // noop
+        }
+        return retVal;
+    }
+
+    /**
+     * Creates the select widget configuration for the index names.<p>
+     * 
+     * @return the select widget configuration for the index names
+     */
+    private List getSortNamesIndex() {
+
+        List retVal = new ArrayList();
+        try {
+            List<String> names = OpenCms.getSearchManager().getIndexNames();
+            for (int i = 0; i < names.size(); i++) {
+                String indexName = names.get(i);
+                String wpIndexName = getSettings().getUserSettings().getWorkplaceSearchIndexName();
+                boolean isDefault = indexName.toLowerCase().equals(wpIndexName.toLowerCase());
+                retVal.add(new CmsSelectWidgetOption(names.get(i), isDefault, names.get(i)));
             }
         } catch (Exception e) {
             // noop
@@ -327,6 +374,25 @@ public class CmsSearchDialog extends CmsWidgetDialog {
         } else {
             // reuse params stored in session
             m_search = (CmsSearchWorkplaceBean)o;
+        }
+    }
+
+    /**
+     * Gets the information if the search form is in the inital state.<p>
+     * 
+     * @return true, the search form is in the inital state. otherwise false
+     */
+    private boolean isInitialCall() {
+
+        if (((getJsp().getRequest().getParameter(CmsDialog.PARAM_ACTION) != null) && (getJsp().getRequest().getParameter(
+            CmsDialog.PARAM_ACTION).equals(CmsSearchDialog.PARAM_ACTION_VALUE_FOR_CHANGED_INDEX)))
+            || ((getJsp().getRequest().getParameter("indexName.0")) != null)) {
+            // the form was submitted already
+            // the submit button was pressed or the index was changed
+            return false;
+        } else {
+            // the initial call
+            return true;
         }
     }
 }

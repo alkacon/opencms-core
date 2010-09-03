@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/search/CmsSearchWorkplaceBean.java,v $
- * Date   : $Date: 2009/06/04 14:29:43 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/09/03 13:10:38 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import org.opencms.util.CmsStringUtil;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.3.0 
  */
@@ -52,6 +52,9 @@ public class CmsSearchWorkplaceBean {
 
     /** The comma separated list of fields to search parameter value. */
     private String m_fields;
+
+    /** The index name. */
+    private String m_indexName;
 
     /** The creation date the resources have to have as maximum. */
     private String m_maxDateCreated;
@@ -94,6 +97,16 @@ public class CmsSearchWorkplaceBean {
     public String getFields() {
 
         return m_fields;
+    }
+
+    /**
+     * Returns the index name.<p>
+     *
+     * @return the index name
+     */
+    public String getIndexName() {
+
+        return m_indexName;
     }
 
     /**
@@ -191,6 +204,16 @@ public class CmsSearchWorkplaceBean {
             throw new CmsIllegalStateException(Messages.get().container(Messages.ERR_VALIDATE_SEARCH_PARAMS_0));
         }
         m_fields = fields;
+    }
+
+    /**
+     * Sets the index name.<p>
+     *
+     * @param indexName the index name
+     */
+    public void setIndexName(String indexName) {
+
+        m_indexName = indexName;
     }
 
     /**

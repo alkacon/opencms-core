@@ -496,6 +496,10 @@
 					<value><![CDATA[${key.GUI_GROUPS_FIELDCONFIGURATION_TOOL_INDEX_0}]]></value>
 				</property>
 				<property>
+					<name>NavPos</name>
+					<value><![CDATA[15.0]]></value>
+				</property>
+				<property>
 					<name>Title</name>
 					<value><![CDATA[A list of all field configurations of the OpenCms installation]]></value>
 				</property>
@@ -984,6 +988,10 @@
 					<value><![CDATA[${key.GUI_GROUPS_INDEXSOURCE_TOOL_INDEX_0}]]></value>
 				</property>
 				<property>
+					<name>NavPos</name>
+					<value><![CDATA[10.0]]></value>
+				</property>
+				<property>
 					<name>Title</name>
 					<value><![CDATA[A list of all indexsources of the OpenCms installation]]></value>
 				</property>
@@ -1178,6 +1186,10 @@
 				<property>
 					<name>NavText</name>
 					<value><![CDATA[${key.GUI_GROUPS_SEARCHINDEX_TOOL_NEW_0}]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[5.0]]></value>
 				</property>
 				<property>
 					<name>Title</name>
@@ -1518,6 +1530,124 @@
 				<property>
 					<name>admintoolhandler-class</name>
 					<value><![CDATA[org.opencms.workplace.tools.searchindex.CmsSearchToolHandler]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/admin/searchindex/sourcesearch</destination>
+			<type>folder</type>
+			<uuidstructure>47056e70-ac55-11df-bb3e-00144f45afea</uuidstructure>
+			<datelastmodified>Wed, 01 Sep 2010 10:07:58 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 20 Aug 2010 12:20:10 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_SOURCESEARCH_ADMIN_TOOL_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[tools/searchindex/icons/big/sourcesearch.png]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_SOURCESEARCH_ADMIN_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[50.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_SOURCESEARCH_ADMIN_TOOL_NAME_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Source search]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.CmsOnlyAdminToolHandler]]></value>
+				</property>
+				<property>
+					<name>default-file</name>
+					<value><![CDATA[index.jsp]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/searchindex/sourcesearch/fileslist.jsp</source>
+			<destination>system/workplace/admin/searchindex/sourcesearch/fileslist.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>12ce5717-b11b-11df-904d-00144f45afea</uuidstructure>
+			<uuidresource>12ce5718-b11b-11df-904d-00144f45afea</uuidresource>
+			<datelastmodified>Wed, 01 Sep 2010 10:13:26 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2010 14:06:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_SOURCESEARCH_FILES_LIST_OVERHEAD_0}]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[path:/searchindex/sourcesearch/fileslist]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.CmsInvisibleToolHandler]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/searchindex/sourcesearch/index.jsp</source>
+			<destination>system/workplace/admin/searchindex/sourcesearch/index.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>47c8e589-ac55-11df-bb3e-00144f45afea</uuidstructure>
+			<uuidresource>47c8e58a-ac55-11df-bb3e-00144f45afea</uuidresource>
+			<datelastmodified>Wed, 01 Sep 2010 12:36:21 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 20 Aug 2010 12:20:12 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/searchindex/sourcesearch/sourcesearch.jsp</source>
+			<destination>system/workplace/admin/searchindex/sourcesearch/sourcesearch.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>15233381-ae96-11df-85f4-00144f45afea</uuidstructure>
+			<uuidresource>15233382-ae96-11df-85f4-00144f45afea</uuidresource>
+			<datelastmodified>Mon, 23 Aug 2010 09:09:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 23 Aug 2010 09:09:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -1997,6 +2127,26 @@
 			<datelastmodified>Thu, 14 Dec 2006 09:27:22 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/searchindex/icons/big/sourcesearch.png</source>
+			<destination>system/workplace/resources/tools/searchindex/icons/big/sourcesearch.png</destination>
+			<type>image</type>
+			<uuidstructure>6dfc63f0-b0f4-11df-b359-00144f45afea</uuidstructure>
+			<uuidresource>6dfc63f1-b0f4-11df-b359-00144f45afea</uuidresource>
+			<datelastmodified>Mon, 05 Jan 2009 15:32:16 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2010 09:29:30 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>

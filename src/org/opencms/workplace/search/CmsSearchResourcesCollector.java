@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/search/CmsSearchResourcesCollector.java,v $
- * Date   : $Date: 2009/06/04 14:29:42 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/09/03 13:10:38 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.1.0 
  */
@@ -69,6 +69,9 @@ public class CmsSearchResourcesCollector extends A_CmsListResourceCollector {
 
     /** Meta Parameter name constant. */
     public static final String PARAM_FIELDS = "fields";
+
+    /** Meta Parameter index name constant. */
+    public static final String PARAM_INDEXNAME = "indexName";
 
     /** Maximum creation date parameter name constant. */
     public static final String PARAM_MAXCREATIONDATE = "maxCreationDate";
@@ -109,6 +112,7 @@ public class CmsSearchResourcesCollector extends A_CmsListResourceCollector {
      * @param maxCreationDate the maximum creation date of the resources to be searched
      * @param minLastModificationDate the minimum creation date of the resources to be searched
      * @param maxLastModificationDate the maximum creation date of the resources to be searched
+     * @param indexName the index name to search in
      */
     public CmsSearchResourcesCollector(
         A_CmsListExplorerDialog wp,
@@ -119,9 +123,14 @@ public class CmsSearchResourcesCollector extends A_CmsListResourceCollector {
         String minCreationDate,
         String maxCreationDate,
         String minLastModificationDate,
-        String maxLastModificationDate) {
+        String maxLastModificationDate,
+        String indexName) {
 
         super(wp);
+        m_collectorParameter += I_CmsListResourceCollector.SEP_PARAM
+            + PARAM_INDEXNAME
+            + I_CmsListResourceCollector.SEP_KEYVAL
+            + indexName;
         m_collectorParameter += I_CmsListResourceCollector.SEP_PARAM
             + PARAM_QUERY
             + I_CmsListResourceCollector.SEP_KEYVAL
