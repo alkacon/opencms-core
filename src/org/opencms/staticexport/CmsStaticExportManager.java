@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2010/07/07 09:12:09 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/09/03 13:13:59 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -89,7 +89,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -1179,10 +1179,58 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     public String getRfsName(CmsObject cms, String vfsName, String parameters) {
 
         String rfsName = vfsName;
+
+        // try as detail page
+        String path = vfsName;
+        if (path.endsWith("/")) {
+            path = path.substring(0, path.length() - 1);
+        }
+        String detailId = CmsResource.getName(path);
+        if (CmsUUID.isValidUUID(detailId)) {
+            // a detail page URI
+            CmsUUID id = new CmsUUID(detailId);
+            try {
+                CmsResource contentRes = cms.readResource(id);
+                String rootPath = contentRes.getRootPath();
+                vfsName = cms.getRequestContext().removeSiteRoot(rootPath);
+            } catch (CmsException e) {
+                LOG.error("Ressource with id: " + id + " not found", e);
+            }
+        } else {
+            // no detail page: VFS URI
+            try {
+                CmsResource contentRes = cms.readResource(vfsName);
+                String detailViewProp = cms.readPropertyObject(
+                    contentRes,
+                    CmsPropertyDefinition.PROPERTY_ADE_SITEMAP_DETAILVIEW,
+                    true).getValue("");
+
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(detailViewProp)) {
+                    // if detail view found, adjust the uri
+                    if (OpenCms.getDefaultUsers().getUserExport().equals(
+                        cms.getRequestContext().currentUser().getName())) {
+                        rfsName = OpenCms.getSiteManager().getSiteRoot(contentRes.getRootPath()) + detailViewProp;
+                    } else {
+                        rfsName = detailViewProp;
+                    }
+                    if (!rfsName.endsWith("/")) {
+                        rfsName += "/";
+                    }
+                    rfsName += contentRes.getStructureId().toString();
+                    rfsName += "/";
+                }
+            } catch (CmsException e) {
+                LOG.error("Ressource with path: " + vfsName + " not found", e);
+            }
+        }
         try {
             // check if the resource folder (or a parent folder) has the "exportname" property set
+            CmsSitemapEntry sitemapEntry = OpenCms.getSitemapManager().getEntryForUri(cms, vfsName);
+            CmsUUID structureId = sitemapEntry.getStructureId();
+            CmsResource ressource = cms.readResource(structureId);
+
             CmsProperty exportNameProperty = cms.readPropertyObject(
-                CmsResource.getFolderPath(rfsName),
+                ressource,
                 CmsPropertyDefinition.PROPERTY_EXPORTNAME,
                 true);
 
@@ -2176,9 +2224,9 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 } catch (CmsException e) {
                     // ignore, resource does not exist
                     if (LOG.isWarnEnabled()) {
-                        LOG.warn(Messages.get().getBundle().key(
-                            Messages.ERR_EXPORT_FILE_FAILED_1,
-                            new String[] {rfsName}), e);
+                        LOG.warn(
+                            Messages.get().getBundle().key(Messages.ERR_EXPORT_FILE_FAILED_1, new String[] {rfsName}),
+                            e);
                     }
                 }
             }
@@ -2468,11 +2516,13 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 }
                 count++;
                 if (report != null) {
-                    report.println(Messages.get().container(
-                        Messages.RPT_DELETE_EXPORT_FOLDER_3,
-                        new Integer(count),
-                        size,
-                        exportFolderName), I_CmsReport.FORMAT_NOTE);
+                    report.println(
+                        Messages.get().container(
+                            Messages.RPT_DELETE_EXPORT_FOLDER_3,
+                            new Integer(count),
+                            size,
+                            exportFolderName),
+                        I_CmsReport.FORMAT_NOTE);
                 } else {
                     // write log message
                     if (LOG.isInfoEnabled()) {
@@ -2498,11 +2548,13 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                     }
                     count++;
                     if (report != null) {
-                        report.println(Messages.get().container(
-                            Messages.RPT_DELETE_EXPORT_FOLDER_3,
-                            new Integer(count),
-                            size,
-                            exportFolderName), I_CmsReport.FORMAT_NOTE);
+                        report.println(
+                            Messages.get().container(
+                                Messages.RPT_DELETE_EXPORT_FOLDER_3,
+                                new Integer(count),
+                                size,
+                                exportFolderName),
+                            I_CmsReport.FORMAT_NOTE);
                     } else {
                         // write log message
                         if (LOG.isInfoEnabled()) {

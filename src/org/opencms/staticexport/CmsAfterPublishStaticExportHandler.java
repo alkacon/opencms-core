@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsAfterPublishStaticExportHandler.java,v $
- * Date   : $Date: 2010/01/18 11:14:12 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/09/03 13:13:59 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  * 
@@ -326,10 +326,12 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
                     exportData.getRfsName()));
             }
 
-            report.print(org.opencms.report.Messages.get().container(
-                org.opencms.report.Messages.RPT_SUCCESSION_2,
-                new Integer(count++),
-                new Integer(size)), I_CmsReport.FORMAT_NOTE);
+            report.print(
+                org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_SUCCESSION_2,
+                    new Integer(count++),
+                    new Integer(size)),
+                I_CmsReport.FORMAT_NOTE);
             report.print(Messages.get().container(Messages.RPT_EXPORTING_0), I_CmsReport.FORMAT_NOTE);
             report.print(org.opencms.report.Messages.get().container(
                 org.opencms.report.Messages.RPT_ARGUMENT_1,
@@ -507,10 +509,12 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
             }
             if (data != null) {
                 data.setRfsName(rfsName);
-                report.print(org.opencms.report.Messages.get().container(
-                    org.opencms.report.Messages.RPT_SUCCESSION_2,
-                    new Integer(count++),
-                    new Integer(size)), I_CmsReport.FORMAT_NOTE);
+                report.print(
+                    org.opencms.report.Messages.get().container(
+                        org.opencms.report.Messages.RPT_SUCCESSION_2,
+                        new Integer(count++),
+                        new Integer(size)),
+                    I_CmsReport.FORMAT_NOTE);
                 report.print(Messages.get().container(Messages.RPT_EXPORTING_0), I_CmsReport.FORMAT_NOTE);
                 report.print(org.opencms.report.Messages.get().container(
                     org.opencms.report.Messages.RPT_ARGUMENT_1,
@@ -530,15 +534,19 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
                         org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
                         I_CmsReport.FORMAT_OK);
                 } else if (status == HttpServletResponse.SC_NOT_MODIFIED) {
-                    report.println(org.opencms.report.Messages.get().container(
-                        org.opencms.report.Messages.RPT_SKIPPED_0), I_CmsReport.FORMAT_NOTE);
+                    report.println(
+                        org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_SKIPPED_0),
+                        I_CmsReport.FORMAT_NOTE);
                 } else if (status == HttpServletResponse.SC_SEE_OTHER) {
-                    report.println(org.opencms.report.Messages.get().container(
-                        org.opencms.report.Messages.RPT_IGNORED_0), I_CmsReport.FORMAT_NOTE);
+                    report.println(
+                        org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_IGNORED_0),
+                        I_CmsReport.FORMAT_NOTE);
                 } else {
-                    report.println(org.opencms.report.Messages.get().container(
-                        org.opencms.report.Messages.RPT_ARGUMENT_1,
-                        new Integer(status)), I_CmsReport.FORMAT_OK);
+                    report.println(
+                        org.opencms.report.Messages.get().container(
+                            org.opencms.report.Messages.RPT_ARGUMENT_1,
+                            new Integer(status)),
+                        I_CmsReport.FORMAT_OK);
                 }
             } catch (IOException e) {
                 report.println(e);
@@ -549,6 +557,15 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
         report.println(
             Messages.get().container(Messages.RPT_STATICEXPORT_TEMPLATE_RESOURCES_END_0),
             I_CmsReport.FORMAT_HEADLINE);
+    }
+
+    /**
+     * @see org.opencms.staticexport.A_CmsStaticExportHandler#getRelatedFilesToPurge(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
+     */
+    @Override
+    protected List<File> getRelatedFilesToPurge(CmsObject cms, String exportFileName, String vfsName) {
+
+        return Collections.emptyList();
     }
 
     /**

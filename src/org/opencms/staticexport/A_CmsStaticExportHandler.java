@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/A_CmsStaticExportHandler.java,v $
- * Date   : $Date: 2010/01/18 11:13:55 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/09/03 13:13:59 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.1.7 
  * 
@@ -266,6 +266,17 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
     protected abstract List getRelatedFilesToPurge(String exportFileName, String vfsName);
 
     /**
+     * Returns a list of related files to purge.<p>
+     * 
+     * @param cms the export user context 
+     * @param exportFileName the previous exported rfs filename (already purged)
+     * @param vfsName the vfs name of the resource (to be used to compute more sofisticated sets of related files to purge 
+     * 
+     * @return a list of related files to purge
+     */
+    protected abstract List<File> getRelatedFilesToPurge(CmsObject cms, String exportFileName, String vfsName);
+
+    /**
      * Returns a list containing the root paths of all siblings of a resource.<p> 
      * 
      * @param cms the export user context
@@ -396,10 +407,7 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
                     vfsName)
                     + rfsName.substring(OpenCms.getStaticExportManager().getRfsPrefix(vfsName).length()));
 
-                purgeFile(rfsExportFileName, vfsName);
-                scrubbedFiles.add(rfsName);
-
-                List fileList = getRelatedFilesToPurge(rfsExportFileName, vfsName);
+                List fileList = getRelatedFilesToPurge(cms, rfsExportFileName, vfsName);
                 Iterator iter = fileList.iterator();
                 while (iter.hasNext()) {
                     File file = (File)iter.next();
@@ -411,6 +419,8 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
                     rfsName = CmsStringUtil.substitute(rfsName, new String(new char[] {File.separatorChar}), "/");
                     scrubbedFiles.add(rfsName);
                 }
+                purgeFile(rfsExportFileName, vfsName);
+                scrubbedFiles.add(rfsName);
             }
         }
     }
