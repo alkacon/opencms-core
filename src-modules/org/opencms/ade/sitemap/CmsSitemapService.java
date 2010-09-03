@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsSitemapService.java,v $
- * Date   : $Date: 2010/08/26 13:37:49 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2010/09/03 13:27:35 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,12 +56,15 @@ import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
+import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.explorer.CmsResourceUtil;
+import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.content.CmsXmlContentPropertyHelper;
+import org.opencms.xml.content.I_CmsXmlContentHandler;
 import org.opencms.xml.sitemap.CmsInternalSitemapEntry;
 import org.opencms.xml.sitemap.CmsSitemapBean;
 import org.opencms.xml.sitemap.CmsSitemapChangeDelete;
@@ -94,7 +97,7 @@ import org.apache.commons.collections.map.MultiValueMap;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.33 $ 
+ * @version $Revision: 1.34 $ 
  * 
  * @since 8.0.0
  * 
@@ -140,7 +143,7 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
             entries.addAll(descendants);
 
             // multimap from resources to (sets of) sitemap entries 
-            @SuppressWarnings("rawtypes")
+            @SuppressWarnings("unchecked")
             MultiValueMap linkMap = MultiValueMap.decorate(
                 new HashMap(),
                 FactoryUtils.instantiateFactory(HashSet.class));
@@ -169,7 +172,8 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
             CmsResource sitemapRes = cms.readResource(sitemapUri);
             Map<String, CmsXmlContentProperty> propertyConfig = OpenCms.getSitemapManager().getElementPropertyConfiguration(
                 cms,
-                sitemapRes);
+                sitemapRes,
+                true);
             children = getChildren(root, 1, propertyConfig);
         } catch (Throwable e) {
             error(e);
@@ -186,7 +190,8 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
             CmsObject cms = getCmsObject();
             Map<String, CmsXmlContentProperty> propertyConfig = OpenCms.getSitemapManager().getElementPropertyConfiguration(
                 cms,
-                cms.readResource(sitemapUri));
+                cms.readResource(sitemapUri),
+                true);
 
             return toClientEntry(OpenCms.getSitemapManager().getEntryForUri(getCmsObject(), root), propertyConfig);
         } catch (Throwable e) {
@@ -253,7 +258,8 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
             CmsObject cms = getCmsObject();
             Map<String, CmsXmlContentProperty> propertyConfig = OpenCms.getSitemapManager().getElementPropertyConfiguration(
                 cms,
-                cms.readResource(sitemapUri));
+                cms.readResource(sitemapUri),
+                true);
             // TODO: what about historical requests?
             CmsInternalSitemapEntry entry = (CmsInternalSitemapEntry)OpenCms.getSitemapManager().getEntryForUri(
                 getCmsObject(),
@@ -284,13 +290,20 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
             CmsResource sitemap = cms.readResource(sitemapUri);
             Map<String, CmsXmlContentProperty> propertyConfig = OpenCms.getSitemapManager().getElementPropertyConfiguration(
                 cms,
-                sitemap);
+                sitemap,
+                true);
+
+            I_CmsXmlContentHandler contentHandler = CmsXmlContentDefinition.getContentHandlerForResource(cms, sitemap);
+            CmsMacroResolver resolver = CmsXmlContentPropertyHelper.getMacroResolverForProperties(cms, contentHandler);
+            Map<String, CmsXmlContentProperty> resolvedProps = CmsXmlContentPropertyHelper.resolveMacrosInProperties(
+                propertyConfig,
+                resolver);
             String parentSitemap = OpenCms.getSitemapManager().getParentSitemap(cms, sitemapUri);
             String openPath = getRequest().getParameter("path");
             result = new CmsSitemapData(
                 getDefaultTemplate(sitemapUri),
                 getTemplates(),
-                CmsXmlContentPropertyHelper.getPropertyInfo(cms, sitemap),
+                resolvedProps,
                 getClipboardData(),
                 getNoEditReason(cms, getRequest()),
                 isDisplayToolbar(getRequest()),

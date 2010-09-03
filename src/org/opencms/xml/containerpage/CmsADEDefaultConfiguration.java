@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADEDefaultConfiguration.java,v $
- * Date   : $Date: 2010/01/27 12:25:30 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/09/03 13:27:35 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,6 +38,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.util.List;
 
@@ -56,7 +57,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 7.6 
  */
@@ -125,6 +126,21 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
 
         CmsConfigurationParser parser = getConfigurationParser(cms, cntPageUri);
         return parser.getNewFileName(cms, parser.getConfiguration().get(type).getDestination());
+    }
+
+    /**
+     * Returns a list of properties defined in the configuration file.<p>
+     * 
+     * @param cms the CMS context 
+     * @param cntPageUri the uri of the page
+     *  
+     * @return the list of properties in the configuration file
+     *     
+     * @throws CmsException if something goes wrong 
+     */
+    public List<CmsXmlContentProperty> getProperties(CmsObject cms, String cntPageUri) throws CmsException {
+
+        return getConfigurationParser(cms, cntPageUri).getDefinedProperties();
     }
 
     /**

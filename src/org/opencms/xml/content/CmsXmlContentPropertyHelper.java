@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentPropertyHelper.java,v $
- * Date   : $Date: 2010/07/23 13:20:39 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/09/03 13:27:35 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import org.dom4j.Element;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 7.9.2
  */
@@ -176,6 +176,25 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
     }
 
     /**
+     * Creates and configures a new macro resolver for resolving macros which occur in property definitions.<p>
+     * 
+     * @param cms the CMS context 
+     * @param contentHandler the content handler which contains the message bundle that should be available in the macro resolver
+     *  
+     * @return a new macro resolver 
+     */
+    public static CmsMacroResolver getMacroResolverForProperties(CmsObject cms, I_CmsXmlContentHandler contentHandler) {
+
+        CmsMacroResolver resolver = new CmsMacroResolver();
+        resolver.setCmsObject(cms);
+        CmsUserSettings settings = new CmsUserSettings(cms.getRequestContext().currentUser());
+        CmsMessages messages = contentHandler.getMessages(settings.getLocale());
+        resolver.setMessages(messages);
+        resolver.setKeepEmptyMacros(true);
+        return resolver;
+    }
+
+    /**
      * Returns the property information for the given resource (type) AND the current user.<p>
      * 
      * @param cms the current CMS context 
@@ -188,36 +207,11 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
     public static Map<String, CmsXmlContentProperty> getPropertyInfo(CmsObject cms, CmsResource resource)
     throws CmsException {
 
-        Map<String, CmsXmlContentProperty> result = new HashMap<String, CmsXmlContentProperty>();
-
         I_CmsXmlContentHandler contentHandler = CmsXmlContentDefinition.getContentHandlerForResource(cms, resource);
-
-        CmsMacroResolver resolver = new CmsMacroResolver();
-        resolver.setCmsObject(cms);
-        CmsUserSettings settings = new CmsUserSettings(cms.getRequestContext().currentUser());
-        CmsMessages messages = contentHandler.getMessages(settings.getLocale());
-        resolver.setMessages(messages);
-        resolver.setKeepEmptyMacros(true);
-
         Map<String, CmsXmlContentProperty> propertiesConf = contentHandler.getProperties();
-        for (Map.Entry<String, CmsXmlContentProperty> entry : propertiesConf.entrySet()) {
-            String propertyName = entry.getKey();
-            CmsXmlContentProperty property = entry.getValue();
-            CmsXmlContentProperty newProperty = new CmsXmlContentProperty(
-                propertyName,
-                property.getPropertyType(),
-                property.getWidget(),
-                resolver.resolveMacros(property.getWidgetConfiguration()),
-                property.getRuleRegex(),
-                property.getRuleType(),
-                property.getDefault(),
-                resolver.resolveMacros(property.getNiceName()),
-                resolver.resolveMacros(property.getDescription()),
-                resolver.resolveMacros(property.getError()));
 
-            result.put(propertyName, newProperty);
-        }
-        return result;
+        CmsMacroResolver resolver = getMacroResolverForProperties(cms, contentHandler);
+        return resolveMacrosInProperties(propertiesConf, resolver);
     }
 
     /**
@@ -520,28 +514,74 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
     }
 
     /**
+     * Resolves macros in all properties in a map.<p>
+     * 
+     * @param properties the map of properties in which macros should be resolved 
+     * @param resolver the macro resolver to use 
+     * 
+     * @return a new map of properties with resolved macros 
+     */
+    public static Map<String, CmsXmlContentProperty> resolveMacrosInProperties(
+        Map<String, CmsXmlContentProperty> properties,
+        CmsMacroResolver resolver) {
+
+        Map<String, CmsXmlContentProperty> result = new HashMap<String, CmsXmlContentProperty>();
+        for (Map.Entry<String, CmsXmlContentProperty> entry : properties.entrySet()) {
+            String key = entry.getKey();
+            CmsXmlContentProperty prop = entry.getValue();
+            result.put(key, resolveMacrosInProperty(prop, resolver));
+        }
+        return result;
+    }
+
+    /**
+     * Resolves the macros in a single property.<p>
+     * 
+     * @param property the property in which macros should be resolved 
+     * @param resolver the macro resolver to use 
+     * 
+     * @return a new property with resolved macros 
+     */
+    public static CmsXmlContentProperty resolveMacrosInProperty(
+        CmsXmlContentProperty property,
+        CmsMacroResolver resolver) {
+
+        String propName = property.getPropertyName();
+        CmsXmlContentProperty result = new CmsXmlContentProperty(
+            propName,
+            property.getPropertyType(),
+            property.getWidget(),
+            resolver.resolveMacros(property.getWidgetConfiguration()),
+            property.getRuleRegex(),
+            property.getRuleType(),
+            property.getDefault(),
+            resolver.resolveMacros(property.getNiceName()),
+            resolver.resolveMacros(property.getDescription()),
+            resolver.resolveMacros(property.getError()),
+            property.getAdvanced());
+        return result;
+    }
+
+    /**
      * Saves the given properties to the given xml element.<p>
      * 
      * @param cms the current CMS context
      * @param parentElement the parent xml element
      * @param properties the properties to save, if there is a list of resources, every entry can be a site path or a UUID
      * @param resource the resource to get the property configuration from
-     * 
-     * @throws CmsException if something goes wrong 
+     * @param propertiesConf the configuration of the properties 
      */
     public static void saveProperties(
         CmsObject cms,
         Element parentElement,
         Map<String, String> properties,
-        CmsResource resource) throws CmsException {
+        CmsResource resource,
+        Map<String, CmsXmlContentProperty> propertiesConf) {
 
         // remove old entries
         for (Object propElement : parentElement.elements(CmsXmlContentProperty.XmlNode.Properties.name())) {
             parentElement.remove((Element)propElement);
         }
-        Map<String, CmsXmlContentProperty> propertiesConf = OpenCms.getADEManager().getElementPropertyConfiguration(
-            cms,
-            resource);
 
         // create new entries
         for (Map.Entry<String, String> property : properties.entrySet()) {

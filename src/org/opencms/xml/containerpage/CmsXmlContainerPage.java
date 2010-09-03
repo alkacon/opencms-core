@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsXmlContainerPage.java,v $
- * Date   : $Date: 2010/05/18 13:15:51 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/09/03 13:27:35 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,6 +50,7 @@ import org.opencms.xml.CmsXmlGenericWrapper;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentMacroVisitor;
+import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.content.CmsXmlContentPropertyHelper;
 import org.opencms.xml.page.CmsXmlPage;
 import org.opencms.xml.types.CmsXmlNestedContentDefinition;
@@ -79,7 +80,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 7.5.2
  * 
@@ -475,7 +476,11 @@ public class CmsXmlContainerPage extends CmsXmlContent {
 
                 // the properties
                 Map<String, String> properties = element.getProperties();
-                CmsXmlContentPropertyHelper.saveProperties(cms, elemElement, properties, uriRes);
+                Map<String, CmsXmlContentProperty> propertiesConf = OpenCms.getADEManager().getElementPropertyConfiguration(
+                    cms,
+                    uriRes);
+
+                CmsXmlContentPropertyHelper.saveProperties(cms, elemElement, properties, uriRes, propertiesConf);
             }
         }
     }

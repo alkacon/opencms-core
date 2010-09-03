@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/form/Attic/CmsBasicFormField.java,v $
- * Date   : $Date: 2010/06/14 15:07:18 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/09/03 13:27:35 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,11 +47,14 @@ import java.util.Map;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0 
  */
 public class CmsBasicFormField implements I_CmsFormField {
+
+    /** Indicates whether this is an advanced or basic form field. */
+    private boolean m_advanced;
 
     /** The default value of the form field. */
     private Object m_defaultValue;
@@ -82,8 +85,15 @@ public class CmsBasicFormField implements I_CmsFormField {
      * @param label the label of the form field
      * @param defaultValue the default value of the form field 
      * @param widget the widget of the form field
+     * @param advanced if true, this is an advanced, else a basic form field 
      */
-    public CmsBasicFormField(String id, String description, String label, Object defaultValue, I_CmsFormWidget widget) {
+    public CmsBasicFormField(
+        String id,
+        String description,
+        String label,
+        Object defaultValue,
+        I_CmsFormWidget widget,
+        boolean advanced) {
 
         super();
         m_id = id;
@@ -91,6 +101,7 @@ public class CmsBasicFormField implements I_CmsFormField {
         m_label = label;
         m_widget = widget;
         m_defaultValue = defaultValue;
+        m_advanced = advanced;
     }
 
     /**
@@ -121,7 +132,8 @@ public class CmsBasicFormField implements I_CmsFormField {
             propertyConfig.getDescription(),
             label,
             propertyConfig.getDefault(),
-            widget);
+            widget,
+            "true".equals(propertyConfig.getAdvanced()));
         String ruleRegex = propertyConfig.getRuleRegex();
         if (!CmsStringUtil.isEmpty(ruleRegex)) {
             field.setValidator(new CmsRegexValidator(ruleRegex, propertyConfig.getError()));
@@ -201,6 +213,14 @@ public class CmsBasicFormField implements I_CmsFormField {
     public I_CmsFormWidget getWidget() {
 
         return m_widget;
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormField#isAdvanced()
+     */
+    public boolean isAdvanced() {
+
+        return m_advanced;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsTextBox.java,v $
- * Date   : $Date: 2010/08/31 07:30:24 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2010/09/03 13:27:35 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import com.google.gwt.user.client.ui.TextBox;
  * @author Georg Westenberger
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 8.0.0
  * 
@@ -312,6 +312,15 @@ HasClickHandlers, I_CmsHasBlur {
     public void setText(String text) {
 
         m_textbox.setText(text);
+    }
+
+    /**
+     * Updates the layout of the text box.<p>
+     */
+    public void updateLayout() {
+
+        m_textboxContainer.updatePadding();
+
     }
 
     /** 

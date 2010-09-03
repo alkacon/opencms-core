@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentProperty.java,v $
- * Date   : $Date: 2010/05/25 11:52:18 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/09/03 13:27:35 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,31 +38,11 @@ import java.io.Serializable;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 7.9.2
  */
 public class CmsXmlContentProperty implements Cloneable, Serializable {
-
-    /** The serialization uid. */
-    private static final long serialVersionUID = -4588082362096864995L;
-
-    /** XML node name constants. */
-    public enum XmlNode {
-
-        /** Value file list node name. */
-        FileList,
-        /** Container or property name node name. */
-        Name,
-        /** Element properties node name. */
-        Properties,
-        /** Value string node name. */
-        String,
-        /** File list URI node name. */
-        Uri,
-        /** Property value node name. */
-        Value;
-    }
 
     /** Property type constants. */
     public enum PropType {
@@ -87,8 +67,31 @@ public class CmsXmlContentProperty implements Cloneable, Serializable {
         }
     }
 
+    /** XML node name constants. */
+    public enum XmlNode {
+
+        /** Value file list node name. */
+        FileList,
+        /** Container or property name node name. */
+        Name,
+        /** Element properties node name. */
+        Properties,
+        /** Value string node name. */
+        String,
+        /** File list URI node name. */
+        Uri,
+        /** Property value node name. */
+        Value;
+    }
+
     /** IDs separator constant. */
     public static final String PROP_SEPARATOR = ",";
+
+    /** The serialization uid. */
+    private static final long serialVersionUID = -4588082362096864995L;
+
+    /** The value of the "advanced" property. */
+    private String m_advanced;
 
     /** Default value. */
     private String m_default;
@@ -121,14 +124,6 @@ public class CmsXmlContentProperty implements Cloneable, Serializable {
     private String m_widgetConfiguration;
 
     /**
-     * Serialization constructor.<p>
-     */ 
-    protected CmsXmlContentProperty() {
-    
-        // empty
-    }
-    
-    /**
      * Public constructor.<p>
      * 
      * @param propertyName the property name
@@ -141,6 +136,7 @@ public class CmsXmlContentProperty implements Cloneable, Serializable {
      * @param niceName the nice-name
      * @param description  the description
      * @param error the error message
+     * @param advanced the "advanced" property 
      */
     public CmsXmlContentProperty(
         String propertyName,
@@ -152,7 +148,8 @@ public class CmsXmlContentProperty implements Cloneable, Serializable {
         String default1,
         String niceName,
         String description,
-        String error) {
+        String error,
+        String advanced) {
 
         super();
         m_propertyName = propertyName;
@@ -165,6 +162,15 @@ public class CmsXmlContentProperty implements Cloneable, Serializable {
         m_niceName = niceName;
         m_description = description;
         m_error = error;
+        m_advanced = advanced;
+    }
+
+    /**
+     * Serialization constructor.<p>
+     */
+    protected CmsXmlContentProperty() {
+
+        // empty
     }
 
     /**
@@ -184,7 +190,18 @@ public class CmsXmlContentProperty implements Cloneable, Serializable {
             m_default,
             m_niceName,
             m_description,
-            m_error);
+            m_error,
+            m_advanced);
+    }
+
+    /**
+     * Returns the value of the "advanced" property.<p>
+     *
+     * @return the "advanced" property 
+     */
+    public String getAdvanced() {
+
+        return m_advanced;
     }
 
     /**

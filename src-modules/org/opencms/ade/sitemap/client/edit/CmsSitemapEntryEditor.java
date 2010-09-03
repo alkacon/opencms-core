@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/edit/Attic/CmsSitemapEntryEditor.java,v $
- * Date   : $Date: 2010/08/25 15:24:41 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/09/03 13:27:35 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import java.util.Map;
  * 
  *  @author Georg Westenberger
  *  
- *  @version $Revision: 1.9 $
+ *  @version $Revision: 1.10 $
  *  
  *  @since 8.0.0
  */
@@ -144,7 +144,7 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
 
         CmsForm form = getForm();
 
-        form.addLabel(m_handler.getDescriptionText());
+        form.addLabel(m_handler.getDescriptionText(), false);
 
         if (m_handler.hasEditableName()) {
             // the root entry name can't be edited 
@@ -166,7 +166,6 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
         CmsBasicFormField templateInheritField = createTemplateInheritField();
         form.addField(templateInheritField, "" + inheritTemplate);
 
-        form.addSeparator();
         Map<String, I_CmsFormField> formFields = CmsBasicFormField.createFields(m_propertyConfig.values());
         for (I_CmsFormField field : formFields.values()) {
             String currentValue = properties.get(field.getId());
@@ -276,7 +275,7 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
         String description = message(Messages.GUI_TEMPLATE_PROPERTY_DESC_0);
         String label = message(Messages.GUI_TEMPLATE_PROPERTY_TITLE_0);
         CmsTemplateSelectBox select = createTemplateSelector(m_controller.getData().getTemplates());
-        return new CmsBasicFormField(FIELD_TEMPLATE, description, label, null, select);
+        return new CmsBasicFormField(FIELD_TEMPLATE, description, label, null, select, false);
     }
 
     /** 
@@ -294,7 +293,8 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
             description,
             label,
             null,
-            checkbox);
+            checkbox,
+            false);
         return result;
     }
 
@@ -330,7 +330,7 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
         String description = message(Messages.GUI_TITLE_PROPERTY_DESC_0);
         String label = message(Messages.GUI_TITLE_PROPERTY_0);
 
-        CmsBasicFormField result = new CmsBasicFormField(FIELD_TITLE, description, label, null, new CmsTextBox());
+        CmsBasicFormField result = new CmsBasicFormField(FIELD_TITLE, description, label, null, new CmsTextBox(), false);
         String title = m_handler.getTitle();
         if (title == null) {
             title = "";
@@ -351,7 +351,7 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
         String label = message(Messages.GUI_URLNAME_PROPERTY_0);
         final CmsTextBox textbox = new CmsTextBox();
 
-        CmsBasicFormField result = new CmsBasicFormField(FIELD_URLNAME, description, label, null, textbox);
+        CmsBasicFormField result = new CmsBasicFormField(FIELD_URLNAME, description, label, null, textbox, false);
         String urlName = m_handler.getName();
         if (urlName == null) {
             urlName = "";

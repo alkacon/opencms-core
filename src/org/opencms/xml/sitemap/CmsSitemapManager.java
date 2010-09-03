@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2010/07/23 11:38:25 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2010/09/03 13:27:35 $
+ * Version: $Revision: 1.51 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,6 +53,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.xml.CmsXmlContentDefinition;
+import org.opencms.xml.containerpage.CmsADEDefaultConfiguration;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.util.ArrayList;
@@ -74,7 +75,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.50 $
+ * @version $Revision: 1.51 $
  * 
  * @since 7.9.2
  */
@@ -471,15 +472,30 @@ public class CmsSitemapManager {
      * 
      * @param cms the current cms context
      * @param resource the resource
+     * @param includeNonSchemaProperties if true, the properties defined not in the schema but in a configuration file will also be added to the result 
      * 
      * @return the property configuration
      * 
      * @throws CmsException if something goes wrong
      */
-    public Map<String, CmsXmlContentProperty> getElementPropertyConfiguration(CmsObject cms, CmsResource resource)
-    throws CmsException {
+    public Map<String, CmsXmlContentProperty> getElementPropertyConfiguration(
+        CmsObject cms,
+        CmsResource resource,
+        boolean includeNonSchemaProperties) throws CmsException {
 
-        return CmsXmlContentDefinition.getContentHandlerForResource(cms, resource).getProperties();
+        Map<String, CmsXmlContentProperty> result = new HashMap<String, CmsXmlContentProperty>();
+        Map<String, CmsXmlContentProperty> propertiesFromSchema = CmsXmlContentDefinition.getContentHandlerForResource(
+            cms,
+            resource).getProperties();
+        result.putAll(propertiesFromSchema);
+        if (includeNonSchemaProperties) {
+            CmsADEDefaultConfiguration conf = new CmsADEDefaultConfiguration();
+            List<CmsXmlContentProperty> propertiesFromConfigFile = conf.getProperties(cms, cms.getSitePath(resource));
+            for (CmsXmlContentProperty prop : propertiesFromConfigFile) {
+                result.put(prop.getPropertyName(), prop);
+            }
+        }
+        return result;
     }
 
     /**

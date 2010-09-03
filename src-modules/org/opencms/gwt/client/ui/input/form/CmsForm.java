@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/form/Attic/CmsForm.java,v $
- * Date   : $Date: 2010/08/24 15:15:14 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/09/03 13:27:35 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,8 +31,10 @@
 
 package org.opencms.gwt.client.ui.input.form;
 
+import org.opencms.gwt.client.ui.CmsTabbedPanel;
 import org.opencms.gwt.client.ui.css.I_CmsInputCss;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
+import org.opencms.gwt.client.ui.input.CmsTextBox;
 import org.opencms.gwt.client.ui.input.I_CmsFormField;
 import org.opencms.gwt.client.ui.input.I_CmsFormWidget;
 import org.opencms.gwt.client.ui.input.I_CmsHasBlur;
@@ -50,16 +52,20 @@ import java.util.Map;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.HasKeyPressHandlers;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -70,7 +76,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 8.0.0
  * 
@@ -92,12 +98,16 @@ public class CmsForm extends Composite {
     /** A flag which indicates whether the user has pressed enter in a widget. */
     protected boolean m_pressedEnter;
 
+    /** The tab for advanced form fields. */
+    private FlowPanel m_advancedTab = new FlowPanel();
+
+    /** The tab for basic form fields. */
+    private FlowPanel m_basicTab = new FlowPanel();
     /** The initial values of the form fields. */
     private Map<String, String> m_initialValues = new HashMap<String, String>();
 
     /** The main panel for this widget. */
-    private FlowPanel m_panel = new FlowPanel();
-
+    private CmsTabbedPanel<Widget> m_panel = new CmsTabbedPanel<Widget>();
     /** 
     private boolean m_isSubmittable;
 
@@ -112,7 +122,28 @@ public class CmsForm extends Composite {
 
         initWidget(m_panel);
         m_panel.addStyleName(CSS.form());
+        m_panel.setHeight("500px");
+        m_panel.add(m_basicTab, "Basic");
+        m_basicTab.getElement().getStyle().setPaddingLeft(5, Unit.PX);
+        m_panel.add(m_advancedTab, "Advanced");
+        m_advancedTab.getElement().getStyle().setPaddingLeft(5, Unit.PX);
+        m_panel.addSelectionHandler(new SelectionHandler<Integer>() {
 
+            /**
+             * Updates textbox layout when the tab is changed.<p>
+             *  
+             * @param event the tab selection event 
+             */
+            public void onSelection(SelectionEvent<Integer> event) {
+
+                for (I_CmsFormField field : m_fields.values()) {
+                    I_CmsFormWidget w = field.getWidget();
+                    if (w instanceof CmsTextBox) {
+                        ((CmsTextBox)w).updateLayout();
+                    }
+                }
+            }
+        });
     }
 
     /**
@@ -183,7 +214,7 @@ public class CmsForm extends Composite {
         }
 
         m_fields.put(formField.getId(), formField);
-        addRow(labelText, description, (Widget)widget);
+        addRow(labelText, description, (Widget)widget, formField.isAdvanced());
     }
 
     /**
@@ -204,13 +235,15 @@ public class CmsForm extends Composite {
      * Adds a text label.<p>
      * 
      * @param labelText the text for the label
+     * @param advanced if true, add the label to the advanced tab, else to the basic tab 
+     * 
      * @return a label with the given text
      */
-    public Label addLabel(String labelText) {
+    public Label addLabel(String labelText, boolean advanced) {
 
         Label label = new Label(labelText);
         label.setStyleName(CSS.formDescriptionLabel());
-        m_panel.add(label);
+        getPanel(advanced).add(label);
         return label;
     }
 
@@ -230,27 +263,30 @@ public class CmsForm extends Composite {
      * @param labelText the label text for the form field
      * @param description the description of the form field 
      * @param widget the widget for the form field 
+     * @param advanced if true, add the row to the advanced tab, else the basic tab 
      *  
      * @return the newly added form row 
      */
-    public CmsFormRow addRow(String labelText, String description, Widget widget) {
+    public CmsFormRow addRow(String labelText, String description, Widget widget, boolean advanced) {
 
         CmsFormRow row = new CmsFormRow();
         Label label = row.getLabel();
         label.setText(labelText);
         label.setTitle(description);
         row.getWidgetContainer().add(widget);
-        m_panel.add(row);
+        getPanel(advanced).add(row);
         return row;
     }
 
     /**
      * Adds a separator below the last added form field.<p>
      * 
+     * @param advanced if true, adds the separator to the advanced tab, else to the basic tab 
+     * 
      */
-    public void addSeparator() {
+    public void addSeparator(boolean advanced) {
 
-        m_panel.add(new CmsSeparator());
+        getPanel(advanced).add(new CmsSeparator());
     }
 
     /**
@@ -408,6 +444,18 @@ public class CmsForm extends Composite {
 
         CmsValidationController validationController = new CmsValidationController(field, createValidationHandler());
         validationController.startValidation();
+    }
+
+    /**
+     * Returns either the basic or advanced tab based on a boolean value.<p>
+     *  
+     * @param advanced if true, the advanced tab will be returned, else the basic tab
+     *  
+     * @return the basic or advanced tab 
+     */
+    protected Panel getPanel(boolean advanced) {
+
+        return advanced ? m_advancedTab : m_basicTab;
     }
 
     /**

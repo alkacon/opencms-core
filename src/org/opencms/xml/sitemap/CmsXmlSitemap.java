@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsXmlSitemap.java,v $
- * Date   : $Date: 2010/08/25 14:40:14 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2010/09/03 13:27:35 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,6 +60,7 @@ import org.opencms.xml.CmsXmlGenericWrapper;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentMacroVisitor;
+import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.content.CmsXmlContentPropertyHelper;
 import org.opencms.xml.page.CmsXmlPage;
 import org.opencms.xml.types.CmsXmlNestedContentDefinition;
@@ -93,7 +94,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.36 $ 
+ * @version $Revision: 1.37 $ 
  * 
  * @since 7.5.2
  * 
@@ -362,6 +363,7 @@ public class CmsXmlSitemap extends CmsXmlContent {
      * 
      * @param cms the current cms context
      * @param changes the changes to apply
+     * @param req the current request
      * 
      * @throws CmsException if something goes wrong
      */
@@ -585,7 +587,16 @@ public class CmsXmlSitemap extends CmsXmlContent {
 
         // the properties
         if (change.getProperties() != null) {
-            CmsXmlContentPropertyHelper.saveProperties(cms, entryElement, change.getProperties(), getFile());
+            Map<String, CmsXmlContentProperty> propertiesConf = OpenCms.getSitemapManager().getElementPropertyConfiguration(
+                cms,
+                m_file,
+                true);
+            CmsXmlContentPropertyHelper.saveProperties(
+                cms,
+                entryElement,
+                change.getProperties(),
+                getFile(),
+                propertiesConf);
         }
 
         return cms.getRequestContext().addSiteRoot(change.getSitePath());
@@ -661,10 +672,8 @@ public class CmsXmlSitemap extends CmsXmlContent {
                 // create the sitemap
                 m_sitemaps.put(locale, new CmsSitemapBean(locale, entries));
             } catch (NullPointerException e) {
-                LOG.error(
-                    org.opencms.xml.content.Messages.get().getBundle().key(
-                        org.opencms.xml.content.Messages.LOG_XMLCONTENT_INIT_BOOKMARKS_0),
-                    e);
+                LOG.error(org.opencms.xml.content.Messages.get().getBundle().key(
+                    org.opencms.xml.content.Messages.LOG_XMLCONTENT_INIT_BOOKMARKS_0), e);
             }
         }
     }
@@ -737,6 +746,7 @@ public class CmsXmlSitemap extends CmsXmlContent {
      * 
      * @param cms the CMS context
      * @param change the change to apply
+     * @param req the current request
      * 
      * @return the site path of the entries that need to be re-indexed
      * 
@@ -791,7 +801,12 @@ public class CmsXmlSitemap extends CmsXmlContent {
         }
         fillResource(cms, vfsFile, resource);
         // the properties
-        CmsXmlContentPropertyHelper.saveProperties(cms, entryElement, change.getProperties(), getFile());
+
+        Map<String, CmsXmlContentProperty> propertiesConf = OpenCms.getADEManager().getElementPropertyConfiguration(
+            cms,
+            getFile());
+
+        CmsXmlContentPropertyHelper.saveProperties(cms, entryElement, change.getProperties(), getFile(), propertiesConf);
 
         return cms.getRequestContext().addSiteRoot(change.getSitePath());
     }

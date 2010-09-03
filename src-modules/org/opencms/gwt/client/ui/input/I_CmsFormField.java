@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/I_CmsFormField.java,v $
- * Date   : $Date: 2010/06/14 15:07:18 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/09/03 13:27:35 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import org.opencms.gwt.client.validation.I_CmsValidator;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
  * 
@@ -112,6 +112,13 @@ public interface I_CmsFormField {
      * @return a widget
      */
     I_CmsFormWidget getWidget();
+
+    /**
+     * Returns true is this an "advanced" form field.<p>
+     * 
+     * @return true if this is an advanced form field 
+     */
+    boolean isAdvanced();
 
     /**
      * Sets the id of this form field.<p>

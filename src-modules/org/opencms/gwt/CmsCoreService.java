@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsCoreService.java,v $
- * Date   : $Date: 2010/08/26 13:34:27 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2010/09/03 13:27:35 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,9 +37,9 @@ import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData;
-import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.CmsValidationQuery;
 import org.opencms.gwt.shared.CmsValidationResult;
+import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.rpc.I_CmsCoreService;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
@@ -74,7 +74,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 8.0.0
  * 

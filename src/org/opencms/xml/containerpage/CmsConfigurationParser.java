@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsConfigurationParser.java,v $
- * Date   : $Date: 2010/01/27 12:25:30 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/09/03 13:27:35 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,13 +48,13 @@ import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.I_CmsXmlDocument;
 import org.opencms.xml.content.CmsXmlContentFactory;
+import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -69,7 +69,7 @@ import java.util.Set;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 7.6 
  */
@@ -96,11 +96,17 @@ public class CmsConfigurationParser {
     /** The tag name of the source file in the type configuration. */
     public static final String N_SOURCE = "Source";
 
+    /** The tag name for elements containing field configurations. */
+    private static final String N_ADE_FIELD = "ADEField";
+
     /** Configuration data, read from xml content. */
     private Map<String, CmsConfigurationItem> m_configuration;
 
     /** New elements. */
     private List<CmsResource> m_newElements;
+
+    /** The list of properties read from the configuration file. */
+    private List<CmsXmlContentProperty> m_props = new ArrayList<CmsXmlContentProperty>();
 
     /**
      * Constructs a new instance.<p>
@@ -126,6 +132,36 @@ public class CmsConfigurationParser {
         CmsFile configFile = cms.readFile(config);
         I_CmsXmlDocument content = CmsXmlContentFactory.unmarshal(cms, configFile);
         parseConfiguration(cms, content);
+    }
+
+    /**
+     * Returns the configuration as an unmodifiable map.<p>
+     * 
+     * @return the configuration as an unmodifiable map
+     */
+    public Map<String, CmsConfigurationItem> getConfiguration() {
+
+        return Collections.unmodifiableMap(m_configuration);
+    }
+
+    /**
+     * Returns an unmodifiable list of properties defined in the configuration file.<p>
+     *  
+     * @return the list of properties defined in the configuration file 
+     */
+    public List<CmsXmlContentProperty> getDefinedProperties() {
+
+        return Collections.unmodifiableList(m_props);
+    }
+
+    /**
+     * Returns the new elements.<p>
+     * 
+     * @return the new elements
+     */
+    public List<CmsResource> getNewElements() {
+
+        return Collections.unmodifiableList(m_newElements);
     }
 
     /**
@@ -177,40 +213,6 @@ public class CmsConfigurationParser {
     }
 
     /**
-     * Helper method for retrieving the OpenCms type name for a given type id.<p>
-     * 
-     * @param typeId the id of the type
-     * 
-     * @return the name of the type
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    protected String getTypeName(int typeId) throws CmsException {
-
-        return OpenCms.getResourceManager().getResourceType(typeId).getTypeName();
-    }
-
-    /**
-     * Returns the configuration as an unmodifiable map.<p>
-     * 
-     * @return the configuration as an unmodifiable map
-     */
-    public Map<String, CmsConfigurationItem> getConfiguration() {
-
-        return Collections.unmodifiableMap(m_configuration);
-    }
-
-    /**
-     * Returns the new elements.<p>
-     * 
-     * @return the new elements
-     */
-    public List<CmsResource> getNewElements() {
-
-        return Collections.unmodifiableList(m_newElements);
-    }
-
-    /**
      * Parses a type configuration contained in an XML content.<p>
      * 
      * This method uses the first locale from the following list which has a corresponding
@@ -228,6 +230,31 @@ public class CmsConfigurationParser {
      */
     public void parseConfiguration(CmsObject cms, I_CmsXmlDocument content) throws CmsException {
 
+        Locale locale = getLocale(cms, content);
+        List<I_CmsXmlContentValue> typeValues = content.getValues(N_ADE_TYPE, locale);
+        for (I_CmsXmlContentValue xmlType : typeValues) {
+            parseType(cms, xmlType, locale);
+        }
+
+        List<I_CmsXmlContentValue> fieldValues = content.getValues(N_ADE_FIELD, locale);
+        for (I_CmsXmlContentValue xmlField : fieldValues) {
+            parseField(cms, xmlField, locale);
+        }
+
+    }
+
+    /**
+     * Helper method for finding the locale for accessing the XML content.<p>
+     * 
+     * @param cms the CMS context 
+     * @param content the XML content 
+     * 
+     * @return the locale
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    protected Locale getLocale(CmsObject cms, I_CmsXmlDocument content) throws CmsException {
+
         Locale currentLocale = cms.getRequestContext().getLocale();
         Locale defaultLocale = CmsLocaleManager.getDefaultLocale();
         Locale locale = null;
@@ -244,33 +271,105 @@ public class CmsConfigurationParser {
             }
             locale = locales.get(0);
         }
+        return locale;
+    }
 
-        Iterator<I_CmsXmlContentValue> itTypes = content.getValues(N_ADE_TYPE, locale).iterator();
-        while (itTypes.hasNext()) {
-            I_CmsXmlContentValue xmlType = itTypes.next();
-            String typePath = xmlType.getPath();
-            String source = content.getValue(CmsXmlUtils.concatXpath(typePath, N_SOURCE), locale).getStringValue(cms);
-            String folder = content.getValue(
-                CmsXmlUtils.concatXpath(typePath, CmsXmlUtils.concatXpath(N_DESTINATION, N_FOLDER)),
-                locale).getStringValue(cms);
-            String pattern = content.getValue(
-                CmsXmlUtils.concatXpath(typePath, CmsXmlUtils.concatXpath(N_DESTINATION, N_PATTERN)),
-                locale).getStringValue(cms);
-            CmsConfigurationItem configItem = new CmsConfigurationItem(source, folder, pattern);
-            CmsResource resource = cms.readResource(source);
-            String type = getTypeName(resource.getTypeId());
-            m_configuration.put(type, configItem);
+    /**
+     * Returns a child content value of a given content value as a string.<p>
+     *  
+     * @param cms the CMS context 
+     * @param value the parent content value
+     * @param locale the locale 
+     * @param subPath the name of the child content value, relative to the parent's path 
+     * 
+     * @return the child content value as a string 
+     */
+    protected String getSubValueAsString(CmsObject cms, I_CmsXmlContentValue value, Locale locale, String subPath) {
 
-            // checking access entries for the explorer-type
-            CmsResource folderRes = cms.readResource(folder);
-            CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
-                OpenCms.getResourceManager().getResourceType(resource).getTypeName());
-            boolean editable = settings.isEditable(cms, folderRes);
-            //TODO: fix wrong permission test for explorer-types
-            boolean controlPermission = settings.getAccess().getPermissions(cms, folderRes).requiresControlPermission();
-            if (editable && controlPermission) {
-                m_newElements.add(resource);
-            }
+        I_CmsXmlContentValue subValue = value.getDocument().getValue(
+            CmsXmlUtils.concatXpath(value.getPath(), subPath),
+            locale);
+        return subValue != null ? subValue.getStringValue(cms) : null;
+    }
+
+    /**
+     * Helper method for retrieving the OpenCms type name for a given type id.<p>
+     * 
+     * @param typeId the id of the type
+     * 
+     * @return the name of the type
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    protected String getTypeName(int typeId) throws CmsException {
+
+        return OpenCms.getResourceManager().getResourceType(typeId).getTypeName();
+    }
+
+    /**
+     * Parses a single field definition from a content value.<p>
+     * 
+     * @param cms the CMS context 
+     * @param xmlField the content value to parse the field from 
+     * @param locale the locale to use 
+     */
+    private void parseField(CmsObject cms, I_CmsXmlContentValue xmlField, Locale locale) {
+
+        String name = getSubValueAsString(cms, xmlField, locale, "Name");
+        String type = getSubValueAsString(cms, xmlField, locale, "Type");
+        String widget = getSubValueAsString(cms, xmlField, locale, "Widget");
+        String widgetConfig = getSubValueAsString(cms, xmlField, locale, "WidgetConfig");
+        String ruleRegex = getSubValueAsString(cms, xmlField, locale, "RuleRegex");
+        String ruleType = getSubValueAsString(cms, xmlField, locale, "RuleType");
+        String default1 = getSubValueAsString(cms, xmlField, locale, "Default");
+        String error = getSubValueAsString(cms, xmlField, locale, "Error");
+        String niceName = getSubValueAsString(cms, xmlField, locale, "NiceName");
+        String description = getSubValueAsString(cms, xmlField, locale, "Description");
+        String advanced = getSubValueAsString(cms, xmlField, locale, "Advanced");
+        CmsXmlContentProperty prop = new CmsXmlContentProperty(
+            name,
+            type,
+            widget,
+            widgetConfig,
+            ruleRegex,
+            ruleType,
+            default1,
+            niceName,
+            description,
+            error,
+            advanced);
+        m_props.add(prop);
+    }
+
+    /**
+     * Internal method for parsing the element types in the configuration file.<p>
+     * 
+     * @param cms the CMS context 
+     * @param xmlType a content value representing an element type 
+     * @param locale the locale to use 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    private void parseType(CmsObject cms, I_CmsXmlContentValue xmlType, Locale locale) throws CmsException {
+
+        String source = getSubValueAsString(cms, xmlType, locale, N_SOURCE);
+        String folder = getSubValueAsString(cms, xmlType, locale, CmsXmlUtils.concatXpath(N_DESTINATION, N_FOLDER));
+        String pattern = getSubValueAsString(cms, xmlType, locale, CmsXmlUtils.concatXpath(N_DESTINATION, N_PATTERN));
+
+        CmsConfigurationItem configItem = new CmsConfigurationItem(source, folder, pattern);
+        CmsResource resource = cms.readResource(source);
+        String type = getTypeName(resource.getTypeId());
+        m_configuration.put(type, configItem);
+
+        // checking access entries for the explorer-type
+        CmsResource folderRes = cms.readResource(folder);
+        CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
+            OpenCms.getResourceManager().getResourceType(resource).getTypeName());
+        boolean editable = settings.isEditable(cms, folderRes);
+        //TODO: fix wrong permission test for explorer-types
+        boolean controlPermission = settings.getAccess().getPermissions(cms, folderRes).requiresControlPermission();
+        if (editable && controlPermission) {
+            m_newElements.add(resource);
         }
     }
 }
