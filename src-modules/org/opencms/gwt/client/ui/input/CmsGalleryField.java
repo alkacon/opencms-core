@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsGalleryField.java,v $
- * Date   : $Date: 2010/08/31 07:30:24 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsGalleryField.java,v $
+ * Date   : $Date: 2010/09/03 14:14:22 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -29,13 +29,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.galleries.client.ui;
+package org.opencms.gwt.client.ui.input;
 
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.I_CmsHasInit;
-import org.opencms.gwt.client.ui.input.CmsFramePopup;
-import org.opencms.gwt.client.ui.input.CmsTextBox;
-import org.opencms.gwt.client.ui.input.I_CmsFormWidget;
 import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
@@ -186,8 +183,9 @@ public class CmsGalleryField extends Composite implements I_CmsFormWidget, I_Cms
      * Internal method which opens the gallery dialog.<p>
      */
     protected void openGalleryDialog() {
-        
-        String title = Messages.get().key(Messages.GUI_GALLERY_SELECT_DIALOG_TITLE_0);
+
+        String title = org.opencms.gwt.client.Messages.get().key(
+            org.opencms.gwt.client.Messages.GUI_GALLERY_SELECT_DIALOG_TITLE_0);
         CmsFramePopup popup = new CmsFramePopup(title, buildGalleryUrl());
         popup.setId(m_id);
         popup.getFrame().setSize("666px", "490px");
