@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsSelectOnChangeReloadWidget.java,v $
- * Date   : $Date: 2010/09/03 13:10:38 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/09/06 06:47:08 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import java.util.List;
  *
  * @author Mario Jaeger
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 7.5.3
  */
@@ -110,7 +110,6 @@ public class CmsSelectOnChangeReloadWidget extends CmsSelectWidget {
         result.append("\" id=\"");
         result.append(id);
         result.append("\"");
-        //result.append(" onChange=\"document.getElementsByName('action')[0].value='index';this.form.submit()\"");
         result.append(" onChange=\"document.getElementsByName('"
             + CmsDialog.PARAM_ACTION
             + "')[0].value='"
