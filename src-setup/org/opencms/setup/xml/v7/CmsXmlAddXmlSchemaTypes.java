@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/v7/CmsXmlAddXmlSchemaTypes.java,v $
- * Date   : $Date: 2010/02/24 12:44:19 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/09/06 13:41:01 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,8 +36,10 @@ import org.opencms.configuration.CmsVfsConfiguration;
 import org.opencms.configuration.I_CmsXmlConfiguration;
 import org.opencms.setup.xml.A_CmsXmlVfs;
 import org.opencms.setup.xml.CmsSetupXmlHelper;
+import org.opencms.widgets.CmsInputWidget;
 import org.opencms.widgets.CmsVfsFileWidget;
 import org.opencms.widgets.CmsVfsImageWidget;
+import org.opencms.xml.types.CmsXmlPlainTextStringValue;
 import org.opencms.xml.types.CmsXmlVarLinkValue;
 import org.opencms.xml.types.CmsXmlVfsImageValue;
 
@@ -55,7 +57,7 @@ import org.dom4j.Node;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 7.0.3
  */
@@ -156,6 +158,7 @@ public class CmsXmlAddXmlSchemaTypes extends A_CmsXmlVfs {
             m_schemaData = new HashMap<String, String>();
             m_schemaData.put(CmsXmlVarLinkValue.class.getName(), CmsVfsFileWidget.class.getName());
             m_schemaData.put(CmsXmlVfsImageValue.class.getName(), CmsVfsImageWidget.class.getName());
+            m_schemaData.put(CmsXmlPlainTextStringValue.class.getName(), CmsInputWidget.class.getName());
         }
         return m_schemaData;
     }
