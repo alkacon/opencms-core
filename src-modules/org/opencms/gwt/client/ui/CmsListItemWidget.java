@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItemWidget.java,v $
- * Date   : $Date: 2010/09/01 10:24:56 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2010/09/06 06:40:23 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -76,7 +76,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Tobias Herrmann
  * @author Michael Moossen
  * 
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  * 
  * @since 8.0.0
  */
@@ -530,6 +530,7 @@ implements HasMouseOutHandlers, HasClickHandlers, HasMouseOverHandlers, I_CmsTru
 
         m_title.setVisible(false);
         final TextBox box = new TextBox();
+        box.setText(m_title.getText());
         box.getElement().setAttribute("size", "45");
         Style style = box.getElement().getStyle();
         style.setBackgroundColor("transparent");
