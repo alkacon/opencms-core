@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/A_CmsXmlConfiguration.java,v $
- * Date   : $Date: 2009/09/08 12:54:45 $
- * Version: $Revision: 1.21.2.1 $
+ * Date   : $Date: 2010/09/06 13:40:14 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.21.2.1 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.0.0
  */
@@ -53,6 +53,14 @@ public abstract class A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
 
     /** The name of the XML file used for this configuration. */
     private String m_xmlFileName;
+
+    /**
+     * Constructor.<p>
+     */
+    public A_CmsXmlConfiguration() {
+
+        initMembers();
+    }
 
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#addConfigurationParameter(java.lang.String, java.lang.String)
@@ -111,6 +119,11 @@ public abstract class A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_INIT_CONFIGURATION_1, this));
         }
     }
+
+    /**
+     * Initializes member variables.<p>
+     */
+    protected abstract void initMembers();
 
     /**
      * Sets the file name of this XML configuration.<p>

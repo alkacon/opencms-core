@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2010/07/23 08:29:33 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/09/06 13:40:14 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 6.0.0
  */
@@ -597,25 +597,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
     /** The configured validation handler. */
     private String m_validationHandler;
-
-    /**
-     * Public constructor, will be called by configuration manager.<p> 
-     */
-    public CmsSystemConfiguration() {
-
-        setXmlFileName(DEFAULT_XML_FILE_NAME);
-        m_historyEnabled = true;
-        m_historyVersions = 10;
-        m_historyVersionsAfterDeletion = -1; // use m_historyVersions instead
-        m_resourceInitHandlers = new ArrayList<I_CmsResourceInit>();
-        m_requestHandlers = new ArrayList<I_CmsRequestHandler>();
-        m_configuredJobs = new ArrayList<CmsScheduledJobInfo>();
-        m_runtimeProperties = new HashMap<String, String>();
-        m_eventManager = new CmsEventManager();
-        if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SYSTEM_CONFIG_INIT_0));
-        }
-    }
 
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#addConfigurationParameter(java.lang.String, java.lang.String)
@@ -1643,9 +1624,11 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             authorizationHandler.setParameters(m_runtimeProperties);
             return authorizationHandler;
         } catch (Throwable t) {
-            LOG.error(Messages.get().getBundle().key(
-                Messages.INIT_AUTHORIZATION_HANDLER_CLASS_INVALID_1,
-                m_authorizationHandler), t);
+            LOG.error(
+                Messages.get().getBundle().key(
+                    Messages.INIT_AUTHORIZATION_HANDLER_CLASS_INVALID_1,
+                    m_authorizationHandler),
+                t);
             return new CmsDefaultAuthorizationHandler();
         }
     }
@@ -1931,9 +1914,11 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             }
             return sessionCacheProvider;
         } catch (Throwable t) {
-            LOG.error(Messages.get().getBundle().key(
-                Messages.LOG_INIT_SESSION_STORAGEPROVIDER_FAILURE_1,
-                m_sessionStorageProvider), t);
+            LOG.error(
+                Messages.get().getBundle().key(
+                    Messages.LOG_INIT_SESSION_STORAGEPROVIDER_FAILURE_1,
+                    m_sessionStorageProvider),
+                t);
             return new CmsDefaultSessionStorageProvider();
         }
     }
@@ -2001,9 +1986,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             }
             return validationHandler;
         } catch (Throwable t) {
-            LOG.error(Messages.get().getBundle().key(
-                Messages.INIT_VALIDATION_HANDLER_CLASS_INVALID_1,
-                m_validationHandler), t);
+            LOG.error(
+                Messages.get().getBundle().key(Messages.INIT_VALIDATION_HANDLER_CLASS_INVALID_1, m_validationHandler),
+                t);
             return new CmsDefaultValidationHandler();
         }
     }
@@ -2474,5 +2459,25 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     public void setValidationHandler(String validationHandlerClass) {
 
         m_validationHandler = validationHandlerClass;
+    }
+
+    /**
+     * @see org.opencms.configuration.A_CmsXmlConfiguration#initMembers()
+     */
+    @Override
+    protected void initMembers() {
+
+        setXmlFileName(DEFAULT_XML_FILE_NAME);
+        m_historyEnabled = true;
+        m_historyVersions = 10;
+        m_historyVersionsAfterDeletion = -1; // use m_historyVersions instead
+        m_resourceInitHandlers = new ArrayList<I_CmsResourceInit>();
+        m_requestHandlers = new ArrayList<I_CmsRequestHandler>();
+        m_configuredJobs = new ArrayList<CmsScheduledJobInfo>();
+        m_runtimeProperties = new HashMap<String, String>();
+        m_eventManager = new CmsEventManager();
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SYSTEM_CONFIG_INIT_0));
+        }
     }
 }

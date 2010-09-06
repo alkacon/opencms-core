@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsVfsConfiguration.java,v $
- * Date   : $Date: 2010/02/18 13:50:46 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/09/06 13:40:14 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -67,7 +67,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 6.0.0
  */
@@ -210,20 +210,6 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
 
     /** The configured resource manager. */
     private CmsResourceManager m_resourceManager;
-
-    /**
-     * Public constructor, will be called by configuration manager.<p> 
-     */
-    public CmsVfsConfiguration() {
-
-        setXmlFileName(DEFAULT_XML_FILE_NAME);
-        m_fileTranslations = new ArrayList();
-        m_folderTranslations = new ArrayList();
-        m_defaultFiles = new ArrayList();
-        if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_VFS_CONFIG_INIT_0));
-        }
-    }
 
     /**
      * Adds the resource type rules to the given digester.<p>
@@ -895,5 +881,20 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_VFS_XML_CONTENT_FINISHED_0));
         }
         m_xmlContentTypeManager = manager;
+    }
+
+    /**
+     * @see org.opencms.configuration.A_CmsXmlConfiguration#initMembers()
+     */
+    @Override
+    protected void initMembers() {
+
+        setXmlFileName(DEFAULT_XML_FILE_NAME);
+        m_fileTranslations = new ArrayList();
+        m_folderTranslations = new ArrayList();
+        m_defaultFiles = new ArrayList();
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_VFS_CONFIG_INIT_0));
+        }
     }
 }

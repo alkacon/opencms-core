@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsImportExportConfiguration.java,v $
- * Date   : $Date: 2009/07/23 13:56:21 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2010/09/06 13:40:14 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.39 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.0.0
  */
@@ -302,17 +302,6 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration {
 
     /** The configured static export manager. */
     private CmsStaticExportManager m_staticExportManager;
-
-    /**
-     * Public constructor, will be called by configuration manager.<p> 
-     */
-    public CmsImportExportConfiguration() {
-
-        setXmlFileName(DEFAULT_XML_FILE_NAME);
-        if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_IMPORT_CONFIG_INIT_0));
-        }
-    }
 
     /**
      * @see org.opencms.configuration.I_CmsXmlConfiguration#addXmlDigesterRules(org.apache.commons.digester.Digester)
@@ -1180,6 +1169,18 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration {
     public void setUserExportSettings(CmsUserExportSettings userExportSettings) {
 
         m_importExportManager.setUserExportSettings(userExportSettings);
+    }
+
+    /**
+     * @see org.opencms.configuration.A_CmsXmlConfiguration#initMembers()
+     */
+    @Override
+    protected void initMembers() {
+
+        setXmlFileName(DEFAULT_XML_FILE_NAME);
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_IMPORT_CONFIG_INIT_0));
+        }
     }
 
 }
