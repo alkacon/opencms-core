@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/CmsUpdateBean.java,v $
- * Date   : $Date: 2010/02/24 12:44:23 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/09/06 13:42:11 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,6 +58,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -75,7 +76,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -152,6 +153,29 @@ public class CmsUpdateBean extends CmsSetupBean {
         super();
         m_modulesFolder = FOLDER_UPDATE + CmsSystemInfo.FOLDER_MODULES;
         m_logFile = CmsSystemInfo.FOLDER_WEBINF + CmsLog.FOLDER_LOGS + "update.log";
+    }
+
+    /**
+     * Compatibility check for OCEE modules.<p>
+     * 
+     * @param version the opencms version
+     * 
+     * @return <code>false</code> if OCEE is present but not compatible with opencms version
+     */
+    @SuppressWarnings({"unchecked", "boxing", "rawtypes"})
+    public boolean checkOceeVersion(String version) {
+
+        try {
+            Class manager = Class.forName("org.opencms.ocee.base.CmsOceeManager");
+            Method checkVersion = manager.getMethod("checkOceeVersion", String.class);
+            return (Boolean)checkVersion.invoke(manager, version);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     /**
@@ -789,10 +813,12 @@ public class CmsUpdateBean extends CmsSetupBean {
             while (itTypes.hasNext()) {
                 I_CmsResourceType type = itTypes.next();
                 m++;
-                report.print(org.opencms.report.Messages.get().container(
-                    org.opencms.report.Messages.RPT_SUCCESSION_2,
-                    String.valueOf(m),
-                    String.valueOf(n)), I_CmsReport.FORMAT_NOTE);
+                report.print(
+                    org.opencms.report.Messages.get().container(
+                        org.opencms.report.Messages.RPT_SUCCESSION_2,
+                        String.valueOf(m),
+                        String.valueOf(n)),
+                    I_CmsReport.FORMAT_NOTE);
                 report.print(org.opencms.report.Messages.get().container(
                     org.opencms.report.Messages.RPT_ARGUMENT_1,
                     type.getTypeName()));
@@ -816,15 +842,17 @@ public class CmsUpdateBean extends CmsSetupBean {
                             org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
                             I_CmsReport.FORMAT_OK);
                     } catch (Exception e) {
-                        report.println(org.opencms.report.Messages.get().container(
-                            org.opencms.report.Messages.RPT_ERROR_0), I_CmsReport.FORMAT_ERROR);
+                        report.println(
+                            org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_ERROR_0),
+                            I_CmsReport.FORMAT_ERROR);
                         report.addError(e);
                         // log the error
                         e.printStackTrace(System.err);
                     }
                 } else {
-                    report.println(org.opencms.report.Messages.get().container(
-                        org.opencms.report.Messages.RPT_SKIPPED_0), I_CmsReport.FORMAT_WARNING);
+                    report.println(
+                        org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_SKIPPED_0),
+                        I_CmsReport.FORMAT_WARNING);
                 }
             }
         } finally {

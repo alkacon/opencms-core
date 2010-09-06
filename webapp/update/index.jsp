@@ -2,6 +2,12 @@
 --%><jsp:useBean id="Bean" class="org.opencms.setup.CmsUpdateBean" scope="session" /><%--
 --%><jsp:setProperty name="Bean" property="*" /><%
 // next page 
+if (!Bean.checkOceeVersion("7.5.3")){ %>
+<html>    
+	<head><title>OpenCms Upgrade Wizard</title></head>
+	<body><h1>Incompatible version of Alkacon OCEE detected!</h1><p><dl><dt><b>Warning:</b></dt><dd><em>You have installed a version of Alkacon OCEE that is not compatible with OpenCms 7.5.3.<br />Please upgrade Alkacon OCEE to version 2.1.3 or newer before upgrading OpenCms.</em></dd></dl></p><p>The upgrade wizard cannot continue before these problems are solved.</p></body>
+</html>
+<% }else{
 String nextPage = "step_0_dbsettings.jsp";
 
 boolean isInitialized = false;
@@ -121,3 +127,4 @@ OpenCms Update Wizard - License Agreement
 </script>
 <% } %>
 <%= Bean.getHtmlPart("C_HTML_END") %>
+<% } %>
