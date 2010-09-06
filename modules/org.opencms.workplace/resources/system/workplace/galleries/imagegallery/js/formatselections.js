@@ -33,7 +33,7 @@ function setCropActive(isCropped, forceRefreshPreview) {
 			if (initValues.useformats == true && initValues.showformats != true) {
 				// using formats, calculate image for currently selected size
 				changeFormat();
-			} else if (initValues.useformats == false) {
+			} else if (initValues.useformats == null || initValues.useformats == false) {
 				// only enable if not using formats
 				$('#txtWidth').get(0).disabled = false;
 				$('#txtHeight').get(0).disabled = false;
