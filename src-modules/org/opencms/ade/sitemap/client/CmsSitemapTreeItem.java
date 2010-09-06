@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapTreeItem.java,v $
- * Date   : $Date: 2010/09/01 10:15:19 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2010/09/06 06:57:10 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -67,7 +67,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 8.0.0
  * 
@@ -124,10 +124,13 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
                     alert.center();
                     return;
                 }
-                CmsClientSitemapEntry newEntry = new CmsClientSitemapEntry(m_entry);
-                newEntry.setTitle(text);
-                CmsClientSitemapChangeEdit edit = new CmsClientSitemapChangeEdit(m_entry, newEntry);
-                CmsSitemapView.getInstance().getController().addChange(edit, false);
+                String oldTitle = m_entry.getTitle();
+                if (!oldTitle.equals(text)) {
+                    CmsClientSitemapEntry newEntry = new CmsClientSitemapEntry(m_entry);
+                    newEntry.setTitle(text);
+                    CmsClientSitemapChangeEdit edit = new CmsClientSitemapChangeEdit(m_entry, newEntry);
+                    CmsSitemapView.getInstance().getController().addChange(edit, false);
+                }
                 titleLabel.setVisible(true);
             }
         });

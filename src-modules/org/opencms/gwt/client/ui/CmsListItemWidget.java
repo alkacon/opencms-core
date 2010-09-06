@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItemWidget.java,v $
- * Date   : $Date: 2010/09/06 06:40:23 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2010/09/06 06:57:10 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -76,7 +76,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Tobias Herrmann
  * @author Michael Moossen
  * 
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  * 
  * @since 8.0.0
  */
@@ -535,6 +535,7 @@ implements HasMouseOutHandlers, HasClickHandlers, HasMouseOverHandlers, I_CmsTru
         Style style = box.getElement().getStyle();
         style.setBackgroundColor("transparent");
         style.setBorderStyle(BorderStyle.NONE);
+        final String originalTitle = m_title.getText();
         // wrap the boolean flag in an array so we can change it from the event handlers 
         final boolean[] checked = new boolean[] {false};
 
@@ -568,6 +569,13 @@ implements HasMouseOutHandlers, HasClickHandlers, HasMouseOverHandlers, I_CmsTru
                 if ((event.getCharCode() == 10) || (event.getCharCode() == 13)) {
                     onEditTitleTextBox(box);
                     checked[0] = true;
+                }
+
+                if (event.getCharCode() == 27) {
+                    box.setText(originalTitle);
+                    onEditTitleTextBox(box);
+                    checked[0] = true;
+
                 }
             }
         });
