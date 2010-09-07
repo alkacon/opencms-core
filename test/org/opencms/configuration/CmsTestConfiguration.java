@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/configuration/CmsTestConfiguration.java,v $
- * Date   : $Date: 2009/06/04 14:35:30 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2010/09/07 07:11:14 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.0.0
  */
@@ -119,5 +119,17 @@ public class CmsTestConfiguration extends A_CmsXmlConfiguration {
     public String getDtdFilename() {
 
         return CONFIGURATION_DTD_NAME;
+    }
+
+    /**
+     * @see org.opencms.configuration.A_CmsXmlConfiguration#initMembers()
+     */
+    @Override
+    protected void initMembers() {
+
+        setXmlFileName(DEFAULT_XML_FILE_NAME);
+        if (CmsLog.getLog(this).isDebugEnabled()) {
+            CmsLog.getLog(this).debug("Empty constructor called on " + this);
+        }
     }
 }
