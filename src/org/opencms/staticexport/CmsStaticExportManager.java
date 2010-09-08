@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2010/09/03 13:13:59 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/09/08 08:19:31 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -89,7 +89,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -1227,10 +1227,10 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             // check if the resource folder (or a parent folder) has the "exportname" property set
             CmsSitemapEntry sitemapEntry = OpenCms.getSitemapManager().getEntryForUri(cms, vfsName);
             CmsUUID structureId = sitemapEntry.getStructureId();
-            CmsResource ressource = cms.readResource(structureId);
+            CmsResource resource = cms.readResource(structureId);
 
             CmsProperty exportNameProperty = cms.readPropertyObject(
-                ressource,
+                resource,
                 CmsPropertyDefinition.PROPERTY_EXPORTNAME,
                 true);
 
