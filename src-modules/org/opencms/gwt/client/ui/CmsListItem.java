@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItem.java,v $
- * Date   : $Date: 2010/06/24 09:05:26 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2010/09/08 08:34:01 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  *  
  * @since 8.0.0 
  */
@@ -265,9 +265,9 @@ public class CmsListItem extends Composite implements I_CmsListItem {
             // and we put it additionally inside a absolute positioned provisional parent  
             // ON the original parent for the eventual animation when releasing 
             m_provisionalParent = DOM.createElement(getElement().getParentElement().getTagName());
-            m_provisionalParent.setClassName(getElement().getParentElement().getClassName());
+            //           m_provisionalParent.setClassName(getElement().getParentElement().getClassName());
             m_provisionalParent.appendChild(m_helper);
-            m_provisionalParent.getStyle().setWidth(m_helper.getOffsetWidth(), Style.Unit.PX);
+            m_provisionalParent.getStyle().setWidth(getElement().getOffsetWidth(), Style.Unit.PX);
             m_provisionalParent.getStyle().setPosition(Position.ABSOLUTE);
             Element listEl = getParent().getElement();
             m_provisionalParent.getStyle().setTop(listEl.getAbsoluteTop(), Unit.PX);

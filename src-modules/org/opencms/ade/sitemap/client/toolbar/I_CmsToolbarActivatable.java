@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/toolbar/Attic/CmsToolbarAddButton.java,v $
- * Date   : $Date: 2010/06/24 09:05:26 $
- * Version: $Revision: 1.2 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/toolbar/Attic/I_CmsToolbarActivatable.java,v $
+ * Date   : $Date: 2010/09/08 08:34:01 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,33 +31,23 @@
 
 package org.opencms.ade.sitemap.client.toolbar;
 
-import org.opencms.ade.sitemap.client.control.CmsSitemapController;
-import org.opencms.gwt.client.ui.CmsToggleButton;
-import org.opencms.gwt.client.ui.I_CmsButton;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
- * Sitemap toolbar add button.<p>
+ * Interface for activatable toolbar widgets.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  */
-public class CmsToolbarAddButton extends CmsToggleButton {
+public interface I_CmsToolbarActivatable {
 
     /**
-     * Constructor.<p>
+     * Execute on activation.<p>
      * 
-     * @param toolbar the toolbar instance
-     * @param controller the sitemap controller 
+     * @param widget the widget
      */
-    public CmsToolbarAddButton(final CmsSitemapToolbar toolbar, final CmsSitemapController controller) {
-
-        setImageClass(I_CmsButton.ButtonData.ADD.getIconClass());
-        setTitle(I_CmsButton.ButtonData.ADD.getTitle());
-        if (!controller.isEditable()) {
-            disable(controller.getData().getNoEditReason());
-        }
-    }
+    void onActivation(Widget widget);
 }

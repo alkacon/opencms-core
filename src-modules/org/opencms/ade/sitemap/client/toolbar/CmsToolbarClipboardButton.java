@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/toolbar/Attic/CmsToolbarClipboardButton.java,v $
- * Date   : $Date: 2010/08/25 14:40:14 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/09/08 08:34:01 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,12 +52,13 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
-public class CmsToolbarClipboardButton extends CmsMenuButton implements I_CmsToolbarActivable {
+public class CmsToolbarClipboardButton extends CmsMenuButton implements I_CmsToolbarActivatable {
 
+    /** The content panel. */
     protected FlowPanel m_content;
 
     /**
@@ -139,7 +140,7 @@ public class CmsToolbarClipboardButton extends CmsMenuButton implements I_CmsToo
     }
 
     /**
-     * @see org.opencms.ade.sitemap.client.toolbar.I_CmsToolbarActivable#onActivation(com.google.gwt.user.client.ui.Widget)
+     * @see org.opencms.ade.sitemap.client.toolbar.I_CmsToolbarActivatable#onActivation(com.google.gwt.user.client.ui.Widget)
      */
     public void onActivation(Widget widget) {
 

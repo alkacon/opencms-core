@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/toolbar/Attic/CmsToolbarClipboardView.java,v $
- * Date   : $Date: 2010/08/26 13:37:49 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/09/08 08:34:01 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,6 +49,7 @@ import org.opencms.gwt.client.ui.dnd.I_CmsDraggable;
 import org.opencms.gwt.client.ui.dnd.I_CmsDropHandler;
 import org.opencms.gwt.client.ui.dnd.I_CmsDropTarget;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
+import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
 
@@ -64,14 +65,18 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
 public class CmsToolbarClipboardView {
 
+    /**
+     * The deleted item widget.<p>
+     */
     public final class CmsClipboardDeletedItem extends CmsListItem {
 
+        /** The sitemap entry. */
         private final CmsClientSitemapEntry m_entry;
 
         /**
@@ -105,8 +110,8 @@ public class CmsToolbarClipboardView {
 
             Element dragHelper = super.getDragHelper(target);
             dragHelper.getStyle().setListStyleType(Style.ListStyleType.NONE);
-            dragHelper.getParentElement().removeClassName(
-                org.opencms.ade.sitemap.client.ui.css.I_CmsLayoutBundle.INSTANCE.clipboardCss().clipboardList());
+            //            dragHelper.getParentElement().removeClassName(
+            //                org.opencms.ade.sitemap.client.ui.css.I_CmsLayoutBundle.INSTANCE.clipboardCss().clipboardList());
 
             // HACK: i do not why the listWidget is not cloned :(
             List<com.google.gwt.dom.client.Element> elemsX = CmsDomUtil.getElementsByClass(
@@ -117,6 +122,7 @@ public class CmsToolbarClipboardView {
                 if (elem.getChildCount() > 0) {
                     break;
                 }
+                CmsDebugLog.getInstance().printLine("Using weird hack for helper");
                 elem.appendChild(CmsDomUtil.clone(getListItemWidget().getElement()));
                 break;
             }
@@ -202,7 +208,8 @@ public class CmsToolbarClipboardView {
         }
     }
 
-    CmsToolbarClipboardButton m_clipboardButton;
+    /** The clipboard toolbar button. */
+    protected CmsToolbarClipboardButton m_clipboardButton;
 
     /** The deleted list. */
     private CmsList<CmsListItem> m_deleted;

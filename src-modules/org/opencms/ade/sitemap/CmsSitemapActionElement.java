@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsSitemapActionElement.java,v $
- * Date   : $Date: 2010/08/26 13:02:23 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/09/08 08:34:01 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.ade.sitemap;
 
+import org.opencms.ade.galleries.CmsGalleryActionElement;
 import org.opencms.ade.publish.CmsPublishActionElement;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService;
@@ -54,7 +55,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -118,7 +119,7 @@ public class CmsSitemapActionElement extends CmsGwtActionElement {
         sb.append(super.export());
         sb.append(export());
         sb.append(new CmsPublishActionElement(getJspContext(), getRequest(), getResponse()).export());
-        //        sb.append(new CmsGalleryActionElement(getJspContext(), getRequest(), getResponse()).export());
+        sb.append(new CmsGalleryActionElement(null, getRequest(), null).exportForSitemap());
         return sb.toString();
     }
 
