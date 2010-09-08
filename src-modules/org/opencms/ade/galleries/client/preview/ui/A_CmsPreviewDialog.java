@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/ui/Attic/A_CmsPreviewDialog.java,v $
- * Date   : $Date: 2010/07/26 06:40:50 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/09/08 08:21:20 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,7 +32,6 @@
 package org.opencms.ade.galleries.client.preview.ui;
 
 import org.opencms.ade.galleries.client.preview.I_CmsPreviewHandler;
-import org.opencms.ade.galleries.client.ui.CmsGalleryDialog;
 import org.opencms.ade.galleries.shared.CmsResourceInfoBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 import org.opencms.gwt.client.ui.CmsConfirmDialog;
@@ -67,7 +66,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Polina Smagina
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.
  */
@@ -126,9 +125,6 @@ public abstract class A_CmsPreviewDialog<T extends CmsResourceInfoBean> extends 
      * @param dialogWidth the dialog width to set
      */
     public A_CmsPreviewDialog(GalleryMode dialogMode, int dialogHeight, int dialogWidth) {
-
-        // TODO: to remove, if a better way is found, so the css is only loaded once
-        CmsGalleryDialog.initCss();
 
         initWidget(uiBinder.createAndBindUi(this));
 

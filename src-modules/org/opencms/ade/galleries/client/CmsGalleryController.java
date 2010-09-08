@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleryController.java,v $
- * Date   : $Date: 2010/07/09 07:44:02 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2010/09/08 08:21:20 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * @author Polina Smagina
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 8.0.0
  */
@@ -851,7 +851,7 @@ public class CmsGalleryController {
         try{
         openPreview(galleryMode, resourcePath, parentElementId);
         }catch(err){
-        return err.description;
+        return "ERROR: " + err.description;
         }
         return null;
         }else{

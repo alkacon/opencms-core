@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsGalleryDialog.java,v $
- * Date   : $Date: 2010/08/26 13:34:11 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2010/09/08 08:21:20 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,6 +45,7 @@ import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTab
 import org.opencms.gwt.client.draganddrop.I_CmsDragHandler;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
 import org.opencms.gwt.client.ui.CmsTabbedPanel.CmsTabLayout;
+import org.opencms.gwt.client.ui.dnd.CmsDnDManager;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -69,7 +70,7 @@ import com.google.gwt.user.client.ui.HTMLPanel;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  * 
  * @since 8.0.
  */
@@ -87,6 +88,9 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
 
     /** The HTML id of the dialog element. */
     private String m_dialogElementId;
+
+    /** The dnd manager. */
+    private CmsDnDManager m_dndManager;
 
     /** The reference to the drag handler. */
     private I_CmsDragHandler<?, ?> m_dragHandler;
@@ -148,7 +152,18 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
     }
 
     /**
-     * The default constructor for the gallery dialog.<p> 
+     * The constructor.<p> 
+     * 
+     * @param dndManager the reference to the dnd manager
+     */
+    public CmsGalleryDialog(CmsDnDManager dndManager) {
+
+        this();
+        m_dndManager = dndManager;
+    }
+
+    /**
+     * The constructor.<p> 
      * 
      * @param handler the reference to the drag handler
      */
@@ -239,7 +254,7 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
                     break;
             }
         }
-        m_resultsTab = new CmsResultsTab(new CmsResultsTabHandler(controller), m_dragHandler);
+        m_resultsTab = new CmsResultsTab(new CmsResultsTabHandler(controller), m_dragHandler, m_dndManager);
         m_tabbedPanel.addWithLeftMargin(m_resultsTab, Messages.get().key(Messages.GUI_TAB_TITLE_RESULTS_0));
         m_tabbedPanel.addBeforeSelectionHandler(this);
         m_tabbedPanel.addSelectionHandler(this);

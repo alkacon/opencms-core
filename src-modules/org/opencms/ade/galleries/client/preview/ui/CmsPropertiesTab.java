@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/ui/Attic/CmsPropertiesTab.java,v $
- * Date   : $Date: 2010/08/26 13:34:11 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/09/08 08:21:20 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.
  */
@@ -116,27 +116,29 @@ public class CmsPropertiesTab extends A_CmsPreviewDetailTab implements ValueChan
         // width of a property form
         int pannelWidth = calculateWidth(m_tabWidth);
         m_content.clear();
-        Iterator<Entry<String, String>> it = properties.entrySet().iterator();
-        boolean isLeft = true;
-        while (it.hasNext()) {
+        if (properties != null) {
+            Iterator<Entry<String, String>> it = properties.entrySet().iterator();
+            boolean isLeft = true;
+            while (it.hasNext()) {
 
-            Entry<String, String> entry = it.next();
-            CmsPropertyForm property = new CmsPropertyForm(
-                entry.getKey(),
-                pannelWidth,
-                entry.getValue(),
-                TM_PREVIEW_TAB_PROPERTIES);
-            if (isLeft) {
-                property.setFormStyle(I_CmsLayoutBundle.INSTANCE.previewDialogCss().propertyLeft());
-                isLeft = false;
-            } else {
-                property.setFormStyle(I_CmsLayoutBundle.INSTANCE.previewDialogCss().propertyRight());
-                isLeft = true;
+                Entry<String, String> entry = it.next();
+                CmsPropertyForm property = new CmsPropertyForm(
+                    entry.getKey(),
+                    pannelWidth,
+                    entry.getValue(),
+                    TM_PREVIEW_TAB_PROPERTIES);
+                if (isLeft) {
+                    property.setFormStyle(I_CmsLayoutBundle.INSTANCE.previewDialogCss().propertyLeft());
+                    isLeft = false;
+                } else {
+                    property.setFormStyle(I_CmsLayoutBundle.INSTANCE.previewDialogCss().propertyRight());
+                    isLeft = true;
+                }
+                property.addValueChangeHandler(this);
+                m_content.add(property);
+
+                // TODO: set the calculated height of the scrolled panel with properties
             }
-            property.addValueChangeHandler(this);
-            m_content.add(property);
-
-            // TODO: set the calculated height of the scrolled panel with properties
         }
         setChanged(false);
         m_saveButton.disable("nothing changed");

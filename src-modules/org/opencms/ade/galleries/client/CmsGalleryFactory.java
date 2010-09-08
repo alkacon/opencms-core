@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleryFactory.java,v $
- * Date   : $Date: 2010/05/14 13:34:53 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/09/08 08:21:20 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,13 +33,14 @@ package org.opencms.ade.galleries.client;
 
 import org.opencms.ade.galleries.client.ui.CmsGalleryDialog;
 import org.opencms.gwt.client.draganddrop.I_CmsDragHandler;
+import org.opencms.gwt.client.ui.dnd.CmsDnDManager;
 
 /**
  * Factory class to create gallery dialog with or without paramter.<p>
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.
  */
@@ -61,6 +62,19 @@ public final class CmsGalleryFactory {
     public static CmsGalleryDialog createDialog() {
 
         CmsGalleryDialog galleryDialog = new CmsGalleryDialog();
+        new CmsGalleryController(new CmsGalleryControllerHandler(galleryDialog));
+        return galleryDialog;
+    }
+
+    /**
+     * Returns a gallery dialog object with dnd manager.<p>
+     * 
+     * @param dndManager the reference to the dnd manager
+     * @return gallery dialog
+     */
+    public static CmsGalleryDialog createDialog(CmsDnDManager dndManager) {
+
+        CmsGalleryDialog galleryDialog = new CmsGalleryDialog(dndManager);
         new CmsGalleryController(new CmsGalleryControllerHandler(galleryDialog));
         return galleryDialog;
     }
