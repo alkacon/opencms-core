@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/rpc/Attic/I_CmsCoreServiceAsync.java,v $
- * Date   : $Date: 2010/08/26 13:34:27 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/09/09 15:02:20 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,9 +34,9 @@ package org.opencms.gwt.shared.rpc;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData;
-import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.CmsValidationQuery;
 import org.opencms.gwt.shared.CmsValidationResult;
+import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.util.CmsUUID;
 
 import java.util.List;
@@ -50,7 +50,7 @@ import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 8.0.0
  * 
@@ -151,5 +151,21 @@ public interface I_CmsCoreServiceAsync {
      */
     void validate(
         Map<String, CmsValidationQuery> validationQueries,
+        AsyncCallback<Map<String, CmsValidationResult>> callback);
+
+    /**
+     * Performs a batch of validations using a custom form validator class.<p>
+     * 
+     * @param formValidatorClass the class name of the form validator
+     * @param validationQueries a map from field names to validation queries 
+     * @param values the map of all field values 
+     * @param config the form validator configuration string
+     * @param callback the asnchronous callback  
+     */
+    void validate(
+        String formValidatorClass,
+        Map<String, CmsValidationQuery> validationQueries,
+        Map<String, String> values,
+        String config,
         AsyncCallback<Map<String, CmsValidationResult>> callback);
 }

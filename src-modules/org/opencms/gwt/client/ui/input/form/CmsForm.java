@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/form/Attic/CmsForm.java,v $
- * Date   : $Date: 2010/09/03 13:27:35 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2010/09/09 15:02:20 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,9 +46,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -76,7 +78,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 8.0.0
  * 
@@ -85,6 +87,9 @@ public class CmsForm extends Composite {
 
     /** The CSS bundle used for this form. **/
     private static final I_CmsInputCss CSS = I_CmsInputLayoutBundle.INSTANCE.inputCss();
+
+    /** The set of fields which have been edited. */
+    protected Set<String> m_editedFields = new HashSet<String>();
 
     /** A map from field ids to the corresponding widgets. */
     protected Map<String, I_CmsFormField> m_fields = new LinkedHashMap<String, I_CmsFormField>();
@@ -103,6 +108,7 @@ public class CmsForm extends Composite {
 
     /** The tab for basic form fields. */
     private FlowPanel m_basicTab = new FlowPanel();
+
     /** The initial values of the form fields. */
     private Map<String, String> m_initialValues = new HashMap<String, String>();
 
@@ -113,6 +119,9 @@ public class CmsForm extends Composite {
 
     /** The list of form reset handlers. */
     private List<I_CmsFormResetHandler> m_resetHandlers = new ArrayList<I_CmsFormResetHandler>();
+
+    /** The server-side form validator class to use. */
+    private String m_validatorClass;
 
     /**
      * The default constructor.<p>
@@ -167,6 +176,7 @@ public class CmsForm extends Composite {
                  */
                 public void onValueChange(ValueChangeEvent<String> event) {
 
+                    m_editedFields.add(formField.getId());
                     formField.setValidationStatus(I_CmsFormField.ValidationStatus.unknown);
 
                     // if the user presses enter, the keypressed event is fired before the change event,
@@ -194,7 +204,6 @@ public class CmsForm extends Composite {
                         if (widget instanceof I_CmsHasBlur) {
                             // force a blur because not all browsers send a change event if the user just presses enter in a field
                             ((I_CmsHasBlur)widget).blur();
-
                         }
                         // make sure that the flag is set to false again after the other events have been processed 
                         Scheduler.get().scheduleDeferred(new ScheduledCommand() {
@@ -318,7 +327,20 @@ public class CmsForm extends Composite {
         CmsValidationController validationController = new CmsValidationController(
             m_fields.values(),
             createValidationHandler());
-        validationController.startValidation();
+        validationController.setFormValidator(m_validatorClass);
+        validationController.setFormValidatorConfig(createValidatorConfig());
+        startValidation(validationController);
+    }
+
+    /**
+     * Returns the set of names of fields which have been edited by the user in the current form.<p>
+     *  
+     * @return the set of names of fields edited by the user 
+     */
+    public Set<String> getEditedFields() {
+
+        return m_editedFields;
+
     }
 
     /**
@@ -399,6 +421,16 @@ public class CmsForm extends Composite {
     }
 
     /**
+     * Sets the server-side form validator class to use.<p>
+     * 
+     * @param validatorClass the form validator class name 
+     */
+    public void setValidatorClass(String validatorClass) {
+
+        m_validatorClass = validatorClass;
+    }
+
+    /**
      * Validates the form fields and submits their values if the validation was successful.<p>
      */
     public void validateAndSubmit() {
@@ -414,7 +446,7 @@ public class CmsForm extends Composite {
 
                     if (ok) {
                         m_formDialog.closeDialog();
-                        m_formHandler.onSubmitForm(collectValues());
+                        m_formHandler.onSubmitForm(collectValues(), m_editedFields);
 
                     } else {
                         m_formDialog.setOkButtonEnabled(noFieldsInvalid(m_fields.values()));
@@ -431,8 +463,9 @@ public class CmsForm extends Composite {
                 }
 
             });
-        validationController.startValidation();
-
+        validationController.setFormValidator(m_validatorClass);
+        validationController.setFormValidatorConfig(createValidatorConfig());
+        startValidation(validationController);
     }
 
     /**
@@ -443,7 +476,19 @@ public class CmsForm extends Composite {
     public void validateField(final I_CmsFormField field) {
 
         CmsValidationController validationController = new CmsValidationController(field, createValidationHandler());
-        validationController.startValidation();
+        validationController.setFormValidator(m_validatorClass);
+        validationController.setFormValidatorConfig(createValidatorConfig());
+        startValidation(validationController);
+    }
+
+    /**
+     * Returns the configuration string for the server side form validator.<p>
+     * 
+     * @return the form validator configuration string 
+     */
+    protected String createValidatorConfig() {
+
+        return "";
     }
 
     /**
@@ -502,5 +547,15 @@ public class CmsForm extends Composite {
                 updateFieldValidationStatus(fieldId, result);
             }
         };
+    }
+
+    /**
+     * Starts the validation of the form.<p>
+     * 
+     * @param validationController the validation controller to use for the validation 
+     */
+    private void startValidation(CmsValidationController validationController) {
+
+        validationController.startValidation();
     }
 }

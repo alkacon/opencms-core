@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/validation/Attic/CmsValidationController.java,v $
- * Date   : $Date: 2010/06/15 12:18:20 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/09/09 15:02:20 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,9 @@ import org.opencms.gwt.shared.CmsValidationResult;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * This class is responsible for coordinating the synchronous and asynchronous validation for 
@@ -48,23 +50,38 @@ import java.util.Map;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  *
  * @since 8.0.0
  */
 public class CmsValidationController implements I_CmsValidationController {
 
+    /** A counter used to give newly created validation controllers unique ids. */
+    private static int counter;
+
+    /** The list of form fields which should be validated. */
+    protected Collection<I_CmsFormField> m_fields;
+
     /** A map containing all validation queries which should be executed asynchronously. */
     protected Map<String, CmsValidationQuery> m_validationQueries = new HashMap<String, CmsValidationQuery>();
 
-    /** The list of form fields which should be validated. */
-    private Collection<I_CmsFormField> m_fields;
+    /** The form validator class name. */
+    private String m_formValidatorClass;
+
+    /** The form validator configuration. */
+    private String m_formValidatorConfig;
 
     /** The validation handler which will receive the results of the validation. */
     private I_CmsValidationHandler m_handler;
 
+    /** The id of the validation controller. */
+    private int m_id;
+
     /** A flag to make sure that the validation controller is not used twice. */
     private boolean m_isNew = true;
+
+    /** The set of fields which have been validated. */
+    private Set<String> m_validatedFields = new HashSet<String>();
 
     /** A flag indicating whether the validation has been successful. */
     private boolean m_validationOk;
@@ -79,6 +96,7 @@ public class CmsValidationController implements I_CmsValidationController {
 
         m_fields = fields;
         m_handler = handler;
+        m_id = counter++;
     }
 
     /**
@@ -92,6 +110,27 @@ public class CmsValidationController implements I_CmsValidationController {
         m_fields = new ArrayList<I_CmsFormField>();
         m_fields.add(field);
         m_handler = handler;
+        m_id = counter++;
+    }
+
+    /**
+     * Returns the id of this validation controller.<p>
+     * 
+     * @return an id 
+     */
+    public int getId() {
+
+        return m_id;
+    }
+
+    /**
+     * Returns the set of fields which have been validated. 
+     * 
+     * @return the set of validated fields 
+     */
+    public Set<String> getValidatedFields() {
+
+        return m_validatedFields;
     }
 
     /**
@@ -107,34 +146,35 @@ public class CmsValidationController implements I_CmsValidationController {
     }
 
     /**
+     * Sets the form validator class name for this validation controller.<p>
+     * 
+     * @param formValidatorClass the class name of  the form validator 
+     */
+    public void setFormValidator(String formValidatorClass) {
+
+        m_formValidatorClass = formValidatorClass;
+    }
+
+    /**
+     * Sets the form validator configuration string.<p>
+     * a
+     * @param formValidatorConfig the form validator configuration string 
+     */
+    public void setFormValidatorConfig(String formValidatorConfig) {
+
+        m_formValidatorConfig = formValidatorConfig;
+
+    }
+
+    /**
      * Starts the validation.<p>
+     * 
+     * This uses the {@link CmsValidationScheduler}, so the validation only starts after the currently running or scheduled
+     * validations have finished running.<p>
      */
     public void startValidation() {
 
-        assert m_isNew : "A validation controller can only be used once!";
-        m_isNew = false;
-
-        m_validationOk = true;
-        for (I_CmsFormField field : m_fields) {
-            I_CmsFormField.ValidationStatus status = field.getValidationStatus();
-            switch (status) {
-                case unknown:
-                    I_CmsValidator validator = field.getValidator();
-                    validator.validate(field, this);
-                    break;
-                case invalid:
-                    m_validationOk = false;
-                    break;
-                default:
-                    break;
-            }
-        }
-        if (m_validationQueries.isEmpty()) {
-            m_handler.onValidationFinished(m_validationOk);
-        } else {
-            startAsyncValidation();
-        }
-
+        CmsValidationScheduler.get().schedule(this);
     }
 
     /**
@@ -146,18 +186,53 @@ public class CmsValidationController implements I_CmsValidationController {
     }
 
     /**
+     * Starts the validation.<p>
+     */
+    protected void internalStartValidation() {
+
+        assert m_isNew : "A validation controller can only be used once!";
+        m_isNew = false;
+
+        m_validationOk = true;
+        for (I_CmsFormField field : m_fields) {
+            I_CmsFormField.ValidationStatus status = field.getValidationStatus();
+            if (status == I_CmsFormField.ValidationStatus.unknown) {
+                I_CmsValidator validator = field.getValidator();
+                validator.validate(field, this);
+                m_validatedFields.add(field.getId());
+            } else if (status == I_CmsFormField.ValidationStatus.invalid) {
+                m_validationOk = false;
+            }
+        }
+        if (m_validationQueries.isEmpty()) {
+            m_handler.onValidationFinished(m_validationOk);
+            CmsValidationScheduler.get().executeNext();
+        } else {
+            if (m_formValidatorClass == null) {
+                startAsyncValidation();
+            } else {
+                startAsyncValidation(m_formValidatorClass, m_formValidatorConfig);
+            }
+        }
+    }
+
+    /**
      * Internal method which is executed when the results of the asynchronous validation are received from the server.<p>
      * 
      * @param results the validation results 
      */
     protected void onReceiveValidationResults(Map<String, CmsValidationResult> results) {
 
-        for (Map.Entry<String, CmsValidationResult> resultEntry : results.entrySet()) {
-            String fieldName = resultEntry.getKey();
-            CmsValidationResult result = resultEntry.getValue();
-            provideValidationResult(fieldName, result);
+        try {
+            for (Map.Entry<String, CmsValidationResult> resultEntry : results.entrySet()) {
+                String fieldName = resultEntry.getKey();
+                CmsValidationResult result = resultEntry.getValue();
+                provideValidationResult(fieldName, result);
+            }
+            m_handler.onValidationFinished(m_validationOk);
+        } finally {
+            CmsValidationScheduler.get().executeNext();
         }
-        m_handler.onValidationFinished(m_validationOk);
     }
 
     /**
@@ -177,6 +252,14 @@ public class CmsValidationController implements I_CmsValidationController {
                 CmsCoreProvider.getService().validate(m_validationQueries, this);
             }
 
+            @Override
+            public void onFailure(Throwable e) {
+
+                super.onFailure(e);
+                CmsValidationScheduler.get().executeNext();
+
+            }
+
             /**
              * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
              */
@@ -191,4 +274,42 @@ public class CmsValidationController implements I_CmsValidationController {
         action.execute();
     }
 
+    /**
+     * Starts the asynchronous validation.<p>
+     * 
+     * @param formValidationHandler the form validator class to use 
+     * @param config the form validator configuration string 
+     */
+    private void startAsyncValidation(final String formValidationHandler, final String config) {
+
+        CmsRpcAction<Map<String, CmsValidationResult>> action = new CmsRpcAction<Map<String, CmsValidationResult>>() {
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+             */
+            @Override
+            public void execute() {
+
+                final Map<String, String> values = new HashMap<String, String>();
+                for (I_CmsFormField field : m_fields) {
+                    values.put(field.getId(), field.getWidget().getFormValueAsString());
+                }
+                start(0);
+                CmsCoreProvider.getService().validate(formValidationHandler, m_validationQueries, values, config, this);
+
+            }
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+             */
+            @Override
+            protected void onResponse(Map<String, CmsValidationResult> result) {
+
+                stop(false);
+                onReceiveValidationResults(result);
+            }
+
+        };
+        action.execute();
+    }
 }

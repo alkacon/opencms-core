@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/form/Attic/I_CmsFormHandler.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/I_CmsFormValidator.java,v $
  * Date   : $Date: 2010/09/09 15:02:20 $
- * Version: $Revision: 1.3 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,32 +29,44 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.gwt.client.ui.input.form;
+package org.opencms.gwt;
+
+import org.opencms.file.CmsObject;
+import org.opencms.gwt.shared.CmsValidationQuery;
+import org.opencms.gwt.shared.CmsValidationResult;
 
 import java.util.Map;
-import java.util.Set;
 
 /**
- * The interface for objects which should be notified when a {@link CmsForm} is successfully submitted.<p>
+ * Interface for handling the server-side validation of a whole form.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  */
-public interface I_CmsFormHandler {
+public interface I_CmsFormValidator {
 
     /**
-     * The method which should be called when a {@link CmsForm} is submitted.<p>
+     * Validates the form and returns the validation result.<p>
      * 
-     * The map passed as a parameter will contain key-value pairs where the key is the 
-     * name of the field and the value is the value obtained from the field. It is explicitly
-     * allowed that the value is null; this means that the property is set to 'default'.
+     * Implementations of this interface may or may not use the validators in the validation queries passed as 
+     * an argument.<p>
      * 
-     * @param fieldValues a map of field values
-     * @param editedFields the fields which have been edited 
+     * @param cms the CMS context 
+     * @param queries the validation queries for the form fields, indexed by form field key 
+     * @param values the form field values 
+     * @param config the configuration for the form validator
+     *  
+     * @return a map of the validation results, indexed by form field key
+     *  
+     * @throws Exception if something goes wrong 
      */
-    void onSubmitForm(Map<String, String> fieldValues, Set<String> editedFields);
+    Map<String, CmsValidationResult> validate(
+        CmsObject cms,
+        Map<String, CmsValidationQuery> queries,
+        Map<String, String> values,
+        String config) throws Exception;
 
 }

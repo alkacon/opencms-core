@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/edit/Attic/I_CmsSitemapEntryEditorHandler.java,v $
- * Date   : $Date: 2010/08/25 15:24:41 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/09/09 15:02:20 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import java.util.Map;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -109,8 +109,14 @@ public interface I_CmsSitemapEntryEditorHandler {
      * @param newUrlName the new url name 
      * @param vfsPath the new vfs path 
      * @param properties the new properties 
+     * @param editedName if true, the URL name has been edited 
      */
-    void handleSubmit(String newTitle, String newUrlName, String vfsPath, Map<String, String> properties);
+    void handleSubmit(
+        String newTitle,
+        String newUrlName,
+        String vfsPath,
+        Map<String, String> properties,
+        boolean editedName);
 
     /**
      * Returns if the handled entry has an editable name.<p>

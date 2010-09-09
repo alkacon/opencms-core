@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/edit/Attic/CmsSitemapEntryEditor.java,v $
- * Date   : $Date: 2010/09/03 13:27:35 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/09/09 15:02:20 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,9 +35,9 @@ import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.client.ui.CmsTemplateSelectBox;
 import org.opencms.ade.sitemap.client.ui.CmsTemplateSelectCell;
+import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsSitemapTemplate;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
-import org.opencms.gwt.client.ui.input.CmsNonEmptyValidator;
 import org.opencms.gwt.client.ui.input.CmsTextBox;
 import org.opencms.gwt.client.ui.input.I_CmsFormField;
 import org.opencms.gwt.client.ui.input.form.CmsBasicFormField;
@@ -45,19 +45,21 @@ import org.opencms.gwt.client.ui.input.form.CmsForm;
 import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormHandler;
 import org.opencms.util.CmsPair;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.sitemap.CmsSitemapManager;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * A dialog for editing the properties, title, url name and template of a sitemap entry.<p>
  * 
  *  @author Georg Westenberger
  *  
- *  @version $Revision: 1.10 $
+ *  @version $Revision: 1.11 $
  *  
  *  @since 8.0.0
  */
@@ -117,9 +119,9 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
         setFormHandler(new I_CmsFormHandler() {
 
             /**
-             * @see org.opencms.gwt.client.ui.input.form.I_CmsFormHandler#onSubmitForm(java.util.Map)
+             * @see org.opencms.gwt.client.ui.input.form.I_CmsFormHandler#onSubmitForm(java.util.Map, java.util.Set)
              */
-            public void onSubmitForm(Map<String, String> fieldValues) {
+            public void onSubmitForm(Map<String, String> fieldValues, Set<String> editedFields) {
 
                 final String titleValue = getAndRemoveValue(fieldValues, FIELD_TITLE);
                 CmsPair<String, String> templateProps = getTemplateProperties(fieldValues);
@@ -128,11 +130,16 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
                 if (!m_handler.hasEditableName()) {
                     // The root element's name can't be edited 
                     hide();
-                    m_handler.handleSubmit(titleValue, "", null, fieldValues);
+                    m_handler.handleSubmit(titleValue, "", null, fieldValues, editedFields.contains("field_urlname"));
                     return;
                 }
                 final String urlNameValue = getAndRemoveValue(fieldValues, FIELD_URLNAME);
-                m_handler.handleSubmit(titleValue, urlNameValue, null, fieldValues);
+                m_handler.handleSubmit(
+                    titleValue,
+                    urlNameValue,
+                    null,
+                    fieldValues,
+                    editedFields.contains(FIELD_URLNAME));
             }
         });
     }
@@ -171,6 +178,7 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
             String currentValue = properties.get(field.getId());
             form.addField(field, currentValue);
         }
+        form.setValidatorClass("org.opencms.ade.sitemap.CmsSitemapFormValidator");
         center();
     }
 
@@ -181,6 +189,29 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
 
         start();
         getForm().doInitialValidation();
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.form.CmsFormDialog#createForm()
+     */
+    @Override
+    protected CmsForm createForm() {
+
+        return new CmsForm() {
+
+            @Override
+            protected String createValidatorConfig() {
+
+                List<String> forbiddenNames = m_handler.getForbiddenUrlNames();
+                String forbiddenNamesStr = CmsStringUtil.listAsString(forbiddenNames, "#");
+                CmsClientSitemapEntry entry = m_handler.getEntry();
+                boolean isNew = entry.isNew() && !getEditedFields().contains("field_urlname");
+                String config = "new:" + isNew;
+                config += "|forbidden:" + forbiddenNamesStr;
+
+                return config;
+            }
+        };
     }
 
     /** 
@@ -336,7 +367,9 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
             title = "";
         }
         result.getWidget().setFormValueAsString(title);
-        result.setValidator(new CmsNonEmptyValidator(Messages.get().key(Messages.GUI_TITLE_CANT_BE_EMPTY_0)));
+        //result.setValidator(new CmsNonEmptyValidator(Messages.get().key(Messages.GUI_TITLE_CANT_BE_EMPTY_0)));
+        result.setValidator(new CmsTitleValidator());
+
         return result;
     }
 

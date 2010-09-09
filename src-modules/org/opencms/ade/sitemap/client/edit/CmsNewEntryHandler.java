@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/edit/Attic/CmsNewEntryHandler.java,v $
- * Date   : $Date: 2010/08/26 13:37:49 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/09/09 15:02:20 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import java.util.Map;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  * 
@@ -113,9 +113,14 @@ public class CmsNewEntryHandler extends A_CmsSitemapEntryEditorHandler {
     }
 
     /**
-     * @see org.opencms.ade.sitemap.client.edit.I_CmsSitemapEntryEditorHandler#handleSubmit(java.lang.String, java.lang.String, java.lang.String, java.util.Map)
+     * @see org.opencms.ade.sitemap.client.edit.I_CmsSitemapEntryEditorHandler#handleSubmit(java.lang.String, java.lang.String, java.lang.String, java.util.Map, boolean)
      */
-    public void handleSubmit(String newTitle, String newUrlName, String vfsPath, Map<String, String> fieldValues) {
+    public void handleSubmit(
+        String newTitle,
+        String newUrlName,
+        String vfsPath,
+        Map<String, String> fieldValues,
+        boolean editedName) {
 
         // create
         String path = getPath(newUrlName);

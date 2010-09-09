@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/form/Attic/I_CmsFormHandler.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsTitleValidationService.java,v $
  * Date   : $Date: 2010/09/09 15:02:20 $
- * Version: $Revision: 1.3 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,32 +29,35 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.gwt.client.ui.input.form;
+package org.opencms.ade.sitemap;
 
-import java.util.Map;
-import java.util.Set;
+import org.opencms.file.CmsObject;
+import org.opencms.gwt.I_CmsValidationService;
+import org.opencms.gwt.shared.CmsValidationResult;
+import org.opencms.util.CmsStringUtil;
 
 /**
- * The interface for objects which should be notified when a {@link CmsForm} is successfully submitted.<p>
+ * A dummy validation service for the title of a sitemap entry.
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  */
-public interface I_CmsFormHandler {
+public class CmsTitleValidationService implements I_CmsValidationService {
 
     /**
-     * The method which should be called when a {@link CmsForm} is submitted.<p>
-     * 
-     * The map passed as a parameter will contain key-value pairs where the key is the 
-     * name of the field and the value is the value obtained from the field. It is explicitly
-     * allowed that the value is null; this means that the property is set to 'default'.
-     * 
-     * @param fieldValues a map of field values
-     * @param editedFields the fields which have been edited 
+     * @see org.opencms.gwt.I_CmsValidationService#validate(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
      */
-    void onSubmitForm(Map<String, String> fieldValues, Set<String> editedFields);
+    public CmsValidationResult validate(CmsObject cms, String value, String config) {
+
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(value)) {
+            String errorMessage = Messages.get().getBundle().key(Messages.ERR_TITLE_MUST_NOT_BE_EMPTY_0);
+            return new CmsValidationResult(errorMessage, value);
+        }
+        // TODO: strip whitespace 
+        return new CmsValidationResult(null, value);
+    }
 
 }

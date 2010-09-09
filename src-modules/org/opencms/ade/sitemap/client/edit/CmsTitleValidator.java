@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/form/Attic/I_CmsFormHandler.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/edit/Attic/CmsTitleValidator.java,v $
  * Date   : $Date: 2010/09/09 15:02:20 $
- * Version: $Revision: 1.3 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,32 +29,34 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.gwt.client.ui.input.form;
+package org.opencms.ade.sitemap.client.edit;
 
-import java.util.Map;
-import java.util.Set;
+import org.opencms.gwt.client.ui.input.I_CmsFormField;
+import org.opencms.gwt.client.validation.I_CmsValidationController;
+import org.opencms.gwt.client.validation.I_CmsValidator;
 
 /**
- * The interface for objects which should be notified when a {@link CmsForm} is successfully submitted.<p>
+ * Validator for the title field of a sitemap entry.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
+ * 
  */
-public interface I_CmsFormHandler {
+public class CmsTitleValidator implements I_CmsValidator {
 
     /**
-     * The method which should be called when a {@link CmsForm} is submitted.<p>
-     * 
-     * The map passed as a parameter will contain key-value pairs where the key is the 
-     * name of the field and the value is the value obtained from the field. It is explicitly
-     * allowed that the value is null; this means that the property is set to 'default'.
-     * 
-     * @param fieldValues a map of field values
-     * @param editedFields the fields which have been edited 
+     * @see org.opencms.gwt.client.validation.I_CmsValidator#validate(org.opencms.gwt.client.ui.input.I_CmsFormField, org.opencms.gwt.client.validation.I_CmsValidationController)
      */
-    void onSubmitForm(Map<String, String> fieldValues, Set<String> editedFields);
+    public void validate(I_CmsFormField field, I_CmsValidationController controller) {
+
+        controller.validateAsync(
+            field.getId(),
+            field.getWidget().getFormValueAsString(),
+            "org.opencms.ade.sitemap.CmsTitleValidationService",
+            null);
+    }
 
 }

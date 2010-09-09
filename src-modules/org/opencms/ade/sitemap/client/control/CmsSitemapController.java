@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2010/09/01 10:15:19 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/09/09 15:02:20 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -77,7 +77,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 8.0.0
  */
@@ -290,6 +290,7 @@ public class CmsSitemapController {
             public void onResponse(Long result) {
 
                 m_data.setTimestamp(result.longValue());
+                markAllEntriesAsOld();
                 resetChanges();
 
                 stop(true);
@@ -321,6 +322,26 @@ public class CmsSitemapController {
     }
 
     /**
+     * Creates a new sub-entry of an existing sitemap entry.<p>
+     * 
+     * @param entry the entry to which a new sub-entry should be added 
+     */
+    public void createSubEntry(CmsClientSitemapEntry entry) {
+
+        CmsClientSitemapEntry newEntry = new CmsClientSitemapEntry();
+        String urlName = generateUrlName(entry);
+        newEntry.setTitle(urlName);
+        newEntry.setName(urlName);
+        String sitePath = entry.getSitePath() + urlName + "/";
+        newEntry.setSitePath(sitePath);
+        newEntry.setVfsPath(null);
+        newEntry.setPosition(-1);
+        newEntry.setNew(true);
+        create(newEntry);
+        // leave properties empty
+    }
+
+    /**
      * Creates a sub-sitemap from the subtree of the current sitemap starting at a given path.<p>
      * 
      * @param path the path whose subtree should be converted to a sub-sitemap 
@@ -338,6 +359,7 @@ public class CmsSitemapController {
                 start(0);
                 List<I_CmsSitemapChange> changes = getChangesToSave();
                 getService().saveAndCreateSubSitemap(getSitemapUri(), changes, path, this);
+
             }
 
             /**
@@ -348,6 +370,7 @@ public class CmsSitemapController {
 
                 stop(false);
                 resetChanges();
+                markAllEntriesAsOld();
                 onCreateSubSitemap(path, result);
 
             }
@@ -376,8 +399,14 @@ public class CmsSitemapController {
      * @param title the new title, can be <code>null</code> to keep the old one
      * @param vfsReference the new VFS reference, can be <code>null</code> to keep the old one
      * @param properties the new properties, can be <code>null</code> to keep the old properties
+     * @param isNew if false, the entry's name has been edited 
      */
-    public void edit(CmsClientSitemapEntry entry, String title, String vfsReference, Map<String, String> properties) {
+    public void edit(
+        CmsClientSitemapEntry entry,
+        String title,
+        String vfsReference,
+        Map<String, String> properties,
+        boolean isNew) {
 
         // check changes
         boolean changedTitle = ((title != null) && !title.trim().equals(entry.getTitle()));
@@ -386,7 +415,7 @@ public class CmsSitemapController {
         Map<String, String> newProps = new HashMap<String, String>(entry.getProperties());
         CmsCollectionUtil.updateMapAndRemoveNulls(properties, newProps);
         boolean changedProperties = !oldProps.equals(newProps);
-        if (!changedTitle && !changedVfsRef && !changedProperties) {
+        if (!changedTitle && !changedVfsRef && !changedProperties && isNew) {
             // nothing to do
             return;
         }
@@ -396,6 +425,11 @@ public class CmsSitemapController {
         if (changedTitle) {
             newEntry.setTitle(title);
         }
+
+        // We don't calculate isNew by comparing the old and new url names.
+        // This is because any editing of the URL name field should mark the entry as "not new", even if the final
+        // value is the same as the initial one. 
+        newEntry.setNew(entry.isNew() && isNew);
         if (changedVfsRef) {
             newEntry.setVfsPath(vfsReference);
         }
@@ -405,6 +439,28 @@ public class CmsSitemapController {
 
         // apply changes
         addChange(new CmsClientSitemapChangeEdit(entry, newEntry), false);
+    }
+
+    /**
+     * Edits an entry and changes its URL name.<p>
+     * 
+     * @param entry the entry which is being edited 
+     * @param newTitle the new title of the entry 
+     * @param newUrlName the new URL name of the entry 
+     * @param vfsPath the vfs path of the entry 
+     * @param fieldValues the new properties of the entry 
+     * @param editedName true if the name has been edited 
+     */
+    public void editAndChangeName(
+        CmsClientSitemapEntry entry,
+        String newTitle,
+        String newUrlName,
+        String vfsPath,
+        Map<String, String> fieldValues,
+        boolean editedName) {
+
+        edit(entry, newTitle, vfsPath, fieldValues, !editedName);
+        move(entry, getPath(entry, newUrlName), entry.getPosition());
     }
 
     /**
@@ -494,10 +550,10 @@ public class CmsSitemapController {
     }
 
     /**
-     * Returns the sitemap data.<p>
-     *
-     * @return the sitemap data
-     */
+    * Returns the sitemap data.<p>
+    *
+    * @return the sitemap data
+    */
     public CmsSitemapData getData() {
 
         return m_data;
@@ -643,6 +699,23 @@ public class CmsSitemapController {
     }
 
     /**
+     * Marks all entries as old.<p>
+     * 
+     * This means editing those entries' titles will not change their URL names.
+     */
+    public void markAllEntriesAsOld() {
+
+        CmsClientSitemapEntry root = m_data.getRoot();
+        LinkedList<CmsClientSitemapEntry> entriesToProcess = new LinkedList<CmsClientSitemapEntry>();
+        entriesToProcess.add(root);
+        while (!entriesToProcess.isEmpty()) {
+            CmsClientSitemapEntry entry = entriesToProcess.removeFirst();
+            entry.setNew(false);
+            entriesToProcess.addAll(entry.getSubEntries());
+        }
+    }
+
+    /**
      * Moves the given sitemap entry with all its descendants to the new position.<p>
      * 
      * @param entry the sitemap entry to move
@@ -783,6 +856,22 @@ public class CmsSitemapController {
     }
 
     /**
+     * Helper method for getting the full path of a sitemap entry whose URL name is being edited.<p> 
+     * 
+     * @param entry the sitemap entry 
+     * @param newUrlName the new url name of the sitemap entry 
+     * 
+     * @return the new full site path of the sitemap entry 
+     */
+    protected String getPath(CmsClientSitemapEntry entry, String newUrlName) {
+
+        if (newUrlName.equals("")) {
+            return entry.getSitePath();
+        }
+        return CmsResource.getParentFolder(entry.getSitePath()) + newUrlName + "/";
+    }
+
+    /**
      * Returns the sitemap service instance.<p>
      * 
      * @return the sitemap service instance
@@ -832,5 +921,26 @@ public class CmsSitemapController {
             changes.add(change.getChangeForCommit());
         }
         return changes;
+    }
+
+    /**
+     * Generates an URL name for a new child entry which is being added to a given sitemap entry.<p>
+     *  
+     * @param entry the sitemap entry to which a new child entry is being added
+     *   
+     * @return the generated URL name 
+     */
+    private String generateUrlName(CmsClientSitemapEntry entry) {
+
+        Set<String> subUrlNames = new HashSet<String>();
+        for (CmsClientSitemapEntry subEntry : entry.getSubEntries()) {
+            subUrlNames.add(subEntry.getName());
+        }
+        int counter = 1;
+        String prefix = "item_";
+        while (subUrlNames.contains(prefix + counter)) {
+            counter += 1;
+        }
+        return prefix + counter;
     }
 }

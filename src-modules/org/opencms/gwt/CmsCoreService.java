@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsCoreService.java,v $
- * Date   : $Date: 2010/09/03 13:27:35 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2010/09/09 15:02:20 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 8.0.0
  * 
@@ -88,21 +88,6 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     private static final long serialVersionUID = 5915848952948986278L;
 
     /**
-     * Returns a new configured service instance.<p>
-     * 
-     * @param request the current request
-     * 
-     * @return a new service instance
-     */
-    public static CmsCoreService newInstance(HttpServletRequest request) {
-
-        CmsCoreService srv = new CmsCoreService();
-        srv.setCms(CmsFlexController.getCmsObject(request));
-        srv.setRequest(request);
-        return srv;
-    }
-
-    /**
      * Internal helper method for getting a validation service.<p>
      * 
      * @param name the class name of the validation service
@@ -111,7 +96,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
      * 
      * @throws CmsException if something goes wrong 
      */
-    private static I_CmsValidationService getValidationService(String name) throws CmsException {
+    public static I_CmsValidationService getValidationService(String name) throws CmsException {
 
         try {
             Class<?> cls = Class.forName(name, false, I_CmsValidationService.class.getClassLoader());
@@ -128,6 +113,60 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         } catch (IllegalAccessException e) {
             throw new CmsException(Messages.get().container(Messages.ERR_VALIDATOR_INSTANTIATION_FAILED_1, name), e);
         }
+    }
+
+    /**
+     * Instantiates a class given its name using its default constructor.<p>
+     * 
+     * Also checks whether the class with the given name is the subclass of another class/interface.<p>
+     * 
+     * 
+     * @param <T> the type of the interface/class passed as a parameter
+     *  
+     * @param anInterface the interface or class against which the class should be checked 
+     * @param className the name of the class 
+     * @return a new instance of the class
+     * 
+     * @throws CmsException if the instantiation fails
+     */
+    public static <T> T instantiate(Class<T> anInterface, String className) throws CmsException {
+
+        try {
+            Class<?> cls = Class.forName(className, false, anInterface.getClassLoader());
+            if (!anInterface.isAssignableFrom(cls)) {
+                // class was found, but does not implement the interface 
+                throw new CmsIllegalArgumentException(Messages.get().container(
+                    Messages.ERR_INSTANTIATION_INCORRECT_TYPE_2,
+                    className,
+                    anInterface.getName()));
+            }
+
+            // we use another variable so we don't have to put the @SuppressWarnings on the method itself 
+            @SuppressWarnings("unchecked")
+            Class<T> typedClass = (Class<T>)cls;
+            return typedClass.newInstance();
+        } catch (ClassNotFoundException e) {
+            throw new CmsException(Messages.get().container(Messages.ERR_INSTANTIATION_FAILED_1, className), e);
+        } catch (InstantiationException e) {
+            throw new CmsException(Messages.get().container(Messages.ERR_INSTANTIATION_FAILED_1, className), e);
+        } catch (IllegalAccessException e) {
+            throw new CmsException(Messages.get().container(Messages.ERR_INSTANTIATION_FAILED_1, className), e);
+        }
+    }
+
+    /**
+     * Returns a new configured service instance.<p>
+     * 
+     * @param request the current request
+     * 
+     * @return a new service instance
+     */
+    public static CmsCoreService newInstance(HttpServletRequest request) {
+
+        CmsCoreService srv = new CmsCoreService();
+        srv.setCms(CmsFlexController.getCmsObject(request));
+        srv.setRequest(request);
+        return srv;
     }
 
     /**
@@ -357,6 +396,24 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
                 result.put(fieldName, validate(query.getValidatorId(), query.getValue(), query.getConfig()));
             }
             return result;
+        } catch (Throwable e) {
+            error(e);
+        }
+        return null;
+    }
+
+    /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#validate(java.lang.String, java.util.Map, java.util.Map, java.lang.String)
+     */
+    public Map<String, CmsValidationResult> validate(
+        String formValidatorClass,
+        Map<String, CmsValidationQuery> validationQueries,
+        Map<String, String> values,
+        String config) throws CmsRpcException {
+
+        try {
+            I_CmsFormValidator formValidator = instantiate(I_CmsFormValidator.class, formValidatorClass);
+            return formValidator.validate(getCmsObject(), validationQueries, values, config);
         } catch (Throwable e) {
             error(e);
         }

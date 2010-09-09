@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapTreeItem.java,v $
- * Date   : $Date: 2010/09/06 06:57:10 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2010/09/09 15:02:20 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,6 +41,7 @@ import org.opencms.ade.sitemap.client.ui.css.I_CmsSitemapItemCss;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.file.CmsResource;
 import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
@@ -56,6 +57,9 @@ import org.opencms.gwt.client.ui.tree.CmsTreeItem;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.sitemap.CmsSitemapManager;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -67,7 +71,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 8.0.0
  * 
@@ -125,12 +129,73 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
                     return;
                 }
                 String oldTitle = m_entry.getTitle();
-                if (!oldTitle.equals(text)) {
-                    CmsClientSitemapEntry newEntry = new CmsClientSitemapEntry(m_entry);
-                    newEntry.setTitle(text);
-                    CmsClientSitemapChangeEdit edit = new CmsClientSitemapChangeEdit(m_entry, newEntry);
-                    CmsSitemapView.getInstance().getController().addChange(edit, false);
+
+                final Set<String> otherUrlNames = new HashSet<String>();
+                if (!m_entry.isRoot()) {
+                    String parentPath = CmsResource.getParentFolder(m_entry.getSitePath());
+                    CmsClientSitemapEntry parent = CmsSitemapView.getInstance().getController().getEntry(parentPath);
+                    for (CmsClientSitemapEntry sibling : parent.getSubEntries()) {
+                        if (sibling != m_entry) {
+                            otherUrlNames.add(sibling.getName());
+                        }
+                    }
                 }
+
+                if (!oldTitle.equals(text)) {
+
+                    if (m_entry.isNew()) {
+                        CmsRpcAction<String> action = new CmsRpcAction<String>() {
+
+                            /**
+                             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+                             */
+                            @Override
+                            public void execute() {
+
+                                start(0);
+                                CmsCoreProvider.getService().translateUrlName(text, this);
+                            }
+
+                            /**
+                             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+                             */
+                            @Override
+                            protected void onResponse(String result) {
+
+                                stop(false);
+                                int counter = 0;
+
+                                // find first of "${name}", "${name}_1", "${name}_2", ... which does not conflict with
+                                // an entry on the same level
+                                String newUrlName = result;
+                                while (otherUrlNames.contains(newUrlName)) {
+                                    counter += 1;
+                                    newUrlName = result + "_" + counter;
+                                }
+                                CmsClientSitemapEntry newEntry = new CmsClientSitemapEntry(m_entry);
+                                newEntry.setTitle(text);
+                                newEntry.setName(newUrlName);
+                                CmsSitemapController controller = CmsSitemapView.getInstance().getController();
+                                controller.editAndChangeName(
+                                    m_entry,
+                                    text,
+                                    newUrlName,
+                                    m_entry.getVfsPath(),
+                                    m_entry.getProperties(),
+                                    false);
+                            }
+
+                        };
+                        action.execute();
+                    } else {
+                        CmsClientSitemapEntry newEntry = new CmsClientSitemapEntry(m_entry);
+                        newEntry.setTitle(text);
+                        CmsClientSitemapChangeEdit edit = new CmsClientSitemapChangeEdit(m_entry, newEntry);
+                        CmsSitemapView.getInstance().getController().addChange(edit, false);
+                    }
+
+                }
+
                 titleLabel.setVisible(true);
             }
         });
@@ -413,4 +478,5 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
         }
         return null;
     }
+
 }

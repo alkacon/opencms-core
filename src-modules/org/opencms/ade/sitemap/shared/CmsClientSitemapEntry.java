@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsClientSitemapEntry.java,v $
- * Date   : $Date: 2010/06/29 09:38:46 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2010/09/09 15:02:20 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 8.0.0
  */
@@ -61,6 +61,9 @@ public class CmsClientSitemapEntry implements IsSerializable {
 
     /** The entry name. */
     private String m_name;
+
+    /** True if this entry has been just created, and its name hasn't been directly changed. */
+    private boolean m_new;
 
     /** The relative position between siblings. */
     private int m_position;
@@ -222,6 +225,16 @@ public class CmsClientSitemapEntry implements IsSerializable {
     }
 
     /**
+     * Returns the "new" flag of the sitemap entry.<p>
+     * 
+     * @return the "new" flag
+     */
+    public boolean isNew() {
+
+        return m_new;
+    }
+
+    /**
      * Returns true if this entry is the root entry of the sitemap.<p>
      * 
      * @return true if this entry is the root entry of the sitemap 
@@ -271,6 +284,15 @@ public class CmsClientSitemapEntry implements IsSerializable {
     public void setName(String name) {
 
         m_name = name;
+    }
+
+    /**
+     * Sets the "new" flag of the client sitemap entry.<p>
+     * @param new1
+     */
+    public void setNew(boolean new1) {
+
+        m_new = new1;
     }
 
     /**
@@ -399,5 +421,4 @@ public class CmsClientSitemapEntry implements IsSerializable {
             m_subEntries.get(i).setPosition(i);
         }
     }
-
 }

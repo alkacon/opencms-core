@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsHoverbarNewButton.java,v $
- * Date   : $Date: 2010/06/14 08:08:41 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/09/09 15:02:20 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,8 +33,6 @@ package org.opencms.ade.sitemap.client.hoverbar;
 
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
-import org.opencms.ade.sitemap.client.edit.CmsNewEntryHandler;
-import org.opencms.ade.sitemap.client.edit.CmsSitemapEntryEditor;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsImageBundle;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.gwt.client.ui.CmsPushButton;
@@ -49,7 +47,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  */
@@ -76,7 +74,9 @@ public class CmsHoverbarNewButton extends CmsPushButton {
                 hoverbar.deattach();
                 CmsSitemapController controller = hoverbar.getController();
                 CmsClientSitemapEntry entry = controller.getEntry(hoverbar.getSitePath());
-                (new CmsSitemapEntryEditor(new CmsNewEntryHandler(controller, entry))).start();
+                controller.createSubEntry(entry);
+
+                //(new CmsSitemapEntryEditor(new CmsNewEntryHandler(controller, entry))).start();
             }
         });
         hoverbar.addAttachHandler(new I_CmsHoverbarAttachHandler() {
