@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsResultListItem.java,v $
- * Date   : $Date: 2010/09/08 08:21:20 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/09/13 06:47:41 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.
  */
@@ -72,7 +72,9 @@ public class CmsResultListItem extends CmsListItem {
             m_draggable = draggable;
         }
 
-        @Override
+        /**
+         * @see org.opencms.gwt.client.ui.dnd.I_CmsDragHandle#getDraggable()
+         */
         public I_CmsDraggable getDraggable() {
 
             return m_draggable;
