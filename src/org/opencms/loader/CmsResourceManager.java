@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsResourceManager.java,v $
- * Date   : $Date: 2010/03/01 10:21:47 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/09/13 12:24:50 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,6 +58,7 @@ import org.opencms.util.CmsResourceTranslator;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.I_CmsHtmlConverter;
 import org.opencms.workplace.CmsWorkplace;
+import org.opencms.xml.sitemap.CmsSitemapEntry;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -81,7 +82,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -900,7 +901,38 @@ public class CmsResourceManager {
     public CmsTemplateLoaderFacade getTemplateLoaderFacade(CmsObject cms, CmsResource resource, String templateProperty)
     throws CmsException {
 
-        String templateProp = cms.readPropertyObject(resource, templateProperty, true).getValue();
+        return getTemplateLoaderFacade(cms, resource, null, templateProperty);
+
+    }
+
+    /**
+     * Returns a template loader facade for the given file.<p>
+     * @param cms the current OpenCms user context
+     * @param resource the requested file
+     * @param templateProperty the property to read for the template
+     * @param originalUri the original uri which was requested 
+     * 
+     * @return a resource loader facade for the given file
+     * @throws CmsException if something goes wrong
+     */
+    public CmsTemplateLoaderFacade getTemplateLoaderFacade(
+        CmsObject cms,
+        CmsResource resource,
+        String originalUri,
+        String templateProperty) throws CmsException {
+
+        String templateProp = null;
+        if (originalUri != null) {
+            String context = OpenCms.getSystemInfo().getOpenCmsContext();
+            if (originalUri.startsWith(context)) {
+                originalUri = originalUri.substring(context.length());
+            }
+            CmsSitemapEntry entry = OpenCms.getSitemapManager().getEntryForUri(cms, originalUri);
+            templateProp = entry.getTemplate(null);
+        }
+        if (templateProp == null) {
+            templateProp = cms.readPropertyObject(resource, templateProperty, true).getValue();
+        }
 
         if (templateProp == null) {
 
