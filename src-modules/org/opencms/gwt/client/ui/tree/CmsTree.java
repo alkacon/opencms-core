@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/tree/Attic/CmsTree.java,v $
- * Date   : $Date: 2010/06/24 09:05:26 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/09/14 14:22:47 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,11 +32,6 @@
 package org.opencms.gwt.client.ui.tree;
 
 import org.opencms.gwt.client.ui.CmsList;
-import org.opencms.gwt.client.ui.CmsListItem;
-import org.opencms.gwt.client.ui.dnd.CmsDropEvent;
-import org.opencms.gwt.client.ui.dnd.CmsDropPosition;
-import org.opencms.gwt.client.ui.dnd.I_CmsDraggable;
-import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.util.CmsStringUtil;
 
@@ -48,6 +43,7 @@ import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.HasAnimation;
 
 /**
@@ -57,11 +53,52 @@ import com.google.gwt.user.client.ui.HasAnimation;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
 public class CmsTree<I extends CmsTreeItem> extends CmsList<I> implements HasOpenHandlers<I>, HasAnimation {
+
+    /**
+     * Timer to set sub item list visible.<p>
+     */
+    private class OpenTimer extends Timer {
+
+        /** The tree item. */
+        private CmsTreeItem m_item;
+
+        /**
+         * Constructor.<p>
+         * 
+         * @param item the tree item
+         */
+        protected OpenTimer(CmsTreeItem item) {
+
+            m_item = item;
+        }
+
+        /**
+         * @see com.google.gwt.user.client.Timer#run()
+         */
+        @Override
+        public void run() {
+
+            m_item.setOpen(true);
+            removeOpenTimer();
+        }
+
+        /**
+         * Checks if the timer is running for the given tree item.<p>
+         * 
+         * @param item the tree item to check
+         * @return <code>true</code> if the given item matches the timer item
+         */
+        protected boolean checkTimer(CmsTreeItem item) {
+
+            return item == m_item;
+        }
+
+    }
 
     /** The event handlers for the tree. */
     protected HandlerManager m_handlers;
@@ -69,8 +106,11 @@ public class CmsTree<I extends CmsTreeItem> extends CmsList<I> implements HasOpe
     /** Flag to indicate is animations are enabled or not. */
     private boolean m_animate;
 
-    /** The drop target place holder, when hovering a tree item. */
-    private CmsTreeItem m_treePlaceholder;
+    /** The open timer if one is running. */
+    private OpenTimer m_openTimer;
+
+    /** The parent path of the current placeholder. */
+    private String m_placeholderPath;
 
     /**
      * Constructor.<p>
@@ -100,10 +140,21 @@ public class CmsTree<I extends CmsTreeItem> extends CmsList<I> implements HasOpe
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.CmsList#check(int, int)
+     * Cancels the open timer if present.<p>
+     */
+    public void cancelOpenTimer() {
+
+        if (m_openTimer != null) {
+            m_openTimer.cancel();
+            m_openTimer = null;
+        }
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.CmsList#checkPosition(int, int)
      */
     @Override
-    public boolean check(int x, int y) {
+    public boolean checkPosition(int x, int y) {
 
         Element element = getElement();
         // check if the mouse pointer is within the width of the target 
@@ -173,6 +224,16 @@ public class CmsTree<I extends CmsTreeItem> extends CmsList<I> implements HasOpe
     }
 
     /**
+     * Returns the placeholder path.<p>
+     * 
+     * @return the path
+     */
+    public String getPlaceholderPath() {
+
+        return m_placeholderPath;
+    }
+
+    /**
      * @see com.google.gwt.user.client.ui.HasAnimation#isAnimationEnabled()
      */
     public boolean isAnimationEnabled() {
@@ -194,60 +255,20 @@ public class CmsTree<I extends CmsTreeItem> extends CmsList<I> implements HasOpe
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.CmsList#onDrop()
-     */
-    @Override
-    public void onDrop() {
-
-        if (m_treePlaceholder == null) {
-            return;
-        }
-        m_treePlaceholder.onDragOverOut();
-        if (!m_treePlaceholder.isOpen()) {
-            m_treePlaceholder.setOpen(true);
-        }
-        m_treePlaceholder = null;
-    }
-
-    /**
      * @see org.opencms.gwt.client.ui.CmsList#removePlaceholder()
      */
     @Override
     public void removePlaceholder() {
 
         super.removePlaceholder();
-        if (m_treePlaceholder != null) {
-            m_treePlaceholder.onDragOverOut();
-            m_treePlaceholder = null;
-        }
+        m_placeholderPath = null;
     }
 
     /**
-     * @see com.google.gwt.user.client.ui.HasAnimation#setAnimationEnabled(boolean)
-     */
-    public void setAnimationEnabled(boolean enable) {
-
-        m_animate = enable;
-    }
-
-    /**
-     * Here the meaning is enabling dropping on the root level.<p>
-     * 
-     * Use {@link CmsTreeItem#setDropEnabled(boolean)} for dropping on tree items.<p>
-     * 
-     * @see org.opencms.gwt.client.ui.CmsList#setDropEnabled(boolean)
+     * @see org.opencms.gwt.client.ui.CmsList#repositionPlaceholder(int, int)
      */
     @Override
-    public void setDropEnabled(boolean enabled) {
-
-        super.setDropEnabled(enabled);
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.CmsList#setPlaceholder(int, int, CmsDropEvent)
-     */
-    @Override
-    public CmsDropPosition setPlaceholder(int x, int y, CmsDropEvent event) {
+    public void repositionPlaceholder(int x, int y) {
 
         for (int index = 0; index < getWidgetCount(); index++) {
             CmsTreeItem item = getItem(index);
@@ -273,20 +294,50 @@ public class CmsTree<I extends CmsTreeItem> extends CmsList<I> implements HasOpe
                 continue;
             }
 
-            CmsDropPosition position = item.setPlaceholder(x, y, event);
-            if (position == null) {
-                // no match
-                return position;
-            }
-            I_CmsDraggable draggable = event.getDraggable();
-            if (draggable instanceof CmsListItem) {
-                String id = ((CmsListItem)draggable).getId();
-                position.setName(id);
-            }
-            CmsDebugLog.getInstance().printLine(position.toString());
-            return position;
+            m_placeholderIndex = item.repositionPlaceholder(x, y, m_placeholder);
+            return;
         }
-        return null;
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.HasAnimation#setAnimationEnabled(boolean)
+     */
+    public void setAnimationEnabled(boolean enable) {
+
+        m_animate = enable;
+    }
+
+    /**
+     * Here the meaning is enabling dropping on the root level.<p>
+     * 
+     * Use {@link CmsTreeItem#setDropEnabled(boolean)} for dropping on tree items.<p>
+     * 
+     * @see org.opencms.gwt.client.ui.CmsList#setDropEnabled(boolean)
+     */
+    @Override
+    public void setDropEnabled(boolean enabled) {
+
+        super.setDropEnabled(enabled);
+    }
+
+    /**
+     * Sets a timer to set a tree item open.<p>
+     * 
+     * @param item the item to open
+     */
+    public void setOpenTimer(CmsTreeItem item) {
+
+        if (item.isOpen()) {
+            return;
+        }
+        if (m_openTimer != null) {
+            if (m_openTimer.checkTimer(item)) {
+                return;
+            }
+            m_openTimer.cancel();
+        }
+        m_openTimer = new OpenTimer(item);
+        m_openTimer.schedule(300);
     }
 
     /**
@@ -301,15 +352,11 @@ public class CmsTree<I extends CmsTreeItem> extends CmsList<I> implements HasOpe
     }
 
     /**
-     * Sets the place holder.<p>
-     * 
-     * @param e the place holder to set
+     * Sets the timer reference to <code>null</code>.<p>
      */
-    protected void setPlaceholder(CmsTreeItem e) {
+    protected void removeOpenTimer() {
 
-        removePlaceholder();
-        m_treePlaceholder = e;
-        m_treePlaceholder.onDragOverIn();
+        m_openTimer = null;
     }
 
     /**
@@ -319,5 +366,15 @@ public class CmsTree<I extends CmsTreeItem> extends CmsList<I> implements HasOpe
     protected void setPlaceholder(Element placeholder) {
 
         super.setPlaceholder(placeholder);
+    }
+
+    /**
+     * Sets the placeholder path.<p>
+     * 
+     * @param path the path
+     */
+    protected void setPlaceholderPath(String path) {
+
+        m_placeholderPath = path;
     }
 }

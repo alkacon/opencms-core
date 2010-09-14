@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsSimpleListItem.java,v $
- * Date   : $Date: 2010/06/24 09:05:26 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/09/14 14:22:47 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,14 +31,11 @@
 
 package org.opencms.gwt.client.ui;
 
+import org.opencms.gwt.client.dnd.I_CmsDropTarget;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
-import org.opencms.gwt.client.ui.dnd.CmsDropEvent;
-import org.opencms.gwt.client.ui.dnd.CmsDropPosition;
-import org.opencms.gwt.client.ui.dnd.I_CmsDropTarget;
 import org.opencms.gwt.client.util.CmsDomUtil;
 
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -48,7 +45,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Michael Moossen
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -90,27 +87,9 @@ public class CmsSimpleListItem extends Composite implements I_CmsListItem {
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.dnd.I_CmsDraggable#beforeDrop(org.opencms.gwt.client.ui.dnd.CmsDropEvent, com.google.gwt.user.client.rpc.AsyncCallback)
+     * @see org.opencms.gwt.client.dnd.I_CmsDraggable#getDragHelper(org.opencms.gwt.client.dnd.I_CmsDropTarget)
      */
-    public void beforeDrop(CmsDropEvent e, AsyncCallback<CmsDropEvent> asyncCallback) {
-
-        // TODO: Auto-generated method stub
-
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.dnd.I_CmsDraggable#canDrop(org.opencms.gwt.client.ui.dnd.I_CmsDropTarget, CmsDropPosition)
-     */
-    public boolean canDrop(I_CmsDropTarget target, CmsDropPosition position) {
-
-        // TODO: Auto-generated method stub
-        return false;
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.dnd.I_CmsDraggable#getDragHelper(org.opencms.gwt.client.ui.dnd.I_CmsDropTarget)
-     */
-    public Element getDragHelper(I_CmsDropTarget target) {
+    public Element getDragHelper(org.opencms.gwt.client.dnd.I_CmsDropTarget target) {
 
         // TODO: Auto-generated method stub
         return null;
@@ -125,9 +104,18 @@ public class CmsSimpleListItem extends Composite implements I_CmsListItem {
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.dnd.I_CmsDraggable#getPlaceHolder(org.opencms.gwt.client.ui.dnd.I_CmsDropTarget)
+     * @see org.opencms.gwt.client.dnd.I_CmsDraggable#getParentTarget()
      */
-    public Element getPlaceHolder(I_CmsDropTarget target) {
+    public I_CmsDropTarget getParentTarget() {
+
+        // TODO: Auto-generated method stub
+        return null;
+    }
+
+    /**
+     * @see org.opencms.gwt.client.dnd.I_CmsDraggable#getPlaceholder(org.opencms.gwt.client.dnd.I_CmsDropTarget)
+     */
+    public Element getPlaceholder(org.opencms.gwt.client.dnd.I_CmsDropTarget target) {
 
         // TODO: Auto-generated method stub
         return null;
@@ -146,7 +134,7 @@ public class CmsSimpleListItem extends Composite implements I_CmsListItem {
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.dnd.I_CmsDraggable#onDragCancel()
+     * @see org.opencms.gwt.client.dnd.I_CmsDraggable#onDragCancel()
      */
     public void onDragCancel() {
 
@@ -155,39 +143,21 @@ public class CmsSimpleListItem extends Composite implements I_CmsListItem {
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.dnd.I_CmsDraggable#onDragStart()
+     * @see org.opencms.gwt.client.dnd.I_CmsDraggable#onDrop(org.opencms.gwt.client.dnd.I_CmsDropTarget)
      */
-    public boolean onDragStart() {
-
-        // TODO: Auto-generated method stub
-        return false;
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.dnd.I_CmsDraggable#onDragStop()
-     */
-    public void onDragStop() {
+    public void onDrop(org.opencms.gwt.client.dnd.I_CmsDropTarget target) {
 
         // TODO: Auto-generated method stub
 
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.dnd.I_CmsDraggable#onDrop()
+     * @see org.opencms.gwt.client.dnd.I_CmsDraggable#onStartDrag(org.opencms.gwt.client.dnd.I_CmsDropTarget)
      */
-    public void onDrop() {
+    public void onStartDrag(org.opencms.gwt.client.dnd.I_CmsDropTarget target) {
 
         // TODO: Auto-generated method stub
 
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.dnd.I_CmsDraggable#resetPlaceHolder()
-     */
-    public CmsDropPosition resetPlaceHolder() {
-
-        // TODO: Auto-generated method stub
-        return null;
     }
 
     /**
@@ -214,4 +184,5 @@ public class CmsSimpleListItem extends Composite implements I_CmsListItem {
             ((I_CmsTruncable)widget).truncate(textMetricsPrefix, width);
         }
     }
+
 }

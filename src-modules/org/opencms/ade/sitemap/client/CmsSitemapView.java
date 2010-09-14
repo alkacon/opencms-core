@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapView.java,v $
- * Date   : $Date: 2010/09/01 10:15:19 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2010/09/14 14:22:47 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.ade.sitemap.client;
 
 import org.opencms.ade.sitemap.client.control.CmsSitemapChangeEvent;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
+import org.opencms.ade.sitemap.client.control.CmsSitemapDNDController;
 import org.opencms.ade.sitemap.client.control.CmsSitemapLoadEvent;
 import org.opencms.ade.sitemap.client.control.I_CmsSitemapChangeHandler;
 import org.opencms.ade.sitemap.client.control.I_CmsSitemapLoadHandler;
@@ -45,17 +46,17 @@ import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.gwt.client.A_CmsEntryPoint;
 import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.CmsHeader;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsNotification;
-import org.opencms.gwt.client.ui.CmsToolbar;
 import org.opencms.gwt.client.ui.CmsToolbarPlaceHolder;
 import org.opencms.gwt.client.ui.dnd.CmsDropEvent;
 import org.opencms.gwt.client.ui.dnd.I_CmsDropHandler;
 import org.opencms.gwt.client.ui.tree.A_CmsDeepLazyOpenHandler;
 import org.opencms.gwt.client.ui.tree.CmsLazyTree;
-import org.opencms.gwt.client.ui.tree.CmsTreeItem;
 import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem.LoadState;
+import org.opencms.gwt.client.ui.tree.CmsTreeItem;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsPair;
@@ -64,10 +65,7 @@ import org.opencms.util.CmsStringUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.Event.NativePreviewEvent;
-import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.Window.ClosingHandler;
 import com.google.gwt.user.client.ui.Label;
@@ -78,12 +76,12 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.32 $ 
+ * @version $Revision: 1.33 $ 
  * 
  * @since 8.0.0
  */
 public final class CmsSitemapView extends A_CmsEntryPoint
-implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler, NativePreviewHandler, ClosingHandler, I_CmsDropHandler {
+implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler, ClosingHandler, I_CmsDropHandler {
 
     /** The singleton instance. */
     private static CmsSitemapView m_instance;
@@ -101,7 +99,7 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler, NativePreviewHand
     protected CmsLazyTree<CmsSitemapTreeItem> m_tree;
 
     /** The sitemap toolbar. */
-    private CmsToolbar m_toolbar;
+    private CmsSitemapToolbar m_toolbar;
 
     /**
      * Returns the instance.<p>
@@ -346,9 +344,9 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler, NativePreviewHand
         if (m_controller.isEditable()) {
             // enable drag'n drop 
             m_tree.setDnDEnabled(true);
-            // handle drops
-            m_tree.getDnDManager().addDropHandler(this);
-            // prevent drop on root level
+            CmsDNDHandler dndHandler = new CmsDNDHandler(new CmsSitemapDNDController(m_controller, m_toolbar));
+            dndHandler.addTarget(m_tree);
+            m_tree.setDNDHandler(dndHandler);
             m_tree.setDropEnabled(false);
         }
         m_tree.truncate(TM_SITEMAP, 920);
@@ -358,9 +356,6 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler, NativePreviewHand
         // paint
         page.remove(loadingLabel);
         page.add(m_tree);
-
-        // key events handling
-        Event.addNativePreviewHandler(this);
 
         // unload event handling
         Window.addWindowClosingHandler(this);
@@ -377,33 +372,6 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler, NativePreviewHand
         if (openPath != null) {
             highlightPath(openPath);
         }
-    }
-
-    /**
-     * @see com.google.gwt.user.client.Event.NativePreviewHandler#onPreviewNativeEvent(com.google.gwt.user.client.Event.NativePreviewEvent)
-     */
-    public void onPreviewNativeEvent(NativePreviewEvent event) {
-
-        Event nativeEvent;
-        try {
-            nativeEvent = Event.as(event.getNativeEvent());
-        } catch (Throwable e) {
-            // sometimes in dev mode, and only in dev mode, we get
-            // "Found interface com.google.gwt.user.client.Event, but class was expected"
-            return;
-        }
-
-        /* Disabled this for now, since those events will be fired while typing the letters z or r in a text field. */
-
-        //      if ((event.getTypeInt() != Event.ONKEYUP)) {
-        //            return;
-        //        }
-        //        if ((nativeEvent.getKeyCode() == 'z') || (nativeEvent.getKeyCode() == 'Z')) {
-        //            m_controller.undo();
-        //        }
-        //        if ((nativeEvent.getKeyCode() == 'r') || (nativeEvent.getKeyCode() == 'R')) {
-        //            m_controller.redo();
-        //        }
     }
 
     /** 

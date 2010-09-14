@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/I_CmsListItem.java,v $
- * Date   : $Date: 2010/09/14 14:22:47 $
- * Version: $Revision: 1.4 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/dnd/Attic/I_CmsDragHandle.java,v $
+ * Date   : $Date: 2010/09/14 14:22:30 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,41 +29,25 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.gwt.client.ui;
+package org.opencms.gwt.client.dnd;
 
-import org.opencms.gwt.client.dnd.I_CmsDraggable;
-
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.event.dom.client.HasMouseDownHandlers;
 
 /**
- * Provides a UI list item.<p>
+ * Drag and drop drag handle.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.1 $ 
  * 
  * @since 8.0.0
  */
-public interface I_CmsListItem extends I_CmsTruncable, I_CmsDraggable {
+public interface I_CmsDragHandle extends HasMouseDownHandlers {
 
     /**
-     * Adds a widget to this list item.<p>
+     * Returns the draggable item.<p>
      * 
-     * @param w the widget to add
+     * @return the draggable item
      */
-    void add(Widget w);
-
-    /**
-     * Returns the logical id, it is not the HTML id.<p>
-     *
-     * @return the id
-     */
-    String getId();
-
-    /**
-     * Sets the logical id, it is not the HTML id.<p>
-     *
-     * @param id the id to set
-     */
-    void setId(String id);
+    I_CmsDraggable getDraggable();
 }

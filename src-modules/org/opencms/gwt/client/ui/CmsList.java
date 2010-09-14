@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsList.java,v $
- * Date   : $Date: 2010/09/08 08:34:01 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2010/09/14 14:22:47 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,13 +31,11 @@
 
 package org.opencms.gwt.client.ui;
 
+import org.opencms.gwt.client.dnd.CmsDNDHandler;
+import org.opencms.gwt.client.dnd.I_CmsDraggable;
+import org.opencms.gwt.client.dnd.I_CmsDropTarget;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsListTreeCss;
-import org.opencms.gwt.client.ui.dnd.CmsDnDManager;
-import org.opencms.gwt.client.ui.dnd.CmsDropEvent;
-import org.opencms.gwt.client.ui.dnd.CmsDropPosition;
-import org.opencms.gwt.client.ui.dnd.I_CmsDraggable;
-import org.opencms.gwt.client.ui.dnd.I_CmsDropTarget;
 import org.opencms.gwt.client.util.CmsDomUtil;
 
 import java.util.HashMap;
@@ -57,7 +55,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 8.0.0
  */
@@ -70,10 +68,13 @@ public class CmsList<I extends I_CmsListItem> extends ComplexPanel implements I_
     protected boolean m_dndEnabled;
 
     /** The drag'n drop handler. */
-    protected CmsDnDManager m_dndManager;
+    protected CmsDNDHandler m_dndHandler;
 
     /** The current place holder. */
     protected Element m_placeholder;
+
+    /** The placeholder position index. */
+    protected int m_placeholderIndex = -1;
 
     /** The child width in px for truncation. */
     private int m_childWidth;
@@ -122,9 +123,9 @@ public class CmsList<I extends I_CmsListItem> extends ComplexPanel implements I_
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.dnd.I_CmsDropTarget#check(int, int)
+     * @see org.opencms.gwt.client.dnd.I_CmsDropTarget#checkPosition(int, int)
      */
-    public boolean check(int x, int y) {
+    public boolean checkPosition(int x, int y) {
 
         if (!isDropEnabled()) {
             return false;
@@ -160,9 +161,9 @@ public class CmsList<I extends I_CmsListItem> extends ComplexPanel implements I_
      *
      * @return the handler
      */
-    public CmsDnDManager getDnDManager() {
+    public CmsDNDHandler getDnDHandler() {
 
-        return m_dndManager;
+        return m_dndHandler;
     }
 
     /**
@@ -207,6 +208,15 @@ public class CmsList<I extends I_CmsListItem> extends ComplexPanel implements I_
     }
 
     /**
+     * @see org.opencms.gwt.client.dnd.I_CmsDropTarget#getPlaceholderIndex()
+     */
+    public int getPlaceholderIndex() {
+
+        return m_placeholderIndex;
+
+    }
+
+    /**
      * Inserts the given widget at the given position.<p>
      * 
      * @param widget the widget to insert
@@ -232,6 +242,15 @@ public class CmsList<I extends I_CmsListItem> extends ComplexPanel implements I_
     }
 
     /**
+     * @see org.opencms.gwt.client.dnd.I_CmsDropTarget#insertPlaceholder(com.google.gwt.dom.client.Element, int, int)
+     */
+    public void insertPlaceholder(Element placeholder, int x, int y) {
+
+        m_placeholder = placeholder;
+        repositionPlaceholder(x, y);
+    }
+
+    /**
      * Checks if drag'n drop is enabled.<p>
      *
      * @return <code>true</code> if drag'n drop is enabled
@@ -252,11 +271,27 @@ public class CmsList<I extends I_CmsListItem> extends ComplexPanel implements I_
     }
 
     /**
+     * @see org.opencms.gwt.client.dnd.I_CmsDropTarget#onDragStart(org.opencms.gwt.client.dnd.I_CmsDraggable)
+     */
+    public void onDragStart(I_CmsDraggable draggable) {
+
+        return;
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.dnd.I_CmsDropTarget#onDrop()
      */
     public void onDrop() {
 
-        // nothing to do here
+        removePlaceholder();
+    }
+
+    /**
+     * @see org.opencms.gwt.client.dnd.I_CmsDropTarget#onDrop(org.opencms.gwt.client.dnd.I_CmsDraggable)
+     */
+    public void onDrop(I_CmsDraggable draggable) {
+
+        return;
     }
 
     /**
@@ -274,6 +309,85 @@ public class CmsList<I extends I_CmsListItem> extends ComplexPanel implements I_
         }
         return result;
     }
+
+    /**
+     * @see org.opencms.gwt.client.ui.dnd.I_CmsDropTarget#setPlaceholder(int, int, CmsDropEvent)
+     */
+    //    public CmsDropPosition setPlaceholder(int x, int y, CmsDropEvent event) {
+    //
+    //        Element targetElement = getElement();
+    //        // TODO: use binary search instead of this linear search, will improve performance from O(n) to O(log(n))!
+    //        for (int index = 0; index < targetElement.getChildCount(); index++) {
+    //            Node node = targetElement.getChild(index);
+    //            if (!(node instanceof Element)) {
+    //                continue;
+    //            }
+    //            Element child = (Element)node;
+    //
+    //            String positioning = child.getStyle().getPosition();
+    //            if (positioning.equals(Position.ABSOLUTE.getCssName()) || positioning.equals(Position.FIXED.getCssName())) {
+    //                // only not 'position:absolute' elements into account, 
+    //                // not visible children will be excluded in the next condition
+    //                continue;
+    //            }
+    //
+    //            // check if the mouse pointer is within the width of the element 
+    //            int left = CmsDomUtil.getRelativeX(x, child);
+    //            if ((left <= 0) || (left >= child.getOffsetWidth())) {
+    //                continue;
+    //            }
+    //
+    //            // check if the mouse pointer is within the height of the element 
+    //            int top = CmsDomUtil.getRelativeY(y, child);
+    //            int height = child.getOffsetHeight();
+    //            if ((top <= 0) || (top >= height)) {
+    //                continue;
+    //            }
+    //
+    //            CmsDropPosition position = null;
+    //            boolean checkPos = ((event.getTarget() == this) && (event.getPosition() != null));
+    //            I_CmsDraggable draggable = event.getDraggable();
+    //            if (draggable.getElement() == child) {
+    //                // this case occurs when start dragging
+    //                if (checkPos && (event.getPosition().getPosition() == index)) {
+    //                    // nothing has changed
+    //                    return null;
+    //                }
+    //                // insert place holder before the current child
+    //                removePlaceholder();
+    //                m_placeholder = draggable.getPlaceHolder(this);
+    //                targetElement.insertBefore(m_placeholder, child);
+    //                position = new CmsDropPosition(null, index, null, m_placeholder);
+    //            } else if (top < height / 2) {
+    //                // the mouse pointer is within the upper half of the element
+    //                if (checkPos && (event.getPosition().getPosition() == index)) {
+    //                    // nothing has changed
+    //                    return null;
+    //                }
+    //                removePlaceholder();
+    //                m_placeholder = draggable.getPlaceHolder(this);
+    //                targetElement.insertBefore(m_placeholder, child);
+    //                position = new CmsDropPosition(null, index, null, m_placeholder);
+    //            } else {
+    //                // the mouse pointer is within the bottom half of the element
+    //                if (checkPos && (event.getPosition().getPosition() == index + 1)) {
+    //                    // nothing has changed
+    //                    return null;
+    //                }
+    //                removePlaceholder();
+    //                m_placeholder = draggable.getPlaceHolder(this);
+    //                targetElement.insertAfter(m_placeholder, child);
+    //                position = new CmsDropPosition(null, index + 1, null, m_placeholder);
+    //            }
+    //            if (draggable instanceof CmsListItem) {
+    //                // add name if available
+    //                String name = ((CmsListItem)draggable).getId();
+    //                position.setName(name);
+    //            }
+    //            return position;
+    //        }
+    //        return null;
+    //    }
 
     /**
      * Removes an item from the list.<p>
@@ -316,51 +430,13 @@ public class CmsList<I extends I_CmsListItem> extends ComplexPanel implements I_
         }
         m_placeholder.removeFromParent();
         m_placeholder = null;
+        m_placeholderIndex = -1;
     }
 
     /**
-     * Enables/Disables drag'n drop.<p>
-     * 
-     * @param enabled <code>true</code> to enable drag'n drop 
+     * @see org.opencms.gwt.client.dnd.I_CmsDropTarget#repositionPlaceholder(int, int)
      */
-    public void setDnDEnabled(boolean enabled) {
-
-        if (m_dndEnabled == enabled) {
-            return;
-        }
-        m_dndEnabled = enabled;
-        if (m_dndManager == null) {
-            // set default DnD manager
-            m_dndManager = new CmsDnDManager();
-            // add this as a drop target
-            m_dndManager.addDragTarget(this);
-        }
-    }
-
-    /**
-     * Sets the drag'n drop handler.<p>
-     *
-     * @param handler the handler to set
-     */
-    public void setDnDManager(CmsDnDManager handler) {
-
-        m_dndManager = handler;
-    }
-
-    /**
-     * Enables/disables dropping.<p>
-     *
-     * @param enabled <code>true</code> to enable, or <code>false</code> to disable
-     */
-    public void setDropEnabled(boolean enabled) {
-
-        m_dropEnabled = enabled;
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.dnd.I_CmsDropTarget#setPlaceholder(int, int, CmsDropEvent)
-     */
-    public CmsDropPosition setPlaceholder(int x, int y, CmsDropEvent event) {
+    public void repositionPlaceholder(int x, int y) {
 
         Element targetElement = getElement();
         // TODO: use binary search instead of this linear search, will improve performance from O(n) to O(log(n))!
@@ -370,7 +446,6 @@ public class CmsList<I extends I_CmsListItem> extends ComplexPanel implements I_
                 continue;
             }
             Element child = (Element)node;
-
             String positioning = child.getStyle().getPosition();
             if (positioning.equals(Position.ABSOLUTE.getCssName()) || positioning.equals(Position.FIXED.getCssName())) {
                 // only not 'position:absolute' elements into account, 
@@ -390,50 +465,72 @@ public class CmsList<I extends I_CmsListItem> extends ComplexPanel implements I_
             if ((top <= 0) || (top >= height)) {
                 continue;
             }
+            if (child == m_placeholder) {
+                return;
+            }
 
-            CmsDropPosition position = null;
-            boolean checkPos = ((event.getTarget() == this) && (event.getPosition() != null));
-            I_CmsDraggable draggable = event.getDraggable();
-            if (draggable.getElement() == child) {
-                // this case occurs when start dragging
-                if (checkPos && (event.getPosition().getPosition() == index)) {
-                    // nothing has changed
-                    return null;
-                }
-                // insert place holder before the current child
-                removePlaceholder();
-                m_placeholder = draggable.getPlaceHolder(this);
+            if (top < height / 2) {
                 targetElement.insertBefore(m_placeholder, child);
-                position = new CmsDropPosition(null, index, null, m_placeholder);
-            } else if (top < height / 2) {
-                // the mouse pointer is within the upper half of the element
-                if (checkPos && (event.getPosition().getPosition() == index)) {
-                    // nothing has changed
-                    return null;
-                }
-                removePlaceholder();
-                m_placeholder = draggable.getPlaceHolder(this);
-                targetElement.insertBefore(m_placeholder, child);
-                position = new CmsDropPosition(null, index, null, m_placeholder);
+                m_placeholderIndex = index;
+                return;
             } else {
-                // the mouse pointer is within the bottom half of the element
-                if (checkPos && (event.getPosition().getPosition() == index + 1)) {
-                    // nothing has changed
-                    return null;
-                }
-                removePlaceholder();
-                m_placeholder = draggable.getPlaceHolder(this);
                 targetElement.insertAfter(m_placeholder, child);
-                position = new CmsDropPosition(null, index + 1, null, m_placeholder);
+                m_placeholderIndex = index + 1;
+                return;
             }
-            if (draggable instanceof CmsListItem) {
-                // add name if available
-                String name = ((CmsListItem)draggable).getId();
-                position.setName(name);
-            }
-            return position;
+
         }
-        return null;
+        // not over any child position
+        int top = CmsDomUtil.getRelativeY(y, targetElement);
+        int offsetHeight = targetElement.getOffsetHeight();
+        if ((top >= offsetHeight / 2)) {
+            // over top half, insert as first child
+            targetElement.insertFirst(m_placeholder);
+            m_placeholderIndex = 0;
+            return;
+        }
+        // over bottom half, insert as last child
+        targetElement.appendChild(m_placeholder);
+        m_placeholderIndex = targetElement.getChildCount() - 1;
+    }
+
+    /**
+     * Enables/Disables drag'n drop.<p>
+     * 
+     * @param enabled <code>true</code> to enable drag'n drop 
+     */
+    public void setDnDEnabled(boolean enabled) {
+
+        if (m_dndEnabled == enabled) {
+            return;
+        }
+        m_dndEnabled = enabled;
+        //        if (m_dndManager == null) {
+        //            // set default DnD manager
+        //            m_dndManager = new CmsDnDManager();
+        //            // add this as a drop target
+        //            m_dndManager.addDragTarget(this);
+        //        }
+    }
+
+    /**
+     * Sets the drag'n drop handler.<p>
+     *
+     * @param handler the handler to set
+     */
+    public void setDNDHandler(CmsDNDHandler handler) {
+
+        m_dndHandler = handler;
+    }
+
+    /**
+     * Enables/disables dropping.<p>
+     *
+     * @param enabled <code>true</code> to enable, or <code>false</code> to disable
+     */
+    public void setDropEnabled(boolean enabled) {
+
+        m_dropEnabled = enabled;
     }
 
     /**

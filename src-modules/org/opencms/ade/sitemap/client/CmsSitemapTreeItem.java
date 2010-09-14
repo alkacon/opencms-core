@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapTreeItem.java,v $
- * Date   : $Date: 2010/09/09 15:02:20 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2010/09/14 14:22:47 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,8 +32,6 @@
 package org.opencms.ade.sitemap.client;
 
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
-import org.opencms.ade.sitemap.client.edit.CmsDnDEntryHandler;
-import org.opencms.ade.sitemap.client.edit.CmsSitemapEntryEditor;
 import org.opencms.ade.sitemap.client.hoverbar.CmsSitemapHoverbar;
 import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeEdit;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsLayoutBundle;
@@ -41,18 +39,13 @@ import org.opencms.ade.sitemap.client.ui.css.I_CmsSitemapItemCss;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.file.CmsResource;
 import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.dnd.I_CmsDropTarget;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsAlertDialog;
-import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsListItemWidget.I_CmsTitleEditHandler;
-import org.opencms.gwt.client.ui.dnd.CmsDropEvent;
-import org.opencms.gwt.client.ui.dnd.CmsDropPosition;
-import org.opencms.gwt.client.ui.dnd.I_CmsDraggable;
-import org.opencms.gwt.client.ui.dnd.I_CmsDropTarget;
 import org.opencms.gwt.client.ui.input.CmsLabel;
 import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem;
-import org.opencms.gwt.client.ui.tree.CmsTree;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.sitemap.CmsSitemapManager;
@@ -62,7 +55,6 @@ import java.util.Set;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.RepeatingCommand;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -71,7 +63,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 8.0.0
  * 
@@ -202,93 +194,6 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.CmsListItem#beforeDrop(org.opencms.gwt.client.ui.dnd.CmsDropEvent, com.google.gwt.user.client.rpc.AsyncCallback)
-     */
-    @Override
-    public void beforeDrop(final CmsDropEvent e, final AsyncCallback<CmsDropEvent> callback) {
-
-        if (!(e.getTarget() instanceof CmsTree<?>)) {
-
-            if (e.getTarget() instanceof CmsList<?>) {
-                // a list so let's check ids
-                super.beforeDrop(e, callback);
-                return;
-            }
-
-            // not a list so i can not check ids
-            callback.onSuccess(e);
-            return;
-        }
-
-        CmsTree<?> tree = (CmsTree<?>)e.getTarget();
-        // get the drop position
-        String destPath = e.getPosition().getInfo() + e.getPosition().getName() + "/";
-
-        // if the path already exists
-        Object item = tree.getItemByPath(destPath);
-        if (item == null) {
-            // the id does not exist, so everything is ok
-            callback.onSuccess(e);
-            return;
-        }
-        I_CmsDraggable draggable = e.getDraggable();
-        if (draggable instanceof CmsTreeItem) {
-            CmsTreeItem src = (CmsTreeItem)draggable;
-            if ((src.getTree() == e.getTarget()) && destPath.equals(src.getPath())) {
-                // just a position change
-                callback.onSuccess(e);
-                return;
-            }
-        }
-
-        CmsSitemapController controller = CmsSitemapView.getInstance().getController();
-        // collision detected
-        (new CmsSitemapEntryEditor(new CmsDnDEntryHandler(
-            controller,
-            controller.getEntry(getPath()),
-            destPath,
-            new AsyncCallback<String>() {
-
-                /**
-                 * @see com.google.gwt.user.client.rpc.AsyncCallback#onFailure(java.lang.Throwable)
-                 */
-                public void onFailure(Throwable caught) {
-
-                    // cancel drag'n drop action
-                    callback.onFailure(null);
-                }
-
-                /**
-                 * @see com.google.gwt.user.client.rpc.AsyncCallback#onSuccess(java.lang.Object)
-                 */
-                public void onSuccess(String newName) {
-
-                    // finalize dnd action
-                    e.getPosition().setName(newName);
-                    callback.onSuccess(e);
-                }
-            }))).startAndValidate();
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.CmsListItem#canDrop(org.opencms.gwt.client.ui.dnd.I_CmsDropTarget, CmsDropPosition)
-     */
-    @Override
-    public boolean canDrop(I_CmsDropTarget target, CmsDropPosition position) {
-
-        if (!super.canDrop(target, position)) {
-            return false;
-        }
-
-        CmsSitemapController controller = CmsSitemapView.getInstance().getController();
-        boolean cancel = !controller.isDirty();
-        cancel &= !CmsCoreProvider.get().lockAndCheckModification(
-            CmsCoreProvider.get().getUri(),
-            controller.getData().getTimestamp());
-        return !cancel;
-    }
-
-    /**
      * Returns the original site path, in case this entry has been moved or renamed.<p>
      *
      * @return the original site path
@@ -364,16 +269,15 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.CmsListItem#onDragStart()
+     * @see org.opencms.gwt.client.ui.CmsListItem#onStartDrag(org.opencms.gwt.client.dnd.I_CmsDropTarget)
      */
     @Override
-    public boolean onDragStart() {
+    public void onStartDrag(I_CmsDropTarget target) {
 
         CmsSitemapHoverbar hoverbar = getHoverbar();
         if (hoverbar != null) {
             hoverbar.deattach();
         }
-        return super.onDragStart();
     }
 
     /**

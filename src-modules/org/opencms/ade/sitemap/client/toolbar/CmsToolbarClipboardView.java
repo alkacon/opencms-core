@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/toolbar/Attic/CmsToolbarClipboardView.java,v $
- * Date   : $Date: 2010/09/08 08:34:01 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/09/14 14:22:47 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,25 +38,15 @@ import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.client.control.I_CmsSitemapChangeHandler;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsImageBundle;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
+import org.opencms.gwt.client.dnd.I_CmsDragHandle;
+import org.opencms.gwt.client.dnd.I_CmsDraggable;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsPushButton;
-import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
-import org.opencms.gwt.client.ui.dnd.CmsDropEvent;
-import org.opencms.gwt.client.ui.dnd.I_CmsDragHandle;
-import org.opencms.gwt.client.ui.dnd.I_CmsDraggable;
-import org.opencms.gwt.client.ui.dnd.I_CmsDropHandler;
-import org.opencms.gwt.client.ui.dnd.I_CmsDropTarget;
-import org.opencms.gwt.client.ui.tree.CmsTreeItem;
-import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
 
-import java.util.List;
-
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 
@@ -65,7 +55,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -101,74 +91,6 @@ public class CmsToolbarClipboardView {
 
             return m_entry;
         }
-
-        /**
-         * @see org.opencms.gwt.client.ui.CmsListItem#getDragHelper(I_CmsDropTarget target)
-         */
-        @Override
-        public Element getDragHelper(I_CmsDropTarget target) {
-
-            Element dragHelper = super.getDragHelper(target);
-            dragHelper.getStyle().setListStyleType(Style.ListStyleType.NONE);
-            //            dragHelper.getParentElement().removeClassName(
-            //                org.opencms.ade.sitemap.client.ui.css.I_CmsLayoutBundle.INSTANCE.clipboardCss().clipboardList());
-
-            // HACK: i do not why the listWidget is not cloned :(
-            List<com.google.gwt.dom.client.Element> elemsX = CmsDomUtil.getElementsByClass(
-                I_CmsLayoutBundle.INSTANCE.floatDecoratedPanelCss().primary(),
-                CmsDomUtil.Tag.div,
-                dragHelper);
-            for (com.google.gwt.dom.client.Element elem : elemsX) {
-                if (elem.getChildCount() > 0) {
-                    break;
-                }
-                CmsDebugLog.getInstance().printLine("Using weird hack for helper");
-                elem.appendChild(CmsDomUtil.clone(getListItemWidget().getElement()));
-                break;
-            }
-
-            m_clipboardButton.hide();
-            return dragHelper;
-        }
-
-        /**
-         * @see org.opencms.gwt.client.ui.CmsListItem#getPlaceHolder(org.opencms.gwt.client.ui.dnd.I_CmsDropTarget)
-         */
-        @Override
-        public Element getPlaceHolder(I_CmsDropTarget target) {
-
-            if (m_placeholder == null) {
-                CmsTreeItem placeholder = new CmsTreeItem(true, getListItemWidget());
-                if (!m_entry.getSubEntries().isEmpty()) {
-                    placeholder.addChild(new CmsTreeItem(false, null));
-                }
-                m_placeholder = cloneForPlaceholder(placeholder);
-            }
-            return m_placeholder;
-        }
-
-        /**
-         * @see org.opencms.gwt.client.ui.CmsListItem#onDragCancel()
-         */
-        @Override
-        public void onDragCancel() {
-
-            super.onDragCancel();
-            m_clipboardButton.show();
-            m_clipboardButton.openMenu();
-        }
-
-        /**
-         * @see org.opencms.gwt.client.ui.CmsListItem#onDrop()
-         */
-        @Override
-        public void onDrop() {
-
-            super.onDrop();
-            m_clipboardButton.show();
-            m_clipboardButton.closeMenu();
-
-        }
     }
 
     /**
@@ -186,11 +108,11 @@ public class CmsToolbarClipboardView {
             setImageClass(I_CmsImageBundle.INSTANCE.buttonCss().hoverbarMove());
             setTitle(Messages.get().key(Messages.GUI_HOVERBAR_MOVE_0));
             setShowBorder(false);
-            addMouseDownHandler(CmsSitemapView.getInstance().getTree().getDnDManager().getMouseDownHandler());
+            addMouseDownHandler(CmsSitemapView.getInstance().getTree().getDnDHandler());
         }
 
         /**
-         * @see org.opencms.gwt.client.ui.dnd.I_CmsDragHandle#getDraggable()
+         * @see org.opencms.gwt.client.dnd.I_CmsDragHandle#getDraggable()
          */
         public I_CmsDraggable getDraggable() {
 
@@ -232,7 +154,7 @@ public class CmsToolbarClipboardView {
 
         m_deleted = new CmsList<CmsListItem>();
         // allow dragging to the sitemap tree
-        m_deleted.setDnDManager(CmsSitemapView.getInstance().getTree().getDnDManager());
+        m_deleted.setDNDHandler(CmsSitemapView.getInstance().getTree().getDnDHandler());
         // enabled dnd
         m_deleted.setDnDEnabled(true);
         // prevent dragging to the deleted list
@@ -254,28 +176,12 @@ public class CmsToolbarClipboardView {
                 changeEvent.getChange().applyToClipboardView(CmsToolbarClipboardView.this);
             }
         });
-
-        m_deleted.getDnDManager().addDropHandler(new I_CmsDropHandler() {
-
-            /**
-             * @see org.opencms.gwt.client.ui.dnd.I_CmsDropHandler#onDrop(org.opencms.gwt.client.ui.dnd.CmsDropEvent)
-             */
-            public void onDrop(CmsDropEvent dropEvent) {
-
-                if (!(dropEvent.getDraggable() instanceof CmsClipboardDeletedItem)) {
-                    // handle only drop from the deleted list
-                    return;
-                }
-                CmsClientSitemapEntry entry = ((CmsClipboardDeletedItem)dropEvent.getDraggable()).getEntry();
-                entry.updateSitePath(dropEvent.getPosition().getInfo() + entry.getName() + "/");
-                entry.setPosition(dropEvent.getPosition().getPosition());
-                CmsSitemapView.getInstance().getController().create(entry);
-            }
-        });
     }
 
     /**
-     * @param entry
+     * Adds an deleted entry.<p>
+     * 
+     * @param entry the deleted entry
      */
     public void addDeleted(CmsClientSitemapEntry entry) {
 
@@ -285,8 +191,10 @@ public class CmsToolbarClipboardView {
     }
 
     /**
-     * @param entry
-     * @param previousPath 
+     * Adds a modified entry.<p>
+     * 
+     * @param entry the entry
+     * @param previousPath the previous path
      */
     public void addModified(CmsClientSitemapEntry entry, String previousPath) {
 
@@ -389,7 +297,9 @@ public class CmsToolbarClipboardView {
     }
 
     /**
-     * @param sitePath
+     * Removes an entry from the deleted list.<p>
+     * 
+     * @param sitePath the former sitemap path of the entry
      */
     protected void removeDeleted(String sitePath) {
 
@@ -401,7 +311,9 @@ public class CmsToolbarClipboardView {
     }
 
     /**
-     * @param sitePath
+     * Removes an entry from the modified list.<p>
+     * 
+     * @param sitePath the former sitemap path of the entry
      */
     protected void removeModified(String sitePath) {
 

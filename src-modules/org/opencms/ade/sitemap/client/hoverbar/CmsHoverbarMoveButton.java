@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsHoverbarMoveButton.java,v $
- * Date   : $Date: 2010/06/24 09:05:26 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/09/14 14:22:47 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,9 +35,9 @@ import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsImageBundle;
+import org.opencms.gwt.client.dnd.I_CmsDragHandle;
+import org.opencms.gwt.client.dnd.I_CmsDraggable;
 import org.opencms.gwt.client.ui.CmsPushButton;
-import org.opencms.gwt.client.ui.dnd.I_CmsDragHandle;
-import org.opencms.gwt.client.ui.dnd.I_CmsDraggable;
 
 import com.google.gwt.event.shared.HandlerRegistration;
 
@@ -46,7 +46,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  */
@@ -81,7 +81,7 @@ public class CmsHoverbarMoveButton extends CmsPushButton implements I_CmsDragHan
                     disable(Messages.get().key(Messages.GUI_DISABLED_ROOT_ITEM_0));
                 } else {
                     enable();
-                    m_mouseDownHandlerReg = addMouseDownHandler(CmsSitemapView.getInstance().getTree().getDnDManager().getMouseDownHandler());
+                    m_mouseDownHandlerReg = addMouseDownHandler(CmsSitemapView.getInstance().getTree().getDnDHandler());
                 }
             }
         });
@@ -101,7 +101,7 @@ public class CmsHoverbarMoveButton extends CmsPushButton implements I_CmsDragHan
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.dnd.I_CmsDragHandle#getDraggable()
+     * @see org.opencms.gwt.client.dnd.I_CmsDragHandle#getDraggable()
      */
     public I_CmsDraggable getDraggable() {
 

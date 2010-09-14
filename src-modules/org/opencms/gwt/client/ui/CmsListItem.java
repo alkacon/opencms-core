@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItem.java,v $
- * Date   : $Date: 2010/09/08 08:34:01 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2010/09/14 14:22:47 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,12 +31,9 @@
 
 package org.opencms.gwt.client.ui;
 
+import org.opencms.gwt.client.dnd.I_CmsDropTarget;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsListItemCss;
-import org.opencms.gwt.client.ui.dnd.CmsDropEvent;
-import org.opencms.gwt.client.ui.dnd.CmsDropPosition;
-import org.opencms.gwt.client.ui.dnd.I_CmsDraggable;
-import org.opencms.gwt.client.ui.dnd.I_CmsDropTarget;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.util.CmsDomUtil;
 
@@ -50,8 +47,6 @@ import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -61,7 +56,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  *  
  * @since 8.0.0 
  */
@@ -116,8 +111,6 @@ public class CmsListItem extends Composite implements I_CmsListItem {
     /** The drag helper. */
     private Element m_helper;
 
-    private String m_currentWidth;
-
     /** 
      * Default constructor.<p>
      */
@@ -160,68 +153,68 @@ public class CmsListItem extends Composite implements I_CmsListItem {
     /**
      * @see org.opencms.gwt.client.ui.dnd.I_CmsDraggable#beforeDrop(CmsDropEvent, AsyncCallback)
      */
-    public void beforeDrop(CmsDropEvent e, AsyncCallback<CmsDropEvent> callback) {
-
-        if (getParentList().getElement() == e.getTarget().getElement()) {
-            // if the same list there should not be any conflict
-            callback.onSuccess(e);
-            return;
-        }
-        if (!(e.getTarget() instanceof CmsList<?>)) {
-            // not a list so i can not check ids
-            callback.onSuccess(e);
-            return;
-        }
-
-        // get the id to use while dropping
-        String id = e.getPosition().getName();
-
-        // if the id already exists
-        CmsList<?> list = (CmsList<?>)e.getTarget();
-        if (list.getItem(id) == null) {
-            // the id does not exist, so everything is ok
-            callback.onSuccess(e);
-            return;
-        }
-
-        I_CmsDraggable draggable = e.getDraggable();
-        if (draggable instanceof CmsListItem) {
-            CmsListItem src = (CmsListItem)draggable;
-            if ((src.getParentList() == e.getTarget()) && id.equals(src.getId())) {
-                // just a position change
-                callback.onSuccess(e);
-                return;
-            }
-        }
-
-        String newName = id;
-        // TODO: use a nicer dialog, with blacklist for already used ids 
-        while ((newName != null) && (list.getItem(newName) != null)) {
-            // TODO: i18n
-            newName = Window.prompt("duplicated name, please enter a new one", newName);
-        }
-        if (newName == null) {
-            callback.onFailure(null);
-        } else {
-            e.getPosition().setName(newName);
-            callback.onSuccess(new CmsDropEvent(CmsListItem.this, e.getTarget(), e.getPosition()));
-        }
-    }
+    //    public void beforeDrop(CmsDropEvent e, AsyncCallback<CmsDropEvent> callback) {
+    //
+    //        if (getParentList().getElement() == e.getTarget().getElement()) {
+    //            // if the same list there should not be any conflict
+    //            callback.onSuccess(e);
+    //            return;
+    //        }
+    //        if (!(e.getTarget() instanceof CmsList<?>)) {
+    //            // not a list so i can not check ids
+    //            callback.onSuccess(e);
+    //            return;
+    //        }
+    //
+    //        // get the id to use while dropping
+    //        String id = e.getPosition().getName();
+    //
+    //        // if the id already exists
+    //        CmsList<?> list = (CmsList<?>)e.getTarget();
+    //        if (list.getItem(id) == null) {
+    //            // the id does not exist, so everything is ok
+    //            callback.onSuccess(e);
+    //            return;
+    //        }
+    //
+    //        I_CmsDraggable draggable = e.getDraggable();
+    //        if (draggable instanceof CmsListItem) {
+    //            CmsListItem src = (CmsListItem)draggable;
+    //            if ((src.getParentList() == e.getTarget()) && id.equals(src.getId())) {
+    //                // just a position change
+    //                callback.onSuccess(e);
+    //                return;
+    //            }
+    //        }
+    //
+    //        String newName = id;
+    //        // TODO: use a nicer dialog, with blacklist for already used ids 
+    //        while ((newName != null) && (list.getItem(newName) != null)) {
+    //            // TODO: i18n
+    //            newName = Window.prompt("duplicated name, please enter a new one", newName);
+    //        }
+    //        if (newName == null) {
+    //            callback.onFailure(null);
+    //        } else {
+    //            e.getPosition().setName(newName);
+    //            callback.onSuccess(new CmsDropEvent(CmsListItem.this, e.getTarget(), e.getPosition()));
+    //        }
+    //    }
 
     /**
      * @see org.opencms.gwt.client.ui.dnd.I_CmsDraggable#canDrop(org.opencms.gwt.client.ui.dnd.I_CmsDropTarget, CmsDropPosition)
      */
-    public boolean canDrop(I_CmsDropTarget target, CmsDropPosition position) {
-
-        if (target != getParentList()) {
-            // another target does not matter
-            return true;
-        }
-        int pPos = position.getPosition();
-        int pos = CmsDomUtil.getPosition(getElement());
-        // since this is hidden, we prevent dropping if the place holder is just before or just after this
-        return (pPos < pos - 1) || (pPos > pos + 1);
-    }
+    //    public boolean canDrop(I_CmsDropTarget target, CmsDropPosition position) {
+    //
+    //        if (target != getParentList()) {
+    //            // another target does not matter
+    //            return true;
+    //        }
+    //        int pPos = position.getPosition();
+    //        int pos = CmsDomUtil.getPosition(getElement());
+    //        // since this is hidden, we prevent dropping if the place holder is just before or just after this
+    //        return (pPos < pos - 1) || (pPos > pos + 1);
+    //    }
 
     /**
      * Gets the checkbox of this list item.<p>
@@ -236,13 +229,12 @@ public class CmsListItem extends Composite implements I_CmsListItem {
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.dnd.I_CmsDraggable#getDragHelper(I_CmsDropTarget)
+     * @see org.opencms.gwt.client.dnd.I_CmsDraggable#getDragHelper(I_CmsDropTarget)
      */
     public Element getDragHelper(I_CmsDropTarget target) {
 
         if (m_helper == null) {
             m_helper = CmsDomUtil.clone(getElement());
-
             // remove all decorations
             List<com.google.gwt.dom.client.Element> elems = CmsDomUtil.getElementsByClass(
                 I_CmsLayoutBundle.INSTANCE.floatDecoratedPanelCss().decorationBox(),
@@ -258,16 +250,14 @@ public class CmsListItem extends Composite implements I_CmsListItem {
             style.setMargin(0, Unit.PX);
             style.setZIndex(100);
             m_helper.addClassName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().dragging());
-            style.setProperty(CmsDomUtil.Style.width.name(), m_currentWidth);
+            style.setWidth(getElement().getOffsetWidth(), Unit.PX);
 
             // we append the drag helper to the body to prevent any kind of issues 
             // (ie when the parent is styled with overflow:hidden)
             // and we put it additionally inside a absolute positioned provisional parent  
             // ON the original parent for the eventual animation when releasing 
             m_provisionalParent = DOM.createElement(getElement().getParentElement().getTagName());
-            //           m_provisionalParent.setClassName(getElement().getParentElement().getClassName());
             m_provisionalParent.appendChild(m_helper);
-            m_provisionalParent.getStyle().setWidth(getElement().getOffsetWidth(), Style.Unit.PX);
             m_provisionalParent.getStyle().setPosition(Position.ABSOLUTE);
             Element listEl = getParent().getElement();
             m_provisionalParent.getStyle().setTop(listEl.getAbsoluteTop(), Unit.PX);
@@ -315,11 +305,10 @@ public class CmsListItem extends Composite implements I_CmsListItem {
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.dnd.I_CmsDraggable#getPlaceHolder(I_CmsDropTarget)
+     * @see org.opencms.gwt.client.dnd.I_CmsDraggable#getPlaceholder(I_CmsDropTarget)
      */
-    public Element getPlaceHolder(I_CmsDropTarget target) {
+    public Element getPlaceholder(I_CmsDropTarget target) {
 
-        setVisible(false);
         if (m_placeholder == null) {
             m_placeholder = cloneForPlaceholder(this);
         }
@@ -327,20 +316,11 @@ public class CmsListItem extends Composite implements I_CmsListItem {
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.dnd.I_CmsDraggable#onDragCancel()
+     * @see org.opencms.gwt.client.dnd.I_CmsDraggable#onDragCancel()
      */
     public void onDragCancel() {
 
-        // override
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.dnd.I_CmsDraggable#onDragStart()
-     */
-    public boolean onDragStart() {
-
-        m_currentWidth = CmsDomUtil.getCurrentStyle(getElement(), CmsDomUtil.Style.width);
-        return true;
+        clearDrag();
     }
 
     /**
@@ -364,24 +344,16 @@ public class CmsListItem extends Composite implements I_CmsListItem {
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.dnd.I_CmsDraggable#onDrop()
-     */
-    public void onDrop() {
-
-        // override
-    }
-
-    /**
      * @see org.opencms.gwt.client.ui.dnd.I_CmsDraggable#resetPlaceHolder()
      */
-    public CmsDropPosition resetPlaceHolder() {
-
-        m_placeholder = getPlaceHolder(getParentList());
-        // HACK: i do not like this very much :(
-        getParentList().setPlaceholder(m_placeholder);
-        getParent().getElement().insertAfter(m_placeholder, getElement());
-        return new CmsDropPosition(getId(), CmsDomUtil.getPosition(m_placeholder), null, m_placeholder);
-    }
+    //    public CmsDropPosition resetPlaceHolder() {
+    //
+    //        m_placeholder = getPlaceHolder(getParentList());
+    //        // HACK: i do not like this very much :(
+    //        getParentList().setPlaceholder(m_placeholder);
+    //        getParent().getElement().insertAfter(m_placeholder, getElement());
+    //        return new CmsDropPosition(getId(), CmsDomUtil.getPosition(m_placeholder), null, m_placeholder);
+    //    }
 
     /**
      * @see org.opencms.gwt.client.ui.I_CmsListItem#setId(java.lang.String)
@@ -518,4 +490,40 @@ public class CmsListItem extends Composite implements I_CmsListItem {
         initContent();
     }
 
+    /**
+     * @see org.opencms.gwt.client.dnd.I_CmsDraggable#onStartDrag(org.opencms.gwt.client.dnd.I_CmsDropTarget)
+     */
+    public void onStartDrag(I_CmsDropTarget target) {
+
+        setVisible(false);
+    }
+
+    /**
+     * @see org.opencms.gwt.client.dnd.I_CmsDraggable#onDrop(org.opencms.gwt.client.dnd.I_CmsDropTarget)
+     */
+    public void onDrop(I_CmsDropTarget target) {
+
+        clearDrag();
+    }
+
+    /**
+     * @see org.opencms.gwt.client.dnd.I_CmsDraggable#getParentTarget()
+     */
+    public I_CmsDropTarget getParentTarget() {
+
+        return getParentList();
+    }
+
+    private void clearDrag() {
+
+        if (m_helper != null) {
+            m_helper.removeFromParent();
+            m_helper = null;
+        }
+        if (m_provisionalParent != null) {
+            m_provisionalParent.removeFromParent();
+            m_provisionalParent = null;
+        }
+        setVisible(true);
+    }
 }

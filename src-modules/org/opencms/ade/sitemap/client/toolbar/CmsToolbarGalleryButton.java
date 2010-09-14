@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/toolbar/Attic/CmsToolbarGalleryButton.java,v $
- * Date   : $Date: 2010/09/08 08:34:01 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/09/14 14:22:47 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -83,7 +83,7 @@ public class CmsToolbarGalleryButton extends CmsMenuButton implements I_CmsToolb
 
                         SimplePanel tabsContainer = new SimplePanel();
                         tabsContainer.addStyleName(I_CmsLayoutBundle.INSTANCE.clipboardCss().menuTabContainer());
-                        tabsContainer.add(CmsGalleryFactory.createDialog(CmsSitemapView.getInstance().getTree().getDnDManager()));
+                        tabsContainer.add(CmsGalleryFactory.createDialog(CmsSitemapView.getInstance().getTree().getDnDHandler()));
                         m_content = new FlowPanel();
                         m_content.setStyleName(I_CmsLayoutBundle.INSTANCE.clipboardCss().menuContent());
                         m_content.add(tabsContainer);
