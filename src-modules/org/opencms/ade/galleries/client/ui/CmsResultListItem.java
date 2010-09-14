@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsResultListItem.java,v $
- * Date   : $Date: 2010/09/13 06:47:41 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/09/14 14:20:24 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,14 +33,14 @@ package org.opencms.ade.galleries.client.ui;
 
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.shared.CmsResultItemBean;
+import org.opencms.gwt.client.dnd.CmsDNDHandler;
+import org.opencms.gwt.client.dnd.I_CmsDragHandle;
+import org.opencms.gwt.client.dnd.I_CmsDraggable;
 import org.opencms.gwt.client.draganddrop.I_CmsDragHandler;
 import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
-import org.opencms.gwt.client.ui.dnd.CmsDnDManager;
-import org.opencms.gwt.client.ui.dnd.I_CmsDragHandle;
-import org.opencms.gwt.client.ui.dnd.I_CmsDraggable;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
@@ -54,7 +54,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.
  */
@@ -73,7 +73,7 @@ public class CmsResultListItem extends CmsListItem {
         }
 
         /**
-         * @see org.opencms.gwt.client.ui.dnd.I_CmsDragHandle#getDraggable()
+         * @see org.opencms.gwt.client.dnd.I_CmsDragHandle#getDraggable()
          */
         public I_CmsDraggable getDraggable() {
 
@@ -87,6 +87,19 @@ public class CmsResultListItem extends CmsListItem {
 
     /** The resource type name of the resource. */
     private String m_resourceType;
+
+    /** The vfs path. */
+    private String m_vfsPath;
+
+    /**
+     * Returns the vfs path.<p>
+     *
+     * @return the vfs path
+     */
+    public String getVfsPath() {
+
+        return m_vfsPath;
+    }
 
     /** The select button. */
     private CmsPushButton m_selectButton;
@@ -107,18 +120,19 @@ public class CmsResultListItem extends CmsListItem {
      * 
      * @param resultItem the result item
      * @param dragHandler the drag handler (container page)
-     * @param dndManager the DnD manager (site map)
+     * @param dndHandler the drag and drop handler
      */
-    public CmsResultListItem(CmsResultItemBean resultItem, I_CmsDragHandler<?, ?> dragHandler, CmsDnDManager dndManager) {
+    public CmsResultListItem(CmsResultItemBean resultItem, I_CmsDragHandler<?, ?> dragHandler, CmsDNDHandler dndHandler) {
 
         CmsListItemWidget resultItemWidget;
         CmsListInfoBean infoBean = new CmsListInfoBean(resultItem.getTitle(), resultItem.getDescription(), null);
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(resultItem.getExcerpt())) {
             infoBean.addAdditionalInfo(Messages.get().key(Messages.GUI_RESULT_LABEL_EXCERPT_0), resultItem.getExcerpt());
         }
+        m_vfsPath = resultItem.getPath();
         if (dragHandler != null) {
             resultItemWidget = dragHandler.createDraggableListItemWidget(infoBean, resultItem.getClientId());
-        } else if (dndManager != null) {
+        } else if (dndHandler != null) {
             resultItemWidget = new CmsResultItemWidget(infoBean, resultItem.getType(), resultItem.getPath());
             if (resultItem.getTitle() != null) {
                 setId(resultItem.getTitle().toLowerCase().replace("/", "-").replace(" ", "_"));
@@ -127,7 +141,7 @@ public class CmsResultListItem extends CmsListItem {
                 setId("");
             }
             CmsPushButton moveButton = new MoveHandle(this);
-            moveButton.addMouseDownHandler(dndManager.getMouseDownHandler());
+            moveButton.addMouseDownHandler(dndHandler);
             resultItemWidget.addButton(moveButton);
         } else {
             resultItemWidget = new CmsResultItemWidget(infoBean, resultItem.getType(), resultItem.getPath());

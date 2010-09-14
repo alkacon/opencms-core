@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsResultItemWidget.java,v $
- * Date   : $Date: 2010/08/26 13:34:11 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/09/14 14:20:24 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,14 +39,35 @@ import org.opencms.gwt.shared.CmsListInfoBean;
 
 import com.google.gwt.user.client.ui.HTML;
 
+/**
+ * The result list item widget.<p>
+ * 
+ * Enabling the image tile view.<p>
+ * 
+ * @author Tobias Herrmann
+ * 
+ * @version $Revision: 1.2 $
+ * 
+ * @since 8.0.0
+ */
 public class CmsResultItemWidget extends CmsListItemWidget {
 
+    /** The image resource type name. */
     private static final String IMAGE_TYPE = "image";
 
+    /** Standard image tile scale parameter. */
     private static final String IMAGE_SCALE_PARAM = "?__scale=w:142,h:100,t:1,c:transparent,r:2";
 
+    /** Tile view flag. */
     private boolean m_hasTileView;
 
+    /**
+     * Constructor.<p>
+     * 
+     * @param infoBean the resource info bean
+     * @param resourceType the resource type
+     * @param resourcePath the resource path
+     */
     public CmsResultItemWidget(CmsListInfoBean infoBean, String resourceType, String resourcePath) {
 
         super(infoBean);
@@ -70,6 +91,11 @@ public class CmsResultItemWidget extends CmsListItemWidget {
 
     }
 
+    /**
+     * Indicates wther there is a tile view available for this widget.<p>
+     * 
+     * @return <code>true</code> if a tiled view is available
+     */
     public boolean hasTileView() {
 
         return m_hasTileView;
