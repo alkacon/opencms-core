@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsContainerDragHandler.java,v $
- * Date   : $Date: 2010/06/10 12:56:28 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2010/09/22 14:27:47 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,7 +68,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  * 
  * @since 8.0.0
  */
@@ -535,8 +535,8 @@ extends A_CmsSortingDragHandler<I_CmsDragContainerElement<I_CmsDragTargetContain
                     }
                     if (m_controller.isSubcontainerEditing()) {
                         if (isDragFromMenu()) {
-                            String type = m_controller.getSubcontainerType();
-                            if (arg.getContents().containsKey(type)) {
+                            String containerId = m_controller.getSubcontainerId();
+                            if (arg.getContents().containsKey(containerId)) {
                                 try {
                                     CmsDragContainerElement dragElement;
                                     if (arg.isSubContainer()) {
@@ -547,7 +547,7 @@ extends A_CmsSortingDragHandler<I_CmsDragContainerElement<I_CmsDragTargetContain
                                         dragElement = m_controller.getContainerpageUtil().createElement(
                                             arg,
                                             m_controller.getSubcontainer(),
-                                            type);
+                                            containerId);
                                         dragElement.setNewType(getNewType());
                                         m_controller.getSubcontainer().add(dragElement);
                                         int offsetLeft = dragElement.getOffsetWidth() - 20;
@@ -566,17 +566,17 @@ extends A_CmsSortingDragHandler<I_CmsDragContainerElement<I_CmsDragTargetContain
                                     CmsDebugLog.getInstance().printLine(e.getMessage());
                                 }
                             } else {
-                                CmsDebugLog.getInstance().printLine("No content for type " + type);
+                                CmsDebugLog.getInstance().printLine("No content for container " + containerId);
                             }
                         }
                     } else {
                         CmsDebugLog.getInstance().printLine(
-                            "Loaded content for " + arg.getContents().size() + " container types");
+                            "Loaded content for " + arg.getContents().size() + " containers");
                         Iterator<Entry<String, CmsDragTargetContainer>> it = m_controller.getContainerTargets().entrySet().iterator();
                         while (it.hasNext()) {
                             Entry<String, CmsDragTargetContainer> entry = it.next();
-                            String containerType = m_controller.getContainerType(entry.getKey());
-                            if (arg.getContents().containsKey(containerType)
+                            String containerId = entry.getKey();
+                            if (arg.getContents().containsKey(containerId)
                                 && (entry.getValue() != getDragElement().getDragParent())) {
                                 try {
                                     CmsDragContainerElement dragElement;
@@ -594,13 +594,13 @@ extends A_CmsSortingDragHandler<I_CmsDragContainerElement<I_CmsDragTargetContain
                                             arg,
                                             subElements,
                                             entry.getValue(),
-                                            containerType);
+                                            containerId);
                                         CmsDebugLog.getInstance().printLine("Sub-container created.");
                                     } else {
                                         dragElement = m_controller.getContainerpageUtil().createElement(
                                             arg,
                                             entry.getValue(),
-                                            containerType);
+                                            containerId);
                                     }
                                     dragElement.setNewType(getNewType());
                                     entry.getValue().add(dragElement);

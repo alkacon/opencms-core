@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/I_CmsXmlContentHandler.java,v $
- * Date   : $Date: 2010/07/23 08:29:33 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/09/22 14:27:47 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -216,6 +216,13 @@ public interface I_CmsXmlContentHandler {
      * @throws CmsXmlException if something goes wrong
      */
     I_CmsWidget getWidget(I_CmsXmlContentValue value) throws CmsXmlException;
+
+    /**
+     * Returns the formatter mapping based on container widths.<p>
+     * 
+     * @return a map from maximal container widths to formatter jsp uris
+     */
+    Map<Integer, String> getWidthFormatters();
 
     /**
      * Initializes this content handler for the given XML content definition by

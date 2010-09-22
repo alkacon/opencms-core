@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsDefaultFormatterHelper.java,v $
- * Date   : $Date: 2010/02/26 13:17:53 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/09/22 14:27:48 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,6 +45,7 @@ import org.opencms.xml.containerpage.CmsADEManager;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
@@ -58,7 +59,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 7.6
  */
@@ -105,25 +106,6 @@ public class CmsDefaultFormatterHelper extends CmsJspActionElement {
     }
 
     /**
-     * Gets the current formatter-info-bean from the request.<p>
-     * 
-     * @param req the servlet-request
-     * @return the info-bean or null if not available
-     * @throws CmsException if something goes wrong
-     */
-    public CmsFormatterInfoBean getFormatterInfo(ServletRequest req) throws CmsException {
-
-        CmsFormatterInfoBean info = null;
-        try {
-            info = (CmsFormatterInfoBean)req.getAttribute(CmsADEManager.ATTR_FORMATTER_INFO);
-        } catch (Exception e) {
-            throw new CmsException(org.opencms.xml.containerpage.Messages.get().container(
-                org.opencms.xml.containerpage.Messages.ERR_READING_FORMATTER_INFO_FROM_REQUEST_0), e);
-        }
-        return info;
-    }
-
-    /**
      * Returns a list of additional info.<p>
      * 
      * @return the additional info.
@@ -149,6 +131,25 @@ public class CmsDefaultFormatterHelper extends CmsJspActionElement {
         return m_formatterInfo.getAdditionalInfo();
     }
 
+    /**
+     * Gets the current formatter-info-bean from the request.<p>
+     * 
+     * @param req the servlet-request
+     * @return the info-bean or null if not available
+     * @throws CmsException if something goes wrong
+     */
+    public CmsFormatterInfoBean getFormatterInfo(ServletRequest req) throws CmsException {
+
+        CmsFormatterInfoBean info = null;
+        try {
+            info = (CmsFormatterInfoBean)req.getAttribute(CmsADEManager.ATTR_FORMATTER_INFO);
+        } catch (Exception e) {
+            throw new CmsException(org.opencms.xml.containerpage.Messages.get().container(
+                org.opencms.xml.containerpage.Messages.ERR_READING_FORMATTER_INFO_FROM_REQUEST_0), e);
+        }
+        return info;
+    }
+
     /** 
      * Returns the icon-path.<p>
      * 
@@ -162,6 +163,32 @@ public class CmsDefaultFormatterHelper extends CmsJspActionElement {
                 + OpenCms.getWorkplaceManager().getExplorerTypeSetting(getTypeName()).getIcon());
         }
         return m_formatterInfo.getIcon();
+    }
+
+    /**
+     * Generates an image info string containing dimensions and file size, returns an empty string if the resource type is not "image".<p>
+     * 
+     * @return the info string
+     * @throws CmsException if something goes wrong reading the resource
+     */
+    public String getImageInfo() throws CmsException {
+
+        String result = "";
+        if (getTypeName().equals(CmsResourceTypeImage.getStaticTypeName())) {
+            CmsImageScaler scaler = new CmsImageScaler(getCmsObject(), getResource());
+            int width = -1;
+            int height = -1;
+            // 1: image width
+            if (scaler.isValid()) {
+                width = scaler.getWidth();
+            }
+            // 2: image height
+            if (scaler.isValid()) {
+                height = scaler.getHeight();
+            }
+            result = getTitle() + "  " + width + "x" + height + "  " + (getResource().getLength() / 1024) + "kb";
+        }
+        return result;
     }
 
     /**
@@ -269,34 +296,11 @@ public class CmsDefaultFormatterHelper extends CmsJspActionElement {
     public boolean isNew() throws CmsException {
 
         CmsObject cms = getCmsObject();
-        List<CmsResource> elems = getManager().getCreatableElements(cms, cms.getRequestContext().getUri(), getRequest());
+        Collection<CmsResource> elems = getManager().getCreatableElements(
+            cms,
+            cms.getRequestContext().getUri(),
+            getRequest());
         return elems.contains(getResource());
-    }
-
-    /**
-     * Generates an image info string containing dimensions and file size, returns an empty string if the resource type is not "image".<p>
-     * 
-     * @return the info string
-     * @throws CmsException if something goes wrong reading the resource
-     */
-    public String getImageInfo() throws CmsException {
-
-        String result = "";
-        if (getTypeName().equals(CmsResourceTypeImage.getStaticTypeName())) {
-            CmsImageScaler scaler = new CmsImageScaler(getCmsObject(), getResource());
-            int width = -1;
-            int height = -1;
-            // 1: image width
-            if (scaler.isValid()) {
-                width = scaler.getWidth();
-            }
-            // 2: image height
-            if (scaler.isValid()) {
-                height = scaler.getHeight();
-            }
-            result = getTitle() + "  " + width + "x" + height + "  " + (getResource().getLength() / 1024) + "kb";
-        }
-        return result;
     }
 
     /**

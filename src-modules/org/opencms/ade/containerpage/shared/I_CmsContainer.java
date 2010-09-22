@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/shared/Attic/I_CmsContainer.java,v $
- * Date   : $Date: 2010/04/07 14:50:55 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/09/22 14:27:48 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,7 @@ package org.opencms.ade.containerpage.shared;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -81,6 +81,13 @@ public interface I_CmsContainer {
      * @return the container type
      */
     String getType();
+
+    /** 
+     * Returns the width of the container.<p>
+     * 
+     * @return the width of the container 
+     */
+    int getWidth();
 
     /**
      * Sets the elements contained in this container.<p>

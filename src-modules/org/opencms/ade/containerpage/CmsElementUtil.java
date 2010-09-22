@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsElementUtil.java,v $
- * Date   : $Date: 2010/06/08 14:42:15 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/09/22 14:27:47 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,15 +31,16 @@
 
 package org.opencms.ade.containerpage;
 
+import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
-import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.loader.CmsTemplateLoaderFacade;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsPair;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.editors.directedit.CmsAdvancedDirectEditProvider;
 import org.opencms.workplace.editors.directedit.CmsDirectEditMode;
@@ -57,9 +58,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -70,7 +72,7 @@ import javax.servlet.http.HttpServletResponse;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -158,16 +160,15 @@ public class CmsElementUtil {
      * Returns the data for an element.<p>
      * 
      * @param element the resource
-     * @param types the types supported by the container page
+     * @param containers the containers on the current container page 
      * 
      * @return the data for an element
      * 
      * @throws CmsException if something goes wrong
      */
-    public CmsContainerElementData getElementData(CmsContainerElementBean element, Collection<String> types)
+    public CmsContainerElementData getElementData(CmsContainerElementBean element, Collection<CmsContainer> containers)
     throws CmsException {
 
-        // create new json object for the element
         CmsResource resource = m_cms.readResource(element.getElementId());
         CmsResourceUtil resUtil = new CmsResourceUtil(m_cms, resource);
         //      resElement.put(JsonElement.objtype.name(), TYPE_ELEMENT);
@@ -190,22 +191,27 @@ public class CmsElementUtil {
             m_cms))));
         elementBean.setStatus(resUtil.getStateAbbreviation());
 
-        // add formatted elements
         Map<String, String> contents = new HashMap<String, String>();
-
         if (resource.getTypeId() == CmsResourceTypeXmlContainerPage.SUB_CONTAINER_TYPE_ID) {
+            Set<String> types = new HashSet<String>();
+            Map<String, CmsContainer> containersByName = new HashMap<String, CmsContainer>();
+            for (CmsContainer container : containers) {
+                types.add(container.getType());
+                containersByName.put(container.getName(), container);
+            }
             CmsXmlSubContainer xmlSubContainer = CmsXmlSubContainerFactory.unmarshal(m_cms, resource, m_req);
             CmsSubContainerBean subContainer = xmlSubContainer.getSubContainer(
                 m_cms,
                 m_cms.getRequestContext().getLocale());
             elementBean.setSubContainer(true);
+
             elementBean.setDescription(subContainer.getDescription());
             if (subContainer.getTypes().isEmpty()) {
                 if (subContainer.getElements().isEmpty()) {
                     //TODO: use formatter to generate the 'empty'-content
                     String emptySub = "<div>NEW AND EMPTY</div>";
-                    for (String type : types) {
-                        contents.put(type, emptySub);
+                    for (String name : containersByName.keySet()) {
+                        contents.put(name, emptySub);
                     }
                 } else {
                     // TODO: throw appropriate exception
@@ -213,13 +219,13 @@ public class CmsElementUtil {
                 }
             } else {
                 // add formatter and content entries for the supported types
-                for (String type : subContainer.getTypes()) {
-                    if (types.contains(type)) {
-                        contents.put(type, "<div>should not be used</div>");
+                for (CmsContainer cnt : containersByName.values()) {
+                    String type = cnt.getType();
+                    if (subContainer.getTypes().contains(type)) {
+                        contents.put(cnt.getName(), "<div>should not be used</div>");
                     }
                 }
             }
-
             // add subitems
             List<String> subItems = new ArrayList<String>();
 
@@ -229,30 +235,106 @@ public class CmsElementUtil {
             }
             elementBean.setSubItems(subItems);
         } else {
-            Iterator<String> it = types.iterator();
-            I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(resource);
-            while (it.hasNext()) {
-                String type = it.next();
-                String formatterUri = resType.getFormatterForContainerType(m_cms, resource, type);
-                if (CmsStringUtil.isEmptyOrWhitespaceOnly(formatterUri)) {
-                    continue;
-                }
-
-                // execute the formatter jsp for the given element
-                try {
-                    String jspResult = getElementContent(element, m_cms.readResource(formatterUri));
-                    // set the results
-                    contents.put(type, jspResult);
-                } catch (Exception e) {
-                    //                    LOG.error(Messages.get().getBundle().key(
-                    //                        Messages.ERR_GENERATE_FORMATTED_ELEMENT_3,
-                    //                        m_cms.getSitePath(resource),
-                    //                        formatterUri,
-                    //                        type), e);
-                }
-            }
+            // get map from type/width combination to formatter uri 
+            Map<CmsPair<String, Integer>, String> formatters = getFormatterMap(resource, containers);
+            // find unique formatters (we don't want to call the same formatter twice)  
+            Set<String> formatterUris = new HashSet<String>(formatters.values());
+            // get map from formatter uris to content 
+            Map<String, String> contentsByFormatter = getContentsByFormatter(element, formatterUris);
+            // combine them into mapping from container names to contents 
+            Map<String, String> contentsByName = getContentsByContainerName(containers, formatters, contentsByFormatter);
+            contents = contentsByName;
         }
         elementBean.setContents(contents);
         return elementBean;
+    }
+
+    /**
+     * Combines the a map of from type/width keys to formatters, a map from formatters to contents, and a list of containers
+     * into a map from container names to contents. 
+     *  
+     * @param containers the containers 
+     * @param formatters a map from type/width pairs to formatter jsps 
+     * @param contentsByFormatter a map from formatter jsps to contents
+     *  
+     * @return a map from container names to contents 
+     */
+    private Map<String, String> getContentsByContainerName(
+        Collection<CmsContainer> containers,
+        Map<CmsPair<String, Integer>, String> formatters,
+        Map<String, String> contentsByFormatter) {
+
+        Map<String, String> contentsByName = new HashMap<String, String>();
+        for (CmsContainer container : containers) {
+            String name = container.getName();
+            CmsPair<String, Integer> key = CmsPair.create(container.getType(), new Integer(container.getWidth()));
+            String fmtUri = formatters.get(key);
+            if (fmtUri != null) {
+                String content = contentsByFormatter.get(fmtUri);
+                if (content != null) {
+                    contentsByName.put(name, content);
+                }
+            }
+        }
+        return contentsByName;
+    }
+
+    /**
+     * Formats the contents of an element using a set of formatters and returns a map from formatter uris to the 
+     * corresponding formatted output.<p>
+     * 
+     * @param element the content element 
+     * @param formatterUris a set of formatter jsp uris 
+     * 
+     * @return a map from formatter jsp uris to formatted contents 
+     */
+    private Map<String, String> getContentsByFormatter(CmsContainerElementBean element, Set<String> formatterUris) {
+
+        Map<String, String> contentsByFormatter = new HashMap<String, String>();
+        for (String formatterUri : formatterUris) {
+            try {
+                String jspResult = getElementContent(element, m_cms.readResource(formatterUri));
+                // set the results
+                contentsByFormatter.put(formatterUri, jspResult);
+            } catch (Exception e) {
+                //                    LOG.error(Messages.get().getBundle().key(
+                //                        Messages.ERR_GENERATE_FORMATTED_ELEMENT_3,
+                //                        m_cms.getSitePath(resource),
+                //                        formatterUri,
+                //                        type), e);
+            }
+        }
+        return contentsByFormatter;
+    }
+
+    /**
+     * Creates a map from type/width pairs to formatter jsp uris.<p>
+     * 
+     * @param resource the resource which should be formatted 
+     * @param containers the list of containers 
+     * 
+     * @return a map from type/width pairs to formatter jsp uris
+     * 
+     * @throws CmsException if something goes wrong  
+     */
+    private Map<CmsPair<String, Integer>, String> getFormatterMap(
+        CmsResource resource,
+        Collection<CmsContainer> containers) throws CmsException {
+
+        Map<CmsPair<String, Integer>, String> formatters = new HashMap<CmsPair<String, Integer>, String>();
+        for (CmsContainer container : containers) {
+            CmsPair<String, Integer> key = CmsPair.create(container.getType(), new Integer(container.getWidth()));
+            if (!formatters.containsKey(key)) {
+                String formatter = OpenCms.getADEManager().getFormatterForContainerTypeAndWidth(
+                    m_cms,
+                    resource,
+                    key.getFirst(),
+                    key.getSecond().intValue());
+                if (!CmsStringUtil.isEmptyOrWhitespaceOnly(formatter)) {
+                    formatters.put(key, formatter);
+                }
+            }
+        }
+        return formatters;
     }
 }

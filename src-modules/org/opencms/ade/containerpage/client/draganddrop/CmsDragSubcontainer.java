@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsDragSubcontainer.java,v $
- * Date   : $Date: 2010/06/01 12:08:21 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/09/22 14:27:47 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,14 +47,14 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
 public class CmsDragSubcontainer extends CmsDragContainerElement implements I_CmsDragTargetContainer {
 
     /** The container type. */
-    private String m_containerType;
+    private String m_containerId;
 
     /** The sub-container's place-holder while it's being edited. */
     private Widget m_placeholder;
@@ -81,11 +81,11 @@ public class CmsDragSubcontainer extends CmsDragContainerElement implements I_Cm
     }
 
     /**
-     * @see org.opencms.ade.containerpage.client.draganddrop.I_CmsDragTargetContainer#getContainerType()
+     * @see org.opencms.ade.containerpage.client.draganddrop.I_CmsDragTargetContainer#getContainerId()
      */
-    public String getContainerType() {
+    public String getContainerId() {
 
-        return m_containerType;
+        return m_containerId;
     }
 
     /**
@@ -135,21 +135,27 @@ public class CmsDragSubcontainer extends CmsDragContainerElement implements I_Cm
     @Override
     public void removeHighlighting() {
 
-        m_placeholder.getElement().getStyle().clearHeight();
-        m_highlighting.removeFromParent();
-        m_highlighting = null;
+        if (m_placeholder != null) {
+            m_placeholder.getElement().getStyle().clearHeight();
+        }
+        if (m_highlighting != null) {
+            m_highlighting.removeFromParent();
+            m_highlighting = null;
+        }
+
         getElement().removeClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragging());
         getElement().removeClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().clearFix());
+
     }
 
     /**
-     * Sets the container type.<p>
+     * Sets the container id.<p>
      *
-     * @param containerType the container type to set
+     * @param containerId the container id to set
      */
-    public void setContainerType(String containerType) {
+    public void setContainerId(String containerId) {
 
-        m_containerType = containerType;
+        m_containerId = containerId;
     }
 
     /**

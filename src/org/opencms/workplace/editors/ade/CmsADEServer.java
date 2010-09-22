@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEServer.java,v $
- * Date   : $Date: 2010/04/14 07:34:28 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2010/09/22 14:27:48 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -92,7 +92,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.37 $
+ * @version $Revision: 1.38 $
  * 
  * @since 7.6
  */
@@ -1259,7 +1259,7 @@ public class CmsADEServer extends A_CmsAjaxServer {
         CmsObject cms = getCmsObject();
         CmsElementUtil elemUtil = new CmsElementUtil(cms, cntPageUri, request, getResponse());
 
-        List<CmsResource> creatableElements = m_manager.getCreatableElements(cms, cntPageUri, request);
+        Collection<CmsResource> creatableElements = m_manager.getCreatableElements(cms, cntPageUri, request);
         for (CmsResource creatableElement : creatableElements) {
             String type = OpenCms.getResourceManager().getResourceType(creatableElement).getTypeName();
             JSONObject resElement = elemUtil.getElementData(new CmsContainerElementBean(
@@ -1299,7 +1299,7 @@ public class CmsADEServer extends A_CmsAjaxServer {
         HttpServletRequest request = getRequest();
         CmsObject cms = getCmsObject();
         CmsElementUtil elemUtil = new CmsElementUtil(cms, cntPageUri, request, getResponse());
-        List<CmsResource> searchableElements = m_manager.getSearchableResourceTypes(cms, cntPageUri, request);
+        Collection<CmsResource> searchableElements = m_manager.getSearchableResourceTypes(cms, cntPageUri, request);
         for (CmsResource searchableElement : searchableElements) {
             I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(searchableElement);
             String typeName = type.getTypeName();

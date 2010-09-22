@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2010/09/03 13:27:34 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2010/09/22 14:27:47 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,8 +56,10 @@ import org.opencms.security.CmsPrincipal;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.site.CmsSite;
 import org.opencms.util.CmsFileUtil;
+import org.opencms.util.CmsFormatterUtil;
 import org.opencms.util.CmsHtmlConverter;
 import org.opencms.util.CmsMacroResolver;
+import org.opencms.util.CmsPair;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.widgets.CmsCategoryWidget;
@@ -70,6 +72,7 @@ import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.CmsXmlGenericWrapper;
 import org.opencms.xml.CmsXmlUtils;
+import org.opencms.xml.containerpage.CmsFormatterConfigBean;
 import org.opencms.xml.sitemap.CmsSitemapEntry;
 import org.opencms.xml.types.CmsXmlNestedContentDefinition;
 import org.opencms.xml.types.CmsXmlVarLinkValue;
@@ -99,7 +102,7 @@ import org.dom4j.Element;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -179,6 +182,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
     /** Constant for the "widget-config" appinfo attribute name. */
     public static final String APPINFO_ATTR_WIDGET_CONFIG = "widget-config";
+
+    /** Constant for the "width" appinfo attribute name. */
+    public static final String APPINFO_ATTR_WIDTH = "width";
 
     /** Constant for the "default" appinfo element name. */
     public static final String APPINFO_DEFAULT = "default";
@@ -338,6 +344,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     /** The validation rules that cause a warning (as defined in the annotations). */
     protected Map<String, String> m_validationWarningRules;
 
+    /** The map of width-based formatters. */
+    private Map<Integer, String> m_widthFormatters;
+
     /**
      * Creates a new instance of the default XML content handler.<p>  
      */
@@ -383,6 +392,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
         String elementName = type.getName();
         return m_configurationValues.get(elementName);
+
     }
 
     /**
@@ -575,6 +585,14 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         result.setConfiguration(configuration);
 
         return result;
+    }
+
+    /**
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getWidthFormatters()
+     */
+    public Map<Integer, String> getWidthFormatters() {
+
+        return Collections.unmodifiableMap(m_widthFormatters);
     }
 
     /**
@@ -1498,6 +1516,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         m_modelFolder = null;
         m_tabs = new ArrayList<CmsXmlContentTab>();
         m_formatters = new HashMap<String, String>();
+        m_widthFormatters = new HashMap<Integer, String>();
         m_formatters.put(DEFAULT_FORMATTER_TYPE, DEFAULT_FORMATTER);
         m_properties = new HashMap<String, CmsXmlContentProperty>();
     }
@@ -1543,48 +1562,49 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         }
 
         Iterator<Element> itFormatter = CmsXmlGenericWrapper.elementIterator(root, APPINFO_FORMATTER);
+        String schemaLocation = contentDefinition.getSchemaLocation();
+        List<CmsFormatterConfigBean> configBeans = new ArrayList<CmsFormatterConfigBean>();
         while (itFormatter.hasNext()) {
             // iterate all "formatter" elements in the "formatters" node
             Element element = itFormatter.next();
             // this is a tab node
             String type = element.attributeValue(APPINFO_ATTR_TYPE);
             String uri = element.attributeValue(APPINFO_ATTR_URI);
-
-            if (m_formatters.get(type) != null) {
-                LOG.warn(Messages.get().getBundle().key(
-                    Messages.LOG_CONTENT_DEFINITION_DUPLICATE_FORMATTER_4,
-                    new Object[] {type, m_formatters.get(type), uri, contentDefinition.getSchemaLocation()}));
-            }
-            // add the formatter
-            m_formatters.put(type, uri);
+            String widthStr = element.attributeValue(APPINFO_ATTR_WIDTH);
+            configBeans.add(new CmsFormatterConfigBean(uri, type, widthStr));
         }
+        CmsPair<Map<String, String>, Map<Integer, String>> formatterMaps = CmsFormatterUtil.getFormatterMapsFromConfigBeans(
+            configBeans,
+            schemaLocation);
+        m_formatters.putAll(formatterMaps.getFirst());
+        m_widthFormatters.putAll(formatterMaps.getSecond());
     }
 
     /**
-     * Initializes the layout for this content handler.<p>
-     * 
-     * Unless otherwise instructed, the editor uses one specific GUI widget for each 
-     * XML value schema type. For example, for a {@link org.opencms.xml.types.CmsXmlStringValue} 
-     * the default widget is the {@link org.opencms.widgets.CmsInputWidget}.
-     * However, certain values can also use more then one widget, for example you may 
-     * also use a {@link org.opencms.widgets.CmsCheckboxWidget} for a String value,
-     * and as a result the Strings possible values would be eithe <code>"false"</code> or <code>"true"</code>,
-     * but nevertheless be a String.<p>
-     *
-     * The widget to use can further be controlled using the <code>widget</code> attribute.
-     * You can specify either a valid widget alias such as <code>StringWidget</code>, 
-     * or the name of a Java class that implements <code>{@link I_CmsWidget}</code>.<p>
-     * 
-     * Configuration options to the widget can be passed using the <code>configuration</code>
-     * attribute. You can specify any String as configuration. This String is then passed
-     * to the widget during initialization. It's up to the individual widget implementation 
-     * to interpret this configuration String.<p>
-     * 
-     * @param root the "layouts" element from the appinfo node of the XML content definition
-     * @param contentDefinition the content definition the layout belongs to
-     * 
-     * @throws CmsXmlException if something goes wrong
-     */
+    * Initializes the layout for this content handler.<p>
+    * 
+    * Unless otherwise instructed, the editor uses one specific GUI widget for each 
+    * XML value schema type. For example, for a {@link org.opencms.xml.types.CmsXmlStringValue} 
+    * the default widget is the {@link org.opencms.widgets.CmsInputWidget}.
+    * However, certain values can also use more then one widget, for example you may 
+    * also use a {@link org.opencms.widgets.CmsCheckboxWidget} for a String value,
+    * and as a result the Strings possible values would be eithe <code>"false"</code> or <code>"true"</code>,
+    * but nevertheless be a String.<p>
+    *
+    * The widget to use can further be controlled using the <code>widget</code> attribute.
+    * You can specify either a valid widget alias such as <code>StringWidget</code>, 
+    * or the name of a Java class that implements <code>{@link I_CmsWidget}</code>.<p>
+    * 
+    * Configuration options to the widget can be passed using the <code>configuration</code>
+    * attribute. You can specify any String as configuration. This String is then passed
+    * to the widget during initialization. It's up to the individual widget implementation 
+    * to interpret this configuration String.<p>
+    * 
+    * @param root the "layouts" element from the appinfo node of the XML content definition
+    * @param contentDefinition the content definition the layout belongs to
+    * 
+    * @throws CmsXmlException if something goes wrong
+    */
     protected void initLayouts(Element root, CmsXmlContentDefinition contentDefinition) throws CmsXmlException {
 
         Iterator<Element> i = CmsXmlGenericWrapper.elementIterator(root, APPINFO_LAYOUT);

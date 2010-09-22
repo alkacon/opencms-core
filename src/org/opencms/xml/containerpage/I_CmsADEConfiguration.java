@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/I_CmsADEConfiguration.java,v $
- * Date   : $Date: 2009/10/20 15:25:51 $
- * Version: $Revision: 1.1.2.3 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/I_CmsADEConfiguration.java,v $
+ * Date   : $Date: 2010/09/22 14:27:47 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,7 +35,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 
-import java.util.List;
+import java.util.Collection;
 
 import javax.servlet.ServletRequest;
 
@@ -44,7 +44,7 @@ import javax.servlet.ServletRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.6 
  */
@@ -76,7 +76,7 @@ public interface I_CmsADEConfiguration {
      * 
      * @throws CmsException if something goes wrong 
      */
-    List<CmsResource> getCreatableElements(CmsObject cms, String cntPageUri, ServletRequest request)
+    Collection<CmsResource> getCreatableElements(CmsObject cms, String cntPageUri, ServletRequest request)
     throws CmsException;
 
     /**
@@ -89,6 +89,21 @@ public interface I_CmsADEConfiguration {
      * @throws CmsException if something goes wrong 
      */
     int getFavoriteListMaxSize(CmsObject cms) throws CmsException;
+
+    /**
+     * Returns the formatter for a given content element and a container type and width.<p>
+     * 
+     * @param cms the CMS context 
+     * @param res the content element resource 
+     * @param cntType the container type 
+     * @param width the container width
+     *  
+     * @return the element's formatter uri for the given container type and width
+     *   
+     * @throws CmsException if something goes wrong  
+     */
+    String getFormatterForContainerTypeAndWidth(CmsObject cms, CmsResource res, String cntType, int width)
+    throws CmsException;
 
     /**
      * Returns the name of the next new file of the given type to be created.<p>
@@ -127,7 +142,7 @@ public interface I_CmsADEConfiguration {
      * 
      * @throws CmsException if something goes wrong 
      */
-    List<CmsResource> getSearchableResourceTypes(CmsObject cms, String cntPageUri, ServletRequest request)
+    Collection<CmsResource> getSearchableResourceTypes(CmsObject cms, String cntPageUri, ServletRequest request)
     throws CmsException;
 
     /**
@@ -140,4 +155,13 @@ public interface I_CmsADEConfiguration {
      * @throws CmsException if something goes wrong 
      */
     int getSearchPageSize(CmsObject cms) throws CmsException;
+
+    /**
+     * Initializes the configuration.<p>
+     * 
+     * @param cms the CMS object  
+     * @param moduleParamKey the name of the module parameter which contains the name of the ADE configuration file  
+     */
+    void init(CmsObject cms, String moduleParamKey);
+
 }

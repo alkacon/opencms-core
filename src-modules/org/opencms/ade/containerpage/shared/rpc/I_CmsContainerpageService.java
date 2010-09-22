@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/shared/rpc/Attic/I_CmsContainerpageService.java,v $
- * Date   : $Date: 2010/05/21 13:20:08 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/09/22 14:27:48 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,6 @@ import org.opencms.gwt.CmsRpcException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
@@ -50,7 +49,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 8.0.0
  */
@@ -95,7 +94,7 @@ public interface I_CmsContainerpageService extends RemoteService {
      * @param containerpageUri the current URI
      * @param reqParams optional request parameters
      * @param clientIds the requested element id's
-     * @param containerTypes the container types of the current page
+     * @param containers the containers of the current page
      * 
      * @return the element data
      * 
@@ -105,7 +104,7 @@ public interface I_CmsContainerpageService extends RemoteService {
         String containerpageUri,
         String reqParams,
         Collection<String> clientIds,
-        Set<String> containerTypes) throws CmsRpcException;
+        Collection<CmsContainer> containers) throws CmsRpcException;
 
     /**
      * Gets the element data for an id and a map of properties.<p>
@@ -114,7 +113,7 @@ public interface I_CmsContainerpageService extends RemoteService {
      * @param reqParams optional request parameters 
      * @param clientId the requested element ids 
      * @param properties the properties for which the element data should be loaded 
-     * @param types the container types of the current page 
+     * @param containers the containers of the current page 
      * 
      * @return the element data 
      * 
@@ -125,32 +124,32 @@ public interface I_CmsContainerpageService extends RemoteService {
         String reqParams,
         String clientId,
         Map<String, String> properties,
-        Set<String> types) throws CmsRpcException;
+        Collection<CmsContainer> containers) throws CmsRpcException;
 
     /**
      * Returns the container element data of the favorite list.<p>
      * 
      * @param containerpageUri the current URI
-     * @param containerTypes the container types of the current page
+     * @param containers the containers of the current page
      * 
      * @return the favorite list element data
      * 
      * @throws CmsRpcException if something goes wrong processing the request
      */
-    List<CmsContainerElementData> getFavoriteList(String containerpageUri, Set<String> containerTypes)
+    List<CmsContainerElementData> getFavoriteList(String containerpageUri, Collection<CmsContainer> containers)
     throws CmsRpcException;
 
     /**
      * Returns the container element data of the recent list.<p>
      * 
      * @param containerpageUri the current URI
-     * @param containerTypes the container types of the current page
+     * @param containers the containers of the current page
      * 
      * @return the recent list element data
      * 
      * @throws CmsRpcException if something goes wrong processing the request
      */
-    List<CmsContainerElementData> getRecentList(String containerpageUri, Set<String> containerTypes)
+    List<CmsContainerElementData> getRecentList(String containerpageUri, Collection<CmsContainer> containers)
     throws CmsRpcException;
 
     /**

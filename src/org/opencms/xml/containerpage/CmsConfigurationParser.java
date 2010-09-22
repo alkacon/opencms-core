@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsConfigurationParser.java,v $
- * Date   : $Date: 2010/09/03 13:27:35 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/09/22 14:27:47 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,19 +31,19 @@
 
 package org.opencms.xml.containerpage;
 
+import org.opencms.cache.CmsVfsMemoryObjectCache;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalStateException;
+import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
-import org.opencms.util.CmsMacroResolver;
-import org.opencms.util.PrintfFormat;
-import org.opencms.workplace.CmsWorkplace;
+import org.opencms.util.CmsFormatterUtil;
+import org.opencms.util.CmsPair;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.I_CmsXmlDocument;
@@ -52,13 +52,16 @@ import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+
+import org.apache.commons.collections.Transformer;
 
 /**
  * Class for managing the creation of new content elements in ADE.<p>
@@ -67,19 +70,15 @@ import java.util.Set;
  * prototypes for new elements, and which file names are used for the new
  * elements.<p> 
  * 
+ * TODO: separate the parser from the data it parses 
+ * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 7.6 
  */
 public class CmsConfigurationParser {
-
-    /** The format used for the macro replacement. */
-    public static final String FILE_NUMBER_FORMAT = "%0.4d";
-
-    /** The macro name for new file name patterns. */
-    public static final String MACRO_NUMBER = "number";
 
     /** The tag name of the configuration for a single type. */
     public static final String N_ADE_TYPE = "ADEType";
@@ -90,23 +89,50 @@ public class CmsConfigurationParser {
     /** The tag name of the source file in the type configuration. */
     public static final String N_FOLDER = "Folder";
 
+    /** The tag name of a formatter configuration. */
+    public static final String N_FORMATTER = "Formatter";
+
+    /** The tag name of the formatter jsp. */
+    public static final String N_JSP = "Jsp";
+
     /** The tag name of the source file in the type configuration. */
     public static final String N_PATTERN = "Pattern";
 
     /** The tag name of the source file in the type configuration. */
     public static final String N_SOURCE = "Source";
 
+    /** The tag name of the formatter container type. */
+    public static final String N_TYPE = "Type";
+
+    /** The tag name of the formatter width. */
+    public static final String N_WIDTH = "Width";
+
+    /** The instance cache. */
+    private static CmsVfsMemoryObjectCache m_cache = new CmsVfsMemoryObjectCache();
+
     /** The tag name for elements containing field configurations. */
     private static final String N_ADE_FIELD = "ADEField";
 
     /** Configuration data, read from xml content. */
-    private Map<String, CmsConfigurationItem> m_configuration;
+    private Map<String, CmsConfigurationItem> m_configuration = new HashMap<String, CmsConfigurationItem>();
+
+    /** The formatter configuration maps. */
+    private Map<String, CmsPair<Map<String, String>, Map<Integer, String>>> m_formatterConfiguration = new HashMap<String, CmsPair<Map<String, String>, Map<Integer, String>>>();
 
     /** New elements. */
-    private List<CmsResource> m_newElements;
+    private Collection<CmsResource> m_newElements = new LinkedHashSet<CmsResource>();
 
     /** The list of properties read from the configuration file. */
     private List<CmsXmlContentProperty> m_props = new ArrayList<CmsXmlContentProperty>();
+
+    /**
+     * Default constructor.<p>
+     */
+    public CmsConfigurationParser() {
+
+        // do nothing
+
+    }
 
     /**
      * Constructs a new instance.<p>
@@ -119,29 +145,42 @@ public class CmsConfigurationParser {
     public CmsConfigurationParser(CmsObject cms, CmsResource config)
     throws CmsException {
 
-        if (config.getTypeId() != CmsResourceTypeXmlContainerPage.CONFIGURATION_TYPE_ID) {
-            throw new CmsIllegalStateException(Messages.get().container(
-                Messages.ERR_CONFIG_WRONG_TYPE_2,
-                CmsPropertyDefinition.PROPERTY_ADE_CNTPAGE_CONFIG,
-                cms.getSitePath(config)));
-        }
-
-        m_configuration = new HashMap<String, CmsConfigurationItem>();
-        m_newElements = new ArrayList<CmsResource>();
-
-        CmsFile configFile = cms.readFile(config);
-        I_CmsXmlDocument content = CmsXmlContentFactory.unmarshal(cms, configFile);
-        parseConfiguration(cms, content);
+        processFile(cms, config);
     }
 
     /**
-     * Returns the configuration as an unmodifiable map.<p>
+     * Constructs a parser and caches it so that subsequent calls to this method with the same resource
+     * will return the same object if the resource hasn'T changed.<p>
      * 
-     * @return the configuration as an unmodifiable map
+     * @param cms the CMS context 
+     * @param config the configuration resource 
+     * @return the configuration parser 
+     * 
+     * @throws CmsException if something goes wrong 
      */
-    public Map<String, CmsConfigurationItem> getConfiguration() {
+    public static CmsConfigurationParser getParser(final CmsObject cms, final CmsResource config) throws CmsException {
 
-        return Collections.unmodifiableMap(m_configuration);
+        try {
+            Object cachedObj = m_cache.loadVfsObject(cms, config.getRootPath(), new Transformer() {
+
+                /**
+                 * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
+                 */
+                public Object transform(Object o) {
+
+                    try {
+                        return new CmsConfigurationParser(cms, config);
+                    } catch (CmsException e) {
+                        // the Transformer interface does not allow checked exceptions, so we wrap
+                        // them into runtime exceptions and then unwrap them again later.
+                        throw new CmsRuntimeException(e.getMessageContainer(), e);
+                    }
+                }
+            });
+            return (CmsConfigurationParser)cachedObj;
+        } catch (CmsRuntimeException e) {
+            throw (CmsException)e.getCause();
+        }
     }
 
     /**
@@ -155,61 +194,50 @@ public class CmsConfigurationParser {
     }
 
     /**
-     * Returns the new elements.<p>
+     * Returns the formatter configuration for a given element type.<p>
      * 
-     * @return the new elements
+     * @param type a type name 
+     * 
+     * @return a pair of maps containing the formatter configuration for the type 
      */
-    public List<CmsResource> getNewElements() {
+    public CmsPair<Map<String, String>, Map<Integer, String>> getFormatterConfigurationForType(String type) {
 
-        return Collections.unmodifiableList(m_newElements);
+        return m_formatterConfiguration.get(type);
     }
 
     /**
-     * Returns a new file name for an element to be created based on a pattern.<p>
+     * Gets the list of 'prototype resources' which are used for creating new content elements.
      * 
-     * The pattern consists of a path which may contain the macro %(number), which 
-     * will be replaced by the first 5-digit sequence for which the resulting file name is not already
-     * used.<p>
+     * @param cms the CMS context
      * 
-     * Although this method is synchronized, it may still return a used file name in the unlikely
-     * case that it is called after a previous call to this method, but before the resulting file name
-     * was used to create a file.<p>  
-     * 
-     * This method was adapted from the method {@link org.opencms.file.collectors.A_CmsResourceCollector}<code>#getCreateInFolder</code>.<p>
-     *
-     * @param cms the CmsObject used for checking the existence of file names
-     * @param pattern the pattern for new files
-     * 
-     * @return the new file name
-     * 
-     * @throws CmsException if something goes wrong
+     * @return the resources which are used as prototypes for creating new elements
      */
-    public String getNewFileName(CmsObject cms, String pattern) throws CmsException {
+    public Collection<CmsResource> getNewElements(CmsObject cms) {
 
-        // this method was adapted from A_CmsResourceCollector#getCreateInFolder
-        pattern = cms.getRequestContext().removeSiteRoot(pattern);
-        PrintfFormat format = new PrintfFormat(FILE_NUMBER_FORMAT);
-        String folderName = CmsResource.getFolderPath(pattern);
-        List<CmsResource> resources = cms.readResources(folderName, CmsResourceFilter.ALL, false);
-        // now create a list of all resources that just contains the file names
-        Set<String> result = new HashSet<String>();
-        for (int i = 0; i < resources.size(); i++) {
-            CmsResource resource = resources.get(i);
-            result.add(cms.getSitePath(resource));
+        Set<CmsResource> result = new LinkedHashSet<CmsResource>();
+        for (Map.Entry<String, CmsConfigurationItem> entry : m_configuration.entrySet()) {
+            CmsConfigurationItem item = entry.getValue();
+            String type = entry.getKey();
+            CmsResource source = item.getSourceFile();
+            CmsResource folderRes = item.getFolder();
+            CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type);
+            boolean editable = settings.isEditable(cms, folderRes);
+            boolean controlPermission = settings.getAccess().getPermissions(cms, folderRes).requiresControlPermission();
+            if (editable && controlPermission) {
+                result.add(source);
+            }
         }
+        return result;
+    }
 
-        String checkFileName, checkTempFileName, number;
-        CmsMacroResolver resolver = CmsMacroResolver.newInstance();
-        int j = 0;
-        do {
-            number = format.sprintf(++j);
-            resolver.addMacro(MACRO_NUMBER, number);
-            // resolve macros in file name
-            checkFileName = resolver.resolveMacros(pattern);
-            // get name of the resolved temp file
-            checkTempFileName = CmsWorkplace.getTemporaryFileName(checkFileName);
-        } while (result.contains(checkFileName) || result.contains(checkTempFileName));
-        return checkFileName;
+    /**
+     * Returns the configuration as an unmodifiable map.<p>
+     * 
+     * @return the configuration as an unmodifiable map
+     */
+    public Map<String, CmsConfigurationItem> getTypeConfiguration() {
+
+        return Collections.unmodifiableMap(m_configuration);
     }
 
     /**
@@ -244,6 +272,43 @@ public class CmsConfigurationParser {
     }
 
     /**
+     * Reads additional configuration data from a file.<p>
+     * 
+     * @param cms the CMS context 
+     * @param config the configuration file 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public void processFile(CmsObject cms, CmsResource config) throws CmsException {
+
+        if (config.getTypeId() != CmsResourceTypeXmlContainerPage.CONFIGURATION_TYPE_ID) {
+            throw new CmsIllegalStateException(Messages.get().container(
+                Messages.ERR_CONFIG_WRONG_TYPE_2,
+                CmsPropertyDefinition.PROPERTY_ADE_CNTPAGE_CONFIG,
+                cms.getSitePath(config)));
+        }
+        CmsFile configFile = cms.readFile(config);
+        I_CmsXmlDocument content = CmsXmlContentFactory.unmarshal(cms, configFile);
+        parseConfiguration(cms, content);
+    }
+
+    /**
+     * Adds the configuration from another parser to this one.<p>
+     * 
+     * @param parser the configuration parser whose data should be added to this one 
+     */
+    public void update(CmsConfigurationParser parser) {
+
+        for (Map.Entry<String, CmsConfigurationItem> entry : parser.m_configuration.entrySet()) {
+            m_configuration.put(entry.getKey(), entry.getValue());
+        }
+        for (CmsResource res : parser.m_newElements) {
+            m_newElements.add(res);
+        }
+        m_formatterConfiguration.putAll(parser.m_formatterConfiguration);
+    }
+
+    /**
      * Helper method for finding the locale for accessing the XML content.<p>
      * 
      * @param cms the CMS context 
@@ -275,6 +340,23 @@ public class CmsConfigurationParser {
     }
 
     /**
+     * Returns a named child value of a given XML content value.<p> 
+     * 
+     * @param value the XML content value whose sub-element value should be read
+     * @param locale the locale 
+     * @param subPath a path relative to the given value's path 
+     * 
+     * @return the XML content value  
+     */
+    protected I_CmsXmlContentValue getSubValue(I_CmsXmlContentValue value, Locale locale, String subPath) {
+
+        I_CmsXmlContentValue subValue = value.getDocument().getValue(
+            CmsXmlUtils.concatXpath(value.getPath(), subPath),
+            locale);
+        return subValue;
+    }
+
+    /**
      * Returns a child content value of a given content value as a string.<p>
      *  
      * @param cms the CMS context 
@@ -286,10 +368,24 @@ public class CmsConfigurationParser {
      */
     protected String getSubValueAsString(CmsObject cms, I_CmsXmlContentValue value, Locale locale, String subPath) {
 
-        I_CmsXmlContentValue subValue = value.getDocument().getValue(
-            CmsXmlUtils.concatXpath(value.getPath(), subPath),
-            locale);
+        I_CmsXmlContentValue subValue = getSubValue(value, locale, subPath);
         return subValue != null ? subValue.getStringValue(cms) : null;
+    }
+
+    /**
+     * Helper method for retrieving the sub-values of a given XML content value.
+     * 
+     * @param value the parent XML content value 
+     * @param locale the locale 
+     * @param subPath the path relative to parent value 
+     * 
+     * @return the list of sub-values with the given path below the parent value 
+     */
+    protected List<I_CmsXmlContentValue> getSubValues(I_CmsXmlContentValue value, Locale locale, String subPath) {
+
+        String path = CmsXmlUtils.concatXpath(value.getPath(), subPath);
+        return value.getDocument().getValues(path, locale);
+
     }
 
     /**
@@ -354,22 +450,29 @@ public class CmsConfigurationParser {
 
         String source = getSubValueAsString(cms, xmlType, locale, N_SOURCE);
         String folder = getSubValueAsString(cms, xmlType, locale, CmsXmlUtils.concatXpath(N_DESTINATION, N_FOLDER));
+        cms.getRequestContext().addSiteRoot(folder);
         String pattern = getSubValueAsString(cms, xmlType, locale, CmsXmlUtils.concatXpath(N_DESTINATION, N_PATTERN));
-
-        CmsConfigurationItem configItem = new CmsConfigurationItem(source, folder, pattern);
         CmsResource resource = cms.readResource(source);
         String type = getTypeName(resource.getTypeId());
-        m_configuration.put(type, configItem);
-
-        // checking access entries for the explorer-type
-        CmsResource folderRes = cms.readResource(folder);
-        CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
-            OpenCms.getResourceManager().getResourceType(resource).getTypeName());
-        boolean editable = settings.isEditable(cms, folderRes);
-        //TODO: fix wrong permission test for explorer-types
-        boolean controlPermission = settings.getAccess().getPermissions(cms, folderRes).requiresControlPermission();
-        if (editable && controlPermission) {
-            m_newElements.add(resource);
+        CmsConfigurationItem configItem = new CmsConfigurationItem(
+            cms.readResource(source),
+            cms.readResource(folder),
+            pattern);
+        List<I_CmsXmlContentValue> fmtValues = getSubValues(xmlType, locale, N_FORMATTER);
+        List<CmsFormatterConfigBean> formatterConfigBeans = new ArrayList<CmsFormatterConfigBean>();
+        for (I_CmsXmlContentValue fmtValue : fmtValues) {
+            String jsp = getSubValueAsString(cms, fmtValue, locale, N_JSP);
+            String width = getSubValueAsString(cms, fmtValue, locale, N_WIDTH);
+            String fmtType = getSubValueAsString(cms, fmtValue, locale, N_TYPE);
+            formatterConfigBeans.add(new CmsFormatterConfigBean(jsp, fmtType, width));
         }
+        if (!formatterConfigBeans.isEmpty()) {
+            CmsPair<Map<String, String>, Map<Integer, String>> formatterMaps = CmsFormatterUtil.getFormatterMapsFromConfigBeans(
+                formatterConfigBeans,
+                xmlType.getDocument().getFile().getRootPath());
+            m_formatterConfiguration.put(type, formatterMaps);
+        }
+        m_configuration.put(type, configItem);
     }
+
 }

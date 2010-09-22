@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapDNDController.java,v $
- * Date   : $Date: 2010/09/14 14:22:47 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/09/22 14:27:48 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import org.opencms.gwt.client.util.CmsDebugLog;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -57,14 +57,14 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
     /** The sitemap controller instance. */
     private CmsSitemapController m_controller;
 
-    /** The sitemap toolbar. */
-    private CmsSitemapToolbar m_toolbar;
-
     /** The insert position of the draggable. */
     private int m_insertIndex;
 
     /** The insert path of the draggable. */
     private String m_insertPath;
+
+    /** The sitemap toolbar. */
+    private CmsSitemapToolbar m_toolbar;
 
     /**
      * Constructor.<p>
@@ -76,6 +76,26 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
 
         m_controller = controller;
         m_toolbar = toolbar;
+    }
+
+    /**
+     * @see org.opencms.gwt.client.dnd.I_CmsDNDController#onBeforeDrop(org.opencms.gwt.client.dnd.I_CmsDraggable, org.opencms.gwt.client.dnd.I_CmsDropTarget, org.opencms.gwt.client.dnd.CmsDNDHandler)
+     */
+    public void onBeforeDrop(I_CmsDraggable draggable, I_CmsDropTarget target, CmsDNDHandler handler) {
+
+        if (!(target instanceof CmsTree<?>)) {
+            // only dropping onto the tree allowed in sitemap
+            handler.cancel();
+            return;
+        }
+        CmsTree<?> tree = (CmsTree<?>)target;
+        m_insertIndex = tree.getPlaceholderIndex();
+        if (m_insertIndex == -1) {
+            handler.cancel();
+            return;
+        }
+        m_insertPath = tree.getPlaceholderPath();
+
     }
 
     /**
@@ -109,10 +129,9 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
     /**
      * @see org.opencms.gwt.client.dnd.I_CmsDNDController#onDrop(org.opencms.gwt.client.dnd.I_CmsDraggable, org.opencms.gwt.client.dnd.I_CmsDropTarget, org.opencms.gwt.client.dnd.CmsDNDHandler)
      */
-    @Override
     public void onDrop(I_CmsDraggable draggable, I_CmsDropTarget target, CmsDNDHandler handler) {
 
-        if (!(target instanceof CmsTree)) {
+        if (!(target instanceof CmsTree<?>)) {
             // only dropping onto the tree allowed in sitemap
             handler.cancel();
             return;
@@ -159,29 +178,9 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
      */
     public void onTargetLeave(I_CmsDraggable draggable, I_CmsDropTarget target, CmsDNDHandler handler) {
 
-        if (target instanceof CmsTree) {
+        if (target instanceof CmsTree<?>) {
             ((CmsTree<?>)target).cancelOpenTimer();
         }
-    }
-
-    /**
-     * @see org.opencms.gwt.client.dnd.I_CmsDNDController#onBeforeDrop(org.opencms.gwt.client.dnd.I_CmsDraggable, org.opencms.gwt.client.dnd.I_CmsDropTarget, org.opencms.gwt.client.dnd.CmsDNDHandler)
-     */
-    public void onBeforeDrop(I_CmsDraggable draggable, I_CmsDropTarget target, CmsDNDHandler handler) {
-
-        if (!(target instanceof CmsTree)) {
-            // only dropping onto the tree allowed in sitemap
-            handler.cancel();
-            return;
-        }
-        CmsTree<?> tree = (CmsTree<?>)target;
-        m_insertIndex = tree.getPlaceholderIndex();
-        if (m_insertIndex == -1) {
-            handler.cancel();
-            return;
-        }
-        m_insertPath = tree.getPlaceholderPath();
-
     }
 
 }

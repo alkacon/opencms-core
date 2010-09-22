@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerJso.java,v $
- * Date   : $Date: 2010/05/04 09:45:21 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/09/22 14:27:47 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import com.google.gwt.core.client.JsArray;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -51,13 +51,16 @@ public class CmsContainerJso extends JavaScriptObject implements I_CmsContainer 
     public static final String JSONKEY_ELEMENTS = "elements";
 
     /** Key 'maxElements' used within the JSON representation of a container object. */
-    public static final String JSONKEY_MAXELEMENTS = "maxElements";
+    public static final String JSONKEY_MAXELEMENTS = "maxElem";
 
     /** Key 'name' used within the JSON representation of a container object. */
     public static final String JSONKEY_NAME = "name";
 
     /** Key 'type' used within the JSON representation of a container object. */
     public static final String JSONKEY_TYPE = "type";
+
+    /** Key 'width' used within the JSON representation of a container object. */
+    public static final String JSONKEY_WIDTH = "width";
 
     /**
      * Constructor. Overlay types always have protected, zero-argument constructors.<p>
@@ -66,6 +69,15 @@ public class CmsContainerJso extends JavaScriptObject implements I_CmsContainer 
 
         // nothing to do here
     }
+
+    /**
+     * Returns the containers of the page.<p>
+     * 
+     * @return the containers
+     */
+    public static final native JsArray<CmsContainerJso> getContainers() /*-{
+        return $wnd[@org.opencms.ade.containerpage.shared.CmsContainer::KEY_CONTAINER_DATA];
+    }-*/;
 
     /**
      * @see org.opencms.ade.containerpage.shared.I_CmsContainer#getElements()
@@ -96,19 +108,17 @@ public class CmsContainerJso extends JavaScriptObject implements I_CmsContainer 
     }-*/;
 
     /**
+     * @see org.opencms.ade.containerpage.shared.I_CmsContainer#getWidth()
+     */
+    public final native int getWidth() /*-{
+        return this[@org.opencms.ade.containerpage.client.CmsContainerJso::JSONKEY_WIDTH];
+    }-*/;
+
+    /**
      * @see org.opencms.ade.containerpage.shared.I_CmsContainer#setElements(java.lang.String[])
      */
     public final native void setElements(String[] elements) /*-{
         this[@org.opencms.ade.containerpage.client.CmsContainerJso::JSONKEY_ELEMENTS]=elements;
-    }-*/;
-
-    /**
-     * Returns the containers of the page.<p>
-     * 
-     * @return the containers
-     */
-    public static final native JsArray<CmsContainerJso> getContainers() /*-{
-        return $wnd[@org.opencms.ade.containerpage.shared.CmsContainer::KEY_CONTAINER_DATA];
     }-*/;
 
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageUtil.java,v $
- * Date   : $Date: 2010/05/26 10:19:15 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/09/22 14:27:47 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import com.google.gwt.user.client.Element;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 8.0.0
  */
@@ -121,7 +121,7 @@ public class CmsContainerpageUtil {
                         sitePath,
                         noEditReason,
                         hasProps);
-                    subContainer.setContainerType(container.getContainerType());
+                    subContainer.setContainerId(container.getContainerId());
                     elements.add(subContainer);
                     DOM.removeChild(container.getElement(), child);
                     consumeContainerElements(subContainer);
@@ -170,7 +170,7 @@ public class CmsContainerpageUtil {
      * 
      * @param containerElement the container element data 
      * @param dragParent the drag parent
-     * @param containerType the container type
+     * @param containerName the container id
      * 
      * @return the draggable element
      * 
@@ -179,7 +179,7 @@ public class CmsContainerpageUtil {
     public CmsDragContainerElement createElement(
         CmsContainerElementData containerElement,
         I_CmsDragTargetContainer dragParent,
-        String containerType) throws Exception {
+        String containerName) throws Exception {
 
         com.google.gwt.user.client.Element element;
         boolean hasProps = !containerElement.getPropertyConfig().isEmpty();
@@ -187,7 +187,7 @@ public class CmsContainerpageUtil {
             throw new UnsupportedOperationException(
                 "Not allowed for Subcontainers, use createSubcontainerElement instead.");
         } else {
-            element = CmsDomUtil.createElement(containerElement.getContents().get(containerType));
+            element = CmsDomUtil.createElement(containerElement.getContents().get(containerName));
         }
         return createElement(
             element,
@@ -240,7 +240,7 @@ public class CmsContainerpageUtil {
      * @param containerElement the container element data 
      * @param subElements the sub-elements
      * @param dragParent the drag parent
-     * @param containerType the container type
+     * @param containerId the container id
      * 
      * @return the draggable element
      * 
@@ -250,7 +250,7 @@ public class CmsContainerpageUtil {
         CmsContainerElementData containerElement,
         List<CmsContainerElementData> subElements,
         I_CmsDragTargetContainer dragParent,
-        String containerType) throws Exception {
+        String containerId) throws Exception {
 
         com.google.gwt.user.client.Element element = DOM.createDiv();
         element.addClassName(CmsContainerpageUtil.CLASS_SUB_CONTAINER_ELEMENTS);
@@ -263,15 +263,15 @@ public class CmsContainerpageUtil {
             containerElement.getSitePath(),
             containerElement.getNoEditReason(),
             hasProps);
-        subContainer.setContainerType(containerType);
+        subContainer.setContainerId(containerId);
         addOptionBar(subContainer);
 
         //adding sub-elements
         Iterator<CmsContainerElementData> it = subElements.iterator();
         while (it.hasNext()) {
             CmsContainerElementData subElement = it.next();
-            if (subElement.getContents().containsKey(containerType)) {
-                CmsDragContainerElement subDragElement = createElement(subElement, subContainer, containerType);
+            if (subElement.getContents().containsKey(containerId)) {
+                CmsDragContainerElement subDragElement = createElement(subElement, subContainer, containerId);
                 subContainer.add(subDragElement);
             }
         }

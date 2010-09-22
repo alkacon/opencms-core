@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageController.java,v $
- * Date   : $Date: 2010/07/26 06:30:01 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2010/09/22 14:27:47 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,8 +61,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JsArray;
@@ -71,9 +71,9 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.Window.ClosingHandler;
 import com.google.gwt.user.client.ui.Widget;
@@ -83,7 +83,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 8.0.0
  */
@@ -139,7 +139,7 @@ public final class CmsContainerpageController {
                     CmsContainerpageController.getCurrentUri(),
                     null,
                     m_clientIds,
-                    m_containerTypes,
+                    m_containerBeans,
                     this);
             }
 
@@ -197,7 +197,7 @@ public final class CmsContainerpageController {
                 CmsContainerpageController.getCurrentUri(),
                 null,
                 m_clientIds,
-                m_containerTypes,
+                m_containerBeans,
                 this);
 
         }
@@ -269,7 +269,7 @@ public final class CmsContainerpageController {
                     CmsContainerpageController.getCurrentUri(),
                     null,
                     clientIds,
-                    m_containerTypes,
+                    m_containerBeans,
                     this);
             }
 
@@ -292,6 +292,9 @@ public final class CmsContainerpageController {
 
     /** Instance of the data provider. */
     private static CmsContainerpageController INSTANCE;
+
+    /** The list of beans for the containers on the current page. */
+    protected List<CmsContainer> m_containerBeans;
 
     /** Closing handler registration. */
     /*DEFAULT*/HandlerRegistration m_closingRegistration;
@@ -647,7 +650,7 @@ public final class CmsContainerpageController {
                     null,
                     clientId,
                     properties,
-                    m_containerTypes,
+                    m_containerBeans,
                     this);
 
             }
@@ -704,10 +707,10 @@ public final class CmsContainerpageController {
      * 
      * @return the sub-container type, or <code>null</code> if no editing is taking place
      */
-    public String getSubcontainerType() {
+    public String getSubcontainerId() {
 
         if (m_editingSubcontainer != null) {
-            return m_editingSubcontainer.getContainerType();
+            return m_editingSubcontainer.getContainerId();
         }
         return null;
     }
@@ -743,6 +746,7 @@ public final class CmsContainerpageController {
             m_containerTypes.add(container.getType());
             m_containers.put(container.getName(), container);
         }
+        m_containerBeans = createEmptyContainerBeans();
         m_targetContainers = m_containerpageUtil.consumeContainers(m_containers);
 
         Event.addNativePreviewHandler(new NativePreviewHandler() {
@@ -823,7 +827,7 @@ public final class CmsContainerpageController {
             @Override
             public void execute() {
 
-                getContainerpageService().getFavoriteList(getCurrentUri(), m_containerTypes, this);
+                getContainerpageService().getFavoriteList(getCurrentUri(), m_containerBeans, this);
             }
 
             /**
@@ -853,7 +857,7 @@ public final class CmsContainerpageController {
             @Override
             public void execute() {
 
-                getContainerpageService().getRecentList(getCurrentUri(), m_containerTypes, this);
+                getContainerpageService().getRecentList(getCurrentUri(), m_containerBeans, this);
             }
 
             /**
@@ -939,14 +943,14 @@ public final class CmsContainerpageController {
     throws Exception {
 
         I_CmsDragTargetContainer dragParent = dragElement.getDragParent();
-        String containerType = dragParent.getContainerType();
+        String containerId = dragParent.getContainerId();
 
-        String elementContent = elementData.getContents().get(containerType);
+        String elementContent = elementData.getContents().get(containerId);
         if ((elementContent != null) && (elementContent.trim().length() > 0)) {
             CmsDragContainerElement replacer = getContainerpageUtil().createElement(
                 elementData,
                 dragParent,
-                containerType);
+                containerId);
             if (dragElement.isNew()) {
                 // if replacing element data has the same structure id, keep the 'new' state by setting the new type property
                 // this should only be the case when editing properties of a new element that has not been created in the VFS yet
@@ -1195,7 +1199,14 @@ public final class CmsContainerpageController {
                     CmsDebugLog.getInstance().printLine("WARNING: there is an inappropriate element within a container");
                 }
             }
-            containers.add(new CmsContainer(entry.getKey(), m_containers.get(entry.getKey()).getType(), -1, elements));
+            CmsContainerJso cnt = m_containers.get(entry.getKey());
+            containers.add(new CmsContainer(
+                entry.getKey(),
+                cnt.getType(),
+                cnt.getWidth(),
+                cnt.getMaxElements(),
+                elements));
+
         }
         return containers;
     }
@@ -1338,6 +1349,26 @@ public final class CmsContainerpageController {
         } else {
             // ignore
         }
+    }
+
+    /**
+     * Creates beans for each of this page's containers and ignore their contents.<p>
+     * 
+     * @return a list of container beans without contents 
+     */
+    private List<CmsContainer> createEmptyContainerBeans() {
+
+        List<CmsContainer> result = new ArrayList<CmsContainer>();
+        for (CmsContainerJso containerJso : m_containers.values()) {
+            CmsContainer container = new CmsContainer(
+                containerJso.getName(),
+                containerJso.getType(),
+                containerJso.getWidth(),
+                containerJso.getMaxElements(),
+                null);
+            result.add(container);
+        }
+        return result;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsConfigurationItem.java,v $
- * Date   : $Date: 2009/10/13 11:59:41 $
- * Version: $Revision: 1.1.2.1 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsConfigurationItem.java,v $
+ * Date   : $Date: 2010/09/22 14:27:47 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,8 @@
 
 package org.opencms.xml.containerpage;
 
+import org.opencms.file.CmsResource;
+
 /**
  * A single item of the ADE file type configuration.<p>
  * 
@@ -41,29 +43,29 @@ package org.opencms.xml.containerpage;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.6 
  */
 public class CmsConfigurationItem {
 
-    /** The destination folder uri. */
-    private final String m_folder;
+    /** The destination folder. */
+    private final CmsResource m_folder;
 
     /** The file pattern. */
     private final String m_pattern;
 
     /** The source file. */
-    private final String m_sourceFile;
+    private final CmsResource m_sourceFile;
 
     /** 
      * Creates a new type configuration item.<p> 
      * 
-     * @param sourceFile the source file uri
-     * @param destinationFolder the destination folder uri
+     * @param sourceFile the source file 
+     * @param destinationFolder the destination folder 
      * @param pattern the file pattern
      **/
-    public CmsConfigurationItem(String sourceFile, String destinationFolder, String pattern) {
+    public CmsConfigurationItem(CmsResource sourceFile, CmsResource destinationFolder, String pattern) {
 
         m_sourceFile = sourceFile;
         m_folder = destinationFolder;
@@ -71,23 +73,11 @@ public class CmsConfigurationItem {
     }
 
     /**
-     * Gets the destination uri pattern.<p>
-     * 
-     * For example <code>/demo/news/news_%(number).html</code>.<p>
-     * 
-     * @return the destination uri pattern
-     */
-    public String getDestination() {
-
-        return m_folder + m_pattern;
-    }
-
-    /**
      * Returns the destination folder uri.<p>
      *
      * @return the destination folder uri
      */
-    public String getFolder() {
+    public CmsResource getFolder() {
 
         return m_folder;
     }
@@ -107,7 +97,7 @@ public class CmsConfigurationItem {
      * 
      * @return the source file uri
      */
-    public String getSourceFile() {
+    public CmsResource getSourceFile() {
 
         return m_sourceFile;
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsElementUtil.java,v $
- * Date   : $Date: 2010/03/12 09:50:43 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2010/09/22 14:27:48 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,10 +73,11 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 7.6
  */
+@Deprecated
 public final class CmsElementUtil {
 
     /** Element json property constants. */
@@ -212,6 +213,7 @@ public final class CmsElementUtil {
      * @throws CmsException if something goes wrong
      * @throws JSONException if something goes wrong in the json manipulation
      */
+    @Deprecated
     public JSONObject getElementData(CmsContainerElementBean element, Collection<String> types)
     throws CmsException, JSONException {
 
@@ -252,8 +254,12 @@ public final class CmsElementUtil {
                     //TODO: use formatter to generate the 'empty'-content
                     String emptySub = "<div>NEW AND EMPTY</div>";
                     for (String type : types) {
-                        formatters.put(type, resType.getFormatterForContainerType(m_cms, resource, type));
-
+                        String formatter = OpenCms.getADEManager().getFormatterForContainerTypeAndWidth(
+                            m_cms,
+                            resource,
+                            type,
+                            -1);
+                        formatters.put(type, formatter);
                         resContents.put(type, emptySub);
                     }
                 } else {
@@ -265,17 +271,18 @@ public final class CmsElementUtil {
                 for (String type : subContainer.getTypes()) {
                     jTypes.put(type);
                     if (types.contains(type)) {
-                        formatters.put(type, resType.getFormatterForContainerType(m_cms, resource, type)); // empty formatters
+                        formatters.put(type, resType.getFormatterForContainerTypeAndWidth(m_cms, resource, type, -1)); // empty formatters
                         resContents.put(type, "<div>should not be used</div>"); // empty contents
                     }
                 }
             }
 
             String jspResult;
-            String defaultFormatter = OpenCms.getResourceManager().getResourceType(resource).getFormatterForContainerType(
+            String defaultFormatter = OpenCms.getResourceManager().getResourceType(resource).getFormatterForContainerTypeAndWidth(
                 m_cms,
                 resource,
-                CmsDefaultXmlContentHandler.DEFAULT_FORMATTER_TYPE);
+                CmsDefaultXmlContentHandler.DEFAULT_FORMATTER_TYPE,
+                -1);
             try {
                 jspResult = getElementContent(element, m_cms.readResource(defaultFormatter));
                 // set the results
@@ -302,7 +309,7 @@ public final class CmsElementUtil {
             I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(resource);
             while (it.hasNext()) {
                 String type = it.next();
-                String formatterUri = resType.getFormatterForContainerType(m_cms, resource, type);
+                String formatterUri = resType.getFormatterForContainerTypeAndWidth(m_cms, resource, type, -1);
                 if (CmsStringUtil.isEmptyOrWhitespaceOnly(formatterUri)) {
                     continue;
                 }
@@ -321,10 +328,11 @@ public final class CmsElementUtil {
                         type), e);
                 }
             }
-            String defaultFormatter = OpenCms.getResourceManager().getResourceType(resource).getFormatterForContainerType(
+            String defaultFormatter = OpenCms.getResourceManager().getResourceType(resource).getFormatterForContainerTypeAndWidth(
                 m_cms,
                 resource,
-                CmsDefaultXmlContentHandler.DEFAULT_FORMATTER_TYPE);
+                CmsDefaultXmlContentHandler.DEFAULT_FORMATTER_TYPE,
+                -1);
             String jspResult;
             try {
                 jspResult = getElementContent(element, m_cms.readResource(defaultFormatter));

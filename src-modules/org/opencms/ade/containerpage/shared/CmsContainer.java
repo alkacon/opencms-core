@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/shared/Attic/CmsContainer.java,v $
- * Date   : $Date: 2010/05/21 13:20:08 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/09/22 14:27:48 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import java.util.List;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -63,28 +63,33 @@ public class CmsContainer implements Serializable {
     /** The container type. */
     private String m_type;
 
-    /**
-     * Constructor.<p>
-     */
-    public CmsContainer() {
-
-        // nothing to do
-    }
+    /** The width of the container. */
+    private int m_width;
 
     /**
      * Constructor.<p>
      * 
      * @param name the container name, also used as id within a container-page
      * @param type the container type
+     * @param width the width of the container 
      * @param maxElements the maximum number of elements displayed by this container
      * @param elements the container elements id's
      */
-    public CmsContainer(String name, String type, int maxElements, List<CmsContainerElement> elements) {
+    public CmsContainer(String name, String type, int width, int maxElements, List<CmsContainerElement> elements) {
 
         m_elements = elements;
         m_name = name;
         m_type = type;
         m_maxElements = maxElements;
+        m_width = width;
+    }
+
+    /**
+     * Hidden default constructor (for GWT serialization).<p>
+     */
+    protected CmsContainer() {
+
+        // do nothing 
     }
 
     /**
@@ -125,6 +130,16 @@ public class CmsContainer implements Serializable {
     public String getType() {
 
         return m_type;
+    }
+
+    /**
+     * Returns the container width.<p>
+     * 
+     * @return the container width 
+     */
+    public int getWidth() {
+
+        return m_width;
     }
 
     /**

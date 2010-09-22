@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/I_CmsDragTargetContainer.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsFormatterConfigBean.java,v $
  * Date   : $Date: 2010/09/22 14:27:47 $
- * Version: $Revision: 1.3 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,41 +29,70 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.containerpage.client.draganddrop;
-
-import org.opencms.gwt.client.draganddrop.I_CmsSortableDragTarget;
+package org.opencms.xml.containerpage;
 
 /**
- * Extended drag target functions used within the container page editor.<p>
+ * A bean containing formatter configuration data as strings.<p>
  * 
- * @author Tobias Herrmann
+ * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  */
-public interface I_CmsDragTargetContainer extends I_CmsSortableDragTarget {
+public class CmsFormatterConfigBean {
+
+    /** The formatter jsp. */
+    private String m_jsp;
+
+    /** The formatter container type. */
+    private String m_type;
+
+    /** The formatter width. */
+    private String m_width;
 
     /**
-     * Returns the container type.<p>
+     * Constructor.<p>
      * 
-     * @return the container type
+     * @param jsp the formatter jsp 
+     * @param type the formatter container type 
+     * @param width the formatter width 
      */
-    String getContainerId();
+    public CmsFormatterConfigBean(String jsp, String type, String width) {
+
+        m_jsp = jsp;
+        m_type = type;
+        m_width = width;
+    }
 
     /**
-     * Puts a highlighting border around the container content.<p>
+     * Returns the formatter jsp.<p>
+     * 
+     * @return the formatter jsp 
      */
-    void highlightContainer();
+    public String getJsp() {
+
+        return m_jsp;
+    }
 
     /**
-     * Refreshes position and dimension of the highlighting border. Call when anything changed during the drag process.<p>
+     * Returns the formatter container type.<p>
+     * 
+     * @return the formatter container type 
      */
-    void refreshHighlighting();
+    public String getType() {
+
+        return m_type;
+    }
 
     /**
-     * Removes the highlighting border.<p>
+     * Returns the formatter width.<p>
+     * 
+     * @return the formatter width 
      */
-    void removeHighlighting();
+    public String getWidth() {
+
+        return m_width;
+    }
 
 }

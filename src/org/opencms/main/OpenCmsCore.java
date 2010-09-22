@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2010/07/23 08:29:34 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2010/09/22 14:27:47 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -146,7 +146,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -1252,7 +1252,7 @@ public final class OpenCmsCore {
             m_subscriptionManager.initialize(adminCms);
 
             // initialize ade manager
-            m_adeManager = new CmsADEManager(m_memoryMonitor, systemConfiguration);
+            m_adeManager = new CmsADEManager(initCmsObject(adminCms), m_memoryMonitor, systemConfiguration);
 
             // initialize sitemap manager
             m_sitemapManager = new CmsSitemapManager(initCmsObject(adminCms), m_memoryMonitor, systemConfiguration);

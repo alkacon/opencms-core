@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/I_CmsResourceType.java,v $
- * Date   : $Date: 2010/05/27 09:44:59 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/09/22 14:27:47 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -77,7 +77,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Thomas Weckert  
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -107,7 +107,12 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
         /** Formatter name. */
         private String m_name;
 
-        /** Constructor.<p> */
+        /** 
+         * Constructor.<p>
+         * 
+         * @param name the formatter name 
+         * @param defaultPath the default formatter path 
+         */
         private Formatter(String name, String defaultPath) {
 
             m_name = name;
@@ -439,9 +444,11 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * @param cms the current cms context
      * @param resource the resource
      * @param containerType the container type
+     * @param width the container width 
+     * 
      * @return the formatter uri
      */
-    String getFormatterForContainerType(CmsObject cms, CmsResource resource, String containerType);
+    String getFormatterForContainerTypeAndWidth(CmsObject cms, CmsResource resource, String containerType, int width);
 
     /**
      * Returns the path to an optional, additional java-script file to be used in the advanced galleries.<p> 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/Attic/CmsResourceTypeJspRenderer.java,v $
- * Date   : $Date: 2010/01/28 08:04:17 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/09/22 14:27:47 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  * @author Tobias Herrmann 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 7.9.0 
  */
@@ -129,10 +129,14 @@ public class CmsResourceTypeJspRenderer extends CmsResourceTypeXmlContent {
     }
 
     /**
-     * @see org.opencms.file.types.I_CmsResourceType#getFormatterForContainerType(CmsObject, CmsResource, String)
+     * @see org.opencms.file.types.CmsResourceTypeXmlContent#getFormatterForContainerTypeAndWidth(org.opencms.file.CmsObject, org.opencms.file.CmsResource, java.lang.String, int)
      */
     @Override
-    public String getFormatterForContainerType(CmsObject cms, CmsResource resource, String containerType) {
+    public String getFormatterForContainerTypeAndWidth(
+        CmsObject cms,
+        CmsResource resource,
+        String containerType,
+        int width) {
 
         if (CmsDefaultXmlContentHandler.DEFAULT_FORMATTER_TYPE.equals(containerType)) {
             return CmsDefaultXmlContentHandler.DEFAULT_FORMATTER;
@@ -177,6 +181,6 @@ public class CmsResourceTypeJspRenderer extends CmsResourceTypeXmlContent {
             }
         }
         // try to get formatter out of XSD as fall back
-        return super.getFormatterForContainerType(cms, resource, containerType);
+        return super.getFormatterForContainerTypeAndWidth(cms, resource, containerType, width);
     }
 }

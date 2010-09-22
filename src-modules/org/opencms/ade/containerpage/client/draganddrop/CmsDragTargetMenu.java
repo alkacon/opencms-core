@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsDragTargetMenu.java,v $
- * Date   : $Date: 2010/06/01 12:08:21 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/09/22 14:27:47 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -50,6 +50,14 @@ public class CmsDragTargetMenu extends FlowPanel implements I_CmsDragTargetConta
     public CmsDragTargetMenu() {
 
         super();
+    }
+
+    /**
+     * @see org.opencms.ade.containerpage.client.draganddrop.I_CmsDragTargetContainer#getContainerId()
+     */
+    public String getContainerId() {
+
+        return null;
     }
 
     /**
@@ -74,13 +82,5 @@ public class CmsDragTargetMenu extends FlowPanel implements I_CmsDragTargetConta
     public void removeHighlighting() {
 
         // the menu drop-zone will not be highlighted, so there is nothing to do here
-    }
-
-    /**
-     * @see org.opencms.ade.containerpage.client.draganddrop.I_CmsDragTargetContainer#getContainerType()
-     */
-    public String getContainerType() {
-
-        return null;
     }
 }

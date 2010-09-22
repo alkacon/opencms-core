@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/Attic/CmsGalleryService.java,v $
- * Date   : $Date: 2010/07/19 07:45:28 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2010/09/22 14:27:48 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -76,8 +76,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.TreeMap;
+import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -87,7 +87,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Polina Smagina
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.28 $ 
  * 
  * @since 8.0.0
  * 
@@ -1070,7 +1070,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
         List<I_CmsResourceType> result = new ArrayList<I_CmsResourceType>();
         try {
-            List<CmsResource> resources = OpenCms.getADEManager().getSearchableResourceTypes(
+            Collection<CmsResource> resources = OpenCms.getADEManager().getSearchableResourceTypes(
                 getCmsObject(),
                 getCmsObject().getRequestContext().getUri(),
                 getThreadLocalRequest());

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/shared/rpc/Attic/I_CmsContainerpageServiceAsync.java,v $
- * Date   : $Date: 2010/05/21 13:20:08 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/09/22 14:27:48 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,6 @@ import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
@@ -49,7 +48,7 @@ import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 8.0.0
  */
@@ -91,14 +90,14 @@ public interface I_CmsContainerpageServiceAsync {
      * @param containerpageUri the current URI
      * @param reqParams optional request parameters
      * @param clientIds the requested element id's
-     * @param containerTypes the container type of the current page
+     * @param containers the containers of the current page
      * @param callback the call-back executed on response
      */
     void getElementsData(
         String containerpageUri,
         String reqParams,
         Collection<String> clientIds,
-        Set<String> containerTypes,
+        Collection<CmsContainer> containers,
         AsyncCallback<Map<String, CmsContainerElementData>> callback);
 
     /**
@@ -108,7 +107,7 @@ public interface I_CmsContainerpageServiceAsync {
      * @param reqParams optional request parameters 
      * @param clientId the requested element ids 
      * @param properties the properties for which the element data should be loaded 
-     * @param types the container types of the current page
+     * @param containers the containers of the current page
      * @param callback the callback for receiving the element data  
      */
     void getElementWithProperties(
@@ -116,31 +115,31 @@ public interface I_CmsContainerpageServiceAsync {
         String reqParams,
         String clientId,
         Map<String, String> properties,
-        Set<String> types,
+        Collection<CmsContainer> containers,
         AsyncCallback<CmsContainerElementData> callback);
 
     /**
      * Requests the container element data of the favorite list.<p>
      * 
      * @param containerpageUri the current URI
-     * @param containerTypes the container types of the current page
+     * @param containers the containers of the current page
      * @param callback the call-back executed on response
      */
     void getFavoriteList(
         String containerpageUri,
-        Set<String> containerTypes,
+        Collection<CmsContainer> containers,
         AsyncCallback<List<CmsContainerElementData>> callback);
 
     /**
      * Requests the container element data of the recent list.<p>
      * 
      * @param containerpageUri the current URI
-     * @param containerTypes the container types of the current page
+     * @param containers the containers of the current page
      * @param callback the call-back executed on response
      */
     void getRecentList(
         String containerpageUri,
-        Set<String> containerTypes,
+        Collection<CmsContainer> containers,
         AsyncCallback<List<CmsContainerElementData>> callback);
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/cache/CmsVfsMemoryObjectCache.java,v $
- * Date   : $Date: 2010/01/05 14:05:44 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/09/22 14:27:48 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.monitor.CmsMemoryMonitor;
 
+import org.apache.commons.collections.Transformer;
 import org.apache.commons.logging.Log;
 
 /**
@@ -46,11 +47,14 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 6.1.3
  */
-public final class CmsVfsMemoryObjectCache extends CmsVfsCache {
+public class CmsVfsMemoryObjectCache extends CmsVfsCache {
+
+    /** Counts the number of instances created. */
+    private static int instanceCounter;
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsVfsMemoryObjectCache.class);
@@ -58,11 +62,16 @@ public final class CmsVfsMemoryObjectCache extends CmsVfsCache {
     /** A cache that maps VFS resource names to Objects. */
     private static CmsVfsMemoryObjectCache m_vfsMemoryObjectCache;
 
+    /** The id for this instance. */
+    private int m_id;
+
     /**
      * Constructor, creates a new CmsVfsMemoryObjectCache.<p>
      */
-    private CmsVfsMemoryObjectCache() {
+    public CmsVfsMemoryObjectCache() {
 
+        m_id = instanceCounter;
+        instanceCounter += 1;
         // register the event listeners
         registerEventListener();
     }
@@ -91,6 +100,25 @@ public final class CmsVfsMemoryObjectCache extends CmsVfsCache {
 
         String key = getCacheKeyForCurrentProject(cms, rootPath);
         return OpenCms.getMemoryMonitor().getCachedVfsObject(key);
+    }
+
+    /**
+     * Uses a transformer for loading an object from a path if it has not already been cached, and then caches it.<p>
+     * 
+     * @param cms the CMS context 
+     * @param rootPath the root path from which the object should be loaded 
+     * @param function the function which should load the object from VFS if it isn't already cached 
+     * 
+     * @return the loaded object 
+     */
+    public Object loadVfsObject(CmsObject cms, String rootPath, Transformer function) {
+
+        Object result = getCachedObject(cms, rootPath);
+        if (result == null) {
+            result = function.transform(rootPath);
+            putCachedObject(cms, rootPath, result);
+        }
+        return result;
     }
 
     /**
@@ -136,9 +164,9 @@ public final class CmsVfsMemoryObjectCache extends CmsVfsCache {
     private String getCacheKey(String systemId, boolean online) {
 
         if (online) {
-            return "online_".concat(systemId);
+            return "online_(" + m_id + ")_" + systemId;
         }
-        return "offline_".concat(systemId);
+        return "offline_(" + m_id + ")_" + systemId;
     }
 
     /**

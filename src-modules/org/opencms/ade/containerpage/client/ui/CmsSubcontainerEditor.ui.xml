@@ -13,7 +13,7 @@
 		}
 	</ui:style>
 	<g:HTMLPanel styleName="{containerpage.containerpageCss.subcontainerEditor}">
-		<div style="z-index:1000;" class="{resources.dialogCss.popupOverlay} {containerpage.containerpageCss.subcontainerOverlay}"></div>
+		<div style="z-index:400;" class="{resources.dialogCss.popupOverlay} {containerpage.containerpageCss.subcontainerOverlay}"></div>
 		<div ui:field="m_dialog" class="{resources.dialogCss.popup} {resources.dialogCss.popupContent} {resources.generalCss.cornerAll} {style.dialog}">
 			<g:Label ui:field="m_dialogHeading" addStyleNames="{resources.dialogCss.popupHead} {resources.generalCss.cornerTop}">Subcontainer editor</g:Label>
 			<div class="{resources.dialogCss.popupMainContent}">

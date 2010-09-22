@@ -1,6 +1,7 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
     <xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd" />
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.containerpage/schemas/type_destination.xsd" />
+    <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.containerpage/schemas/type_formatters.xsd" />
  
     <xsd:element name="ADETypes" type="OpenCmsADETypes" />
     
@@ -14,6 +15,7 @@
         <xsd:sequence>    
             <xsd:element name="Source" type="OpenCmsVfsFile" minOccurs="1" maxOccurs="1" />
             <xsd:element name="Destination" type="OpenCmsADETypeDestination" minOccurs="1" maxOccurs="1" />
+            <xsd:element name="Formatter" type="OpenCmsADETypeFormatter" minOccurs="0" maxOccurs="unbounded" />
         </xsd:sequence>
         <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
     </xsd:complexType>

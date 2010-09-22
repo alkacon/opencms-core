@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlContent.java,v $
- * Date   : $Date: 2010/05/27 09:44:58 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/09/22 14:27:47 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,12 +49,14 @@ import org.opencms.relations.CmsRelationFilter;
 import org.opencms.relations.CmsRelationType;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.staticexport.CmsLinkTable;
+import org.opencms.util.CmsFormatterUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.content.CmsDefaultXmlContentHandler;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
+import org.opencms.xml.content.I_CmsXmlContentHandler;
 import org.opencms.xml.types.CmsXmlHtmlValue;
 import org.opencms.xml.types.CmsXmlVarLinkValue;
 import org.opencms.xml.types.CmsXmlVfsFileValue;
@@ -77,7 +79,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -215,10 +217,14 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
     }
 
     /**
-     * @see org.opencms.file.types.I_CmsResourceType#getFormatterForContainerType(CmsObject, CmsResource, String)
+     * @see org.opencms.file.types.A_CmsResourceType#getFormatterForContainerTypeAndWidth(org.opencms.file.CmsObject, org.opencms.file.CmsResource, java.lang.String, int)
      */
     @Override
-    public String getFormatterForContainerType(CmsObject cms, CmsResource resource, String containerType) {
+    public String getFormatterForContainerTypeAndWidth(
+        CmsObject cms,
+        CmsResource resource,
+        String containerType,
+        int maxWidth) {
 
         if (containerType.equals(CmsDefaultXmlContentHandler.DEFAULT_FORMATTER_TYPE)) {
             return CmsDefaultXmlContentHandler.DEFAULT_FORMATTER;
@@ -226,55 +232,21 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
         if (getTypeId() == CmsResourceTypeXmlContainerPage.SUB_CONTAINER_TYPE_ID) {
             return CmsDefaultXmlContentHandler.DEFAULT_FORMATTER;
         }
-        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(m_schema)) {
-            CmsXmlContentDefinition contentDef = new CmsXmlEntityResolver(cms).getCachedContentDefinition(m_schema);
-            if (contentDef == null) {
-                try {
-                    CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, cms.readFile(resource));
-                    contentDef = content.getContentDefinition();
-                } catch (CmsException e) {
-                    if (LOG.isErrorEnabled()) {
-                        LOG.error(Messages.get().getBundle().key(
-                            Messages.ERR_READING_FORMATTER_CONFIGURATION_1,
-                            cms.getSitePath(resource)), e);
-                    }
-                    return null;
-                }
-            }
-            // cache formatters for all resource types with a defined schema
-            Map<String, String> containerFormatters = contentDef.getContentHandler().getFormatters();
-            if (containerFormatters.isEmpty()) {
-                LOG.warn(Messages.get().getBundle().key(
-                    Messages.LOG_WARN_NO_FORMATTERS_DEFINED_1,
-                    contentDef.getSchemaLocation()));
-            }
-            return containerFormatters.get(containerType);
-        }
-
-        CmsXmlContentDefinition contentDef = null;
-        try {
-            List<CmsRelation> relations = cms.getRelationsForResource(
-                resource,
-                CmsRelationFilter.TARGETS.filterType(CmsRelationType.XSD));
-            if ((relations != null) && !relations.isEmpty()) {
-                String xsd = cms.getSitePath(relations.get(0).getTarget(cms, CmsResourceFilter.ALL));
-                contentDef = new CmsXmlEntityResolver(cms).getCachedContentDefinition(xsd);
-            }
-            if (contentDef == null) {
-                CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, cms.readFile(resource));
-                contentDef = content.getContentDefinition();
-            }
-        } catch (CmsException e) {
-            if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().getBundle().key(
-                    Messages.ERR_READING_FORMATTER_CONFIGURATION_1,
-                    cms.getSitePath(resource)), e);
-            }
-            return null;
-        }
+        CmsXmlContentDefinition contentDef = searchContentDefinition(cms, resource);
         Map<String, String> formatters = contentDef.getContentHandler().getFormatters();
-        return formatters.get(containerType);
 
+        if (formatters.isEmpty()) {
+            LOG.warn(Messages.get().getBundle().key(
+                Messages.LOG_WARN_NO_FORMATTERS_DEFINED_1,
+                contentDef.getSchemaLocation()));
+        }
+
+        I_CmsXmlContentHandler handler = contentDef.getContentHandler();
+        return CmsFormatterUtil.selectFormatter(
+            handler.getFormatters(),
+            handler.getWidthFormatters(),
+            containerType,
+            maxWidth);
     }
 
     /**
@@ -424,4 +396,42 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
         }
         return null;
     }
+
+    /**
+     * Helper method for finding the content definition of an XML content resource.<p>
+     * 
+     * @param cms the CMS context 
+     * @param resource the XML content resource
+     *  
+     * @return the content definition for the resource 
+     */
+    private CmsXmlContentDefinition searchContentDefinition(CmsObject cms, CmsResource resource) {
+
+        try {
+            CmsXmlContentDefinition contentDef = null;
+            String xsd = m_schema;
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(xsd)) {
+                List<CmsRelation> relations = cms.getRelationsForResource(
+                    resource,
+                    CmsRelationFilter.TARGETS.filterType(CmsRelationType.XSD));
+                if ((relations != null) && !relations.isEmpty()) {
+                    xsd = cms.getSitePath(relations.get(0).getTarget(cms, CmsResourceFilter.ALL));
+                }
+            }
+            contentDef = new CmsXmlEntityResolver(cms).getCachedContentDefinition(xsd);
+            if (contentDef == null) {
+                CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, cms.readFile(resource));
+                contentDef = content.getContentDefinition();
+            }
+            return contentDef;
+        } catch (CmsException e) {
+            if (LOG.isErrorEnabled()) {
+                LOG.error(Messages.get().getBundle().key(
+                    Messages.ERR_READING_FORMATTER_CONFIGURATION_1,
+                    cms.getSitePath(resource)), e);
+            }
+            return null;
+        }
+    }
+
 }

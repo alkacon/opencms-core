@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADEManager.java,v $
- * Date   : $Date: 2010/09/03 13:27:35 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2010/09/22 14:27:47 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,6 +57,7 @@ import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.content.CmsXmlContentPropertyHelper;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -73,7 +74,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 7.6
  */
@@ -95,6 +96,9 @@ public class CmsADEManager {
     /** The request attribute name for the formatter-info-bean. */
     public static final String ATTR_FORMATTER_INFO = "__formatterInfo";
 
+    /** The name of the module parameter which may contain the name of the ADE configuration file. */
+    public static final String MODULE_CONFIG_KEY = "ade.config";
+
     /** User additional info key constant. */
     protected static final String ADDINFO_ADE_FAVORITE_LIST = "ADE_FAVORITE_LIST";
 
@@ -109,11 +113,12 @@ public class CmsADEManager {
 
     /**
      * Creates a new ADE manager.<p>
-     * 
+     *
+     * @param adminCms a CMS context with admin privileges 
      * @param memoryMonitor the memory monitor instance
      * @param systemConfiguration the system configuration
      */
-    public CmsADEManager(CmsMemoryMonitor memoryMonitor, CmsSystemConfiguration systemConfiguration) {
+    public CmsADEManager(CmsObject adminCms, CmsMemoryMonitor memoryMonitor, CmsSystemConfiguration systemConfiguration) {
 
         // initialize the ade cache
         CmsADECacheSettings cacheSettings = systemConfiguration.getAdeCacheSettings();
@@ -138,6 +143,7 @@ public class CmsADEManager {
                     adeConfigurationClassName), e);
             }
         }
+        configuration.init(adminCms, MODULE_CONFIG_KEY);
         m_configuration = configuration;
     }
 
@@ -199,7 +205,7 @@ public class CmsADEManager {
      *
      * @see org.opencms.xml.containerpage.I_CmsADEConfiguration#getCreatableElements(org.opencms.file.CmsObject, java.lang.String, javax.servlet.ServletRequest)
      */
-    public List<CmsResource> getCreatableElements(CmsObject cms, String cntPageUri, ServletRequest request)
+    public Collection<CmsResource> getCreatableElements(CmsObject cms, String cntPageUri, ServletRequest request)
     throws CmsException {
 
         return m_configuration.getCreatableElements(cms, cntPageUri, request);
@@ -355,6 +361,24 @@ public class CmsADEManager {
     }
 
     /**
+     * Returns the formatter for a container element (as a resource) and a container type.<p>
+     * 
+     * @param cms the CMS context 
+     * @param res the resource of the container element 
+     * @param containerType the container type 
+     * @param width the width of the container 
+     *  
+     * @return the formatter jsp path
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public String getFormatterForContainerTypeAndWidth(CmsObject cms, CmsResource res, String containerType, int width)
+    throws CmsException {
+
+        return m_configuration.getFormatterForContainerTypeAndWidth(cms, res, containerType, width);
+    }
+
+    /**
      * Returns the name of the next new file of the given type to be created.<p>
      * 
      * @param cms the current opencms context
@@ -403,7 +427,7 @@ public class CmsADEManager {
      *
      * @see org.opencms.xml.containerpage.I_CmsADEConfiguration#getSearchableResourceTypes(org.opencms.file.CmsObject, java.lang.String, javax.servlet.ServletRequest)
      */
-    public List<CmsResource> getSearchableResourceTypes(CmsObject cms, String cntPageUri, ServletRequest request)
+    public Collection<CmsResource> getSearchableResourceTypes(CmsObject cms, String cntPageUri, ServletRequest request)
     throws CmsException {
 
         return m_configuration.getSearchableResourceTypes(cms, cntPageUri, request);

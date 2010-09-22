@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2010/07/08 06:49:43 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2010/09/22 14:27:47 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -81,7 +81,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  */
@@ -139,6 +139,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     protected List<CmsProperty> m_defaultProperties;
 
     /** Content formatters. */
+    @Deprecated
     protected Map<String, CmsResource> m_formatters;
 
     /** Indicates that the configuration of the resource type has been frozen. */
@@ -501,6 +502,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     /**
      * @see org.opencms.file.types.I_CmsResourceType#getFormattedContent(CmsObject, HttpServletRequest, HttpServletResponse, Formatter, java.util.Map)
      */
+    @Deprecated
     public String getFormattedContent(
         CmsObject cms,
         HttpServletRequest req,
@@ -558,9 +560,10 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     }
 
     /**
-     * @see org.opencms.file.types.I_CmsResourceType#getFormatterForContainerType(CmsObject, CmsResource, String)
+     * 
+     * @see org.opencms.file.types.I_CmsResourceType#getFormatterForContainerTypeAndWidth(org.opencms.file.CmsObject, org.opencms.file.CmsResource, java.lang.String, int)
      */
-    public String getFormatterForContainerType(CmsObject cms, CmsResource resource, String containerType) {
+    public String getFormatterForContainerTypeAndWidth(CmsObject cms, CmsResource res, String containerType, int width) {
 
         if (containerType.equals(CmsDefaultXmlContentHandler.DEFAULT_FORMATTER_TYPE)) {
             return CmsDefaultXmlContentHandler.DEFAULT_FORMATTER;

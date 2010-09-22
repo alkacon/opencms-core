@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsContainerpageService.java,v $
- * Date   : $Date: 2010/06/18 07:29:54 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2010/09/22 14:27:47 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,6 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
-import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.CmsGwtService;
 import org.opencms.gwt.CmsRpcException;
@@ -86,7 +85,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 8.0.0
  */
@@ -181,17 +180,17 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
-     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#getElementsData(java.lang.String, java.lang.String, java.util.Collection, java.util.Set)
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#getElementsData(java.lang.String, java.lang.String, java.util.Collection, java.util.Collection)
      */
     public Map<String, CmsContainerElementData> getElementsData(
         String containerpageUri,
         String reqParams,
         Collection<String> clientIds,
-        Set<String> containerTypes) throws CmsRpcException {
+        Collection<CmsContainer> containers) throws CmsRpcException {
 
         Map<String, CmsContainerElementData> result = null;
         try {
-            result = getElements(clientIds, containerpageUri, containerTypes);
+            result = getElements(clientIds, containerpageUri, containers);
         } catch (Throwable e) {
             error(e);
         }
@@ -199,14 +198,14 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
-     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#getElementWithProperties(java.lang.String, java.lang.String, java.lang.String, java.util.Map, java.util.Set)
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#getElementWithProperties(java.lang.String, java.lang.String, java.lang.String, java.util.Map, java.util.Collection)
      */
     public CmsContainerElementData getElementWithProperties(
         String containerpageUri,
         String uriParams,
         String clientId,
         Map<String, String> properties,
-        Set<String> types) throws CmsRpcException {
+        Collection<CmsContainer> containers) throws CmsRpcException {
 
         try {
             CmsObject cms = getCmsObject();
@@ -214,7 +213,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             CmsUUID serverId = OpenCms.getADEManager().convertToServerId(clientId);
             CmsContainerElementBean elementBean = createElement(serverId, properties);
             getSessionCache().setCacheContainerElement(elementBean.getClientId(), elementBean);
-            CmsContainerElementData element = elemUtil.getElementData(elementBean, types);
+            CmsContainerElementData element = elemUtil.getElementData(elementBean, containers);
             return element;
         } catch (Throwable e) {
             error(e);
@@ -223,9 +222,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
-     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#getFavoriteList(java.lang.String, java.util.Set)
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#getFavoriteList(java.lang.String, java.util.Collection)
      */
-    public List<CmsContainerElementData> getFavoriteList(String containerpageUri, Set<String> containerTypes)
+    public List<CmsContainerElementData> getFavoriteList(String containerpageUri, Collection<CmsContainer> containers)
     throws CmsRpcException {
 
         List<CmsContainerElementData> result = null;
@@ -233,7 +232,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             result = getListElementsData(
                 OpenCms.getADEManager().getFavoriteList(getCmsObject()),
                 containerpageUri,
-                containerTypes);
+                containers);
         } catch (Throwable e) {
             error(e);
         }
@@ -241,14 +240,14 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
-     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#getRecentList(java.lang.String, java.util.Set)
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#getRecentList(java.lang.String, java.util.Collection)
      */
-    public List<CmsContainerElementData> getRecentList(String containerpageUri, Set<String> containerTypes)
+    public List<CmsContainerElementData> getRecentList(String containerpageUri, Collection<CmsContainer> containers)
     throws CmsRpcException {
 
         List<CmsContainerElementData> result = null;
         try {
-            result = getListElementsData(getSessionCache().getRecentList(), containerpageUri, containerTypes);
+            result = getListElementsData(getSessionCache().getRecentList(), containerpageUri, containers);
         } catch (Throwable e) {
             error(e);
         }
@@ -456,8 +455,12 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 CmsResource resource = cms.readResource(element.getElementId());
 
                 // check if there is a valid formatter
-                I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(resource);
-                String formatterUri = resType.getFormatterForContainerType(cms, resource, container.getType());
+                int containerWidth = container.getWidth();
+                String formatterUri = OpenCms.getADEManager().getFormatterForContainerTypeAndWidth(
+                    cms,
+                    resource,
+                    container.getType(),
+                    containerWidth);
                 boolean hasValidFormatter = CmsStringUtil.isNotEmptyOrWhitespaceOnly(formatterUri);
                 if (hasValidFormatter) {
                     CmsResource formatter = cms.readResource(formatterUri);
@@ -510,7 +513,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
      * 
      * @param clientIds the list of IDs of the elements to retrieve the data for
      * @param uriParam the current URI
-     * @param types the container types to consider
+     * @param containers the containers for which the element data should be fetched 
      * 
      * @return the elements data
      * 
@@ -519,7 +522,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     private Map<String, CmsContainerElementData> getElements(
         Collection<String> clientIds,
         String uriParam,
-        Set<String> types) throws CmsException {
+        Collection<CmsContainer> containers) throws CmsException {
 
         CmsObject cms = getCmsObject();
         CmsElementUtil elemUtil = new CmsElementUtil(cms, uriParam, getRequest(), getResponse());
@@ -532,7 +535,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 continue;
             }
             CmsContainerElementBean element = getCachedElement(elemId);
-            CmsContainerElementData elementData = elemUtil.getElementData(element, types);
+            CmsContainerElementData elementData = elemUtil.getElementData(element, containers);
             result.put(element.getClientId(), elementData);
             if (elementData.isSubContainer()) {
                 // this is a sub-container 
@@ -550,7 +553,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                         if (ids.contains(subId)) {
                             continue;
                         }
-                        CmsContainerElementData subItemData = elemUtil.getElementData(subElement, types);
+                        CmsContainerElementData subItemData = elemUtil.getElementData(subElement, containers);
                         ids.add(subId);
                         result.put(subId, subItemData);
                     }
@@ -566,7 +569,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
      * 
      * @param listElements the list of element beans to retrieve the data for
      * @param containerpageUri the current URI
-     * @param containerTypes the container types of the current page 
+     * @param containers the containers which exist on the container page  
      * 
      * @return the elements data
      * 
@@ -575,7 +578,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     private List<CmsContainerElementData> getListElementsData(
         List<CmsContainerElementBean> listElements,
         String containerpageUri,
-        Set<String> containerTypes) throws CmsException {
+        Collection<CmsContainer> containers) throws CmsException {
 
         CmsObject cms = getCmsObject();
         CmsElementUtil elemUtil = new CmsElementUtil(cms, containerpageUri, getRequest(), getResponse());
@@ -583,7 +586,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         for (CmsContainerElementBean element : listElements) {
             // checking if resource exists
             if (cms.existsResource(element.getElementId(), CmsResourceFilter.ONLY_VISIBLE_NO_DELETED)) {
-                CmsContainerElementData elementData = elemUtil.getElementData(element, containerTypes);
+                CmsContainerElementData elementData = elemUtil.getElementData(element, containers);
                 result.add(elementData);
                 if (elementData.isSubContainer()) {
                     // this is a sub-container 
@@ -599,7 +602,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
                     // adding all sub-items to the elements data
                     for (CmsContainerElementBean subElement : subContainer.getElements()) {
-                        CmsContainerElementData subItemData = elemUtil.getElementData(subElement, containerTypes);
+                        CmsContainerElementData subItemData = elemUtil.getElementData(subElement, containers);
                         result.add(subItemData);
                     }
                 }
@@ -623,7 +626,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         Map<String, String> result = new HashMap<String, String>();
         CmsResourceManager resourceManager = OpenCms.getResourceManager();
         try {
-            List<CmsResource> resources = OpenCms.getADEManager().getCreatableElements(
+            Collection<CmsResource> resources = OpenCms.getADEManager().getCreatableElements(
                 cms,
                 cms.getRequestContext().getUri(),
                 request);
