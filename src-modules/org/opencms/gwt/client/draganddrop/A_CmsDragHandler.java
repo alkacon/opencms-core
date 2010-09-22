@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/draganddrop/Attic/A_CmsDragHandler.java,v $
- * Date   : $Date: 2010/06/24 08:41:56 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2010/09/22 12:04:49 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,9 +32,9 @@
 package org.opencms.gwt.client.draganddrop;
 
 import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.gwt.client.util.CmsDomUtil.Style;
 import org.opencms.gwt.client.util.CmsMoveAnimation;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
-import org.opencms.gwt.client.util.CmsDomUtil.Style;
 
 import java.util.Iterator;
 import java.util.List;
@@ -64,7 +64,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * 
  * @since 8.0.0
  */
@@ -229,6 +229,9 @@ implements I_CmsDragHandler<E, T> {
     /** The mouse event vertical position. */
     private int m_clientY;
 
+    /** The element that captures all events while dragging. */
+    private Element m_capture;
+
     /**
      * @see org.opencms.gwt.client.draganddrop.I_CmsDragHandler#addDragTarget(org.opencms.gwt.client.draganddrop.I_CmsDragTarget)
      */
@@ -337,7 +340,8 @@ implements I_CmsDragHandler<E, T> {
         }
 
         // let's drag
-        DOM.setCapture(m_dragElement.getElement());
+        m_capture = m_dragElement.getElement();
+        DOM.setCapture(m_capture);
         m_dragging = true;
         Document.get().getBody().addClassName(
             org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.dragdropCss().dragStarted());
@@ -405,7 +409,8 @@ implements I_CmsDragHandler<E, T> {
                 m_scrollTimer.cancel();
                 m_scrollTimer = null;
             }
-            DOM.releaseCapture(m_dragElement.getElement());
+            DOM.releaseCapture(m_capture);
+            m_capture = null;
             event.preventDefault();
             event.stopPropagation();
             if (m_animationEnabled) {
