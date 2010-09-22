@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapStructureCache.java,v $
- * Date   : $Date: 2010/07/23 13:20:40 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/09/22 13:06:07 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Moossen
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -151,14 +151,12 @@ public class CmsSitemapStructureCache extends CmsVfsCache implements I_CmsSitema
         CmsObject adminCms = internalCreateCmsObject(cms);
 
         // check cache
-        Map<String, String> active = m_active;
-        if (active != null) {
-            return active;
+        if (m_active != null) {
+            return m_active;
         }
         long t = System.currentTimeMillis();
 
         m_active = Collections.synchronizedMap(new HashMap<String, String>());
-        active = m_active;
         register("sitemapActive", m_active);
 
         // clean up
@@ -174,7 +172,7 @@ public class CmsSitemapStructureCache extends CmsVfsCache implements I_CmsSitema
             try {
                 CmsFile sitemapFile = internalReadSitemapFile(adminCms, entryPoint, sitemapPath);
                 CmsXmlSitemap xmlSitemap = internalUnmarshalSitemapFile(adminCms, sitemapFile);
-                visitRootSitemap(adminCms, active, entryPoint, sitemapFile, xmlSitemap);
+                visitRootSitemap(adminCms, m_active, entryPoint, sitemapFile, xmlSitemap);
             } catch (CmsException e) {
                 //It's an error if a root sitemap can't be read, but we still want to process the other root sitemaps
                 LOG.error("Can't read root sitemap: ");
@@ -186,7 +184,7 @@ public class CmsSitemapStructureCache extends CmsVfsCache implements I_CmsSitema
             Messages.LOG_DEBUG_NAMED_CACHE_SITEMAP_2,
             getName(),
             new Long(System.currentTimeMillis() - t)));
-        return active;
+        return m_active;
     }
 
     /**
