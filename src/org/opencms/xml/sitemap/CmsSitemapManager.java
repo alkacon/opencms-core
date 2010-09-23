@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2010/09/03 13:27:35 $
- * Version: $Revision: 1.51 $
+ * Date   : $Date: 2010/09/23 07:16:50 $
+ * Version: $Revision: 1.52 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,6 +57,7 @@ import org.opencms.xml.containerpage.CmsADEDefaultConfiguration;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -75,7 +76,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.51 $
+ * @version $Revision: 1.52 $
  * 
  * @since 7.9.2
  */
@@ -376,7 +377,7 @@ public class CmsSitemapManager {
      * 
      * @throws CmsException if something goes wrong 
      */
-    public List<CmsResource> getCreatableElements(CmsObject cms, String sitemapUri, ServletRequest request)
+    public Collection<CmsResource> getCreatableElements(CmsObject cms, String sitemapUri, ServletRequest request)
     throws CmsException {
 
         // TODO: implement this
