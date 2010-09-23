@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsSitemapHoverbar.java,v $
- * Date   : $Date: 2010/08/25 14:40:14 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/09/23 06:30:51 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 8.0.0
  */
@@ -82,41 +82,18 @@ public class CmsSitemapHoverbar extends FlowPanel {
         m_enabled = true;
         setStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().buttonPanel());
 
-        add(new CmsHoverbarGotoSubSitemapButton(this));
-        add(new CmsHoverbarGotoButton(this));
-        add(new CmsHoverbarSubsitemapButton(this));
-        add(new CmsHoverbarDeleteButton(this));
-        add(new CmsHoverbarEditButton(this));
-        add(new CmsHoverbarNewButton(this));
-        add(new CmsHoverbarMergeButton(this));
-        add(new CmsHoverbarMoveButton(this));
-        add(new CmsHoverbarParentButton(this));
-    }
-
-    /**
-     * Sets the buttons of the hoverbar enabled.<p>
-     * 
-     * @param enable if <code>true</code> the buttons will be enabled
-     * @param disableMessage message for disabling buttons
-     */
-    public void setEnabled(boolean enable, String disableMessage) {
-
-        if (m_enabled && !enable) {
-            Iterator<Widget> it = iterator();
-            while (it.hasNext()) {
-                Widget w = it.next();
-                if (w instanceof CmsPushButton) {
-                    ((CmsPushButton)w).disable(disableMessage);
-                }
-            }
-        } else if (!m_enabled && enable) {
-            Iterator<Widget> it = iterator();
-            while (it.hasNext()) {
-                Widget w = it.next();
-                if (w instanceof CmsPushButton) {
-                    ((CmsPushButton)w).enable();
-                }
-            }
+        if (controller.isEditable()) {
+            add(new CmsHoverbarGotoSubSitemapButton(this));
+            add(new CmsHoverbarGotoButton(this));
+            add(new CmsHoverbarSubsitemapButton(this));
+            add(new CmsHoverbarDeleteButton(this));
+            add(new CmsHoverbarEditButton(this));
+            add(new CmsHoverbarNewButton(this));
+            add(new CmsHoverbarMergeButton(this));
+            add(new CmsHoverbarMoveButton(this));
+            add(new CmsHoverbarParentButton(this));
+        } else {
+            add(new CmsHoverbarGotoButton(this));
         }
     }
 
@@ -214,5 +191,32 @@ public class CmsSitemapHoverbar extends FlowPanel {
         };
         widget.addMouseOutHandler(handler);
         widget.addMouseOverHandler(handler);
+    }
+
+    /**
+     * Sets the buttons of the hoverbar enabled.<p>
+     * 
+     * @param enable if <code>true</code> the buttons will be enabled
+     * @param disableMessage message for disabling buttons
+     */
+    public void setEnabled(boolean enable, String disableMessage) {
+
+        if (m_enabled && !enable) {
+            Iterator<Widget> it = iterator();
+            while (it.hasNext()) {
+                Widget w = it.next();
+                if (w instanceof CmsPushButton) {
+                    ((CmsPushButton)w).disable(disableMessage);
+                }
+            }
+        } else if (!m_enabled && enable) {
+            Iterator<Widget> it = iterator();
+            while (it.hasNext()) {
+                Widget w = it.next();
+                if (w instanceof CmsPushButton) {
+                    ((CmsPushButton)w).enable();
+                }
+            }
+        }
     }
 }

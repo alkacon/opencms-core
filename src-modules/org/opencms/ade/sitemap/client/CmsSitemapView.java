@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapView.java,v $
- * Date   : $Date: 2010/09/14 14:22:47 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2010/09/23 06:30:51 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,8 +55,8 @@ import org.opencms.gwt.client.ui.dnd.CmsDropEvent;
 import org.opencms.gwt.client.ui.dnd.I_CmsDropHandler;
 import org.opencms.gwt.client.ui.tree.A_CmsDeepLazyOpenHandler;
 import org.opencms.gwt.client.ui.tree.CmsLazyTree;
-import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem.LoadState;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
+import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem.LoadState;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsPair;
@@ -76,7 +76,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.33 $ 
+ * @version $Revision: 1.34 $ 
  * 
  * @since 8.0.0
  */
@@ -128,9 +128,9 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler, ClosingHandler, I
         infoBean.addAdditionalInfo(Messages.get().key(Messages.GUI_VFS_PATH_0), entry.getVfsPath());
         CmsListItemWidget itemWidget = new CmsListItemWidget(infoBean);
         CmsSitemapTreeItem treeItem = new CmsSitemapTreeItem(itemWidget, entry, originalPath);
-        if (m_controller.isEditable()) {
-            m_hoverbar.installOn(m_controller, treeItem);
-        }
+
+        m_hoverbar.installOn(m_controller, treeItem);
+
         return treeItem;
     }
 
