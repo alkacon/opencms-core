@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/template3/Attic/CmsListBoxContentMapping.java,v $
- * Date   : $Date: 2010/01/26 11:00:18 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/09/23 10:07:27 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import java.util.Set;
  * 
  * @since 7.6
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  */
 public class CmsListBoxContentMapping {
 
@@ -419,8 +419,9 @@ public class CmsListBoxContentMapping {
             // we need at least an entry and an description
             if (link == null) {
                 // calculate the link                
-                link = OpenCms.getLinkManager().getServerLink(cms, m_facade);
-                link += content.getFile().getStructureId().toString() + "/";
+                link = OpenCms.getLinkManager().getServerLink(
+                    cms,
+                    m_facade + content.getFile().getStructureId().toString() + "/");
             }
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(link)) {
                 result.setLink(link);
