@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapTreeItem.java,v $
- * Date   : $Date: 2010/09/14 14:22:47 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2010/09/23 08:18:33 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.27 $ 
  * 
  * @since 8.0.0
  * 
@@ -274,6 +274,7 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
     @Override
     public void onStartDrag(I_CmsDropTarget target) {
 
+        super.onStartDrag(target);
         CmsSitemapHoverbar hoverbar = getHoverbar();
         if (hoverbar != null) {
             hoverbar.deattach();

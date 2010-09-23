@@ -25,6 +25,17 @@
 .cellpadding {
 	padding: 2px 0px;
 }
+
+@sprite .disablingOverlay{
+	gwt-image: 'overlayImage';
+	display: block;
+	position:absolute;
+	z-index: 2;
+	top: 0px;
+	left: 0px;
+	height: 100%;
+	width: 100%;
+}
 	
 .cmsState-up, .cmsState-up-hovering, .cmsState-up-disabled, .cmsState-down, .cmsState-down-hovering, .cmsState-down-disabled, .cmsHovering{};
 

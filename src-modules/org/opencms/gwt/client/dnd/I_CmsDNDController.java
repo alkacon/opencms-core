@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/dnd/Attic/I_CmsDNDController.java,v $
- * Date   : $Date: 2010/09/14 14:22:30 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/09/23 08:18:33 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,7 @@ package org.opencms.gwt.client.dnd;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -48,8 +48,10 @@ public interface I_CmsDNDController {
      * @param draggable the draggable item
      * @param target the current drop target
      * @param handler the drag and drop handler instance
+     * 
+     * @return <code>false</code> to cancel dropping 
      */
-    void onBeforeDrop(I_CmsDraggable draggable, I_CmsDropTarget target, CmsDNDHandler handler);
+    boolean onBeforeDrop(I_CmsDraggable draggable, I_CmsDropTarget target, CmsDNDHandler handler);
 
     /**
      * Executed on drag cancel.<p>
@@ -66,8 +68,10 @@ public interface I_CmsDNDController {
      * @param draggable the draggable item
      * @param target the current drop target
      * @param handler the drag and drop handler instance
+     * 
+     * @return <code>false</code> to cancel dragging
      */
-    void onDragStart(I_CmsDraggable draggable, I_CmsDropTarget target, CmsDNDHandler handler);
+    boolean onDragStart(I_CmsDraggable draggable, I_CmsDropTarget target, CmsDNDHandler handler);
 
     /**
      * Executed on drop.<p>
@@ -79,13 +83,24 @@ public interface I_CmsDNDController {
     void onDrop(I_CmsDraggable draggable, I_CmsDropTarget target, CmsDNDHandler handler);
 
     /**
-     * Executed when the helper is dragged into a drop target.<p>
+     * Executed after the placeholder has been positioned inside a drop target.<p>
      * 
      * @param draggable the draggable item
      * @param target the current drop target
      * @param handler the drag and drop handler instance
      */
-    void onTargetEnter(I_CmsDraggable draggable, I_CmsDropTarget target, CmsDNDHandler handler);
+    void onPositionedPlaceholder(I_CmsDraggable draggable, I_CmsDropTarget target, CmsDNDHandler handler);
+
+    /**
+     * Executed when the helper is dragged into a drop target.<p>
+     * 
+     * @param draggable the draggable item
+     * @param target the current drop target
+     * @param handler the drag and drop handler instance
+     * 
+     * @return <code>false</code> to cancel entering target (placeholder will not positioned inside target)
+     */
+    boolean onTargetEnter(I_CmsDraggable draggable, I_CmsDropTarget target, CmsDNDHandler handler);
 
     /**
      * Executed when the helper is dragged out of a drop target.<p>

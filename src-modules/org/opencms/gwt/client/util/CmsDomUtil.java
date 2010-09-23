@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsDomUtil.java,v $
- * Date   : $Date: 2010/08/26 13:34:27 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2010/09/23 08:18:33 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,6 +46,7 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
+import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
@@ -56,7 +57,7 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentC
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  * 
  * @since 8.0.0
  */
@@ -929,5 +930,38 @@ public final class CmsDomUtil {
         hasClass |= elementClass.endsWith(" " + className);
 
         return hasClass;
+    }
+
+    /**
+     * Adds an overlay div to the element.<p>
+     * 
+     * @param element the element
+     */
+    public static void addDisablingOverlay(Element element) {
+
+        Element overlay = DOM.createDiv();
+        overlay.addClassName(I_CmsLayoutBundle.INSTANCE.generalCss().disablingOverlay());
+        element.getStyle().setPosition(Position.RELATIVE);
+        element.appendChild(overlay);
+    }
+
+    /**
+     * Removes any present overlay from the element and it's children.<p>
+     * 
+     * @param element the element
+     */
+    public static void removeDisablingOverlay(Element element) {
+
+        List<Element> overlays = CmsDomUtil.getElementsByClass(
+            I_CmsLayoutBundle.INSTANCE.generalCss().disablingOverlay(),
+            Tag.div,
+            element);
+        if (overlays == null) {
+            return;
+        }
+        for (Element overlay : overlays) {
+            overlay.getParentElement().getStyle().clearPosition();
+            overlay.removeFromParent();
+        }
     }
 }

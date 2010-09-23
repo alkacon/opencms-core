@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsList.java,v $
- * Date   : $Date: 2010/09/14 14:22:47 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2010/09/23 08:18:33 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @since 8.0.0
  */
@@ -268,14 +268,6 @@ public class CmsList<I extends I_CmsListItem> extends ComplexPanel implements I_
     public boolean isDropEnabled() {
 
         return m_dropEnabled;
-    }
-
-    /**
-     * @see org.opencms.gwt.client.dnd.I_CmsDropTarget#onDragStart(org.opencms.gwt.client.dnd.I_CmsDraggable)
-     */
-    public void onDragStart(I_CmsDraggable draggable) {
-
-        return;
     }
 
     /**

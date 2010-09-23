@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/dnd/Attic/I_CmsDropTarget.java,v $
- * Date   : $Date: 2010/09/14 14:22:30 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/09/23 08:18:33 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import com.google.gwt.dom.client.Element;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -77,13 +77,6 @@ public interface I_CmsDropTarget {
      * @param y the cursor client y position
      */
     void insertPlaceholder(Element placeholder, int x, int y);
-
-    /**
-     * Executed on drag start.<p>
-     * 
-     * @param draggable the draggable
-     */
-    void onDragStart(I_CmsDraggable draggable);
 
     /**
      * Executed on drop.<p>

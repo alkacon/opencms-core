@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapDNDController.java,v $
- * Date   : $Date: 2010/09/22 14:27:48 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/09/23 08:18:33 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,13 +42,16 @@ import org.opencms.gwt.client.dnd.I_CmsDraggable;
 import org.opencms.gwt.client.dnd.I_CmsDropTarget;
 import org.opencms.gwt.client.ui.tree.CmsTree;
 import org.opencms.gwt.client.util.CmsDebugLog;
+import org.opencms.gwt.client.util.CmsDomUtil;
+
+import com.google.gwt.dom.client.Style.Display;
 
 /**
  * The sitemap drag and drop controller.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -62,6 +65,12 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
 
     /** The insert path of the draggable. */
     private String m_insertPath;
+
+    /** The original position of the draggable. */
+    private int m_originalIndex;
+
+    /** The original path of the draggable. */
+    private String m_originalPath;
 
     /** The sitemap toolbar. */
     private CmsSitemapToolbar m_toolbar;
@@ -81,21 +90,19 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
     /**
      * @see org.opencms.gwt.client.dnd.I_CmsDNDController#onBeforeDrop(org.opencms.gwt.client.dnd.I_CmsDraggable, org.opencms.gwt.client.dnd.I_CmsDropTarget, org.opencms.gwt.client.dnd.CmsDNDHandler)
      */
-    public void onBeforeDrop(I_CmsDraggable draggable, I_CmsDropTarget target, CmsDNDHandler handler) {
+    public boolean onBeforeDrop(I_CmsDraggable draggable, I_CmsDropTarget target, CmsDNDHandler handler) {
 
         if (!(target instanceof CmsTree<?>)) {
-            // only dropping onto the tree allowed in sitemap
-            handler.cancel();
-            return;
+            // only dropping onto the tree allowed in sitemap editor
+            return false;
         }
         CmsTree<?> tree = (CmsTree<?>)target;
         m_insertIndex = tree.getPlaceholderIndex();
         if (m_insertIndex == -1) {
-            handler.cancel();
-            return;
+            return false;
         }
         m_insertPath = tree.getPlaceholderPath();
-
+        return true;
     }
 
     /**
@@ -103,14 +110,13 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
      */
     public void onDragCancel(I_CmsDraggable draggable, I_CmsDropTarget target, CmsDNDHandler handler) {
 
-        // TODO: check if there is anything to do
-
+        CmsDomUtil.removeDisablingOverlay(draggable.getElement());
     }
 
     /**
      * @see org.opencms.gwt.client.dnd.I_CmsDNDController#onDragStart(org.opencms.gwt.client.dnd.I_CmsDraggable, org.opencms.gwt.client.dnd.I_CmsDropTarget, org.opencms.gwt.client.dnd.CmsDNDHandler)
      */
-    public void onDragStart(I_CmsDraggable draggable, I_CmsDropTarget target, CmsDNDHandler handler) {
+    public boolean onDragStart(I_CmsDraggable draggable, I_CmsDropTarget target, CmsDNDHandler handler) {
 
         // TODO: check lock and modification state
         //        CmsSitemapController controller = CmsSitemapView.getInstance().getController();
@@ -121,9 +127,20 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
 
         m_insertIndex = -1;
         m_insertPath = null;
+        m_originalIndex = -1;
+        m_originalPath = null;
         if ((draggable instanceof CmsClipboardDeletedItem) || (draggable instanceof CmsResultListItem)) {
             m_toolbar.onButtonActivation(null);
+        } else if (draggable instanceof CmsSitemapTreeItem) {
+            CmsSitemapTreeItem treeItem = (CmsSitemapTreeItem)draggable;
+            m_originalPath = treeItem.getParentItem().getPath();
+            if (treeItem.getParentItem() != null) {
+                m_originalIndex = treeItem.getParentItem().getItemPosition(treeItem);
+            }
+            CmsDomUtil.addDisablingOverlay(draggable.getElement());
         }
+        CmsDebugLog.getInstance().printLine("Starting path: " + m_originalPath + ", Index: " + m_originalIndex);
+        return true;
     }
 
     /**
@@ -144,11 +161,16 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
             m_controller.create(entry);
         }
         if (draggable instanceof CmsSitemapTreeItem) {
-            // moving a tree entry around
-            CmsClientSitemapEntry entry = m_controller.getEntry(((CmsSitemapTreeItem)draggable).getSitePath());
-            CmsDebugLog.getInstance().printLine(
-                "inserting at " + m_insertPath + entry.getName() + "/ and index " + m_insertIndex);
-            m_controller.move(entry, m_insertPath + entry.getName() + "/", m_insertIndex);
+            CmsDomUtil.removeDisablingOverlay(draggable.getElement());
+            if (isChangedPosition(draggable, target)) {
+                // moving a tree entry around
+                CmsClientSitemapEntry entry = m_controller.getEntry(((CmsSitemapTreeItem)draggable).getSitePath());
+                CmsDebugLog.getInstance().printLine(
+                    "inserting at " + m_insertPath + entry.getName() + "/ and index " + m_insertIndex);
+                m_controller.move(entry, m_insertPath + entry.getName() + "/", m_insertIndex);
+            } else {
+                CmsDebugLog.getInstance().printLine("Nothing changed");
+            }
         }
         if (draggable instanceof CmsResultListItem) {
             CmsResultListItem galleryItem = (CmsResultListItem)draggable;
@@ -165,12 +187,25 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
     }
 
     /**
+     * @see org.opencms.gwt.client.dnd.I_CmsDNDController#onPositionedPlaceholder(org.opencms.gwt.client.dnd.I_CmsDraggable, org.opencms.gwt.client.dnd.I_CmsDropTarget, org.opencms.gwt.client.dnd.CmsDNDHandler)
+     */
+    public void onPositionedPlaceholder(I_CmsDraggable draggable, I_CmsDropTarget target, CmsDNDHandler handler) {
+
+        if (draggable instanceof CmsSitemapTreeItem) {
+            if (!isChangedPosition(draggable, target)) {
+                draggable.getElement().getStyle().setDisplay(Display.NONE);
+            } else {
+                draggable.getElement().getStyle().setDisplay(Display.BLOCK);
+            }
+        }
+    }
+
+    /**
      * @see org.opencms.gwt.client.dnd.I_CmsDNDController#onTargetEnter(org.opencms.gwt.client.dnd.I_CmsDraggable, org.opencms.gwt.client.dnd.I_CmsDropTarget, org.opencms.gwt.client.dnd.CmsDNDHandler)
      */
-    public void onTargetEnter(I_CmsDraggable draggable, I_CmsDropTarget target, CmsDNDHandler handler) {
+    public boolean onTargetEnter(I_CmsDraggable draggable, I_CmsDropTarget target, CmsDNDHandler handler) {
 
-        // nothing to do here
-
+        return true;
     }
 
     /**
@@ -180,7 +215,36 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
 
         if (target instanceof CmsTree<?>) {
             ((CmsTree<?>)target).cancelOpenTimer();
+            if (draggable instanceof CmsSitemapTreeItem) {
+                draggable.getElement().getStyle().setDisplay(Display.BLOCK);
+            }
         }
+    }
+
+    /**
+     * Checks whether the current placeholder position represents a change to the original draggable position within the tree.<p>
+     * 
+     * @param draggable the draggable
+     * @param target the current drop target
+     * 
+     * @return <code>true</code> if the position changed
+     */
+    private boolean isChangedPosition(I_CmsDraggable draggable, I_CmsDropTarget target) {
+
+        // if draggable is not a sitemap item, any valid position is a changed position
+        if (!((draggable instanceof CmsSitemapTreeItem) && (target instanceof CmsTree<?>))) {
+            return true;
+        }
+        // if the the path differs, the position has changed
+        String placeholderPath = ((CmsTree<?>)target).getPlaceholderPath();
+        if (!((placeholderPath != null) && placeholderPath.equals(m_originalPath))) {
+            return true;
+        }
+        // if the new index is not next to the old one, the position has changed
+        if (!((target.getPlaceholderIndex() == m_originalIndex + 1) || (target.getPlaceholderIndex() == m_originalIndex))) {
+            return true;
+        }
+        return false;
     }
 
 }

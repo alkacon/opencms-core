@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2010/08/26 13:34:27 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2010/09/23 08:18:33 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import com.google.gwt.resources.client.ImageResource.RepeatStyle;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.41 $
+ * @version $Revision: 1.42 $
  * 
  * @since 8.0.0
  */
@@ -488,6 +488,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String cornerTop();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String disablingOverlay();
 
         /**
          * Access method.<p>
@@ -1378,6 +1385,15 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      */
     @Source("notification.css")
     I_CmsNotificationCss notificationCss();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/placeholderOverlay_trans.png")
+    @ImageOptions(repeatStyle = RepeatStyle.Both)
+    ImageResource overlayImage();
 
     /**
      * Access method.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/tree/Attic/CmsTreeItem.java,v $
- * Date   : $Date: 2010/09/14 14:22:47 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2010/09/23 08:18:33 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,7 +71,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Georg Westenberger
  * @author Michael Moossen
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 8.0.0
  */
@@ -491,7 +491,7 @@ public class CmsTreeItem extends CmsListItem {
     }
 
     /**
-     * Positions the placeholder as a sibling or descendant of this element.<p> 
+     * Positions the drag and drop placeholder as a sibling or descendant of this element.<p> 
      * 
      * @param x the cursor client x position
      * @param y the cursor client y position
@@ -500,6 +500,10 @@ public class CmsTreeItem extends CmsListItem {
      */
     public int repositionPlaceholder(int x, int y, Element placeholder) {
 
+        if ((getTree().getDnDHandler() != null) && (getTree().getDnDHandler().getDraggable() == this)) {
+            // can't drop item on itself, keeping previous position
+            return getTree().getPlaceholderIndex();
+        }
         Element itemElement = getListItemWidget().getElement();
         // check if the mouse pointer is within the height of the element 
         int top = CmsDomUtil.getRelativeY(y, itemElement);

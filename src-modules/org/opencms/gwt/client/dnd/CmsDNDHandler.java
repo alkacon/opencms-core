@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/dnd/Attic/CmsDNDHandler.java,v $
- * Date   : $Date: 2010/09/14 14:22:30 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/09/23 08:18:33 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import com.google.gwt.user.client.Event.NativePreviewHandler;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -183,7 +183,11 @@ public class CmsDNDHandler implements MouseDownHandler {
      */
     public void drop() {
 
-        m_controller.onBeforeDrop(m_draggable, m_currentTarget, this);
+        // notifying controller, if false is returned, dropping will be canceled
+        if (!m_controller.onBeforeDrop(m_draggable, m_currentTarget, this)) {
+            cancel();
+            return;
+        }
         m_draggable.onDrop(m_currentTarget);
         m_currentTarget.onDrop(m_draggable);
         m_controller.onDrop(m_draggable, m_currentTarget, this);
@@ -276,12 +280,15 @@ public class CmsDNDHandler implements MouseDownHandler {
         m_cursorOffsetY = CmsDomUtil.getRelativeY(m_clientY, m_draggable.getElement());
 
         m_currentTarget = m_draggable.getParentTarget();
+        // notifying controller, if false is returned, dragging will be canceled
+
         m_dragHelper = (Element)m_draggable.getDragHelper(m_currentTarget);
         m_placeholder = (Element)m_draggable.getPlaceholder(m_currentTarget);
-
-        m_controller.onDragStart(m_draggable, m_currentTarget, this);
+        if (!m_controller.onDragStart(m_draggable, m_currentTarget, this)) {
+            cancel();
+            return;
+        }
         m_draggable.onStartDrag(m_currentTarget);
-
         m_dragging = true;
         // add marker css class to enable drag and drop dependent styles
         Document.get().getBody().addClassName(
@@ -369,15 +376,21 @@ public class CmsDNDHandler implements MouseDownHandler {
             } else {
                 m_currentTarget.repositionPlaceholder(m_clientX, m_clientY);
             }
+            m_controller.onPositionedPlaceholder(m_draggable, m_currentTarget, this);
         } else {
             // leaving the current target
-            m_controller.onTargetLeave(m_draggable, m_currentTarget, this);
+            if (m_currentTarget != null) {
+                m_controller.onTargetLeave(m_draggable, m_currentTarget, this);
+            }
             for (I_CmsDropTarget target : m_targets) {
                 if ((target != m_currentTarget) && target.checkPosition(m_clientX, m_clientY)) {
-                    m_controller.onTargetEnter(m_draggable, target, this);
-                    target.insertPlaceholder(m_placeholder, m_clientX, m_clientY);
-                    m_currentTarget = target;
-                    return;
+                    // notifying controller, if false is returned, placeholder will not be positioned inside target 
+                    if (m_controller.onTargetEnter(m_draggable, target, this)) {
+                        target.insertPlaceholder(m_placeholder, m_clientX, m_clientY);
+                        m_currentTarget = target;
+                        m_controller.onPositionedPlaceholder(m_draggable, m_currentTarget, this);
+                        return;
+                    }
                 }
             }
             // mouse position is not over any registered target
@@ -392,10 +405,20 @@ public class CmsDNDHandler implements MouseDownHandler {
 
         if (m_previewHandlerRegistration != null) {
             m_previewHandlerRegistration.removeHandler();
+            m_previewHandlerRegistration = null;
         }
         m_dragging = false;
         for (I_CmsDropTarget target : m_targets) {
             target.removePlaceholder();
         }
+        if (m_dragHelper != null) {
+            m_dragHelper.removeFromParent();
+            m_dragHelper = null;
+        }
+        m_placeholder = null;
+        m_currentTarget = null;
+        m_draggable = null;
+        Document.get().getBody().removeClassName(
+            org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.dragdropCss().dragStarted());
     }
 }
