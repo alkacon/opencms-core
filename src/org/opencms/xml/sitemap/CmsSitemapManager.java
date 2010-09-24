@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2010/09/23 07:16:50 $
- * Version: $Revision: 1.52 $
+ * Date   : $Date: 2010/09/24 07:01:23 $
+ * Version: $Revision: 1.53 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,6 +63,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
@@ -76,7 +77,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.52 $
+ * @version $Revision: 1.53 $
  * 
  * @since 7.9.2
  */
@@ -137,7 +138,7 @@ public class CmsSitemapManager {
     private CmsObject m_adminCms;
 
     /** The cache instance. */
-    private I_CmsSitemapCache m_cache;
+    private CmsOnlineAndOfflineSitemapCache m_cache;
 
     /** Lazy initialized sitemap type id. */
     private int m_sitemapTypeId;
@@ -163,7 +164,6 @@ public class CmsSitemapManager {
         if (cacheSettings == null) {
             cacheSettings = new CmsSitemapCacheSettings();
         }
-        //m_cache = new CmsSitemapCache(adminCms, memoryMonitor, cacheSettings);
         m_cache = new CmsOnlineAndOfflineSitemapCache(adminCms, memoryMonitor);
 
         m_sitemapXmlCaches = new HashMap<Boolean, CmsSitemapXmlCache>();
@@ -581,7 +581,7 @@ public class CmsSitemapManager {
 
         // if not found try as detail page
         String path = entryUri;
-        if (path.endsWith("/")) {
+        if (path.endsWith("/") && (path.length() > 1)) {
             path = path.substring(0, path.length() - 1);
         }
         String detailId = CmsResource.getName(path);
@@ -893,6 +893,20 @@ public class CmsSitemapManager {
             sitemapBean.getSiteEntries(),
             resource.getStructureId());
         return entry.getSitePath(cms);
+    }
+
+    /**
+     * Returns the site roots of sites which use sitemaps.<p>
+     * 
+     * @param cms the current CMS context
+     *  
+     * @return a set of roots of sites which use sitemaps 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public Set<String> getSiteRootsWithSitemaps(CmsObject cms) throws CmsException {
+
+        return m_cache.getSiteRootsWithSitemap(cms);
     }
 
     /**

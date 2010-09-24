@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapStructureCache.java,v $
- * Date   : $Date: 2010/09/22 13:06:07 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/09/24 07:01:23 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Moossen
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -86,6 +86,9 @@ public class CmsSitemapStructureCache extends CmsVfsCache implements I_CmsSitema
     /** Cache for active sitemaps, as localized entry point root path vs sitemap resource root path. */
     private Map<String, String> m_active;
 
+    /** Sitemap entries indexed by vfs paths and locale.*/
+    private Map<CmsPair<String, Locale>, List<CmsInternalSitemapEntry>> m_byRootVfsPath;
+
     /** A map from structure ids to sets of corresponding sitemap paths. */
     private Map<CmsPair<CmsUUID, Locale>, List<CmsInternalSitemapEntry>> m_byStructureId;
 
@@ -100,6 +103,9 @@ public class CmsSitemapStructureCache extends CmsVfsCache implements I_CmsSitema
 
     /** A flag which indicates whether this is the online sitemap cache (this flag only makes sense if the <code>m_useCache</code> flag is set ). */
     private boolean m_online;
+
+    /** The list of site roots of sites which use sitemaps. */
+    private Set<String> m_siteRoots;
 
     /** If true, the cached data will be registered in the memory monitor. */
     private boolean m_useMemoryMonitor;
@@ -164,10 +170,14 @@ public class CmsSitemapStructureCache extends CmsVfsCache implements I_CmsSitema
         m_byUri.clear();
         m_pathSet.clear();
         m_byStructureId.clear();
+        m_byRootVfsPath.clear();
+        m_siteRoots.clear();
 
         // iterate sitemap entry points (system wide)
         List<CmsResource> entryPoints = internalGetEntryPointResources(adminCms);
         for (CmsResource entryPoint : entryPoints) {
+            String siteRoot = OpenCms.getSiteManager().getSiteRoot(entryPoint.getRootPath());
+            m_siteRoots.add(siteRoot);
             String sitemapPath = internalReadSitemapProperty(adminCms, entryPoint);
             try {
                 CmsFile sitemapFile = internalReadSitemapFile(adminCms, entryPoint, sitemapPath);
@@ -239,6 +249,28 @@ public class CmsSitemapStructureCache extends CmsVfsCache implements I_CmsSitema
     }
 
     /**
+     * Gets sitemap entries by root vfs path.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param rootPath the root path
+     *  
+     * @return a list of sitemap entries which point to a resource with the given root path 
+     * @throws CmsException if something goes wrong 
+     */
+    public List<CmsInternalSitemapEntry> getEntriesByRootVfsPath(CmsObject cms, String rootPath) throws CmsException {
+
+        getActiveSitemaps(cms);
+        Locale locale = cms.getRequestContext().getLocale();
+        CmsPair<String, Locale> key = CmsPair.create(rootPath, locale);
+        List<CmsInternalSitemapEntry> entries = m_byRootVfsPath.get(key);
+        if (entries == null) {
+            return Collections.<CmsInternalSitemapEntry> emptyList();
+        } else {
+            return Collections.unmodifiableList(entries);
+        }
+    }
+
+    /**
      * @see org.opencms.xml.sitemap.I_CmsSitemapCache#getEntriesByStructureId(org.opencms.file.CmsObject, org.opencms.util.CmsUUID)
      */
     public List<CmsInternalSitemapEntry> getEntriesByStructureId(CmsObject cms, CmsUUID id) throws CmsException {
@@ -302,12 +334,45 @@ public class CmsSitemapStructureCache extends CmsVfsCache implements I_CmsSitema
     }
 
     /**
+     * Returns the roots of the sites in which sitemaps are active.<p>
+     * 
+     * @param cms the current CMS context
+     *  
+     * @return a set of site roots 
+     * 
+     * @throws CmsException if something goes wrong  
+     */
+    public Set<String> getSiteRootsWithSitemap(CmsObject cms) throws CmsException {
+
+        getActiveSitemaps(cms);
+        return Collections.unmodifiableSet(m_siteRoots);
+    }
+
+    /**
      * @see java.lang.Object#toString()
      */
     @Override
     public String toString() {
 
         return getClass().getName() + " (" + m_name + ")";
+    }
+
+    /**
+     * Adds a sitemap entry to the map which indexes sitemap entries by the root path of the container page
+     * which they point to.<p>
+     * 
+     * @param rootPath the root path of the container page 
+     * @param locale the locale 
+     * @param entry the entry to add 
+     */
+    protected void addEntryForRootPath(String rootPath, Locale locale, CmsInternalSitemapEntry entry) {
+
+        CmsPair<String, Locale> key = CmsPair.create(rootPath, locale);
+        List<CmsInternalSitemapEntry> entries = m_byRootVfsPath.get(key);
+        if (entries == null) {
+            entries = new ArrayList<CmsInternalSitemapEntry>();
+            m_byRootVfsPath.put(key, entries);
+        }
     }
 
     /**
@@ -608,8 +673,11 @@ public class CmsSitemapStructureCache extends CmsVfsCache implements I_CmsSitema
 
         // collect the inherited properties
         properties.putAll(entry.getProperties());
+        CmsUUID structureId = entry.getStructureId();
+        CmsResource resource = cms.readResource(structureId);
+        addEntryForStructureId(structureId, locale, entry);
+        addEntryForRootPath(resource.getRootPath(), locale, entry);
 
-        addEntryForStructureId(entry.getStructureId(), locale, entry);
         // get sub-entries
         List<CmsInternalSitemapEntry> subEntries = getSubEntries(cms, locale, entry);
         String sitemapUuid = properties.get(CmsSitemapManager.Property.sitemap.name());
@@ -691,6 +759,13 @@ public class CmsSitemapStructureCache extends CmsVfsCache implements I_CmsSitema
 
         m_byStructureId = new HashMap<CmsPair<CmsUUID, Locale>, List<CmsInternalSitemapEntry>>();
         register("structIds", m_byStructureId);
+
+        m_byRootVfsPath = new HashMap<CmsPair<String, Locale>, List<CmsInternalSitemapEntry>>();
+        register("rootPaths", m_byRootVfsPath);
+
+        m_siteRoots = new HashSet<String>();
+        register("siteRoots", m_siteRoots);
+
     }
 
 }

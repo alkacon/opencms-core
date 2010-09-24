@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapEntry.java,v $
- * Date   : $Date: 2010/07/23 11:38:25 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2010/09/24 07:01:23 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 7.6 
  */
@@ -161,6 +161,9 @@ public class CmsSitemapEntry {
 
     /**
      * Returns the content id, for detail pages.<p>
+     * 
+     * This will only be set if this sitemap entry has been retrieved by calling {@link CmsSitemapManager#getEntryForUri}
+     * with a detail URI of the form (sitemapUri + contentId).<p>
      *
      * @return the content id
      */
@@ -170,9 +173,11 @@ public class CmsSitemapEntry {
     }
 
     /**
-     * Returns the id.<p>
+     * Returns the sitemap entry's id.<p>
+     * 
+     * The id is not a structure or resource id of a file, but just an arbitrary unique identifier for sitemap entries.<p>
      *
-     * @return the id
+     * @return the sitemap entry's id
      */
     public CmsUUID getId() {
 
@@ -190,7 +195,7 @@ public class CmsSitemapEntry {
     }
 
     /**
-     * Returns the name.<p>
+     * Returns the name (URL component) of this entry.<p>
      *
      * @return the name
      */

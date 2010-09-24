@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsOnlineAndOfflineSitemapCache.java,v $
- * Date   : $Date: 2010/07/20 11:50:24 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/09/24 07:01:23 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,6 +39,7 @@ import org.opencms.util.CmsUUID;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * This class wraps both the online and offline sitemap caches and delegates method calls
@@ -46,7 +47,7 @@ import java.util.Map;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -113,22 +114,12 @@ public class CmsOnlineAndOfflineSitemapCache implements I_CmsSitemapCache {
     }
 
     /**
-     * @see org.opencms.xml.sitemap.I_CmsSitemapCache#shutdown()
-     */
-    public void shutdown() {
-
-        m_offlineCache.shutdown();
-        m_onlineCache.shutdown();
-
-    }
-
-    /**
      * Returns either the online or offline sitemap cache depending on a flag.<p>
      * 
      * @param online if true, return the online sitemap cache, else the offline sitemap cache 
      * @return the online or offline sitemap cache 
      */
-    protected I_CmsSitemapCache getInternalCache(boolean online) {
+    public I_CmsSitemapCache getInternalCache(boolean online) {
 
         return online ? m_onlineCache : m_offlineCache;
     }
@@ -140,9 +131,28 @@ public class CmsOnlineAndOfflineSitemapCache implements I_CmsSitemapCache {
      * 
      * @return the online or offline sitemap cache 
      */
-    protected I_CmsSitemapCache getInternalCache(CmsObject cms) {
+    public I_CmsSitemapCache getInternalCache(CmsObject cms) {
 
         boolean online = CmsProject.isOnlineProject(cms.getRequestContext().currentProject().getUuid());
         return getInternalCache(online);
     }
+
+    /**
+     * @see org.opencms.xml.sitemap.I_CmsSitemapCache#getSiteRootsWithSitemap(org.opencms.file.CmsObject)
+     */
+    public Set<String> getSiteRootsWithSitemap(CmsObject cms) throws CmsException {
+
+        return getInternalCache(cms).getSiteRootsWithSitemap(cms);
+    }
+
+    /**
+     * @see org.opencms.xml.sitemap.I_CmsSitemapCache#shutdown()
+     */
+    public void shutdown() {
+
+        m_offlineCache.shutdown();
+        m_onlineCache.shutdown();
+
+    }
+
 }
