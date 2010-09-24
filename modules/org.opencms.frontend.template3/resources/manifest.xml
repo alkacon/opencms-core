@@ -1686,7 +1686,7 @@
 				</property>
 				<property>
 					<name>cache</name>
-					<value><![CDATA[sitemap-entry]]></value>
+					<value><![CDATA[sitemap-entry;uri]]></value>
 				</property>
 				<property type="shared">
 					<name>export</name>
