@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2010/09/24 07:01:23 $
- * Version: $Revision: 1.53 $
+ * Date   : $Date: 2010/09/24 09:43:03 $
+ * Version: $Revision: 1.54 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
@@ -77,7 +76,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.53 $
+ * @version $Revision: 1.54 $
  * 
  * @since 7.9.2
  */
@@ -165,7 +164,6 @@ public class CmsSitemapManager {
             cacheSettings = new CmsSitemapCacheSettings();
         }
         m_cache = new CmsOnlineAndOfflineSitemapCache(adminCms, memoryMonitor);
-
         m_sitemapXmlCaches = new HashMap<Boolean, CmsSitemapXmlCache>();
         CmsSitemapXmlCache onlineXmlCache = new CmsSitemapXmlCache(
             "Online",
@@ -809,6 +807,7 @@ public class CmsSitemapManager {
         return CmsStringUtil.joinPaths(detailView, "/", searchResultStructureId.toString(), "/");
     }
 
+
     /**
      * Returns the sitemap URI for the given sitemap entry URI.<p>
      * 
@@ -896,20 +895,6 @@ public class CmsSitemapManager {
     }
 
     /**
-     * Returns the site roots of sites which use sitemaps.<p>
-     * 
-     * @param cms the current CMS context
-     *  
-     * @return a set of roots of sites which use sitemaps 
-     * 
-     * @throws CmsException if something goes wrong 
-     */
-    public Set<String> getSiteRootsWithSitemaps(CmsObject cms) throws CmsException {
-
-        return m_cache.getSiteRootsWithSitemap(cms);
-    }
-
-    /**
      * Returns the list of sub-entries for the given sitemap entry URI.<p>
      * 
      * @param cms the current CMS context
@@ -929,6 +914,21 @@ public class CmsSitemapManager {
             }
         }
         return subEntries;
+    }
+
+    /**
+     * Returns true if the site with the given site root is using a sitemap.<p>
+     * 
+     * @param cms the CMS context 
+     * @param siteRoot a site root 
+     * 
+     * @return true if the site with the given root uses a sitemap 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public boolean isSiteUsingSitemap(CmsObject cms, String siteRoot) throws CmsException {
+
+        return m_cache.getSiteRootsWithSitemap(cms).contains(siteRoot);
     }
 
     /**
