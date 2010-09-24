@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2010/09/24 09:43:03 $
- * Version: $Revision: 1.54 $
+ * Date   : $Date: 2010/09/24 13:59:11 $
+ * Version: $Revision: 1.55 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.xml.sitemap;
 
+import org.opencms.cache.CmsVfsMemoryObjectCache;
 import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
@@ -76,7 +77,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.54 $
+ * @version $Revision: 1.55 $
  * 
  * @since 7.9.2
  */
@@ -163,7 +164,8 @@ public class CmsSitemapManager {
         if (cacheSettings == null) {
             cacheSettings = new CmsSitemapCacheSettings();
         }
-        m_cache = new CmsOnlineAndOfflineSitemapCache(adminCms, memoryMonitor);
+        CmsVfsMemoryObjectCache structureIdCache = new CmsVfsMemoryObjectCache();
+        m_cache = new CmsOnlineAndOfflineSitemapCache(adminCms, memoryMonitor, structureIdCache);
         m_sitemapXmlCaches = new HashMap<Boolean, CmsSitemapXmlCache>();
         CmsSitemapXmlCache onlineXmlCache = new CmsSitemapXmlCache(
             "Online",
@@ -498,6 +500,21 @@ public class CmsSitemapManager {
     }
 
     /**
+     * Returns the sitemap entries which point to the container page at the given VFS root path.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param rootPath a root VFS path 
+     * 
+     * @return the list of sitemap entries which reference the container page at the given VFS root path 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public List<CmsInternalSitemapEntry> getEntriesForRootVfsPath(CmsObject cms, String rootPath) throws CmsException {
+
+        return m_cache.getEntriesByRootVfsPath(cms, rootPath);
+    }
+
+    /**
      * Returns the sitemap entries which reference a resource with a given structure id.<p>
      * 
      * @param cms the CMS context 
@@ -807,7 +824,6 @@ public class CmsSitemapManager {
         return CmsStringUtil.joinPaths(detailView, "/", searchResultStructureId.toString(), "/");
     }
 
-
     /**
      * Returns the sitemap URI for the given sitemap entry URI.<p>
      * 
@@ -847,7 +863,6 @@ public class CmsSitemapManager {
             CmsRelationType.XML_STRONG));
         List<CmsResource> sitemaps = new ArrayList<CmsResource>();
         for (CmsRelation relation : relations) {
-
             CmsResource source = relation.getSource(cms, CmsResourceFilter.ALL);
             if (cms.existsResource(source.getStructureId(), CmsResourceFilter.DEFAULT)
                 && CmsResourceTypeXmlSitemap.isSitemap(source)) {

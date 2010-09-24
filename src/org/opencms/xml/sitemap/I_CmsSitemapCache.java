@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/I_CmsSitemapCache.java,v $
- * Date   : $Date: 2010/09/24 07:01:23 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/09/24 13:59:11 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,6 +72,17 @@ public interface I_CmsSitemapCache {
      * @return the default sitemap properties
      */
     Map<String, String> getDefaultProperties(CmsObject cms);
+
+    /**
+     * Gets sitemap entries by root vfs path.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param rootPath the root path
+     *  
+     * @return a list of sitemap entries which point to a resource with the given root path 
+     * @throws CmsException if something goes wrong 
+     */
+    List<CmsInternalSitemapEntry> getEntriesByRootVfsPath(CmsObject cms, String rootPath) throws CmsException;
 
     /**
      * Gets the entries of the sitemap which refer to a resource with a given structure id.<p>

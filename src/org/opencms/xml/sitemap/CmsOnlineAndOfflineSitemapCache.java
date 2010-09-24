@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsOnlineAndOfflineSitemapCache.java,v $
- * Date   : $Date: 2010/09/24 07:01:23 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/09/24 13:59:11 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.xml.sitemap;
 
+import org.opencms.cache.CmsVfsMemoryObjectCache;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.main.CmsException;
@@ -47,7 +48,7 @@ import java.util.Set;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -64,12 +65,17 @@ public class CmsOnlineAndOfflineSitemapCache implements I_CmsSitemapCache {
      * 
      * @param adminCms the root admin CMS context for permission independent data retrieval 
      * @param memMonitor the memory monitor instance
+     * @param structureIdCache a cache for memorizing the structure ids for resource paths
+     * 
      * @see org.opencms.main.OpenCmsCore#initConfiguration
      */
-    public CmsOnlineAndOfflineSitemapCache(CmsObject adminCms, CmsMemoryMonitor memMonitor) {
+    public CmsOnlineAndOfflineSitemapCache(
+        CmsObject adminCms,
+        CmsMemoryMonitor memMonitor,
+        CmsVfsMemoryObjectCache structureIdCache) {
 
-        m_offlineCache = new CmsSitemapStructureCache(adminCms, memMonitor, true, false, "Offline");
-        m_onlineCache = new CmsSitemapStructureCache(adminCms, memMonitor, true, true, "Online");
+        m_offlineCache = new CmsSitemapStructureCache(adminCms, memMonitor, structureIdCache, true, false, "Offline");
+        m_onlineCache = new CmsSitemapStructureCache(adminCms, memMonitor, structureIdCache, true, true, "Online");
     }
 
     /**
@@ -86,6 +92,14 @@ public class CmsOnlineAndOfflineSitemapCache implements I_CmsSitemapCache {
     public Map<String, String> getDefaultProperties(CmsObject cms) {
 
         return getInternalCache(cms).getDefaultProperties(cms);
+    }
+
+    /**
+     * @see org.opencms.xml.sitemap.I_CmsSitemapCache#getEntriesByRootVfsPath(org.opencms.file.CmsObject, java.lang.String)
+     */
+    public List<CmsInternalSitemapEntry> getEntriesByRootVfsPath(CmsObject cms, String rootPath) throws CmsException {
+
+        return getInternalCache(cms).getEntriesByRootVfsPath(cms, rootPath);
     }
 
     /**

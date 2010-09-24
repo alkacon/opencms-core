@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsPublishSitemapCache.java,v $
- * Date   : $Date: 2010/07/23 11:51:59 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/09/24 13:59:11 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -100,7 +100,7 @@ public class CmsPublishSitemapCache extends CmsSitemapStructureCache {
      */
     public CmsPublishSitemapCache(CmsObject adminCms, String name) {
 
-        super(adminCms, null, false, false, name);
+        super(adminCms, null, null, false, false, name);
     }
 
     /**
