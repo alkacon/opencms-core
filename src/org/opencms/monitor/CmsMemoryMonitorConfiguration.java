@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitorConfiguration.java,v $
- * Date   : $Date: 2009/09/08 12:52:24 $
- * Version: $Revision: 1.10.2.1 $
+ * Date   : $Date: 2010/09/27 09:32:24 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import java.util.List;
  * 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.10.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -175,7 +175,11 @@ public class CmsMemoryMonitorConfiguration {
         m_className = className;
         m_maxUsagePercent = Integer.parseInt(maxUsagePercent);
         m_logInterval = Integer.parseInt(logInterval);
-        m_emailInterval = Integer.parseInt(emailInterval);
+        try {
+            m_emailInterval = Integer.parseInt(emailInterval);
+        } catch (NumberFormatException e) {
+            // then email interval not set, use null
+        }
         m_warningInterval = Integer.parseInt(warningInterval);
     }
 

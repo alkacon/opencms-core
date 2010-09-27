@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2010/09/03 13:10:38 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2010/09/27 09:32:24 $
+ * Version: $Revision: 1.48 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -20,6 +20,7 @@ Legend:
 - General comment
 
 OpenCms x.x.x - Month Day, Year
+* Fixed issue setting the configuration values of the MemoryMonitor to 0
 ! New user tracking allows subscription of files, tracking of visited resources, listing subsribed resources and many more
 * Fixed issue displaying HTML in "Title" "and NavText" column of explorer view
 * fixed issue: anchor of URL being encoded incorrectly (Bug: 1872)
