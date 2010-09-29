@@ -412,6 +412,7 @@
 										<pathelement path="${module.input.src.shared}" />
 										<pathelement path="${module.dependencies.path}" />
 										<pathelement path="${module.libs.path}" />
+										<pathelement path="${opencms.input}/src" />
 									</classpath>
 								</java>
 							</sequential>
