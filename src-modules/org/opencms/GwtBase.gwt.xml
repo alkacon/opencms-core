@@ -28,9 +28,9 @@
         </any>
     </replace-with>
     
-	<source path="client" />
-	<source path="shared" />
-	<super-source path="client/super_src/" />
+	<source path="gwt/client" />
+	<source path="gwt/shared" />
+	<super-source path="gwt/client/super_src/" />
 
 	<generate-with class="org.opencms.gwt.rebind.rpc.CmsRpcServiceGenerator">
 		<when-type-assignable class="com.google.gwt.user.client.rpc.RemoteService" />
