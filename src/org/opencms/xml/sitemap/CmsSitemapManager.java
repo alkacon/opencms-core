@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2010/09/24 13:59:11 $
- * Version: $Revision: 1.55 $
+ * Date   : $Date: 2010/09/29 15:05:49 $
+ * Version: $Revision: 1.56 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -77,7 +77,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.55 $
+ * @version $Revision: 1.56 $
  * 
  * @since 7.9.2
  */
@@ -667,6 +667,35 @@ public class CmsSitemapManager {
     }
 
     /**
+     * Returns the exportname for a given sitemap entry.<p>
+     * 
+     * @param cms the cms object
+     * @param sitemapEntry the sitemap entry to get the exportname for
+     * 
+     * @return the exportname for a given sitemap entry
+     */
+    public String getExportnameForSiteMapEntry(CmsObject cms, CmsSitemapEntry sitemapEntry) {
+
+        // TODO: replace with reading the exportname from the sitemap configuration
+        int todo;
+        if (sitemapEntry.isVfs()) {
+            return null;
+        }
+        String exportname = null;
+        CmsProperty exportNameProperty = null;
+        try {
+            String sitemapUri = getSitemapForUri(cms, sitemapEntry.getSitePath(cms));
+            exportNameProperty = cms.readPropertyObject(sitemapUri, CmsPropertyDefinition.PROPERTY_EXPORTNAME, true);
+            if (!exportNameProperty.isNullProperty()) {
+                exportname = exportNameProperty.getValue();
+            }
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+        return exportname;
+    }
+
+    /**
      * Returns the parent sitemap for the given sitemap, 
      * or <code>null</code> if the given sitemap is a root sitemap.<p>
      * 
@@ -1082,5 +1111,4 @@ public class CmsSitemapManager {
         }
         return null;
     }
-
 }
