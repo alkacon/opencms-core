@@ -456,7 +456,7 @@
 				</property>
 				<property>
 					<name>cache</name>
-					<value><![CDATA[params=(schema,file);locale]]></value>
+					<value><![CDATA[params=(schema,file);locale;uri]]></value>
 				</property>
 				<property type="shared">
 					<name>export</name>
