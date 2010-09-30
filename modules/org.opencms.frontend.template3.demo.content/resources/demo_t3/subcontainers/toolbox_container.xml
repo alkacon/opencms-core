@@ -5,7 +5,7 @@
     <SubContainers>
       <Title><![CDATA[Toolbox container]]></Title>
       <Description><![CDATA[Insert into left toolbox]]></Description>
-      <Type><![CDATA[leftcnt]]></Type>
+      <Type><![CDATA[left]]></Type>
       <Element>
         <Uri>
           <link type="STRONG">
