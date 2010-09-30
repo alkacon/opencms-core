@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportExportRule.java,v $
- * Date   : $Date: 2009/10/26 08:14:12 $
- * Version: $Revision: 1.6.2.2 $
+ * Date   : $Date: 2010/09/30 10:09:14 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import java.util.regex.Pattern;
  * Help class for storing of export-rules.<p>
  * 
  * @author Michael Moossen
- * @version $Revision: 1.6.2.2 $
+ * @version $Revision: 1.3 $
  * @since 6.0.0
  */
 public class CmsStaticExportExportRule {
@@ -58,10 +58,10 @@ public class CmsStaticExportExportRule {
     private String m_description;
 
     /** configured Rfs export path. */
-    private List m_exportResources;
+    private List<String> m_exportResources;
 
     /** List of regular expresions to determine if a relevant resource has been modified. */
-    private List m_modifiedResources;
+    private List<Pattern> m_modifiedResources;
 
     /** Name of rule. */
     private String m_name;
@@ -76,8 +76,8 @@ public class CmsStaticExportExportRule {
 
         m_name = name;
         m_description = description;
-        m_exportResources = new ArrayList();
-        m_modifiedResources = new ArrayList();
+        m_exportResources = new ArrayList<String>();
+        m_modifiedResources = new ArrayList<Pattern>();
     }
 
     /**
@@ -91,8 +91,8 @@ public class CmsStaticExportExportRule {
     public CmsStaticExportExportRule(
         String name,
         String description,
-        List modifiedResources,
-        List exportResourcePatterns) {
+        List<Pattern> modifiedResources,
+        List<String> exportResourcePatterns) {
 
         this(name, description);
         m_modifiedResources.addAll(modifiedResources);
@@ -134,7 +134,7 @@ public class CmsStaticExportExportRule {
      *
      * @return the export Resources list
      */
-    public List getExportResourcePatterns() {
+    public List<String> getExportResourcePatterns() {
 
         return Collections.unmodifiableList(m_exportResources);
     }
@@ -149,12 +149,12 @@ public class CmsStaticExportExportRule {
      * 
      * @throws CmsException if something goes wrong
      */
-    public Set getExportResources(CmsObject cms) throws CmsException {
+    public Set<CmsPublishedResource> getExportResources(CmsObject cms) throws CmsException {
 
-        Set resources = new HashSet(128);
-        Iterator itExpRes = m_exportResources.iterator();
+        Set<CmsPublishedResource> resources = new HashSet<CmsPublishedResource>(128);
+        Iterator<String> itExpRes = m_exportResources.iterator();
         while (itExpRes.hasNext()) {
-            String exportRes = (String)itExpRes.next();
+            String exportRes = itExpRes.next();
             // read all from the configured node path, exclude resources flagged as internal  
             if (cms.existsResource(exportRes)) {
                 // first add the resource itself
@@ -162,13 +162,13 @@ public class CmsStaticExportExportRule {
                 resources.add(new CmsPublishedResource(res));
                 if (res.isFolder()) {
                     // if the resource is a folder add also all sub-resources 
-                    List vfsResources = cms.readResources(
+                    List<CmsResource> vfsResources = cms.readResources(
                         exportRes,
                         CmsResourceFilter.ALL.addExcludeFlags(CmsResource.FLAG_INTERNAL));
                     // loop through the list and create the list of CmsPublishedResources
-                    Iterator itRes = vfsResources.iterator();
+                    Iterator<CmsResource> itRes = vfsResources.iterator();
                     while (itRes.hasNext()) {
-                        CmsResource vfsResource = (CmsResource)itRes.next();
+                        CmsResource vfsResource = itRes.next();
                         CmsPublishedResource resource = new CmsPublishedResource(vfsResource);
                         resources.add(resource);
                     }
@@ -183,7 +183,7 @@ public class CmsStaticExportExportRule {
      * 
      * @return the modified Resources list as list of <code>{@link Pattern}</code>
      */
-    public List getModifiedResources() {
+    public List<Pattern> getModifiedResources() {
 
         return Collections.unmodifiableList(m_modifiedResources);
     }
@@ -210,7 +210,8 @@ public class CmsStaticExportExportRule {
      * 
      * @throws CmsException if something goes wrong
      */
-    public Set getRelatedResources(CmsObject cms, CmsPublishedResource publishedResource) throws CmsException {
+    public Set<CmsPublishedResource> getRelatedResources(CmsObject cms, CmsPublishedResource publishedResource)
+    throws CmsException {
 
         if (match(publishedResource.getRootPath())) {
             return getExportResources(cms);
@@ -227,7 +228,7 @@ public class CmsStaticExportExportRule {
     public boolean match(String vfsName) {
 
         for (int j = 0; j < m_modifiedResources.size(); j++) {
-            Pattern pattern = (Pattern)m_modifiedResources.get(j);
+            Pattern pattern = m_modifiedResources.get(j);
             if (pattern.matcher(vfsName).matches()) {
                 return true;
             }
@@ -238,6 +239,7 @@ public class CmsStaticExportExportRule {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         StringBuffer ret = new StringBuffer(getClass().getName());

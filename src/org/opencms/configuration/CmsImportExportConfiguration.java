@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsImportExportConfiguration.java,v $
- * Date   : $Date: 2010/09/06 13:40:14 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/09/30 10:09:14 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 6.0.0
  */
@@ -233,6 +233,9 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration {
 
     /**  The node name of the static export handler node. */
     public static final String N_STATICEXPORT_HANDLER = "staticexporthandler";
+
+    /**  The node name of the static export handler node. */
+    public static final String N_LINKSTRATEGY_HANDLER = "linkstrategyhandler";
 
     /**  The node name of the static export header node. */
     public static final String N_STATICEXPORT_HEADER = "header";
@@ -415,6 +418,7 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration {
             "*/" + N_STATICEXPORT + "/" + N_LINKSUBSTITUTION_HANDLER,
             "setLinkSubstitutionHandler",
             0);
+        digester.addCallMethod("*/" + N_STATICEXPORT + "/" + N_LINKSTRATEGY_HANDLER, "setLinkStrategyHandler", 0);
         // exportpath rule
         digester.addCallMethod("*/" + N_STATICEXPORT + "/" + N_STATICEXPORT_EXPORTPATH, "setExportPath", 0);
         // exportworkpath rule
@@ -774,6 +778,10 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration {
         // <linksubstitutionhandler> node
         staticexportElement.addElement(N_LINKSUBSTITUTION_HANDLER).addText(
             m_staticExportManager.getLinkSubstitutionHandler().getClass().getName());
+
+        // <linkstrategyhandler> node
+        staticexportElement.addElement(N_LINKSTRATEGY_HANDLER).addText(
+            m_staticExportManager.getLinkStrategyHandler().getClass().getName());
 
         // <exportpath> node
         String exportPathUnmodified = m_staticExportManager.getExportPathForConfiguration();

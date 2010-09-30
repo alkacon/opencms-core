@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportRfsRule.java,v $
- * Date   : $Date: 2009/06/04 14:29:47 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/09/30 10:09:14 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import java.util.regex.Pattern;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.0.0
  */
@@ -77,7 +77,7 @@ public class CmsStaticExportRfsRule {
     private String m_name;
 
     /** List of regular expressions to determine related system resources. */
-    private List m_relatedSystemResources;
+    private List<Pattern> m_relatedSystemResources;
 
     /** configured Url prefix. */
     private final String m_rfsPreConfigured;
@@ -121,7 +121,7 @@ public class CmsStaticExportRfsRule {
         m_exportWorkPathConfigured = exportWorkPath;
         m_exportBackups = exportBackups;
         m_useRelativeLinks = useRelativeLinks;
-        m_relatedSystemResources = new ArrayList();
+        m_relatedSystemResources = new ArrayList<Pattern>();
     }
 
     /**
@@ -146,7 +146,7 @@ public class CmsStaticExportRfsRule {
         String exportWorkPath,
         Integer exportBackups,
         Boolean useRelativeLinks,
-        List relatedSystemRes) {
+        List<Pattern> relatedSystemRes) {
 
         this(name, description, source, rfsPrefix, exportPath, exportWorkPath, exportBackups, useRelativeLinks);
         m_relatedSystemResources.addAll(relatedSystemRes);
@@ -269,7 +269,7 @@ public class CmsStaticExportRfsRule {
      * 
      * @return the related resources list as list of <code>{@link Pattern}</code>
      */
-    public List getRelatedSystemResources() {
+    public List<Pattern> getRelatedSystemResources() {
 
         return Collections.unmodifiableList(m_relatedSystemResources);
     }
@@ -324,7 +324,7 @@ public class CmsStaticExportRfsRule {
     public boolean match(String vfsName) {
 
         for (int j = 0; j < m_relatedSystemResources.size(); j++) {
-            Pattern pattern = (Pattern)m_relatedSystemResources.get(j);
+            Pattern pattern = m_relatedSystemResources.get(j);
             if (pattern.matcher(vfsName).matches()) {
                 return true;
             }
@@ -373,6 +373,7 @@ public class CmsStaticExportRfsRule {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         StringBuffer ret = new StringBuffer(getClass().getName());

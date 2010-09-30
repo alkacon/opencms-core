@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsOnDemandStaticExportHandler.java,v $
- * Date   : $Date: 2010/09/03 13:13:59 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/09/30 10:09:14 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,6 @@ import org.opencms.xml.sitemap.CmsInternalSitemapEntry;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -58,7 +57,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Moossen
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  * 
@@ -70,23 +69,15 @@ public class CmsOnDemandStaticExportHandler extends A_CmsOnDemandStaticExportHan
     private static final Log LOG = CmsLog.getLog(CmsOnDemandStaticExportHandler.class);
 
     /**
-     * @see org.opencms.staticexport.A_CmsOnDemandStaticExportHandler#getRelatedFilesToPurge(java.lang.String, java.lang.String)
+     * @see org.opencms.staticexport.A_CmsStaticExportHandler#getRelatedFilesToPurge(java.lang.String, java.lang.String)
      */
     @Override
     protected List<File> getRelatedFilesToPurge(String exportFileName, String vfsName) {
 
-        return Collections.emptyList();
-    }
-
-    /**
-     * @see org.opencms.staticexport.A_CmsStaticExportHandler#getRelatedFilesToPurge(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
-     */
-    @Override
-    protected List<File> getRelatedFilesToPurge(CmsObject cms, String exportFileName, String vfsName) {
-
         List<File> filesToPurge = new ArrayList<File>();
-        addFileToPurge(cms, filesToPurge, vfsName);
         try {
+            CmsObject cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
+            addFileToPurge(cms, filesToPurge, vfsName);
             // get the related files of the given resource (vfsPath)
             List<CmsRelation> relations = cms.getRelationsForResource(vfsName, CmsRelationFilter.SOURCES);
             for (CmsRelation relation : relations) {
@@ -136,7 +127,7 @@ public class CmsOnDemandStaticExportHandler extends A_CmsOnDemandStaticExportHan
         String rfsName = OpenCms.getStaticExportManager().getRfsName(cms, path);
         String exportName = CmsFileUtil.normalizePath(OpenCms.getStaticExportManager().getExportPath(path)
             + rfsName.substring(OpenCms.getStaticExportManager().getRfsPrefix(path).length()));
-        File f = null;
+        File f;
         if (exportName.endsWith(File.separator)) {
             f = new File(exportName + File.separator + CmsStaticExportManager.EXPORT_DEFAULT_FILE);
         } else {

@@ -1,6 +1,6 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsAfterPublishMultiLanguageStaticExportHandler.java,v $
- * Date   : $Date: 2009/06/04 14:29:47 $
+ * Date   : $Date: 2010/09/30 10:09:14 $
  * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
@@ -55,22 +55,23 @@ import java.util.Locale;
 public class CmsAfterPublishMultiLanguageStaticExportHandler extends CmsAfterPublishStaticExportHandler {
 
     /** Cached locale matching rules. */
-    private static List m_rules;
+    private static List<CmsStaticExportRfsRule> m_rules;
 
     /**
      * @see org.opencms.staticexport.CmsAfterPublishStaticExportHandler#getRelatedFilesToPurge(java.lang.String, java.lang.String)
      */
-    protected List getRelatedFilesToPurge(String exportFileName, String vfsName) {
+    @Override
+    protected List<File> getRelatedFilesToPurge(String exportFileName, String vfsName) {
 
         CmsStaticExportManager manager = OpenCms.getStaticExportManager();
-        List result = new ArrayList();
+        List<File> result = new ArrayList<File>();
         if (m_rules == null) {
             // get the locale matching rules
             CmsLocaleManager locManager = OpenCms.getLocaleManager();
-            m_rules = new ArrayList();
-            Iterator itRules = manager.getRfsRules().iterator();
+            m_rules = new ArrayList<CmsStaticExportRfsRule>();
+            Iterator<CmsStaticExportRfsRule> itRules = manager.getRfsRules().iterator();
             while (itRules.hasNext()) {
-                CmsStaticExportRfsRule rule = (CmsStaticExportRfsRule)itRules.next();
+                CmsStaticExportRfsRule rule = itRules.next();
                 Locale locale = CmsLocaleManager.getLocale(rule.getName());
                 if (locManager.getDefaultLocales().contains(locale)) {
                     m_rules.add(rule);
@@ -78,9 +79,9 @@ public class CmsAfterPublishMultiLanguageStaticExportHandler extends CmsAfterPub
             }
         }
         // add paths for all possible locales 
-        Iterator it = m_rules.iterator();
+        Iterator<CmsStaticExportRfsRule> it = m_rules.iterator();
         while (it.hasNext()) {
-            CmsStaticExportRfsRule rule = (CmsStaticExportRfsRule)it.next();
+            CmsStaticExportRfsRule rule = it.next();
             result.add(new File(rule.getLocalizedRfsName(exportFileName, File.separator)));
         }
         return result;

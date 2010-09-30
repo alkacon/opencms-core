@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsOnDemandHtmlSubTreeHandler.java,v $
- * Date   : $Date: 2010/09/03 13:13:59 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/09/30 10:09:14 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,6 @@
 
 package org.opencms.staticexport;
 
-import org.opencms.file.CmsObject;
 import org.opencms.util.CmsFileUtil;
 
 import java.io.File;
@@ -45,7 +44,7 @@ import java.util.List;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  * 
@@ -56,6 +55,7 @@ public class CmsOnDemandHtmlSubTreeHandler extends A_CmsOnDemandStaticExportHand
     /**
      * @see org.opencms.staticexport.A_CmsOnDemandStaticExportHandler#getRelatedFilesToPurge(java.lang.String, java.lang.String)
      */
+    @Override
     protected List<File> getRelatedFilesToPurge(String exportFileName, String vfsName) {
 
         FileFilter htmlFilter = new FileFilter() {
@@ -72,14 +72,4 @@ public class CmsOnDemandHtmlSubTreeHandler extends A_CmsOnDemandStaticExportHand
 
         return CmsFileUtil.getFiles(exportFileName, htmlFilter, true);
     }
-
-    /**
-     * @see org.opencms.staticexport.A_CmsStaticExportHandler#getRelatedFilesToPurge(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
-     */
-    @Override
-    protected List<File> getRelatedFilesToPurge(CmsObject cms, String exportFileName, String vfsName) {
-
-        return getRelatedFilesToPurge(exportFileName, vfsName);
-    }
-
 }

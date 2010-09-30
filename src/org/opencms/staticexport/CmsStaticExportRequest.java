@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportRequest.java,v $
- * Date   : $Date: 2009/06/04 14:29:47 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/09/30 10:09:14 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,14 +45,14 @@ import javax.servlet.http.HttpServletRequestWrapper;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsStaticExportRequest extends HttpServletRequestWrapper {
 
     /** Map of parameters from the original request. */
-    private Map m_parameters;
+    private Map<String, String[]> m_parameters;
 
     /**
      * Creates a new static export request wrapper.<p>
@@ -69,6 +69,7 @@ public class CmsStaticExportRequest extends HttpServletRequestWrapper {
     /**
      * @see javax.servlet.http.HttpServletRequest#getDateHeader(java.lang.String)
      */
+    @Override
     public long getDateHeader(String name) {
 
         // make sue "last modified since" optimization is NOT used for export requests
@@ -82,9 +83,10 @@ public class CmsStaticExportRequest extends HttpServletRequestWrapper {
     /**
      * @see javax.servlet.ServletRequest#getParameter(java.lang.String)
      */
+    @Override
     public String getParameter(String name) {
 
-        String[] values = (String[])m_parameters.get(name);
+        String[] values = m_parameters.get(name);
         if (values != null) {
             return (values[0]);
         }
@@ -94,7 +96,8 @@ public class CmsStaticExportRequest extends HttpServletRequestWrapper {
     /**
      * @see javax.servlet.ServletRequest#getParameterMap()
      */
-    public Map getParameterMap() {
+    @Override
+    public Map<String, String[]> getParameterMap() {
 
         return m_parameters;
     }
@@ -102,7 +105,8 @@ public class CmsStaticExportRequest extends HttpServletRequestWrapper {
     /**
      * @see javax.servlet.ServletRequest#getParameterNames()
      */
-    public Enumeration getParameterNames() {
+    @Override
+    public Enumeration<String> getParameterNames() {
 
         return Collections.enumeration(m_parameters.keySet());
     }
@@ -110,8 +114,9 @@ public class CmsStaticExportRequest extends HttpServletRequestWrapper {
     /**
      * @see javax.servlet.ServletRequest#getParameterValues(java.lang.String)
      */
+    @Override
     public String[] getParameterValues(String name) {
 
-        return (String[])m_parameters.get(name);
+        return m_parameters.get(name);
     }
 }

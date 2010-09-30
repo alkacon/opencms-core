@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
- * Date   : $Date: 2010/07/13 15:36:42 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/09/30 10:09:14 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,6 +41,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -60,11 +61,38 @@ import org.apache.oro.text.perl.Perl5Util;
  * @author  Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
 public final class CmsStringUtil {
+
+    /**
+     * Compares two Strings according to the count of containing slashes.<p>
+     * 
+     * If both Strings contain the same count of slashes the Strings are compared.<p>
+     * 
+     * @author Ruediger Kurz
+     */
+    public static class CmsSlashComparator implements Comparator<String> {
+
+        /**
+         * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+         */
+        public int compare(String a, String b) {
+
+            int slashCountA = countChar(a, '/');
+            int slashCountB = countChar(b, '/');
+
+            if (slashCountA < slashCountB) {
+                return 1;
+            } else if (slashCountA == slashCountB) {
+                return a.compareTo(b);
+            } else {
+                return -1;
+            }
+        }
+    }
 
     /** Regular expression that matches the HTML body end tag. */
     public static final String BODY_END_REGEX = "<\\s*/\\s*body[^>]*>";
@@ -236,6 +264,25 @@ public final class CmsStringUtil {
             }
         }
         return string.toString();
+    }
+
+    /**
+     * Counts the occurrence of a given char in a given String.<p>
+     * 
+     * @param s the string
+     * @param c the char to count
+     * 
+     * @return returns the count of occurrences of a given char in a given String
+     */
+    public static int countChar(String s, char c) {
+
+        int counter = 0;
+        for (int i = 0; i < s.length(); i++) {
+            if (s.charAt(i) == c) {
+                counter++;
+            }
+        }
+        return counter;
     }
 
     /**

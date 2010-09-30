@@ -114,6 +114,7 @@
 <!ELEMENT staticexport (
 	staticexporthandler, 
 	linksubstitutionhandler?,
+	linkstrategyhandler?,
 	exportpath,
 	exportworkpath?,
 	exportbackups?,
@@ -148,6 +149,27 @@
 # The default handler is "CmsDefaultLinkSubstitutionHandler".
 -->
 <!ELEMENT linksubstitutionhandler (#PCDATA)>
+
+<!--
+# The fully qualified class name of a concrete implementation of the 
+# org.opencms.staticexport.I_CmsLinkStrategyHandler interface.
+# The default handler is "CmsSwitchLinkStrategyHandler",
+# which can be used for a sites realized with a sitemap and also for
+# sites which are realized without a sitemap. For better performance
+# it is recommended to use a more specific link strategy. Possible 
+# handlers are "CmsSitemapLinkStrategyHandler" and 
+# "CmsVfsLinkStrategyHandler"
+#
+# The following implementations are shipped with the default OpenCms 
+# core distribution:
+#    org.opencms.staticexport.CmsSwitchLinkStrategyHandler
+#         selects link strategy "switch" mode
+#    org.opencms.staticexport.CmsSitemapLinkStrategyHandler             
+#         selects link strategy "sitemap" mode
+#    org.opencms.staticexport.CmsVfsLinkStrategyHandler
+#         selects link strategy "vfs" mode
+-->
+<!ELEMENT linkstrategyhandler (#PCDATA)>
 
 <!--
 # The path in the "real" FS to write the static exported pages to.

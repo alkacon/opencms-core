@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsFileUtil.java,v $
- * Date   : $Date: 2009/10/28 07:21:29 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/09/30 10:09:14 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,7 +65,7 @@ import java.util.Locale;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -273,6 +273,7 @@ public final class CmsFileUtil {
      * 
      * @deprecated use {@link #getExtension(String)} instead, it is better implemented
      */
+    @Deprecated
     public static String getFileExtension(String filename) {
 
         int pos = filename.lastIndexOf('.');
@@ -294,9 +295,9 @@ public final class CmsFileUtil {
      * 
      * @return a list of filtered <code>{@link File}</code> objects
      */
-    public static List getFiles(String name, FileFilter filter, boolean includeSubtree) {
+    public static List<File> getFiles(String name, FileFilter filter, boolean includeSubtree) {
 
-        List ret = new ArrayList();
+        List<File> ret = new ArrayList<File>();
 
         File file = new File(name);
         if (!file.isDirectory()) {

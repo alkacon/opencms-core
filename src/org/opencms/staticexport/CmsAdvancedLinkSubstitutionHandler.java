@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsAdvancedLinkSubstitutionHandler.java,v $
- * Date   : $Date: 2009/06/04 14:29:47 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/09/30 10:09:14 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Emmerich
  *
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.5.0
  * 
@@ -67,51 +67,19 @@ import org.apache.commons.logging.Log;
  */
 public class CmsAdvancedLinkSubstitutionHandler extends CmsDefaultLinkSubstitutionHandler {
 
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsAdvancedLinkSubstitutionHandler.class);
-
     /** Filename of the link exclude definition file. */
     private static final String LINK_EXCLUDE_DEFINIFITON_FILE = "/system/shared/linkexcludes";
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsAdvancedLinkSubstitutionHandler.class);
 
     /** XPath for link exclude in definition file. */
     private static final String XPATH_LINK = "link";
 
     /**
-     * Reads the link exclude definition file and extracts all excluded links stored in it.<p>
-     * 
-     * @param cms the current CmsObject
-     * @return list of Strings, containing link exclude paths
-     */
-    private List readLinkExcludes(CmsObject cms) {
-
-        List linkExcludes = new ArrayList();
-
-        try {
-            // get the link exclude file
-            CmsResource res = cms.readResource(LINK_EXCLUDE_DEFINIFITON_FILE);
-            CmsFile file = cms.readFile(res);
-            CmsXmlContent linkExcludeDefinitions = CmsXmlContentFactory.unmarshal(cms, file);
-
-            // get number of excludes
-            int count = linkExcludeDefinitions.getIndexCount(XPATH_LINK, Locale.ENGLISH);
-
-            for (int i = 1; i <= count; i++) {
-
-                String exclude = linkExcludeDefinitions.getStringValue(cms, XPATH_LINK + "[" + i + "]", Locale.ENGLISH);
-                linkExcludes.add(exclude);
-
-            }
-
-        } catch (CmsException e) {
-            LOG.error(e);
-        }
-
-        return linkExcludes;
-    }
-
-    /**
      * @see org.opencms.staticexport.I_CmsLinkSubstitutionHandler#getRootPath(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
      */
+    @Override
     public String getRootPath(CmsObject cms, String targetUri, String basePath) {
 
         if (cms == null) {
@@ -160,7 +128,8 @@ public class CmsAdvancedLinkSubstitutionHandler extends CmsDefaultLinkSubstituti
 
         // get the list of link excludes form the cache if possible
         CmsVfsMemoryObjectCache cache = CmsVfsMemoryObjectCache.getVfsMemoryObjectCache();
-        List excludes = (List)cache.getCachedObject(cms, LINK_EXCLUDE_DEFINIFITON_FILE);
+        @SuppressWarnings("unchecked")
+        List<String> excludes = (List<String>)cache.getCachedObject(cms, LINK_EXCLUDE_DEFINIFITON_FILE);
         if (excludes == null) {
             // nothing found in cache, so read definition file and store the result in cache
             excludes = readLinkExcludes(cms);
@@ -168,7 +137,7 @@ public class CmsAdvancedLinkSubstitutionHandler extends CmsDefaultLinkSubstituti
         }
         // now check if the current link start with one of the exclude links
         for (int i = 0; i < excludes.size(); i++) {
-            if (path.startsWith((String)excludes.get(i))) {
+            if (path.startsWith(excludes.get(i))) {
                 return null;
             }
         }
@@ -261,5 +230,38 @@ public class CmsAdvancedLinkSubstitutionHandler extends CmsDefaultLinkSubstituti
 
         // URI without path (typically local link)
         return suffix;
+    }
+
+    /**
+     * Reads the link exclude definition file and extracts all excluded links stored in it.<p>
+     * 
+     * @param cms the current CmsObject
+     * @return list of Strings, containing link exclude paths
+     */
+    private List<String> readLinkExcludes(CmsObject cms) {
+
+        List<String> linkExcludes = new ArrayList<String>();
+
+        try {
+            // get the link exclude file
+            CmsResource res = cms.readResource(LINK_EXCLUDE_DEFINIFITON_FILE);
+            CmsFile file = cms.readFile(res);
+            CmsXmlContent linkExcludeDefinitions = CmsXmlContentFactory.unmarshal(cms, file);
+
+            // get number of excludes
+            int count = linkExcludeDefinitions.getIndexCount(XPATH_LINK, Locale.ENGLISH);
+
+            for (int i = 1; i <= count; i++) {
+
+                String exclude = linkExcludeDefinitions.getStringValue(cms, XPATH_LINK + "[" + i + "]", Locale.ENGLISH);
+                linkExcludes.add(exclude);
+
+            }
+
+        } catch (CmsException e) {
+            LOG.error(e);
+        }
+
+        return linkExcludes;
     }
 }

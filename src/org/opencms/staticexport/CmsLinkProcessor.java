@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkProcessor.java,v $
- * Date   : $Date: 2009/06/04 14:29:47 $
- * Version: $Revision: 1.57 $
+ * Date   : $Date: 2010/09/30 10:09:14 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import org.htmlparser.util.SimpleNodeIterator;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.57 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -248,6 +248,7 @@ public class CmsLinkProcessor extends CmsHtmlParser {
      * 
      * @param tag the tag to process
      */
+    @Override
     public void visitTag(Tag tag) {
 
         if (tag instanceof LinkTag) {
@@ -435,7 +436,8 @@ public class CmsLinkProcessor extends CmsHtmlParser {
                 }
             }
             // some editors add a "/" at the end of the tag, we must make sure to insert before that
-            Vector attrs = tag.getAttributesEx();
+            @SuppressWarnings("unchecked")
+            Vector<Attribute> attrs = tag.getAttributesEx();
             // first element is always the tag name
             attrs.add(1, new Attribute(" "));
             attrs.add(2, new Attribute("alt", value == null ? "" : value, '"'));

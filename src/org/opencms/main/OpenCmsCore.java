@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2010/09/22 14:27:47 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2010/09/30 10:09:14 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -146,7 +146,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  */
@@ -1442,9 +1442,9 @@ public final class OpenCmsCore {
                     try {
                         secureUrl = site.getSecureUrl();
                     } catch (Exception e) {
-                        LOG.error(Messages.get().getBundle().key(
-                            Messages.ERR_SECURE_SITE_NOT_CONFIGURED_1,
-                            resourceName), e);
+                        LOG.error(
+                            Messages.get().getBundle().key(Messages.ERR_SECURE_SITE_NOT_CONFIGURED_1, resourceName),
+                            e);
                         throw new CmsException(Messages.get().container(
                             Messages.ERR_SECURE_SITE_NOT_CONFIGURED_1,
                             resourceName), e);
@@ -1592,6 +1592,18 @@ public final class OpenCmsCore {
         CmsObject cms = null;
         try {
             cms = initCmsObject(req, res);
+
+            if (cms.getRequestContext().currentProject().isOnlineProject()) {
+                String uri = cms.getRequestContext().getUri();
+                if (OpenCms.getStaticExportManager().isExportLink(cms, uri)) {
+                    String url = OpenCms.getStaticExportManager().getRfsName(cms, uri);
+                    String siteRoot = cms.getRequestContext().getSiteRoot();
+                    url = OpenCms.getSiteManager().getSiteForSiteRoot(siteRoot).getUrl() + url;
+                    res.sendRedirect(url);
+                    return;
+                }
+            }
+
             // user is initialized, now deliver the requested resource
             CmsResource resource = initResource(cms, cms.getRequestContext().getUri(), req, res);
             if (resource != null) {
@@ -1645,10 +1657,12 @@ public final class OpenCmsCore {
                         try {
                             gwtService.destroy();
                         } catch (Throwable e) {
-                            CmsLog.INIT.error(Messages.get().getBundle().key(
-                                Messages.LOG_ERROR_GWTSERVICE_SHUTDOWN_2,
-                                gwtService.getClass().getName(),
-                                e.getMessage()), e);
+                            CmsLog.INIT.error(
+                                Messages.get().getBundle().key(
+                                    Messages.LOG_ERROR_GWTSERVICE_SHUTDOWN_2,
+                                    gwtService.getClass().getName(),
+                                    e.getMessage()),
+                                e);
                         }
                     }
                 }
@@ -1657,9 +1671,9 @@ public final class OpenCmsCore {
                     // the first thing we have to do is to wait until the current publish process finishes
                     m_publishEngine.shutDown();
                 } catch (Throwable e) {
-                    CmsLog.INIT.error(Messages.get().getBundle().key(
-                        Messages.LOG_ERROR_PUBLISH_SHUTDOWN_1,
-                        e.getMessage()), e);
+                    CmsLog.INIT.error(
+                        Messages.get().getBundle().key(Messages.LOG_ERROR_PUBLISH_SHUTDOWN_1, e.getMessage()),
+                        e);
                 }
                 try {
                     // search manager must be shut down early since there may be background indexing still ongoing
@@ -1667,45 +1681,45 @@ public final class OpenCmsCore {
                         m_searchManager.shutDown();
                     }
                 } catch (Throwable e) {
-                    CmsLog.INIT.error(Messages.get().getBundle().key(
-                        Messages.LOG_ERROR_SEARCH_MANAGER_SHUTDOWN_1,
-                        e.getMessage()), e);
+                    CmsLog.INIT.error(
+                        Messages.get().getBundle().key(Messages.LOG_ERROR_SEARCH_MANAGER_SHUTDOWN_1, e.getMessage()),
+                        e);
                 }
                 try {
                     if (m_staticExportManager != null) {
                         m_staticExportManager.shutDown();
                     }
                 } catch (Throwable e) {
-                    CmsLog.INIT.error(Messages.get().getBundle().key(
-                        Messages.LOG_ERROR_EXPORT_SHUTDOWN_1,
-                        e.getMessage()), e);
+                    CmsLog.INIT.error(
+                        Messages.get().getBundle().key(Messages.LOG_ERROR_EXPORT_SHUTDOWN_1, e.getMessage()),
+                        e);
                 }
                 try {
                     if (m_moduleManager != null) {
                         m_moduleManager.shutDown();
                     }
                 } catch (Throwable e) {
-                    CmsLog.INIT.error(Messages.get().getBundle().key(
-                        Messages.LOG_ERROR_MODULE_SHUTDOWN_1,
-                        e.getMessage()), e);
+                    CmsLog.INIT.error(
+                        Messages.get().getBundle().key(Messages.LOG_ERROR_MODULE_SHUTDOWN_1, e.getMessage()),
+                        e);
                 }
                 try {
                     if (m_scheduleManager != null) {
                         m_scheduleManager.shutDown();
                     }
                 } catch (Throwable e) {
-                    CmsLog.INIT.error(Messages.get().getBundle().key(
-                        Messages.LOG_ERROR_SCHEDULE_SHUTDOWN_1,
-                        e.getMessage()), e);
+                    CmsLog.INIT.error(
+                        Messages.get().getBundle().key(Messages.LOG_ERROR_SCHEDULE_SHUTDOWN_1, e.getMessage()),
+                        e);
                 }
                 try {
                     if (m_resourceManager != null) {
                         m_resourceManager.shutDown();
                     }
                 } catch (Throwable e) {
-                    CmsLog.INIT.error(Messages.get().getBundle().key(
-                        Messages.LOG_ERROR_RESOURCE_SHUTDOWN_1,
-                        e.getMessage()), e);
+                    CmsLog.INIT.error(
+                        Messages.get().getBundle().key(Messages.LOG_ERROR_RESOURCE_SHUTDOWN_1, e.getMessage()),
+                        e);
                 }
                 try {
                     // has to be stopped before the security manager, since this thread uses it
@@ -1713,54 +1727,54 @@ public final class OpenCmsCore {
                         m_threadStore.shutDown();
                     }
                 } catch (Throwable e) {
-                    CmsLog.INIT.error(Messages.get().getBundle().key(
-                        Messages.LOG_ERROR_THREAD_SHUTDOWN_1,
-                        e.getMessage()), e);
+                    CmsLog.INIT.error(
+                        Messages.get().getBundle().key(Messages.LOG_ERROR_THREAD_SHUTDOWN_1, e.getMessage()),
+                        e);
                 }
                 try {
                     if (m_securityManager != null) {
                         m_securityManager.destroy();
                     }
                 } catch (Throwable e) {
-                    CmsLog.INIT.error(Messages.get().getBundle().key(
-                        Messages.LOG_ERROR_SECURITY_SHUTDOWN_1,
-                        e.getMessage()), e);
+                    CmsLog.INIT.error(
+                        Messages.get().getBundle().key(Messages.LOG_ERROR_SECURITY_SHUTDOWN_1, e.getMessage()),
+                        e);
                 }
                 try {
                     if (m_sessionManager != null) {
                         m_sessionManager.shutdown();
                     }
                 } catch (Throwable e) {
-                    CmsLog.INIT.error(Messages.get().getBundle().key(
-                        Messages.LOG_ERROR_SESSION_MANAGER_SHUTDOWN_1,
-                        e.getMessage()), e);
+                    CmsLog.INIT.error(
+                        Messages.get().getBundle().key(Messages.LOG_ERROR_SESSION_MANAGER_SHUTDOWN_1, e.getMessage()),
+                        e);
                 }
                 try {
                     if (m_memoryMonitor != null) {
                         m_memoryMonitor.shutdown();
                     }
                 } catch (Throwable e) {
-                    CmsLog.INIT.error(Messages.get().getBundle().key(
-                        Messages.LOG_ERROR_MEMORY_MONITOR_SHUTDOWN_1,
-                        e.getMessage()), e);
+                    CmsLog.INIT.error(
+                        Messages.get().getBundle().key(Messages.LOG_ERROR_MEMORY_MONITOR_SHUTDOWN_1, e.getMessage()),
+                        e);
                 }
                 try {
                     if (m_adeManager != null) {
                         m_adeManager.shutdown();
                     }
                 } catch (Throwable e) {
-                    CmsLog.INIT.error(Messages.get().getBundle().key(
-                        Messages.LOG_ERROR_ADE_MANAGER_SHUTDOWN_1,
-                        e.getMessage()), e);
+                    CmsLog.INIT.error(
+                        Messages.get().getBundle().key(Messages.LOG_ERROR_ADE_MANAGER_SHUTDOWN_1, e.getMessage()),
+                        e);
                 }
                 try {
                     if (m_sitemapManager != null) {
                         m_sitemapManager.shutdown();
                     }
                 } catch (Throwable e) {
-                    CmsLog.INIT.error(Messages.get().getBundle().key(
-                        Messages.LOG_ERROR_SITEMAP_MANAGER_SHUTDOWN_1,
-                        e.getMessage()), e);
+                    CmsLog.INIT.error(
+                        Messages.get().getBundle().key(Messages.LOG_ERROR_SITEMAP_MANAGER_SHUTDOWN_1, e.getMessage()),
+                        e);
                 }
                 String runtime = CmsStringUtil.formatRuntime(getSystemInfo().getRuntime());
                 if (CmsLog.INIT.isInfoEnabled()) {
@@ -2110,10 +2124,12 @@ public final class OpenCmsCore {
             propertyLoginForm = adminCms.readPropertyObject(path, CmsPropertyDefinition.PROPERTY_LOGIN_FORM, true);
         } catch (Throwable t) {
             if (LOG.isWarnEnabled()) {
-                LOG.warn(Messages.get().getBundle().key(
-                    Messages.LOG_ERROR_READING_AUTH_PROP_2,
-                    CmsPropertyDefinition.PROPERTY_LOGIN_FORM,
-                    path), t);
+                LOG.warn(
+                    Messages.get().getBundle().key(
+                        Messages.LOG_ERROR_READING_AUTH_PROP_2,
+                        CmsPropertyDefinition.PROPERTY_LOGIN_FORM,
+                        path),
+                    t);
             }
         }
 

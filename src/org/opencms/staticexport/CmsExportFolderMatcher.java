@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsExportFolderMatcher.java,v $
- * Date   : $Date: 2009/06/04 14:29:47 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/09/30 10:09:14 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,7 +34,6 @@ package org.opencms.staticexport;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -44,14 +43,14 @@ import java.util.regex.Pattern;
  *
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsExportFolderMatcher {
 
     /** Internal array containing the vfs folders that should be exported. */
-    private List m_vfsFolders;
+    private List<Pattern> m_vfsFolders;
 
     /**
      * Creates a new CmsExportFolderMatcher.<p>
@@ -59,17 +58,13 @@ public class CmsExportFolderMatcher {
      * @param vfsFolders array of vfsFolder used for static export 
      * @param checkResource additional resource name to be added to the static export
      */
-    public CmsExportFolderMatcher(List vfsFolders, String checkResource) {
+    public CmsExportFolderMatcher(List<String> vfsFolders, String checkResource) {
 
-        m_vfsFolders = new ArrayList();
-
-        Iterator i = vfsFolders.iterator();
-        while (i.hasNext()) {
-            m_vfsFolders.add(Pattern.compile((String)i.next()));
+        m_vfsFolders = new ArrayList<Pattern>();
+        for (String patternAsString : vfsFolders) {
+            m_vfsFolders.add(Pattern.compile(patternAsString));
         }
-
         m_vfsFolders.add(Pattern.compile(CmsStringUtil.escapePattern(checkResource)));
-
     }
 
     /**
@@ -83,7 +78,7 @@ public class CmsExportFolderMatcher {
         boolean match = false;
 
         for (int j = 0; j < m_vfsFolders.size(); j++) {
-            Pattern pattern = (Pattern)m_vfsFolders.get(j);
+            Pattern pattern = m_vfsFolders.get(j);
             match = pattern.matcher(vfsName).matches();
             if (match) {
                 break;

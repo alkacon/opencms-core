@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsDisplayResource.java,v $
- * Date   : $Date: 2009/06/04 14:29:13 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2010/09/30 10:09:14 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.history.I_CmsHistoryResource;
+import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
@@ -44,15 +45,14 @@ import org.opencms.main.CmsContextInfo;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.staticexport.CmsStaticExportManager;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
+import org.opencms.xml.sitemap.CmsInternalSitemapEntry;
 
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -223,6 +223,19 @@ public class CmsDisplayResource extends CmsDialog {
                 autoTimeWarp(resource);
 
                 // code for display resource after all tests for displayability (exists, not deleted)
+
+                if (CmsResourceTypeXmlContainerPage.isContainerPage(resource)) {
+                    // if we have a container page look for the first sitemap entry 
+                    // and use that to display the container page  
+                    List<CmsInternalSitemapEntry> entries = OpenCms.getSitemapManager().getEntriesForStructureId(
+                        getJsp().getCmsObject(),
+                        resource.getStructureId());
+                    if (!entries.isEmpty()) {
+                        CmsInternalSitemapEntry entry = entries.get(0);
+                        resourceStr = entry.getRootPath();
+                    }
+                }
+
                 String url = getJsp().link(resourceStr);
                 // if in online project
                 if ((url.indexOf("://") < 0) && getCms().getRequestContext().currentProject().isOnlineProject()) {
@@ -239,44 +252,44 @@ public class CmsDisplayResource extends CmsDialog {
                     } else {
                         url = OpenCms.getSiteManager().getSiteForSiteRoot(site).getUrl() + url;
                     }
-                    try {
-                        CmsStaticExportManager manager = OpenCms.getStaticExportManager();
-                        HttpURLConnection.setFollowRedirects(false);
-                        // try to export it
-                        URL exportUrl = new URL(manager.getExportUrl() + manager.getRfsName(getCms(), resourceStr));
-                        HttpURLConnection urlcon = (HttpURLConnection)exportUrl.openConnection();
-                        // setup the connection and request the resource
-                        urlcon.setRequestMethod("GET");
-                        urlcon.setRequestProperty(CmsRequestUtil.HEADER_OPENCMS_EXPORT, Boolean.TRUE.toString());
-                        if (manager.getAcceptLanguageHeader() != null) {
-                            urlcon.setRequestProperty(
-                                CmsRequestUtil.HEADER_ACCEPT_LANGUAGE,
-                                manager.getAcceptLanguageHeader());
-                        } else {
-                            urlcon.setRequestProperty(
-                                CmsRequestUtil.HEADER_ACCEPT_LANGUAGE,
-                                manager.getDefaultAcceptLanguageHeader());
-                        }
-                        if (manager.getAcceptCharsetHeader() != null) {
-                            urlcon.setRequestProperty(
-                                CmsRequestUtil.HEADER_ACCEPT_CHARSET,
-                                manager.getAcceptCharsetHeader());
-                        } else {
-                            urlcon.setRequestProperty(
-                                CmsRequestUtil.HEADER_ACCEPT_CHARSET,
-                                manager.getDefaultAcceptCharsetHeader());
-                        }
-                        // now perform the request to export
-                        urlcon.connect();
-                        urlcon.getResponseCode();
-                        urlcon.disconnect();
-
-                    } catch (Exception e) {
-                        // ignore
-                        if (LOG.isDebugEnabled()) {
-                            LOG.debug(e.getLocalizedMessage(), e);
-                        }
-                    }
+                    //                    try {
+                    //                        CmsStaticExportManager manager = OpenCms.getStaticExportManager();
+                    //                        HttpURLConnection.setFollowRedirects(false);
+                    //                        // try to export it
+                    //                        URL exportUrl = new URL(manager.getExportUrl() + manager.getRfsName(getCms(), resourceStr));
+                    //                        HttpURLConnection urlcon = (HttpURLConnection)exportUrl.openConnection();
+                    //                        // setup the connection and request the resource
+                    //                        urlcon.setRequestMethod("GET");
+                    //                        urlcon.setRequestProperty(CmsRequestUtil.HEADER_OPENCMS_EXPORT, Boolean.TRUE.toString());
+                    //                        if (manager.getAcceptLanguageHeader() != null) {
+                    //                            urlcon.setRequestProperty(
+                    //                                CmsRequestUtil.HEADER_ACCEPT_LANGUAGE,
+                    //                                manager.getAcceptLanguageHeader());
+                    //                        } else {
+                    //                            urlcon.setRequestProperty(
+                    //                                CmsRequestUtil.HEADER_ACCEPT_LANGUAGE,
+                    //                                manager.getDefaultAcceptLanguageHeader());
+                    //                        }
+                    //                        if (manager.getAcceptCharsetHeader() != null) {
+                    //                            urlcon.setRequestProperty(
+                    //                                CmsRequestUtil.HEADER_ACCEPT_CHARSET,
+                    //                                manager.getAcceptCharsetHeader());
+                    //                        } else {
+                    //                            urlcon.setRequestProperty(
+                    //                                CmsRequestUtil.HEADER_ACCEPT_CHARSET,
+                    //                                manager.getDefaultAcceptCharsetHeader());
+                    //                        }
+                    //                        // now perform the request to export
+                    //                        urlcon.connect();
+                    //                        urlcon.getResponseCode();
+                    //                        urlcon.disconnect();
+                    //
+                    //                    } catch (Exception e) {
+                    //                        // ignore
+                    //                        if (LOG.isDebugEnabled()) {
+                    //                            LOG.debug(e.getLocalizedMessage(), e);
+                    //                        }
+                    //                    }
                 }
                 getJsp().getResponse().sendRedirect(url);
             } else {
@@ -360,6 +373,7 @@ public class CmsDisplayResource extends CmsDialog {
     /**
      * @see org.opencms.workplace.CmsDialog#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         fillParamValues(settings, request);

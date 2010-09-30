@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsResourceManager.java,v $
- * Date   : $Date: 2010/09/13 12:24:50 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/09/30 10:09:14 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,7 @@ import org.opencms.configuration.CmsVfsConfiguration;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.collectors.I_CmsResourceCollector;
 import org.opencms.file.types.CmsResourceTypeBinary;
 import org.opencms.file.types.CmsResourceTypeFolder;
@@ -82,7 +83,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -924,11 +925,15 @@ public class CmsResourceManager {
         String templateProp = null;
         if (originalUri != null) {
             String context = OpenCms.getSystemInfo().getOpenCmsContext();
-            if (originalUri.startsWith(context)) {
+            if (originalUri.startsWith(context + "/")) {
                 originalUri = originalUri.substring(context.length());
             }
-            CmsSitemapEntry entry = OpenCms.getSitemapManager().getEntryForUri(cms, originalUri);
-            templateProp = entry.getTemplate(null);
+            try {
+                CmsSitemapEntry entry = OpenCms.getSitemapManager().getEntryForUri(cms, originalUri);
+                templateProp = entry.getTemplate(null);
+            } catch (CmsVfsResourceNotFoundException e) {
+                LOG.debug(e.getLocalizedMessage(), e);
+            }
         }
         if (templateProp == null) {
             templateProp = cms.readPropertyObject(resource, templateProperty, true).getValue();

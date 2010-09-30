@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/A_CmsStaticExportHandler.java,v $
- * Date   : $Date: 2010/09/03 13:13:59 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/09/30 10:09:14 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.1.7 
  * 
@@ -136,14 +136,14 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
      * 
      * @return the list of {@link CmsPublishedResource} objects to export
      */
-    public List scrubExportFolders(CmsUUID publishHistoryId) {
+    public List<CmsPublishedResource> scrubExportFolders(CmsUUID publishHistoryId) {
 
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_SCRUBBING_EXPORT_FOLDERS_1, publishHistoryId));
         }
 
-        Set scrubbedFolders = new HashSet();
-        Set scrubbedFiles = new HashSet();
+        Set<String> scrubbedFolders = new HashSet<String>();
+        Set<String> scrubbedFiles = new HashSet<String>();
 
         // get a export user cms context        
         CmsObject cms;
@@ -153,25 +153,25 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
         } catch (CmsException e) {
             // this should never happen
             LOG.error(Messages.get().getBundle().key(Messages.LOG_INIT_FAILED_0), e);
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
 
-        List publishedResources;
+        List<CmsPublishedResource> publishedResources;
         try {
             publishedResources = cms.readPublishedResources(publishHistoryId);
         } catch (CmsException e) {
             LOG.error(
                 Messages.get().getBundle().key(Messages.LOG_READING_CHANGED_RESOURCES_FAILED_1, publishHistoryId),
                 e);
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
 
         publishedResources = addMovedLinkSources(cms, publishedResources);
 
         // now iterate the actual resources to be exported
-        Iterator itPubRes = publishedResources.iterator();
+        Iterator<CmsPublishedResource> itPubRes = publishedResources.iterator();
         while (itPubRes.hasNext()) {
-            CmsPublishedResource res = (CmsPublishedResource)itPubRes.next();
+            CmsPublishedResource res = itPubRes.next();
             if (res.getState().isUnchanged()) {
                 // unchanged resources don't need to be deleted
                 continue;
@@ -190,29 +190,29 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
      * 
      * @return the list of published resources included the link sources of moved resources 
      */
-    protected List addMovedLinkSources(CmsObject cms, List publishedResources) {
+    protected List<CmsPublishedResource> addMovedLinkSources(
+        CmsObject cms,
+        List<CmsPublishedResource> publishedResources) {
 
-        publishedResources = new ArrayList(publishedResources);
-        Set pubResources = new HashSet(publishedResources.size());
+        publishedResources = new ArrayList<CmsPublishedResource>(publishedResources);
+        Set<String> pubResources = new HashSet<String>(publishedResources.size());
         // this is needed since the CmsPublishedResource#equals(Object) method just compares ids and not paths
         // and with moved files you have 2 entries with the same id and different paths...
-        Iterator itPubRes = publishedResources.iterator();
-        while (itPubRes.hasNext()) {
-            CmsPublishedResource pubRes = (CmsPublishedResource)itPubRes.next();
+        for (CmsPublishedResource pubRes : publishedResources) {
             pubResources.add(pubRes.getRootPath());
         }
         boolean modified = true;
         // until no more resources are added
         while (modified) {
             modified = false;
-            Iterator itPrePubRes = new ArrayList(publishedResources).iterator();
+            Iterator<CmsPublishedResource> itPrePubRes = new ArrayList<CmsPublishedResource>(publishedResources).iterator();
             while (itPrePubRes.hasNext()) {
-                CmsPublishedResource res = (CmsPublishedResource)itPrePubRes.next();
+                CmsPublishedResource res = itPrePubRes.next();
                 if (res.getMovedState() != CmsPublishedResource.STATE_MOVED_DESTINATION) {
                     // handle only resources that are destination of move operations
                     continue;
                 }
-                List relations = null;
+                List<CmsRelation> relations = null;
                 try {
                     // get all link sources to this resource
                     relations = cms.getRelationsForResource(
@@ -228,9 +228,9 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
                     // continue with next resource if no link sources found
                     continue;
                 }
-                Iterator itRelations = relations.iterator();
+                Iterator<CmsRelation> itRelations = relations.iterator();
                 while (itRelations.hasNext()) {
-                    CmsRelation relation = (CmsRelation)itRelations.next();
+                    CmsRelation relation = itRelations.next();
                     CmsPublishedResource source = null;
                     try {
                         // get the link source
@@ -263,18 +263,7 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
      * 
      * @return a list of related files to purge
      */
-    protected abstract List getRelatedFilesToPurge(String exportFileName, String vfsName);
-
-    /**
-     * Returns a list of related files to purge.<p>
-     * 
-     * @param cms the export user context 
-     * @param exportFileName the previous exported rfs filename (already purged)
-     * @param vfsName the vfs name of the resource (to be used to compute more sofisticated sets of related files to purge 
-     * 
-     * @return a list of related files to purge
-     */
-    protected abstract List<File> getRelatedFilesToPurge(CmsObject cms, String exportFileName, String vfsName);
+    protected abstract List<File> getRelatedFilesToPurge(String exportFileName, String vfsName);
 
     /**
      * Returns a list containing the root paths of all siblings of a resource.<p> 
@@ -284,13 +273,13 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
      * 
      * @return a list containing the root paths of all siblings of a resource
      */
-    protected List getSiblingsList(CmsObject cms, String resPath) {
+    protected List<String> getSiblingsList(CmsObject cms, String resPath) {
 
-        List siblings = new ArrayList();
+        List<String> siblings = new ArrayList<String>();
         try {
-            List li = cms.readSiblings(resPath, CmsResourceFilter.ALL);
+            List<CmsResource> li = cms.readSiblings(resPath, CmsResourceFilter.ALL);
             for (int i = 0, l = li.size(); i < l; i++) {
-                String vfsName = ((CmsResource)li.get(i)).getRootPath();
+                String vfsName = (li.get(i)).getRootPath();
                 siblings.add(vfsName);
             }
         } catch (CmsVfsResourceNotFoundException e) {
@@ -347,15 +336,19 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
      * @param scrubbedFolders the list of already scrubbed folders
      * @param scrubbedFiles the list of already scrubbed files
      */
-    protected void scrubResource(CmsObject cms, CmsPublishedResource res, Set scrubbedFolders, Set scrubbedFiles) {
+    protected void scrubResource(
+        CmsObject cms,
+        CmsPublishedResource res,
+        Set<String> scrubbedFolders,
+        Set<String> scrubbedFiles) {
 
         // ensure all siblings are scrubbed if the resource has one
         String resPath = cms.getRequestContext().removeSiteRoot(res.getRootPath());
-        List siblings = getSiblingsList(cms, resPath);
+        List<String> siblings = getSiblingsList(cms, resPath);
 
-        Iterator itSibs = siblings.iterator();
+        Iterator<String> itSibs = siblings.iterator();
         while (itSibs.hasNext()) {
-            String vfsName = (String)itSibs.next();
+            String vfsName = itSibs.next();
 
             // get the link name for the published file 
             String rfsName = OpenCms.getStaticExportManager().getRfsName(cms, vfsName);
@@ -407,10 +400,10 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
                     vfsName)
                     + rfsName.substring(OpenCms.getStaticExportManager().getRfsPrefix(vfsName).length()));
 
-                List fileList = getRelatedFilesToPurge(cms, rfsExportFileName, vfsName);
-                Iterator iter = fileList.iterator();
+                List<File> fileList = getRelatedFilesToPurge(rfsExportFileName, vfsName);
+                Iterator<File> iter = fileList.iterator();
                 while (iter.hasNext()) {
-                    File file = (File)iter.next();
+                    File file = iter.next();
                     purgeFile(file.getAbsolutePath(), vfsName);
                     rfsName = CmsFileUtil.normalizePath(OpenCms.getStaticExportManager().getRfsPrefix(vfsName)
                         + "/"

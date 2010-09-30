@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapStructureCache.java,v $
- * Date   : $Date: 2010/09/24 13:59:11 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/09/30 10:09:14 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Moossen
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -707,7 +707,8 @@ public class CmsSitemapStructureCache extends CmsVfsCache implements I_CmsSitema
         for (int position = 0; position < size; position++) {
             // visit sub-entries
             CmsInternalSitemapEntry subEntry = subEntries.get(position);
-            visitEntry(cms, active, subEntry, locale, currentEntryPoint, false, position, properties);
+            visitEntry(cms, active, subEntry, locale, currentEntryPoint, false, position, new HashMap<String, String>(
+                properties));
         }
     }
 

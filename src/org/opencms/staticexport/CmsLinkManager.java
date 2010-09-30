@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2009/12/16 15:21:11 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/09/30 10:09:14 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -190,6 +190,7 @@ public class CmsLinkManager {
      * @deprecated use {@link #getRootPath(CmsObject, String, String)} instead, obtain the link manager 
      *      with {@link OpenCms#getLinkManager()}
      */
+    @Deprecated
     public static String getSitePath(CmsObject cms, String basePath, String targetUri) {
 
         return OpenCms.getLinkManager().getRootPath(cms, targetUri, basePath);
