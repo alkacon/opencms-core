@@ -4,6 +4,13 @@
 }
 
 
+.dragHandle{
+	position: absolute;
+	top: 2px;
+	right: 2px;
+	cursor: pointer;
+}
+
 .dragStarted, .dragPlaceholder{}
 
 .currentTarget{

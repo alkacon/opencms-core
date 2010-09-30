@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageHandler.java,v $
- * Date   : $Date: 2010/09/14 14:19:47 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2010/09/30 13:32:25 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,12 +31,11 @@
 
 package org.opencms.ade.containerpage.client;
 
-import org.opencms.ade.containerpage.client.draganddrop.CmsDragContainerElement;
-import org.opencms.ade.containerpage.client.draganddrop.CmsDragSubcontainer;
-import org.opencms.ade.containerpage.client.draganddrop.I_CmsDragContainerElement;
-import org.opencms.ade.containerpage.client.draganddrop.I_CmsDragTargetContainer;
+import org.opencms.ade.containerpage.client.ui.A_CmsToolbarMenu;
+import org.opencms.ade.containerpage.client.ui.CmsContainerPageElement;
 import org.opencms.ade.containerpage.client.ui.CmsContentEditorDialog;
 import org.opencms.ade.containerpage.client.ui.CmsLeavePageDialog;
+import org.opencms.ade.containerpage.client.ui.CmsSubContainerElement;
 import org.opencms.ade.containerpage.client.ui.CmsSubcontainerEditor;
 import org.opencms.ade.containerpage.client.ui.I_CmsToolbarButton;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
@@ -44,8 +43,9 @@ import org.opencms.ade.publish.client.CmsPublishDialog;
 import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.gwt.client.ui.CmsConfirmDialog;
 import org.opencms.gwt.client.ui.CmsContextMenuEntry;
+import org.opencms.gwt.client.ui.CmsList;
+import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsNotification;
-import org.opencms.gwt.client.ui.CmsSimpleListItem;
 import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
 import org.opencms.gwt.client.ui.I_CmsContextMenuEntry;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
@@ -86,7 +86,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * 
  * @since 8.0.0
  */
@@ -130,7 +130,7 @@ public class CmsContainerpageHandler {
      * 
      * @param listItem the list item
      */
-    public void addToFavorites(CmsSimpleListItem listItem) {
+    public void addToFavorites(CmsListItem listItem) {
 
         m_editor.getClipboard().addToFavorites(listItem);
     }
@@ -140,7 +140,7 @@ public class CmsContainerpageHandler {
      * 
      * @param listItem the list item
      */
-    public void addToRecent(CmsSimpleListItem listItem) {
+    public void addToRecent(CmsListItem listItem) {
 
         m_editor.getClipboard().addToRecent(listItem);
     }
@@ -158,13 +158,23 @@ public class CmsContainerpageHandler {
     }
 
     /**
+     * De-activates menu button.<p>
+     */
+    public void deactivateMenuButton() {
+
+        if ((m_activeButton != null) && (m_activeButton instanceof A_CmsToolbarMenu)) {
+            ((A_CmsToolbarMenu)m_activeButton).setActive(false);
+        }
+    }
+
+    /**
      * Starts the property editor for the given container element.<p>
      * 
      * @param elementWidget the container element widget for which the properties should be edited 
      */
-    public void editProperties(final CmsDragContainerElement elementWidget) {
+    public void editProperties(final org.opencms.ade.containerpage.client.ui.CmsContainerPageElement elementWidget) {
 
-        final String id = elementWidget.getClientId();
+        final String id = elementWidget.getId();
 
         m_controller.getElement(id, new I_CmsSimpleCallback<CmsContainerElementData>() {
 
@@ -215,16 +225,6 @@ public class CmsContainerpageHandler {
     }
 
     /**
-     * Enables the drag handler on the given element.<p>
-     * 
-     * @param element the element
-     */
-    public void enableDragHandler(I_CmsDragContainerElement<I_CmsDragTargetContainer> element) {
-
-        m_controller.getContainerpageUtil().enableDragHandler(element);
-    }
-
-    /**
      * Enables the save and reset button of the tool-bar.<p>
      * 
      * @param enable <code>true</code> to enable
@@ -238,6 +238,16 @@ public class CmsContainerpageHandler {
             m_editor.getSave().disable(Messages.get().key(Messages.GUI_BUTTON_SAVE_DISABLED_0));
             m_editor.getReset().disable(Messages.get().key(Messages.GUI_BUTTON_RESET_DISABLED_0));
         }
+    }
+
+    /**
+     * Returns the tool-bar drop-zone.<p>
+     * 
+     * @return the drop-zone
+     */
+    public CmsList<CmsListItem> getDropzone() {
+
+        return m_editor.getClipboard().getDropzone();
     }
 
     /**
@@ -257,6 +267,16 @@ public class CmsContainerpageHandler {
             m_controller.leaveUnsaved(target);
         }
 
+    }
+
+    /**
+     * Hides any open menu.<p>
+     */
+    public void hideMenu() {
+
+        if ((m_activeButton != null) && (m_activeButton instanceof A_CmsToolbarMenu)) {
+            ((A_CmsToolbarMenu)m_activeButton).hideMenu();
+        }
     }
 
     /**
@@ -309,7 +329,7 @@ public class CmsContainerpageHandler {
                 m_editor.getClipboard().clearFavorites();
                 Iterator<CmsContainerElementData> it = arg.iterator();
                 while (it.hasNext()) {
-                    addToFavorites(m_controller.getContainerpageUtil().createListItem(it.next(), null));
+                    addToFavorites(m_controller.getContainerpageUtil().createListItem(it.next()));
                 }
             }
 
@@ -341,7 +361,7 @@ public class CmsContainerpageHandler {
                 m_editor.getClipboard().clearRecent();
                 Iterator<CmsContainerElementData> it = arg.iterator();
                 while (it.hasNext()) {
-                    addToRecent(m_controller.getContainerpageUtil().createListItem(it.next(), null));
+                    addToRecent(m_controller.getContainerpageUtil().createListItem(it.next()));
                 }
             }
 
@@ -361,11 +381,11 @@ public class CmsContainerpageHandler {
      * 
      * @param element the element to edit
      */
-    public void openEditorForElement(CmsDragContainerElement element) {
+    public void openEditorForElement(CmsContainerPageElement element) {
 
         if (element.isNew()) {
             CmsDebugLog.getInstance().printLine(
-                "editing new element, id: " + element.getClientId() + ", tpype: " + element.getNewType());
+                "editing new element, id: " + element.getId() + ", tpype: " + element.getNewType());
             m_controller.createAndEditNewElement(element);
             return;
         }
@@ -389,9 +409,9 @@ public class CmsContainerpageHandler {
             return;
         }
         if (CmsDomUtil.hasClass(CmsContainerpageUtil.CLASS_SUB_CONTAINER_ELEMENTS, element.getElement())) {
-            openSubcontainerEditor((CmsDragSubcontainer)element);
+            //         openSubcontainerEditor((CmsDragSubcontainer)element);
         } else {
-            CmsContentEditorDialog.get().openEditDialog(element.getClientId(), element.getSitePath());
+            CmsContentEditorDialog.get().openEditDialog(element.getId(), element.getSitePath());
         }
     }
 
@@ -410,7 +430,7 @@ public class CmsContainerpageHandler {
      * 
      * @param element the element
      */
-    public void removeElement(CmsDragContainerElement element) {
+    public void removeElement(CmsContainerPageElement element) {
 
         m_controller.removeElement(element);
     }
@@ -479,6 +499,16 @@ public class CmsContainerpageHandler {
     }
 
     /**
+     * Opens the menu showing the favorite list drop-zone and hiding all other menu content.<p>
+     * 
+     * @param show <code>true</code> to show the drop-zone
+     */
+    public void showDropzone(boolean show) {
+
+        m_editor.getClipboard().showDropzone(show);
+    }
+
+    /**
      * Shows a page overlay preventing user actions.<p>
      */
     public void showPageOverlay() {
@@ -534,7 +564,7 @@ public class CmsContainerpageHandler {
      * 
      * @param subContainer the sub-container element
      */
-    private void openSubcontainerEditor(CmsDragSubcontainer subContainer) {
+    private void openSubcontainerEditor(CmsSubContainerElement subContainer) {
 
         CmsSubcontainerEditor.openSubcontainerEditor(subContainer, m_controller, this);
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsResultListItem.java,v $
- * Date   : $Date: 2010/09/14 14:20:24 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/09/30 13:32:25 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,9 +34,6 @@ package org.opencms.ade.galleries.client.ui;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.shared.CmsResultItemBean;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
-import org.opencms.gwt.client.dnd.I_CmsDragHandle;
-import org.opencms.gwt.client.dnd.I_CmsDraggable;
-import org.opencms.gwt.client.draganddrop.I_CmsDragHandler;
 import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsPushButton;
@@ -54,33 +51,11 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.
  */
 public class CmsResultListItem extends CmsListItem {
-
-    /** The move handle. */
-    private class MoveHandle extends CmsPushButton implements I_CmsDragHandle {
-
-        CmsResultListItem m_draggable;
-
-        MoveHandle(CmsResultListItem draggable) {
-
-            setImageClass(I_CmsImageBundle.INSTANCE.style().moveIcon());
-            setShowBorder(false);
-            m_draggable = draggable;
-        }
-
-        /**
-         * @see org.opencms.gwt.client.dnd.I_CmsDragHandle#getDraggable()
-         */
-        public I_CmsDraggable getDraggable() {
-
-            return m_draggable;
-        }
-
-    }
 
     /** The preview button. */
     private CmsPushButton m_previewButton;
@@ -90,6 +65,9 @@ public class CmsResultListItem extends CmsListItem {
 
     /** The vfs path. */
     private String m_vfsPath;
+
+    /** The name. */
+    private String m_name;
 
     /**
      * Returns the vfs path.<p>
@@ -119,10 +97,9 @@ public class CmsResultListItem extends CmsListItem {
      * Creates a new result list item with a main widget.<p>
      * 
      * @param resultItem the result item
-     * @param dragHandler the drag handler (container page)
      * @param dndHandler the drag and drop handler
      */
-    public CmsResultListItem(CmsResultItemBean resultItem, I_CmsDragHandler<?, ?> dragHandler, CmsDNDHandler dndHandler) {
+    public CmsResultListItem(CmsResultItemBean resultItem, CmsDNDHandler dndHandler) {
 
         CmsListItemWidget resultItemWidget;
         CmsListInfoBean infoBean = new CmsListInfoBean(resultItem.getTitle(), resultItem.getDescription(), null);
@@ -130,21 +107,18 @@ public class CmsResultListItem extends CmsListItem {
             infoBean.addAdditionalInfo(Messages.get().key(Messages.GUI_RESULT_LABEL_EXCERPT_0), resultItem.getExcerpt());
         }
         m_vfsPath = resultItem.getPath();
-        if (dragHandler != null) {
-            resultItemWidget = dragHandler.createDraggableListItemWidget(infoBean, resultItem.getClientId());
-        } else if (dndHandler != null) {
-            resultItemWidget = new CmsResultItemWidget(infoBean, resultItem.getType(), resultItem.getPath());
+        resultItemWidget = new CmsResultItemWidget(infoBean, resultItem.getType(), resultItem.getPath());
+        initContent(resultItemWidget);
+        if (dndHandler != null) {
+            setId(resultItem.getClientId());
             if (resultItem.getTitle() != null) {
-                setId(resultItem.getTitle().toLowerCase().replace("/", "-").replace(" ", "_"));
+                setName(resultItem.getTitle().toLowerCase().replace("/", "-").replace(" ", "_"));
             } else {
-                // TODO: check if another id makes more sense
-                setId("");
+                // TODO: check if another name makes more sense
+                setName(resultItem.getClientId());
             }
-            CmsPushButton moveButton = new MoveHandle(this);
-            moveButton.addMouseDownHandler(dndHandler);
-            resultItemWidget.addButton(moveButton);
+            initMoveHandle(dndHandler);
         } else {
-            resultItemWidget = new CmsResultItemWidget(infoBean, resultItem.getType(), resultItem.getPath());
             if (((CmsResultItemWidget)resultItemWidget).hasTileView()) {
                 addStyleName(I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().tilingItem());
             }
@@ -165,7 +139,7 @@ public class CmsResultListItem extends CmsListItem {
 
         // add file icon
         resultItemWidget.setIcon(CmsIconUtil.getResourceIconClasses(resultItem.getType(), resultItem.getPath(), false));
-        initContent(resultItemWidget);
+
     }
 
     /**
@@ -207,5 +181,25 @@ public class CmsResultListItem extends CmsListItem {
     public void setResourceType(String resourceType) {
 
         m_resourceType = resourceType;
+    }
+
+    /**
+     * Sets the name.<p>
+     *
+     * @param name the name to set
+     */
+    public void setName(String name) {
+
+        m_name = name;
+    }
+
+    /**
+     * Returns the name.<p>
+     *
+     * @return the name
+     */
+    public String getName() {
+
+        return m_name;
     }
 }

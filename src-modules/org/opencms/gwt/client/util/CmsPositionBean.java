@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsPositionBean.java,v $
- * Date   : $Date: 2010/07/26 06:40:50 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/09/30 13:32:25 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,19 +31,17 @@
 
 package org.opencms.gwt.client.util;
 
-import java.util.Iterator;
-
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Position;
-import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.UIObject;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Bean holding the position data of a HTML DOM element.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -51,9 +49,6 @@ public class CmsPositionBean {
 
     /** Position area. */
     public static enum Area {
-
-        /** Top border. */
-        BORDER_TOP,
 
         /** Bottom border. */
         BORDER_BOTTOM,
@@ -64,11 +59,11 @@ public class CmsPositionBean {
         /** Right border. */
         BORDER_RIGHT,
 
-        /** Top left corner. */
-        CORNER_TOP_LEFT,
+        /** Top border. */
+        BORDER_TOP,
 
-        /** Top right corner. */
-        CORNER_TOP_RIGHT,
+        /** The center. */
+        CENTER,
 
         /** Bottom left corner. */
         CORNER_BOTTOM_LEFT,
@@ -76,8 +71,11 @@ public class CmsPositionBean {
         /** Bottom right corner. */
         CORNER_BOTTOM_RIGHT,
 
-        /** The center. */
-        CENTER
+        /** Top left corner. */
+        CORNER_TOP_LEFT,
+
+        /** Top right corner. */
+        CORNER_TOP_RIGHT
     }
 
     /** Element height. */
@@ -116,18 +114,30 @@ public class CmsPositionBean {
     /**
      * Collects the position information of the given UI object and returns a position info bean.<p> 
      * 
+     * @param element the object to read the position data from
+     * 
+     * @return the position data
+     */
+    public static CmsPositionBean generatePositionInfo(Element element) {
+
+        CmsPositionBean result = new CmsPositionBean();
+        result.setHeight(element.getOffsetHeight());
+        result.setWidth(element.getOffsetWidth());
+        result.setTop(element.getAbsoluteTop());
+        result.setLeft(element.getAbsoluteLeft());
+        return result;
+    }
+
+    /**
+     * Collects the position information of the given UI object and returns a position info bean.<p> 
+     * 
      * @param uiObject the object to read the position data from
      * 
      * @return the position data
      */
     public static CmsPositionBean generatePositionInfo(UIObject uiObject) {
 
-        CmsPositionBean result = new CmsPositionBean();
-        result.setHeight(uiObject.getOffsetHeight());
-        result.setWidth(uiObject.getOffsetWidth());
-        result.setTop(uiObject.getAbsoluteTop());
-        result.setLeft(uiObject.getAbsoluteLeft());
-        return result;
+        return generatePositionInfo(uiObject.getElement());
     }
 
     /**
@@ -138,36 +148,36 @@ public class CmsPositionBean {
      * 
      * @return the position info
      */
-    public static CmsPositionBean getInnerDimensions(Panel panel) {
+    public static CmsPositionBean getInnerDimensions(Element panel) {
 
         boolean first = true;
         int top = 0;
         int left = 0;
         int height = 0;
         int width = 0;
-        Iterator<Widget> it = panel.iterator();
-        while (it.hasNext()) {
-            Widget w = it.next();
-            String positioning = w.getElement().getStyle().getPosition();
-            if (w.isVisible()
+        Element child = panel.getFirstChildElement();
+        while (child != null) {
+            String positioning = child.getStyle().getPosition();
+            if (!Display.NONE.getCssName().equals(child.getStyle().getDisplay())
                 && !(positioning.equals(Position.ABSOLUTE.getCssName()) || positioning.equals(Position.FIXED.getCssName()))) {
                 if (first) {
                     first = false;
-                    top = w.getAbsoluteTop();
-                    left = w.getAbsoluteLeft();
-                    height = w.getOffsetHeight();
-                    width = w.getOffsetWidth();
+                    top = child.getAbsoluteTop();
+                    left = child.getAbsoluteLeft();
+                    height = child.getOffsetHeight();
+                    width = child.getOffsetWidth();
                 } else {
-                    int wTop = w.getAbsoluteTop();
+                    int wTop = child.getAbsoluteTop();
                     top = top < wTop ? top : wTop;
-                    int wLeft = w.getAbsoluteLeft();
+                    int wLeft = child.getAbsoluteLeft();
                     left = left < wLeft ? left : wLeft;
-                    int wHeight = w.getOffsetHeight();
+                    int wHeight = child.getOffsetHeight();
                     height = height > (wTop + wHeight - top) ? height : (wTop + wHeight - top);
-                    int wWidth = w.getOffsetWidth();
+                    int wWidth = child.getOffsetWidth();
                     width = width > (wLeft + wWidth - left) ? width : (wLeft + wWidth - left);
                 }
             }
+            child = child.getNextSiblingElement();
         }
         if (!first) {
             CmsPositionBean result = new CmsPositionBean();
@@ -179,6 +189,54 @@ public class CmsPositionBean {
         } else {
             return generatePositionInfo(panel);
         }
+    }
+
+    /**
+     * Returns over which area of this the given position is. Will return <code>null</code> if the provided position is not within this position.<p>
+     *  
+     * @param absLeft the left position
+     * @param absTop the right position
+     * @param offset the border offset
+     * 
+     * @return the area
+     */
+    public Area getArea(int absLeft, int absTop, int offset) {
+
+        if (isOverElement(absLeft, absTop)) {
+            if (absLeft < m_left + 10) {
+                // left border
+                if (absTop < m_top + offset) {
+                    // top left corner
+                    return Area.CORNER_TOP_LEFT;
+                } else if (absTop > m_top + m_height - offset) {
+                    // bottom left corner
+                    return Area.CORNER_BOTTOM_LEFT;
+                }
+                return Area.BORDER_LEFT;
+            }
+            if (absLeft > m_left + m_width - offset) {
+                // right border
+                if (absTop < m_top + offset) {
+                    // top right corner
+                    return Area.CORNER_TOP_RIGHT;
+                    // fixing opposite corner
+                } else if (absTop > m_top + m_height - offset) {
+                    // bottom right corner
+                    return Area.CORNER_BOTTOM_RIGHT;
+                    // fixing opposite corner
+                }
+                return Area.BORDER_RIGHT;
+            }
+            if (absTop < m_top + offset) {
+                // border top
+                return Area.BORDER_TOP;
+            } else if (absTop > m_top + m_height - offset) {
+                // border bottom
+                return Area.BORDER_BOTTOM;
+            }
+            return Area.CENTER;
+        }
+        return null;
     }
 
     /**
@@ -299,54 +357,6 @@ public class CmsPositionBean {
     public String toString() {
 
         return "top: " + m_top + "   left: " + m_left + "   height: " + m_height + "   width: " + m_width;
-    }
-
-    /**
-     * Returns over which area of this the given position is. Will return <code>null</code> if the provided position is not within this position.<p>
-     *  
-     * @param absLeft the left position
-     * @param absTop the right position
-     * @param offset the border offset
-     * 
-     * @return the area
-     */
-    public Area getArea(int absLeft, int absTop, int offset) {
-
-        if (isOverElement(absLeft, absTop)) {
-            if (absLeft < m_left + 10) {
-                // left border
-                if (absTop < m_top + offset) {
-                    // top left corner
-                    return Area.CORNER_TOP_LEFT;
-                } else if (absTop > m_top + m_height - offset) {
-                    // bottom left corner
-                    return Area.CORNER_BOTTOM_LEFT;
-                }
-                return Area.BORDER_LEFT;
-            }
-            if (absLeft > m_left + m_width - offset) {
-                // right border
-                if (absTop < m_top + offset) {
-                    // top right corner
-                    return Area.CORNER_TOP_RIGHT;
-                    // fixing opposite corner
-                } else if (absTop > m_top + m_height - offset) {
-                    // bottom right corner
-                    return Area.CORNER_BOTTOM_RIGHT;
-                    // fixing opposite corner
-                }
-                return Area.BORDER_RIGHT;
-            }
-            if (absTop < m_top + offset) {
-                // border top
-                return Area.BORDER_TOP;
-            } else if (absTop > m_top + m_height - offset) {
-                // border bottom
-                return Area.BORDER_BOTTOM;
-            }
-            return Area.CENTER;
-        }
-        return null;
     }
 
 }

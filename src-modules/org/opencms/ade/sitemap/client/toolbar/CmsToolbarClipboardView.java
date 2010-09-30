@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/toolbar/Attic/CmsToolbarClipboardView.java,v $
- * Date   : $Date: 2010/09/14 14:22:47 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/09/30 13:32:25 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,8 +38,6 @@ import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.client.control.I_CmsSitemapChangeHandler;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsImageBundle;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
-import org.opencms.gwt.client.dnd.I_CmsDragHandle;
-import org.opencms.gwt.client.dnd.I_CmsDraggable;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
@@ -55,7 +53,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -93,43 +91,6 @@ public class CmsToolbarClipboardView {
         }
     }
 
-    /**
-     * The move button.<p>
-     */
-    private static class MoveButton extends CmsPushButton implements I_CmsDragHandle {
-
-        private CmsListItem m_listItem;
-
-        /**
-         * Constructor.<p>
-         */
-        public MoveButton() {
-
-            setImageClass(I_CmsImageBundle.INSTANCE.buttonCss().hoverbarMove());
-            setTitle(Messages.get().key(Messages.GUI_HOVERBAR_MOVE_0));
-            setShowBorder(false);
-            addMouseDownHandler(CmsSitemapView.getInstance().getTree().getDnDHandler());
-        }
-
-        /**
-         * @see org.opencms.gwt.client.dnd.I_CmsDragHandle#getDraggable()
-         */
-        public I_CmsDraggable getDraggable() {
-
-            return m_listItem;
-        }
-
-        /**
-         * Sets the list item.<p>
-         *
-         * @param listItem the list item to set
-         */
-        public void setListItem(CmsListItem listItem) {
-
-            m_listItem = listItem;
-        }
-    }
-
     /** The clipboard toolbar button. */
     protected CmsToolbarClipboardButton m_clipboardButton;
 
@@ -155,8 +116,6 @@ public class CmsToolbarClipboardView {
         m_deleted = new CmsList<CmsListItem>();
         // allow dragging to the sitemap tree
         m_deleted.setDNDHandler(CmsSitemapView.getInstance().getTree().getDnDHandler());
-        // enabled dnd
-        m_deleted.setDnDEnabled(true);
         // prevent dragging to the deleted list
         m_deleted.setDropEnabled(false);
 
@@ -218,10 +177,8 @@ public class CmsToolbarClipboardView {
         infoBean.addAdditionalInfo(Messages.get().key(Messages.GUI_NAME_0), entry.getName());
         infoBean.addAdditionalInfo(Messages.get().key(Messages.GUI_VFS_PATH_0), entry.getVfsPath());
         final CmsListItemWidget itemWidget = new CmsListItemWidget(infoBean);
-        final MoveButton button = new MoveButton();
-        itemWidget.addButton(button);
         CmsListItem listItem = new CmsClipboardDeletedItem(itemWidget, entry);
-        button.setListItem(listItem);
+        listItem.initMoveHandle(CmsSitemapView.getInstance().getTree().getDnDHandler());
         listItem.setId(entry.getSitePath());
         return listItem;
     }

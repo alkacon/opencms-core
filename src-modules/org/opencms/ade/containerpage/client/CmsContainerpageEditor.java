@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageEditor.java,v $
- * Date   : $Date: 2010/08/06 14:08:14 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2010/09/30 13:32:25 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,6 @@
 
 package org.opencms.ade.containerpage.client;
 
-import org.opencms.ade.containerpage.client.draganddrop.CmsContainerDragHandler;
 import org.opencms.ade.containerpage.client.ui.CmsContentEditorDialog;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarClipboardMenu;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarContextButton;
@@ -48,6 +47,7 @@ import org.opencms.ade.containerpage.client.ui.CmsToolbarSitemapButton;
 import org.opencms.ade.containerpage.client.ui.I_CmsToolbarButton;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.A_CmsEntryPoint;
+import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsToolbar;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
@@ -67,7 +67,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 8.0.0
  */
@@ -209,8 +209,9 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
 
         CmsContainerpageController controller = new CmsContainerpageController();
         final CmsContainerpageHandler containerpageHandler = new CmsContainerpageHandler(controller, this);
-        CmsContainerDragHandler dragHandler = new CmsContainerDragHandler(controller, this);
         CmsContentEditorDialog.init(containerpageHandler, controller.getData());
+        CmsContainerpageDNDController dndController = new CmsContainerpageDNDController(controller);
+        CmsDNDHandler dndHandler = new CmsDNDHandler(dndController);
 
         ClickHandler clickHandler = new ClickHandler() {
 
@@ -260,7 +261,7 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         m_selection.addClickHandler(clickHandler);
         m_toolbar.addLeft(m_selection);
 
-        m_move = new CmsToolbarMoveButton(containerpageHandler);
+        m_move = new CmsToolbarMoveButton(containerpageHandler, dndHandler);
         m_move.addClickHandler(clickHandler);
         m_toolbar.addLeft(m_move);
 
@@ -276,7 +277,7 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         m_properties.addClickHandler(clickHandler);
         m_toolbar.addLeft(m_properties);
 
-        m_add = new CmsToolbarGalleryMenu(containerpageHandler, dragHandler);
+        m_add = new CmsToolbarGalleryMenu(containerpageHandler, dndHandler);
         m_add.addClickHandler(clickHandler);
         m_toolbar.addLeft(m_add);
 
@@ -311,7 +312,7 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         }
 
         CmsContainerpageUtil containerpageUtil = new CmsContainerpageUtil(
-            dragHandler,
+            dndHandler,
             m_selection,
             m_move,
             m_edit,

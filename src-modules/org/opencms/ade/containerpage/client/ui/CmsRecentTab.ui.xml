@@ -1,7 +1,7 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
-	xmlns:cnt="urn:import:org.opencms.ade.containerpage.client.draganddrop">
+	xmlns:cms="urn:import:org.opencms.gwt.client.ui">
 	<ui:with field="resources" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
 	<ui:with field="containerpage" type="org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle"></ui:with>
 	<ui:style>
@@ -14,6 +14,6 @@
 	</ui:style>
 	<g:FlowPanel styleName="{containerpage.containerpageCss.clipboardTabPanel}">
 		<g:Label ui:field="m_decriptionLabel" addStyleNames="{style.description} {resources.generalCss.textBig}"></g:Label>
-		<cnt:CmsDragTargetList ui:field="m_listPanel" addStyleNames="{style.itemList} {containerpage.containerpageCss.clipboardList} {resources.generalCss.cornerAll}" ></cnt:CmsDragTargetList>
+		<cms:CmsList ui:field="m_listPanel" addStyleNames="{style.itemList} {containerpage.containerpageCss.clipboardList} {resources.generalCss.cornerAll}" />
 	</g:FlowPanel>
 </ui:UiBinder> 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsDomUtil.java,v $
- * Date   : $Date: 2010/09/23 08:18:33 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2010/09/30 13:32:25 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentC
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  * 
  * @since 8.0.0
  */
@@ -412,6 +412,19 @@ public final class CmsDomUtil {
     }
 
     /**
+     * Adds an overlay div to the element.<p>
+     * 
+     * @param element the element
+     */
+    public static void addDisablingOverlay(Element element) {
+
+        Element overlay = DOM.createDiv();
+        overlay.addClassName(I_CmsLayoutBundle.INSTANCE.generalCss().disablingOverlay());
+        element.getStyle().setPosition(Position.RELATIVE);
+        element.appendChild(overlay);
+    }
+
+    /**
      * Clones the given element.<p>
      * 
      * It creates a new element with the same tag, and sets the class attribute, 
@@ -763,6 +776,24 @@ public final class CmsDomUtil {
     }
 
     /**
+     * Returns the element position relative to its siblings.<p>
+     * 
+     * @param e the element to get the position for
+     * 
+     * @return the position, or <code>-1</code> if not found
+     */
+    public static int getPosition(Element e) {
+
+        NodeList<Node> childNodes = e.getParentElement().getChildNodes();
+        for (int i = childNodes.getLength(); i >= 0; i--) {
+            if (childNodes.getItem(i) == e) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    /**
      * Gets the horizontal position of the given x-coordinate relative to a given element.<p>
      * 
      * @param x the coordinate to use 
@@ -883,66 +914,77 @@ public final class CmsDomUtil {
     }
 
     /**
-     * Returns the DOM implementation.<p>
+     * Positions an element inside the given parent, reordering the content of the parent and returns the new position index.<p>
+     * This is none absolute positioning. Use for drag and drop reordering of drop targets.<p>
      * 
-     * @return the DOM implementation
+     * @param element the child element
+     * @param parent the parent element
+     * @param currentIndex the current index position of the element, use -1 if element is not attached to the parent yet 
+     * @param x the x position
+     * @param y the y position
+     * 
+     * @return the new index position
      */
-    private static DOMImpl getDOMImpl() {
+    public static int positionElementInside(Element element, Element parent, int currentIndex, int x, int y) {
 
-        if (domImpl == null) {
-            domImpl = GWT.create(DOMImpl.class);
-        }
-        return domImpl;
-    }
-
-    /**
-     * Returns the element position relative to its siblings.<p>
-     * 
-     * @param e the element to get the position for
-     * 
-     * @return the position, or <code>-1</code> if not found
-     */
-    public static int getPosition(Element e) {
-
-        NodeList<Node> childNodes = e.getParentElement().getChildNodes();
-        for (int i = childNodes.getLength(); i >= 0; i--) {
-            if (childNodes.getItem(i) == e) {
-                return i;
+        for (int index = 0; index < parent.getChildCount(); index++) {
+            Node node = parent.getChild(index);
+            if (!(node instanceof Element)) {
+                continue;
             }
+            Element child = (Element)node;
+            String positioning = child.getStyle().getPosition();
+            if (positioning.equals(Position.ABSOLUTE.getCssName()) || positioning.equals(Position.FIXED.getCssName())) {
+                // only not 'position:absolute' elements into account, 
+                // not visible children will be excluded in the next condition
+                continue;
+            }
+
+            // check if the mouse pointer is within the width of the element 
+            int left = CmsDomUtil.getRelativeX(x, child);
+            if ((left <= 0) || (left >= child.getOffsetWidth())) {
+                continue;
+            }
+
+            // check if the mouse pointer is within the height of the element 
+            int top = CmsDomUtil.getRelativeY(y, child);
+            int height = child.getOffsetHeight();
+            if ((top <= 0) || (top >= height)) {
+                continue;
+            }
+            if (child == element) {
+                return currentIndex;
+            }
+
+            if (top < height / 2) {
+                parent.insertBefore(element, child);
+                currentIndex = index;
+                return currentIndex;
+            } else {
+                parent.insertAfter(element, child);
+                currentIndex = index + 1;
+                return currentIndex;
+            }
+
         }
-        return -1;
-    }
-
-    /**
-     * Internal method to indicate if the given element has a CSS class.<p>
-     * 
-     * @param className the class name to look for
-     * @param element the element
-     * 
-     * @return <code>true</code> if the element has the given CSS class
-     */
-    private static boolean internalHasClass(String className, Element element) {
-
-        String elementClass = element.getClassName().trim();
-        boolean hasClass = elementClass.equals(className);
-        hasClass |= elementClass.contains(" " + className + " ");
-        hasClass |= elementClass.startsWith(className + " ");
-        hasClass |= elementClass.endsWith(" " + className);
-
-        return hasClass;
-    }
-
-    /**
-     * Adds an overlay div to the element.<p>
-     * 
-     * @param element the element
-     */
-    public static void addDisablingOverlay(Element element) {
-
-        Element overlay = DOM.createDiv();
-        overlay.addClassName(I_CmsLayoutBundle.INSTANCE.generalCss().disablingOverlay());
-        element.getStyle().setPosition(Position.RELATIVE);
-        element.appendChild(overlay);
+        // not over any child position
+        if ((currentIndex >= 0) && (element.getParentElement() == parent)) {
+            // element is already attached to this parent and no new position available
+            // don't do anything
+            return currentIndex;
+        }
+        int top = CmsDomUtil.getRelativeY(y, parent);
+        int offsetHeight = parent.getOffsetHeight();
+        if ((top >= offsetHeight / 2)) {
+            // over top half, insert as first child
+            parent.insertFirst(element);
+            currentIndex = 0;
+            return currentIndex;
+        }
+        // over bottom half, insert as last child
+        parent.appendChild(element);
+        currentIndex = parent.getChildCount() - 1;
+        return currentIndex;
     }
 
     /**
@@ -963,5 +1005,37 @@ public final class CmsDomUtil {
             overlay.getParentElement().getStyle().clearPosition();
             overlay.removeFromParent();
         }
+    }
+
+    /**
+     * Returns the DOM implementation.<p>
+     * 
+     * @return the DOM implementation
+     */
+    private static DOMImpl getDOMImpl() {
+
+        if (domImpl == null) {
+            domImpl = GWT.create(DOMImpl.class);
+        }
+        return domImpl;
+    }
+
+    /**
+     * Internal method to indicate if the given element has a CSS class.<p>
+     * 
+     * @param className the class name to look for
+     * @param element the element
+     * 
+     * @return <code>true</code> if the element has the given CSS class
+     */
+    private static boolean internalHasClass(String className, Element element) {
+
+        String elementClass = element.getClassName().trim();
+        boolean hasClass = elementClass.equals(className);
+        hasClass |= elementClass.contains(" " + className + " ");
+        hasClass |= elementClass.startsWith(className + " ");
+        hasClass |= elementClass.endsWith(" " + className);
+
+        return hasClass;
     }
 }

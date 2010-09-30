@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItem.java,v $
- * Date   : $Date: 2010/09/14 14:22:47 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2010/09/30 13:32:25 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,12 @@
 
 package org.opencms.gwt.client.ui;
 
+import org.opencms.gwt.client.Messages;
+import org.opencms.gwt.client.dnd.CmsDNDHandler;
+import org.opencms.gwt.client.dnd.I_CmsDragHandle;
+import org.opencms.gwt.client.dnd.I_CmsDraggable;
 import org.opencms.gwt.client.dnd.I_CmsDropTarget;
+import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsListItemCss;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
@@ -56,7 +61,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  *  
  * @since 8.0.0 
  */
@@ -67,6 +72,29 @@ public class CmsListItem extends Composite implements I_CmsListItem {
      */
     protected interface I_CmsSimpleListItemUiBinder extends UiBinder<CmsFlowPanel, CmsListItem> {
         // GWT interface, nothing to do here
+    }
+
+    /** The move handle. */
+    private class MoveHandle extends CmsPushButton implements I_CmsDragHandle {
+
+        CmsListItem m_draggable;
+
+        MoveHandle(CmsListItem draggable) {
+
+            setImageClass(I_CmsImageBundle.INSTANCE.style().moveIcon());
+            setShowBorder(false);
+            setTitle(Messages.get().key(Messages.GUI_TOOLBAR_MOVE_0));
+            m_draggable = draggable;
+        }
+
+        /**
+         * @see org.opencms.gwt.client.dnd.I_CmsDragHandle#getDraggable()
+         */
+        public I_CmsDraggable getDraggable() {
+
+            return m_draggable;
+        }
+
     }
 
     /** The width of a checkbox. */
@@ -105,11 +133,13 @@ public class CmsListItem extends Composite implements I_CmsListItem {
     /** The provisional drag parent. */
     protected Element m_provisionalParent;
 
+    /** The drag helper. */
+    private Element m_helper;
+
     /** The list item widget, if this widget has one. */
     private CmsListItemWidget m_listItemWidget;
 
-    /** The drag helper. */
-    private Element m_helper;
+    private MoveHandle m_moveHandle;
 
     /** 
      * Default constructor.<p>
@@ -148,6 +178,18 @@ public class CmsListItem extends Composite implements I_CmsListItem {
     public void add(Widget w) {
 
         throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Gets the checkbox of this list item.<p>
+     * 
+     * This method will return a checkbox if this list item has one, or null if it doesn't.
+     * 
+     * @return a check box or null
+     */
+    public CmsCheckBox getCheckBox() {
+
+        return m_checkbox;
     }
 
     /**
@@ -217,18 +259,6 @@ public class CmsListItem extends Composite implements I_CmsListItem {
     //    }
 
     /**
-     * Gets the checkbox of this list item.<p>
-     * 
-     * This method will return a checkbox if this list item has one, or null if it doesn't.
-     * 
-     * @return a check box or null
-     */
-    public CmsCheckBox getCheckBox() {
-
-        return m_checkbox;
-    }
-
-    /**
      * @see org.opencms.gwt.client.dnd.I_CmsDraggable#getDragHelper(I_CmsDropTarget)
      */
     public Element getDragHelper(I_CmsDropTarget target) {
@@ -243,27 +273,31 @@ public class CmsListItem extends Composite implements I_CmsListItem {
             for (com.google.gwt.dom.client.Element elem : elems) {
                 elem.removeFromParent();
             }
-
-            // position absolute
-            Style style = m_helper.getStyle();
-            style.setPosition(Position.ABSOLUTE);
-            style.setMargin(0, Unit.PX);
-            style.setZIndex(100);
             m_helper.addClassName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().dragging());
-            style.setWidth(getElement().getOffsetWidth(), Unit.PX);
 
             // we append the drag helper to the body to prevent any kind of issues 
             // (ie when the parent is styled with overflow:hidden)
             // and we put it additionally inside a absolute positioned provisional parent  
             // ON the original parent for the eventual animation when releasing 
-            m_provisionalParent = DOM.createElement(getElement().getParentElement().getTagName());
-            m_provisionalParent.appendChild(m_helper);
-            m_provisionalParent.getStyle().setPosition(Position.ABSOLUTE);
-            Element listEl = getParent().getElement();
-            m_provisionalParent.getStyle().setTop(listEl.getAbsoluteTop(), Unit.PX);
-            m_provisionalParent.getStyle().setLeft(listEl.getAbsoluteLeft(), Unit.PX);
-            m_provisionalParent.getStyle().setZIndex(99999);
+            Element parentElement = getElement().getParentElement();
+            if (parentElement == null) {
+                parentElement = target.getElement();
+            }
+            m_provisionalParent = DOM.createElement(parentElement.getTagName());
             RootPanel.getBodyElement().appendChild(m_provisionalParent);
+            m_provisionalParent.getStyle().setWidth(parentElement.getOffsetWidth(), Unit.PX);
+            m_provisionalParent.appendChild(m_helper);
+            Style style = m_helper.getStyle();
+            style.setWidth(m_helper.getOffsetWidth(), Unit.PX);
+            // position absolute
+            style.setPosition(Position.ABSOLUTE);
+            style.setMargin(0, Unit.PX);
+            style.setZIndex(100);
+            m_provisionalParent.getStyle().setPosition(Position.ABSOLUTE);
+            m_provisionalParent.getStyle().setTop(parentElement.getAbsoluteTop(), Unit.PX);
+            m_provisionalParent.getStyle().setLeft(parentElement.getAbsoluteLeft(), Unit.PX);
+            m_provisionalParent.getStyle().setZIndex(99999);
+
         }
         return m_helper;
     }
@@ -305,6 +339,14 @@ public class CmsListItem extends Composite implements I_CmsListItem {
     }
 
     /**
+     * @see org.opencms.gwt.client.dnd.I_CmsDraggable#getParentTarget()
+     */
+    public I_CmsDropTarget getParentTarget() {
+
+        return getParentList();
+    }
+
+    /**
      * @see org.opencms.gwt.client.dnd.I_CmsDraggable#getPlaceholder(I_CmsDropTarget)
      */
     public Element getPlaceholder(I_CmsDropTarget target) {
@@ -316,12 +358,47 @@ public class CmsListItem extends Composite implements I_CmsListItem {
     }
 
     /**
+     * Initializes the move handle with the given drag and drop handler and adds it to the list item widget.<p>
+     * 
+     * This method will not work for list items that don't have a list-item-widget.<p>
+     * 
+     * @param dndHandler the drag and drop handler
+     * 
+     * @return <code>true</code> if initialization was successful
+     */
+    public boolean initMoveHandle(CmsDNDHandler dndHandler) {
+
+        if (m_moveHandle != null) {
+            return true;
+        }
+        if (m_listItemWidget == null) {
+            return false;
+        }
+        m_moveHandle = new MoveHandle(this);
+        m_listItemWidget.addButton(m_moveHandle);
+        m_moveHandle.addMouseDownHandler(dndHandler);
+        return true;
+    }
+
+    /**
      * @see org.opencms.gwt.client.dnd.I_CmsDraggable#onDragCancel()
      */
     public void onDragCancel() {
 
         clearDrag();
     }
+
+    /**
+     * @see org.opencms.gwt.client.ui.dnd.I_CmsDraggable#resetPlaceHolder()
+     */
+    //    public CmsDropPosition resetPlaceHolder() {
+    //
+    //        m_placeholder = getPlaceHolder(getParentList());
+    //        // HACK: i do not like this very much :(
+    //        getParentList().setPlaceholder(m_placeholder);
+    //        getParent().getElement().insertAfter(m_placeholder, getElement());
+    //        return new CmsDropPosition(getId(), CmsDomUtil.getPosition(m_placeholder), null, m_placeholder);
+    //    }
 
     /**
      * @see org.opencms.gwt.client.ui.dnd.I_CmsDraggable#onDragStop()
@@ -344,16 +421,20 @@ public class CmsListItem extends Composite implements I_CmsListItem {
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.dnd.I_CmsDraggable#resetPlaceHolder()
+     * @see org.opencms.gwt.client.dnd.I_CmsDraggable#onDrop(org.opencms.gwt.client.dnd.I_CmsDropTarget)
      */
-    //    public CmsDropPosition resetPlaceHolder() {
-    //
-    //        m_placeholder = getPlaceHolder(getParentList());
-    //        // HACK: i do not like this very much :(
-    //        getParentList().setPlaceholder(m_placeholder);
-    //        getParent().getElement().insertAfter(m_placeholder, getElement());
-    //        return new CmsDropPosition(getId(), CmsDomUtil.getPosition(m_placeholder), null, m_placeholder);
-    //    }
+    public void onDrop(I_CmsDropTarget target) {
+
+        clearDrag();
+    }
+
+    /**
+     * @see org.opencms.gwt.client.dnd.I_CmsDraggable#onStartDrag(org.opencms.gwt.client.dnd.I_CmsDropTarget)
+     */
+    public void onStartDrag(I_CmsDropTarget target) {
+
+        setVisible(false);
+    }
 
     /**
      * @see org.opencms.gwt.client.ui.I_CmsListItem#setId(java.lang.String)
@@ -488,30 +569,6 @@ public class CmsListItem extends Composite implements I_CmsListItem {
 
         addMainWidget(mainWidget);
         initContent();
-    }
-
-    /**
-     * @see org.opencms.gwt.client.dnd.I_CmsDraggable#onStartDrag(org.opencms.gwt.client.dnd.I_CmsDropTarget)
-     */
-    public void onStartDrag(I_CmsDropTarget target) {
-
-        setVisible(false);
-    }
-
-    /**
-     * @see org.opencms.gwt.client.dnd.I_CmsDraggable#onDrop(org.opencms.gwt.client.dnd.I_CmsDropTarget)
-     */
-    public void onDrop(I_CmsDropTarget target) {
-
-        clearDrag();
-    }
-
-    /**
-     * @see org.opencms.gwt.client.dnd.I_CmsDraggable#getParentTarget()
-     */
-    public I_CmsDropTarget getParentTarget() {
-
-        return getParentList();
     }
 
     private void clearDrag() {

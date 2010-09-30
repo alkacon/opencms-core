@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsSubcontainerEditor.java,v $
- * Date   : $Date: 2010/05/05 09:49:13 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/09/30 13:32:25 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,7 +33,6 @@ package org.opencms.ade.containerpage.client.ui;
 
 import org.opencms.ade.containerpage.client.CmsContainerpageController;
 import org.opencms.ade.containerpage.client.CmsContainerpageHandler;
-import org.opencms.ade.containerpage.client.draganddrop.CmsDragSubcontainer;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.css.I_CmsToolbarButtonLayoutBundle;
@@ -61,7 +60,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -102,7 +101,7 @@ public final class CmsSubcontainerEditor extends Composite {
     private Widget m_placeholder;
 
     /** The sub-container. */
-    private CmsDragSubcontainer m_subContainer;
+    private CmsSubContainerElement m_subContainer;
 
     /**
      * Constructor.<p>
@@ -112,7 +111,7 @@ public final class CmsSubcontainerEditor extends Composite {
      * @param handler the container-page handler
      */
     private CmsSubcontainerEditor(
-        CmsDragSubcontainer subContainer,
+        CmsSubContainerElement subContainer,
         CmsContainerpageController controller,
         CmsContainerpageHandler handler) {
 
@@ -123,9 +122,9 @@ public final class CmsSubcontainerEditor extends Composite {
         m_subContainer = subContainer;
         CmsPositionBean position = CmsPositionBean.generatePositionInfo(m_subContainer);
         m_placeholder = createPlaceholder(m_subContainer.getElement());
-        m_subContainer.getDragParent().insert(
-            m_placeholder,
-            m_subContainer.getDragParent().getWidgetIndex(m_subContainer));
+        //        m_subContainer.getDragParent().insert(
+        //            m_placeholder,
+        //            m_subContainer.getDragParent().getWidgetIndex(m_subContainer));
         m_editorWidget.add(m_subContainer, m_editorId);
         Style style = m_subContainer.getElement().getStyle();
         style.setPosition(Position.ABSOLUTE);
@@ -137,7 +136,7 @@ public final class CmsSubcontainerEditor extends Composite {
         m_subContainer.getElementOptionBar().setVisible(false);
         m_subContainer.getElementOptionBar().removeStyleName(
             I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().cmsHovering());
-        m_subContainer.setPlaceholder(m_placeholder);
+        //        m_subContainer.setPlaceholder(m_placeholder);
         m_saveButton.setTitle("Save");
         m_saveButton.setText("Save");
         m_cancelButton.setTitle("Cancel");
@@ -155,7 +154,7 @@ public final class CmsSubcontainerEditor extends Composite {
      * @param handler the container-page handler
      */
     public static void openSubcontainerEditor(
-        CmsDragSubcontainer subContainer,
+        CmsSubContainerElement subContainer,
         CmsContainerpageController controller,
         CmsContainerpageHandler handler) {
 
@@ -219,10 +218,10 @@ public final class CmsSubcontainerEditor extends Composite {
         style.clearLeft();
         style.clearZIndex();
         style.clearWidth();
-        m_subContainer.getDragParent().insert(
-            m_subContainer,
-            m_subContainer.getDragParent().getWidgetIndex(m_placeholder));
-        m_subContainer.setPlaceholder(null);
+        //        m_subContainer.getDragParent().insert(
+        //            m_subContainer,
+        //            m_subContainer.getDragParent().getWidgetIndex(m_placeholder));
+        //        m_subContainer.setPlaceholder(null);
         m_placeholder.removeFromParent();
         RootPanel.get().removeStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().subcontainerEditing());
         m_subContainer.getElementOptionBar().setVisible(true);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/A_CmsToolbarOptionButton.java,v $
- * Date   : $Date: 2010/04/28 13:03:39 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/09/30 13:32:25 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,7 +32,6 @@
 package org.opencms.ade.containerpage.client.ui;
 
 import org.opencms.ade.containerpage.client.CmsContainerpageHandler;
-import org.opencms.ade.containerpage.client.draganddrop.CmsDragContainerElement;
 import org.opencms.gwt.client.ui.I_CmsButton;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -44,7 +43,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -59,7 +58,7 @@ public abstract class A_CmsToolbarOptionButton extends A_CmsToolbarButton {
         public void onClick(ClickEvent event) {
 
             CmsElementOptionButton source = (CmsElementOptionButton)event.getSource();
-            source.getToolbarButton().onElementClick(event, source.getDragElement());
+            source.getToolbarButton().onElementClick(event, source.getContainerElement());
         }
     };
 
@@ -81,7 +80,7 @@ public abstract class A_CmsToolbarOptionButton extends A_CmsToolbarButton {
      * 
      * @return the created button
      */
-    public CmsElementOptionButton createOptionForElement(CmsDragContainerElement element) {
+    public CmsElementOptionButton createOptionForElement(CmsContainerPageElement element) {
 
         CmsElementOptionButton button = new CmsElementOptionButton(this, element);
         button.addClickHandler(m_elementClickHandler);
@@ -98,7 +97,7 @@ public abstract class A_CmsToolbarOptionButton extends A_CmsToolbarButton {
      * 
      * @return <code>true</code> if the user has permissions
      */
-    public abstract boolean hasPermissions(CmsDragContainerElement element);
+    public abstract boolean hasPermissions(CmsContainerPageElement element);
 
     /**
      * Method is executed when the element option button is clicked.<p>
@@ -106,7 +105,7 @@ public abstract class A_CmsToolbarOptionButton extends A_CmsToolbarButton {
      * @param event the mouse event (stop propagation if appropriate)
      * @param element the element the option button is associated to
      */
-    public abstract void onElementClick(ClickEvent event, CmsDragContainerElement element);
+    public abstract void onElementClick(ClickEvent event, CmsContainerPageElement element);
 
     /**
      * @see org.opencms.ade.containerpage.client.ui.I_CmsToolbarButton#onToolbarActivate()

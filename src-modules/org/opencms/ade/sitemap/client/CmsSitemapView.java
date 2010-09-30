@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapView.java,v $
- * Date   : $Date: 2010/09/23 06:30:51 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2010/09/30 13:32:25 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,8 +55,8 @@ import org.opencms.gwt.client.ui.dnd.CmsDropEvent;
 import org.opencms.gwt.client.ui.dnd.I_CmsDropHandler;
 import org.opencms.gwt.client.ui.tree.A_CmsDeepLazyOpenHandler;
 import org.opencms.gwt.client.ui.tree.CmsLazyTree;
-import org.opencms.gwt.client.ui.tree.CmsTreeItem;
 import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem.LoadState;
+import org.opencms.gwt.client.ui.tree.CmsTreeItem;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsPair;
@@ -76,7 +76,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.34 $ 
+ * @version $Revision: 1.35 $ 
  * 
  * @since 8.0.0
  */
@@ -343,7 +343,6 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler, ClosingHandler, I
         });
         if (m_controller.isEditable()) {
             // enable drag'n drop 
-            m_tree.setDnDEnabled(true);
             CmsDNDHandler dndHandler = new CmsDNDHandler(new CmsSitemapDNDController(m_controller, m_toolbar));
             dndHandler.addTarget(m_tree);
             m_tree.setDNDHandler(dndHandler);

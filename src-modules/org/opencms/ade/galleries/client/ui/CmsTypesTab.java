@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsTypesTab.java,v $
- * Date   : $Date: 2010/07/20 10:28:08 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2010/09/30 13:32:25 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,7 @@ import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.CmsResourceTypeBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
-import org.opencms.gwt.client.draganddrop.I_CmsDragHandler;
+import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.util.CmsCollectionUtil;
@@ -58,7 +58,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 8.0.
  */
@@ -106,7 +106,7 @@ public class CmsTypesTab extends A_CmsListTab {
     private static final String TM_TYPE_TAB = "TypeTab";
 
     /** The reference to the drag handler for the list elements. */
-    private I_CmsDragHandler<?, ?> m_dragHandler;
+    private CmsDNDHandler m_dndHandler;
 
     /** The search parameter panel for this tab. */
     private CmsSearchParamPanel m_paramPanel;
@@ -118,13 +118,13 @@ public class CmsTypesTab extends A_CmsListTab {
      * Constructor.<p>
      * 
      * @param tabHandler the tab handler 
-     * @param dragHandler the drag handler
+     * @param dndHandler the drag and drop handler
      */
-    public CmsTypesTab(CmsTypesTabHandler tabHandler, I_CmsDragHandler<?, ?> dragHandler) {
+    public CmsTypesTab(CmsTypesTabHandler tabHandler, CmsDNDHandler dndHandler) {
 
         super(GalleryTabId.cms_tab_types);
         m_tabHandler = tabHandler;
-        m_dragHandler = dragHandler;
+        m_dndHandler = dndHandler;
         m_scrollList.truncate(TM_TYPE_TAB, CmsGalleryDialog.DIALOG_WIDTH);
     }
 
@@ -139,11 +139,7 @@ public class CmsTypesTab extends A_CmsListTab {
         for (CmsResourceTypeBean typeBean : typeInfos) {
             CmsListItemWidget listItemWidget;
             CmsListInfoBean infoBean = new CmsListInfoBean(typeBean.getTitle(), typeBean.getDescription(), null);
-            if (m_dragHandler != null) {
-                listItemWidget = m_dragHandler.createDraggableListItemWidget(infoBean, typeBean.getType());
-            } else {
-                listItemWidget = new CmsListItemWidget(infoBean);
-            }
+            listItemWidget = new CmsListItemWidget(infoBean);
             listItemWidget.setIcon(CmsIconUtil.getResourceIconClasses(typeBean.getType(), false));
             CmsCheckBox checkBox = new CmsCheckBox();
             checkBox.addClickHandler(new CheckboxHandler(typeBean.getType(), checkBox));
@@ -154,6 +150,9 @@ public class CmsTypesTab extends A_CmsListTab {
             listItem.setId(typeBean.getType());
             listItem.setItemTitle(typeBean.getTitle());
             listItem.setSubTitle(typeBean.getDescription());
+            if (m_dndHandler != null) {
+                listItem.initMoveHandle(m_dndHandler);
+            }
             addWidgetToList(listItem);
         }
     }

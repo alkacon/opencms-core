@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsToolbarEditButton.java,v $
- * Date   : $Date: 2010/05/19 09:39:39 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/09/30 13:32:25 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,7 +32,6 @@
 package org.opencms.ade.containerpage.client.ui;
 
 import org.opencms.ade.containerpage.client.CmsContainerpageHandler;
-import org.opencms.ade.containerpage.client.draganddrop.CmsDragContainerElement;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.util.CmsStringUtil;
@@ -44,7 +43,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
@@ -61,19 +60,19 @@ public class CmsToolbarEditButton extends A_CmsToolbarOptionButton {
     }
 
     /**
-     * @see org.opencms.ade.containerpage.client.ui.A_CmsToolbarOptionButton#hasPermissions(org.opencms.ade.containerpage.client.draganddrop.CmsDragContainerElement)
+     * @see org.opencms.ade.containerpage.client.ui.A_CmsToolbarOptionButton#hasPermissions(org.opencms.ade.containerpage.client.ui.CmsContainerPageElement)
      */
     @Override
-    public boolean hasPermissions(CmsDragContainerElement element) {
+    public boolean hasPermissions(CmsContainerPageElement element) {
 
         return CmsStringUtil.isEmptyOrWhitespaceOnly(element.getNoEditReason());
     }
 
     /**
-     * @see org.opencms.ade.containerpage.client.ui.A_CmsToolbarOptionButton#onElementClick(com.google.gwt.event.dom.client.ClickEvent, org.opencms.ade.containerpage.client.draganddrop.CmsDragContainerElement)
+     * @see org.opencms.ade.containerpage.client.ui.A_CmsToolbarOptionButton#onElementClick(com.google.gwt.event.dom.client.ClickEvent, org.opencms.ade.containerpage.client.ui.CmsContainerPageElement)
      */
     @Override
-    public void onElementClick(ClickEvent event, CmsDragContainerElement element) {
+    public void onElementClick(ClickEvent event, CmsContainerPageElement element) {
 
         CmsDomUtil.ensureMouseOut(element.getElementOptionBar().getElement());
         getHandler().openEditorForElement(element);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsElementOptionButton.java,v $
- * Date   : $Date: 2010/04/28 13:03:39 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/09/30 13:32:25 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,8 @@
 
 package org.opencms.ade.containerpage.client.ui;
 
-import org.opencms.ade.containerpage.client.draganddrop.CmsDragContainerElement;
+import org.opencms.gwt.client.dnd.I_CmsDragHandle;
+import org.opencms.gwt.client.dnd.I_CmsDraggable;
 import org.opencms.gwt.client.ui.CmsPushButton;
 
 /**
@@ -39,14 +40,14 @@ import org.opencms.gwt.client.ui.CmsPushButton;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
-public class CmsElementOptionButton extends CmsPushButton {
+public class CmsElementOptionButton extends CmsPushButton implements I_CmsDragHandle {
 
     /** The associated container element. */
-    private CmsDragContainerElement m_dragElement;
+    private CmsContainerPageElement m_dragElement;
 
     /** The associated tool-bar button. */
     private A_CmsToolbarOptionButton m_toolbarButton;
@@ -57,7 +58,7 @@ public class CmsElementOptionButton extends CmsPushButton {
      * @param toolbarButton the tool-bar button associated with this button, providing all necessary information
      * @param element the element to create this button for
      */
-    public CmsElementOptionButton(A_CmsToolbarOptionButton toolbarButton, CmsDragContainerElement element) {
+    public CmsElementOptionButton(A_CmsToolbarOptionButton toolbarButton, CmsContainerPageElement element) {
 
         super();
         setImageClass(toolbarButton.getIconClass());
@@ -73,7 +74,7 @@ public class CmsElementOptionButton extends CmsPushButton {
      *
      * @return the dragElement
      */
-    public CmsDragContainerElement getDragElement() {
+    public CmsContainerPageElement getContainerElement() {
 
         return m_dragElement;
     }
@@ -86,6 +87,14 @@ public class CmsElementOptionButton extends CmsPushButton {
     public A_CmsToolbarOptionButton getToolbarButton() {
 
         return m_toolbarButton;
+    }
+
+    /**
+     * @see org.opencms.gwt.client.dnd.I_CmsDragHandle#getDraggable()
+     */
+    public I_CmsDraggable getDraggable() {
+
+        return m_dragElement;
     }
 
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsToolbarRemoveButton.java,v $
- * Date   : $Date: 2010/04/28 13:03:39 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/09/30 13:32:25 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,7 +32,6 @@
 package org.opencms.ade.containerpage.client.ui;
 
 import org.opencms.ade.containerpage.client.CmsContainerpageHandler;
-import org.opencms.ade.containerpage.client.draganddrop.CmsDragContainerElement;
 import org.opencms.gwt.client.ui.I_CmsButton;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -42,7 +41,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -59,20 +58,20 @@ public class CmsToolbarRemoveButton extends A_CmsToolbarOptionButton {
     }
 
     /**
-     * @see org.opencms.ade.containerpage.client.ui.A_CmsToolbarOptionButton#hasPermissions(org.opencms.ade.containerpage.client.draganddrop.CmsDragContainerElement)
+     * @see org.opencms.ade.containerpage.client.ui.A_CmsToolbarOptionButton#hasPermissions(org.opencms.ade.containerpage.client.ui.CmsContainerPageElement)
      */
     @Override
-    public boolean hasPermissions(CmsDragContainerElement element) {
+    public boolean hasPermissions(CmsContainerPageElement element) {
 
         // TODO: get permissions from element
         return true;
     }
 
     /**
-     * @see org.opencms.ade.containerpage.client.ui.A_CmsToolbarOptionButton#onElementClick(com.google.gwt.event.dom.client.ClickEvent, org.opencms.ade.containerpage.client.draganddrop.CmsDragContainerElement)
+     * @see org.opencms.ade.containerpage.client.ui.A_CmsToolbarOptionButton#onElementClick(com.google.gwt.event.dom.client.ClickEvent, org.opencms.ade.containerpage.client.ui.CmsContainerPageElement)
      */
     @Override
-    public void onElementClick(ClickEvent event, CmsDragContainerElement element) {
+    public void onElementClick(ClickEvent event, CmsContainerPageElement element) {
 
         getHandler().removeElement(element);
     }

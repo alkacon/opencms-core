@@ -56,6 +56,7 @@ ul.clipboardList{
 	background: #ffffff;
 	height: 90px;
 	position: relative;
+	padding: 0px 2px;
 }
 
 .clipboardDropzone > div, .clipboardList > div  {

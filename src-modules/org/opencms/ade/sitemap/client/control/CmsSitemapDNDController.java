@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapDNDController.java,v $
- * Date   : $Date: 2010/09/23 08:18:33 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/09/30 13:32:25 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,7 @@ import org.opencms.ade.sitemap.client.CmsSitemapTreeItem;
 import org.opencms.ade.sitemap.client.toolbar.CmsSitemapToolbar;
 import org.opencms.ade.sitemap.client.toolbar.CmsToolbarClipboardView.CmsClipboardDeletedItem;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
+import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.dnd.I_CmsDNDController;
 import org.opencms.gwt.client.dnd.I_CmsDraggable;
@@ -43,15 +44,20 @@ import org.opencms.gwt.client.dnd.I_CmsDropTarget;
 import org.opencms.gwt.client.ui.tree.CmsTree;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.gwt.client.util.CmsDomUtil.Tag;
 
+import java.util.List;
+
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Display;
+import com.google.gwt.dom.client.Style.Unit;
 
 /**
  * The sitemap drag and drop controller.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -118,19 +124,31 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
      */
     public boolean onDragStart(I_CmsDraggable draggable, I_CmsDropTarget target, CmsDNDHandler handler) {
 
-        // TODO: check lock and modification state
-        //        CmsSitemapController controller = CmsSitemapView.getInstance().getController();
-        //        boolean cancel = !controller.isDirty();
-        //        cancel &= !CmsCoreProvider.get().lockAndCheckModification(
-        //            CmsCoreProvider.get().getUri(),
-        //            controller.getData().getTimestamp());
+        // TODO: check if the synchronized lock action request causes lock-ups of the GUI
 
+        // cancel if page can't be locked
+        boolean cancel = !m_controller.isDirty();
+        cancel &= !CmsCoreProvider.get().lockAndCheckModification(
+            CmsCoreProvider.get().getUri(),
+            m_controller.getData().getTimestamp());
+        if (cancel) {
+            return false;
+        }
         m_insertIndex = -1;
         m_insertPath = null;
         m_originalIndex = -1;
         m_originalPath = null;
         if ((draggable instanceof CmsClipboardDeletedItem) || (draggable instanceof CmsResultListItem)) {
             m_toolbar.onButtonActivation(null);
+
+            // fixing placeholder indent not being present in non tree items
+            List<Element> elements = CmsDomUtil.getElementsByClass(
+                org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.floatDecoratedPanelCss().primary(),
+                Tag.div,
+                handler.getPlaceholder());
+            if ((elements != null) && (elements.size() > 0)) {
+                elements.get(0).getStyle().setMarginLeft(16, Unit.PX);
+            }
         } else if (draggable instanceof CmsSitemapTreeItem) {
             CmsSitemapTreeItem treeItem = (CmsSitemapTreeItem)draggable;
             m_originalPath = treeItem.getParentItem().getPath();
@@ -176,8 +194,8 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
             CmsResultListItem galleryItem = (CmsResultListItem)draggable;
 
             CmsClientSitemapEntry entry = new CmsClientSitemapEntry();
-            entry.setName(galleryItem.getId());
-            entry.setSitePath(m_insertPath + galleryItem.getId() + "/");
+            entry.setName(galleryItem.getName());
+            entry.setSitePath(m_insertPath + galleryItem.getName() + "/");
             entry.setTitle(galleryItem.getListItemWidget().getTitleLabel());
             entry.setVfsPath(galleryItem.getVfsPath());
             entry.setPosition(m_insertIndex);

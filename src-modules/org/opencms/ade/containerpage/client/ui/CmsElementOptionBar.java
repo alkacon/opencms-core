@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsElementOptionBar.java,v $
- * Date   : $Date: 2010/05/27 09:21:18 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/09/30 13:32:25 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,7 @@
 
 package org.opencms.ade.containerpage.client.ui;
 
-import org.opencms.ade.containerpage.client.draganddrop.CmsDragContainerElement;
+import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.A_CmsHoverHandler;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 
@@ -50,7 +50,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -87,7 +87,7 @@ public class CmsElementOptionBar extends Composite implements HasMouseOverHandle
     private static String CSS_CLASS = org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle.INSTANCE.containerpageCss().optionBar();
 
     /** The parent container element. */
-    private CmsDragContainerElement m_containerElement;
+    private CmsContainerPageElement m_containerElement;
 
     /** The panel. */
     private FlowPanel m_panel;
@@ -97,7 +97,7 @@ public class CmsElementOptionBar extends Composite implements HasMouseOverHandle
      * 
      * @param containerElement the parent container element
      */
-    public CmsElementOptionBar(CmsDragContainerElement containerElement) {
+    public CmsElementOptionBar(CmsContainerPageElement containerElement) {
 
         m_panel = new FlowPanel();
         m_containerElement = containerElement;
@@ -112,12 +112,14 @@ public class CmsElementOptionBar extends Composite implements HasMouseOverHandle
      * Creates an option-bar for the given drag element.<p>
      * 
      * @param element the element to create the option-bar for
+     * @param dndHandler the drag and drop handler
      * @param buttons the list of buttons to display
      * 
      * @return the created option-bar
      */
     public static CmsElementOptionBar createOptionBarForElement(
-        CmsDragContainerElement element,
+        CmsContainerPageElement element,
+        CmsDNDHandler dndHandler,
         A_CmsToolbarOptionButton... buttons) {
 
         CmsElementOptionBar optionBar = new CmsElementOptionBar(element);
@@ -125,6 +127,9 @@ public class CmsElementOptionBar extends Composite implements HasMouseOverHandle
             for (int i = 0; i < buttons.length; i++) {
                 CmsElementOptionButton option = buttons[i].createOptionForElement(element);
                 optionBar.add(option);
+                if (buttons[i] instanceof CmsToolbarMoveButton) {
+                    option.addMouseDownHandler(dndHandler);
+                }
             }
         }
         return optionBar;
@@ -170,7 +175,7 @@ public class CmsElementOptionBar extends Composite implements HasMouseOverHandle
      * 
      * @return the parent container element
      */
-    protected CmsDragContainerElement getContainerElement() {
+    protected CmsContainerPageElement getContainerElement() {
 
         return m_containerElement;
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsList.java,v $
- * Date   : $Date: 2010/09/23 08:18:33 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2010/09/30 13:32:25 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,8 +42,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Node;
-import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -55,7 +53,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * 
  * @since 8.0.0
  */
@@ -63,9 +61,6 @@ public class CmsList<I extends I_CmsListItem> extends ComplexPanel implements I_
 
     /** The css bundle used for this widget. */
     private static final I_CmsListTreeCss CSS = I_CmsLayoutBundle.INSTANCE.listTreeCss();
-
-    /** Flag to indicate if drag'n drop is enabled. */
-    protected boolean m_dndEnabled;
 
     /** The drag'n drop handler. */
     protected CmsDNDHandler m_dndHandler;
@@ -251,16 +246,6 @@ public class CmsList<I extends I_CmsListItem> extends ComplexPanel implements I_
     }
 
     /**
-     * Checks if drag'n drop is enabled.<p>
-     *
-     * @return <code>true</code> if drag'n drop is enabled
-     */
-    public boolean isDndEnabled() {
-
-        return m_dndEnabled;
-    }
-
-    /**
      * Checks if dropping is enabled.<p>
      *
      * @return <code>true</code> if dropping is enabled
@@ -430,79 +415,7 @@ public class CmsList<I extends I_CmsListItem> extends ComplexPanel implements I_
      */
     public void repositionPlaceholder(int x, int y) {
 
-        Element targetElement = getElement();
-        // TODO: use binary search instead of this linear search, will improve performance from O(n) to O(log(n))!
-        for (int index = 0; index < targetElement.getChildCount(); index++) {
-            Node node = targetElement.getChild(index);
-            if (!(node instanceof Element)) {
-                continue;
-            }
-            Element child = (Element)node;
-            String positioning = child.getStyle().getPosition();
-            if (positioning.equals(Position.ABSOLUTE.getCssName()) || positioning.equals(Position.FIXED.getCssName())) {
-                // only not 'position:absolute' elements into account, 
-                // not visible children will be excluded in the next condition
-                continue;
-            }
-
-            // check if the mouse pointer is within the width of the element 
-            int left = CmsDomUtil.getRelativeX(x, child);
-            if ((left <= 0) || (left >= child.getOffsetWidth())) {
-                continue;
-            }
-
-            // check if the mouse pointer is within the height of the element 
-            int top = CmsDomUtil.getRelativeY(y, child);
-            int height = child.getOffsetHeight();
-            if ((top <= 0) || (top >= height)) {
-                continue;
-            }
-            if (child == m_placeholder) {
-                return;
-            }
-
-            if (top < height / 2) {
-                targetElement.insertBefore(m_placeholder, child);
-                m_placeholderIndex = index;
-                return;
-            } else {
-                targetElement.insertAfter(m_placeholder, child);
-                m_placeholderIndex = index + 1;
-                return;
-            }
-
-        }
-        // not over any child position
-        int top = CmsDomUtil.getRelativeY(y, targetElement);
-        int offsetHeight = targetElement.getOffsetHeight();
-        if ((top >= offsetHeight / 2)) {
-            // over top half, insert as first child
-            targetElement.insertFirst(m_placeholder);
-            m_placeholderIndex = 0;
-            return;
-        }
-        // over bottom half, insert as last child
-        targetElement.appendChild(m_placeholder);
-        m_placeholderIndex = targetElement.getChildCount() - 1;
-    }
-
-    /**
-     * Enables/Disables drag'n drop.<p>
-     * 
-     * @param enabled <code>true</code> to enable drag'n drop 
-     */
-    public void setDnDEnabled(boolean enabled) {
-
-        if (m_dndEnabled == enabled) {
-            return;
-        }
-        m_dndEnabled = enabled;
-        //        if (m_dndManager == null) {
-        //            // set default DnD manager
-        //            m_dndManager = new CmsDnDManager();
-        //            // add this as a drop target
-        //            m_dndManager.addDragTarget(this);
-        //        }
+        m_placeholderIndex = CmsDomUtil.positionElementInside(m_placeholder, getElement(), m_placeholderIndex, x, y);
     }
 
     /**

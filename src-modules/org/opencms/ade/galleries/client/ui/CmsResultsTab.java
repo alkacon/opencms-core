@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsResultsTab.java,v $
- * Date   : $Date: 2010/09/14 14:20:24 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2010/09/30 13:32:25 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,6 @@ import org.opencms.ade.galleries.shared.CmsResultItemBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
-import org.opencms.gwt.client.draganddrop.I_CmsDragHandler;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.util.CmsPair;
@@ -69,7 +68,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Polina Smagina
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.32 $
+ * @version $Revision: 1.33 $
  * 
  * @since 8.0.
  */
@@ -81,7 +80,7 @@ public class CmsResultsTab extends A_CmsListTab {
      * @author Georg Westenberger
      * @author Ruediger Kurz
      * 
-     * @version $Revision: 1.32 $
+     * @version $Revision: 1.33 $
      * 
      * @since 8.0.0
      */
@@ -206,9 +205,6 @@ public class CmsResultsTab extends A_CmsListTab {
     /** The optional dnd manager. */
     private CmsDNDHandler m_dndHandler;
 
-    /** The reference to the drag handler for the list elements. */
-    private I_CmsDragHandler<?, ?> m_dragHandler;
-
     /** The panel showing the search parameters. */
     private FlowPanel m_params;
 
@@ -221,15 +217,13 @@ public class CmsResultsTab extends A_CmsListTab {
      * The constructor.<p>
      * 
      * @param tabHandler the tab handler 
-     * @param dragHandler the drag handler
      * @param dndHandler the dnd manager
      */
-    public CmsResultsTab(CmsResultsTabHandler tabHandler, I_CmsDragHandler<?, ?> dragHandler, CmsDNDHandler dndHandler) {
+    public CmsResultsTab(CmsResultsTabHandler tabHandler, CmsDNDHandler dndHandler) {
 
         super(GalleryTabId.cms_tab_results);
         m_types = new HashSet<String>();
         m_hasMoreResults = false;
-        m_dragHandler = dragHandler;
         m_dndHandler = dndHandler;
         m_tabHandler = tabHandler;
         m_scrollList.truncate(TM_RESULT_TAB, CmsGalleryDialog.DIALOG_WIDTH);
@@ -373,7 +367,7 @@ public class CmsResultsTab extends A_CmsListTab {
         }
         for (CmsResultItemBean resultItem : list) {
             m_types.add(resultItem.getType());
-            CmsResultListItem listItem = new CmsResultListItem(resultItem, m_dragHandler, m_dndHandler);
+            CmsResultListItem listItem = new CmsResultListItem(resultItem, m_dndHandler);
             listItem.addPreviewClickHandler(new PreviewHandler(resultItem.getPath(), resultItem.getType()));
             if (m_tabHandler.hasSelectResource()) {
                 listItem.addSelectClickHandler(new SelectHandler(

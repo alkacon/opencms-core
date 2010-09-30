@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/draganddrop/Attic/CmsDragMenuElement.java,v $
- * Date   : $Date: 2010/05/25 12:36:33 $
- * Version: $Revision: 1.6 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsMenuListItem.java,v $
+ * Date   : $Date: 2010/09/30 13:32:25 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,11 +29,11 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.containerpage.client.draganddrop;
+package org.opencms.ade.containerpage.client.ui;
 
-import org.opencms.ade.containerpage.client.ui.CmsDraggableListItemWidget;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
-import org.opencms.gwt.client.ui.CmsSimpleListItem;
+import org.opencms.gwt.client.ui.CmsListItem;
+import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.shared.CmsListInfoBean;
@@ -46,27 +46,24 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
-public class CmsDragMenuElement extends CmsDraggableListItemWidget<I_CmsDragTargetContainer> {
+public class CmsMenuListItem extends CmsListItem {
 
     /** The element delete button. */
     private CmsPushButton m_deleteButton;
-
-    /** Parent list item. */
-    private CmsSimpleListItem m_parentListItem;
 
     /**
      * Constructor.<p>
      * 
      * @param element the element data
      */
-    public CmsDragMenuElement(CmsContainerElementData element) {
+    public CmsMenuListItem(CmsContainerElementData element) {
 
-        super(new CmsListInfoBean(element.getTitle(), element.getSitePath(), null), true);
-        setClientId(element.getClientId());
+        super(new CmsListItemWidget(new CmsListInfoBean(element.getTitle(), element.getSitePath(), null)));
+        setId(element.getClientId());
         m_deleteButton = new CmsPushButton();
         m_deleteButton.setImageClass(I_CmsImageBundle.INSTANCE.style().deleteIcon());
         m_deleteButton.setShowBorder(false);
@@ -93,31 +90,11 @@ public class CmsDragMenuElement extends CmsDraggableListItemWidget<I_CmsDragTarg
     }
 
     /**
-     * Returns the parent list item.<p>
-     *
-     * @return the parent list item
-     */
-    public CmsSimpleListItem getParentListItem() {
-
-        return m_parentListItem;
-    }
-
-    /**
      * Hides the element delete button.<p>
      */
     public void hideDeleteButton() {
 
-        removeButton(m_deleteButton);
-    }
-
-    /**
-     * Sets the parent list item.<p>
-     *
-     * @param parentListItem the parent list item to set
-     */
-    public void setParentListItem(CmsSimpleListItem parentListItem) {
-
-        m_parentListItem = parentListItem;
+        getListItemWidget().removeButton(m_deleteButton);
     }
 
     /**
@@ -125,7 +102,7 @@ public class CmsDragMenuElement extends CmsDraggableListItemWidget<I_CmsDragTarg
      */
     public void showDeleteButton() {
 
-        addButton(m_deleteButton);
+        getListItemWidget().addButton(m_deleteButton);
     }
 
 }

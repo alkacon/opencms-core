@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsToolbarGalleryMenu.java,v $
- * Date   : $Date: 2010/05/03 07:53:47 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/09/30 13:32:25 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,10 +32,10 @@
 package org.opencms.ade.containerpage.client.ui;
 
 import org.opencms.ade.containerpage.client.CmsContainerpageHandler;
-import org.opencms.ade.containerpage.client.draganddrop.CmsContainerDragHandler;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.client.CmsGalleryFactory;
 import org.opencms.ade.galleries.client.ui.CmsGalleryDialog;
+import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.I_CmsButton;
 
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -46,7 +46,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -55,7 +55,7 @@ public class CmsToolbarGalleryMenu extends A_CmsToolbarMenu {
     /** The main content widget. */
     private FlowPanel m_content;
 
-    private CmsContainerDragHandler m_dragHandler;
+    private CmsDNDHandler m_dragHandler;
 
     private CmsGalleryDialog m_gallery;
 
@@ -67,7 +67,7 @@ public class CmsToolbarGalleryMenu extends A_CmsToolbarMenu {
      * @param handler the container-page handler
      * @param dragHandler the container-page drag handler
      */
-    public CmsToolbarGalleryMenu(CmsContainerpageHandler handler, CmsContainerDragHandler dragHandler) {
+    public CmsToolbarGalleryMenu(CmsContainerpageHandler handler, CmsDNDHandler dragHandler) {
 
         super(I_CmsButton.ButtonData.ADD, handler);
         m_dragHandler = dragHandler;

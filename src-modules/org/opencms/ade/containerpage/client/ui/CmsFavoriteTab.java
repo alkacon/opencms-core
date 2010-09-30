@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsFavoriteTab.java,v $
- * Date   : $Date: 2010/05/25 12:36:33 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/09/30 13:32:25 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,8 +32,8 @@
 package org.opencms.ade.containerpage.client.ui;
 
 import org.opencms.ade.containerpage.client.Messages;
-import org.opencms.ade.containerpage.client.draganddrop.CmsDragTargetList;
-import org.opencms.gwt.client.ui.CmsSimpleListItem;
+import org.opencms.gwt.client.ui.CmsList;
+import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsPushButton;
 
 import java.util.Iterator;
@@ -53,7 +53,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -67,9 +67,6 @@ public class CmsFavoriteTab extends Composite {
     /** The ui-binder for this widget. */
     private static I_CmsFavoriteTabUiBinder uiBinder = GWT.create(I_CmsFavoriteTabUiBinder.class);
 
-    /** The clip-board menu. */
-    protected CmsToolbarClipboardMenu m_clipboard;
-
     /** Button panel shown while editing the favorites. */
     @UiField
     protected FlowPanel m_buttonEditingPanel;
@@ -82,21 +79,24 @@ public class CmsFavoriteTab extends Composite {
     @UiField
     protected CmsPushButton m_cancelButton;
 
+    /** The clip-board menu. */
+    protected CmsToolbarClipboardMenu m_clipboard;
+
+    /** The tab description label. */
+    @UiField
+    protected Label m_decriptionLabel;
+
     /** The edit button. */
     @UiField
     protected CmsPushButton m_editButton;
 
     /** The list panel holding the favorite elements. */
-    @UiField
-    protected CmsDragTargetList m_listPanel;
+    @UiField(provided = true)
+    protected CmsList<CmsListItem> m_listPanel = new CmsList<CmsListItem>();
 
     /** The save favorites button. */
     @UiField
     protected CmsPushButton m_saveButton;
-
-    /** The tab description label. */
-    @UiField
-    protected Label m_decriptionLabel;
 
     /**
      * Constructor.<p>
@@ -115,6 +115,9 @@ public class CmsFavoriteTab extends Composite {
         m_saveButton.setTitle(Messages.get().key(Messages.GUI_BUTTON_SAVE_TEXT_0));
         m_cancelButton.setText(Messages.get().key(Messages.GUI_BUTTON_CANCEL_TEXT_0));
         m_cancelButton.setTitle(Messages.get().key(Messages.GUI_BUTTON_CANCEL_TEXT_0));
+
+        //TODO: show button when rditing works
+        m_editButton.setVisible(false);
     }
 
     /**
@@ -122,7 +125,7 @@ public class CmsFavoriteTab extends Composite {
      * 
      * @param item the item to add
      */
-    public void addListItem(CmsSimpleListItem item) {
+    public void addListItem(CmsListItem item) {
 
         m_listPanel.add(item);
     }
@@ -140,7 +143,7 @@ public class CmsFavoriteTab extends Composite {
      * 
      * @return the favorite list drag target
      */
-    public CmsDragTargetList getListTarget() {
+    public CmsList<CmsListItem> getListTarget() {
 
         return m_listPanel;
     }

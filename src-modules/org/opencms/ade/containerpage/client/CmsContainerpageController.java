@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageController.java,v $
- * Date   : $Date: 2010/09/22 14:27:47 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2010/09/30 13:32:25 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,11 +31,8 @@
 
 package org.opencms.ade.containerpage.client;
 
-import org.opencms.ade.containerpage.client.draganddrop.CmsDragContainerElement;
-import org.opencms.ade.containerpage.client.draganddrop.CmsDragSubcontainer;
-import org.opencms.ade.containerpage.client.draganddrop.CmsDragTargetContainer;
-import org.opencms.ade.containerpage.client.draganddrop.I_CmsDragTargetContainer;
 import org.opencms.ade.containerpage.client.ui.CmsLeavePageDialog;
+import org.opencms.ade.containerpage.client.ui.CmsSubContainerElement;
 import org.opencms.ade.containerpage.client.ui.I_CmsToolbarButton;
 import org.opencms.ade.containerpage.shared.CmsCntPageData;
 import org.opencms.ade.containerpage.shared.CmsContainer;
@@ -61,8 +58,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JsArray;
@@ -71,9 +68,9 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.Window.ClosingHandler;
 import com.google.gwt.user.client.ui.Widget;
@@ -83,7 +80,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 8.0.0
  */
@@ -212,14 +209,14 @@ public final class CmsContainerpageController {
                 return;
             }
             addElements(result);
-            Iterator<CmsDragContainerElement> it = getAllDragElements().iterator();
+            Iterator<org.opencms.ade.containerpage.client.ui.CmsContainerPageElement> it = getAllDragElements().iterator();
             while (it.hasNext()) {
-                CmsDragContainerElement dragElement = it.next();
-                if (!m_clientIds.contains(dragElement.getClientId())) {
+                org.opencms.ade.containerpage.client.ui.CmsContainerPageElement containerElement = it.next();
+                if (!m_clientIds.contains(containerElement.getId())) {
                     continue;
                 }
                 try {
-                    replaceDragElement(dragElement, m_elements.get(dragElement.getClientId()));
+                    replaceDragElement(containerElement, m_elements.get(containerElement.getId()));
                 } catch (Exception e) {
                     CmsDebugLog.getInstance().printLine("trying to replace");
                     CmsDebugLog.getInstance().printLine(e.getLocalizedMessage());
@@ -284,9 +281,9 @@ public final class CmsContainerpageController {
             if (result != null) {
                 addElements(result);
                 m_callback.execute(m_elements.get(m_clientId));
+                return;
             }
             m_callback.onError("An error occurred while retrieving element with id: '" + m_clientId + "'.");
-
         }
     }
 
@@ -327,10 +324,10 @@ public final class CmsContainerpageController {
     private CmsCntPageData m_data;
 
     /** The currently edited sub-container element. */
-    private CmsDragSubcontainer m_editingSubcontainer;
+    private CmsSubContainerElement m_editingSubcontainer;
 
     /** The drag targets within this page. */
-    private Map<String, CmsDragTargetContainer> m_targetContainers;
+    private Map<String, org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer> m_targetContainers;
 
     /**
      * Constructor.<p>
@@ -444,7 +441,7 @@ public final class CmsContainerpageController {
      * 
      * @param element the container element
      */
-    public void createAndEditNewElement(final CmsDragContainerElement element) {
+    public void createAndEditNewElement(final org.opencms.ade.containerpage.client.ui.CmsContainerPageElement element) {
 
         if (!element.isNew()) {
             return;
@@ -458,11 +455,7 @@ public final class CmsContainerpageController {
             @Override
             public void execute() {
 
-                getContainerpageService().createNewElement(
-                    getCurrentUri(),
-                    element.getClientId(),
-                    element.getNewType(),
-                    this);
+                getContainerpageService().createNewElement(getCurrentUri(), element.getId(), element.getNewType(), this);
             }
 
             /**
@@ -472,7 +465,7 @@ public final class CmsContainerpageController {
             protected void onResponse(CmsContainerElement result) {
 
                 element.setNewType(null);
-                element.setClientId(result.getClientId());
+                element.setId(result.getClientId());
                 element.setSitePath(result.getSitePath());
                 getHandler().hidePageOverlay();
                 getHandler().openEditorForElement(element);
@@ -486,10 +479,10 @@ public final class CmsContainerpageController {
      * 
      * @return the drag elements
      */
-    public List<CmsDragContainerElement> getAllDragElements() {
+    public List<org.opencms.ade.containerpage.client.ui.CmsContainerPageElement> getAllDragElements() {
 
-        List<CmsDragContainerElement> result = new ArrayList<CmsDragContainerElement>();
-        Iterator<CmsDragTargetContainer> it = m_targetContainers.values().iterator();
+        List<org.opencms.ade.containerpage.client.ui.CmsContainerPageElement> result = new ArrayList<org.opencms.ade.containerpage.client.ui.CmsContainerPageElement>();
+        Iterator<org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer> it = m_targetContainers.values().iterator();
         while (it.hasNext()) {
             result.addAll(it.next().getAllDragElements());
         }
@@ -497,8 +490,8 @@ public final class CmsContainerpageController {
             Iterator<Widget> itSub = m_editingSubcontainer.iterator();
             while (itSub.hasNext()) {
                 Widget w = itSub.next();
-                if (w instanceof CmsDragContainerElement) {
-                    result.add((CmsDragContainerElement)w);
+                if (w instanceof org.opencms.ade.containerpage.client.ui.CmsContainerPageElement) {
+                    result.add((org.opencms.ade.containerpage.client.ui.CmsContainerPageElement)w);
                 }
             }
         }
@@ -558,7 +551,7 @@ public final class CmsContainerpageController {
      * @param containerName the container name
      * @return the drag target
      */
-    public CmsDragTargetContainer getContainerTarget(String containerName) {
+    public org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer getContainerTarget(String containerName) {
 
         return m_targetContainers.get(containerName);
     }
@@ -568,7 +561,7 @@ public final class CmsContainerpageController {
      * 
      * @return the drag targets
      */
-    public Map<String, CmsDragTargetContainer> getContainerTargets() {
+    public Map<String, org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer> getContainerTargets() {
 
         return m_targetContainers;
     }
@@ -697,7 +690,7 @@ public final class CmsContainerpageController {
      * 
      * @return the sub-container
      */
-    public CmsDragSubcontainer getSubcontainer() {
+    public CmsSubContainerElement getSubcontainer() {
 
         return m_editingSubcontainer;
     }
@@ -894,7 +887,7 @@ public final class CmsContainerpageController {
      * @param properties the new set of properties 
      */
     public void reloadElementWithProperties(
-        final CmsDragContainerElement elementWidget,
+        final org.opencms.ade.containerpage.client.ui.CmsContainerPageElement elementWidget,
         String clientId,
         Map<String, String> properties) {
 
@@ -925,7 +918,7 @@ public final class CmsContainerpageController {
      * 
      * @param dragElement the element to remove
      */
-    public void removeElement(CmsDragContainerElement dragElement) {
+    public void removeElement(org.opencms.ade.containerpage.client.ui.CmsContainerPageElement dragElement) {
 
         dragElement.removeFromParent();
         setPageChanged();
@@ -939,22 +932,22 @@ public final class CmsContainerpageController {
      * 
      * @throws Exception if something goes wrong
      */
-    public void replaceDragElement(CmsDragContainerElement dragElement, CmsContainerElementData elementData)
-    throws Exception {
+    public void replaceDragElement(
+        org.opencms.ade.containerpage.client.ui.CmsContainerPageElement dragElement,
+        CmsContainerElementData elementData) throws Exception {
 
-        I_CmsDragTargetContainer dragParent = dragElement.getDragParent();
+        org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer dragParent = (org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer)dragElement.getParentTarget();
         String containerId = dragParent.getContainerId();
 
         String elementContent = elementData.getContents().get(containerId);
         if ((elementContent != null) && (elementContent.trim().length() > 0)) {
-            CmsDragContainerElement replacer = getContainerpageUtil().createElement(
+            org.opencms.ade.containerpage.client.ui.CmsContainerPageElement replacer = getContainerpageUtil().createElement(
                 elementData,
-                dragParent,
-                containerId);
+                dragParent);
             if (dragElement.isNew()) {
                 // if replacing element data has the same structure id, keep the 'new' state by setting the new type property
                 // this should only be the case when editing properties of a new element that has not been created in the VFS yet
-                String id = dragElement.getClientId();
+                String id = dragElement.getId();
                 if (id.contains("#")) {
                     id = id.substring(0, id.indexOf("#"));
                 }
@@ -1124,7 +1117,7 @@ public final class CmsContainerpageController {
      * 
      * @param subContainer the sub-container
      */
-    public void startEditingSubcontainer(CmsDragSubcontainer subContainer) {
+    public void startEditingSubcontainer(CmsSubContainerElement subContainer) {
 
         m_editingSubcontainer = subContainer;
     }
@@ -1181,16 +1174,16 @@ public final class CmsContainerpageController {
     protected List<CmsContainer> getPageContent() {
 
         List<CmsContainer> containers = new ArrayList<CmsContainer>();
-        Iterator<Entry<String, CmsDragTargetContainer>> it = m_targetContainers.entrySet().iterator();
+        Iterator<Entry<String, org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer>> it = m_targetContainers.entrySet().iterator();
         while (it.hasNext()) {
-            Entry<String, CmsDragTargetContainer> entry = it.next();
+            Entry<String, org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer> entry = it.next();
             List<CmsContainerElement> elements = new ArrayList<CmsContainerElement>();
             Iterator<Widget> elIt = entry.getValue().iterator();
             while (elIt.hasNext()) {
                 try {
-                    CmsDragContainerElement elementWidget = (CmsDragContainerElement)elIt.next();
+                    org.opencms.ade.containerpage.client.ui.CmsContainerPageElement elementWidget = (org.opencms.ade.containerpage.client.ui.CmsContainerPageElement)elIt.next();
                     CmsContainerElement element = new CmsContainerElement();
-                    element.setClientId(elementWidget.getClientId());
+                    element.setClientId(elementWidget.getId());
                     element.setNewType(elementWidget.getNewType());
                     element.setSitePath(elementWidget.getSitePath());
                     elements.add(element);
@@ -1393,11 +1386,11 @@ public final class CmsContainerpageController {
             }
         }
 
-        Iterator<CmsDragContainerElement> itEl = getAllDragElements().iterator();
+        Iterator<org.opencms.ade.containerpage.client.ui.CmsContainerPageElement> itEl = getAllDragElements().iterator();
         while (itEl.hasNext()) {
-            CmsDragContainerElement element = itEl.next();
-            if (element.getClientId().startsWith(serverId)) {
-                result.add(element.getClientId());
+            org.opencms.ade.containerpage.client.ui.CmsContainerPageElement element = itEl.next();
+            if (element.getId().startsWith(serverId)) {
+                result.add(element.getId());
             }
         }
         return result;

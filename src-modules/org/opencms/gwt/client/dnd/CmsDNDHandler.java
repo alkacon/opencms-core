@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/dnd/Attic/CmsDNDHandler.java,v $
- * Date   : $Date: 2010/09/23 08:18:33 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/09/30 13:32:25 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import com.google.gwt.user.client.Event.NativePreviewHandler;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -215,6 +215,26 @@ public class CmsDNDHandler implements MouseDownHandler {
     }
 
     /**
+     * Returns the cursor offset x.<p>
+     *
+     * @return the cursor offset x
+     */
+    public int getCursorOffsetX() {
+
+        return m_cursorOffsetX;
+    }
+
+    /**
+     * Returns the cursor offset y.<p>
+     *
+     * @return the cursor offset y
+     */
+    public int getCursorOffsetY() {
+
+        return m_cursorOffsetY;
+    }
+
+    /**
      * Returns the current draggable.<p>
      * 
      * @return the draggable
@@ -259,7 +279,7 @@ public class CmsDNDHandler implements MouseDownHandler {
      */
     public void onMouseDown(MouseDownEvent event) {
 
-        if (event.getNativeButton() != NativeEvent.BUTTON_LEFT) {
+        if ((event.getNativeButton() != NativeEvent.BUTTON_LEFT) || m_dragging) {
             // only act on left button down, ignore right click
             return;
         }
@@ -278,12 +298,10 @@ public class CmsDNDHandler implements MouseDownHandler {
         m_clientY = event.getClientY();
         m_cursorOffsetX = CmsDomUtil.getRelativeX(m_clientX, m_draggable.getElement());
         m_cursorOffsetY = CmsDomUtil.getRelativeY(m_clientY, m_draggable.getElement());
-
         m_currentTarget = m_draggable.getParentTarget();
-        // notifying controller, if false is returned, dragging will be canceled
-
         m_dragHelper = (Element)m_draggable.getDragHelper(m_currentTarget);
         m_placeholder = (Element)m_draggable.getPlaceholder(m_currentTarget);
+        // notifying controller, if false is returned, dragging will be canceled
         if (!m_controller.onDragStart(m_draggable, m_currentTarget, this)) {
             cancel();
             return;
@@ -294,6 +312,7 @@ public class CmsDNDHandler implements MouseDownHandler {
         Document.get().getBody().addClassName(
             org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.dragdropCss().dragStarted());
         m_previewHandlerRegistration = Event.addNativePreviewHandler(m_previewHandler);
+        onMove((Event)event.getNativeEvent());
     }
 
     /**
@@ -306,6 +325,26 @@ public class CmsDNDHandler implements MouseDownHandler {
         m_targets.remove(target);
     }
 
+    /**
+     * Sets the cursor offset x.<p>
+     *
+     * @param cursorOffsetX the cursor offset x to set
+     */
+    public void setCursorOffsetX(int cursorOffsetX) {
+
+        m_cursorOffsetX = cursorOffsetX;
+    }
+
+    /**
+     * Sets the cursor offset y.<p>
+     *
+     * @param cursorOffsetY the cursor offset y to set
+     */
+    public void setCursorOffsetY(int cursorOffsetY) {
+
+        m_cursorOffsetY = cursorOffsetY;
+    }
+
     /** 
      * Sets the draggable.<p>
      * 
@@ -314,6 +353,26 @@ public class CmsDNDHandler implements MouseDownHandler {
     public void setDraggable(I_CmsDraggable draggable) {
 
         m_draggable = draggable;
+    }
+
+    /**
+     * Sets the drag helper element.<p>
+     * 
+     * @param dragHelper the drag helper element
+     */
+    public void setDragHelper(Element dragHelper) {
+
+        m_dragHelper = dragHelper;
+    }
+
+    /**
+     * Sets the placeholder element.<p>
+     * 
+     * @param placeholder the placeholder element
+     */
+    public void setPlaceholder(Element placeholder) {
+
+        m_placeholder = placeholder;
     }
 
     /**
@@ -338,7 +397,7 @@ public class CmsDNDHandler implements MouseDownHandler {
 
         m_clientX = event.getClientX();
         m_clientY = event.getClientY();
-        if (m_currentTarget == null) {
+        if ((m_currentTarget == null) || (m_currentTarget.getPlaceholderIndex() < 0)) {
 
             cancel();
         } else {

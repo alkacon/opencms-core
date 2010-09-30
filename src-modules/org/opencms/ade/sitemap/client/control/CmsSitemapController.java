@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2010/09/09 15:02:20 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/09/30 13:32:25 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -77,7 +77,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 8.0.0
  */
@@ -654,7 +654,7 @@ public class CmsSitemapController {
     /**
      * Checks if any change made.<p>
      * 
-     * @return <code>true</code> if there is at least a change to commit
+     * @return <code>true</code> if there is at least one change to commit
      */
     public boolean isDirty() {
 

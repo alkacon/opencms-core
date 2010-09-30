@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsGalleryDialog.java,v $
- * Date   : $Date: 2010/09/14 14:20:24 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2010/09/30 13:32:25 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,6 @@ import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
-import org.opencms.gwt.client.draganddrop.I_CmsDragHandler;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
 import org.opencms.gwt.client.ui.CmsTabbedPanel.CmsTabLayout;
 
@@ -70,7 +69,7 @@ import com.google.gwt.user.client.ui.HTMLPanel;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.31 $
+ * @version $Revision: 1.32 $
  * 
  * @since 8.0.
  */
@@ -91,9 +90,6 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
 
     /** The dnd manager. */
     private CmsDNDHandler m_dndHandler;
-
-    /** The reference to the drag handler. */
-    private I_CmsDragHandler<?, ?> m_dragHandler;
 
     /** The galleries tab. */
     private CmsGalleriesTab m_galleriesTab;
@@ -132,7 +128,6 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
 
         initCss();
 
-        m_dragHandler = null;
         m_isInitialSearch = false;
         // parent widget
         m_parentPanel = new FlowPanel();
@@ -160,17 +155,6 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
 
         this();
         m_dndHandler = dndHandler;
-    }
-
-    /**
-     * The constructor.<p> 
-     * 
-     * @param handler the reference to the drag handler
-     */
-    public CmsGalleryDialog(I_CmsDragHandler<?, ?> handler) {
-
-        this();
-        m_dragHandler = handler;
     }
 
     /**
@@ -225,7 +209,7 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
         for (int i = 0; i < tabIds.length; i++) {
             switch (tabIds[i]) {
                 case cms_tab_types:
-                    m_typesTab = new CmsTypesTab(new CmsTypesTabHandler(controller), m_dragHandler);
+                    m_typesTab = new CmsTypesTab(new CmsTypesTabHandler(controller), m_dndHandler);
                     m_tabbedPanel.add(m_typesTab, Messages.get().key(Messages.GUI_TAB_TITLE_TYPES_0));
                     break;
                 case cms_tab_galleries:
@@ -254,7 +238,7 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
                     break;
             }
         }
-        m_resultsTab = new CmsResultsTab(new CmsResultsTabHandler(controller), m_dragHandler, m_dndHandler);
+        m_resultsTab = new CmsResultsTab(new CmsResultsTabHandler(controller), m_dndHandler);
         m_tabbedPanel.addWithLeftMargin(m_resultsTab, Messages.get().key(Messages.GUI_TAB_TITLE_RESULTS_0));
         m_tabbedPanel.addBeforeSelectionHandler(this);
         m_tabbedPanel.addSelectionHandler(this);
