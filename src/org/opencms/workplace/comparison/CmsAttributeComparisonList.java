@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsAttributeComparisonList.java,v $
- * Date   : $Date: 2009/11/12 12:47:21 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/10/01 08:22:38 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.workplace.comparison;
 
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
@@ -62,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Jan Baudisch  
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -183,34 +184,50 @@ public class CmsAttributeComparisonList extends CmsPropertyComparisonList {
      */
     protected String getViewVersionButtonHtml(CmsUUID structureId, String version) {
 
-        String label = Messages.get().container(
-            Messages.GUI_COMPARE_VIEW_VERSION_1,
-            CmsHistoryList.getDisplayVersion(version, getLocale())).key(getLocale());
-        String iconPath = null;
+        boolean active = true;
         try {
-            String typeName = OpenCms.getResourceManager().getResourceType(getResource1().getTypeId()).getTypeName();
-            iconPath = CmsWorkplace.RES_PATH_FILETYPES + OpenCms.getWorkplaceManager().getExplorerTypeSetting(typeName).getIcon();
-        } catch (CmsException e) {
-            iconPath = CmsWorkplace.RES_PATH_FILETYPES
-                + OpenCms.getWorkplaceManager().getExplorerTypeSetting(CmsResourceTypePlain.getStaticTypeName()).getIcon();
-        }
-        StringBuffer result = new StringBuffer(1024);
-        result.append("<span class='link' onClick=\"");
-        result.append("window.open('");
-        result.append(getJsp().link(CmsHistoryList.getHistoryLink(getCms(), structureId, version)));
-        result.append("','version','scrollbars=yes', 'resizable=yes', 'width=800', 'height=600')\">");
-        result.append("<img style='width: 16px; height: 16px;' src='");
-        result.append(CmsWorkplace.getSkinUri());
-        result.append(iconPath);
-        result.append("' alt='");
-        result.append(label);
-        result.append("' title='");
-        result.append(label);
-        result.append("'>&nbsp;<a href='#'>");
-        result.append(label);
-        result.append("</a></span>");
+            if (OpenCms.getResourceManager().getResourceType(getResource1().getTypeId()).isFolder()) {
+                active = false;
+            }
+        } catch (CmsLoaderException e) {
+            // ignore, buttons will be shown
 
-        return result.toString();
+        }
+
+        // return button only if file resource
+        if (active) {
+            String label = Messages.get().container(
+                Messages.GUI_COMPARE_VIEW_VERSION_1,
+                CmsHistoryList.getDisplayVersion(version, getLocale())).key(getLocale());
+            String iconPath = null;
+            try {
+                String typeName = OpenCms.getResourceManager().getResourceType(getResource1().getTypeId()).getTypeName();
+                iconPath = CmsWorkplace.RES_PATH_FILETYPES
+                    + OpenCms.getWorkplaceManager().getExplorerTypeSetting(typeName).getIcon();
+            } catch (CmsException e) {
+                iconPath = CmsWorkplace.RES_PATH_FILETYPES
+                    + OpenCms.getWorkplaceManager().getExplorerTypeSetting(CmsResourceTypePlain.getStaticTypeName()).getIcon();
+            }
+            StringBuffer result = new StringBuffer(1024);
+            result.append("<span class='link' onClick=\"");
+            result.append("window.open('");
+            result.append(getJsp().link(CmsHistoryList.getHistoryLink(getCms(), structureId, version)));
+            result.append("','version','scrollbars=yes', 'resizable=yes', 'width=800', 'height=600')\">");
+            result.append("<img style='width: 16px; height: 16px;' src='");
+            result.append(CmsWorkplace.getSkinUri());
+            result.append(iconPath);
+            result.append("' alt='");
+            result.append(label);
+            result.append("' title='");
+            result.append(label);
+            result.append("'>&nbsp;<a href='#'>");
+            result.append(label);
+            result.append("</a></span>");
+
+            return result.toString();
+        }
+        // no buttons to return for folder resources
+        return "";
     }
 
     /**
