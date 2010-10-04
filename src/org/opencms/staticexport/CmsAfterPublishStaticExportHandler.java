@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsAfterPublishStaticExportHandler.java,v $
- * Date   : $Date: 2010/09/30 10:09:14 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/10/04 14:53:39 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlSitemap;
 import org.opencms.loader.I_CmsResourceLoader;
 import org.opencms.main.CmsException;
@@ -75,7 +76,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  * 
@@ -385,17 +386,31 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
      * 
      * @throws IOException if something goes wrong 
      */
-    protected int exportSitemapResource(CmsInternalSitemapEntry entry, CmsStaticExportData data, StringBuffer cookies)
+    protected int exportSitemapResource(CmsSitemapEntry entry, CmsStaticExportData data, StringBuffer cookies)
     throws IOException {
 
         String vfsName = data.getVfsName();
         String rfsName = data.getRfsName();
         CmsStaticExportManager manager = OpenCms.getStaticExportManager();
 
+        // check if the resource to export is a detail page
+        // TODO: later when the property concept is finished this info is unnecessary
+        String path = vfsName;
+        boolean exportPropertyAlreadyReadFromVFS = false;
+        if (path.endsWith("/")) {
+            path = path.substring(0, path.length() - 1);
+            String detailId = CmsResource.getName(path);
+            if (CmsUUID.isValidUUID(detailId)) {
+                exportPropertyAlreadyReadFromVFS = true;
+            }
+        }
+
         try {
             CmsObject exportCms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
             Map<String, String> props = entry.getProperties(true);
-            if ((props.get("export") != null) && props.get("export").equals("true")) {
+            // if a container page was found in the vfs and 
+            if (((props.get("export") != null) && props.get("export").equals("true"))
+                || exportPropertyAlreadyReadFromVFS) {
                 // calculate rfs name
                 rfsName = manager.getRfsName(exportCms, entry.getRootPath());
 
@@ -485,7 +500,7 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
         } catch (CmsException e) {
             LOG.error(e.getLocalizedMessage(), e);
         }
-        return 0;
+        return HttpServletResponse.SC_SEE_OTHER;
     }
 
     /**
@@ -504,32 +519,6 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
         String rfsName = data.getRfsName();
         CmsStaticExportManager manager = OpenCms.getStaticExportManager();
 
-        if (data.getResource().isFile() && CmsResource.isFolder(rfsName)) {
-            // vfs file over sitemap case
-            try {
-                // calculate the rfs name
-                CmsObject exportCms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
-                CmsSitemapEntry entry = OpenCms.getSitemapManager().getEntryForUri(exportCms, vfsName);
-                rfsName = manager.getRfsName(exportCms, entry.getRootPath());
-
-                // calculate the vfs name
-                String detailId = vfsName;
-                if (vfsName.endsWith("/")) {
-                    detailId = vfsName.substring(0, vfsName.length() - 1);
-                    detailId = CmsResource.getName(detailId);
-                }
-                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(detailId) && CmsUUID.isValidUUID(detailId)) {
-                    CmsResource res = exportCms.readResource(new CmsUUID(detailId));
-                    vfsName = exportCms.getRequestContext().removeSiteRoot(res.getRootPath());
-                } else {
-                    CmsResource file = OpenCms.initResource(exportCms, vfsName, null, null);
-                    vfsName = file.getRootPath();
-                }
-            } catch (CmsException e) {
-                // should never happen
-                LOG.error(e.getLocalizedMessage(), e);
-            }
-        }
         String exportUrlStr;
         if (rfsName.contains(manager.getRfsPrefix(vfsName))) {
             exportUrlStr = manager.getExportUrl() + rfsName;
@@ -665,21 +654,46 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
             }
 
             try {
+                // HTTP status for the URL connection
                 int status = -1;
-                // test if the vfs name points to a container page
-                List<CmsInternalSitemapEntry> entries = new ArrayList<CmsInternalSitemapEntry>();
+
+                // check if we have to export a sitemap resource or if we have to export a vfs resource
+                CmsResource res = data.getResource();
                 try {
-                    CmsResource res = cms.readResource(data.getVfsName());
-                    entries = OpenCms.getSitemapManager().getEntriesForStructureId(cms, res.getStructureId());
-                    for (CmsInternalSitemapEntry entry : entries) {
-                        status = exportSitemapResource(entry, data, cookies);
+                    // get the sitemap entry for the given vfs name
+                    CmsSitemapEntry sitemapEntry = OpenCms.getSitemapManager().getEntryForUri(cms, data.getVfsName());
+                    if (sitemapEntry.isSitemap()) {
+                        // the sitemap entry is a path in the sitemap
+                        status = exportSitemapResource(sitemapEntry, data, cookies);
+                    } else {
+                        // the sitemap entry is a pseudo entry for a vfs resource
+                        if (CmsResourceTypeXmlContainerPage.isContainerPage(res)) {
+                            // the resource is a container page
+                            // let's look for sitemap entries that point on this container page
+                            // and export them all
+                            if (CmsSwitchLinkStrategyHandler.isSitemapInUse(cms, data.getVfsName(), false)) {
+                                List<CmsInternalSitemapEntry> entries = OpenCms.getSitemapManager().getEntriesForStructureId(
+                                    cms,
+                                    res.getStructureId());
+                                for (CmsSitemapEntry entry : entries) {
+                                    status = exportSitemapResource(entry, data, cookies);
+                                }
+                                if (entries.isEmpty()) {
+                                    // the container page is never referenced by a sitemap entry ignore it
+                                    status = HttpServletResponse.SC_SEE_OTHER;
+                                }
+                            } else {
+                                // the sitemap is not in use, so export the container page as a regular resource
+                                status = exportTemplateResource(data, cookies);
+                            }
+                        } else {
+                            // no container page and no real sitemap entry so export the resource as usual 
+                            status = exportTemplateResource(data, cookies);
+                        }
                     }
-                } catch (CmsException e1) {
-                    // no reference on vfs resource: go on
-                } finally {
-                    if (entries.isEmpty()) {
-                        status = exportTemplateResource(data, cookies);
-                    }
+                } catch (CmsException e) {
+                    // something was wrong, set the status to 404
+                    status = HttpServletResponse.SC_NOT_FOUND;
                 }
 
                 // write the report

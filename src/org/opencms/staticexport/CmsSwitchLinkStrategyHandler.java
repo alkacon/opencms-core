@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/Attic/CmsSwitchLinkStrategyHandler.java,v $
- * Date   : $Date: 2010/09/30 10:09:14 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/10/04 14:53:39 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Ruediger Kurz
  *
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  */
@@ -119,7 +119,7 @@ public class CmsSwitchLinkStrategyHandler implements I_CmsLinkStrategyHandler {
      * 
      * @return the site root for a given RFS name or <code>null</code> if no site root was found
      */
-    private String getSiteRootForPath(CmsObject cms, String path, boolean isRfsPath) {
+    public static String getSiteRootForPath(CmsObject cms, String path, boolean isRfsPath) {
 
         String siteRoot;
         if (!(cms.getRequestContext().getSiteRoot().equals("") || cms.getRequestContext().getSiteRoot().equals("/"))) {
@@ -142,7 +142,9 @@ public class CmsSwitchLinkStrategyHandler implements I_CmsLinkStrategyHandler {
                     break;
                 }
             }
-            siteRoot = OpenCms.getSiteManager().getSiteRoot(folderName);
+            if (folderName != null) {
+                siteRoot = OpenCms.getSiteManager().getSiteRoot(folderName);
+            }
         }
         return siteRoot;
     }
@@ -156,7 +158,7 @@ public class CmsSwitchLinkStrategyHandler implements I_CmsLinkStrategyHandler {
      * 
      * @return <code>true</code> if a sitemap is in use for the given name
      */
-    private boolean isSitemapInUse(CmsObject cms, String path, boolean isRfsPath) {
+    public static boolean isSitemapInUse(CmsObject cms, String path, boolean isRfsPath) {
 
         try {
             if (OpenCms.getSitemapManager().isSiteUsingSitemap(cms, getSiteRootForPath(cms, path, isRfsPath))) {

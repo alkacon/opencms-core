@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2010/09/30 10:09:14 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2010/10/04 14:53:39 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,11 +87,14 @@ import org.apache.commons.logging.Log;
  * @author Michael Moossen
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
+
+    /** Name for the default file. */
+    public static final String DEFAULT_FILE = "index.html";
 
     /** Marker for error message attribute. */
     public static final String EXPORT_ATTRIBUTE_ERROR_MESSAGE = "javax.servlet.error.message";
@@ -281,6 +284,35 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         m_exportTmpRule = new CmsStaticExportExportRule("", "");
         m_rfsTmpRule = new CmsStaticExportRfsRule("", "", "", "", "", "", null, null);
         m_fullStaticExport = false;
+    }
+
+    /**
+     * Returns the rfs name plus the default file name.<p>
+     * 
+     * E.g. for a sitemap entry the default file name is <code>"index.html"</code>
+     * whereby the default file name for a folder in the vfs is <code>"index_export.html"</code>.<p>
+     * 
+     * So the result of this method is <code>"/path/to/folder/index.html"</code> for the sitemap case and
+     * <code>"/path/to/folder/index_export.html"</code> for the vfs folder case.
+     * Otherwise this method returns the original input rfs name.<p>
+     * 
+     * @param rfsName the rfs name to append the default file name to
+     * @param isFolder signals wether the according vfs resource is an folder or not
+     * 
+     * @return the rfs name plus the default file name
+     */
+    public String addDefaultFileNameToFolder(String rfsName, boolean isFolder) {
+
+        StringBuffer name = new StringBuffer(rfsName);
+
+        if (isFolder) {
+            // vfs folder case
+            name.append(EXPORT_DEFAULT_FILE);
+        } else if (CmsResource.isFolder(rfsName)) {
+            // sitemap case
+            name.append(DEFAULT_FILE);
+        }
+        return name.toString();
     }
 
     /**
@@ -481,9 +513,9 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     public int export(HttpServletRequest req, HttpServletResponse res, CmsObject cms, CmsStaticExportData data)
     throws CmsException, IOException, ServletException, CmsStaticExportException {
 
-        String vfsName = data.getVfsName();
-        String rfsName = data.getRfsName();
         CmsResource resource = data.getResource();
+        String vfsName = data.getVfsName();
+        String rfsName = addDefaultFileNameToFolder(data.getRfsName(), resource.isFolder());
 
         // cut the site root from the vfsName and switch to the correct site
         String siteRoot = OpenCms.getSiteManager().getSiteRoot(vfsName);
@@ -539,24 +571,8 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_SE_RESOURCE_START_1, data));
         }
 
-        CmsFile file;
-        // read the file
-        if (resource.isFile()) {
-            if (CmsResource.isFolder(rfsName)) {
-                // sitemap case
-                file = exportCms.readFile(OpenCms.initResource(exportCms, vfsName, req, wrapRes));
-                vfsName = exportCms.getSitePath(file);
-                rfsName += "index.html";
-            } else {
-                // vfs file case
-                file = exportCms.readFile(vfsName);
-            }
-        } else {
-            // vfs folder case
-            file = exportCms.readFile(OpenCms.initResource(exportCms, vfsName, req, wrapRes));
-            vfsName = exportCms.getSitePath(file);
-            rfsName += EXPORT_DEFAULT_FILE;
-        }
+        CmsFile file = exportCms.readFile(OpenCms.initResource(exportCms, vfsName, req, wrapRes));
+        vfsName = exportCms.getSitePath(file);
 
         // check loader id for resource
         I_CmsResourceLoader loader = OpenCms.getResourceManager().getLoader(file);

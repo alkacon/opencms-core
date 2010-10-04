@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/Attic/CmsVfsLinkStrategyHandler.java,v $
- * Date   : $Date: 2010/09/30 10:09:14 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/10/04 14:53:39 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,7 +32,6 @@
 package org.opencms.staticexport;
 
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsVfsResourceNotFoundException;
@@ -40,7 +39,6 @@ import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.security.CmsSecurityException;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.workplace.CmsWorkplace;
 
@@ -55,7 +53,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Ruediger Kurz
  *
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  */
@@ -69,55 +67,8 @@ public class CmsVfsLinkStrategyHandler extends A_CmsLinkStrategyHandler {
      */
     public String getRfsName(CmsObject cms, String vfsName, String parameters) {
 
-        String rfsName = vfsName;
+        String rfsName = getRfsNameWithExportName(cms, vfsName);
         try {
-            // check if the resource folder (or a parent folder) has the "exportname" property set
-            CmsProperty exportNameProperty = cms.readPropertyObject(
-                CmsResource.getFolderPath(rfsName),
-                CmsPropertyDefinition.PROPERTY_EXPORTNAME,
-                true);
-
-            if (exportNameProperty.isNullProperty()) {
-                // if "exportname" is not set we must add the site root 
-                rfsName = cms.getRequestContext().addSiteRoot(rfsName);
-            } else {
-                // "exportname" property is set
-                String exportname = exportNameProperty.getValue();
-                if (exportname.charAt(0) != '/') {
-                    exportname = '/' + exportname;
-                }
-                if (exportname.charAt(exportname.length() - 1) != '/') {
-                    exportname = exportname + '/';
-                }
-                String value = null;
-                boolean cont;
-                String resourceName = rfsName;
-                do {
-                    // find out where the export name was set, to replace these parent folders in the RFS name
-                    try {
-                        CmsProperty prop = cms.readPropertyObject(
-                            resourceName,
-                            CmsPropertyDefinition.PROPERTY_EXPORTNAME,
-                            false);
-                        if (prop.isIdentical(exportNameProperty)) {
-                            // look for the right position in path 
-                            value = prop.getValue();
-                        }
-                        cont = (value == null) && (resourceName.length() > 1);
-                    } catch (CmsVfsResourceNotFoundException e) {
-                        // this is for publishing deleted resources 
-                        cont = (resourceName.length() > 1);
-                    } catch (CmsSecurityException se) {
-                        // a security exception (probably no read permission) we return the current result                      
-                        cont = false;
-                    }
-                    if (cont) {
-                        resourceName = CmsResource.getParentFolder(resourceName);
-                    }
-                } while (cont);
-                rfsName = exportname + rfsName.substring(resourceName.length());
-            }
-
             String extension = CmsFileUtil.getExtension(rfsName);
             // check if the VFS resource is a JSP page with a ".jsp" ending 
             // in this case the rfs name suffix must be build with special care,

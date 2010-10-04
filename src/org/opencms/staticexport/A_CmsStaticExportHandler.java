@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/A_CmsStaticExportHandler.java,v $
- * Date   : $Date: 2010/09/30 10:09:14 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/10/04 14:53:39 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsResourceNotFoundException;
+import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -46,6 +47,7 @@ import org.opencms.security.CmsSecurityException;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.xml.sitemap.CmsInternalSitemapEntry;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -64,8 +66,9 @@ import org.apache.commons.logging.Log;
  * This class provides several util methods to be used by static export handlers.
  * 
  * @author Michael Emmerich
+ * @author Rueidger Kurz
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.1.7 
  * 
@@ -346,9 +349,7 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
         String resPath = cms.getRequestContext().removeSiteRoot(res.getRootPath());
         List<String> siblings = getSiblingsList(cms, resPath);
 
-        Iterator<String> itSibs = siblings.iterator();
-        while (itSibs.hasNext()) {
-            String vfsName = itSibs.next();
+        for (String vfsName : siblings) {
 
             // get the link name for the published file 
             String rfsName = OpenCms.getStaticExportManager().getRfsName(cms, vfsName);
@@ -388,30 +389,26 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
                             }
                         }
                     }
-                    // add index.html to folder name
-                    rfsName += CmsStaticExportManager.EXPORT_DEFAULT_FILE;
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug(Messages.get().getBundle().key(Messages.LOG_FOLDER_1, rfsName));
-                    }
-
                 }
 
+                // add index_export.html or the index.html to the folder name
+                rfsName = OpenCms.getStaticExportManager().addDefaultFileNameToFolder(rfsName, res.isFolder());
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(Messages.get().getBundle().key(Messages.LOG_RFSNAME_1, rfsName));
+                }
                 String rfsExportFileName = CmsFileUtil.normalizePath(OpenCms.getStaticExportManager().getExportPath(
                     vfsName)
                     + rfsName.substring(OpenCms.getStaticExportManager().getRfsPrefix(vfsName).length()));
 
-                List<File> fileList = getRelatedFilesToPurge(rfsExportFileName, vfsName);
-                Iterator<File> iter = fileList.iterator();
-                while (iter.hasNext()) {
-                    File file = iter.next();
-                    purgeFile(file.getAbsolutePath(), vfsName);
-                    rfsName = CmsFileUtil.normalizePath(OpenCms.getStaticExportManager().getRfsPrefix(vfsName)
-                        + "/"
-                        + file.getAbsolutePath().substring(
-                            OpenCms.getStaticExportManager().getExportPath(vfsName).length()));
-                    rfsName = CmsStringUtil.substitute(rfsName, new String(new char[] {File.separatorChar}), "/");
-                    scrubbedFiles.add(rfsName);
-                }
+                // purge related files
+                List<File> relFilesToPurge = getRelatedFilesToPurge(rfsExportFileName, vfsName);
+                purgeFiles(relFilesToPurge, vfsName, scrubbedFiles);
+
+                // purge all sitemap references in case of a container page
+                List<File> relSitemapFiles = getRelatedSitemapFiles(cms, res, vfsName);
+                purgeFiles(relSitemapFiles, vfsName, scrubbedFiles);
+
+                // purge the file itself
                 purgeFile(rfsExportFileName, vfsName);
                 scrubbedFiles.add(rfsName);
             }
@@ -420,6 +417,9 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
 
     /**
      * Deletes the given file from the RFS, with error handling and logging.<p>
+     * 
+     * If the parent folder of the file is empty after deletion, the parent folder
+     * is deleted also.<p>
      * 
      * @param file the file to delete
      * @param vfsName the VFS name of the file (required for logging)
@@ -433,6 +433,18 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
                 if (LOG.isInfoEnabled()) {
                     LOG.info(Messages.get().getBundle().key(Messages.LOG_FILE_DELETED_1, getRfsName(file, vfsName)));
                 }
+                // delete the parent folder if it is empty (don't do this recursive)
+                File parent = new File(file.getParent());
+                if (parent.listFiles().length == 0) {
+                    if (parent.canWrite()) {
+                        parent.delete();
+                        if (LOG.isInfoEnabled()) {
+                            LOG.info(Messages.get().getBundle().key(
+                                Messages.LOG_FILE_DELETED_1,
+                                getRfsName(file, vfsName)));
+                        }
+                    }
+                }
             }
         } catch (Throwable t) {
             // ignore, nothing to do about this
@@ -442,6 +454,41 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
                     t);
             }
         }
+    }
+
+    /**
+     * Returns a list of files which are referenced by a container page.<p>
+     * 
+     * @param cms the current cms object
+     * @param res the originally resource to purge (the container page)
+     * @param vfsName the vfs name of the originally resource to purge
+     */
+    private List<File> getRelatedSitemapFiles(CmsObject cms, CmsPublishedResource res, String vfsName) {
+
+        List<File> files = new ArrayList<File>();
+        try {
+            if (res.getType() == CmsResourceTypeXmlContainerPage.getContainerPageTypeId()) {
+                List<CmsInternalSitemapEntry> entries = OpenCms.getSitemapManager().getEntriesForStructureId(
+                    cms,
+                    res.getStructureId());
+                for (CmsInternalSitemapEntry entry : entries) {
+                    String rfsName = OpenCms.getStaticExportManager().getRfsName(cms, entry.getRootPath());
+                    // add index_export.html or the index.html to the folder name
+                    rfsName = OpenCms.getStaticExportManager().addDefaultFileNameToFolder(rfsName, res.isFolder());
+                    // get 
+                    String rfsExportFileName = CmsFileUtil.normalizePath(OpenCms.getStaticExportManager().getExportPath(
+                        vfsName)
+                        + rfsName.substring(OpenCms.getStaticExportManager().getRfsPrefix(vfsName).length()));
+                    File file = new File(rfsExportFileName);
+                    if (file.exists() && !files.contains(file)) {
+                        files.add(file);
+                    }
+                }
+            }
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+        return files;
     }
 
     /**
@@ -459,5 +506,25 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
         String result = CmsFileUtil.normalizePath(manager.getRfsPrefix(vfsName)
             + filePath.substring(OpenCms.getStaticExportManager().getExportPath(vfsName).length()));
         return CmsStringUtil.substitute(result, new String(new char[] {File.separatorChar}), "/");
+    }
+
+    /**
+     * Purges a list of files from the rfs.<p>
+     * 
+     * @param files the list of files to purge
+     * @param vfsName the vfs name of the originally file to purge
+     * @param rfsName the rfs name of the originally file to purge
+     * @param scrubbedFiles the list which stores all the scrubbed files
+     */
+    private void purgeFiles(List<File> files, String vfsName, Set<String> scrubbedFiles) {
+
+        for (File file : files) {
+            purgeFile(file.getAbsolutePath(), vfsName);
+            String rfsName = CmsFileUtil.normalizePath(OpenCms.getStaticExportManager().getRfsPrefix(vfsName)
+                + "/"
+                + file.getAbsolutePath().substring(OpenCms.getStaticExportManager().getExportPath(vfsName).length()));
+            rfsName = CmsStringUtil.substitute(rfsName, new String(new char[] {File.separatorChar}), "/");
+            scrubbedFiles.add(rfsName);
+        }
     }
 }

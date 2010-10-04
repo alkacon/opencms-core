@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/Attic/CmsSitemapLinkStrategyHandler.java,v $
- * Date   : $Date: 2010/09/30 10:09:14 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/10/04 14:53:39 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,7 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.CmsResourceTypeJsp;
+import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.CmsResourceTypeXmlSitemap;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -57,7 +58,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Ruediger Kurz
  *
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  */
@@ -77,31 +78,50 @@ public class CmsSitemapLinkStrategyHandler extends A_CmsLinkStrategyHandler {
             // if the path starts with "/system/" the sitemap export name isn't relevant
             if (!vfsName.startsWith(CmsWorkplace.VFS_PATH_SYSTEM)) {
                 CmsSitemapEntry sitemapEntry = OpenCms.getSitemapManager().getEntryForUri(cms, vfsName);
-                if (sitemapEntry != null) {
-                    // get the export name of the according sitemap
-                    String exportname = null;
-                    if (sitemapEntry.isSitemap()) {
-                        exportname = OpenCms.getSitemapManager().getExportnameForSiteMapEntry(cms, sitemapEntry);
-                    } else {
-                        CmsSitemapEntry sitemapEntryOfOriUri = OpenCms.getSitemapManager().getEntryForUri(
-                            cms,
-                            cms.getRequestContext().getOriginalUri());
-                        exportname = OpenCms.getSitemapManager().getExportnameForSiteMapEntry(cms, sitemapEntryOfOriUri);
-                    }
-                    if (exportname != null) {
-                        // if an export name was found replace the site root with the found export name
-                        String storedSiteRoot = cms.getRequestContext().getSiteRoot();
-                        try {
-                            String siteRoot = OpenCms.getSiteManager().getSiteRoot(sitemapEntry.getRootPath());
-                            if (siteRoot != null) {
-                                cms.getRequestContext().setSiteRoot(siteRoot);
+                if (sitemapEntry.isVfs()) {
+                    String sitemapUri = null;
+                    CmsResource res = cms.readResource(vfsName);
+                    if (CmsResourceTypeXmlContent.isXmlContent(res)) {
+                        String detailViewProp = null;
+                        detailViewProp = cms.readPropertyObject(
+                            res,
+                            CmsPropertyDefinition.PROPERTY_ADE_SITEMAP_DETAILVIEW,
+                            true).getValue("");
+                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(detailViewProp)) {
+                            // if detail view found, adjust the uri
+                            sitemapUri = detailViewProp;
+                            if (!sitemapUri.endsWith("/")) {
+                                rfsName += "/";
                             }
-                            rfsName = "/" + exportname + sitemapEntry.getSitePath(cms);
-                        } finally {
-                            cms.getRequestContext().setSiteRoot(storedSiteRoot);
+                            sitemapUri += res.getStructureId().toString();
+                            sitemapUri += "/";
                         }
                     }
+                    if (sitemapUri != null) {
+                        sitemapUri = OpenCms.getSiteManager().getSiteRoot(res.getRootPath()) + sitemapUri;
+                        sitemapEntry = OpenCms.getSitemapManager().getEntryForUri(cms, sitemapUri);
+                        vfsName = sitemapEntry.getRootPath();
+                    }
                 }
+                // get the export name of the according sitemap
+                String exportname = OpenCms.getSitemapManager().getExportnameForSiteRoot(
+                    cms,
+                    OpenCms.getSiteManager().getSiteRoot(sitemapEntry.getRootPath()));
+                if (exportname != null) {
+                    // if an export name was found replace the site root with the found export name
+                    String storedSiteRoot = cms.getRequestContext().getSiteRoot();
+                    try {
+                        String siteRoot = OpenCms.getSiteManager().getSiteRoot(sitemapEntry.getRootPath());
+                        if (siteRoot != null) {
+                            cms.getRequestContext().setSiteRoot(siteRoot);
+                        }
+                        rfsName = "/" + exportname + sitemapEntry.getSitePath(cms);
+                    } finally {
+                        cms.getRequestContext().setSiteRoot(storedSiteRoot);
+                    }
+                }
+            } else {
+                rfsName = getRfsNameWithExportName(cms, vfsName);
             }
 
             String extension = CmsFileUtil.getExtension(rfsName);
@@ -193,12 +213,10 @@ public class CmsSitemapLinkStrategyHandler extends A_CmsLinkStrategyHandler {
         try {
             cms.getRequestContext().setSiteRoot("/");
 
-            Map<String, String> exportnameResources = OpenCms.getStaticExportManager().getExportnames();
-
-            for (String key : exportnameResources.keySet()) {
-                if (rfsName.startsWith(key)) {
-                    String folderName = exportnameResources.get(key);
-                    String vfsPart = rfsName.substring(key.length());
+            for (Map.Entry<String, String> exportNameRes : OpenCms.getStaticExportManager().getExportnames().entrySet()) {
+                if (rfsName.startsWith(exportNameRes.getKey())) {
+                    String folderName = exportNameRes.getValue();
+                    String vfsPart = rfsName.substring(exportNameRes.getKey().length());
                     String vfsName = null;
                     if (!CmsResource.isFolder(folderName) && cms.existsResource(folderName)) {
                         CmsResource res = cms.readResource(folderName);
