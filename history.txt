@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2010/09/27 09:32:24 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2010/10/04 15:57:51 $
+ * Version: $Revision: 1.49 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -45,6 +45,7 @@ OpenCms x.x.x - Month Day, Year
 * Fixed issue #1901: Workplace login page security issue
 ! New search management tool to search and replace contents in the workplace resources 
 - Workplace search with selectable index now
+* Fixed issue #1858: Entering email Address of user not possible
 
 OpenCms 7.9.2 - February 24th, 2010
 ! Added support for xsd:choice in XML content API and editor

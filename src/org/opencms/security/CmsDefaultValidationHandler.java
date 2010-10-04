@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsDefaultValidationHandler.java,v $
- * Date   : $Date: 2009/06/04 14:29:03 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/10/04 15:57:51 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.util.CmsStringUtil;
  * 
  * @author Michael Moossen
  *
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.3.0 
  */
@@ -62,6 +62,9 @@ public class CmsDefaultValidationHandler implements I_CmsValidationHandler {
      */
     public void checkEmail(String email) throws CmsIllegalArgumentException {
 
+        if (CmsStringUtil.isNotEmpty(email)) {
+            email = email.trim();
+        }
         if (!CmsStringUtil.validateRegex(email, EMAIL_REGEX, false)) {
             throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_EMAIL_VALIDATION_1, email));
         }
