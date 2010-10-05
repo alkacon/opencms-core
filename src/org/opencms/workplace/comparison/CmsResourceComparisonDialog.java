@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsResourceComparisonDialog.java,v $
- * Date   : $Date: 2010/07/15 09:00:23 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/10/05 13:39:28 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -89,7 +89,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -389,9 +389,17 @@ public class CmsResourceComparisonDialog extends CmsDialog {
                 textExtractor = CmsExtractorMsPowerPoint.getExtractor();
             }
             if (textExtractor != null) {
-                // extract the content
-                originalSource = textExtractor.extractText(content1).getContent();
-                copySource = textExtractor.extractText(content2).getContent();
+                try {
+                    // extract the content
+                    originalSource = textExtractor.extractText(content1).getContent();
+                    copySource = textExtractor.extractText(content2).getContent();
+                } catch (Exception e) {
+                    // something goes wrong on extracting content 
+                    // set the content to null, so the content dialog will not be shown
+                    originalSource = null;
+                    copySource = null;
+                    LOG.error(e.getMessage(), e);
+                }
             } else if ((resourceType instanceof CmsResourceTypePlain) || (resourceType instanceof CmsResourceTypeJsp)) {
                 originalSource = new String(content1);
                 copySource = new String(content2);
