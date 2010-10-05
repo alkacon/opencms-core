@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/languagecopy/CmsLanguageCopyThread.java,v $
- * Date   : $Date: 2010/04/07 06:21:13 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/10/05 07:38:41 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.workplace.tools.content.languagecopy;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
@@ -57,7 +58,7 @@ import org.apache.commons.logging.Log;
  * @author Achim Westermann
  * @author Mario Jaeger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 7.5.1
  */
@@ -121,11 +122,13 @@ public class CmsLanguageCopyThread extends A_CmsReportThread {
 
         CmsMultiplexReport report = (CmsMultiplexReport)this.getReport();
         int totalFiles = this.m_copyresources.length;
-        Locale sourceLocale = new Locale(this.m_sourceLanguage);
-        Locale targetLocale = new Locale(this.m_targetLanguage);
-        report.println(Messages.get().container(
-            Messages.GUI_REPORT_LANGUAGEC0PY_START_3,
-            new Object[] {new Integer(totalFiles), sourceLocale, targetLocale}), I_CmsReport.FORMAT_HEADLINE);
+        Locale sourceLocale = CmsLocaleManager.getLocale(this.m_sourceLanguage);
+        Locale targetLocale = CmsLocaleManager.getLocale(this.m_targetLanguage);
+        report.println(
+            Messages.get().container(
+                Messages.GUI_REPORT_LANGUAGEC0PY_START_3,
+                new Object[] {new Integer(totalFiles), sourceLocale, targetLocale}),
+            I_CmsReport.FORMAT_HEADLINE);
 
         try {
             this.copyLanguageNodes();
@@ -140,9 +143,11 @@ public class CmsLanguageCopyThread extends A_CmsReportThread {
         List<Object> errors = report.getErrors();
         List<Object> warnings = report.getWarnings();
 
-        report.println(Messages.get().container(
-            Messages.GUI_REPORT_LANGUAGEC0PY_END_2,
-            new Object[] {new Integer(warnings.size()), new Integer(errors.size())}), I_CmsReport.FORMAT_HEADLINE);
+        report.println(
+            Messages.get().container(
+                Messages.GUI_REPORT_LANGUAGEC0PY_END_2,
+                new Object[] {new Integer(warnings.size()), new Integer(errors.size())}),
+            I_CmsReport.FORMAT_HEADLINE);
         for (Object f : warnings) {
             if (f instanceof CmsMessageContainer) {
                 report.println((CmsMessageContainer)f, I_CmsReport.FORMAT_WARNING);
@@ -175,14 +180,16 @@ public class CmsLanguageCopyThread extends A_CmsReportThread {
         CmsXmlContent content;
         int totalFiles = this.m_copyresources.length;
         int processedFiles = 0;
-        Locale sourceLocale = new Locale(this.m_sourceLanguage);
-        Locale targetLocale = new Locale(this.m_targetLanguage);
+        Locale sourceLocale = CmsLocaleManager.getLocale(this.m_sourceLanguage);
+        Locale targetLocale = CmsLocaleManager.getLocale(this.m_targetLanguage);
 
         for (int i = 0; i < this.m_copyresources.length; i++) {
             processedFiles++;
-            report.print(org.opencms.report.Messages.get().container(
-                org.opencms.report.Messages.RPT_SUCCESSION_2,
-                new Object[] {String.valueOf(processedFiles), String.valueOf(totalFiles)}), I_CmsReport.FORMAT_NOTE);
+            report.print(
+                org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_SUCCESSION_2,
+                    new Object[] {String.valueOf(processedFiles), String.valueOf(totalFiles)}),
+                I_CmsReport.FORMAT_NOTE);
 
             report.print(Messages.get().container(
                 Messages.LOCALIZATION_BYPASS_1,
@@ -194,17 +201,21 @@ public class CmsLanguageCopyThread extends A_CmsReportThread {
                 content = CmsXmlContentFactory.unmarshal(cms, file);
 
                 if (!content.hasLocale(sourceLocale)) {
-                    report.println(Messages.get().container(
-                        Messages.GUI_REPORT_LANGUAGEC0PY_WARN_SOURCELOCALE_MISSING_1,
-                        new Object[] {sourceLocale}), I_CmsReport.FORMAT_WARNING);
+                    report.println(
+                        Messages.get().container(
+                            Messages.GUI_REPORT_LANGUAGEC0PY_WARN_SOURCELOCALE_MISSING_1,
+                            new Object[] {sourceLocale}),
+                        I_CmsReport.FORMAT_WARNING);
                     CmsMessageContainer container = Messages.get().container(
                         Messages.GUI_REPORT_LANGUAGEC0PY_WARN_SOURCELOCALE_MISSING_2,
                         new Object[] {this.m_copyresources[i], sourceLocale});
                     report.addWarning(container);
                 } else if (content.hasLocale(targetLocale)) {
-                    report.println(Messages.get().container(
-                        Messages.GUI_REPORT_LANGUAGEC0PY_WARN_TARGETLOCALE_EXISTS_1,
-                        new Object[] {targetLocale}), I_CmsReport.FORMAT_WARNING);
+                    report.println(
+                        Messages.get().container(
+                            Messages.GUI_REPORT_LANGUAGEC0PY_WARN_TARGETLOCALE_EXISTS_1,
+                            new Object[] {targetLocale}),
+                        I_CmsReport.FORMAT_WARNING);
                     CmsMessageContainer container = Messages.get().container(
                         Messages.GUI_REPORT_LANGUAGEC0PY_WARN_TARGETLOCALE_EXISTS_2,
                         new Object[] {this.m_copyresources[i], targetLocale});
