@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/cache/CmsVfsMemoryObjectCache.java,v $
- * Date   : $Date: 2010/09/22 14:27:48 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/10/06 13:27:38 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 6.1.3
  */
@@ -62,7 +62,7 @@ public class CmsVfsMemoryObjectCache extends CmsVfsCache {
     /** A cache that maps VFS resource names to Objects. */
     private static CmsVfsMemoryObjectCache m_vfsMemoryObjectCache;
 
-    /** The id for this instance. */
+    /** The id for this instance, which is used for distinguishing cache keys of different instances. */
     private int m_id;
 
     /**
