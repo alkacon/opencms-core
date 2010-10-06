@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageController.java,v $
- * Date   : $Date: 2010/09/30 13:32:25 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2010/10/06 14:31:06 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -80,7 +80,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 8.0.0
  */
@@ -284,6 +284,7 @@ public final class CmsContainerpageController {
                 return;
             }
             m_callback.onError("An error occurred while retrieving element with id: '" + m_clientId + "'.");
+
         }
     }
 
@@ -696,9 +697,9 @@ public final class CmsContainerpageController {
     }
 
     /**
-     * Returns the type of the currently edited sub-container.<p>
+     * Returns the id of the currently edited sub-container.<p>
      * 
-     * @return the sub-container type, or <code>null</code> if no editing is taking place
+     * @return the sub-container id, or <code>null</code> if no editing is taking place
      */
     public String getSubcontainerId() {
 
