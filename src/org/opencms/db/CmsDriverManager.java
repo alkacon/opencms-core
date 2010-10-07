@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2010/08/11 06:47:55 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2010/10/07 12:30:12 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -471,6 +471,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             I_CmsEventListener.EVENT_UPDATE_EXPORTS,
             I_CmsEventListener.EVENT_CLEAR_CACHES,
             I_CmsEventListener.EVENT_CLEAR_PRINCIPAL_CACHES,
+            I_CmsEventListener.EVENT_USER_MODIFIED,
             I_CmsEventListener.EVENT_PUBLISH_PROJECT});
 
         // return the configured driver manager
