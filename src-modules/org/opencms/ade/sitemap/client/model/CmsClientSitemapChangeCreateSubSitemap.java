@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeCreateSubSitemap.java,v $
- * Date   : $Date: 2010/08/26 13:37:49 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/10/07 07:56:35 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,6 +39,7 @@ import org.opencms.ade.sitemap.shared.CmsSubSitemapInfo;
 import org.opencms.xml.sitemap.CmsSitemapManager;
 import org.opencms.xml.sitemap.I_CmsSitemapChange;
 import org.opencms.xml.sitemap.I_CmsSitemapChange.Type;
+import org.opencms.xml.sitemap.properties.CmsSimplePropertyValue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +52,7 @@ import java.util.List;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -78,7 +79,9 @@ public class CmsClientSitemapChangeCreateSubSitemap implements I_CmsClientSitema
             changes.add(deleteAction);
         }
         CmsClientSitemapEntry newEntry = new CmsClientSitemapEntry(entry);
-        newEntry.getProperties().put(CmsSitemapManager.Property.sitemap.name(), subSitemapPath);
+
+        CmsSimplePropertyValue sitemapProp = new CmsSimplePropertyValue(subSitemapPath, subSitemapPath);
+        newEntry.getProperties().put(CmsSitemapManager.Property.sitemap.name(), sitemapProp);
         CmsClientSitemapChangeEdit editAction = new CmsClientSitemapChangeEdit(entry, newEntry, false);
         changes.add(editAction);
         m_internalChanges = changes;

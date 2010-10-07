@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADEManager.java,v $
- * Date   : $Date: 2010/09/22 14:27:47 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2010/10/07 07:56:34 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 7.6
  */
@@ -297,7 +297,7 @@ public class CmsADEManager {
             cms,
             resource).getProperties();
         result.putAll(propertiesFromSchema);
-        return result;
+        return CmsXmlContentPropertyHelper.copyPropertyConfiguration(result);
     }
 
     /**

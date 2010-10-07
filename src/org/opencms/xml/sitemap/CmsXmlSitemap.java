@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsXmlSitemap.java,v $
- * Date   : $Date: 2010/09/03 13:27:35 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2010/10/07 07:56:35 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,6 +63,7 @@ import org.opencms.xml.content.CmsXmlContentMacroVisitor;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.content.CmsXmlContentPropertyHelper;
 import org.opencms.xml.page.CmsXmlPage;
+import org.opencms.xml.sitemap.properties.CmsSimplePropertyValue;
 import org.opencms.xml.types.CmsXmlNestedContentDefinition;
 import org.opencms.xml.types.CmsXmlVfsFileValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
@@ -94,7 +95,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.37 $ 
+ * @version $Revision: 1.38 $ 
  * 
  * @since 7.5.2
  * 
@@ -591,7 +592,8 @@ public class CmsXmlSitemap extends CmsXmlContent {
                 cms,
                 m_file,
                 true);
-            CmsXmlContentPropertyHelper.saveProperties(
+
+            CmsXmlContentPropertyHelper.saveSimpleProperties(
                 cms,
                 entryElement,
                 change.getProperties(),
@@ -806,7 +808,12 @@ public class CmsXmlSitemap extends CmsXmlContent {
             cms,
             getFile());
 
-        CmsXmlContentPropertyHelper.saveProperties(cms, entryElement, change.getProperties(), getFile(), propertiesConf);
+        CmsXmlContentPropertyHelper.saveSimpleProperties(
+            cms,
+            entryElement,
+            change.getProperties(),
+            getFile(),
+            propertiesConf);
 
         return cms.getRequestContext().addSiteRoot(change.getSitePath());
     }
@@ -885,7 +892,7 @@ public class CmsXmlSitemap extends CmsXmlContent {
             }
 
             // properties
-            Map<String, String> propertiesMap = CmsXmlContentPropertyHelper.readProperties(
+            Map<String, CmsSimplePropertyValue> ownProps = CmsXmlContentPropertyHelper.readSimpleProperties(
                 this,
                 locale,
                 entry,
@@ -908,7 +915,7 @@ public class CmsXmlSitemap extends CmsXmlContent {
                 entryName,
                 titleValue,
                 false,
-                propertiesMap,
+                ownProps,
                 subEntries,
                 null));
         }

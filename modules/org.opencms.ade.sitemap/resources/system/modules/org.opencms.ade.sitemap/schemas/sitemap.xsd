@@ -23,15 +23,17 @@
 			<resourcebundle name="org.opencms.xml.sitemap.messages"/>
 			<handler class="org.opencms.xml.sitemap.CmsXmlSitemapHandler" />
 			<properties>
+                <!-- don't change the template property -->
+				<property name="template" type="string" widget="string" />
+				
 				<property name="test1" type="string" widget="string" default=""/>
 				<property name="test2" type="vfslist" widget="gallery" default=""/>
+				<property name="test3" type="vfslist" widget="string" default="" />
 				<property name="navigation" type="string" widget="checkbox" default="false" widget-config="true"/>
 
 				<!-- TODO: should not we treat this properties separately?? -->
 				<!-- do *NOT* touch these properties -->
 				<property name="sitemap" type="vfslist"  widget="string" />
-				<property name="template" type="string" widget="string" />
-				<property name="template-inherited" type="string" widget="string" />
 			</properties>
 		</xsd:appinfo>
 	</xsd:annotation>  

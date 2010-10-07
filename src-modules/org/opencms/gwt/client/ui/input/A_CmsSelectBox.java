@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/A_CmsSelectBox.java,v $
- * Date   : $Date: 2010/08/26 13:34:27 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/10/07 07:56:35 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -76,7 +76,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
  * 
@@ -124,14 +124,14 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
     /** Style of the select box widget. */
     protected final CmsStyleVariable m_selectBoxState;
 
-    /** Style of the select box widget. */
-    protected final CmsStyleVariable m_selectorState;
-
     /** The map of select options. */
     protected Map<String, OPTION> m_selectCells = new HashMap<String, OPTION>();
 
     /** The selector which contains the select options. */
     protected Panel m_selector = new FlowPanel();
+
+    /** Style of the select box widget. */
+    protected final CmsStyleVariable m_selectorState;
 
     /** Flag indicating whether this widget is enabled. */
     private boolean m_enabled = true;
@@ -265,8 +265,10 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
      */
     public Object getFormValue() {
 
+        if (m_selectedValue.equals("")) {
+            return null;
+        }
         return m_selectedValue;
-
     }
 
     /**
@@ -321,7 +323,9 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setFormValue(java.lang.Object)
+     * Sets the form value of this select box.<p>
+     * 
+     * @param value the new value 
      */
     public void setFormValue(Object value) {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2010/09/30 13:32:25 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/10/07 07:56:35 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,6 +57,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.sitemap.CmsSitemapManager;
 import org.opencms.xml.sitemap.I_CmsSitemapChange;
+import org.opencms.xml.sitemap.properties.CmsSimplePropertyValue;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -77,7 +78,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 8.0.0
  */
@@ -111,8 +112,6 @@ public class CmsSitemapController {
         m_data = (CmsSitemapData)CmsRpcPrefetcher.getSerializedObject(getService(), CmsSitemapData.DICT_NAME);
 
         m_hiddenProperties = new HashSet<String>();
-        m_hiddenProperties.add(CmsSitemapManager.Property.template.toString());
-        m_hiddenProperties.add(CmsSitemapManager.Property.templateInherited.toString());
         m_hiddenProperties.add(CmsSitemapManager.Property.sitemap.toString());
         m_handlerManager = new HandlerManager(this);
     }
@@ -405,16 +404,21 @@ public class CmsSitemapController {
         CmsClientSitemapEntry entry,
         String title,
         String vfsReference,
-        Map<String, String> properties,
+        Map<String, CmsSimplePropertyValue> properties,
         boolean isNew) {
 
         // check changes
         boolean changedTitle = ((title != null) && !title.trim().equals(entry.getTitle()));
         boolean changedVfsRef = ((vfsReference != null) && !vfsReference.trim().equals(entry.getVfsPath()));
-        Map<String, String> oldProps = new HashMap<String, String>(entry.getProperties());
-        Map<String, String> newProps = new HashMap<String, String>(entry.getProperties());
+
+        Map<String, CmsSimplePropertyValue> oldProps = new HashMap<String, CmsSimplePropertyValue>(
+            entry.getProperties());
+        Map<String, CmsSimplePropertyValue> newProps = new HashMap<String, CmsSimplePropertyValue>(
+            entry.getProperties());
+
         CmsCollectionUtil.updateMapAndRemoveNulls(properties, newProps);
         boolean changedProperties = !oldProps.equals(newProps);
+        //TODO: fix property comparison   
         if (!changedTitle && !changedVfsRef && !changedProperties && isNew) {
             // nothing to do
             return;
@@ -456,7 +460,7 @@ public class CmsSitemapController {
         String newTitle,
         String newUrlName,
         String vfsPath,
-        Map<String, String> fieldValues,
+        Map<String, CmsSimplePropertyValue> fieldValues,
         boolean editedName) {
 
         edit(entry, newTitle, vfsPath, fieldValues, !editedName);
@@ -576,9 +580,9 @@ public class CmsSitemapController {
         }
 
         CmsClientSitemapEntry entry = getEntry(sitemapPath);
-        String templateInherited = entry.getProperties().get(CmsSitemapManager.Property.templateInherited);
+        CmsSimplePropertyValue templateInherited = entry.getProperties().get(CmsSitemapManager.Property.template);
         if (templateInherited != null) {
-            return m_data.getTemplates().get(templateInherited);
+            return m_data.getTemplates().get(templateInherited.getOwnValue());
         }
 
         if (sitemapPath.equals(m_data.getRoot().getSitePath())) {
@@ -803,9 +807,11 @@ public class CmsSitemapController {
             }
         };
         CmsClientSitemapEntry entry = getEntry(path);
-        String sitemapProp = entry.getProperties().get(CmsSitemapManager.Property.sitemap.name());
+
+        CmsSimplePropertyValue sitemapProp = entry.getProperties().get(CmsSitemapManager.Property.sitemap.name());
+        String sitemapVal = sitemapProp == null ? null : sitemapProp.getOwnValue();
         if (CmsCoreProvider.get().lockAndCheckModification(getSitemapUri(), m_data.getTimestamp())
-            && CmsCoreProvider.get().lock(sitemapProp)) {
+            && CmsCoreProvider.get().lock(sitemapVal)) {
             mergeAction.execute();
         }
     }

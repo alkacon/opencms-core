@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/edit/Attic/CmsEditEntryHandler.java,v $
- * Date   : $Date: 2010/09/13 12:24:50 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/10/07 07:56:35 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,8 +35,10 @@ import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.file.CmsResource;
+import org.opencms.xml.sitemap.properties.CmsSimplePropertyValue;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -45,7 +47,7 @@ import java.util.Map;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -84,6 +86,10 @@ public class CmsEditEntryHandler extends A_CmsSitemapEntryEditorHandler {
      */
     public List<String> getForbiddenUrlNames() {
 
+        if (m_entry.getSitePath().equals("/")) {
+            return Collections.<String> emptyList();
+        }
+
         List<String> result = new ArrayList<String>();
         String parentPath = CmsResource.getParentFolder(m_entry.getSitePath());
         CmsClientSitemapEntry parent = m_controller.getEntry(parentPath);
@@ -105,7 +111,7 @@ public class CmsEditEntryHandler extends A_CmsSitemapEntryEditorHandler {
         String newTitle,
         String newUrlName,
         String vfsPath,
-        Map<String, String> fieldValues,
+        Map<String, CmsSimplePropertyValue> fieldValues,
         boolean editedName) {
 
         // edit

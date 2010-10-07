@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapChangeNewSubSitemapEntry.java,v $
- * Date   : $Date: 2010/06/15 13:49:53 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/10/07 07:56:35 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.xml.sitemap;
 
 import org.opencms.util.CmsUUID;
+import org.opencms.xml.sitemap.properties.CmsSimplePropertyValue;
 
 import java.util.Map;
 
@@ -40,7 +41,7 @@ import java.util.Map;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -68,7 +69,7 @@ public class CmsSitemapChangeNewSubSitemapEntry extends CmsSitemapChangeNew {
         int position,
         String title,
         String vfsPath,
-        Map<String, String> properties,
+        Map<String, CmsSimplePropertyValue> properties,
         String entryPoint,
         CmsUUID id) {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsClientSitemapEntry.java,v $
- * Date   : $Date: 2010/09/09 15:02:20 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2010/10/07 07:56:35 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,8 @@ package org.opencms.ade.sitemap.shared;
 import org.opencms.file.CmsResource;
 import org.opencms.gwt.client.util.CmsCollectionUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.xml.sitemap.properties.CmsComputedPropertyValue;
+import org.opencms.xml.sitemap.properties.CmsSimplePropertyValue;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,7 +49,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 8.0.0
  */
@@ -59,6 +61,9 @@ public class CmsClientSitemapEntry implements IsSerializable {
     /** The entry id. */
     private CmsUUID m_id;
 
+    /** The map of inherited properties. */
+    private Map<String, CmsComputedPropertyValue> m_inheritedProperties;
+
     /** The entry name. */
     private String m_name;
 
@@ -68,8 +73,8 @@ public class CmsClientSitemapEntry implements IsSerializable {
     /** The relative position between siblings. */
     private int m_position;
 
-    /** The property map. */
-    private Map<String, String> m_properties;
+    /** The map of the entry's own properties. */
+    private Map<String, CmsSimplePropertyValue> m_properties;
 
     /** The sitemap path. */
     private String m_sitePath;
@@ -89,7 +94,6 @@ public class CmsClientSitemapEntry implements IsSerializable {
     public CmsClientSitemapEntry() {
 
         m_subEntries = new ArrayList<CmsClientSitemapEntry>();
-        m_properties = new HashMap<String, String>();
     }
 
     /**
@@ -102,7 +106,7 @@ public class CmsClientSitemapEntry implements IsSerializable {
         this();
         setId(clone.getId());
         setName(clone.getName());
-        setProperties(new HashMap<String, String>(clone.getProperties()));
+        setProperties(new HashMap<String, CmsSimplePropertyValue>(clone.getProperties()));
         setSitePath(clone.getSitePath());
         setTitle(clone.getTitle());
         setVfsPath(clone.getVfsPath());
@@ -142,6 +146,16 @@ public class CmsClientSitemapEntry implements IsSerializable {
     }
 
     /**
+     * Returns the map of inherited properties for this entry.<p>
+     * 
+     * @return the map of inherited properties for this entry 
+     */
+    public Map<String, CmsComputedPropertyValue> getInheritedProperties() {
+
+        return m_inheritedProperties;
+    }
+
+    /**
      * Returns the name.<p>
      *
      * @return the name
@@ -149,6 +163,19 @@ public class CmsClientSitemapEntry implements IsSerializable {
     public String getName() {
 
         return m_name;
+    }
+
+    /**
+     * Returns the individual value for a property of this entry.<p>
+     * 
+     * @param propName the name of the property 
+     *  
+     * @return the individual value for the property propName 
+     */
+    public String getOwnProperty(String propName) {
+
+        CmsSimplePropertyValue prop = m_properties.get(propName);
+        return prop == null ? null : prop.getOwnValue();
     }
 
     /**
@@ -162,11 +189,11 @@ public class CmsClientSitemapEntry implements IsSerializable {
     }
 
     /**
-     * Returns the configured properties.<p>
+     * Returns a map of this entry's own properties.<p>
      * 
-     * @return the configured properties
+     * @return a map of this entry's own properties
      */
-    public Map<String, String> getProperties() {
+    public Map<String, CmsSimplePropertyValue> getProperties() {
 
         return m_properties;
     }
@@ -277,6 +304,16 @@ public class CmsClientSitemapEntry implements IsSerializable {
     }
 
     /**
+     * Sets the map of inherited properties for this entry.<p>
+     * 
+     * @param inheritedProperties the new map of inherited properties for this entry 
+     */
+    public void setInheritedProperties(Map<String, CmsComputedPropertyValue> inheritedProperties) {
+
+        m_inheritedProperties = inheritedProperties;
+    }
+
+    /**
      * Sets the name.<p>
      *
      * @param name the name to set
@@ -310,7 +347,7 @@ public class CmsClientSitemapEntry implements IsSerializable {
      *
      * @param properties the properties to set
      */
-    public void setProperties(Map<String, String> properties) {
+    public void setProperties(Map<String, CmsSimplePropertyValue> properties) {
 
         m_properties = properties;
     }
@@ -383,7 +420,7 @@ public class CmsClientSitemapEntry implements IsSerializable {
      * 
      * @param newProperties the properties which should be updated
      */
-    public void updateProperties(Map<String, String> newProperties) {
+    public void updateProperties(Map<String, CmsSimplePropertyValue> newProperties) {
 
         CmsCollectionUtil.updateMapAndRemoveNulls(newProperties, m_properties);
     }

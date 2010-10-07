@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/form/Attic/CmsFormRow.java,v $
- * Date   : $Date: 2010/05/12 09:07:26 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/10/07 07:56:34 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,10 +31,12 @@
 
 package org.opencms.gwt.client.ui.input.form;
 
+import org.opencms.gwt.client.ui.CmsToggleButton;
 import org.opencms.gwt.client.ui.css.I_CmsInputCss;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
@@ -50,7 +52,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger 
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -61,15 +63,24 @@ public class CmsFormRow extends Composite {
         // uibinder
     }
 
+    /** The width of the label. */
+    public static final int LABEL_WIDTH = 160;
+
+    /** The width of the opener. */
+    public static final int OPENER_WIDTH = 16;
+
     /** The CSS bundle used for this widget. */
     protected static I_CmsInputCss CSS = I_CmsInputLayoutBundle.INSTANCE.inputCss();
 
     /** The ui binder instance for this form row. */
     private static I_CmsFormRowUiBinder uiBinder = GWT.create(I_CmsFormRowUiBinder.class);
-
     /** The label for the form row. */
     @UiField
     protected Label m_label;
+
+    /** The opener of the form row. */
+    @UiField
+    protected CmsToggleButton m_opener;
 
     /** The widget container for the form row. */
     @UiField
@@ -81,6 +92,40 @@ public class CmsFormRow extends Composite {
     public CmsFormRow() {
 
         initWidget(uiBinder.createAndBindUi(this));
+        m_opener.setDown(false);
+
+        m_opener.setUpFace("", CSS.formRowOpenerClosed());
+        m_opener.setDownFace("", CSS.formRowOpenerOpen());
+    }
+
+    /** 
+     * Returns the width of the label as a string.<p>
+     * 
+     * @return the width of the label as a string 
+     */
+    public static String getLabelWidth() {
+
+        return LABEL_WIDTH + "px";
+    }
+
+    /**
+     * Returns the width of the opener as a string.<p>
+     * 
+     * @return the width of the opener as a string 
+     */
+    public static String getOpenerWidth() {
+
+        return OPENER_WIDTH + "px";
+    }
+
+    /**
+     * Returns the left margin of the widget container as a string.<p>
+     * 
+     * @return the left margin of the widget container as a string 
+     */
+    public static String getWidgetContainerLeftMargin() {
+
+        return OPENER_WIDTH + LABEL_WIDTH + "px";
     }
 
     /**
@@ -94,6 +139,16 @@ public class CmsFormRow extends Composite {
     }
 
     /**
+     * Returns the opener of the form row.<p>
+     * 
+     * @return the opener of the form row 
+     */
+    public CmsToggleButton getOpener() {
+
+        return m_opener;
+    }
+
+    /**
      * Returns the widget container for the form row.<p>
      * 
      * @return the widget container for the form row
@@ -101,6 +156,26 @@ public class CmsFormRow extends Composite {
     public Panel getWidgetContainer() {
 
         return m_widgetContainer;
+    }
+
+    /**
+     * Opens or closes the opener.<p>
+     * 
+     * @param open if true opens the opener, else closes it.<p>
+     */
+    public void setOpenerOpen(boolean open) {
+
+        m_opener.setDown(open);
+    }
+
+    /**
+     * Shows or hides the opener.<p>
+     * 
+     * @param openerVisible if true, shows the opener, else hides it.
+     */
+    public void setOpenerVisible(boolean openerVisible) {
+
+        m_opener.getElement().getStyle().setVisibility(openerVisible ? Visibility.VISIBLE : Visibility.HIDDEN);
     }
 
 }

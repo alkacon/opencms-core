@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsInputImageBundle.java,v $
- * Date   : $Date: 2010/05/11 09:11:52 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/10/07 07:56:34 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import com.google.gwt.resources.client.ImageResource.RepeatStyle;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  */
@@ -117,6 +117,22 @@ public interface I_CmsInputImageBundle extends ClientBundle {
     @Source("images/checkboxUncheckedHover.png")
     ImageResource checkboxUncheckedHover();
 
+    /**
+     * Image resource accessor.<p>
+     * 
+     * @return an image resource
+     */
+    @Source("images/minus.png")
+    ImageResource minus();
+
+    /**
+     * Image resource accessor.<p>
+     * 
+     * @return an image resource
+     */
+    @Source("images/plus.png")
+    ImageResource plus();
+
     /** 
      * Image resource accessor.<p>
      * 
@@ -164,4 +180,5 @@ public interface I_CmsInputImageBundle extends ClientBundle {
      */
     @Source("images/radioUncheckedHover.png")
     ImageResource radioUncheckedHover();
+
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsHoverbarGotoSubSitemapButton.java,v $
- * Date   : $Date: 2010/08/25 14:40:14 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/10/07 07:56:34 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import com.google.gwt.user.client.Window;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -77,7 +77,7 @@ public class CmsHoverbarGotoSubSitemapButton extends CmsPushButton {
                 CmsSitemapController controller = hoverbar.getController();
                 String sitePath = hoverbar.getSitePath();
                 CmsClientSitemapEntry entry = controller.getEntry(sitePath);
-                String sitemapLocation = entry.getProperties().get(CmsSitemapManager.Property.sitemap.name());
+                String sitemapLocation = entry.getOwnProperty(CmsSitemapManager.Property.sitemap.name());
                 Window.Location.assign(CmsCoreProvider.get().link(sitemapLocation));
             }
         });
@@ -91,7 +91,7 @@ public class CmsHoverbarGotoSubSitemapButton extends CmsPushButton {
                 CmsSitemapController controller = hoverbar.getController();
                 String sitePath = hoverbar.getSitePath();
                 CmsClientSitemapEntry entry = controller.getEntry(sitePath);
-                String sitemapLocation = entry.getProperties().get(CmsSitemapManager.Property.sitemap.name());
+                String sitemapLocation = entry.getOwnProperty(CmsSitemapManager.Property.sitemap.name());
                 setVisible((sitemapLocation != null) && !controller.isRoot(sitePath));
             }
         });

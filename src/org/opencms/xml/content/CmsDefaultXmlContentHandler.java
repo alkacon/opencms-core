@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2010/09/22 14:27:47 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2010/10/07 07:56:35 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -102,7 +102,7 @@ import org.dom4j.Element;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -155,6 +155,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
     /** Constant for the "searchcontent" appinfo attribute name. */
     public static final String APPINFO_ATTR_SEARCHCONTENT = "searchcontent";
+
+    /** Constant for the "select-inherit" appinfo attribute name. */
+    public static final String APPINFO_ATTR_SELECT_INHERIT = "select-inherit";
 
     /** Constant for the "type" appinfo attribute name. */
     public static final String APPINFO_ATTR_TYPE = "type";
@@ -1711,7 +1714,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                 element.attributeValue(APPINFO_ATTR_NICE_NAME),
                 element.attributeValue(APPINFO_ATTR_DESCRIPTION),
                 element.attributeValue(APPINFO_ATTR_ERROR),
-                element.attributeValue(APPINFO_ATTR_ADVANCED)
+                element.attributeValue(APPINFO_ATTR_ADVANCED),
+                element.attributeValue(APPINFO_ATTR_SELECT_INHERIT)
 
             );
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(property.getPropertyName())) {

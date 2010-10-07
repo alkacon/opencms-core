@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADEDefaultConfiguration.java,v $
- * Date   : $Date: 2010/09/22 14:27:47 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/10/07 07:56:34 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,7 +71,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 7.6 
  */
@@ -314,12 +314,20 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
         try {
             // read configuration file
             return cms.readResource(cfgPath);
-        } catch (Exception e) {
-            throw new CmsIllegalStateException(Messages.get().container(
-                Messages.ERR_CONFIG_NOT_FOUND_3,
-                containerPageUri,
-                CmsPropertyDefinition.PROPERTY_ADE_CNTPAGE_CONFIG,
-                cfgPath));
+        } catch (Exception e1) {
+            try {
+                CmsResource baseResource = cms.readResource(containerPageUri);
+                String baseRootPath = baseResource.getRootPath();
+                String siteRoot = OpenCms.getSiteManager().getSiteRoot(baseRootPath);
+                String rootCfgPath = CmsStringUtil.joinPaths(siteRoot, cfgPath);
+                return cms.readResource(rootCfgPath);
+            } catch (Exception e2) {
+                throw new CmsIllegalStateException(Messages.get().container(
+                    Messages.ERR_CONFIG_NOT_FOUND_3,
+                    containerPageUri,
+                    CmsPropertyDefinition.PROPERTY_ADE_CNTPAGE_CONFIG,
+                    cfgPath));
+            }
         }
     }
 

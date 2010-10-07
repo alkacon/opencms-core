@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapTreeItem.java,v $
- * Date   : $Date: 2010/09/23 08:18:33 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2010/10/07 07:56:35 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.28 $ 
  * 
  * @since 8.0.0
  * 
@@ -361,7 +361,7 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
      */
     protected void updateSitemapReferenceStatus(CmsClientSitemapEntry entry) {
 
-        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(entry.getProperties().get(CmsSitemapManager.Property.sitemap.name()))) {
+        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(entry.getOwnProperty(CmsSitemapManager.Property.sitemap.name()))) {
             m_listItemWidget.getContentPanel().addStyleName(CSS.subSitemapRef());
         } else {
             m_listItemWidget.getContentPanel().removeStyleName(CSS.subSitemapRef());

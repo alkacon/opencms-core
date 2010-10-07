@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapChangeEdit.java,v $
- * Date   : $Date: 2010/05/18 12:58:17 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/10/07 07:56:35 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,8 @@
 
 package org.opencms.xml.sitemap;
 
+import org.opencms.xml.sitemap.properties.CmsSimplePropertyValue;
+
 import java.util.Map;
 
 /**
@@ -38,7 +40,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -48,7 +50,7 @@ public class CmsSitemapChangeEdit implements I_CmsSitemapChange {
     private static final long serialVersionUID = -2505651588029718797L;
 
     /** The entry's new properties. */
-    private Map<String, String> m_properties;
+    private Map<String, CmsSimplePropertyValue> m_properties;
 
     /** The entry's site path. */
     private String m_sitePath;
@@ -67,7 +69,11 @@ public class CmsSitemapChangeEdit implements I_CmsSitemapChange {
      * @param vfsPath the entry's new VFS path
      * @param properties the entry's new properties
      */
-    public CmsSitemapChangeEdit(String sitePath, String title, String vfsPath, Map<String, String> properties) {
+    public CmsSitemapChangeEdit(
+        String sitePath,
+        String title,
+        String vfsPath,
+        Map<String, CmsSimplePropertyValue> properties) {
 
         m_sitePath = sitePath;
         m_title = title;
@@ -88,7 +94,7 @@ public class CmsSitemapChangeEdit implements I_CmsSitemapChange {
      *
      * @return the entry's new properties
      */
-    public Map<String, String> getProperties() {
+    public Map<String, CmsSimplePropertyValue> getProperties() {
 
         return m_properties;
     }

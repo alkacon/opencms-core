@@ -218,7 +218,7 @@
 }
 
 .form {
-	width: 520px;
+	width: 570px;
 }
 
 .alignBottom {
@@ -230,19 +230,40 @@
 	margin-top: 2px;
 }
 
+@sprite .formRowOpenerClosed {
+	gwt-image: "images.plus"
+}
+
+
+
+@sprite .formRowOpenerOpen {
+	gwt-image: "images.minus"; 
+}
+
+@def fieldOpenerWidth 32px ; 
 @def formLabelWidth 160px ;
 
-.formLabel {
+@eval openerWidth org.opencms.gwt.client.ui.input.form.CmsFormRow.getOpenerWidth();
+@eval widgetContainerMargin org.opencms.gwt.client.ui.input.form.CmsFormRow.getWidgetContainerLeftMargin();  
+
+.formOpener {
+	width: openerWidth;
+	float: left;
+	vertical-align: top; 
+}
+
+.formLabel { 
 	width: formLabelWidth;
 	overflow: hidden;
 	vertical-align: top;
 	margin-top: 2px;
+/*	margin-left: openerWidth; */ 
 	float: left;
 }
 
 .formWidgetContainer {
 	width: 350px;
-	margin-left: formLabelWidth;
+	margin-left: widgetContainerMargin;
 }
 
 .separator {
@@ -258,8 +279,9 @@
 	margin-top: 5px;
 }
 
-
-
+.weakText { 
+	color: #999;
+}
 
 
 

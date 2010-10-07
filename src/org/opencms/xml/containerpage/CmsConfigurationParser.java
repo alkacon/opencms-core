@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsConfigurationParser.java,v $
- * Date   : $Date: 2010/09/22 14:27:47 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/10/07 07:56:34 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import org.apache.commons.collections.Transformer;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 7.6 
  */
@@ -260,6 +260,7 @@ public class CmsConfigurationParser {
 
         Locale locale = getLocale(cms, content);
         List<I_CmsXmlContentValue> typeValues = content.getValues(N_ADE_TYPE, locale);
+
         for (I_CmsXmlContentValue xmlType : typeValues) {
             parseType(cms, xmlType, locale);
         }
@@ -268,7 +269,6 @@ public class CmsConfigurationParser {
         for (I_CmsXmlContentValue xmlField : fieldValues) {
             parseField(cms, xmlField, locale);
         }
-
     }
 
     /**
@@ -343,12 +343,13 @@ public class CmsConfigurationParser {
      * Returns a named child value of a given XML content value.<p> 
      * 
      * @param value the XML content value whose sub-element value should be read
-     * @param locale the locale 
      * @param subPath a path relative to the given value's path 
      * 
      * @return the XML content value  
      */
-    protected I_CmsXmlContentValue getSubValue(I_CmsXmlContentValue value, Locale locale, String subPath) {
+    protected I_CmsXmlContentValue getSubValue(I_CmsXmlContentValue value, String subPath) {
+
+        Locale locale = value.getLocale();
 
         I_CmsXmlContentValue subValue = value.getDocument().getValue(
             CmsXmlUtils.concatXpath(value.getPath(), subPath),
@@ -361,14 +362,13 @@ public class CmsConfigurationParser {
      *  
      * @param cms the CMS context 
      * @param value the parent content value
-     * @param locale the locale 
      * @param subPath the name of the child content value, relative to the parent's path 
      * 
      * @return the child content value as a string 
      */
-    protected String getSubValueAsString(CmsObject cms, I_CmsXmlContentValue value, Locale locale, String subPath) {
+    protected String getSubValueAsString(CmsObject cms, I_CmsXmlContentValue value, String subPath) {
 
-        I_CmsXmlContentValue subValue = getSubValue(value, locale, subPath);
+        I_CmsXmlContentValue subValue = getSubValue(value, subPath);
         return subValue != null ? subValue.getStringValue(cms) : null;
     }
 
@@ -376,13 +376,13 @@ public class CmsConfigurationParser {
      * Helper method for retrieving the sub-values of a given XML content value.
      * 
      * @param value the parent XML content value 
-     * @param locale the locale 
      * @param subPath the path relative to parent value 
      * 
      * @return the list of sub-values with the given path below the parent value 
      */
-    protected List<I_CmsXmlContentValue> getSubValues(I_CmsXmlContentValue value, Locale locale, String subPath) {
+    protected List<I_CmsXmlContentValue> getSubValues(I_CmsXmlContentValue value, String subPath) {
 
+        Locale locale = value.getLocale();
         String path = CmsXmlUtils.concatXpath(value.getPath(), subPath);
         return value.getDocument().getValues(path, locale);
 
@@ -411,17 +411,18 @@ public class CmsConfigurationParser {
      */
     private void parseField(CmsObject cms, I_CmsXmlContentValue xmlField, Locale locale) {
 
-        String name = getSubValueAsString(cms, xmlField, locale, "Name");
-        String type = getSubValueAsString(cms, xmlField, locale, "Type");
-        String widget = getSubValueAsString(cms, xmlField, locale, "Widget");
-        String widgetConfig = getSubValueAsString(cms, xmlField, locale, "WidgetConfig");
-        String ruleRegex = getSubValueAsString(cms, xmlField, locale, "RuleRegex");
-        String ruleType = getSubValueAsString(cms, xmlField, locale, "RuleType");
-        String default1 = getSubValueAsString(cms, xmlField, locale, "Default");
-        String error = getSubValueAsString(cms, xmlField, locale, "Error");
-        String niceName = getSubValueAsString(cms, xmlField, locale, "NiceName");
-        String description = getSubValueAsString(cms, xmlField, locale, "Description");
-        String advanced = getSubValueAsString(cms, xmlField, locale, "Advanced");
+        String name = getSubValueAsString(cms, xmlField, "Name");
+        String type = getSubValueAsString(cms, xmlField, "Type");
+        String widget = getSubValueAsString(cms, xmlField, "Widget");
+        String widgetConfig = getSubValueAsString(cms, xmlField, "WidgetConfig");
+        String ruleRegex = getSubValueAsString(cms, xmlField, "RuleRegex");
+        String ruleType = getSubValueAsString(cms, xmlField, "RuleType");
+        String default1 = getSubValueAsString(cms, xmlField, "Default");
+        String error = getSubValueAsString(cms, xmlField, "Error");
+        String niceName = getSubValueAsString(cms, xmlField, "NiceName");
+        String description = getSubValueAsString(cms, xmlField, "Description");
+        String advanced = getSubValueAsString(cms, xmlField, "Advanced");
+        String selectInherit = getSubValueAsString(cms, xmlField, "SelectInherit");
         CmsXmlContentProperty prop = new CmsXmlContentProperty(
             name,
             type,
@@ -433,7 +434,8 @@ public class CmsConfigurationParser {
             niceName,
             description,
             error,
-            advanced);
+            advanced,
+            selectInherit);
         m_props.add(prop);
     }
 
@@ -448,22 +450,22 @@ public class CmsConfigurationParser {
      */
     private void parseType(CmsObject cms, I_CmsXmlContentValue xmlType, Locale locale) throws CmsException {
 
-        String source = getSubValueAsString(cms, xmlType, locale, N_SOURCE);
-        String folder = getSubValueAsString(cms, xmlType, locale, CmsXmlUtils.concatXpath(N_DESTINATION, N_FOLDER));
+        String source = getSubValueAsString(cms, xmlType, N_SOURCE);
+        String folder = getSubValueAsString(cms, xmlType, CmsXmlUtils.concatXpath(N_DESTINATION, N_FOLDER));
         cms.getRequestContext().addSiteRoot(folder);
-        String pattern = getSubValueAsString(cms, xmlType, locale, CmsXmlUtils.concatXpath(N_DESTINATION, N_PATTERN));
+        String pattern = getSubValueAsString(cms, xmlType, CmsXmlUtils.concatXpath(N_DESTINATION, N_PATTERN));
         CmsResource resource = cms.readResource(source);
         String type = getTypeName(resource.getTypeId());
         CmsConfigurationItem configItem = new CmsConfigurationItem(
             cms.readResource(source),
             cms.readResource(folder),
             pattern);
-        List<I_CmsXmlContentValue> fmtValues = getSubValues(xmlType, locale, N_FORMATTER);
+        List<I_CmsXmlContentValue> fmtValues = getSubValues(xmlType, N_FORMATTER);
         List<CmsFormatterConfigBean> formatterConfigBeans = new ArrayList<CmsFormatterConfigBean>();
         for (I_CmsXmlContentValue fmtValue : fmtValues) {
-            String jsp = getSubValueAsString(cms, fmtValue, locale, N_JSP);
-            String width = getSubValueAsString(cms, fmtValue, locale, N_WIDTH);
-            String fmtType = getSubValueAsString(cms, fmtValue, locale, N_TYPE);
+            String jsp = getSubValueAsString(cms, fmtValue, N_JSP);
+            String width = getSubValueAsString(cms, fmtValue, N_WIDTH);
+            String fmtType = getSubValueAsString(cms, fmtValue, N_TYPE);
             formatterConfigBeans.add(new CmsFormatterConfigBean(jsp, fmtType, width));
         }
         if (!formatterConfigBeans.isEmpty()) {

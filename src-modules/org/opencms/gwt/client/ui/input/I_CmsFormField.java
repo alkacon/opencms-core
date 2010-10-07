@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/I_CmsFormField.java,v $
- * Date   : $Date: 2010/09/03 13:27:35 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/10/07 07:56:35 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import org.opencms.gwt.client.validation.I_CmsValidator;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 8.0.0
  * 
@@ -121,11 +121,28 @@ public interface I_CmsFormField {
     boolean isAdvanced();
 
     /**
+     * Returns the value of the "ignore" flag for this field.<p>
+     * 
+     * If a field is ignored, it will be regarded as empty when the field values of a form are being collected, 
+     * regardless if it's actually empty or not.<p>
+     * 
+     * @return the "ignore" flag of this field 
+     */
+    boolean isIgnored();
+
+    /**
      * Sets the id of this form field.<p>
      * 
      * @param id the new id 
      */
     void setId(String id);
+
+    /**
+     * Sets the "ignore" flag of this field.<p>
+     * 
+     * @param ignore the new value of the "ignore" flag 
+     */
+    void setIgnore(boolean ignore);
 
     /**
      * Updates the validation status of this form field.<p>

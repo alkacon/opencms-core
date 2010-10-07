@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsInternalSitemapEntry.java,v $
- * Date   : $Date: 2010/07/07 09:12:09 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/10/07 07:56:34 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,8 @@ import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.xml.sitemap.properties.CmsComputedPropertyValue;
+import org.opencms.xml.sitemap.properties.CmsSimplePropertyValue;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -50,7 +52,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 8.0 
  */
@@ -76,10 +78,12 @@ public class CmsInternalSitemapEntry extends CmsSitemapEntry {
             entry.getName(),
             entry.getTitle(),
             entry.isRootEntry(),
-            entry.getProperties(),
+            entry.getNewProperties(),
             entry.getSubEntries(),
             entry.getContentId());
-        setRuntimeInfo("", entry.getPosition(), entry.getInheritedProperties());
+
+        setRuntimeInfo("", entry.getPosition(), entry.getComputedProperties());
+
     }
 
     /**
@@ -116,7 +120,7 @@ public class CmsInternalSitemapEntry extends CmsSitemapEntry {
         String name,
         String title,
         boolean isRootEntry,
-        Map<String, String> properties,
+        Map<String, CmsSimplePropertyValue> properties,
         List<CmsInternalSitemapEntry> subEntries,
         CmsUUID contentId) {
 
@@ -204,26 +208,47 @@ public class CmsInternalSitemapEntry extends CmsSitemapEntry {
     }
 
     /**
+     * Sets the runtime entry point of this sitemap entry.<p>
+     * 
+     * @param entryPoint the new entry point 
+     */
+    protected void setEntryPoint(String entryPoint) {
+
+        m_entryPoint = entryPoint;
+    }
+
+    /**
      * Sets the runtime information.<p>
      * 
-     * @param entryPoint the entry point
      * @param position the position to set
      * @param inheritedProperties the inherited properties to set
      */
-    protected void setRuntimeInfo(String entryPoint, int position, Map<String, String> inheritedProperties) {
+    protected void setRuntimeInfo(
 
-        // set the inherited properties
-        m_inheritedProperties = new HashMap<String, String>();
-        if (inheritedProperties != null) {
-            // it is important that they are cloned, see CmsSitemapManager#getEntry(...)
-            m_inheritedProperties.putAll(inheritedProperties);
-            m_inheritedProperties.putAll(m_properties);
-        }
-        // set the position
-        m_properties.put(CmsPropertyDefinition.PROPERTY_NAVPOS, String.valueOf(position));
-        m_inheritedProperties.put(CmsPropertyDefinition.PROPERTY_NAVPOS, String.valueOf(position));
+    int position, Map<String, CmsComputedPropertyValue> inheritedProperties) {
+
+        m_computedProperties = new HashMap<String, CmsComputedPropertyValue>(inheritedProperties);
+        CmsComputedPropertyValue navpos = CmsComputedPropertyValue.create("" + position, null, getRootPath());
+        m_computedProperties.put(CmsPropertyDefinition.PROPERTY_NAVPOS, navpos);
+        CmsSimplePropertyValue simpleNavpos = new CmsSimplePropertyValue("" + position, null);
+        m_newProperties.put(CmsPropertyDefinition.PROPERTY_NAVPOS, simpleNavpos);
         m_position = position;
-        m_entryPoint = entryPoint;
+    }
+
+    /**
+     * Sets the runtime information including the entry point.<p>
+     * 
+     * @param entryPoint the new entry point 
+     * @param position the position to set 
+     * @param inheritedProperties the inherited properties to set 
+     */
+    protected void setRuntimeInfo(
+        String entryPoint,
+        int position,
+        Map<String, CmsComputedPropertyValue> inheritedProperties) {
+
+        setEntryPoint(entryPoint);
+        setRuntimeInfo(position, inheritedProperties);
     }
 
     /**

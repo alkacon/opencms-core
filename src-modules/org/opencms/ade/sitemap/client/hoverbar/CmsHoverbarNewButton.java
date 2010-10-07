@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsHoverbarNewButton.java,v $
- * Date   : $Date: 2010/09/09 15:02:20 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/10/07 07:56:34 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
  */
@@ -88,7 +88,7 @@ public class CmsHoverbarNewButton extends CmsPushButton {
 
                 final String sitePath = hoverbar.getSitePath();
                 final CmsSitemapController controller = hoverbar.getController();
-                String sitemapProp = controller.getEntry(sitePath).getProperties().get(
+                String sitemapProp = controller.getEntry(sitePath).getOwnProperty(
                     CmsSitemapManager.Property.sitemap.name());
                 setVisible(CmsStringUtil.isEmptyOrWhitespaceOnly(sitemapProp));
             }

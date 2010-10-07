@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/I_CmsSitemapCache.java,v $
- * Date   : $Date: 2010/09/24 13:59:11 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/10/07 07:56:35 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -119,6 +119,16 @@ public interface I_CmsSitemapCache {
      * @throws CmsException if something goes wrong 
      */
     CmsInternalSitemapEntry getEntryByUri(CmsObject cms, String uri) throws CmsException;
+
+    /**
+     * Returns a map from URIs of active sitemaps to their entry points.<p>
+     * 
+     * @param cms the current CMS context 
+     * @return a map from sitemap URIs to entry points 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    Map<String, String> getEntryPoints(CmsObject cms) throws CmsException;
 
     /**
      * Gets the roots of the sites which use a sitemap.<p>

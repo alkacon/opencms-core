@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/form/Attic/CmsBasicFormField.java,v $
- * Date   : $Date: 2010/09/03 13:27:35 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/10/07 07:56:34 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import java.util.Map;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0 
  */
@@ -64,6 +64,9 @@ public class CmsBasicFormField implements I_CmsFormField {
 
     /** Id of the form field.*/
     private String m_id;
+
+    /** The "ignore" flag. */
+    private boolean m_ignore;
 
     /** Label of the form field. */
     private String m_label;
@@ -150,6 +153,7 @@ public class CmsBasicFormField implements I_CmsFormField {
      */
     public static Map<String, I_CmsFormField> createFields(Collection<CmsXmlContentProperty> propertyConfigurations) {
 
+        // using LinkedHashMap to preserve the order 
         Map<String, I_CmsFormField> result = new LinkedHashMap<String, I_CmsFormField>();
         for (CmsXmlContentProperty propConfig : propertyConfigurations) {
             CmsBasicFormField field = createField(propConfig);
@@ -224,11 +228,27 @@ public class CmsBasicFormField implements I_CmsFormField {
     }
 
     /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormField#isIgnored()
+     */
+    public boolean isIgnored() {
+
+        return m_ignore;
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.input.I_CmsFormField#setId(java.lang.String)
      */
     public void setId(String id) {
 
         m_id = id;
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormField#setIgnore(boolean)
+     */
+    public void setIgnore(boolean ignore) {
+
+        m_ignore = ignore;
     }
 
     /**

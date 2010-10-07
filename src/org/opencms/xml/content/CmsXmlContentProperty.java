@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentProperty.java,v $
- * Date   : $Date: 2010/09/03 13:27:35 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/10/07 07:56:35 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,11 +38,11 @@ import java.io.Serializable;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 7.9.2
  */
-public class CmsXmlContentProperty implements Cloneable, Serializable {
+public class CmsXmlContentProperty implements Serializable {
 
     /** Property type constants. */
     public enum PropType {
@@ -117,6 +117,9 @@ public class CmsXmlContentProperty implements Cloneable, Serializable {
     /** The validation rule type. */
     private String m_ruleType;
 
+    /** The value which indicates whether the user can influence how this property is going to be inherited. */
+    private String m_selectInherit;
+
     /** The widget to use in the editor. */
     private String m_widget;
 
@@ -137,6 +140,7 @@ public class CmsXmlContentProperty implements Cloneable, Serializable {
      * @param description  the description
      * @param error the error message
      * @param advanced the "advanced" property 
+     * @param selectInherit the property which indicates whether the user can control the inheritance of this property 
      */
     public CmsXmlContentProperty(
         String propertyName,
@@ -149,7 +153,8 @@ public class CmsXmlContentProperty implements Cloneable, Serializable {
         String niceName,
         String description,
         String error,
-        String advanced) {
+        String advanced,
+        String selectInherit) {
 
         super();
         m_propertyName = propertyName;
@@ -163,6 +168,7 @@ public class CmsXmlContentProperty implements Cloneable, Serializable {
         m_description = description;
         m_error = error;
         m_advanced = advanced;
+        m_selectInherit = selectInherit;
     }
 
     /**
@@ -174,11 +180,11 @@ public class CmsXmlContentProperty implements Cloneable, Serializable {
     }
 
     /**
+     * Copies this property definition.<p>
      * 
-     * @see java.lang.Object#clone()
+     * @return a new copy of the current property definition 
      */
-    @Override
-    public CmsXmlContentProperty clone() {
+    public CmsXmlContentProperty copy() {
 
         return new CmsXmlContentProperty(
             m_propertyName,
@@ -191,7 +197,8 @@ public class CmsXmlContentProperty implements Cloneable, Serializable {
             m_niceName,
             m_description,
             m_error,
-            m_advanced);
+            m_advanced,
+            m_selectInherit);
     }
 
     /**
@@ -285,6 +292,16 @@ public class CmsXmlContentProperty implements Cloneable, Serializable {
     }
 
     /**
+     * Returns a value which indicates whether the user can control the inheritance of this property.<p>
+     * 
+     * @return the "select-inherit" property 
+     */
+    public String getSelectInherit() {
+
+        return m_selectInherit;
+    }
+
+    /**
      * Returns the widget.<p>
      *
      * @return the widget
@@ -302,106 +319,6 @@ public class CmsXmlContentProperty implements Cloneable, Serializable {
     public String getWidgetConfiguration() {
 
         return m_widgetConfiguration;
-    }
-
-    /**
-     * Sets the default.<p>
-     *
-     * @param default1 the default to set
-     */
-    public void setDefault(String default1) {
-
-        m_default = default1;
-    }
-
-    /**
-     * Sets the description.<p>
-     *
-     * @param description the description to set
-     */
-    public void setDescription(String description) {
-
-        m_description = description;
-    }
-
-    /**
-     * Sets the error.<p>
-     *
-     * @param error the error to set
-     */
-    public void setError(String error) {
-
-        m_error = error;
-    }
-
-    /**
-     * Sets the niceName.<p>
-     *
-     * @param niceName the niceName to set
-     */
-    public void setNiceName(String niceName) {
-
-        m_niceName = niceName;
-    }
-
-    /**
-     * Sets the propertyName.<p>
-     *
-     * @param propertyName the propertyName to set
-     */
-    public void setPropertyName(String propertyName) {
-
-        m_propertyName = propertyName;
-    }
-
-    /**
-     * Sets the propertyType.<p>
-     *
-     * @param propertyType the propertyType to set
-     */
-    public void setPropertyType(String propertyType) {
-
-        m_propertyType = propertyType;
-    }
-
-    /**
-     * Sets the ruleRegex.<p>
-     *
-     * @param ruleRegex the ruleRegex to set
-     */
-    public void setRuleRegex(String ruleRegex) {
-
-        m_ruleRegex = ruleRegex;
-    }
-
-    /**
-     * Sets the ruleType.<p>
-     *
-     * @param ruleType the ruleType to set
-     */
-    public void setRuleType(String ruleType) {
-
-        m_ruleType = ruleType;
-    }
-
-    /**
-     * Sets the widget.<p>
-     *
-     * @param widget the widget to set
-     */
-    public void setWidget(String widget) {
-
-        m_widget = widget;
-    }
-
-    /**
-     * Sets the widgetConfiguration.<p>
-     *
-     * @param widgetConfiguration the widgetConfiguration to set
-     */
-    public void setWidgetConfiguration(String widgetConfiguration) {
-
-        m_widgetConfiguration = widgetConfiguration;
     }
 
 }

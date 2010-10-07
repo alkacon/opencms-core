@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/form/Attic/CmsForm.java,v $
- * Date   : $Date: 2010/09/09 15:02:20 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2010/10/07 07:56:34 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,9 @@
 
 package org.opencms.gwt.client.ui.input.form;
 
+import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
+import org.opencms.gwt.client.ui.CmsToggleButton;
 import org.opencms.gwt.client.ui.css.I_CmsInputCss;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsTextBox;
@@ -55,6 +57,8 @@ import java.util.Set;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasKeyPressHandlers;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyPressEvent;
@@ -78,7 +82,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 8.0.0
  * 
@@ -132,14 +136,13 @@ public class CmsForm extends Composite {
         initWidget(m_panel);
         m_panel.addStyleName(CSS.form());
         m_panel.setHeight("500px");
-        m_panel.add(m_basicTab, "Basic");
+        m_panel.add(m_basicTab, Messages.get().key(Messages.GUI_FORM_TAB_BASIC_0));
         m_basicTab.getElement().getStyle().setPaddingLeft(5, Unit.PX);
-        m_panel.add(m_advancedTab, "Advanced");
+        m_panel.add(m_advancedTab, Messages.get().key(Messages.GUI_FORM_TAB_ADVANCED_0));
         m_advancedTab.getElement().getStyle().setPaddingLeft(5, Unit.PX);
         m_panel.addSelectionHandler(new SelectionHandler<Integer>() {
 
             /**
-             * Updates textbox layout when the tab is changed.<p>
              *  
              * @param event the tab selection event 
              */
@@ -156,74 +159,67 @@ public class CmsForm extends Composite {
     }
 
     /**
+     * Adds a double field, with an opener icon next to the first field which can be used to show or hide the second field.<p>
+     * 
+     * @param field1 the first field 
+     * @param field2 the second field 
+     */
+    public void addDoubleField(final I_CmsFormField field1, final I_CmsFormField field2) {
+
+        String initialValue = field1.getWidget().getFormValueAsString();
+        m_initialValues.put(field1.getId(), initialValue);
+
+        initializeFormFieldWidget(field1);
+        final CmsFormRow row1 = addField(field1);
+        initializeFormFieldWidget(field2);
+        final CmsFormRow row2 = addField(field2);
+        row2.getLabel().addStyleName(CSS.weakText());
+
+        row1.setOpenerVisible(true);
+        row1.setOpenerOpen(true);
+        row2.setOpenerVisible(false);
+
+        boolean initiallyOpen = shouldDoubleFieldBeInitiallyOpen(field1, field2);
+        row2.setVisible(initiallyOpen);
+        field2.setIgnore(!initiallyOpen);
+        final CmsToggleButton opener = row1.getOpener();
+        opener.setDown(initiallyOpen);
+        opener.addClickHandler(new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
+
+                field2.setIgnore(!opener.isDown());
+                if (!opener.isDown()) {
+                    // we set it to empty and not to the value of the first field
+                    // here because the user may still edit the first field's value later 
+                    field2.getWidget().setFormValueAsString(null);
+                } else {
+                    field2.getWidget().setFormValueAsString(field1.getWidget().getFormValueAsString());
+                }
+                row2.setVisible(opener.isDown());
+            }
+        });
+    }
+
+    /**
      * Adds a form field to the form.<p>
      * 
      * @param formField the form field which should be added
+     * @return the form row which has been created 
      */
-    @SuppressWarnings("unchecked")
-    public void addField(final I_CmsFormField formField) {
+    public CmsFormRow addField(final I_CmsFormField formField) {
 
         String initialValue = formField.getWidget().getFormValueAsString();
         m_initialValues.put(formField.getId(), initialValue);
         String description = formField.getDescription();
         String labelText = formField.getLabel();
+        initializeFormFieldWidget(formField);
         final I_CmsFormWidget widget = formField.getWidget();
-        if (widget instanceof HasValueChangeHandlers) {
-            ((HasValueChangeHandlers<String>)widget).addValueChangeHandler(new ValueChangeHandler<String>() {
-
-                /**
-                 * @see com.google.gwt.event.logical.shared.ValueChangeHandler#onValueChange(ValueChangeEvent event) 
-                 */
-                public void onValueChange(ValueChangeEvent<String> event) {
-
-                    m_editedFields.add(formField.getId());
-                    formField.setValidationStatus(I_CmsFormField.ValidationStatus.unknown);
-
-                    // if the user presses enter, the keypressed event is fired before the change event,
-                    // so we use a flag to keep track of whether enter was pressed.
-                    if (!m_pressedEnter) {
-                        validateField(formField);
-                    } else {
-                        validateAndSubmit();
-                    }
-                }
-            });
-        }
-
-        if (widget instanceof HasKeyPressHandlers) {
-            ((HasKeyPressHandlers)widget).addKeyPressHandler(new KeyPressHandler() {
-
-                /**
-                 * @see com.google.gwt.event.dom.client.KeyPressHandler#onKeyPress(com.google.gwt.event.dom.client.KeyPressEvent)
-                 */
-                public void onKeyPress(KeyPressEvent event) {
-
-                    int keyCode = event.getNativeEvent().getKeyCode();
-                    if (keyCode == KeyCodes.KEY_ENTER) {
-                        m_pressedEnter = true;
-                        if (widget instanceof I_CmsHasBlur) {
-                            // force a blur because not all browsers send a change event if the user just presses enter in a field
-                            ((I_CmsHasBlur)widget).blur();
-                        }
-                        // make sure that the flag is set to false again after the other events have been processed 
-                        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-
-                            /**
-                             * @see com.google.gwt.core.client.Scheduler.ScheduledCommand#execute()
-                             */
-                            public void execute() {
-
-                                m_pressedEnter = false;
-                            }
-                        });
-                    }
-                }
-
-            });
-        }
-
         m_fields.put(formField.getId(), formField);
-        addRow(labelText, description, (Widget)widget, formField.isAdvanced());
+        CmsFormRow row = addRow(labelText, description, (Widget)widget, formField.isAdvanced());
+        row.setOpenerVisible(false);
+        return row;
+
     }
 
     /**
@@ -312,6 +308,10 @@ public class CmsForm extends Composite {
             String key = entry.getKey();
             String value = null;
             I_CmsFormField field = entry.getValue();
+            if (field.isIgnored()) {
+                result.put(key, null);
+                continue;
+            }
             I_CmsFormWidget widget = field.getWidget();
             value = widget.getFormValueAsString();
             result.put(key, value);
@@ -547,6 +547,85 @@ public class CmsForm extends Composite {
                 updateFieldValidationStatus(fieldId, result);
             }
         };
+    }
+
+    /**
+     * Initializes the widget for a new form field.<p>
+     * 
+     * @param formField the form field whose widget should be initialized 
+     */
+    @SuppressWarnings("unchecked")
+    private void initializeFormFieldWidget(final I_CmsFormField formField) {
+
+        final I_CmsFormWidget widget = formField.getWidget();
+        if (widget instanceof HasValueChangeHandlers<?>) {
+            ((HasValueChangeHandlers<String>)widget).addValueChangeHandler(new ValueChangeHandler<String>() {
+
+                /**
+                 * @see com.google.gwt.event.logical.shared.ValueChangeHandler#onValueChange(ValueChangeEvent event) 
+                 */
+                public void onValueChange(ValueChangeEvent<String> event) {
+
+                    m_editedFields.add(formField.getId());
+                    formField.setValidationStatus(I_CmsFormField.ValidationStatus.unknown);
+
+                    // if the user presses enter, the keypressed event is fired before the change event,
+                    // so we use a flag to keep track of whether enter was pressed.
+                    if (!m_pressedEnter) {
+                        validateField(formField);
+                    } else {
+                        validateAndSubmit();
+                    }
+                }
+            });
+        }
+
+        if (widget instanceof HasKeyPressHandlers) {
+            ((HasKeyPressHandlers)widget).addKeyPressHandler(new KeyPressHandler() {
+
+                /**
+                 * @see com.google.gwt.event.dom.client.KeyPressHandler#onKeyPress(com.google.gwt.event.dom.client.KeyPressEvent)
+                 */
+                public void onKeyPress(KeyPressEvent event) {
+
+                    int keyCode = event.getNativeEvent().getKeyCode();
+                    if (keyCode == KeyCodes.KEY_ENTER) {
+                        m_pressedEnter = true;
+                        if (widget instanceof I_CmsHasBlur) {
+                            // force a blur because not all browsers send a change event if the user just presses enter in a field
+                            ((I_CmsHasBlur)widget).blur();
+                        }
+                        // make sure that the flag is set to false again after the other events have been processed 
+                        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
+                            /**
+                             * @see com.google.gwt.core.client.Scheduler.ScheduledCommand#execute()
+                             */
+                            public void execute() {
+
+                                m_pressedEnter = false;
+                            }
+                        });
+                    }
+                }
+
+            });
+        }
+    }
+
+    /**
+     * Returns true when a double field should be initially opened.<p>
+     * 
+     * @param field1 the first field 
+     * @param field2 the second field 
+     * 
+     * @return true if the double field should be initially opened 
+     */
+    private boolean shouldDoubleFieldBeInitiallyOpen(I_CmsFormField field1, I_CmsFormField field2) {
+
+        String value1 = field1.getWidget().getFormValueAsString();
+        String value2 = field2.getWidget().getFormValueAsString();
+        return !((value2 == null) || value2.equals(value1));
     }
 
     /**

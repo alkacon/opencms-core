@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsHoverbarSubsitemapButton.java,v $
- * Date   : $Date: 2010/06/08 14:42:16 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/10/07 07:56:34 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
  */
@@ -109,7 +109,7 @@ public class CmsHoverbarSubsitemapButton extends CmsPushButton {
                 final String sitePath = hoverbar.getSitePath();
                 final CmsSitemapController controller = hoverbar.getController();
                 boolean isLeaf = controller.getEntry(sitePath).getSubEntries().isEmpty();
-                String sitemapProp = controller.getEntry(sitePath).getProperties().get(
+                String sitemapProp = controller.getEntry(sitePath).getOwnProperty(
                     CmsSitemapManager.Property.sitemap.name());
                 setVisible(CmsStringUtil.isEmptyOrWhitespaceOnly(sitemapProp) && !isLeaf);
                 if (controller.isRoot(sitePath)) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsSitemapData.java,v $
- * Date   : $Date: 2010/06/24 09:05:27 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/10/07 07:56:35 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.ade.sitemap.shared;
 
 import org.opencms.xml.content.CmsXmlContentProperty;
+import org.opencms.xml.sitemap.properties.CmsComputedPropertyValue;
 
 import java.util.Map;
 
@@ -42,7 +43,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0
  */
@@ -68,6 +69,9 @@ public class CmsSitemapData implements IsSerializable {
 
     /** The path at which the sitemap should be opened, or null. */
     private String m_openPath;
+
+    /** A map of properties which the root entry of the sitemap should inherit. */
+    private Map<String, CmsComputedPropertyValue> m_parentProperties;
 
     /** The path to the parent sitemap or <code>null</code>. */
     private String m_parentSitemap;
@@ -99,6 +103,7 @@ public class CmsSitemapData implements IsSerializable {
      * @param templates the available templates
      * @param properties the properties
      * @param clipboardData the clipboard data
+     * @param parentProperties the root entry's parent's inherited properties 
      * @param noEditReason the reason why the current sitemap is not editable
      * @param displayToolbar the flag to control the display of the toolbar
      * @param cntPageType the type of the container page resource
@@ -112,6 +117,7 @@ public class CmsSitemapData implements IsSerializable {
         Map<String, CmsSitemapTemplate> templates,
         Map<String, CmsXmlContentProperty> properties,
         CmsSitemapClipboardData clipboardData,
+        Map<String, CmsComputedPropertyValue> parentProperties,
         String noEditReason,
         boolean displayToolbar,
         int cntPageType,
@@ -128,6 +134,7 @@ public class CmsSitemapData implements IsSerializable {
         m_displayToolbar = displayToolbar;
         m_cntPageType = cntPageType;
         m_parentSitemap = parentSitemap;
+        m_parentProperties = parentProperties;
         m_root = root;
         m_timestamp = timestamp;
         m_openPath = openPath;
@@ -181,6 +188,16 @@ public class CmsSitemapData implements IsSerializable {
     public String getOpenPath() {
 
         return m_openPath;
+    }
+
+    /**
+     * Returns the properties which the root entry of this sitemap should inherit.<p>
+     * 
+     * @return the set of inherited properties 
+     */
+    public Map<String, CmsComputedPropertyValue> getParentProperties() {
+
+        return m_parentProperties;
     }
 
     /**

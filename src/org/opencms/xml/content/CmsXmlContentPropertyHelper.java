@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentPropertyHelper.java,v $
- * Date   : $Date: 2010/09/03 13:27:35 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/10/07 07:56:35 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,6 +52,7 @@ import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.content.CmsXmlContentProperty.PropType;
 import org.opencms.xml.page.CmsXmlPage;
 import org.opencms.xml.sitemap.CmsSitemapEntry;
+import org.opencms.xml.sitemap.properties.CmsSimplePropertyValue;
 import org.opencms.xml.types.CmsXmlNestedContentDefinition;
 import org.opencms.xml.types.CmsXmlVfsFileValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
@@ -59,10 +60,13 @@ import org.opencms.xml.types.I_CmsXmlSchemaType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
@@ -73,7 +77,7 @@ import org.dom4j.Element;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 7.9.2
  */
@@ -153,6 +157,100 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
         Map<String, CmsXmlContentProperty> propConfig) {
 
         return convertProperties(cms, props, propConfig, false);
+    }
+
+    /**
+     * Converts a map from strings to CmsSimplePropertyValue instances between client format and server format.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param props the map of properties to convert 
+     * @param propConfig the property configuration 
+     * @param toClient if true, convert from server format to client format, else convert the other way 
+     * 
+     * @return the convert properties 
+     */
+    public static Map<String, CmsSimplePropertyValue> convertPropertySimpleValues(
+        CmsObject cms,
+        Map<String, CmsSimplePropertyValue> props,
+        Map<String, CmsXmlContentProperty> propConfig,
+        boolean toClient) {
+
+        Map<String, CmsSimplePropertyValue> result = new HashMap<String, CmsSimplePropertyValue>();
+        for (Map.Entry<String, CmsSimplePropertyValue> entry : props.entrySet()) {
+            CmsXmlContentProperty propDef = propConfig.get(entry.getKey());
+            String type = "string";
+            if (propDef != null) {
+                type = propDef.getPropertyType();
+            }
+            CmsSimplePropertyValue convertedValue = convertSimplePropertyValue(cms, entry.getValue(), type, toClient);
+            result.put(entry.getKey(), convertedValue);
+        }
+        return result;
+    }
+
+    /**
+     * Converts a Map of simple properties to a map of strings.<p>
+     * 
+     * @param newProps a map of simple properties 
+     * @return the converted map of strings 
+     */
+    public static Map<String, String> convertSimpleToStringProperties(Map<String, CmsSimplePropertyValue> newProps) {
+
+        Map<String, String> result = new HashMap<String, String>();
+        for (Map.Entry<String, CmsSimplePropertyValue> entry : newProps.entrySet()) {
+            String propName = entry.getKey();
+            CmsSimplePropertyValue propValue = entry.getValue();
+            result.put(propName, propValue.getOwnValue());
+            if ((propValue.getInheritValue() != null) && !propValue.getInheritValue().equals(propValue.getOwnValue())) {
+                result.put("#" + propName, propValue.getInheritValue());
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Converts a Map of strings to a map of simple properties.<p>
+     * 
+     * @param oldProps a string map 
+     * @return a map of simple properties 
+     */
+    public static Map<String, CmsSimplePropertyValue> convertStringToSimpleProperties(Map<String, String> oldProps) {
+
+        Set<String> baseNames = new HashSet<String>();
+        for (String key : oldProps.keySet()) {
+            baseNames.add(getPropertyBaseName(key));
+        }
+        Map<String, CmsSimplePropertyValue> result = new HashMap<String, CmsSimplePropertyValue>();
+        for (String propName : baseNames) {
+            String ownName = oldProps.get(propName);
+            String inheritName = oldProps.get("#" + propName);
+            // ownName and inheritName can't both be null
+            if (inheritName == null) {
+                inheritName = ownName;
+            }
+            CmsSimplePropertyValue property = new CmsSimplePropertyValue(ownName, inheritName);
+            result.put(propName, property);
+        }
+        return result;
+    }
+
+    /**
+     * Creates a deep copy of a property configuration map.<p>
+     * 
+     * @param propConfig the property configuration which should be copied 
+     *  
+     * @return a copy of the property configuration 
+     */
+    public static Map<String, CmsXmlContentProperty> copyPropertyConfiguration(
+        Map<String, CmsXmlContentProperty> propConfig) {
+
+        Map<String, CmsXmlContentProperty> result = new LinkedHashMap<String, CmsXmlContentProperty>();
+        for (Map.Entry<String, CmsXmlContentProperty> entry : propConfig.entrySet()) {
+            String key = entry.getKey();
+            CmsXmlContentProperty propDef = entry.getValue();
+            result.put(key, propDef.copy());
+        }
+        return result;
     }
 
     /**
@@ -371,6 +469,18 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
     }
 
     /**
+     * Returns true if the property name passed as a parameter is the name of a special system property.<p>
+     * 
+     * @param name the property name 
+     * 
+     * @return true if the property name is the name of a special property 
+     */
+    public static boolean isSpecialProperty(String name) {
+
+        return name.startsWith("#");
+    }
+
+    /**
      * Extends the given properties with the default values 
      * from the resource's property configuration.<p>
      * 
@@ -514,6 +624,28 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
     }
 
     /**
+     * Reads properties from an XML content and returns them as a map from strings to {@link CmsSimplePropertyValue} objects.<p>
+     * 
+     * @param xmlContent the XML content 
+     * @param locale the locale in which to read 
+     * @param element the element from which the properties should be read 
+     * @param elemPath the path of the element 
+     * @param elemDef the content definition 
+     * 
+     * @return the properties which were read from the XML content 
+     */
+    public static Map<String, CmsSimplePropertyValue> readSimpleProperties(
+        CmsXmlContent xmlContent,
+        Locale locale,
+        Element element,
+        String elemPath,
+        CmsXmlContentDefinition elemDef) {
+
+        Map<String, String> stringProps = readProperties(xmlContent, locale, element, elemPath, elemDef);
+        return convertStringToSimpleProperties(stringProps);
+    }
+
+    /**
      * Resolves macros in all properties in a map.<p>
      * 
      * @param properties the map of properties in which macros should be resolved 
@@ -558,7 +690,8 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
             resolver.resolveMacros(property.getNiceName()),
             resolver.resolveMacros(property.getDescription()),
             resolver.resolveMacros(property.getError()),
-            property.getAdvanced());
+            property.getAdvanced(),
+            property.getSelectInherit());
         return result;
     }
 
@@ -587,7 +720,8 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
         for (Map.Entry<String, String> property : properties.entrySet()) {
             String propName = property.getKey();
             String propValue = property.getValue();
-            if (!propertiesConf.containsKey(propName) || (propValue == null)) {
+            boolean isSpecial = isSpecialProperty(propName);
+            if (!isSpecial && (!propertiesConf.containsKey(propName) || (propValue == null))) {
                 continue;
             }
             // only if the property is configured in the schema we will save it
@@ -596,15 +730,39 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
             // the property name
             propElement.addElement(CmsXmlContentProperty.XmlNode.Name.name()).addCDATA(propName);
             Element valueElement = propElement.addElement(CmsXmlContentProperty.XmlNode.Value.name());
-
-            // the property value
-            if (!CmsXmlContentProperty.PropType.isVfsList(propertiesConf.get(propName).getPropertyType())) {
+            String baseName = isSpecial ? propName.substring(1) : propName;
+            boolean isVfs = false;
+            CmsXmlContentProperty propDef = propertiesConf.get(baseName);
+            if (propDef != null) {
+                isVfs = CmsXmlContentProperty.PropType.isVfsList(propDef.getPropertyType());
+            }
+            if (!isVfs) {
                 // string value
                 valueElement.addElement(CmsXmlContentProperty.XmlNode.String.name()).addCDATA(propValue);
             } else {
                 addFileListPropertyValue(cms, valueElement, propValue);
             }
         }
+    }
+
+    /**
+     * Saves a map from strings to {@link CmsSimplePropertyValue} objects in an XML content.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param parentElement the parent element in the XML content 
+     * @param properties the map of properties which should be saved 
+     * @param resource the resource to get the property configuration from
+     * @param propertiesConf the property configuration 
+     */
+    public static void saveSimpleProperties(
+        CmsObject cms,
+        Element parentElement,
+        Map<String, CmsSimplePropertyValue> properties,
+        CmsResource resource,
+        Map<String, CmsXmlContentProperty> propertiesConf) {
+
+        Map<String, String> stringProps = convertSimpleToStringProperties(properties);
+        saveProperties(cms, parentElement, stringProps, resource, propertiesConf);
     }
 
     /**
@@ -711,20 +869,66 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
         for (Map.Entry<String, String> entry : props.entrySet()) {
             String propName = entry.getKey();
             String propValue = entry.getValue();
-            CmsXmlContentProperty configEntry = propConfig.get(propName);
+            String type;
+            CmsXmlContentProperty configEntry = getPropertyConfig(propConfig, propName);
             if (configEntry == null) {
                 continue; // ignore properties which are not configured anymore 
             }
-            String type = configEntry.getPropertyType();
-            String newValue;
-            if (toClient) {
-                newValue = CmsXmlContentPropertyHelper.getPropValuePaths(cms, type, propValue);
-            } else {
-                newValue = CmsXmlContentPropertyHelper.getPropValueIds(cms, type, propValue);
-            }
+            type = configEntry.getPropertyType();
+
+            String newValue = convertStringPropertyValue(cms, propValue, type, toClient);
             result.put(propName, newValue);
         }
         return result;
+    }
+
+    /**
+     * Converts a {@link CmsSimplePropertyValue} object between client and server format.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param propValue the property value to translate 
+     * @param type the type of the property 
+     * @param toClient if true, converts from server to client format, else converts from client format to server format 
+     * 
+     * @return the converted property value 
+     */
+    protected static CmsSimplePropertyValue convertSimplePropertyValue(
+        CmsObject cms,
+        CmsSimplePropertyValue propValue,
+        String type,
+        boolean toClient) {
+
+        String ownValue = propValue.getOwnValue();
+        String inheritValue = propValue.getInheritValue();
+        if ((ownValue != null) && ownValue.equals(inheritValue)) {
+            String converted = convertStringPropertyValue(cms, ownValue, type, toClient);
+            return new CmsSimplePropertyValue(converted, converted);
+        }
+        String ownValueConverted = convertStringPropertyValue(cms, ownValue, type, toClient);
+        String inheritValueConverted = convertStringPropertyValue(cms, inheritValue, type, toClient);
+        return new CmsSimplePropertyValue(ownValueConverted, inheritValueConverted);
+    }
+
+    /**
+     * Converts a property value given as a string between server format and client format.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param propValue the property value to convert 
+     * @param type the type of the property
+     * @param toClient if true, convert to client format, else convert to server format 
+     * 
+     * @return the converted property value 
+     */
+    protected static String convertStringPropertyValue(CmsObject cms, String propValue, String type, boolean toClient) {
+
+        if (propValue == null) {
+            return null;
+        }
+        if (toClient) {
+            return CmsXmlContentPropertyHelper.getPropValuePaths(cms, type, propValue);
+        } else {
+            return CmsXmlContentPropertyHelper.getPropValueIds(cms, type, propValue);
+        }
     }
 
     /**
@@ -751,6 +955,42 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
             result = new CmsVfsFileValueBean(cms.getRequestContext().addSiteRoot(uri), id);
         }
         return result;
+
+    }
+
+    /**
+     * Returns the base name of a given property name.<p>
+     * 
+     * If propName starts with a '#' character, the base name equals the part 
+     * after the '#', otherwise the base name is identical to propName.<p>
+     * 
+     * @param propName a property name 
+     * @return the base name of the property name 
+     */
+    protected static String getPropertyBaseName(String propName) {
+
+        if (propName.startsWith("#")) {
+            return propName.substring(1);
+        }
+        return propName;
+    }
+
+    /**
+     * Helper method for accessing the property configuration for a single property.<p>
+     * 
+     * This method uses the base name of the property to access the property configuration,
+     * i.e. if propName starts with a '#', the part after the '#' will be used as the key for 
+     * the property configuration.<p>
+     * 
+     * @param propertyConfig the property configuration map 
+     * @param propName the name of a property 
+     * @return the property configuration for the given property name 
+     */
+    protected static CmsXmlContentProperty getPropertyConfig(
+        Map<String, CmsXmlContentProperty> propertyConfig,
+        String propName) {
+
+        return propertyConfig.get(getPropertyBaseName(propName));
     }
 
 }

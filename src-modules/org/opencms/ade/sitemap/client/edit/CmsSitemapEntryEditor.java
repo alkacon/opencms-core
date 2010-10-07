@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/edit/Attic/CmsSitemapEntryEditor.java,v $
- * Date   : $Date: 2010/09/09 15:02:20 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/10/07 07:56:35 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,7 +37,6 @@ import org.opencms.ade.sitemap.client.ui.CmsTemplateSelectBox;
 import org.opencms.ade.sitemap.client.ui.CmsTemplateSelectCell;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsSitemapTemplate;
-import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.CmsTextBox;
 import org.opencms.gwt.client.ui.input.I_CmsFormField;
 import org.opencms.gwt.client.ui.input.form.CmsBasicFormField;
@@ -48,8 +47,12 @@ import org.opencms.util.CmsPair;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.sitemap.CmsSitemapManager;
+import org.opencms.xml.sitemap.properties.CmsSimplePropertyValue;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -59,7 +62,7 @@ import java.util.Set;
  * 
  *  @author Georg Westenberger
  *  
- *  @version $Revision: 1.11 $
+ *  @version $Revision: 1.12 $
  *  
  *  @since 8.0.0
  */
@@ -123,25 +126,57 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
              */
             public void onSubmitForm(Map<String, String> fieldValues, Set<String> editedFields) {
 
+                Map<String, CmsSimplePropertyValue> simpleProps;
+
                 final String titleValue = getAndRemoveValue(fieldValues, FIELD_TITLE);
-                CmsPair<String, String> templateProps = getTemplateProperties(fieldValues);
-                fieldValues.put(CmsSitemapManager.Property.template.toString(), templateProps.getFirst());
-                fieldValues.put(CmsSitemapManager.Property.templateInherited.toString(), templateProps.getSecond());
                 if (!m_handler.hasEditableName()) {
                     // The root element's name can't be edited 
                     hide();
-                    m_handler.handleSubmit(titleValue, "", null, fieldValues, editedFields.contains("field_urlname"));
+                    simpleProps = convertProperties(fieldValues);
+                    m_handler.handleSubmit(titleValue, "", null, simpleProps, editedFields.contains("field_urlname"));
                     return;
                 }
                 final String urlNameValue = getAndRemoveValue(fieldValues, FIELD_URLNAME);
+                simpleProps = convertProperties(fieldValues);
                 m_handler.handleSubmit(
                     titleValue,
                     urlNameValue,
                     null,
-                    fieldValues,
+                    simpleProps,
                     editedFields.contains(FIELD_URLNAME));
             }
         });
+    }
+
+    /**
+     * Adds a form field for a given property.<p>
+     * 
+     * @param propDef the property definition 
+     * @param entry the entry being edited 
+     */
+    public void addFieldForProperty(CmsXmlContentProperty propDef, CmsClientSitemapEntry entry) {
+
+        String name = propDef.getPropertyName();
+
+        String selectInherit = propDef.getSelectInherit();
+        if ((selectInherit != null) && !Boolean.parseBoolean(selectInherit)) {
+            I_CmsFormField f1 = createField(propDef);
+            f1.getWidget().setFormValueAsString(entry.getOwnProperty(name));
+            f1.setId("#" + name);
+            m_form.addField(f1);
+        } else {
+            Map<String, CmsSimplePropertyValue> props = entry.getProperties();
+            CmsSimplePropertyValue prop = props.get(name);
+            if (prop == null) {
+                prop = new CmsSimplePropertyValue(null, null);
+            }
+            I_CmsFormField f1 = createField(propDef);
+            f1.getWidget().setFormValueAsString(prop.getInheritValue());
+            f1.setId("#" + name);
+            I_CmsFormField f2 = createField(propDef);
+            f2.getWidget().setFormValueAsString(prop.getOwnValue());
+            m_form.addDoubleField(f1, f2);
+        }
     }
 
     /**
@@ -162,22 +197,13 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
         CmsBasicFormField titleField = createTitleField();
         form.addField(titleField);
 
-        Map<String, String> properties = m_handler.getEntry().getProperties();
-        String propTemplate = properties.get(CmsSitemapManager.Property.template.toString());
-        String propTemplateInherited = properties.get(CmsSitemapManager.Property.templateInherited.toString());
-        boolean inheritTemplate = (propTemplate != null) && propTemplate.equals(propTemplateInherited);
-        CmsBasicFormField templateField = createTemplateField();
-        String initialTemplate = propTemplate != null ? propTemplate : "";
-        form.addField(templateField, initialTemplate);
+        CmsClientSitemapEntry entry = m_handler.getEntry();
+        Collection<CmsXmlContentProperty> propertyDefs = m_propertyConfig.values();
 
-        CmsBasicFormField templateInheritField = createTemplateInheritField();
-        form.addField(templateInheritField, "" + inheritTemplate);
-
-        Map<String, I_CmsFormField> formFields = CmsBasicFormField.createFields(m_propertyConfig.values());
-        for (I_CmsFormField field : formFields.values()) {
-            String currentValue = properties.get(field.getId());
-            form.addField(field, currentValue);
+        for (CmsXmlContentProperty propDef : propertyDefs) {
+            addFieldForProperty(propDef, entry);
         }
+
         form.setValidatorClass("org.opencms.ade.sitemap.CmsSitemapFormValidator");
         center();
     }
@@ -189,6 +215,42 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
 
         start();
         getForm().doInitialValidation();
+    }
+
+    /**
+     * Helper method for converting a map of strings to a map of {@link CmsSimplePropertyValue} instances.<p>
+     * 
+     * @param strProps the properties as a map of strings 
+     * @return a map from strings to {@link CmsSimplePropertyValue} instances 
+     */
+    protected Map<String, CmsSimplePropertyValue> convertProperties(Map<String, String> strProps) {
+
+        Map<String, CmsSimplePropertyValue> result = new LinkedHashMap<String, CmsSimplePropertyValue>();
+
+        Set<String> baseNames = new LinkedHashSet<String>();
+        for (String key : strProps.keySet()) {
+            if (key.startsWith("#")) {
+                baseNames.add(key.substring(1));
+            } else {
+                baseNames.add(key);
+            }
+        }
+        for (String key : baseNames) {
+            String own = strProps.get(key);
+            String inherit = strProps.get("#" + key);
+
+            if (inherit == null) {
+                result.put(key, null);
+                continue;
+            }
+            if (own == null) {
+                own = inherit;
+            }
+            CmsSimplePropertyValue prop = new CmsSimplePropertyValue(own, inherit);
+            result.put(key, prop);
+        }
+        return result;
+
     }
 
     /**
@@ -297,6 +359,20 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
     }
 
     /**
+     * Helper method for creating a form field from a property definition.<p>
+     * 
+     * @param propDef the property definition for which the field should be created 
+     * @return a new field 
+     */
+    private I_CmsFormField createField(CmsXmlContentProperty propDef) {
+
+        if (propDef.getPropertyName().equals("template")) {
+            return createTemplateField();
+        }
+        return CmsBasicFormField.createField(propDef);
+    }
+
+    /**
      * Helper method for creating the form field for selecting a template.<p>
      * 
      * @return the template form field 
@@ -307,26 +383,6 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
         String label = message(Messages.GUI_TEMPLATE_PROPERTY_TITLE_0);
         CmsTemplateSelectBox select = createTemplateSelector(m_controller.getData().getTemplates());
         return new CmsBasicFormField(FIELD_TEMPLATE, description, label, null, select, false);
-    }
-
-    /** 
-     * Helper method for creating the form field for selecting whether the template should be inherited or not.<p>
-     * 
-     * @return the new form field 
-     */
-    private CmsBasicFormField createTemplateInheritField() {
-
-        String description = "";
-        String label = "";
-        CmsCheckBox checkbox = new CmsCheckBox(message(Messages.GUI_TEMPLATE_INHERIT_0));
-        CmsBasicFormField result = new CmsBasicFormField(
-            FIELD_TEMPLATE_INHERIT_CHECKBOX,
-            description,
-            label,
-            null,
-            checkbox,
-            false);
-        return result;
     }
 
     /**
@@ -432,4 +488,5 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
         }
         return result;
     }
+
 }

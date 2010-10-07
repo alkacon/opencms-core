@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/Messages.java,v $
- * Date   : $Date: 2010/09/01 10:15:19 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2010/10/07 07:56:35 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.client.util.CmsMessages;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 8.0.0
  */
@@ -205,6 +205,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_URLNAME_PROPERTY_DESC_0 = "GUI_URLNAME_PROPERTY_DESC_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USE_FOR_SUBPAGES_0 = "GUI_USE_FOR_SUBPAGES_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_VFS_PATH_0 = "GUI_VFS_PATH_0";

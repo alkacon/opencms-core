@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapEntry.java,v $
- * Date   : $Date: 2010/09/24 07:01:23 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2010/10/07 07:56:35 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,8 @@ package org.opencms.xml.sitemap;
 
 import org.opencms.file.CmsObject;
 import org.opencms.util.CmsUUID;
+import org.opencms.xml.sitemap.properties.CmsComputedPropertyValue;
+import org.opencms.xml.sitemap.properties.CmsSimplePropertyValue;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -43,17 +45,23 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 7.6 
  */
 public class CmsSitemapEntry {
 
+    /** The map of properties computed by inheritance. */
+    protected Map<String, CmsComputedPropertyValue> m_computedProperties;
+
     /** The inherited properties. */
-    protected Map<String, String> m_inheritedProperties;
+    //protected Map<String, String> m_inheritedProperties;
 
     /** The entry name. */
     protected String m_name;
+
+    /** The map of this entry's individual properties. */
+    protected Map<String, CmsSimplePropertyValue> m_newProperties;
 
     /** The original uri, without entry point info nor content ID. */
     protected String m_originalUri;
@@ -62,7 +70,7 @@ public class CmsSitemapEntry {
     protected int m_position;
 
     /** The configured properties. */
-    protected final Map<String, String> m_properties;
+    //protected final Map<String, String> m_properties;
 
     /** The content id, for detail pages. */
     private CmsUUID m_contentId;
@@ -96,8 +104,8 @@ public class CmsSitemapEntry {
             entry.getName(),
             entry.getTitle(),
             entry.isRootEntry(),
-            entry.getProperties(),
-            entry.getInheritedProperties(),
+            entry.getNewProperties(),
+            entry.getComputedProperties(),
             entry.getContentId());
     }
 
@@ -110,8 +118,8 @@ public class CmsSitemapEntry {
      * @param name the entry's name
      * @param title the entry's title
      * @param isRoot true if this is the root entry of a root sitemap 
-     * @param properties the properties as a map of name/value pairs
-     * @param inheritedProperties the properties as a map of name/value pairs
+     * @param ownProperties the entry's individual properties 
+     * @param computedProperties the entry's properties which were computed by inheritance
      * @param contentId optional content id
      **/
     public CmsSitemapEntry(
@@ -121,8 +129,8 @@ public class CmsSitemapEntry {
         String name,
         String title,
         boolean isRoot,
-        Map<String, String> properties,
-        Map<String, String> inheritedProperties,
+        Map<String, CmsSimplePropertyValue> ownProperties,
+        Map<String, CmsComputedPropertyValue> computedProperties,
         CmsUUID contentId) {
 
         m_id = id;
@@ -131,13 +139,13 @@ public class CmsSitemapEntry {
         m_title = title;
         m_isRootEntry = isRoot;
         // do not freeze the properties
-        m_properties = new HashMap<String, String>();
-        if (properties != null) {
-            m_properties.putAll(properties);
+        m_newProperties = new HashMap<String, CmsSimplePropertyValue>();
+        if (ownProperties != null) {
+            m_newProperties.putAll(ownProperties);
         }
-        m_inheritedProperties = new HashMap<String, String>();
-        if (inheritedProperties != null) {
-            m_inheritedProperties.putAll(inheritedProperties);
+        m_computedProperties = new HashMap<String, CmsComputedPropertyValue>();
+        if (computedProperties != null) {
+            m_computedProperties.putAll(computedProperties);
         }
         m_originalUri = originalUri;
         if (m_originalUri.equals("/")) {
@@ -157,6 +165,16 @@ public class CmsSitemapEntry {
             return false;
         }
         return m_id.equals(((CmsSitemapEntry)o).getId());
+    }
+
+    /**
+     * Returns the properties which were computed by inheritance.<p>
+     * 
+     * @return returns the map of computed properties  
+     */
+    public Map<String, CmsComputedPropertyValue> getComputedProperties() {
+
+        return Collections.unmodifiableMap(m_computedProperties);
     }
 
     /**
@@ -185,13 +203,17 @@ public class CmsSitemapEntry {
     }
 
     /**
-     * Returns the inherited properties.<p>
+     * Returns a map of the inherited properties, in the form of strings.<p>
      * 
-     * @return the inherited properties
+     * @return a map of inherited properties 
      */
     public Map<String, String> getInheritedProperties() {
 
-        return m_inheritedProperties;
+        Map<String, String> result = new HashMap<String, String>();
+        for (Map.Entry<String, CmsComputedPropertyValue> entry : m_computedProperties.entrySet()) {
+            result.put(entry.getKey(), entry.getValue().getOwnValue());
+        }
+        return result;
     }
 
     /**
@@ -202,6 +224,16 @@ public class CmsSitemapEntry {
     public String getName() {
 
         return m_name;
+    }
+
+    /**
+     * Returns a map of this entry's own properties as {@link CmsSimplePropertyValue} instances.<p>
+     * 
+     * @return the map of this entry's own properties 
+     */
+    public Map<String, CmsSimplePropertyValue> getNewProperties() {
+
+        return Collections.unmodifiableMap(m_newProperties);
     }
 
     /**
@@ -225,29 +257,29 @@ public class CmsSitemapEntry {
     }
 
     /**
-     * Returns the configured properties.<p>
+     * Returns a map of this entry's own properties as strings.<p>
      * 
-     * @return the configured properties
+     * @return a map of this entry's own properties as strings 
      */
     public Map<String, String> getProperties() {
 
-        return Collections.unmodifiableMap(m_properties);
+        Map<String, String> result = new HashMap<String, String>();
+        for (Map.Entry<String, CmsSimplePropertyValue> entry : m_newProperties.entrySet()) {
+            result.put(entry.getKey(), entry.getValue().getOwnValue());
+        }
+        return result;
     }
 
     /**
-     * Returns the properties.<p>
+     * Returns a map of this entry's properties as strings.<p>
      * 
-     * @param search if taking into account inherited properties or not
-     * 
-     * @return the properties
+     * @param search if true, returns all properties including the ones that have been inherited; else only return this entry's own properties
+     *  
+     * @return a map of this entry's properties 
      */
     public Map<String, String> getProperties(boolean search) {
 
-        if (search) {
-            return getInheritedProperties();
-        } else {
-            return getProperties();
-        }
+        return search ? getInheritedProperties() : getProperties();
     }
 
     /**
@@ -301,16 +333,11 @@ public class CmsSitemapEntry {
      */
     public String getTemplate(String defaultValue) {
 
-        Map<String, String> ownProperties = getProperties(false);
-        Map<String, String> allProperties = getProperties(true);
-
-        if (ownProperties.containsKey(CmsSitemapManager.Property.template.getName())) {
-            return ownProperties.get(CmsSitemapManager.Property.template.getName());
-        } else if (allProperties.containsKey(CmsSitemapManager.Property.templateInherited.getName())) {
-            return allProperties.get(CmsSitemapManager.Property.templateInherited.getName());
-        } else {
+        CmsComputedPropertyValue templateProp = m_computedProperties.get(CmsSitemapManager.Property.template.name());
+        if ((templateProp == null) || (templateProp.getOwnValue() == null)) {
             return defaultValue;
         }
+        return templateProp.getOwnValue();
     }
 
     /**

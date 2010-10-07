@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsSitemapService.java,v $
- * Date   : $Date: 2010/09/03 13:27:35 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2010/10/07 07:56:34 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -76,6 +76,8 @@ import org.opencms.xml.sitemap.CmsSitemapManager;
 import org.opencms.xml.sitemap.CmsXmlSitemap;
 import org.opencms.xml.sitemap.CmsXmlSitemapFactory;
 import org.opencms.xml.sitemap.I_CmsSitemapChange;
+import org.opencms.xml.sitemap.properties.CmsComputedPropertyValue;
+import org.opencms.xml.sitemap.properties.CmsSimplePropertyValue;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -97,7 +99,7 @@ import org.apache.commons.collections.map.MultiValueMap;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.34 $ 
+ * @version $Revision: 1.35 $ 
  * 
  * @since 8.0.0
  * 
@@ -300,11 +302,20 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
                 resolver);
             String parentSitemap = OpenCms.getSitemapManager().getParentSitemap(cms, sitemapUri);
             String openPath = getRequest().getParameter("path");
+
+            CmsSitemapEntry entry = OpenCms.getSitemapManager().getParentEntryOfSitemap(cms, sitemapUri);
+            Map<String, CmsComputedPropertyValue> parentProperties = new HashMap<String, CmsComputedPropertyValue>();
+
+            if (entry != null) {
+                parentProperties = entry.getComputedProperties();
+            }
+
             result = new CmsSitemapData(
                 getDefaultTemplate(sitemapUri),
                 getTemplates(),
                 resolvedProps,
                 getClipboardData(),
+                parentProperties,
                 getNoEditReason(cms, getRequest()),
                 isDisplayToolbar(getRequest()),
                 OpenCms.getResourceManager().getResourceType(CmsResourceTypeXmlContainerPage.getStaticTypeName()).getTypeId(),
@@ -586,7 +597,7 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
             entry.getPosition(),
             entry.getTitle(),
             cms.getSitePath(resource),
-            entry.getProperties(),
+            entry.getNewProperties(),
             entryPoint,
             entry.getId());
         return result;
@@ -718,14 +729,15 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
                 entry.getPosition(),
                 entry.getTitle(),
                 cms.getSitePath(childRes),
-                entry.getProperties(),
+                entry.getNewProperties(),
                 entry.getId());
             changes.add(newChildChange);
         }
 
         // remove sitemap property from the parent entry of the sub-sitemap 
         CmsResource resource = cms.readResource(rootEntry.getStructureId());
-        Map<String, String> newProps = new HashMap<String, String>(rootEntry.getProperties());
+        Map<String, CmsSimplePropertyValue> newProps = new HashMap<String, CmsSimplePropertyValue>(
+            rootEntry.getNewProperties());
         newProps.remove(CmsSitemapManager.Property.sitemap.name());
         CmsSitemapChangeEdit editParentChange = new CmsSitemapChangeEdit(
             rootEntry.getSitePath(getCmsObject()),
@@ -757,8 +769,12 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
         for (CmsInternalSitemapEntry childEntry : entry.getSubEntries()) {
             result.add(new CmsSitemapChangeDelete(childEntry.getSitePath(cms)));
         }
-        Map<String, String> newProps = new HashMap<String, String>(entry.getProperties());
-        newProps.put(CmsSitemapManager.Property.sitemap.getName(), subSitemapRes.getStructureId().toString());
+        Map<String, CmsSimplePropertyValue> newProps = new HashMap<String, CmsSimplePropertyValue>(
+            entry.getNewProperties());
+
+        String sitemapId = subSitemapRes.getStructureId().toString();
+        CmsSimplePropertyValue sitemapProp = new CmsSimplePropertyValue(sitemapId, sitemapId);
+        newProps.put(CmsSitemapManager.Property.sitemap.getName(), sitemapProp);
 
         CmsResource originalResource = cms.readResource(entry.getStructureId());
         String originalVfsPath = cms.getRequestContext().removeSiteRoot(originalResource.getRootPath());
@@ -1073,14 +1089,16 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
             vfsPath = e.getLocalizedMessage(getCmsObject().getRequestContext().getLocale());
         }
         clientEntry.setVfsPath(vfsPath);
-        Map<String, String> clientProperties = CmsXmlContentPropertyHelper.convertPropertiesToClientFormat(
+        Map<String, CmsSimplePropertyValue> clientProperties = CmsXmlContentPropertyHelper.convertPropertySimpleValues(
             getCmsObject(),
-            entry.getProperties(),
-            propertyConfig);
+            entry.getNewProperties(),
+            propertyConfig,
+            true);
+
         clientEntry.setProperties(clientProperties);
         clientEntry.setSitePath(entry.getSitePath(getCmsObject()));
         clientEntry.setPosition(entry.getPosition());
         return clientEntry;
-    }
 
+    }
 }

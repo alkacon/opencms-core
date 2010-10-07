@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/ui/Attic/CmsTemplateSelectCell.java,v $
- * Date   : $Date: 2010/05/31 08:15:40 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/10/07 07:56:35 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -109,7 +109,8 @@ public class CmsTemplateSelectCell extends A_CmsSelectCell implements I_CmsTrunc
     @Override
     public String getValue() {
 
-        return m_template.getSitePath();
+        String result = m_template.getSitePath();
+        return result;
     }
 
     /**

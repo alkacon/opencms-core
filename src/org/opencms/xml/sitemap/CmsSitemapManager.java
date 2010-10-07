@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2010/10/04 14:53:39 $
- * Version: $Revision: 1.57 $
+ * Date   : $Date: 2010/10/07 07:56:35 $
+ * Version: $Revision: 1.58 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,6 +56,9 @@ import org.opencms.workplace.CmsWorkplace;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.containerpage.CmsADEDefaultConfiguration;
 import org.opencms.xml.content.CmsXmlContentProperty;
+import org.opencms.xml.content.CmsXmlContentPropertyHelper;
+import org.opencms.xml.sitemap.properties.CmsComputedPropertyValue;
+import org.opencms.xml.sitemap.properties.CmsSimplePropertyValue;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -77,7 +80,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.57 $
+ * @version $Revision: 1.58 $
  * 
  * @since 7.9.2
  */
@@ -202,11 +205,11 @@ public class CmsSitemapManager {
             "",
             entry.getTitle(),
             false,
-            entry.getProperties(),
+            entry.getNewProperties(),
             new ArrayList<CmsInternalSitemapEntry>(),
             entry.getContentId());
 
-        clone.setRuntimeInfo(entry.getSitePath(cms), 0, new HashMap<String, String>());
+        clone.setRuntimeInfo(entry.getSitePath(cms), 0, new HashMap<String, CmsComputedPropertyValue>());
         return clone;
     }
 
@@ -364,6 +367,7 @@ public class CmsSitemapManager {
             return cms.getSitePath(resource);
         }
         return entry.getSitePath(cms);
+
     }
 
     /**
@@ -410,7 +414,6 @@ public class CmsSitemapManager {
      */
     public CmsResource getDefaultTemplate(CmsObject cms, String sitemapUri, ServletRequest request) throws CmsException {
 
-        //TODO: use the properties inherited from super-sitemaps to find the default template
         CmsProperty prop = cms.readPropertyObject(sitemapUri, CmsPropertyDefinition.PROPERTY_TEMPLATE, true);
         String templatePath = prop.getValue();
         try {
@@ -496,7 +499,7 @@ public class CmsSitemapManager {
                 result.put(prop.getPropertyName(), prop);
             }
         }
-        return result;
+        return CmsXmlContentPropertyHelper.copyPropertyConfiguration(result);
     }
 
     /**
@@ -618,9 +621,11 @@ public class CmsSitemapManager {
         String title = cms.readPropertyObject(contentRes, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue(
             id.toString());
         // clone & extend the properties
-        HashMap<String, String> entryProps = new HashMap<String, String>(entry.getProperties());
+        HashMap<String, CmsSimplePropertyValue> entryProps = new HashMap<String, CmsSimplePropertyValue>(
+            entry.getNewProperties());
         // detail pages are NEVER shown in the navigation
-        entryProps.put(Property.navigation.getName(), Boolean.FALSE.toString());
+        CmsSimplePropertyValue navValue = new CmsSimplePropertyValue("false", "false");
+        entryProps.put(Property.navigation.getName(), navValue);
         // create entry
         CmsInternalSitemapEntry contentEntry = new CmsInternalSitemapEntry(
             entry.getId(),
@@ -632,7 +637,7 @@ public class CmsSitemapManager {
             entryProps,
             null,
             id);
-        contentEntry.setRuntimeInfo(entry.getEntryPoint(), 0, entry.getInheritedProperties());
+        contentEntry.setRuntimeInfo(entry.getEntryPoint(), 0, entry.getComputedProperties());
         return contentEntry;
     }
 
@@ -684,6 +689,51 @@ public class CmsSitemapManager {
         } else {
             return null;
         }
+    }
+
+    /**
+     * Returns the parent entry of a given sitemap entry.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param entry the entry whose parent should be retrieved
+     *  
+     * @return the parent of the entry 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public CmsSitemapEntry getParentEntry(CmsObject cms, CmsSitemapEntry entry) throws CmsException {
+
+        if (entry.isRootEntry()) {
+            return null;
+        }
+        String uri = entry.getSitePath(cms);
+        String parentUri = CmsResource.getParentFolder(uri);
+        CmsSitemapEntry parent = getEntryForUri(cms, parentUri);
+        return parent;
+    }
+
+    /**
+     * Returns the entry which refers to a sub-sitemap with a given URI.
+     * 
+     * @param cms the current CMS context 
+     * @param sitemapUri the URI of the sub-sitemap
+     *  
+     * @return the parent entry
+     *  
+     * @throws CmsException if something goes wrong 
+     */
+    public CmsSitemapEntry getParentEntryOfSitemap(CmsObject cms, String sitemapUri) throws CmsException {
+
+        Map<String, String> entryPoints = m_cache.getEntryPoints(cms);
+        String sitemapRootUri = cms.getRequestContext().addSiteRoot(sitemapUri);
+        String entryPoint = entryPoints.get(sitemapRootUri);
+        entryPoint = cms.getRequestContext().removeSiteRoot(entryPoint);
+        CmsSitemapEntry entry = getEntryForUri(cms, entryPoint);
+        if (entry.isRootEntry()) {
+            return null;
+        }
+        String parentUri = CmsResource.getParentFolder(entryPoint);
+        return getEntryForUri(cms, parentUri);
     }
 
     /**
@@ -1096,7 +1146,9 @@ public class CmsSitemapManager {
             if (currentEntry.getStructureId().equals(resourceId)) {
                 return currentEntry;
             }
-            if (currentEntry.getProperties().get(CmsSitemapManager.Property.sitemap.name()) == null) {
+            CmsSimplePropertyValue sitemapProp = currentEntry.getNewProperties().get(
+                CmsSitemapManager.Property.sitemap.name());
+            if (sitemapProp == null) {
                 entriesToProcess.addAll(currentEntry.getSubEntries());
             }
         }
