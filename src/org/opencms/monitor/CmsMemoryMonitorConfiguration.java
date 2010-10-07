@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitorConfiguration.java,v $
- * Date   : $Date: 2010/09/27 09:32:24 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/10/07 14:53:19 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,8 @@
 
 package org.opencms.monitor;
 
+import org.opencms.util.CmsStringUtil;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -40,7 +42,7 @@ import java.util.List;
  * 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -178,7 +180,10 @@ public class CmsMemoryMonitorConfiguration {
         try {
             m_emailInterval = Integer.parseInt(emailInterval);
         } catch (NumberFormatException e) {
-            // then email interval not set, use null
+            // throw exception, when email interval is not null, or not an empty/whitespace string
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(emailInterval)) {
+                throw new NumberFormatException();
+            }
         }
         m_warningInterval = Integer.parseInt(warningInterval);
     }

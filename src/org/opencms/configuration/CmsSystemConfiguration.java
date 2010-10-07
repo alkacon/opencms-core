@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2010/09/27 09:32:24 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/10/07 14:53:19 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 6.0.0
  */
@@ -1403,7 +1403,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             memorymonitorElement.addElement(N_LOG_INTERVAL).addText(
                 String.valueOf(m_cmsMemoryMonitorConfiguration.getLogInterval()));
 
-            if (m_cmsMemoryMonitorConfiguration.getEmailInterval() > 0) {
+            if (m_cmsMemoryMonitorConfiguration.getEmailInterval() >= 0) {
                 memorymonitorElement.addElement(N_EMAIL_INTERVAL).addText(
                     String.valueOf(m_cmsMemoryMonitorConfiguration.getEmailInterval()));
             }
