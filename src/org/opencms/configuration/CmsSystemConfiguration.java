@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2010/08/18 08:13:28 $
- * Version: $Revision: 1.56 $
+ * Date   : $Date: 2010/10/07 14:43:50 $
+ * Version: $Revision: 1.57 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -84,7 +84,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.56 $
+ * @version $Revision: 1.57 $
  * 
  * @since 6.0.0
  */
@@ -1266,22 +1266,19 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_cmsMemoryMonitorConfiguration.getClassName())) {
                 memorymonitorElement.addAttribute(A_CLASS, m_cmsMemoryMonitorConfiguration.getClassName());
             }
-            if (m_cmsMemoryMonitorConfiguration.getMaxUsagePercent() > 0) {
-                memorymonitorElement.addElement(N_MAXUSAGE_PERCENT).addText(
-                    String.valueOf(m_cmsMemoryMonitorConfiguration.getMaxUsagePercent()));
-            }
-            if (m_cmsMemoryMonitorConfiguration.getLogInterval() > 0) {
-                memorymonitorElement.addElement(N_LOG_INTERVAL).addText(
-                    String.valueOf(m_cmsMemoryMonitorConfiguration.getLogInterval()));
-            }
-            if (m_cmsMemoryMonitorConfiguration.getEmailInterval() > 0) {
+            memorymonitorElement.addElement(N_MAXUSAGE_PERCENT).addText(
+                String.valueOf(m_cmsMemoryMonitorConfiguration.getMaxUsagePercent()));
+
+            memorymonitorElement.addElement(N_LOG_INTERVAL).addText(
+                String.valueOf(m_cmsMemoryMonitorConfiguration.getLogInterval()));
+
+            if (m_cmsMemoryMonitorConfiguration.getEmailInterval() >= 0) {
                 memorymonitorElement.addElement(N_EMAIL_INTERVAL).addText(
                     String.valueOf(m_cmsMemoryMonitorConfiguration.getEmailInterval()));
             }
-            if (m_cmsMemoryMonitorConfiguration.getWarningInterval() > 0) {
-                memorymonitorElement.addElement(N_WARNING_INTERVAL).addText(
-                    String.valueOf(m_cmsMemoryMonitorConfiguration.getWarningInterval()));
-            }
+            memorymonitorElement.addElement(N_WARNING_INTERVAL).addText(
+                String.valueOf(m_cmsMemoryMonitorConfiguration.getWarningInterval()));
+
             if (m_cmsMemoryMonitorConfiguration.getEmailSender() != null) {
                 memorymonitorElement.addElement(N_EMAIL_SENDER).addText(
                     m_cmsMemoryMonitorConfiguration.getEmailSender());
