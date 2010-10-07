@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapChangeNewSubSitemapEntry.java,v $
- * Date   : $Date: 2010/10/07 07:56:35 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/10/07 13:49:12 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,9 +39,14 @@ import java.util.Map;
 /**
  * Sitemap change class for adding new entries to a sub-sitemap.<p>
  * 
+ * Warning: This class is used by GWT client-side code (See GwtBase.gwt.xml for a list of
+ * classes used by GWT client-side code). If you change this class, either make sure that 
+ * your changes are compatible with GWT, or write a separate client version of the class 
+ * and put it into super_src. 
+ * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */

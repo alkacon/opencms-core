@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentPropertyHelper.java,v $
- * Date   : $Date: 2010/10/07 07:56:35 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/10/07 13:49:12 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.xml.content;
 
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.i18n.CmsMessages;
@@ -52,6 +53,7 @@ import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.content.CmsXmlContentProperty.PropType;
 import org.opencms.xml.page.CmsXmlPage;
 import org.opencms.xml.sitemap.CmsSitemapEntry;
+import org.opencms.xml.sitemap.properties.CmsComputedPropertyValue;
 import org.opencms.xml.sitemap.properties.CmsSimplePropertyValue;
 import org.opencms.xml.types.CmsXmlNestedContentDefinition;
 import org.opencms.xml.types.CmsXmlVfsFileValue;
@@ -77,7 +79,7 @@ import org.dom4j.Element;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 7.9.2
  */
@@ -249,6 +251,27 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
             String key = entry.getKey();
             CmsXmlContentProperty propDef = entry.getValue();
             result.put(key, propDef.copy());
+        }
+        return result;
+    }
+
+    /**
+     * Helper method for converting a map of {@link CmsComputedPropertyValue} objects to a map of {@link CmsProperty} objects.<p>
+     * 
+     * @param props a map of properties 
+     * 
+     * @return a map of {@link CmsProperty} objects 
+     */
+    public static Map<String, CmsProperty> createCmsProperties(Map<String, CmsComputedPropertyValue> props) {
+
+        Map<String, CmsProperty> result = new HashMap<String, CmsProperty>();
+        for (Map.Entry<String, CmsComputedPropertyValue> propEntry : props.entrySet()) {
+            CmsComputedPropertyValue propValue = propEntry.getValue();
+            CmsProperty cmsProperty = new CmsProperty(
+                propEntry.getKey(),
+                propValue.getOwnValue(),
+                propValue.getInheritValue());
+            result.put(propEntry.getKey(), cmsProperty);
         }
         return result;
     }

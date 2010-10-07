@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/properties/Attic/CmsPropertyInheritanceState.java,v $
- * Date   : $Date: 2010/10/07 07:56:34 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/10/07 13:49:12 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,9 +42,14 @@ import java.util.Set;
 /**
  * This class encapsulates a state of a property inheritance calculation for sitemap entries.<p>
  * 
+ * Warning: This class is used by GWT client-side code (See GwtBase.gwt.xml for a list of
+ * classes used by GWT client-side code). If you change this class, either make sure that 
+ * your changes are compatible with GWT, or write a separate client version of the class 
+ * and put it into super_src. 
+ * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -78,6 +83,17 @@ public class CmsPropertyInheritanceState {
     public CmsPropertyInheritanceState(Map<String, CmsXmlContentProperty> propertyConfiguration) {
 
         m_currentProperties = new HashMap<String, CmsComputedPropertyValue>();
+        for (Map.Entry<String, CmsXmlContentProperty> entry : propertyConfiguration.entrySet()) {
+            String key = entry.getKey();
+            CmsXmlContentProperty propDef = entry.getValue();
+            if (propDef.getDefault() != null) {
+                CmsComputedPropertyValue propValue = CmsComputedPropertyValue.create(
+                    propDef.getDefault(),
+                    propDef.getDefault(),
+                    "[default]");
+                m_currentProperties.put(key, propValue);
+            }
+        }
         m_propertyConfig = propertyConfiguration;
     }
 

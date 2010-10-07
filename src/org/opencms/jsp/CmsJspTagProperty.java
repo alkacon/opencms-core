@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagProperty.java,v $
- * Date   : $Date: 2010/05/26 14:20:10 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/10/07 13:49:12 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -108,7 +108,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -145,7 +145,9 @@ public class CmsJspTagProperty extends TagSupport {
         /** Property name. */
         private String m_name;
 
-        /** Constructor.<p> */
+        /** Constructor.<p>
+         * @param name the string representation of the constant  
+         **/
         private FileUse(String name) {
 
             m_name = name;
@@ -290,7 +292,6 @@ public class CmsJspTagProperty extends TagSupport {
         if (vfsUri != null) {
             value = CmsProperty.toMap(controller.getCmsObject().readPropertyObjects(vfsUri, search));
         } else if (sitemapUri != null) {
-            value.putAll(OpenCms.getSitemapManager().getDefaultProperties(controller.getCmsObject()));
             value = sitemapUri.getProperties(search);
         }
         return value;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2010/10/07 07:56:35 $
- * Version: $Revision: 1.58 $
+ * Date   : $Date: 2010/10/07 13:49:12 $
+ * Version: $Revision: 1.59 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -80,7 +80,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.58 $
+ * @version $Revision: 1.59 $
  * 
  * @since 7.9.2
  */
@@ -780,6 +780,18 @@ public class CmsSitemapManager {
         }
         // and return the site path
         return cms.getRequestContext().removeSiteRoot(bestMatch.getValue());
+    }
+
+    /**
+     * Returns the properties of a sitemap entry as {@link CmsProperty} instances.<p>
+     * 
+     * @param entry the sitemap entry whose properties should be returned 
+     * 
+     * @return a map from property names to {@link CmsProperty} objects 
+     */
+    public Map<String, CmsProperty> getProperties(CmsSitemapEntry entry) {
+
+        return CmsXmlContentPropertyHelper.createCmsProperties(entry.getComputedProperties());
     }
 
     /**

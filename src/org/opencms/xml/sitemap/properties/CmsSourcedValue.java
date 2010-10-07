@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/properties/Attic/CmsSourcedValue.java,v $
- * Date   : $Date: 2010/10/07 07:56:34 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/10/07 13:49:12 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,12 +31,19 @@
 
 package org.opencms.xml.sitemap.properties;
 
+import org.opencms.util.CmsObjectUtil;
+
 /**
  * This class represents a string value together with its "source", which is just another arbitary string.<p>
  * 
+ * Warning: This class is used by GWT client-side code (See GwtBase.gwt.xml for a list of
+ * classes used by GWT client-side code). If you change this class, either make sure that 
+ * your changes are compatible with GWT, or write a separate client version of the class 
+ * and put it into super_src. 
+ * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  * 
@@ -79,6 +86,19 @@ public class CmsSourcedValue {
     }
 
     /**
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object o) {
+
+        if ((o == null) || !(o instanceof CmsSourcedValue)) {
+            return false;
+        }
+        CmsSourcedValue val = (CmsSourcedValue)o;
+        return CmsObjectUtil.equals(m_source, val.m_source) && CmsObjectUtil.equals(m_value, val.m_value);
+    }
+
+    /**
      * Returns the source of the value.<p>
      * 
      * @return the source of the value 
@@ -96,6 +116,15 @@ public class CmsSourcedValue {
     public String getValue() {
 
         return m_value;
+    }
+
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+
+        return CmsObjectUtil.computeHashCode(m_value, m_source);
     }
 
 }

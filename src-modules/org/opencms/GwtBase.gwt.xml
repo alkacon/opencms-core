@@ -32,7 +32,6 @@
 	<source path="gwt/shared" />
 	<super-source path="gwt/client/super_src/" />
 	<source path="xml/sitemap/properties">
-		<include name="I_CmsPropertyValue.java" />
 		<include name="CmsSimplePropertyValue.java" />
 		<include name="CmsComputedPropertyValue.java" />
 		<include name="CmsPropertyInheritanceState.java" />
@@ -45,6 +44,9 @@
 		<include name="CmsSitemapChangeDelete.java" />
 		<include name="CmsSitemapChangeNewSubSitemapEntry.java" />
 		<include name="I_CmsSitemapChange.java" />
+	</source>
+	<source path="util" >
+		<include name="CmsObjectUtil.java" />
 	</source>
 	<source path="xml/content">
 		<include name="CmsXmlContentProperty.java" />

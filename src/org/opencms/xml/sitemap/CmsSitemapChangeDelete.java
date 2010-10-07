@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapChangeDelete.java,v $
- * Date   : $Date: 2010/05/18 12:58:17 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/10/07 13:49:12 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,9 +34,14 @@ package org.opencms.xml.sitemap;
 /**
  * Stores one deletion change to the sitemap.<p>
  * 
+ * Warning: This class is used by GWT client-side code (See GwtBase.gwt.xml for a list of
+ * classes used by GWT client-side code). If you change this class, either make sure that 
+ * your changes are compatible with GWT, or write a separate client version of the class 
+ * and put it into super_src. 
+ * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -49,14 +54,6 @@ public class CmsSitemapChangeDelete implements I_CmsSitemapChange {
     private String m_sitePath;
 
     /**
-     * Serialization constructor.<p>
-     */
-    protected CmsSitemapChangeDelete() {
-
-        // empty
-    }
-
-    /**
      * Constructor.<p>
      * 
      * @param sitePath the deleted entry's site path
@@ -64,6 +61,14 @@ public class CmsSitemapChangeDelete implements I_CmsSitemapChange {
     public CmsSitemapChangeDelete(String sitePath) {
 
         m_sitePath = sitePath;
+    }
+
+    /**
+     * Serialization constructor.<p>
+     */
+    protected CmsSitemapChangeDelete() {
+
+        // empty
     }
 
     /**

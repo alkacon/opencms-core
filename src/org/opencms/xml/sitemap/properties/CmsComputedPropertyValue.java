@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/properties/Attic/CmsComputedPropertyValue.java,v $
- * Date   : $Date: 2010/10/07 07:56:34 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/10/07 13:49:12 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,14 +31,21 @@
 
 package org.opencms.xml.sitemap.properties;
 
+import org.opencms.util.CmsObjectUtil;
+
 import java.io.Serializable;
 
 /**
  * This class represents a property value for a sitemap entry which has been computed by inheritance.<p>
  * 
+ * Warning: This class is used by GWT client-side code (See GwtBase.gwt.xml for a list of
+ * classes used by GWT client-side code). If you change this class, either make sure that 
+ * your changes are compatible with GWT, or write a separate client version of the class 
+ * and put it into super_src. 
+ * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -157,6 +164,29 @@ public class CmsComputedPropertyValue implements Serializable {
         }
         return value;
     }
+
+    /**
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object o) {
+
+        if ((o == null) || !(o instanceof CmsComputedPropertyValue)) {
+            return false;
+        }
+        CmsComputedPropertyValue prop = (CmsComputedPropertyValue)o;
+        return CmsObjectUtil.equals(m_ownValue, prop.m_ownValue)
+            && CmsObjectUtil.equals(m_inheritValue, prop.m_inheritValue);
+    }
+    
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        return CmsObjectUtil.computeHashCode(m_ownValue, m_inheritValue);
+    } 
+    
 
     /**
      * Returns the value which should be inherited by children of the entry as a sourced value.<p>

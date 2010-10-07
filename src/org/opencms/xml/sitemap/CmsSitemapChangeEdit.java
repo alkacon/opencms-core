@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapChangeEdit.java,v $
- * Date   : $Date: 2010/10/07 07:56:35 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/10/07 13:49:12 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,11 +36,16 @@ import org.opencms.xml.sitemap.properties.CmsSimplePropertyValue;
 import java.util.Map;
 
 /**
- * Stores one edition change to the sitemap.<p>
+ * Stores one edit change to the sitemap.<p>
+ * 
+ * Warning: This class is used by GWT client-side code (See GwtBase.gwt.xml for a list of
+ * classes used by GWT client-side code). If you change this class, either make sure that 
+ * your changes are compatible with GWT, or write a separate client version of the class 
+ * and put it into super_src. 
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
