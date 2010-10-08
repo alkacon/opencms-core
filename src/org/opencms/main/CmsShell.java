@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShell.java,v $
- * Date   : $Date: 2010/10/08 08:44:17 $
- * Version: $Revision: 1.59 $
+ * Date   : $Date: 2010/10/08 08:47:46 $
+ * Version: $Revision: 1.60 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -80,7 +80,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.59 $ 
+ * @version $Revision: 1.60 $ 
  * 
  * @since 6.0.0 
  * 
@@ -524,8 +524,7 @@ public class CmsShell {
                     defaultWebApp = arg.substring(SHELL_PARAM_DEFAULT_WEB_APP.length());
                 } else if (arg.startsWith(SHELL_PARAM_ADDITIONAL_COMMANDS)) {
                     additional = arg.substring(SHELL_PARAM_ADDITIONAL_COMMANDS.length());
-                }
-                {
+                } else {
                     System.out.println(Messages.get().getBundle().key(Messages.GUI_SHELL_WRONG_USAGE_0));
                     wrongUsage = true;
                 }

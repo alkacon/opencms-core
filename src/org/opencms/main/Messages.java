@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Messages.java,v $
- * Date   : $Date: 2010/01/18 10:02:22 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2010/10/08 08:44:17 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.41 $ 
+ * @version $Revision: 1.42 $ 
  * 
  * @since 6.0.0 
  */
@@ -157,6 +157,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SHELL_ECHO_ON_0 = "GUI_SHELL_ECHO_ON_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SHELL_ERR_ADDITIONAL_COMMANDS_1 = "GUI_SHELL_ERR_ADDITIONAL_COMMANDS_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SHELL_ERR_SCRIPTFILE_1 = "GUI_SHELL_ERR_SCRIPTFILE_1";
