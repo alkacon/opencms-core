@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShell.java,v $
- * Date   : $Date: 2010/01/18 10:02:22 $
- * Version: $Revision: 1.58 $
+ * Date   : $Date: 2010/10/08 08:44:17 $
+ * Version: $Revision: 1.59 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -80,7 +80,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.58 $ 
+ * @version $Revision: 1.59 $ 
  * 
  * @since 6.0.0 
  * 
@@ -351,6 +351,9 @@ public class CmsShell {
         }
     }
 
+    /** Prefix for "additional" parameter. */
+    public static final String SHELL_PARAM_ADDITIONAL_COMMANDS = "-additional=";
+
     /** Prefix for "base" parameter. */
     public static final String SHELL_PARAM_BASE = "-base=";
 
@@ -470,7 +473,7 @@ public class CmsShell {
             // initialize additional shell command object
             if (additionalShellCommands != null) {
                 m_additionaShellCommands = additionalShellCommands;
-                m_additionaShellCommands.initShellCmsObject(m_cms, null);
+                m_additionaShellCommands.initShellCmsObject(m_cms, this);
                 m_additionaShellCommands.shellStart();
             } else {
                 m_shellCommands.shellStart();
@@ -504,6 +507,7 @@ public class CmsShell {
         String script = null;
         String servletMapping = null;
         String defaultWebApp = null;
+        String additional = null;
 
         if (args.length > 4) {
             wrongUsage = true;
@@ -518,7 +522,10 @@ public class CmsShell {
                     servletMapping = arg.substring(SHELL_PARAM_SERVLET_MAPPING.length());
                 } else if (arg.startsWith(SHELL_PARAM_DEFAULT_WEB_APP)) {
                     defaultWebApp = arg.substring(SHELL_PARAM_DEFAULT_WEB_APP.length());
-                } else {
+                } else if (arg.startsWith(SHELL_PARAM_ADDITIONAL_COMMANDS)) {
+                    additional = arg.substring(SHELL_PARAM_ADDITIONAL_COMMANDS.length());
+                }
+                {
                     System.out.println(Messages.get().getBundle().key(Messages.GUI_SHELL_WRONG_USAGE_0));
                     wrongUsage = true;
                 }
@@ -527,6 +534,20 @@ public class CmsShell {
         if (wrongUsage) {
             System.out.println(Messages.get().getBundle().key(Messages.GUI_SHELL_USAGE_1, CmsShell.class.getName()));
         } else {
+
+            I_CmsShellCommands additionalCommands = null;
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(additional)) {
+                try {
+                    Class commandClass = Class.forName(additional);
+                    additionalCommands = (I_CmsShellCommands)commandClass.newInstance();
+                } catch (Exception e) {
+                    System.out.println(Messages.get().getBundle().key(
+                        Messages.GUI_SHELL_ERR_ADDITIONAL_COMMANDS_1,
+                        additional));
+                    e.printStackTrace();
+                    return;
+                }
+            }
             FileInputStream stream = null;
             if (script != null) {
                 try {
@@ -544,7 +565,7 @@ public class CmsShell {
                 servletMapping,
                 defaultWebApp,
                 "${user}@${project}:${siteroot}|${uri}>",
-                null);
+                additionalCommands);
             shell.start(stream);
         }
     }
