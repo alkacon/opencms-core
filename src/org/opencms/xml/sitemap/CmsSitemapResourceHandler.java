@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapResourceHandler.java,v $
- * Date   : $Date: 2010/07/07 09:12:09 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/10/08 15:06:57 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,6 +38,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.CmsResourceInitException;
 import org.opencms.main.I_CmsResourceInit;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsPermissionViolationException;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 
@@ -51,7 +52,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 7.9.2
  */
@@ -72,7 +73,7 @@ public class CmsSitemapResourceHandler implements I_CmsResourceInit {
      * @see org.opencms.main.I_CmsResourceInit#initResource(org.opencms.file.CmsResource, org.opencms.file.CmsObject, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
     public CmsResource initResource(CmsResource resource, CmsObject cms, HttpServletRequest req, HttpServletResponse res)
-    throws CmsResourceInitException {
+    throws CmsResourceInitException, CmsPermissionViolationException {
 
         // check if the resource was already found
         boolean abort = (resource != null);
@@ -100,6 +101,9 @@ public class CmsSitemapResourceHandler implements I_CmsResourceInit {
             }
             // set the resource path
             cms.getRequestContext().setUri(cms.getSitePath(resource));
+        } catch (CmsPermissionViolationException e) {
+            // trigger the permission denied handler
+            throw e;
         } catch (Throwable e) {
             String uri = cms.getRequestContext().getUri();
             CmsMessageContainer msg = Messages.get().container(Messages.ERR_SITEMAP_1, uri);
