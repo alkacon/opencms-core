@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/CmsShellReport.java,v $
- * Date   : $Date: 2010/01/18 10:01:51 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2010/10/08 08:44:43 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,8 @@
 
 package org.opencms.report;
 
+import org.opencms.i18n.CmsMessageContainer;
+
 import java.util.Locale;
 
 /**
@@ -41,11 +43,13 @@ import java.util.Locale;
  * @author Alexander Kandzior
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.29 $ 
+ * @version $Revision: 1.30 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsShellReport extends CmsPrintStreamReport {
+
+    private boolean m_stillRunning;
 
     /**
      * Constructs a new report using the provided locale for the output language.<p>
@@ -56,4 +60,110 @@ public class CmsShellReport extends CmsPrintStreamReport {
 
         super(System.out, locale, false);
     }
+
+    /**
+     * @see org.opencms.report.I_CmsReport#getReportUpdate()
+     */
+    @Override
+    public synchronized String getReportUpdate() {
+
+        // to avoid premature interruption of the reporting thread (@see org.opencms.main.CmsThreadStore),
+        // a not empty string is returned, if there have been any print outs since the last check
+        if (m_stillRunning) {
+            m_stillRunning = false;
+            return "*";
+        }
+        return "";
+    }
+
+    /**
+     * @see org.opencms.report.A_CmsReport#print(org.opencms.i18n.CmsMessageContainer)
+     */
+    @Override
+    public void print(CmsMessageContainer container) {
+
+        super.print(container);
+        m_stillRunning = true;
+    }
+
+    /**
+     * @see org.opencms.report.A_CmsReport#print(org.opencms.i18n.CmsMessageContainer, int)
+     */
+    @Override
+    public void print(CmsMessageContainer container, int format) {
+
+        super.print(container, format);
+        m_stillRunning = true;
+    }
+
+    /**
+     * @see org.opencms.report.CmsPrintStreamReport#println()
+     */
+    @Override
+    public void println() {
+
+        super.println();
+        m_stillRunning = true;
+    }
+
+    /**
+     * @see org.opencms.report.A_CmsReport#println(org.opencms.i18n.CmsMessageContainer)
+     */
+    @Override
+    public void println(CmsMessageContainer container) {
+
+        super.println(container);
+        m_stillRunning = true;
+    }
+
+    /**
+     * @see org.opencms.report.A_CmsReport#println(org.opencms.i18n.CmsMessageContainer, int)
+     */
+    @Override
+    public void println(CmsMessageContainer container, int format) {
+
+        super.println(container, format);
+        m_stillRunning = true;
+    }
+
+    /**
+     * @see org.opencms.report.CmsPrintStreamReport#println(java.lang.Throwable)
+     */
+    @Override
+    public void println(Throwable t) {
+
+        super.println(t);
+        m_stillRunning = true;
+    }
+
+    /**
+     * @see org.opencms.report.A_CmsReport#printMessageWithParam(org.opencms.i18n.CmsMessageContainer, java.lang.Object)
+     */
+    @Override
+    public void printMessageWithParam(CmsMessageContainer container, Object param) {
+
+        super.printMessageWithParam(container, param);
+        m_stillRunning = true;
+    }
+
+    /**
+     * @see org.opencms.report.A_CmsReport#printMessageWithParam(int, int, org.opencms.i18n.CmsMessageContainer, java.lang.Object)
+     */
+    @Override
+    public void printMessageWithParam(int m, int n, CmsMessageContainer container, Object param) {
+
+        super.printMessageWithParam(m, n, container, param);
+        m_stillRunning = true;
+    }
+
+    /**
+     * @see org.opencms.report.CmsPrintStreamReport#start()
+     */
+    @Override
+    public void start() {
+
+        super.start();
+        m_stillRunning = true;
+    }
+
 }

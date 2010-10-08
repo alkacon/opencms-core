@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2010/10/07 14:43:51 $
- * Version: $Revision: 1.1204 $
+ * Date   : $Date: 2010/10/08 08:44:43 $
+ * Version: $Revision: 1.1205 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -20,9 +20,11 @@ Legend:
 - General comment
 
 OpenCms x.x.x - month day, year
+- Added new optional CmsShell start parameter to load additional commands
 * Fixed issue setting the configuration values of the MemoryMonitor to 0
 * Fixed issue #1895: "All others" entry in permission dialog misses summary of permissions
 * Fixed issue #1901: Workplace login page security issue
+* Fixed premature publish thread interruption within CmsShell
 
 OpenCms 7.5.3 - August 18, 2010
 ! External Links (pointers) now support handling of request parameters (loader parameter in opencms-vfs.xml)
