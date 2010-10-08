@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/CmsShellReport.java,v $
- * Date   : $Date: 2010/10/08 08:44:43 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2010/10/08 09:03:42 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,12 +43,13 @@ import java.util.Locale;
  * @author Alexander Kandzior
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.30 $ 
+ * @version $Revision: 1.31 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsShellReport extends CmsPrintStreamReport {
 
+    /** Flag indicating if the job is still running. */
     private boolean m_stillRunning;
 
     /**
