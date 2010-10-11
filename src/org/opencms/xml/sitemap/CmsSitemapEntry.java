@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapEntry.java,v $
- * Date   : $Date: 2010/10/07 07:56:35 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2010/10/11 06:40:55 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 7.6 
  */
@@ -53,9 +53,6 @@ public class CmsSitemapEntry {
 
     /** The map of properties computed by inheritance. */
     protected Map<String, CmsComputedPropertyValue> m_computedProperties;
-
-    /** The inherited properties. */
-    //protected Map<String, String> m_inheritedProperties;
 
     /** The entry name. */
     protected String m_name;
@@ -66,14 +63,15 @@ public class CmsSitemapEntry {
     /** The original uri, without entry point info nor content ID. */
     protected String m_originalUri;
 
+    /** The map of properties of the parent computed by inheritance. */
+    protected Map<String, CmsComputedPropertyValue> m_parentComputedProperties;
+
     /** The position. */
     protected int m_position;
 
-    /** The configured properties. */
-    //protected final Map<String, String> m_properties;
-
     /** The content id, for detail pages. */
     private CmsUUID m_contentId;
+
 
     /** The entry id. */
     private final CmsUUID m_id;
@@ -244,6 +242,16 @@ public class CmsSitemapEntry {
     public String getOriginalUri() {
 
         return m_originalUri;
+    }
+
+    /**
+     * Returns this entry's parent's computed properties.<p>
+     * 
+     * @return the entry's parent's computed properties 
+     */
+    public Map<String, CmsComputedPropertyValue> getParentComputedProperties() {
+
+        return Collections.unmodifiableMap(m_parentComputedProperties);
     }
 
     /**

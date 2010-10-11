@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2010/10/07 07:56:35 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2010/10/11 06:40:55 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,8 @@
 
 package org.opencms.ade.sitemap.client.control;
 
+import org.opencms.ade.sitemap.client.CmsSitemapTreeItem;
+import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeCreateSubSitemap;
 import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeDelete;
@@ -55,8 +57,11 @@ import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.util.CmsCollectionUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.sitemap.CmsSitemapManager;
 import org.opencms.xml.sitemap.I_CmsSitemapChange;
+import org.opencms.xml.sitemap.properties.CmsComputedPropertyValue;
+import org.opencms.xml.sitemap.properties.CmsPropertyInheritanceState;
 import org.opencms.xml.sitemap.properties.CmsSimplePropertyValue;
 
 import java.util.ArrayList;
@@ -78,11 +83,33 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 8.0.0
  */
 public class CmsSitemapController {
+
+    /**
+     * Debug class used for debugging property updates by changing the color of the affected sitemap entries.<p>
+     */
+    public static class DebugPropertyUpdateHandler implements I_CmsPropertyUpdateHandler {
+
+        /**
+         * @see org.opencms.ade.sitemap.client.control.I_CmsPropertyUpdateHandler#handlePropertyUpdate(org.opencms.ade.sitemap.shared.CmsClientSitemapEntry)
+         */
+        public void handlePropertyUpdate(CmsClientSitemapEntry entry) {
+
+            Map<String, CmsComputedPropertyValue> myProps = entry.getInheritedProperties();
+            String color = "gray";
+            if (myProps.containsKey("color")) {
+                color = myProps.get("color").getOwnValue();
+            }
+            CmsSitemapTreeItem item = CmsSitemapView.getInstance().getTreeItem(entry.getSitePath());
+            com.google.gwt.dom.client.Style style = item.getListItemWidget().getContentPanel().getElement().getStyle();
+            style.setBackgroundImage("none");
+            style.setBackgroundColor(color);
+        }
+    }
 
     /** The list of changes. */
     protected List<I_CmsClientSitemapChange> m_changes;
@@ -98,6 +125,9 @@ public class CmsSitemapController {
 
     /** The set of names of hidden properties. */
     private Set<String> m_hiddenProperties;
+
+    /** The list of property update handlers. */
+    private List<I_CmsPropertyUpdateHandler> m_propertyUpdateHandlers = new ArrayList<I_CmsPropertyUpdateHandler>();
 
     /** The sitemap service instance. */
     private I_CmsSitemapServiceAsync m_service;
@@ -158,7 +188,7 @@ public class CmsSitemapController {
         change.applyToModel(this);
 
         // refresh view, in dnd mode view already ok
-        m_handlerManager.fireEvent(new CmsSitemapChangeEvent(change));
+        fireChange(change);
     }
 
     /**
@@ -231,6 +261,17 @@ public class CmsSitemapController {
     public HandlerRegistration addLoadHandler(I_CmsSitemapLoadHandler handler) {
 
         return m_handlerManager.addHandler(CmsSitemapLoadEvent.getType(), handler);
+    }
+
+    /**
+     * Adds a handler for property changes caused by user edits.<p>
+     * 
+     * @param handler a new handler for property updates caused by the user 
+     */
+    public void addPropertyUpdateHandler(I_CmsPropertyUpdateHandler handler) {
+
+        m_propertyUpdateHandlers.add(handler);
+
     }
 
     /**
@@ -537,8 +578,9 @@ public class CmsSitemapController {
 
                 CmsClientSitemapEntry target = getEntry(sitePath);
                 if (target == null) {
-                    // this might happen after an automated deletion 
+                    // this might happen after an automated deletion
                     stop(false);
+                    recomputePropertyInheritance();
                     return;
                 }
                 target.setSubEntries(result);
@@ -548,6 +590,7 @@ public class CmsSitemapController {
                 }
                 m_handlerManager.fireEvent(new CmsSitemapLoadEvent(target, originalPath));
                 stop(false);
+                recomputePropertyInheritance();
             }
         };
         getChildrenAction.execute();
@@ -739,6 +782,17 @@ public class CmsSitemapController {
     }
 
     /**
+     * Recomputes the inherited properties for the whole loaded portion of the tree.<p>
+     */
+    public void recomputePropertyInheritance() {
+
+        Map<String, CmsXmlContentProperty> propertyConfig = m_data.getProperties();
+        Map<String, CmsComputedPropertyValue> parentProperties = m_data.getParentProperties();
+        CmsPropertyInheritanceState propState = new CmsPropertyInheritanceState(parentProperties, propertyConfig);
+        recomputeProperties(m_data.getRoot(), propState);
+    }
+
+    /**
      * Re-does the last undone change.<p>
      */
     public void redo() {
@@ -839,7 +893,7 @@ public class CmsSitemapController {
         revertChange.applyToModel(this);
 
         // refresh view
-        m_handlerManager.fireEvent(new CmsSitemapChangeEvent(revertChange));
+        fireChange(revertChange);
 
         // post-state
         if (!isDirty()) {
@@ -858,7 +912,18 @@ public class CmsSitemapController {
         // apply change to the model
         change.applyToModel(this);
         // refresh view
+        fireChange(change);
+    }
+
+    /**
+     * Fires a sitemap change event.<p>
+     * 
+     * @param change the change event to fire 
+     */
+    protected void fireChange(I_CmsClientSitemapChange change) {
+
         m_handlerManager.fireEvent(new CmsSitemapChangeEvent(change));
+        recomputePropertyInheritance();
     }
 
     /**
@@ -902,6 +967,28 @@ public class CmsSitemapController {
         CmsClientSitemapEntry entry = getEntry(path);
         CmsClientSitemapChangeCreateSubSitemap change = new CmsClientSitemapChangeCreateSubSitemap(entry, info);
         executeChange(change);
+    }
+
+    /**
+     * Recomputes the properties for a client sitemap entry.<p>
+     * 
+     * @param entry the sitemap entry whose properties should be updated 
+     * @param propState the property state of the entry's parent 
+     */
+    protected void recomputeProperties(CmsClientSitemapEntry entry, CmsPropertyInheritanceState propState) {
+
+        CmsPropertyInheritanceState myState = propState.update(entry.getProperties(), entry.getSitePath());
+        Map<String, CmsComputedPropertyValue> myProps = myState.getInheritedProperties();
+        entry.setParentInheritedProperties(propState.getInheritedProperties());
+        entry.setInheritedProperties(myProps);
+        for (I_CmsPropertyUpdateHandler handler : m_propertyUpdateHandlers) {
+            handler.handlePropertyUpdate(entry);
+        }
+
+        for (CmsClientSitemapEntry child : entry.getSubEntries()) {
+            recomputeProperties(child, myState);
+        }
+        CmsSitemapView.getInstance().getTreeItem(entry.getSitePath());
     }
 
     /**

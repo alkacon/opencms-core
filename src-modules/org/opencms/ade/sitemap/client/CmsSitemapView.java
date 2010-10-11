@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapView.java,v $
- * Date   : $Date: 2010/09/30 13:32:25 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2010/10/11 06:40:55 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,8 +55,8 @@ import org.opencms.gwt.client.ui.dnd.CmsDropEvent;
 import org.opencms.gwt.client.ui.dnd.I_CmsDropHandler;
 import org.opencms.gwt.client.ui.tree.A_CmsDeepLazyOpenHandler;
 import org.opencms.gwt.client.ui.tree.CmsLazyTree;
-import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem.LoadState;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
+import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem.LoadState;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsPair;
@@ -76,7 +76,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.35 $ 
+ * @version $Revision: 1.36 $ 
  * 
  * @since 8.0.0
  */
@@ -276,6 +276,7 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler, ClosingHandler, I
         }
         target.onFinishLoading();
         target.getTree().setAnimationEnabled(true);
+
     }
 
     /**
@@ -371,6 +372,9 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler, ClosingHandler, I
         if (openPath != null) {
             highlightPath(openPath);
         }
+        //m_controller.addPropertyUpdateHandler(new CmsSitemapController.DebugPropertyUpdateHandler());
+        m_controller.recomputePropertyInheritance();
+
     }
 
     /** 

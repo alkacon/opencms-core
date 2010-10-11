@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/Attic/A_CmsEntryPoint.java,v $
- * Date   : $Date: 2010/07/15 17:13:12 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2010/10/11 06:40:56 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import com.google.gwt.core.client.GWT;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 8.0.0
  * 
@@ -106,6 +106,11 @@ public abstract class A_CmsEntryPoint implements EntryPoint {
      * Enables client exception logging on the server.<p>
      */
     protected void enableRemoteExceptionHandler() {
+
+        if (!GWT.isScript()) {
+            // In hosted mode, uncaught exceptions are easier to debug 
+            return;
+        }
 
         GWT.setUncaughtExceptionHandler(new GWT.UncaughtExceptionHandler() {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/properties/Attic/CmsSourcedValue.java,v $
- * Date   : $Date: 2010/10/07 13:49:12 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/10/11 06:40:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,8 @@ package org.opencms.xml.sitemap.properties;
 
 import org.opencms.util.CmsObjectUtil;
 
+import java.io.Serializable;
+
 /**
  * This class represents a string value together with its "source", which is just another arbitary string.<p>
  * 
@@ -43,12 +45,15 @@ import org.opencms.util.CmsObjectUtil;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  * 
  */
-public class CmsSourcedValue {
+public class CmsSourcedValue implements Serializable {
+
+    /** id for serialization. */
+    private static final long serialVersionUID = 6967322591643126376L;
 
     /** The source of the value. */
     private String m_source;
@@ -67,6 +72,15 @@ public class CmsSourcedValue {
         super();
         m_value = value;
         m_source = source;
+    }
+
+    /**
+     * Hidden constructor for serialization.<p>
+     *  
+     */
+    protected CmsSourcedValue() {
+
+        // do nothing  
     }
 
     /**

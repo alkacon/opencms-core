@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/form/Attic/CmsForm.java,v $
- * Date   : $Date: 2010/10/07 07:56:34 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2010/10/11 06:40:56 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,6 +43,7 @@ import org.opencms.gwt.client.ui.input.I_CmsHasBlur;
 import org.opencms.gwt.client.validation.CmsValidationController;
 import org.opencms.gwt.client.validation.I_CmsValidationHandler;
 import org.opencms.gwt.shared.CmsValidationResult;
+import org.opencms.util.CmsPair;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -82,7 +83,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 8.0.0
  * 
@@ -163,8 +164,10 @@ public class CmsForm extends Composite {
      * 
      * @param field1 the first field 
      * @param field2 the second field 
+     * 
+     * @return the form rows corresponding to the fields which were added 
      */
-    public void addDoubleField(final I_CmsFormField field1, final I_CmsFormField field2) {
+    public CmsPair<CmsFormRow, CmsFormRow> addDoubleField(final I_CmsFormField field1, final I_CmsFormField field2) {
 
         String initialValue = field1.getWidget().getFormValueAsString();
         m_initialValues.put(field1.getId(), initialValue);
@@ -199,6 +202,7 @@ public class CmsForm extends Composite {
                 row2.setVisible(opener.isDown());
             }
         });
+        return new CmsPair<CmsFormRow, CmsFormRow>(row1, row2);
     }
 
     /**
@@ -333,6 +337,22 @@ public class CmsForm extends Composite {
     }
 
     /**
+     * Returns the fields which are not ignored.<p>
+     * 
+     * @return a collection of fields 
+     */
+    public Collection<I_CmsFormField> getActiveFields() {
+
+        List<I_CmsFormField> result = new ArrayList<I_CmsFormField>();
+        for (I_CmsFormField field : m_fields.values()) {
+            if (!field.isIgnored()) {
+                result.add(field);
+            }
+        }
+        return result;
+    }
+
+    /**
      * Returns the set of names of fields which have been edited by the user in the current form.<p>
      *  
      * @return the set of names of fields edited by the user 
@@ -436,7 +456,7 @@ public class CmsForm extends Composite {
     public void validateAndSubmit() {
 
         CmsValidationController validationController = new CmsValidationController(
-            m_fields.values(),
+            getActiveFields(),
             new I_CmsValidationHandler() {
 
                 /**

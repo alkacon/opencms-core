@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/edit/Attic/CmsSitemapEntryEditor.java,v $
- * Date   : $Date: 2010/10/07 07:56:35 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/10/11 06:40:56 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,12 +42,15 @@ import org.opencms.gwt.client.ui.input.I_CmsFormField;
 import org.opencms.gwt.client.ui.input.form.CmsBasicFormField;
 import org.opencms.gwt.client.ui.input.form.CmsForm;
 import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
+import org.opencms.gwt.client.ui.input.form.CmsFormRow;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormHandler;
 import org.opencms.util.CmsPair;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.sitemap.CmsSitemapManager;
+import org.opencms.xml.sitemap.properties.CmsComputedPropertyValue;
 import org.opencms.xml.sitemap.properties.CmsSimplePropertyValue;
+import org.opencms.xml.sitemap.properties.CmsSourcedValue;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -62,7 +65,7 @@ import java.util.Set;
  * 
  *  @author Georg Westenberger
  *  
- *  @version $Revision: 1.12 $
+ *  @version $Revision: 1.13 $
  *  
  *  @since 8.0.0
  */
@@ -175,7 +178,19 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
             f1.setId("#" + name);
             I_CmsFormField f2 = createField(propDef);
             f2.getWidget().setFormValueAsString(prop.getOwnValue());
-            m_form.addDoubleField(f1, f2);
+            CmsPair<CmsFormRow, CmsFormRow> rows = m_form.addDoubleField(f1, f2);
+            CmsFormRow row1 = rows.getFirst();
+
+            CmsComputedPropertyValue propValue = entry.getParentInheritedProperties().get(name);
+            if (propValue != null) {
+                CmsSourcedValue sourcedProp = propValue.getInheritSourcedValue();
+                if (sourcedProp != null) {
+                    String val = sourcedProp.getValue();
+                    String src = sourcedProp.getSource();
+                    String message = Messages.get().key(Messages.GUI_INHERIT_PROPERTY_2, val, src);
+                    row1.getOpener().setTitle(message);
+                }
+            }
         }
     }
 

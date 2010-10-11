@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsSitemapService.java,v $
- * Date   : $Date: 2010/10/07 07:56:34 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2010/10/11 06:40:55 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -99,7 +99,7 @@ import org.apache.commons.collections.map.MultiValueMap;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.35 $ 
+ * @version $Revision: 1.36 $ 
  * 
  * @since 8.0.0
  * 
@@ -288,9 +288,10 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
 
         CmsSitemapData result = null;
         CmsObject cms = getCmsObject();
+        CmsSitemapManager sitemapMgr = OpenCms.getSitemapManager();
         try {
             CmsResource sitemap = cms.readResource(sitemapUri);
-            Map<String, CmsXmlContentProperty> propertyConfig = OpenCms.getSitemapManager().getElementPropertyConfiguration(
+            Map<String, CmsXmlContentProperty> propertyConfig = sitemapMgr.getElementPropertyConfiguration(
                 cms,
                 sitemap,
                 true);
@@ -300,15 +301,13 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
             Map<String, CmsXmlContentProperty> resolvedProps = CmsXmlContentPropertyHelper.resolveMacrosInProperties(
                 propertyConfig,
                 resolver);
-            String parentSitemap = OpenCms.getSitemapManager().getParentSitemap(cms, sitemapUri);
+            String parentSitemap = sitemapMgr.getParentSitemap(cms, sitemapUri);
             String openPath = getRequest().getParameter("path");
 
-            CmsSitemapEntry entry = OpenCms.getSitemapManager().getParentEntryOfSitemap(cms, sitemapUri);
-            Map<String, CmsComputedPropertyValue> parentProperties = new HashMap<String, CmsComputedPropertyValue>();
-
-            if (entry != null) {
-                parentProperties = entry.getComputedProperties();
-            }
+            String entryPoint = sitemapMgr.getEntryPoint(cms, sitemapUri);
+            CmsSitemapEntry entry = sitemapMgr.getEntryForUri(cms, entryPoint);
+            Map<String, CmsComputedPropertyValue> parentProperties = new HashMap<String, CmsComputedPropertyValue>(
+                entry.getParentComputedProperties());
 
             result = new CmsSitemapData(
                 getDefaultTemplate(sitemapUri),

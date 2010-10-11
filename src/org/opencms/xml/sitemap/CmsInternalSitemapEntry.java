@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsInternalSitemapEntry.java,v $
- * Date   : $Date: 2010/10/07 07:56:34 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/10/11 06:40:55 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 8.0 
  */
@@ -215,6 +215,16 @@ public class CmsInternalSitemapEntry extends CmsSitemapEntry {
     protected void setEntryPoint(String entryPoint) {
 
         m_entryPoint = entryPoint;
+    }
+
+    /**
+     * Sets the parent computed properties for this entry.<p>
+     * 
+     * @param computedProperties the computed properties of this entry's parent 
+     */
+    protected void setParentComputedProperties(Map<String, CmsComputedPropertyValue> computedProperties) {
+
+        m_parentComputedProperties = computedProperties;
     }
 
     /**

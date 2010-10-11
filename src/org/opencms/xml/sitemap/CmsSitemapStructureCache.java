@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapStructureCache.java,v $
- * Date   : $Date: 2010/10/07 07:56:35 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/10/11 06:40:55 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,6 +50,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.content.CmsXmlContentPropertyHelper;
+import org.opencms.xml.sitemap.properties.CmsComputedPropertyValue;
 import org.opencms.xml.sitemap.properties.CmsPropertyInheritanceState;
 import org.opencms.xml.sitemap.properties.CmsSimplePropertyValue;
 
@@ -71,7 +72,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Moossen
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -664,11 +665,11 @@ public class CmsSitemapStructureCache extends CmsVfsCache implements I_CmsSitema
         if (resource.getRootPath().equals(CmsResourceTypeXmlSitemap.SCHEMA)) {
             // flush offline default properties 
             m_defProps = null;
-            return;
         }
 
-        // we care only more if the modified resource is a sitemap
-        if (!CmsResourceTypeXmlSitemap.isSitemap(resource)) {
+        // return if 
+        if (!CmsResourceTypeXmlSitemap.isSitemap(resource)
+            && !resource.getRootPath().equals(CmsResourceTypeXmlSitemap.SCHEMA)) {
             return;
         }
 
@@ -704,12 +705,15 @@ public class CmsSitemapStructureCache extends CmsVfsCache implements I_CmsSitema
         entry.setEntryPoint(entryPoint);
 
         // compute properties for this entry 
-        propertyState = propertyState.update(entry.getNewProperties(), entry.getRootPath());
+        CmsPropertyInheritanceState myPropertyState = propertyState.update(
+            entry.getNewProperties(),
+            entry.getRootPath());
         // set runtime data
         String currentEntryPoint = entryPoint;
-        entry.setRuntimeInfo(currentEntryPoint, entryPos, propertyState.getInheritedProperties());
+        entry.setRuntimeInfo(currentEntryPoint, entryPos, myPropertyState.getInheritedProperties());
         entry.setRootEntry(isRootEntry);
-
+        entry.setParentComputedProperties(new HashMap<String, CmsComputedPropertyValue>(
+            propertyState.getInheritedProperties()));
         // cache
         Map<CmsUUID, CmsInternalSitemapEntry> byId = m_byId;
         Map<String, CmsInternalSitemapEntry> byPath = m_byUri;

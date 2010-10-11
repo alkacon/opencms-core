@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsClientSitemapEntry.java,v $
- * Date   : $Date: 2010/10/07 07:56:35 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2010/10/11 06:40:56 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 8.0.0
  */
@@ -69,6 +69,9 @@ public class CmsClientSitemapEntry implements IsSerializable {
 
     /** True if this entry has been just created, and its name hasn't been directly changed. */
     private boolean m_new;
+
+    /** The map of inherited properties of the entry's parent. */
+    private Map<String, CmsComputedPropertyValue> m_parentInheritedProperties;
 
     /** The relative position between siblings. */
     private int m_position;
@@ -176,6 +179,16 @@ public class CmsClientSitemapEntry implements IsSerializable {
 
         CmsSimplePropertyValue prop = m_properties.get(propName);
         return prop == null ? null : prop.getOwnValue();
+    }
+
+    /**
+     * Gets the inherited properties of the entry's parent.<p>
+     * 
+     * @return the inherited entries of the parent 
+     */
+    public Map<String, CmsComputedPropertyValue> getParentInheritedProperties() {
+
+        return m_parentInheritedProperties;
     }
 
     /**
@@ -330,6 +343,16 @@ public class CmsClientSitemapEntry implements IsSerializable {
     public void setNew(boolean new1) {
 
         m_new = new1;
+    }
+
+    /**
+     * Sets the properties inherited by the entry's parent.<p>
+     * 
+     * @param parentProperties the properties inherited by the entry's parent 
+     */
+    public void setParentInheritedProperties(Map<String, CmsComputedPropertyValue> parentProperties) {
+
+        m_parentInheritedProperties = parentProperties;
     }
 
     /**
