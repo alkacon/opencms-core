@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapStructureCache.java,v $
- * Date   : $Date: 2010/10/11 06:40:55 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/10/11 14:18:52 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,6 +45,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.monitor.CmsMemoryMonitor;
+import org.opencms.site.CmsSite;
 import org.opencms.util.CmsPair;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -72,7 +73,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Moossen
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
@@ -110,9 +111,6 @@ public class CmsSitemapStructureCache extends CmsVfsCache implements I_CmsSitema
 
     /** A flag which indicates whether this is the online sitemap cache (this flag only makes sense if the <code>m_useCache</code> flag is set ). */
     private boolean m_online;
-
-    /** The property configuration to use. */
-    private Map<String, CmsXmlContentProperty> m_propertyConfig;
 
     /** The list of site roots of sites which use sitemaps. */
     private Set<String> m_siteRoots;
@@ -189,7 +187,6 @@ public class CmsSitemapStructureCache extends CmsVfsCache implements I_CmsSitema
         m_byStructureId.clear();
         m_siteRoots.clear();
         m_entryPoints.clear();
-        m_propertyConfig = null;
 
         // iterate sitemap entry points (system wide)
         List<CmsResource> entryPoints = internalGetEntryPointResources(adminCms);
@@ -747,7 +744,7 @@ public class CmsSitemapStructureCache extends CmsVfsCache implements I_CmsSitema
         for (int position = 0; position < size; position++) {
             // visit sub-entries
             CmsInternalSitemapEntry subEntry = subEntries.get(position);
-            visitEntry(cms, subEntry, locale, currentEntryPoint, false, position, propertyState);
+            visitEntry(cms, subEntry, locale, currentEntryPoint, false, position, myPropertyState);
         }
     }
 
@@ -764,7 +761,11 @@ public class CmsSitemapStructureCache extends CmsVfsCache implements I_CmsSitema
     protected void visitRootSitemap(CmsObject cms, CmsResource entryPoint, CmsFile sitemapFile, CmsXmlSitemap xmlSitemap)
     throws CmsException {
 
-        initPropertyConfig(cms, sitemapFile);
+        Map<String, CmsXmlContentProperty> propDefs = getPropertyConfig(cms, sitemapFile);
+        CmsSite site = OpenCms.getSiteManager().getSiteForRootPath(sitemapFile.getRootPath());
+        //String exportName = OpenCms.getSitemapManager().getExportNameFor(...blah....);
+        //exportNames.put(site.getSiteRoot(), exportName); 
+
         for (Locale locale : xmlSitemap.getLocales()) {
             // entry point sitemaps can have several locales
             addActiveSitemap(locale, entryPoint.getRootPath(), sitemapFile.getRootPath());
@@ -776,10 +777,27 @@ public class CmsSitemapStructureCache extends CmsVfsCache implements I_CmsSitema
                 startEntry.removeName();
             }
             // inherited properties 
-            CmsPropertyInheritanceState propState = new CmsPropertyInheritanceState(m_propertyConfig);
+            CmsPropertyInheritanceState propState = new CmsPropertyInheritanceState(propDefs);
             // start iterating
             visitEntry(cms, startEntry, locale, entryPoint.getRootPath(), true, 0, propState);
         }
+    }
+
+    /**
+     * Helper method for initializing the property configuration.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param res the resource from which to search the property configurations
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    private Map<String, CmsXmlContentProperty> getPropertyConfig(CmsObject cms, CmsResource res) throws CmsException {
+
+        Map<String, CmsXmlContentProperty> result = OpenCms.getSitemapManager().getElementPropertyConfiguration(
+            cms,
+            res,
+            true);
+        return result;
     }
 
     /**
@@ -833,21 +851,6 @@ public class CmsSitemapStructureCache extends CmsVfsCache implements I_CmsSitema
         m_entryPoints = new HashMap<String, String>();
         register("entryPoints", m_entryPoints);
 
-    }
-
-    /**
-     * Helper method for initializing the property configuration.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param res the resource from which to search the property configurations
-     * 
-     * @throws CmsException if something goes wrong 
-     */
-    private void initPropertyConfig(CmsObject cms, CmsResource res) throws CmsException {
-
-        if (m_propertyConfig == null) {
-            m_propertyConfig = OpenCms.getSitemapManager().getElementPropertyConfiguration(cms, res, true);
-        }
     }
 
 }
