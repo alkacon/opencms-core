@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/tree/Attic/CmsTreeItem.java,v $
- * Date   : $Date: 2010/10/11 06:40:55 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2010/10/11 09:39:55 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,7 +71,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Georg Westenberger
  * @author Michael Moossen
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 8.0.0
  */
@@ -314,7 +314,13 @@ public class CmsTreeItem extends CmsListItem {
             path.insert(0, current.getId()).insert(0, "/");
             current = current.getParentItem();
         }
-        return path.toString();
+        String result = path.toString();
+        if (result.startsWith("//")) {
+            // This happens if the root item has an empty id.
+            // In that case, we cut off the first slash. 
+            result = result.substring(1);
+        }
+        return result;
     }
 
     /**
