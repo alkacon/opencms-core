@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2010/10/08 08:44:43 $
- * Version: $Revision: 1.1205 $
+ * Date   : $Date: 2010/10/12 13:57:25 $
+ * Version: $Revision: 1.1206 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -25,6 +25,7 @@ OpenCms x.x.x - month day, year
 * Fixed issue #1895: "All others" entry in permission dialog misses summary of permissions
 * Fixed issue #1901: Workplace login page security issue
 * Fixed premature publish thread interruption within CmsShell
+! In the workplace content tool "Change Property Values" it is possible to use more than one place holder
 
 OpenCms 7.5.3 - August 18, 2010
 ! External Links (pointers) now support handling of request parameters (loader parameter in opencms-vfs.xml)

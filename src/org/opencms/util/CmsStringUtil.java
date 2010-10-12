@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
- * Date   : $Date: 2010/07/13 16:11:43 $
- * Version: $Revision: 1.55 $
+ * Date   : $Date: 2010/10/12 13:57:25 $
+ * Version: $Revision: 1.56 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,6 +46,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import org.apache.commons.logging.Log;
 import org.apache.oro.text.perl.MalformedPerl5PatternException;
@@ -58,7 +59,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * @author  Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.55 $ 
+ * @version $Revision: 1.56 $ 
  * 
  * @since 6.0.0 
  */
@@ -1139,9 +1140,9 @@ public final class CmsStringUtil {
     }
 
     /**
-     * This method transformes a string which matched a format with a place holder into another format. The other format 
-     * also includes place holders. Place holders start with {@link org.opencms.util.CmsStringUtil#PLACEHOLDER_START} 
-     * and end with {@link org.opencms.util.CmsStringUtil#PLACEHOLDER_END}.<p>
+     * This method transformes a string which matched a format with one or more place holders into another format. The 
+     * other format also includes the same number of place holders. Place holders start with 
+     * {@link org.opencms.util.CmsStringUtil#PLACEHOLDER_START} and end with {@link org.opencms.util.CmsStringUtil#PLACEHOLDER_END}.<p>
      *
      * @param oldFormat the original format
      * @param newFormat the new format
@@ -1149,7 +1150,7 @@ public final class CmsStringUtil {
      * 
      * @return the new value with the filled place holder with the information in the parameter value
      */
-    public static String transformValue(String oldFormat, String newFormat, String value) {
+    public static String transformValues(String oldFormat, String newFormat, String value) {
 
         if (!oldFormat.contains(CmsStringUtil.PLACEHOLDER_START)
             || !oldFormat.contains(CmsStringUtil.PLACEHOLDER_END)
@@ -1159,65 +1160,260 @@ public final class CmsStringUtil {
             // that is why there is nothing to calculate and the value is the new format
             return newFormat;
         }
-        // example for an old format: <b>{.*}</b>
-        // example for a value which matched the old format: <b>Hallo</b>
-        //                                                   012345678901
-        // example for a new format: <strong>{}</strong>
-        // the transformed value is: <strong>Hallo</strong>
+        //initialize the arrays with the values where the place holders starts
+        ArrayList<Integer> oldValues = new ArrayList<Integer>();
+        ArrayList<Integer> newValues = new ArrayList<Integer>();
 
-        // the place holder content in the value is to calculate to fill in the new format 
-        // thereto at first the contents before and after the place holder in the old format is to calculate
-        // then these contents are matched against the value - between is the place holder content
-        // then the place holder content is filled into the new format
-
-        // get the contents before and after the place holder
-        // at first get the content before the place holder 
-        // in this example: <b>
-        // thereto get the index of the place holder start sign in the old format
-        int indexPlaceHolderStart = oldFormat.indexOf(CmsStringUtil.PLACEHOLDER_START);
-        // get the content before the place holder
-        String placeHolderStart = "";
-        if (indexPlaceHolderStart > 0) {
-            placeHolderStart = oldFormat.substring(0, indexPlaceHolderStart);
+        // count the number of placeholders
+        // for example these are three pairs:
+        // old format: {.*}<b>{.*}</b>{.*}
+        // new format: {}<strong>{}</strong>{}
+        // get the number of place holders in the old format
+        int oldNumber = 0;
+        try {
+            int counter = 0;
+            Pattern pattern = Pattern.compile("\\{\\.\\*\\}");
+            Matcher matcher = pattern.matcher(oldFormat);
+            // get the number of matches
+            while (matcher.find()) {
+                counter += 1;
+            }
+            oldValues = new ArrayList<Integer>(counter);
+            matcher = pattern.matcher(oldFormat);
+            while (matcher.find()) {
+                int start = matcher.start() + 1;
+                oldValues.add(oldNumber, new Integer(start));
+                oldNumber += 1;
+            }
+        } catch (PatternSyntaxException e) {
+            // do nothing
         }
-        // then get the content after the place holder in the old format
-        // in this example: </b>
-        // thereto get the index of the place holder end sign
-        int indexPlaceHolderEnd = oldFormat.indexOf(CmsStringUtil.PLACEHOLDER_END) + 1;
-        // get the content after the place holder
-        String placeHolderEnd = oldFormat.substring(indexPlaceHolderEnd);
-
-        // get the place holder content
-        // thereto the contents before and after the place holders are matched against the value
-        // the signs between are the place holder content
-        // get the index of the value of the last sign which matches the content before the place holder
-        int indexValueStart = 0;
-        if (CmsStringUtil.isNotEmpty(placeHolderStart)) {
-            indexValueStart = value.lastIndexOf(placeHolderStart);
-            indexValueStart = indexValueStart + placeHolderStart.length();
+        // get the number of place holders in the new format
+        int newNumber = 0;
+        try {
+            int counter = 0;
+            Pattern pattern = Pattern.compile("\\{\\}");
+            Matcher matcher = pattern.matcher(newFormat);
+            // get the number of matches
+            while (matcher.find()) {
+                counter += 1;
+            }
+            newValues = new ArrayList<Integer>(counter);
+            matcher = pattern.matcher(newFormat);
+            while (matcher.find()) {
+                int start = matcher.start() + 1;
+                newValues.add(newNumber, new Integer(start));
+                newNumber += 1;
+            }
+        } catch (PatternSyntaxException e) {
+            // do nothing
         }
-        // get the index of the value of the first sign which matches the content after the place holder
-        int indexValueEnd = value.indexOf(placeHolderEnd);
-        // if there is no sign after the place holder, then take the full length of the value
-        if (indexValueEnd == 0) {
-            indexValueEnd = value.length();
+        // prove the numbers of place holders
+        if (oldNumber != newNumber) {
+            // not the same number of place holders in the old and in the new format
+            return newFormat;
         }
-        // the place holder content in this example: Hallo
-        String placeHolderContent = value.substring(indexValueStart, indexValueEnd);
 
-        // now the value is transformed into the new format
-        // the transforming appends the content before the place holder, then the place holder content and then the content
-        // after the place holder
-        // in this example the content before the place holder in the new format: <strong>
-        int newValueStart = newFormat.indexOf(CmsStringUtil.PLACEHOLDER_START);
-        // in the new value, the index of the last sign which matches the content before the place holder
-        // in this example the content after the place holder in the new format: </strong>
-        int newValueEnd = newFormat.indexOf(CmsStringUtil.PLACEHOLDER_END) + 1;
-        // transform the value into the new format
-        newFormat = newFormat.substring(0, newValueStart).concat(placeHolderContent).concat(
-            newFormat.substring(newValueEnd));
-        // return the transformed value
-        return newFormat;
+        // initialize the arrays with the values between the place holders
+        ArrayList<String> oldBetween = new ArrayList<String>(oldNumber + 1);
+        ArrayList<String> newBetween = new ArrayList<String>(newNumber + 1);
+
+        // get the values between the place holders for the old format
+        // for this example with oldFormat: {.*}<b>{.*}</b>{.*}
+        // this array is that:
+        // ---------
+        // | empty |        
+        // ---------
+        // | <b>   |
+        // |--------
+        // | </b>  |
+        // |--------
+        // | empty |    
+        // |--------
+        int counter = 0;
+        Iterator<Integer> iter = oldValues.iterator();
+        while (iter.hasNext()) {
+            int start = iter.next().intValue();
+            if (counter == 0) {
+                // the first entry
+                if (start == 1) {
+                    // the first place holder starts at the beginning of the old format
+                    // for example: {.*}<b>...
+                    oldBetween.add(counter, "");
+                } else {
+                    // the first place holder starts NOT at the beginning of the old format
+                    // for example: <a>{.*}<b>...
+                    String part = oldFormat.substring(0, start - 1);
+                    oldBetween.add(counter, part);
+                }
+            } else {
+                // the entries between the first and the last entry
+                int lastStart = oldValues.get(counter - 1).intValue();
+                String part = oldFormat.substring(lastStart + 3, start - 1);
+                oldBetween.add(counter, part);
+            }
+            counter += 1;
+        }
+        // the last element
+        int lastElstart = oldValues.get(counter - 1).intValue();
+        if ((lastElstart + 2) == (oldFormat.length() - 1)) {
+            // the last place holder ends at the end of the old format
+            // for example: ...</b>{.*}
+            oldBetween.add(counter, "");
+        } else {
+            // the last place holder ends NOT at the end of the old format
+            // for example: ...</b>{.*}</a>
+            String part = oldFormat.substring(lastElstart + 3);
+            oldBetween.add(counter, part);
+        }
+
+        // get the values between the place holders for the new format
+        // for this example with newFormat: {}<strong>{}</strong>{}
+        // this array is that:
+        // ------------|
+        // | empty     |     
+        // ------------|
+        // | <strong>  |
+        // |-----------|
+        // | </strong> |
+        // |-----------|
+        // | empty     |    
+        // |-----------|
+        counter = 0;
+        iter = newValues.iterator();
+        while (iter.hasNext()) {
+            int start = iter.next().intValue();
+            if (counter == 0) {
+                // the first entry
+                if (start == 1) {
+                    // the first place holder starts at the beginning of the new format
+                    // for example: {.*}<b>...
+                    newBetween.add(counter, "");
+                } else {
+                    // the first place holder starts NOT at the beginning of the new format
+                    // for example: <a>{.*}<b>...
+                    String part = newFormat.substring(0, start - 1);
+                    newBetween.add(counter, part);
+                }
+            } else {
+                // the entries between the first and the last entry
+                int lastStart = newValues.get(counter - 1).intValue();
+                String part = newFormat.substring(lastStart + 1, start - 1);
+                newBetween.add(counter, part);
+            }
+            counter += 1;
+        }
+        // the last element
+        lastElstart = newValues.get(counter - 1).intValue();
+        if ((lastElstart + 2) == (newFormat.length() - 1)) {
+            // the last place holder ends at the end of the old format
+            // for example: ...</b>{.*}
+            newBetween.add(counter, "");
+        } else {
+            // the last place holder ends NOT at the end of the old format
+            // for example: ...</b>{.*}</a>
+            String part = newFormat.substring(lastElstart + 1);
+            newBetween.add(counter, part);
+        }
+
+        // get the values in the place holders
+        // for the example with:
+        //   oldFormat: {.*}<b>{.*}</b>{.*}
+        //   newFormat: {}<strong>{}</strong>{}
+        //   value: abc<b>def</b>ghi
+        // it is used the array with the old values between the place holders to get the content in the place holders
+        // this result array is that:
+        // ------|
+        // | abc |     
+        // ------|
+        // | def |
+        // |-----|
+        // | ghi |
+        // |-----|
+        ArrayList<String> placeHolders = new ArrayList<String>(oldNumber);
+        String tmpValue = value;
+        // loop over all rows with the old values between the place holders and take the values between them in the 
+        // current property value
+        for (int placeCounter = 0; placeCounter < oldBetween.size() - 1; placeCounter++) {
+            // get the two next values with the old values between the place holders
+            String content = oldBetween.get(placeCounter);
+            String nextContent = oldBetween.get(placeCounter + 1);
+            // check the position of the first of the next values in the current property value
+            int contPos = 0;
+            int nextContPos = 0;
+            if ((placeCounter == 0) && CmsStringUtil.isEmpty(content)) {
+                // the first value in the values between the place holders is empty
+                // for example: {.*}<p>...
+                contPos = 0;
+            } else {
+                // the first value in the values between the place holders is NOT empty
+                // for example: bla{.*}<p>...
+                contPos = tmpValue.indexOf(content);
+            }
+            // check the position of the second of the next values in the current property value
+            if (((placeCounter + 1) == (oldBetween.size() - 1)) && CmsStringUtil.isEmpty(nextContent)) {
+                // the last value in the values between the place holders is empty
+                // for example: ...<p>{.*}
+                nextContPos = tmpValue.length();
+            } else {
+                // the last value in the values between the place holders is NOT empty
+                // for example: ...<p>{.*}bla
+                nextContPos = tmpValue.indexOf(nextContent);
+            }
+            // every value must match the current value
+            if ((contPos < 0) || (nextContPos < 0)) {
+                return value;
+            }
+            // get the content of the current place holder
+            String placeContent = tmpValue.substring(contPos + content.length(), nextContPos);
+            placeHolders.add(placeCounter, placeContent);
+            // cut off the currently visited part of the value
+            tmpValue = tmpValue.substring(nextContPos);
+        }
+
+        // build the new format
+        // with following vectors from above:
+        // old values between the place holders:
+        // ---------
+        // | empty | (old.1)        
+        // ---------
+        // | <b>   | (old.2)
+        // |--------
+        // | </b>  | (old.3)
+        // |--------
+        // | empty | (old.4)
+        // |--------
+        //
+        // new values between the place holders:
+        // ------------|
+        // | empty     | (new.1)     
+        // ------------|
+        // | <strong>  | (new.2)
+        // |-----------|
+        // | </strong> | (new.3)
+        // |-----------|
+        // | empty     | (new.4)
+        // |-----------|
+        //
+        // content of the place holders:
+        // ------|
+        // | abc | (place.1)
+        // ------| 
+        // | def | (place.2)
+        // |-----|
+        // | ghi | (place.3)
+        // |-----|
+        // 
+        // the result is calculated in that way:
+        // new.1 + place.1 + new.2 + place.2 + new.3 + place.3 + new.4
+        String newValue = "";
+        // take the values between the place holders and add the content of the place holders 
+        for (int buildCounter = 0; buildCounter < newNumber; buildCounter++) {
+            newValue = newValue + newBetween.get(buildCounter) + placeHolders.get(buildCounter);
+        }
+        newValue = newValue + newBetween.get(newNumber);
+        // return the changed value
+        return newValue;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2010/08/11 10:48:44 $
- * Version: $Revision: 1.653 $
+ * Date   : $Date: 2010/10/12 13:57:25 $
+ * Version: $Revision: 1.654 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -832,21 +832,13 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 continue;
             }
             CmsProperty property = readPropertyObject(dbc, res, propertyDefinition, false);
-            String structureValue = property.getStructureValue();
-            String resourceValue = property.getResourceValue();
+            String propertyValue = property.getValue();
             boolean changed = false;
-            if ((structureValue != null) && oldPattern.matcher(structureValue).matches()) {
+            if ((propertyValue != null) && oldPattern.matcher(propertyValue).matches()) {
                 // apply the place holder content
-                String tmpNewValue = CmsStringUtil.transformValue(oldValue, newValue, structureValue);
+                String tmpNewValue = CmsStringUtil.transformValues(oldValue, newValue, propertyValue);
                 // change structure value
                 property.setStructureValue(tmpNewValue);
-                changed = true;
-            }
-            if ((resourceValue != null) && oldPattern.matcher(resourceValue).matches()) {
-                // apply the place holder content
-                String tmpNewValue = CmsStringUtil.transformValue(oldValue, newValue, structureValue);
-                // change resource value
-                property.setResourceValue(tmpNewValue);
                 changed = true;
             }
             if (changed) {
