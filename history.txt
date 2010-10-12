@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2010/10/05 13:39:28 $
- * Version: $Revision: 1.51 $
+ * Date   : $Date: 2010/10/12 06:57:39 $
+ * Version: $Revision: 1.52 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -48,6 +48,8 @@ OpenCms x.x.x - Month Day, Year
 - Workplace search with selectable index now
 * Fixed issue #1858: Entering email Address of user not possible
 * Fixed issue #1903: Error using language node copier on country specific locales
+- Added new optional CmsShell start parameter to load additional commands
+* Fixed premature publish thread interruption within CmsShell
 
 OpenCms 7.9.2 - February 24th, 2010
 ! Added support for xsd:choice in XML content API and editor
