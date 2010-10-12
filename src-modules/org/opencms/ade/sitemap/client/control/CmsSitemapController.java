@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2010/10/11 06:40:55 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2010/10/12 06:56:33 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -83,7 +83,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 8.0.0
  */
@@ -978,8 +978,11 @@ public class CmsSitemapController {
     protected void recomputeProperties(CmsClientSitemapEntry entry, CmsPropertyInheritanceState propState) {
 
         CmsPropertyInheritanceState myState = propState.update(entry.getProperties(), entry.getSitePath());
-        Map<String, CmsComputedPropertyValue> myProps = myState.getInheritedProperties();
-        entry.setParentInheritedProperties(propState.getInheritedProperties());
+        Map<String, CmsComputedPropertyValue> myProps = new HashMap<String, CmsComputedPropertyValue>(
+            myState.getInheritedProperties());
+        Map<String, CmsComputedPropertyValue> myParentProps = new HashMap<String, CmsComputedPropertyValue>(
+            propState.getInheritedProperties());
+        entry.setParentInheritedProperties(myParentProps);
         entry.setInheritedProperties(myProps);
         for (I_CmsPropertyUpdateHandler handler : m_propertyUpdateHandlers) {
             handler.handlePropertyUpdate(entry);
