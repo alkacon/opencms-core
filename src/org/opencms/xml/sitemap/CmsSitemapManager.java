@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2010/10/12 13:37:09 $
- * Version: $Revision: 1.61 $
+ * Date   : $Date: 2010/10/12 15:02:41 $
+ * Version: $Revision: 1.62 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -83,7 +83,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.61 $
+ * @version $Revision: 1.62 $
  * 
  * @since 7.9.2
  */
@@ -644,9 +644,7 @@ public class CmsSitemapManager {
             null,
             id);
 
-        Map<String, CmsXmlContentProperty> propDefs = getPropertyDefinitionsForSite(
-            cms,
-            cms.getRequestContext().getSiteRoot());
+        Map<String, CmsXmlContentProperty> propDefs = entry.getPropertyDefinitions();
         CmsPropertyInheritanceState propState = new CmsPropertyInheritanceState(entry.getComputedProperties(), propDefs);
         CmsPropertyInheritanceState newPropState = propState.update(
             Collections.<String, CmsSimplePropertyValue> emptyMap(),
@@ -799,22 +797,6 @@ public class CmsSitemapManager {
     public Map<String, CmsProperty> getProperties(CmsSitemapEntry entry) {
 
         return CmsXmlContentPropertyHelper.createCmsProperties(entry.getComputedProperties());
-    }
-
-    /**
-     * Returns the property definitions for a given site.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param siteRoot the site for which the property definitions should be retrieved 
-     * 
-     * @return the property definitions for that site 
-     * 
-     * @throws CmsException if something goes wrong 
-     */
-    public Map<String, CmsXmlContentProperty> getPropertyDefinitionsForSite(CmsObject cms, String siteRoot)
-    throws CmsException {
-
-        return m_cache.getPropertyDefinitionsForSite(cms, siteRoot);
     }
 
     /**

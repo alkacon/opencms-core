@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapEntry.java,v $
- * Date   : $Date: 2010/10/11 06:40:55 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2010/10/12 15:02:41 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.xml.sitemap;
 
 import org.opencms.file.CmsObject;
 import org.opencms.util.CmsUUID;
+import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.sitemap.properties.CmsComputedPropertyValue;
 import org.opencms.xml.sitemap.properties.CmsSimplePropertyValue;
 
@@ -45,7 +46,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 7.6 
  */
@@ -69,9 +70,11 @@ public class CmsSitemapEntry {
     /** The position. */
     protected int m_position;
 
+    /** The property definitions of this sitemap entry. */
+    protected Map<String, CmsXmlContentProperty> m_propertyDefinitions;
+
     /** The content id, for detail pages. */
     private CmsUUID m_contentId;
-
 
     /** The entry id. */
     private final CmsUUID m_id;
@@ -416,5 +419,25 @@ public class CmsSitemapEntry {
     public String toString() {
 
         return getRootPath();
+    }
+
+    /**
+     * Gets the property definitions which apply to this sitemap entry.<p>
+     * 
+     * @return the property definitions for the sitemap entry 
+     */
+    protected Map<String, CmsXmlContentProperty> getPropertyDefinitions() {
+
+        return m_propertyDefinitions;
+    }
+
+    /**
+     * Sets the entry's property definitions.<p>
+     *  
+     * @param propDefs the new property definitions 
+     */
+    protected void setPropertyDefinitions(Map<String, CmsXmlContentProperty> propDefs) {
+
+        m_propertyDefinitions = propDefs;
     }
 }
