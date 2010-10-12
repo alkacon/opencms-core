@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/Attic/CmsSitemapLinkStrategyHandler.java,v $
- * Date   : $Date: 2010/10/12 10:00:59 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/10/12 15:11:02 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Ruediger Kurz
  *
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  */
@@ -106,18 +106,20 @@ public class CmsSitemapLinkStrategyHandler extends A_CmsLinkStrategyHandler {
                 // get the export name of the according sitemap
                 String exportname = OpenCms.getSitemapManager().getExportnameForSiteRoot(
                     OpenCms.getSiteManager().getSiteRoot(sitemapEntry.getRootPath()));
-                if (exportname != null) {
-                    // if an export name was found replace the site root with the found export name
-                    String storedSiteRoot = cms.getRequestContext().getSiteRoot();
-                    try {
-                        String siteRoot = OpenCms.getSiteManager().getSiteRoot(sitemapEntry.getRootPath());
-                        if (siteRoot != null) {
-                            cms.getRequestContext().setSiteRoot(siteRoot);
-                        }
-                        rfsName = CmsStringUtil.joinPaths("/" + exportname + "/" + sitemapEntry.getSitePath(cms));
-                    } finally {
-                        cms.getRequestContext().setSiteRoot(storedSiteRoot);
+                String storedSiteRoot = cms.getRequestContext().getSiteRoot();
+                try {
+                    String siteRoot = OpenCms.getSiteManager().getSiteRoot(sitemapEntry.getRootPath());
+                    if (siteRoot != null) {
+                        cms.getRequestContext().setSiteRoot(siteRoot);
                     }
+                    if (exportname != null) {
+                        // if an export name was found replace the site root with the found export name
+                        rfsName = CmsStringUtil.joinPaths("/" + exportname + "/" + sitemapEntry.getSitePath(cms));
+                    } else {
+                        rfsName = sitemapEntry.getRootPath();
+                    }
+                } finally {
+                    cms.getRequestContext().setSiteRoot(storedSiteRoot);
                 }
             } else {
                 rfsName = getRfsNameWithExportName(cms, vfsName);
@@ -305,9 +307,10 @@ public class CmsSitemapLinkStrategyHandler extends A_CmsLinkStrategyHandler {
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(path)) {
                 detailId = CmsResource.getName(path);
             }
-            // if the entry was found and it is a sitemap entry path (without an detail id)
-            // read the export property from the sitemap entry
-            if ((entry != null) && entry.isSitemap() && !CmsUUID.isValidUUID(detailId)) {
+
+            if ((entry != null) && entry.isSitemap()) {
+                // if the entry was found and it is a sitemap entry
+                // read the export property from the sitemap entry
                 Map<String, String> props = entry.getProperties(true);
                 if ((props.get(CmsPropertyDefinition.PROPERTY_EXPORT) != null)
                     && props.get(CmsPropertyDefinition.PROPERTY_EXPORT).equals(CmsStringUtil.TRUE)) {
