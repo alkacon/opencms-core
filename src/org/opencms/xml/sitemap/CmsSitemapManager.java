@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2010/10/12 08:03:16 $
- * Version: $Revision: 1.60 $
+ * Date   : $Date: 2010/10/12 13:37:09 $
+ * Version: $Revision: 1.61 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,10 +59,12 @@ import org.opencms.xml.containerpage.CmsADEDefaultConfiguration;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.content.CmsXmlContentPropertyHelper;
 import org.opencms.xml.sitemap.properties.CmsComputedPropertyValue;
+import org.opencms.xml.sitemap.properties.CmsPropertyInheritanceState;
 import org.opencms.xml.sitemap.properties.CmsSimplePropertyValue;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -81,7 +83,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.60 $
+ * @version $Revision: 1.61 $
  * 
  * @since 7.9.2
  */
@@ -638,10 +640,18 @@ public class CmsSitemapManager {
             id.toString(),
             title,
             entry.isRootEntry(),
-            entryProps,
+            new HashMap<String, CmsSimplePropertyValue>(),
             null,
             id);
-        contentEntry.setRuntimeInfo(entry.getEntryPoint(), 0, entry.getComputedProperties());
+
+        Map<String, CmsXmlContentProperty> propDefs = getPropertyDefinitionsForSite(
+            cms,
+            cms.getRequestContext().getSiteRoot());
+        CmsPropertyInheritanceState propState = new CmsPropertyInheritanceState(entry.getComputedProperties(), propDefs);
+        CmsPropertyInheritanceState newPropState = propState.update(
+            Collections.<String, CmsSimplePropertyValue> emptyMap(),
+            id.toString());
+        contentEntry.setRuntimeInfo(entry.getEntryPoint(), 0, newPropState.getInheritedProperties());
         return contentEntry;
     }
 
@@ -789,6 +799,22 @@ public class CmsSitemapManager {
     public Map<String, CmsProperty> getProperties(CmsSitemapEntry entry) {
 
         return CmsXmlContentPropertyHelper.createCmsProperties(entry.getComputedProperties());
+    }
+
+    /**
+     * Returns the property definitions for a given site.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param siteRoot the site for which the property definitions should be retrieved 
+     * 
+     * @return the property definitions for that site 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public Map<String, CmsXmlContentProperty> getPropertyDefinitionsForSite(CmsObject cms, String siteRoot)
+    throws CmsException {
+
+        return m_cache.getPropertyDefinitionsForSite(cms, siteRoot);
     }
 
     /**

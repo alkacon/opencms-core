@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsOnlineAndOfflineSitemapCache.java,v $
- * Date   : $Date: 2010/10/12 08:03:16 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/10/12 13:37:09 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,7 @@ import org.opencms.file.CmsProject;
 import org.opencms.main.CmsException;
 import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.util.CmsUUID;
+import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.util.List;
 import java.util.Map;
@@ -48,7 +49,7 @@ import java.util.Set;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -166,6 +167,15 @@ public class CmsOnlineAndOfflineSitemapCache implements I_CmsSitemapCache {
 
         boolean online = CmsProject.isOnlineProject(cms.getRequestContext().currentProject().getUuid());
         return getInternalCache(online);
+    }
+
+    /**
+     * @see org.opencms.xml.sitemap.I_CmsSitemapCache#getPropertyDefinitionsForSite(org.opencms.file.CmsObject, java.lang.String)
+     */
+    public Map<String, CmsXmlContentProperty> getPropertyDefinitionsForSite(CmsObject cms, String siteRoot)
+    throws CmsException {
+
+        return getInternalCache(cms).getPropertyDefinitionsForSite(cms, siteRoot);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/I_CmsSitemapCache.java,v $
- * Date   : $Date: 2010/10/12 08:03:16 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/10/12 13:37:09 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.xml.sitemap;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.util.CmsUUID;
+import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.util.List;
 import java.util.Map;
@@ -140,6 +141,18 @@ public interface I_CmsSitemapCache {
      * @throws CmsException if something goes wrong 
      */
     String getExportName(String siteRoot) throws CmsException;
+
+    /**
+     * Returns the property definitions for a site with a given site root.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param siteRoot the site root 
+     * @return the property definitions for the site 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    Map<String, CmsXmlContentProperty> getPropertyDefinitionsForSite(CmsObject cms, String siteRoot)
+    throws CmsException;
 
     /**
      * Returns the map from export names to site roots.<p>
