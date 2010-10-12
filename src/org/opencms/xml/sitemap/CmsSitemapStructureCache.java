@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapStructureCache.java,v $
- * Date   : $Date: 2010/10/12 08:03:16 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/10/12 09:43:48 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -75,7 +75,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Moossen
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 8.0.0
  */
@@ -451,8 +451,11 @@ public class CmsSitemapStructureCache extends CmsVfsCache implements I_CmsSitema
      */
     protected void addExportName(String siteRoot, String exportName) {
 
+        exportName = CmsStringUtil.joinPaths("/", exportName, "/");
+        String newSiteRoot = CmsStringUtil.joinPaths(siteRoot, "/");
         m_exportNames.put(siteRoot, exportName);
-        m_exportNamesReverse.put(exportName, siteRoot);
+        m_exportNames.put(newSiteRoot, exportName);
+        m_exportNamesReverse.put(exportName, newSiteRoot);
     }
 
     /**
