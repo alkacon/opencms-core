@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2010/10/07 07:56:35 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2010/10/12 09:26:51 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -102,7 +102,7 @@ import org.dom4j.Element;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -2310,8 +2310,18 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     protected CmsFile writeCategories(CmsObject cms, CmsFile file, CmsXmlContent content) throws CmsException {
 
         if (CmsWorkplace.isTemporaryFile(file)) {
-            // ignore temporary files
-            return file;
+            // ignore temporary file if the original file exists (not the case for direct edit: "new")
+            if (CmsResource.isTemporaryFileName(file.getRootPath())) {
+                String originalFileName = CmsResource.getFolderPath(file.getRootPath())
+                    + CmsResource.getName(file.getRootPath()).substring(CmsResource.TEMP_FILE_PREFIX.length());
+                if (cms.existsResource(cms.getRequestContext().removeSiteRoot(originalFileName))) {
+                    // original file exists, ignore it
+                    return file;
+                }
+            } else {
+                // file name does not start with temporary prefix, ignore the file
+                return file;
+            }
         }
         // check the presence of a category widget
         boolean hasCategoryWidget = false;
