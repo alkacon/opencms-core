@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2010/10/07 13:49:12 $
- * Version: $Revision: 1.59 $
+ * Date   : $Date: 2010/10/12 08:03:16 $
+ * Version: $Revision: 1.60 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.xml.sitemap;
 import org.opencms.cache.CmsVfsMemoryObjectCache;
 import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
@@ -80,7 +81,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.59 $
+ * @version $Revision: 1.60 $
  * 
  * @since 7.9.2
  */
@@ -142,6 +143,9 @@ public class CmsSitemapManager {
 
     /** The cache instance. */
     private CmsOnlineAndOfflineSitemapCache m_cache;
+
+    /** Cached online project. */
+    private CmsProject m_onlineProject;
 
     /** Lazy initialized sitemap type id. */
     private int m_sitemapTypeId;
@@ -672,23 +676,16 @@ public class CmsSitemapManager {
     }
 
     /**
-     * Returns the exportname for a given sitemap entry.<p>
+     * Returns the configured export name for a given site root.<p>
      * 
-     * @param cms the cms object
-     * @param siteRoot the siteRoot to get the exportName for 
+     * @param siteRoot a site root 
+     * @return the configured export name for the site root  
      * 
-     * @return the exportname for a given sitemap entry
+     * @throws CmsException if something goes wrong 
      */
-    public String getExportnameForSiteRoot(CmsObject cms, String siteRoot) {
+    public String getExportnameForSiteRoot(String siteRoot) throws CmsException {
 
-        // TODO: replace with reading the exportname from the sitemap configuration
-        int todo;
-
-        if ((siteRoot != null) && siteRoot.startsWith("/sites/default")) {
-            return "t3";
-        } else {
-            return null;
-        }
+        return m_cache.getExportName(siteRoot);
     }
 
     /**
@@ -992,6 +989,18 @@ public class CmsSitemapManager {
     }
 
     /**
+     * Returns a map from export names to site roots for which they are configured.<p>
+     * 
+     * @return a map from export names to site roots 
+     *  
+     * @throws CmsException if something goes wrong 
+     */
+    public Map<String, String> getSiteRootsForExportNames() throws CmsException {
+
+        return m_cache.getInternalCache(true).getSiteRootsForExportNames();
+    }
+
+    /**
      * Returns the list of sub-entries for the given sitemap entry URI.<p>
      * 
      * @param cms the current CMS context
@@ -1135,6 +1144,14 @@ public class CmsSitemapManager {
             }
         }
         return result;
+    }
+
+    private CmsProject getOnlineProject(CmsObject cms) throws CmsException {
+
+        if (m_onlineProject == null) {
+            m_onlineProject = cms.readProject(CmsProject.ONLINE_PROJECT_ID);
+        }
+        return m_onlineProject;
     }
 
     /**

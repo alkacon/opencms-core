@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsOnlineAndOfflineSitemapCache.java,v $
- * Date   : $Date: 2010/10/07 07:56:35 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/10/12 08:03:16 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import java.util.Set;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -137,6 +137,14 @@ public class CmsOnlineAndOfflineSitemapCache implements I_CmsSitemapCache {
     }
 
     /**
+     * @see org.opencms.xml.sitemap.I_CmsSitemapCache#getExportName(java.lang.String)
+     */
+    public String getExportName(String siteRoot) throws CmsException {
+
+        return getInternalCache(true).getExportName(siteRoot);
+    }
+
+    /**
      * Returns either the online or offline sitemap cache depending on a flag.<p>
      * 
      * @param online if true, return the online sitemap cache, else the offline sitemap cache 
@@ -158,6 +166,14 @@ public class CmsOnlineAndOfflineSitemapCache implements I_CmsSitemapCache {
 
         boolean online = CmsProject.isOnlineProject(cms.getRequestContext().currentProject().getUuid());
         return getInternalCache(online);
+    }
+
+    /**
+     * @see org.opencms.xml.sitemap.I_CmsSitemapCache#getSiteRootsForExportNames()
+     */
+    public Map<String, String> getSiteRootsForExportNames() throws CmsException {
+
+        return getInternalCache(true).getSiteRootsForExportNames();
     }
 
     /**

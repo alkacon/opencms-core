@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsConfigurationParser.java,v $
- * Date   : $Date: 2010/10/07 07:56:34 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/10/12 08:03:16 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,11 +74,14 @@ import org.apache.commons.collections.Transformer;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 7.6 
  */
 public class CmsConfigurationParser {
+
+    /** The tag name for the export name configuration. */
+    public static final String N_ADE_EXPORTNAME = "ADEExportName";
 
     /** The tag name of the configuration for a single type. */
     public static final String N_ADE_TYPE = "ADEType";
@@ -115,6 +118,9 @@ public class CmsConfigurationParser {
 
     /** Configuration data, read from xml content. */
     private Map<String, CmsConfigurationItem> m_configuration = new HashMap<String, CmsConfigurationItem>();
+
+    /** The configured export name. */
+    private String m_exportName;
 
     /** The formatter configuration maps. */
     private Map<String, CmsPair<Map<String, String>, Map<Integer, String>>> m_formatterConfiguration = new HashMap<String, CmsPair<Map<String, String>, Map<Integer, String>>>();
@@ -194,6 +200,16 @@ public class CmsConfigurationParser {
     }
 
     /**
+     * Returns the configured export name.<p>
+     * 
+     * @return the configured export name 
+     */
+    public String getExportName() {
+
+        return m_exportName;
+    }
+
+    /**
      * Returns the formatter configuration for a given element type.<p>
      * 
      * @param type a type name 
@@ -269,6 +285,12 @@ public class CmsConfigurationParser {
         for (I_CmsXmlContentValue xmlField : fieldValues) {
             parseField(cms, xmlField, locale);
         }
+
+        I_CmsXmlContentValue exportNameNode = content.getValue(N_ADE_EXPORTNAME, locale);
+        if (exportNameNode != null) {
+            m_exportName = exportNameNode.getStringValue(cms);
+        }
+
     }
 
     /**

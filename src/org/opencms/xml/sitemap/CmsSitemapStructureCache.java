@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapStructureCache.java,v $
- * Date   : $Date: 2010/10/11 14:18:52 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/10/12 08:03:16 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ import org.opencms.cache.CmsVfsCache;
 import org.opencms.cache.CmsVfsMemoryObjectCache;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
@@ -49,6 +50,7 @@ import org.opencms.site.CmsSite;
 import org.opencms.util.CmsPair;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.xml.containerpage.CmsADEDefaultConfiguration;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.content.CmsXmlContentPropertyHelper;
 import org.opencms.xml.sitemap.properties.CmsComputedPropertyValue;
@@ -73,7 +75,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Moossen
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.0
  */
@@ -106,11 +108,20 @@ public class CmsSitemapStructureCache extends CmsVfsCache implements I_CmsSitema
     /** The default sitemap properties. */
     private Map<String, String> m_defProps;
 
+    /** Map from site roots to export names. */
+    private Map<String, String> m_exportNames;
+
+    /** Map from export names to site roots. */
+    private Map<String, String> m_exportNamesReverse;
+
     /** The name of this sitemap cache. */
     private String m_name;
 
     /** A flag which indicates whether this is the online sitemap cache (this flag only makes sense if the <code>m_useCache</code> flag is set ). */
     private boolean m_online;
+
+    /** The cached online project. */
+    private CmsProject m_onlineProject;
 
     /** The list of site roots of sites which use sitemaps. */
     private Set<String> m_siteRoots;
@@ -187,6 +198,8 @@ public class CmsSitemapStructureCache extends CmsVfsCache implements I_CmsSitema
         m_byStructureId.clear();
         m_siteRoots.clear();
         m_entryPoints.clear();
+        m_exportNames.clear();
+        m_exportNamesReverse.clear();
 
         // iterate sitemap entry points (system wide)
         List<CmsResource> entryPoints = internalGetEntryPointResources(adminCms);
@@ -347,6 +360,15 @@ public class CmsSitemapStructureCache extends CmsVfsCache implements I_CmsSitema
     }
 
     /**
+     * @see org.opencms.xml.sitemap.I_CmsSitemapCache#getExportName(java.lang.String)
+     */
+    public String getExportName(String siteRoot) throws CmsException {
+
+        getActiveSitemaps(internalCreateOnlineCmsObject());
+        return m_exportNames.get(siteRoot);
+    }
+
+    /**
      * Returns the name of this sitemap cache.<p> 
      * 
      * @return the name of the sitemap cache 
@@ -354,6 +376,15 @@ public class CmsSitemapStructureCache extends CmsVfsCache implements I_CmsSitema
     public String getName() {
 
         return m_name;
+    }
+
+    /**
+     * @see org.opencms.xml.sitemap.I_CmsSitemapCache#getSiteRootsForExportNames()
+     */
+    public Map<String, String> getSiteRootsForExportNames() throws CmsException {
+
+        getActiveSitemaps(internalCreateOnlineCmsObject());
+        return Collections.unmodifiableMap(m_exportNamesReverse);
     }
 
     /**
@@ -413,6 +444,18 @@ public class CmsSitemapStructureCache extends CmsVfsCache implements I_CmsSitema
     }
 
     /**
+     * Helper method for adding a configured export name.<p>
+     * 
+     * @param siteRoot the site root 
+     * @param exportName
+     */
+    protected void addExportName(String siteRoot, String exportName) {
+
+        m_exportNames.put(siteRoot, exportName);
+        m_exportNamesReverse.put(exportName, siteRoot);
+    }
+
+    /**
      * @see org.opencms.cache.CmsVfsCache#flush(boolean)
      */
     @Override
@@ -425,6 +468,22 @@ public class CmsSitemapStructureCache extends CmsVfsCache implements I_CmsSitema
                 m_active = null;
             }
         }
+    }
+
+    /**
+     * Reads and caches the online project.<p>
+     *  
+     * @return the online project
+     *  
+     * @throws CmsException if something goes wrong 
+     */
+    protected CmsProject getOnlineProject() throws CmsException {
+
+        if (m_onlineProject == null) {
+            m_onlineProject = m_adminCms.readProject(CmsProject.ONLINE_PROJECT_ID);
+
+        }
+        return m_onlineProject;
     }
 
     /**
@@ -501,6 +560,20 @@ public class CmsSitemapStructureCache extends CmsVfsCache implements I_CmsSitema
 
         CmsObject adminCms = OpenCms.initCmsObject(m_adminCms);
         adminCms.getRequestContext().setCurrentProject(cms.getRequestContext().currentProject());
+        return adminCms;
+    }
+
+    /**
+     * Creates an admin CMS context for the online project.<p>
+     * 
+     * @return an admin CMS context for the online project
+     *  
+     * @throws CmsException if something goes wrong 
+     */
+    protected CmsObject internalCreateOnlineCmsObject() throws CmsException {
+
+        CmsObject adminCms = OpenCms.initCmsObject(m_adminCms);
+        adminCms.getRequestContext().setCurrentProject(getOnlineProject());
         return adminCms;
     }
 
@@ -763,7 +836,13 @@ public class CmsSitemapStructureCache extends CmsVfsCache implements I_CmsSitema
 
         Map<String, CmsXmlContentProperty> propDefs = getPropertyConfig(cms, sitemapFile);
         CmsSite site = OpenCms.getSiteManager().getSiteForRootPath(sitemapFile.getRootPath());
-        //String exportName = OpenCms.getSitemapManager().getExportNameFor(...blah....);
+
+        CmsADEDefaultConfiguration conf = new CmsADEDefaultConfiguration();
+        String exportName = conf.getExportName(cms, cms.getSitePath(sitemapFile));
+        if (exportName != null) {
+            addExportName(site.getSiteRoot(), exportName);
+        }
+
         //exportNames.put(site.getSiteRoot(), exportName); 
 
         for (Locale locale : xmlSitemap.getLocales()) {
@@ -788,6 +867,8 @@ public class CmsSitemapStructureCache extends CmsVfsCache implements I_CmsSitema
      * 
      * @param cms the current CMS context 
      * @param res the resource from which to search the property configurations
+     * 
+     * @return the property configuration for the resource 
      * 
      * @throws CmsException if something goes wrong 
      */
@@ -851,6 +932,11 @@ public class CmsSitemapStructureCache extends CmsVfsCache implements I_CmsSitema
         m_entryPoints = new HashMap<String, String>();
         register("entryPoints", m_entryPoints);
 
+        m_exportNamesReverse = new HashMap<String, String>();
+        register("siteExportNamesReverse", m_exportNamesReverse);
+
+        m_exportNames = new HashMap<String, String>();
+        register("siteExportNames", m_exportNames);
     }
 
 }

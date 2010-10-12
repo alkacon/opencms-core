@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADEDefaultConfiguration.java,v $
- * Date   : $Date: 2010/10/07 07:56:34 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/10/12 08:03:16 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,7 +71,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 7.6 
  */
@@ -142,6 +142,22 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
         }
         resources.addAll(siteConfigParser.getNewElements(cms));
         return resources;
+    }
+
+    /**
+     * Returns the configured export name.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param uri the URI for which the configuration should be retrieved 
+     * 
+     * @return the configured export name 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public String getExportName(CmsObject cms, String uri) throws CmsException {
+
+        CmsConfigurationParser config = getConfigurationParser(cms, uri);
+        return config.getExportName();
     }
 
     /**
