@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/Attic/CmsSwitchLinkStrategyHandler.java,v $
- * Date   : $Date: 2010/10/04 14:53:39 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/10/12 10:00:59 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Ruediger Kurz
  *
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  */
@@ -111,7 +111,7 @@ public class CmsSwitchLinkStrategyHandler implements I_CmsLinkStrategyHandler {
     }
 
     /**
-     * Returns the site root for a given RFS name or <code>null</code> if no site root was found.<p>
+     * Returns the site root for a given RFS name or <code>null</code> if site root was not found.<p>
      * 
      * @param cms the current cms object
      * @param path the RFS name to get the site root for 
@@ -119,22 +119,25 @@ public class CmsSwitchLinkStrategyHandler implements I_CmsLinkStrategyHandler {
      * 
      * @return the site root for a given RFS name or <code>null</code> if no site root was found
      */
-    public static String getSiteRootForPath(CmsObject cms, String path, boolean isRfsPath) {
+    private static String getSiteRootForPath(CmsObject cms, String path, boolean isRfsPath) {
 
-        String siteRoot;
+        // a system resource is requested: no site root necessary
+        if (path.startsWith(CmsWorkplace.VFS_PATH_SYSTEM)) {
+            // the name starts with "/system/"
+            return null;
+        }
+
+        // the request context is set in the request context
         if (!(cms.getRequestContext().getSiteRoot().equals("") || cms.getRequestContext().getSiteRoot().equals("/"))) {
             // the cms object has a site root set
             return cms.getRequestContext().getSiteRoot();
-        } else if (path.startsWith(CmsWorkplace.VFS_PATH_SYSTEM)) {
-            // the name starts with "/system/"
-            return null;
-        } else {
-            // the name starts with a configured site e.g. "/sites/default/"
-            siteRoot = OpenCms.getSiteManager().getSiteRoot(path);
         }
-        // if the site root is still not found and the path is a RFS path 
+
+        // the name starts with a configured site e.g. "/sites/default/"
+        String siteRoot = OpenCms.getSiteManager().getSiteRoot(path);
+
+        // if the site root is still not found and the path is a RFS path look up in the export names
         if (((isRfsPath && (CmsStringUtil.isEmptyOrWhitespaceOnly(siteRoot) || siteRoot.equals("/"))))) {
-            // the name starts with a export name
             String folderName = null;
             for (Map.Entry<String, String> exportNameRes : OpenCms.getStaticExportManager().getExportnames().entrySet()) {
                 if (path.startsWith(exportNameRes.getKey())) {
@@ -150,18 +153,18 @@ public class CmsSwitchLinkStrategyHandler implements I_CmsLinkStrategyHandler {
     }
 
     /**
-     * Returns <code>true</code> if a sitemap is in use for the given name.<p>
+     * Returns <code>true</code> if a sitemap is in use for the given path.<p>
      * 
      * @param cms the cms object
      * @param path the path to check
-     * @param isRfsPath signals if the given name is a RFS name
+     * @param isRfs signals that the given path is a rfs path
      * 
      * @return <code>true</code> if a sitemap is in use for the given name
      */
-    public static boolean isSitemapInUse(CmsObject cms, String path, boolean isRfsPath) {
+    public static boolean isSitemapInUse(CmsObject cms, String path, boolean isRfs) {
 
         try {
-            if (OpenCms.getSitemapManager().isSiteUsingSitemap(cms, getSiteRootForPath(cms, path, isRfsPath))) {
+            if (OpenCms.getSitemapManager().isSiteUsingSitemap(cms, getSiteRootForPath(cms, path, isRfs))) {
                 return true;
             }
         } catch (CmsException e) {

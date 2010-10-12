@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2010/10/04 14:53:39 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2010/10/12 10:00:59 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,6 +50,7 @@ import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsLogReport;
 import org.opencms.report.I_CmsReport;
+import org.opencms.site.CmsSite;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsMacroResolver;
@@ -87,7 +88,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Moossen
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -216,7 +217,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     /** Lock object for export folder deletion in {@link #scrubExportFolders(I_CmsReport)}. */
     private Object m_lockScrubExportFolders;
 
-    /** Lock object for write access to the {@link #m_exportnameResources} map in {@link #setExportnames()}. */
+    /** Lock object for write access to the {@link #m_exportnameResources} map in {@link #computeVfsExportnames()}. */
     private Object m_lockSetExportnames;
 
     /** Indicates if the quick static export for plain resources is enabled. */
@@ -313,20 +314,6 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             name.append(DEFAULT_FILE);
         }
         return name.toString();
-    }
-
-    /**
-     * Adds a map of exportnames to the existing map of exportname resources.<p>
-     * 
-     * @param exportnames the exportnames to add
-     */
-    public void addExportnames(Map<String, String> exportnames) {
-
-        Map<String, String> tempMap = new HashMap<String, String>(m_exportnameResources);
-        tempMap.putAll(exportnames);
-        TreeMap<String, String> sortedMap = new TreeMap<String, String>(new CmsStringUtil.CmsSlashComparator());
-        sortedMap.putAll(tempMap);
-        m_exportnameResources = Collections.unmodifiableMap(sortedMap);
     }
 
     /**
@@ -882,7 +869,20 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             return null;
         }
 
-        return getRfsExportData(cms, rfsName);
+        // store the site root
+        String storedSiteRoot = cms.getRequestContext().getSiteRoot();
+        try {
+            // get the site root according to the HttpServletRequest 
+            CmsSite site = OpenCms.getSiteManager().matchRequest(request);
+            // set the site root of the request context before getting the export data
+            cms.getRequestContext().setSiteRoot(site.getSiteRoot());
+            // get the export data now
+            CmsStaticExportData data = getRfsExportData(cms, rfsName);
+            return data;
+        } finally {
+            // restore the site root
+            cms.getRequestContext().setSiteRoot(storedSiteRoot);
+        }
     }
 
     /**
@@ -928,16 +928,33 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     }
 
     /**
-     * Returns the list of all resources that have the "exportname" property set.<p>
+     * Returns a map of all export names with export name as key 
+     * and the vfs folder path as value including the sitemap configuration.<p>
      * 
-     * @return the list of all resources that have the "exportname" property set
+     * @return a map of export names
      */
+
     public Map<String, String> getExportnames() {
 
+        Map<String, String> exportnames = new HashMap<String, String>();
         if (m_exportnameResources == null) {
-            setExportnames();
+            m_exportnameResources = Collections.unmodifiableMap(computeVfsExportnames());
+            exportnames.putAll(m_exportnameResources);
+        } else {
+            exportnames.putAll(m_exportnameResources);
         }
-        return m_exportnameResources;
+        try {
+            exportnames.putAll(OpenCms.getSitemapManager().getSiteRootsForExportNames());
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+        TreeMap<String, String> sortedMap = new TreeMap<String, String>(new CmsStringUtil.CmsSlashComparator());
+        sortedMap.putAll(exportnames);
+
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_UPDATE_EXPORTNAME_PROP_FINISHED_0));
+        }
+        return Collections.unmodifiableMap(sortedMap);
     }
 
     /**
@@ -2355,72 +2372,16 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     }
 
     /**
-     * Set the list of all resources that have the "exportname" property set.<p>
-     */
-    protected void setExportnames() {
-
-        if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(Messages.LOG_UPDATE_EXPORTNAME_PROP_START_0));
-        }
-
-        List<CmsResource> resources;
-        CmsObject cms = null;
-        try {
-            // this will always be in the root site
-            cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
-            resources = cms.readResourcesWithProperty(CmsPropertyDefinition.PROPERTY_EXPORTNAME);
-
-            synchronized (m_lockSetExportnames) {
-                Map<String, String> exportnameResources = new HashMap<String, String>();
-                for (int i = 0, n = resources.size(); i < n; i++) {
-                    CmsResource res = resources.get(i);
-                    try {
-                        String foldername = res.getRootPath();
-                        String exportname = cms.readPropertyObject(
-                            foldername,
-                            CmsPropertyDefinition.PROPERTY_EXPORTNAME,
-                            false).getValue();
-                        if (exportname != null) {
-                            if (exportname.charAt(exportname.length() - 1) != '/') {
-                                exportname = exportname + "/";
-                            }
-                            if (exportname.charAt(0) != '/') {
-                                exportname = "/" + exportname;
-                            }
-                            // export name has to be system-wide unique 
-                            // the folder name is a root path
-                            exportnameResources.put(exportname, foldername);
-                        }
-                    } catch (CmsException e) {
-                        // should never happen, folder will not be added
-                        LOG.error(e.getLocalizedMessage(), e);
-                    }
-                }
-                TreeMap<String, String> sortedMap = new TreeMap<String, String>(new CmsStringUtil.CmsSlashComparator());
-                sortedMap.putAll(exportnameResources);
-                m_exportnameResources = Collections.unmodifiableMap(sortedMap);
-            }
-        } catch (CmsException e) {
-            // should never happen, no resources will be added at all
-            LOG.error(e.getLocalizedMessage(), e);
-            m_exportnameResources = Collections.emptyMap();
-        }
-        if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(Messages.LOG_UPDATE_EXPORTNAME_PROP_FINISHED_0));
-        }
-    }
-
-    /**
-     * Writes a resource to the given export path with the given rfs name and the given content.<p>
-     * 
-     * @param req the current request
-     * @param exportPath the path to export the resource
-     * @param rfsName the rfs name
-     * @param resource the resource
-     * @param content the content
-     * 
-     * @throws CmsException if something goes wrong
-     */
+      * Writes a resource to the given export path with the given rfs name and the given content.<p>
+      * 
+      * @param req the current request
+      * @param exportPath the path to export the resource
+      * @param rfsName the rfs name
+      * @param resource the resource
+      * @param content the content
+      * 
+      * @throws CmsException if something goes wrong
+      */
     protected void writeResource(
         HttpServletRequest req,
         String exportPath,
@@ -2468,6 +2429,59 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         } else {
             // otherwise take the last modification date form the OpenCms resource
             exportFile.setLastModified((resource.getDateLastModified() / 1000) * 1000);
+        }
+    }
+
+    /**
+      * Returns the map of vfs exportnames with exportname as key and the vfs folder path as value.<p>
+      * 
+      * @return the map of vfs exportnames with exportname as key and the vfs folder path as value
+      */
+    private Map<String, String> computeVfsExportnames() {
+
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_UPDATE_EXPORTNAME_PROP_START_0));
+        }
+
+        List<CmsResource> resources;
+        CmsObject cms = null;
+        try {
+            // this will always be in the root site
+            cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
+            resources = cms.readResourcesWithProperty(CmsPropertyDefinition.PROPERTY_EXPORTNAME);
+
+            synchronized (m_lockSetExportnames) {
+                Map<String, String> exportnameResources = new HashMap<String, String>();
+                for (int i = 0, n = resources.size(); i < n; i++) {
+                    CmsResource res = resources.get(i);
+                    try {
+                        String foldername = res.getRootPath();
+                        String exportname = cms.readPropertyObject(
+                            foldername,
+                            CmsPropertyDefinition.PROPERTY_EXPORTNAME,
+                            false).getValue();
+                        if (exportname != null) {
+                            if (exportname.charAt(exportname.length() - 1) != '/') {
+                                exportname = exportname + "/";
+                            }
+                            if (exportname.charAt(0) != '/') {
+                                exportname = "/" + exportname;
+                            }
+                            // export name has to be system-wide unique 
+                            // the folder name is a root path
+                            exportnameResources.put(exportname, foldername);
+                        }
+                    } catch (CmsException e) {
+                        // should never happen, folder will not be added
+                        LOG.error(e.getLocalizedMessage(), e);
+                    }
+                }
+                return Collections.unmodifiableMap(exportnameResources);
+            }
+        } catch (CmsException e) {
+            // should never happen, no resources will be added at all
+            LOG.error(e.getLocalizedMessage(), e);
+            return Collections.emptyMap();
         }
     }
 }

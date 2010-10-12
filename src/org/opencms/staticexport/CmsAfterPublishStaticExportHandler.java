@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsAfterPublishStaticExportHandler.java,v $
- * Date   : $Date: 2010/10/04 14:53:39 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/10/12 10:00:59 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -76,7 +76,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  * 
@@ -671,7 +671,8 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
                             // the resource is a container page
                             // let's look for sitemap entries that point on this container page
                             // and export them all
-                            if (CmsSwitchLinkStrategyHandler.isSitemapInUse(cms, data.getVfsName(), false)) {
+                            if (CmsSwitchLinkStrategyHandler.isSitemapInUse(cms, data.getVfsName(), false)
+                                || data.getVfsName().startsWith(CmsWorkplace.VFS_PATH_SYSTEM)) {
                                 List<CmsInternalSitemapEntry> entries = OpenCms.getSitemapManager().getEntriesForStructureId(
                                     cms,
                                     res.getStructureId());
@@ -681,6 +682,9 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
                                 if (entries.isEmpty()) {
                                     // the container page is never referenced by a sitemap entry ignore it
                                     status = HttpServletResponse.SC_SEE_OTHER;
+                                }
+                                if (data.getVfsName().startsWith(CmsWorkplace.VFS_PATH_SYSTEM)) {
+                                    status = exportTemplateResource(data, cookies);
                                 }
                             } else {
                                 // the sitemap is not in use, so export the container page as a regular resource
