@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsContainerpageService.java,v $
- * Date   : $Date: 2010/09/22 14:27:47 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2010/10/12 06:55:30 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ import org.opencms.ade.containerpage.shared.CmsCntPageData;
 import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
+import org.opencms.ade.containerpage.shared.CmsSubContainer;
 import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
@@ -85,7 +86,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 8.0.0
  */
@@ -329,6 +330,32 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#saveSubContainer(java.lang.String, org.opencms.ade.containerpage.shared.CmsSubContainer)
+     */
+    public void saveSubContainer(String containerpageUri, CmsSubContainer subContainer) throws CmsRpcException {
+
+        CmsObject cms = getCmsObject();
+        try {
+            String resourceName = subContainer.getSitePath();
+            if (subContainer.isNew()) {
+                CmsResource subContainerResource = OpenCms.getADEManager().createNewElement(
+                    getCmsObject(),
+                    containerpageUri,
+                    getRequest(),
+                    CmsResourceTypeXmlContainerPage.SUB_CONTAINER_TYPE_NAME);
+                resourceName = cms.getSitePath(subContainerResource);
+            }
+            CmsSubContainerBean subContainerBean = getSubContainerBean(subContainer, containerpageUri);
+            cms.lockResourceTemporary(resourceName);
+            CmsXmlSubContainer xmlSubContainer = CmsXmlSubContainerFactory.unmarshal(cms, cms.readFile(resourceName));
+            xmlSubContainer.save(cms, subContainerBean);
+            cms.unlockResource(resourceName);
+        } catch (Throwable e) {
+            error(e);
+        }
+    }
+
+    /**
      * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#setToolbarVisible(boolean)
      */
     public void setToolbarVisible(boolean visible) throws CmsRpcException {
@@ -371,10 +398,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             for (Map.Entry<String, String> entry : properties.entrySet()) {
                 String propName = entry.getKey();
                 String propType = propertiesConf.get(propName).getPropertyType();
-                changedProps.put(propName, CmsXmlContentPropertyHelper.getPropValueIds(
-                    cms,
-                    propType,
-                    properties.get(propName)));
+                changedProps.put(
+                    propName,
+                    CmsXmlContentPropertyHelper.getPropValueIds(cms, propType, properties.get(propName)));
             }
         }
         return new CmsContainerElementBean(resourceId, null, changedProps);
@@ -708,7 +734,44 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         }
         sitemap = (sitemap == null) ? "" : OpenCms.getLinkManager().substituteLink(cms, sitemap);
         return new CmsSitemapLocation(sitemap, sitePath);
-
     }
 
+    /**
+     * Helper method for converting a CmsSubContainer to a CmsSubContainerBean when saving a sub container.<p>
+     * 
+     * @param subContainer the sub-container data
+     * @param containerpageUri the URI of the container page 
+     * 
+     * @return the sub-container bean
+     */
+    private CmsSubContainerBean getSubContainerBean(CmsSubContainer subContainer, String containerpageUri) {
+
+        CmsObject cms = getCmsObject();
+        CmsADESessionCache cache = getSessionCache();
+        List<CmsContainerElementBean> elements = new ArrayList<CmsContainerElementBean>();
+        for (CmsContainerElement elementData : subContainer.getElements()) {
+            try {
+                if (elementData.isNew()) {
+                    elementData = createNewElement(
+                        containerpageUri,
+                        elementData.getClientId(),
+                        elementData.getNewType());
+                }
+                CmsContainerElementBean element = cache.getCacheContainerElement(elementData.getClientId());
+
+                // make sure resource is readable, 
+                if (cms.existsResource(element.getElementId())) {
+                    elements.add(element);
+                }
+
+            } catch (Exception e) {
+                log(e.getLocalizedMessage(), e);
+            }
+        }
+        return new CmsSubContainerBean(
+            subContainer.getTitle(),
+            subContainer.getDescription(),
+            elements,
+            subContainer.getTypes());
+    }
 }

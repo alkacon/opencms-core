@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/shared/Attic/CmsContainerElementData.java,v $
- * Date   : $Date: 2010/05/21 13:20:08 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/10/12 06:55:30 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,13 +36,14 @@ import org.opencms.xml.content.CmsXmlContentProperty;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Bean holding all element information including it's formatted contents.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -89,6 +90,29 @@ public class CmsContainerElementData extends CmsContainerElement {
 
     /** The element title property. */
     private String m_title;
+
+    /** The supported container types of a sub-container. */
+    private Set<String> m_types;
+
+    /**
+     * Returns the supported container types.<p>
+     *
+     * @return the supported container types
+     */
+    public Set<String> getTypes() {
+
+        return m_types;
+    }
+
+    /**
+     * Sets the supported container types.<p>
+     *
+     * @param types the supported container types to set
+     */
+    public void setTypes(Set<String> types) {
+
+        m_types = types;
+    }
 
     /**
      * Returns the contents.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/shared/Attic/CmsContainer.java,v $
- * Date   : $Date: 2010/09/22 14:27:48 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/10/12 06:55:30 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,25 +31,23 @@
 
 package org.opencms.ade.containerpage.shared;
 
-import java.io.Serializable;
 import java.util.List;
+
+import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * Container bean.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
-public class CmsContainer implements Serializable {
+public class CmsContainer implements IsSerializable {
 
     /** Key for container data. This has to be identical with {@link org.opencms.jsp.CmsJspTagContainer#KEY_CONTAINER_DATA}. */
     public static final String KEY_CONTAINER_DATA = "org_opencms_ade_containerpage_containers";
-
-    /** The serial version id. */
-    private static final long serialVersionUID = -8888935436501323896L;
 
     /** List of the contained elements id's. */
     private List<CmsContainerElement> m_elements;

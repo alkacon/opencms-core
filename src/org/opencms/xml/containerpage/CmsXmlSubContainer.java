@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsXmlSubContainer.java,v $
- * Date   : $Date: 2010/09/03 13:27:35 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/10/12 06:54:08 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -81,7 +81,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 7.9.1
  */
@@ -344,7 +344,7 @@ public class CmsXmlSubContainer extends CmsXmlContent {
                 addBookmarkForElement(description, locale, subContainer, cntPath, cntDef);
 
                 // types
-                List<String> types = new ArrayList<String>();
+                Set<String> types = new HashSet<String>();
                 for (Iterator<Element> itTypes = CmsXmlGenericWrapper.elementIterator(subContainer, XmlNode.Type.name()); itTypes.hasNext();) {
                     Element type = itTypes.next();
                     addBookmarkForElement(type, locale, subContainer, cntPath, cntDef);
@@ -363,9 +363,9 @@ public class CmsXmlSubContainer extends CmsXmlContent {
 
                     // element itself
                     int elemIndex = CmsXmlUtils.getXpathIndexInt(element.getUniquePath(subContainer));
-                    String elemPath = CmsXmlUtils.concatXpath(cntPath, CmsXmlUtils.createXpathElement(
-                        element.getName(),
-                        elemIndex));
+                    String elemPath = CmsXmlUtils.concatXpath(
+                        cntPath,
+                        CmsXmlUtils.createXpathElement(element.getName(), elemIndex));
                     I_CmsXmlSchemaType elemSchemaType = cntDef.getSchemaType(element.getName());
                     I_CmsXmlContentValue elemValue = elemSchemaType.createValue(this, element, locale);
                     addBookmark(elemPath, locale, true, elemValue);
@@ -401,8 +401,10 @@ public class CmsXmlSubContainer extends CmsXmlContent {
                     elements,
                     types));
             } catch (NullPointerException e) {
-                LOG.error(org.opencms.xml.content.Messages.get().getBundle().key(
-                    org.opencms.xml.content.Messages.LOG_XMLCONTENT_INIT_BOOKMARKS_0), e);
+                LOG.error(
+                    org.opencms.xml.content.Messages.get().getBundle().key(
+                        org.opencms.xml.content.Messages.LOG_XMLCONTENT_INIT_BOOKMARKS_0),
+                    e);
             }
         }
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageUtil.java,v $
- * Date   : $Date: 2010/09/30 13:32:25 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2010/10/12 06:55:30 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,6 +38,7 @@ import org.opencms.ade.containerpage.client.ui.CmsElementOptionBar;
 import org.opencms.ade.containerpage.client.ui.CmsMenuListItem;
 import org.opencms.ade.containerpage.client.ui.CmsSubContainerElement;
 import org.opencms.ade.containerpage.client.ui.I_CmsDropContainer;
+import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.util.CmsDomUtil;
@@ -56,7 +57,7 @@ import com.google.gwt.user.client.Element;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 8.0.0
  */
@@ -68,6 +69,10 @@ public class CmsContainerpageUtil {
     /** HTML class used to identify sub container elements. Has to be identical with {@link org.opencms.jsp.CmsJspTagContainer#CLASS_SUB_CONTAINER_ELEMENTS}. */
     public static final String CLASS_SUB_CONTAINER_ELEMENTS = "cms_ade_subcontainer";
 
+    /** The container page controller. */
+    private CmsContainerpageController m_controller;
+
+    /** The drag and drop handler. */
     private CmsDNDHandler m_dndHandler;
 
     /** List of buttons of the tool-bar. */
@@ -77,11 +82,16 @@ public class CmsContainerpageUtil {
      * Constructor.<p>
      * 
      * @param dndHandler the container-page drag and drop handler
+     * @param controller the container page controller
      * @param optionButtons the tool-bar option buttons
      */
-    public CmsContainerpageUtil(CmsDNDHandler dndHandler, A_CmsToolbarOptionButton... optionButtons) {
+    public CmsContainerpageUtil(
+        CmsDNDHandler dndHandler,
+        CmsContainerpageController controller,
+        A_CmsToolbarOptionButton... optionButtons) {
 
         m_dndHandler = dndHandler;
+        m_controller = controller;
         m_optionButtons = optionButtons;
     }
 
@@ -175,14 +185,20 @@ public class CmsContainerpageUtil {
     public CmsContainerPageElement createElement(CmsContainerElementData containerElement, I_CmsDropContainer container)
     throws Exception {
 
-        com.google.gwt.user.client.Element element;
-        boolean hasProps = !containerElement.getPropertyConfig().isEmpty();
         if (containerElement.isSubContainer()) {
-            throw new UnsupportedOperationException(
-                "Not allowed for Subcontainers, use createSubcontainerElement instead.");
-        } else {
-            element = CmsDomUtil.createElement(containerElement.getContents().get(container.getContainerId()));
+            List<CmsContainerElementData> subElements = new ArrayList<CmsContainerElementData>();
+            for (String subId : containerElement.getSubItems()) {
+                CmsContainerElementData element = m_controller.getCachedElement(subId);
+                if (element != null) {
+                    subElements.add(element);
+                }
+            }
+            return createSubcontainerElement(containerElement, subElements, container);
         }
+        boolean hasProps = !containerElement.getPropertyConfig().isEmpty();
+        com.google.gwt.user.client.Element element = CmsDomUtil.createElement(containerElement.getContents().get(
+            container.getContainerId()));
+
         return createElement(
             element,
             container,
@@ -242,6 +258,9 @@ public class CmsContainerpageUtil {
                 CmsContainerPageElement subDragElement = createElement(subElement, subContainer);
                 subContainer.add(subDragElement);
             }
+        }
+        if (subElements.size() == 0) {
+            subContainer.addStyleName(I_CmsLayoutBundle.INSTANCE.dragdropCss().emptySubContainer());
         }
         addOptionBar(subContainer);
         return subContainer;

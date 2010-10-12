@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsElementUtil.java,v $
- * Date   : $Date: 2010/09/22 14:27:47 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/10/12 06:55:30 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,7 +72,7 @@ import javax.servlet.http.HttpServletResponse;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -204,7 +204,7 @@ public class CmsElementUtil {
                 m_cms,
                 m_cms.getRequestContext().getLocale());
             elementBean.setSubContainer(true);
-
+            elementBean.setTypes(subContainer.getTypes());
             elementBean.setDescription(subContainer.getDescription());
             if (subContainer.getTypes().isEmpty()) {
                 if (subContainer.getElements().isEmpty()) {

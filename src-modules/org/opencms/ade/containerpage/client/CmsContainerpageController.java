@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageController.java,v $
- * Date   : $Date: 2010/10/06 14:31:06 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2010/10/12 06:55:30 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,15 +34,19 @@ package org.opencms.ade.containerpage.client;
 import org.opencms.ade.containerpage.client.ui.CmsLeavePageDialog;
 import org.opencms.ade.containerpage.client.ui.CmsSubContainerElement;
 import org.opencms.ade.containerpage.client.ui.I_CmsToolbarButton;
+import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.containerpage.shared.CmsCntPageData;
 import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
+import org.opencms.ade.containerpage.shared.CmsSubContainer;
 import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService;
 import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageServiceAsync;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.rpc.CmsRpcPrefetcher;
+import org.opencms.gwt.client.ui.CmsNotification;
+import org.opencms.gwt.client.ui.CmsNotification.Type;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
@@ -67,6 +71,8 @@ import com.google.gwt.dom.client.AnchorElement;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
@@ -80,7 +86,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @since 8.0.0
  */
@@ -595,10 +601,20 @@ public final class CmsContainerpageController {
      * @param clientId the element id
      * @param callback the call-back to execute with the requested data
      */
-    public void getElement(String clientId, I_CmsSimpleCallback<CmsContainerElementData> callback) {
+    public void getElement(final String clientId, final I_CmsSimpleCallback<CmsContainerElementData> callback) {
 
         if (m_elements.containsKey(clientId)) {
-            callback.execute(m_elements.get(clientId));
+            DeferredCommand.addCommand(new Command() {
+
+                /**
+                 * @see com.google.gwt.user.client.Command#execute()
+                 */
+                public void execute() {
+
+                    callback.execute(m_elements.get(clientId));
+
+                }
+            });
         } else {
             SingleElementAction action = new SingleElementAction(clientId, callback);
             action.execute();
@@ -922,6 +938,10 @@ public final class CmsContainerpageController {
     public void removeElement(org.opencms.ade.containerpage.client.ui.CmsContainerPageElement dragElement) {
 
         dragElement.removeFromParent();
+        if (isSubcontainerEditing() && !getSubcontainer().iterator().hasNext()) {
+            // sub-container is empty, mark it
+            getSubcontainer().addStyleName(I_CmsLayoutBundle.INSTANCE.dragdropCss().emptySubContainer());
+        }
         setPageChanged();
     }
 
@@ -995,6 +1015,7 @@ public final class CmsContainerpageController {
                 @Override
                 protected void onResponse(Void result) {
 
+                    CmsNotification.get().send(Type.NORMAL, "Container page saved.");
                     setPageChanged(false, true);
                     Window.Location.assign(targetUri);
                 }
@@ -1026,7 +1047,7 @@ public final class CmsContainerpageController {
                 @Override
                 protected void onResponse(Void result) {
 
-                    //TODO: add notification
+                    CmsNotification.get().send(Type.NORMAL, "Container page saved.");
                     setPageChanged(false, false);
                     Window.Location.reload();
                 }
@@ -1059,7 +1080,7 @@ public final class CmsContainerpageController {
             @Override
             protected void onResponse(Void result) {
 
-                //TODO: add notification
+                CmsNotification.get().send(Type.NORMAL, "Favorites saved.");
             }
         };
         action.execute();
@@ -1067,10 +1088,35 @@ public final class CmsContainerpageController {
 
     /**
      * Saves the sub-container.<p>
+     * 
+     * @param subContainer the sub-container data to save 
      */
-    public void saveSubcontainer() {
+    public void saveSubcontainer(final CmsSubContainer subContainer) {
 
-        // TODO: implement
+        if (getSubcontainer() != null) {
+            CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
+
+                /**
+                 * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+                 */
+                @Override
+                public void execute() {
+
+                    getContainerpageService().saveSubContainer(getCurrentUri(), subContainer, this);
+                }
+
+                /**
+                 * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+                 */
+                @Override
+                protected void onResponse(Void result) {
+
+                    CmsNotification.get().send(Type.NORMAL, "Sub-container saved.");
+                }
+            };
+            action.execute();
+
+        }
     }
 
     /**
@@ -1117,10 +1163,17 @@ public final class CmsContainerpageController {
      * Tells the controller that sub-container editing has started.<p>
      * 
      * @param subContainer the sub-container
+     * 
+     * @return <code>true</code> if sub-container resource was locked and can be edited
      */
-    public void startEditingSubcontainer(CmsSubContainerElement subContainer) {
+    public boolean startEditingSubcontainer(CmsSubContainerElement subContainer) {
 
-        m_editingSubcontainer = subContainer;
+        if (subContainer.isNew() || CmsCoreProvider.get().lock(subContainer.getSitePath())) {
+            m_editingSubcontainer = subContainer;
+            return true;
+        }
+        CmsNotification.get().send(Type.WARNING, "Resource could not be locked.");
+        return false;
     }
 
     /**
@@ -1175,9 +1228,7 @@ public final class CmsContainerpageController {
     protected List<CmsContainer> getPageContent() {
 
         List<CmsContainer> containers = new ArrayList<CmsContainer>();
-        Iterator<Entry<String, org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer>> it = m_targetContainers.entrySet().iterator();
-        while (it.hasNext()) {
-            Entry<String, org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer> entry = it.next();
+        for (Entry<String, org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer> entry : m_targetContainers.entrySet()) {
             List<CmsContainerElement> elements = new ArrayList<CmsContainerElement>();
             Iterator<Widget> elIt = entry.getValue().iterator();
             while (elIt.hasNext()) {
@@ -1207,13 +1258,16 @@ public final class CmsContainerpageController {
 
     /**
      * Locks the container-page.<p>
+     * 
+     * @return <code>true</code> if page was locked successfully 
      */
-    protected void lockContainerpage() {
+    protected boolean lockContainerpage() {
 
         if (CmsCoreProvider.get().lock(getCurrentUri())) {
-            // nothing to do here
+            return true;
         } else {
-            // TODO: add notification
+            CmsNotification.get().send(Type.WARNING, "Page could not be locked.");
+            return false;
         }
     }
 
@@ -1286,9 +1340,7 @@ public final class CmsContainerpageController {
 
                 }
             });
-            CmsDebugLog.getInstance().printLine("PAGE CHANGED");
             m_handler.enableSaveReset(true);
-
         } else {
             m_pageChanged = changed;
             m_handler.enableSaveReset(false);
@@ -1325,7 +1377,7 @@ public final class CmsContainerpageController {
                 @Override
                 protected void onResponse(Void result) {
 
-                    CmsDebugLog.getInstance().printLine("Page saved");
+                    CmsNotification.get().send(Type.NORMAL, "Page saved");
                     setPageChanged(false, false);
                 }
             };

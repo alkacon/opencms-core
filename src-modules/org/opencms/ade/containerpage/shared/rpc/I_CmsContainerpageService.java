@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/shared/rpc/Attic/I_CmsContainerpageService.java,v $
- * Date   : $Date: 2010/09/22 14:27:48 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/10/12 06:55:30 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ import org.opencms.ade.containerpage.shared.CmsCntPageData;
 import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
+import org.opencms.ade.containerpage.shared.CmsSubContainer;
 import org.opencms.gwt.CmsRpcException;
 
 import java.util.Collection;
@@ -49,7 +50,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 8.0.0
  */
@@ -179,6 +180,16 @@ public interface I_CmsContainerpageService extends RemoteService {
      * @throws CmsRpcException if something goes wrong processing the request
      */
     void saveFavoriteList(List<String> clientIds) throws CmsRpcException;
+
+    /**
+     * Saves a sub-container element.<p>
+     * 
+     * @param containerpageUri the current URI
+     * @param subContainer the sub-container to save
+     * 
+     * @throws CmsRpcException if something goes wrong processing the request
+     */
+    void saveSubContainer(String containerpageUri, CmsSubContainer subContainer) throws CmsRpcException;
 
     /**
      * Saves the recent list.<p>

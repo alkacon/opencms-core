@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsSubContainerElement.java,v $
- * Date   : $Date: 2010/09/30 13:32:25 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/10/12 06:55:30 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -59,6 +59,9 @@ public class CmsSubContainerElement extends CmsContainerPageElement implements I
 
     /** The placeholder element. */
     private Element m_placeholder;
+
+    /** The editing placeholder. Used within sub-container editing. */
+    private Element m_editingPlaceholder;
 
     /** The index of the current placeholder position. */
     private int m_placeholderIndex = -1;
@@ -170,7 +173,9 @@ public class CmsSubContainerElement extends CmsContainerPageElement implements I
     public void refreshHighlighting() {
 
         CmsPositionBean position = CmsPositionBean.getInnerDimensions(getElement());
-        m_placeholder.getStyle().setHeight(position.getHeight() + 10, Unit.PX);
+        if (m_editingPlaceholder != null) {
+            m_editingPlaceholder.getStyle().setHeight(position.getHeight() + 10, Unit.PX);
+        }
         m_highlighting.setPosition(position);
     }
 
@@ -180,9 +185,6 @@ public class CmsSubContainerElement extends CmsContainerPageElement implements I
     @Override
     public void removeHighlighting() {
 
-        if (m_placeholder != null) {
-            m_placeholder.getStyle().clearHeight();
-        }
         if (m_highlighting != null) {
             m_highlighting.removeFromParent();
             m_highlighting = null;
@@ -221,6 +223,24 @@ public class CmsSubContainerElement extends CmsContainerPageElement implements I
     public void setContainerId(String containerId) {
 
         m_containerId = containerId;
+    }
+
+    /**
+     * Sets the editing placeholder.<p>
+     * 
+     * @param editingPlaceholder the editing placeholder element
+     */
+    public void setEditingPlaceholder(Element editingPlaceholder) {
+
+        m_editingPlaceholder = editingPlaceholder;
+    }
+
+    /**
+     * Clears the editing placeholder reference.<p>
+     */
+    public void clearEditingPlaceholder() {
+
+        m_editingPlaceholder = null;
     }
 
 }

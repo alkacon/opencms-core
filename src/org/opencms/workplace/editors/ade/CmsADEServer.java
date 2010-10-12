@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEServer.java,v $
- * Date   : $Date: 2010/09/22 14:27:48 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2010/10/12 06:54:57 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -92,7 +92,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.38 $
+ * @version $Revision: 1.39 $
  * 
  * @since 7.6
  */
@@ -322,8 +322,10 @@ public class CmsADEServer extends A_CmsAjaxServer {
             Iterator<String> itProperties = properties.keys();
             while (itProperties.hasNext()) {
                 String propertyName = itProperties.next();
-                cnfProps.put(propertyName, CmsXmlContentPropertyHelper.getPropValueIds(cms, propertiesConf.get(
-                    propertyName).getPropertyType(), properties.getString(propertyName)));
+                cnfProps.put(propertyName, CmsXmlContentPropertyHelper.getPropValueIds(
+                    cms,
+                    propertiesConf.get(propertyName).getPropertyType(),
+                    properties.getString(propertyName)));
             }
         }
         return new CmsContainerElementBean(structureId, null, cnfProps);
@@ -609,10 +611,12 @@ public class CmsADEServer extends A_CmsAjaxServer {
                 error(result, e.getLocalizedMessage());
             }
         } else {
-            error(result, Messages.get().getBundle(getWorkplaceLocale()).key(
-                Messages.ERR_JSON_WRONG_PARAMETER_VALUE_2,
-                ReqParam.action.name(),
-                actionParam));
+            error(
+                result,
+                Messages.get().getBundle(getWorkplaceLocale()).key(
+                    Messages.ERR_JSON_WRONG_PARAMETER_VALUE_2,
+                    ReqParam.action.name(),
+                    actionParam));
         }
         return result;
     }
@@ -1035,10 +1039,9 @@ public class CmsADEServer extends A_CmsAjaxServer {
                     String uri = cms.getRequestContext().removeSiteRoot(sr.getPath());
                     try {
                         CmsResource resource = cms.readResource(uri);
-                        JSONObject resElement = elemUtil.getElementData(new CmsContainerElementBean(
-                            resource.getStructureId(),
-                            null,
-                            null), types);
+                        JSONObject resElement = elemUtil.getElementData(
+                            new CmsContainerElementBean(resource.getStructureId(), null, null),
+                            types);
                         // store element data
                         elements.put(resElement);
                     } catch (Exception e) {
@@ -1262,17 +1265,16 @@ public class CmsADEServer extends A_CmsAjaxServer {
         Collection<CmsResource> creatableElements = m_manager.getCreatableElements(cms, cntPageUri, request);
         for (CmsResource creatableElement : creatableElements) {
             String type = OpenCms.getResourceManager().getResourceType(creatableElement).getTypeName();
-            JSONObject resElement = elemUtil.getElementData(new CmsContainerElementBean(
-                creatableElement.getStructureId(),
-                null,
-                null), types);
+            JSONObject resElement = elemUtil.getElementData(
+                new CmsContainerElementBean(creatableElement.getStructureId(), null, null),
+                types);
             // overwrite some special fields for new elements
             resElement.put(CmsElementUtil.JsonElement.id.name(), type);
             resElement.put(CmsElementUtil.JsonElement.status.name(), ELEMENT_NEWCONFIG);
             resElement.put(JsonResType.type.name(), type);
-            resElement.put(JsonResType.typename.name(), CmsWorkplaceMessages.getResourceTypeName(
-                cms.getRequestContext().getLocale(),
-                type));
+            resElement.put(
+                JsonResType.typename.name(),
+                CmsWorkplaceMessages.getResourceTypeName(cms.getRequestContext().getLocale(), type));
             resElements.put(type, resElement);
             // additional array to keep track of the order
             resElements.accumulate(JsonCntPage.newOrder.name(), type);
@@ -1303,18 +1305,17 @@ public class CmsADEServer extends A_CmsAjaxServer {
         for (CmsResource searchableElement : searchableElements) {
             I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(searchableElement);
             String typeName = type.getTypeName();
-            JSONObject resElement = elemUtil.getElementData(new CmsContainerElementBean(
-                searchableElement.getStructureId(),
-                null,
-                null), types);
+            JSONObject resElement = elemUtil.getElementData(
+                new CmsContainerElementBean(searchableElement.getStructureId(), null, null),
+                types);
             // overwrite some special fields for searchable elements
             resElement.put(CmsElementUtil.JsonElement.id.name(), typeName);
             resElement.put(CmsElementUtil.JsonElement.status.name(), ELEMENT_NEWCONFIG);
             resElement.put(JsonResType.type.name(), typeName);
             resElement.put(JsonResType.typeid.name(), type.getTypeId());
-            resElement.put(JsonResType.typename.name(), CmsWorkplaceMessages.getResourceTypeName(
-                cms.getRequestContext().getLocale(),
-                typeName));
+            resElement.put(
+                JsonResType.typename.name(),
+                CmsWorkplaceMessages.getResourceTypeName(cms.getRequestContext().getLocale(), typeName));
             resElements.put(typeName, resElement);
             // additional array to keep track of the order
             resElements.accumulate(JsonCntPage.searchOrder.name(), typeName);
@@ -1398,7 +1399,7 @@ public class CmsADEServer extends A_CmsAjaxServer {
         String description = json.getString(CmsElementUtil.JsonElement.description.name());
 
         JSONArray jsonTypes = json.getJSONArray(CmsElementUtil.JsonElement.types.name());
-        List<String> types = new ArrayList<String>();
+        Set<String> types = new HashSet<String>();
         for (int i = 0; i < jsonTypes.length(); i++) {
             String type = jsonTypes.getString(i);
             types.add(type);

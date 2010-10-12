@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsSubContainerBean.java,v $
- * Date   : $Date: 2010/01/20 13:50:05 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/10/12 06:54:08 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,13 +32,14 @@
 package org.opencms.xml.containerpage;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * A sub container.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 7.9.1
  */
@@ -54,7 +55,7 @@ public class CmsSubContainerBean {
     private String m_title;
 
     /** The supported container types. */
-    private List<String> m_types;
+    private Set<String> m_types;
 
     /**
      * Creates a new sub container bean.<p>
@@ -68,7 +69,7 @@ public class CmsSubContainerBean {
         String title,
         String description,
         List<CmsContainerElementBean> elements,
-        List<String> types) {
+        Set<String> types) {
 
         m_title = title;
         m_description = description;
@@ -111,7 +112,7 @@ public class CmsSubContainerBean {
      *
      * @return the types
      */
-    public List<String> getTypes() {
+    public Set<String> getTypes() {
 
         return m_types;
     }

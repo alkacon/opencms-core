@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContainer.java,v $
- * Date   : $Date: 2010/09/22 14:27:48 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2010/10/12 06:54:08 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.28 $ 
  * 
  * @since 7.6 
  */
@@ -762,6 +762,7 @@ public class CmsJspTagContainer extends TagSupport {
                     OpenCms.getResourceManager().getResourceType(resUri).getTypeName(),
                     containerType));
             }
+            element.setSitePath(cms.getSitePath(resUri));
             // wrapping the elements with DIV containing initial element data. To be removed by the container-page editor
             printElementWrapperTagStart(isOnline, cms, resUri, element, true);
             for (CmsContainerElementBean subelement : subContainer.getElements()) {

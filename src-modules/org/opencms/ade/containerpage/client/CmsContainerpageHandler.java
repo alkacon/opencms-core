@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageHandler.java,v $
- * Date   : $Date: 2010/09/30 13:32:25 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2010/10/12 06:55:30 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -86,7 +86,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * 
  * @since 8.0.0
  */
@@ -408,8 +408,9 @@ public class CmsContainerpageHandler {
             timer.schedule(2000);
             return;
         }
+
         if (CmsDomUtil.hasClass(CmsContainerpageUtil.CLASS_SUB_CONTAINER_ELEMENTS, element.getElement())) {
-            //         openSubcontainerEditor((CmsDragSubcontainer)element);
+            openSubcontainerEditor((CmsSubContainerElement)element);
         } else {
             CmsContentEditorDialog.get().openEditDialog(element.getId(), element.getSitePath());
         }
