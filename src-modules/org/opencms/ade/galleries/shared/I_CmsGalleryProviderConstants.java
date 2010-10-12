@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/Attic/I_CmsGalleryProviderConstants.java,v $
- * Date   : $Date: 2010/07/19 07:45:28 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/10/12 06:56:00 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Polina Smagina 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 8.0.0
  */
@@ -48,12 +48,11 @@ public interface I_CmsGalleryProviderConstants {
     enum GalleryMode implements IsSerializable {
 
         /** The advanced direct edit mode. */
-        ade(GalleryTabId.cms_tab_types, GalleryTabId.cms_tab_galleries, GalleryTabId.cms_tab_vfstree,
-        GalleryTabId.cms_tab_sitemap, GalleryTabId.cms_tab_categories, GalleryTabId.cms_tab_search),
+        ade(GalleryTabId.cms_tab_types, GalleryTabId.cms_tab_galleries, GalleryTabId.cms_tab_categories,
+        GalleryTabId.cms_tab_search),
 
         /** The FCKEditor mode. */
-        editor(GalleryTabId.cms_tab_galleries, GalleryTabId.cms_tab_vfstree, GalleryTabId.cms_tab_categories,
-        GalleryTabId.cms_tab_search),
+        editor(GalleryTabId.cms_tab_galleries, GalleryTabId.cms_tab_categories, GalleryTabId.cms_tab_search),
 
         /** The sitemap editor mode. */
         sitemap(GalleryTabId.cms_tab_galleries, GalleryTabId.cms_tab_vfstree, GalleryTabId.cms_tab_categories,

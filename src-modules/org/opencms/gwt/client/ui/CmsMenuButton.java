@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsMenuButton.java,v $
- * Date   : $Date: 2010/07/19 07:45:28 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2010/10/12 06:56:47 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 8.0.0
  */
@@ -223,10 +223,10 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
      */
     public void openMenu() {
 
-        // TODO: verify if there are layout differences between IE and other browsers
-        m_content.setPopupPosition(m_button.getAbsoluteLeft() - Window.getScrollLeft() - 5, m_button.getAbsoluteTop()
-            - Window.getScrollTop()
-            + 34);
+        int windowWidth = Window.getClientWidth();
+        int contentLeft = m_button.getAbsoluteLeft() - 5;
+        int contentTop = m_button.getAbsoluteTop() - Window.getScrollTop() + 34;
+        m_content.setPopupPosition(contentLeft - Window.getScrollLeft(), contentTop);
         m_menuConnect.getStyle().setWidth(m_button.getOffsetWidth() + 2, Style.Unit.PX);
 
         m_isOpen = true;
@@ -234,7 +234,11 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
 
         m_menuConnect.removeClassName(m_style.hidden());
         m_content.show();
-
+        int contentWidth = m_content.getOffsetWidth();
+        if ((contentWidth + 10 < windowWidth) && (contentWidth + contentLeft > windowWidth)) {
+            contentLeft = windowWidth - contentWidth - 10;
+            m_content.setPopupPosition(contentLeft, contentTop);
+        }
         // overriding position absolute set by PopupPanel 
         m_content.getElement().getStyle().setPosition(Position.FIXED);
 

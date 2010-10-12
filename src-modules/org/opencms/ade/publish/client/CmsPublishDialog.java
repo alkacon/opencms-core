@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishDialog.java,v $
- * Date   : $Date: 2010/06/01 09:29:08 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2010/10/12 06:56:11 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 8.0.0
  * 
@@ -157,7 +157,7 @@ public class CmsPublishDialog extends CmsPopupDialog {
     }
 
     /** The dialog width in pixels. */
-    public static final int DIALOG_WIDTH = 800;
+    public static final int DIALOG_WIDTH = 766;
 
     /** The project map used by showPublishDialog. */
     public static Map<String, String> m_staticProjects;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/ui/Attic/A_CmsPreviewDialog.java,v $
- * Date   : $Date: 2010/09/08 08:21:20 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/10/12 06:56:00 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,8 +40,6 @@ import org.opencms.gwt.client.ui.CmsTabbedPanel;
 import org.opencms.gwt.client.ui.CmsTabbedPanel.CmsTabLayout;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
-import org.opencms.gwt.client.util.CmsDomUtil;
-import org.opencms.gwt.client.util.CmsDomUtil.Style;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
@@ -66,7 +64,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Polina Smagina
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.
  */
@@ -115,7 +113,7 @@ public abstract class A_CmsPreviewDialog<T extends CmsResourceInfoBean> extends 
     protected FlowPanel m_tabsHolder;
 
     /** The min height for the preview panel. */
-    private final int m_minPreviewHeight = 364;
+    private final int m_minPreviewHeight = 362;
 
     /**
      * The constructor.<p>
@@ -133,28 +131,12 @@ public abstract class A_CmsPreviewDialog<T extends CmsResourceInfoBean> extends 
         m_dialogHeight = dialogHeight;
         m_dialogWidth = dialogWidth;
 
-        // height of the preview dialog
-        //        getElement().getStyle().setHeight(m_dialogHeight, Unit.PX);
-        //        getElement().getStyle().setWidth((m_dialogWidth), Unit.PX);
-
         int previewHeight = m_minPreviewHeight;
-        int detailsHeight = m_dialogHeight - previewHeight;
+        int detailsHeight = m_dialogHeight - previewHeight - 6;
 
-        // height of the preview and tabs part
-        previewHeight = previewHeight
-            - CmsDomUtil.getCurrentStyleInt(m_previewHolder.getElement(), Style.marginBottom)
-            - CmsDomUtil.getCurrentStyleInt(m_previewHolder.getElement(), Style.marginTop)
-            - 1;
-        // FF: -1;
-        // IE7 -2;
         m_previewHolder.getElement().getStyle().setHeight(previewHeight, Unit.PX);
 
-        detailsHeight = detailsHeight
-            - CmsDomUtil.getCurrentStyleInt(m_tabsHolder.getElement(), Style.marginBottom)
-            - CmsDomUtil.getCurrentStyleInt(m_tabsHolder.getElement(), Style.marginTop)
-            - 2;
         m_tabsHolder.getElement().getStyle().setHeight(detailsHeight, Unit.PX);
-        // m_tabsHolder.getElement().getStyle().setWidth((m_dialogWidth - 2), Unit.PX);
 
         m_tabbedPanel = new CmsTabbedPanel<Widget>(CmsTabLayout.small, false);
         m_tabsHolder.add(m_tabbedPanel);

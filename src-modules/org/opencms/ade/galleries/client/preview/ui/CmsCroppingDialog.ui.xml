@@ -43,7 +43,7 @@
 		}
 		.topPanel{
 			border: 1px solid #aaaaaa;
-			height: 459px;
+			height: 457px;
 		}
 
 	</ui:style>
