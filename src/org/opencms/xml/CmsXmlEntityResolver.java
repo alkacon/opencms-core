@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlEntityResolver.java,v $
- * Date   : $Date: 2010/01/18 10:04:11 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2010/10/13 10:11:24 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,15 +32,18 @@
 package org.opencms.xml;
 
 import org.opencms.configuration.CmsConfigurationManager;
+import org.opencms.db.CmsPublishedResource;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsEvent;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsFileUtil;
+import org.opencms.util.CmsUUID;
 import org.opencms.xml.page.CmsXmlPage;
 
 import java.io.ByteArrayInputStream;
@@ -63,7 +66,7 @@ import org.xml.sax.InputSource;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.35 $ 
+ * @version $Revision: 1.36 $ 
  * 
  * @since 6.0.0 
  */
@@ -159,13 +162,13 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
     private static void initCaches() {
 
         if (m_cacheTemporary == null) {
-            Map<String, byte[]> cacheTemporary = new LRUMap(128);
+            Map<String, byte[]> cacheTemporary = new LRUMap(1024);
             m_cacheTemporary = Collections.synchronizedMap(cacheTemporary);
 
             Map<String, byte[]> cachePermanent = new HashMap<String, byte[]>(32);
             m_cachePermanent = Collections.synchronizedMap(cachePermanent);
 
-            Map<String, CmsXmlContentDefinition> cacheContentDefinitions = new LRUMap(64);
+            Map<String, CmsXmlContentDefinition> cacheContentDefinitions = new LRUMap(512);
             m_cacheContentDefinitions = Collections.synchronizedMap(cacheContentDefinitions);
         }
         if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_1_CORE_OBJECT) {
@@ -223,6 +226,16 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
         CmsResource resource;
         switch (event.getType()) {
             case I_CmsEventListener.EVENT_PUBLISH_PROJECT:
+                // only flush cache if a Schema definition where published.
+                CmsUUID publishHistoryId = new CmsUUID((String)event.getData().get(I_CmsEventListener.KEY_PUBLISHID));
+                if (isSchemaDefinitionInPublishList(publishHistoryId)) {
+                    m_cacheTemporary.clear();
+                    m_cacheContentDefinitions.clear();
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(Messages.get().getBundle().key(Messages.LOG_ER_FLUSHED_CACHES_0));
+                    }
+                }
+                break;
             case I_CmsEventListener.EVENT_CLEAR_CACHES:
                 // flush cache   
                 m_cacheTemporary.clear();
@@ -390,6 +403,33 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
         }
 
         return getCacheKey(systemId, project);
+    }
+
+    /**
+     * Proves if there is at least one xsd or dtd file in the list of resources to publish.<p>
+     * 
+     * @param publishHistoryId the publish history id
+     * 
+     * @return true, if there is at least one xsd or dtd file in the list of resources to publish, otherwise false
+     */
+    private boolean isSchemaDefinitionInPublishList(CmsUUID publishHistoryId) {
+
+        try {
+            List<CmsPublishedResource> publishedResources = m_cms.readPublishedResources(publishHistoryId);
+            for (CmsPublishedResource cmsPublishedResource : publishedResources) {
+                String resourceRootPath = cmsPublishedResource.getRootPath();
+                String resourceRootPathLowerCase = resourceRootPath.toLowerCase();
+                if (resourceRootPathLowerCase.endsWith(".xsd")
+                    || resourceRootPathLowerCase.endsWith(".dtd")
+                    || m_cacheTemporary.containsKey(getCacheKey(resourceRootPath, true))) {
+                    return true;
+                }
+            }
+        } catch (CmsException e) {
+            // error reading published Resources.
+            LOG.warn(e.getMessage(), e);
+        }
+        return false;
     }
 
     /**

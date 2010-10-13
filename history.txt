@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2010/10/13 08:04:59 $
- * Version: $Revision: 1.1208 $
+ * Date   : $Date: 2010/10/13 10:11:25 $
+ * Version: $Revision: 1.1209 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -28,6 +28,7 @@ OpenCms x.x.x - month day, year
 * Fixed premature publish thread interruption within CmsShell
 ! In the workplace content tool "Change Property Values" it is possible to use more than one place holder
 * Fixed issue #1892: CmsContentInfoBean - The functions isFirstOnPage and isLastOnPage return the wrong values
+* Fixed issue #1900: Performance Patch for OpenCms
 
 OpenCms 7.5.3 - August 18, 2010
 ! External Links (pointers) now support handling of request parameters (loader parameter in opencms-vfs.xml)
