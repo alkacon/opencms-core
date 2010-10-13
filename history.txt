@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2010/10/13 07:38:56 $
- * Version: $Revision: 1.55 $
+ * Date   : $Date: 2010/10/13 09:43:45 $
+ * Version: $Revision: 1.56 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -53,6 +53,7 @@ OpenCms x.x.x - Month Day, Year
 ! In the workplace content tool "Change Property Values" it is possible to use more than one place holder
 * Fixed issue #1909: Internet Explorer crashes after saving structured XML content with image added from gallery into HTML field
 * Fixed issue #1892: CmsContentInfoBean - The functions isFirstOnPage and isLastOnPage return the wrong values
+* Fixed issue #1900: Performance Patch for OpenCms
 
 OpenCms 7.9.2 - February 24th, 2010
 ! Added support for xsd:choice in XML content API and editor
