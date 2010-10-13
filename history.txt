@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2010/10/12 13:49:26 $
- * Version: $Revision: 1.53 $
+ * Date   : $Date: 2010/10/13 07:30:13 $
+ * Version: $Revision: 1.54 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -51,6 +51,7 @@ OpenCms x.x.x - Month Day, Year
 - Added new optional CmsShell start parameter to load additional commands
 * Fixed premature publish thread interruption within CmsShell
 ! In the workplace content tool "Change Property Values" it is possible to use more than one place holder
+* Fixed issue #1909: Internet Explorer crashes after saving structured XML content with image added from gallery into HTML field
 
 OpenCms 7.9.2 - February 24th, 2010
 ! Added support for xsd:choice in XML content API and editor
