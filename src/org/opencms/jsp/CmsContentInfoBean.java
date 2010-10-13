@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsContentInfoBean.java,v $
- * Date   : $Date: 2010/01/18 10:02:27 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2010/10/13 08:04:58 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.util.CmsStringUtil;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 6.0.0 
  */
@@ -199,7 +199,7 @@ public class CmsContentInfoBean {
      */
     public boolean isFirstOnPage() {
 
-        return m_resultIndex == (m_pageCount * m_pageSize) + 1;
+        return m_resultIndex == ((m_pageIndex - 1) * m_pageSize) + 1;
     }
 
     /**
@@ -219,7 +219,7 @@ public class CmsContentInfoBean {
      */
     public boolean isLastOnPage() {
 
-        return (m_resultIndex == (m_pageCount + 1) * m_pageSize) || isLastResult();
+        return (m_resultIndex == m_pageIndex * m_pageSize) || isLastResult();
     }
 
     /**
