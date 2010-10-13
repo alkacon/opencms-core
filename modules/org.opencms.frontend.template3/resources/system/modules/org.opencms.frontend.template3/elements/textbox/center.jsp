@@ -8,7 +8,7 @@
 %>
 <cms:contentload collector="singleFile" param="%(opencms.element)" >
 	<cms:contentaccess var="content" />
-	<div class="box box_schema3">
+	<div class="box box_schema<cms:property name="color" file="container" default="3"/>">
 		<h4><c:out value="${content.value['Title']}" /></h4>
 		<div class="boxbody">
 			<c:out value="${content.value['Content']}" escapeXml="false" />

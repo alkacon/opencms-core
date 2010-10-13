@@ -40,7 +40,7 @@
 				<formatter type="footer" uri="/system/modules/org.opencms.frontend.template3/elements/textbox/footer.jsp" />
 			</formatters>
 			<properties>
-				<property name="test1" type="string" widget="string" default=""/>
+				<property name="color" nice-name="Color Schema" type="string" widget="select" widget-config="1:Schema 1|2:Schema 2|3:Schema 3" />
 			</properties>
 		</xsd:appinfo>
 

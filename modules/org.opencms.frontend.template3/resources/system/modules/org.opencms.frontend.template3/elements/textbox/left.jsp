@@ -10,17 +10,10 @@
 %>
 <cms:contentload collector="singleFile" param="%(opencms.element)" >
 	<cms:contentaccess var="content" />
-	<div class="box box_schema1">
+	<div class="box box_schema<cms:property name="color" file="container" default="1"/>">
 		<h4><c:out value="${content.value['Title']}" /></h4>
 		<div class="boxbody">
 			<c:out value="${content.value['Content']}" escapeXml="false" />
-			<% 
-			CmsContainerElementBean element =  (CmsContainerElementBean) request.getAttribute("__currentElement");
-			Map<String, String> properties =  element.getProperties();
-			for (Map.Entry<String, String> entry: properties.entrySet()) {
-				out.println(entry.getKey() + " -> " + entry.getValue());
-			}
-			%>
 			<c:if test="${content.hasValue['JspFile']}">
 				<c:set var="path" value="${content.value['JspFile'].stringValue}" />
 				<c:choose>
