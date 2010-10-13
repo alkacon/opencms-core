@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeMove.java,v $
- * Date   : $Date: 2010/08/26 13:37:49 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/10/13 06:03:01 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import org.opencms.xml.sitemap.I_CmsSitemapChange.Type;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
@@ -106,7 +106,10 @@ public class CmsClientSitemapChangeMove implements I_CmsClientSitemapChange {
         if (getDestinationPosition() < destParent.getSubEntries().size()) {
             destParent.insertSubEntry(moved, getDestinationPosition());
         } else {
+            // inserting as last entry of the parent list
             destParent.addSubEntry(moved);
+            // make sure change position index matches the real index
+            m_destinationPosition = destParent.getSubEntries().size() - 1;
         }
         moved.updateSitePath(getDestinationPath());
     }
