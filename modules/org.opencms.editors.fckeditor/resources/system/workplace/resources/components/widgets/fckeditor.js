@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.editors.fckeditor/resources/system/workplace/resources/components/widgets/fckeditor.js,v $
- * Date   : $Date: 2010/01/18 10:03:31 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/10/13 08:02:02 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,6 +56,10 @@ function submitHtml(form) {
 		if (editedContent != null && editedContent != "null") {
 			cf.value = encodeURIComponent(editedContent);
 		}
+		try {
+			// fixes IE issue when inserting image and saving immediately
+			editInst.Selection.Collapse(true);
+		} catch (e) {}
 	}
 }
 

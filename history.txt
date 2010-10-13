@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2010/10/12 13:57:25 $
- * Version: $Revision: 1.1206 $
+ * Date   : $Date: 2010/10/13 08:02:02 $
+ * Version: $Revision: 1.1207 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -24,6 +24,7 @@ OpenCms x.x.x - month day, year
 * Fixed issue setting the configuration values of the MemoryMonitor to 0
 * Fixed issue #1895: "All others" entry in permission dialog misses summary of permissions
 * Fixed issue #1901: Workplace login page security issue
+* Fixed issue #1909: Internet Explorer crashes after saving structured XML content with image added from gallery into HTML field
 * Fixed premature publish thread interruption within CmsShell
 ! In the workplace content tool "Change Property Values" it is possible to use more than one place holder
 
