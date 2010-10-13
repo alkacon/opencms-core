@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsSubcontainerEditor.java,v $
- * Date   : $Date: 2010/10/12 06:55:30 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/10/13 12:53:49 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,6 +39,8 @@ import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.ade.containerpage.shared.CmsSubContainer;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.css.I_CmsToolbarButtonLayoutBundle;
+import org.opencms.gwt.client.ui.input.CmsLabel;
+import org.opencms.gwt.client.ui.input.CmsTextBox;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsPositionBean;
@@ -71,7 +73,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -98,6 +100,22 @@ public final class CmsSubcontainerEditor extends Composite {
     /** The save button. */
     @UiField
     protected CmsPushButton m_saveButton;
+
+    /** The title label. */
+    @UiField
+    protected CmsLabel m_labelTitle;
+
+    /** The descriptionLabel. */
+    @UiField
+    protected CmsLabel m_labelDescription;
+
+    /** The title input. */
+    @UiField
+    protected CmsTextBox m_inputTitle;
+
+    /** The description input. */
+    @UiField
+    protected CmsTextBox m_inputDescription;
 
     /** List of elements when editing started, use to restore on cancel. */
     private List<CmsContainerPageElement> m_backUpElements;
@@ -140,6 +158,8 @@ public final class CmsSubcontainerEditor extends Composite {
         m_controller = controller;
         m_editorWidget = uiBinder.createAndBindUi(this);
         initWidget(m_editorWidget);
+        m_labelDescription.setText("Description");
+        m_labelTitle.setText("Title");
         m_editorId = HTMLPanel.createUniqueId();
         m_editorWidget.getElement().setId(m_editorId);
         m_subContainer = subContainer;
@@ -154,7 +174,6 @@ public final class CmsSubcontainerEditor extends Composite {
         m_parentContainer = (CmsContainerPageContainer)m_subContainer.getParentTarget();
         CmsPositionBean position = CmsPositionBean.generatePositionInfo(m_subContainer);
         m_editingPlaceholder = createPlaceholder(m_subContainer.getElement());
-        m_editingPlaceholder.removeClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().emptySubContainer());
         m_subContainer.setEditingPlaceholder(m_editingPlaceholder);
         m_indexPosition = m_parentContainer.getWidgetIndex(m_subContainer);
         // inserting placeholder element
@@ -251,6 +270,7 @@ public final class CmsSubcontainerEditor extends Composite {
 
         Element result = CmsDomUtil.clone(element);
         result.addClassName(I_CmsLayoutBundle.INSTANCE.containerpageCss().subcontainerPlaceholder());
+        result.getStyle().setBackgroundColor("transparent");
         return result;
     }
 
@@ -262,9 +282,10 @@ public final class CmsSubcontainerEditor extends Composite {
     @UiHandler("m_saveButton")
     protected void saveEdit(ClickEvent event) {
 
-        // TODO set title and description from input
+        m_subContainerBean.setTitle(m_inputTitle.getFormValueAsString());
+        m_subContainerBean.setDescription(m_inputDescription.getFormValueAsString());
         m_subContainerBean.setElements(getElements());
-        m_controller.saveSubcontainer(m_subContainerBean);
+        m_controller.saveSubcontainer(m_subContainerBean, m_subContainer);
         closeDialog();
     }
 
@@ -282,8 +303,16 @@ public final class CmsSubcontainerEditor extends Composite {
             m_subContainerBean.setClientId(elementData.getClientId());
             m_subContainerBean.setNewType(m_subContainer.getNewType());
             m_subContainerBean.setSitePath(elementData.getSitePath());
-            m_subContainerBean.setTypes(elementData.getTypes());
-            // TODO: set title and description fields
+            if (elementData.getTypes().isEmpty()) {
+                Set<String> types = new HashSet<String>();
+                types.add(((CmsContainerPageContainer)m_subContainer.getParentTarget()).getContainerType());
+                elementData.setTypes(types);
+                m_subContainerBean.setTypes(types);
+            } else {
+                m_subContainerBean.setTypes(elementData.getTypes());
+            }
+            m_inputDescription.setFormValueAsString(elementData.getDescription());
+            m_inputTitle.setFormValueAsString(elementData.getTitle());
             m_subContainerBean.setTitle(elementData.getTitle());
             m_subContainerBean.setDescription(elementData.getDescription());
         } else {

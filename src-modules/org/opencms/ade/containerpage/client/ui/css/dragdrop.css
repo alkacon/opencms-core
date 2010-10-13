@@ -13,10 +13,10 @@
 
 .dragStarted, .dragPlaceholder{}
 
-@sprite .emptySubContainer{
+.emptySubContainer{
 	min-height: 50px;
 	background: #AACCFF;
-	gwt-image: 'overlayImage';
+/*	gwt-image: 'overlayImage'; */
 }
 
 .currentTarget{

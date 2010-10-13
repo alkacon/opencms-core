@@ -1,15 +1,31 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
-	xmlns:cms="urn:import:org.opencms.gwt.client.ui">
+	xmlns:cms="urn:import:org.opencms.gwt.client.ui"
+	xmlns:cmsinput="urn:import:org.opencms.gwt.client.ui.input">
 	<ui:with field="resources" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
 	<ui:with field="containerpage" type="org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle" />
 	<ui:style>
 		.editor{}
 		.dialog{
-			width: 300px;
+			width: 460px;
 			border: 1px solid #aaaaaa;
 			background: #ffffff;
+		}
+		.inputRow{
+			height: 25px;
+			overflow: hidden;
+		}
+		.inputLabel{
+			font-weight: bold;
+			vertical-align: middle;
+			display: inline-block;
+			width: 150px;
+		}
+		.inputBox{
+			vertical-align: middle;
+			display: inline-block;
+			width: 300px;
 		}
 	</ui:style>
 	<g:HTMLPanel styleName="{containerpage.containerpageCss.subcontainerEditor}">
@@ -17,7 +33,8 @@
 		<div ui:field="m_dialog" class="{resources.dialogCss.popup} {resources.dialogCss.popupContent} {resources.generalCss.cornerAll} {style.dialog}">
 			<g:Label ui:field="m_dialogHeading" addStyleNames="{resources.dialogCss.popupHead} {resources.generalCss.cornerTop}">Subcontainer editor</g:Label>
 			<div class="{resources.dialogCss.popupMainContent}">
-				<g:FlowPanel><g:Label>FIELDS</g:Label></g:FlowPanel>
+				<div class="{style.inputRow}"><cmsinput:CmsLabel ui:field="m_labelTitle" addStyleNames="{style.inputLabel}" /><cmsinput:CmsTextBox ui:field="m_inputTitle" addStyleNames="{style.inputBox}"  /></div>
+				<div class="{style.inputRow}"><cmsinput:CmsLabel ui:field="m_labelDescription" addStyleNames="{style.inputLabel}" /><cmsinput:CmsTextBox ui:field="m_inputDescription" addStyleNames="{style.inputBox}"  /></div>
 				<div class="{resources.dialogCss.popupButtonPanel}"><cms:CmsPushButton ui:field="m_saveButton"></cms:CmsPushButton><cms:CmsPushButton ui:field="m_cancelButton"></cms:CmsPushButton></div>
 			</div>
 		</div>

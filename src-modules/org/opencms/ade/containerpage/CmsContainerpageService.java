@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsContainerpageService.java,v $
- * Date   : $Date: 2010/10/12 06:55:30 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2010/10/13 12:53:49 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -86,7 +86,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 8.0.0
  */
@@ -330,9 +330,13 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
-     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#saveSubContainer(java.lang.String, org.opencms.ade.containerpage.shared.CmsSubContainer)
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#saveSubContainer(java.lang.String, java.lang.String, org.opencms.ade.containerpage.shared.CmsSubContainer, java.util.Collection)
      */
-    public void saveSubContainer(String containerpageUri, CmsSubContainer subContainer) throws CmsRpcException {
+    public Map<String, CmsContainerElementData> saveSubContainer(
+        String containerpageUri,
+        String reqParams,
+        CmsSubContainer subContainer,
+        Collection<CmsContainer> containers) throws CmsRpcException {
 
         CmsObject cms = getCmsObject();
         try {
@@ -344,6 +348,8 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                     getRequest(),
                     CmsResourceTypeXmlContainerPage.SUB_CONTAINER_TYPE_NAME);
                 resourceName = cms.getSitePath(subContainerResource);
+                subContainer.setSitePath(resourceName);
+                subContainer.setClientId(subContainerResource.getStructureId().toString());
             }
             CmsSubContainerBean subContainerBean = getSubContainerBean(subContainer, containerpageUri);
             cms.lockResourceTemporary(resourceName);
@@ -353,6 +359,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         } catch (Throwable e) {
             error(e);
         }
+        Collection<String> ids = new ArrayList<String>();
+        ids.add(subContainer.getClientId());
+        return getElementsData(containerpageUri, reqParams, ids, containers);
     }
 
     /**

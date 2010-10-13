@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageController.java,v $
- * Date   : $Date: 2010/10/12 06:55:30 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2010/10/13 12:53:49 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -86,7 +86,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * 
  * @since 8.0.0
  */
@@ -140,7 +140,7 @@ public final class CmsContainerpageController {
             } else {
                 getContainerpageService().getElementsData(
                     CmsContainerpageController.getCurrentUri(),
-                    null,
+                    getRequestParams(),
                     m_clientIds,
                     m_containerBeans,
                     this);
@@ -198,7 +198,7 @@ public final class CmsContainerpageController {
 
             getContainerpageService().getElementsData(
                 CmsContainerpageController.getCurrentUri(),
-                null,
+                getRequestParams(),
                 m_clientIds,
                 m_containerBeans,
                 this);
@@ -222,7 +222,7 @@ public final class CmsContainerpageController {
                     continue;
                 }
                 try {
-                    replaceDragElement(containerElement, m_elements.get(containerElement.getId()));
+                    replaceContainerElement(containerElement, m_elements.get(containerElement.getId()));
                 } catch (Exception e) {
                     CmsDebugLog.getInstance().printLine("trying to replace");
                     CmsDebugLog.getInstance().printLine(e.getLocalizedMessage());
@@ -270,7 +270,7 @@ public final class CmsContainerpageController {
                 clientIds.add(m_clientId);
                 getContainerpageService().getElementsData(
                     CmsContainerpageController.getCurrentUri(),
-                    null,
+                    getRequestParams(),
                     clientIds,
                     m_containerBeans,
                     this);
@@ -913,10 +913,10 @@ public final class CmsContainerpageController {
             public void execute(CmsContainerElementData newElement) {
 
                 try {
-                    replaceDragElement(elementWidget, newElement);
+                    replaceContainerElement(elementWidget, newElement);
                     setPageChanged(true, false);
                 } catch (Exception e) {
-                    //TODO: check if this can ever happen
+                    // should never happen
                     CmsDebugLog.getInstance().printLine(e.getLocalizedMessage());
                 }
             }
@@ -948,36 +948,36 @@ public final class CmsContainerpageController {
     /**
      * Replaces the given drag-element with the given container element.<p>
      * 
-     * @param dragElement the drag-element to replace
+     * @param containerElement the container element to replace
      * @param elementData the new element data
      * 
      * @throws Exception if something goes wrong
      */
-    public void replaceDragElement(
-        org.opencms.ade.containerpage.client.ui.CmsContainerPageElement dragElement,
+    public void replaceContainerElement(
+        org.opencms.ade.containerpage.client.ui.CmsContainerPageElement containerElement,
         CmsContainerElementData elementData) throws Exception {
 
-        org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer dragParent = (org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer)dragElement.getParentTarget();
-        String containerId = dragParent.getContainerId();
+        org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer parentContainer = (org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer)containerElement.getParentTarget();
+        String containerId = parentContainer.getContainerId();
 
         String elementContent = elementData.getContents().get(containerId);
         if ((elementContent != null) && (elementContent.trim().length() > 0)) {
             org.opencms.ade.containerpage.client.ui.CmsContainerPageElement replacer = getContainerpageUtil().createElement(
                 elementData,
-                dragParent);
-            if (dragElement.isNew()) {
+                parentContainer);
+            if (containerElement.isNew()) {
                 // if replacing element data has the same structure id, keep the 'new' state by setting the new type property
                 // this should only be the case when editing properties of a new element that has not been created in the VFS yet
-                String id = dragElement.getId();
+                String id = containerElement.getId();
                 if (id.contains("#")) {
                     id = id.substring(0, id.indexOf("#"));
                 }
                 if (elementData.getClientId().startsWith(id)) {
-                    replacer.setNewType(dragElement.getNewType());
+                    replacer.setNewType(containerElement.getNewType());
                 }
             }
-            dragParent.insert(replacer, dragParent.getWidgetIndex(dragElement));
-            dragElement.removeFromParent();
+            parentContainer.insert(replacer, parentContainer.getWidgetIndex(containerElement));
+            containerElement.removeFromParent();
         }
     }
 
@@ -1090,11 +1090,12 @@ public final class CmsContainerpageController {
      * Saves the sub-container.<p>
      * 
      * @param subContainer the sub-container data to save 
+     * @param subContainerElement the sub container widget
      */
-    public void saveSubcontainer(final CmsSubContainer subContainer) {
+    public void saveSubcontainer(final CmsSubContainer subContainer, final CmsSubContainerElement subContainerElement) {
 
         if (getSubcontainer() != null) {
-            CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
+            CmsRpcAction<Map<String, CmsContainerElementData>> action = new CmsRpcAction<Map<String, CmsContainerElementData>>() {
 
                 /**
                  * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
@@ -1102,15 +1103,21 @@ public final class CmsContainerpageController {
                 @Override
                 public void execute() {
 
-                    getContainerpageService().saveSubContainer(getCurrentUri(), subContainer, this);
+                    getContainerpageService().saveSubContainer(
+                        getCurrentUri(),
+                        getRequestParams(),
+                        subContainer,
+                        m_containerBeans,
+                        this);
                 }
 
                 /**
                  * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
                  */
                 @Override
-                protected void onResponse(Void result) {
+                protected void onResponse(Map<String, CmsContainerElementData> result) {
 
+                    m_elements.putAll(result);
                     CmsNotification.get().send(Type.NORMAL, "Sub-container saved.");
                 }
             };
@@ -1254,6 +1261,16 @@ public final class CmsContainerpageController {
 
         }
         return containers;
+    }
+
+    /**
+     * Returns the request parameters of the displayed container-page.<p>
+     * 
+     * @return the request parameters
+     */
+    protected String getRequestParams() {
+
+        return m_data.getRequestParams();
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageDNDController.java,v $
- * Date   : $Date: 2010/10/12 07:00:36 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/10/13 12:53:49 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,7 +69,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -215,11 +215,13 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                 ((I_CmsDropContainer)target).highlightContainer();
             }
         }
-        m_dragInfos.put(target, new DragInfo(
-            handler.getDragHelper(),
-            handler.getPlaceholder(),
-            handler.getCursorOffsetX(),
-            handler.getCursorOffsetY()));
+        m_dragInfos.put(
+            target,
+            new DragInfo(
+                handler.getDragHelper(),
+                handler.getPlaceholder(),
+                handler.getCursorOffsetX(),
+                handler.getCursorOffsetY()));
         m_controller.getHandler().hideMenu();
         String clientId = draggable.getId();
         if (!CmsUUID.isValidUUID(clientId)) {
@@ -232,11 +234,19 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         }
         m_controller.getElement(clientId, new I_CmsSimpleCallback<CmsContainerElementData>() {
 
+            /**
+             * Execute on success.<p>
+             * 
+             * @param arg the container element data
+             */
             public void execute(CmsContainerElementData arg) {
 
                 prepareHelperElements(arg, handler);
             }
 
+            /**
+             * @see org.opencms.gwt.client.util.I_CmsSimpleCallback#onError(java.lang.String)
+             */
             public void onError(String message) {
 
                 CmsDebugLog.getInstance().printLine(message);
@@ -272,7 +282,10 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                     } else {
                         container.insert(containerElement, container.getPlaceholderIndex());
                     }
-                    m_controller.setPageChanged();
+                    if (!m_controller.isSubcontainerEditing()) {
+                        // changes are only relevant to the container page if not sub-container editing
+                        m_controller.setPageChanged();
+                    }
                     if (draggable instanceof CmsContainerPageElement) {
                         ((CmsContainerPageElement)draggable).removeFromParent();
                     }
@@ -370,11 +383,9 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
 
             Element placeholder = (Element)temp.getPlaceholder(dropzone);
             Element helper = (Element)temp.getDragHelper(dropzone);
-            m_dragInfos.put(dropzone, new DragInfo(
-                helper,
-                placeholder,
-                helper.getOffsetWidth() - 15,
-                handler.getCursorOffsetY()));
+            m_dragInfos.put(
+                dropzone,
+                new DragInfo(helper, placeholder, helper.getOffsetWidth() - 15, handler.getCursorOffsetY()));
             handler.addTarget(dropzone);
             helper.getStyle().setDisplay(Display.NONE);
         }

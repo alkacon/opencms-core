@@ -67,7 +67,7 @@ ul.clipboardList{
 	position: absolute;
 	top: 2px;
 	right: 2px;
-	
+	z-index: 1;
 }
 
 @sprite .toolbarSelection .optionBar.cmsHovering{

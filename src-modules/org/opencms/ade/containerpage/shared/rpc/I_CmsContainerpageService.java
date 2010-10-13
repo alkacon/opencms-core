@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/shared/rpc/Attic/I_CmsContainerpageService.java,v $
- * Date   : $Date: 2010/10/12 06:55:30 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/10/13 12:53:49 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 8.0.0
  */
@@ -185,11 +185,19 @@ public interface I_CmsContainerpageService extends RemoteService {
      * Saves a sub-container element.<p>
      * 
      * @param containerpageUri the current URI
+     * @param reqParams optional request parameters
      * @param subContainer the sub-container to save
+     * @param containers the containers of the current page
+     * 
+     * @return the data of the saved sub container 
      * 
      * @throws CmsRpcException if something goes wrong processing the request
      */
-    void saveSubContainer(String containerpageUri, CmsSubContainer subContainer) throws CmsRpcException;
+    Map<String, CmsContainerElementData> saveSubContainer(
+        String containerpageUri,
+        String reqParams,
+        CmsSubContainer subContainer,
+        Collection<CmsContainer> containers) throws CmsRpcException;
 
     /**
      * Saves the recent list.<p>

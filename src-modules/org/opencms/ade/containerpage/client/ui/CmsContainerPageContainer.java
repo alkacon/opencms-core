@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsContainerPageContainer.java,v $
- * Date   : $Date: 2010/09/30 13:32:25 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/10/13 12:53:49 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -62,11 +62,16 @@ public class CmsContainerPageContainer implements I_CmsDropContainer, HasWidgets
     /** Container element id. */
     private String m_containerId;
 
+    /** The container type. */
+    private String m_containerType;
+
     /** Highlighting border for this container. */
     private CmsHighlightingBorder m_highlighting;
 
+    /** The drag and drop placeholder. */
     private Element m_placeholder;
 
+    /** The drag and drop placeholder position index. */
     private int m_placeholderIndex = -1;
 
     /** This container wrapped in a {@link com.google.gwt.user.client.ui.RootPanel}. */
@@ -81,6 +86,7 @@ public class CmsContainerPageContainer implements I_CmsDropContainer, HasWidgets
 
         m_root = RootPanel.get(containerData.getName());
         m_containerId = containerData.getName();
+        m_containerType = containerData.getType();
         m_root.getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragTarget());
     }
 
@@ -159,6 +165,16 @@ public class CmsContainerPageContainer implements I_CmsDropContainer, HasWidgets
     public String getContainerId() {
 
         return m_containerId;
+    }
+
+    /**
+     * Returns the container type.<p>
+     *
+     * @return the container type
+     */
+    public String getContainerType() {
+
+        return m_containerType;
     }
 
     /**
