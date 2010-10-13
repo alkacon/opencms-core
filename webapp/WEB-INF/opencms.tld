@@ -697,6 +697,11 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+        	<name>width</name>
+        	<required>false</required>
+        	<rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
         	<name>tag</name>
         	<required>false</required>
         	<rtexprvalue>true</rtexprvalue>
