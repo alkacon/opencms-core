@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2010/10/12 06:56:33 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2010/10/13 05:56:47 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -83,7 +83,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 8.0.0
  */
@@ -816,14 +816,20 @@ public class CmsSitemapController {
      */
     public void reset() {
 
-        m_changes.clear();
-        m_undone.clear();
+        resetChanges();
 
-        // state
-        m_handlerManager.fireEvent(new CmsSitemapResetEvent());
-
-        CmsCoreProvider.get().unlock();
         Window.Location.reload();
+    }
+
+    /**
+     * Commits all changes and leaves the sitemap editor opening the provided site-path.<p>
+     * 
+     * @param sitePath the site-path
+     */
+    public void saveAndLeavePage(String sitePath) {
+
+        commit(true);
+        Window.Location.assign(CmsCoreProvider.get().link(sitePath));
     }
 
     /**
@@ -1003,6 +1009,7 @@ public class CmsSitemapController {
         m_undone.clear();
         // state
         m_handlerManager.fireEvent(new CmsSitemapResetEvent());
+        CmsCoreProvider.get().unlock();
     }
 
     /**

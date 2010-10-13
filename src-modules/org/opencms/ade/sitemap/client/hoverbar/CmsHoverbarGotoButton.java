@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsHoverbarGotoButton.java,v $
- * Date   : $Date: 2010/05/27 11:13:52 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/10/13 05:56:47 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.ade.sitemap.client.hoverbar;
 
 import org.opencms.ade.sitemap.client.Messages;
+import org.opencms.ade.sitemap.client.ui.CmsLeavePageDialog;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.CmsPushButton;
@@ -45,7 +46,7 @@ import com.google.gwt.user.client.Window;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  */
@@ -70,8 +71,13 @@ public class CmsHoverbarGotoButton extends CmsPushButton {
             public void onClick(ClickEvent event) {
 
                 hoverbar.deattach();
-                final String sitePath = hoverbar.getSitePath();
-                Window.Location.assign(CmsCoreProvider.get().link(sitePath));
+                if (hoverbar.getController().isDirty()) {
+                    CmsLeavePageDialog dialog = new CmsLeavePageDialog(hoverbar.getController(), hoverbar.getSitePath());
+                    dialog.center();
+                } else {
+                    final String sitePath = hoverbar.getSitePath();
+                    Window.Location.assign(CmsCoreProvider.get().link(sitePath));
+                }
             }
         });
     }
