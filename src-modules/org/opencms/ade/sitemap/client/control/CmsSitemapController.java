@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2010/10/13 05:56:47 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2010/10/14 14:11:49 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -83,7 +83,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 8.0.0
  */
@@ -143,6 +143,7 @@ public class CmsSitemapController {
 
         m_hiddenProperties = new HashSet<String>();
         m_hiddenProperties.add(CmsSitemapManager.Property.sitemap.toString());
+        //addPropertyUpdateHandler(new DebugPropertyUpdateHandler());
         m_handlerManager = new HandlerManager(this);
     }
 
@@ -618,18 +619,17 @@ public class CmsSitemapController {
      */
     public CmsSitemapTemplate getDefaultTemplate(String sitemapPath) {
 
-        if ((sitemapPath == null) || sitemapPath.equals("") || sitemapPath.equals("/")) {
+        if ((sitemapPath == null) || sitemapPath.equals("")) {
             return m_data.getDefaultTemplate();
         }
 
         CmsClientSitemapEntry entry = getEntry(sitemapPath);
-        CmsSimplePropertyValue templateInherited = entry.getProperties().get(CmsSitemapManager.Property.template);
+        if (entry == null) {
+            return m_data.getDefaultTemplate();
+        }
+        CmsSimplePropertyValue templateInherited = entry.getProperties().get(CmsSitemapManager.Property.template.name());
         if (templateInherited != null) {
             return m_data.getTemplates().get(templateInherited.getOwnValue());
-        }
-
-        if (sitemapPath.equals(m_data.getRoot().getSitePath())) {
-            return m_data.getDefaultTemplate();
         }
         String parentPath = CmsResource.getParentFolder(sitemapPath);
         return getDefaultTemplate(parentPath);
