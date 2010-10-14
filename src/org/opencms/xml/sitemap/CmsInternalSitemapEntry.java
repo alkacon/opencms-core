@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsInternalSitemapEntry.java,v $
- * Date   : $Date: 2010/10/11 06:40:55 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/10/14 13:06:51 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 8.0 
  */
@@ -240,7 +240,8 @@ public class CmsInternalSitemapEntry extends CmsSitemapEntry {
         m_computedProperties = new HashMap<String, CmsComputedPropertyValue>(inheritedProperties);
         CmsComputedPropertyValue navpos = CmsComputedPropertyValue.create("" + position, null, getRootPath());
         m_computedProperties.put(CmsPropertyDefinition.PROPERTY_NAVPOS, navpos);
-        CmsSimplePropertyValue simpleNavpos = new CmsSimplePropertyValue("" + position, null);
+        String navposValue = "" + position;
+        CmsSimplePropertyValue simpleNavpos = new CmsSimplePropertyValue(navposValue, navposValue);
         m_newProperties.put(CmsPropertyDefinition.PROPERTY_NAVPOS, simpleNavpos);
         m_position = position;
     }

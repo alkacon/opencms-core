@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/properties/Attic/CmsComputedPropertyValue.java,v $
- * Date   : $Date: 2010/10/07 13:49:12 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/10/14 13:06:51 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import java.io.Serializable;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -178,15 +178,6 @@ public class CmsComputedPropertyValue implements Serializable {
         return CmsObjectUtil.equals(m_ownValue, prop.m_ownValue)
             && CmsObjectUtil.equals(m_inheritValue, prop.m_inheritValue);
     }
-    
-    /**
-     * @see java.lang.Object#hashCode()
-     */
-    @Override
-    public int hashCode() {
-        return CmsObjectUtil.computeHashCode(m_ownValue, m_inheritValue);
-    } 
-    
 
     /**
      * Returns the value which should be inherited by children of the entry as a sourced value.<p>
@@ -237,6 +228,24 @@ public class CmsComputedPropertyValue implements Serializable {
     public String getSource() {
 
         return m_ownValue == null ? null : m_ownValue.getSource();
+    }
+
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+
+        return CmsObjectUtil.computeHashCode(m_ownValue, m_inheritValue);
+    }
+
+    /**
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+
+        return "(" + m_ownValue + " | " + m_inheritValue + ")";
     }
 
 }

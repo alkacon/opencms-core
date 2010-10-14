@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/properties/Attic/CmsSourcedValue.java,v $
- * Date   : $Date: 2010/10/11 06:40:55 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/10/14 13:06:51 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import java.io.Serializable;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  * 
@@ -93,7 +93,7 @@ public class CmsSourcedValue implements Serializable {
      */
     public static CmsSourcedValue overrideValue(CmsSourcedValue a, CmsSourcedValue b) {
 
-        if (b != null) {
+        if ((b != null) && (b.m_value != null)) {
             return b;
         }
         return a;
@@ -139,6 +139,16 @@ public class CmsSourcedValue implements Serializable {
     public int hashCode() {
 
         return CmsObjectUtil.computeHashCode(m_value, m_source);
+    }
+
+    /**
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+
+        return "" + m_value;
+
     }
 
 }

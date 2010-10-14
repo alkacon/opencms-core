@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2010/10/12 09:26:51 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2010/10/14 13:06:51 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -102,7 +102,7 @@ import org.dom4j.Element;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  */
@@ -1718,8 +1718,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                 element.attributeValue(APPINFO_ATTR_SELECT_INHERIT)
 
             );
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(property.getPropertyName())) {
-                m_properties.put(property.getPropertyName(), property);
+            String name = property.getPropertyName();
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(name) && !CmsXmlContentPropertyHelper.isSpecialProperty(name)) {
+                m_properties.put(name, property);
             }
         }
     }

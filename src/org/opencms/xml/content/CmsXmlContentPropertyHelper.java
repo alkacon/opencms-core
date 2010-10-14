@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentPropertyHelper.java,v $
- * Date   : $Date: 2010/10/07 13:49:12 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/10/14 13:06:51 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -79,7 +79,7 @@ import org.dom4j.Element;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 7.9.2
  */
@@ -202,6 +202,12 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
         for (Map.Entry<String, CmsSimplePropertyValue> entry : newProps.entrySet()) {
             String propName = entry.getKey();
             CmsSimplePropertyValue propValue = entry.getValue();
+
+            if (propValue.getInheritValue() == null) {
+                result.put("*" + propName, propValue.getOwnValue());
+                continue;
+            }
+
             result.put(propName, propValue.getOwnValue());
             if ((propValue.getInheritValue() != null) && !propValue.getInheritValue().equals(propValue.getOwnValue())) {
                 result.put("#" + propName, propValue.getInheritValue());
@@ -224,13 +230,21 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
         }
         Map<String, CmsSimplePropertyValue> result = new HashMap<String, CmsSimplePropertyValue>();
         for (String propName : baseNames) {
-            String ownName = oldProps.get(propName);
-            String inheritName = oldProps.get("#" + propName);
-            // ownName and inheritName can't both be null
-            if (inheritName == null) {
-                inheritName = ownName;
+            String ownValue = oldProps.get(propName);
+            String inheritValue = oldProps.get("#" + propName);
+            String starValue = oldProps.get("*" + propName);
+            if (starValue != null) {
+                // a property name with a prefix of '*' signifies that the property should not be inherited from this
+                // sitemap entry 
+                result.put(propName, new CmsSimplePropertyValue(starValue, null));
+                continue;
             }
-            CmsSimplePropertyValue property = new CmsSimplePropertyValue(ownName, inheritName);
+
+            // ownName and inheritName can't both be null
+            if (inheritValue == null) {
+                inheritValue = ownValue;
+            }
+            CmsSimplePropertyValue property = new CmsSimplePropertyValue(ownValue, inheritValue);
             result.put(propName, property);
         }
         return result;
@@ -500,7 +514,7 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
      */
     public static boolean isSpecialProperty(String name) {
 
-        return name.startsWith("#");
+        return name.startsWith("#") || name.startsWith("*");
     }
 
     /**
@@ -992,7 +1006,7 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
      */
     protected static String getPropertyBaseName(String propName) {
 
-        if (propName.startsWith("#")) {
+        if (isSpecialProperty(propName)) {
             return propName.substring(1);
         }
         return propName;
