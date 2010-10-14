@@ -187,36 +187,6 @@
       <accesscontrol/>
     </file>
     <file>
-      <source>system/modules/org.opencms.ade.containerpage/resources/0AFBF4988EF01D9CD7D531858431D4A9.cache.png</source>
-      <destination>system/modules/org.opencms.ade.containerpage/resources/0AFBF4988EF01D9CD7D531858431D4A9.cache.png</destination>
-      <type>image</type>
-      <uuidstructure>657b6f33-5d02-11df-89d5-0596f08ef5d0</uuidstructure>
-      <uuidresource>657b6f34-5d02-11df-89d5-0596f08ef5d0</uuidresource>
-      <datelastmodified>Tue, 11 May 2010 13:37:51 GMT</datelastmodified>
-      <userlastmodified>Admin</userlastmodified>
-      <datecreated>Tue, 11 May 2010 13:37:51 GMT</datecreated>
-      <usercreated>Admin</usercreated>
-      <flags>0</flags>
-      <properties/>
-      <relations/>
-      <accesscontrol/>
-    </file>
-    <file>
-      <source>system/modules/org.opencms.ade.containerpage/resources/1633105CC9BFA1C6AD322FAFB68475DC.cache.html</source>
-      <destination>system/modules/org.opencms.ade.containerpage/resources/1633105CC9BFA1C6AD322FAFB68475DC.cache.html</destination>
-      <type>plain</type>
-      <uuidstructure>beacb270-c592-11df-aaa1-63eec7c5ed2a</uuidstructure>
-      <uuidresource>beaefc61-c592-11df-aaa1-63eec7c5ed2a</uuidresource>
-      <datelastmodified>Tue, 21 Sep 2010 15:13:09 GMT</datelastmodified>
-      <userlastmodified>Admin</userlastmodified>
-      <datecreated>Tue, 21 Sep 2010 15:13:10 GMT</datecreated>
-      <usercreated>Admin</usercreated>
-      <flags>0</flags>
-      <properties/>
-      <relations/>
-      <accesscontrol/>
-    </file>
-    <file>
       <source>system/modules/org.opencms.ade.containerpage/resources/1BA570A78005D17EB033A5D959952436.cache.gif</source>
       <destination>system/modules/org.opencms.ade.containerpage/resources/1BA570A78005D17EB033A5D959952436.cache.gif</destination>
       <type>image</type>
@@ -225,21 +195,6 @@
       <datelastmodified>Thu, 08 Apr 2010 06:42:59 GMT</datelastmodified>
       <userlastmodified>Admin</userlastmodified>
       <datecreated>Thu, 08 Apr 2010 06:42:59 GMT</datecreated>
-      <usercreated>Admin</usercreated>
-      <flags>0</flags>
-      <properties/>
-      <relations/>
-      <accesscontrol/>
-    </file>
-    <file>
-      <source>system/modules/org.opencms.ade.containerpage/resources/1C26B827D546A4D40C906958025D14DE.cache.html</source>
-      <destination>system/modules/org.opencms.ade.containerpage/resources/1C26B827D546A4D40C906958025D14DE.cache.html</destination>
-      <type>plain</type>
-      <uuidstructure>bebd5442-c592-11df-aaa1-63eec7c5ed2a</uuidstructure>
-      <uuidresource>bebd5443-c592-11df-aaa1-63eec7c5ed2a</uuidresource>
-      <datelastmodified>Tue, 21 Sep 2010 15:13:10 GMT</datelastmodified>
-      <userlastmodified>Admin</userlastmodified>
-      <datecreated>Tue, 21 Sep 2010 15:13:10 GMT</datecreated>
       <usercreated>Admin</usercreated>
       <flags>0</flags>
       <properties/>
@@ -262,14 +217,29 @@
       <accesscontrol/>
     </file>
     <file>
+      <source>system/modules/org.opencms.ade.containerpage/resources/28102F1FFBAD88328D2C00C941E8AE83.cache.html</source>
+      <destination>system/modules/org.opencms.ade.containerpage/resources/28102F1FFBAD88328D2C00C941E8AE83.cache.html</destination>
+      <type>plain</type>
+      <uuidstructure>6e0ad827-d764-11df-b87b-238c56554ae3</uuidstructure>
+      <uuidresource>6e0ad828-d764-11df-b87b-238c56554ae3</uuidresource>
+      <datelastmodified>Thu, 14 Oct 2010 07:26:58 GMT</datelastmodified>
+      <userlastmodified>Admin</userlastmodified>
+      <datecreated>Thu, 14 Oct 2010 07:26:58 GMT</datecreated>
+      <usercreated>Admin</usercreated>
+      <flags>0</flags>
+      <properties/>
+      <relations/>
+      <accesscontrol/>
+    </file>
+    <file>
       <source>system/modules/org.opencms.ade.containerpage/resources/2D845645D43483D802E3242C95684CF7.gwt.rpc</source>
       <destination>system/modules/org.opencms.ade.containerpage/resources/2D845645D43483D802E3242C95684CF7.gwt.rpc</destination>
       <type>plain</type>
-      <uuidstructure>d46a588d-aebf-11df-9a97-dd57cd69c875</uuidstructure>
-      <uuidresource>d46a588e-aebf-11df-9a97-dd57cd69c875</uuidresource>
-      <datelastmodified>Mon, 23 Aug 2010 14:07:57 GMT</datelastmodified>
+      <uuidstructure>6e0d4929-d764-11df-b87b-238c56554ae3</uuidstructure>
+      <uuidresource>6e0d492a-d764-11df-b87b-238c56554ae3</uuidresource>
+      <datelastmodified>Thu, 14 Oct 2010 07:26:58 GMT</datelastmodified>
       <userlastmodified>Admin</userlastmodified>
-      <datecreated>Mon, 23 Aug 2010 14:07:57 GMT</datecreated>
+      <datecreated>Thu, 14 Oct 2010 07:26:58 GMT</datecreated>
       <usercreated>Admin</usercreated>
       <flags>0</flags>
       <properties/>
@@ -280,11 +250,11 @@
       <source>system/modules/org.opencms.ade.containerpage/resources/34C95905BBECFD06604AEB99F4D24FEF.gwt.rpc</source>
       <destination>system/modules/org.opencms.ade.containerpage/resources/34C95905BBECFD06604AEB99F4D24FEF.gwt.rpc</destination>
       <type>plain</type>
-      <uuidstructure>44cc974a-b121-11df-a952-3df3a23bd81d</uuidstructure>
-      <uuidresource>44cc974b-b121-11df-a952-3df3a23bd81d</uuidresource>
-      <datelastmodified>Thu, 26 Aug 2010 14:50:29 GMT</datelastmodified>
+      <uuidstructure>6e0d492b-d764-11df-b87b-238c56554ae3</uuidstructure>
+      <uuidresource>6e0d492c-d764-11df-b87b-238c56554ae3</uuidresource>
+      <datelastmodified>Thu, 14 Oct 2010 07:26:58 GMT</datelastmodified>
       <userlastmodified>Admin</userlastmodified>
-      <datecreated>Thu, 26 Aug 2010 14:50:29 GMT</datecreated>
+      <datecreated>Thu, 14 Oct 2010 07:26:58 GMT</datecreated>
       <usercreated>Admin</usercreated>
       <flags>0</flags>
       <properties/>
@@ -310,11 +280,11 @@
       <source>system/modules/org.opencms.ade.containerpage/resources/3BF2A8CCBA0FC125FF4DC82E73568DDC.cache.png</source>
       <destination>system/modules/org.opencms.ade.containerpage/resources/3BF2A8CCBA0FC125FF4DC82E73568DDC.cache.png</destination>
       <type>image</type>
-      <uuidstructure>8a52177b-a487-11df-ba58-8f3b561b1422</uuidstructure>
-      <uuidresource>8a52177c-a487-11df-ba58-8f3b561b1422</uuidresource>
-      <datelastmodified>Tue, 10 Aug 2010 13:59:49 GMT</datelastmodified>
+      <uuidstructure>6e0f931d-d764-11df-b87b-238c56554ae3</uuidstructure>
+      <uuidresource>6e0f931e-d764-11df-b87b-238c56554ae3</uuidresource>
+      <datelastmodified>Thu, 14 Oct 2010 07:26:58 GMT</datelastmodified>
       <userlastmodified>Admin</userlastmodified>
-      <datecreated>Tue, 10 Aug 2010 13:59:49 GMT</datecreated>
+      <datecreated>Thu, 14 Oct 2010 07:26:58 GMT</datecreated>
       <usercreated>Admin</usercreated>
       <flags>0</flags>
       <properties/>
@@ -337,21 +307,6 @@
       <accesscontrol/>
     </file>
     <file>
-      <source>system/modules/org.opencms.ade.containerpage/resources/4BEAF0D1F96F1C2F5596D04490654F0A.cache.html</source>
-      <destination>system/modules/org.opencms.ade.containerpage/resources/4BEAF0D1F96F1C2F5596D04490654F0A.cache.html</destination>
-      <type>plain</type>
-      <uuidstructure>bebfc544-c592-11df-aaa1-63eec7c5ed2a</uuidstructure>
-      <uuidresource>bec20f35-c592-11df-aaa1-63eec7c5ed2a</uuidresource>
-      <datelastmodified>Tue, 21 Sep 2010 15:13:10 GMT</datelastmodified>
-      <userlastmodified>Admin</userlastmodified>
-      <datecreated>Tue, 21 Sep 2010 15:13:10 GMT</datecreated>
-      <usercreated>Admin</usercreated>
-      <flags>0</flags>
-      <properties/>
-      <relations/>
-      <accesscontrol/>
-    </file>
-    <file>
       <source>system/modules/org.opencms.ade.containerpage/resources/5D775A1E6EE265B14EC6ACC0A7DC9412.cache.png</source>
       <destination>system/modules/org.opencms.ade.containerpage/resources/5D775A1E6EE265B14EC6ACC0A7DC9412.cache.png</destination>
       <type>image</type>
@@ -367,14 +322,29 @@
       <accesscontrol/>
     </file>
     <file>
+      <source>system/modules/org.opencms.ade.containerpage/resources/64CBE045246465D46A1EC93F7864EB90.cache.html</source>
+      <destination>system/modules/org.opencms.ade.containerpage/resources/64CBE045246465D46A1EC93F7864EB90.cache.html</destination>
+      <type>plain</type>
+      <uuidstructure>6e0f931f-d764-11df-b87b-238c56554ae3</uuidstructure>
+      <uuidresource>6e0f9320-d764-11df-b87b-238c56554ae3</uuidresource>
+      <datelastmodified>Thu, 14 Oct 2010 07:26:58 GMT</datelastmodified>
+      <userlastmodified>Admin</userlastmodified>
+      <datecreated>Thu, 14 Oct 2010 07:26:58 GMT</datecreated>
+      <usercreated>Admin</usercreated>
+      <flags>0</flags>
+      <properties/>
+      <relations/>
+      <accesscontrol/>
+    </file>
+    <file>
       <source>system/modules/org.opencms.ade.containerpage/resources/67FA9683AF334C48F3015E5F868A8CE6.gwt.rpc</source>
       <destination>system/modules/org.opencms.ade.containerpage/resources/67FA9683AF334C48F3015E5F868A8CE6.gwt.rpc</destination>
       <type>plain</type>
-      <uuidstructure>8a548881-a487-11df-ba58-8f3b561b1422</uuidstructure>
-      <uuidresource>8a548882-a487-11df-ba58-8f3b561b1422</uuidresource>
-      <datelastmodified>Tue, 10 Aug 2010 13:59:49 GMT</datelastmodified>
+      <uuidstructure>6e120421-d764-11df-b87b-238c56554ae3</uuidstructure>
+      <uuidresource>6e120422-d764-11df-b87b-238c56554ae3</uuidresource>
+      <datelastmodified>Thu, 14 Oct 2010 07:26:58 GMT</datelastmodified>
       <userlastmodified>Admin</userlastmodified>
-      <datecreated>Tue, 10 Aug 2010 13:59:49 GMT</datecreated>
+      <datecreated>Thu, 14 Oct 2010 07:26:58 GMT</datecreated>
       <usercreated>Admin</usercreated>
       <flags>0</flags>
       <properties/>
@@ -385,11 +355,11 @@
       <source>system/modules/org.opencms.ade.containerpage/resources/719179A4B115CD4172EAED2569F1E476.cache.png</source>
       <destination>system/modules/org.opencms.ade.containerpage/resources/719179A4B115CD4172EAED2569F1E476.cache.png</destination>
       <type>image</type>
-      <uuidstructure>a65299dc-68d8-11df-8c3d-c18300d4411f</uuidstructure>
-      <uuidresource>a65299dd-68d8-11df-8c3d-c18300d4411f</uuidresource>
-      <datelastmodified>Wed, 26 May 2010 15:09:15 GMT</datelastmodified>
+      <uuidstructure>6e120423-d764-11df-b87b-238c56554ae3</uuidstructure>
+      <uuidresource>6e120424-d764-11df-b87b-238c56554ae3</uuidresource>
+      <datelastmodified>Thu, 14 Oct 2010 07:26:58 GMT</datelastmodified>
       <userlastmodified>Admin</userlastmodified>
-      <datecreated>Wed, 26 May 2010 15:09:15 GMT</datecreated>
+      <datecreated>Thu, 14 Oct 2010 07:26:58 GMT</datecreated>
       <usercreated>Admin</usercreated>
       <flags>0</flags>
       <properties/>
@@ -415,11 +385,11 @@
       <source>system/modules/org.opencms.ade.containerpage/resources/8665EDDB209791139114DD2ABA31A393.gwt.rpc</source>
       <destination>system/modules/org.opencms.ade.containerpage/resources/8665EDDB209791139114DD2ABA31A393.gwt.rpc</destination>
       <type>plain</type>
-      <uuidstructure>ec66a01b-626d-11df-b0af-81cbd70fe444</uuidstructure>
-      <uuidresource>ec66a01c-626d-11df-b0af-81cbd70fe444</uuidresource>
-      <datelastmodified>Tue, 18 May 2010 11:10:10 GMT</datelastmodified>
+      <uuidstructure>6e147525-d764-11df-b87b-238c56554ae3</uuidstructure>
+      <uuidresource>6e147526-d764-11df-b87b-238c56554ae3</uuidresource>
+      <datelastmodified>Thu, 14 Oct 2010 07:26:58 GMT</datelastmodified>
       <userlastmodified>Admin</userlastmodified>
-      <datecreated>Tue, 18 May 2010 11:10:10 GMT</datecreated>
+      <datecreated>Thu, 14 Oct 2010 07:26:58 GMT</datecreated>
       <usercreated>Admin</usercreated>
       <flags>0</flags>
       <properties/>
@@ -427,14 +397,14 @@
       <accesscontrol/>
     </file>
     <file>
-      <source>system/modules/org.opencms.ade.containerpage/resources/89511C75C2F05DA3EC6E575171045700.cache.html</source>
-      <destination>system/modules/org.opencms.ade.containerpage/resources/89511C75C2F05DA3EC6E575171045700.cache.html</destination>
+      <source>system/modules/org.opencms.ade.containerpage/resources/87FA7B8F79654414905B62E7C5A237FE.cache.html</source>
+      <destination>system/modules/org.opencms.ade.containerpage/resources/87FA7B8F79654414905B62E7C5A237FE.cache.html</destination>
       <type>plain</type>
-      <uuidstructure>bec48036-c592-11df-aaa1-63eec7c5ed2a</uuidstructure>
-      <uuidresource>bec48037-c592-11df-aaa1-63eec7c5ed2a</uuidresource>
-      <datelastmodified>Tue, 21 Sep 2010 15:13:10 GMT</datelastmodified>
+      <uuidstructure>6e147527-d764-11df-b87b-238c56554ae3</uuidstructure>
+      <uuidresource>6e147528-d764-11df-b87b-238c56554ae3</uuidresource>
+      <datelastmodified>Thu, 14 Oct 2010 07:26:58 GMT</datelastmodified>
       <userlastmodified>Admin</userlastmodified>
-      <datecreated>Tue, 21 Sep 2010 15:13:10 GMT</datecreated>
+      <datecreated>Thu, 14 Oct 2010 07:26:58 GMT</datecreated>
       <usercreated>Admin</usercreated>
       <flags>0</flags>
       <properties/>
@@ -472,6 +442,36 @@
       <accesscontrol/>
     </file>
     <file>
+      <source>system/modules/org.opencms.ade.containerpage/resources/96960D709272B0A94505159C43A0B47A.gwt.rpc</source>
+      <destination>system/modules/org.opencms.ade.containerpage/resources/96960D709272B0A94505159C43A0B47A.gwt.rpc</destination>
+      <type>plain</type>
+      <uuidstructure>6e16bf19-d764-11df-b87b-238c56554ae3</uuidstructure>
+      <uuidresource>6e16bf1a-d764-11df-b87b-238c56554ae3</uuidresource>
+      <datelastmodified>Thu, 14 Oct 2010 07:26:58 GMT</datelastmodified>
+      <userlastmodified>Admin</userlastmodified>
+      <datecreated>Thu, 14 Oct 2010 07:26:58 GMT</datecreated>
+      <usercreated>Admin</usercreated>
+      <flags>0</flags>
+      <properties/>
+      <relations/>
+      <accesscontrol/>
+    </file>
+    <file>
+      <source>system/modules/org.opencms.ade.containerpage/resources/9976C937941BA485CC97C75BC426C6FA.cache.html</source>
+      <destination>system/modules/org.opencms.ade.containerpage/resources/9976C937941BA485CC97C75BC426C6FA.cache.html</destination>
+      <type>plain</type>
+      <uuidstructure>6e16bf1b-d764-11df-b87b-238c56554ae3</uuidstructure>
+      <uuidresource>6e16bf1c-d764-11df-b87b-238c56554ae3</uuidresource>
+      <datelastmodified>Thu, 14 Oct 2010 07:26:58 GMT</datelastmodified>
+      <userlastmodified>Admin</userlastmodified>
+      <datecreated>Thu, 14 Oct 2010 07:26:58 GMT</datecreated>
+      <usercreated>Admin</usercreated>
+      <flags>0</flags>
+      <properties/>
+      <relations/>
+      <accesscontrol/>
+    </file>
+    <file>
       <source>system/modules/org.opencms.ade.containerpage/resources/9B56DF4CD68CC5BCB6821A8DE7E4830C.cache.gif</source>
       <destination>system/modules/org.opencms.ade.containerpage/resources/9B56DF4CD68CC5BCB6821A8DE7E4830C.cache.gif</destination>
       <type>image</type>
@@ -502,14 +502,29 @@
       <accesscontrol/>
     </file>
     <file>
-      <source>system/modules/org.opencms.ade.containerpage/resources/A8E26A2EA9E0C6B07D8835C23F1D7347.cache.html</source>
-      <destination>system/modules/org.opencms.ade.containerpage/resources/A8E26A2EA9E0C6B07D8835C23F1D7347.cache.html</destination>
+      <source>system/modules/org.opencms.ade.containerpage/resources/A23F72CCBCABD22CB288E3C92F1B8C81.cache.html</source>
+      <destination>system/modules/org.opencms.ade.containerpage/resources/A23F72CCBCABD22CB288E3C92F1B8C81.cache.html</destination>
       <type>plain</type>
-      <uuidstructure>bec93b28-c592-11df-aaa1-63eec7c5ed2a</uuidstructure>
-      <uuidresource>bec93b29-c592-11df-aaa1-63eec7c5ed2a</uuidresource>
-      <datelastmodified>Tue, 21 Sep 2010 15:13:10 GMT</datelastmodified>
+      <uuidstructure>6e19301d-d764-11df-b87b-238c56554ae3</uuidstructure>
+      <uuidresource>6e19301e-d764-11df-b87b-238c56554ae3</uuidresource>
+      <datelastmodified>Thu, 14 Oct 2010 07:26:58 GMT</datelastmodified>
       <userlastmodified>Admin</userlastmodified>
-      <datecreated>Tue, 21 Sep 2010 15:13:10 GMT</datecreated>
+      <datecreated>Thu, 14 Oct 2010 07:26:58 GMT</datecreated>
+      <usercreated>Admin</usercreated>
+      <flags>0</flags>
+      <properties/>
+      <relations/>
+      <accesscontrol/>
+    </file>
+    <file>
+      <source>system/modules/org.opencms.ade.containerpage/resources/BA168EF4A32ED8CAEFAD305BDA78E9E4.cache.html</source>
+      <destination>system/modules/org.opencms.ade.containerpage/resources/BA168EF4A32ED8CAEFAD305BDA78E9E4.cache.html</destination>
+      <type>plain</type>
+      <uuidstructure>6e19301f-d764-11df-b87b-238c56554ae3</uuidstructure>
+      <uuidresource>6e193020-d764-11df-b87b-238c56554ae3</uuidresource>
+      <datelastmodified>Thu, 14 Oct 2010 07:26:58 GMT</datelastmodified>
+      <userlastmodified>Admin</userlastmodified>
+      <datecreated>Thu, 14 Oct 2010 07:26:58 GMT</datecreated>
       <usercreated>Admin</usercreated>
       <flags>0</flags>
       <properties/>
@@ -547,44 +562,14 @@
       <accesscontrol/>
     </file>
     <file>
-      <source>system/modules/org.opencms.ade.containerpage/resources/BC42DB3D2EC741E8DB5DA2BCAB0138D0.cache.html</source>
-      <destination>system/modules/org.opencms.ade.containerpage/resources/BC42DB3D2EC741E8DB5DA2BCAB0138D0.cache.html</destination>
-      <type>plain</type>
-      <uuidstructure>becdf61a-c592-11df-aaa1-63eec7c5ed2a</uuidstructure>
-      <uuidresource>becdf61b-c592-11df-aaa1-63eec7c5ed2a</uuidresource>
-      <datelastmodified>Tue, 21 Sep 2010 15:13:10 GMT</datelastmodified>
-      <userlastmodified>Admin</userlastmodified>
-      <datecreated>Tue, 21 Sep 2010 15:13:10 GMT</datecreated>
-      <usercreated>Admin</usercreated>
-      <flags>0</flags>
-      <properties/>
-      <relations/>
-      <accesscontrol/>
-    </file>
-    <file>
       <source>system/modules/org.opencms.ade.containerpage/resources/blank.html</source>
       <destination>system/modules/org.opencms.ade.containerpage/resources/blank.html</destination>
       <type>plain</type>
-      <uuidstructure>8a5bb47b-a487-11df-ba58-8f3b561b1422</uuidstructure>
-      <uuidresource>8a5bb47c-a487-11df-ba58-8f3b561b1422</uuidresource>
-      <datelastmodified>Tue, 10 Aug 2010 13:59:49 GMT</datelastmodified>
+      <uuidstructure>6e1b7a11-d764-11df-b87b-238c56554ae3</uuidstructure>
+      <uuidresource>6e1b7a12-d764-11df-b87b-238c56554ae3</uuidresource>
+      <datelastmodified>Thu, 14 Oct 2010 07:26:58 GMT</datelastmodified>
       <userlastmodified>Admin</userlastmodified>
-      <datecreated>Tue, 10 Aug 2010 13:59:49 GMT</datecreated>
-      <usercreated>Admin</usercreated>
-      <flags>0</flags>
-      <properties/>
-      <relations/>
-      <accesscontrol/>
-    </file>
-    <file>
-      <source>system/modules/org.opencms.ade.containerpage/resources/C03BD0BC5526A6A8CF8D228DD36497E1.gwt.rpc</source>
-      <destination>system/modules/org.opencms.ade.containerpage/resources/C03BD0BC5526A6A8CF8D228DD36497E1.gwt.rpc</destination>
-      <type>plain</type>
-      <uuidstructure>bed2d81c-c592-11df-aaa1-63eec7c5ed2a</uuidstructure>
-      <uuidresource>bed2d81d-c592-11df-aaa1-63eec7c5ed2a</uuidresource>
-      <datelastmodified>Tue, 21 Sep 2010 15:13:10 GMT</datelastmodified>
-      <userlastmodified>Admin</userlastmodified>
-      <datecreated>Tue, 21 Sep 2010 15:13:10 GMT</datecreated>
+      <datecreated>Thu, 14 Oct 2010 07:26:58 GMT</datecreated>
       <usercreated>Admin</usercreated>
       <flags>0</flags>
       <properties/>
@@ -610,11 +595,11 @@
       <source>system/modules/org.opencms.ade.containerpage/resources/C4EA130FD0ED44BE513FEEDDE13614DA.cache.png</source>
       <destination>system/modules/org.opencms.ade.containerpage/resources/C4EA130FD0ED44BE513FEEDDE13614DA.cache.png</destination>
       <type>image</type>
-      <uuidstructure>8a5bb47d-a487-11df-ba58-8f3b561b1422</uuidstructure>
-      <uuidresource>8a5bb47e-a487-11df-ba58-8f3b561b1422</uuidresource>
-      <datelastmodified>Tue, 10 Aug 2010 13:59:49 GMT</datelastmodified>
+      <uuidstructure>6e1b7a13-d764-11df-b87b-238c56554ae3</uuidstructure>
+      <uuidresource>6e1b7a14-d764-11df-b87b-238c56554ae3</uuidresource>
+      <datelastmodified>Thu, 14 Oct 2010 07:26:58 GMT</datelastmodified>
       <userlastmodified>Admin</userlastmodified>
-      <datecreated>Tue, 10 Aug 2010 13:59:49 GMT</datecreated>
+      <datecreated>Thu, 14 Oct 2010 07:26:58 GMT</datecreated>
       <usercreated>Admin</usercreated>
       <flags>0</flags>
       <properties/>
@@ -655,11 +640,11 @@
       <source>system/modules/org.opencms.ade.containerpage/resources/clear.gif</source>
       <destination>system/modules/org.opencms.ade.containerpage/resources/clear.gif</destination>
       <type>image</type>
-      <uuidstructure>8a5dfe6f-a487-11df-ba58-8f3b561b1422</uuidstructure>
-      <uuidresource>8a5dfe70-a487-11df-ba58-8f3b561b1422</uuidresource>
-      <datelastmodified>Tue, 10 Aug 2010 13:59:49 GMT</datelastmodified>
+      <uuidstructure>6e1deb15-d764-11df-b87b-238c56554ae3</uuidstructure>
+      <uuidresource>6e1deb16-d764-11df-b87b-238c56554ae3</uuidresource>
+      <datelastmodified>Thu, 14 Oct 2010 07:26:58 GMT</datelastmodified>
       <userlastmodified>Admin</userlastmodified>
-      <datecreated>Tue, 10 Aug 2010 13:59:49 GMT</datecreated>
+      <datecreated>Thu, 14 Oct 2010 07:26:58 GMT</datecreated>
       <usercreated>Admin</usercreated>
       <flags>0</flags>
       <properties/>
@@ -670,11 +655,11 @@
       <source>system/modules/org.opencms.ade.containerpage/resources/D0E43497744DF5C818B8EC8DC4EAF7AE.cache.png</source>
       <destination>system/modules/org.opencms.ade.containerpage/resources/D0E43497744DF5C818B8EC8DC4EAF7AE.cache.png</destination>
       <type>image</type>
-      <uuidstructure>8a5dfe71-a487-11df-ba58-8f3b561b1422</uuidstructure>
-      <uuidresource>8a5dfe72-a487-11df-ba58-8f3b561b1422</uuidresource>
-      <datelastmodified>Tue, 10 Aug 2010 13:59:49 GMT</datelastmodified>
+      <uuidstructure>6e1deb17-d764-11df-b87b-238c56554ae3</uuidstructure>
+      <uuidresource>6e205c18-d764-11df-b87b-238c56554ae3</uuidresource>
+      <datelastmodified>Thu, 14 Oct 2010 07:26:58 GMT</datelastmodified>
       <userlastmodified>Admin</userlastmodified>
-      <datecreated>Tue, 10 Aug 2010 13:59:49 GMT</datecreated>
+      <datecreated>Thu, 14 Oct 2010 07:26:58 GMT</datecreated>
       <usercreated>Admin</usercreated>
       <flags>0</flags>
       <properties/>
@@ -775,11 +760,26 @@
       <source>system/modules/org.opencms.ade.containerpage/resources/EEB17778392DA509D574392FF8BA79A3.gwt.rpc</source>
       <destination>system/modules/org.opencms.ade.containerpage/resources/EEB17778392DA509D574392FF8BA79A3.gwt.rpc</destination>
       <type>plain</type>
-      <uuidstructure>8a606f75-a487-11df-ba58-8f3b561b1422</uuidstructure>
-      <uuidresource>8a606f76-a487-11df-ba58-8f3b561b1422</uuidresource>
-      <datelastmodified>Tue, 10 Aug 2010 13:59:49 GMT</datelastmodified>
+      <uuidstructure>6e205c19-d764-11df-b87b-238c56554ae3</uuidstructure>
+      <uuidresource>6e205c1a-d764-11df-b87b-238c56554ae3</uuidresource>
+      <datelastmodified>Thu, 14 Oct 2010 07:26:58 GMT</datelastmodified>
       <userlastmodified>Admin</userlastmodified>
-      <datecreated>Tue, 10 Aug 2010 13:59:49 GMT</datecreated>
+      <datecreated>Thu, 14 Oct 2010 07:26:58 GMT</datecreated>
+      <usercreated>Admin</usercreated>
+      <flags>0</flags>
+      <properties/>
+      <relations/>
+      <accesscontrol/>
+    </file>
+    <file>
+      <source>system/modules/org.opencms.ade.containerpage/resources/F90B878957C280DF5E5912D48802F200.cache.png</source>
+      <destination>system/modules/org.opencms.ade.containerpage/resources/F90B878957C280DF5E5912D48802F200.cache.png</destination>
+      <type>image</type>
+      <uuidstructure>6e205c1b-d764-11df-b87b-238c56554ae3</uuidstructure>
+      <uuidresource>6e22a60c-d764-11df-b87b-238c56554ae3</uuidresource>
+      <datelastmodified>Thu, 14 Oct 2010 07:26:58 GMT</datelastmodified>
+      <userlastmodified>Admin</userlastmodified>
+      <datecreated>Thu, 14 Oct 2010 07:26:58 GMT</datecreated>
       <usercreated>Admin</usercreated>
       <flags>0</flags>
       <properties/>
