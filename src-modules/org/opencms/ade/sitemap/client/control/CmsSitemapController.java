@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2010/10/14 14:11:49 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2010/10/14 14:17:44 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -83,7 +83,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 8.0.0
  */
@@ -627,12 +627,12 @@ public class CmsSitemapController {
         if (entry == null) {
             return m_data.getDefaultTemplate();
         }
-        CmsSimplePropertyValue templateInherited = entry.getProperties().get(CmsSitemapManager.Property.template.name());
+        CmsComputedPropertyValue templateInherited = entry.getInheritedProperties().get(
+            CmsSitemapManager.Property.template.name());
         if (templateInherited != null) {
             return m_data.getTemplates().get(templateInherited.getOwnValue());
         }
-        String parentPath = CmsResource.getParentFolder(sitemapPath);
-        return getDefaultTemplate(parentPath);
+        return m_data.getDefaultTemplate();
     }
 
     /**
