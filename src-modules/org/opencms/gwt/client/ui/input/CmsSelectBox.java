@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsSelectBox.java,v $
- * Date   : $Date: 2010/08/24 15:15:14 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2010/10/14 09:46:44 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,10 +32,12 @@
 package org.opencms.gwt.client.ui.input;
 
 import org.opencms.gwt.client.I_CmsHasInit;
+import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
 import org.opencms.util.CmsPair;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.List;
 import java.util.Map;
@@ -46,12 +48,12 @@ import java.util.Map;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.29 $ 
  * 
  * @since 8.0.0
  * 
  */
-public class CmsSelectBox extends A_CmsSelectBox<CmsLabelSelectCell> implements I_CmsHasInit {
+public class CmsSelectBox extends A_CmsSelectBox<CmsLabelSelectCell> implements I_CmsHasInit, I_CmsHasGhostValue {
 
     /** Text metrics key. */
     private static final String TM_OPENER_LABEL = "OpenerLabel";
@@ -61,6 +63,9 @@ public class CmsSelectBox extends A_CmsSelectBox<CmsLabelSelectCell> implements 
 
     /** The widget displayed in the opener. */
     protected CmsLabel m_openerWidget;
+
+    /** A map from select options to their label texts. */
+    private Map<String, String> m_items;
 
     /**
      * Default constructor.<p>
@@ -98,6 +103,25 @@ public class CmsSelectBox extends A_CmsSelectBox<CmsLabelSelectCell> implements 
     }
 
     /**
+     * Creates a new select box, with the option of adding a "not selected" choice.<p>
+     * 
+     * @param items the map of select options 
+     * @param addNullOption if true, a "not selected" option will be added to the select box 
+     */
+    public CmsSelectBox(Map<String, String> items, boolean addNullOption) {
+
+        super();
+        if (addNullOption) {
+            String text = Messages.get().key(Messages.GUI_SELECTBOX_EMPTY_SELECTION_0);
+            items.put("", text);
+        }
+        setItems(items);
+        if (addNullOption) {
+            selectValue("");
+        }
+    }
+
+    /**
      * Initializes this class.<p>
      */
     public static void initClass() {
@@ -110,7 +134,7 @@ public class CmsSelectBox extends A_CmsSelectBox<CmsLabelSelectCell> implements 
              */
             public I_CmsFormWidget createWidget(Map<String, String> widgetParams) {
 
-                return new CmsSelectBox(widgetParams);
+                return new CmsSelectBox(widgetParams, true);
             }
         });
     }
@@ -137,6 +161,19 @@ public class CmsSelectBox extends A_CmsSelectBox<CmsLabelSelectCell> implements 
     }
 
     /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsHasGhostValue#setGhostValue(java.lang.String, boolean)
+     */
+    public void setGhostValue(String value, boolean ghostMode) {
+
+        String otherOptionText = m_items.get(value);
+        String message = Messages.get().key(Messages.GUI_SELECTBOX_EMPTY_SELECTION_1, otherOptionText);
+        setTextForNullSelection(message);
+        if (ghostMode) {
+            selectValue("");
+        }
+    }
+
+    /**
      * Sets the items as key-value pairs.<p>
      * 
      * The first component of each pair is the option value, the second is the text to be displayed for the option value.<p>
@@ -159,8 +196,29 @@ public class CmsSelectBox extends A_CmsSelectBox<CmsLabelSelectCell> implements 
     public void setItems(Map<String, String> items) {
 
         clearItems();
+        m_items = items;
         for (Map.Entry<String, String> entry : items.entrySet()) {
             addOption(entry.getKey(), entry.getValue());
+        }
+    }
+
+    /**
+     * Sets the text that is used for the "not selected" option.<p>
+     * 
+     * @param text the text which should be used for the "not selected" option 
+     */
+    public void setTextForNullSelection(String text) {
+
+        // do nothing if there's no null option
+        CmsLabelSelectCell cell = m_selectCells.get("");
+        if (cell == null) {
+            return;
+        }
+        cell.setText(text);
+
+        // if the null option is selected, we still need to update the opener 
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_selectedValue)) {
+            selectValue("");
         }
     }
 

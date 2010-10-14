@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsInputCss.java,v $
- * Date   : $Date: 2010/10/07 07:56:34 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2010/10/14 09:46:44 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import com.google.gwt.resources.client.CssResource;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 8.0.0
  */
@@ -211,14 +211,14 @@ public interface I_CmsInputCss extends CssResource {
      * 
      * @return the css class
      */
-    String selectBoxCell();
+    // String textAreaWidget();
 
     /**
      * Css class reader.<p>
      * 
      * @return the css class
      */
-    // String textAreaWidget();
+    String selectBoxCell();
 
     /**
      * Css class reader.<p>
@@ -296,6 +296,13 @@ public interface I_CmsInputCss extends CssResource {
      * @return the css class
      */
     String textBox();
+
+    /**
+     * Css class reader. <p>
+     * 
+     * @return the css class
+     */
+    String textboxGhostMode();
 
     /**
      * Css class reader.<p>

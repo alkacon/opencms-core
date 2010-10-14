@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/edit/Attic/CmsSitemapEntryEditor.java,v $
- * Date   : $Date: 2010/10/11 06:40:56 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/10/14 09:46:44 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,6 +39,8 @@ import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsSitemapTemplate;
 import org.opencms.gwt.client.ui.input.CmsTextBox;
 import org.opencms.gwt.client.ui.input.I_CmsFormField;
+import org.opencms.gwt.client.ui.input.I_CmsFormWidget;
+import org.opencms.gwt.client.ui.input.I_CmsHasGhostValue;
 import org.opencms.gwt.client.ui.input.form.CmsBasicFormField;
 import org.opencms.gwt.client.ui.input.form.CmsForm;
 import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
@@ -65,7 +67,7 @@ import java.util.Set;
  * 
  *  @author Georg Westenberger
  *  
- *  @version $Revision: 1.13 $
+ *  @version $Revision: 1.14 $
  *  
  *  @since 8.0.0
  */
@@ -162,11 +164,15 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
         String name = propDef.getPropertyName();
 
         String selectInherit = propDef.getSelectInherit();
+        Map<String, CmsComputedPropertyValue> parentProps = entry.getParentInheritedProperties();
+        CmsComputedPropertyValue parentProp = parentProps.get(propDef.getPropertyName());
+
         if ((selectInherit != null) && !Boolean.parseBoolean(selectInherit)) {
             I_CmsFormField f1 = createField(propDef);
             f1.getWidget().setFormValueAsString(entry.getOwnProperty(name));
             f1.setId("#" + name);
             m_form.addField(f1);
+
         } else {
             Map<String, CmsSimplePropertyValue> props = entry.getProperties();
             CmsSimplePropertyValue prop = props.get(name);
@@ -179,6 +185,11 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
             I_CmsFormField f2 = createField(propDef);
             f2.getWidget().setFormValueAsString(prop.getOwnValue());
             CmsPair<CmsFormRow, CmsFormRow> rows = m_form.addDoubleField(f1, f2);
+
+            if (parentProp != null) {
+                setGhostValue(f1, parentProp.getInheritValue(), prop.getInheritValue() == null);
+            }
+
             CmsFormRow row1 = rows.getFirst();
 
             CmsComputedPropertyValue propValue = entry.getParentInheritedProperties().get(name);
@@ -187,7 +198,7 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
                 if (sourcedProp != null) {
                     String val = sourcedProp.getValue();
                     String src = sourcedProp.getSource();
-                    String message = Messages.get().key(Messages.GUI_INHERIT_PROPERTY_2, val, src);
+                    String message = Messages.get().key(Messages.GUI_INHERIT_PROPERTY_2, "" + val, "" + src);
                     row1.getOpener().setTitle(message);
                 }
             }
@@ -253,8 +264,7 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
         for (String key : baseNames) {
             String own = strProps.get(key);
             String inherit = strProps.get("#" + key);
-
-            if (inherit == null) {
+            if ((own == null) && (inherit == null)) {
                 result.put(key, null);
                 continue;
             }
@@ -351,6 +361,21 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
 
         super.onClickCancel();
         m_handler.handleCancel();
+    }
+
+    /**
+     * Sets the ghost value for a form field if its normal value is empty and the field's widget supports ghost values.<p>
+     *  
+     * @param field the form field 
+     * @param value the ghost value to set
+     * @param ghostMode if true, sets the widget to ghost mode  
+     */
+    protected void setGhostValue(I_CmsFormField field, String value, boolean ghostMode) {
+
+        I_CmsFormWidget widget = field.getWidget();
+        if ((widget instanceof I_CmsHasGhostValue) && (value != null)) {
+            ((I_CmsHasGhostValue)widget).setGhostValue(value, ghostMode);
+        }
     }
 
     /**

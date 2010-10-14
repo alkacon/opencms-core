@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageController.java,v $
- * Date   : $Date: 2010/10/13 12:53:49 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2010/10/14 09:46:44 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,8 +62,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JsArray;
@@ -74,9 +74,9 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.Window.ClosingHandler;
 import com.google.gwt.user.client.ui.Widget;
@@ -86,7 +86,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * 
  * @since 8.0.0
  */
@@ -1337,27 +1337,31 @@ public final class CmsContainerpageController {
     protected void setPageChanged(boolean changed, boolean unlock) {
 
         if (changed) {
-            m_pageChanged = changed;
-            lockContainerpage();
-            m_closingRegistration = Window.addWindowClosingHandler(new ClosingHandler() {
+            if (!m_pageChanged) {
 
-                /**
-                 * @see com.google.gwt.user.client.Window.ClosingHandler#onWindowClosing(com.google.gwt.user.client.Window.ClosingEvent)
-                 */
-                public void onWindowClosing(ClosingEvent event) {
+                m_pageChanged = changed;
+                lockContainerpage();
 
-                    if (m_pageChanged) {
-                        boolean savePage = Window.confirm("Do you want to save the page before leaving?");
-                        if (savePage) {
-                            syncSaveContainerpage();
-                        } else {
-                            unlockContainerpage();
+                m_closingRegistration = Window.addWindowClosingHandler(new ClosingHandler() {
+
+                    /**
+                     * @see com.google.gwt.user.client.Window.ClosingHandler#onWindowClosing(com.google.gwt.user.client.Window.ClosingEvent)
+                     */
+                    public void onWindowClosing(ClosingEvent event) {
+
+                        if (m_pageChanged) {
+                            boolean savePage = Window.confirm("Do you want to save the page before leaving?");
+                            if (savePage) {
+                                syncSaveContainerpage();
+                            } else {
+                                unlockContainerpage();
+                            }
                         }
-                    }
 
-                }
-            });
-            m_handler.enableSaveReset(true);
+                    }
+                });
+                m_handler.enableSaveReset(true);
+            }
         } else {
             m_pageChanged = changed;
             m_handler.enableSaveReset(false);

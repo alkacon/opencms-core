@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsSitemapService.java,v $
- * Date   : $Date: 2010/10/14 05:56:41 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2010/10/14 09:46:44 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -99,7 +99,7 @@ import org.apache.commons.collections.map.MultiValueMap;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.37 $ 
+ * @version $Revision: 1.38 $ 
  * 
  * @since 8.0.0
  * 
@@ -145,8 +145,9 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
             entries.addAll(descendants);
 
             // multimap from resources to (sets of) sitemap entries 
+
             MultiValueMap linkMap = MultiValueMap.decorate(
-                new HashMap(),
+                new HashMap<Object, Object>(),
                 FactoryUtils.instantiateFactory(HashSet.class));
             for (CmsInternalSitemapEntry entry : entries) {
                 List<CmsResource> linkSources = getLinkSources(cms, entry.getId());

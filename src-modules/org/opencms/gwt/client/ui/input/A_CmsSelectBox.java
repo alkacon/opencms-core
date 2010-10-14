@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/A_CmsSelectBox.java,v $
- * Date   : $Date: 2010/10/07 07:56:35 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/10/14 09:46:44 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -76,7 +76,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 8.0.0
  * 
@@ -127,6 +127,9 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
     /** The map of select options. */
     protected Map<String, OPTION> m_selectCells = new HashMap<String, OPTION>();
 
+    /** The value of the currently selected option. */
+    protected String m_selectedValue;
+
     /** The selector which contains the select options. */
     protected Panel m_selector = new FlowPanel();
 
@@ -138,9 +141,6 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
 
     /** The value of the first select option. */
     private String m_firstValue;
-
-    /** The value of the currently selected option. */
-    private String m_selectedValue;
 
     /** The text metrics prefix. */
     private String m_textMetricsPrefix;
@@ -296,6 +296,10 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
      * @param value the new value
      */
     public void selectValue(String value) {
+
+        if (m_selectCells.get(value) == null) {
+            return;
+        }
 
         updateOpener(value);
         if (m_textMetricsPrefix != null) {

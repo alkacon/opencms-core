@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsLabelSelectCell.java,v $
- * Date   : $Date: 2010/05/28 08:22:28 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/10/14 09:46:44 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,8 +44,14 @@ public class CmsLabelSelectCell extends A_CmsSelectCell implements I_CmsTruncabl
     /** The label of which this select cell consists. */
     private CmsLabel m_label = new CmsLabel();
 
+    /** The label width last used in a truncate()-call. */
+    private int m_labelWidth;
+
     /** The text of the select option. */
     private String m_text;
+
+    /** The text metrics key last used in a truncate()-call. */
+    private String m_textMetricsKey;
 
     /**
      * Creates a new select cell.<p>
@@ -82,10 +88,28 @@ public class CmsLabelSelectCell extends A_CmsSelectCell implements I_CmsTruncabl
     }
 
     /**
+     * Sets the text of the label.<p>
+     * 
+     * @param text the new text 
+     */
+    public void setText(String text) {
+
+        m_label.setText(text);
+        m_text = text;
+        if (m_textMetricsKey != null) {
+            truncate(m_textMetricsKey, m_labelWidth);
+
+        }
+
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.I_CmsTruncable#truncate(java.lang.String, int)
      */
     public void truncate(String textMetricsKey, int labelWidth) {
 
+        m_textMetricsKey = textMetricsKey;
+        m_labelWidth = labelWidth;
         m_label.truncate(textMetricsKey, labelWidth);
     }
 

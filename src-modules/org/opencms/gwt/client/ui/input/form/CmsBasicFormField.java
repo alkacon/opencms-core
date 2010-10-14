@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/form/Attic/CmsBasicFormField.java,v $
- * Date   : $Date: 2010/10/07 07:56:34 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/10/14 09:46:44 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,6 +39,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -47,7 +48,7 @@ import java.util.Map;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0 
  */
@@ -116,6 +117,21 @@ public class CmsBasicFormField implements I_CmsFormField {
      */
     public static CmsBasicFormField createField(CmsXmlContentProperty propertyConfig) {
 
+        return createField(propertyConfig, Collections.<String, String> emptyMap());
+    }
+
+    /**
+     * Utility method for creating a single basic form field from an id and a property configuration. 
+     * 
+     * @param propertyConfig the configuration of the property
+     * @param additionalParams 
+     *   
+     * @return the newly created form field 
+     */
+    public static CmsBasicFormField createField(
+        CmsXmlContentProperty propertyConfig,
+        Map<String, String> additionalParams) {
+
         String id = propertyConfig.getPropertyName();
         String widgetConfigStr = propertyConfig.getWidgetConfiguration();
         if (widgetConfigStr == null) {
@@ -128,6 +144,7 @@ public class CmsBasicFormField implements I_CmsFormField {
         }
 
         Map<String, String> widgetConfig = CmsStringUtil.splitAsMap(widgetConfigStr, "|", ":");
+        widgetConfig.putAll(additionalParams);
         String widgetType = propertyConfig.getWidget();
         I_CmsFormWidget widget = CmsWidgetFactoryRegistry.instance().createFormWidget(widgetType, widgetConfig);
         CmsBasicFormField field = new CmsBasicFormField(

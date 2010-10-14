@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsTextBox.java,v $
- * Date   : $Date: 2010/09/03 13:27:35 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2010/10/14 09:46:44 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,6 +47,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasBlurHandlers;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.dom.client.HasKeyPressHandlers;
+import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -62,14 +63,14 @@ import com.google.gwt.user.client.ui.TextBox;
  * @author Georg Westenberger
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 8.0.0
  * 
  */
 public class CmsTextBox extends Composite
 implements I_CmsFormWidget, I_CmsHasInit, HasBlurHandlers, HasValueChangeHandlers<String>, HasKeyPressHandlers,
-HasClickHandlers, I_CmsHasBlur {
+HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
 
     /** The CSS bundle used for this widget. */
     public static final I_CmsInputCss CSS = I_CmsInputLayoutBundle.INSTANCE.inputCss();
@@ -88,6 +89,9 @@ HasClickHandlers, I_CmsHasBlur {
 
     /** The error display for this widget. */
     private CmsErrorWidget m_error = new CmsErrorWidget();
+
+    /** Flag for ghost mode. */
+    private boolean m_ghostMode;
 
     /** The container for the textbox container and error widget. */
     private FlowPanel m_panel = new FlowPanel();
@@ -110,6 +114,7 @@ HasClickHandlers, I_CmsHasBlur {
         m_textboxContainer.add(m_textbox);
         m_textboxContainer.setPaddingX(4);
         initWidget(m_panel);
+
         m_textbox.addValueChangeHandler(new ValueChangeHandler<String>() {
 
             /**
@@ -117,7 +122,18 @@ HasClickHandlers, I_CmsHasBlur {
              */
             public void onValueChange(ValueChangeEvent<String> event) {
 
+                setGhostMode(false);
                 fireValueChangedEvent();
+            }
+        });
+        m_textbox.addKeyPressHandler(new KeyPressHandler() {
+
+            /**
+             * @see com.google.gwt.event.dom.client.KeyPressHandler#onKeyPress(com.google.gwt.event.dom.client.KeyPressEvent)
+             */
+            public void onKeyPress(KeyPressEvent event) {
+
+                setGhostMode(false);
             }
         });
     }
@@ -206,6 +222,9 @@ HasClickHandlers, I_CmsHasBlur {
      */
     public String getFormValueAsString() {
 
+        if (m_ghostMode) {
+            return null;
+        }
         return (String)getFormValue();
     }
 
@@ -305,6 +324,18 @@ HasClickHandlers, I_CmsHasBlur {
     }
 
     /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsHasGhostValue#setGhostValue(java.lang.String, boolean)
+     */
+    public void setGhostValue(String value, boolean ghostMode) {
+
+        if (!ghostMode) {
+            return;
+        }
+        m_textbox.setValue(value);
+        setGhostMode(true);
+    }
+
+    /**
      * Sets the text in the text box.<p>
      * 
      * @param text the new text
@@ -329,6 +360,22 @@ HasClickHandlers, I_CmsHasBlur {
     protected void fireValueChangedEvent() {
 
         ValueChangeEvent.fire(this, getText());
+    }
+
+    /**
+     * Enables or disables ghost mode.<p>
+     * 
+     * @param ghostMode if true, enables ghost mode, else disables it 
+     */
+    protected void setGhostMode(boolean ghostMode) {
+
+        if (ghostMode) {
+            m_textbox.addStyleName(CSS.textboxGhostMode());
+        } else {
+            m_textbox.removeStyleName(CSS.textboxGhostMode());
+        }
+        m_ghostMode = ghostMode;
+
     }
 
 }
