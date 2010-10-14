@@ -189,7 +189,7 @@
 		<file>
 			<source>demo_t3/_config/sitemap_restype.config</source>
 			<destination>demo_t3/_config/sitemap_restype.config</destination>
-			<type>containerpage_config</type>
+			<type>sitemap_config</type>
 			<uuidstructure>979addd7-e33e-11de-ad4c-9f305ad86e25</uuidstructure>
 			<uuidresource>979addd8-e33e-11de-ad4c-9f305ad86e25</uuidresource>
 			<datelastmodified>Mon, 07 Dec 2009 14:43:21 GMT</datelastmodified>

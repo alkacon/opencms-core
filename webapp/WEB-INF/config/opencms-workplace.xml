@@ -667,13 +667,19 @@
           <accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
         </accesscontrol>
       </explorertype>
+      <explorertype name="sitemap_config" key="fileicon.sitemap_config" icon="containerpage_config.png" reference="xmlcontent">
+      	<newresource page="ade" uri="newresource_xmlcontent.jsp?newresourcetype=sitemap_config" order="21"  autosetnavigation="false"  autosettitle="false" info="desc.sitemap_config" />
+        <accesscontrol>
+          <accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
+        </accesscontrol>
+      </explorertype>
       <explorertype name="subcontainer" key="fileicon.subcontainer" icon="containerpage.gif" reference="xmlcontent">
         <newresource page="ade" uri="newresource_xmlcontent.jsp?newresourcetype=subcontainer" order="10" autosetnavigation="false" autosettitle="false" info="desc.subcontainer"/>
         <accesscontrol>
           <accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
         </accesscontrol>
       </explorertype>
-      <explorertype name="sitemap" key="fileicon.sitemap" icon="sitemap.gif" reference="xmlcontent">
+      <explorertype name="sitemap" key="fileicon.sitemap" icon="plain.gif" reference="xmlcontent">
         <newresource page="ade" uri="newresource_xmlcontent.jsp?newresourcetype=sitemap" order="30" autosetnavigation="false" autosettitle="false" info="desc.sitemap"/>
         <accesscontrol>
           <accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>

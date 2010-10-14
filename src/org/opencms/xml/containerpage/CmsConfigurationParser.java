@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsConfigurationParser.java,v $
- * Date   : $Date: 2010/10/12 08:03:16 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/10/14 06:10:06 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,12 +34,9 @@ package org.opencms.xml.containerpage;
 import org.opencms.cache.CmsVfsMemoryObjectCache;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
-import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
-import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsFormatterUtil;
@@ -74,7 +71,7 @@ import org.apache.commons.collections.Transformer;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 7.6 
  */
@@ -303,12 +300,6 @@ public class CmsConfigurationParser {
      */
     public void processFile(CmsObject cms, CmsResource config) throws CmsException {
 
-        if (config.getTypeId() != CmsResourceTypeXmlContainerPage.CONFIGURATION_TYPE_ID) {
-            throw new CmsIllegalStateException(Messages.get().container(
-                Messages.ERR_CONFIG_WRONG_TYPE_2,
-                CmsPropertyDefinition.PROPERTY_ADE_CNTPAGE_CONFIG,
-                cms.getSitePath(config)));
-        }
         CmsFile configFile = cms.readFile(config);
         I_CmsXmlDocument content = CmsXmlContentFactory.unmarshal(cms, configFile);
         parseConfiguration(cms, content);
