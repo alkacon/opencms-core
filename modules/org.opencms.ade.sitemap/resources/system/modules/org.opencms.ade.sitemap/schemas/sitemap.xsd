@@ -29,7 +29,7 @@
 				<property name="test1" type="string" widget="string" default=""/>
 				<property name="test2" type="vfslist" widget="gallery" default=""/>
 				<property name="test3" type="vfslist" widget="string" default="" />
-				<property name="navigation" type="string" widget="checkbox" default="false" widget-config="true"/>
+				<property name="navigation" nice-name="Navigation" type="string" widget="select" widget-config="true:Show in navigation|false:Hide from navigation"/>
 
 				<!-- TODO: should not we treat this properties separately?? -->
 				<!-- do *NOT* touch these properties -->
