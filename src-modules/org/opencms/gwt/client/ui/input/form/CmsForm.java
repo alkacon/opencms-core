@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/form/Attic/CmsForm.java,v $
- * Date   : $Date: 2010/10/11 06:40:56 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2010/10/15 13:30:53 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -83,7 +83,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 8.0.0
  * 
@@ -521,6 +521,26 @@ public class CmsForm extends Composite {
     protected Panel getPanel(boolean advanced) {
 
         return advanced ? m_advancedTab : m_basicTab;
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.Widget#onLoad()
+     */
+    @Override
+    protected void onLoad() {
+
+        removeAdvancedTabIfEmpty();
+    }
+
+    /**
+     * Removes the "advanced" tab if it's empty.<p>
+     */
+    protected void removeAdvancedTabIfEmpty() {
+
+        if (m_advancedTab.getWidgetCount() == 0) {
+            m_panel.removeTab(1);
+        }
+
     }
 
     /**

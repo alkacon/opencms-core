@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsTabbedPanel.java,v $
- * Date   : $Date: 2010/05/21 14:27:40 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/10/15 13:30:53 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 8.0.0
  * 
@@ -79,7 +79,11 @@ public class CmsTabbedPanel<E extends Widget> extends Composite {
         /** Property name. */
         private int m_barHeight;
 
-        /** Constructor.<p> */
+        /** 
+         * Constructor.<p>
+         * 
+         * @param barHeight the height of the bar
+         */
         private CmsTabLayout(int barHeight) {
 
             m_barHeight = barHeight;
@@ -276,6 +280,16 @@ public class CmsTabbedPanel<E extends Widget> extends Composite {
     public Iterator<E> iterator() {
 
         return (Iterator<E>)m_tabPanel.iterator();
+    }
+
+    /**
+     * Removes the tab with the given index.<p>
+     * 
+     * @param tabIndex the index of the tab which should be removed 
+     */
+    public void removeTab(int tabIndex) {
+
+        m_tabPanel.remove(tabIndex);
     }
 
     /**
