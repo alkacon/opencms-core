@@ -1,0 +1,32 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+	<xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.containerpage/schemas/container_element.xsd"/>
+		
+	<xsd:element name="AlkaconContainers" type="OpenCmsAlkaconContainers"/>
+	
+	<xsd:complexType name="OpenCmsAlkaconContainers">
+		<xsd:sequence>
+			<xsd:element name="AlkaconContainer" type="OpenCmsAlkaconContainer" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsAlkaconContainer">
+		<xsd:sequence>
+			<xsd:element name="Name" type="OpenCmsString" minOccurs="1" maxOccurs="1" />
+			<xsd:element name="Type" type="OpenCmsString" minOccurs="1" maxOccurs="1" />
+			<xsd:element name="Elements" type="OpenCmsAlkaconContainerElement" minOccurs="0" maxOccurs="unbounded" />
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>
+	</xsd:complexType>
+
+	<xsd:annotation>
+		<xsd:appinfo>
+			<resourcebundle name="org.opencms.xml.containerpage.messages"/>
+			<validationrules>
+				<rule element="Name" regex=".+" type="error" message="%(key.err.name.notempty)" />
+				<rule element="Type" regex=".+" type="error" message="%(key.err.type.notempty)" />
+			</validationrules>
+		</xsd:appinfo>
+	</xsd:annotation>  
+</xsd:schema>

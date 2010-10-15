@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/Attic/CmsSitemapLinkStrategyHandler.java,v $
- * Date   : $Date: 2010/10/12 15:11:02 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/10/15 08:26:04 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Ruediger Kurz
  *
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
  */
@@ -112,7 +112,7 @@ public class CmsSitemapLinkStrategyHandler extends A_CmsLinkStrategyHandler {
                     if (siteRoot != null) {
                         cms.getRequestContext().setSiteRoot(siteRoot);
                     }
-                    if (exportname != null) {
+                    if ((exportname != null) && sitemapEntry.isSitemap()) {
                         // if an export name was found replace the site root with the found export name
                         rfsName = CmsStringUtil.joinPaths("/" + exportname + "/" + sitemapEntry.getSitePath(cms));
                     } else {

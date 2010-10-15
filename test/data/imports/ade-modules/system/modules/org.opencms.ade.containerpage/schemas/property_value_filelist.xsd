@@ -1,0 +1,26 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+		
+	<xsd:element name="AlkaconVfsFileLists" type="OpenCmsAlkaconVfsFileLists"/>
+	
+	<xsd:complexType name="OpenCmsAlkaconVfsFileLists">
+		<xsd:sequence>
+			<xsd:element name="AlkaconVfsFileList" type="OpenCmsAlkaconVfsFileList" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsAlkaconVfsFileList">
+		<xsd:sequence>
+			<xsd:element name="Uri" type="OpenCmsVfsFile" minOccurs="1" maxOccurs="unbounded" />
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>
+	</xsd:complexType>
+
+	<xsd:annotation>
+		<xsd:appinfo>
+			<resourcebundle name="org.opencms.xml.containerpage.messages"/>
+		</xsd:appinfo>
+
+	</xsd:annotation>  
+</xsd:schema>

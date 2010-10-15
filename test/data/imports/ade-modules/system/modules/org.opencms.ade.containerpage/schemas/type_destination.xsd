@@ -1,0 +1,28 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+    <xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd" />
+ 
+    <xsd:element name="ADETypeDestinations" type="OpenCmsADETypeDestinations" />
+    
+    <xsd:complexType name="OpenCmsADETypeDestinations">
+        <xsd:sequence>
+            <xsd:element name="ADETypeDestination" type="OpenCmsADETypeDestination" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+    </xsd:complexType>
+    
+    <xsd:complexType name="OpenCmsADETypeDestination">
+        <xsd:sequence>    
+            <xsd:element name="Folder" type="OpenCmsVfsFile" minOccurs="1" maxOccurs="1" />
+            <xsd:element name="Pattern" type="OpenCmsString" minOccurs="1" maxOccurs="1" />
+        </xsd:sequence>
+        <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
+    </xsd:complexType>
+    
+    <xsd:annotation>
+        <xsd:appinfo>
+			<resourcebundle name="org.opencms.xml.containerpage.messages"/>
+			<relations>
+				<relation element="Folder" type="strong" invalidate="false" />
+			</relations>
+        </xsd:appinfo>
+    </xsd:annotation>
+</xsd:schema>

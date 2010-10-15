@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Contents xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://sites/default/_config/content.xsd">
+  <Content language="en">
+    <Title><![CDATA[Sample content]]></Title>
+    <Text name="Text0">
+      <links/>
+      <content><![CDATA[<p>This is the content text</p>]]></content>
+    </Text>
+    <Release>1286471160000</Release>
+    <Author><![CDATA[Au Thor]]></Author>
+  </Content>
+</Contents>

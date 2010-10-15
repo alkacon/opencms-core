@@ -1,0 +1,26 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+    <xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd" />
+    <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.containerpage/schemas/type.xsd" />
+    <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.containerpage/schemas/field.xsd" />
+    
+    <xsd:element name="ADETypeConfigurations" type="OpenCmsADETypeConfigurations" />
+
+    <xsd:complexType name="OpenCmsADETypeConfigurations">
+        <xsd:sequence>
+            <xsd:element name="ADETypeConfiguration" type="OpenCmsADETypeConfiguration" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+    </xsd:complexType>
+    
+    <xsd:complexType name="OpenCmsADETypeConfiguration">
+        <xsd:sequence>
+            <xsd:element name="ADEType" type="OpenCmsADEType" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+        <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
+    </xsd:complexType>
+    
+    <xsd:annotation>
+        <xsd:appinfo>
+			<resourcebundle name="org.opencms.xml.containerpage.messages"/>
+        </xsd:appinfo>
+    </xsd:annotation>
+</xsd:schema>

@@ -7,8 +7,8 @@ echo on
 # Login the Admin user
 login Admin admin
 
-# Create the temp file project
-createTempfileProject
+# Create the temp file project (is not nessecary because the base script already does this)
+# createTempfileProject
 
 # Switch to the setup project
 setCurrentProject "tempFileProject"

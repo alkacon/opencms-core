@@ -1,0 +1,510 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<export>
+	<info>
+		<creator>Admin</creator>
+		<opencms_version>7.9.2</opencms_version>
+		<createdate>Thu, 14 Oct 2010 11:49:13 GMT</createdate>
+		<infoproject>Offline</infoproject>
+		<export_version>7</export_version>
+	</info>
+	<files>
+		<file>
+			<destination>sites</destination>
+			<type>folder</type>
+			<uuidstructure>2864da32-d5e1-11df-bae7-edac56888092</uuidstructure>
+			<datelastmodified>Tue, 12 Oct 2010 09:14:46 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 12 Oct 2010 09:14:46 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/default</destination>
+			<type>folder</type>
+			<uuidstructure>28699524-d5e1-11df-bae7-edac56888092</uuidstructure>
+			<datelastmodified>Thu, 14 Oct 2010 08:36:41 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 12 Oct 2010 09:14:46 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>ade.cntpage.config</name>
+					<value><![CDATA[/_config/restype.config]]></value>
+				</property>
+				<property>
+					<name>ade.sitemap</name>
+					<value><![CDATA[/_config/sitemap]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/_config/template.jsp]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>GROUP.Users</uuidprincipal>
+					<flags>34</flags>
+					<permissionset>
+						<allowed>7</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<destination>sites/default/_config</destination>
+			<type>folder</type>
+			<uuidstructure>ef618ae7-d6a1-11df-869e-edac56888092</uuidstructure>
+			<datelastmodified>Wed, 13 Oct 2010 08:14:43 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 13 Oct 2010 08:14:43 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/_config/content.xsd</source>
+			<destination>sites/default/_config/content.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>3f849d80-d61f-11df-bd93-edac56888092</uuidstructure>
+			<uuidresource>3f849d81-d61f-11df-bd93-edac56888092</uuidresource>
+			<datelastmodified>Wed, 13 Oct 2010 09:03:28 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 12 Oct 2010 16:39:14 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[XSD for test content]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/_config/formatter.jsp</source>
+			<destination>sites/default/_config/formatter.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>a164013e-d61f-11df-bd93-edac56888092</uuidstructure>
+			<uuidresource>a164013f-d61f-11df-bd93-edac56888092</uuidresource>
+			<datelastmodified>Wed, 13 Oct 2010 09:03:17 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 12 Oct 2010 16:41:58 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Formatter for test content]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/_config/restype.config</source>
+			<destination>sites/default/_config/restype.config</destination>
+			<type>containerpage_config</type>
+			<uuidstructure>8074bb9a-d622-11df-bd93-edac56888092</uuidstructure>
+			<uuidresource>8074bb9b-d622-11df-bd93-edac56888092</uuidresource>
+			<datelastmodified>Wed, 13 Oct 2010 09:07:49 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 12 Oct 2010 17:02:31 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Resource Type Configuration]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/_config/sitemap</source>
+			<destination>sites/default/_config/sitemap</destination>
+			<type>sitemap</type>
+			<uuidstructure>dab597a6-d6b6-11df-9af7-edac56888092</uuidstructure>
+			<uuidresource>dab597a7-d6b6-11df-9af7-edac56888092</uuidresource>
+			<datelastmodified>Wed, 13 Oct 2010 11:04:46 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 13 Oct 2010 10:44:28 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>ade.cntpage.config</name>
+					<value><![CDATA[/_config/sitemap_restype.config]]></value>
+				</property>
+				<property>
+					<name>template-elements</name>
+					<value><![CDATA[/system/modules/org.opencms.ade.sitemap/sitemap.jsp]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/_config/sitemap_exportname</source>
+			<destination>sites/default/_config/sitemap_exportname</destination>
+			<type>sitemap</type>
+			<uuidstructure>ce6a13b2-d6bf-11df-9af7-edac56888092</uuidstructure>
+			<uuidresource>ce6a13b3-d6bf-11df-9af7-edac56888092</uuidresource>
+			<datelastmodified>Wed, 13 Oct 2010 11:49:02 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 13 Oct 2010 11:48:33 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>ade.cntpage.config</name>
+					<value><![CDATA[/_config/sitemap_restype.config_exportname]]></value>
+				</property>
+				<property>
+					<name>template-elements</name>
+					<value><![CDATA[/system/modules/org.opencms.ade.sitemap/sitemap.jsp]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/_config/sitemap_restype.config</source>
+			<destination>sites/default/_config/sitemap_restype.config</destination>
+			<type>sitemap_config</type>
+			<uuidstructure>1e5587e8-d788-11df-bdc1-edac56888092</uuidstructure>
+			<uuidresource>1e5587e9-d788-11df-bdc1-edac56888092</uuidresource>
+			<datelastmodified>Thu, 14 Oct 2010 11:43:57 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 14 Oct 2010 11:42:26 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/_config/sitemap_restype.config_exportname</source>
+			<destination>sites/default/_config/sitemap_restype.config_exportname</destination>
+			<type>sitemap_config</type>
+			<uuidstructure>2c5758aa-d788-11df-bdc1-edac56888092</uuidstructure>
+			<uuidresource>2c5758ab-d788-11df-bdc1-edac56888092</uuidresource>
+			<datelastmodified>Thu, 14 Oct 2010 11:45:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 14 Oct 2010 11:42:50 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/_config/template.jsp</source>
+			<destination>sites/default/_config/template.jsp</destination>
+			<type>containerpage_template</type>
+			<uuidstructure>95dd7ef6-d621-11df-bd93-edac56888092</uuidstructure>
+			<uuidresource>95dd7ef7-d621-11df-bd93-edac56888092</uuidresource>
+			<datelastmodified>Wed, 13 Oct 2010 09:02:52 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 12 Oct 2010 16:55:58 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Main test template]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/default/_config/new</destination>
+			<type>folder</type>
+			<uuidstructure>c414f63d-d6a5-11df-869e-edac56888092</uuidstructure>
+			<datelastmodified>Wed, 13 Oct 2010 08:42:09 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 13 Oct 2010 08:42:09 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/_config/new/content.xml</source>
+			<destination>sites/default/_config/new/content.xml</destination>
+			<type>xmlcontent</type>
+			<uuidstructure>5d6c4142-d61f-11df-bd93-edac56888092</uuidstructure>
+			<uuidresource>5d6c4143-d61f-11df-bd93-edac56888092</uuidresource>
+			<datelastmodified>Wed, 13 Oct 2010 09:03:44 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 12 Oct 2010 16:40:04 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Test content]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/default/cntpages</destination>
+			<type>folder</type>
+			<uuidstructure>d577df5e-d61e-11df-bd93-edac56888092</uuidstructure>
+			<datelastmodified>Wed, 13 Oct 2010 09:13:55 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 12 Oct 2010 16:36:16 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/cntpages/index.html</source>
+			<destination>sites/default/cntpages/index.html</destination>
+			<type>containerpage</type>
+			<uuidstructure>8a9ce661-d620-11df-bd93-edac56888092</uuidstructure>
+			<uuidresource>8a9ce662-d620-11df-bd93-edac56888092</uuidresource>
+			<datelastmodified>Wed, 13 Oct 2010 09:04:09 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 12 Oct 2010 16:48:29 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Test container page]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/cntpages/page_0001.html</source>
+			<destination>sites/default/cntpages/page_0001.html</destination>
+			<type>containerpage</type>
+			<uuidstructure>2aeedabb-d6b7-11df-9af7-edac56888092</uuidstructure>
+			<uuidresource>2aeedabc-d6b7-11df-9af7-edac56888092</uuidresource>
+			<datelastmodified>Wed, 13 Oct 2010 10:46:43 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 13 Oct 2010 10:46:43 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[item_1]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/cntpages/page_0002.html</source>
+			<destination>sites/default/cntpages/page_0002.html</destination>
+			<type>containerpage</type>
+			<uuidstructure>0e9f6dc5-d6b8-11df-9af7-edac56888092</uuidstructure>
+			<uuidresource>0e9f6dc6-d6b8-11df-9af7-edac56888092</uuidresource>
+			<datelastmodified>Wed, 13 Oct 2010 10:53:05 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 13 Oct 2010 10:53:05 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[item_2]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/cntpages/page_0003.html</source>
+			<destination>sites/default/cntpages/page_0003.html</destination>
+			<type>containerpage</type>
+			<uuidstructure>0eb76299-d6b8-11df-9af7-edac56888092</uuidstructure>
+			<uuidresource>0eb7629a-d6b8-11df-9af7-edac56888092</uuidresource>
+			<datelastmodified>Wed, 13 Oct 2010 10:53:05 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 13 Oct 2010 10:53:05 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[item_3]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/cntpages/page_0004.html</source>
+			<destination>sites/default/cntpages/page_0004.html</destination>
+			<type>containerpage</type>
+			<uuidstructure>0eca756d-d6b8-11df-9af7-edac56888092</uuidstructure>
+			<uuidresource>0eca756e-d6b8-11df-9af7-edac56888092</uuidresource>
+			<datelastmodified>Wed, 13 Oct 2010 10:53:05 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 13 Oct 2010 10:53:05 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[item_1]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/cntpages/page_0005.html</source>
+			<destination>sites/default/cntpages/page_0005.html</destination>
+			<type>containerpage</type>
+			<uuidstructure>0edd8841-d6b8-11df-9af7-edac56888092</uuidstructure>
+			<uuidresource>0edd8842-d6b8-11df-9af7-edac56888092</uuidresource>
+			<datelastmodified>Wed, 13 Oct 2010 10:53:05 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 13 Oct 2010 10:53:05 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[item_2]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/cntpages/page_0006.html</source>
+			<destination>sites/default/cntpages/page_0006.html</destination>
+			<type>containerpage</type>
+			<uuidstructure>0ef55605-d6b8-11df-9af7-edac56888092</uuidstructure>
+			<uuidresource>0ef55606-d6b8-11df-9af7-edac56888092</uuidresource>
+			<datelastmodified>Wed, 13 Oct 2010 10:53:05 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 13 Oct 2010 10:53:05 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[item_4]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/cntpages/page_0007.html</source>
+			<destination>sites/default/cntpages/page_0007.html</destination>
+			<type>containerpage</type>
+			<uuidstructure>0f0868d9-d6b8-11df-9af7-edac56888092</uuidstructure>
+			<uuidresource>0f0868da-d6b8-11df-9af7-edac56888092</uuidresource>
+			<datelastmodified>Wed, 13 Oct 2010 10:53:05 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 13 Oct 2010 10:53:05 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[item_5]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/cntpages/page_0008.html</source>
+			<destination>sites/default/cntpages/page_0008.html</destination>
+			<type>containerpage</type>
+			<uuidstructure>0f1decad-d6b8-11df-9af7-edac56888092</uuidstructure>
+			<uuidresource>0f1decae-d6b8-11df-9af7-edac56888092</uuidresource>
+			<datelastmodified>Wed, 13 Oct 2010 10:53:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 13 Oct 2010 10:53:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[item_3]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/default/contents</destination>
+			<type>folder</type>
+			<uuidstructure>d560e555-d6a1-11df-869e-edac56888092</uuidstructure>
+			<datelastmodified>Wed, 13 Oct 2010 10:54:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 13 Oct 2010 08:14:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>ade.sitemap.detailview</name>
+					<value><![CDATA[/item_2/item_1/]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/contents/content_0001.xml</source>
+			<destination>sites/default/contents/content_0001.xml</destination>
+			<type>xmlcontent</type>
+			<uuidstructure>c611b7c6-d6a2-11df-869e-edac56888092</uuidstructure>
+			<uuidresource>c611b7c7-d6a2-11df-869e-edac56888092</uuidresource>
+			<datelastmodified>Wed, 13 Oct 2010 08:52:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 13 Oct 2010 08:20:44 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/contents/content_0002.xml</source>
+			<destination>sites/default/contents/content_0002.xml</destination>
+			<type>xmlcontent</type>
+			<uuidstructure>d2c81cd0-d6a2-11df-869e-edac56888092</uuidstructure>
+			<uuidresource>d2c81cd1-d6a2-11df-869e-edac56888092</uuidresource>
+			<datelastmodified>Wed, 13 Oct 2010 08:52:21 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 13 Oct 2010 08:21:05 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+	</files>
+</export>

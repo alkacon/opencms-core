@@ -1,0 +1,37 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+	<xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.containerpage/schemas/container_element_property.xsd"/>
+		
+	<xsd:element name="AlkaconContainerElements" type="OpenCmsAlkaconContainerElements"/>
+	
+	<xsd:complexType name="OpenCmsAlkaconContainerElements">
+		<xsd:sequence>
+			<xsd:element name="AlkaconContainerElement" type="OpenCmsAlkaconContainerElement" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsAlkaconContainerElement">
+		<xsd:sequence>
+			<xsd:element name="Uri" type="OpenCmsVfsFile" minOccurs="1" maxOccurs="1" />
+			<xsd:element name="Formatter" type="OpenCmsVfsFile" minOccurs="1" maxOccurs="1" />
+			<xsd:element name="Properties" type="OpenCmsAlkaconContainerElementProperty" minOccurs="0" maxOccurs="unbounded" />
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>
+	</xsd:complexType>
+
+	<xsd:annotation>
+		<xsd:appinfo>
+			<resourcebundle name="org.opencms.xml.containerpage.messages"/>
+			<validationrules>
+				<rule element="Uri" regex=".+" type="error" message="%(key.err.uri.notempty)" />
+				<rule element="Formatter" regex=".+" type="error" message="%(key.err.formatter.notempty)" />
+			</validationrules>
+			<relations>
+				<relation element="Uri" type="strong" invalidate="false" />
+				<relation element="Formatter" type="strong" invalidate="false" />
+			</relations>
+		</xsd:appinfo>
+
+	</xsd:annotation>  
+</xsd:schema>

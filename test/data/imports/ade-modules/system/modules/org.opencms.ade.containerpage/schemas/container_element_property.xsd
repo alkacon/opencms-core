@@ -1,0 +1,27 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+	<xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.containerpage/schemas/property_value_choice.xsd"/>
+		
+	<xsd:element name="AlkaconContainerElementProperties" type="OpenCmsAlkaconContainerElementProperties"/>
+	
+	<xsd:complexType name="OpenCmsAlkaconContainerElementProperties">
+		<xsd:sequence>
+			<xsd:element name="AlkaconContainerElementProperty" type="OpenCmsAlkaconContainerElementProperty" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsAlkaconContainerElementProperty">
+		<xsd:sequence>
+			<xsd:element name="Name" type="OpenCmsString" minOccurs="1" maxOccurs="1" />
+			<xsd:element name="Value" type="OpenCmsAlkaconPropertyValueChoice" minOccurs="0" maxOccurs="1" />
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>
+	</xsd:complexType>
+
+	<xsd:annotation>
+		<xsd:appinfo>
+			<resourcebundle name="org.opencms.xml.containerpage.messages"/>
+		</xsd:appinfo>
+	</xsd:annotation>  
+</xsd:schema>
