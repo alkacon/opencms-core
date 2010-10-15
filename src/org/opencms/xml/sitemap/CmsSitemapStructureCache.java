@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapStructureCache.java,v $
- * Date   : $Date: 2010/10/12 15:02:41 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2010/10/15 12:50:04 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -75,7 +75,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Moossen
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 8.0.0
  */
@@ -807,6 +807,13 @@ public class CmsSitemapStructureCache extends CmsVfsCache implements I_CmsSitema
 
         // get sub-entries
         List<CmsInternalSitemapEntry> subEntries = getSubEntries(cms, locale, entry);
+        CmsPropertyInheritanceState nextState = myPropertyState;
+        if (subEntries.size() > 0) {
+            CmsInternalSitemapEntry firstEntry = subEntries.get(0);
+            if (firstEntry.getPropertyDefinitions() != entry.getPropertyDefinitions()) {
+                nextState = nextState.update(firstEntry.getPropertyDefinitions());
+            }
+        }
 
         CmsSimplePropertyValue sitemapProp = entry.getNewProperties().get(CmsSitemapManager.Property.sitemap.name());
         String sitemapUuid = sitemapProp == null ? null : sitemapProp.getOwnValue();
@@ -827,7 +834,7 @@ public class CmsSitemapStructureCache extends CmsVfsCache implements I_CmsSitema
         for (int position = 0; position < size; position++) {
             // visit sub-entries
             CmsInternalSitemapEntry subEntry = subEntries.get(position);
-            visitEntry(cms, subEntry, locale, currentEntryPoint, false, position, myPropertyState);
+            visitEntry(cms, subEntry, locale, currentEntryPoint, false, position, nextState);
         }
     }
 

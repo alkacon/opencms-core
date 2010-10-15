@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/properties/Attic/CmsComputedPropertyValue.java,v $
- * Date   : $Date: 2010/10/14 13:06:51 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/10/15 12:50:04 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import java.io.Serializable;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -145,6 +145,20 @@ public class CmsComputedPropertyValue implements Serializable {
 
         CmsSourcedValue ownObj = new CmsSourcedValue(own, source);
         CmsSourcedValue inheritObj = new CmsSourcedValue(inherit, source);
+        return new CmsComputedPropertyValue(ownObj, inheritObj);
+    }
+
+    /**
+     * Creates a computed property value which represents a default value.<p>
+     * 
+     * @param value the default value
+     * 
+     * @return a computed property value which represents the default value 
+     */
+    public static CmsComputedPropertyValue createDefaultValue(String value) {
+
+        CmsSourcedValue ownObj = new CmsSourcedValue(value, "[default]", true);
+        CmsSourcedValue inheritObj = new CmsSourcedValue(value, "[default]", true);
         return new CmsComputedPropertyValue(ownObj, inheritObj);
     }
 

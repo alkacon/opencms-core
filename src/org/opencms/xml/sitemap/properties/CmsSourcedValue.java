@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/properties/Attic/CmsSourcedValue.java,v $
- * Date   : $Date: 2010/10/14 13:06:51 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/10/15 12:50:04 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import java.io.Serializable;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  * 
@@ -54,6 +54,9 @@ public class CmsSourcedValue implements Serializable {
 
     /** id for serialization. */
     private static final long serialVersionUID = 6967322591643126376L;
+
+    /** Flag which indicates whether this is a default value. */
+    private boolean m_isDefault;
 
     /** The source of the value. */
     private String m_source;
@@ -72,6 +75,22 @@ public class CmsSourcedValue implements Serializable {
         super();
         m_value = value;
         m_source = source;
+        m_isDefault = false;
+    }
+
+    /**
+     * Creates a new sourced value.<p>
+     * 
+     * @param value the actual value 
+     * @param source the source of the value 
+     * @param isDefault flag which indicates whether this is a default value 
+     */
+    public CmsSourcedValue(String value, String source, boolean isDefault) {
+
+        super();
+        m_value = value;
+        m_source = source;
+        m_isDefault = isDefault;
     }
 
     /**
@@ -84,19 +103,52 @@ public class CmsSourcedValue implements Serializable {
     }
 
     /**
-     * Returns the second of two values if it's not null, else the first value.<p>
+     * Given two sourced values, this method will return the second one if it "overrides" the first one,
+     * else the first one will be returned.<p>
+     * 
+     * @see CmsSourcedValue#shouldOverride(CmsSourcedValue, CmsSourcedValue)
      * 
      * @param a the first value 
      * @param b the second value 
      * 
-     * @return b if it isn't null, else a 
+     * @return the second value if it overrides the first one, else the first value 
      */
     public static CmsSourcedValue overrideValue(CmsSourcedValue a, CmsSourcedValue b) {
 
-        if ((b != null) && (b.m_value != null)) {
+        if (shouldOverride(a, b)) {
             return b;
         }
         return a;
+    }
+
+    /**
+     * Returns true if the second parameter should override the first one.<p>
+     * 
+     * Any value should override a null value.<p>
+     * A non-default value should override any other value.<p>
+     * A default value should override another default value.<p>
+     * 
+     * @param a the first value 
+     * @param b the second value 
+     * 
+     * @return true if the second value should override the first value 
+     */
+    private static boolean shouldOverride(CmsSourcedValue a, CmsSourcedValue b) {
+
+        if ((b == null) || (b.m_value == null)) {
+            return false;
+        }
+
+        if ((a == null) || (a.m_value == null)) {
+            return true;
+        }
+
+        // neither a nor b are null 
+        if (!b.m_isDefault) {
+            return true;
+        }
+        // b is a default value and a is not null  
+        return a.m_isDefault;
     }
 
     /**

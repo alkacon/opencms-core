@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/properties/Attic/CmsPropertyInheritanceState.java,v $
- * Date   : $Date: 2010/10/07 13:49:12 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/10/15 12:50:04 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import java.util.Set;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -76,24 +76,35 @@ public class CmsPropertyInheritanceState {
     }
 
     /**
+     * Creates a new property inheritance state and also uses the property configuration to initialize the property values.<p>
+     * 
+     * @param initialProps the initial properties 
+     * @param propertyConfiguration the property configuration 
+     * @param updateDefaults if true, the property configuration will be used to initialize the property values 
+     */
+    public CmsPropertyInheritanceState(
+        Map<String, CmsComputedPropertyValue> initialProps,
+        Map<String, CmsXmlContentProperty> propertyConfiguration,
+        boolean updateDefaults) {
+
+        m_propertyConfig = propertyConfiguration;
+        if (updateDefaults) {
+            m_currentProperties = combinePropertyMaps(
+                initialProps,
+                getComputedPropertyValuesFromPropertyDefinitions(propertyConfiguration));
+        } else {
+            m_currentProperties = initialProps;
+        }
+    }
+
+    /**
      * Creates an empty property inheritance state.<p>
      * 
      * @param propertyConfiguration the property configuration 
      */
     public CmsPropertyInheritanceState(Map<String, CmsXmlContentProperty> propertyConfiguration) {
 
-        m_currentProperties = new HashMap<String, CmsComputedPropertyValue>();
-        for (Map.Entry<String, CmsXmlContentProperty> entry : propertyConfiguration.entrySet()) {
-            String key = entry.getKey();
-            CmsXmlContentProperty propDef = entry.getValue();
-            if (propDef.getDefault() != null) {
-                CmsComputedPropertyValue propValue = CmsComputedPropertyValue.create(
-                    propDef.getDefault(),
-                    propDef.getDefault(),
-                    "[default]");
-                m_currentProperties.put(key, propValue);
-            }
-        }
+        m_currentProperties = getComputedPropertyValuesFromPropertyDefinitions(propertyConfiguration);
         m_propertyConfig = propertyConfiguration;
     }
 
@@ -133,6 +144,28 @@ public class CmsPropertyInheritanceState {
     }
 
     /**
+     * Converts a property definition map to a map containing the default property values configured in the property definitions.<p>
+     *   
+     * @param propDefs the property definitions 
+     * 
+     * @return a map of default property values 
+     */
+    public static Map<String, CmsComputedPropertyValue> getComputedPropertyValuesFromPropertyDefinitions(
+        Map<String, CmsXmlContentProperty> propDefs) {
+
+        Map<String, CmsComputedPropertyValue> result = new HashMap<String, CmsComputedPropertyValue>();
+        for (Map.Entry<String, CmsXmlContentProperty> entry : propDefs.entrySet()) {
+            String key = entry.getKey();
+            CmsXmlContentProperty propDef = entry.getValue();
+            if (propDef.getDefault() != null) {
+                CmsComputedPropertyValue propValue = CmsComputedPropertyValue.createDefaultValue(propDef.getDefault());
+                result.put(key, propValue);
+            }
+        }
+        return result;
+    }
+
+    /**
      * Returns the currently inherited properties of the state.<p>
      * 
      * @return the map of inherited properties 
@@ -143,39 +176,90 @@ public class CmsPropertyInheritanceState {
     }
 
     /**
-     * Creates a new property inheritance state based on the current state and a new set of properties.<p>
+     * Creates a new property inheritance state by updating the properties of the current state with a new set of 
+     * properties.<p>
      * 
-     * This method does not modify the original state.<p>
-     * 
-     * @param ownProps a map of properties which should be updated
-     * @param location the location where the properties come from
+     * @param ownProps the properties which should be used to update the property state
      *  
-     * @return an updated property inheritance state 
+     * @param location the location from which ownProps originates
+     * 
+     * @return the updated property state  
      */
     public CmsPropertyInheritanceState update(Map<String, CmsSimplePropertyValue> ownProps, String location) {
 
+        Map<String, CmsComputedPropertyValue> ownComputedProps = createComputedPropertyMap(ownProps, location);
+        Map<String, CmsComputedPropertyValue> resultProps = combinePropertyMaps(m_currentProperties, ownComputedProps);
+        return new CmsPropertyInheritanceState(resultProps, m_propertyConfig);
+    }
+
+    /**
+     * Creates a new property inheritance state by updating the property definitions of this state with a new set of property 
+     * definitions.<p>
+     * 
+     * @param propDefs the property definitions with which the state should be updated
+     *  
+     * @return the new property inheritance state 
+     */
+    public CmsPropertyInheritanceState update(Map<String, CmsXmlContentProperty> propDefs) {
+
+        Map<String, CmsComputedPropertyValue> defaults = getComputedPropertyValuesFromPropertyDefinitions(propDefs);
+        Map<String, CmsComputedPropertyValue> result = combinePropertyMaps(m_currentProperties, defaults);
+        return new CmsPropertyInheritanceState(result, propDefs);
+    }
+
+    /** 
+     * Combines a parent map and a child map of property values for inheritance.<p>
+     * 
+     * @param parent the map of properties of the parent 
+     * @param child the map of properties of the child 
+     * 
+     * @return the combined property map 
+     */
+    protected Map<String, CmsComputedPropertyValue> combinePropertyMaps(
+        Map<String, CmsComputedPropertyValue> parent,
+        Map<String, CmsComputedPropertyValue> child) {
+
         Map<String, CmsComputedPropertyValue> result = new HashMap<String, CmsComputedPropertyValue>();
         Set<String> keys = new HashSet<String>();
-
-        // Iterate over all properties which are either in the current state or in ownProps 
-        keys.addAll(m_currentProperties.keySet());
-        keys.addAll(ownProps.keySet());
+        keys.addAll(parent.keySet());
+        keys.addAll(child.keySet());
         for (String propName : keys) {
-            CmsSimplePropertyValue ownProp = ownProps.get(propName);
+            CmsComputedPropertyValue childProp = child.get(propName);
             if (shouldInherit(propName)) {
-                CmsComputedPropertyValue parentValue = m_currentProperties.get(propName);
-                CmsComputedPropertyValue childValue = CmsComputedPropertyValue.create(ownProp, location);
-                CmsComputedPropertyValue combinedValue = combineParentAndChildValues(parentValue, childValue);
+                CmsComputedPropertyValue parentValue = parent.get(propName);
+                CmsComputedPropertyValue combinedValue = combineParentAndChildValues(parentValue, childProp);
                 if (combinedValue != null) {
                     result.put(propName, combinedValue);
                 }
             } else {
-                if (ownProp != null) {
-                    result.put(propName, CmsComputedPropertyValue.create(ownProp, location));
+                if (childProp != null) {
+                    result.put(propName, childProp);
                 }
             }
         }
-        return new CmsPropertyInheritanceState(result, m_propertyConfig);
+        return result;
+    }
+
+    /**
+     * Creates a map of {@link CmsComputedPropertyValue} objects from a map of {@link CmsSimplePropertyValue} objects.<p>
+     * 
+     * @param simpleProps a map from strings to simple property values 
+     * 
+     * @param location the location to put into the {@link CmsComputedPropertyValue} objects
+     * 
+     * @return a map of computed property values
+     */
+    protected Map<String, CmsComputedPropertyValue> createComputedPropertyMap(
+        Map<String, CmsSimplePropertyValue> simpleProps,
+        String location) {
+
+        Map<String, CmsComputedPropertyValue> result = new HashMap<String, CmsComputedPropertyValue>();
+        for (Map.Entry<String, CmsSimplePropertyValue> entry : simpleProps.entrySet()) {
+            String propName = entry.getKey();
+            CmsSimplePropertyValue simpleValue = entry.getValue();
+            result.put(propName, CmsComputedPropertyValue.create(simpleValue, location));
+        }
+        return result;
     }
 
     /**
