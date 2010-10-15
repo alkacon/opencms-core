@@ -1,12 +1,11 @@
-#!/bin/sh
+#!/bin/bash
 # Start script for the OpenCms Shell
 # 
 # Please make sure that "servlet-api.jar" and "jsp-api.jar" are found.
 #
-
 # get path to opencms base directory 
-pushd `dirname $0` > /dev/null
-OPENCMS_BASE=`dirs +0`
+pushd $(dirname "$0") > /dev/null
+OPENCMS_BASE=$(pwd -L)
 popd > /dev/null
 
 # get path to tomcat home 
@@ -34,4 +33,3 @@ for JAR in ${OPENCMS_BASE}/lib/*.jar; do
 done
 
 java -classpath "${OPENCMS_CLASSPATH}:${TOMCAT_CLASSPATH}:classes" org.opencms.main.CmsShell -base="${OPENCMS_BASE}" "$@"
-
