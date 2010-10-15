@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/properties/Attic/CmsComputedPropertyValue.java,v $
- * Date   : $Date: 2010/10/15 12:50:04 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/10/15 13:05:07 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import java.io.Serializable;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -78,41 +78,6 @@ public class CmsComputedPropertyValue implements Serializable {
     protected CmsComputedPropertyValue() {
 
         // do nothing
-    }
-
-    /**
-     * Combines a parent computed property value and a child computed property value into a result computed property value
-     * for the child.<p>
-     *  
-     * @param parentValue the computed property value for the parent 
-     * @param childValue the computed property value for the child 
-     * @return the combined computed property value for the child  
-     */
-    public static CmsComputedPropertyValue combineParentAndChildValues(
-        CmsComputedPropertyValue parentValue,
-        CmsComputedPropertyValue childValue) {
-
-        if ((parentValue == null) && (childValue == null)) {
-            // both are null; we're done 
-            return null;
-        }
-        // only one is null; replace it with a CmsComputedPropertyValue containing nulls 
-        parentValue = normalize(parentValue);
-        childValue = normalize(childValue);
-
-        // computed both components of the result 
-        CmsSourcedValue newOwn = CmsSourcedValue.overrideValue(
-            parentValue.getInheritSourcedValue(),
-            childValue.getOwnSourcedValue());
-        CmsSourcedValue newInherit = CmsSourcedValue.overrideValue(
-            parentValue.getInheritSourcedValue(),
-            childValue.getInheritSourcedValue());
-
-        if ((newOwn == null) && (newInherit == null)) {
-            return null;
-        }
-        CmsComputedPropertyValue result = new CmsComputedPropertyValue(newOwn, newInherit);
-        return result;
     }
 
     /**
