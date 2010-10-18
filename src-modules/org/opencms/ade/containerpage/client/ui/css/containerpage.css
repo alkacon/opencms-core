@@ -64,6 +64,7 @@ ul.clipboardList{
 }
 
 .optionBar{
+	border: 1px solid transparent;
 	position: absolute;
 	top: 2px;
 	right: 2px;

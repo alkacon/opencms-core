@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageDNDController.java,v $
- * Date   : $Date: 2010/10/13 12:53:49 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/10/18 15:09:15 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,7 +69,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -342,8 +342,10 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         }
         if (target != m_initialDropTarget) {
             draggable.getElement().getStyle().setDisplay(Display.BLOCK);
+            CmsDomUtil.showOverlay(draggable.getElement(), true);
         } else {
             draggable.getElement().getStyle().setDisplay(Display.NONE);
+            CmsDomUtil.showOverlay(draggable.getElement(), false);
         }
         return true;
     }
@@ -365,6 +367,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             handler.getPlaceholder().getStyle().setDisplay(Display.NONE);
         }
         draggable.getElement().getStyle().setDisplay(Display.BLOCK);
+        CmsDomUtil.showOverlay(draggable.getElement(), false);
         updateHighlighting();
     }
 

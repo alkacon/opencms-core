@@ -1,8 +1,6 @@
 .dragElement{
 	position: relative;
-	
 }
-
 
 .dragHandle{
 	position: absolute;
@@ -70,25 +68,21 @@
 	body.dragStarted{
 		overflow-y: scroll;
 	}
-
 } @elif user.agent safari {
 	
 	/** Assigned to the body on drag start. */
 	body.dragStarted{
 		overflow-y: scroll;
 	}
-	
 } @elif user.agent opera {
 
 	/** Assigned to the body on drag start. */
 	body.dragStarted{
 		overflow-y: scroll;
 	}
-	
 	.dragPlaceholder{
 		opacity: 0.5;
 	}
-
 } @elif user.agent ie6 {
 	
 	.dragTarget.dragging{
@@ -97,7 +91,6 @@
 	.currentTarget{
 		z-index: 50;
 	}
-	
 } @elif user.agent ie8 {
 
 /** Assigned to the body on drag start. */
@@ -111,6 +104,4 @@
 	.currentTarget{
 		z-index: 50;
 	}
-	
 }
-
