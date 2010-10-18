@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2010/10/15 12:50:04 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2010/10/18 10:05:41 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -83,7 +83,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 8.0.0
  */
@@ -143,7 +143,7 @@ public class CmsSitemapController {
 
         m_hiddenProperties = new HashSet<String>();
         m_hiddenProperties.add(CmsSitemapManager.Property.sitemap.toString());
-        //addPropertyUpdateHandler(new DebugPropertyUpdateHandler());
+
         m_handlerManager = new HandlerManager(this);
     }
 
@@ -729,6 +729,11 @@ public class CmsSitemapController {
      * @return true if the argument is the name of a hidden property
      */
     public boolean isHiddenProperty(String propertyName) {
+
+        if (propertyName.equals("secure") && !m_data.isSecure()) {
+            // "secure" property should not be editable in a site for which no secure server is configured 
+            return true;
+        }
 
         return m_hiddenProperties.contains(propertyName);
     }

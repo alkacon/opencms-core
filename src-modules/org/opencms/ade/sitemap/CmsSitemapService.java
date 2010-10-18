@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsSitemapService.java,v $
- * Date   : $Date: 2010/10/14 09:46:44 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2010/10/18 10:05:41 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,6 +56,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
+import org.opencms.site.CmsSite;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -99,7 +100,7 @@ import org.apache.commons.collections.map.MultiValueMap;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.38 $ 
+ * @version $Revision: 1.39 $ 
  * 
  * @since 8.0.0
  * 
@@ -309,12 +310,20 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
             Map<String, CmsComputedPropertyValue> parentProperties = new HashMap<String, CmsComputedPropertyValue>(
                 entry.getParentComputedProperties());
 
+            String siteRoot = OpenCms.getSiteManager().getSiteRoot(sitemap.getRootPath());
+            String exportName = sitemapMgr.getExportnameForSiteRoot(siteRoot);
+
+            CmsSite site = OpenCms.getSiteManager().getSiteForSiteRoot(siteRoot);
+            boolean isSecure = site.hasSecureServer();
+
             result = new CmsSitemapData(
                 getDefaultTemplate(sitemapUri),
                 getTemplates(),
                 resolvedProps,
                 getClipboardData(),
                 parentProperties,
+                exportName,
+                isSecure,
                 getNoEditReason(cms, getRequest()),
                 isDisplayToolbar(getRequest()),
                 OpenCms.getResourceManager().getResourceType(CmsResourceTypeXmlContainerPage.getStaticTypeName()).getTypeId(),

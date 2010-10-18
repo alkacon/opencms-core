@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItemWidget.java,v $
- * Date   : $Date: 2010/09/06 06:57:10 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2010/10/18 10:05:41 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -76,7 +76,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Tobias Herrmann
  * @author Michael Moossen
  * 
- * @version $Revision: 1.30 $
+ * @version $Revision: 1.31 $
  * 
  * @since 8.0.0
  */
@@ -317,6 +317,14 @@ implements HasMouseOutHandlers, HasClickHandlers, HasMouseOverHandlers, I_CmsTru
     public void addTitleStyleName(String styleName) {
 
         m_title.addStyleName(styleName);
+    }
+
+    /**
+     * Hides the icon of the list item widget.<p>
+     */
+    public void clearIcon() {
+
+        m_iconPanel.setVisible(false);
     }
 
     /**

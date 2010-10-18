@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapTreeItem.java,v $
- * Date   : $Date: 2010/10/07 07:56:35 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2010/10/18 10:05:41 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.29 $ 
  * 
  * @since 8.0.0
  * 
@@ -71,6 +71,18 @@ import com.google.gwt.user.client.ui.Widget;
  * @see org.opencms.ade.sitemap.shared.CmsClientSitemapEntry
  */
 public class CmsSitemapTreeItem extends CmsLazyTreeItem {
+
+    /**
+     * Enum for the type of status icon which should be displayed.<p>
+     */
+    public enum StatusIcon {
+        /** export status icon. */
+        export,
+        /** no status icon. */
+        none,
+        /** secure status icon. */
+        secure
+    }
 
     /** The CSS bundle used by this widget. */
     private static final I_CmsSitemapItemCss CSS = I_CmsLayoutBundle.INSTANCE.sitemapItemCss();
@@ -194,6 +206,23 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
     }
 
     /**
+     * Given the path of a sitemap entry, this method returns the URL which should be displayed to the user.<p>
+     * 
+     * @param sitePath the site path of a sitemap entry 
+     * 
+     * @return the URL which should be displayed to the user
+     */
+    public String getDisplayedUrl(String sitePath) {
+
+        String context = CmsCoreProvider.get().getContext();
+        String exportName = CmsSitemapView.getInstance().getController().getData().getExportName();
+        if (exportName != null) {
+            return CmsStringUtil.joinPaths(CmsResource.getParentFolder(context), exportName, sitePath);
+        }
+        return CmsStringUtil.joinPaths(context, sitePath);
+    }
+
+    /**
      * Returns the original site path, in case this entry has been moved or renamed.<p>
      *
      * @return the original site path
@@ -282,6 +311,27 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
     }
 
     /**
+     * Changes the status icon of the sitemap item.<p>
+     * 
+     * @param status the value representing the status icon 
+     */
+    public void setStatus(StatusIcon status) {
+
+        switch (status) {
+            case export:
+                m_listItemWidget.setIcon(CSS.export());
+                break;
+            case secure:
+                m_listItemWidget.setIcon(CSS.secure());
+                break;
+            case none:
+            default:
+                m_listItemWidget.clearIcon();
+                break;
+        }
+    }
+
+    /**
      * @see com.google.gwt.user.client.ui.UIObject#toString()
      */
     @Override
@@ -321,11 +371,13 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
      */
     public void updateSitePath(String sitePath) {
 
-        if (m_listItemWidget.getSubtitleLabel().equals(sitePath)) {
+        String newSubTitle = getDisplayedUrl(sitePath);
+
+        if (m_listItemWidget.getSubtitleLabel().equals(newSubTitle)) {
             // nothing to do
             return;
         }
-        m_listItemWidget.setSubtitleLabel(sitePath);
+        m_listItemWidget.setSubtitleLabel(newSubTitle);
         String name = getName(sitePath);
         setId(name);
         m_listItemWidget.setAdditionalInfoValue(0, name);
@@ -336,6 +388,7 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
             }
         }
         m_listItemWidget.updateTruncation();
+
     }
 
     /**

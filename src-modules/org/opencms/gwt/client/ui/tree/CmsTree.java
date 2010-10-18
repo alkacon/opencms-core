@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/tree/Attic/CmsTree.java,v $
- * Date   : $Date: 2010/09/14 14:22:47 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/10/18 10:05:41 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import com.google.gwt.user.client.ui.HasAnimation;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -200,6 +200,9 @@ public class CmsTree<I extends CmsTreeItem> extends CmsList<I> implements HasOpe
      * @return the tree entry with the given path, or <code>null</code> if not found
      */
     @SuppressWarnings("unchecked")
+    @Deprecated
+    // method may not work correctly when the tree root has an empty id
+    // TODO: check this
     public I getItemByPath(String path) {
 
         String[] names = CmsStringUtil.splitAsArray(path, "/");

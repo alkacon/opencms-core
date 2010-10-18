@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsSitemapData.java,v $
- * Date   : $Date: 2010/10/07 07:56:35 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/10/18 10:05:41 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0
  */
@@ -63,6 +63,12 @@ public class CmsSitemapData implements IsSerializable {
 
     /** Flag to control the display of the toolbar. */
     private boolean m_displayToolbar;
+
+    /** The export name of the site which contains the sitemap. */
+    private String m_exportName;
+
+    /** A flag which indicates whether the site which contains the sitemap is a secure site. */
+    private boolean m_isSecure;
 
     /** The reason why the current sitemap is not editable. */
     private String m_noEditReason;
@@ -104,6 +110,8 @@ public class CmsSitemapData implements IsSerializable {
      * @param properties the properties
      * @param clipboardData the clipboard data
      * @param parentProperties the root entry's parent's inherited properties 
+     * @param exportName the configured export name for the site which contains the sitemap
+     * @param isSecure true if there is a secure server configuration for the site which contains the sitemap 
      * @param noEditReason the reason why the current sitemap is not editable
      * @param displayToolbar the flag to control the display of the toolbar
      * @param cntPageType the type of the container page resource
@@ -118,6 +126,8 @@ public class CmsSitemapData implements IsSerializable {
         Map<String, CmsXmlContentProperty> properties,
         CmsSitemapClipboardData clipboardData,
         Map<String, CmsComputedPropertyValue> parentProperties,
+        String exportName,
+        boolean isSecure,
         String noEditReason,
         boolean displayToolbar,
         int cntPageType,
@@ -138,6 +148,8 @@ public class CmsSitemapData implements IsSerializable {
         m_root = root;
         m_timestamp = timestamp;
         m_openPath = openPath;
+        m_exportName = exportName;
+        m_isSecure = isSecure;
     }
 
     /**
@@ -168,6 +180,16 @@ public class CmsSitemapData implements IsSerializable {
     public CmsSitemapTemplate getDefaultTemplate() {
 
         return m_defaultTemplate;
+    }
+
+    /**
+     * Returns the export name from the sitemap configuration.<p>
+     *  
+     * @return the export name
+     */
+    public String getExportName() {
+
+        return m_exportName;
     }
 
     /**
@@ -258,6 +280,16 @@ public class CmsSitemapData implements IsSerializable {
     public boolean isDisplayToolbar() {
 
         return m_displayToolbar;
+    }
+
+    /**
+     * Returns true if there is a secure server configured for the site which contains the sitemap.<p>
+     * 
+     * @return true if there is a secure server configured for the site which contains the sitemap 
+     */
+    public boolean isSecure() {
+
+        return m_isSecure;
     }
 
     /**

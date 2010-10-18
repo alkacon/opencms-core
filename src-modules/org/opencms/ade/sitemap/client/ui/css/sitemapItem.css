@@ -29,3 +29,17 @@
 	text-decoration: line-through;
 }
 
+
+@sprite .export {
+	gwt-image: "images.iconExport"; 
+	margin-top:  3px;
+	margin-left: 3px;
+}
+
+@sprite .secure {
+	gwt-image: "images.iconSecure";
+	margin-top: 3px;
+	margin-left: 3px;  
+}
+
+

@@ -30,6 +30,8 @@
 				<property name="test2" type="vfslist" widget="gallery" default=""/>
 				<property name="test3" type="vfslist" widget="string" default="" />
 				<property name="navigation" nice-name="Navigation" type="string" widget="select" widget-config="true:Show in navigation|false:Hide from navigation"/>
+				<property name="secure" nice-name="Secure" type="string" widget="select" widget-config="true:Yes|false:No" default="false"/>
+				<property name="export" type="string" widget="select" widget-config="true:Yes|false:No" default="false" />
 
 				<!-- TODO: should not we treat this properties separately?? -->
 				<!-- do *NOT* touch these properties -->
