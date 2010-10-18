@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsDomUtil.java,v $
- * Date   : $Date: 2010/09/30 13:32:25 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2010/10/18 15:09:43 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentC
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  * 
  * @since 8.0.0
  */
@@ -1004,6 +1004,22 @@ public final class CmsDomUtil {
         for (Element overlay : overlays) {
             overlay.getParentElement().getStyle().clearPosition();
             overlay.removeFromParent();
+        }
+        element.removeClassName(I_CmsLayoutBundle.INSTANCE.generalCss().hideOverlay());
+    }
+
+    /**
+     * Sets a CSS class to show or hide a given overlay. Will not add an overlay to the element.<p>
+     * 
+     * @param element the parent element of the overlay
+     * @param show <code>true</code> to show the overlay
+     */
+    public static void showOverlay(Element element, boolean show) {
+
+        if (show) {
+            element.removeClassName(I_CmsLayoutBundle.INSTANCE.generalCss().hideOverlay());
+        } else {
+            element.addClassName(I_CmsLayoutBundle.INSTANCE.generalCss().hideOverlay());
         }
     }
 

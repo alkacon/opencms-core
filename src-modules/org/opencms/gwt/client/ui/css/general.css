@@ -36,6 +36,10 @@
 	height: 100%;
 	width: 100%;
 }
+
+.hideOverlay .disablingOverlay{
+	display: none;
+}
 	
 .cmsState-up, .cmsState-up-hovering, .cmsState-up-disabled, .cmsState-down, .cmsState-down-hovering, .cmsState-down-disabled, .cmsHovering{};
 
