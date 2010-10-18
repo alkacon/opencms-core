@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/Attic/A_CmsLinkStrategyHandler.java,v $
- * Date   : $Date: 2010/10/04 14:53:39 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/10/18 15:07:54 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Ruediger Kurz 
  *
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  */
@@ -62,7 +62,7 @@ public abstract class A_CmsLinkStrategyHandler implements I_CmsLinkStrategyHandl
     /**
      * Implements the file filter used to guess the right suffix of a deleted jsp file.<p>
      */
-    protected static class CmsPrefixFileFilter implements FileFilter {
+    public static class CmsPrefixFileFilter implements FileFilter {
 
         /** The base file. */
         private String m_baseName;
