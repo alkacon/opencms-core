@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2010/10/12 15:02:41 $
- * Version: $Revision: 1.62 $
+ * Date   : $Date: 2010/10/18 12:19:33 $
+ * Version: $Revision: 1.63 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -66,6 +66,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -83,7 +84,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.62 $
+ * @version $Revision: 1.63 $
  * 
  * @since 7.9.2
  */
@@ -493,7 +494,7 @@ public class CmsSitemapManager {
         CmsResource resource,
         boolean includeNonSchemaProperties) throws CmsException {
 
-        Map<String, CmsXmlContentProperty> result = new HashMap<String, CmsXmlContentProperty>();
+        Map<String, CmsXmlContentProperty> result = new LinkedHashMap<String, CmsXmlContentProperty>();
         Map<String, CmsXmlContentProperty> propertiesFromSchema = CmsXmlContentDefinition.getContentHandlerForResource(
             cms,
             resource).getProperties();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentPropertyHelper.java,v $
- * Date   : $Date: 2010/10/14 13:06:51 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2010/10/18 12:19:33 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -79,7 +79,7 @@ import org.dom4j.Element;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 7.9.2
  */
@@ -694,7 +694,7 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
         Map<String, CmsXmlContentProperty> properties,
         CmsMacroResolver resolver) {
 
-        Map<String, CmsXmlContentProperty> result = new HashMap<String, CmsXmlContentProperty>();
+        Map<String, CmsXmlContentProperty> result = new LinkedHashMap<String, CmsXmlContentProperty>();
         for (Map.Entry<String, CmsXmlContentProperty> entry : properties.entrySet()) {
             String key = entry.getKey();
             CmsXmlContentProperty prop = entry.getValue();

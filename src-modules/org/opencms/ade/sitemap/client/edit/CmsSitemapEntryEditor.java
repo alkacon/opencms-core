@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/edit/Attic/CmsSitemapEntryEditor.java,v $
- * Date   : $Date: 2010/10/14 09:46:44 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2010/10/18 12:19:33 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,6 @@ import org.opencms.xml.sitemap.properties.CmsSimplePropertyValue;
 import org.opencms.xml.sitemap.properties.CmsSourcedValue;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -67,7 +66,7 @@ import java.util.Set;
  * 
  *  @author Georg Westenberger
  *  
- *  @version $Revision: 1.14 $
+ *  @version $Revision: 1.15 $
  *  
  *  @since 8.0.0
  */
@@ -520,7 +519,7 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
      */
     private Map<String, CmsXmlContentProperty> removeHiddenProperties(Map<String, CmsXmlContentProperty> propConfig) {
 
-        Map<String, CmsXmlContentProperty> result = new HashMap<String, CmsXmlContentProperty>();
+        Map<String, CmsXmlContentProperty> result = new LinkedHashMap<String, CmsXmlContentProperty>();
         for (Map.Entry<String, CmsXmlContentProperty> entry : propConfig.entrySet()) {
             if (!m_controller.isHiddenProperty(entry.getKey())) {
                 result.put(entry.getKey(), entry.getValue());

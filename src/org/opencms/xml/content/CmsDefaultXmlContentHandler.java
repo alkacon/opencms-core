@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2010/10/14 13:06:51 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2010/10/18 12:19:33 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -84,6 +84,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -102,7 +103,7 @@ import org.dom4j.Element;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  */
@@ -1521,7 +1522,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         m_formatters = new HashMap<String, String>();
         m_widthFormatters = new HashMap<Integer, String>();
         m_formatters.put(DEFAULT_FORMATTER_TYPE, DEFAULT_FORMATTER);
-        m_properties = new HashMap<String, CmsXmlContentProperty>();
+        m_properties = new LinkedHashMap<String, CmsXmlContentProperty>();
     }
 
     /**
