@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItemWidget.java,v $
- * Date   : $Date: 2010/10/18 10:05:41 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2010/10/19 12:55:30 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -76,7 +76,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Tobias Herrmann
  * @author Michael Moossen
  * 
- * @version $Revision: 1.31 $
+ * @version $Revision: 1.32 $
  * 
  * @since 8.0.0
  */
@@ -512,6 +512,10 @@ implements HasMouseOutHandlers, HasClickHandlers, HasMouseOverHandlers, I_CmsTru
         }
         if (m_iconPanel.isVisible()) {
             width -= 32;
+        }
+        if (width < 0) {
+            // IE fails with a JS error if the width is negative 
+            width = 0;
         }
         m_titleRow.getElement().getStyle().setWidth(width, Unit.PX);
         m_title.truncate(textMetricsPrefix + TM_TITLE, width - 10);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsGalleryField.java,v $
- * Date   : $Date: 2010/09/03 14:14:22 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/10/19 12:55:30 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,12 +33,18 @@ package org.opencms.gwt.client.ui.input;
 
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.I_CmsHasInit;
+import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.I_CmsButton.UiIcon;
 import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
 
 import java.util.Map;
 
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.Style.Cursor;
+import com.google.gwt.dom.client.Style.Position;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Composite;
@@ -48,7 +54,7 @@ import com.google.gwt.user.client.ui.Composite;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -186,10 +192,31 @@ public class CmsGalleryField extends Composite implements I_CmsFormWidget, I_Cms
 
         String title = org.opencms.gwt.client.Messages.get().key(
             org.opencms.gwt.client.Messages.GUI_GALLERY_SELECT_DIALOG_TITLE_0);
-        CmsFramePopup popup = new CmsFramePopup(title, buildGalleryUrl());
+        final CmsFramePopup popup = new CmsFramePopup(title, buildGalleryUrl());
         popup.setId(m_id);
-        popup.getFrame().setSize("666px", "490px");
+        popup.getFrame().setSize("700px", "490px");
         popup.center();
+
+        CmsPushButton button = new CmsPushButton(UiIcon.close);
+
+        Style style = button.getElement().getStyle();
+        style.setRight(4, Unit.PX);
+        style.setTop(0, Unit.PX);
+        style.setPosition(Position.ABSOLUTE);
+        style.setCursor(Cursor.POINTER);
+        button.addClickHandler(new ClickHandler() {
+
+            /**
+             * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
+             */
+            public void onClick(ClickEvent event) {
+
+                popup.hide();
+            }
+        });
+
+        popup.insertFront(button);
+
     }
 
 }
