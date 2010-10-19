@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsFramePopup.java,v $
- * Date   : $Date: 2010/08/31 07:30:24 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/10/19 13:29:05 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,11 +44,14 @@ import com.google.gwt.user.client.ui.Frame;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
 public class CmsFramePopup extends CmsPopup {
+
+    /** The handler which is called when the popup closes itself. */
+    protected Runnable m_closeHandler;
 
     /** The iframe for the popup content. */
     Frame m_frame;
@@ -107,9 +110,23 @@ public class CmsFramePopup extends CmsPopup {
              */
             public void execute() {
 
+                if (m_closeHandler != null) {
+                    m_closeHandler.run();
+                }
+
                 hide();
             }
         });
+    }
+
+    /**
+     * Sets the handler which should be called when the popup closes itself.<p>
+     * 
+     * @param closeHandler the "close" handler
+     */
+    public void setCloseHandler(Runnable closeHandler) {
+
+        m_closeHandler = closeHandler;
     }
 
     /**

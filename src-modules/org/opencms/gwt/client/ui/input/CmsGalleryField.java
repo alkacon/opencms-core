@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsGalleryField.java,v $
- * Date   : $Date: 2010/10/19 12:55:30 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/10/19 13:29:05 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,20 +54,20 @@ import com.google.gwt.user.client.ui.Composite;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
-public class CmsGalleryField extends Composite implements I_CmsFormWidget, I_CmsHasInit {
+public class CmsGalleryField extends Composite implements I_CmsFormWidget, I_CmsHasInit, I_CmsHasGhostValue {
 
     /** The widget type. */
     public static final String WIDGET_TYPE = "gallery";
 
+    /** The textbox containing the currently selected path. */
+    protected CmsTextBox m_textbox;
+
     /** The HTML id of the field. */
     private String m_id;
-
-    /** The textbox containing the currently selected path. */
-    private CmsTextBox m_textbox;
 
     /** 
      * Constructs a new gallery widget.<p>
@@ -175,6 +175,14 @@ public class CmsGalleryField extends Composite implements I_CmsFormWidget, I_Cms
     }
 
     /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsHasGhostValue#setGhostValue(java.lang.String, boolean)
+     */
+    public void setGhostValue(String value, boolean isGhostMode) {
+
+        m_textbox.setGhostValue(value, isGhostMode);
+    }
+
+    /**
      * Creates the URL for the gallery dialog IFrame.<p>
      * 
      * @return the URL for the gallery dialog IFrame 
@@ -193,6 +201,15 @@ public class CmsGalleryField extends Composite implements I_CmsFormWidget, I_Cms
         String title = org.opencms.gwt.client.Messages.get().key(
             org.opencms.gwt.client.Messages.GUI_GALLERY_SELECT_DIALOG_TITLE_0);
         final CmsFramePopup popup = new CmsFramePopup(title, buildGalleryUrl());
+        popup.setCloseHandler(new Runnable() {
+
+            public void run() {
+
+                m_textbox.setGhostMode(false);
+
+            }
+
+        });
         popup.setId(m_id);
         popup.getFrame().setSize("700px", "490px");
         popup.center();
@@ -216,7 +233,6 @@ public class CmsGalleryField extends Composite implements I_CmsFormWidget, I_Cms
         });
 
         popup.insertFront(button);
-
     }
 
 }
