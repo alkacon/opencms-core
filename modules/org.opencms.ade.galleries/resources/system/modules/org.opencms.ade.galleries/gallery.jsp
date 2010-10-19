@@ -6,6 +6,11 @@
   <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <title><%= gallery.getTitle() %></title>
+    <style type="text/css">
+    * {
+    	zoom: 1; 
+    }
+    </style>
     <script type="text/javascript" src="<cms:link>/system/modules/org.opencms.ade.galleries/resources/resources.nocache.js</cms:link>"></script>
     <%= gallery.exportAll() %>
     <% if (gallery.isEditorMode()){ /* opened from rich text editor (FCKEditor, CKEditor...) include necessary scripts */ %>
