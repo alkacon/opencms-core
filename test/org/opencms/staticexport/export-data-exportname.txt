@@ -11,6 +11,12 @@
   <parameters>null</parameters>
 </exportdata>
 <exportdata>
+  <vfsName>/sites/default/item_2/item_1/</vfsName>
+  <rfsName>/t3/item_2/item_1/</rfsName>
+  <resName>/sites/default/cntpages/page_0004.html</resName>
+  <parameters>null</parameters>
+</exportdata>
+<exportdata>
   <vfsName>/sites/default/item_2/item_2/</vfsName>
   <rfsName>/t3/item_2/item_2/</rfsName>
   <resName>/sites/default/cntpages/page_0005.html</resName>
@@ -38,5 +44,107 @@
   <vfsName>/sites/default/item_5/</vfsName>
   <rfsName>/t3/item_5/</rfsName>
   <resName>/sites/default/cntpages/page_0007.html</resName>
+  <parameters>null</parameters>
+</exportdata>
+<exportdata>
+  <vfsName>/sites/default/item_2/item_1/c611b7c6-d6a2-11df-869e-edac56888092/</vfsName>
+  <rfsName>/t3/item_2/item_1/c611b7c6-d6a2-11df-869e-edac56888092/</rfsName>
+  <resName>/sites/default/cntpages/page_0004.html</resName>
+  <parameters>null</parameters>
+</exportdata>
+<exportdata>
+  <vfsName>/sites/default/item_2/item_1/d2c81cd0-d6a2-11df-869e-edac56888092/</vfsName>
+  <rfsName>/t3/item_2/item_1/d2c81cd0-d6a2-11df-869e-edac56888092/</rfsName>
+  <resName>/sites/default/cntpages/page_0004.html</resName>
+  <parameters>null</parameters>
+</exportdata>
+<exportdata>
+  <vfsName>/sites/default/cntpages/index.html</vfsName>
+  <rfsName>/sites/default/cntpages/index.html</rfsName>
+  <resName>/sites/default/cntpages/index.html</resName>
+  <parameters>null</parameters>
+</exportdata>
+<exportdata>
+  <vfsName>/sites/default/cntpages/page_0001.html</vfsName>
+  <rfsName>/sites/default/cntpages/page_0001.html</rfsName>
+  <resName>/sites/default/cntpages/page_0001.html</resName>
+  <parameters>null</parameters>
+</exportdata>
+<exportdata>
+  <vfsName>/sites/default/cntpages/page_0002.html</vfsName>
+  <rfsName>/sites/default/cntpages/page_0002.html</rfsName>
+  <resName>/sites/default/cntpages/page_0002.html</resName>
+  <parameters>null</parameters>
+</exportdata>
+<exportdata>
+  <vfsName>/sites/default/cntpages/page_0003.html</vfsName>
+  <rfsName>/sites/default/cntpages/page_0003.html</rfsName>
+  <resName>/sites/default/cntpages/page_0003.html</resName>
+  <parameters>null</parameters>
+</exportdata>
+<exportdata>
+  <vfsName>/sites/default/cntpages/page_0004.html</vfsName>
+  <rfsName>/sites/default/cntpages/page_0004.html</rfsName>
+  <resName>/sites/default/cntpages/page_0004.html</resName>
+  <parameters>null</parameters>
+</exportdata>
+<exportdata>
+  <vfsName>/sites/default/cntpages/page_0005.html</vfsName>
+  <rfsName>/sites/default/cntpages/page_0005.html</rfsName>
+  <resName>/sites/default/cntpages/page_0005.html</resName>
+  <parameters>null</parameters>
+</exportdata>
+<exportdata>
+  <vfsName>/sites/default/cntpages/page_0006.html</vfsName>
+  <rfsName>/sites/default/cntpages/page_0006.html</rfsName>
+  <resName>/sites/default/cntpages/page_0006.html</resName>
+  <parameters>null</parameters>
+</exportdata>
+<exportdata>
+  <vfsName>/sites/default/cntpages/page_0007.html</vfsName>
+  <rfsName>/sites/default/cntpages/page_0007.html</rfsName>
+  <resName>/sites/default/cntpages/page_0007.html</resName>
+  <parameters>null</parameters>
+</exportdata>
+<exportdata>
+  <vfsName>/sites/default/cntpages/page_0008.html</vfsName>
+  <rfsName>/sites/default/cntpages/page_0008.html</rfsName>
+  <resName>/sites/default/cntpages/page_0008.html</resName>
+  <parameters>null</parameters>
+</exportdata>
+<exportdata>
+  <vfsName>/system/modules/org.opencms.ade.sitemap/schemas/property_value_choice.xsd</vfsName>
+  <rfsName>/sitemap-schemas/property_value_choice.xsd</rfsName>
+  <resName>/system/modules/org.opencms.ade.sitemap/schemas/property_value_choice.xsd</resName>
+  <parameters>null</parameters>
+</exportdata>
+<exportdata>
+  <vfsName>/system/modules/org.opencms.ade.sitemap/schemas/property_value_filelist.xsd</vfsName>
+  <rfsName>/sitemap-schemas/property_value_filelist.xsd</rfsName>
+  <resName>/system/modules/org.opencms.ade.sitemap/schemas/property_value_filelist.xsd</resName>
+  <parameters>null</parameters>
+</exportdata>
+<exportdata>
+  <vfsName>/system/modules/org.opencms.ade.sitemap/schemas/site-entry-property.xsd</vfsName>
+  <rfsName>/sitemap-schemas/site-entry-property.xsd</rfsName>
+  <resName>/system/modules/org.opencms.ade.sitemap/schemas/site-entry-property.xsd</resName>
+  <parameters>null</parameters>
+</exportdata>
+<exportdata>
+  <vfsName>/system/modules/org.opencms.ade.sitemap/schemas/site-entry.xsd</vfsName>
+  <rfsName>/sitemap-schemas/site-entry.xsd</rfsName>
+  <resName>/system/modules/org.opencms.ade.sitemap/schemas/site-entry.xsd</resName>
+  <parameters>null</parameters>
+</exportdata>
+<exportdata>
+  <vfsName>/system/modules/org.opencms.ade.sitemap/schemas/sitemap.xsd</vfsName>
+  <rfsName>/sitemap-schemas/sitemap.xsd</rfsName>
+  <resName>/system/modules/org.opencms.ade.sitemap/schemas/sitemap.xsd</resName>
+  <parameters>null</parameters>
+</exportdata>
+<exportdata>
+  <vfsName>/system/modules/org.opencms.ade.sitemap/schemas/sitemap_config.xsd</vfsName>
+  <rfsName>/sitemap-schemas/sitemap_config.xsd</rfsName>
+  <resName>/system/modules/org.opencms.ade.sitemap/schemas/sitemap_config.xsd</resName>
   <parameters>null</parameters>
 </exportdata>

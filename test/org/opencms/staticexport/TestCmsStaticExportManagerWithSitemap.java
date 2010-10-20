@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/staticexport/Attic/TestCmsStaticExportManagerWithSitemap.java,v $
- * Date   : $Date: 2010/10/15 08:26:04 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/10/20 15:23:20 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,8 @@ package org.opencms.staticexport;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.OpenCms;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
@@ -46,6 +48,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.List;
 
 import junit.extensions.TestSetup;
@@ -57,7 +60,7 @@ import junit.framework.TestSuite;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -137,6 +140,8 @@ public class TestCmsStaticExportManagerWithSitemap extends OpenCmsTestCase {
         suite.addTest(new TestCmsStaticExportManagerWithSitemap("testRfsNameWithExportName"));
         suite.addTest(new TestCmsStaticExportManagerWithSitemap("testVfsNameInternal"));
         suite.addTest(new TestCmsStaticExportManagerWithSitemap("testVfsNameInternalWithExportname"));
+        suite.addTest(new TestCmsStaticExportManagerWithSitemap("testVfsNameInternalWithParameters"));
+        suite.addTest(new TestCmsStaticExportManagerWithSitemap("testVfsNameInternalWithExportnameAndParameters"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -304,19 +309,8 @@ public class TestCmsStaticExportManagerWithSitemap extends OpenCmsTestCase {
         echo("Testing get vfs name internal");
 
         if (changeToNormal()) {
-            createTmpFile();
-            // set the export mode to export immediately after publishing resources
-            OpenCms.getStaticExportManager().setHandler("org.opencms.staticexport.CmsOnDemandStaticExportHandler");
-            CmsObject cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
-            List<CmsSitemapEntry> rootEntries = OpenCms.getSitemapManager().getRootSitemapRootEntries(cms);
-            for (CmsSitemapEntry rootEntry : rootEntries) {
-                CmsInternalSitemapEntry entry = (CmsInternalSitemapEntry)rootEntry;
-                List<CmsInternalSitemapEntry> entries = entry.getSubEntries();
-                testEntries(entries);
-            }
             File tobeExportDataFile = new File(getClass().getResource("export-data.txt").getFile());
-            assertTrue(compareFiles(TMP_FILE, tobeExportDataFile));
-            deleteTmpFile();
+            testVfsInt(tobeExportDataFile, null);
         } else {
             assertTrue(false);
         }
@@ -335,19 +329,49 @@ public class TestCmsStaticExportManagerWithSitemap extends OpenCmsTestCase {
         echo("Testing get vfs name internal with export name");
 
         if (changeToExportName()) {
-            createTmpFile();
-            // set the export mode to export immediately after publishing resources
-            OpenCms.getStaticExportManager().setHandler("org.opencms.staticexport.CmsOnDemandStaticExportHandler");
-            CmsObject cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
-            List<CmsSitemapEntry> rootEntries = OpenCms.getSitemapManager().getRootSitemapRootEntries(cms);
-            for (CmsSitemapEntry rootEntry : rootEntries) {
-                CmsInternalSitemapEntry entry = (CmsInternalSitemapEntry)rootEntry;
-                List<CmsInternalSitemapEntry> entries = entry.getSubEntries();
-                testEntries(entries);
-            }
             File tobeExportDataFile = new File(getClass().getResource("export-data-exportname.txt").getFile());
-            assertTrue(compareFiles(TMP_FILE, tobeExportDataFile));
-            deleteTmpFile();
+            testVfsInt(tobeExportDataFile, null);
+        } else {
+            assertTrue(false);
+        }
+    }
+
+    /**
+     * Tests if the static export data object returned by the method 
+     * {@link CmsStaticExportManager#getVfsNameInternal(CmsObject, String)}
+     * is identical to the expected data objects defined in the file
+     * <code>"export-data.txt"</code> in this package.<p>
+     * 
+     * @throws Exception if something goes wrong
+     */
+    public void testVfsNameInternalWithParameters() throws Exception {
+
+        echo("Testing get vfs name internal");
+
+        if (changeToNormal()) {
+            File tobeExportDataFile = new File(getClass().getResource("export-data-parameters.txt").getFile());
+            testVfsInt(tobeExportDataFile, "?a=b&c=d");
+        } else {
+            assertTrue(false);
+        }
+    }
+
+    /**
+     * Tests if the static export data object returned by the method 
+     * {@link CmsStaticExportManager#getVfsNameInternal(CmsObject, String)}
+     * is identical to the expected data objects defined in the file
+     * <code>"export-data.txt"</code> in this package.<p>
+     * 
+     * @throws Exception throws an exception if something goes wrong
+     */
+    public void testVfsNameInternalWithExportnameAndParameters() throws Exception {
+
+        echo("Testing get vfs name internal with export name");
+
+        if (changeToExportName()) {
+            File tobeExportDataFile = new File(
+                getClass().getResource("export-data-exportname-parameters.txt").getFile());
+            testVfsInt(tobeExportDataFile, "?a=b&c=d");
         } else {
             assertTrue(false);
         }
@@ -362,6 +386,7 @@ public class TestCmsStaticExportManagerWithSitemap extends OpenCmsTestCase {
      */
     private boolean changeToExportName() throws Exception {
 
+        boolean success = true;
         CmsObject adminCms = getCmsObject();
         adminCms.getRequestContext().setSiteRoot("/");
         if (adminCms.getLock(adminCms.readResource("/sites/default/")).isLockableBy(
@@ -373,12 +398,21 @@ public class TestCmsStaticExportManagerWithSitemap extends OpenCmsTestCase {
                 "/_config/sitemap_exportname",
                 true);
             adminCms.writePropertyObject("/sites/default/", sitemapProp);
-            OpenCms.getPublishManager().publishProject(adminCms);
-            OpenCms.getPublishManager().waitWhileRunning();
-            OpenCms.getMemoryMonitor().clearCache();
-            return true;
+        } else {
+            success = false;
         }
-        return false;
+        if (adminCms.getLock(adminCms.readResource("/system/modules/org.opencms.ade.sitemap/schemas/")).isLockableBy(
+            adminCms.getRequestContext().currentUser())) {
+            adminCms.lockResource("/system/modules/org.opencms.ade.sitemap/schemas/");
+            CmsProperty exportNameProp = new CmsProperty("exportname", "sitemap-schemas", "sitemap-schemas", true);
+            adminCms.writePropertyObject("/system/modules/org.opencms.ade.sitemap/schemas/", exportNameProp);
+        } else {
+            success = false;
+        }
+        OpenCms.getPublishManager().publishProject(adminCms);
+        OpenCms.getPublishManager().waitWhileRunning();
+        OpenCms.getMemoryMonitor().clearCache();
+        return success;
     }
 
     /**
@@ -390,6 +424,7 @@ public class TestCmsStaticExportManagerWithSitemap extends OpenCmsTestCase {
      */
     private boolean changeToNormal() throws Exception {
 
+        boolean success = true;
         CmsObject adminCms = getCmsObject();
         adminCms.getRequestContext().setSiteRoot("/");
         if (adminCms.getLock(adminCms.readResource("/sites/default/")).isLockableBy(
@@ -397,12 +432,21 @@ public class TestCmsStaticExportManagerWithSitemap extends OpenCmsTestCase {
             adminCms.lockResource("/sites/default/");
             CmsProperty sitemapProp = new CmsProperty("ade.sitemap", "/_config/sitemap", "/_config/sitemap", true);
             adminCms.writePropertyObject("/sites/default/", sitemapProp);
-            OpenCms.getPublishManager().publishProject(adminCms);
-            OpenCms.getPublishManager().waitWhileRunning();
-            OpenCms.getMemoryMonitor().clearCache();
-            return true;
+        } else {
+            success = false;
         }
-        return false;
+        if (adminCms.getLock(adminCms.readResource("/system/modules/org.opencms.ade.sitemap/schemas/")).isLockableBy(
+            adminCms.getRequestContext().currentUser())) {
+            adminCms.lockResource("/system/modules/org.opencms.ade.sitemap/schemas/");
+            CmsProperty exportNameProp = new CmsProperty("exportname", "", "", true);
+            adminCms.writePropertyObject("/system/modules/org.opencms.ade.sitemap/schemas/", exportNameProp);
+        } else {
+            success = false;
+        }
+        OpenCms.getPublishManager().publishProject(adminCms);
+        OpenCms.getPublishManager().waitWhileRunning();
+        OpenCms.getMemoryMonitor().clearCache();
+        return success;
     }
 
     /**
@@ -461,42 +505,104 @@ public class TestCmsStaticExportManagerWithSitemap extends OpenCmsTestCase {
      * 
      * @param entries the root entries of all configured sitemaps
      */
-    private void testEntries(List<CmsInternalSitemapEntry> entries) throws Exception {
+    private void testEntries(List<CmsInternalSitemapEntry> entries, String parameters) throws Exception {
 
         CmsObject cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
         CmsStaticExportManager manager = OpenCms.getStaticExportManager();
 
         for (CmsInternalSitemapEntry entry : entries) {
 
-            if (manager.isExportLink(cms, entry.getRootPath())) {
+            CmsStaticExportData data;
 
-                // get the rfsName for the current entry
-                String rfsName = manager.getRfsName(cms, entry.getRootPath());
-                // get the rfs prefix for the current entry
-                String rfsPrefix = OpenCms.getStaticExportManager().getRfsPrefixForRfsName(rfsName);
-                // substring the rfsName for the prefix
-                rfsName = rfsName.substring(rfsPrefix.length());
+            // get the rfsName for the current entry
+            String rfsName = manager.getRfsName(cms, entry.getRootPath(), parameters);
 
-                // execute the method to test
-                CmsStaticExportData data = manager.getVfsNameInternal(cms, rfsName);
+            // get the rfs prefix for the current entry
+            String rfsPrefix = OpenCms.getStaticExportManager().getRfsPrefixForRfsName(rfsName);
+            // substring the rfsName for the prefix
+            rfsName = rfsName.substring(rfsPrefix.length());
+            // execute the method to test
+            data = manager.getRfsExportData(cms, rfsName);
+            // add the calculated rfs name to the data object
+            data.setRfsName(rfsName);
 
-                // add the calculated rfs name to the data object
-                data.setRfsName(rfsName);
-
-                // write the object data to a pseudo xml file
-                if (TMP_FILE.exists()) {
-                    FileWriter fw = new FileWriter(TMP_FILE, true);
-                    PrintWriter out = new PrintWriter(fw);
-                    out.println("<exportdata>");
-                    out.println("  <vfsName>" + data.getVfsName() + "</vfsName>");
-                    out.println("  <rfsName>" + data.getRfsName() + "</rfsName>");
-                    out.println("  <resName>" + data.getResource().getRootPath() + "</resName>");
-                    out.println("  <parameters>" + data.getParameters() + "</parameters>");
-                    out.println("</exportdata>");
-                    out.close();
-                }
+            // write the object data to a pseudo xml file
+            if (TMP_FILE.exists()) {
+                FileWriter fw = new FileWriter(TMP_FILE, true);
+                PrintWriter out = new PrintWriter(fw);
+                out.println("<exportdata>");
+                out.println("  <vfsName>" + data.getVfsName() + "</vfsName>");
+                out.println("  <rfsName>" + data.getRfsName() + "</rfsName>");
+                out.println("  <resName>" + data.getResource().getRootPath() + "</resName>");
+                out.println("  <parameters>" + data.getParameters() + "</parameters>");
+                out.println("</exportdata>");
+                out.close();
             }
-            testEntries(entry.getSubEntries());
+
+            if (entry.isSitemap()) {
+                testEntries(entry.getSubEntries(), parameters);
+            }
         }
+    }
+
+    /**
+     * Helper for vfs internal test.<p>
+     * 
+     * @param tobeExportDataFile the file with the target state
+     * 
+     * @throws Exception if something goes wrong
+     */
+    private void testVfsInt(File tobeExportDataFile, String parameters) throws Exception {
+
+        createTmpFile();
+        // get the export cms
+        CmsObject cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
+
+        // test the entire sitemap
+        List<CmsSitemapEntry> rootEntries = OpenCms.getSitemapManager().getRootSitemapRootEntries(cms);
+        for (CmsSitemapEntry rootEntry : rootEntries) {
+            CmsInternalSitemapEntry entry = (CmsInternalSitemapEntry)rootEntry;
+            List<CmsInternalSitemapEntry> entries = entry.getSubEntries();
+            testEntries(entries, parameters);
+        }
+
+        // now test some detail pages as sitemap entry 
+        List<CmsInternalSitemapEntry> detailEntries = new ArrayList<CmsInternalSitemapEntry>();
+        List<CmsResource> detailResources = cms.readResources("/sites/default/contents/", CmsResourceFilter.ALL);
+        for (CmsResource res : detailResources) {
+            CmsInternalSitemapEntry entry = (CmsInternalSitemapEntry)OpenCms.getSitemapManager().getEntryForUri(
+                cms,
+                "/sites/default/item_2/item_1/" + res.getStructureId());
+            detailEntries.add(entry);
+        }
+        testEntries(detailEntries, parameters);
+
+        // now test some vfs resources under the default site 
+        List<CmsInternalSitemapEntry> vfsEntries = new ArrayList<CmsInternalSitemapEntry>();
+        List<CmsResource> vfsResources = cms.readResources("/sites/default/cntpages/", CmsResourceFilter.ALL);
+        for (CmsResource res : vfsResources) {
+            CmsInternalSitemapEntry entry = (CmsInternalSitemapEntry)OpenCms.getSitemapManager().getEntryForUri(
+                cms,
+                res.getRootPath());
+            vfsEntries.add(entry);
+        }
+        testEntries(vfsEntries, parameters);
+
+        // now test some system resources
+        List<CmsInternalSitemapEntry> systemEntries = new ArrayList<CmsInternalSitemapEntry>();
+        List<CmsResource> systemResources = cms.readResources(
+            "/system/modules/org.opencms.ade.sitemap/schemas/",
+            CmsResourceFilter.ALL);
+        for (CmsResource res : systemResources) {
+            CmsInternalSitemapEntry entry = (CmsInternalSitemapEntry)OpenCms.getSitemapManager().getEntryForUri(
+                cms,
+                res.getRootPath());
+            systemEntries.add(entry);
+        }
+        testEntries(systemEntries, parameters);
+
+        // compare the target state with the current state
+        assertTrue(compareFiles(TMP_FILE, tobeExportDataFile));
+        deleteTmpFile();
     }
 }
