@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/gwt/CmsGwtService.java,v $
- * Date   : $Date: 2010/06/10 06:19:09 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/10/20 11:44:00 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,7 +68,7 @@ import com.google.gwt.user.server.rpc.SerializationPolicyLoader;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 8.0.0
  */
@@ -371,8 +371,8 @@ public class CmsGwtService extends RemoteServiceServlet implements I_CmsEventLis
                 + m_serializationPolicyPath
                 + "' was not found; did you forget to include it in this deployment?";
             this.log(message);
-            LOG.error(ex.getLocalizedMessage(), ex);
-            return null;
+            LOG.warn(ex.getLocalizedMessage(), ex);
+            return new CmsDummySerializationPolicy();
         }
 
         // read the policy
