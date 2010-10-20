@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2010/09/30 10:09:14 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/10/20 15:22:48 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -258,7 +258,7 @@ public class CmsLinkManager {
             try {
                 cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
                 result = substituteLinkForUnknownTarget(cms, resourceName);
-                result = appendServerPrefix(cms, result);
+                result = appendServerPrefix(cms, result, resourceName);
             } finally {
                 cms.getRequestContext().setCurrentProject(currentProject);
             }
@@ -397,7 +397,7 @@ public class CmsLinkManager {
     public String getServerLink(CmsObject cms, String resourceName) {
 
         String result = substituteLinkForUnknownTarget(cms, resourceName);
-        return appendServerPrefix(cms, result);
+        return appendServerPrefix(cms, result, resourceName);
     }
 
     /**
@@ -649,7 +649,7 @@ public class CmsLinkManager {
      * 
      * @return the link for the given resource in the current project, with full server prefix
      */
-    private String appendServerPrefix(CmsObject cms, String link) {
+    private String appendServerPrefix(CmsObject cms, String link, String resourceName) {
 
         if (isAbsoluteUri(link) && !hasScheme(link)) {
             // URI is absolute and contains no schema
@@ -657,8 +657,10 @@ public class CmsLinkManager {
             String serverPrefix;
             if (cms.getRequestContext().currentProject().isOnlineProject()) {
                 // on online project, get the real site name from the site manager
-                CmsSite currentSite = OpenCms.getSiteManager().getSite(link, cms.getRequestContext().getSiteRoot());
-                serverPrefix = currentSite.getServerPrefix(cms, link);
+                CmsSite currentSite = OpenCms.getSiteManager().getSite(
+                    resourceName,
+                    cms.getRequestContext().getSiteRoot());
+                serverPrefix = currentSite.getServerPrefix(cms, resourceName);
             } else {
                 // in offline mode, source must be the workplace 
                 // so append the workplace server so links can still be clicked

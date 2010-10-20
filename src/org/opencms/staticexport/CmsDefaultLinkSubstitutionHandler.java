@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsDefaultLinkSubstitutionHandler.java,v $
- * Date   : $Date: 2010/09/30 10:09:14 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/10/20 15:22:48 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 7.0.2
  * 
@@ -240,7 +240,7 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
                     if (linkType != imageId) {
                         // check the secure property of the link
                         boolean secureLink = exportManager.isSecureLink(cms, vfsName, targetSite.getSiteRoot());
-                        boolean secureRequest = exportManager.isSecureLink(cms, cms.getRequestContext().getUri());
+                        boolean secureRequest = exportManager.isSecureLink(cms, oriUri);
                         // if we are on a normal server, and the requested resource is secure, 
                         // the server name has to be prepended                        
                         if (secureLink && (forceSecure || !secureRequest)) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/Attic/CmsSwitchLinkStrategyHandler.java,v $
- * Date   : $Date: 2010/10/12 10:00:59 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/10/20 15:22:48 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Ruediger Kurz
  *
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  */
@@ -75,39 +75,24 @@ public class CmsSwitchLinkStrategyHandler implements I_CmsLinkStrategyHandler {
     }
 
     /**
-     * @see org.opencms.staticexport.I_CmsLinkStrategyHandler#getRfsName(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
+     * Returns <code>true</code> if a sitemap is in use for the given path.<p>
+     * 
+     * @param cms the cms object
+     * @param path the path to check
+     * @param isRfs signals that the given path is a rfs path
+     * 
+     * @return <code>true</code> if a sitemap is in use for the given name
      */
-    public String getRfsName(CmsObject cms, String vfsName, String parameters) {
+    public static boolean isSitemapInUse(CmsObject cms, String path, boolean isRfs) {
 
-        // make the decision
-        if (!isSitemapInUse(cms, vfsName, false)) {
-            return m_vfsStrategy.getRfsName(cms, vfsName, parameters);
+        try {
+            if (OpenCms.getSitemapManager().isSiteUsingSitemap(cms, getSiteRootForPath(cms, path, isRfs))) {
+                return true;
+            }
+        } catch (CmsException e) {
+            LOG.debug(e.getLocalizedMessage(), e);
         }
-        return m_sitemapStrategy.getRfsName(cms, vfsName, parameters);
-    }
-
-    /**
-     * @see org.opencms.staticexport.I_CmsLinkStrategyHandler#getVfsNameInternal(org.opencms.file.CmsObject, java.lang.String)
-     */
-    public CmsStaticExportData getVfsNameInternal(CmsObject cms, String rfsName) {
-
-        // make the decision
-        if (!isSitemapInUse(cms, rfsName, true)) {
-            return m_vfsStrategy.getVfsNameInternal(cms, rfsName);
-        }
-        return m_sitemapStrategy.getVfsNameInternal(cms, rfsName);
-    }
-
-    /**
-     * @see org.opencms.staticexport.I_CmsLinkStrategyHandler#isExportLink(org.opencms.file.CmsObject, java.lang.String)
-     */
-    public boolean isExportLink(CmsObject cms, String vfsName) {
-
-        // make the decision
-        if (!isSitemapInUse(cms, vfsName, false)) {
-            return m_vfsStrategy.isExportLink(cms, vfsName);
-        }
-        return m_sitemapStrategy.isExportLink(cms, vfsName);
+        return false;
     }
 
     /**
@@ -153,23 +138,52 @@ public class CmsSwitchLinkStrategyHandler implements I_CmsLinkStrategyHandler {
     }
 
     /**
-     * Returns <code>true</code> if a sitemap is in use for the given path.<p>
-     * 
-     * @param cms the cms object
-     * @param path the path to check
-     * @param isRfs signals that the given path is a rfs path
-     * 
-     * @return <code>true</code> if a sitemap is in use for the given name
+     * @see org.opencms.staticexport.I_CmsLinkStrategyHandler#getRfsName(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
      */
-    public static boolean isSitemapInUse(CmsObject cms, String path, boolean isRfs) {
+    public String getRfsName(CmsObject cms, String vfsName, String parameters) {
 
-        try {
-            if (OpenCms.getSitemapManager().isSiteUsingSitemap(cms, getSiteRootForPath(cms, path, isRfs))) {
-                return true;
-            }
-        } catch (CmsException e) {
-            LOG.debug(e.getLocalizedMessage(), e);
+        // make the decision
+        if (!isSitemapInUse(cms, vfsName, false)) {
+            return m_vfsStrategy.getRfsName(cms, vfsName, parameters);
         }
-        return false;
+        return m_sitemapStrategy.getRfsName(cms, vfsName, parameters);
+    }
+
+    /**
+     * @see org.opencms.staticexport.I_CmsLinkStrategyHandler#getVfsNameInternal(org.opencms.file.CmsObject, java.lang.String)
+     */
+    public CmsStaticExportData getVfsNameInternal(CmsObject cms, String rfsName) {
+
+        // make the decision
+        if (!isSitemapInUse(cms, rfsName, true)) {
+            return m_vfsStrategy.getVfsNameInternal(cms, rfsName);
+        }
+        return m_sitemapStrategy.getVfsNameInternal(cms, rfsName);
+    }
+
+    /**
+     * @see org.opencms.staticexport.I_CmsLinkStrategyHandler#isExportLink(org.opencms.file.CmsObject, java.lang.String)
+     */
+    public boolean isExportLink(CmsObject cms, String vfsName) {
+
+        // make the decision
+        if (!isSitemapInUse(cms, vfsName, false)) {
+            return m_vfsStrategy.isExportLink(cms, vfsName);
+        }
+        return m_sitemapStrategy.isExportLink(cms, vfsName);
+    }
+
+    /**
+     * @see org.opencms.staticexport.I_CmsLinkStrategyHandler#isSecureLink(org.opencms.file.CmsObject, java.lang.String)
+     */
+    @Override
+    public boolean isSecureLink(CmsObject cms, String vfsName) {
+
+        // make the decision
+        if (!isSitemapInUse(cms, vfsName, false)) {
+            return m_vfsStrategy.isSecureLink(cms, vfsName);
+        }
+        return m_sitemapStrategy.isSecureLink(cms, vfsName);
+
     }
 }

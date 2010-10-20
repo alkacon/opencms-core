@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/Attic/CmsSitemapLinkStrategyHandler.java,v $
- * Date   : $Date: 2010/10/15 08:26:04 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/10/20 15:22:48 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,6 +41,7 @@ import org.opencms.file.types.CmsResourceTypeXmlSitemap;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.site.CmsSite;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -58,7 +59,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Ruediger Kurz
  *
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 8.0.0
  */
@@ -165,6 +166,14 @@ public class CmsSitemapLinkStrategyHandler extends A_CmsLinkStrategyHandler {
             }
             if (parameters != null) {
                 // build the RFS name for the link with parameters
+                if (CmsResource.isFolder(rfsName)) {
+                    rfsName = OpenCms.getStaticExportManager().addDefaultFileNameToFolder(
+                        rfsName,
+                        !CmsResource.isFolder(vfsName));
+                }
+                if (CmsStringUtil.isEmptyOrWhitespaceOnly(extension)) {
+                    extension = ".html";
+                }
                 rfsName = CmsFileUtil.getRfsPath(rfsName, extension, parameters);
                 // we have found a rfs name for a vfs resource with parameters, save it to the database
                 try {
@@ -281,71 +290,123 @@ public class CmsSitemapLinkStrategyHandler extends A_CmsLinkStrategyHandler {
         if (exportResource != null) {
             return exportResource.booleanValue();
         }
-
         boolean result = false;
-        try {
-            // static export must always be checked with the export users permissions,
-            // not the current users permissions
-            CmsObject exportCms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
-            exportCms.getRequestContext().setSiteRoot(cms.getRequestContext().getSiteRoot());
+        CmsSite currentSite = OpenCms.getSiteManager().getSite(vfsName, cms.getRequestContext().getSiteRoot());
 
-            // read the export property from the sitemap or from the VFS
-            CmsSitemapEntry entry = null;
+        // if the site is exclusive secured and the link is a secure link this resource is not to be exported
+        if (currentSite.isExclusiveUrl() && isSecureLink(cms, vfsName)) {
+            result = false;
+        } else {
+            // ! otherwise check if we have an export link
             try {
-                entry = OpenCms.getSitemapManager().getEntryForUri(exportCms, vfsName);
-            } catch (Exception e) {
-                // no sitemap entry found: go on
-                LOG.debug(e.getLocalizedMessage(), e);
-            }
+                // static export must always be checked with the export users permissions,
+                // not the current users permissions
+                CmsObject exportCms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
+                exportCms.getRequestContext().setSiteRoot(cms.getRequestContext().getSiteRoot());
 
-            // get the detail id from the vfs name
-            String path = vfsName;
-            if (path.endsWith("/")) {
-                path = path.substring(0, path.length() - 1);
-            }
-            String detailId = "";
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(path)) {
-                detailId = CmsResource.getName(path);
-            }
+                // read the export property from the sitemap or from the VFS
+                CmsSitemapEntry entry = null;
+                try {
+                    entry = OpenCms.getSitemapManager().getEntryForUri(exportCms, vfsName);
+                } catch (Exception e) {
+                    // no sitemap entry found: go on
+                    LOG.debug(e.getLocalizedMessage(), e);
+                }
 
-            if ((entry != null) && entry.isSitemap()) {
-                // if the entry was found and it is a sitemap entry
-                // read the export property from the sitemap entry
-                Map<String, String> props = entry.getProperties(true);
-                if ((props.get(CmsPropertyDefinition.PROPERTY_EXPORT) != null)
-                    && props.get(CmsPropertyDefinition.PROPERTY_EXPORT).equals(CmsStringUtil.TRUE)) {
-                    result = true;
+                // get the detail id from the vfs name
+                String path = vfsName;
+                if (path.endsWith("/")) {
+                    path = path.substring(0, path.length() - 1);
                 }
-            } else {
-                // let's look up export property in VFS
-                String exportValue;
-                CmsResource res;
-                if (CmsUUID.isValidUUID(detailId)) {
-                    res = exportCms.readResource(new CmsUUID(detailId));
-                } else {
-                    res = exportCms.readResource(vfsName);
+                String detailId = "";
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(path)) {
+                    detailId = CmsResource.getName(path);
                 }
-                exportValue = exportCms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_EXPORT, true).getValue();
-                if (exportValue == null) {
-                    // no setting found for "export" property
-                    if (OpenCms.getStaticExportManager().getExportPropertyDefault()) {
-                        // if the default is "true" we always export
+
+                if ((entry != null) && entry.isSitemap()) {
+                    // if the entry was found and it is a sitemap entry
+                    // read the export property from the sitemap entry
+                    Map<String, String> props = entry.getProperties(true);
+                    if ((props.get(CmsPropertyDefinition.PROPERTY_EXPORT) != null)
+                        && props.get(CmsPropertyDefinition.PROPERTY_EXPORT).equals(CmsStringUtil.TRUE)) {
                         result = true;
-                    } else {
-                        // check if the resource is exportable by suffix
-                        result = OpenCms.getStaticExportManager().isSuffixExportable(vfsName);
                     }
                 } else {
-                    // "export" value found, if it was "true" we export
-                    result = Boolean.valueOf(exportValue).booleanValue();
+                    // let's look up export property in VFS
+                    String exportValue;
+                    CmsResource res;
+                    if (CmsUUID.isValidUUID(detailId)) {
+                        res = exportCms.readResource(new CmsUUID(detailId));
+                    } else {
+                        res = exportCms.readResource(vfsName);
+                    }
+                    exportValue = exportCms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_EXPORT, true).getValue();
+                    if (exportValue == null) {
+                        // no setting found for "export" property
+                        if (OpenCms.getStaticExportManager().getExportPropertyDefault()) {
+                            // if the default is "true" we always export
+                            result = true;
+                        } else {
+                            // check if the resource is exportable by suffix
+                            result = OpenCms.getStaticExportManager().isSuffixExportable(vfsName);
+                        }
+                    } else {
+                        // "export" value found, if it was "true" we export
+                        result = Boolean.valueOf(exportValue).booleanValue();
+                    }
                 }
+            } catch (CmsException e) {
+                // no export required (probably security issues, e.g. no access for export user)
+                LOG.debug(e.getLocalizedMessage(), e);
             }
-        } catch (CmsException e) {
-            // no export required (probably security issues, e.g. no access for export user)
-            LOG.debug(e.getLocalizedMessage(), e);
         }
         OpenCms.getStaticExportManager().getCacheExportLinks().put(cacheKey, Boolean.valueOf(result));
 
         return result;
+    }
+
+    /**
+     * @see org.opencms.staticexport.I_CmsLinkStrategyHandler#isSecureLink(org.opencms.file.CmsObject, java.lang.String)
+     */
+    @Override
+    public boolean isSecureLink(CmsObject cms, String vfsName) {
+
+        if (!cms.getRequestContext().currentProject().isOnlineProject()) {
+            return false;
+        }
+        String cacheKey = OpenCms.getStaticExportManager().getCacheKey(cms.getRequestContext().getSiteRoot(), vfsName);
+        Boolean secureResource = OpenCms.getStaticExportManager().getCacheSecureLinks().get(cacheKey);
+        if (secureResource == null) {
+            try {
+                CmsSitemapEntry entry = OpenCms.getSitemapManager().getEntryForUri(cms, vfsName);
+                if (entry.isSitemap()) {
+                    String prop = entry.getProperties(true).get(CmsPropertyDefinition.PROPERTY_SECURE);
+                    secureResource = Boolean.valueOf(prop);
+                    // only cache result if read was successfull
+                    OpenCms.getStaticExportManager().getCacheSecureLinks().put(cacheKey, secureResource);
+                } else {
+                    try {
+                        String secureProp = cms.readPropertyObject(vfsName, CmsPropertyDefinition.PROPERTY_SECURE, true).getValue();
+                        secureResource = Boolean.valueOf(secureProp);
+                        // only cache result if read was successfull
+                        OpenCms.getStaticExportManager().getCacheSecureLinks().put(cacheKey, secureResource);
+                    } catch (CmsVfsResourceNotFoundException e) {
+                        secureResource = Boolean.FALSE;
+                        // resource does not exist, no secure link will be required for any user
+                        OpenCms.getStaticExportManager().getCacheSecureLinks().put(cacheKey, secureResource);
+                    } catch (Exception e) {
+                        // no secure link required (probably security issues, e.g. no access for current user)
+                        // however other users may be allowed to read the resource, so the result can't be cached
+                        secureResource = Boolean.FALSE;
+                    }
+                }
+            } catch (CmsException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+                // no secure link required (probably security issues, e.g. no access for current user)
+                // however other users may be allowed to read the resource, so the result can't be cached
+                secureResource = Boolean.FALSE;
+            }
+        }
+        return secureResource.booleanValue();
     }
 }

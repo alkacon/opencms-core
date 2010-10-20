@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/Attic/CmsVfsLinkStrategyHandler.java,v $
- * Date   : $Date: 2010/10/04 14:53:39 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/10/20 15:22:48 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Ruediger Kurz
  *
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  */
@@ -266,5 +266,35 @@ public class CmsVfsLinkStrategyHandler extends A_CmsLinkStrategyHandler {
         OpenCms.getStaticExportManager().getCacheExportLinks().put(cacheKey, Boolean.valueOf(result));
 
         return result;
+    }
+
+    /**
+     * @see org.opencms.staticexport.I_CmsLinkStrategyHandler#isSecureLink(org.opencms.file.CmsObject, java.lang.String)
+     */
+    @Override
+    public boolean isSecureLink(CmsObject cms, String vfsName) {
+
+        if (!cms.getRequestContext().currentProject().isOnlineProject()) {
+            return false;
+        }
+        String cacheKey = OpenCms.getStaticExportManager().getCacheKey(cms.getRequestContext().getSiteRoot(), vfsName);
+        Boolean secureResource = OpenCms.getStaticExportManager().getCacheSecureLinks().get(cacheKey);
+        if (secureResource == null) {
+            try {
+                String secureProp = cms.readPropertyObject(vfsName, CmsPropertyDefinition.PROPERTY_SECURE, true).getValue();
+                secureResource = Boolean.valueOf(secureProp);
+                // only cache result if read was successfull
+                OpenCms.getStaticExportManager().getCacheSecureLinks().put(cacheKey, secureResource);
+            } catch (CmsVfsResourceNotFoundException e) {
+                secureResource = Boolean.FALSE;
+                // resource does not exist, no secure link will be required for any user
+                OpenCms.getStaticExportManager().getCacheSecureLinks().put(cacheKey, secureResource);
+            } catch (Exception e) {
+                // no secure link required (probably security issues, e.g. no access for current user)
+                // however other users may be allowed to read the resource, so the result can't be cached
+                secureResource = Boolean.FALSE;
+            }
+        }
+        return secureResource.booleanValue();
     }
 }

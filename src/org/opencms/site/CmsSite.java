@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSite.java,v $
- * Date   : $Date: 2010/04/07 14:48:11 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/10/20 15:22:48 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,7 +37,6 @@ import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -52,7 +51,7 @@ import org.apache.commons.logging.Log;
  * @author  Alexander Kandzior 
  * @author  Jan Baudisch 
  *
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -279,24 +278,11 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
         if (equals(OpenCms.getSiteManager().getDefaultSite())) {
             return OpenCms.getSiteManager().getWorkplaceServer();
         }
-        boolean secure = false;
-        if (hasSecureServer()) {
-            if (resourceName.startsWith(cms.getRequestContext().getSiteRoot())) {
-                // make sure this can also be used with a resource root path
-                resourceName = resourceName.substring(cms.getRequestContext().getSiteRoot().length());
-            }
-            try {
-                secure = Boolean.valueOf(
-                    cms.readPropertyObject(
-                        CmsRequestUtil.getRequestLink(resourceName),
-                        CmsPropertyDefinition.PROPERTY_SECURE,
-                        true).getValue()).booleanValue();
-            } catch (CmsException e) {
-                if (LOG.isErrorEnabled()) {
-                    LOG.error(e.getLocalizedMessage(), e);
-                }
-            }
+        if (resourceName.startsWith(cms.getRequestContext().getSiteRoot())) {
+            // make sure this can also be used with a resource root path
+            resourceName = resourceName.substring(cms.getRequestContext().getSiteRoot().length());
         }
+        boolean secure = OpenCms.getStaticExportManager().isSecureLink(cms, resourceName);
         return (secure ? getSecureUrl() : getUrl());
     }
 

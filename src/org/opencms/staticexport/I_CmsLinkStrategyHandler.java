@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/Attic/I_CmsLinkStrategyHandler.java,v $
- * Date   : $Date: 2010/09/30 10:09:14 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/10/20 15:22:48 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,7 @@ import org.opencms.file.CmsObject;
 /**
  * @author  Ruediger Kurz 
  *
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  */
@@ -83,4 +83,22 @@ public interface I_CmsLinkStrategyHandler {
      * @return <code>true</code> if static export is required for the given VFS resource
      */
     boolean isExportLink(CmsObject cms, String vfsName);
+
+    /**
+     * Returns <code>true</code> if the given VFS resource should be transported through a secure channel.<p>
+     * 
+     * The secure mode is only checked in the "Online" project. 
+     * If the given OpenCms context is currently not in the "Online" project,
+     * <code>false</code> is returned.<p>
+     * 
+     * The given resource is read from the site root of the provided OpenCms context.<p>
+     * 
+     * @param cms the current users OpenCms context
+     * @param vfsName the VFS resource name to check
+     * 
+     * @return <code>true</code> if the given VFS resource should be transported through a secure channel
+     * 
+     * @see CmsStaticExportManager#isSecureLink(CmsObject, String, String)
+     */
+    boolean isSecureLink(CmsObject cms, String vfsName);
 }

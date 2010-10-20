@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapResourceHandler.java,v $
- * Date   : $Date: 2010/10/08 15:06:57 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2010/10/20 15:22:48 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,13 +32,17 @@
 package org.opencms.xml.sitemap;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsResourceInitException;
 import org.opencms.main.I_CmsResourceInit;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionViolationException;
+import org.opencms.site.CmsSite;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 
@@ -52,7 +56,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 7.9.2
  */
@@ -95,6 +99,61 @@ public class CmsSitemapResourceHandler implements I_CmsResourceInit {
             }
             // read the resource
             resource = cms.readResource(entry.getStructureId());
+            if (resource != null) {
+                // set the request uri to the right file
+                cms.getRequestContext().setUri(cms.getSitePath(resource));
+                // test if this file is only available for internal access operations
+                if (resource.isInternal()) {
+                    throw new CmsException(Messages.get().container(
+                        org.opencms.main.Messages.ERR_READ_INTERNAL_RESOURCE_1,
+                        cms.getRequestContext().getUri()));
+                }
+
+                // check online project
+                if (cms.getRequestContext().currentProject().isOnlineProject()) {
+                    // check if resource is secure
+                    String secureProp = entry.getProperties(true).get(CmsPropertyDefinition.PROPERTY_SECURE);
+                    boolean secure = Boolean.valueOf(secureProp).booleanValue();
+
+                    if (secure) {
+                        // resource is secure, check site config
+                        CmsSite site = OpenCms.getSiteManager().getCurrentSite(cms);
+                        // check the secure url
+                        String secureUrl = null;
+                        try {
+                            secureUrl = site.getSecureUrl();
+                        } catch (Exception e) {
+                            LOG.error(
+                                Messages.get().getBundle().key(
+                                    org.opencms.main.Messages.ERR_SECURE_SITE_NOT_CONFIGURED_1,
+                                    resource.getRootPath()),
+                                e);
+                            throw new CmsException(Messages.get().container(
+                                org.opencms.main.Messages.ERR_SECURE_SITE_NOT_CONFIGURED_1,
+                                resource.getRootPath()), e);
+                        }
+                        boolean usingSec = req.getRequestURL().toString().toUpperCase().startsWith(
+                            secureUrl.toUpperCase());
+                        if (site.isExclusiveUrl() && !usingSec) {
+                            // secure resource without secure protocol, check error config
+                            if (site.isExclusiveError()) {
+                                // trigger 404 error
+                                throw new CmsVfsResourceNotFoundException(Messages.get().container(
+                                    org.opencms.main.Messages.ERR_REQUEST_SECURE_RESOURCE_0));
+                            } else {
+                                // redirect
+                                String target = OpenCms.getLinkManager().getOnlineLink(cms, entry.getRootPath());
+                                try {
+                                    res.sendRedirect(target);
+                                    return null;
+                                } catch (Exception e) {
+                                    // ignore, but should never happen
+                                }
+                            }
+                        }
+                    }
+                }
+            }
             if (req != null) {
                 // set the element
                 req.setAttribute(CmsSitemapManager.ATTR_SITEMAP_ENTRY, entry);
