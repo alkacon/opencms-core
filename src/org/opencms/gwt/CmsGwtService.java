@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/gwt/CmsGwtService.java,v $
- * Date   : $Date: 2010/10/20 11:44:00 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/10/20 13:21:10 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,25 +31,13 @@
 
 package org.opencms.gwt;
 
-import org.opencms.db.CmsDriverManager;
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsResource;
-import org.opencms.main.CmsEvent;
-import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
-import org.opencms.util.CmsCollectionsGenericWrapper;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.text.ParseException;
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -61,18 +49,17 @@ import org.apache.commons.logging.Log;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.google.gwt.user.server.rpc.SerializationPolicy;
-import com.google.gwt.user.server.rpc.SerializationPolicyLoader;
 
 /**
  * Wrapper for GWT services served through OpenCms.<p>
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 8.0.0
  */
-public class CmsGwtService extends RemoteServiceServlet implements I_CmsEventListener {
+public class CmsGwtService extends RemoteServiceServlet {
 
     /** The static log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsGwtService.class);
@@ -80,17 +67,11 @@ public class CmsGwtService extends RemoteServiceServlet implements I_CmsEventLis
     /** Serialization id. */
     private static final long serialVersionUID = 8119684308154724518L;
 
+    /** The service class context. */
+    private CmsGwtServiceContext m_context;
+
     /** The current CMS context. */
     private ThreadLocal<CmsObject> m_perThreadCmsObject;
-
-    /** The serialization policy path. */
-    private String m_serializationPolicyPath;
-
-    /** The offline serialization policy. */
-    private SerializationPolicy m_serPolicyOffline;
-
-    /** The online serialization policy. */
-    private SerializationPolicy m_serPolicyOnline;
 
     /**
      * Constructor.<p>
@@ -98,17 +79,6 @@ public class CmsGwtService extends RemoteServiceServlet implements I_CmsEventLis
     public CmsGwtService() {
 
         super();
-        // listen on VFS changes for serialization policies 
-        OpenCms.addCmsEventListener(this, new int[] {
-            I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED,
-            I_CmsEventListener.EVENT_RESOURCES_AND_PROPERTIES_MODIFIED,
-            I_CmsEventListener.EVENT_RESOURCE_MODIFIED,
-            I_CmsEventListener.EVENT_RESOURCES_MODIFIED,
-            I_CmsEventListener.EVENT_RESOURCE_DELETED,
-            I_CmsEventListener.EVENT_PUBLISH_PROJECT,
-            I_CmsEventListener.EVENT_CLEAR_CACHES,
-            I_CmsEventListener.EVENT_CLEAR_ONLINE_CACHES,
-            I_CmsEventListener.EVENT_CLEAR_OFFLINE_CACHES});
     }
 
     /**
@@ -125,62 +95,6 @@ public class CmsGwtService extends RemoteServiceServlet implements I_CmsEventLis
     public void checkPermissions(CmsObject cms) throws CmsRoleViolationException {
 
         OpenCms.getRoleManager().checkRole(cms, CmsRole.WORKPLACE_USER);
-    }
-
-    /**
-     * @see org.opencms.main.I_CmsEventListener#cmsEvent(org.opencms.main.CmsEvent)
-     */
-    public void cmsEvent(CmsEvent event) {
-
-        CmsResource resource = null;
-        List<CmsResource> resources = null;
-
-        switch (event.getType()) {
-            case I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED:
-            case I_CmsEventListener.EVENT_RESOURCE_MODIFIED:
-                Object change = event.getData().get(I_CmsEventListener.KEY_CHANGE);
-                if ((change != null) && change.equals(new Integer(CmsDriverManager.NOTHING_CHANGED))) {
-                    // skip lock & unlock
-                    return;
-                }
-                // a resource has been modified in a way that it *IS NOT* necessary also to clear 
-                // lists of cached sub-resources where the specified resource might be contained inside.
-                resource = (CmsResource)event.getData().get(I_CmsEventListener.KEY_RESOURCE);
-                uncacheResource(resource);
-                break;
-
-            case I_CmsEventListener.EVENT_RESOURCES_AND_PROPERTIES_MODIFIED:
-                // a list of resources and all of their properties have been modified
-                resources = CmsCollectionsGenericWrapper.list(event.getData().get(I_CmsEventListener.KEY_RESOURCES));
-                uncacheResources(resources);
-                break;
-
-            case I_CmsEventListener.EVENT_RESOURCE_MOVED:
-            case I_CmsEventListener.EVENT_RESOURCE_DELETED:
-            case I_CmsEventListener.EVENT_RESOURCES_MODIFIED:
-                // a list of resources has been modified
-                resources = CmsCollectionsGenericWrapper.list(event.getData().get(I_CmsEventListener.KEY_RESOURCES));
-                uncacheResources(resources);
-                break;
-
-            case I_CmsEventListener.EVENT_CLEAR_ONLINE_CACHES:
-            case I_CmsEventListener.EVENT_PUBLISH_PROJECT:
-                m_serPolicyOnline = null;
-                break;
-
-            case I_CmsEventListener.EVENT_CLEAR_CACHES:
-                m_serPolicyOnline = null;
-                m_serPolicyOffline = null;
-                break;
-
-            case I_CmsEventListener.EVENT_CLEAR_OFFLINE_CACHES:
-                m_serPolicyOffline = null;
-                break;
-
-            default:
-                // noop
-                break;
-        }
     }
 
     /**
@@ -290,6 +204,16 @@ public class CmsGwtService extends RemoteServiceServlet implements I_CmsEventLis
     }
 
     /**
+     * Sets the service context.<p>
+     * 
+     * @param context the new service context 
+     */
+    public synchronized void setContext(CmsGwtServiceContext context) {
+
+        m_context = context;
+    }
+
+    /**
      * Sets the current request.<p>
      * 
      * @param request the request to set
@@ -313,26 +237,7 @@ public class CmsGwtService extends RemoteServiceServlet implements I_CmsEventLis
         String moduleBaseURL,
         String strongName) {
 
-        if (m_serializationPolicyPath == null) {
-            // locate the serialization policy file in OpenCms
-            String modulePath = null;
-            try {
-                modulePath = new URL(moduleBaseURL).getPath();
-            } catch (MalformedURLException ex) {
-                // moduleBaseUrl is bad
-                LOG.error(ex.getLocalizedMessage(), ex);
-                return null;
-            } catch (NullPointerException ex) {
-                // moduleBaseUrl is null
-                LOG.error(ex.getLocalizedMessage(), ex);
-                return null;
-            }
-            String serializationPolicyUrl = SerializationPolicyLoader.getSerializationPolicyFileName(modulePath
-                + strongName);
-            m_serializationPolicyPath = OpenCms.getLinkManager().getRootPath(getCmsObject(), serializationPolicyUrl);
-        }
-
-        return getSerializationPolicy();
+        return m_context.getSerializationPolicy(getCmsObject(), moduleBaseURL, strongName);
     }
 
     /**
@@ -345,89 +250,4 @@ public class CmsGwtService extends RemoteServiceServlet implements I_CmsEventLis
         super.doUnexpectedFailure(e);
     }
 
-    /**
-     * Returns the serialization policy, using lazy initialization.<p>
-     * 
-     * @return the serialization policy 
-     */
-    private SerializationPolicy getSerializationPolicy() {
-
-        boolean online = getCmsObject().getRequestContext().currentProject().isOnlineProject();
-        if (online && (m_serPolicyOnline != null)) {
-            return m_serPolicyOnline;
-        } else if (!online && (m_serPolicyOffline != null)) {
-            return m_serPolicyOffline;
-        }
-
-        SerializationPolicy serializationPolicy = null;
-
-        // Open the RPC resource file and read its contents
-        InputStream is;
-        try {
-            is = new ByteArrayInputStream(getCmsObject().readFile(m_serializationPolicyPath).getContents());
-        } catch (CmsException ex) {
-            // most likely file not found
-            String message = "ERROR: The serialization policy file '"
-                + m_serializationPolicyPath
-                + "' was not found; did you forget to include it in this deployment?";
-            this.log(message);
-            LOG.warn(ex.getLocalizedMessage(), ex);
-            return new CmsDummySerializationPolicy();
-        }
-
-        // read the policy
-        try {
-            serializationPolicy = SerializationPolicyLoader.loadFromStream(is, null);
-        } catch (ParseException e) {
-            this.log("ERROR: Failed to parse the policy file '" + m_serializationPolicyPath + "'", e);
-        } catch (IOException e) {
-            this.log("ERROR: Could not read the policy file '" + m_serializationPolicyPath + "'", e);
-        } finally {
-            try {
-                is.close();
-            } catch (IOException e) {
-                // Ignore this error
-            }
-        }
-
-        if (online) {
-            m_serPolicyOnline = serializationPolicy;
-        } else {
-            m_serPolicyOffline = serializationPolicy;
-        }
-        return serializationPolicy;
-    }
-
-    /**
-     * Removes a cached resource from the cache.<p>
-     * 
-     * @param resource the resource
-     */
-    private void uncacheResource(CmsResource resource) {
-
-        if (resource == null) {
-            return;
-        }
-        if ((m_serializationPolicyPath != null) && resource.getRootPath().equals(m_serializationPolicyPath)) {
-            m_serPolicyOffline = null;
-        }
-    }
-
-    /**
-     * Removes a bunch of cached resources from the cache.<p>
-     * 
-     * @param resources a list of resources
-     * 
-     * @see #uncacheResource(CmsResource)
-     */
-    private void uncacheResources(List<CmsResource> resources) {
-
-        if (resources == null) {
-            return;
-        }
-        for (int i = 0, n = resources.size(); i < n; i++) {
-            // remove the resource
-            uncacheResource(resources.get(i));
-        }
-    }
 }
