@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapView.java,v $
- * Date   : $Date: 2010/10/18 10:05:41 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2010/10/21 08:28:53 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -77,7 +77,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.37 $ 
+ * @version $Revision: 1.38 $ 
  * 
  * @since 8.0.0
  */
@@ -360,6 +360,8 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler, ClosingHandler, I
 
         // unload event handling
         Window.addWindowClosingHandler(this);
+        m_controller.addPropertyUpdateHandler(new CmsStatusIconUpdateHandler());
+        m_controller.recomputePropertyInheritance();
 
         // check if editable
         if (!m_controller.isEditable()) {
@@ -373,8 +375,6 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler, ClosingHandler, I
         if (openPath != null) {
             highlightPath(openPath);
         }
-        m_controller.addPropertyUpdateHandler(new CmsStatusIconUpdateHandler());
-        m_controller.recomputePropertyInheritance();
     }
 
     /** 
