@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2010/10/13 14:31:31 $
- * Version: $Revision: 1.1210 $
+ * Date   : $Date: 2010/10/21 13:19:10 $
+ * Version: $Revision: 1.1211 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -30,6 +30,7 @@ OpenCms x.x.x - month day, year
 * Fixed issue #1892: CmsContentInfoBean - The functions isFirstOnPage and isLastOnPage return the wrong values
 * Fixed issue #1900: Performance Patch for OpenCms
 * Fixed issue #1910: An ISO-8859-1 to UTF-8 change in htmlmsg.properties
+* Fixed issue #1919: Some Chinese translation for fckeditor zh-cn.js
 
 OpenCms 7.5.3 - August 18, 2010
 ! External Links (pointers) now support handling of request parameters (loader parameter in opencms-vfs.xml)

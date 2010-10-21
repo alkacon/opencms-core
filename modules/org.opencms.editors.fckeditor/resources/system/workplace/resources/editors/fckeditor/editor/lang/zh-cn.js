@@ -532,8 +532,8 @@ DlgDivAdvancedTab	: "高级",
 DlgDivStyle		: "样式",
 DlgDivInlineStyle	: "CSS 样式",
 
-ScaytTitle			: "SCAYT",	//MISSING
-ScaytTitleOptions	: "Options",	//MISSING
-ScaytTitleLangs		: "Languages",	//MISSING
-ScaytTitleAbout		: "About"	//MISSING
+ScaytTitle			: "拼写检查",
+ScaytTitleOptions	: "选项",
+ScaytTitleLangs		: "语言",
+ScaytTitleAbout		: "关于"
 };
