@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItemWidget.java,v $
- * Date   : $Date: 2010/10/19 12:55:30 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2010/10/21 13:47:51 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -76,7 +76,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Tobias Herrmann
  * @author Michael Moossen
  * 
- * @version $Revision: 1.32 $
+ * @version $Revision: 1.33 $
  * 
  * @since 8.0.0
  */
@@ -437,6 +437,16 @@ implements HasMouseOutHandlers, HasClickHandlers, HasMouseOverHandlers, I_CmsTru
         Panel iconWidget = new SimplePanel();
         iconWidget.addStyleName(iconClasses);
         m_iconPanel.setWidget(iconWidget);
+    }
+
+    /**
+     * Sets the icon title.<p>
+     * 
+     * @param title the new icon title
+     */
+    public void setIconTitle(String title) {
+
+        m_iconPanel.setTitle(title);
     }
 
     /**
