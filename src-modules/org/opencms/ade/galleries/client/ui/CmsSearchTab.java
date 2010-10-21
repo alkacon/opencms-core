@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsSearchTab.java,v $
- * Date   : $Date: 2010/07/08 09:26:45 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/10/21 12:36:10 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,13 +50,14 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.PopupPanel;
 
 /**
  * Provides the widget for the full text search tab.<p>
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 8.0.
  */
@@ -208,6 +209,9 @@ public class CmsSearchTab extends A_CmsTab {
     /** The search parameter panel for this tab. */
     private CmsSearchParamPanel m_paramPanel;
 
+    /** The parent popup to this dialog if present. */
+    private PopupPanel m_parentPopup;
+
     /** The tab panel. */
     private HTMLPanel m_tab;
 
@@ -215,15 +219,16 @@ public class CmsSearchTab extends A_CmsTab {
      * Constructor for the search tab.<p>
      * 
      * @param tabHandler the tab handler 
+     * @param parentPopup the parent popup to this dialog if present
      */
-    public CmsSearchTab(CmsSearchTabHandler tabHandler) {
+    public CmsSearchTab(CmsSearchTabHandler tabHandler, PopupPanel parentPopup) {
 
         // initialize the tab
         super(GalleryTabId.cms_tab_search);
         m_tab = uiBinder.createAndBindUi(this);
         initWidget(m_tab);
         m_tabHandler = tabHandler;
-
+        m_parentPopup = parentPopup;
         // set the description for the search tab
         m_descriptionLabel.setText(Messages.get().key(Messages.GUI_TAB_SEARCH_DESCRIPTION_0));
 
