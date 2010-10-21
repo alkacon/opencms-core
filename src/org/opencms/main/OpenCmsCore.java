@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2010/10/21 13:45:16 $
- * Version: $Revision: 1.254 $
+ * Date   : $Date: 2010/10/21 13:55:50 $
+ * Version: $Revision: 1.255 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -139,7 +139,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.254 $ 
+ * @version $Revision: 1.255 $ 
  * 
  * @since 6.0.0 
  */
@@ -1318,8 +1318,8 @@ public final class OpenCmsCore {
      *
      * The resource that is returned is always a <code>{@link org.opencms.file.CmsFile}</code>,
      * even though the content will usually not be loaded in the result. Folders are never returned since
-     * the point of this method is really to load the default file if just a folder name is requested. If there is no 
-     * default file in a folder, then the return value is null and no CmsException is thrown.<p>
+     * the point of this method is really to load the default file if just a folder name is requested. If 
+     * there is no default file in a folder, then the return value is null and no CmsException is thrown.<p>
      *
      * The URI stored in the given OpenCms user context will be changed to the URI of the resource 
      * that was found and returned.<p>
