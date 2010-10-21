@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/Attic/A_CmsEntryPoint.java,v $
- * Date   : $Date: 2010/10/11 06:40:56 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2010/10/21 13:49:18 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import com.google.gwt.core.client.GWT;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 8.0.0
  * 
@@ -56,6 +56,9 @@ import com.google.gwt.core.client.GWT;
  * @see org.opencms.gwt.shared.rpc.I_CmsLogServiceAsync
  */
 public abstract class A_CmsEntryPoint implements EntryPoint {
+
+    /** Flag which indicates whether initClasses() has already been called. */
+    private static boolean initializedClasses;
 
     /**
      * Default constructor.<p> 
@@ -98,8 +101,8 @@ public abstract class A_CmsEntryPoint implements EntryPoint {
         I_CmsToolbarButtonLayoutBundle.INSTANCE.style().ensureInjected();
         I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().ensureInjected();
 
-        I_CmsClassInitializer initializer = GWT.create(I_CmsClassInitializer.class);
-        initializer.initClasses();
+        initClasses();
+
     }
 
     /**
@@ -124,5 +127,19 @@ public abstract class A_CmsEntryPoint implements EntryPoint {
                 CmsLog.log(message + "\n" + CmsClientStringUtil.getStackTrace(t, "\n"));
             }
         });
+    }
+
+    /**
+     * Helper method for initializing the classes implementing {@link I_CmsHasInit}.<p>
+     * 
+     * Calling this method more than once will have no effect.<p>
+     */
+    private void initClasses() {
+
+        if (!initializedClasses) {
+            I_CmsClassInitializer initializer = GWT.create(I_CmsClassInitializer.class);
+            initializer.initClasses();
+            initializedClasses = true;
+        }
     }
 }
