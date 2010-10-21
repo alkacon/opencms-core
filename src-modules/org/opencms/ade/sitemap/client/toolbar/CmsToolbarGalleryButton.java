@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/toolbar/Attic/CmsToolbarGalleryButton.java,v $
- * Date   : $Date: 2010/09/14 14:22:47 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/10/21 12:48:56 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,14 +49,14 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
 public class CmsToolbarGalleryButton extends CmsMenuButton implements I_CmsToolbarActivatable {
 
     /** The main content widget. */
-    protected FlowPanel m_content;
+    private FlowPanel m_contentPanel;
 
     /**
      * The constructor.<p>
@@ -77,23 +77,7 @@ public class CmsToolbarGalleryButton extends CmsMenuButton implements I_CmsToolb
              */
             public void onClick(ClickEvent event) {
 
-                if (!isOpen()) {
-                    toolbar.onButtonActivation(CmsToolbarGalleryButton.this);
-                    if (m_content == null) {
-
-                        SimplePanel tabsContainer = new SimplePanel();
-                        tabsContainer.addStyleName(I_CmsLayoutBundle.INSTANCE.clipboardCss().menuTabContainer());
-                        tabsContainer.add(CmsGalleryFactory.createDialog(CmsSitemapView.getInstance().getTree().getDnDHandler()));
-                        m_content = new FlowPanel();
-                        m_content.setStyleName(I_CmsLayoutBundle.INSTANCE.clipboardCss().menuContent());
-                        m_content.add(tabsContainer);
-                        setMenuWidget(m_content);
-                    }
-
-                    openMenu();
-                } else {
-                    closeMenu();
-                }
+                handleClick(toolbar);
             }
         });
 
@@ -105,5 +89,33 @@ public class CmsToolbarGalleryButton extends CmsMenuButton implements I_CmsToolb
     public void onActivation(Widget widget) {
 
         closeMenu();
+    }
+
+    /**
+     * Handles the button click.<p>
+     * 
+     * @param toolbar the toolbar
+     */
+    protected void handleClick(CmsSitemapToolbar toolbar) {
+
+        if (!isOpen()) {
+            toolbar.onButtonActivation(CmsToolbarGalleryButton.this);
+            if (m_contentPanel == null) {
+
+                SimplePanel tabsContainer = new SimplePanel();
+                tabsContainer.addStyleName(I_CmsLayoutBundle.INSTANCE.clipboardCss().menuTabContainer());
+                tabsContainer.add(CmsGalleryFactory.createDialog(
+                    CmsSitemapView.getInstance().getTree().getDnDHandler(),
+                    m_content));
+                m_contentPanel = new FlowPanel();
+                m_contentPanel.setStyleName(I_CmsLayoutBundle.INSTANCE.clipboardCss().menuContent());
+                m_contentPanel.add(tabsContainer);
+                setMenuWidget(m_contentPanel);
+            }
+
+            openMenu();
+        } else {
+            closeMenu();
+        }
     }
 }

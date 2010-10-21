@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsGalleryDialog.java,v $
- * Date   : $Date: 2010/09/30 13:32:25 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2010/10/21 12:48:56 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,13 +63,14 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.PopupPanel;
 
 /**
  * Provides the method for the gallery dialog.<p>
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.32 $
+ * @version $Revision: 1.33 $
  * 
  * @since 8.0.
  */
@@ -102,6 +103,9 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
 
     /** The parent panel for the gallery dialog. */
     private FlowPanel m_parentPanel;
+
+    /** The parent popup to this dialog if present. */
+    private PopupPanel m_parentPopup;
 
     /** The results tab. */
     private CmsResultsTab m_resultsTab;
@@ -150,11 +154,13 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
      * The constructor.<p> 
      * 
      * @param dndHandler the reference to the dnd manager
+     * @param parentPopup the parent popup to this dialog if present
      */
-    public CmsGalleryDialog(CmsDNDHandler dndHandler) {
+    public CmsGalleryDialog(CmsDNDHandler dndHandler, PopupPanel parentPopup) {
 
         this();
         m_dndHandler = dndHandler;
+        m_parentPopup = parentPopup;
     }
 
     /**
@@ -221,7 +227,7 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
                     m_tabbedPanel.add(m_categoriesTab, Messages.get().key(Messages.GUI_TAB_TITLE_CATEGORIES_0));
                     break;
                 case cms_tab_search:
-                    m_searchTab = new CmsSearchTab(new CmsSearchTabHandler(controller));
+                    m_searchTab = new CmsSearchTab(new CmsSearchTabHandler(controller), m_parentPopup);
                     m_tabbedPanel.add(m_searchTab, Messages.get().key(Messages.GUI_TAB_TITLE_SEARCH_0));
                     break;
                 case cms_tab_sitemap:
