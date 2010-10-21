@@ -36,6 +36,12 @@
 	margin-left: 3px;
 }
 
+@sprite .normal {
+	gwt-image: "images.iconNormal";
+	margin-top: 3px;
+	margin-left: 3px;
+}
+
 @sprite .secure {
 	gwt-image: "images.iconSecure";
 	margin-top: 3px;

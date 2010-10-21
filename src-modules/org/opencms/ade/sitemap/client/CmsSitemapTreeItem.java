@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapTreeItem.java,v $
- * Date   : $Date: 2010/10/18 10:05:41 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2010/10/21 13:45:42 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.29 $ 
+ * @version $Revision: 1.30 $ 
  * 
  * @since 8.0.0
  * 
@@ -320,13 +320,16 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
         switch (status) {
             case export:
                 m_listItemWidget.setIcon(CSS.export());
+                m_listItemWidget.setIconTitle(Messages.get().key(Messages.GUI_ICON_TITLE_EXPORT_0));
                 break;
             case secure:
                 m_listItemWidget.setIcon(CSS.secure());
+                m_listItemWidget.setIconTitle(Messages.get().key(Messages.GUI_ICON_TITLE_SECURE_0));
                 break;
             case none:
             default:
-                m_listItemWidget.clearIcon();
+                m_listItemWidget.setIcon(CSS.normal());
+                m_listItemWidget.setIconTitle(null);
                 break;
         }
     }
