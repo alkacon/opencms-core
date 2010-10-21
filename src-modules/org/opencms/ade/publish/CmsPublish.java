@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/Attic/CmsPublish.java,v $
- * Date   : $Date: 2010/05/18 12:31:14 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/10/21 12:43:01 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.ade.publish;
 
+import org.opencms.ade.publish.CmsPublishGroupHelper.GroupAge;
 import org.opencms.ade.publish.shared.CmsProjectBean;
 import org.opencms.ade.publish.shared.CmsPublishGroup;
 import org.opencms.ade.publish.shared.CmsPublishOptions;
@@ -60,14 +61,13 @@ import org.opencms.util.CmsUUID;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -77,7 +77,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -357,79 +357,60 @@ public class CmsPublish {
             LOG.error(e.getLocalizedMessage(), e);
         }
 
-        int sessions = GROUP_SESSIONS_NUMBER;
-        int days = GROUP_DAYS_NUMBER;
-        List<CmsPublishGroup> groups = new ArrayList<CmsPublishGroup>();
-        List<CmsPublishResource> resources = new ArrayList<CmsPublishResource>();
-        long groupDate = sortedResources.get(0).getDateLastModified(); // we checked earlier that there is at least one resource
-        ListIterator<CmsResource> itResources = sortedResources.listIterator();
-        while (itResources.hasNext()) {
-            CmsResource resource = itResources.next();
-            try {
-                List<CmsPublishResource> related = getRelatedResources(
-                    resource,
+        CmsPublishGroupHelper groupHelper = new CmsPublishGroupHelper(m_locale);
+
+        Map<Long, Integer> daysMap = groupHelper.computeDaysForResources(sortedResources);
+        Map<GroupAge, List<CmsResource>> resourcesByAge = groupHelper.partitionPublishResourcesByAge(
+            sortedResources,
+            daysMap);
+        List<List<CmsResource>> youngGroups = groupHelper.partitionYoungResources(resourcesByAge.get(GroupAge.young));
+        List<List<CmsResource>> mediumGroups = groupHelper.partitionMediumResources(
+            resourcesByAge.get(GroupAge.medium),
+            daysMap);
+        List<CmsResource> oldGroup = resourcesByAge.get(GroupAge.old);
+
+        List<CmsPublishGroup> resultGroups = new ArrayList<CmsPublishGroup>();
+        for (List<CmsResource> groupRes : youngGroups) {
+            List<CmsPublishResource> groupPubRes = new ArrayList<CmsPublishResource>();
+            for (CmsResource res : groupRes) {
+                CmsPublishResource pubRes = createPublishResource(
+                    res,
+                    pubList,
                     allPubRes,
                     published,
                     permissions,
                     locked);
-                CmsPublishResourceInfo info = getResourceInfo(resource, published, permissions, locked);
-                CmsPublishResource pubResource = resourceToBean(resource, info, pubList.contains(resource), related);
-                resources.add(pubResource);
-            } catch (Exception e) {
-                // should never happen
-                LOG.error(e.getLocalizedMessage(), e);
+                groupPubRes.add(pubRes);
             }
-            boolean newGroup = !itResources.hasNext();
-            if (!newGroup) {
-                CmsResource nextRes = itResources.next();
-                itResources.previous(); // go back to continue in the right order
-                if (sessions > 0) {
-                    // check the difference is not greater than x hours
-                    newGroup = (resource.getDateLastModified() - nextRes.getDateLastModified() > GROUP_SESSIONS_GAP);
-                } else if (days > 0) {
-                    // check they are not in the same day
-                    Calendar oldCalendar = Calendar.getInstance();
-                    oldCalendar.setTimeInMillis(resource.getDateLastModified());
-                    Calendar newCalendar = Calendar.getInstance();
-                    newCalendar.setTimeInMillis(nextRes.getDateLastModified());
-
-                    newGroup = (oldCalendar.get(Calendar.DAY_OF_MONTH) == newCalendar.get(Calendar.DAY_OF_MONTH));
-                    newGroup &= (oldCalendar.get(Calendar.MONTH) == newCalendar.get(Calendar.MONTH));
-                    newGroup &= (oldCalendar.get(Calendar.YEAR) == newCalendar.get(Calendar.YEAR));
-                }
-            }
-            if (newGroup) {
-                try {
-                    String groupName;
-                    if (sessions > 0) {
-                        groupName = Messages.get().getBundle(m_locale).key(
-                            Messages.GUI_GROUPNAME_SESSION_1,
-                            new Date(groupDate));
-                        sessions--;
-                    } else if (days > 0) {
-                        groupName = Messages.get().getBundle(m_locale).key(
-                            Messages.GUI_GROUPNAME_DAY_1,
-                            new Date(groupDate));
-                        days--;
-                    } else {
-                        groupName = Messages.get().getBundle(m_locale).key(Messages.GUI_GROUPNAME_EVERYTHING_ELSE_0);
-                    }
-                    if (itResources.hasNext()) {
-                        CmsResource nextRes = itResources.next();
-                        itResources.previous(); // go back to continue in the right order
-                        groupDate = nextRes.getDateLastModified();
-                    }
-                    CmsPublishGroup group = new CmsPublishGroup(groupName, resources);
-                    groups.add(group);
-                    resources = new ArrayList<CmsPublishResource>();
-                } catch (Exception e) {
-                    // should never happen
-                    LOG.error(e.getLocalizedMessage(), e);
-                }
-            }
+            String name = groupHelper.getPublishGroupName(groupRes, GroupAge.young);
+            resultGroups.add(new CmsPublishGroup(name, groupPubRes));
         }
 
-        return groups;
+        for (List<CmsResource> groupRes : mediumGroups) {
+            List<CmsPublishResource> groupPubRes = new ArrayList<CmsPublishResource>();
+            for (CmsResource res : groupRes) {
+                CmsPublishResource pubRes = createPublishResource(
+                    res,
+                    pubList,
+                    allPubRes,
+                    published,
+                    permissions,
+                    locked);
+                groupPubRes.add(pubRes);
+            }
+            String name = groupHelper.getPublishGroupName(groupRes, GroupAge.medium);
+            resultGroups.add(new CmsPublishGroup(name, groupPubRes));
+        }
+
+        String oldName = groupHelper.getPublishGroupName(oldGroup, GroupAge.old);
+        List<CmsPublishResource> oldRes = new ArrayList<CmsPublishResource>();
+        for (CmsResource res : oldGroup) {
+            CmsPublishResource pubRes = createPublishResource(res, pubList, allPubRes, published, permissions, locked);
+            oldRes.add(pubRes);
+        }
+        resultGroups.add(new CmsPublishGroup(oldName, oldRes));
+
+        return resultGroups;
     }
 
     /**
@@ -862,6 +843,32 @@ public class CmsPublish {
             removable,
             info,
             related);
+        return pubResource;
+    }
+
+    /**
+     * Creates a {@link CmsPublishResource} from a {@link CmsResource}.<p> 
+     * 
+     * @param resource the resource to convert
+     * @param pubList a publish list
+     * @param allPubRes a set of all publish resources
+     * @param published a set of already published resources
+     * @param permissions resources for which we don't have the permissions
+     * @param locked resources which are locked by another user 
+     * 
+     * @return a publish resource bean 
+     */
+    private CmsPublishResource createPublishResource(
+        CmsResource resource,
+        List<CmsResource> pubList,
+        Set<CmsResource> allPubRes,
+        Set<CmsResource> published,
+        ResourcesAndRelated permissions,
+        ResourcesAndRelated locked) {
+
+        List<CmsPublishResource> related = getRelatedResources(resource, allPubRes, published, permissions, locked);
+        CmsPublishResourceInfo info = getResourceInfo(resource, published, permissions, locked);
+        CmsPublishResource pubResource = resourceToBean(resource, info, pubList.contains(resource), related);
         return pubResource;
     }
 }
