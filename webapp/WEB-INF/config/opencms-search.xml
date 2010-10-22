@@ -136,17 +136,15 @@
 				<class>org.opencms.search.galleries.CmsGalleryDocumentXmlContent</class>
 				<mimetypes/>
 				<resourcetypes>
-					<resourcetype>*</resourcetype>
+					<resourcetype>xmlcontent-galleries</resourcetype>
 				</resourcetypes>
 			</documenttype>	
             <documenttype>
 				<name>xmlpage-galleries</name>
 				<class>org.opencms.search.galleries.CmsGalleryDocumentXmlPage</class>
-				<mimetypes>
-					<mimetype>text/html</mimetype>
-				</mimetypes>
+				<mimetypes />
 				<resourcetypes>
-					<resourcetype>xmlpage</resourcetype>
+					<resourcetype>xmlpage-galleries</resourcetype>
 				</resourcetypes>
 			</documenttype>		
 			<documenttype>
