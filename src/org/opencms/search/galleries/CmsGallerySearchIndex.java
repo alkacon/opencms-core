@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/galleries/CmsGallerySearchIndex.java,v $
- * Date   : $Date: 2010/06/29 09:38:46 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/10/22 12:07:28 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,8 @@ package org.opencms.search.galleries;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.types.CmsResourceTypeXmlContent;
+import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
@@ -41,6 +43,7 @@ import org.opencms.search.CmsSearchException;
 import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsSearchParameters;
 import org.opencms.search.Messages;
+import org.opencms.search.documents.I_CmsDocumentFactory;
 import org.opencms.search.documents.I_CmsTermHighlighter;
 
 import java.util.ArrayList;
@@ -64,11 +67,17 @@ import org.apache.lucene.util.Version;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 8.0.0 
  */
 public class CmsGallerySearchIndex extends CmsSearchIndex {
+
+    /** The gallery document type name for xml-contents. */
+    public static final String TYPE_XMLCONTENT_GALLERIES = "xmlcontent-galleries";
+
+    /** The gallery document type name for xml-pages. */
+    public static final String TYPE_XMLPAGE_GALLERIES = "xmlpage-galleries";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsGallerySearchIndex.class);
@@ -98,6 +107,25 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
 
         super();
         setName(name);
+    }
+
+    /**
+     * @see org.opencms.search.CmsSearchIndex#getDocumentFactory(org.opencms.file.CmsResource)
+     */
+    @Override
+    public I_CmsDocumentFactory getDocumentFactory(CmsResource res) {
+
+        if ((res != null) && (m_sources != null)) {
+            // the result can only be null or the type configured for the resource
+            if (CmsResourceTypeXmlContent.isXmlContent(res)) {
+                return OpenCms.getSearchManager().getDocumentFactory(TYPE_XMLCONTENT_GALLERIES, null);
+            } else if (CmsResourceTypeXmlPage.isXmlPage(res)) {
+                return OpenCms.getSearchManager().getDocumentFactory(TYPE_XMLPAGE_GALLERIES, null);
+            } else {
+                return super.getDocumentFactory(res);
+            }
+        }
+        return null;
     }
 
     /**

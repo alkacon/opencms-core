@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/A_CmsVfsDocument.java,v $
- * Date   : $Date: 2010/01/19 15:35:43 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/10/22 12:07:28 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import org.apache.lucene.document.Fieldable;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -134,10 +134,9 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
             if ((cache != null) && (resource.getSiblingCount() > 1)) {
                 // hard drive based caching only makes sense for resources that have siblings, 
                 // because the index will also store the content as a blob
-                cacheName = cache.getCacheName(resource, isLocaleDependend() ? index.getLocaleForResource(
-                    cms,
+                cacheName = cache.getCacheName(
                     resource,
-                    null) : null);
+                    isLocaleDependend() ? index.getLocaleForResource(cms, resource, null) : null);
                 content = cache.getCacheObject(cacheName);
             }
 
@@ -218,7 +217,7 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
         try {
             for (Iterator<String> i = resourceTypes.iterator(); i.hasNext();) {
 
-                String typeName = OpenCms.getResourceManager().getResourceType(i.next()).getTypeName();
+                String typeName = i.next();
                 for (Iterator<String> j = mimeTypes.iterator(); j.hasNext();) {
                     keys.add(getDocumentKey(typeName, j.next()));
                 }
