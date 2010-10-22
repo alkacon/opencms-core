@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/dnd/Attic/CmsDNDHandler.java,v $
- * Date   : $Date: 2010/09/30 13:32:25 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/10/22 12:09:47 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import com.google.gwt.user.client.Event.NativePreviewHandler;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -165,7 +165,7 @@ public class CmsDNDHandler implements MouseDownHandler {
      */
     public void cancel() {
 
-        m_controller.onDragCancel(m_draggable, m_currentTarget, this);
+        m_controller.onDragCancel(m_draggable, null, this);
         m_draggable.onDragCancel();
         clear();
     }
@@ -323,6 +323,16 @@ public class CmsDNDHandler implements MouseDownHandler {
     public void removeTarget(I_CmsDropTarget target) {
 
         m_targets.remove(target);
+    }
+
+    /**
+     * Sets the drag and drop controller.<p>
+     *
+     * @param controller the drag and drop controller to set
+     */
+    public void setController(I_CmsDNDController controller) {
+
+        m_controller = controller;
     }
 
     /**
