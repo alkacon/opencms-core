@@ -11,6 +11,7 @@
 			border-style: none;
 			border-width: 0;
 			outline:0 none;
+			width: 177px;
 		}
 		.x-date-bottom{ /* Use the gxt class to format the time panel. */
 		}
@@ -38,6 +39,9 @@
 		.ampm div span { /* Make a margin to separate the radiobuttons. */
 			margin-right: 1px;
 		}
+		.err {
+			width: 177px;
+		}
 	</ui:style>
 
 	<g:FlowPanel ui:field="m_dateBoxPanel">
@@ -49,7 +53,7 @@
 				<input:CmsRadioButton ui:field="m_am" addStyleNames="{style.ampm}"></input:CmsRadioButton>
 				<input:CmsRadioButton ui:field="m_pm" addStyleNames="{style.ampm}"></input:CmsRadioButton>
 			</g:FlowPanel>
-			<input:CmsErrorWidget ui:field="m_timeErr"></input:CmsErrorWidget>
+			<input:CmsErrorWidget ui:field="m_timeErr" addStyleNames="{style.err}"></input:CmsErrorWidget>
 		</g:FlowPanel>
 	</g:FlowPanel>
 </ui:UiBinder> 

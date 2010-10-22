@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/datebox/Attic/CmsDateBoxHandler.java,v $
- * Date   : $Date: 2010/10/22 14:35:37 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/10/22 14:38:40 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -209,11 +209,10 @@ public final class CmsDateBoxHandler {
                             setValidTimeFlag(false);
                             updatePopupCloseBehavior();
                         } else {
+
                             setValidTimeFlag(true);
                             updatePopupCloseBehavior();
-                            m_dateBox.getPopup().repaint();
                             m_dateBox.getPopup().sync(true);
-
                         }
                     }
                 });
