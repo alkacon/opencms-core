@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsToolbarClipboardMenu.java,v $
- * Date   : $Date: 2010/09/30 13:32:25 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2010/10/22 12:11:36 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.ade.containerpage.client.ui;
 
 import org.opencms.ade.containerpage.client.CmsContainerpageHandler;
+import org.opencms.ade.containerpage.client.CmsFavoritesDNDController;
 import org.opencms.ade.containerpage.client.Messages;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.CmsList;
@@ -44,6 +45,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -53,20 +56,26 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 8.0.0
  */
 public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu {
 
+    /** The favorite list widget. */
+    protected CmsFavoriteTab m_favorites;
+
+    /** Flag to indicate if the favorites are being edited. */
+    protected boolean m_isEditingFavorites;
+
     /** The main content widget. */
     private FlowPanel m_content;
 
+    /** The favorites editing drag and drop controller. */
+    private CmsFavoritesDNDController m_dndController;
+
     /** The favorite list drop-zone. */
     private CmsList<CmsListItem> m_dropzone;
-
-    /** The favorite list widget. */
-    private CmsFavoriteTab m_favorites;
 
     /** The recent list widget. */
     private CmsRecentTab m_recent;
@@ -86,6 +95,18 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu {
         m_content = new FlowPanel();
         m_content.setStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().menuContent());
         m_tabs = new CmsTabbedPanel<Widget>();
+        m_tabs.addSelectionHandler(new SelectionHandler<Integer>() {
+
+            /**
+             * @see com.google.gwt.event.logical.shared.SelectionHandler#onSelection(com.google.gwt.event.logical.shared.SelectionEvent)
+             */
+            public void onSelection(SelectionEvent<Integer> event) {
+
+                if (m_isEditingFavorites) {
+                    m_favorites.saveFavorites();
+                }
+            }
+        });
         m_favorites = new CmsFavoriteTab(this);
         m_recent = new CmsRecentTab();
 
@@ -101,6 +122,7 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu {
         m_dropzone.setDropEnabled(true);
         m_content.add(m_dropzone);
         setMenuWidget(m_content);
+        m_dndController = new CmsFavoritesDNDController();
     }
 
     /**
@@ -144,20 +166,16 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu {
      */
     public void enableFavoritesEdit() {
 
-        //        Iterator<Widget> it = m_favorites.iterator();
-        //        while (it.hasNext()) {
-        //            try {
-        //                CmsDragMenuElement element = (CmsDragMenuElement)((CmsSimpleListItem)it.next()).getWidget(0);
-        //                element.showDeleteButton();
-        //
-        //                // disabling the container-page drag and enabling the menu drag
-        //                element.removeDndMouseHandlers();
-        //                element.setDragParent(m_favorites.getListTarget());
-        //                m_menuDragHandler.registerMouseHandler(element);
-        //            } catch (ClassCastException e) {
-        //                CmsDebugLog.getInstance().printLine("Could not cast widget");
-        //            }
-        //        }
+        m_isEditingFavorites = true;
+        getHandler().enableFavoriteEditing(true, m_dndController);
+
+        Iterator<Widget> it = m_favorites.iterator();
+        while (it.hasNext()) {
+
+            CmsMenuListItem element = (CmsMenuListItem)it.next();
+            element.showDeleteButton();
+        }
+
     }
 
     /**
@@ -184,7 +202,9 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu {
      */
     public void onToolbarDeactivate() {
 
-        // nothing to do here
+        if (m_isEditingFavorites) {
+            m_favorites.saveFavorites();
+        }
     }
 
     /**
@@ -192,6 +212,8 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu {
      */
     public void reloadFavorites() {
 
+        m_isEditingFavorites = false;
+        getHandler().enableFavoriteEditing(false, m_dndController);
         getHandler().loadFavorites();
     }
 
@@ -200,6 +222,8 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu {
      */
     public void saveFavorites() {
 
+        m_isEditingFavorites = false;
+        getHandler().enableFavoriteEditing(false, m_dndController);
         List<String> clientIds = new ArrayList<String>();
         Iterator<Widget> it = m_favorites.iterator();
         while (it.hasNext()) {
@@ -207,10 +231,6 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu {
                 CmsMenuListItem element = (CmsMenuListItem)it.next();
                 element.hideDeleteButton();
                 clientIds.add(element.getId());
-
-                // disabling the menu drag and re-enabling the container-page drag
-                //                element.removeDndMouseHandlers();
-                //                getHandler().enableDragHandler(element);
             } catch (ClassCastException e) {
                 CmsDebugLog.getInstance().printLine("Could not cast widget");
             }

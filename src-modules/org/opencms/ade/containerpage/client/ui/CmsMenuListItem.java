@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsMenuListItem.java,v $
- * Date   : $Date: 2010/09/30 13:32:25 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/10/22 12:11:36 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,8 @@
 package org.opencms.ade.containerpage.client.ui;
 
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
+import org.opencms.gwt.client.dnd.CmsDNDHandler;
+import org.opencms.gwt.client.dnd.I_CmsDropTarget;
 import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsPushButton;
@@ -46,7 +48,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -98,6 +100,51 @@ public class CmsMenuListItem extends CmsListItem {
     }
 
     /**
+     * @see org.opencms.gwt.client.ui.CmsListItem#initMoveHandle(org.opencms.gwt.client.dnd.CmsDNDHandler)
+     */
+    @Override
+    public boolean initMoveHandle(CmsDNDHandler dndHandler) {
+
+        if (super.initMoveHandle(dndHandler)) {
+            // move handle should always be visible
+            getMoveHandle().addStyleName(
+                org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * @see org.opencms.gwt.client.dnd.I_CmsDraggable#onDragCancel()
+     */
+    @Override
+    public void onDragCancel() {
+
+        super.onDragCancel();
+        clearDrag();
+    }
+
+    /**
+     * @see org.opencms.gwt.client.dnd.I_CmsDraggable#onDrop(org.opencms.gwt.client.dnd.I_CmsDropTarget)
+     */
+    @Override
+    public void onDrop(I_CmsDropTarget target) {
+
+        super.onDrop(target);
+        clearDrag();
+    }
+
+    /**
+     * @see org.opencms.gwt.client.dnd.I_CmsDraggable#onStartDrag(org.opencms.gwt.client.dnd.I_CmsDropTarget)
+     */
+    @Override
+    public void onStartDrag(I_CmsDropTarget target) {
+
+        super.onStartDrag(target);
+        getElement().getStyle().setOpacity(0.5);
+    }
+
+    /**
      * Shows the element delete button.<p>
      */
     public void showDeleteButton() {
@@ -105,4 +152,12 @@ public class CmsMenuListItem extends CmsListItem {
         getListItemWidget().addButton(m_deleteButton);
     }
 
+    /**
+     * Removes all styling done during drag and drop.<p>
+     */
+    private void clearDrag() {
+
+        getElement().getStyle().clearOpacity();
+        getElement().getStyle().clearDisplay();
+    }
 }

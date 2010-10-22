@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsFavoriteTab.java,v $
- * Date   : $Date: 2010/09/30 13:32:25 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/10/22 12:11:36 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -115,9 +115,7 @@ public class CmsFavoriteTab extends Composite {
         m_saveButton.setTitle(Messages.get().key(Messages.GUI_BUTTON_SAVE_TEXT_0));
         m_cancelButton.setText(Messages.get().key(Messages.GUI_BUTTON_CANCEL_TEXT_0));
         m_cancelButton.setTitle(Messages.get().key(Messages.GUI_BUTTON_CANCEL_TEXT_0));
-
-        //TODO: show button when rditing works
-        m_editButton.setVisible(false);
+        m_listPanel.setDropEnabled(true);
     }
 
     /**
@@ -191,6 +189,14 @@ public class CmsFavoriteTab extends Composite {
      */
     @UiHandler("m_saveButton")
     void saveAction(ClickEvent event) {
+
+        saveFavorites();
+    }
+
+    /**
+     * Saves the favorites.<p>
+     */
+    public void saveFavorites() {
 
         m_clipboard.saveFavorites();
         m_buttonEditingPanel.setVisible(false);
