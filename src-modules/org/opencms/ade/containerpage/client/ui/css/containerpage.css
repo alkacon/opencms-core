@@ -40,6 +40,24 @@ ul.clipboardList{
 	display: none;
 }
 
+.dragStarted div.listCollectorEditor{
+	display: none;
+}
+
+.toolbarSelection .listCollectorEditor, .toolbarEdit .listCollectorEditor{
+	display: block;
+}
+
+.listCollectorEditor{
+	position: absolute;
+	text-align: right;
+	display: none;
+}
+
+.listCollectorEditor .cmsState{
+	display: inline-block;
+}
+
 .menuContent.showDropzone{
 	padding: 5px 0px;	
 }

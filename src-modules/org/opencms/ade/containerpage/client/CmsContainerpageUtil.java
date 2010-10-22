@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageUtil.java,v $
- * Date   : $Date: 2010/10/12 06:55:30 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2010/10/22 12:12:43 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,6 @@ import org.opencms.ade.containerpage.client.ui.CmsSubContainerElement;
 import org.opencms.ade.containerpage.client.ui.I_CmsDropContainer;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
-import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.util.CmsDomUtil;
 
 import java.util.ArrayList;
@@ -57,7 +56,7 @@ import com.google.gwt.user.client.Element;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 8.0.0
  */
@@ -72,25 +71,17 @@ public class CmsContainerpageUtil {
     /** The container page controller. */
     private CmsContainerpageController m_controller;
 
-    /** The drag and drop handler. */
-    private CmsDNDHandler m_dndHandler;
-
     /** List of buttons of the tool-bar. */
     private A_CmsToolbarOptionButton[] m_optionButtons;
 
     /**
      * Constructor.<p>
      * 
-     * @param dndHandler the container-page drag and drop handler
      * @param controller the container page controller
      * @param optionButtons the tool-bar option buttons
      */
-    public CmsContainerpageUtil(
-        CmsDNDHandler dndHandler,
-        CmsContainerpageController controller,
-        A_CmsToolbarOptionButton... optionButtons) {
+    public CmsContainerpageUtil(CmsContainerpageController controller, A_CmsToolbarOptionButton... optionButtons) {
 
-        m_dndHandler = dndHandler;
         m_controller = controller;
         m_optionButtons = optionButtons;
     }
@@ -218,7 +209,7 @@ public class CmsContainerpageUtil {
     public CmsMenuListItem createListItem(CmsContainerElementData containerElement) {
 
         CmsMenuListItem listItem = new CmsMenuListItem(containerElement);
-        listItem.initMoveHandle(m_dndHandler);
+        listItem.initMoveHandle(m_controller.getDndHandler());
         return listItem;
     }
 
@@ -266,16 +257,6 @@ public class CmsContainerpageUtil {
         return subContainer;
     }
 
-    //    /**
-    //     * Enables container-page drag and drop for the given element.<p>
-    //     * 
-    //     * @param element the element
-    //     */
-    //    public void enableDragHandler(I_CmsDragContainerElement<I_CmsDragTargetContainer> element) {
-    //
-    //        m_dragHandler.registerMouseHandler(element);
-    //    }
-
     /**
      * Adds an option bar to the given drag element.<p>
      * 
@@ -285,7 +266,7 @@ public class CmsContainerpageUtil {
 
         CmsElementOptionBar optionBar = CmsElementOptionBar.createOptionBarForElement(
             element,
-            m_dndHandler,
+            m_controller.getDndHandler(),
             m_optionButtons);
         element.setElementOptionBar(optionBar);
     }

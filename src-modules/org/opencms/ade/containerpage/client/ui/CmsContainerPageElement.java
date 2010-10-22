@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsContainerPageElement.java,v $
- * Date   : $Date: 2010/10/18 15:09:15 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/10/22 12:12:43 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,11 +35,17 @@ import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.dnd.I_CmsDraggable;
 import org.opencms.gwt.client.dnd.I_CmsDropTarget;
 import org.opencms.gwt.client.ui.CmsHighlightingBorder;
+import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.gwt.client.util.CmsDomUtil.Tag;
 import org.opencms.gwt.client.util.CmsPositionBean;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.ui.AbsolutePanel;
@@ -50,7 +56,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -61,6 +67,8 @@ public class CmsContainerPageElement extends AbsolutePanel implements I_CmsDragg
 
     /** The elements client id. */
     private String m_clientId;
+
+    private List<CmsListCollectorEditor> m_editables;
 
     /** The option bar, holding optional function buttons. */
     private CmsElementOptionBar m_elementOptionBar;
@@ -210,6 +218,18 @@ public class CmsContainerPageElement extends AbsolutePanel implements I_CmsDragg
     }
 
     /**
+     * Hides list collector direct edit buttons, if present.<p>
+     */
+    public void hideEditableListButtons() {
+
+        if (m_editables == null) {
+            for (CmsListCollectorEditor editor : m_editables) {
+                editor.getElement().getStyle().setDisplay(Display.NONE);
+            }
+        }
+    }
+
+    /**
      * Puts a highlighting border around the element.<p>
      */
     public void highlightElement() {
@@ -239,11 +259,7 @@ public class CmsContainerPageElement extends AbsolutePanel implements I_CmsDragg
      */
     public void onDragCancel() {
 
-        CmsDomUtil.removeDisablingOverlay(getElement());
-        m_elementOptionBar.getElement().removeClassName(
-            org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.stateCss().cmsHovering());
-        getElement().getStyle().clearOpacity();
-        getElement().getStyle().clearDisplay();
+        clearDrag();
     }
 
     /**
@@ -251,11 +267,7 @@ public class CmsContainerPageElement extends AbsolutePanel implements I_CmsDragg
      */
     public void onDrop(I_CmsDropTarget target) {
 
-        CmsDomUtil.removeDisablingOverlay(getElement());
-        m_elementOptionBar.getElement().removeClassName(
-            org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.stateCss().cmsHovering());
-        getElement().getStyle().clearOpacity();
-        getElement().getStyle().clearDisplay();
+        clearDrag();
     }
 
     /**
@@ -343,4 +355,89 @@ public class CmsContainerPageElement extends AbsolutePanel implements I_CmsDragg
         m_sitePath = sitePath;
     }
 
+    /**
+     * Shows list collector direct edit buttons (old direct edit style), if present.<p>
+     */
+    public void showEditableListButtons() {
+
+        if (m_editables == null) {
+            m_editables = new ArrayList<CmsListCollectorEditor>();
+            List<Element> editables = CmsDomUtil.getElementsByClass("cms-editable", Tag.div, getElement());
+            if ((editables != null) && (editables.size() > 0)) {
+                for (Element editable : editables) {
+                    try {
+                        CmsListCollectorEditor editor = new CmsListCollectorEditor(editable, m_clientId);
+                        add(editor);
+                        editor.setPosition(getEditablePosition(editable), this);
+                        m_editables.add(editor);
+                    } catch (UnsupportedOperationException e) {
+                        CmsDebugLog.getInstance().printLine(e.getMessage());
+                    }
+                }
+            }
+        } else {
+            for (CmsListCollectorEditor editor : m_editables) {
+                editor.getElement().getStyle().clearDisplay();
+                editor.setPosition(getEditablePosition(editor.getMarkerTag()), this);
+            }
+        }
+    }
+
+    /**
+     * Removes all styling done during drag and drop.<p>
+     */
+    private void clearDrag() {
+
+        CmsDomUtil.removeDisablingOverlay(getElement());
+        m_elementOptionBar.getElement().removeClassName(
+            org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.stateCss().cmsHovering());
+        getElement().getStyle().clearOpacity();
+        getElement().getStyle().clearDisplay();
+    }
+
+    /**
+     * Determines the position of the list collector editable content.<p> 
+     * 
+     * @param editable the editable marker tag
+     * 
+     * @return the position
+     */
+    private CmsPositionBean getEditablePosition(Element editable) {
+
+        CmsPositionBean result = new CmsPositionBean();
+        int dummy = -999;
+        // setting minimum height
+        result.setHeight(20);
+        result.setWidth(60);
+        result.setLeft(dummy);
+        result.setTop(dummy);
+        Element sibling = editable.getNextSiblingElement();
+        while ((sibling != null)
+            && !CmsDomUtil.hasClass("cms-editable", sibling)
+            && !CmsDomUtil.hasClass("cms-editable-end", sibling)) {
+            CmsPositionBean siblingPos = CmsPositionBean.generatePositionInfo(sibling);
+            result.setLeft(((result.getLeft() == dummy) || (siblingPos.getLeft() < result.getLeft()))
+            ? siblingPos.getLeft()
+            : result.getLeft());
+            result.setTop(((result.getTop() == dummy) || (siblingPos.getTop() < result.getTop()))
+            ? siblingPos.getTop()
+            : result.getTop());
+            result.setHeight((result.getTop() + result.getHeight() > siblingPos.getTop() + siblingPos.getHeight())
+            ? result.getHeight()
+            : siblingPos.getTop() + siblingPos.getHeight() - result.getTop());
+            result.setWidth((result.getLeft() + result.getWidth() > siblingPos.getLeft() + siblingPos.getWidth())
+            ? result.getWidth()
+            : siblingPos.getLeft() + siblingPos.getWidth() - result.getLeft());
+            sibling = sibling.getNextSiblingElement();
+        }
+
+        if (result.getHeight() == -1) {
+            // in case no height was set
+            result = CmsPositionBean.generatePositionInfo(editable);
+            result.setHeight(20);
+            result.setWidth((result.getWidth() < 60) ? 60 : result.getWidth());
+        }
+
+        return result;
+    }
 }

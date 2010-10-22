@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/shared/rpc/Attic/I_CmsContainerpageServiceAsync.java,v $
- * Date   : $Date: 2010/10/13 12:53:49 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2010/10/22 12:12:43 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 8.0.0
  */
@@ -84,6 +84,14 @@ public interface I_CmsContainerpageServiceAsync {
         String clientId,
         String resourceType,
         AsyncCallback<CmsContainerElement> callback);
+
+    /**
+     * Deletes an element from the VFS.<p>
+     * 
+     * @param clientId the elements client id
+     * @param callback the call-back executed on response
+     */
+    void deleteElement(String clientId, AsyncCallback<Void> callback);
 
     /**
      * Requests container element data by client id.<p>

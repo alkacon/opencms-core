@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageDNDController.java,v $
- * Date   : $Date: 2010/10/18 15:09:15 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/10/22 12:12:43 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,7 +69,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -199,6 +199,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         m_isNew = false;
         m_originalIndex = -1;
         m_initialDropTarget = target;
+        m_controller.hideEditableListButtons();
         if (target != null) {
             handler.addTarget(target);
             String positioning = CmsDomUtil.getCurrentStyle(
@@ -379,6 +380,9 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
      */
     protected void prepareHelperElements(CmsContainerElementData elementData, CmsDNDHandler handler) {
 
+        if (!handler.isDragging()) {
+            return;
+        }
         if (handler.getDraggable() instanceof CmsContainerPageElement) {
             CmsList<CmsListItem> dropzone = m_controller.getHandler().getDropzone();
             m_controller.getHandler().showDropzone(true);
@@ -469,6 +473,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         m_isNew = false;
         m_controller.getHandler().showDropzone(false);
         m_controller.getHandler().deactivateMenuButton();
+        m_controller.resetEditableListButtons();
         m_dragInfos.clear();
         DeferredCommand.addCommand(new Command() {
 
@@ -480,6 +485,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                 handler.clearTargets();
             }
         });
+
     }
 
     /**

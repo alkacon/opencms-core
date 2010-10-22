@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsDomUtil.java,v $
- * Date   : $Date: 2010/10/18 15:09:43 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2010/10/22 12:12:43 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentC
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.30 $
+ * @version $Revision: 1.31 $
  * 
  * @since 8.0.0
  */
@@ -791,6 +791,28 @@ public final class CmsDomUtil {
             }
         }
         return -1;
+    }
+
+    /**
+     * Returns the next ancestor to the element with an absolute, fixed or relative position.<p>
+     * 
+     * @param child the element
+     * 
+     * @return the positioning parent element (may be <code>null</code>)
+     */
+    public static Element getPositioningParent(Element child) {
+
+        Element parent = child.getParentElement();
+        while (parent != null) {
+            String parentPositioning = CmsDomUtil.getCurrentStyle(parent, Style.position);
+            if (Position.RELATIVE.getCssName().equals(parentPositioning)
+                || Position.ABSOLUTE.getCssName().equals(parentPositioning)
+                || Position.FIXED.getCssName().equals(parentPositioning)) {
+                return parent;
+            }
+            parent = parent.getParentElement();
+        }
+        return null;
     }
 
     /**

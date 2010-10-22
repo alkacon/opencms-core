@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/I_CmsDropContainer.java,v $
- * Date   : $Date: 2010/09/30 13:32:25 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/10/22 12:12:43 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,6 +73,11 @@ public interface I_CmsDropContainer extends I_CmsDropTarget {
     int getWidgetIndex(Widget w);
 
     /**
+     * Hides list collector direct edit buttons, if present.<p>
+     */
+    void hideEditableListButtons();
+
+    /**
      * Puts a highlighting border around the container content.<p>
      */
     void highlightContainer();
@@ -95,5 +100,10 @@ public interface I_CmsDropContainer extends I_CmsDropTarget {
      * Removes the highlighting border.<p>
      */
     void removeHighlighting();
+
+    /**
+     * Shows list collector direct edit buttons (old direct edit style), if present.<p>
+     */
+    void showEditableListButtons();
 
 }

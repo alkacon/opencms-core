@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageController.java,v $
- * Date   : $Date: 2010/10/14 09:46:44 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2010/10/22 12:12:43 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,7 +33,6 @@ package org.opencms.ade.containerpage.client;
 
 import org.opencms.ade.containerpage.client.ui.CmsLeavePageDialog;
 import org.opencms.ade.containerpage.client.ui.CmsSubContainerElement;
-import org.opencms.ade.containerpage.client.ui.I_CmsToolbarButton;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.containerpage.shared.CmsCntPageData;
 import org.opencms.ade.containerpage.shared.CmsContainer;
@@ -43,6 +42,8 @@ import org.opencms.ade.containerpage.shared.CmsSubContainer;
 import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService;
 import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageServiceAsync;
 import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.dnd.CmsDNDHandler;
+import org.opencms.gwt.client.dnd.I_CmsDNDController;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.rpc.CmsRpcPrefetcher;
 import org.opencms.gwt.client.ui.CmsNotification;
@@ -62,8 +63,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JsArray;
@@ -74,9 +75,9 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.Window.ClosingHandler;
 import com.google.gwt.user.client.ui.Widget;
@@ -86,7 +87,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * 
  * @since 8.0.0
  */
@@ -229,7 +230,7 @@ public final class CmsContainerpageController {
                 }
 
             }
-
+            resetEditableListButtons();
         }
     }
 
@@ -330,6 +331,12 @@ public final class CmsContainerpageController {
     /** The prefetched data. */
     private CmsCntPageData m_data;
 
+    /** The drag and drop handler. */
+    private CmsDNDHandler m_dndHandler;
+
+    /** The container page drag and drop controller. */
+    private I_CmsDNDController m_cntDndController;
+
     /** The currently edited sub-container element. */
     private CmsSubContainerElement m_editingSubcontainer;
 
@@ -341,6 +348,7 @@ public final class CmsContainerpageController {
      */
     public CmsContainerpageController() {
 
+        INSTANCE = this;
         m_data = (CmsCntPageData)CmsRpcPrefetcher.getSerializedObject(
             getContainerpageService(),
             CmsCntPageData.DICT_NAME);
@@ -369,18 +377,6 @@ public final class CmsContainerpageController {
 
         return CmsCoreProvider.get().getUri();
 
-    }
-
-    /**
-     * Initializes the data provider. This will also transform the pages containers and elements into the appropriate widgets (done within the private constructor).<p>
-     *  
-     * @param toolbarButtons the tool-bar buttons of the container-page editor
-     */
-    public static void init(List<I_CmsToolbarButton> toolbarButtons) {
-
-        if (INSTANCE == null) {
-            INSTANCE = new CmsContainerpageController();
-        }
     }
 
     /**
@@ -479,6 +475,62 @@ public final class CmsContainerpageController {
             }
         };
         action.execute();
+    }
+
+    /**
+     * Deletes an element from the VFS, removes it from all containers and the client side cache.<p>
+     * 
+     * @param elementId the element to delete
+     * @param relatedElementId related element to reload after the element has been deleted
+     */
+    public void deleteElement(String elementId, final String relatedElementId) {
+
+        if (elementId.contains("#")) {
+            elementId = elementId.substring(0, elementId.indexOf("#"));
+        }
+        final String id = elementId;
+        CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+             */
+            @Override
+            public void execute() {
+
+                getContainerpageService().deleteElement(id, this);
+            }
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+             */
+            @Override
+            protected void onResponse(Void result) {
+
+                removeContainerElements(id);
+                reloadElements(new String[] {relatedElementId});
+            }
+        };
+        action.execute();
+    }
+
+    /**
+     * Enables the favorites editing drag and drop controller.<p>
+     * 
+     * @param enable if <code>true</code> favorites editing will enabled, otherwise disabled
+     * @param dndController the favorites editing drag and drop controller
+     */
+    public void enableFavoriteEditing(boolean enable, I_CmsDNDController dndController) {
+
+        if (m_dndHandler.isDragging()) {
+            // never switch drag and drop controllers while dragging
+            return;
+        }
+        if (enable) {
+            m_dndHandler.setController(dndController);
+        } else {
+            m_dndHandler.setController(m_cntDndController);
+        }
+
     }
 
     /**
@@ -596,6 +648,16 @@ public final class CmsContainerpageController {
     }
 
     /**
+     * Returns the drag and drop handler.<p>
+     *
+     * @return the drag and drop handler
+     */
+    public CmsDNDHandler getDndHandler() {
+
+        return m_dndHandler;
+    }
+
+    /**
      * Requests the data for a container element specified by the client id. The data will be provided to the given call-back function.<p>
      * 
      * @param clientId the element id
@@ -641,7 +703,7 @@ public final class CmsContainerpageController {
      *  
      * @param callback the callback which should be executed when the element has been loaded 
      */
-    public void getElementWithProperties(
+    private void getElementWithProperties(
         final String clientId,
         final Map<String, String> properties,
         final I_CmsSimpleCallback<CmsContainerElementData> callback) {
@@ -736,15 +798,28 @@ public final class CmsContainerpageController {
     }
 
     /**
+     * Hides list collector direct edit buttons, if present.<p>
+     */
+    public void hideEditableListButtons() {
+
+        for (org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer container : m_targetContainers.values()) {
+            container.hideEditableListButtons();
+        }
+    }
+
+    /**
      * Initializes the controller.<p>
      * 
      * @param handler the container-page handler
+     * @param dndHandler the drag and drop handler
      * @param containerpageUtil the container-page utility
      */
-    public void init(CmsContainerpageHandler handler, CmsContainerpageUtil containerpageUtil) {
+    public void init(CmsContainerpageHandler handler, CmsDNDHandler dndHandler, CmsContainerpageUtil containerpageUtil) {
 
         m_containerpageUtil = containerpageUtil;
         m_handler = handler;
+        m_dndHandler = dndHandler;
+        m_cntDndController = m_dndHandler.getController();
 
         m_elements = new HashMap<String, CmsContainerElementData>();
         m_containerTypes = new HashSet<String>();
@@ -758,7 +833,7 @@ public final class CmsContainerpageController {
         }
         m_containerBeans = createEmptyContainerBeans();
         m_targetContainers = m_containerpageUtil.consumeContainers(m_containers);
-
+        resetEditableListButtons();
         Event.addNativePreviewHandler(new NativePreviewHandler() {
 
             public void onPreviewNativeEvent(NativePreviewEvent event) {
@@ -887,11 +962,14 @@ public final class CmsContainerpageController {
      * 
      * Call this if the element content has changed.<p>
      * 
-     * @param id the element id
+     * @param ids the element id's
      */
-    public void reloadElement(String id) {
+    public void reloadElements(String[] ids) {
 
-        Set<String> related = getRelatedElementIds(id);
+        Set<String> related = new HashSet<String>();
+        for (int i = 0; i < ids.length; i++) {
+            related.addAll(getRelatedElementIds(ids[i]));
+        }
         ReloadElementAction action = new ReloadElementAction(related);
         action.execute();
     }
@@ -915,6 +993,7 @@ public final class CmsContainerpageController {
                 try {
                     replaceContainerElement(elementWidget, newElement);
                     setPageChanged(true, false);
+                    resetEditableListButtons();
                 } catch (Exception e) {
                     // should never happen
                     CmsDebugLog.getInstance().printLine(e.getLocalizedMessage());
@@ -978,6 +1057,28 @@ public final class CmsContainerpageController {
             }
             parentContainer.insert(replacer, parentContainer.getWidgetIndex(containerElement));
             containerElement.removeFromParent();
+        }
+    }
+
+    /**
+     * Removes all container elements with the given id from all containers and the client side cache.<p>
+     * 
+     * @param resourceId the resource id
+     */
+    protected void removeContainerElements(String resourceId) {
+
+        Iterator<org.opencms.ade.containerpage.client.ui.CmsContainerPageElement> it = getAllDragElements().iterator();
+        while (it.hasNext()) {
+            org.opencms.ade.containerpage.client.ui.CmsContainerPageElement containerElement = it.next();
+            if (resourceId.startsWith(containerElement.getId())) {
+                containerElement.removeFromParent();
+                setPageChanged();
+            }
+        }
+        for (String elementId : m_elements.keySet()) {
+            if (elementId.startsWith(resourceId)) {
+                m_elements.remove(elementId);
+            }
         }
     }
 
@@ -1164,6 +1265,19 @@ public final class CmsContainerpageController {
             }
         };
         action.execute();
+        if (visible) {
+            resetEditableListButtons();
+        }
+    }
+
+    /**
+     * Shows list collector direct edit buttons (old direct edit style), if present.<p>
+     */
+    public void resetEditableListButtons() {
+
+        for (org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer container : m_targetContainers.values()) {
+            container.showEditableListButtons();
+        }
     }
 
     /**

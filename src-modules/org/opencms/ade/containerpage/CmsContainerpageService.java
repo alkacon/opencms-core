@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsContainerpageService.java,v $
- * Date   : $Date: 2010/10/13 12:53:49 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2010/10/22 12:12:55 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -86,7 +86,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @since 8.0.0
  */
@@ -178,6 +178,32 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             error(e);
         }
         return element;
+    }
+
+    /**
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#deleteElement(java.lang.String)
+     */
+    public void deleteElement(String clientId) throws CmsRpcException {
+
+        String path = null;
+        try {
+            CmsResource res = getCmsObject().readResource(OpenCms.getADEManager().convertToServerId(clientId));
+            path = getCmsObject().getSitePath(res);
+            getCmsObject().lockResource(path);
+            getCmsObject().deleteResource(path, CmsResource.DELETE_PRESERVE_SIBLINGS);
+        } catch (Exception e) {
+            // should never happen
+            error(e);
+        } finally {
+            try {
+                if (path != null) {
+                    getCmsObject().unlockResource(path);
+                }
+            } catch (Exception e) {
+                // should really never happen
+                LOG.debug(e.getLocalizedMessage(), e);
+            }
+        }
     }
 
     /**

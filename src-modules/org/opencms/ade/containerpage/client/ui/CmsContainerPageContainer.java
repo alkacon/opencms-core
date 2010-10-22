@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsContainerPageContainer.java,v $
- * Date   : $Date: 2010/10/13 12:53:49 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/10/22 12:12:43 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -210,6 +210,21 @@ public class CmsContainerPageContainer implements I_CmsDropContainer, HasWidgets
     }
 
     /**
+     * @see org.opencms.ade.containerpage.client.ui.I_CmsDropContainer#hideEditableListButtons()
+     */
+    @Override
+    public void hideEditableListButtons() {
+
+        Iterator<Widget> it = iterator();
+        while (it.hasNext()) {
+            Widget child = it.next();
+            if (child instanceof CmsContainerPageElement) {
+                ((CmsContainerPageElement)child).hideEditableListButtons();
+            }
+        }
+    }
+
+    /**
      * Puts a highlighting border around the container content.<p>
      */
     public void highlightContainer() {
@@ -260,7 +275,7 @@ public class CmsContainerPageContainer implements I_CmsDropContainer, HasWidgets
      */
     public void onDrop(I_CmsDraggable draggable) {
 
-        // TODO: Auto-generated method stub
+        // nothing to do
 
     }
 
@@ -313,4 +328,18 @@ public class CmsContainerPageContainer implements I_CmsDropContainer, HasWidgets
         m_placeholderIndex = CmsDomUtil.positionElementInside(m_placeholder, getElement(), m_placeholderIndex, x, y);
     }
 
+    /**
+     * @see org.opencms.ade.containerpage.client.ui.I_CmsDropContainer#showEditableListButtons()
+     */
+    @Override
+    public void showEditableListButtons() {
+
+        Iterator<Widget> it = iterator();
+        while (it.hasNext()) {
+            Widget child = it.next();
+            if (child instanceof CmsContainerPageElement) {
+                ((CmsContainerPageElement)child).showEditableListButtons();
+            }
+        }
+    }
 }

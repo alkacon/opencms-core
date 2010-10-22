@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageHandler.java,v $
- * Date   : $Date: 2010/10/12 06:55:30 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2010/10/22 12:12:43 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,6 +40,7 @@ import org.opencms.ade.containerpage.client.ui.CmsSubcontainerEditor;
 import org.opencms.ade.containerpage.client.ui.I_CmsToolbarButton;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.ade.publish.client.CmsPublishDialog;
+import org.opencms.gwt.client.dnd.I_CmsDNDController;
 import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.gwt.client.ui.CmsConfirmDialog;
 import org.opencms.gwt.client.ui.CmsContextMenuEntry;
@@ -55,7 +56,6 @@ import org.opencms.gwt.client.ui.input.form.CmsForm;
 import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormHandler;
 import org.opencms.gwt.client.util.CmsCollectionUtil;
-import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
@@ -86,7 +86,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * 
  * @since 8.0.0
  */
@@ -222,6 +222,17 @@ public class CmsContainerpageHandler {
 
         });
 
+    }
+
+    /**
+     * Enables the favorites editing drag and drop controller.<p>
+     * 
+     * @param enable if <code>true</code> favorites editing will enabled, otherwise disabled
+     * @param dndController the favorites editing drag and drop controller
+     */
+    public void enableFavoriteEditing(boolean enable, I_CmsDNDController dndController) {
+
+        m_controller.enableFavoriteEditing(enable, dndController);
     }
 
     /**
@@ -384,8 +395,6 @@ public class CmsContainerpageHandler {
     public void openEditorForElement(CmsContainerPageElement element) {
 
         if (element.isNew()) {
-            CmsDebugLog.getInstance().printLine(
-                "editing new element, id: " + element.getId() + ", tpype: " + element.getNewType());
             m_controller.createAndEditNewElement(element);
             return;
         }
@@ -412,18 +421,18 @@ public class CmsContainerpageHandler {
         if (CmsDomUtil.hasClass(CmsContainerpageUtil.CLASS_SUB_CONTAINER_ELEMENTS, element.getElement())) {
             openSubcontainerEditor((CmsSubContainerElement)element);
         } else {
-            CmsContentEditorDialog.get().openEditDialog(element.getId(), element.getSitePath());
+            CmsContentEditorDialog.get().openEditDialog(element.getId(), element.getSitePath(), false);
         }
     }
 
     /**
      * Reloads the content for the given element and all related elements.<p>
      * 
-     * @param elementId the element id
+     * @param elementIds the element id's
      */
-    public void reloadElement(String elementId) {
+    public void reloadElements(String... elementIds) {
 
-        m_controller.reloadElement(elementId);
+        m_controller.reloadElements(elementIds);
     }
 
     /**

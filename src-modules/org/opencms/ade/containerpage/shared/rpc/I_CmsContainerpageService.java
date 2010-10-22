@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/shared/rpc/Attic/I_CmsContainerpageService.java,v $
- * Date   : $Date: 2010/10/13 12:53:49 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2010/10/22 12:12:43 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 8.0.0
  */
@@ -88,6 +88,15 @@ public interface I_CmsContainerpageService extends RemoteService {
      */
     CmsContainerElement createNewElement(String containerpageUri, String clientId, String resourceType)
     throws CmsRpcException;
+
+    /**
+     * Deletes an element from the VFS.<p>
+     * 
+     * @param clientId the elements client id
+     * 
+     * @throws CmsRpcException if something goes wrong processing the request
+     */
+    void deleteElement(String clientId) throws CmsRpcException;
 
     /**
      * Returns container element data by client id.<p>

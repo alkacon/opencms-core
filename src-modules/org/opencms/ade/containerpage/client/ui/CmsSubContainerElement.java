@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsSubContainerElement.java,v $
- * Date   : $Date: 2010/10/12 06:55:30 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/10/22 12:12:43 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,9 +38,12 @@ import org.opencms.gwt.client.ui.CmsHighlightingBorder;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsPositionBean;
 
+import java.util.Iterator;
+
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Sub-container element. To be used for content elements within a container-page.<p>
@@ -48,7 +51,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -57,11 +60,11 @@ public class CmsSubContainerElement extends CmsContainerPageElement implements I
     /** The container type. */
     private String m_containerId;
 
-    /** The placeholder element. */
-    private Element m_placeholder;
-
     /** The editing placeholder. Used within sub-container editing. */
     private Element m_editingPlaceholder;
+
+    /** The placeholder element. */
+    private Element m_placeholder;
 
     /** The index of the current placeholder position. */
     private int m_placeholderIndex = -1;
@@ -111,6 +114,14 @@ public class CmsSubContainerElement extends CmsContainerPageElement implements I
     }
 
     /**
+     * Clears the editing placeholder reference.<p>
+     */
+    public void clearEditingPlaceholder() {
+
+        m_editingPlaceholder = null;
+    }
+
+    /**
      * Returns the container id.<p>
      *
      * @return the container id
@@ -126,6 +137,21 @@ public class CmsSubContainerElement extends CmsContainerPageElement implements I
     public int getPlaceholderIndex() {
 
         return m_placeholderIndex;
+    }
+
+    /**
+     * @see org.opencms.ade.containerpage.client.ui.CmsContainerPageElement#hideEditableListButtons()
+     */
+    @Override
+    public void hideEditableListButtons() {
+
+        Iterator<Widget> it = iterator();
+        while (it.hasNext()) {
+            Widget child = it.next();
+            if (child instanceof CmsContainerPageElement) {
+                ((CmsContainerPageElement)child).hideEditableListButtons();
+            }
+        }
     }
 
     /**
@@ -163,7 +189,7 @@ public class CmsSubContainerElement extends CmsContainerPageElement implements I
      */
     public void onDrop(I_CmsDraggable draggable) {
 
-        // TODO: Auto-generated method stub
+        // nothing to do
 
     }
 
@@ -236,11 +262,18 @@ public class CmsSubContainerElement extends CmsContainerPageElement implements I
     }
 
     /**
-     * Clears the editing placeholder reference.<p>
+     * @see org.opencms.ade.containerpage.client.ui.CmsContainerPageElement#showEditableListButtons()
      */
-    public void clearEditingPlaceholder() {
+    @Override
+    public void showEditableListButtons() {
 
-        m_editingPlaceholder = null;
+        Iterator<Widget> it = iterator();
+        while (it.hasNext()) {
+            Widget child = it.next();
+            if (child instanceof CmsContainerPageElement) {
+                ((CmsContainerPageElement)child).showEditableListButtons();
+            }
+        }
     }
 
 }

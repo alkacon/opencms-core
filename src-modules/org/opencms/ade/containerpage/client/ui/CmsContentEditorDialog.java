@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsContentEditorDialog.java,v $
- * Date   : $Date: 2010/10/12 06:55:30 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/10/22 12:12:43 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import com.google.gwt.user.client.Window;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
@@ -71,6 +71,9 @@ public final class CmsContentEditorDialog {
 
     /** the prefetched data. */
     private CmsCntPageData m_data;
+
+    /** The depending element's id. */
+    private String m_dependingElementId;
 
     /** The popup instance. */
     private CmsPopup m_dialog;
@@ -127,8 +130,9 @@ public final class CmsContentEditorDialog {
      * 
      * @param elementId the element id
      * @param sitePath the element site-path
+     * @param isNew <code>true</code> when creating a new resource
      */
-    public void openEditDialog(String elementId, String sitePath) {
+    public void openEditDialog(String elementId, String sitePath, boolean isNew) {
 
         if ((m_dialog != null) && m_dialog.isShowing()) {
             CmsDebugLog.getInstance().printLine("Dialog is already open, cannot open another one.");
@@ -139,7 +143,7 @@ public final class CmsContentEditorDialog {
         m_currentSitePath = sitePath;
         m_dialog = new CmsPopup(Messages.get().key(Messages.GUI_DIALOG_CONTENTEDITOR_TITLE_0)
             + " - "
-            + m_currentSitePath);
+            + (isNew ? "Editing new resource" : m_currentSitePath));
         m_dialog.addStyleName(I_CmsLayoutBundle.INSTANCE.contentEditorCss().contentEditor());
 
         int height = Window.getClientHeight() - 20;
@@ -156,6 +160,16 @@ public final class CmsContentEditorDialog {
     }
 
     /**
+     * Sets the depending element id.<p>
+     *
+     * @param dependingElementId the depending element id to set
+     */
+    public void setDependingElementId(String dependingElementId) {
+
+        m_dependingElementId = dependingElementId;
+    }
+
+    /**
      * Closes the dialog.<p>
      */
     private void close() {
@@ -163,7 +177,12 @@ public final class CmsContentEditorDialog {
         if (m_dialog != null) {
             m_dialog.hide();
             m_dialog = null;
-            m_handler.reloadElement(m_currentElementId);
+            if (m_dependingElementId != null) {
+                m_handler.reloadElements(m_currentElementId, m_dependingElementId);
+                m_dependingElementId = null;
+            } else {
+                m_handler.reloadElements(m_currentElementId);
+            }
             m_currentElementId = null;
             m_currentSitePath = null;
         }
