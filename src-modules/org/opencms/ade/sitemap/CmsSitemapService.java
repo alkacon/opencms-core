@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsSitemapService.java,v $
- * Date   : $Date: 2010/10/18 10:05:41 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2010/10/22 15:05:29 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -100,7 +100,7 @@ import org.apache.commons.collections.map.MultiValueMap;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.39 $ 
+ * @version $Revision: 1.40 $ 
  * 
  * @since 8.0.0
  * 
@@ -313,6 +313,8 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
             String siteRoot = OpenCms.getSiteManager().getSiteRoot(sitemap.getRootPath());
             String exportName = sitemapMgr.getExportnameForSiteRoot(siteRoot);
 
+            String exportRfsPrefix = OpenCms.getStaticExportManager().getDefaultRfsPrefix();
+
             CmsSite site = OpenCms.getSiteManager().getSiteForSiteRoot(siteRoot);
             boolean isSecure = site.hasSecureServer();
 
@@ -323,6 +325,7 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
                 getClipboardData(),
                 parentProperties,
                 exportName,
+                exportRfsPrefix,
                 isSecure,
                 getNoEditReason(cms, getRequest()),
                 isDisplayToolbar(getRequest()),

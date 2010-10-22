@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsSitemapData.java,v $
- * Date   : $Date: 2010/10/18 10:05:41 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/10/22 15:05:29 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0
  */
@@ -66,6 +66,8 @@ public class CmsSitemapData implements IsSerializable {
 
     /** The export name of the site which contains the sitemap. */
     private String m_exportName;
+
+    private String m_exportRfsPrefix;
 
     /** A flag which indicates whether the site which contains the sitemap is a secure site. */
     private boolean m_isSecure;
@@ -127,6 +129,7 @@ public class CmsSitemapData implements IsSerializable {
         CmsSitemapClipboardData clipboardData,
         Map<String, CmsComputedPropertyValue> parentProperties,
         String exportName,
+        String exportRfsPrefix,
         boolean isSecure,
         String noEditReason,
         boolean displayToolbar,
@@ -149,6 +152,7 @@ public class CmsSitemapData implements IsSerializable {
         m_timestamp = timestamp;
         m_openPath = openPath;
         m_exportName = exportName;
+        m_exportRfsPrefix = exportRfsPrefix;
         m_isSecure = isSecure;
     }
 
@@ -190,6 +194,16 @@ public class CmsSitemapData implements IsSerializable {
     public String getExportName() {
 
         return m_exportName;
+    }
+
+    /**
+     * Returns the export RFS prefix.<p>
+     * 
+     * @return the export RFS prefix
+     */
+    public String getExportRfsPrefix() {
+
+        return m_exportRfsPrefix;
     }
 
     /**

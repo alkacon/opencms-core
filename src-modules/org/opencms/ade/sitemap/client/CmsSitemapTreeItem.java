@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapTreeItem.java,v $
- * Date   : $Date: 2010/10/22 09:41:36 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2010/10/22 15:05:29 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,6 +48,7 @@ import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.sitemap.CmsSitemapManager;
+import org.opencms.xml.sitemap.properties.CmsComputedPropertyValue;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -62,7 +63,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.32 $ 
+ * @version $Revision: 1.33 $ 
  * 
  * @since 8.0.0
  * 
@@ -213,9 +214,19 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
     public String getDisplayedUrl(String sitePath) {
 
         String context = CmsCoreProvider.get().getContext();
-        String exportName = CmsSitemapView.getInstance().getController().getData().getExportName();
-        if (exportName != null) {
-            return CmsStringUtil.joinPaths(CmsResource.getParentFolder(context), exportName, sitePath);
+        if (m_entry.getInheritedProperties() == null) {
+            return CmsStringUtil.joinPaths(context, sitePath);
+        }
+        CmsComputedPropertyValue exportProp = m_entry.getInheritedProperties().get("export");
+        if ((exportProp != null) && Boolean.parseBoolean(exportProp.getOwnValue())) {
+            String exportName = CmsSitemapView.getInstance().getController().getData().getExportName();
+            if (exportName == null) {
+                exportName = CmsCoreProvider.get().getSiteRoot();
+            }
+            String rfsPrefix = CmsSitemapView.getInstance().getController().getData().getExportRfsPrefix();
+            if (rfsPrefix != null) {
+                return CmsStringUtil.joinPaths(rfsPrefix, exportName, sitePath);
+            }
         }
         return CmsStringUtil.joinPaths(context, sitePath);
     }
@@ -408,6 +419,11 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
         updateSitemapReferenceStatus(entry);
         updateColor(entry);
         setDropEnabled(!m_entry.getProperties().containsKey(CmsSitemapManager.Property.sitemap));
+    }
+
+    public void updateSitePath() {
+
+        updateSitePath(m_entry.getSitePath());
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2010/10/22 09:41:36 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2010/10/22 15:05:29 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -84,7 +84,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 8.0.0
  */
@@ -763,6 +763,8 @@ public class CmsSitemapController {
         Map<String, CmsComputedPropertyValue> parentProperties = m_data.getParentProperties();
         CmsPropertyInheritanceState propState = new CmsPropertyInheritanceState(parentProperties, propertyConfig, true);
         recomputeProperties(m_data.getRoot(), propState);
+        CmsSitemapView.getInstance().getTree().getItem(0).updateSitePath();
+
     }
 
     /**
