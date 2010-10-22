@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/Attic/CmsPublish.java,v $
- * Date   : $Date: 2010/10/21 12:43:01 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/10/22 11:41:28 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -77,7 +77,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -402,13 +402,21 @@ public class CmsPublish {
             resultGroups.add(new CmsPublishGroup(name, groupPubRes));
         }
 
-        String oldName = groupHelper.getPublishGroupName(oldGroup, GroupAge.old);
-        List<CmsPublishResource> oldRes = new ArrayList<CmsPublishResource>();
-        for (CmsResource res : oldGroup) {
-            CmsPublishResource pubRes = createPublishResource(res, pubList, allPubRes, published, permissions, locked);
-            oldRes.add(pubRes);
+        if (!oldGroup.isEmpty()) {
+            String oldName = groupHelper.getPublishGroupName(oldGroup, GroupAge.old);
+            List<CmsPublishResource> oldRes = new ArrayList<CmsPublishResource>();
+            for (CmsResource res : oldGroup) {
+                CmsPublishResource pubRes = createPublishResource(
+                    res,
+                    pubList,
+                    allPubRes,
+                    published,
+                    permissions,
+                    locked);
+                oldRes.add(pubRes);
+            }
+            resultGroups.add(new CmsPublishGroup(oldName, oldRes));
         }
-        resultGroups.add(new CmsPublishGroup(oldName, oldRes));
 
         return resultGroups;
     }
