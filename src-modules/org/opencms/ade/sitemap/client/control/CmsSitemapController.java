@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2010/10/22 08:18:28 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2010/10/22 09:41:36 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -84,7 +84,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 8.0.0
  */
@@ -157,40 +157,6 @@ public class CmsSitemapController {
 
         return CmsCoreProvider.get().getUri();
 
-    }
-
-    /**
-    * Adds a change to the queue.<p>
-    * 
-    * @param change the change to be added  
-    * @param redo if redoing a change
-    */
-    public void addChange(I_CmsClientSitemapChange change, boolean redo) {
-
-        // state
-        if (!isDirty()) {
-            if (CmsCoreProvider.get().lockAndCheckModification(getSitemapUri(), m_data.getTimestamp())) {
-                m_handlerManager.fireEvent(new CmsSitemapStartEditEvent());
-            } else {
-                // could not lock
-                return;
-            }
-        }
-
-        if (!redo && !m_undone.isEmpty()) {
-            // after a new change no changes can be redone
-            m_undone.clear();
-            m_handlerManager.fireEvent(new CmsSitemapClearUndoEvent());
-        }
-
-        // add it
-        m_changes.add(change);
-
-        // apply change to the model
-        change.applyToModel(this);
-
-        // refresh view, in dnd mode view already ok
-        fireChange(change);
     }
 
     /**
@@ -913,6 +879,40 @@ public class CmsSitemapController {
             m_handlerManager.fireEvent(new CmsSitemapLastUndoEvent());
             CmsCoreProvider.get().unlock();
         }
+    }
+
+    /**
+    * Adds a change to the queue.<p>
+    * 
+    * @param change the change to be added  
+    * @param redo if redoing a change
+    */
+    protected void addChange(I_CmsClientSitemapChange change, boolean redo) {
+
+        // state
+        if (!isDirty()) {
+            if (CmsCoreProvider.get().lockAndCheckModification(getSitemapUri(), m_data.getTimestamp())) {
+                m_handlerManager.fireEvent(new CmsSitemapStartEditEvent());
+            } else {
+                // could not lock
+                return;
+            }
+        }
+
+        if (!redo && !m_undone.isEmpty()) {
+            // after a new change no changes can be redone
+            m_undone.clear();
+            m_handlerManager.fireEvent(new CmsSitemapClearUndoEvent());
+        }
+
+        // add it
+        m_changes.add(change);
+
+        // apply change to the model
+        change.applyToModel(this);
+
+        // refresh view, in dnd mode view already ok
+        fireChange(change);
     }
 
     /**

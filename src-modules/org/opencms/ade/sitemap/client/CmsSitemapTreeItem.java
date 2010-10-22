@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapTreeItem.java,v $
- * Date   : $Date: 2010/10/22 08:18:28 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2010/10/22 09:41:36 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,7 +33,6 @@ package org.opencms.ade.sitemap.client;
 
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.client.hoverbar.CmsSitemapHoverbar;
-import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeEdit;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsSitemapItemCss;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
@@ -63,7 +62,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.31 $ 
+ * @version $Revision: 1.32 $ 
  * 
  * @since 8.0.0
  * 
@@ -192,10 +191,9 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
                         };
                         action.execute();
                     } else {
-                        CmsClientSitemapEntry newEntry = new CmsClientSitemapEntry(m_entry);
-                        newEntry.setTitle(text);
-                        CmsClientSitemapChangeEdit edit = new CmsClientSitemapChangeEdit(m_entry, newEntry);
-                        CmsSitemapView.getInstance().getController().addChange(edit, false);
+                        CmsSitemapController controller = CmsSitemapView.getInstance().getController();
+                        controller.edit(m_entry, text, m_entry.getVfsPath(), m_entry.getProperties(), false);
+                        //CmsSitemapView.getInstance().getController().addChange(edit, false);
                     }
 
                 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeMove.java,v $
- * Date   : $Date: 2010/10/13 06:03:01 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/10/22 09:41:36 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,7 @@ import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.client.toolbar.CmsToolbarClipboardView;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
+import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry.EditStatus;
 import org.opencms.file.CmsResource;
 import org.opencms.xml.sitemap.CmsSitemapChangeMove;
 import org.opencms.xml.sitemap.I_CmsSitemapChange;
@@ -46,7 +47,7 @@ import org.opencms.xml.sitemap.I_CmsSitemapChange.Type;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.0
  */
@@ -63,6 +64,12 @@ public class CmsClientSitemapChangeMove implements I_CmsClientSitemapChange {
 
     /** The entry to change. */
     private CmsClientSitemapEntry m_entry;
+
+    /** The new edit status. */
+    private EditStatus m_newStatus;
+
+    /** The original edit status. */
+    private EditStatus m_originalStatus;
 
     /** The source path. */
     private String m_sourcePath;
@@ -84,6 +91,29 @@ public class CmsClientSitemapChangeMove implements I_CmsClientSitemapChange {
         m_destinationPath = destinationPath;
         m_sourcePosition = m_entry.getPosition();
         m_destinationPosition = destinationPosition;
+        m_originalStatus = entry.getEditStatus();
+    }
+
+    /**
+     * Constructor used for creating a "revert move" change.<p>
+     * 
+     * @param entry the entry to change 
+     * @param destPath the destination path 
+     * @param destPosition the destination position 
+     * @param newStatus the new edit status 
+     */
+    public CmsClientSitemapChangeMove(
+        CmsClientSitemapEntry entry,
+        String destPath,
+        int destPosition,
+        EditStatus newStatus) {
+
+        m_entry = entry;
+        m_sourcePath = m_entry.getSitePath();
+        m_destinationPath = destPath;
+        m_sourcePosition = m_entry.getPosition();
+        m_destinationPosition = destPosition;
+        m_newStatus = newStatus;
     }
 
     /**
@@ -111,6 +141,11 @@ public class CmsClientSitemapChangeMove implements I_CmsClientSitemapChange {
             // make sure change position index matches the real index
             m_destinationPosition = destParent.getSubEntries().size() - 1;
         }
+        if (m_newStatus == null) {
+            m_entry.setEdited();
+        } else {
+            m_entry.setEditStatus(m_newStatus);
+        }
         moved.updateSitePath(getDestinationPath());
     }
 
@@ -129,6 +164,7 @@ public class CmsClientSitemapChangeMove implements I_CmsClientSitemapChange {
         } else {
             destParent.addChild(moved);
         }
+        moved.updateEntry(m_entry);
         moved.updateSitePath(getDestinationPath());
         if (m_ensureVisible) {
             view.ensureVisible(moved);
@@ -204,7 +240,12 @@ public class CmsClientSitemapChangeMove implements I_CmsClientSitemapChange {
      */
     public I_CmsClientSitemapChange revert() {
 
-        return new CmsClientSitemapChangeMove(getEntry(), getSourcePath(), getSourcePosition());
+        CmsClientSitemapChangeMove result = new CmsClientSitemapChangeMove(
+            getEntry(),
+            getSourcePath(),
+            getSourcePosition(),
+            m_originalStatus);
+        return result;
     }
 
     /**
