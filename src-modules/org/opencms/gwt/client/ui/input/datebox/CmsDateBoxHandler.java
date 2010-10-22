@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/datebox/Attic/CmsDateBoxHandler.java,v $
- * Date   : $Date: 2010/10/22 14:07:05 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/10/22 14:35:37 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -211,6 +211,9 @@ public final class CmsDateBoxHandler {
                         } else {
                             setValidTimeFlag(true);
                             updatePopupCloseBehavior();
+                            m_dateBox.getPopup().repaint();
+                            m_dateBox.getPopup().sync(true);
+
                         }
                     }
                 });
@@ -244,11 +247,15 @@ public final class CmsDateBoxHandler {
                 Messages.get().key(Messages.ERR_DATEBOX_INVALID_TIME_FORMAT_1, CmsDateConverter.cutSuffix(time)));
             setValidTimeFlag(false);
             updatePopupCloseBehavior();
+            m_dateBox.getPopup().repaint();
+            m_dateBox.getPopup().sync(true);
         } else {
             m_dateBox.getTimeErr().setText(null);
             m_dateBox.getBox().setErrorMessage(null);
             setValidTimeFlag(true);
             updatePopupCloseBehavior();
+            m_dateBox.getPopup().repaint();
+            m_dateBox.getPopup().sync(true);
         }
     }
 
@@ -331,6 +338,8 @@ public final class CmsDateBoxHandler {
         try {
             date = CmsDateConverter.toDate(dateAsString);
             m_dateBox.getBox().setErrorMessage(null);
+            m_dateBox.getPopup().repaint();
+            m_dateBox.getPopup().sync(true);
         } catch (Exception e) {
 
             m_dateBox.getBox().setErrorMessage(
@@ -386,8 +395,12 @@ public final class CmsDateBoxHandler {
 
         if (!m_isValidTime && valid) {
             m_isValidTime = true;
+            m_dateBox.getPopup().repaint();
+            m_dateBox.getPopup().sync(true);
         } else if (m_isValidTime && !valid) {
             m_isValidTime = false;
+            m_dateBox.getPopup().repaint();
+            m_dateBox.getPopup().sync(true);
         }
     }
 
