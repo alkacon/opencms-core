@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsTypeListItem.java,v $
- * Date   : $Date: 2010/05/25 12:36:33 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/10/22 12:10:05 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.ade.galleries.client.ui;
 
+import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 
@@ -41,7 +42,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.
  */
@@ -92,6 +93,21 @@ public class CmsTypeListItem extends CmsListItem {
     public String getSubTitle() {
 
         return m_subTitle;
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.CmsListItem#initMoveHandle(org.opencms.gwt.client.dnd.CmsDNDHandler)
+     */
+    @Override
+    public boolean initMoveHandle(CmsDNDHandler dndHandler) {
+
+        if (super.initMoveHandle(dndHandler)) {
+            // move handle should always be visible
+            getMoveHandle().addStyleName(
+                org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
+            return true;
+        }
+        return false;
     }
 
     /**

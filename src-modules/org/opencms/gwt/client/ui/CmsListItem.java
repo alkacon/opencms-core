@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItem.java,v $
- * Date   : $Date: 2010/09/30 13:32:25 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2010/10/22 12:08:45 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  *  
  * @since 8.0.0 
  */
@@ -75,10 +75,16 @@ public class CmsListItem extends Composite implements I_CmsListItem {
     }
 
     /** The move handle. */
-    private class MoveHandle extends CmsPushButton implements I_CmsDragHandle {
+    protected class MoveHandle extends CmsPushButton implements I_CmsDragHandle {
 
-        CmsListItem m_draggable;
+        /** The draggable. */
+        private CmsListItem m_draggable;
 
+        /**
+         * Constructor.<p>
+         * 
+         * @param draggable the draggable
+         */
         MoveHandle(CmsListItem draggable) {
 
             setImageClass(I_CmsImageBundle.INSTANCE.style().moveIcon());
@@ -433,6 +439,7 @@ public class CmsListItem extends Composite implements I_CmsListItem {
      */
     public void onStartDrag(I_CmsDropTarget target) {
 
+        CmsDomUtil.ensureMouseOut(getMoveHandle().getElement());
         setVisible(false);
     }
 
@@ -536,6 +543,16 @@ public class CmsListItem extends Composite implements I_CmsListItem {
     }
 
     /**
+     * Returns the move handle.<p>
+     * 
+     * @return the move handle
+     */
+    protected MoveHandle getMoveHandle() {
+
+        return m_moveHandle;
+    }
+
+    /**
      * This internal helper method creates the actual contents of the widget by combining the decorators and the main widget.<p>
      */
     protected void initContent() {
@@ -582,5 +599,6 @@ public class CmsListItem extends Composite implements I_CmsListItem {
             m_provisionalParent = null;
         }
         setVisible(true);
+
     }
 }
