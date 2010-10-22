@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/datebox/Attic/CmsDateBoxHandler.java,v $
- * Date   : $Date: 2010/08/06 14:08:14 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/10/22 14:07:05 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,6 +42,7 @@ import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
+import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * This singleton implements the handler for the whole date time piker.<p>
@@ -55,6 +56,9 @@ public final class CmsDateBoxHandler {
     /** The date box. */
     private CmsDateBox m_dateBox;
 
+    /** Signals whether the time field is valid or not. */
+    private boolean m_isValidTime;
+
     /** The old value for fire event decision. */
     private Date m_oldValue;
 
@@ -66,6 +70,7 @@ public final class CmsDateBoxHandler {
     public CmsDateBoxHandler(CmsDateBox dateBox) {
 
         m_dateBox = dateBox;
+        m_isValidTime = true;
     }
 
     /**
@@ -143,21 +148,21 @@ public final class CmsDateBoxHandler {
     /**
      * If the value of the picker changes, the value of the date time picker should be updated.<p> 
      * 
-     * @param event the value change event
-     */
-    public void onPickerValueChanged(ValueChangeEvent<Date> event) {
-
-        updateFromDateTimePicker(event.getValue());
-    }
-
-    /**
-     * If the value of the picker changes, the value of the date time picker should be updated.<p> 
-     * 
      * @param value the new date selected from the picker
      */
     public void onPickerValueChanged(Date value) {
 
         updateFromDateTimePicker(value);
+    }
+
+    /**
+     * If the value of the picker changes, the value of the date time picker should be updated.<p> 
+     * 
+     * @param event the value change event
+     */
+    public void onPickerValueChanged(ValueChangeEvent<Date> event) {
+
+        updateFromDateTimePicker(event.getValue());
     }
 
     /**
@@ -176,6 +181,7 @@ public final class CmsDateBoxHandler {
     public void onTimeBlur(BlurEvent event) {
 
         checkTime(getCurrentTimeFieldValue());
+        // updateFromDateTimePicker(getValueFromDateTimePicker());
 
     }
 
@@ -199,10 +205,15 @@ public final class CmsDateBoxHandler {
 
                     public void execute() {
 
-                        preventDatePickerClose();
+                        if (!CmsDateConverter.validateTime(getCurrentTimeFieldValue())) {
+                            setValidTimeFlag(false);
+                            updatePopupCloseBehavior();
+                        } else {
+                            setValidTimeFlag(true);
+                            updatePopupCloseBehavior();
+                        }
                     }
                 });
-
                 break;
         }
     }
@@ -210,15 +221,14 @@ public final class CmsDateBoxHandler {
     /**
      * Prevents the popup to close.<p>
      */
-    protected void preventDatePickerClose() {
+    protected void updatePopupCloseBehavior() {
 
-        String timeAsString = getCurrentTimeFieldValue();
-        if (!CmsDateConverter.validateTime(timeAsString)) {
-            m_dateBox.getPopup().setAutoHide(false);
-        } else {
+        if (m_isValidTime) {
             m_dateBox.getBox().setText(CmsDateConverter.toString(getValueFromDateTimePicker()));
-            m_dateBox.getPopup().setAutoHide(true);
             m_dateBox.getTimeErr().setText(null);
+            m_dateBox.getPopup().getIgnoreList().remove(RootPanel.getBodyElement());
+        } else {
+            m_dateBox.getPopup().getIgnoreList().add(RootPanel.getBodyElement());
         }
     }
 
@@ -232,11 +242,13 @@ public final class CmsDateBoxHandler {
         if (!CmsDateConverter.validateTime(time)) {
             m_dateBox.getTimeErr().setText(
                 Messages.get().key(Messages.ERR_DATEBOX_INVALID_TIME_FORMAT_1, CmsDateConverter.cutSuffix(time)));
-            m_dateBox.getPopup().setAutoHide(false);
+            setValidTimeFlag(false);
+            updatePopupCloseBehavior();
         } else {
             m_dateBox.getTimeErr().setText(null);
             m_dateBox.getBox().setErrorMessage(null);
-            m_dateBox.getPopup().show(m_dateBox.getBox().getElement(), "bl");
+            setValidTimeFlag(true);
+            updatePopupCloseBehavior();
         }
     }
 
@@ -252,7 +264,6 @@ public final class CmsDateBoxHandler {
             timeAsString = getTimeWithAmPmInfo(timeAsString);
         }
         return timeAsString;
-
     }
 
     /**
@@ -291,6 +302,10 @@ public final class CmsDateBoxHandler {
      */
     private void hideDatePicker() {
 
+        // before hiding the date picker remove the date box popup from the auto hide partners of the parent popup
+        if (m_dateBox.getParentPopup() != null) {
+            m_dateBox.getParentPopup().removeAutoHidePartner(m_dateBox.getPopup().getElement());
+        }
         if (CmsDateConverter.validateTime(getCurrentTimeFieldValue())) {
             m_dateBox.getPopup().hide();
         }
@@ -360,6 +375,23 @@ public final class CmsDateBoxHandler {
     }
 
     /**
+     * Sets the valid time flag.<p>
+     * 
+     * Only if the "current time valid state" differs from the "stored time valid state"
+     * the value of the flag is changed.<p>
+     * 
+     * @param valid the "current time valid state"
+     */
+    private void setValidTimeFlag(boolean valid) {
+
+        if (!m_isValidTime && valid) {
+            m_isValidTime = true;
+        } else if (m_isValidTime && !valid) {
+            m_isValidTime = false;
+        }
+    }
+
+    /**
      * Parses the current date box's value and shows that date.
      */
     private void showDatePicker() {
@@ -373,7 +405,12 @@ public final class CmsDateBoxHandler {
         }
         updateDateFromTextBox();
         m_oldValue = m_dateBox.getValue();
-        m_dateBox.getPopup().show(m_dateBox.getBox().getElement(), "bl");
+        m_dateBox.showPopup();
+
+        // after showing the date picker add the date box popup as auto hide partner to the parent popup
+        if (m_dateBox.getParentPopup() != null) {
+            m_dateBox.getParentPopup().addAutoHidePartner(m_dateBox.getPopup().getElement());
+        }
     }
 
     /**
@@ -388,7 +425,7 @@ public final class CmsDateBoxHandler {
         setTime(parsedDate);
         setAmPmFromBox(parsedDate);
         m_dateBox.getTimeErr().setText(null);
-        m_dateBox.getPopup().setAutoHide(true);
+        updatePopupCloseBehavior();
     }
 
     /**
@@ -402,10 +439,10 @@ public final class CmsDateBoxHandler {
             Date tmpDate = new Date();
             m_dateBox.getPicker().setValue(tmpDate, false);
         }
-
         String timeAsString = getCurrentTimeFieldValue();
-        checkTime(timeAsString);
+        // checkTime(timeAsString);
         date = CmsDateConverter.getDateWithTime(date, timeAsString);
         m_dateBox.getBox().setText(CmsDateConverter.toString(date));
+        CmsDateChangeEvent.fireIfNotEqualDates(m_dateBox, m_oldValue, m_dateBox.getValue());
     }
 }

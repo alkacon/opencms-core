@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/datebox/Attic/CmsDateBox.java,v $
- * Date   : $Date: 2010/08/24 15:15:14 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/10/22 14:07:05 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,11 +68,12 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.user.client.ui.PopupPanel;
 
 /**
  * A text box that shows a date time picker widget when the user clicks on it.
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @author Ruediger Kurz
  */
@@ -87,7 +88,7 @@ implements HasValue<Date>, HasDoubleClickHandlers, I_CmsFormWidget, I_CmsHasInit
     /**
      * This inner Class implements the handlers for the date box widget.<p>
      * 
-     * @version $Revision: 1.7 $
+     * @version $Revision: 1.8 $
      * 
      * @author Ruediger Kurz
      * 
@@ -139,7 +140,7 @@ implements HasValue<Date>, HasDoubleClickHandlers, I_CmsFormWidget, I_CmsHasInit
     /**
      * This inner Class implements the listeners for the date box.<p>
      * 
-     * @version $Revision: 1.7 $
+     * @version $Revision: 1.8 $
      * 
      * @author Ruediger Kurz
      */
@@ -171,7 +172,7 @@ implements HasValue<Date>, HasDoubleClickHandlers, I_CmsFormWidget, I_CmsHasInit
     /**
      * This inner Class implements the handlers for the date box widget.<p>
      * 
-     * @version $Revision: 1.7 $
+     * @version $Revision: 1.8 $
      * 
      * @author Ruediger Kurz
      * 
@@ -221,7 +222,7 @@ implements HasValue<Date>, HasDoubleClickHandlers, I_CmsFormWidget, I_CmsHasInit
     /**
      * This inner Class implements the listeners for the date time picker.<p>
      * 
-     * @version $Revision: 1.7 $
+     * @version $Revision: 1.8 $
      * 
      * @author Ruediger Kurz
      */
@@ -255,6 +256,9 @@ implements HasValue<Date>, HasDoubleClickHandlers, I_CmsFormWidget, I_CmsHasInit
 
     /** The ui-binder instance. */
     private static I_CmsDateBoxUiBinder uiBinder = GWT.create(I_CmsDateBoxUiBinder.class);
+
+    /** The dialog which contains this widget. */
+    protected CmsFormDialog m_dialog;
 
     /** The am radio button. */
     @UiField
@@ -291,9 +295,14 @@ implements HasValue<Date>, HasDoubleClickHandlers, I_CmsFormWidget, I_CmsHasInit
     /** The radio button group for am/pm selection. */
     private CmsRadioButtonGroup m_ampmGroup = new CmsRadioButtonGroup();
 
+    /** The parent popup to this dialog if present. */
+    private PopupPanel m_parentPopup;
+
     /** The popup panel to show the the date time picker widget in. */
     //private CmsPopup m_popup = new CmsPopup();
     private Popup m_popup = new Popup();
+
+    private DateBoxListener m_dateBoxListener;
 
     /**
      * Create a new date box widget with the date time picker.
@@ -333,9 +342,10 @@ implements HasValue<Date>, HasDoubleClickHandlers, I_CmsFormWidget, I_CmsHasInit
         m_popup.add(m_dateTimePanel);
         m_popup.setShadow(true);
 
-        DateBoxListener dateBoxListener = new DateBoxListener(pickerHandler);
-        m_popup.addListener(Events.Close, dateBoxListener);
-        m_popup.getIgnoreList().add(m_box.getElement());
+        m_dateBoxListener = new DateBoxListener(pickerHandler);
+
+        m_popup.setAutoHide(true);
+        // m_popup.getIgnoreList().add(m_box.getElement());
 
     }
 
@@ -442,6 +452,16 @@ implements HasValue<Date>, HasDoubleClickHandlers, I_CmsFormWidget, I_CmsHasInit
     }
 
     /**
+     * Returns the parentPopup.<p>
+     *
+     * @return the parentPopup
+     */
+    public PopupPanel getParentPopup() {
+
+        return m_parentPopup;
+    }
+
+    /**
      * Returns the date picker.<p>
      *
      * @return the date picker
@@ -521,7 +541,7 @@ implements HasValue<Date>, HasDoubleClickHandlers, I_CmsFormWidget, I_CmsHasInit
      */
     public void onOpenDialog(CmsFormDialog formDialog) {
 
-        //TODO: store the dialog in a member variable so that the popup can be set as one of its auto-hide partners 
+        m_dialog = formDialog;
     }
 
     /**
@@ -581,6 +601,16 @@ implements HasValue<Date>, HasDoubleClickHandlers, I_CmsFormWidget, I_CmsHasInit
     }
 
     /**
+     * Sets the parent popup.<p>
+     * 
+     * @param parentPopup the parent popup to set
+     */
+    public void setParentPopup(PopupPanel parentPopup) {
+
+        m_parentPopup = parentPopup;
+    }
+
+    /**
      * @see com.google.gwt.user.client.ui.HasValue#setValue(java.lang.Object)
      */
     public void setValue(Date value) {
@@ -598,5 +628,11 @@ implements HasValue<Date>, HasDoubleClickHandlers, I_CmsFormWidget, I_CmsHasInit
             CmsDateChangeEvent.fireIfNotEqualDates(this, getValue(), value);
         }
 
+    }
+
+    public void showPopup() {
+
+        m_popup.show(getBox().getElement(), "bl");
+        m_popup.addListener(Events.Close, m_dateBoxListener);
     }
 }
