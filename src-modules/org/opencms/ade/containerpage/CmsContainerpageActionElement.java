@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsContainerpageActionElement.java,v $
- * Date   : $Date: 2010/10/18 15:08:45 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/10/22 07:58:36 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -90,11 +90,6 @@ public class CmsContainerpageActionElement extends CmsGwtActionElement {
     public String exportAll() throws Exception {
 
         StringBuffer sb = new StringBuffer();
-        if ((getCntPageData() != null) && getCntPageData().isToolbarVisible()) {
-            // this is a hack to avoid quirky toolbar insertion
-            sb.append("document.body.style.marginTop=\"36px\";\ndocument.body.style.overflowY=\"scroll\"");
-            wrapScript(sb);
-        }
         sb.append(super.export());
         sb.append(new CmsPublishActionElement(null, getRequest(), null).export());
         sb.append(new CmsGalleryActionElement(null, getRequest(), null).exportForContainerpage());
