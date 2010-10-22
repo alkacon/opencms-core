@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/directedit/Attic/CmsAdvancedDirectEditProvider.java,v $
- * Date   : $Date: 2009/09/25 08:44:01 $
- * Version: $Revision: 1.1.2.1 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/directedit/CmsAdvancedDirectEditProvider.java,v $
+ * Date   : $Date: 2010/10/22 12:07:39 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.9.1
  */
@@ -71,7 +71,7 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
      */
     public String endDirectEditEnabled() {
 
-        return "";
+        return "<div class=\"cms-editable-end\"></div>";
     }
 
     /**
@@ -218,7 +218,7 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
         }
         result.append(" -->\n");
 
-        result.append("<div class='cms-editable' rel='ade_").append(resourceInfo.getResource().getStructureId()).append(
+        result.append("<div class='cms-editable' rel='").append(resourceInfo.getResource().getStructureId()).append(
             "'>");
         result.append("<form name=\"form_").append(editId).append("\" id=\"form_").append(editId).append(
             "\" method=\"post\" action=\"").append(editLink).append(

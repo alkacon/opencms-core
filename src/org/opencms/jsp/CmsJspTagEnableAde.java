@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagEnableAde.java,v $
- * Date   : $Date: 2010/05/14 13:34:15 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2010/10/22 12:06:20 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,9 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.history.CmsHistoryResourceHandler;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.main.OpenCms;
+import org.opencms.workplace.editors.directedit.CmsAdvancedDirectEditProvider;
+import org.opencms.workplace.editors.directedit.CmsDirectEditMode;
+import org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.jsp.JspException;
@@ -45,7 +48,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
 /**
  * Implementation of the <code>&lt;enable-ade/&gt;</code> tag.<p>
  * 
- * @version $Revision: 1.31 $ 
+ * @version $Revision: 1.32 $ 
  * 
  * @since 7.6 
  */
@@ -84,6 +87,9 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
             // don't display advanced direct edit buttons if a temporary file is displayed
             return;
         }
+        I_CmsDirectEditProvider eb = new CmsAdvancedDirectEditProvider();
+        eb.init(cms, CmsDirectEditMode.TRUE, "");
+        CmsJspTagEditable.setDirectEditProvider(context, eb);
 
         CmsJspTagInclude.includeTagAction(context, INCLUDE_JSP_URI, null, false, null, null, req, context.getResponse());
     }
