@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2010/10/18 10:05:41 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2010/10/22 08:18:28 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,6 +47,7 @@ import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.ade.sitemap.shared.CmsSitemapMergeInfo;
 import org.opencms.ade.sitemap.shared.CmsSitemapTemplate;
 import org.opencms.ade.sitemap.shared.CmsSubSitemapInfo;
+import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry.EditStatus;
 import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService;
 import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapServiceAsync;
 import org.opencms.file.CmsResource;
@@ -83,7 +84,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 8.0.0
  */
@@ -358,7 +359,7 @@ public class CmsSitemapController {
 
         assert (getEntry(newEntry.getSitePath()) == null);
         assert (getEntry(CmsResource.getParentFolder(newEntry.getSitePath())) != null);
-
+        newEntry.setEditStatus(EditStatus.created);
         addChange(new CmsClientSitemapChangeNew(newEntry), false);
     }
 
@@ -471,6 +472,7 @@ public class CmsSitemapController {
         if (changedTitle) {
             newEntry.setTitle(title);
         }
+        newEntry.setEdited();
 
         // We don't calculate isNew by comparing the old and new url names.
         // This is because any editing of the URL name field should mark the entry as "not new", even if the final

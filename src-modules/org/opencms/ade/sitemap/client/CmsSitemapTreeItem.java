@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapTreeItem.java,v $
- * Date   : $Date: 2010/10/21 13:45:42 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2010/10/22 08:18:28 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.30 $ 
+ * @version $Revision: 1.31 $ 
  * 
  * @since 8.0.0
  * 
@@ -311,6 +311,25 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
     }
 
     /**
+     * Sets the color of the list item widget.<p>
+     * 
+     * If the color is null, the widget will be shown with its default style.<p>
+     * 
+     * @param color a valid CSS color or null
+     */
+    public void setColor(String color) {
+
+        com.google.gwt.dom.client.Style style = getListItemWidget().getContentPanel().getElement().getStyle();
+        if (color != null) {
+            style.setBackgroundImage("none");
+            style.setBackgroundColor(color);
+        } else {
+            style.clearBackgroundImage();
+            style.clearBackgroundColor();
+        }
+    }
+
+    /**
      * Changes the status icon of the sitemap item.<p>
      * 
      * @param status the value representing the status icon 
@@ -353,6 +372,31 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
     }
 
     /**
+     * Updates the color of the sitemap tree item.<p>
+     * 
+     * @param entry the entry whose data should be used to update the color of the sitemap tree item.<p>
+     */
+    public void updateColor(CmsClientSitemapEntry entry) {
+
+        if (entry.getProperties().containsKey("sitemap")) {
+            return;
+        }
+        String newColor;
+        switch (entry.getEditStatus()) {
+            case edited:
+                newColor = "#f77";
+                break;
+            case created:
+                newColor = "#8bf";
+                break;
+            case normal:
+            default:
+                newColor = null;
+        }
+        setColor(newColor);
+    }
+
+    /**
      * Refreshes the displayed data from the given sitemap entry.<p>
      * 
      * @param entry the sitemap entry to update
@@ -364,6 +408,7 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
         m_listItemWidget.setAdditionalInfoValue(1, entry.getVfsPath());
         m_listItemWidget.updateTruncation();
         updateSitemapReferenceStatus(entry);
+        updateColor(entry);
         setDropEnabled(!m_entry.getProperties().containsKey(CmsSitemapManager.Property.sitemap));
     }
 

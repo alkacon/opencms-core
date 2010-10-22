@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsClientSitemapEntry.java,v $
- * Date   : $Date: 2010/10/11 07:35:41 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2010/10/22 08:18:28 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,14 +49,29 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 8.0.0
  */
 public class CmsClientSitemapEntry implements IsSerializable {
 
+    /**
+     * An enum for the edit status of the entry.<p>
+     */
+    public enum EditStatus {
+        /** edit status constant. */
+        created,
+        /** edit status constant. */
+        edited,
+        /** edit status constant. */
+        normal
+    }
+
     /** True if the children of this entry have initially been loaded. */
     private boolean m_childrenLoadedInitially;
+
+    /** The current edit status. */
+    private EditStatus m_editStatus = EditStatus.normal;
 
     /** The entry id. */
     private CmsUUID m_id;
@@ -114,6 +129,7 @@ public class CmsClientSitemapEntry implements IsSerializable {
         setTitle(clone.getTitle());
         setVfsPath(clone.getVfsPath());
         setPosition(clone.getPosition());
+        setEditStatus(clone.getEditStatus());
     }
 
     /**
@@ -136,6 +152,16 @@ public class CmsClientSitemapEntry implements IsSerializable {
     public boolean getChildrenLoadedInitially() {
 
         return m_childrenLoadedInitially;
+    }
+
+    /**
+     * Returns the current edit status.<p>
+     * 
+     * @return the current edit status 
+     */
+    public EditStatus getEditStatus() {
+
+        return m_editStatus;
     }
 
     /**
@@ -304,6 +330,27 @@ public class CmsClientSitemapEntry implements IsSerializable {
     public void setChildrenLoadedInitially() {
 
         m_childrenLoadedInitially = true;
+    }
+
+    /**
+     * Sets the edit status to "edited", but only if the current edit status is not "new".<p>
+     */
+    public void setEdited() {
+
+        // new entries should *not* have their status changed to "edited" 
+        if (m_editStatus == EditStatus.normal) {
+            m_editStatus = EditStatus.edited;
+        }
+    }
+
+    /**
+     * Sets the current edit status.<p>
+     * 
+     * @param status the new edit status 
+     */
+    public void setEditStatus(EditStatus status) {
+
+        m_editStatus = status;
     }
 
     /**

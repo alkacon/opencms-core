@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeNew.java,v $
- * Date   : $Date: 2010/08/26 13:37:49 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/10/22 08:18:28 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import org.opencms.xml.sitemap.I_CmsSitemapChange.Type;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.0
  */
@@ -58,11 +58,11 @@ public class CmsClientSitemapChangeNew implements I_CmsClientSitemapChange {
     /** The new entry with children. */
     private CmsClientSitemapEntry m_entry;
 
-    /** The corresponding tree item, if available from a delete operation. */
-    private CmsSitemapTreeItem m_treeItem;
-
     /** Stores the entries site path at the time of the change event. */
     private String m_eventSitePath;
+
+    /** The corresponding tree item, if available from a delete operation. */
+    private CmsSitemapTreeItem m_treeItem;
 
     /**
      * Constructor.<p>
@@ -115,9 +115,11 @@ public class CmsClientSitemapChangeNew implements I_CmsClientSitemapChange {
         } else {
             newParent.addChild(newChild);
         }
+        newChild.updateEntry(getEntry());
         if (m_ensureVisible) {
             view.ensureVisible(newChild);
         }
+
     }
 
     /**
