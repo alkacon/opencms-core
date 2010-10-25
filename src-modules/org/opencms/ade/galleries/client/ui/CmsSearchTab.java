@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsSearchTab.java,v $
- * Date   : $Date: 2010/10/21 12:36:10 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/10/25 10:21:55 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 8.0.
  */
@@ -243,6 +243,12 @@ public class CmsSearchTab extends A_CmsTab {
         m_dateModifiedStartLabel.setText(Messages.get().key(Messages.GUI_TAB_SEARCH_LABEL_MODIFIED_SINCE_0));
         m_dateModifiedEndLabel.setText(Messages.get().key(Messages.GUI_TAB_SEARCH_LABEL_MODIFIED_UNTIL_0));
 
+        if (m_parentPopup != null) {
+            m_dateCreatedEndDateBox.setParentPopup(m_parentPopup);
+            m_dateCreatedStartDateBox.setParentPopup(m_parentPopup);
+            m_dateModifiedEndDateBox.setParentPopup(m_parentPopup);
+            m_dateModifiedStartDateBox.setParentPopup(m_parentPopup);
+        }
         // add the handler to the according date box widgets
         DateBoxChangeHandler handler = new DateBoxChangeHandler();
         m_dateCreatedStartDateBox.addValueChangeHandler(handler);
