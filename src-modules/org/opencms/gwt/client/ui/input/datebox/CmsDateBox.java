@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/datebox/Attic/CmsDateBox.java,v $
- * Date   : $Date: 2010/10/22 14:07:05 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/10/25 12:32:05 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,11 +69,12 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * A text box that shows a date time picker widget when the user clicks on it.
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @author Ruediger Kurz
  */
@@ -88,7 +89,7 @@ implements HasValue<Date>, HasDoubleClickHandlers, I_CmsFormWidget, I_CmsHasInit
     /**
      * This inner Class implements the handlers for the date box widget.<p>
      * 
-     * @version $Revision: 1.8 $
+     * @version $Revision: 1.9 $
      * 
      * @author Ruediger Kurz
      * 
@@ -140,7 +141,7 @@ implements HasValue<Date>, HasDoubleClickHandlers, I_CmsFormWidget, I_CmsHasInit
     /**
      * This inner Class implements the listeners for the date box.<p>
      * 
-     * @version $Revision: 1.8 $
+     * @version $Revision: 1.9 $
      * 
      * @author Ruediger Kurz
      */
@@ -172,7 +173,7 @@ implements HasValue<Date>, HasDoubleClickHandlers, I_CmsFormWidget, I_CmsHasInit
     /**
      * This inner Class implements the handlers for the date box widget.<p>
      * 
-     * @version $Revision: 1.8 $
+     * @version $Revision: 1.9 $
      * 
      * @author Ruediger Kurz
      * 
@@ -222,7 +223,7 @@ implements HasValue<Date>, HasDoubleClickHandlers, I_CmsFormWidget, I_CmsHasInit
     /**
      * This inner Class implements the listeners for the date time picker.<p>
      * 
-     * @version $Revision: 1.8 $
+     * @version $Revision: 1.9 $
      * 
      * @author Ruediger Kurz
      */
@@ -295,14 +296,15 @@ implements HasValue<Date>, HasDoubleClickHandlers, I_CmsFormWidget, I_CmsHasInit
     /** The radio button group for am/pm selection. */
     private CmsRadioButtonGroup m_ampmGroup = new CmsRadioButtonGroup();
 
+    /** The listener for the date box. */
+    private DateBoxListener m_dateBoxListener;
+
     /** The parent popup to this dialog if present. */
     private PopupPanel m_parentPopup;
 
     /** The popup panel to show the the date time picker widget in. */
     //private CmsPopup m_popup = new CmsPopup();
     private Popup m_popup = new Popup();
-
-    private DateBoxListener m_dateBoxListener;
 
     /**
      * Create a new date box widget with the date time picker.
@@ -384,46 +386,6 @@ implements HasValue<Date>, HasDoubleClickHandlers, I_CmsFormWidget, I_CmsHasInit
     }
 
     /**
-     * Returns the am radio button.<p>
-     *
-     * @return the am radio button
-     */
-    public CmsRadioButton getAm() {
-
-        return m_am;
-    }
-
-    /**
-     * Returns the group.<p>
-     *
-     * @return the group
-     */
-    public CmsRadioButtonGroup getAmpmGroup() {
-
-        return m_ampmGroup;
-    }
-
-    /**
-     * Returns the box.<p>
-     *
-     * @return the box
-     */
-    public CmsTextBox getBox() {
-
-        return m_box;
-    }
-
-    /**
-     * Returns the dateBoxPanel.<p>
-     *
-     * @return the dateBoxPanel
-     */
-    public FlowPanel getDateBoxPanel() {
-
-        return m_dateBoxPanel;
-    }
-
-    /**
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getFieldType()
      */
     public FieldType getFieldType() {
@@ -440,6 +402,8 @@ implements HasValue<Date>, HasDoubleClickHandlers, I_CmsFormWidget, I_CmsHasInit
     }
 
     /**
+     * Returns the value of the date box as String in form of a long.<p>
+     * 
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getFormValueAsString()
      */
     public String getFormValueAsString() {
@@ -452,67 +416,6 @@ implements HasValue<Date>, HasDoubleClickHandlers, I_CmsFormWidget, I_CmsHasInit
     }
 
     /**
-     * Returns the parentPopup.<p>
-     *
-     * @return the parentPopup
-     */
-    public PopupPanel getParentPopup() {
-
-        return m_parentPopup;
-    }
-
-    /**
-     * Returns the date picker.<p>
-     *
-     * @return the date picker
-     */
-    public DatePicker getPicker() {
-
-        return m_picker;
-    }
-
-    /**
-     * Returns the pm radio button.<p>
-     *
-     * @return the pm radio button
-     */
-    public CmsRadioButton getPm() {
-
-        return m_pm;
-    }
-
-    /**
-     * Returns the popup.<p>
-     *
-     * @return the popup
-     */
-    public Popup getPopup() {
-
-        return m_popup;
-    }
-
-    /**
-     * Returns the time text box widget.<p>
-     *
-     * @return the time text box widget
-     */
-    public CmsTextBox getTime() {
-
-        return m_time;
-
-    }
-
-    /**
-     * Returns the timeErr.<p>
-     *
-     * @return the timeErr
-     */
-    public CmsErrorWidget getTimeErr() {
-
-        return m_timeErr;
-    }
-
-    /**
      * @see com.google.gwt.user.client.ui.HasValue#getValue()
      */
     public Date getValue() {
@@ -520,8 +423,11 @@ implements HasValue<Date>, HasDoubleClickHandlers, I_CmsFormWidget, I_CmsHasInit
         Date date = null;
         try {
             date = CmsDateConverter.toDate(m_box.getText());
+            m_box.setErrorMessage(null);
         } catch (Exception e) {
-            // should never happen
+            m_box.setErrorMessage(Messages.get().key(
+                Messages.ERR_DATEBOX_INVALID_DATE_FORMAT_1,
+                CmsDateConverter.cutSuffix(m_box.getText())));
         }
         return date;
     }
@@ -571,17 +477,8 @@ implements HasValue<Date>, HasDoubleClickHandlers, I_CmsFormWidget, I_CmsHasInit
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setFormValue(java.lang.Object)
-     */
-    public void setFormValue(Object value) {
-
-        if (value instanceof Date) {
-            Date dateValue = (Date)value;
-            setValue(dateValue);
-        }
-    }
-
-    /**
+     * Expects the value as String in form of a long.<p>
+     * 
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setFormValueAsString(java.lang.String)
      */
     public void setFormValueAsString(String value) {
@@ -627,12 +524,137 @@ implements HasValue<Date>, HasDoubleClickHandlers, I_CmsFormWidget, I_CmsHasInit
         if (fireEvents) {
             CmsDateChangeEvent.fireIfNotEqualDates(this, getValue(), value);
         }
-
     }
 
-    public void showPopup() {
+    /**
+     * Adds the body element to the popup's ignore list.<p>
+     */
+    protected void addBodyToIgnoreList() {
 
-        m_popup.show(getBox().getElement(), "bl");
+        m_popup.getIgnoreList().add(RootPanel.getBodyElement());
+    }
+
+    /**
+     * Returns the current value of the date picker.<p>
+     * 
+     * @return the value of the date picker
+     */
+    protected Date getPickerValue() {
+
+        return m_picker.getValue();
+    }
+
+    /**
+     * Returns the time text field value as string.<p>
+     * 
+     * @return the time text field value as string
+     */
+    protected String getTimeText() {
+
+        String timeAsString = m_time.getText().trim();
+        if (CmsDateConverter.is12HourPresentation()) {
+            if (!(timeAsString.contains(CmsDateConverter.AM) || timeAsString.contains(CmsDateConverter.PM))) {
+                if (m_am.isChecked()) {
+                    timeAsString = timeAsString + " " + CmsDateConverter.AM;
+                } else {
+                    timeAsString = timeAsString + " " + CmsDateConverter.PM;
+                }
+            }
+        }
+        return timeAsString;
+    }
+
+    /**
+     * Returns the current Value of the date time picker.<p>
+     * 
+     * @return the current Value of the date time picker
+     */
+    protected Date getValueFromDateTimePicker() {
+
+        Date date = getPickerValue();
+        String time = getTimeText();
+        return CmsDateConverter.getDateWithTime(date, time);
+    }
+
+    /**
+     * Hides the Popup.<p>
+     */
+    protected void hidePopup() {
+
+        // before hiding the date picker remove the date box popup from the auto hide partners of the parent popup
+        if (m_parentPopup != null) {
+            m_parentPopup.removeAutoHidePartner(m_popup.getElement());
+        }
+        m_popup.hide();
+    }
+
+    /**
+     * Returns <code>true</code> if the date picker is currently showed <code>false</code> otherwise.<p> 
+     * 
+     * @return true if date picker is currently showing, false if not
+     */
+    protected boolean isDatePickerShowing() {
+
+        return m_popup.isVisible();
+    }
+
+    /**
+     * Removes the body element from the popup's ignore list.<p>
+     */
+    protected void removeBodyFromIgnoreList() {
+
+        m_popup.getIgnoreList().remove(RootPanel.getBodyElement());
+    }
+
+    /**
+     * Sets the value of the date picker.<p>
+     * 
+     * @param date the value to set
+     * @param supressEvent signals whether the value changed event should be suppressed or not
+     */
+    protected void setPickerValue(Date date, boolean supressEvent) {
+
+        if (date == null) {
+            date = new Date();
+        }
+        m_picker.setValue(date, supressEvent);
+        m_time.setText(CmsDateConverter.cutSuffix(CmsDateConverter.getTime(date)).trim());
+        if (CmsDateConverter.isAm(date)) {
+            m_ampmGroup.selectButton(m_am);
+        } else {
+            m_ampmGroup.selectButton(m_pm);
+        }
+    }
+
+    /**
+     * Sets an error of the time text field.<p>
+     * 
+     * @param errMsg the error message to set
+     */
+    protected void setTimeError(String errMsg) {
+
+        m_timeErr.setText(errMsg);
+    }
+
+    /**
+     * Shows the date picker popup.<p>
+     */
+    protected void showPopup() {
+
+        m_popup.show(m_box.getElement(), "bl");
         m_popup.addListener(Events.Close, m_dateBoxListener);
+
+        // after showing the date picker add the date box popup as auto hide partner to the parent popup
+        if (m_parentPopup != null) {
+            m_parentPopup.addAutoHidePartner(m_popup.getElement());
+        }
+    }
+
+    /**
+     * Synchronizes the popup e.g. for shadow repaint.<p> 
+     */
+    protected void syncPopup() {
+
+        m_popup.sync(true);
     }
 }
