@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageController.java,v $
- * Date   : $Date: 2010/10/22 12:12:43 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2010/10/25 10:23:04 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * 
  * @since 8.0.0
  */
@@ -1425,7 +1425,10 @@ public final class CmsContainerpageController {
             }
             AnchorElement anc = AnchorElement.as(element);
             final String uri = anc.getHref();
-            if (CmsStringUtil.isEmptyOrWhitespaceOnly(uri)) {
+
+            // avoid to abort events for date-picker widgets
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(uri)
+                || (CmsDomUtil.getAncestor(element, "x-date-picker") != null)) {
                 return;
             }
             nativeEvent.preventDefault();

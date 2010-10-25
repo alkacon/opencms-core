@@ -44,14 +44,14 @@ ul.clipboardList{
 	display: none;
 }
 
-.toolbarSelection .listCollectorEditor, .toolbarEdit .listCollectorEditor{
+/**.toolbarSelection .listCollectorEditor, .toolbarEdit .listCollectorEditor{
 	display: block;
-}
+}**/
 
 .listCollectorEditor{
 	position: absolute;
 	text-align: right;
-	display: none;
+/**	display: none;  **/
 }
 
 .listCollectorEditor .cmsState{
@@ -147,6 +147,7 @@ ul.clipboardList{
 
 .toolbarRemove .optionBar .toolbarRemove, 
 .toolbarEdit .optionBar .toolbarEdit, 
+.toolbarEdit .listCollectorEditor .toolbarNew,
 .toolbarMove .optionBar .toolbarMove, 
 .toolbarNew .optionBar .toolbarNew, 
 .toolbarProperties .optionBar .toolbarProperties, 

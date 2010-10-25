@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/directedit/CmsAdvancedDirectEditProvider.java,v $
- * Date   : $Date: 2010/10/22 12:07:39 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/10/25 10:23:04 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,8 @@
 package org.opencms.workplace.editors.directedit;
 
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.json.JSONException;
+import org.opencms.json.JSONObject;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
@@ -45,7 +47,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 7.9.1
  */
@@ -133,7 +135,11 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
                 content = startDirectEditDisabled(params, resourceInfo);
                 break;
             case 2: // enabled
-                content = startDirectEditEnabled(params, resourceInfo);
+                try {
+                    content = startDirectEditEnabled(params, resourceInfo);
+                } catch (JSONException e) {
+                    throw new JspException(e);
+                }
                 break;
             default: // inactive or undefined
                 content = null;
@@ -195,62 +201,29 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
      * @param resourceInfo contains information about the resource to edit
      * 
      * @return the start HTML for an enabled direct edit button
+     * @throws JSONException 
      */
-    public String startDirectEditEnabled(CmsDirectEditParams params, CmsDirectEditResourceInfo resourceInfo) {
+    public String startDirectEditEnabled(CmsDirectEditParams params, CmsDirectEditResourceInfo resourceInfo)
+    throws JSONException {
 
         String editLocale = m_cms.getRequestContext().getLocale().toString();
         String editId = getNextDirectEditId();
-        StringBuffer result = new StringBuffer(512);
-
-        String uri = m_cms.getRequestContext().getUri();
-
-        String editLink = getLink(params.getLinkForEdit());
         String editNewLink = CmsEncoder.encode(params.getLinkForNew());
+        // putting together all needed data
+        JSONObject editableData = new JSONObject();
+        editableData.put("editId", editId);
+        editableData.put("structureId", resourceInfo.getResource().getStructureId());
+        editableData.put("sitePath", params.getResourceName());
+        editableData.put("elementlanguage", editLocale);
+        editableData.put("elementname", params.getElement());
+        editableData.put("newlink", editNewLink);
+        editableData.put("hasEdit", params.getButtonSelection().isShowEdit());
+        editableData.put("hasDelete", params.getButtonSelection().isShowDelete());
+        editableData.put("hasNew", params.getButtonSelection().isShowNew());
 
-        result.append("<!-- EDIT BLOCK START (ENABLED): ");
-        result.append(params.m_resourceName);
-        result.append(" [");
-        result.append(resourceInfo.getResource().getState());
-        result.append("]");
-        if (!resourceInfo.getLock().isUnlocked()) {
-            result.append(" locked ");
-            result.append(resourceInfo.getLock().getProject().getName());
-        }
-        result.append(" -->\n");
+        StringBuffer result = new StringBuffer(512);
+        result.append("<div class='cms-editable' rel='").append(editableData.toString()).append("'></div>");
 
-        result.append("<div class='cms-editable' rel='").append(resourceInfo.getResource().getStructureId()).append(
-            "'>");
-        result.append("<form name=\"form_").append(editId).append("\" id=\"form_").append(editId).append(
-            "\" method=\"post\" action=\"").append(editLink).append(
-            "\" class=\"cms-editable-form\" target=\"_top\" onsubmit=\"return false;\">\n");
-        result.append("<input type=\"hidden\" name=\"resource\" value=\"").append(params.getResourceName()).append(
-            "\"/>\n");
-        result.append("<input type=\"hidden\" name=\"directedit\" value=\"true\"/>\n");
-        result.append("<input type=\"hidden\" name=\"elementlanguage\" value=\"").append(editLocale).append("\"/>\n");
-        result.append("<input type=\"hidden\" name=\"elementname\" value=\"").append(params.getElement()).append(
-            "\"/>\n");
-        result.append("<input type=\"hidden\" name=\"backlink\" value=\"").append(uri).append("\"/>\n");
-        result.append("<input type=\"hidden\" name=\"newlink\" value=\"").append(editNewLink).append("\" />\n");
-        result.append("<input type=\"hidden\" name=\"closelink\"/>\n");
-        result.append("<input type=\"hidden\" name=\"redirect\" value=\"true\"/>\n");
-        result.append("<input type=\"hidden\" name=\"editortitle\"/>\n");
-        result.append("</form>\n");
-
-        // append required buttons
-        result.append("<div class='cms-directedit-buttons'>\n");
-        if (params.getButtonSelection().isShowEdit()) {
-            result.append("<a class='cms-edit-enabled'></a>\n");
-        } else {
-            result.append("<a class='cms-edit-disabled'></a>\n");
-        }
-        if (params.getButtonSelection().isShowDelete()) {
-            result.append("<a class='cms-delete'></a>\n");
-        }
-        if (params.getButtonSelection().isShowNew()) {
-            result.append("<a class='cms-new'></a>\n");
-        }
-        result.append("</div>\n");
-        result.append("</div>\n");
         return result.toString();
     }
 }

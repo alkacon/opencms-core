@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsListCollectorEditor.java,v $
- * Date   : $Date: 2010/10/22 12:12:43 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/10/25 10:23:04 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,26 +32,28 @@
 package org.opencms.ade.containerpage.client.ui;
 
 import org.opencms.ade.containerpage.client.CmsContainerpageController;
+import org.opencms.ade.containerpage.client.CmsEditableDataJSO;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.CmsConfirmDialog;
 import org.opencms.gwt.client.ui.CmsHighlightingBorder;
 import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsPositionBean;
 
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.FormElement;
-import com.google.gwt.dom.client.NodeCollection;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.HasMouseOutHandlers;
+import com.google.gwt.event.dom.client.HasMouseOverHandlers;
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseOverHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -61,21 +63,21 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
-public class CmsListCollectorEditor extends FlowPanel {
+public class CmsListCollectorEditor extends FlowPanel implements HasMouseOverHandlers, HasMouseOutHandlers {
 
     /**
      * Button handler for this class.<p>
      */
-    private class ButtonHandler implements MouseOverHandler, MouseOutHandler, ClickHandler {
+    private class MouseHandler implements MouseOverHandler, MouseOutHandler, ClickHandler {
 
         /**
          * Constructor.<p>
          */
-        protected ButtonHandler() {
+        protected MouseHandler() {
 
             // nothing to do
         }
@@ -95,8 +97,7 @@ public class CmsListCollectorEditor extends FlowPanel {
 
                     public void onClose() {
 
-                        CmsDomUtil.ensureMouseOut(m_delete.getElement());
-
+                        // nothing to do
                     }
 
                     public void onOk() {
@@ -105,6 +106,8 @@ public class CmsListCollectorEditor extends FlowPanel {
 
                     }
                 });
+                CmsDomUtil.ensureMouseOut(m_delete.getElement());
+                CmsDomUtil.ensureMouseOut(getElement());
                 dialog.center();
             }
             if (source == m_edit) {
@@ -123,6 +126,8 @@ public class CmsListCollectorEditor extends FlowPanel {
          */
         public void onMouseOut(MouseOutEvent event) {
 
+            getElement().removeClassName(
+                org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.stateCss().cmsHovering());
             removeHighlighting();
         }
 
@@ -131,6 +136,7 @@ public class CmsListCollectorEditor extends FlowPanel {
          */
         public void onMouseOver(MouseOverEvent event) {
 
+            getElement().addClassName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.stateCss().cmsHovering());
             highlightElement();
         }
 
@@ -148,23 +154,17 @@ public class CmsListCollectorEditor extends FlowPanel {
     /** The new button. */
     protected CmsPushButton m_new;
 
+    /** The editable data. */
+    private CmsEditableDataJSO m_editableData;
+
     /** The editable marker tag. */
     private Element m_markerTag;
-
-    /** The new link path. */
-    private String m_newLink;
 
     /** The parent element id. */
     private String m_parentResourceId;
 
     /** The editable element position. */
     private CmsPositionBean m_position;
-
-    /** The resource path. */
-    private String m_resource;
-
-    /** The element id. */
-    private String m_resourceId;
 
     /**
      * Constructor.<p>
@@ -176,53 +176,68 @@ public class CmsListCollectorEditor extends FlowPanel {
 
         try {
             setStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().listCollectorEditor());
+            addStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().optionBar());
+            addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
             m_markerTag = editable;
             m_parentResourceId = parentId;
-            FormElement form = m_markerTag.getFirstChild().cast();
-            NodeCollection<Element> elements = form.getElements();
-            m_resource = elements.getNamedItem("resource").getPropertyString("value");
-            m_newLink = elements.getNamedItem("newlink").getPropertyString("value");
-            m_resourceId = editable.getAttribute("rel");
-            Element button = form.getNextSiblingElement().getFirstChildElement();
-            ButtonHandler handler = new ButtonHandler();
-            while (button != null) {
-                if (CmsDomUtil.hasClass("cms-edit-enabled", button)) {
-                    m_edit = new CmsPushButton();
-                    m_edit.setImageClass(I_CmsImageBundle.INSTANCE.style().editorIcon());
-                    m_edit.setShowBorder(false);
-                    add(m_edit);
-                    m_edit.addClickHandler(handler);
-                    m_edit.addMouseOverHandler(handler);
-                    m_edit.addMouseOutHandler(handler);
-                    button = button.getNextSiblingElement();
-                    continue;
-                }
-                if (CmsDomUtil.hasClass("cms-delete", button)) {
-                    m_delete = new CmsPushButton();
-                    m_delete.setImageClass(I_CmsImageBundle.INSTANCE.style().deleteIcon());
-                    m_delete.setShowBorder(false);
-                    add(m_delete);
-                    m_delete.addClickHandler(handler);
-                    m_delete.addMouseOverHandler(handler);
-                    m_delete.addMouseOutHandler(handler);
-                    button = button.getNextSiblingElement();
-                    continue;
-                }
-                if (CmsDomUtil.hasClass("cms-new", button)) {
-                    m_new = new CmsPushButton();
-                    m_new.setImageClass(I_CmsImageBundle.INSTANCE.style().newIcon());
-                    m_new.setShowBorder(false);
-                    add(m_new);
-                    m_new.addClickHandler(handler);
-                    m_new.addMouseOverHandler(handler);
-                    m_new.addMouseOutHandler(handler);
-                    button = button.getNextSiblingElement();
-                }
-            }
 
+            String jsonText = editable.getAttribute("rel");
+            m_editableData = CmsEditableDataJSO.parseEditableData(jsonText);
+
+            MouseHandler handler = new MouseHandler();
+            addMouseOutHandler(handler);
+            addMouseOverHandler(handler);
+            if (m_editableData.hasNew()) {
+                m_new = new CmsPushButton();
+                m_new.setImageClass(I_CmsButton.ButtonData.NEW.getIconClass());
+                m_new.addStyleName(I_CmsButton.ButtonData.NEW.getIconClass());
+                m_new.setShowBorder(false);
+                add(m_new);
+                m_new.addClickHandler(handler);
+            }
+            if (m_editableData.hasDelete()) {
+                m_delete = new CmsPushButton();
+                m_delete.setImageClass(I_CmsButton.ButtonData.REMOVE.getIconClass());
+                m_delete.addStyleName(I_CmsButton.ButtonData.REMOVE.getIconClass());
+                m_delete.setShowBorder(false);
+                add(m_delete);
+                m_delete.addClickHandler(handler);
+            }
+            if (m_editableData.hasEdit()) {
+                m_edit = new CmsPushButton();
+                m_edit.setImageClass(I_CmsButton.ButtonData.EDIT.getIconClass());
+                m_edit.addStyleName(I_CmsButton.ButtonData.EDIT.getIconClass());
+                m_edit.setShowBorder(false);
+                add(m_edit);
+                m_edit.addClickHandler(handler);
+            }
+            if (this.getWidgetCount() > 0) {
+                CmsPushButton selection = new CmsPushButton();
+                selection.setImageClass(I_CmsButton.ButtonData.SELECTION.getIconClass());
+                selection.addStyleName(I_CmsButton.ButtonData.SELECTION.getIconClass());
+                selection.setShowBorder(false);
+                insert(selection, 0);
+            }
         } catch (Exception e) {
             throw new UnsupportedOperationException("Error while parsing editable tag information: " + e.getMessage());
         }
+    }
+
+    /**
+     * @see com.google.gwt.event.dom.client.HasMouseOutHandlers#addMouseOutHandler(com.google.gwt.event.dom.client.MouseOutHandler)
+     */
+    public HandlerRegistration addMouseOutHandler(MouseOutHandler handler) {
+
+        return addDomHandler(handler, MouseOutEvent.getType());
+
+    }
+
+    /**
+     * @see com.google.gwt.event.dom.client.HasMouseOverHandlers#addMouseOverHandler(com.google.gwt.event.dom.client.MouseOverHandler)
+     */
+    public HandlerRegistration addMouseOverHandler(MouseOverHandler handler) {
+
+        return addDomHandler(handler, MouseOverEvent.getType());
     }
 
     /**
@@ -299,7 +314,7 @@ public class CmsListCollectorEditor extends FlowPanel {
      */
     protected void deleteElement() {
 
-        CmsContainerpageController.get().deleteElement(m_resourceId, m_parentResourceId);
+        CmsContainerpageController.get().deleteElement(m_editableData.getStructureId(), m_parentResourceId);
     }
 
     /**
@@ -312,11 +327,11 @@ public class CmsListCollectorEditor extends FlowPanel {
         if (isNew) {
             CmsContentEditorDialog.get().openEditDialog(
                 m_parentResourceId,
-                m_resource + "&amp;newlink=" + URL.encodeComponent(m_newLink),
+                m_editableData.getSitePath() + "&amp;newlink=" + URL.encodeComponent(m_editableData.getNewLink()),
                 true);
         } else {
             CmsContentEditorDialog dialog = CmsContentEditorDialog.get();
-            dialog.openEditDialog(m_resourceId, m_resource, false);
+            dialog.openEditDialog(m_editableData.getStructureId(), m_editableData.getSitePath(), false);
             dialog.setDependingElementId(m_parentResourceId);
         }
     }
