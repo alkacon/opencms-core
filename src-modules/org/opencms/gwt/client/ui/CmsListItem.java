@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItem.java,v $
- * Date   : $Date: 2010/10/22 12:08:45 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2010/10/25 13:29:45 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  *  
  * @since 8.0.0 
  */
@@ -547,7 +547,7 @@ public class CmsListItem extends Composite implements I_CmsListItem {
      * 
      * @return the move handle
      */
-    protected MoveHandle getMoveHandle() {
+    protected I_CmsDragHandle getMoveHandle() {
 
         return m_moveHandle;
     }

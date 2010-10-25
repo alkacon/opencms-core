@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/dnd/Attic/I_CmsDragHandle.java,v $
- * Date   : $Date: 2010/09/14 14:22:30 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/10/25 13:29:23 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.gwt.client.dnd;
 
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.HasMouseDownHandlers;
 
 /**
@@ -38,7 +39,7 @@ import com.google.gwt.event.dom.client.HasMouseDownHandlers;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  */
@@ -50,4 +51,11 @@ public interface I_CmsDragHandle extends HasMouseDownHandlers {
      * @return the draggable item
      */
     I_CmsDraggable getDraggable();
+
+    /**
+     * Returns the handle element.<p>
+     * 
+     * @return the handle element
+     */
+    Element getElement();
 }

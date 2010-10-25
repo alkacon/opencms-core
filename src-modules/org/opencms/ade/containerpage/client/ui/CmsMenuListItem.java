@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsMenuListItem.java,v $
- * Date   : $Date: 2010/10/22 12:11:36 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/10/25 13:29:23 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -107,7 +107,7 @@ public class CmsMenuListItem extends CmsListItem {
 
         if (super.initMoveHandle(dndHandler)) {
             // move handle should always be visible
-            getMoveHandle().addStyleName(
+            getMoveHandle().getElement().addClassName(
                 org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
             return true;
         }

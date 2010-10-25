@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapTreeItem.java,v $
- * Date   : $Date: 2010/10/25 07:30:29 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2010/10/25 13:29:23 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,6 +38,7 @@ import org.opencms.ade.sitemap.client.ui.css.I_CmsSitemapItemCss;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.file.CmsResource;
 import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.dnd.I_CmsDragHandle;
 import org.opencms.gwt.client.dnd.I_CmsDropTarget;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsAlertDialog;
@@ -63,7 +64,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.35 $ 
+ * @version $Revision: 1.36 $ 
  * 
  * @since 8.0.0
  * 
@@ -453,6 +454,27 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
     }
 
     /**
+     * @see org.opencms.gwt.client.ui.CmsListItem#getMoveHandle()
+     */
+    @Override
+    protected I_CmsDragHandle getMoveHandle() {
+
+        CmsSitemapHoverbar hoverbar = getHoverbar();
+        if (hoverbar != null) {
+            int count = hoverbar.getWidgetCount();
+            if (count > 0) {
+                for (int i = 0; i < count; i++) {
+                    Widget w = hoverbar.getWidget(i);
+                    if (w instanceof I_CmsDragHandle) {
+                        return (I_CmsDragHandle)w;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
      * Return the name of this item, which can differ from the entry name for root nodes.<p>
      * 
      * @param sitePath the sitemap entry's site path 
@@ -466,6 +488,7 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
             name = name.substring(0, name.length() - 1);
         }
         return name;
+
     }
 
     /**

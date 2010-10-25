@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsTypeListItem.java,v $
- * Date   : $Date: 2010/10/22 12:10:05 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/10/25 13:29:22 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.
  */
@@ -103,7 +103,7 @@ public class CmsTypeListItem extends CmsListItem {
 
         if (super.initMoveHandle(dndHandler)) {
             // move handle should always be visible
-            getMoveHandle().addStyleName(
+            getMoveHandle().getElement().addClassName(
                 org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
             return true;
         }
