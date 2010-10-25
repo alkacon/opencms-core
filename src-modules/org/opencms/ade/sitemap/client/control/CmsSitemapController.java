@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2010/10/22 15:05:29 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2010/10/25 07:31:39 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,12 +42,12 @@ import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeMove;
 import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeNew;
 import org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
+import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry.EditStatus;
 import org.opencms.ade.sitemap.shared.CmsSitemapBrokenLinkBean;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.ade.sitemap.shared.CmsSitemapMergeInfo;
 import org.opencms.ade.sitemap.shared.CmsSitemapTemplate;
 import org.opencms.ade.sitemap.shared.CmsSubSitemapInfo;
-import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry.EditStatus;
 import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService;
 import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapServiceAsync;
 import org.opencms.file.CmsResource;
@@ -84,7 +84,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 8.0.0
  */
@@ -731,6 +731,8 @@ public class CmsSitemapController {
         while (!entriesToProcess.isEmpty()) {
             CmsClientSitemapEntry entry = entriesToProcess.removeFirst();
             entry.setNew(false);
+            entry.setEditStatus(EditStatus.normal);
+            CmsSitemapView.getInstance().getTreeItem(entry.getSitePath()).updateColor(entry);
             entriesToProcess.addAll(entry.getSubEntries());
         }
     }
