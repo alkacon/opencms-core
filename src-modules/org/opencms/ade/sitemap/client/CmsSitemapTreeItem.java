@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapTreeItem.java,v $
- * Date   : $Date: 2010/10/22 15:05:29 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2010/10/25 05:43:38 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.33 $ 
+ * @version $Revision: 1.34 $ 
  * 
  * @since 8.0.0
  * 
@@ -421,6 +421,9 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
         setDropEnabled(!m_entry.getProperties().containsKey(CmsSitemapManager.Property.sitemap));
     }
 
+    /**
+     * Updates the site path using the current site entry's data.<p>
+     */
     public void updateSitePath() {
 
         updateSitePath(m_entry.getSitePath());

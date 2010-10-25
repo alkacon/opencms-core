@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsSitemapData.java,v $
- * Date   : $Date: 2010/10/22 15:05:29 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/10/25 05:43:38 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0
  */
@@ -67,6 +67,7 @@ public class CmsSitemapData implements IsSerializable {
     /** The export name of the site which contains the sitemap. */
     private String m_exportName;
 
+    /** The export RFS prefix. */
     private String m_exportRfsPrefix;
 
     /** A flag which indicates whether the site which contains the sitemap is a secure site. */
@@ -113,6 +114,7 @@ public class CmsSitemapData implements IsSerializable {
      * @param clipboardData the clipboard data
      * @param parentProperties the root entry's parent's inherited properties 
      * @param exportName the configured export name for the site which contains the sitemap
+     * @param exportRfsPrefix the export RFS prefix 
      * @param isSecure true if there is a secure server configuration for the site which contains the sitemap 
      * @param noEditReason the reason why the current sitemap is not editable
      * @param displayToolbar the flag to control the display of the toolbar
