@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/datebox/Attic/CmsDateBox.java,v $
- * Date   : $Date: 2010/10/26 08:51:13 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/10/26 11:04:50 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -75,7 +75,7 @@ import com.google.gwt.user.client.ui.UIObject;
 /**
  * A text box that shows a date time picker widget when the user clicks on it.
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @author Ruediger Kurz
  */
@@ -84,7 +84,7 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
     /**
      * This inner class implements the handler for the date box widget.<p>
      * 
-     * @version $Revision: 1.11 $
+     * @version $Revision: 1.12 $
      * 
      * @author Ruediger Kurz
      */
@@ -110,6 +110,8 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
 
             if (event.getSource() == m_box) {
                 onDateBoxClick();
+            } else if (event.getSource() == m_time) {
+                onTimeClick();
             } else if ((event.getSource() == m_am) || (event.getSource() == m_pm)) {
                 onAmPmClick();
             }
@@ -227,6 +229,7 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
         m_box.addKeyPressHandler(dateBoxHandler);
         m_am.addClickHandler(dateBoxHandler);
         m_pm.addClickHandler(dateBoxHandler);
+        m_time.addClickHandler(dateBoxHandler);
         m_time.addBlurHandler(dateBoxHandler);
         m_time.addKeyPressHandler(dateBoxHandler);
 
@@ -327,6 +330,14 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
     }
 
     /**
+     * Updates the date box when the user has clicked on the time field.<p> 
+     */
+    public void onTimeClick() {
+
+        updateFromPicker();
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#reset()
      */
     public void reset() {
@@ -394,10 +405,11 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
      */
     public void setValue(Date value, boolean fireEvents) {
 
-        m_box.setText(CmsDateConverter.toString(value));
         if (fireEvents) {
             CmsDateChangeEvent.fireIfNotEqualDates(this, getValue(), value);
+            m_oldValue = value;
         }
+        m_box.setText(CmsDateConverter.toString(value));
     }
 
     /**
@@ -430,6 +442,8 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
 
         if (!m_popup.isVisible()) {
             updateFromTextBox();
+        } else {
+            updateCloseBehavior(true);
         }
     }
 
@@ -643,7 +657,8 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
         checkTime(timeAsString);
         date = CmsDateConverter.getDateWithTime(date, timeAsString);
         setValue(date);
-        CmsDateChangeEvent.fireIfNotEqualDates(this, m_oldValue, getValue());
+        CmsDateChangeEvent.fireIfNotEqualDates(this, m_oldValue, date);
+        m_oldValue = date;
     }
 
     /**
@@ -655,5 +670,6 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
         setPickerValue(date, true);
         m_timeErr.setText(null);
         CmsDateChangeEvent.fireIfNotEqualDates(this, m_oldValue, getValue());
+        m_oldValue = date;
     }
 }
