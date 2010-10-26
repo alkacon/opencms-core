@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsRadioButton.java,v $
- * Date   : $Date: 2010/06/23 10:01:02 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/10/26 08:13:44 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 8.0.0
  * 
@@ -124,7 +124,7 @@ public class CmsRadioButton extends Composite implements HasHorizontalAlignment,
      */
     public HandlerRegistration addClickHandler(ClickHandler handler) {
 
-        return m_button.addClickHandler(handler);
+        return addDomHandler(handler, ClickEvent.getType());
     }
 
     /**
