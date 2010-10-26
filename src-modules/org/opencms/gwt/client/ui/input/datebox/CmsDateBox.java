@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/datebox/Attic/CmsDateBox.java,v $
- * Date   : $Date: 2010/10/26 08:14:28 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/10/26 08:51:13 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -75,7 +75,7 @@ import com.google.gwt.user.client.ui.UIObject;
 /**
  * A text box that shows a date time picker widget when the user clicks on it.
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @author Ruediger Kurz
  */
@@ -84,7 +84,7 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
     /**
      * This inner class implements the handler for the date box widget.<p>
      * 
-     * @version $Revision: 1.10 $
+     * @version $Revision: 1.11 $
      * 
      * @author Ruediger Kurz
      */
@@ -299,9 +299,9 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
         Date date = null;
         try {
             date = CmsDateConverter.toDate(m_box.getText());
-            m_box.setErrorMessage(null);
+            setErrorMessage(null);
         } catch (Exception e) {
-            m_box.setErrorMessage(Messages.get().key(
+            setErrorMessage(Messages.get().key(
                 Messages.ERR_DATEBOX_INVALID_DATE_FORMAT_1,
                 CmsDateConverter.cutSuffix(m_box.getText())));
         }
@@ -602,6 +602,7 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
     private void showPopup() {
 
         updateFromTextBox();
+        setErrorMessage(null);
         m_popup.show(m_box.getElement(), "bl");
         // after showing the date picker add the date box popup as auto hide partner to the parent popup
         if (m_parentPopup != null) {
@@ -622,9 +623,11 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
         if (!m_isValidTime && valid) {
             m_isValidTime = true;
             m_popup.getIgnoreList().remove(RootPanel.getBodyElement());
+            m_parentPopup.removeAutoHidePartner(RootPanel.getBodyElement());
         } else if (m_isValidTime && !valid) {
             m_isValidTime = false;
             m_popup.getIgnoreList().add(RootPanel.getBodyElement());
+            m_parentPopup.addAutoHidePartner(RootPanel.getBodyElement());
         }
     }
 
