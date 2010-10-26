@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/datebox/Attic/CmsDateBox.java,v $
- * Date   : $Date: 2010/10/25 12:32:05 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/10/26 08:14:28 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,9 +55,7 @@ import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.DoubleClickEvent;
-import com.google.gwt.event.dom.client.DoubleClickHandler;
-import com.google.gwt.event.dom.client.HasDoubleClickHandlers;
+import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -65,191 +63,74 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.UIObject;
 
 /**
  * A text box that shows a date time picker widget when the user clicks on it.
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @author Ruediger Kurz
  */
-public class CmsDateBox extends Composite
-implements HasValue<Date>, HasDoubleClickHandlers, I_CmsFormWidget, I_CmsHasInit {
+public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWidget, I_CmsHasInit {
+
+    /**
+     * This inner class implements the handler for the date box widget.<p>
+     * 
+     * @version $Revision: 1.10 $
+     * 
+     * @author Ruediger Kurz
+     */
+    protected class CmsDateBoxHandler implements ClickHandler, BlurHandler, KeyPressHandler {
+
+        /**
+         * @see com.google.gwt.event.dom.client.BlurHandler#onBlur(com.google.gwt.event.dom.client.BlurEvent)
+         */
+        public void onBlur(BlurEvent event) {
+
+            UIObject source = (UIObject)event.getSource();
+            if (m_box.getElement().isOrHasChild(source.getElement())) {
+                onDateBoxBlur();
+            } else if (m_time.getElement().isOrHasChild(source.getElement())) {
+                onTimeBlur();
+            }
+        }
+
+        /**
+         * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
+         */
+        public void onClick(ClickEvent event) {
+
+            if (event.getSource() == m_box) {
+                onDateBoxClick();
+            } else if ((event.getSource() == m_am) || (event.getSource() == m_pm)) {
+                onAmPmClick();
+            }
+        }
+
+        /**
+         * @see com.google.gwt.event.dom.client.KeyPressHandler#onKeyPress(com.google.gwt.event.dom.client.KeyPressEvent)
+         */
+        public void onKeyPress(KeyPressEvent event) {
+
+            if (event.getSource() == m_box) {
+                onDateBoxKeyPress(event);
+            } else if (event.getSource() == m_time) {
+                onTimeKeyPressed(event);
+            }
+        }
+    }
 
     /** The ui-binder interface for this composite. */
     interface I_CmsDateBoxUiBinder extends UiBinder<FlowPanel, CmsDateBox> {
         // GWT interface, nothing to do here
-    }
-
-    /**
-     * This inner Class implements the handlers for the date box widget.<p>
-     * 
-     * @version $Revision: 1.9 $
-     * 
-     * @author Ruediger Kurz
-     * 
-     * @see {@link ClickHandler}, {@link BlurHandler}, {@link KeyPressHandler}
-     */
-    private class DateBoxHandler implements ClickHandler, BlurHandler, KeyPressHandler {
-
-        /** The main handler for this UI. */
-        private CmsDateBoxHandler m_handler;
-
-        /**
-         * The public constructor.<p>
-         * 
-         * @param handler the main handler for the UI
-         */
-        public DateBoxHandler(CmsDateBoxHandler handler) {
-
-            m_handler = handler;
-        }
-
-        /**
-         * @see com.google.gwt.event.dom.client.BlurHandler#onBlur(com.google.gwt.event.dom.client.BlurEvent)
-         */
-        public void onBlur(BlurEvent event) {
-
-            m_handler.onDateBoxBlur(event);
-
-        }
-
-        /**
-         * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
-         */
-        public void onClick(ClickEvent event) {
-
-            m_handler.onDateBoxClick(event);
-
-        }
-
-        /**
-         * @see com.google.gwt.event.dom.client.KeyPressHandler#onKeyPress(com.google.gwt.event.dom.client.KeyPressEvent)
-         */
-        public void onKeyPress(KeyPressEvent event) {
-
-            m_handler.onDateBoxKeyPress(event);
-
-        }
-    }
-
-    /**
-     * This inner Class implements the listeners for the date box.<p>
-     * 
-     * @version $Revision: 1.9 $
-     * 
-     * @author Ruediger Kurz
-     */
-    private class DateBoxListener implements Listener<ComponentEvent> {
-
-        /** The main handler for this UI. */
-        private CmsDateBoxHandler m_handler;
-
-        /**
-         * The public constructor.<p>
-         * 
-         * @param handler the main handler for the UI
-         */
-        public DateBoxListener(CmsDateBoxHandler handler) {
-
-            m_handler = handler;
-        }
-
-        /**
-         * @see com.extjs.gxt.ui.client.event.Listener#handleEvent(com.extjs.gxt.ui.client.event.BaseEvent)
-         */
-        public void handleEvent(ComponentEvent be) {
-
-            m_handler.onPopupClose();
-
-        }
-    }
-
-    /**
-     * This inner Class implements the handlers for the date box widget.<p>
-     * 
-     * @version $Revision: 1.9 $
-     * 
-     * @author Ruediger Kurz
-     * 
-     * @see {@link ClickHandler}, {@link ValueChangeHandler}, {@link BlurHandler}, {@link KeyPressHandler}
-     */
-    private class DateTimePickerHandler implements ClickHandler, BlurHandler, KeyPressHandler {
-
-        /** The main handler for this UI. */
-        private CmsDateBoxHandler m_handler;
-
-        /**
-         * The public constructor.<p>
-         * 
-         * @param handler the main handler for the UI
-         */
-        public DateTimePickerHandler(CmsDateBoxHandler handler) {
-
-            m_handler = handler;
-        }
-
-        /**
-         * @see com.google.gwt.event.dom.client.BlurHandler#onBlur(com.google.gwt.event.dom.client.BlurEvent)
-         */
-        public void onBlur(BlurEvent event) {
-
-            m_handler.onTimeBlur(event);
-        }
-
-        /**
-         * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
-         */
-        public void onClick(ClickEvent event) {
-
-            m_handler.onAmPmClick(event);
-        }
-
-        /**
-         * @see com.google.gwt.event.dom.client.KeyPressHandler#onKeyPress(com.google.gwt.event.dom.client.KeyPressEvent)
-         */
-        public void onKeyPress(KeyPressEvent event) {
-
-            m_handler.onTimeKeyPressed(event);
-        }
-
-    }
-
-    /**
-     * This inner Class implements the listeners for the date time picker.<p>
-     * 
-     * @version $Revision: 1.9 $
-     * 
-     * @author Ruediger Kurz
-     */
-    private class DateTimePickerListener implements Listener<ComponentEvent> {
-
-        /** The main handler for this UI. */
-        private CmsDateBoxHandler m_handler;
-
-        /**
-         * The public constructor.<p>
-         * 
-         * @param handler the main handler for the UI
-         */
-        public DateTimePickerListener(CmsDateBoxHandler handler) {
-
-            m_handler = handler;
-        }
-
-        /**
-         * @see com.extjs.gxt.ui.client.event.Listener#handleEvent(com.extjs.gxt.ui.client.event.BaseEvent)
-         */
-        public void handleEvent(ComponentEvent be) {
-
-            m_handler.onPickerValueChanged(m_picker.getValue());
-
-        }
     }
 
     /** The widget type identifier for this widget. */
@@ -258,53 +139,56 @@ implements HasValue<Date>, HasDoubleClickHandlers, I_CmsFormWidget, I_CmsHasInit
     /** The ui-binder instance. */
     private static I_CmsDateBoxUiBinder uiBinder = GWT.create(I_CmsDateBoxUiBinder.class);
 
-    /** The dialog which contains this widget. */
-    protected CmsFormDialog m_dialog;
-
     /** The am radio button. */
     @UiField
-    CmsRadioButton m_am;
+    protected CmsRadioButton m_am;
+
+    /** The radio button group for am/pm selection. */
+    protected CmsRadioButtonGroup m_ampmGroup;
 
     /** The input field to show the result of picking a date. */
     @UiField
-    CmsTextBox m_box;
+    protected CmsTextBox m_box;
 
     /** The FlowPanel containing the date box and the the time date picker widget. */
     @UiField
-    FlowPanel m_dateBoxPanel;
+    protected FlowPanel m_dateBoxPanel;
 
     /** The panel for the date time picker. */
     @UiField
-    FlowPanel m_dateTimePanel;
+    protected FlowPanel m_dateTimePanel;
+
+    /** The dialog which contains this widget. */
+    protected CmsFormDialog m_dialog;
 
     /** The gwt date picker. */
     @UiField
-    DatePicker m_picker;
+    protected DatePicker m_picker;
 
     /** The pm radio button. */
     @UiField
-    CmsRadioButton m_pm;
+    protected CmsRadioButton m_pm;
 
     /** The text box to input the time. */
     @UiField
-    CmsTextBox m_time;
+    protected CmsTextBox m_time;
 
     /** The error label for the time input field. */
     @UiField
-    CmsErrorWidget m_timeErr;
+    protected CmsErrorWidget m_timeErr;
 
-    /** The radio button group for am/pm selection. */
-    private CmsRadioButtonGroup m_ampmGroup = new CmsRadioButtonGroup();
+    /** Signals whether the time field is valid or not. */
+    private boolean m_isValidTime;
 
-    /** The listener for the date box. */
-    private DateBoxListener m_dateBoxListener;
+    /** The old value for fire event decision. */
+    private Date m_oldValue;
 
     /** The parent popup to this dialog if present. */
     private PopupPanel m_parentPopup;
 
     /** The popup panel to show the the date time picker widget in. */
     //private CmsPopup m_popup = new CmsPopup();
-    private Popup m_popup = new Popup();
+    private Popup m_popup;
 
     /**
      * Create a new date box widget with the date time picker.
@@ -313,42 +197,42 @@ implements HasValue<Date>, HasDoubleClickHandlers, I_CmsFormWidget, I_CmsHasInit
 
         initWidget(uiBinder.createAndBindUi(this));
 
-        CmsDateBoxHandler pickerHandler = new CmsDateBoxHandler(this);
-
-        DateBoxHandler dateBoxHandler = new DateBoxHandler(pickerHandler);
-        m_box.addBlurHandler(dateBoxHandler);
-        m_box.addClickHandler(dateBoxHandler);
-        m_box.addKeyPressHandler(dateBoxHandler);
+        m_popup = new Popup();
+        m_ampmGroup = new CmsRadioButtonGroup();
 
         m_am.setText(Messages.get().key(Messages.GUI_DATE_AM_0));
         m_am.setGroup(m_ampmGroup);
-
         m_pm.setText(Messages.get().key(Messages.GUI_DATE_PM_0));
         m_pm.setGroup(m_ampmGroup);
-
-        DateTimePickerHandler dateTimePickerHandler = new DateTimePickerHandler(pickerHandler);
-        m_am.addClickHandler(dateTimePickerHandler);
-        m_pm.addClickHandler(dateTimePickerHandler);
-        m_time.addBlurHandler(dateTimePickerHandler);
-        m_time.addKeyPressHandler(dateTimePickerHandler);
-
-        DateTimePickerListener dateTimePickerListener = new DateTimePickerListener(pickerHandler);
-
-        m_picker.addListener(Events.Select, dateTimePickerListener);
 
         if (!CmsDateConverter.is12HourPresentation()) {
             m_pm.setVisible(false);
             m_am.setVisible(false);
         }
 
+        m_picker.addListener(Events.Select, new Listener<ComponentEvent>() {
+
+            /**
+             * @see com.extjs.gxt.ui.client.event.Listener#handleEvent(com.extjs.gxt.ui.client.event.BaseEvent)
+             */
+            public void handleEvent(ComponentEvent be) {
+
+                onPickerValueChanged();
+            }
+        });
+
+        CmsDateBoxHandler dateBoxHandler = new CmsDateBoxHandler();
+        m_box.addBlurHandler(dateBoxHandler);
+        m_box.addClickHandler(dateBoxHandler);
+        m_box.addKeyPressHandler(dateBoxHandler);
+        m_am.addClickHandler(dateBoxHandler);
+        m_pm.addClickHandler(dateBoxHandler);
+        m_time.addBlurHandler(dateBoxHandler);
+        m_time.addKeyPressHandler(dateBoxHandler);
+
         m_popup.add(m_dateTimePanel);
         m_popup.setShadow(true);
-
-        m_dateBoxListener = new DateBoxListener(pickerHandler);
-
         m_popup.setAutoHide(true);
-        // m_popup.getIgnoreList().add(m_box.getElement());
-
     }
 
     /**
@@ -367,14 +251,6 @@ implements HasValue<Date>, HasDoubleClickHandlers, I_CmsFormWidget, I_CmsHasInit
                 return new CmsDateBox();
             }
         });
-    }
-
-    /**
-     * @see com.google.gwt.event.dom.client.HasDoubleClickHandlers#addDoubleClickHandler(com.google.gwt.event.dom.client.DoubleClickHandler)
-     */
-    public HandlerRegistration addDoubleClickHandler(DoubleClickHandler handler) {
-
-        return addDomHandler(handler, DoubleClickEvent.getType());
     }
 
     /**
@@ -464,7 +340,6 @@ implements HasValue<Date>, HasDoubleClickHandlers, I_CmsFormWidget, I_CmsHasInit
     public void setEnabled(boolean enabled) {
 
         m_box.setEnabled(enabled);
-
     }
 
     /**
@@ -473,7 +348,6 @@ implements HasValue<Date>, HasDoubleClickHandlers, I_CmsFormWidget, I_CmsHasInit
     public void setErrorMessage(String errorMessage) {
 
         m_box.setErrorMessage(errorMessage);
-
     }
 
     /**
@@ -527,21 +401,145 @@ implements HasValue<Date>, HasDoubleClickHandlers, I_CmsFormWidget, I_CmsHasInit
     }
 
     /**
-     * Adds the body element to the popup's ignore list.<p>
+     * Updates the updates the close behavior and sets the value of the date box to the value from the picker.<p>
      */
-    protected void addBodyToIgnoreList() {
+    protected void executeTimeAction() {
 
-        m_popup.getIgnoreList().add(RootPanel.getBodyElement());
+        if (!CmsDateConverter.validateTime(getTimeText())) {
+            updateCloseBehavior(false);
+        } else {
+            updateCloseBehavior(true);
+            updateFromPicker();
+        }
     }
 
     /**
-     * Returns the current value of the date picker.<p>
-     * 
-     * @return the value of the date picker
+     * If the am or pm radio button is clicked update the date box from the date time picker.<p>
      */
-    protected Date getPickerValue() {
+    protected void onAmPmClick() {
 
-        return m_picker.getValue();
+        updateFromPicker();
+    }
+
+    /**
+     * The date box on blur action.<p>
+     * 
+     * If the date box loses the focus the date time picker should be updated from the date box value.<p>
+     */
+    protected void onDateBoxBlur() {
+
+        if (!m_popup.isVisible()) {
+            updateFromTextBox();
+        }
+    }
+
+    /**
+     * The date box on click action.<p>
+     * 
+     * If the date box is clicked the time date picker should be shown.<p>
+     */
+    protected void onDateBoxClick() {
+
+        if (!m_popup.isVisible()) {
+            showPopup();
+        }
+    }
+
+    /**
+     * The date box on key down action.<p>
+     * <ul>
+     * <li>If enter or tab is pressed in the date box the date time 
+     * picker should be updated with the value from the date box.</li>
+     * 
+     * <li>If the escape key is pressed the picker should be hided.</li>
+     * 
+     * <li>If the up key is pressed the value should be taken from the date box.</li>
+     * 
+     * <li>If the down key is pressed the picker should be hided.</li>
+     * </ul>
+     *  
+     * @param event the key down event
+     */
+    protected void onDateBoxKeyPress(KeyPressEvent event) {
+
+        switch (event.getNativeEvent().getKeyCode()) {
+            case KeyCodes.KEY_ENTER:
+            case KeyCodes.KEY_TAB:
+            case KeyCodes.KEY_ESCAPE:
+            case KeyCodes.KEY_UP:
+                updateFromTextBox();
+                hidePopup();
+                break;
+            case KeyCodes.KEY_DOWN:
+                showPopup();
+                break;
+            default:
+                hidePopup();
+        }
+
+    }
+
+    /**
+     * If the value of the picker changes, the value of the date time picker should be updated.<p> 
+     */
+    protected void onPickerValueChanged() {
+
+        updateFromPicker();
+    }
+
+    /**
+     * If the time field loses the focus the entered time should be checked.<p>
+     */
+    protected void onTimeBlur() {
+
+        checkTime(getTimeText());
+    }
+
+    /**
+     * If the user presses enter in the time field the value of the 
+     * picker should be updated and the the popup should be closed.<p>
+     * 
+     * In any other case the popup should be prevented to being closed.<p>
+     * 
+     * @param event the key pressed event
+     */
+    protected void onTimeKeyPressed(KeyPressEvent event) {
+
+        switch (event.getCharCode()) {
+            case KeyCodes.KEY_ENTER:
+                updateFromPicker();
+                hidePopup();
+                break;
+            default:
+                DeferredCommand.addCommand(new Command() {
+
+                    public void execute() {
+
+                        executeTimeAction();
+                    }
+                });
+                break;
+        }
+    }
+
+    /**
+     * Validates the time and prints out an error message if the time format is incorrect.<p>
+     * 
+     * @param time the time String to check 
+     */
+    private void checkTime(String time) {
+
+        if (!CmsDateConverter.validateTime(time)) {
+            m_timeErr.setText(Messages.get().key(
+                Messages.ERR_DATEBOX_INVALID_TIME_FORMAT_1,
+                CmsDateConverter.cutSuffix(time)));
+            updateCloseBehavior(false);
+            m_popup.sync(true);
+        } else {
+            m_timeErr.setText(null);
+            updateCloseBehavior(true);
+            m_popup.sync(true);
+        }
     }
 
     /**
@@ -549,7 +547,7 @@ implements HasValue<Date>, HasDoubleClickHandlers, I_CmsFormWidget, I_CmsHasInit
      * 
      * @return the time text field value as string
      */
-    protected String getTimeText() {
+    private String getTimeText() {
 
         String timeAsString = m_time.getText().trim();
         if (CmsDateConverter.is12HourPresentation()) {
@@ -565,45 +563,17 @@ implements HasValue<Date>, HasDoubleClickHandlers, I_CmsFormWidget, I_CmsHasInit
     }
 
     /**
-     * Returns the current Value of the date time picker.<p>
-     * 
-     * @return the current Value of the date time picker
+     * Hides the date time popup.<p>
      */
-    protected Date getValueFromDateTimePicker() {
+    private void hidePopup() {
 
-        Date date = getPickerValue();
-        String time = getTimeText();
-        return CmsDateConverter.getDateWithTime(date, time);
-    }
-
-    /**
-     * Hides the Popup.<p>
-     */
-    protected void hidePopup() {
-
-        // before hiding the date picker remove the date box popup from the auto hide partners of the parent popup
-        if (m_parentPopup != null) {
-            m_parentPopup.removeAutoHidePartner(m_popup.getElement());
+        if (CmsDateConverter.validateTime(getTimeText())) {
+            // before hiding the date picker remove the date box popup from the auto hide partners of the parent popup
+            if (m_parentPopup != null) {
+                m_parentPopup.removeAutoHidePartner(m_popup.getElement());
+            }
+            m_popup.hide();
         }
-        m_popup.hide();
-    }
-
-    /**
-     * Returns <code>true</code> if the date picker is currently showed <code>false</code> otherwise.<p> 
-     * 
-     * @return true if date picker is currently showing, false if not
-     */
-    protected boolean isDatePickerShowing() {
-
-        return m_popup.isVisible();
-    }
-
-    /**
-     * Removes the body element from the popup's ignore list.<p>
-     */
-    protected void removeBodyFromIgnoreList() {
-
-        m_popup.getIgnoreList().remove(RootPanel.getBodyElement());
     }
 
     /**
@@ -612,7 +582,7 @@ implements HasValue<Date>, HasDoubleClickHandlers, I_CmsFormWidget, I_CmsHasInit
      * @param date the value to set
      * @param supressEvent signals whether the value changed event should be suppressed or not
      */
-    protected void setPickerValue(Date date, boolean supressEvent) {
+    private void setPickerValue(Date date, boolean supressEvent) {
 
         if (date == null) {
             date = new Date();
@@ -627,23 +597,12 @@ implements HasValue<Date>, HasDoubleClickHandlers, I_CmsFormWidget, I_CmsHasInit
     }
 
     /**
-     * Sets an error of the time text field.<p>
-     * 
-     * @param errMsg the error message to set
-     */
-    protected void setTimeError(String errMsg) {
-
-        m_timeErr.setText(errMsg);
-    }
-
-    /**
      * Shows the date picker popup.<p>
      */
-    protected void showPopup() {
+    private void showPopup() {
 
+        updateFromTextBox();
         m_popup.show(m_box.getElement(), "bl");
-        m_popup.addListener(Events.Close, m_dateBoxListener);
-
         // after showing the date picker add the date box popup as auto hide partner to the parent popup
         if (m_parentPopup != null) {
             m_parentPopup.addAutoHidePartner(m_popup.getElement());
@@ -651,10 +610,47 @@ implements HasValue<Date>, HasDoubleClickHandlers, I_CmsFormWidget, I_CmsHasInit
     }
 
     /**
-     * Synchronizes the popup e.g. for shadow repaint.<p> 
+     * Sets the valid time flag.<p>
+     * 
+     * Only if the "current time valid state" differs from the "stored time valid state"
+     * the value of the flag is changed.<p>
+     * 
+     * @param valid the "current time valid state"
      */
-    protected void syncPopup() {
+    private void updateCloseBehavior(boolean valid) {
 
-        m_popup.sync(true);
+        if (!m_isValidTime && valid) {
+            m_isValidTime = true;
+            m_popup.getIgnoreList().remove(RootPanel.getBodyElement());
+        } else if (m_isValidTime && !valid) {
+            m_isValidTime = false;
+            m_popup.getIgnoreList().add(RootPanel.getBodyElement());
+        }
+    }
+
+    /**
+     * Sets the value of the date box.<p>
+     * 
+     * @param date the new date
+     */
+    private void updateFromPicker() {
+
+        Date date = m_picker.getValue();
+        String timeAsString = getTimeText();
+        checkTime(timeAsString);
+        date = CmsDateConverter.getDateWithTime(date, timeAsString);
+        setValue(date);
+        CmsDateChangeEvent.fireIfNotEqualDates(this, m_oldValue, getValue());
+    }
+
+    /**
+     * Updates the picker if the user manually modified the date of the text box.<p>
+     */
+    private void updateFromTextBox() {
+
+        Date date = getValue();
+        setPickerValue(date, true);
+        m_timeErr.setText(null);
+        CmsDateChangeEvent.fireIfNotEqualDates(this, m_oldValue, getValue());
     }
 }
