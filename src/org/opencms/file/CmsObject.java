@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2010/04/08 15:34:28 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/10/26 13:14:54 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -96,7 +96,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 6.0.0 
  */
@@ -1217,6 +1217,19 @@ public final class CmsObject {
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
         return m_securityManager.moveToLostAndFound(m_context, resource, true);
+    }
+
+    /**
+     * Returns the next counter value for a given resource type and increments that counter.<p>
+     * 
+     * @param resourceType the resource type for which the counter value should be returned 
+     * @return the next value of the counter 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public int getNextResourceTypeCounterValue(String resourceType) throws CmsException {
+
+        return m_securityManager.getNextResourceTypeCounterValue(m_context, resourceType);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2010/07/23 08:29:33 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/10/26 13:14:54 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -2098,6 +2098,32 @@ public final class CmsSecurityManager {
             dbc.clear();
         }
         return resources;
+    }
+
+    /**
+     * Returns the next counter value for a given resource type and increments the counter.<p>
+     * 
+     * @param context the request context 
+     * @param resourceType the resource type for which the counter should be returned
+     *  
+     * @return the resource type for which the counter value should be returned
+     *    
+     * @throws CmsException if something goes wrong 
+     */
+    public int getNextResourceTypeCounterValue(CmsRequestContext context, String resourceType) throws CmsException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            return m_driverManager.getNextResourceTypeCounterValue(dbc, resourceType);
+        } catch (Exception e) {
+            dbc.report(
+                null,
+                Messages.get().container(Messages.ERR_GET_NEXT_RESOURCE_TYPE_COUNTER_VALUE_1, resourceType),
+                e);
+            return -1; // will never be reached  
+        } finally {
+            dbc.clear();
+        }
     }
 
     /**
@@ -5136,6 +5162,32 @@ public final class CmsSecurityManager {
     }
 
     /**
+     * Marks a subscribed resource as deleted.<p>
+     * 
+     * @param context the request context
+     * @param poolName the name of the database pool to use
+     * @param resource the subscribed resource to mark as deleted
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void setSubscribedResourceAsDeleted(CmsRequestContext context, String poolName, CmsResource resource)
+    throws CmsException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            m_driverManager.setSubscribedResourceAsDeleted(dbc, poolName, resource);
+        } catch (Exception e) {
+
+            dbc.report(null, Messages.get().container(
+                Messages.ERR_SET_SUBSCRIBED_RESOURCE_AS_DELETED_1,
+                context.getSitePath(resource)), e);
+
+        } finally {
+            dbc.clear();
+        }
+    }
+
+    /**
      * Moves an user to the given organizational unit.<p>
      * 
      * @param context the current request context
@@ -5316,32 +5368,6 @@ public final class CmsSecurityManager {
                 context.getSitePath(resource),
                 dbc.currentUser().getName(),
                 e.getLocalizedMessage(dbc.getRequestContext().getLocale())), e);
-        } finally {
-            dbc.clear();
-        }
-    }
-
-    /**
-     * Marks a subscribed resource as deleted.<p>
-     * 
-     * @param context the request context
-     * @param poolName the name of the database pool to use
-     * @param resource the subscribed resource to mark as deleted
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public void setSubscribedResourceAsDeleted(CmsRequestContext context, String poolName, CmsResource resource)
-    throws CmsException {
-
-        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        try {
-            m_driverManager.setSubscribedResourceAsDeleted(dbc, poolName, resource);
-        } catch (Exception e) {
-
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_SET_SUBSCRIBED_RESOURCE_AS_DELETED_1,
-                context.getSitePath(resource)), e);
-
         } finally {
             dbc.clear();
         }

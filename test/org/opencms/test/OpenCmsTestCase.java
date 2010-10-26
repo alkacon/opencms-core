@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2010/02/24 12:47:05 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/10/26 13:14:54 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,6 +72,8 @@ import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.Serializable;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -79,7 +81,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import junit.extensions.TestSetup;
+import junit.framework.Test;
 import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.io.filefilter.FileFilterUtils;
@@ -100,7 +105,7 @@ import org.dom4j.util.NodeComparator;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 6.0.0
  */
@@ -469,6 +474,57 @@ public class OpenCmsTestCase extends TestCase {
     }
 
     /**
+     * Generates a wrapper for a test class which handles setting up the OpenCms instance.<p>
+     * 
+     * @param testClass the test class to wrap 
+     * @param importFolder the RFS folder with the test data to import 
+     * @param targetFolder the VFS target folder for the test data
+     *  
+     * @return the wrapped test 
+     */
+    public static Test generateSetupTestWrapper(
+        Class<? extends Test> testClass,
+        final String importFolder,
+        final String targetFolder) {
+
+        try {
+            TestSuite suite = new TestSuite();
+            suite.setName(testClass.getName());
+            for (Method method : testClass.getMethods()) {
+                String methodName = method.getName();
+                if (methodName.startsWith("test") && (method.getParameterTypes().length == 0)) {
+                    Constructor<? extends Test> constructor = testClass.getConstructor(String.class);
+                    Test test = constructor.newInstance(method.getName());
+                    suite.addTest(test);
+                }
+            }
+            TestSetup wrapper = new TestSetup(suite) {
+
+                /**
+                 * @see junit.extensions.TestSetup#setUp()
+                 */
+                @Override
+                protected void setUp() {
+
+                    setupOpenCms(importFolder, targetFolder);
+                }
+
+                /**
+                 * @see junit.extensions.TestSetup#tearDown()
+                 */
+                @Override
+                protected void tearDown() {
+
+                    removeOpenCms();
+                }
+            };
+            return wrapper;
+        } catch (Throwable e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
      * Generates n new users for a given group.<p>
      * 
      * @param cms the cms context
@@ -695,6 +751,20 @@ public class OpenCmsTestCase extends TestCase {
      * 
      * @param importFolder the folder to import in the "real" FS
      * @param targetFolder the target folder of the import in the VFS
+     * @param publish flag to signalize if the publish script should be called
+     * @return an initialized OpenCms context with "Admin" user in the "Offline" project with the site root set to "/" 
+     */
+    public static CmsObject setupOpenCms(String importFolder, String targetFolder, boolean publish) {
+
+        return setupOpenCms(importFolder, targetFolder, getTestDataPath("WEB-INF/config." + m_dbProduct + "/"), publish);
+    }
+
+    /**
+     * Sets up a complete OpenCms instance with configuration from the config-ori folder, 
+     * creating the usual projects, and importing a default database.<p>
+     * 
+     * @param importFolder the folder to import in the "real" FS
+     * @param targetFolder the target folder of the import in the VFS
      * @param specialConfigFolder the folder that contains the special configuration files for this setup
      * @return an initialized OpenCms context with "Admin" user in the "Offline" project with the site root set to "/" 
      */
@@ -706,20 +776,6 @@ public class OpenCmsTestCase extends TestCase {
             getTestDataPath("WEB-INF/config." + m_dbProduct + "/"),
             getTestDataPath(specialConfigFolder),
             true);
-    }
-
-    /**
-     * Sets up a complete OpenCms instance with configuration from the config-ori folder, 
-     * creating the usual projects, and importing a default database.<p>
-     * 
-     * @param importFolder the folder to import in the "real" FS
-     * @param targetFolder the target folder of the import in the VFS
-     * @param publish flag to signalize if the publish script should be called
-     * @return an initialized OpenCms context with "Admin" user in the "Offline" project with the site root set to "/" 
-     */
-    public static CmsObject setupOpenCms(String importFolder, String targetFolder, boolean publish) {
-
-        return setupOpenCms(importFolder, targetFolder, getTestDataPath("WEB-INF/config." + m_dbProduct + "/"), publish);
     }
 
     /**
@@ -3671,4 +3727,5 @@ public class OpenCmsTestCase extends TestCase {
                 + "-----");
         }
     }
+
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2010/04/28 15:25:27 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/10/26 13:14:54 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import java.util.Map;
  * @author Thomas Weckert  
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 6.0.0 
  */
@@ -273,6 +273,18 @@ public interface I_CmsVfsDriver {
      * @throws Throwable if something goes wrong
      */
     void destroy() throws Throwable;
+
+    /**
+     * Gets the value of the counter for a resource type, and increments that counter.<p>
+     * 
+     * @param dbc the database context 
+     * @param resourceType the resource type for which the next value of the counter should be returned
+     *  
+     * @return the the next counter value for the given resource type 
+     * 
+     * @throws CmsDataAccessException if something goes wrong 
+     */
+    int getNextResourceTypeCounterValue(CmsDbContext dbc, String resourceType) throws CmsDataAccessException;
 
     /**
      * Returns all organizational units for the given resource.<p>

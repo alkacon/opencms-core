@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2010/07/23 08:29:34 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/10/26 13:14:54 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -92,7 +92,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 6.0.0 
  */
@@ -1045,6 +1045,23 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SHUTDOWN_DRIVER_1, getClass().getName()));
         }
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsVfsDriver#getNextResourceTypeCounterValue(org.opencms.db.CmsDbContext, java.lang.String)
+     */
+    public int getNextResourceTypeCounterValue(CmsDbContext dbc, String resourceType) throws CmsDataAccessException {
+
+        Integer counterObj = internalReadResourceTypeCounter(dbc, resourceType);
+        int result;
+        if (counterObj == null) {
+            internalCreateResourceTypeCounter(dbc, resourceType);
+            result = 0;
+        } else {
+            result = counterObj.intValue();
+            internalUpdateResourceTypeCounter(dbc, resourceType);
+        }
+        return result;
     }
 
     /**
@@ -3245,6 +3262,33 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     }
 
     /**
+     * Creates the counter for a given resource type.<p>
+     * 
+     * @param dbc the database context 
+     * @param resourceType the resource type for which a counter should be created 
+     * 
+     * @throws CmsDbSqlException if something goes wrong 
+     */
+    protected void internalCreateResourceTypeCounter(CmsDbContext dbc, String resourceType) throws CmsDbSqlException {
+
+        PreparedStatement stmt = null;
+        Connection conn = null;
+        try {
+            conn = m_sqlManager.getConnection(dbc);
+            stmt = m_sqlManager.getPreparedStatement(
+                conn,
+                CmsProject.ONLINE_PROJECT_ID,
+                "C_CREATE_RESOURCE_TYPE_COUNTER");
+            stmt.setString(1, resourceType);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw wrapException(stmt, e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, null);
+        }
+    }
+
+    /**
      * Returns the parent id of the given resource.<p>
      * 
      * @param dbc the current database context
@@ -3357,6 +3401,41 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     }
 
     /**
+     * Reads the current value of a resource type counter.<p>
+     * 
+     * @param dbc the database context 
+     * @param resourceType the name of the resource type whose counter should be read 
+     * @return the current value of the resource type counter, or null if no resource type counter was found 
+     * 
+     * @throws CmsDbSqlException if something goes wrong
+     */
+    protected Integer internalReadResourceTypeCounter(CmsDbContext dbc, String resourceType) throws CmsDbSqlException {
+
+        PreparedStatement stmt = null;
+        Connection conn = null;
+        ResultSet resultSet = null;
+        try {
+            conn = m_sqlManager.getConnection(dbc);
+            stmt = m_sqlManager.getPreparedStatement(conn, CmsProject.ONLINE_PROJECT_ID, "C_READ_RESOURCE_TYPE_COUNTER");
+            stmt.setString(1, resourceType);
+            resultSet = stmt.executeQuery();
+            Integer result = null;
+            if (resultSet.next()) {
+                int counter = resultSet.getInt(1);
+                result = new Integer(counter);
+                while (resultSet.next()) {
+                    // for MSSQL 
+                }
+            }
+            return result;
+        } catch (SQLException e) {
+            throw wrapException(stmt, e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, resultSet);
+        }
+    }
+
+    /**
      * Returns the structure state of the given resource.<p>
      * 
      * @param dbc the database context
@@ -3431,6 +3510,35 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
+        }
+    }
+
+    /**
+     * Increments the counter for a given resource type.<p>
+     *  
+     * @param dbc the current db context 
+     * @param resourceType the resource type for which the counter should be increased 
+     * 
+     * @throws CmsDbSqlException if something goes wrong 
+     */
+    protected void internalUpdateResourceTypeCounter(CmsDbContext dbc, String resourceType) throws CmsDbSqlException {
+
+        PreparedStatement stmt = null;
+        Connection conn = null;
+        ResultSet resultSet = null;
+        try {
+            conn = m_sqlManager.getConnection(dbc);
+            stmt = m_sqlManager.getPreparedStatement(
+                conn,
+                CmsProject.ONLINE_PROJECT_ID,
+                "C_UPDATE_RESOURCE_TYPE_COUNTER");
+            stmt.setString(1, resourceType);
+            stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            throw wrapException(stmt, e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, resultSet);
         }
     }
 
@@ -4107,6 +4215,13 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
+    }
+
+    protected CmsDbSqlException wrapException(PreparedStatement stmt, SQLException e) {
+
+        return new CmsDbSqlException(Messages.get().container(
+            Messages.ERR_GENERIC_SQL_1,
+            CmsDbSqlException.getErrorQuery(stmt)), e);
     }
 
 }
