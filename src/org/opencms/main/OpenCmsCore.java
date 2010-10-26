@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2010/10/21 13:14:03 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2010/10/26 11:08:17 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -99,6 +99,7 @@ import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.xml.CmsXmlContentTypeManager;
 import org.opencms.xml.containerpage.CmsADEManager;
+import org.opencms.xml.sitemap.CmsSitemapEntry;
 import org.opencms.xml.sitemap.CmsSitemapManager;
 
 import java.io.IOException;
@@ -147,7 +148,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 6.0.0 
  */
@@ -2108,7 +2109,16 @@ public final class OpenCmsCore {
         String path = adminCms.getRequestContext().getUri();
         CmsProperty propertyLoginForm = null;
         try {
-            propertyLoginForm = adminCms.readPropertyObject(path, CmsPropertyDefinition.PROPERTY_LOGIN_FORM, true);
+            CmsSitemapEntry entry = OpenCms.getSitemapManager().getEntryForUri(adminCms, path);
+            if ((entry != null) && entry.isSitemap()) {
+                CmsResource resource = adminCms.readResource(entry.getStructureId());
+                propertyLoginForm = adminCms.readPropertyObject(
+                    resource,
+                    CmsPropertyDefinition.PROPERTY_LOGIN_FORM,
+                    true);
+            } else {
+                propertyLoginForm = adminCms.readPropertyObject(path, CmsPropertyDefinition.PROPERTY_LOGIN_FORM, true);
+            }
         } catch (Throwable t) {
             if (LOG.isWarnEnabled()) {
                 LOG.warn(

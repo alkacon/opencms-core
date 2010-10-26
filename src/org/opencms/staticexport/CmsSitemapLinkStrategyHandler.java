@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/Attic/CmsSitemapLinkStrategyHandler.java,v $
- * Date   : $Date: 2010/10/20 15:22:48 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/10/26 11:08:18 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Ruediger Kurz
  *
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 8.0.0
  */
@@ -377,34 +377,37 @@ public class CmsSitemapLinkStrategyHandler extends A_CmsLinkStrategyHandler {
         String cacheKey = OpenCms.getStaticExportManager().getCacheKey(cms.getRequestContext().getSiteRoot(), vfsName);
         Boolean secureResource = OpenCms.getStaticExportManager().getCacheSecureLinks().get(cacheKey);
         if (secureResource == null) {
+            // read the export property from the sitemap or from the VFS
+            CmsSitemapEntry entry = null;
             try {
-                CmsSitemapEntry entry = OpenCms.getSitemapManager().getEntryForUri(cms, vfsName);
-                if (entry.isSitemap()) {
-                    String prop = entry.getProperties(true).get(CmsPropertyDefinition.PROPERTY_SECURE);
-                    secureResource = Boolean.valueOf(prop);
-                    // only cache result if read was successfull
-                    OpenCms.getStaticExportManager().getCacheSecureLinks().put(cacheKey, secureResource);
-                } else {
-                    try {
-                        String secureProp = cms.readPropertyObject(vfsName, CmsPropertyDefinition.PROPERTY_SECURE, true).getValue();
-                        secureResource = Boolean.valueOf(secureProp);
-                        // only cache result if read was successfull
-                        OpenCms.getStaticExportManager().getCacheSecureLinks().put(cacheKey, secureResource);
-                    } catch (CmsVfsResourceNotFoundException e) {
-                        secureResource = Boolean.FALSE;
-                        // resource does not exist, no secure link will be required for any user
-                        OpenCms.getStaticExportManager().getCacheSecureLinks().put(cacheKey, secureResource);
-                    } catch (Exception e) {
-                        // no secure link required (probably security issues, e.g. no access for current user)
-                        // however other users may be allowed to read the resource, so the result can't be cached
-                        secureResource = Boolean.FALSE;
-                    }
-                }
-            } catch (CmsException e) {
-                LOG.error(e.getLocalizedMessage(), e);
+                entry = OpenCms.getSitemapManager().getEntryForUri(cms, vfsName);
+            } catch (Exception e) {
+                // no sitemap entry found: go on
                 // no secure link required (probably security issues, e.g. no access for current user)
                 // however other users may be allowed to read the resource, so the result can't be cached
                 secureResource = Boolean.FALSE;
+                LOG.debug(e.getLocalizedMessage(), e);
+            }
+            if ((entry != null) && entry.isSitemap()) {
+                String prop = entry.getProperties(true).get(CmsPropertyDefinition.PROPERTY_SECURE);
+                secureResource = Boolean.valueOf(prop);
+                // only cache result if read was successfull
+                OpenCms.getStaticExportManager().getCacheSecureLinks().put(cacheKey, secureResource);
+            } else {
+                try {
+                    String secureProp = cms.readPropertyObject(vfsName, CmsPropertyDefinition.PROPERTY_SECURE, true).getValue();
+                    secureResource = Boolean.valueOf(secureProp);
+                    // only cache result if read was successfull
+                    OpenCms.getStaticExportManager().getCacheSecureLinks().put(cacheKey, secureResource);
+                } catch (CmsVfsResourceNotFoundException e) {
+                    secureResource = Boolean.FALSE;
+                    // resource does not exist, no secure link will be required for any user
+                    OpenCms.getStaticExportManager().getCacheSecureLinks().put(cacheKey, secureResource);
+                } catch (Exception e) {
+                    // no secure link required (probably security issues, e.g. no access for current user)
+                    // however other users may be allowed to read the resource, so the result can't be cached
+                    secureResource = Boolean.FALSE;
+                }
             }
         }
         return secureResource.booleanValue();
