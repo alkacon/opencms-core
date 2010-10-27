@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsXmlSitemap.java,v $
- * Date   : $Date: 2010/10/07 07:56:35 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2010/10/27 08:28:26 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -95,7 +95,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.38 $ 
+ * @version $Revision: 1.39 $ 
  * 
  * @since 7.5.2
  * 
@@ -423,17 +423,11 @@ public class CmsXmlSitemap extends CmsXmlContent {
      */
     public String getEntryPoint(CmsObject cms) throws CmsException {
 
-        String entryPoint = "";
-        List<CmsInternalSitemapEntry> rootEntries = getSitemap(cms, cms.getRequestContext().getLocale()).getSiteEntries();
-        if (rootEntries.size() > 0) {
-            CmsInternalSitemapEntry rootEntry = rootEntries.get(0);
-            entryPoint = cms.getRequestContext().removeSiteRoot(rootEntry.getEntryPoint());
-        } else if (getFile() != null) {
-            entryPoint = OpenCms.getSitemapManager().getEntryPoint(cms, cms.getSitePath(getFile()));
-            if (entryPoint == null) {
-                // if not found, assume absolute paths
-                entryPoint = "";
-            }
+        String entryPoint;
+        entryPoint = OpenCms.getSitemapManager().getEntryPoint(cms, cms.getSitePath(getFile()));
+        if (entryPoint == null) {
+            // if not found, assume absolute paths
+            entryPoint = "";
         }
         return entryPoint;
     }
