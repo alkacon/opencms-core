@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsContainerPageContainer.java,v $
- * Date   : $Date: 2010/10/22 12:12:43 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/10/28 06:16:45 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -212,7 +212,6 @@ public class CmsContainerPageContainer implements I_CmsDropContainer, HasWidgets
     /**
      * @see org.opencms.ade.containerpage.client.ui.I_CmsDropContainer#hideEditableListButtons()
      */
-    @Override
     public void hideEditableListButtons() {
 
         Iterator<Widget> it = iterator();
@@ -331,7 +330,6 @@ public class CmsContainerPageContainer implements I_CmsDropContainer, HasWidgets
     /**
      * @see org.opencms.ade.containerpage.client.ui.I_CmsDropContainer#showEditableListButtons()
      */
-    @Override
     public void showEditableListButtons() {
 
         Iterator<Widget> it = iterator();
