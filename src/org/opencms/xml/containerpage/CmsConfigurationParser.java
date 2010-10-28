@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsConfigurationParser.java,v $
- * Date   : $Date: 2010/10/14 06:10:06 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/10/28 07:38:55 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,7 +71,7 @@ import org.apache.commons.collections.Transformer;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 7.6 
  */
@@ -127,6 +127,12 @@ public class CmsConfigurationParser {
 
     /** The list of properties read from the configuration file. */
     private List<CmsXmlContentProperty> m_props = new ArrayList<CmsXmlContentProperty>();
+
+    /** The container page name generator class. */
+    private String m_nameGenerator;
+
+    /** The node name for the container page name generator class. */
+    public static final String N_ADE_NAME_GENERATOR = "ContainerPageNameGenerator";
 
     /**
      * Default constructor.<p>
@@ -184,6 +190,16 @@ public class CmsConfigurationParser {
         } catch (CmsRuntimeException e) {
             throw (CmsException)e.getCause();
         }
+    }
+
+    /**
+     * Returns the container page name generator class name.<p>
+     * 
+     * @return the container page name generator class name 
+     */
+    public String getContainerPageNameGeneratorClass() {
+
+        return m_nameGenerator;
     }
 
     /**
@@ -286,6 +302,11 @@ public class CmsConfigurationParser {
         I_CmsXmlContentValue exportNameNode = content.getValue(N_ADE_EXPORTNAME, locale);
         if (exportNameNode != null) {
             m_exportName = exportNameNode.getStringValue(cms);
+        }
+
+        I_CmsXmlContentValue nameGeneratorNode = content.getValue(N_ADE_NAME_GENERATOR, locale);
+        if (nameGeneratorNode != null) {
+            m_nameGenerator = nameGeneratorNode.getStringValue(cms);
         }
 
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2010/10/18 12:19:33 $
- * Version: $Revision: 1.63 $
+ * Date   : $Date: 2010/10/28 07:38:56 $
+ * Version: $Revision: 1.64 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,11 +34,11 @@ package org.opencms.xml.sitemap;
 import org.opencms.cache.CmsVfsMemoryObjectCache;
 import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsVfsResourceAlreadyExistsException;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlSitemap;
 import org.opencms.file.types.I_CmsResourceType;
@@ -56,6 +56,8 @@ import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.containerpage.CmsADEDefaultConfiguration;
+import org.opencms.xml.containerpage.CmsConfigurationItem;
+import org.opencms.xml.containerpage.CmsConfigurationParser;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.content.CmsXmlContentPropertyHelper;
 import org.opencms.xml.sitemap.properties.CmsComputedPropertyValue;
@@ -84,7 +86,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.63 $
+ * @version $Revision: 1.64 $
  * 
  * @since 7.9.2
  */
@@ -146,9 +148,6 @@ public class CmsSitemapManager {
 
     /** The cache instance. */
     private CmsOnlineAndOfflineSitemapCache m_cache;
-
-    /** Cached online project. */
-    private CmsProject m_onlineProject;
 
     /** Lazy initialized sitemap type id. */
     private int m_sitemapTypeId;
@@ -255,6 +254,45 @@ public class CmsSitemapManager {
         // TODO: implement this
         int todo;
         return OpenCms.getADEManager().createNewElement(cms, sitemapUri, request, type);
+    }
+
+    /**
+     * Creates a new container page for a given sitemap entry.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param sitemapUri the sitemap URI 
+     * @param title the title of the sitemap entry  
+     * @param sitePath the path of the sitemap entry 
+     * 
+     * @return the newly created container page resource
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public CmsResource createPage(CmsObject cms, String sitemapUri, String title, String sitePath) throws CmsException {
+
+        CmsADEDefaultConfiguration conf = new CmsADEDefaultConfiguration();
+        CmsConfigurationParser configParser = conf.getConfigurationParser(cms, sitemapUri);
+        Map<String, CmsConfigurationItem> typeConfig = configParser.getTypeConfiguration();
+        CmsConfigurationItem item = typeConfig.get(CmsResourceTypeXmlContainerPage.getStaticTypeName());
+
+        String nameGeneratorClassName = configParser.getContainerPageNameGeneratorClass();
+        I_CmsContainerPageNameGenerator nameGen = getContainerPageNameGenerator(nameGeneratorClassName);
+        boolean created = false;
+        String realPath = null;
+        nameGen.init(cms, item.getPattern(), title, sitePath);
+        while (!created) {
+            String targetFolder = cms.getSitePath(item.getFolder());
+            String name = nameGen.getNextName();
+            realPath = CmsStringUtil.joinPaths(targetFolder, name);
+            try {
+                cms.copyResource(cms.getSitePath(item.getSourceFile()), realPath);
+                created = true;
+            } catch (CmsVfsResourceAlreadyExistsException ex) {
+                // ignore
+            }
+        }
+        CmsResource result = cms.readResource(realPath);
+        return result;
     }
 
     /** 
@@ -1155,12 +1193,46 @@ public class CmsSitemapManager {
         return result;
     }
 
-    private CmsProject getOnlineProject(CmsObject cms) throws CmsException {
+    /**
+     * Helper method for instantiating a new container page name generator.<p>
+     * 
+     * @param nameGeneratorClassName the configured class name, or null
+     *  
+     * @return the new container page name generator
+     */
+    private I_CmsContainerPageNameGenerator getContainerPageNameGenerator(String nameGeneratorClassName) {
 
-        if (m_onlineProject == null) {
-            m_onlineProject = cms.readProject(CmsProject.ONLINE_PROJECT_ID);
+        Class<? extends I_CmsContainerPageNameGenerator> nameGeneratorClass = CmsDefaultContainerPageNameGenerator.class;
+        I_CmsContainerPageNameGenerator nameGen = null;
+        if (nameGeneratorClassName != null) {
+            try {
+                Class<?> candidateClass = Class.forName(nameGeneratorClassName);
+                if (I_CmsContainerPageNameGenerator.class.isAssignableFrom(candidateClass)) {
+                    @SuppressWarnings("unchecked")
+                    Class<? extends I_CmsContainerPageNameGenerator> cls = (Class<? extends I_CmsContainerPageNameGenerator>)candidateClass;
+                    nameGeneratorClass = cls;
+                } else {
+                    LOG.warn("The class '"
+                        + candidateClass.getName()
+                        + "' does not implement '"
+                        + I_CmsContainerPageNameGenerator.class.getName()
+                        + "'.");
+                }
+            } catch (ClassNotFoundException cnfe) {
+                LOG.warn("The container page name generator class '" + nameGeneratorClassName + "' was not found.");
+            }
+            try {
+                nameGen = nameGeneratorClass.newInstance();
+            } catch (InstantiationException e) {
+                LOG.warn(e.getLocalizedMessage(), e);
+            } catch (IllegalAccessException e) {
+                LOG.warn(e.getLocalizedMessage(), e);
+            }
         }
-        return m_onlineProject;
+        if (nameGen == null) {
+            nameGen = new CmsDefaultContainerPageNameGenerator();
+        }
+        return nameGen;
     }
 
     /**

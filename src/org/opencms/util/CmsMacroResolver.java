@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsMacroResolver.java,v $
- * Date   : $Date: 2010/08/12 07:21:24 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/10/28 07:38:56 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,6 +52,7 @@ import java.util.Map;
 
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.collections.Factory;
 import org.apache.commons.logging.Log;
 
 /**
@@ -66,7 +67,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -198,6 +199,9 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
 
     /** The resource name to use for resolving macros. */
     protected String m_resourceName;
+
+    /** A map from names of dynamic macros to the factories which generate their values. */
+    private Map<String, Factory> m_factories;
 
     /**
      * Adds macro delimiters to the given input, 
@@ -460,6 +464,22 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
     }
 
     /**
+     * Adds a macro whose value will be dynamically generated at macro resolution time.<p>
+     * 
+     * The value will be generated for each occurence of the macro in a string.<p>
+     * 
+     * @param name the name of the macro 
+     * @param factory the macro value generator 
+     */
+    public void addDynamicMacro(String name, Factory factory) {
+
+        if (m_factories == null) {
+            m_factories = new HashMap<String, Factory>();
+        }
+        m_factories.put(name, factory);
+    }
+
+    /**
      * Adds a customized macro to this macro resolver.<p>
      * 
      * @param key the macro to add
@@ -483,6 +503,14 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
             if (macro.startsWith(CmsMacroResolver.KEY_LOCALIZED_PREFIX)) {
                 String keyName = macro.substring(CmsMacroResolver.KEY_LOCALIZED_PREFIX.length());
                 return m_messages.keyWithParams(keyName);
+            }
+        }
+
+        if (m_factories != null) {
+            Factory factory = m_factories.get(macro);
+            if (factory != null) {
+                String value = (String)factory.create();
+                return value;
             }
         }
 

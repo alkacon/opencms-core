@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADEDefaultConfiguration.java,v $
- * Date   : $Date: 2010/10/12 08:03:16 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/10/28 07:38:56 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,7 +71,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 7.6 
  */
@@ -126,6 +126,22 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
         String newFileName = getNextNewFileName(cms, cntPageUri, request, type);
         cms.copyResource(cms.getSitePath(item.getSourceFile()), newFileName);
         return cms.readResource(newFileName);
+    }
+
+    /**
+     * Returns the configuration parser instance.<p>
+     * 
+     * @param cms the current CMS context
+     * @param cntPageUri the container page URI
+     * 
+     * @return the configuration parser instance
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public CmsConfigurationParser getConfigurationParser(CmsObject cms, String cntPageUri) throws CmsException {
+
+        CmsResource cfg = getConfigurationFile(cms, cntPageUri);
+        return CmsConfigurationParser.getParser(cms, cfg);
     }
 
     /**
@@ -408,22 +424,6 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
         CmsObject result = OpenCms.initCmsObject(m_adminCms);
         result.getRequestContext().setCurrentProject(cms.getRequestContext().currentProject());
         return result;
-    }
-
-    /**
-     * Returns the configuration parser instance.<p>
-     * 
-     * @param cms the current CMS context
-     * @param cntPageUri the container page URI
-     * 
-     * @return the configuration parser instance
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    private CmsConfigurationParser getConfigurationParser(CmsObject cms, String cntPageUri) throws CmsException {
-
-        CmsResource cfg = getConfigurationFile(cms, cntPageUri);
-        return CmsConfigurationParser.getParser(cms, cfg);
     }
 
 }

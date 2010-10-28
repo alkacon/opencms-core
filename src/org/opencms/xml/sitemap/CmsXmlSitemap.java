@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsXmlSitemap.java,v $
- * Date   : $Date: 2010/10/27 08:28:26 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2010/10/28 07:38:56 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,7 +37,6 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
-import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.lock.CmsLock;
@@ -74,6 +73,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -95,7 +95,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.39 $ 
+ * @version $Revision: 1.40 $ 
  * 
  * @since 7.5.2
  * 
@@ -120,6 +120,9 @@ public class CmsXmlSitemap extends CmsXmlContent {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsXmlSitemap.class);
+
+    /** The list of elements corresponding to newly created sitemap entries. */
+    private List<Element> m_newEntryElements = new ArrayList<Element>();
 
     /** The sitemap objects. */
     private Map<Locale, CmsSitemapBean> m_sitemaps;
@@ -372,7 +375,7 @@ public class CmsXmlSitemap extends CmsXmlContent {
     throws CmsException {
 
         Locale locale = cms.getRequestContext().getLocale();
-
+        m_newEntryElements.clear();
         // create the locale
         if (!hasLocale(locale)) {
             addLocale(cms, locale);
@@ -395,12 +398,11 @@ public class CmsXmlSitemap extends CmsXmlContent {
                 case EDIT:
                     modified.add(editEntry(cms, (CmsSitemapChangeEdit)change));
                     break;
-
                 default:
 
             }
         }
-
+        createResourcesForNewElements(cms);
         // generate bookmarks
         initDocument(m_document, m_encoding, m_contentDefinition);
 
@@ -786,18 +788,17 @@ public class CmsXmlSitemap extends CmsXmlContent {
         String vfsPath = change.getVfsPath();
         CmsResource resource = null;
         if (vfsPath == null) {
-            resource = OpenCms.getSitemapManager().createNewElement(
-                cms,
-                cms.getSitePath(m_file),
-                req,
-                CmsResourceTypeXmlContainerPage.getStaticTypeName());
-            setResourceTitle(cms, resource, change.getTitle());
+            // We don't create the resource now because subsequent changes may change the entry's name or delete it.
+            // Only after all the other changes are processed, we create the resources for new entries.
+            m_newEntryElements.add(entryElement);
         } else {
             resource = cms.readResource(vfsPath);
         }
-        fillResource(cms, vfsFile, resource);
-        // the properties
+        if (resource != null) {
+            fillResource(cms, vfsFile, resource);
+        }
 
+        // the properties
         Map<String, CmsXmlContentProperty> propertiesConf = OpenCms.getADEManager().getElementPropertyConfiguration(
             cms,
             getFile());
@@ -927,6 +928,58 @@ public class CmsXmlSitemap extends CmsXmlContent {
     }
 
     /**
+     * Creates the resource for an element corresponding to a new sitemap entry.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param elem the element corresponding to the new sitemap entry 
+     * 
+     * @return the newly created resource
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    private CmsResource createResourceForNewElement(CmsObject cms, Element elem) throws CmsException {
+
+        CmsResource resource;
+        String sitePath = getSitePathForElement(cms, elem);
+        String title = elem.element(XmlNode.Title.name()).getText();
+
+        String sitemapUri = m_file.getRootPath();
+        resource = OpenCms.getSitemapManager().createPage(
+            cms,
+            cms.getRequestContext().removeSiteRoot(sitemapUri),
+            title,
+            sitePath);
+
+        setResourceTitle(cms, resource, title);
+        return resource;
+    }
+
+    /**
+     * Creates the resources for all elements corresponding to new sitemap entries.<p>
+     * 
+     * @param cms the current CMS context 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    private void createResourcesForNewElements(CmsObject cms) throws CmsException {
+
+        for (Element elem : m_newEntryElements) {
+            // we can't directly check the parent of the element, because the element
+            // may be deep in a whole subtree which has been deleted. 
+            List<Element> ancestors = getSitemapEntryAncestorElements(elem);
+            Element first = ancestors.get(0);
+            if (first.getParent() == null) {
+                // entry was deleted, so we ignore the element  
+                continue;
+            }
+
+            CmsResource resource = createResourceForNewElement(cms, elem);
+            Element vfsFile = elem.element(XmlNode.VfsFile.name());
+            fillResource(cms, vfsFile, resource);
+        }
+    }
+
+    /**
      * Locates a DOM element for the given sitemap path.<p>
      * 
      * 
@@ -982,6 +1035,59 @@ public class CmsXmlSitemap extends CmsXmlContent {
             }
         }
         return parent;
+    }
+
+    /**
+     * Given an XML element corresponding to a sitemap entry, this method returns a list of XML
+     * elements corresponding to the ancestor sitemap entries of the entry.<p>
+     * 
+     * The list starts with the topmost ancestor and ends with the element which was passed in.<p>
+     * 
+     * @param elem the element for which the ancestor elements should be retrieved 
+     * 
+     * @return the list of ancestor elements 
+     */
+    private List<Element> getSitemapEntryAncestorElements(Element elem) {
+
+        assert elem.getName().equals(XmlNode.SiteEntry.name());
+        LinkedList<Element> ancestors = new LinkedList<Element>();
+        Element currentElement = elem;
+        while (currentElement.getName().equals(XmlNode.SiteEntry.name())) {
+            // adding the ancestors in reverse order 
+            ancestors.addFirst(currentElement);
+            currentElement = currentElement.getParent();
+            if (currentElement == null) {
+                break;
+            }
+        }
+        return ancestors;
+    }
+
+    /**
+     * Returns the sitemap path for a given XML element corresponding to a sitemap entry.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param elem the element for which the sitemap path should be retrieved
+     *  
+     * @return the sitemap path for the element 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    private String getSitePathForElement(CmsObject cms, Element elem) throws CmsException {
+
+        assert elem.getName().equals(XmlNode.SiteEntry.name());
+        String result = "";
+        List<Element> ancestors = getSitemapEntryAncestorElements(elem);
+        String entryPoint = getEntryPoint(cms);
+        List<String> pathComponents = new ArrayList<String>();
+        pathComponents.add(entryPoint);
+        for (Element ancestor : ancestors) {
+            Element nameNode = ancestor.element(XmlNode.Name.name());
+            String name = nameNode.getText();
+            pathComponents.add(name);
+        }
+        result = CmsStringUtil.joinPaths(pathComponents);
+        return result;
     }
 
     /**

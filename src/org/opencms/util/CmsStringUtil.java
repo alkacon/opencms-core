@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
- * Date   : $Date: 2010/10/12 13:49:26 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/10/28 07:38:56 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * @author  Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -775,16 +775,31 @@ public final class CmsStringUtil {
      * Consecutive slashes will be reduced to a single slash in the resulting string.
      * For example, joinPaths("/foo/", "/bar", "baz") will return "/foo/bar/baz".
      * 
+     * @param paths the list of paths
+     *  
+     * @return the joined path 
+     */
+    public static String joinPaths(List<String> paths) {
+
+        String result = listAsString(paths, "/");
+        // result may now contain multiple consecutive slashes, so reduce them to single slashes
+        result = result.replaceAll("/+", "/");
+        return result;
+    }
+
+    /**
+     * Concatenates multiple paths and separates them with '/'.<p>
+     * 
+     * Consecutive slashes will be reduced to a single slash in the resulting string.
+     * For example, joinPaths("/foo/", "/bar", "baz") will return "/foo/bar/baz".
+     * 
      * @param paths the array of paths
      *  
      * @return the joined path 
      */
     public static String joinPaths(String... paths) {
 
-        String result = listAsString(Arrays.asList(paths), "/");
-        // result may now contain multiple consecutive slashes, so reduce them to single slashes
-        result = result.replaceAll("/+", "/");
-        return result;
+        return joinPaths(Arrays.asList(paths));
     }
 
     /**
