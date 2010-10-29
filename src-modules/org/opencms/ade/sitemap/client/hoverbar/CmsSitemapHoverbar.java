@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsSitemapHoverbar.java,v $
- * Date   : $Date: 2010/10/29 12:21:20 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/10/29 13:10:49 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.ade.sitemap.client.hoverbar;
 
 import org.opencms.ade.sitemap.client.CmsSitemapTreeItem;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
+import org.opencms.ade.sitemap.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.A_CmsHoverHandler;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsPushButton;
@@ -52,7 +53,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 8.0.0
  */
@@ -81,7 +82,7 @@ public class CmsSitemapHoverbar extends FlowPanel {
         m_handlerManager = new HandlerManager(this);
         m_enabled = true;
         setStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().buttonPanel());
-
+        addStyleName(I_CmsImageBundle.INSTANCE.buttonCss().hoverbar());
         if (controller.isEditable()) {
             add(new CmsHoverbarMoveButton(this));
             add(new CmsHoverbarGotoSubSitemapButton(this));

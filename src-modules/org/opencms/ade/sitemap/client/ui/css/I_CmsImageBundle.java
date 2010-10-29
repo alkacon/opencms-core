@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/ui/css/Attic/I_CmsImageBundle.java,v $
- * Date   : $Date: 2010/10/29 12:21:20 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/10/29 13:10:49 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,9 +31,10 @@
 
 package org.opencms.ade.sitemap.client.ui.css;
 
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsDragCss;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
-import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.resources.client.ImageResource;
 
 /**
@@ -41,14 +42,21 @@ import com.google.gwt.resources.client.ImageResource;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
 public interface I_CmsImageBundle extends ClientBundle {
 
     /** The button CSS. */
-    public interface I_CmsButtonCss extends CssResource {
+    public interface I_CmsButtonCss extends I_CmsDragCss {
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String hoverbar();
 
         /** 
          * Access method.<p>

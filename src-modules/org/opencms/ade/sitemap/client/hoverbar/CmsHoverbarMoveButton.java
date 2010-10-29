@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsHoverbarMoveButton.java,v $
- * Date   : $Date: 2010/09/14 14:22:47 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/10/29 13:10:49 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
  */
@@ -65,6 +65,7 @@ public class CmsHoverbarMoveButton extends CmsPushButton implements I_CmsDragHan
      */
     public CmsHoverbarMoveButton(final CmsSitemapHoverbar hoverbar) {
 
+        addStyleName(I_CmsImageBundle.INSTANCE.buttonCss().hoverbarMove());
         setImageClass(I_CmsImageBundle.INSTANCE.buttonCss().hoverbarMove());
         setTitle(Messages.get().key(Messages.GUI_HOVERBAR_MOVE_0));
         setShowBorder(false);
