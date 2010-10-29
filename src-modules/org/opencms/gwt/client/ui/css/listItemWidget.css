@@ -26,16 +26,34 @@
 	position: relative;
 }
 
-@sprite .itemActive {
+@sprite .itemActive > .itemContent {
     gwt-image: "backgroundHover";
     background-position: 50% 50%;
     height: auto;
-	position: relative;
 }
 
-.disabledItem .itemContent {
-	background-image: none;
-	background-color: #aaaaaa;
+@sprite .disabledItem > .itemContent {
+	gwt-image: "backgroundDisabled";
+    background-position: 50% 50%;
+    height: auto;
+}
+
+@sprite .itemBlue > .itemContent {
+    gwt-image: "backgroundBlue";
+    background-position: 50% 50%;
+    height: auto;
+}
+
+@sprite .itemRed > .itemContent {
+    gwt-image: "backgroundRed";
+    background-position: 50% 50%;
+    height: auto;
+}
+
+@sprite .itemYellow > .itemContent {
+    gwt-image: "backgroundYellow";
+    background-position: 50% 50%;
+    height: auto;
 }
 
 .itemIcon{
@@ -55,7 +73,7 @@
     display: inline;
 }
 .titleRow{
-	float: left;
+/**	float: left;**/
 }
 .cmsHovering .buttonPanel{
 	display: block;

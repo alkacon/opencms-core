@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItemWidget.java,v $
- * Date   : $Date: 2010/10/21 13:47:51 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2010/10/29 12:19:46 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsListItemWidgetCss;
 import org.opencms.gwt.client.ui.input.CmsLabel;
 import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.gwt.client.util.CmsStyleVariable;
 import org.opencms.gwt.shared.CmsListInfoBean;
 
 import java.util.ArrayList;
@@ -76,12 +77,24 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Tobias Herrmann
  * @author Michael Moossen
  * 
- * @version $Revision: 1.33 $
+ * @version $Revision: 1.34 $
  * 
  * @since 8.0.0
  */
 public class CmsListItemWidget extends Composite
 implements HasMouseOutHandlers, HasClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
+
+    /** Background color values. */
+    public enum Background {
+        /** Color blue. */
+        BLUE,
+        /** Default color. */
+        DEFAULT,
+        /** Color red. */
+        RED,
+        /** Color yellow. */
+        YELLOW
+    }
 
     /**
      * The interface for handling edits of the title field.<p>
@@ -223,6 +236,8 @@ implements HasMouseOutHandlers, HasClickHandlers, HasMouseOverHandlers, I_CmsTru
     @UiField
     protected FlowPanel m_titleRow;
 
+    private CmsStyleVariable m_backgroundStyle;
+
     /** The child width in px for truncation. */
     private int m_childWidth;
 
@@ -247,6 +262,7 @@ implements HasMouseOutHandlers, HasClickHandlers, HasMouseOverHandlers, I_CmsTru
 
         initWidget(uiBinder.createAndBindUi(this));
         m_handlerRegistrations = new ArrayList<HandlerRegistration>();
+        m_backgroundStyle = new CmsStyleVariable(this);
         init(infoBean);
     }
 
@@ -413,6 +429,48 @@ implements HasMouseOutHandlers, HasClickHandlers, HasMouseOverHandlers, I_CmsTru
     }
 
     /**
+     * Sets the additional info visible if present.<p>
+     * 
+     * @param visible <code>true</code> to show, <code>false</code> to hide 
+     */
+    public void setAdditionalInfoVisible(boolean visible) {
+
+        if (m_openClose == null) {
+            return;
+        }
+        if (visible) {
+            addStyleName(CmsListItemWidget.OPENCLASS);
+            m_openClose.setDown(true);
+        } else {
+            removeStyleName(CmsListItemWidget.OPENCLASS);
+            m_openClose.setDown(false);
+        }
+    }
+
+    /**
+     * Sets the background color.<p>
+     * 
+     * @param background the color
+     */
+    public void setBackground(Background background) {
+
+        switch (background) {
+            case BLUE:
+                m_backgroundStyle.setValue(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().itemBlue());
+                break;
+            case RED:
+                m_backgroundStyle.setValue(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().itemRed());
+                break;
+            case YELLOW:
+                m_backgroundStyle.setValue(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().itemYellow());
+                break;
+            case DEFAULT:
+            default:
+                m_backgroundStyle.setValue(null);
+        }
+    }
+
+    /**
      * Sets the icon of this item.<p>
      * 
      * @param image the image to use as icon
@@ -527,7 +585,14 @@ implements HasMouseOutHandlers, HasClickHandlers, HasMouseOverHandlers, I_CmsTru
             // IE fails with a JS error if the width is negative 
             width = 0;
         }
-        m_titleRow.getElement().getStyle().setWidth(width, Unit.PX);
+        if (m_iconPanel.isVisible()) {
+            m_titleRow.getElement().getStyle().setMarginLeft(32, Unit.PX);
+
+        } else {
+            m_titleRow.getElement().getStyle().clearMargin();
+        }
+
+        // m_titleRow.getElement().getStyle().setWidth(width, Unit.PX);
         m_title.truncate(textMetricsPrefix + TM_TITLE, width - 10);
         m_subtitle.truncate(textMetricsPrefix + TM_SUBTITLE, width - 10);
         for (Widget addInfo : m_additionalInfo) {
@@ -619,7 +684,6 @@ implements HasMouseOutHandlers, HasClickHandlers, HasMouseOverHandlers, I_CmsTru
             m_openClose = new CmsPushButton(I_CmsButton.UiIcon.triangle_1_e, I_CmsButton.UiIcon.triangle_1_s);
             m_openClose.setShowBorder(false);
             m_titleRow.insert(m_openClose, 0);
-            final CmsListItemWidget widget = this;
             m_openClose.addClickHandler(new ClickHandler() {
 
                 /**
@@ -627,13 +691,7 @@ implements HasMouseOutHandlers, HasClickHandlers, HasMouseOverHandlers, I_CmsTru
                  */
                 public void onClick(ClickEvent event) {
 
-                    if (widget.getStyleName().contains(CmsListItemWidget.OPENCLASS)) {
-                        widget.removeStyleName(CmsListItemWidget.OPENCLASS);
-                        m_openClose.setDown(false);
-                    } else {
-                        widget.addStyleName(CmsListItemWidget.OPENCLASS);
-                        m_openClose.setDown(true);
-                    }
+                    setAdditionalInfoVisible(!getElement().getClassName().contains(CmsListItemWidget.OPENCLASS));
                 }
             });
             for (Entry<String, String> entry : infoBean.getAdditionalInfo().entrySet()) {
