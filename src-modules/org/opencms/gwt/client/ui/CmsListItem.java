@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItem.java,v $
- * Date   : $Date: 2010/10/29 12:20:19 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2010/10/29 13:09:50 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  *  
  * @since 8.0.0 
  */
@@ -401,38 +401,6 @@ public class CmsListItem extends Composite implements I_CmsListItem {
     public void onDragCancel() {
 
         clearDrag();
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.dnd.I_CmsDraggable#resetPlaceHolder()
-     */
-    //    public CmsDropPosition resetPlaceHolder() {
-    //
-    //        m_placeholder = getPlaceHolder(getParentList());
-    //        // HACK: i do not like this very much :(
-    //        getParentList().setPlaceholder(m_placeholder);
-    //        getParent().getElement().insertAfter(m_placeholder, getElement());
-    //        return new CmsDropPosition(getId(), CmsDomUtil.getPosition(m_placeholder), null, m_placeholder);
-    //    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.dnd.I_CmsDraggable#onDragStop()
-     */
-    public void onDragStop() {
-
-        setVisible(true);
-        if (m_helper != null) {
-            m_helper.removeFromParent();
-            m_helper = null;
-        }
-        if (m_provisionalParent != null) {
-            m_provisionalParent.removeFromParent();
-            m_provisionalParent = null;
-        }
-        if (m_placeholder != null) {
-            m_placeholder.removeFromParent();
-            m_placeholder = null;
-        }
     }
 
     /**

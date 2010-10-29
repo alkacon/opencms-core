@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsList.java,v $
- * Date   : $Date: 2010/10/29 12:20:19 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2010/10/29 13:09:50 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * 
  * @since 8.0.0
  */
@@ -267,14 +267,6 @@ public class CmsList<I extends I_CmsListItem> extends ComplexPanel implements I_
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.dnd.I_CmsDropTarget#onDrop()
-     */
-    public void onDrop() {
-
-        removePlaceholder();
-    }
-
-    /**
      * @see org.opencms.gwt.client.dnd.I_CmsDropTarget#onDrop(org.opencms.gwt.client.dnd.I_CmsDraggable)
      */
     public void onDrop(I_CmsDraggable draggable) {
@@ -409,7 +401,7 @@ public class CmsList<I extends I_CmsListItem> extends ComplexPanel implements I_
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.dnd.I_CmsDropTarget#removePlaceholder()
+     * @see org.opencms.gwt.client.dnd.I_CmsDropTarget#removePlaceholder()
      */
     public void removePlaceholder() {
 
