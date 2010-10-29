@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/I_CmsFormWidget.java,v $
- * Date   : $Date: 2010/08/24 15:15:14 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/10/29 12:18:21 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,14 +31,14 @@
 
 package org.opencms.gwt.client.ui.input;
 
-import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
+import org.opencms.gwt.client.ui.I_CmsAutoHider;
 
 /**
  * Basic interface for all widgets that can be used for form fields.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 8.0.0
  */
@@ -87,21 +87,21 @@ public interface I_CmsFormWidget {
     /**
      * Gets the current value of the widget as a string.<p>
      * 
-     * @return the current value of the widget 
+     * @return the current value of the widget
      */
     String getFormValueAsString();
-
-    /**
-     * This method will be called when the dialog in which the widget appears is opened.<p>
-     * 
-     * @param formDialog the dialog 
-     */
-    void onOpenDialog(CmsFormDialog formDialog);
 
     /**
      * Resets the widget to its default state.
      */
     void reset();
+
+    /**
+     * Call this when auto hiding parents are shown.<p>
+     * 
+     * @param autoHideParent the auto hide parent
+     */
+    void setAutoHideParent(I_CmsAutoHider autoHideParent);
 
     /**
      * Enables or disables the widget.<p>

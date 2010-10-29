@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsPopup.java,v $
- * Date   : $Date: 2010/10/19 12:55:30 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/10/29 12:18:49 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,20 +47,20 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.PopupPanel.PositionCallback;
 import com.google.gwt.user.client.ui.UIObject;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.user.client.ui.PopupPanel.PositionCallback;
 
 /**
  * Provides a pop up dialog base.
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 8.0.0
  */
-public class CmsPopup {
+public class CmsPopup implements I_CmsAutoHider {
 
     /**
      * The pop up dialog wrapped by the public class.<p>
@@ -314,11 +314,7 @@ public class CmsPopup {
     }
 
     /**
-     * Mouse events that occur within an autoHide partner will not hide a panel set to autoHide.<p>
-     * 
-     * @param partner the auto hide partner to add
-     * 
-     * @see com.google.gwt.user.client.ui.PopupPanel#addAutoHidePartner(com.google.gwt.dom.client.Element)
+     * @see org.opencms.gwt.client.ui.I_CmsAutoHider#addAutoHidePartner(com.google.gwt.dom.client.Element)
      */
     public void addAutoHidePartner(Element partner) {
 
@@ -587,11 +583,7 @@ public class CmsPopup {
     }
 
     /**
-     * Returns if the auto hide feature is enabled.<p>
-     * 
-     * @return true if auto hide is enabled
-     * 
-     * @see com.google.gwt.user.client.ui.PopupPanel#isAutoHideEnabled()
+     * @see org.opencms.gwt.client.ui.I_CmsAutoHider#isAutoHideEnabled()
      */
     public boolean isAutoHideEnabled() {
 
@@ -599,11 +591,7 @@ public class CmsPopup {
     }
 
     /**
-     * Returns if the auto hide on history event feature is enabled.<p>
-     * 
-     * @return true if auto hide is enabled
-     * 
-     * @see com.google.gwt.user.client.ui.PopupPanel#isAutoHideOnHistoryEventsEnabled()
+     * @see org.opencms.gwt.client.ui.I_CmsAutoHider#isAutoHideOnHistoryEventsEnabled()
      */
     public boolean isAutoHideOnHistoryEventsEnabled() {
 
@@ -741,11 +729,7 @@ public class CmsPopup {
     }
 
     /**
-     * Enable or disable the autoHide feature. When enabled, the popup will be automatically hidden when the user clicks outside of it.<p>
-     * 
-     * @param autoHide enable true to enable, false to disable
-     * 
-     * @see com.google.gwt.user.client.ui.PopupPanel#setAutoHideEnabled(boolean)
+     * @see org.opencms.gwt.client.ui.I_CmsAutoHider#setAutoHideEnabled(boolean)
      */
     public void setAutoHideEnabled(boolean autoHide) {
 
@@ -753,11 +737,7 @@ public class CmsPopup {
     }
 
     /**
-     * Enable or disable autoHide on history change events. When enabled, the popup will be automatically hidden when the history token changes, such as when the user presses the browser's back button. Disabled by default.<p>
-     * 
-     * @param enabled enable true to enable, false to disable
-     * 
-     * @see com.google.gwt.user.client.ui.PopupPanel#setAutoHideOnHistoryEventsEnabled(boolean)
+     * @see org.opencms.gwt.client.ui.I_CmsAutoHider#setAutoHideOnHistoryEventsEnabled(boolean)
      */
     public void setAutoHideOnHistoryEventsEnabled(boolean enabled) {
 

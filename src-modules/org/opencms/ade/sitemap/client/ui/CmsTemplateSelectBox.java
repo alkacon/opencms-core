@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/ui/Attic/CmsTemplateSelectBox.java,v $
- * Date   : $Date: 2010/08/24 15:15:14 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/10/29 12:21:34 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,15 +31,15 @@
 
 package org.opencms.ade.sitemap.client.ui;
 
+import org.opencms.gwt.client.ui.I_CmsAutoHider;
 import org.opencms.gwt.client.ui.input.A_CmsSelectBox;
-import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
 
 /**
  * A widget class for selecting a template for a sitemap entry in the sitemap editor.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  * 
@@ -71,9 +71,9 @@ public class CmsTemplateSelectBox extends A_CmsSelectBox<CmsTemplateSelectCell> 
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#onOpenDialog(org.opencms.gwt.client.ui.input.form.CmsFormDialog)
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setAutoHideParent(org.opencms.gwt.client.ui.I_CmsAutoHider)
      */
-    public void onOpenDialog(CmsFormDialog formDialog) {
+    public void setAutoHideParent(I_CmsAutoHider autoHideParent) {
 
         // do nothing
     }

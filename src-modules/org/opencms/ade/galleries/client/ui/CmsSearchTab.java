@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsSearchTab.java,v $
- * Date   : $Date: 2010/10/25 12:32:05 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2010/10/29 12:18:49 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ import org.opencms.ade.galleries.client.CmsSearchTabHandler;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.I_CmsAutoHider;
 import org.opencms.gwt.client.ui.input.CmsTextBox;
 import org.opencms.gwt.client.ui.input.datebox.CmsDateBox;
 import org.opencms.util.CmsStringUtil;
@@ -50,14 +51,13 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.PopupPanel;
 
 /**
  * Provides the widget for the full text search tab.<p>
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 8.0.
  */
@@ -210,7 +210,7 @@ public class CmsSearchTab extends A_CmsTab {
     private CmsSearchParamPanel m_paramPanel;
 
     /** The parent popup to this dialog if present. */
-    private PopupPanel m_parentPopup;
+    private I_CmsAutoHider m_autoHideParent;
 
     /** The tab panel. */
     private HTMLPanel m_tab;
@@ -219,16 +219,16 @@ public class CmsSearchTab extends A_CmsTab {
      * Constructor for the search tab.<p>
      * 
      * @param tabHandler the tab handler 
-     * @param parentPopup the parent popup to this dialog if present
+     * @param autoHideParent the auto-hide parent to this dialog if present
      */
-    public CmsSearchTab(CmsSearchTabHandler tabHandler, PopupPanel parentPopup) {
+    public CmsSearchTab(CmsSearchTabHandler tabHandler, I_CmsAutoHider autoHideParent) {
 
         // initialize the tab
         super(GalleryTabId.cms_tab_search);
         m_tab = uiBinder.createAndBindUi(this);
         initWidget(m_tab);
         m_tabHandler = tabHandler;
-        m_parentPopup = parentPopup;
+        m_autoHideParent = autoHideParent;
         // set the description for the search tab
         m_descriptionLabel.setText(Messages.get().key(Messages.GUI_TAB_SEARCH_DESCRIPTION_0));
 
@@ -243,11 +243,11 @@ public class CmsSearchTab extends A_CmsTab {
         m_dateModifiedStartLabel.setText(Messages.get().key(Messages.GUI_TAB_SEARCH_LABEL_MODIFIED_SINCE_0));
         m_dateModifiedEndLabel.setText(Messages.get().key(Messages.GUI_TAB_SEARCH_LABEL_MODIFIED_UNTIL_0));
 
-        if (m_parentPopup != null) {
-            m_dateCreatedEndDateBox.setParentPopup(m_parentPopup);
-            m_dateCreatedStartDateBox.setParentPopup(m_parentPopup);
-            m_dateModifiedEndDateBox.setParentPopup(m_parentPopup);
-            m_dateModifiedStartDateBox.setParentPopup(m_parentPopup);
+        if (m_autoHideParent != null) {
+            m_dateCreatedEndDateBox.setAutoHideParent(m_autoHideParent);
+            m_dateCreatedStartDateBox.setAutoHideParent(m_autoHideParent);
+            m_dateModifiedEndDateBox.setAutoHideParent(m_autoHideParent);
+            m_dateModifiedStartDateBox.setAutoHideParent(m_autoHideParent);
         }
         // add the handler to the according date box widgets
         DateBoxChangeHandler handler = new DateBoxChangeHandler();

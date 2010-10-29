@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/datebox/Attic/CmsDateBox.java,v $
- * Date   : $Date: 2010/10/26 11:04:50 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/10/29 12:18:21 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,12 +33,12 @@ package org.opencms.gwt.client.ui.input.datebox;
 
 import org.opencms.gwt.client.I_CmsHasInit;
 import org.opencms.gwt.client.Messages;
+import org.opencms.gwt.client.ui.I_CmsAutoHider;
 import org.opencms.gwt.client.ui.input.CmsErrorWidget;
 import org.opencms.gwt.client.ui.input.CmsRadioButton;
 import org.opencms.gwt.client.ui.input.CmsRadioButtonGroup;
 import org.opencms.gwt.client.ui.input.CmsTextBox;
 import org.opencms.gwt.client.ui.input.I_CmsFormWidget;
-import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
 
@@ -68,14 +68,13 @@ import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
-import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.UIObject;
 
 /**
  * A text box that shows a date time picker widget when the user clicks on it.
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @author Ruediger Kurz
  */
@@ -84,7 +83,7 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
     /**
      * This inner class implements the handler for the date box widget.<p>
      * 
-     * @version $Revision: 1.12 $
+     * @version $Revision: 1.13 $
      * 
      * @author Ruediger Kurz
      */
@@ -148,20 +147,16 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
     /** The radio button group for am/pm selection. */
     protected CmsRadioButtonGroup m_ampmGroup;
 
+    /** The auto hide parent. */
+    protected I_CmsAutoHider m_autoHideParent;
+
     /** The input field to show the result of picking a date. */
     @UiField
     protected CmsTextBox m_box;
 
-    /** The FlowPanel containing the date box and the the time date picker widget. */
-    @UiField
-    protected FlowPanel m_dateBoxPanel;
-
     /** The panel for the date time picker. */
     @UiField
     protected FlowPanel m_dateTimePanel;
-
-    /** The dialog which contains this widget. */
-    protected CmsFormDialog m_dialog;
 
     /** The gwt date picker. */
     @UiField
@@ -184,9 +179,6 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
 
     /** The old value for fire event decision. */
     private Date m_oldValue;
-
-    /** The parent popup to this dialog if present. */
-    private PopupPanel m_parentPopup;
 
     /** The popup panel to show the the date time picker widget in. */
     //private CmsPopup m_popup = new CmsPopup();
@@ -322,14 +314,6 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#onOpenDialog(org.opencms.gwt.client.ui.input.form.CmsFormDialog)
-     */
-    public void onOpenDialog(CmsFormDialog formDialog) {
-
-        m_dialog = formDialog;
-    }
-
-    /**
      * Updates the date box when the user has clicked on the time field.<p> 
      */
     public void onTimeClick() {
@@ -343,6 +327,14 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
     public void reset() {
 
         setValue(null);
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setAutoHideParent(org.opencms.gwt.client.ui.I_CmsAutoHider)
+     */
+    public void setAutoHideParent(I_CmsAutoHider autoHideParent) {
+
+        m_autoHideParent = autoHideParent;
     }
 
     /**
@@ -380,16 +372,6 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
             // if the value is <code>null</code> make the field empty
             setValue(null);
         }
-    }
-
-    /**
-     * Sets the parent popup.<p>
-     * 
-     * @param parentPopup the parent popup to set
-     */
-    public void setParentPopup(PopupPanel parentPopup) {
-
-        m_parentPopup = parentPopup;
     }
 
     /**
@@ -583,8 +565,8 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
 
         if (CmsDateConverter.validateTime(getTimeText())) {
             // before hiding the date picker remove the date box popup from the auto hide partners of the parent popup
-            if (m_parentPopup != null) {
-                m_parentPopup.removeAutoHidePartner(m_popup.getElement());
+            if (m_autoHideParent != null) {
+                m_autoHideParent.removeAutoHidePartner(m_popup.getElement());
             }
             m_popup.hide();
         }
@@ -619,8 +601,8 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
         setErrorMessage(null);
         m_popup.show(m_box.getElement(), "bl");
         // after showing the date picker add the date box popup as auto hide partner to the parent popup
-        if (m_parentPopup != null) {
-            m_parentPopup.addAutoHidePartner(m_popup.getElement());
+        if (m_autoHideParent != null) {
+            m_autoHideParent.addAutoHidePartner(m_popup.getElement());
         }
     }
 
@@ -637,11 +619,11 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
         if (!m_isValidTime && valid) {
             m_isValidTime = true;
             m_popup.getIgnoreList().remove(RootPanel.getBodyElement());
-            m_parentPopup.removeAutoHidePartner(RootPanel.getBodyElement());
+            m_autoHideParent.removeAutoHidePartner(RootPanel.getBodyElement());
         } else if (m_isValidTime && !valid) {
             m_isValidTime = false;
             m_popup.getIgnoreList().add(RootPanel.getBodyElement());
-            m_parentPopup.addAutoHidePartner(RootPanel.getBodyElement());
+            m_autoHideParent.addAutoHidePartner(RootPanel.getBodyElement());
         }
     }
 

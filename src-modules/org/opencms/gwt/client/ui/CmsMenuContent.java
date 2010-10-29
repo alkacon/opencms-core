@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsMenuContent.java,v $
- * Date   : $Date: 2010/04/20 05:53:26 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/10/29 12:18:49 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,12 +43,12 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  * 
  */
-public class CmsMenuContent extends PopupPanel {
+public class CmsMenuContent extends PopupPanel implements I_CmsAutoHider {
 
     /** The default pop-up width. */
     private static final String DEFAULT_WIDTH = "650px";

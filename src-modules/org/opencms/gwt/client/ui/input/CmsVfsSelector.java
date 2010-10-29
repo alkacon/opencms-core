@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsVfsSelector.java,v $
- * Date   : $Date: 2010/08/24 15:15:14 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/10/29 12:18:21 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,8 +35,8 @@ import org.opencms.gwt.client.I_CmsHasInit;
 import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.I_CmsAutoHider;
 import org.opencms.gwt.client.ui.exttree.CmsVfsTreeFactory;
-import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
 import org.opencms.gwt.shared.CmsVfsEntryBean;
@@ -68,7 +68,7 @@ import com.google.gwt.user.client.ui.Panel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -85,12 +85,12 @@ public class CmsVfsSelector extends Composite implements I_CmsFormWidget, I_CmsH
     /** UiBinder instance for this widget. */
     protected static I_CmsVfsSelectorUiBinder uiBinder = GWT.create(I_CmsVfsSelectorUiBinder.class);
 
+    /** The auto hide parent. */
+    protected I_CmsAutoHider m_autoHideParent;
+
     /** The button for opening the file selection tree. */
     //@UiField
     protected CmsPushButton m_button;
-
-    /** The dialog which contains this widget. */
-    protected CmsFormDialog m_dialog;
     /** The GUI field displaying the current value. */
     @UiField
     protected CmsTextBox m_field;
@@ -154,20 +154,20 @@ public class CmsVfsSelector extends Composite implements I_CmsFormWidget, I_CmsH
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#onOpenDialog(org.opencms.gwt.client.ui.input.form.CmsFormDialog)
-     */
-    public void onOpenDialog(CmsFormDialog formDialog) {
-
-        m_dialog = formDialog;
-    }
-
-    /**
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#reset()
      */
     public void reset() {
 
         // TODO: Auto-generated method stub
 
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setAutoHideParent(org.opencms.gwt.client.ui.I_CmsAutoHider)
+     */
+    public void setAutoHideParent(I_CmsAutoHider autoHideParent) {
+
+        m_autoHideParent = autoHideParent;
     }
 
     /**
@@ -247,8 +247,8 @@ public class CmsVfsSelector extends Composite implements I_CmsFormWidget, I_CmsH
             @Override
             public void widgetDetached(ComponentEvent event) {
 
-                if (m_dialog != null) {
-                    m_dialog.removeAutoHidePartner(dialog.getElement());
+                if (m_autoHideParent != null) {
+                    m_autoHideParent.removeAutoHidePartner(dialog.getElement());
                 }
             }
         });
@@ -266,8 +266,8 @@ public class CmsVfsSelector extends Composite implements I_CmsFormWidget, I_CmsH
             public void execute() {
 
                 dialog.show();
-                if (m_dialog != null) {
-                    m_dialog.addAutoHidePartner(dialog.getElement());
+                if (m_autoHideParent != null) {
+                    m_autoHideParent.addAutoHidePartner(dialog.getElement());
                 }
                 tree.getStore().getLoader().load(null);
             }

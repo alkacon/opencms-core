@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleryFactory.java,v $
- * Date   : $Date: 2010/10/21 12:48:56 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/10/29 12:18:49 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,15 +33,14 @@ package org.opencms.ade.galleries.client;
 
 import org.opencms.ade.galleries.client.ui.CmsGalleryDialog;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
-
-import com.google.gwt.user.client.ui.PopupPanel;
+import org.opencms.gwt.client.ui.I_CmsAutoHider;
 
 /**
  * Factory class to create gallery dialog with or without parameter.<p>
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.
  */
@@ -71,13 +70,13 @@ public final class CmsGalleryFactory {
      * Returns a gallery dialog object with drag and drop handler.<p>
      * 
      * @param dndHandler the reference to the drag and drop handler
-     * @param parentPopup the parent popup to this dialog if present
+     * @param autoHideParent the auto-hide parent to this dialog if present
      * 
      * @return gallery dialog
      */
-    public static CmsGalleryDialog createDialog(CmsDNDHandler dndHandler, PopupPanel parentPopup) {
+    public static CmsGalleryDialog createDialog(CmsDNDHandler dndHandler, I_CmsAutoHider autoHideParent) {
 
-        CmsGalleryDialog galleryDialog = new CmsGalleryDialog(dndHandler, parentPopup);
+        CmsGalleryDialog galleryDialog = new CmsGalleryDialog(dndHandler, autoHideParent);
         new CmsGalleryController(new CmsGalleryControllerHandler(galleryDialog));
         return galleryDialog;
     }

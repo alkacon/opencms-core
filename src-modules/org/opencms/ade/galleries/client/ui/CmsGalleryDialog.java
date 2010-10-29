@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsGalleryDialog.java,v $
- * Date   : $Date: 2010/10/21 12:48:56 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2010/10/29 12:18:49 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,6 +45,7 @@ import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTab
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
 import org.opencms.gwt.client.ui.CmsTabbedPanel.CmsTabLayout;
+import org.opencms.gwt.client.ui.I_CmsAutoHider;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -63,14 +64,13 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.PopupPanel;
 
 /**
  * Provides the method for the gallery dialog.<p>
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.33 $
+ * @version $Revision: 1.34 $
  * 
  * @since 8.0.
  */
@@ -104,8 +104,8 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
     /** The parent panel for the gallery dialog. */
     private FlowPanel m_parentPanel;
 
-    /** The parent popup to this dialog if present. */
-    private PopupPanel m_parentPopup;
+    /** The auto-hide parent to this dialog if present. */
+    private I_CmsAutoHider m_autoHideParent;
 
     /** The results tab. */
     private CmsResultsTab m_resultsTab;
@@ -154,13 +154,13 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
      * The constructor.<p> 
      * 
      * @param dndHandler the reference to the dnd manager
-     * @param parentPopup the parent popup to this dialog if present
+     * @param autoHideParent the auto-hide parent to this dialog if present
      */
-    public CmsGalleryDialog(CmsDNDHandler dndHandler, PopupPanel parentPopup) {
+    public CmsGalleryDialog(CmsDNDHandler dndHandler, I_CmsAutoHider autoHideParent) {
 
         this();
         m_dndHandler = dndHandler;
-        m_parentPopup = parentPopup;
+        m_autoHideParent = autoHideParent;
     }
 
     /**
@@ -227,7 +227,7 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
                     m_tabbedPanel.add(m_categoriesTab, Messages.get().key(Messages.GUI_TAB_TITLE_CATEGORIES_0));
                     break;
                 case cms_tab_search:
-                    m_searchTab = new CmsSearchTab(new CmsSearchTabHandler(controller), m_parentPopup);
+                    m_searchTab = new CmsSearchTab(new CmsSearchTabHandler(controller), m_autoHideParent);
                     m_tabbedPanel.add(m_searchTab, Messages.get().key(Messages.GUI_TAB_TITLE_SEARCH_0));
                     break;
                 case cms_tab_sitemap:
