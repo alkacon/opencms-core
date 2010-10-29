@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsFramePopup.java,v $
- * Date   : $Date: 2010/10/19 13:29:05 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/10/29 13:10:19 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import com.google.gwt.user.client.ui.Frame;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -57,7 +57,6 @@ public class CmsFramePopup extends CmsPopup {
     Frame m_frame;
 
     /** The id of this popup. */
-    @SuppressWarnings("unused")
     private String m_id;
 
     /**
