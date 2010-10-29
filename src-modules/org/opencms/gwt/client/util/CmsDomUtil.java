@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsDomUtil.java,v $
- * Date   : $Date: 2010/10/22 12:12:43 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2010/10/29 12:17:26 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentC
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.31 $
+ * @version $Revision: 1.32 $
  * 
  * @since 8.0.0
  */
@@ -425,6 +425,39 @@ public final class CmsDomUtil {
     }
 
     /**
+     * Returns if the given client position is over the given element.<p>
+     * Use <code>-1</code> for x or y to ignore one ordering orientation.<p>
+     * 
+     * @param element the element
+     * @param x the client x position, use <code>-1</code> to ignore x position 
+     * @param y the client y position, use <code>-1</code> to ignore y position
+     * 
+     * @return <code>true</code> if the given position is over the given element
+     */
+    public static boolean checkPositionInside(Element element, int x, int y) {
+
+        // ignore x / left-right values for x == -1
+        if (x != -1) {
+            // check if the mouse pointer is within the width of the target 
+            int left = CmsDomUtil.getRelativeX(x, element);
+            int offsetWidth = element.getOffsetWidth();
+            if ((left <= 0) || (left >= offsetWidth)) {
+                return false;
+            }
+        }
+        // ignore y / top-bottom values for y == -1
+        if (y != -1) {
+            // check if the mouse pointer is within the height of the target 
+            int top = CmsDomUtil.getRelativeY(y, element);
+            int offsetHeight = element.getOffsetHeight();
+            if ((top <= 0) || (top >= offsetHeight)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
      * Clones the given element.<p>
      * 
      * It creates a new element with the same tag, and sets the class attribute, 
@@ -709,19 +742,6 @@ public final class CmsDomUtil {
     }
 
     /**
-     * Returns all elements from the DOM with the given CSS class and tag name.<p>
-     * 
-     * @param className the class name to look for
-     * @param tag the tag
-     * 
-     * @return the matching elements
-     */
-    public static List<Element> getElementByClass(String className, Tag tag) {
-
-        return getElementsByClass(className, tag, Document.get().getBody());
-    }
-
-    /**
      * Returns all elements from the DOM with the given CSS class.<p>
      * 
      * @param className the class name to look for
@@ -745,6 +765,19 @@ public final class CmsDomUtil {
 
         return getElementsByClass(className, Tag.ALL, rootElement);
 
+    }
+
+    /**
+     * Returns all elements from the DOM with the given CSS class and tag name.<p>
+     * 
+     * @param className the class name to look for
+     * @param tag the tag
+     * 
+     * @return the matching elements
+     */
+    public static List<Element> getElementsByClass(String className, Tag tag) {
+
+        return getElementsByClass(className, tag, Document.get().getBody());
     }
 
     /**
@@ -938,17 +971,23 @@ public final class CmsDomUtil {
     /**
      * Positions an element inside the given parent, reordering the content of the parent and returns the new position index.<p>
      * This is none absolute positioning. Use for drag and drop reordering of drop targets.<p>
+     * Use <code>-1</code> for x or y to ignore one ordering orientation.<p>
      * 
      * @param element the child element
      * @param parent the parent element
      * @param currentIndex the current index position of the element, use -1 if element is not attached to the parent yet 
-     * @param x the x position
-     * @param y the y position
+     * @param x the client x position, use <code>-1</code> to ignore x position 
+     * @param y the client y position, use <code>-1</code> to ignore y position
      * 
      * @return the new index position
      */
     public static int positionElementInside(Element element, Element parent, int currentIndex, int x, int y) {
 
+        if ((x == -1) && (y == -1)) {
+            // this is wrong usage, do nothing
+            CmsDebugLog.getInstance().printLine("this is wrong usage, doing nothing");
+            return currentIndex;
+        }
         for (int index = 0; index < parent.getChildCount(); index++) {
             Node node = parent.getChild(index);
             if (!(node instanceof Element)) {
@@ -961,18 +1000,39 @@ public final class CmsDomUtil {
                 // not visible children will be excluded in the next condition
                 continue;
             }
-
-            // check if the mouse pointer is within the width of the element 
-            int left = CmsDomUtil.getRelativeX(x, child);
-            if ((left <= 0) || (left >= child.getOffsetWidth())) {
-                continue;
+            int left = 0;
+            int width = 0;
+            int top = 0;
+            int height = 0;
+            if (x != -1) {
+                // check if the mouse pointer is within the width of the element 
+                left = CmsDomUtil.getRelativeX(x, child);
+                width = child.getOffsetWidth();
+                if ((left <= 0) || (left >= width)) {
+                    continue;
+                }
             }
+            if (y != -1) {
+                // check if the mouse pointer is within the height of the element 
+                top = CmsDomUtil.getRelativeY(y, child);
+                height = child.getOffsetHeight();
+                if ((top <= 0) || (top >= height)) {
+                    continue;
+                }
+            } else {
+                if (child == element) {
+                    return currentIndex;
+                }
 
-            // check if the mouse pointer is within the height of the element 
-            int top = CmsDomUtil.getRelativeY(y, child);
-            int height = child.getOffsetHeight();
-            if ((top <= 0) || (top >= height)) {
-                continue;
+                if (left < width / 2) {
+                    parent.insertBefore(element, child);
+                    currentIndex = index;
+                    return currentIndex;
+                } else {
+                    parent.insertAfter(element, child);
+                    currentIndex = index + 1;
+                    return currentIndex;
+                }
             }
             if (child == element) {
                 return currentIndex;
