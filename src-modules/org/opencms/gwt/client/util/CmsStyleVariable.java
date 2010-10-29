@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsStyleVariable.java,v $
- * Date   : $Date: 2010/03/09 14:19:24 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/10/29 12:16:43 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import com.google.gwt.user.client.ui.UIObject;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  * 
@@ -76,7 +76,9 @@ public class CmsStyleVariable {
             if (m_style != null) {
                 ui.removeStyleName(m_style);
             }
-            ui.addStyleName(newStyle);
+            if (newStyle != null) {
+                ui.addStyleName(newStyle);
+            }
         }
         m_style = newStyle;
     }
