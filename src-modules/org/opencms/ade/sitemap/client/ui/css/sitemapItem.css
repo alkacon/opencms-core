@@ -1,3 +1,22 @@
+.contentHide * {
+	visibility: hidden;
+}
+
+@sprite .positionIndicator{
+	gwt-image: "images.arrowLeft";
+	position: absolute;
+	right: -8px;
+	margin-top: -8px;
+}
+
+.positionIndicator *{
+	display: none;
+}
+
+.positionIndicator.markUnchanged {
+	margin-top: 12px;
+}
+
 .sitemapEntryDecoration {
 
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapDNDController.java,v $
- * Date   : $Date: 2010/09/30 13:32:25 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/10/29 12:21:20 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,11 +33,14 @@ package org.opencms.ade.sitemap.client.control;
 
 import org.opencms.ade.galleries.client.ui.CmsResultListItem;
 import org.opencms.ade.sitemap.client.CmsSitemapTreeItem;
+import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.toolbar.CmsSitemapToolbar;
 import org.opencms.ade.sitemap.client.toolbar.CmsToolbarClipboardView.CmsClipboardDeletedItem;
+import org.opencms.ade.sitemap.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
+import org.opencms.gwt.client.dnd.CmsDNDHandler.Orientation;
 import org.opencms.gwt.client.dnd.I_CmsDNDController;
 import org.opencms.gwt.client.dnd.I_CmsDraggable;
 import org.opencms.gwt.client.dnd.I_CmsDropTarget;
@@ -49,15 +52,16 @@ import org.opencms.gwt.client.util.CmsDomUtil.Tag;
 import java.util.List;
 
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.DeferredCommand;
 
 /**
  * The sitemap drag and drop controller.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -116,7 +120,19 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
      */
     public void onDragCancel(I_CmsDraggable draggable, I_CmsDropTarget target, CmsDNDHandler handler) {
 
-        CmsDomUtil.removeDisablingOverlay(draggable.getElement());
+        if (draggable instanceof CmsSitemapTreeItem) {
+            ((CmsSitemapTreeItem)draggable).resetEntry();
+        }
+        DeferredCommand.addCommand(new Command() {
+
+            /**
+             * @see com.google.gwt.user.client.Command#execute()
+             */
+            public void execute() {
+
+                CmsSitemapView.getInstance().getTree().closeAllEmpty();
+            }
+        });
     }
 
     /**
@@ -134,6 +150,9 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
         if (cancel) {
             return false;
         }
+        handler.setOrientation(Orientation.VERTICAL);
+        hideItemContent(handler.getPlaceholder());
+        handler.getDragHelper().getStyle().setOpacity(0.6);
         m_insertIndex = -1;
         m_insertPath = null;
         m_originalIndex = -1;
@@ -155,7 +174,6 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
             if (treeItem.getParentItem() != null) {
                 m_originalIndex = treeItem.getParentItem().getItemPosition(treeItem);
             }
-            CmsDomUtil.addDisablingOverlay(draggable.getElement());
         }
         CmsDebugLog.getInstance().printLine("Starting path: " + m_originalPath + ", Index: " + m_originalIndex);
         return true;
@@ -179,15 +197,14 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
             m_controller.create(entry);
         }
         if (draggable instanceof CmsSitemapTreeItem) {
-            CmsDomUtil.removeDisablingOverlay(draggable.getElement());
-            if (isChangedPosition(draggable, target)) {
+            if (isChangedPosition(draggable, target, true)) {
                 // moving a tree entry around
                 CmsClientSitemapEntry entry = m_controller.getEntry(((CmsSitemapTreeItem)draggable).getSitePath());
                 CmsDebugLog.getInstance().printLine(
                     "inserting at " + m_insertPath + entry.getName() + "/ and index " + m_insertIndex);
                 m_controller.move(entry, m_insertPath + entry.getName() + "/", m_insertIndex);
             } else {
-                CmsDebugLog.getInstance().printLine("Nothing changed");
+                ((CmsSitemapTreeItem)draggable).resetEntry();
             }
         }
         if (draggable instanceof CmsResultListItem) {
@@ -201,7 +218,16 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
             entry.setPosition(m_insertIndex);
             m_controller.create(entry);
         }
+        DeferredCommand.addCommand(new Command() {
 
+            /**
+             * @see com.google.gwt.user.client.Command#execute()
+             */
+            public void execute() {
+
+                CmsSitemapView.getInstance().getTree().closeAllEmpty();
+            }
+        });
     }
 
     /**
@@ -210,10 +236,10 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
     public void onPositionedPlaceholder(I_CmsDraggable draggable, I_CmsDropTarget target, CmsDNDHandler handler) {
 
         if (draggable instanceof CmsSitemapTreeItem) {
-            if (!isChangedPosition(draggable, target)) {
-                draggable.getElement().getStyle().setDisplay(Display.NONE);
+            if (!isChangedPosition(draggable, target, true)) {
+                draggable.getElement().addClassName(I_CmsLayoutBundle.INSTANCE.sitemapItemCss().markUnchanged());
             } else {
-                draggable.getElement().getStyle().setDisplay(Display.BLOCK);
+                draggable.getElement().removeClassName(I_CmsLayoutBundle.INSTANCE.sitemapItemCss().markUnchanged());
             }
         }
     }
@@ -233,9 +259,21 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
 
         if (target instanceof CmsTree<?>) {
             ((CmsTree<?>)target).cancelOpenTimer();
-            if (draggable instanceof CmsSitemapTreeItem) {
-                draggable.getElement().getStyle().setDisplay(Display.BLOCK);
-            }
+        }
+    }
+
+    /**
+     * Hides the content of list items by setting a specific css class.<p>
+     * 
+     * @param element the list item element
+     */
+    private void hideItemContent(Element element) {
+
+        List<Element> itemWidget = CmsDomUtil.getElementsByClass(
+            org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().itemContainer(),
+            element);
+        if ((itemWidget != null) && (itemWidget.size() > 0)) {
+            itemWidget.get(0).addClassName(I_CmsLayoutBundle.INSTANCE.sitemapItemCss().contentHide());
         }
     }
 
@@ -247,22 +285,27 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
      * 
      * @return <code>true</code> if the position changed
      */
-    private boolean isChangedPosition(I_CmsDraggable draggable, I_CmsDropTarget target) {
+    private boolean isChangedPosition(I_CmsDraggable draggable, I_CmsDropTarget target, boolean strict) {
 
         // if draggable is not a sitemap item, any valid position is a changed position
         if (!((draggable instanceof CmsSitemapTreeItem) && (target instanceof CmsTree<?>))) {
             return true;
         }
-        // if the the path differs, the position has changed
+
         String placeholderPath = ((CmsTree<?>)target).getPlaceholderPath();
-        if (!((placeholderPath != null) && placeholderPath.equals(m_originalPath))) {
+        if ((placeholderPath == null) && !strict) {
+            // first positioning, path has not changed yet
+            return false;
+        }
+        // if the the path differs, the position has changed
+        if ((m_originalPath == null) || !m_originalPath.equals(placeholderPath)) {
             return true;
         }
         // if the new index is not next to the old one, the position has changed
-        if (!((target.getPlaceholderIndex() == m_originalIndex + 1) || (target.getPlaceholderIndex() == m_originalIndex))) {
+        if (!((target.getPlaceholderIndex() == m_originalIndex + 1) || (target.getPlaceholderIndex() == m_originalIndex))
+            && strict) {
             return true;
         }
         return false;
     }
-
 }

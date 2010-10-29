@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsList.java,v $
- * Date   : $Date: 2010/09/30 13:32:25 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2010/10/29 12:20:19 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.gwt.client.ui;
 
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
+import org.opencms.gwt.client.dnd.CmsDNDHandler.Orientation;
 import org.opencms.gwt.client.dnd.I_CmsDraggable;
 import org.opencms.gwt.client.dnd.I_CmsDropTarget;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
@@ -53,7 +54,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * 
  * @since 8.0.0
  */
@@ -79,6 +80,9 @@ public class CmsList<I extends I_CmsListItem> extends ComplexPanel implements I_
 
     /** The map of items. */
     private Map<String, I> m_items;
+
+    /** Flag to indicate if the list will always return <code>true</code> on check target requests within drag and drop. */
+    private boolean m_takeAll;
 
     /** The text metrics prefix. */
     private String m_tmPrefix;
@@ -118,28 +122,25 @@ public class CmsList<I extends I_CmsListItem> extends ComplexPanel implements I_
     }
 
     /**
-     * @see org.opencms.gwt.client.dnd.I_CmsDropTarget#checkPosition(int, int)
+     * @see org.opencms.gwt.client.dnd.I_CmsDropTarget#checkPosition(int, int, Orientation)
      */
-    public boolean checkPosition(int x, int y) {
+    public boolean checkPosition(int x, int y, Orientation orientation) {
 
         if (!isDropEnabled()) {
             return false;
         }
-        Element element = getElement();
-        // check if the mouse pointer is within the width of the target 
-        int left = CmsDomUtil.getRelativeX(x, element);
-        int offsetWidth = element.getOffsetWidth();
-        if ((left <= 0) || (left >= offsetWidth)) {
-            return false;
+        if (isDNDTakeAll()) {
+            return true;
         }
-
-        // check if the mouse pointer is within the height of the target 
-        int top = CmsDomUtil.getRelativeY(y, element);
-        int offsetHeight = element.getOffsetHeight();
-        if ((top <= 0) || (top >= offsetHeight)) {
-            return false;
+        switch (orientation) {
+            case HORIZONTAL:
+                return CmsDomUtil.checkPositionInside(getElement(), x, -1);
+            case VERTICAL:
+                return CmsDomUtil.checkPositionInside(getElement(), -1, y);
+            case ALL:
+            default:
+                return CmsDomUtil.checkPositionInside(getElement(), x, y);
         }
-        return true;
     }
 
     /**
@@ -237,12 +238,12 @@ public class CmsList<I extends I_CmsListItem> extends ComplexPanel implements I_
     }
 
     /**
-     * @see org.opencms.gwt.client.dnd.I_CmsDropTarget#insertPlaceholder(com.google.gwt.dom.client.Element, int, int)
+     * @see org.opencms.gwt.client.dnd.I_CmsDropTarget#insertPlaceholder(com.google.gwt.dom.client.Element, int, int, Orientation)
      */
-    public void insertPlaceholder(Element placeholder, int x, int y) {
+    public void insertPlaceholder(Element placeholder, int x, int y, Orientation orientation) {
 
         m_placeholder = placeholder;
-        repositionPlaceholder(x, y);
+        repositionPlaceholder(x, y, orientation);
     }
 
     /**
@@ -253,6 +254,16 @@ public class CmsList<I extends I_CmsListItem> extends ComplexPanel implements I_
     public boolean isDropEnabled() {
 
         return m_dropEnabled;
+    }
+
+    /**
+     * Returns if the list will always return <code>true</code> on check target requests within drag and drop.<p>
+     * 
+     * @return <code>true</code> if take all is enabled for drag and drop
+     */
+    public boolean isDNDTakeAll() {
+
+        return m_takeAll;
     }
 
     /**
@@ -411,11 +422,37 @@ public class CmsList<I extends I_CmsListItem> extends ComplexPanel implements I_
     }
 
     /**
-     * @see org.opencms.gwt.client.dnd.I_CmsDropTarget#repositionPlaceholder(int, int)
+     * @see org.opencms.gwt.client.dnd.I_CmsDropTarget#repositionPlaceholder(int, int, Orientation)
      */
-    public void repositionPlaceholder(int x, int y) {
+    public void repositionPlaceholder(int x, int y, Orientation orientation) {
 
-        m_placeholderIndex = CmsDomUtil.positionElementInside(m_placeholder, getElement(), m_placeholderIndex, x, y);
+        switch (orientation) {
+            case HORIZONTAL:
+                m_placeholderIndex = CmsDomUtil.positionElementInside(
+                    m_placeholder,
+                    getElement(),
+                    m_placeholderIndex,
+                    x,
+                    -1);
+                break;
+            case VERTICAL:
+                m_placeholderIndex = CmsDomUtil.positionElementInside(
+                    m_placeholder,
+                    getElement(),
+                    m_placeholderIndex,
+                    -1,
+                    y);
+                break;
+            case ALL:
+            default:
+                m_placeholderIndex = CmsDomUtil.positionElementInside(
+                    m_placeholder,
+                    getElement(),
+                    m_placeholderIndex,
+                    x,
+                    y);
+                break;
+        }
     }
 
     /**
@@ -426,6 +463,16 @@ public class CmsList<I extends I_CmsListItem> extends ComplexPanel implements I_
     public void setDNDHandler(CmsDNDHandler handler) {
 
         m_dndHandler = handler;
+    }
+
+    /**
+     * Sets if the list will always return <code>true</code> on check target requests within drag and drop.<p>
+     * 
+     * @param takeAll <code>true</code> to enable take all for drag and drop
+     */
+    public void setDNDTakeAll(boolean takeAll) {
+
+        m_takeAll = takeAll;
     }
 
     /**

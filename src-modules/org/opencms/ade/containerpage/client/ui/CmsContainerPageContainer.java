@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsContainerPageContainer.java,v $
- * Date   : $Date: 2010/10/28 06:16:45 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/10/29 12:21:51 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.ade.containerpage.client.ui;
 
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.containerpage.shared.I_CmsContainer;
+import org.opencms.gwt.client.dnd.CmsDNDHandler.Orientation;
 import org.opencms.gwt.client.dnd.I_CmsDraggable;
 import org.opencms.gwt.client.ui.CmsHighlightingBorder;
 import org.opencms.gwt.client.util.CmsDebugLog;
@@ -53,7 +54,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -100,25 +101,19 @@ public class CmsContainerPageContainer implements I_CmsDropContainer, HasWidgets
     }
 
     /**
-     * @see org.opencms.gwt.client.dnd.I_CmsDropTarget#checkPosition(int, int)
+     * @see org.opencms.gwt.client.dnd.I_CmsDropTarget#checkPosition(int, int, Orientation)
      */
-    public boolean checkPosition(int x, int y) {
+    public boolean checkPosition(int x, int y, Orientation orientation) {
 
-        Element element = getElement();
-        // check if the mouse pointer is within the width of the target 
-        int left = CmsDomUtil.getRelativeX(x, element);
-        int offsetWidth = element.getOffsetWidth();
-        if ((left <= 0) || (left >= offsetWidth)) {
-            return false;
+        switch (orientation) {
+            case HORIZONTAL:
+                return CmsDomUtil.checkPositionInside(getElement(), x, -1);
+            case VERTICAL:
+                return CmsDomUtil.checkPositionInside(getElement(), -1, y);
+            case ALL:
+            default:
+                return CmsDomUtil.checkPositionInside(getElement(), x, y);
         }
-
-        // check if the mouse pointer is within the height of the target 
-        int top = CmsDomUtil.getRelativeY(y, element);
-        int offsetHeight = element.getOffsetHeight();
-        if ((top <= 0) || (top >= offsetHeight)) {
-            return false;
-        }
-        return true;
     }
 
     /**
@@ -253,12 +248,12 @@ public class CmsContainerPageContainer implements I_CmsDropContainer, HasWidgets
     }
 
     /**
-     * @see org.opencms.gwt.client.dnd.I_CmsDropTarget#insertPlaceholder(com.google.gwt.dom.client.Element, int, int)
+     * @see org.opencms.gwt.client.dnd.I_CmsDropTarget#insertPlaceholder(com.google.gwt.dom.client.Element, int, int, Orientation)
      */
-    public void insertPlaceholder(Element placeholder, int x, int y) {
+    public void insertPlaceholder(Element placeholder, int x, int y, Orientation orientation) {
 
         m_placeholder = placeholder;
-        repositionPlaceholder(x, y);
+        repositionPlaceholder(x, y, orientation);
     }
 
     /**
@@ -320,11 +315,37 @@ public class CmsContainerPageContainer implements I_CmsDropContainer, HasWidgets
     }
 
     /**
-     * @see org.opencms.gwt.client.dnd.I_CmsDropTarget#repositionPlaceholder(int, int)
+     * @see org.opencms.gwt.client.dnd.I_CmsDropTarget#repositionPlaceholder(int, int, Orientation)
      */
-    public void repositionPlaceholder(int x, int y) {
+    public void repositionPlaceholder(int x, int y, Orientation orientation) {
 
-        m_placeholderIndex = CmsDomUtil.positionElementInside(m_placeholder, getElement(), m_placeholderIndex, x, y);
+        switch (orientation) {
+            case HORIZONTAL:
+                m_placeholderIndex = CmsDomUtil.positionElementInside(
+                    m_placeholder,
+                    getElement(),
+                    m_placeholderIndex,
+                    x,
+                    -1);
+                break;
+            case VERTICAL:
+                m_placeholderIndex = CmsDomUtil.positionElementInside(
+                    m_placeholder,
+                    getElement(),
+                    m_placeholderIndex,
+                    -1,
+                    y);
+                break;
+            case ALL:
+            default:
+                m_placeholderIndex = CmsDomUtil.positionElementInside(
+                    m_placeholder,
+                    getElement(),
+                    m_placeholderIndex,
+                    x,
+                    y);
+                break;
+        }
     }
 
     /**

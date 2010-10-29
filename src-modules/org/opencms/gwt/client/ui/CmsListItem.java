@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItem.java,v $
- * Date   : $Date: 2010/10/25 13:29:45 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2010/10/29 12:20:19 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  *  
  * @since 8.0.0 
  */
@@ -270,6 +270,9 @@ public class CmsListItem extends Composite implements I_CmsListItem {
     public Element getDragHelper(I_CmsDropTarget target) {
 
         if (m_helper == null) {
+            if (m_listItemWidget != null) {
+                m_listItemWidget.setAdditionalInfoVisible(false);
+            }
             m_helper = CmsDomUtil.clone(getElement());
             // remove all decorations
             List<com.google.gwt.dom.client.Element> elems = CmsDomUtil.getElementsByClass(
@@ -289,6 +292,8 @@ public class CmsListItem extends Composite implements I_CmsListItem {
             if (parentElement == null) {
                 parentElement = target.getElement();
             }
+            int elementTop = getElement().getAbsoluteTop();
+            int parentTop = parentElement.getAbsoluteTop();
             m_provisionalParent = DOM.createElement(parentElement.getTagName());
             RootPanel.getBodyElement().appendChild(m_provisionalParent);
             m_provisionalParent.getStyle().setWidth(parentElement.getOffsetWidth(), Unit.PX);
@@ -299,8 +304,9 @@ public class CmsListItem extends Composite implements I_CmsListItem {
             style.setPosition(Position.ABSOLUTE);
             style.setMargin(0, Unit.PX);
             style.setZIndex(100);
+            style.setTop(elementTop - parentTop, Unit.PX);
             m_provisionalParent.getStyle().setPosition(Position.ABSOLUTE);
-            m_provisionalParent.getStyle().setTop(parentElement.getAbsoluteTop(), Unit.PX);
+            m_provisionalParent.getStyle().setTop(parentTop, Unit.PX);
             m_provisionalParent.getStyle().setLeft(parentElement.getAbsoluteLeft(), Unit.PX);
             m_provisionalParent.getStyle().setZIndex(99999);
 
@@ -358,6 +364,9 @@ public class CmsListItem extends Composite implements I_CmsListItem {
     public Element getPlaceholder(I_CmsDropTarget target) {
 
         if (m_placeholder == null) {
+            if (m_listItemWidget != null) {
+                m_listItemWidget.setAdditionalInfoVisible(false);
+            }
             m_placeholder = cloneForPlaceholder(this);
         }
         return m_placeholder;

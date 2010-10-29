@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2010/10/18 15:09:43 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2010/10/29 12:20:19 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import com.google.gwt.resources.client.ImageResource.RepeatStyle;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.43 $
+ * @version $Revision: 1.44 $
  * 
  * @since 8.0.0
  */
@@ -714,6 +714,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
+        String itemBlue();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
         String itemContainer();
 
         /** 
@@ -735,7 +742,21 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
+        String itemRed();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
         String itemTitle();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String itemYellow();
 
         /** 
          * Access method.<p>
@@ -1161,9 +1182,27 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      * 
      * @return the image resource
      */
+    @Source("images/ui-bg_glass_75_88bbff_1x400.png")
+    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
+    ImageResource backgroundBlue();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
     @Source("images/ui-bg_glass_75_e6e6e6_1x400.png")
     @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
     ImageResource backgroundDefault();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/ui-bg_glass_65_aaaaaa_1x400.png")
+    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
+    ImageResource backgroundDisabled();
 
     /**
      * Access method.<p>
@@ -1179,9 +1218,27 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      * 
      * @return the image resource
      */
+    @Source("images/ui-bg_glass_75_ff7777_1x400.png")
+    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
+    ImageResource backgroundRed();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
     @Source("images/ui-bg_highlight-soft_75_aaaaaa_1x100.png")
     @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
     ImageResource backgroundSoft();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/ui-bg_glass_75_ffffcc_1x400.png")
+    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
+    ImageResource backgroundYellow();
 
     /**
      * Access method.<p>

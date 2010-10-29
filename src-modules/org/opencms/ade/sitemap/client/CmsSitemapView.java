@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapView.java,v $
- * Date   : $Date: 2010/10/22 15:05:29 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2010/10/29 12:21:20 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,12 +52,10 @@ import org.opencms.gwt.client.ui.CmsHeader;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.CmsToolbarPlaceHolder;
-import org.opencms.gwt.client.ui.dnd.CmsDropEvent;
-import org.opencms.gwt.client.ui.dnd.I_CmsDropHandler;
 import org.opencms.gwt.client.ui.tree.A_CmsDeepLazyOpenHandler;
 import org.opencms.gwt.client.ui.tree.CmsLazyTree;
-import org.opencms.gwt.client.ui.tree.CmsTreeItem;
 import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem.LoadState;
+import org.opencms.gwt.client.ui.tree.CmsTreeItem;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsPair;
@@ -77,12 +75,12 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.39 $ 
+ * @version $Revision: 1.40 $ 
  * 
  * @since 8.0.0
  */
 public final class CmsSitemapView extends A_CmsEntryPoint
-implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler, ClosingHandler, I_CmsDropHandler {
+implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler, ClosingHandler {
 
     /** The singleton instance. */
     private static CmsSitemapView m_instance;
@@ -245,26 +243,6 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler, ClosingHandler, I
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.dnd.I_CmsDropHandler#onDrop(org.opencms.gwt.client.ui.dnd.CmsDropEvent)
-     */
-    public void onDrop(final CmsDropEvent e) {
-
-        if (!(e.getDraggable() instanceof CmsSitemapTreeItem)) {
-            // we deal here only with dragged site entries
-            return;
-        }
-        // get the dragged sitemap entry 
-        CmsSitemapTreeItem draggable = (CmsSitemapTreeItem)e.getDraggable();
-        CmsClientSitemapEntry entry = m_controller.getEntry(draggable.getSitePath());
-
-        // perform the move
-        m_controller.move(
-            entry,
-            e.getPosition().getInfo() + e.getPosition().getName() + "/",
-            e.getPosition().getPosition());
-    }
-
-    /**
      * @see org.opencms.ade.sitemap.client.control.I_CmsSitemapLoadHandler#onLoad(org.opencms.ade.sitemap.client.control.CmsSitemapLoadEvent)
      */
     public void onLoad(CmsSitemapLoadEvent event) {
@@ -348,7 +326,8 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler, ClosingHandler, I
             CmsDNDHandler dndHandler = new CmsDNDHandler(new CmsSitemapDNDController(m_controller, m_toolbar));
             dndHandler.addTarget(m_tree);
             m_tree.setDNDHandler(dndHandler);
-            m_tree.setDropEnabled(false);
+            m_tree.setDropEnabled(true);
+            m_tree.setDNDTakeAll(true);
         }
         m_tree.truncate(TM_SITEMAP, 920);
         m_tree.setAnimationEnabled(true);

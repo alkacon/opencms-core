@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/dnd/Attic/I_CmsDropTarget.java,v $
- * Date   : $Date: 2010/09/23 08:18:33 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/10/29 12:21:20 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,8 @@
 
 package org.opencms.gwt.client.dnd;
 
+import org.opencms.gwt.client.dnd.CmsDNDHandler.Orientation;
+
 import com.google.gwt.dom.client.Element;
 
 /**
@@ -38,7 +40,7 @@ import com.google.gwt.dom.client.Element;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -49,10 +51,11 @@ public interface I_CmsDropTarget {
      * 
      * @param x the cursor client x position
      * @param y the cursor client y position
+     * @param orientation the drag and drop orientation
      * 
      * @return <code>true</code> if the given cursor position is over the drop target
      */
-    boolean checkPosition(int x, int y);
+    boolean checkPosition(int x, int y, Orientation orientation);
 
     /**
      * Returns the drop target element.<p>
@@ -75,8 +78,9 @@ public interface I_CmsDropTarget {
      * @param placeholder the placeholder element
      * @param x the cursor client x position
      * @param y the cursor client y position
+     * @param orientation the drag and drop orientation
      */
-    void insertPlaceholder(Element placeholder, int x, int y);
+    void insertPlaceholder(Element placeholder, int x, int y, Orientation orientation);
 
     /**
      * Executed on drop.<p>
@@ -95,7 +99,8 @@ public interface I_CmsDropTarget {
      * 
      * @param x the cursor client x position
      * @param y the cursor client y position
+     * @param orientation the drag and drop orientation
      */
-    void repositionPlaceholder(int x, int y);
+    void repositionPlaceholder(int x, int y, Orientation orientation);
 
 }

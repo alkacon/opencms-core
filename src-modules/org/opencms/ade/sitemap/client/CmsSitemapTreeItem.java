@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapTreeItem.java,v $
- * Date   : $Date: 2010/10/25 13:29:23 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2010/10/29 12:21:20 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,6 +43,7 @@ import org.opencms.gwt.client.dnd.I_CmsDropTarget;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
+import org.opencms.gwt.client.ui.CmsListItemWidget.Background;
 import org.opencms.gwt.client.ui.CmsListItemWidget.I_CmsTitleEditHandler;
 import org.opencms.gwt.client.ui.input.CmsLabel;
 import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem;
@@ -56,6 +57,7 @@ import java.util.Set;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.RepeatingCommand;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -64,7 +66,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.36 $ 
+ * @version $Revision: 1.37 $ 
  * 
  * @since 8.0.0
  * 
@@ -233,6 +235,16 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
     }
 
     /**
+     * @see org.opencms.gwt.client.dnd.I_CmsDraggable#getDragHelper(I_CmsDropTarget)
+     */
+    @Override
+    public Element getDragHelper(I_CmsDropTarget target) {
+
+        m_listItemWidget.setBackground(Background.DEFAULT);
+        return super.getDragHelper(target);
+    }
+
+    /**
      * Returns the original site path, in case this entry has been moved or renamed.<p>
      *
      * @return the original site path
@@ -295,16 +307,23 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.tree.CmsTreeItem#onDragOverIn()
+     * @see org.opencms.gwt.client.dnd.I_CmsDraggable#onDragCancel()
      */
     @Override
-    public boolean onDragOverIn() {
+    public void onDragCancel() {
 
-        if (m_entry.getProperties().containsKey(CmsSitemapManager.Property.sitemap)) {
-            // prevent dropping into a subsitemap driven entry
-            return false;
-        }
-        return super.onDragOverIn();
+        removeStyleName(I_CmsLayoutBundle.INSTANCE.sitemapItemCss().positionIndicator());
+        super.onDragCancel();
+    }
+
+    /**
+     * @see org.opencms.gwt.client.dnd.I_CmsDraggable#onDrop(org.opencms.gwt.client.dnd.I_CmsDropTarget)
+     */
+    @Override
+    public void onDrop(I_CmsDropTarget target) {
+
+        removeStyleName(I_CmsLayoutBundle.INSTANCE.sitemapItemCss().positionIndicator());
+        super.onDrop(target);
     }
 
     /**
@@ -313,7 +332,9 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
     @Override
     public void onStartDrag(I_CmsDropTarget target) {
 
-        super.onStartDrag(target);
+        setOpen(false);
+        // transform the widget into a position indicator
+        addStyleName(I_CmsLayoutBundle.INSTANCE.sitemapItemCss().positionIndicator());
         CmsSitemapHoverbar hoverbar = getHoverbar();
         if (hoverbar != null) {
             hoverbar.deattach();
@@ -321,22 +342,23 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
     }
 
     /**
-     * Sets the color of the list item widget.<p>
-     * 
-     * If the color is null, the widget will be shown with its default style.<p>
-     * 
-     * @param color a valid CSS color or null
+     * Resets entry appearance.<p>
      */
-    public void setColor(String color) {
+    public void resetEntry() {
 
-        com.google.gwt.dom.client.Style style = getListItemWidget().getContentPanel().getElement().getStyle();
-        if (color != null) {
-            style.setBackgroundImage("none");
-            style.setBackgroundColor(color);
-        } else {
-            style.clearBackgroundImage();
-            style.clearBackgroundColor();
-        }
+        updateEntry(m_entry);
+    }
+
+    /**
+     * Sets the background color of the list item widget.<p>
+     * 
+     * If the background is <code>null</code>, the widget will be shown with its default style.<p>
+     * 
+     * @param background the background color to set
+     */
+    public void setBackgroundColor(Background background) {
+
+        getListItemWidget().setBackground(background);
     }
 
     /**
@@ -391,19 +413,18 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
         if (entry.getProperties().containsKey("sitemap")) {
             return;
         }
-        String newColor;
         switch (entry.getEditStatus()) {
             case edited:
-                newColor = "#f77";
+                setBackgroundColor(Background.RED);
                 break;
             case created:
-                newColor = "#8bf";
+                setBackgroundColor(Background.BLUE);
                 break;
             case normal:
             default:
-                newColor = null;
+                setBackgroundColor(Background.DEFAULT);
         }
-        setColor(newColor);
+
     }
 
     /**
@@ -499,9 +520,9 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
     protected void updateSitemapReferenceStatus(CmsClientSitemapEntry entry) {
 
         if (!CmsStringUtil.isEmptyOrWhitespaceOnly(entry.getOwnProperty(CmsSitemapManager.Property.sitemap.name()))) {
-            m_listItemWidget.getContentPanel().addStyleName(CSS.subSitemapRef());
+            m_listItemWidget.setBackground(Background.YELLOW);
         } else {
-            m_listItemWidget.getContentPanel().removeStyleName(CSS.subSitemapRef());
+            m_listItemWidget.setBackground(Background.DEFAULT);
         }
     }
 

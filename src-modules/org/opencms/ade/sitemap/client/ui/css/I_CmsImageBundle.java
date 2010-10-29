@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/ui/css/Attic/I_CmsImageBundle.java,v $
- * Date   : $Date: 2010/10/21 13:45:42 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/10/29 12:21:20 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import com.google.gwt.resources.client.ImageResource;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -130,6 +130,14 @@ public interface I_CmsImageBundle extends ClientBundle {
 
     /** The bundle instance. */
     I_CmsImageBundle INSTANCE = GWT.create(I_CmsImageBundle.class);
+
+    /** 
+     * Access method.<p>
+     * 
+     * @return an image resource
+     */
+    @Source("images/arrow_left_green.png")
+    ImageResource arrowLeft();
 
     /** 
      * Access method.<p>

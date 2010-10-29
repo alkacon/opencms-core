@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsFavoritesDNDController.java,v $
- * Date   : $Date: 2010/10/22 12:11:36 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/10/29 12:21:51 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.ade.containerpage.client;
 
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
+import org.opencms.gwt.client.dnd.CmsDNDHandler.Orientation;
 import org.opencms.gwt.client.dnd.I_CmsDNDController;
 import org.opencms.gwt.client.dnd.I_CmsDraggable;
 import org.opencms.gwt.client.dnd.I_CmsDropTarget;
@@ -46,7 +47,7 @@ import com.google.gwt.user.client.DeferredCommand;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -90,6 +91,7 @@ public class CmsFavoritesDNDController implements I_CmsDNDController {
     @SuppressWarnings("unchecked")
     public boolean onDragStart(I_CmsDraggable draggable, I_CmsDropTarget target, CmsDNDHandler handler) {
 
+        handler.setOrientation(Orientation.VERTICAL);
         if ((target instanceof CmsList) && (draggable instanceof CmsListItem)) {
             m_list = (CmsList<CmsListItem>)target;
             m_startPosition = m_list.getItemPosition((CmsListItem)draggable);

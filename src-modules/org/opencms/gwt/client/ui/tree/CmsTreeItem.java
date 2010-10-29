@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/tree/Attic/CmsTreeItem.java,v $
- * Date   : $Date: 2010/10/11 09:39:55 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2010/10/29 12:20:19 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,8 @@
 
 package org.opencms.gwt.client.ui.tree;
 
+import org.opencms.gwt.client.dnd.CmsDNDHandler.Orientation;
+import org.opencms.gwt.client.dnd.I_CmsDraggable;
 import org.opencms.gwt.client.dnd.I_CmsDropTarget;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItem;
@@ -44,7 +46,6 @@ import org.opencms.gwt.client.util.CmsStyleVariable;
 
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Timer;
@@ -71,7 +72,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Georg Westenberger
  * @author Michael Moossen
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 8.0.0
  */
@@ -271,6 +272,16 @@ public class CmsTreeItem extends CmsListItem {
     }
 
     /**
+     * @see org.opencms.gwt.client.dnd.I_CmsDraggable#getDragHelper(I_CmsDropTarget)
+     */
+    @Override
+    public Element getDragHelper(I_CmsDropTarget target) {
+
+        setOpen(false);
+        return super.getDragHelper(target);
+    }
+
+    /**
      * Returns the given item position.<p>
      * 
      * @param item the item to get the position for
@@ -383,48 +394,6 @@ public class CmsTreeItem extends CmsListItem {
     }
 
     /**
-     * Will be executed when the user drags something over this item.<p>
-     * 
-     * Will also check that drop over is allowed
-     * 
-     * @return <code>true</code> if drop over is allowed
-     */
-    public boolean onDragOverIn() {
-
-        getListItemWidget().getContentPanel().addStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().itemActive());
-        if (isOpen()) {
-            return true;
-        }
-        m_timer = new Timer() {
-
-            /**
-             * @see com.google.gwt.user.client.Timer#run()
-             */
-            @Override
-            public void run() {
-
-                m_timer = null;
-                setOpen(true);
-            }
-        };
-        m_timer.schedule(1000);
-        return true;
-    }
-
-    /**
-     * Will be executed when the user stops dragging something over this item.<p>
-     */
-    public void onDragOverOut() {
-
-        if (m_timer != null) {
-            m_timer.cancel();
-            m_timer = null;
-        }
-        getListItemWidget().getContentPanel().removeStyleName(
-            I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().itemActive());
-    }
-
-    /**
      * Removes an item from the list.<p>
      * 
      * @param item the item to remove
@@ -503,34 +472,48 @@ public class CmsTreeItem extends CmsListItem {
      * @param x the cursor client x position
      * @param y the cursor client y position
      * @param placeholder the placeholder
+     * @param orientation the drag and drop orientation
+     * 
      * @return the placeholder index
      */
-    public int repositionPlaceholder(int x, int y, Element placeholder) {
+    public int repositionPlaceholder(int x, int y, Element placeholder, Orientation orientation) {
 
-        if ((getTree().getDnDHandler() != null) && (getTree().getDnDHandler().getDraggable() == this)) {
-            // can't drop item on itself, keeping previous position
-            return getTree().getPlaceholderIndex();
+        I_CmsDraggable draggable = null;
+        if (getTree().getDnDHandler() != null) {
+            draggable = getTree().getDnDHandler().getDraggable();
+            //            if (draggable == this) {
+            //                // can't drop item on itself, keeping previous position
+            //                return getTree().getPlaceholderIndex();
+            //            }
         }
         Element itemElement = getListItemWidget().getElement();
         // check if the mouse pointer is within the height of the element 
         int top = CmsDomUtil.getRelativeY(y, itemElement);
         int height = itemElement.getOffsetHeight();
         int index;
-        String path;
+        String parentPath;
         boolean isParentDndEnabled;
-        if (getParentItem() == null) {
+        CmsTreeItem parentItem = getParentItem();
+        if (parentItem == null) {
             index = getTree().getItemPosition(this);
-            path = "/";
-            isParentDndEnabled = getTree().isDropEnabled();
+            parentPath = "/";
+            isParentDndEnabled = getTree().isRootDropEnabled();
         } else {
-            index = getParentItem().getItemPosition(this);
-            path = getParentItem().getPath();
+            index = parentItem.getItemPosition(this);
+            parentPath = getParentItem().getPath();
             isParentDndEnabled = getParentItem().isDropEnabled();
         }
 
-        Element parentElement = getElement().getParentElement();
-        if (top < height / 3) {
-            // the mouse pointer is within the top section of the widget
+        if (top < height) {
+            // the mouse pointer is within the widget
+            int diff = x - getListItemWidget().getAbsoluteLeft();
+            if ((draggable != this) && (diff > 0) && (diff < 32)) {
+                // over icon
+                getTree().setOpenTimer(this);
+                m_children.getElement().insertBefore(placeholder, m_children.getElement().getFirstChild());
+                getTree().setPlaceholderPath(getPath());
+                return 0;
+            }
             getTree().cancelOpenTimer();
 
             // In this case try to drop on the parent
@@ -539,85 +522,39 @@ public class CmsTreeItem extends CmsListItem {
                 // keeping old position
                 return getTree().getPlaceholderIndex();
             }
+            if ((index > 0) && (parentItem != null)) {
+                CmsTreeItem previousSibling = parentItem.getChild(index - 1);
+                if (previousSibling.isOpen()) {
+                    // insert as last into the last opened of the siblings tree fragment
+                    return CmsTreeItem.getLastOpenedItem(previousSibling).insertPlaceholderAsLastChild(placeholder);
+                }
+            }
             // insert place holder at the parent before the current item
-            parentElement.insertBefore(placeholder, getElement());
-            getTree().setPlaceholderPath(path);
+            getElement().getParentElement().insertBefore(placeholder, getElement());
+            getTree().setPlaceholderPath(parentPath);
             return index;
-        } else if ((top > 2 * height / 3) && (top < height)) {
-            // the mouse pointer is within the bottom section of the widget
-            getTree().cancelOpenTimer();
-
-            if ((getChildCount() == 0) || !isOpen()) {
-                // if the item does not have children or is closed use the same level
-
-                // In this case try to drop on the parent
-                if (!isParentDndEnabled) {
-                    // we are not allowed to drop here
-                    // keeping old position
-                    return getTree().getPlaceholderIndex();
-                }
-
-                // insert place holder at the parent after the current item
-                parentElement.insertAfter(placeholder, getElement());
-                getTree().setPlaceholderPath(path);
-                return index + 1;
-            } else {
-                // but if it has children and they are visible use them
-
-                // In this case try to drop on this item
-                if (!isDropEnabled()) {
-                    // we are not allowed to drop here
-                    // keeping old position
-                    return getTree().getPlaceholderIndex();
-                }
-
-                m_children.getElement().insertBefore(placeholder, m_children.getElement().getFirstChild());
-                getTree().setPlaceholderPath(getPath());
-                return 0;
-            }
-        } else if (top < height) {
-            // the mouse pointer is within the middle section of the element
-
-            // In this case try to drop on this item
-            if (!isDropEnabled()) {
-                // we are not allowed to drop here
-                // keeping old position
-                getTree().cancelOpenTimer();
-                return getTree().getPlaceholderIndex();
-            }
-            getTree().setOpenTimer(this);
-            // TODO: this is rubbish!!! Open child list and insert real placeholder!!!
-            m_children.getElement().appendChild(placeholder);
-            getTree().setPlaceholderPath(getPath());
-            return getChildCount();
-        } else if (isOpen()) {
+        } else if ((draggable != this) && isOpen()) {
             getTree().cancelOpenTimer();
             // the mouse pointer is on children
             for (int childIndex = 0; childIndex < getChildCount(); childIndex++) {
                 CmsTreeItem child = getChild(childIndex);
                 Element childElement = child.getElement();
 
-                String positioning = childElement.getStyle().getPosition();
-                if ((positioning.equals(Position.ABSOLUTE.getCssName()) || positioning.equals(Position.FIXED.getCssName()))
-                    || !child.isVisible()) {
-                    // only take visible and not 'position:absolute' elements into account
-                    continue;
+                boolean over = false;
+                switch (orientation) {
+                    case HORIZONTAL:
+                        over = CmsDomUtil.checkPositionInside(childElement, x, -1);
+                        break;
+                    case VERTICAL:
+                        over = CmsDomUtil.checkPositionInside(childElement, -1, y);
+                        break;
+                    case ALL:
+                    default:
+                        over = CmsDomUtil.checkPositionInside(childElement, x, y);
                 }
-
-                // check if the mouse pointer is within the width of the element 
-                int childLeft = CmsDomUtil.getRelativeX(x, childElement);
-                if ((childLeft <= 0) || (childLeft >= childElement.getOffsetWidth())) {
-                    continue;
+                if (over) {
+                    return child.repositionPlaceholder(x, y, placeholder, orientation);
                 }
-
-                // check if the mouse pointer is within the height of the element 
-                int childTop = CmsDomUtil.getRelativeY(y, childElement);
-                int childHeight = childElement.getOffsetHeight();
-                if ((childTop <= 0) || (childTop >= childHeight)) {
-                    continue;
-                }
-
-                return child.repositionPlaceholder(x, y, placeholder);
             }
         }
         getTree().cancelOpenTimer();
@@ -777,6 +714,58 @@ public class CmsTreeItem extends CmsListItem {
             m_leafStyleVar.setValue(CSS.listTreeItemLeaf());
         } else {
             m_leafStyleVar.setValue(CSS.listTreeItemInternal());
+        }
+    }
+
+    /**
+     * Inserts the placeholder element as last child of the children list.
+     * Setting it's path as the current placeholder path and returning the new index.<p>
+     * 
+     * @param placeholder the placeholder element
+     * 
+     * @return the new index
+     */
+    protected int insertPlaceholderAsLastChild(Element placeholder) {
+
+        m_children.getElement().appendChild(placeholder);
+        getTree().setPlaceholderPath(getPath());
+        return getChildCount();
+    }
+
+    /**
+     * Returns the last opened item of a tree fragment.<p>
+     * 
+     * @param item the tree item
+     * 
+     * @return the last visible item of a tree fragment
+     */
+    protected static CmsTreeItem getLastOpenedItem(CmsTreeItem item) {
+
+        if (item.getChildCount() > 0) {
+            CmsTreeItem child = item.getChild(item.getChildCount() - 1);
+            if (child.isOpen()) {
+                return CmsTreeItem.getLastOpenedItem(child);
+            }
+        }
+        return item;
+    }
+
+    /**
+     * Closes all empty child entries.<p>
+     */
+    public void closeAllEmptyChildren() {
+
+        for (Widget child : m_children) {
+            if (child instanceof CmsTreeItem) {
+                CmsTreeItem item = (CmsTreeItem)child;
+                if (item.isOpen()) {
+                    if (item.getChildCount() == 0) {
+                        item.setOpen(false);
+                    } else {
+                        item.closeAllEmptyChildren();
+                    }
+                }
+            }
         }
     }
 }

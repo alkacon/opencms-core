@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/tree/Attic/CmsTree.java,v $
- * Date   : $Date: 2010/10/18 10:05:41 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/10/29 12:20:19 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,12 +31,13 @@
 
 package org.opencms.gwt.client.ui.tree;
 
+import org.opencms.gwt.client.dnd.CmsDNDHandler.Orientation;
 import org.opencms.gwt.client.ui.CmsList;
+import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.util.CmsStringUtil;
 
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.event.logical.shared.HasOpenHandlers;
 import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
@@ -53,7 +54,7 @@ import com.google.gwt.user.client.ui.HasAnimation;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -112,6 +113,9 @@ public class CmsTree<I extends CmsTreeItem> extends CmsList<I> implements HasOpe
     /** The parent path of the current placeholder. */
     private String m_placeholderPath;
 
+    /** Flag to indicate if dropping on root level is enabled or not. */
+    private boolean m_rootDropEnabled;
+
     /**
      * Constructor.<p>
      */
@@ -148,29 +152,6 @@ public class CmsTree<I extends CmsTreeItem> extends CmsList<I> implements HasOpe
             m_openTimer.cancel();
             m_openTimer = null;
         }
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.CmsList#checkPosition(int, int)
-     */
-    @Override
-    public boolean checkPosition(int x, int y) {
-
-        Element element = getElement();
-        // check if the mouse pointer is within the width of the target 
-        int left = CmsDomUtil.getRelativeX(x, element);
-        int offsetWidth = element.getOffsetWidth();
-        if ((left <= 0) || (left >= offsetWidth)) {
-            return false;
-        }
-
-        // check if the mouse pointer is within the height of the target 
-        int top = CmsDomUtil.getRelativeY(y, element);
-        int offsetHeight = element.getOffsetHeight();
-        if ((top <= 0) || (top >= offsetHeight)) {
-            return false;
-        }
-        return true;
     }
 
     /**
@@ -245,16 +226,13 @@ public class CmsTree<I extends CmsTreeItem> extends CmsList<I> implements HasOpe
     }
 
     /**
-     * Here the meaning is enabling dropping on the root level.<p>
-     * 
-     * Use {@link CmsTreeItem#isDropEnabled()} for dropping on tree items.<p>
-     * 
-     * @see org.opencms.gwt.client.ui.CmsList#isDropEnabled()
+     * Returns if dropping on root level is enabled or not.<p>
+     *
+     * @return <code>true</code> if dropping on root level is enabled
      */
-    @Override
-    public boolean isDropEnabled() {
+    public boolean isRootDropEnabled() {
 
-        return super.isDropEnabled();
+        return m_rootDropEnabled;
     }
 
     /**
@@ -268,37 +246,58 @@ public class CmsTree<I extends CmsTreeItem> extends CmsList<I> implements HasOpe
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.CmsList#repositionPlaceholder(int, int)
+     * @see org.opencms.gwt.client.ui.CmsList#repositionPlaceholder(int, int, Orientation)
      */
     @Override
-    public void repositionPlaceholder(int x, int y) {
+    public void repositionPlaceholder(int x, int y, Orientation orientation) {
 
-        for (int index = 0; index < getWidgetCount(); index++) {
+        int widgetCount = getWidgetCount();
+        for (int index = 0; index < widgetCount; index++) {
             CmsTreeItem item = getItem(index);
             Element itemElement = item.getElement();
-
-            String positioning = itemElement.getStyle().getPosition();
-            if ((positioning.equals(Position.ABSOLUTE.getCssName()) || positioning.equals(Position.FIXED.getCssName()))
-                || !item.isVisible()) {
-                // only take visible and not 'position:absolute' elements into account, also ignore the place-holder
-                continue;
+            boolean over = false;
+            switch (orientation) {
+                case HORIZONTAL:
+                    over = CmsDomUtil.checkPositionInside(itemElement, x, -1);
+                    break;
+                case VERTICAL:
+                    over = CmsDomUtil.checkPositionInside(itemElement, -1, y);
+                    break;
+                case ALL:
+                default:
+                    over = CmsDomUtil.checkPositionInside(itemElement, x, y);
             }
 
-            // check if the mouse pointer is within the width of the element 
-            int left = CmsDomUtil.getRelativeX(x, itemElement);
-            if ((left <= 0) || (left >= itemElement.getClientWidth())) {
-                continue;
+            if (over) {
+                m_placeholderIndex = item.repositionPlaceholder(x, y, m_placeholder, orientation);
+                return;
             }
-
-            // check if the mouse pointer is within the height of the element 
-            int top = CmsDomUtil.getRelativeY(y, itemElement);
-            int height = itemElement.getClientHeight();
-            if ((top <= 0) || (top >= height)) {
-                continue;
+            if (isDNDTakeAll() && (index == widgetCount - 1)) {
+                // last item of the list, no matching item was found and take-all is enabled
+                // check if cursor position is above or below
+                int relativeTop = CmsDomUtil.getRelativeY(y, getElement());
+                int elementHeight = getElement().getOffsetHeight();
+                if (relativeTop <= 0) {
+                    if (isRootDropEnabled()) {
+                        getElement().insertBefore(m_placeholder, getItem(0).getElement());
+                        setPlaceholderPath("/");
+                        m_placeholderIndex = 0;
+                    }
+                } else {
+                    if (relativeTop > elementHeight) {
+                        // insert as last into last opened tree-item
+                        if (item.isOpen() && (item.getChildCount() > 0)) {
+                            // insert into the tree as last visible item
+                            CmsTreeItem lastOpened = CmsTreeItem.getLastOpenedItem(item);
+                            m_placeholderIndex = lastOpened.insertPlaceholderAsLastChild(m_placeholder);
+                        } else if (isRootDropEnabled()) {
+                            getElement().insertAfter(m_placeholder, itemElement);
+                            setPlaceholderPath("/");
+                            m_placeholderIndex = widgetCount;
+                        }
+                    }
+                }
             }
-
-            m_placeholderIndex = item.repositionPlaceholder(x, y, m_placeholder);
-            return;
         }
     }
 
@@ -341,6 +340,31 @@ public class CmsTree<I extends CmsTreeItem> extends CmsList<I> implements HasOpe
         }
         m_openTimer = new OpenTimer(item);
         m_openTimer.schedule(300);
+    }
+
+    /**
+     * Sets the drop on root enabled.<p>
+     *
+     * @param rootDropEnabled <code>true</code> to enable dropping on root level
+     */
+    public void setRootDropEnabled(boolean rootDropEnabled) {
+
+        m_rootDropEnabled = rootDropEnabled;
+    }
+
+    /**
+     * Closes all empty entries.<p>
+     */
+    public void closeAllEmpty() {
+
+        CmsDebugLog.getInstance().printLine("closing all empty");
+        int childCount = getWidgetCount();
+        for (int index = 0; index < childCount; index++) {
+            CmsTreeItem item = getItem(index);
+            if (item.isOpen()) {
+                item.closeAllEmptyChildren();
+            }
+        }
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageDNDController.java,v $
- * Date   : $Date: 2010/10/22 12:12:43 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/10/29 12:21:51 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,6 +38,7 @@ import org.opencms.ade.containerpage.client.ui.I_CmsDropContainer;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
+import org.opencms.gwt.client.dnd.CmsDNDHandler.Orientation;
 import org.opencms.gwt.client.dnd.I_CmsDNDController;
 import org.opencms.gwt.client.dnd.I_CmsDraggable;
 import org.opencms.gwt.client.dnd.I_CmsDropTarget;
@@ -53,6 +54,7 @@ import org.opencms.util.CmsUUID;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Position;
@@ -60,7 +62,6 @@ import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.DeferredCommand;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -69,7 +70,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -199,21 +200,12 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         m_isNew = false;
         m_originalIndex = -1;
         m_initialDropTarget = target;
+        handler.setOrientation(Orientation.ALL);
         m_controller.hideEditableListButtons();
         if (target != null) {
             handler.addTarget(target);
-            String positioning = CmsDomUtil.getCurrentStyle(
-                target.getElement(),
-                org.opencms.gwt.client.util.CmsDomUtil.Style.position);
-            // set target relative, if not absolute or fixed
-            if (!Position.ABSOLUTE.getCssName().equals(positioning) && !Position.FIXED.getCssName().equals(positioning)) {
-                target.getElement().getStyle().setPosition(Position.RELATIVE);
-            }
             if (target instanceof I_CmsDropContainer) {
-                m_originalIndex = ((I_CmsDropContainer)target).getWidgetIndex((Widget)draggable);
-                target.getElement().insertBefore(handler.getPlaceholder(), draggable.getElement());
-                draggable.getElement().getStyle().setDisplay(Display.NONE);
-                ((I_CmsDropContainer)target).highlightContainer();
+                prepareTargetContainer((I_CmsDropContainer)target, draggable, handler.getPlaceholder());
             }
         }
         m_dragInfos.put(
@@ -225,7 +217,11 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                 handler.getCursorOffsetY()));
         m_controller.getHandler().hideMenu();
         String clientId = draggable.getId();
-        if (!CmsUUID.isValidUUID(clientId)) {
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(clientId)) {
+            CmsDebugLog.getInstance().printLine("draggable has no id, canceling drop");
+            handler.cancel();
+        }
+        if (isNewId(clientId)) {
             // for new content elements dragged from the gallery menu, the given id contains the resource type name
             clientId = m_controller.getNewResourceId(clientId);
             m_isNew = true;
@@ -388,8 +384,8 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             m_controller.getHandler().showDropzone(true);
             CmsListItem temp = m_controller.getContainerpageUtil().createListItem(elementData);
 
-            Element placeholder = (Element)temp.getPlaceholder(dropzone);
-            Element helper = (Element)temp.getDragHelper(dropzone);
+            Element placeholder = temp.getPlaceholder(dropzone);
+            Element helper = temp.getDragHelper(dropzone);
             m_dragInfos.put(
                 dropzone,
                 new DragInfo(helper, placeholder, helper.getOffsetWidth() - 15, handler.getCursorOffsetY()));
@@ -506,6 +502,21 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
     }
 
     /**
+     * Checks if the given id is a new id.<p>
+     * 
+     * @param id the id
+     * 
+     * @return <code>true</code> if the id is a new id
+     */
+    private boolean isNewId(String id) {
+
+        if (id.contains("#")) {
+            id = id.substring(0, id.indexOf("#"));
+        }
+        return !CmsUUID.isValidUUID(id);
+    }
+
+    /**
      * Sets styles of helper elements, appends the to the drop target and puts them into a drag info bean.<p>
      * 
      * @param dragHelper the drag helper element
@@ -548,6 +559,31 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         Element button = (new Image(I_CmsImageBundle.INSTANCE.moveIconActive())).getElement();
         button.addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragHandle());
         dragHelper.appendChild(button);
+    }
+
+    /**
+     * Prepares the target container.<p>
+     * 
+     * @param targetContainer the container
+     * @param draggable the draggable
+     * @param placeholder the placeholder
+     */
+    private void prepareTargetContainer(
+        I_CmsDropContainer targetContainer,
+        I_CmsDraggable draggable,
+        Element placeholder) {
+
+        String positioning = CmsDomUtil.getCurrentStyle(
+            targetContainer.getElement(),
+            org.opencms.gwt.client.util.CmsDomUtil.Style.position);
+        // set target relative, if not absolute or fixed
+        if (!Position.ABSOLUTE.getCssName().equals(positioning) && !Position.FIXED.getCssName().equals(positioning)) {
+            targetContainer.getElement().getStyle().setPosition(Position.RELATIVE);
+        }
+        m_originalIndex = targetContainer.getWidgetIndex((Widget)draggable);
+        targetContainer.getElement().insertBefore(placeholder, draggable.getElement());
+        draggable.getElement().getStyle().setDisplay(Display.NONE);
+        targetContainer.highlightContainer();
     }
 
     /**

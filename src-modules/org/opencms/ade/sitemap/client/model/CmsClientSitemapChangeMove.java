@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeMove.java,v $
- * Date   : $Date: 2010/10/22 09:41:36 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/10/29 12:21:20 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import org.opencms.xml.sitemap.I_CmsSitemapChange.Type;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 8.0.0
  */
@@ -157,7 +157,6 @@ public class CmsClientSitemapChangeMove implements I_CmsClientSitemapChange {
         CmsSitemapTreeItem sourceParent = view.getTreeItem(CmsResource.getParentFolder(getSourcePath()));
         sourceParent.getTree().setAnimationEnabled(false);
         CmsSitemapTreeItem moved = (CmsSitemapTreeItem)sourceParent.removeChild(getSourcePosition());
-        sourceParent.getTree().setAnimationEnabled(true);
         CmsSitemapTreeItem destParent = view.getTreeItem(CmsResource.getParentFolder(getDestinationPath()));
         if (getDestinationPosition() < destParent.getChildCount()) {
             destParent.insertChild(moved, getDestinationPosition());
@@ -169,6 +168,7 @@ public class CmsClientSitemapChangeMove implements I_CmsClientSitemapChange {
         if (m_ensureVisible) {
             view.ensureVisible(moved);
         }
+        sourceParent.getTree().setAnimationEnabled(true);
     }
 
     /**

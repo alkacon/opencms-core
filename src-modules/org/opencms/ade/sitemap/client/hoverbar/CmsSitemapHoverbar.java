@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsSitemapHoverbar.java,v $
- * Date   : $Date: 2010/09/23 06:30:51 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/10/29 12:21:20 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 8.0.0
  */
@@ -83,6 +83,7 @@ public class CmsSitemapHoverbar extends FlowPanel {
         setStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().buttonPanel());
 
         if (controller.isEditable()) {
+            add(new CmsHoverbarMoveButton(this));
             add(new CmsHoverbarGotoSubSitemapButton(this));
             add(new CmsHoverbarGotoButton(this));
             add(new CmsHoverbarSubsitemapButton(this));
@@ -90,7 +91,6 @@ public class CmsSitemapHoverbar extends FlowPanel {
             add(new CmsHoverbarEditButton(this));
             add(new CmsHoverbarNewButton(this));
             add(new CmsHoverbarMergeButton(this));
-            add(new CmsHoverbarMoveButton(this));
             add(new CmsHoverbarParentButton(this));
         } else {
             add(new CmsHoverbarGotoButton(this));

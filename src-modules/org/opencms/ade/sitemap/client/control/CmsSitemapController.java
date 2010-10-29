@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2010/10/25 07:31:39 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2010/10/29 12:21:20 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,6 +56,7 @@ import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.rpc.CmsRpcPrefetcher;
 import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.util.CmsCollectionUtil;
+import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.content.CmsXmlContentProperty;
@@ -84,7 +85,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 8.0.0
  */
@@ -746,14 +747,17 @@ public class CmsSitemapController {
      */
     public void move(CmsClientSitemapEntry entry, String toPath, int position) {
 
-        assert (getEntry(entry.getSitePath()) != null);
-        if ((toPath == null) || (entry.getSitePath().equals(toPath) && (entry.getPosition() == position))) {
-            // nothing to do
+        // check for valid data
+        if (!isValidEntryAndPath(entry, toPath)) {
+            // invalid data, do nothing 
+            CmsDebugLog.getInstance().printLine("invalid data, doing nothing");
             return;
         }
-        assert (getEntry(CmsResource.getParentFolder(toPath)) != null);
-
-        addChange(new CmsClientSitemapChangeMove(entry, toPath, position), false);
+        // check for relevance
+        if (isChangedPosition(entry, toPath, position)) {
+            // only register real changes
+            addChange(new CmsClientSitemapChangeMove(entry, toPath, position), false);
+        }
     }
 
     /**
@@ -1056,5 +1060,35 @@ public class CmsSitemapController {
             counter += 1;
         }
         return prefix + counter;
+    }
+
+    /**
+     * Checks if the given path and position indicate a changed position for the entry.<p>
+     * 
+     * @param entry the sitemap entry to move
+     * @param toPath the destination path
+     * @param position the new position between its siblings
+     * 
+     * @return <code>true</code> if this is a position change
+     */
+    private boolean isChangedPosition(CmsClientSitemapEntry entry, String toPath, int position) {
+
+        return (!entry.getSitePath().equals(toPath) || (entry.getPosition() != position));
+    }
+
+    /**
+     * Validates the entry and the given path.<p>
+     * 
+     * @param entry the entry
+     * @param toPath the path
+     * 
+     * @return <code>true</code> if entry and path are valid
+     */
+    private boolean isValidEntryAndPath(CmsClientSitemapEntry entry, String toPath) {
+
+        return ((toPath != null)
+            && (CmsResource.getParentFolder(toPath) != null)
+            && (entry != null)
+            && (getEntry(CmsResource.getParentFolder(toPath)) != null) && (getEntry(entry.getSitePath()) != null));
     }
 }
