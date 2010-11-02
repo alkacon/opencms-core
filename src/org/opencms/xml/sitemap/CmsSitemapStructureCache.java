@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapStructureCache.java,v $
- * Date   : $Date: 2010/10/15 12:50:04 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2010/11/02 11:04:14 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -75,7 +75,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Moossen
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 8.0.0
  */
@@ -462,7 +462,7 @@ public class CmsSitemapStructureCache extends CmsVfsCache implements I_CmsSitema
      * @see org.opencms.cache.CmsVfsCache#flush(boolean)
      */
     @Override
-    protected void flush(boolean online) {
+    protected synchronized void flush(boolean online) {
 
         if (m_useMemoryMonitor && (m_online == online)) {
             m_defProps = null;
@@ -730,7 +730,7 @@ public class CmsSitemapStructureCache extends CmsVfsCache implements I_CmsSitema
      * @see org.opencms.cache.CmsVfsCache#uncacheResource(org.opencms.file.CmsResource)
      */
     @Override
-    protected void uncacheResource(CmsResource resource) {
+    protected synchronized void uncacheResource(CmsResource resource) {
 
         if (resource == null) {
             LOG.warn(Messages.get().container(Messages.LOG_WARN_UNCACHE_NULL_0));
