@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/galleries/CmsGallerySearchIndex.java,v $
- * Date   : $Date: 2010/10/22 12:07:28 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/11/02 09:07:38 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.search.galleries;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.i18n.CmsLocaleManager;
@@ -67,7 +68,7 @@ import org.apache.lucene.util.Version;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 8.0.0 
  */
@@ -117,7 +118,7 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
 
         if ((res != null) && (m_sources != null)) {
             // the result can only be null or the type configured for the resource
-            if (CmsResourceTypeXmlContent.isXmlContent(res)) {
+            if (CmsResourceTypeXmlContent.isXmlContent(res) || CmsResourceTypeXmlContainerPage.isContainerPage(res)) {
                 return OpenCms.getSearchManager().getDocumentFactory(TYPE_XMLCONTENT_GALLERIES, null);
             } else if (CmsResourceTypeXmlPage.isXmlPage(res)) {
                 return OpenCms.getSearchManager().getDocumentFactory(TYPE_XMLPAGE_GALLERIES, null);
