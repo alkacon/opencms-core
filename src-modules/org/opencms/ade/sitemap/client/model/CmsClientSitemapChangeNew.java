@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeNew.java,v $
- * Date   : $Date: 2010/10/22 08:18:28 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/11/02 09:40:38 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import org.opencms.xml.sitemap.I_CmsSitemapChange.Type;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 8.0.0
  */
@@ -91,7 +91,8 @@ public class CmsClientSitemapChangeNew implements I_CmsClientSitemapChange {
         // apply to sitemap model 
         CmsClientSitemapEntry newParent = controller.getEntry(CmsResource.getParentFolder(getEntry().getSitePath()));
         if (getEntry().getPosition() < 0) {
-            newParent.addSubEntry(getEntry());
+            // inserting as first child
+            newParent.insertSubEntry(getEntry(), 0);
         } else {
             newParent.insertSubEntry(getEntry(), getEntry().getPosition());
         }
@@ -113,7 +114,8 @@ public class CmsClientSitemapChangeNew implements I_CmsClientSitemapChange {
         if (getEntry().getPosition() != -1) {
             newParent.insertChild(newChild, getEntry().getPosition());
         } else {
-            newParent.addChild(newChild);
+            // inserting as first child
+            newParent.insertChild(newChild, 0);
         }
         newChild.updateEntry(getEntry());
         if (m_ensureVisible) {
