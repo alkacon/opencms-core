@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsDisplayResource.java,v $
- * Date   : $Date: 2010/09/30 10:09:14 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/11/02 15:07:05 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -168,138 +168,42 @@ public class CmsDisplayResource extends CmsDialog {
     public void actionShow() throws Exception {
 
         // try to load the historical resource
-        String resourceStr = getParamResource();
         if (CmsStringUtil.isNotEmpty(getParamVersion())) {
-            byte[] result = getHistoricalResourceContent(getCms(), resourceStr, getParamVersion());
-            if (result != null) {
-                // get the top level response to change the content type
-                String contentType = OpenCms.getResourceManager().getMimeType(
-                    resourceStr,
-                    getCms().getRequestContext().getEncoding());
-
-                HttpServletResponse res = getJsp().getResponse();
-                HttpServletRequest req = getJsp().getRequest();
-
-                res.setHeader(
-                    CmsRequestUtil.HEADER_CONTENT_DISPOSITION,
-                    new StringBuffer("attachment; filename=\"").append(resourceStr).append("\"").toString());
-                res.setContentLength(result.length);
-
-                CmsFlexController controller = CmsFlexController.getController(req);
-                res = controller.getTopResponse();
-                res.setContentType(contentType);
-
-                try {
-                    res.getOutputStream().write(result);
-                    res.getOutputStream().flush();
-                } catch (IOException e) {
-                    // can usually be ignored
-                    if (LOG.isInfoEnabled()) {
-                        LOG.info(e.getLocalizedMessage());
-                    }
-                    return;
-                }
-            }
+            showHistoricVersion();
         } else {
-
-            // manual existsResource, need it for timewarp checking and saves three calls for existsResource
-            CmsResource resource = null;
-            try {
-                resource = getCms().readResource(resourceStr, CmsResourceFilter.ALL);
-            } catch (CmsVfsResourceNotFoundException e) {
-                // ignore, resource will be null
-            }
-
-            if (resource != null) {
-                if (resource.getState().isDeleted()) {
-                    // resource has been deleted in offline project
-                    throw new CmsVfsResourceNotFoundException(Messages.get().container(
-                        Messages.ERR_RESOURCE_DELETED_2,
-                        resourceStr,
-                        getCms().getRequestContext().currentProject().getName()));
-                }
-
-                // check for release / expiration time window 
-                autoTimeWarp(resource);
-
-                // code for display resource after all tests for displayability (exists, not deleted)
-
-                if (CmsResourceTypeXmlContainerPage.isContainerPage(resource)) {
-                    // if we have a container page look for the first sitemap entry 
-                    // and use that to display the container page  
-                    List<CmsInternalSitemapEntry> entries = OpenCms.getSitemapManager().getEntriesForStructureId(
-                        getJsp().getCmsObject(),
-                        resource.getStructureId());
-                    if (!entries.isEmpty()) {
-                        CmsInternalSitemapEntry entry = entries.get(0);
-                        resourceStr = entry.getRootPath();
-                    }
-                }
-
-                String url = getJsp().link(resourceStr);
-                // if in online project
-                if ((url.indexOf("://") < 0) && getCms().getRequestContext().currentProject().isOnlineProject()) {
-                    String site = getCms().getRequestContext().getSiteRoot();
-                    if (CmsStringUtil.isEmptyOrWhitespaceOnly(site)) {
-                        site = OpenCms.getSiteManager().getDefaultUri();
-                        if (CmsStringUtil.isEmptyOrWhitespaceOnly(site)) {
-                            url = OpenCms.getSiteManager().getWorkplaceServer() + url;
-                        } else if (OpenCms.getSiteManager().getSiteForSiteRoot(site) == null) {
-                            url = OpenCms.getSiteManager().getWorkplaceServer() + url;
-                        } else {
-                            url = OpenCms.getSiteManager().getSiteForSiteRoot(site).getUrl() + url;
-                        }
-                    } else {
-                        url = OpenCms.getSiteManager().getSiteForSiteRoot(site).getUrl() + url;
-                    }
-                    //                    try {
-                    //                        CmsStaticExportManager manager = OpenCms.getStaticExportManager();
-                    //                        HttpURLConnection.setFollowRedirects(false);
-                    //                        // try to export it
-                    //                        URL exportUrl = new URL(manager.getExportUrl() + manager.getRfsName(getCms(), resourceStr));
-                    //                        HttpURLConnection urlcon = (HttpURLConnection)exportUrl.openConnection();
-                    //                        // setup the connection and request the resource
-                    //                        urlcon.setRequestMethod("GET");
-                    //                        urlcon.setRequestProperty(CmsRequestUtil.HEADER_OPENCMS_EXPORT, Boolean.TRUE.toString());
-                    //                        if (manager.getAcceptLanguageHeader() != null) {
-                    //                            urlcon.setRequestProperty(
-                    //                                CmsRequestUtil.HEADER_ACCEPT_LANGUAGE,
-                    //                                manager.getAcceptLanguageHeader());
-                    //                        } else {
-                    //                            urlcon.setRequestProperty(
-                    //                                CmsRequestUtil.HEADER_ACCEPT_LANGUAGE,
-                    //                                manager.getDefaultAcceptLanguageHeader());
-                    //                        }
-                    //                        if (manager.getAcceptCharsetHeader() != null) {
-                    //                            urlcon.setRequestProperty(
-                    //                                CmsRequestUtil.HEADER_ACCEPT_CHARSET,
-                    //                                manager.getAcceptCharsetHeader());
-                    //                        } else {
-                    //                            urlcon.setRequestProperty(
-                    //                                CmsRequestUtil.HEADER_ACCEPT_CHARSET,
-                    //                                manager.getDefaultAcceptCharsetHeader());
-                    //                        }
-                    //                        // now perform the request to export
-                    //                        urlcon.connect();
-                    //                        urlcon.getResponseCode();
-                    //                        urlcon.disconnect();
-                    //
-                    //                    } catch (Exception e) {
-                    //                        // ignore
-                    //                        if (LOG.isDebugEnabled()) {
-                    //                            LOG.debug(e.getLocalizedMessage(), e);
-                    //                        }
-                    //                    }
-                }
-                getJsp().getResponse().sendRedirect(url);
-            } else {
-                // resource does not exist, show error message
+            String resourceStr = getParamResource();
+            // trying to read the resource
+            CmsResource resource = readResource(resourceStr);
+            if (isDeleted(resource)) {
+                // resource has been deleted in offline project
                 throw new CmsVfsResourceNotFoundException(Messages.get().container(
-                    Messages.ERR_RESOURCE_DOES_NOT_EXIST_3,
+                    Messages.ERR_RESOURCE_DELETED_2,
                     resourceStr,
-                    getCms().getRequestContext().currentProject().getName(),
-                    getCms().getRequestContext().getSiteRoot()));
+                    getCms().getRequestContext().currentProject().getName()));
             }
+
+            // check for release / expiration time window 
+            autoTimeWarp(resource);
+
+            // code for display resource after all tests for displayability (exists, not deleted)
+            if (CmsResourceTypeXmlContainerPage.isContainerPage(resource)) {
+                // if we have a container page look for the first sitemap entry 
+                // and use that to display the container page  
+                List<CmsInternalSitemapEntry> entries = OpenCms.getSitemapManager().getEntriesForStructureId(
+                    getJsp().getCmsObject(),
+                    resource.getStructureId());
+                if (!entries.isEmpty()) {
+                    CmsInternalSitemapEntry entry = entries.get(0);
+                    resourceStr = entry.getRootPath();
+                }
+            }
+
+            String url = getJsp().link(resourceStr);
+            // if in online project
+            if ((url.indexOf("://") < 0) && getCms().getRequestContext().currentProject().isOnlineProject()) {
+                url = prependSiteRoot(url);
+            }
+            getJsp().getResponse().sendRedirect(url);
         }
     }
 
@@ -377,5 +281,100 @@ public class CmsDisplayResource extends CmsDialog {
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         fillParamValues(settings, request);
+    }
+
+    /**
+     * Returns if the given resource has the state "deleted".<p>
+     * 
+     * @param resource the resource
+     * 
+     * @return <code>true</code> if the resource is of state "deleted"
+     */
+    private boolean isDeleted(CmsResource resource) {
+
+        return resource.getState().isDeleted();
+    }
+
+    /**
+     * Prepends the site-root to the given URL.<p>
+     *  
+     * @param url the URL
+     * 
+     * @return the absolute URL
+     */
+    private String prependSiteRoot(String url) {
+
+        String site = getCms().getRequestContext().getSiteRoot();
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(site)) {
+            site = OpenCms.getSiteManager().getDefaultUri();
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(site)
+                || (OpenCms.getSiteManager().getSiteForSiteRoot(site) == null)) {
+                return OpenCms.getSiteManager().getWorkplaceServer() + url;
+            } else {
+                return OpenCms.getSiteManager().getSiteForSiteRoot(site).getUrl() + url;
+            }
+        }
+        return OpenCms.getSiteManager().getSiteForSiteRoot(site).getUrl() + url;
+    }
+
+    /**
+     * Reads the resource from the DB.<p>
+     * 
+     * @param resourceName the resource name
+     * 
+     * @return the resource
+     * 
+     * @throws CmsException if the resource can not be read
+     */
+    private CmsResource readResource(String resourceName) throws CmsException {
+
+        CmsResource resource = null;
+        try {
+            resource = getCms().readResource(resourceName, CmsResourceFilter.ALL);
+        } catch (CmsVfsResourceNotFoundException e) {
+            throw new CmsVfsResourceNotFoundException(Messages.get().container(
+                Messages.ERR_RESOURCE_DOES_NOT_EXIST_3,
+                resourceName,
+                getCms().getRequestContext().currentProject().getName(),
+                getCms().getRequestContext().getSiteRoot()), e);
+        }
+        return resource;
+    }
+
+    /**
+     * Displays the requested historic version of the resource.<p>
+     */
+    private void showHistoricVersion() {
+
+        String resourceStr = getParamResource();
+        byte[] result = getHistoricalResourceContent(getCms(), resourceStr, getParamVersion());
+        if (result != null) {
+            // get the top level response to change the content type
+            String contentType = OpenCms.getResourceManager().getMimeType(
+                resourceStr,
+                getCms().getRequestContext().getEncoding());
+
+            HttpServletResponse res = getJsp().getResponse();
+            HttpServletRequest req = getJsp().getRequest();
+
+            res.setHeader(
+                CmsRequestUtil.HEADER_CONTENT_DISPOSITION,
+                new StringBuffer("attachment; filename=\"").append(resourceStr).append("\"").toString());
+            res.setContentLength(result.length);
+
+            CmsFlexController controller = CmsFlexController.getController(req);
+            res = controller.getTopResponse();
+            res.setContentType(contentType);
+
+            try {
+                res.getOutputStream().write(result);
+                res.getOutputStream().flush();
+            } catch (IOException e) {
+                // can usually be ignored
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(e.getLocalizedMessage());
+                }
+            }
+        }
     }
 }
