@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsContainerPageContainer.java,v $
- * Date   : $Date: 2010/10/29 12:21:51 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/11/03 08:33:16 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,6 +45,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -54,7 +55,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -68,6 +69,11 @@ public class CmsContainerPageContainer implements I_CmsDropContainer, HasWidgets
 
     /** Highlighting border for this container. */
     private CmsHighlightingBorder m_highlighting;
+
+    /** The maximum number of elements in this container. */
+    private int m_maxElements;
+
+    private Widget m_overflowingElement;
 
     /** The drag and drop placeholder. */
     private Element m_placeholder;
@@ -88,6 +94,7 @@ public class CmsContainerPageContainer implements I_CmsDropContainer, HasWidgets
         m_root = RootPanel.get(containerData.getName());
         m_containerId = containerData.getName();
         m_containerType = containerData.getType();
+        m_maxElements = containerData.getMaxElements();
         m_root.getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragTarget());
     }
 
@@ -97,6 +104,28 @@ public class CmsContainerPageContainer implements I_CmsDropContainer, HasWidgets
     public void add(Widget w) {
 
         m_root.add(w);
+
+    }
+
+    /**
+     * @see org.opencms.ade.containerpage.client.ui.I_CmsDropContainer#checkMaxElementsOnEnter()
+     */
+    public void checkMaxElementsOnEnter() {
+
+        if (getWidgetCount() >= m_maxElements) {
+            m_overflowingElement = m_root.getWidget(getWidgetCount() - 1);
+            m_overflowingElement.getElement().getStyle().setDisplay(Display.NONE);
+        }
+    }
+
+    /**
+     * @see org.opencms.ade.containerpage.client.ui.I_CmsDropContainer#checkMaxElementsOnLeave()
+     */
+    public void checkMaxElementsOnLeave() {
+
+        if (m_overflowingElement != null) {
+            m_overflowingElement.getElement().getStyle().clearDisplay();
+        }
 
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageDNDController.java,v $
- * Date   : $Date: 2010/10/29 12:21:51 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/11/03 08:33:16 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -328,21 +328,16 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
 
         DragInfo info = m_dragInfos.get(target);
         if (info != null) {
-            handler.getDragHelper().getStyle().setDisplay(Display.NONE);
-            handler.getPlaceholder().getStyle().setDisplay(Display.NONE);
-            handler.setDragHelper(info.getDragHelper());
-            handler.setPlaceholder(info.getPlaceholder());
-            handler.setCursorOffsetX(info.getOffsetX());
-            handler.setCursorOffsetY(info.getOffsetY());
-            handler.getDragHelper().getStyle().setDisplay(Display.BLOCK);
-            handler.getPlaceholder().getStyle().setDisplay(Display.BLOCK);
+            hideCurrentHelpers(handler);
+            replaceCurrentHelpers(handler, info);
+            if (target instanceof I_CmsDropContainer) {
+                ((I_CmsDropContainer)target).checkMaxElementsOnEnter();
+            }
         }
         if (target != m_initialDropTarget) {
-            draggable.getElement().getStyle().setDisplay(Display.BLOCK);
-            CmsDomUtil.showOverlay(draggable.getElement(), true);
+            showOriginalPositionPlaceholder(draggable);
         } else {
-            draggable.getElement().getStyle().setDisplay(Display.NONE);
-            CmsDomUtil.showOverlay(draggable.getElement(), false);
+            hideOriginalPositionPlaceholder(draggable);
         }
         return true;
     }
@@ -354,17 +349,14 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
 
         DragInfo info = m_dragInfos.get(m_initialDropTarget);
         if (info != null) {
-            handler.getDragHelper().getStyle().setDisplay(Display.NONE);
+            hideCurrentHelpers(handler);
+            replaceCurrentHelpers(handler, info);
             handler.getPlaceholder().getStyle().setDisplay(Display.NONE);
-            handler.setDragHelper(info.getDragHelper());
-            handler.setPlaceholder(info.getPlaceholder());
-            handler.setCursorOffsetX(info.getOffsetX());
-            handler.setCursorOffsetY(info.getOffsetY());
-            handler.getDragHelper().getStyle().setDisplay(Display.BLOCK);
-            handler.getPlaceholder().getStyle().setDisplay(Display.NONE);
+            if (target instanceof I_CmsDropContainer) {
+                ((I_CmsDropContainer)target).checkMaxElementsOnLeave();
+            }
         }
-        draggable.getElement().getStyle().setDisplay(Display.BLOCK);
-        CmsDomUtil.showOverlay(draggable.getElement(), false);
+        showOriginalPositionPlaceholder(draggable);
         updateHighlighting();
     }
 
@@ -485,6 +477,28 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
     }
 
     /**
+     * Hides the current drag helper and place-holder.<p>
+     * 
+     * @param handler the drag and drop handler
+     */
+    private void hideCurrentHelpers(CmsDNDHandler handler) {
+
+        handler.getDragHelper().getStyle().setDisplay(Display.NONE);
+        handler.getPlaceholder().getStyle().setDisplay(Display.NONE);
+    }
+
+    /**
+     * Hides the the draggable on it'e original position.<p>
+     * 
+     * @param draggable the draggable
+     */
+    private void hideOriginalPositionPlaceholder(I_CmsDraggable draggable) {
+
+        draggable.getElement().getStyle().setDisplay(Display.NONE);
+        CmsDomUtil.showOverlay(draggable.getElement(), false);
+    }
+
+    /**
      * Checks whether the current placeholder position represents a change to the original draggable position within the tree.<p>
      * 
      * @param target the current drop target
@@ -584,6 +598,33 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         targetContainer.getElement().insertBefore(placeholder, draggable.getElement());
         draggable.getElement().getStyle().setDisplay(Display.NONE);
         targetContainer.highlightContainer();
+    }
+
+    /**
+     * Replaces the current drag helper and place-holder in the drag handler sets them both to visible.<p>
+     *  
+     * @param handler the drag and drop handler
+     * @param info the drag info referencing the replacement helpers
+     */
+    private void replaceCurrentHelpers(CmsDNDHandler handler, DragInfo info) {
+
+        handler.setDragHelper(info.getDragHelper());
+        handler.setPlaceholder(info.getPlaceholder());
+        handler.setCursorOffsetX(info.getOffsetX());
+        handler.setCursorOffsetY(info.getOffsetY());
+        handler.getDragHelper().getStyle().setDisplay(Display.BLOCK);
+        handler.getPlaceholder().getStyle().setDisplay(Display.BLOCK);
+    }
+
+    /**
+     * Shows the draggable on it's original position.<p>
+     * 
+     * @param draggable the draggable
+     */
+    private void showOriginalPositionPlaceholder(I_CmsDraggable draggable) {
+
+        draggable.getElement().getStyle().setDisplay(Display.BLOCK);
+        CmsDomUtil.showOverlay(draggable.getElement(), true);
     }
 
     /**

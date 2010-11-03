@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsSubContainerElement.java,v $
- * Date   : $Date: 2010/10/29 12:21:51 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/11/03 08:33:16 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -89,6 +89,24 @@ public class CmsSubContainerElement extends CmsContainerPageElement implements I
         boolean hasProps) {
 
         super(element, parent, clientId, sitePath, noEditReason, hasProps);
+
+    }
+
+    /**
+     * @see org.opencms.ade.containerpage.client.ui.I_CmsDropContainer#checkMaxElementsOnEnter()
+     */
+    public void checkMaxElementsOnEnter() {
+
+        // TODO: implement
+
+    }
+
+    /**
+     * @see org.opencms.ade.containerpage.client.ui.I_CmsDropContainer#checkMaxElementsOnLeave()
+     */
+    public void checkMaxElementsOnLeave() {
+
+        // TODO: implement
 
     }
 

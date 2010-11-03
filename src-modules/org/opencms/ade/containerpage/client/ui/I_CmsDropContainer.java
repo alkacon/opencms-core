@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/I_CmsDropContainer.java,v $
- * Date   : $Date: 2010/10/22 12:12:43 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/11/03 08:33:16 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,6 +48,16 @@ public interface I_CmsDropContainer extends I_CmsDropTarget {
      * @see com.google.gwt.user.client.ui.HasWidgets#add(com.google.gwt.user.client.ui.Widget)
      */
     void add(Widget w);
+
+    /**
+     * Checks the maximum number of allowed elements and hides overflowing elements.<p> 
+     */
+    void checkMaxElementsOnEnter();
+
+    /**
+     * Checks the maximum number of allowed elements and displays formerly hidden elements.<p>
+     */
+    void checkMaxElementsOnLeave();
 
     /**
      * Returns the container id.<p>
