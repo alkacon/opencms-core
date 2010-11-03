@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/Attic/CmsSitemapLinkStrategyHandler.java,v $
- * Date   : $Date: 2010/10/26 11:08:18 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/11/03 07:04:36 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Ruediger Kurz
  *
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 8.0.0
  */
@@ -368,7 +368,6 @@ public class CmsSitemapLinkStrategyHandler extends A_CmsLinkStrategyHandler {
     /**
      * @see org.opencms.staticexport.I_CmsLinkStrategyHandler#isSecureLink(org.opencms.file.CmsObject, java.lang.String)
      */
-    @Override
     public boolean isSecureLink(CmsObject cms, String vfsName) {
 
         if (!cms.getRequestContext().currentProject().isOnlineProject()) {

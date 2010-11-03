@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/Attic/CmsVfsLinkStrategyHandler.java,v $
- * Date   : $Date: 2010/10/20 15:22:48 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/11/03 07:04:36 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Ruediger Kurz
  *
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  */
@@ -271,7 +271,6 @@ public class CmsVfsLinkStrategyHandler extends A_CmsLinkStrategyHandler {
     /**
      * @see org.opencms.staticexport.I_CmsLinkStrategyHandler#isSecureLink(org.opencms.file.CmsObject, java.lang.String)
      */
-    @Override
     public boolean isSecureLink(CmsObject cms, String vfsName) {
 
         if (!cms.getRequestContext().currentProject().isOnlineProject()) {
