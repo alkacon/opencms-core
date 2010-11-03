@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapDNDController.java,v $
- * Date   : $Date: 2010/11/03 08:32:22 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/11/03 13:25:40 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import com.google.gwt.user.client.DeferredCommand;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -196,6 +196,9 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
         if (draggable instanceof CmsClipboardDeletedItem) {
             // reinserting a deleted item
             CmsClientSitemapEntry entry = ((CmsClipboardDeletedItem)draggable).getEntry();
+            CmsClientSitemapEntry parent = CmsSitemapView.getInstance().getController().getEntry(m_insertPath);
+            String uniqueName = CmsSitemapController.ensureUniqueName(parent, entry.getName());
+            entry.setName(uniqueName);
             entry.updateSitePath(m_insertPath + entry.getName() + "/");
             entry.setPosition(m_insertIndex);
             m_controller.create(entry);
@@ -204,9 +207,22 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
             if (isChangedPosition(draggable, target, true)) {
                 // moving a tree entry around
                 CmsClientSitemapEntry entry = m_controller.getEntry(((CmsSitemapTreeItem)draggable).getSitePath());
-                CmsDebugLog.getInstance().printLine(
-                    "inserting at " + m_insertPath + entry.getName() + "/ and index " + m_insertIndex);
-                m_controller.move(entry, m_insertPath + entry.getName() + "/", m_insertIndex);
+                CmsClientSitemapEntry parent = CmsSitemapView.getInstance().getController().getEntry(m_insertPath);
+                String uniqueName = CmsSitemapController.ensureUniqueName(parent, entry.getName());
+                if (!uniqueName.equals(entry.getName())) {
+                    m_controller.editAndChangeName(
+                        entry,
+                        entry.getTitle(),
+                        uniqueName,
+                        entry.getVfsPath(),
+                        entry.getProperties(),
+                        !entry.isNew());
+                    m_controller.move(entry, m_insertPath + uniqueName + "/", m_insertIndex);
+                } else {
+                    CmsDebugLog.getInstance().printLine(
+                        "inserting at " + m_insertPath + entry.getName() + "/ and index " + m_insertIndex);
+                    m_controller.move(entry, m_insertPath + entry.getName() + "/", m_insertIndex);
+                }
             } else {
                 ((CmsSitemapTreeItem)draggable).resetEntry();
             }
@@ -215,8 +231,10 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
             CmsResultListItem galleryItem = (CmsResultListItem)draggable;
 
             CmsClientSitemapEntry entry = new CmsClientSitemapEntry();
-            entry.setName(galleryItem.getName());
-            entry.setSitePath(m_insertPath + galleryItem.getName() + "/");
+            CmsClientSitemapEntry parent = CmsSitemapView.getInstance().getController().getEntry(m_insertPath);
+            String uniqueName = CmsSitemapController.ensureUniqueName(parent, galleryItem.getName());
+            entry.setName(uniqueName);
+            entry.setSitePath(m_insertPath + uniqueName + "/");
             entry.setTitle(galleryItem.getListItemWidget().getTitleLabel());
             entry.setVfsPath(galleryItem.getVfsPath());
             entry.setPosition(m_insertIndex);

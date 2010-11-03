@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2010/10/29 12:21:20 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2010/11/03 13:25:40 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -85,7 +85,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.27 $ 
  * 
  * @since 8.0.0
  */
@@ -147,6 +147,35 @@ public class CmsSitemapController {
         m_hiddenProperties.add(CmsSitemapManager.Property.sitemap.toString());
 
         m_handlerManager = new HandlerManager(this);
+    }
+
+    /**
+     * Ensure the uniqueness of a given URL-name within the children of the given parent site-map entry.<p>
+     * 
+     * @param parent the parent entry
+     * @param newName the proposed name
+     * 
+     * @return the unique name
+     */
+    public static String ensureUniqueName(CmsClientSitemapEntry parent, String newName) {
+
+        Set<String> otherUrlNames = new HashSet<String>();
+        for (CmsClientSitemapEntry sibling : parent.getSubEntries()) {
+            otherUrlNames.add(sibling.getName());
+        }
+        int counter = 0;
+        String newUrlName = newName;
+        // check if the new name contains a counter suffix
+        if (newName.matches(".*_[0-9]+")) {
+            int underscoreIndex = newName.lastIndexOf("_");
+            counter = Integer.parseInt(newName.substring(underscoreIndex + 1));
+            newName = newName.substring(0, underscoreIndex);
+        }
+        while (otherUrlNames.contains(newUrlName)) {
+            counter += 1;
+            newUrlName = newName + "_" + counter;
+        }
+        return newUrlName;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapTreeItem.java,v $
- * Date   : $Date: 2010/10/29 12:21:20 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2010/11/03 13:25:40 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,9 +52,6 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.sitemap.CmsSitemapManager;
 import org.opencms.xml.sitemap.properties.CmsComputedPropertyValue;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.dom.client.Element;
@@ -66,7 +63,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.37 $ 
+ * @version $Revision: 1.38 $ 
  * 
  * @since 8.0.0
  * 
@@ -137,17 +134,6 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
                 }
                 String oldTitle = m_entry.getTitle();
 
-                final Set<String> otherUrlNames = new HashSet<String>();
-                if (!m_entry.isRoot()) {
-                    String parentPath = CmsResource.getParentFolder(m_entry.getSitePath());
-                    CmsClientSitemapEntry parent = CmsSitemapView.getInstance().getController().getEntry(parentPath);
-                    for (CmsClientSitemapEntry sibling : parent.getSubEntries()) {
-                        if (sibling != m_entry) {
-                            otherUrlNames.add(sibling.getName());
-                        }
-                    }
-                }
-
                 if (!oldTitle.equals(text)) {
 
                     if (m_entry.isNew()) {
@@ -170,14 +156,12 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
                             protected void onResponse(String result) {
 
                                 stop(false);
-                                int counter = 0;
-
-                                // find first of "${name}", "${name}_1", "${name}_2", ... which does not conflict with
-                                // an entry on the same level
                                 String newUrlName = result;
-                                while (otherUrlNames.contains(newUrlName)) {
-                                    counter += 1;
-                                    newUrlName = result + "_" + counter;
+                                if (!m_entry.isRoot()) {
+                                    String parentPath = CmsResource.getParentFolder(m_entry.getSitePath());
+                                    CmsClientSitemapEntry parent = CmsSitemapView.getInstance().getController().getEntry(
+                                        parentPath);
+                                    newUrlName = CmsSitemapController.ensureUniqueName(parent, result);
                                 }
                                 CmsClientSitemapEntry newEntry = new CmsClientSitemapEntry(m_entry);
                                 newEntry.setTitle(text);
