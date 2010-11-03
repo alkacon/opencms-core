@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapDNDController.java,v $
- * Date   : $Date: 2010/10/29 12:21:20 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/11/03 08:32:22 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import com.google.gwt.user.client.DeferredCommand;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -107,11 +107,15 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
             return false;
         }
         CmsTree<?> tree = (CmsTree<?>)target;
+        m_insertPath = tree.getPlaceholderPath();
         m_insertIndex = tree.getPlaceholderIndex();
+        if (m_insertPath.equals(m_originalPath) && (m_insertIndex > m_originalIndex)) {
+            // new position has the same path and is below the original position, adjust insert index
+            m_insertIndex -= 1;
+        }
         if (m_insertIndex == -1) {
             return false;
         }
-        m_insertPath = tree.getPlaceholderPath();
         return true;
     }
 
