@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/ui/css/Attic/I_CmsImageBundle.java,v $
- * Date   : $Date: 2010/10/29 13:10:49 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/11/04 07:54:07 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,13 +36,15 @@ import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsDragCss;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.resources.client.ImageResource.ImageOptions;
+import com.google.gwt.resources.client.ImageResource.RepeatStyle;
 
 /**
  * Resource bundle to access CSS and image resources.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.0
  */
@@ -330,6 +332,15 @@ public interface I_CmsImageBundle extends ClientBundle {
      */
     @Source("images/secure.png")
     ImageResource iconSecure();
+
+    /** 
+     * Access method.<p>
+     * 
+     * @return an image resource
+     */
+    @Source("images/placeholderOverlay_trans.png")
+    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
+    ImageResource positionIndicator();
 
     /** 
      * Access method.<p>

@@ -3,10 +3,16 @@
 }
 
 @sprite .positionIndicator{
-	gwt-image: "images.arrowLeft";
+	gwt-image: "images.positionIndicator";
+	height: 4px;
+	right: 6px;
+	left: 46px;
 	position: absolute;
-	right: -8px;
-	margin-top: -8px;
+	z-index: 10;
+	margin-top: -3px;
+	border-left: solid 5px #000000;
+	border-right: solid 5px #000000;
+	opacity: 0.5;
 }
 
 .positionIndicator *{
@@ -14,7 +20,7 @@
 }
 
 .positionIndicator.markUnchanged {
-	margin-top: 12px;
+	display: none;
 }
 
 .sitemapEntryDecoration {

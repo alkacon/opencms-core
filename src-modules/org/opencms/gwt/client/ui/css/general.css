@@ -26,7 +26,7 @@
 	padding: 2px 0px;
 }
 
-@sprite .disablingOverlay{
+@sprite div.disablingOverlay{
 	gwt-image: 'overlayImage';
 	display: block;
 	position:absolute;
@@ -35,9 +35,10 @@
 	left: 0px;
 	height: 100%;
 	width: 100%;
+	visibility: visible;
 }
 
-.hideOverlay .disablingOverlay{
+.hideOverlay div.disablingOverlay{
 	display: none;
 }
 	

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapDNDController.java,v $
- * Date   : $Date: 2010/11/03 13:25:40 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/11/04 07:54:07 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import com.google.gwt.user.client.DeferredCommand;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -209,7 +209,7 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
                 CmsClientSitemapEntry entry = m_controller.getEntry(((CmsSitemapTreeItem)draggable).getSitePath());
                 CmsClientSitemapEntry parent = CmsSitemapView.getInstance().getController().getEntry(m_insertPath);
                 String uniqueName = CmsSitemapController.ensureUniqueName(parent, entry.getName());
-                if (!uniqueName.equals(entry.getName())) {
+                if (!uniqueName.equals(entry.getName()) && isChangedPosition(draggable, target, false)) {
                     m_controller.editAndChangeName(
                         entry,
                         entry.getTitle(),
@@ -258,11 +258,7 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
     public void onPositionedPlaceholder(I_CmsDraggable draggable, I_CmsDropTarget target, CmsDNDHandler handler) {
 
         if (draggable instanceof CmsSitemapTreeItem) {
-            if (!isChangedPosition(draggable, target, true)) {
-                draggable.getElement().addClassName(I_CmsLayoutBundle.INSTANCE.sitemapItemCss().markUnchanged());
-            } else {
-                draggable.getElement().removeClassName(I_CmsLayoutBundle.INSTANCE.sitemapItemCss().markUnchanged());
-            }
+            adjustOriginalPositionIndicator((CmsSitemapTreeItem)draggable, target, handler);
         }
     }
 
@@ -281,6 +277,32 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
 
         if (target instanceof CmsTree<?>) {
             ((CmsTree<?>)target).cancelOpenTimer();
+        }
+    }
+
+    /**
+     * Adjust the original position indicator by styling the draggable element for this purpose.<p>
+     * 
+     * @param draggable the draggable
+     * @param target the current drop target
+     * @param handler the drag and drop handler
+     */
+    private void adjustOriginalPositionIndicator(
+        CmsSitemapTreeItem draggable,
+        I_CmsDropTarget target,
+        CmsDNDHandler handler) {
+
+        if (!isChangedPosition(draggable, target, true)) {
+            draggable.getElement().addClassName(I_CmsLayoutBundle.INSTANCE.sitemapItemCss().markUnchanged());
+            List<Element> itemWidget = CmsDomUtil.getElementsByClass(
+                org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().itemContainer(),
+                handler.getPlaceholder());
+            if ((itemWidget != null) && (itemWidget.size() > 0)) {
+                CmsDomUtil.addDisablingOverlay(itemWidget.get(0));
+            }
+        } else {
+            draggable.getElement().removeClassName(I_CmsLayoutBundle.INSTANCE.sitemapItemCss().markUnchanged());
+            CmsDomUtil.removeDisablingOverlay(handler.getPlaceholder());
         }
     }
 
@@ -304,6 +326,7 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
      * 
      * @param draggable the draggable
      * @param target the current drop target
+     * @param strict if <code>false</code> only the parent path is considered, the index position will be ignored
      * 
      * @return <code>true</code> if the position changed
      */
