@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/db/A_CmsUpdateDBPart.java,v $
- * Date   : $Date: 2010/02/24 12:44:24 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/11/04 12:28:35 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,7 @@ import org.opencms.setup.CmsSetupDb;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -45,7 +46,7 @@ import java.util.Properties;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 6.9.2 
  */
@@ -150,7 +151,10 @@ public abstract class A_CmsUpdateDBPart implements I_CmsUpdateDBPart {
 
         Properties properties = new Properties();
         properties.load(getClass().getClassLoader().getResourceAsStream(propertyFilename));
-        for (String propertyName : properties.stringPropertyNames()) {
+        @SuppressWarnings("unchecked")
+        Enumeration<String> propertyNames = (Enumeration<String>)properties.propertyNames();
+        while (propertyNames.hasMoreElements()) {
+            String propertyName = propertyNames.nextElement();
             m_queries.put(propertyName, properties.getProperty(propertyName));
         }
     }

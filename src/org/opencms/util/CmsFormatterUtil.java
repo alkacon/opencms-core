@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Attic/CmsFormatterUtil.java,v $
- * Date   : $Date: 2010/09/22 14:27:48 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/11/04 12:28:34 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -86,7 +86,7 @@ public final class CmsFormatterUtil {
             String widthStr = configBean.getWidth();
             String oldUri = null;
             Object key = null;
-            if (type.equals("*") || type.isEmpty()) {
+            if (type.equals("*") || CmsStringUtil.isEmptyOrWhitespaceOnly(type)) {
                 // wildcard formatter; index by width
                 // if no width available, use -1
                 int width = -1;

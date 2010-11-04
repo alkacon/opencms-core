@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/gwt/A_CmsClientMessageBundle.java,v $
- * Date   : $Date: 2010/04/15 10:03:22 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/11/04 12:28:35 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,8 +39,8 @@ import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
 import org.opencms.main.CmsLog;
 
+import java.util.Enumeration;
 import java.util.ResourceBundle;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -53,7 +53,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 8.0.0
  */
@@ -89,8 +89,9 @@ public abstract class A_CmsClientMessageBundle implements I_CmsClientMessageBund
             ResourceBundle resourceBundle = CmsResourceBundleLoader.getBundle(
                 getBundleName(),
                 CmsLocaleManager.getLocale(locale));
-            Set<String> bundleKeys = resourceBundle.keySet();
-            for (String bundleKey : bundleKeys) {
+            Enumeration<String> bundleKeys = resourceBundle.getKeys();
+            while (bundleKeys.hasMoreElements()) {
+                String bundleKey = bundleKeys.nextElement();
                 keys.put(bundleKey, resourceBundle.getString(bundleKey));
             }
         } catch (Throwable e) {

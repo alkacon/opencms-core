@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsLabel.java,v $
- * Date   : $Date: 2010/10/29 13:10:19 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/11/04 12:28:35 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 8.0.0
  */
@@ -214,7 +214,7 @@ public class CmsLabel extends Widget implements HasHorizontalAlignment, HasHTML,
             // enough space for ellipsis?
             newText += CmsDomUtil.Entity.hellip.html();
         }
-        if (newText.isEmpty()) {
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(newText)) {
             // if empty, it could break the layout
             newText = CmsDomUtil.Entity.nbsp.html();
         }

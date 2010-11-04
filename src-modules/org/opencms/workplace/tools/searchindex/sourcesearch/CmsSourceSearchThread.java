@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/sourcesearch/CmsSourceSearchThread.java,v $
- * Date   : $Date: 2010/09/06 06:46:46 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/11/04 12:28:34 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Mario Jaeger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 7.5.3
  */
@@ -149,11 +149,13 @@ public class CmsSourceSearchThread extends A_CmsReportThread {
                 I_CmsReport.FORMAT_ERROR);
         }
         // the search pattern
-        if (!m_settings.getSearchpattern().isEmpty()) {
+        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(m_settings.getSearchpattern())) {
             // there is a search pattern
-            report.println(Messages.get().container(
-                Messages.RPT_SOURCESEARCH_PARAMETERS_SEARCHPATTERN_1,
-                CmsStringUtil.escapeHtml(m_settings.getSearchpattern())), I_CmsReport.FORMAT_NOTE);
+            report.println(
+                Messages.get().container(
+                    Messages.RPT_SOURCESEARCH_PARAMETERS_SEARCHPATTERN_1,
+                    CmsStringUtil.escapeHtml(m_settings.getSearchpattern())),
+                I_CmsReport.FORMAT_NOTE);
         } else {
             // empty search pattern
             isError = true;
@@ -162,9 +164,11 @@ public class CmsSourceSearchThread extends A_CmsReportThread {
                 I_CmsReport.FORMAT_ERROR);
         }
         // the replace pattern
-        report.println(Messages.get().container(
-            Messages.RPT_SOURCESEARCH_PARAMETERS_REPLACEPATTERN_1,
-            CmsStringUtil.escapeHtml(m_settings.getReplacepattern())), I_CmsReport.FORMAT_NOTE);
+        report.println(
+            Messages.get().container(
+                Messages.RPT_SOURCESEARCH_PARAMETERS_REPLACEPATTERN_1,
+                CmsStringUtil.escapeHtml(m_settings.getReplacepattern())),
+            I_CmsReport.FORMAT_NOTE);
         // the project
         report.println(
             Messages.get().container(Messages.RPT_SOURCESEARCH_PARAMETERS_PROJECT_1, m_settings.getProject()),
@@ -316,9 +320,9 @@ public class CmsSourceSearchThread extends A_CmsReportThread {
         // at least one file in the select path could be read
         // number of files to update
         int nrOfFiles = resources.size();
-        report.println(Messages.get().container(
-            Messages.RPT_SOURCESEARCH_NR_OF_FILES_TO_SEARCH_IN_1,
-            new Integer(nrOfFiles)), I_CmsReport.FORMAT_NOTE);
+        report.println(
+            Messages.get().container(Messages.RPT_SOURCESEARCH_NR_OF_FILES_TO_SEARCH_IN_1, new Integer(nrOfFiles)),
+            I_CmsReport.FORMAT_NOTE);
         if (replace) {
             // start searching and replacing
             report.println(
@@ -342,8 +346,9 @@ public class CmsSourceSearchThread extends A_CmsReportThread {
             try {
                 cmsFile = getCms().readFile(cmsResource);
             } catch (CmsException e) {
-                report.print(org.opencms.report.Messages.get().container(
-                    Messages.RPT_SOURCESEARCH_COULD_NOT_READ_FILE_0), I_CmsReport.FORMAT_ERROR);
+                report.print(
+                    org.opencms.report.Messages.get().container(Messages.RPT_SOURCESEARCH_COULD_NOT_READ_FILE_0),
+                    I_CmsReport.FORMAT_ERROR);
                 report.println(
                     org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_FAILED_0),
                     I_CmsReport.FORMAT_ERROR);
@@ -351,10 +356,12 @@ public class CmsSourceSearchThread extends A_CmsReportThread {
                 continue;
             }
             // report entries
-            report.print(org.opencms.report.Messages.get().container(
-                org.opencms.report.Messages.RPT_SUCCESSION_2,
-                String.valueOf(fileCounter),
-                String.valueOf(nrOfFiles)), I_CmsReport.FORMAT_NOTE);
+            report.print(
+                org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_SUCCESSION_2,
+                    String.valueOf(fileCounter),
+                    String.valueOf(nrOfFiles)),
+                I_CmsReport.FORMAT_NOTE);
             report.print(org.opencms.report.Messages.get().container(
                 org.opencms.report.Messages.RPT_ARGUMENT_1,
                 report.removeSiteRoot(cmsResource.getRootPath())));
@@ -401,15 +408,19 @@ public class CmsSourceSearchThread extends A_CmsReportThread {
                 try {
                     // try to lock the resource
                     if (!lockResource(cmsObject, cmsResource, report)) {
-                        report.println(Messages.get().container(
-                            Messages.RPT_SOURCESEARCH_LOCKED_FILE_0,
-                            cmsObject.getSitePath(cmsResource)), I_CmsReport.FORMAT_ERROR);
+                        report.println(
+                            Messages.get().container(
+                                Messages.RPT_SOURCESEARCH_LOCKED_FILE_0,
+                                cmsObject.getSitePath(cmsResource)),
+                            I_CmsReport.FORMAT_ERROR);
                         continue;
                     }
                 } catch (CmsException e) {
-                    report.println(Messages.get().container(
-                        Messages.RPT_SOURCESEARCH_LOCKED_FILE_0,
-                        cmsObject.getSitePath(cmsResource)), I_CmsReport.FORMAT_ERROR);
+                    report.println(
+                        Messages.get().container(
+                            Messages.RPT_SOURCESEARCH_LOCKED_FILE_0,
+                            cmsObject.getSitePath(cmsResource)),
+                        I_CmsReport.FORMAT_ERROR);
                     if (LOG.isErrorEnabled()) {
                         LOG.error(e.getMessageContainer(), e);
                     }
@@ -468,23 +479,33 @@ public class CmsSourceSearchThread extends A_CmsReportThread {
         }
         // the results are written in the report
         report.println(Messages.get().container(Messages.RPT_SOURCESEARCH_RESULT_0), I_CmsReport.FORMAT_HEADLINE);
-        report.println(Messages.get().container(
-            Messages.RPT_SOURCESEARCH_NR_OF_FILES_TO_SEARCH_IN_1,
-            new Integer(nrOfFiles).toString()), I_CmsReport.FORMAT_NOTE);
-        report.println(Messages.get().container(
-            Messages.RPT_SOURCESEARCH_NR_OF_FILES_MATCHED_1,
-            new Integer(matchedFiles).toString()), I_CmsReport.FORMAT_NOTE);
-        report.println(Messages.get().container(
-            Messages.RPT_SOURCESEARCH_NUMBER_OF_SEARCH_ERRORS_1,
-            new Integer(m_errorSearch).toString()), I_CmsReport.FORMAT_NOTE);
+        report.println(
+            Messages.get().container(
+                Messages.RPT_SOURCESEARCH_NR_OF_FILES_TO_SEARCH_IN_1,
+                new Integer(nrOfFiles).toString()),
+            I_CmsReport.FORMAT_NOTE);
+        report.println(
+            Messages.get().container(
+                Messages.RPT_SOURCESEARCH_NR_OF_FILES_MATCHED_1,
+                new Integer(matchedFiles).toString()),
+            I_CmsReport.FORMAT_NOTE);
+        report.println(
+            Messages.get().container(
+                Messages.RPT_SOURCESEARCH_NUMBER_OF_SEARCH_ERRORS_1,
+                new Integer(m_errorSearch).toString()),
+            I_CmsReport.FORMAT_NOTE);
         if (replace) {
             // replace report entries
-            report.println(Messages.get().container(
-                Messages.RPT_SOURCESEARCH_NUMBER_OF_REPLACE_ERRORS_1,
-                new Integer(m_errorUpdate).toString()), I_CmsReport.FORMAT_NOTE);
-            report.println(Messages.get().container(
-                Messages.RPT_SOURCESEARCH_LOCKED_FILES_1,
-                new Integer(m_lockedFiles).toString()), I_CmsReport.FORMAT_NOTE);
+            report.println(
+                Messages.get().container(
+                    Messages.RPT_SOURCESEARCH_NUMBER_OF_REPLACE_ERRORS_1,
+                    new Integer(m_errorUpdate).toString()),
+                I_CmsReport.FORMAT_NOTE);
+            report.println(
+                Messages.get().container(
+                    Messages.RPT_SOURCESEARCH_LOCKED_FILES_1,
+                    new Integer(m_lockedFiles).toString()),
+                I_CmsReport.FORMAT_NOTE);
             if (matchedFiles == 0) {
                 report.println(
                     Messages.get().container(Messages.RPT_SOURCESEARCH_NO_FILES_TO_REPLACE_FOUND_0),
