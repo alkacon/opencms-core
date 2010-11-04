@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/tree/Attic/CmsTreeItem.java,v $
- * Date   : $Date: 2010/10/29 12:20:19 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2010/11/04 07:53:18 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,7 +72,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Georg Westenberger
  * @author Michael Moossen
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 8.0.0
  */
@@ -189,6 +189,24 @@ public class CmsTreeItem extends CmsListItem {
     }
 
     /**
+     * Returns the last opened item of a tree fragment.<p>
+     * 
+     * @param item the tree item
+     * 
+     * @return the last visible item of a tree fragment
+     */
+    protected static CmsTreeItem getLastOpenedItem(CmsTreeItem item) {
+
+        if (item.getChildCount() > 0) {
+            CmsTreeItem child = item.getChild(item.getChildCount() - 1);
+            if (child.isOpen()) {
+                return CmsTreeItem.getLastOpenedItem(child);
+            }
+        }
+        return item;
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.CmsListItem#add(com.google.gwt.user.client.ui.Widget)
      */
     @Override
@@ -227,6 +245,25 @@ public class CmsTreeItem extends CmsListItem {
 
         for (int i = getChildCount(); i > 0; i--) {
             removeChild(i - 1);
+        }
+    }
+
+    /**
+     * Closes all empty child entries.<p>
+     */
+    public void closeAllEmptyChildren() {
+
+        for (Widget child : m_children) {
+            if (child instanceof CmsTreeItem) {
+                CmsTreeItem item = (CmsTreeItem)child;
+                if (item.isOpen()) {
+                    if (item.getChildCount() == 0) {
+                        item.setOpen(false);
+                    } else {
+                        item.closeAllEmptyChildren();
+                    }
+                }
+            }
         }
     }
 
@@ -522,7 +559,8 @@ public class CmsTreeItem extends CmsListItem {
                 // keeping old position
                 return getTree().getPlaceholderIndex();
             }
-            if ((index > 0) && (parentItem != null)) {
+            if (shouldInsertIntoSiblingList(draggable, parentItem, index)) {
+                @SuppressWarnings("null")
                 CmsTreeItem previousSibling = parentItem.getChild(index - 1);
                 if (previousSibling.isOpen()) {
                     // insert as last into the last opened of the siblings tree fragment
@@ -705,19 +743,6 @@ public class CmsTreeItem extends CmsListItem {
     }
 
     /**
-     * Helper method which is called when the list of children changes.<p> 
-     */
-    protected void onChangeChildren() {
-
-        int count = getChildCount();
-        if (count == 0) {
-            m_leafStyleVar.setValue(CSS.listTreeItemLeaf());
-        } else {
-            m_leafStyleVar.setValue(CSS.listTreeItemInternal());
-        }
-    }
-
-    /**
      * Inserts the placeholder element as last child of the children list.
      * Setting it's path as the current placeholder path and returning the new index.<p>
      * 
@@ -733,39 +758,50 @@ public class CmsTreeItem extends CmsListItem {
     }
 
     /**
-     * Returns the last opened item of a tree fragment.<p>
-     * 
-     * @param item the tree item
-     * 
-     * @return the last visible item of a tree fragment
+     * Helper method which is called when the list of children changes.<p> 
      */
-    protected static CmsTreeItem getLastOpenedItem(CmsTreeItem item) {
+    protected void onChangeChildren() {
 
-        if (item.getChildCount() > 0) {
-            CmsTreeItem child = item.getChild(item.getChildCount() - 1);
-            if (child.isOpen()) {
-                return CmsTreeItem.getLastOpenedItem(child);
-            }
+        int count = getChildCount();
+        if (count == 0) {
+            m_leafStyleVar.setValue(CSS.listTreeItemLeaf());
+        } else {
+            m_leafStyleVar.setValue(CSS.listTreeItemInternal());
         }
-        return item;
     }
 
     /**
-     * Closes all empty child entries.<p>
+     * Method determining the path level by counting the number of '/'.<p>
+     * Example: '/xxx/xxx/' has a path-level of 2.<p>
+     * 
+     * @param path the path to test
+     * 
+     * @return the path level
      */
-    public void closeAllEmptyChildren() {
+    private native int getPathLevel(String path)/*-{
+        return path.match(/\//g).length - 1;
+    }-*/;
 
-        for (Widget child : m_children) {
-            if (child instanceof CmsTreeItem) {
-                CmsTreeItem item = (CmsTreeItem)child;
-                if (item.isOpen()) {
-                    if (item.getChildCount() == 0) {
-                        item.setOpen(false);
-                    } else {
-                        item.closeAllEmptyChildren();
-                    }
-                }
-            }
+    /**
+     * Determines if the draggable should be inserted into the previous siblings children list.<p>
+     * 
+     * @param draggable the draggable
+     * @param parent the parent item
+     * @param index the current index
+     * 
+     * @return <code>true</code> if the item should be inserted into the previous siblings children list
+     */
+    private boolean shouldInsertIntoSiblingList(I_CmsDraggable draggable, CmsTreeItem parent, int index) {
+
+        if ((index <= 0) || (parent == null)) {
+            return false;
         }
+
+        if (draggable instanceof CmsTreeItem) {
+            int originalPathLevel = getPathLevel(((CmsTreeItem)draggable).getPath()); // Create Matcher
+
+            return originalPathLevel - 1 != getPathLevel(parent.getPath());
+        }
+        return true;
     }
 }
