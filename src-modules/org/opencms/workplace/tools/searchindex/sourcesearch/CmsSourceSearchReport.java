@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/sourcesearch/CmsSourceSearchReport.java,v $
- * Date   : $Date: 2010/09/06 06:46:46 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/11/04 13:46:24 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Mario Jaeger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 7.5.3
  */
@@ -95,11 +95,12 @@ public class CmsSourceSearchReport extends A_CmsListReport {
      * 
      * @throws JspException if including an element fails
      */
+    @SuppressWarnings("rawtypes")
     @Override
     public void actionCloseDialog() throws JspException {
 
         // create a map with empty "resource" parameter to avoid changing the folder when returning to explorer file list
-        Map params = new HashMap();
+        Map<String, String> params = new HashMap<String, String>();
         params.put(PARAM_RESOURCE, "");
         // set action parameter to initial dialog call
         params.put(CmsDialog.PARAM_ACTION, CmsDialog.DIALOG_INITIAL);
@@ -125,6 +126,7 @@ public class CmsSourceSearchReport extends A_CmsListReport {
      * 
      * @see org.opencms.workplace.list.A_CmsListReport#initializeThread()
      */
+    @SuppressWarnings("rawtypes")
     @Override
     public I_CmsReportThread initializeThread() {
 
@@ -138,7 +140,7 @@ public class CmsSourceSearchReport extends A_CmsListReport {
         // org.opencms.workplace.list.A_CmsListReport.actionCloseDialog() method is overwritten here in this class
 
         // start the thread
-        I_CmsReportThread searchThread = new CmsSourceSearchThread(this, session, getCms(), settings);
+        I_CmsReportThread searchThread = new CmsSourceSearchThread(session, getCms(), settings);
 
         return searchThread;
     }

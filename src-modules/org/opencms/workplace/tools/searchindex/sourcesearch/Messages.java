@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/sourcesearch/Messages.java,v $
- * Date   : $Date: 2010/09/06 06:46:46 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/11/04 13:46:24 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Mario Jaeger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 7.5.3
  */
@@ -60,6 +60,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_SOURCESEARCH_BEGIN_SEARCH_THREAD_0 = "RPT_SOURCESEARCH_BEGIN_SEARCH_THREAD_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_SOURCESEARCH_CLICK_OK_TO_GET_LIST_0 = "RPT_SOURCESEARCH_CLICK_OK_TO_GET_LIST_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_SOURCESEARCH_COULD_NOT_READ_FILE_0 = "RPT_SOURCESEARCH_COULD_NOT_READ_FILE_0";
@@ -165,9 +168,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_SOURCESEARCH_WRONG_ENVIRONMENT_REPLACING_0 = "RPT_SOURCESEARCH_WRONG_ENVIRONMENT_REPLACING_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_SOURCESEARCH_CLICK_OK_TO_GET_LIST_0 = "RPT_SOURCESEARCH_CLICK_OK_TO_GET_LIST_0";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.workplace.tools.searchindex.sourcesearch.messages";

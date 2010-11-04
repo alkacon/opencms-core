@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/sourcesearch/CmsSourceSearchThread.java,v $
- * Date   : $Date: 2010/11/04 12:28:34 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/11/04 13:46:24 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Mario Jaeger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 7.5.3
  */
@@ -81,8 +81,7 @@ public class CmsSourceSearchThread extends A_CmsReportThread {
     /** The found resources. */
     private List<CmsResource> m_matchedResources = new ArrayList<CmsResource>();
 
-    private CmsSourceSearchReport m_searchReport;
-
+    /** The current session. */
     private HttpSession m_session;
 
     /** Settings. */
@@ -91,19 +90,14 @@ public class CmsSourceSearchThread extends A_CmsReportThread {
     /**
      * Creates a replace html tag Thread.<p>
      * 
-     * @param cms the current cms context.
-     * 
+     * @param session the current session
+     * @param cms the current cms object
      * @param settings the settings needed to perform the operation.
      */
-    public CmsSourceSearchThread(
-        CmsSourceSearchReport searchReport,
-        HttpSession session,
-        CmsObject cms,
-        CmsSourceSearchSettings settings) {
+    public CmsSourceSearchThread(HttpSession session, CmsObject cms, CmsSourceSearchSettings settings) {
 
         super(cms, Messages.get().getBundle().key(Messages.GUI_SOURCESEARCH_THREAD_NAME_0));
         initHtmlReport(cms.getRequestContext().getLocale());
-        m_searchReport = searchReport;
         m_session = session;
         m_settings = settings;
     }

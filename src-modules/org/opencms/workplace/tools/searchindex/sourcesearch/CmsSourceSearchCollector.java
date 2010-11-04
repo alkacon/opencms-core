@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/sourcesearch/CmsSourceSearchCollector.java,v $
- * Date   : $Date: 2010/09/06 06:46:46 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/11/04 13:46:24 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,14 +49,15 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 
 /**
- * Collector for {@link org.opencms.file.CmsResource} objects from a project.<p>
+ * Collector for {@link org.opencms.file.CmsResource} resources to do source search in.<p>
  * 
  * @author Mario Jaeger
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 7.5.3
  */
+@SuppressWarnings("unchecked")
 public class CmsSourceSearchCollector extends A_CmsListResourceCollector {
 
     /** Parameter of the default collector name. */
@@ -65,16 +66,15 @@ public class CmsSourceSearchCollector extends A_CmsListResourceCollector {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSourceSearchCollector.class);
 
+    /** The source search files dialog. */
     private CmsSourceSearchFilesDialog m_wp;
 
     /**
      * Constructor, creates a new instance.<p>
      * 
      * @param wp the workplace object
-     * @param projectId the id of the project 
-     * @param state the state of the resources to filter
      */
-    public CmsSourceSearchCollector(CmsSourceSearchFilesDialog wp, ArrayList<CmsResource> files) {
+    public CmsSourceSearchCollector(CmsSourceSearchFilesDialog wp) {
 
         super(wp);
         m_wp = wp;
@@ -83,9 +83,9 @@ public class CmsSourceSearchCollector extends A_CmsListResourceCollector {
     /**
      * @see org.opencms.file.collectors.I_CmsResourceCollector#getCollectorNames()
      */
-    public List getCollectorNames() {
+    public List<String> getCollectorNames() {
 
-        List names = new ArrayList();
+        List<String> names = new ArrayList<String>();
         names.add(COLLECTOR_NAME);
         return names;
     }
@@ -98,6 +98,7 @@ public class CmsSourceSearchCollector extends A_CmsListResourceCollector {
      * 
      * @return the resource
      */
+    @Override
     public CmsResource getResource(CmsObject cms, CmsListItem item) {
 
         CmsResource res = null;
@@ -108,11 +109,9 @@ public class CmsSourceSearchCollector extends A_CmsListResourceCollector {
                 res = cms.readResource(id, CmsResourceFilter.ALL);
             } catch (CmsException e) {
                 // should never happen
-                /**
                 if (LOG.isErrorEnabled()) {
                     LOG.error(e.getLocalizedMessage(), e);
                 }
-                */
             }
         }
 
@@ -122,8 +121,9 @@ public class CmsSourceSearchCollector extends A_CmsListResourceCollector {
     /**
      * @see org.opencms.workplace.list.A_CmsListResourceCollector#getResources(org.opencms.file.CmsObject, java.util.Map)
      */
+    @SuppressWarnings("rawtypes")
     @Override
-    public List getResources(CmsObject cms, Map params) throws CmsException {
+    public List<CmsResource> getResources(CmsObject cms, Map params) throws CmsException {
 
         ArrayList<CmsResource> files = new ArrayList<CmsResource>();
         // read the files again, because they can be changed

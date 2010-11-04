@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/sourcesearch/CmsSourceSearchSettings.java,v $
- * Date   : $Date: 2010/09/06 06:46:46 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/11/04 13:46:24 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import java.util.List;
  * 
  * @author Mario Jaeger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 7.5.3
  * 
@@ -72,10 +72,7 @@ public class CmsSourceSearchSettings {
     private String m_searchpattern;
 
     /**
-     * Bean constructor with cms object for path validation.
-     * <p>
-     * 
-     * @param cms used to test the working path for valididty.
+     * Bean constructor with cms object for path validation.<p>
      */
     public CmsSourceSearchSettings() {
 
@@ -142,8 +139,7 @@ public class CmsSourceSearchSettings {
     }
 
     /**
-     * @param message
-     *            the message to set
+     * @param message the message to set
      */
     public void setMessage(final String message) {
 
@@ -151,8 +147,9 @@ public class CmsSourceSearchSettings {
     }
 
     /**
-     * @param path
-     *            the paths to set
+     * Sets the paths.<p>
+     * 
+     * @param paths the paths to set
      */
     public void setPaths(final List<String> paths) {
 
@@ -160,7 +157,7 @@ public class CmsSourceSearchSettings {
     }
 
     /**
-     * @param the project
+     * @param project the project to work in
      */
     public void setProject(String project) {
 
@@ -168,7 +165,9 @@ public class CmsSourceSearchSettings {
     }
 
     /**
-     * @param replace
+     * Sets the replace pattern.<p>
+     * 
+     * @param replacepattern the replace pattern
      */
     public void setReplacepattern(String replacepattern) {
 
@@ -186,7 +185,9 @@ public class CmsSourceSearchSettings {
     }
 
     /**
-     * param the search pattern
+     * Sets the search pattern.<p>
+     * 
+     * @param searchpattern the search pattern
      */
     public void setSearchpattern(String searchpattern) {
 

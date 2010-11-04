@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/sourcesearch/CmsSourceSearchFilesDialog.java,v $
- * Date   : $Date: 2010/09/06 06:46:46 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/11/04 13:46:24 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Mario Jaeger
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 7.5.3
  */
@@ -78,9 +78,6 @@ public class CmsSourceSearchFilesDialog extends A_CmsListExplorerDialog {
 
     /** The content sraech file list. */
     private ArrayList<CmsResource> m_files;
-
-    /** Stores the value of the request parameter for the resource filter. */
-    private String m_filter;
 
     /** Stores the value of the request parameter for the project id. */
     private String m_paramProjectid;
@@ -147,16 +144,16 @@ public class CmsSourceSearchFilesDialog extends A_CmsListExplorerDialog {
     @Override
     public I_CmsListResourceCollector getCollector() {
 
-        m_collector = new CmsSourceSearchCollector(this, m_files);
+        m_collector = new CmsSourceSearchCollector(this);
         return m_collector;
     }
 
     /**
      * Gets the content search result list.<p>
      * 
-     * @return 
+     * @return the content search result list
      */
-    public List getFiles() {
+    public List<CmsResource> getFiles() {
 
         return m_files;
     }
@@ -210,7 +207,10 @@ public class CmsSourceSearchFilesDialog extends A_CmsListExplorerDialog {
         super.refreshList();
     }
 
-    /** Sets the content search result list. */
+    /** Sets the content search result list.
+     * 
+     * @param files the found files
+     */
     public void setList(ArrayList<CmsResource> files) {
 
         m_files = files;
@@ -312,16 +312,12 @@ public class CmsSourceSearchFilesDialog extends A_CmsListExplorerDialog {
     /**
      * Returns a list of list items from a list of resources.<p>
      * 
-     * @param parameter the collector parameter or <code>null</code> for default.<p>
-     * 
      * @return a list of {@link CmsListItem} objects
-     * 
-     * @throws CmsException if something goes wrong
      */
     @Override
-    protected List getListItems() throws CmsException {
+    protected List<CmsListItem> getListItems() {
 
-        List ret = new ArrayList();
+        List<CmsListItem> ret = new ArrayList<CmsListItem>();
         applyColumnVisibilities();
         CmsHtmlList list = getList();
 
@@ -357,11 +353,10 @@ public class CmsSourceSearchFilesDialog extends A_CmsListExplorerDialog {
         boolean showSite = (colSite.isVisible() || colSite.isPrintable());
 
         // get content
-        Iterator itRes = m_files.iterator();
-        int count = 0;
+        Iterator<CmsResource> itRes = m_files.iterator();
         while (itRes.hasNext()) {
 
-            CmsResource resource = (CmsResource)itRes.next();
+            CmsResource resource = itRes.next();
 
             CmsListItem item = createResourceListItem(
                 resource,

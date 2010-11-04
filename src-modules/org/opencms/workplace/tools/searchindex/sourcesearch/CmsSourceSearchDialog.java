@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/sourcesearch/CmsSourceSearchDialog.java,v $
- * Date   : $Date: 2010/09/06 06:46:46 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/11/04 13:46:24 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -66,7 +66,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Mario Jaeger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 7.5.3
  */
@@ -263,7 +263,6 @@ public class CmsSourceSearchDialog extends CmsWidgetDialog {
      * 
      * @return a list with the available projects of the current user.
      */
-    @SuppressWarnings("unchecked")
     private List<CmsSelectWidgetOption> getProjectSelections() {
 
         List<CmsSelectWidgetOption> result = new LinkedList<CmsSelectWidgetOption>();
