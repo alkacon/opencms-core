@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsResourceUtil.java,v $
- * Date   : $Date: 2010/07/19 14:11:43 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/11/05 09:23:16 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,7 +71,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -1093,7 +1093,7 @@ public final class CmsResourceUtil {
                 getCms(),
                 m_resource.getUserCreated()).getName());
         } catch (Throwable e) {
-            LOG.error(e.getLocalizedMessage());
+            LOG.info(e.getLocalizedMessage());
         }
         return user;
     }
@@ -1111,7 +1111,7 @@ public final class CmsResourceUtil {
                 getCms(),
                 m_resource.getUserLastModified()).getName());
         } catch (Throwable e) {
-            LOG.error(e.getLocalizedMessage());
+            LOG.info(e.getLocalizedMessage());
         }
         return user;
     }
