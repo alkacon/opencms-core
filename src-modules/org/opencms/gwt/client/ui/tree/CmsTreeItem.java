@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/tree/Attic/CmsTreeItem.java,v $
- * Date   : $Date: 2010/11/04 07:53:18 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2010/11/08 10:21:15 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,9 @@ import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsListTreeCss;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.gwt.client.util.CmsSlideAnimation;
 import org.opencms.gwt.client.util.CmsStyleVariable;
+import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.dom.client.Element;
@@ -72,7 +74,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Georg Westenberger
  * @author Michael Moossen
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 8.0.0
  */
@@ -616,7 +618,7 @@ public class CmsTreeItem extends CmsListItem {
     /**
      * Opens or closes this tree item (i.e. shows or hides its descendants).<p>
      * 
-     * @param open if true, open the tree item, else close it
+     * @param open if <code>true</code>, open the tree item, else close it
      */
     public void setOpen(boolean open) {
 
@@ -625,10 +627,34 @@ public class CmsTreeItem extends CmsListItem {
         }
         m_open = open;
 
-        m_styleVar.setValue(open ? CSS.listTreeItemOpen() : CSS.listTreeItemClosed());
-        m_opener.setDown(open);
-        if (open) {
-            fireOpen();
+        if ((m_tree != null) && m_tree.isAnimationEnabled()) {
+            CmsSlideAnimation ani = new CmsSlideAnimation(
+                m_children.getElement(),
+                m_open,
+                new I_CmsSimpleCallback<Void>() {
+
+                    /**
+                     * Executed on animation complete.<p>
+                     * 
+                     * @param arg void
+                     */
+                    public void execute(Void arg) {
+
+                        executeOpen();
+                    }
+
+                    /**
+                     * @see org.opencms.gwt.client.util.I_CmsSimpleCallback#onError(java.lang.String)
+                     */
+                    public void onError(String message) {
+
+                        // nothing to do
+
+                    }
+                });
+            ani.run(ANIMATION_DURATION);
+        } else {
+            executeOpen();
         }
     }
 
@@ -710,6 +736,19 @@ public class CmsTreeItem extends CmsListItem {
             }
         });
         return opener;
+    }
+
+    /**
+     * Executes the open call.<p>
+     */
+    protected void executeOpen() {
+
+        m_styleVar.setValue(m_open ? CSS.listTreeItemOpen() : CSS.listTreeItemClosed());
+        m_children.getElement().getStyle().clearDisplay();
+        m_opener.setDown(m_open);
+        if (m_open) {
+            fireOpen();
+        }
     }
 
     /** 
