@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsDomUtil.java,v $
- * Date   : $Date: 2010/10/29 12:17:26 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2010/11/08 10:19:17 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentC
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.32 $
+ * @version $Revision: 1.33 $
  * 
  * @since 8.0.0
  */
@@ -988,12 +988,16 @@ public final class CmsDomUtil {
             CmsDebugLog.getInstance().printLine("this is wrong usage, doing nothing");
             return currentIndex;
         }
+        int indexCorrection = 0;
         for (int index = 0; index < parent.getChildCount(); index++) {
             Node node = parent.getChild(index);
             if (!(node instanceof Element)) {
                 continue;
             }
             Element child = (Element)node;
+            if (child == element) {
+                indexCorrection = 1;
+            }
             String positioning = child.getStyle().getPosition();
             if (positioning.equals(Position.ABSOLUTE.getCssName()) || positioning.equals(Position.FIXED.getCssName())) {
                 // only not 'position:absolute' elements into account, 
@@ -1026,11 +1030,11 @@ public final class CmsDomUtil {
 
                 if (left < width / 2) {
                     parent.insertBefore(element, child);
-                    currentIndex = index;
+                    currentIndex = index - indexCorrection;
                     return currentIndex;
                 } else {
                     parent.insertAfter(element, child);
-                    currentIndex = index + 1;
+                    currentIndex = index + 1 - indexCorrection;
                     return currentIndex;
                 }
             }
@@ -1040,11 +1044,11 @@ public final class CmsDomUtil {
 
             if (top < height / 2) {
                 parent.insertBefore(element, child);
-                currentIndex = index;
+                currentIndex = index - indexCorrection;
                 return currentIndex;
             } else {
                 parent.insertAfter(element, child);
-                currentIndex = index + 1;
+                currentIndex = index + 1 - indexCorrection;
                 return currentIndex;
             }
 
