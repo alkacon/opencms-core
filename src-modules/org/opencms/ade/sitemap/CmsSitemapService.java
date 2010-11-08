@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsSitemapService.java,v $
- * Date   : $Date: 2010/10/22 15:05:29 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2010/11/08 10:21:39 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -100,7 +100,7 @@ import org.apache.commons.collections.map.MultiValueMap;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.40 $ 
+ * @version $Revision: 1.41 $ 
  * 
  * @since 8.0.0
  * 
@@ -269,7 +269,7 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
                 path);
             List<I_CmsSitemapChange> parentChanges = getChangesForMergingSubSitemap(entry);
             long timestamp = saveInternal(sitemapUri, parentChanges, true);
-            List<CmsClientSitemapEntry> mergedClientEntries = getChildren(path, 2, propertyConfig);
+            List<CmsClientSitemapEntry> mergedClientEntries = getChildren(path, 1, propertyConfig);
             String subSitemapId = entry.getProperties().get(CmsSitemapManager.Property.sitemap.name());
             CmsResource subSitemapRes = cms.readResource(new CmsUUID(subSitemapId));
             String subSitemapUri = cms.getSitePath(subSitemapRes);
