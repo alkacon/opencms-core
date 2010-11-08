@@ -26,7 +26,7 @@
 					<cms:param name="src">${imagePath}</cms:param> 
 				</cms:img>
 				<div class="description">
-					<a href="<cms:link>${imageFolder}index.html#${imageTitle}</cms:link>">${imageTitle}</a><br />
+					${imageTitle}<br />
 					<cms:contentcheck ifexists="Description">
 						<cms:contentshow element="Description" />
 					</cms:contentcheck>

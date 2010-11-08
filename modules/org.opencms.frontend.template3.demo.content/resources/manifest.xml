@@ -28,6 +28,7 @@
 		<exportpoints/>
 		<resources>
 			<resource uri="/demo_t3/"/>
+			<resource uri="/index.html"/>
 			<resource uri="/system/categories/species/"/>
 		</resources>
 		<parameters/>
@@ -848,7 +849,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>demo_t3/cntpages</destination>
+			<destination>demo_t3/pages</destination>
 			<type>cntpagegallery</type>
 			<uuidstructure>68abb478-e347-11de-93a5-2fbc40eca8be</uuidstructure>
 			<datelastmodified>Tue, 08 Dec 2009 08:23:09 GMT</datelastmodified>
@@ -866,8 +867,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>demo_t3/cntpages/images.html</source>
-			<destination>demo_t3/cntpages/images.html</destination>
+			<source>demo_t3/pages/images.html</source>
+			<destination>demo_t3/pages/images.html</destination>
 			<type>containerpage</type>
 			<uuidstructure>e0ea4748-a1c6-11de-9d96-dd9f629b113b</uuidstructure>
 			<uuidresource>e0ea4749-a1c6-11de-9d96-dd9f629b113b</uuidresource>
@@ -886,28 +887,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>demo_t3/cntpages/index.html</source>
-			<destination>demo_t3/cntpages/index.html</destination>
-			<type>containerpage</type>
-			<uuidstructure>071146b6-9d0a-11de-bac7-dd9f629b113b</uuidstructure>
-			<uuidresource>071146b7-9d0a-11de-bac7-dd9f629b113b</uuidresource>
-			<datelastmodified>Tue, 08 Dec 2009 13:39:11 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 09 Sep 2009 06:28:46 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[OpenCms Demo T3]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>demo_t3/cntpages/intro.html</source>
-			<destination>demo_t3/cntpages/intro.html</destination>
+			<source>demo_t3/pages/intro.html</source>
+			<destination>demo_t3/pages/intro.html</destination>
 			<type>containerpage</type>
 			<uuidstructure>3f3b9451-9d2a-11de-b26f-dd9f629b113b</uuidstructure>
 			<uuidresource>3f3b9452-9d2a-11de-b26f-dd9f629b113b</uuidresource>
@@ -926,8 +907,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>demo_t3/cntpages/search.html</source>
-			<destination>demo_t3/cntpages/search.html</destination>
+			<source>demo_t3/pages/search.html</source>
+			<destination>demo_t3/pages/search.html</destination>
 			<type>containerpage</type>
 			<uuidstructure>8ebab265-a127-11de-9057-dd9f629b113b</uuidstructure>
 			<uuidresource>8ebab266-a127-11de-9057-dd9f629b113b</uuidresource>
@@ -954,7 +935,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>demo_t3/cntpages/dictionary</destination>
+			<destination>demo_t3/pages/dictionary</destination>
 			<type>folder</type>
 			<uuidstructure>5afaf0d3-9c82-11de-adde-dd9f629b113b</uuidstructure>
 			<datelastmodified>Mon, 07 Dec 2009 15:54:00 GMT</datelastmodified>
@@ -980,8 +961,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>demo_t3/cntpages/dictionary/common-yarrow.html</source>
-			<destination>demo_t3/cntpages/dictionary/common-yarrow.html</destination>
+			<source>demo_t3/pages/dictionary/common-yarrow.html</source>
+			<destination>demo_t3/pages/dictionary/common-yarrow.html</destination>
 			<type>containerpage</type>
 			<uuidstructure>36b11c8b-e4af-11de-842a-2fbc40eca8be</uuidstructure>
 			<uuidresource>36b11c8c-e4af-11de-842a-2fbc40eca8be</uuidresource>
@@ -1011,8 +992,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>demo_t3/cntpages/dictionary/dahlia.html</source>
-			<destination>demo_t3/cntpages/dictionary/dahlia.html</destination>
+			<source>demo_t3/pages/dictionary/dahlia.html</source>
+			<destination>demo_t3/pages/dictionary/dahlia.html</destination>
 			<type>containerpage</type>
 			<uuidstructure>1af75545-e4af-11de-842a-2fbc40eca8be</uuidstructure>
 			<uuidresource>1af75546-e4af-11de-842a-2fbc40eca8be</uuidresource>
@@ -1042,8 +1023,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>demo_t3/cntpages/dictionary/gerbera.html</source>
-			<destination>demo_t3/cntpages/dictionary/gerbera.html</destination>
+			<source>demo_t3/pages/dictionary/gerbera.html</source>
+			<destination>demo_t3/pages/dictionary/gerbera.html</destination>
 			<type>containerpage</type>
 			<uuidstructure>2626cc28-e4af-11de-842a-2fbc40eca8be</uuidstructure>
 			<uuidresource>2626cc29-e4af-11de-842a-2fbc40eca8be</uuidresource>
@@ -1073,8 +1054,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>demo_t3/cntpages/dictionary/index.html</source>
-			<destination>demo_t3/cntpages/dictionary/index.html</destination>
+			<source>demo_t3/pages/dictionary/index.html</source>
+			<destination>demo_t3/pages/dictionary/index.html</destination>
 			<type>containerpage</type>
 			<uuidstructure>e067c85a-9d3c-11de-8a68-dd9f629b113b</uuidstructure>
 			<uuidresource>e067c85b-9d3c-11de-8a68-dd9f629b113b</uuidresource>
@@ -1093,8 +1074,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>demo_t3/cntpages/dictionary/item_composite.html</source>
-			<destination>demo_t3/cntpages/dictionary/item_composite.html</destination>
+			<source>demo_t3/pages/dictionary/item_composite.html</source>
+			<destination>demo_t3/pages/dictionary/item_composite.html</destination>
 			<type>containerpage</type>
 			<uuidstructure>6afc98d0-9d5a-11de-b17e-dd9f629b113b</uuidstructure>
 			<uuidresource>6afc98d1-9d5a-11de-b17e-dd9f629b113b</uuidresource>
@@ -1124,8 +1105,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>demo_t3/cntpages/dictionary/item_liliaceous.html</source>
-			<destination>demo_t3/cntpages/dictionary/item_liliaceous.html</destination>
+			<source>demo_t3/pages/dictionary/item_liliaceous.html</source>
+			<destination>demo_t3/pages/dictionary/item_liliaceous.html</destination>
 			<type>containerpage</type>
 			<uuidstructure>17315e7d-9e05-11de-87d2-dd9f629b113b</uuidstructure>
 			<uuidresource>17315e7e-9e05-11de-87d2-dd9f629b113b</uuidresource>
@@ -1155,8 +1136,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>demo_t3/cntpages/dictionary/item_rosaceous.html</source>
-			<destination>demo_t3/cntpages/dictionary/item_rosaceous.html</destination>
+			<source>demo_t3/pages/dictionary/item_rosaceous.html</source>
+			<destination>demo_t3/pages/dictionary/item_rosaceous.html</destination>
 			<type>containerpage</type>
 			<uuidstructure>01239df5-9e05-11de-87d2-dd9f629b113b</uuidstructure>
 			<uuidresource>01239df6-9e05-11de-87d2-dd9f629b113b</uuidresource>
@@ -1186,8 +1167,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>demo_t3/cntpages/dictionary/lily.html</source>
-			<destination>demo_t3/cntpages/dictionary/lily.html</destination>
+			<source>demo_t3/pages/dictionary/lily.html</source>
+			<destination>demo_t3/pages/dictionary/lily.html</destination>
 			<type>containerpage</type>
 			<uuidstructure>4d92f5f4-e4af-11de-842a-2fbc40eca8be</uuidstructure>
 			<uuidresource>4d92f5f5-e4af-11de-842a-2fbc40eca8be</uuidresource>
@@ -1217,8 +1198,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>demo_t3/cntpages/dictionary/meadowsweet.html</source>
-			<destination>demo_t3/cntpages/dictionary/meadowsweet.html</destination>
+			<source>demo_t3/pages/dictionary/meadowsweet.html</source>
+			<destination>demo_t3/pages/dictionary/meadowsweet.html</destination>
 			<type>containerpage</type>
 			<uuidstructure>678c96b0-e4af-11de-842a-2fbc40eca8be</uuidstructure>
 			<uuidresource>678c96b1-e4af-11de-842a-2fbc40eca8be</uuidresource>
@@ -1248,8 +1229,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>demo_t3/cntpages/dictionary/mountain-avens.html</source>
-			<destination>demo_t3/cntpages/dictionary/mountain-avens.html</destination>
+			<source>demo_t3/pages/dictionary/mountain-avens.html</source>
+			<destination>demo_t3/pages/dictionary/mountain-avens.html</destination>
 			<type>containerpage</type>
 			<uuidstructure>6016cc6d-e4af-11de-842a-2fbc40eca8be</uuidstructure>
 			<uuidresource>6016cc6e-e4af-11de-842a-2fbc40eca8be</uuidresource>
@@ -1279,8 +1260,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>demo_t3/cntpages/dictionary/radnor-lily.html</source>
-			<destination>demo_t3/cntpages/dictionary/radnor-lily.html</destination>
+			<source>demo_t3/pages/dictionary/radnor-lily.html</source>
+			<destination>demo_t3/pages/dictionary/radnor-lily.html</destination>
 			<type>containerpage</type>
 			<uuidstructure>52470827-e4af-11de-842a-2fbc40eca8be</uuidstructure>
 			<uuidresource>52470828-e4af-11de-842a-2fbc40eca8be</uuidresource>
@@ -1310,8 +1291,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>demo_t3/cntpages/dictionary/rose.html</source>
-			<destination>demo_t3/cntpages/dictionary/rose.html</destination>
+			<source>demo_t3/pages/dictionary/rose.html</source>
+			<destination>demo_t3/pages/dictionary/rose.html</destination>
 			<type>containerpage</type>
 			<uuidstructure>5bc6fa4a-e4af-11de-842a-2fbc40eca8be</uuidstructure>
 			<uuidresource>5bc6fa4b-e4af-11de-842a-2fbc40eca8be</uuidresource>
@@ -1341,8 +1322,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>demo_t3/cntpages/dictionary/tulip.html</source>
-			<destination>demo_t3/cntpages/dictionary/tulip.html</destination>
+			<source>demo_t3/pages/dictionary/tulip.html</source>
+			<destination>demo_t3/pages/dictionary/tulip.html</destination>
 			<type>containerpage</type>
 			<uuidstructure>3d74118e-e4af-11de-842a-2fbc40eca8be</uuidstructure>
 			<uuidresource>3d74118f-e4af-11de-842a-2fbc40eca8be</uuidresource>
@@ -1372,7 +1353,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>demo_t3/cntpages/extra</destination>
+			<destination>demo_t3/pages/extra</destination>
 			<type>folder</type>
 			<uuidstructure>5b8a10b1-9c82-11de-adde-dd9f629b113b</uuidstructure>
 			<datelastmodified>Mon, 07 Dec 2009 15:54:00 GMT</datelastmodified>
@@ -1402,8 +1383,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>demo_t3/cntpages/extra/index.html</source>
-			<destination>demo_t3/cntpages/extra/index.html</destination>
+			<source>demo_t3/pages/extra/index.html</source>
+			<destination>demo_t3/pages/extra/index.html</destination>
 			<type>containerpage</type>
 			<uuidstructure>7a07c56c-9e08-11de-9c36-dd9f629b113b</uuidstructure>
 			<uuidresource>7a07c56d-9e08-11de-9c36-dd9f629b113b</uuidresource>
@@ -1422,8 +1403,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>demo_t3/cntpages/extra/login.html</source>
-			<destination>demo_t3/cntpages/extra/login.html</destination>
+			<source>demo_t3/pages/extra/login.html</source>
+			<destination>demo_t3/pages/extra/login.html</destination>
 			<type>containerpage</type>
 			<uuidstructure>d49ed78c-9e08-11de-9c36-dd9f629b113b</uuidstructure>
 			<uuidresource>d49ed78d-9e08-11de-9c36-dd9f629b113b</uuidresource>
@@ -1442,7 +1423,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>demo_t3/cntpages/extra/extranet</destination>
+			<destination>demo_t3/pages/extra/extranet</destination>
 			<type>folder</type>
 			<uuidstructure>5b8ecba3-9c82-11de-adde-dd9f629b113b</uuidstructure>
 			<datelastmodified>Mon, 07 Dec 2009 15:54:00 GMT</datelastmodified>
@@ -1485,8 +1466,8 @@
 			</accesscontrol>
 		</file>
 		<file>
-			<source>demo_t3/cntpages/extra/extranet/index.html</source>
-			<destination>demo_t3/cntpages/extra/extranet/index.html</destination>
+			<source>demo_t3/pages/extra/extranet/index.html</source>
+			<destination>demo_t3/pages/extra/extranet/index.html</destination>
 			<type>containerpage</type>
 			<uuidstructure>77af8842-9e09-11de-9c36-dd9f629b113b</uuidstructure>
 			<uuidresource>77af8843-9e09-11de-9c36-dd9f629b113b</uuidresource>
@@ -1505,8 +1486,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>demo_t3/cntpages/extra/extranet/rare.html</source>
-			<destination>demo_t3/cntpages/extra/extranet/rare.html</destination>
+			<source>demo_t3/pages/extra/extranet/rare.html</source>
+			<destination>demo_t3/pages/extra/extranet/rare.html</destination>
 			<type>containerpage</type>
 			<uuidstructure>1fbdecad-a1d5-11de-9d96-dd9f629b113b</uuidstructure>
 			<uuidresource>1fbdecae-a1d5-11de-9d96-dd9f629b113b</uuidresource>
@@ -1525,8 +1506,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>demo_t3/cntpages/extra/extranet/utf-8.html</source>
-			<destination>demo_t3/cntpages/extra/extranet/utf-8.html</destination>
+			<source>demo_t3/pages/extra/extranet/utf-8.html</source>
+			<destination>demo_t3/pages/extra/extranet/utf-8.html</destination>
 			<type>containerpage</type>
 			<uuidstructure>569ae778-9e09-11de-9c36-dd9f629b113b</uuidstructure>
 			<uuidresource>569ae779-9e09-11de-9c36-dd9f629b113b</uuidresource>
@@ -1545,7 +1526,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>demo_t3/cntpages/today</destination>
+			<destination>demo_t3/pages/today</destination>
 			<type>folder</type>
 			<uuidstructure>5bf555cc-9c82-11de-adde-dd9f629b113b</uuidstructure>
 			<datelastmodified>Mon, 07 Dec 2009 15:54:00 GMT</datelastmodified>
@@ -1571,8 +1552,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>demo_t3/cntpages/today/events.html</source>
-			<destination>demo_t3/cntpages/today/events.html</destination>
+			<source>demo_t3/pages/today/events.html</source>
+			<destination>demo_t3/pages/today/events.html</destination>
 			<type>containerpage</type>
 			<uuidstructure>93de012d-a1c6-11de-9d96-dd9f629b113b</uuidstructure>
 			<uuidresource>93de012e-a1c6-11de-9d96-dd9f629b113b</uuidresource>
@@ -1591,8 +1572,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>demo_t3/cntpages/today/index.html</source>
-			<destination>demo_t3/cntpages/today/index.html</destination>
+			<source>demo_t3/pages/today/index.html</source>
+			<destination>demo_t3/pages/today/index.html</destination>
 			<type>containerpage</type>
 			<uuidstructure>6afd20df-a1c0-11de-9d96-dd9f629b113b</uuidstructure>
 			<uuidresource>6afd20e0-a1c0-11de-9d96-dd9f629b113b</uuidresource>
@@ -1611,8 +1592,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>demo_t3/cntpages/today/news.html</source>
-			<destination>demo_t3/cntpages/today/news.html</destination>
+			<source>demo_t3/pages/today/news.html</source>
+			<destination>demo_t3/pages/today/news.html</destination>
 			<type>containerpage</type>
 			<uuidstructure>07358d03-a1c6-11de-9d96-dd9f629b113b</uuidstructure>
 			<uuidresource>07358d04-a1c6-11de-9d96-dd9f629b113b</uuidresource>
@@ -1631,7 +1612,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>demo_t3/cntpages/view</destination>
+			<destination>demo_t3/pages/view</destination>
 			<type>folder</type>
 			<uuidstructure>5c5bdffc-9c82-11de-adde-dd9f629b113b</uuidstructure>
 			<datelastmodified>Mon, 07 Dec 2009 15:54:00 GMT</datelastmodified>
@@ -1657,8 +1638,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>demo_t3/cntpages/view/index.html</source>
-			<destination>demo_t3/cntpages/view/index.html</destination>
+			<source>demo_t3/pages/view/index.html</source>
+			<destination>demo_t3/pages/view/index.html</destination>
 			<type>containerpage</type>
 			<uuidstructure>3608ae7b-a1d8-11de-9d96-dd9f629b113b</uuidstructure>
 			<uuidresource>3608ae7c-a1d8-11de-9d96-dd9f629b113b</uuidresource>
@@ -4828,6 +4809,26 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Rosaceous Plants]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>index.html</source>
+			<destination>index.html</destination>
+			<type>pointer</type>
+			<uuidstructure>68645dab-eb3b-11df-a35c-fffdb8bf78b9</uuidstructure>
+			<uuidresource>68645dac-eb3b-11df-a35c-fffdb8bf78b9</uuidresource>
+			<datelastmodified>Mon, 08 Nov 2010 13:23:55 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 08 Nov 2010 13:23:43 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Introduction]]></value>
 				</property>
 			</properties>
 			<relations/>

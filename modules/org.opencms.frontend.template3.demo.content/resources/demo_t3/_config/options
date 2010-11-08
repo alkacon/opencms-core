@@ -5,8 +5,8 @@
     <Header name="Header0">
       <links>
         <link name="link4" internal="true" type="A">
-          <target><![CDATA[/sites/default/demo_t3/cntpages/search.html]]></target>
-          <uuid>8ebab265-a127-11de-9057-dd9f629b113b</uuid>
+          <target><![CDATA[/sites/default/demo_t3/search/]]></target>
+          <uuid>1321f17e-eb1b-11df-a35c-fffdb8bf78b9</uuid>
         </link>
         <link name="link2" internal="false" type="A">
           <target><![CDATA[http://www.opencms.org]]></target>
@@ -24,10 +24,10 @@
         </link>
       </links>
       <content><![CDATA[<div style="padding: 10px 10px 5px; height: 55px;">
-<div style="margin: 0pt; padding: 0pt; float: left;"><a href="%(link0)"><img alt="Alkacon Software" title="Go to the Alkacon Software website" src="%(link1)" id="iimg_369039394" /></a></div>
-<div style="margin: 1pt; padding: 0pt; float: right;"><a href="%(link2)"><img alt="Logo OpenCms" title="Go to the OpenCms website" src="%(link3)" id="iimg_364996162" /></a></div>
+<div style="margin: 0pt; padding: 0pt; float: left;"><a href="%(link0)"><img id="iimg_369039394" src="%(link1)" title="Go to the Alkacon Software website" alt="Alkacon Software" /></a></div>
+<div style="margin: 1pt; padding: 0pt; float: right;"><a href="%(link2)"><img id="iimg_364996162" src="%(link3)" title="Go to the OpenCms website" alt="Logo OpenCms" /></a></div>
 <div style="margin: 0px 210px 0pt 160px;">
-<p style="margin: 1pt; float: right;"><a href="%(link4)">Search</a> &nbsp;</p>
+<p style="margin: 1pt; float: right;"><a href="%(link4)" target="_self" title="Search">Search</a> &nbsp;</p>
 <h3 style="margin: 0pt;">OpenCms 8.0 Demo Website</h3>
 <p style="margin: 1pt;"><i>%(property.Title)</i></p>
 </div>
@@ -42,7 +42,7 @@
           <target><![CDATA[http://www.alkacon.com]]></target>
         </link>
       </links>
-      <content><![CDATA[<div style="padding: 2px 0px 0px; height: 14px; text-align: center;">Build with <a title="Go to the OpenCms website" href="%(link0)">OpenCms - The Open Source CMS</a>, provided by <a href="%(link1)" title="Go to the Alkacon Software website">Alkacon Software - The OpenCms Experts</a></div>]]></content>
+      <content><![CDATA[<div style="padding: 2px 0px 0px; height: 14px; text-align: center;">Build with <a href="%(link0)" title="Go to the OpenCms website">OpenCms - The Open Source CMS</a>, provided by <a title="Go to the Alkacon Software website" href="%(link1)">Alkacon Software - The OpenCms Experts</a></div>]]></content>
     </Footer>
   </TemplateOption>
 </TemplateOptions>

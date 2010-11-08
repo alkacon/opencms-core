@@ -5,10 +5,10 @@
     <SiteEntry>
       <Id><![CDATA[6a92725e-ff5c-11de-afed-5b6dea36776d]]></Id>
       <Name/>
-      <Title><![CDATA[Demo T3]]></Title>
+      <Title><![CDATA[Introduction]]></Title>
       <VfsFile>
         <link type="STRONG">
-          <target><![CDATA[/sites/default/demo_t3/cntpages/intro.html]]></target>
+          <target><![CDATA[/sites/default/demo_t3/pages/intro.html]]></target>
           <uuid>3f3b9451-9d2a-11de-b26f-dd9f629b113b</uuid>
         </link>
       </VfsFile>
@@ -24,7 +24,7 @@
         <Title><![CDATA[Flower Dictionary]]></Title>
         <VfsFile>
           <link type="STRONG">
-            <target><![CDATA[/sites/default/demo_t3/cntpages/dictionary/index.html]]></target>
+            <target><![CDATA[/sites/default/demo_t3/pages/dictionary/index.html]]></target>
             <uuid>e067c85a-9d3c-11de-8a68-dd9f629b113b</uuid>
           </link>
         </VfsFile>
@@ -34,7 +34,7 @@
           <Title><![CDATA[Composite Plants]]></Title>
           <VfsFile>
             <link type="STRONG">
-              <target><![CDATA[/sites/default/demo_t3/cntpages/dictionary/item_composite.html]]></target>
+              <target><![CDATA[/sites/default/demo_t3/pages/dictionary/item_composite.html]]></target>
               <uuid>6afc98d0-9d5a-11de-b17e-dd9f629b113b</uuid>
             </link>
           </VfsFile>
@@ -51,7 +51,7 @@
           <Title><![CDATA[Liliaceous Plants]]></Title>
           <VfsFile>
             <link type="STRONG">
-              <target><![CDATA[/sites/default/demo_t3/cntpages/dictionary/item_liliaceous.html]]></target>
+              <target><![CDATA[/sites/default/demo_t3/pages/dictionary/item_liliaceous.html]]></target>
               <uuid>17315e7d-9e05-11de-87d2-dd9f629b113b</uuid>
             </link>
           </VfsFile>
@@ -68,7 +68,7 @@
           <Title><![CDATA[Rosaceous Plants]]></Title>
           <VfsFile>
             <link type="STRONG">
-              <target><![CDATA[/sites/default/demo_t3/cntpages/dictionary/item_rosaceous.html]]></target>
+              <target><![CDATA[/sites/default/demo_t3/pages/dictionary/item_rosaceous.html]]></target>
               <uuid>01239df5-9e05-11de-87d2-dd9f629b113b</uuid>
             </link>
           </VfsFile>
@@ -86,7 +86,7 @@
         <Title><![CDATA[Flower Extranet]]></Title>
         <VfsFile>
           <link type="STRONG">
-            <target><![CDATA[/sites/default/demo_t3/cntpages/extra/index.html]]></target>
+            <target><![CDATA[/sites/default/demo_t3/pages/extra/index.html]]></target>
             <uuid>7a07c56c-9e08-11de-9c36-dd9f629b113b</uuid>
           </link>
         </VfsFile>
@@ -96,7 +96,7 @@
           <Title><![CDATA[Rare plants and flowers]]></Title>
           <VfsFile>
             <link type="STRONG">
-              <target><![CDATA[/sites/default/demo_t3/cntpages/extra/extranet/rare.html]]></target>
+              <target><![CDATA[/sites/default/demo_t3/pages/extra/extranet/rare.html]]></target>
               <uuid>1fbdecad-a1d5-11de-9d96-dd9f629b113b</uuid>
             </link>
           </VfsFile>
@@ -107,7 +107,7 @@
           <Title><![CDATA[I18N Example]]></Title>
           <VfsFile>
             <link type="STRONG">
-              <target><![CDATA[/sites/default/demo_t3/cntpages/extra/extranet/utf-8.html]]></target>
+              <target><![CDATA[/sites/default/demo_t3/pages/extra/extranet/utf-8.html]]></target>
               <uuid>569ae778-9e09-11de-9c36-dd9f629b113b</uuid>
             </link>
           </VfsFile>
@@ -118,7 +118,7 @@
           <Title><![CDATA[Secrets of Flower]]></Title>
           <VfsFile>
             <link type="STRONG">
-              <target><![CDATA[/sites/default/demo_t3/cntpages/extra/extranet/index.html]]></target>
+              <target><![CDATA[/sites/default/demo_t3/pages/extra/extranet/index.html]]></target>
               <uuid>77af8842-9e09-11de-9c36-dd9f629b113b</uuid>
             </link>
           </VfsFile>
@@ -130,7 +130,7 @@
         <Title><![CDATA[Flower Today]]></Title>
         <VfsFile>
           <link type="STRONG">
-            <target><![CDATA[/sites/default/demo_t3/cntpages/today/index.html]]></target>
+            <target><![CDATA[/sites/default/demo_t3/pages/today/index.html]]></target>
             <uuid>6afd20df-a1c0-11de-9d96-dd9f629b113b</uuid>
           </link>
         </VfsFile>
@@ -140,7 +140,7 @@
           <Title><![CDATA[Events]]></Title>
           <VfsFile>
             <link type="STRONG">
-              <target><![CDATA[/sites/default/demo_t3/cntpages/today/events.html]]></target>
+              <target><![CDATA[/sites/default/demo_t3/pages/today/events.html]]></target>
               <uuid>93de012d-a1c6-11de-9d96-dd9f629b113b</uuid>
             </link>
           </VfsFile>
@@ -151,7 +151,7 @@
           <Title><![CDATA[News]]></Title>
           <VfsFile>
             <link type="STRONG">
-              <target><![CDATA[/sites/default/demo_t3/cntpages/today/news.html]]></target>
+              <target><![CDATA[/sites/default/demo_t3/pages/today/news.html]]></target>
               <uuid>07358d03-a1c6-11de-9d96-dd9f629b113b</uuid>
             </link>
           </VfsFile>
@@ -163,10 +163,27 @@
         <Title><![CDATA[Flower View]]></Title>
         <VfsFile>
           <link type="STRONG">
-            <target><![CDATA[/sites/default/demo_t3/cntpages/view/index.html]]></target>
+            <target><![CDATA[/sites/default/demo_t3/pages/view/index.html]]></target>
             <uuid>3608ae7b-a1d8-11de-9d96-dd9f629b113b</uuid>
           </link>
         </VfsFile>
+      </SiteEntry>
+      <SiteEntry>
+        <Id><![CDATA[1321f17e-eb1b-11df-a35c-fffdb8bf78b9]]></Id>
+        <Name><![CDATA[search]]></Name>
+        <Title><![CDATA[Search]]></Title>
+        <VfsFile>
+          <link type="STRONG">
+            <target><![CDATA[/sites/default/demo_t3/pages/search.html]]></target>
+            <uuid>8ebab265-a127-11de-9057-dd9f629b113b</uuid>
+          </link>
+        </VfsFile>
+        <Properties>
+          <Name><![CDATA[navigation]]></Name>
+          <Value>
+            <String><![CDATA[false]]></String>
+          </Value>
+        </Properties>
       </SiteEntry>
     </SiteEntry>
   </AlkaconSitemap>
