@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsMoveAnimation.java,v $
- * Date   : $Date: 2010/10/29 12:17:05 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/11/08 10:20:51 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import com.google.gwt.dom.client.Style.Unit;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -93,6 +93,7 @@ public class CmsMoveAnimation extends A_CmsAnimation {
     @Override
     protected void onUpdate(double progress) {
 
+        progress = progress * progress;
         double newTop = m_startTop + ((m_endTop - m_startTop) * progress);
         double newLeft = m_startLeft + ((m_endLeft - m_startLeft) * progress);
         m_element.getStyle().setTop(newTop, Unit.PX);
