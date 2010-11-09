@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/tree/Attic/CmsTreeItem.java,v $
- * Date   : $Date: 2010/11/08 10:21:15 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2010/11/09 07:24:13 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Georg Westenberger
  * @author Michael Moossen
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 8.0.0
  */
@@ -316,7 +316,11 @@ public class CmsTreeItem extends CmsListItem {
     @Override
     public Element getDragHelper(I_CmsDropTarget target) {
 
+        // disable animation to get a drag helper without any visible children
+        boolean isAnimated = getTree().isAnimationEnabled();
+        getTree().setAnimationEnabled(false);
         setOpen(false);
+        getTree().setAnimationEnabled(isAnimated);
         return super.getDragHelper(target);
     }
 
