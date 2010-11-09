@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsContainerPageElement.java,v $
- * Date   : $Date: 2010/10/22 12:12:43 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/11/09 07:24:58 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -83,7 +83,7 @@ public class CmsContainerPageElement extends AbsolutePanel implements I_CmsDragg
     private String m_noEditReason;
 
     /** The parent drop target. */
-    private I_CmsDropTarget m_parent;
+    private I_CmsDropContainer m_parent;
 
     /** The element resource site-path. */
     private String m_sitePath;
@@ -100,7 +100,7 @@ public class CmsContainerPageElement extends AbsolutePanel implements I_CmsDragg
      */
     public CmsContainerPageElement(
         Element element,
-        I_CmsDropTarget parent,
+        I_CmsDropContainer parent,
         String clientId,
         String sitePath,
         String noEditReason,
@@ -259,6 +259,7 @@ public class CmsContainerPageElement extends AbsolutePanel implements I_CmsDragg
      */
     public void onDragCancel() {
 
+        removeAttach();
         clearDrag();
     }
 
@@ -439,5 +440,20 @@ public class CmsContainerPageElement extends AbsolutePanel implements I_CmsDragg
         }
 
         return result;
+    }
+
+    /**
+     * This method removes the widget from DOM and re-attaches it at it's original position.<p>
+     * Use to avoid mouse-over and mouse-down malfunction.<p> 
+     */
+    private void removeAttach() {
+
+        int index = m_parent.getWidgetIndex(this);
+        this.removeFromParent();
+        if (m_parent.getWidgetCount() > index) {
+            m_parent.insert(this, index);
+        } else {
+            m_parent.add(this);
+        }
     }
 }
