@@ -25,6 +25,7 @@ createPropertyDefinition cache
 createPropertyDefinition template
 createPropertyDefinition template-elements
 createPropertyDefinition locale
+createPropertyDefinition ade.sitemap
 
 # Switch to the root context
 setSiteRoot "/"
