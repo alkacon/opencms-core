@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/staticexport/Attic/TestCmsStaticExportManagerWithSitemap.java,v $
- * Date   : $Date: 2010/10/20 15:23:20 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/11/11 13:08:18 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,10 +32,12 @@
 package org.opencms.staticexport;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.OpenCms;
+import org.opencms.publish.CmsPublishManager;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.xml.sitemap.CmsInternalSitemapEntry;
@@ -60,7 +62,7 @@ import junit.framework.TestSuite;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -275,6 +277,7 @@ public class TestCmsStaticExportManagerWithSitemap extends OpenCmsTestCase {
     public void testRfsNameWithExportName() throws Exception {
 
         echo("Testing get rfs name with export name");
+        addUrlNameMapping();
 
         if (changeToExportName()) {
             CmsObject cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
@@ -307,7 +310,7 @@ public class TestCmsStaticExportManagerWithSitemap extends OpenCmsTestCase {
     public void testVfsNameInternal() throws Exception {
 
         echo("Testing get vfs name internal");
-
+        addUrlNameMapping();
         if (changeToNormal()) {
             File tobeExportDataFile = new File(getClass().getResource("export-data.txt").getFile());
             testVfsInt(tobeExportDataFile, null);
@@ -327,30 +330,10 @@ public class TestCmsStaticExportManagerWithSitemap extends OpenCmsTestCase {
     public void testVfsNameInternalWithExportname() throws Exception {
 
         echo("Testing get vfs name internal with export name");
-
+        addUrlNameMapping();
         if (changeToExportName()) {
             File tobeExportDataFile = new File(getClass().getResource("export-data-exportname.txt").getFile());
             testVfsInt(tobeExportDataFile, null);
-        } else {
-            assertTrue(false);
-        }
-    }
-
-    /**
-     * Tests if the static export data object returned by the method 
-     * {@link CmsStaticExportManager#getVfsNameInternal(CmsObject, String)}
-     * is identical to the expected data objects defined in the file
-     * <code>"export-data.txt"</code> in this package.<p>
-     * 
-     * @throws Exception if something goes wrong
-     */
-    public void testVfsNameInternalWithParameters() throws Exception {
-
-        echo("Testing get vfs name internal");
-
-        if (changeToNormal()) {
-            File tobeExportDataFile = new File(getClass().getResource("export-data-parameters.txt").getFile());
-            testVfsInt(tobeExportDataFile, "?a=b&c=d");
         } else {
             assertTrue(false);
         }
@@ -367,6 +350,7 @@ public class TestCmsStaticExportManagerWithSitemap extends OpenCmsTestCase {
     public void testVfsNameInternalWithExportnameAndParameters() throws Exception {
 
         echo("Testing get vfs name internal with export name");
+        addUrlNameMapping();
 
         if (changeToExportName()) {
             File tobeExportDataFile = new File(
@@ -374,6 +358,51 @@ public class TestCmsStaticExportManagerWithSitemap extends OpenCmsTestCase {
             testVfsInt(tobeExportDataFile, "?a=b&c=d");
         } else {
             assertTrue(false);
+        }
+    }
+
+    /**
+     * Tests if the static export data object returned by the method 
+     * {@link CmsStaticExportManager#getVfsNameInternal(CmsObject, String)}
+     * is identical to the expected data objects defined in the file
+     * <code>"export-data.txt"</code> in this package.<p>
+     * 
+     * @throws Exception if something goes wrong
+     */
+    public void testVfsNameInternalWithParameters() throws Exception {
+
+        echo("Testing get vfs name internal");
+        addUrlNameMapping();
+
+        if (changeToNormal()) {
+            File tobeExportDataFile = new File(getClass().getResource("export-data-parameters.txt").getFile());
+            testVfsInt(tobeExportDataFile, "?a=b&c=d");
+        } else {
+            assertTrue(false);
+        }
+    }
+
+    /** 
+     * Helper method to add an URL name for a single XML content.<p> 
+     * 
+     * @throws Exception if something goes wrong  
+     */
+    private void addUrlNameMapping() throws Exception {
+
+        CmsObject cms = OpenCms.initCmsObject(getCmsObject());
+        CmsProject offline = cms.readProject("Offline");
+        String resName = "/contents/content_0003.xml";
+        cms.getRequestContext().setCurrentProject(offline);
+        CmsResource res = cms.readResource(resName);
+        cms.lockResource(resName);
+        cms.setDateLastModified(resName, System.currentTimeMillis(), false);
+        //cms.unlockResource(resName);
+        if (cms.readNewestUrlNameForId(res.getStructureId()) == null) {
+            System.out.println("========== adding new urlname mapping ==========");
+            cms.writeUrlNameMapping("hello_world", res.getStructureId());
+            CmsPublishManager pubMan = OpenCms.getPublishManager();
+            pubMan.publishProject(cms);
+            pubMan.waitWhileRunning();
         }
     }
 
@@ -570,9 +599,13 @@ public class TestCmsStaticExportManagerWithSitemap extends OpenCmsTestCase {
         List<CmsInternalSitemapEntry> detailEntries = new ArrayList<CmsInternalSitemapEntry>();
         List<CmsResource> detailResources = cms.readResources("/sites/default/contents/", CmsResourceFilter.ALL);
         for (CmsResource res : detailResources) {
+            String uri = "/sites/default/item_2/item_1/" + res.getStructureId();
+            if (res.getRootPath().endsWith("content_0003.xml")) {
+                uri = "/sites/default/item_2/item_1/hello_world";
+            }
             CmsInternalSitemapEntry entry = (CmsInternalSitemapEntry)OpenCms.getSitemapManager().getEntryForUri(
                 cms,
-                "/sites/default/item_2/item_1/" + res.getStructureId());
+                uri);
             detailEntries.add(entry);
         }
         testEntries(detailEntries, parameters);

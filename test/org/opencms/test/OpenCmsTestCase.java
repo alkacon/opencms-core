@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2010/10/26 13:14:54 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/11/11 13:08:18 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -22,7 +22,7 @@
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
- * project website: http://www.opencms.org
+ * project website: http://www.opencms.org 
  * 
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
@@ -105,7 +105,7 @@ import org.dom4j.util.NodeComparator;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 6.0.0
  */
@@ -490,10 +490,10 @@ public class OpenCmsTestCase extends TestCase {
         try {
             TestSuite suite = new TestSuite();
             suite.setName(testClass.getName());
+            Constructor<? extends Test> constructor = testClass.getConstructor(String.class);
             for (Method method : testClass.getMethods()) {
                 String methodName = method.getName();
                 if (methodName.startsWith("test") && (method.getParameterTypes().length == 0)) {
-                    Constructor<? extends Test> constructor = testClass.getConstructor(String.class);
                     Test test = constructor.newInstance(method.getName());
                     suite.addTest(test);
                 }

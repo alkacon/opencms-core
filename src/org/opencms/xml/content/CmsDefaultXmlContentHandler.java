@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2010/10/18 12:19:33 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2010/11/11 13:08:17 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -103,7 +103,7 @@ import org.dom4j.Element;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 6.0.0 
  */
@@ -1010,7 +1010,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                             // special case: shared mappings must be written only to one sibling, end loop
                             i = 0;
                         }
-
+                    } else if (mapping.startsWith(MAPTO_URLNAME)) {
+                        handleUrlNameMapping(cms, content, value, siblings.get(i));
                     } else if (mapping.startsWith(MAPTO_ATTRIBUTE)) {
 
                         // this is an attribute mapping                        
@@ -2403,5 +2404,28 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             content.setFile(file);
         }
         return file;
+    }
+
+    /**
+     * Helper method for handling an URL name mapping.<p>
+     * 
+     * @param cms the CMS context 
+     * @param content the XML content 
+     * @param value the mapped value 
+     * @param resource the resource for which the URL name mapping should take place
+     *   
+     * @throws CmsException if something goes wrong  
+     */
+    private void handleUrlNameMapping(
+        CmsObject cms,
+        CmsXmlContent content,
+        I_CmsXmlContentValue value,
+        CmsResource resource) throws CmsException {
+
+        if (!CmsResource.isTemporaryFileName(resource.getRootPath())) {
+            I_CmsUrlNameSequenceGenerator nameGen = OpenCms.getResourceManager().getNameGenerator();
+            Iterator<String> nameSeq = nameGen.getUrlNameSequence(cms, content, value, resource);
+            cms.writeUrlNameMapping(nameSeq, resource.getStructureId());
+        }
     }
 }

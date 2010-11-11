@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsResourceManager.java,v $
- * Date   : $Date: 2010/09/30 10:09:14 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/11/11 13:08:18 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,6 +59,8 @@ import org.opencms.util.CmsResourceTranslator;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.I_CmsHtmlConverter;
 import org.opencms.workplace.CmsWorkplace;
+import org.opencms.xml.content.CmsDefaultUrlNameSequenceGenerator;
+import org.opencms.xml.content.I_CmsUrlNameSequenceGenerator;
 import org.opencms.xml.sitemap.CmsSitemapEntry;
 
 import java.io.IOException;
@@ -83,7 +85,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -246,6 +248,9 @@ public class CmsResourceManager {
 
     /** The configured default type for folders when the resource type is missing. */
     private I_CmsResourceType m_restypeUnknownFolder;
+
+    /** The URL name generator for XML contents. */
+    private I_CmsUrlNameSequenceGenerator m_nameGenerator = new CmsDefaultUrlNameSequenceGenerator();
 
     /**
      * Creates a new instance for the resource manager, 
@@ -759,6 +764,16 @@ public class CmsResourceManager {
     }
 
     /**
+     * Returns the URL name generator for XML contents.<p>
+     * 
+     * @return the URL name generator XML contents.
+     */
+    public I_CmsUrlNameSequenceGenerator getNameGenerator() {
+
+        return m_nameGenerator;
+    }
+
+    /**
      * Returns an (unmodifiable) list of class names of all currently registered content collectors 
      * ({@link I_CmsResourceCollector} objects).<p>
      *   
@@ -1077,6 +1092,26 @@ public class CmsResourceManager {
         res.setContentType(getMimeType(resource.getName(), cms.getRequestContext().getEncoding()));
         I_CmsResourceLoader loader = getLoader(resource);
         loader.load(cms, resource, req, res);
+    }
+
+    /**
+     * Configures the URL name generator for XML contents.<p>
+     * 
+     * @param nameGeneratorClass the class name for the URL name generator 
+     *
+     * @throws CmsConfigurationException if something goes wrong
+     */
+    public void setNameGeneratorClass(String nameGeneratorClass) throws CmsConfigurationException {
+
+        if (m_frozen) {
+            throw new CmsConfigurationException(Messages.get().container(Messages.ERR_NO_CONFIG_AFTER_STARTUP_0));
+        }
+        try {
+            Class<?> cls = Class.forName(nameGeneratorClass);
+            m_nameGenerator = (I_CmsUrlNameSequenceGenerator)cls.newInstance();
+        } catch (Exception e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
     }
 
     /**

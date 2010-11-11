@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagLink.java,v $
- * Date   : $Date: 2010/01/27 13:10:54 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/11/11 13:08:18 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -22,7 +22,7 @@
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
- * project website: http://www.opencms.org
+ * project website: http://www.opencms.org 
  * 
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -132,7 +132,11 @@ public class CmsJspTagLink extends BodyTagSupport {
                 if (!uri.endsWith("/")) {
                     uri += "/";
                 }
-                uri += res.getStructureId().toString();
+                String detailName = cms.readNewestUrlNameForId(res.getStructureId());
+                if (detailName == null) {
+                    detailName = res.getStructureId().toString();
+                }
+                uri += detailName;
                 uri += "/";
             }
         } catch (CmsException e) {

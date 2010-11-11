@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Messages.java,v $
- * Date   : $Date: 2010/10/26 13:14:54 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/11/11 13:08:17 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Achim Westermann
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 6.0.0 
  */
@@ -253,7 +253,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_GET_LOCK_1 = "ERR_GET_LOCK_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_GET_NEXT_RESOURCE_TYPE_COUNTER_VALUE_1 = "ERR_GET_NEXT_RESOURCE_TYPE_COUNTER_VALUE_1";
+    public static final String ERR_INCREMENT_COUNTER_1 = "ERR_INCREMENT_COUNTER_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_GET_ORGUNITS_1 = "ERR_GET_ORGUNITS_1";
@@ -905,6 +905,18 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_ADD_URLNAME_MAPPING_2 = "ERR_ADD_URLNAME_MAPPING_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_READ_ID_FOR_URLNAME_1 = "ERR_READ_ID_FOR_URLNAME_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_READ_NEWEST_URLNAME_FOR_ID_1 = "ERR_READ_NEWEST_URLNAME_FOR_ID_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_READ_URLNAME_MAPPING_2 = "ERR_READ_URLNAME_MAPPING_2";
 
     /**
      * Hides the public constructor for this utility class.<p>

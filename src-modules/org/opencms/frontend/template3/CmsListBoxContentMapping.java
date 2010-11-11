@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/template3/Attic/CmsListBoxContentMapping.java,v $
- * Date   : $Date: 2010/09/23 10:07:27 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/11/11 13:08:18 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -21,7 +21,7 @@
  * For further information about Alkacon Software GmbH, please see the
  * company website: http://www.alkacon.com
  *
- * For further information about OpenCms, please see the
+ * For further information about OpenCms, please see the 
  * project website: http://www.opencms.org
  * 
  * You should have received a copy of the GNU Lesser General Public
@@ -34,8 +34,11 @@ package org.opencms.frontend.template3;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.collectors.CmsDateResourceComparator;
+import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.types.CmsXmlDateTimeValue;
 import org.opencms.xml.types.CmsXmlHtmlValue;
@@ -52,6 +55,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Describes the mapping from an OpenCms XML content to a list box entry.<p>
  * 
@@ -61,7 +66,7 @@ import java.util.Set;
  * 
  * @since 7.6
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  */
 public class CmsListBoxContentMapping {
 
@@ -236,6 +241,11 @@ public class CmsListBoxContentMapping {
             return m_maxLenght > 0;
         }
     }
+
+    /**
+     * The logger for this class.<p>
+     */
+    protected static final Log LOG = CmsLog.getLog(CmsListBoxContentMapping.class);
 
     /** Constant to map to the list box entry author. */
     public static final String ENTRY_AUTHOR = "Author";
@@ -417,11 +427,19 @@ public class CmsListBoxContentMapping {
 
         if (hasTitle) {
             // we need at least an entry and an description
+            CmsUUID structureId = content.getFile().getStructureId();
             if (link == null) {
+                String detailName = structureId.toString();
+                try {
+                    String niceDetailName = cms.readNewestUrlNameForId(structureId);
+                    if (niceDetailName != null) {
+                        detailName = niceDetailName;
+                    }
+                } catch (CmsException e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
                 // calculate the link                
-                link = OpenCms.getLinkManager().getServerLink(
-                    cms,
-                    m_facade + content.getFile().getStructureId().toString() + "/");
+                link = OpenCms.getLinkManager().getServerLink(cms, m_facade + detailName + "/");
             }
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(link)) {
                 result.setLink(link);

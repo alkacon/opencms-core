@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2010/10/28 07:38:56 $
- * Version: $Revision: 1.64 $
+ * Date   : $Date: 2010/11/11 13:08:18 $
+ * Version: $Revision: 1.65 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -86,7 +86,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.64 $
+ * @version $Revision: 1.65 $
  * 
  * @since 7.9.2
  */
@@ -213,7 +213,8 @@ public class CmsSitemapManager {
             false,
             entry.getNewProperties(),
             new ArrayList<CmsInternalSitemapEntry>(),
-            entry.getContentId());
+            entry.getContentId(),
+            entry.getContentName());
 
         clone.setRuntimeInfo(entry.getSitePath(cms), 0, new HashMap<String, CmsComputedPropertyValue>());
         return clone;
@@ -234,7 +235,7 @@ public class CmsSitemapManager {
             return cms.getRequestContext().getUri();
         }
         return sitemap.getSitePath(cms);
-    }
+    } 
 
     /**
      * Creates a new element of a given type at the configured location.<p>
@@ -647,8 +648,11 @@ public class CmsSitemapManager {
         if (path.endsWith("/") && (path.length() > 1)) {
             path = path.substring(0, path.length() - 1);
         }
-        String detailId = CmsResource.getName(path);
-        if (!CmsUUID.isValidUUID(detailId)) {
+        String detailName = CmsResource.getName(path);
+
+        CmsUUID detailId = cms.readIdForUrlName(detailName);
+
+        if (detailId == null) {
             // not a detail page URI
             return new CmsInternalSitemapEntry(cms, entryUri);
         }
@@ -658,13 +662,11 @@ public class CmsSitemapManager {
             return new CmsInternalSitemapEntry(cms, entryUri);
         }
 
-        // detail page
-        CmsUUID id = new CmsUUID(detailId);
         // check existence / permissions
-        CmsResource contentRes = cms.readResource(id);
+        CmsResource contentRes = cms.readResource(detailId);
         // get the title
         String title = cms.readPropertyObject(contentRes, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue(
-            id.toString());
+            detailId.toString());
         // clone & extend the properties
         HashMap<String, CmsSimplePropertyValue> entryProps = new HashMap<String, CmsSimplePropertyValue>(
             entry.getNewProperties());
@@ -676,18 +678,19 @@ public class CmsSitemapManager {
             entry.getId(),
             entry.getOriginalUri(),
             entry.getStructureId(),
-            id.toString(),
+            detailId.toString(),
             title,
             entry.isRootEntry(),
             new HashMap<String, CmsSimplePropertyValue>(),
             null,
-            id);
+            detailId,
+            detailName);
 
         Map<String, CmsXmlContentProperty> propDefs = entry.getPropertyDefinitions();
         CmsPropertyInheritanceState propState = new CmsPropertyInheritanceState(entry.getComputedProperties(), propDefs);
         CmsPropertyInheritanceState newPropState = propState.update(
             Collections.<String, CmsSimplePropertyValue> emptyMap(),
-            id.toString());
+            detailId.toString());
         contentEntry.setRuntimeInfo(entry.getEntryPoint(), 0, newPropState.getInheritedProperties());
         return contentEntry;
     }
@@ -947,7 +950,11 @@ public class CmsSitemapManager {
         if (detailView.equals("")) {
             return cms.getSitePath(resource);
         }
-        return CmsStringUtil.joinPaths(detailView, "/", searchResultStructureId.toString(), "/");
+        String detailName = cms.readNewestUrlNameForId(searchResultStructureId);
+        if (detailName == null) {
+            detailName = searchResultStructureId.toString();
+        }
+        return CmsStringUtil.joinPaths(detailView, "/", detailName, "/");
     }
 
     /**

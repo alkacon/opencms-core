@@ -31,6 +31,7 @@
 			<preview uri="${previewtempfile}" />
 			<mappings>
 				<mapping element="Title" mapto="property:Title" />
+				<mapping element="Title" mapto="urlName" />
 				<mapping element="EventDates/EventDate" mapto="property:collector.date" />
 				<mapping element="EventDates/EventEndDate" mapto="property:calendar.enddate" />
 				<mapping element="Availability/Release" mapto="attribute:datereleased" />

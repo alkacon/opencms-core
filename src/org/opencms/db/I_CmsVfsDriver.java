@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2010/10/26 13:14:54 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/11/11 13:08:18 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -13,7 +13,7 @@
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful,
+ * This library is distributed in the hope that it will be useful, 
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
@@ -32,6 +32,8 @@
 package org.opencms.db;
 
 import org.opencms.db.generic.CmsSqlManager;
+import org.opencms.db.urlname.CmsUrlNameMappingEntry;
+import org.opencms.db.urlname.CmsUrlNameMappingFilter;
 import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsFolder;
@@ -55,7 +57,7 @@ import java.util.Map;
  * @author Thomas Weckert  
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 6.0.0 
  */
@@ -72,6 +74,18 @@ public interface I_CmsVfsDriver {
 
     /** Add the methods that use these constants to the interface as soon as possible. */
     int todo = 0;
+
+    /**
+     * Adds a new URL name mapping entry.<p>
+     * 
+     * @param dbc the current database context 
+     * @param online if true, writes to the online tables, else to the offline tables 
+     * @param entry the entry to add 
+     * 
+     * @throws CmsDataAccessException if something goes wrong 
+     */
+    void addUrlNameMappingEntry(CmsDbContext dbc, boolean online, CmsUrlNameMappingEntry entry)
+    throws CmsDataAccessException;
 
     /**
      * Counts the number of siblings of a resource.<p>
@@ -268,23 +282,23 @@ public interface I_CmsVfsDriver {
     throws CmsDataAccessException;
 
     /**
+     * Deletes the URL name mapping entries which match a given filter.<p>
+     *  
+     * @param dbc the current database context 
+     * @param online if true, changes the online URL name mappings, else the offline URL name mappings 
+     * @param filter the URL name mapping entries to delete
+     *  
+     * @throws CmsDataAccessException if something goes wrong 
+     */
+    void deleteUrlNameMappingEntries(CmsDbContext dbc, boolean online, CmsUrlNameMappingFilter filter)
+    throws CmsDataAccessException;
+
+    /**
      * Destroys this driver.<p>
      * 
      * @throws Throwable if something goes wrong
      */
     void destroy() throws Throwable;
-
-    /**
-     * Gets the value of the counter for a resource type, and increments that counter.<p>
-     * 
-     * @param dbc the database context 
-     * @param resourceType the resource type for which the next value of the counter should be returned
-     *  
-     * @return the the next counter value for the given resource type 
-     * 
-     * @throws CmsDataAccessException if something goes wrong 
-     */
-    int getNextResourceTypeCounterValue(CmsDbContext dbc, String resourceType) throws CmsDataAccessException;
 
     /**
      * Returns all organizational units for the given resource.<p>
@@ -306,6 +320,18 @@ public interface I_CmsVfsDriver {
      * @return the SqlManager of this driver
      */
     CmsSqlManager getSqlManager();
+
+    /**
+     * Gets the current value of a counter, creates it if it doesn't already exist, and increments it.<p>
+     * 
+     * @param dbc the database context 
+     * @param name the name of the counter 
+     *  
+     * @return the counter value before incrementing  
+     * 
+     * @throws CmsDataAccessException if something goes wrong 
+     */
+    int incrementCounter(CmsDbContext dbc, String name) throws CmsDataAccessException;
 
     /**
      * Initializes the SQL manager for this driver.<p>
@@ -679,6 +705,22 @@ public interface I_CmsVfsDriver {
     throws CmsDataAccessException;
 
     /**
+     * Reads the URL name mapping entries which match a given filter.<p>
+     * 
+     * @param dbc the database context 
+     * @param online if true, reads from the online mapping, else from the offline mapping 
+     * @param filter the filter which the entries to be read should match 
+     * 
+     * @return the mapping entries which match the given filter 
+     * 
+     * @throws CmsDataAccessException if something goes wrong 
+     */
+    List<CmsUrlNameMappingEntry> readUrlNameMappingEntries(
+        CmsDbContext dbc,
+        boolean online,
+        CmsUrlNameMappingFilter filter) throws CmsDataAccessException;
+
+    /**
      * Reads a resource version numbers.<p>
      * 
      * @param dbc the current database context
@@ -920,4 +962,5 @@ public interface I_CmsVfsDriver {
         CmsResource resource,
         int changed,
         boolean isPublishing) throws CmsDataAccessException;
+
 }

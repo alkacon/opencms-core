@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2010/10/26 13:14:54 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2010/11/11 13:08:17 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,8 @@ import org.opencms.db.generic.CmsUserDriver;
 import org.opencms.db.log.CmsLogEntry;
 import org.opencms.db.log.CmsLogEntryType;
 import org.opencms.db.log.CmsLogFilter;
+import org.opencms.db.urlname.CmsUrlNameMappingEntry;
+import org.opencms.db.urlname.CmsUrlNameMappingFilter;
 import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsFolder;
@@ -108,12 +110,14 @@ import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.util.PrintfFormat;
 import org.opencms.workplace.commons.CmsProgressThread;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -135,7 +139,7 @@ import org.apache.commons.pool.ObjectPool;
  * The OpenCms driver manager.<p>
  * 
  * @author Alexander Kandzior 
- * @author Thomas Weckert 
+ * @author Thomas Weckert  
  * @author Carsten Weinholz 
  * @author Michael Emmerich 
  * @author Michael Moossen
@@ -2921,6 +2925,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
                         dbc.currentProject().getUuid(),
                         currentResource,
                         CmsRelationFilter.TARGETS);
+                    getVfsDriver(dbc).deleteUrlNameMappingEntries(
+                        dbc,
+                        false,
+                        CmsUrlNameMappingFilter.ALL.filterStructureId(currentResource.getStructureId()));
                 } else {
                     // the resource exists online => mark the resource as deleted
                     // structure record is removed during next publish
@@ -4050,21 +4058,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
-     * Returns the next counter value for a given resource type, and also increments the counter for that resource type.<p>
-     * 
-     * @param dbc the current database context 
-     * @param resourceType the resource type for which the counter value should be retrieved 
-     * 
-     * @return the value of the counter
-     *  
-     * @throws CmsException if something goes wrong 
-     */
-    public int getNextResourceTypeCounterValue(CmsDbContext dbc, String resourceType) throws CmsException {
-
-        return getVfsDriver(dbc).getNextResourceTypeCounterValue(dbc, resourceType);
-    }
-
-    /**
      * Returns all child organizational units of the given parent organizational unit including 
      * hierarchical deeper organization units if needed.<p>
      *
@@ -4829,6 +4822,21 @@ public final class CmsDriverManager implements I_CmsEventListener {
             dateCreated,
             additionalInfos);
         return newUser;
+    }
+
+    /**
+     * Increments a counter and returns its value before incrementing.<p> 
+     * 
+     * @param dbc the current database context 
+     * @param name the name of the counter which should be incremented  
+     * 
+     * @return the value of the counter
+     *  
+     * @throws CmsException if something goes wrong 
+     */
+    public int incrementCounter(CmsDbContext dbc, String name) throws CmsException {
+
+        return getVfsDriver(dbc).incrementCounter(dbc, name);
     }
 
     /**
@@ -5862,6 +5870,48 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
+     * Transfers the new URL name mappings (if any) for a given resource to the online project.<p>
+     * 
+     * @param dbc the current database context 
+     * @param res the resource whose new URL name mappings should be transferred to the online project
+     *  
+     * @throws CmsDataAccessException if something goes wrong 
+     */
+    public void publishUrlNameMapping(CmsDbContext dbc, CmsResource res) throws CmsDataAccessException {
+
+        I_CmsVfsDriver vfsDriver = getVfsDriver(dbc);
+
+        if (res.getState().isDeleted()) {
+            // remove both offline and online mappings 
+            CmsUrlNameMappingFilter idFilter = CmsUrlNameMappingFilter.ALL.filterStructureId(res.getStructureId());
+            vfsDriver.deleteUrlNameMappingEntries(dbc, true, idFilter);
+            vfsDriver.deleteUrlNameMappingEntries(dbc, false, idFilter);
+        } else {
+            // copy the new entry (if there is one) to the online table  
+            List<CmsUrlNameMappingEntry> entries = vfsDriver.readUrlNameMappingEntries(
+                dbc,
+                false,
+                CmsUrlNameMappingFilter.ALL.filterStructureId(res.getStructureId()).filterState(
+                    CmsUrlNameMappingEntry.MAPPING_STATUS_NEW));
+            if (!entries.isEmpty()) {
+                assert entries.size() == 1;
+                CmsUrlNameMappingEntry entry = entries.get(0);
+                CmsUrlNameMappingFilter nameFilter = CmsUrlNameMappingFilter.ALL.filterName(entry.getName());
+                vfsDriver.deleteUrlNameMappingEntries(dbc, true, nameFilter);
+                vfsDriver.deleteUrlNameMappingEntries(dbc, false, nameFilter);
+                long now = System.currentTimeMillis();
+                CmsUrlNameMappingEntry newEntry = new CmsUrlNameMappingEntry(
+                    entry.getName(),
+                    entry.getStructureId(),
+                    CmsUrlNameMappingEntry.MAPPING_STATUS_PUBLISHED,
+                    now);
+                vfsDriver.addUrlNameMappingEntry(dbc, true, newEntry);
+                vfsDriver.addUrlNameMappingEntry(dbc, false, newEntry);
+            }
+        }
+    }
+
+    /**
      * Reads an access control entry from the cms.<p>
      * 
      * The access control entries of a resource are readable by everyone.
@@ -6441,6 +6491,28 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
+     * Reads the structure id which is mapped to a given URL name.<p>
+     * 
+     * @param dbc the current database context 
+     * @param name the name for which the mapped structure id should be looked up
+     *  
+     * @return the structure id which is mapped to the given name, or null if there is no such id 
+     * 
+     * @throws CmsDataAccessException if something goes wrong 
+     */
+    public CmsUUID readIdForUrlName(CmsDbContext dbc, String name) throws CmsDataAccessException {
+
+        List<CmsUrlNameMappingEntry> entries = getVfsDriver(dbc).readUrlNameMappingEntries(
+            dbc,
+            dbc.currentProject().isOnlineProject(),
+            CmsUrlNameMappingFilter.ALL.filterName(name));
+        if (entries.isEmpty()) {
+            return null;
+        }
+        return entries.get(0).getStructureId();
+    }
+
+    /**
      * Reads the locks that were saved to the database in the previous run of OpenCms.<p>
      * 
      * @param dbc the current database context
@@ -6473,6 +6545,44 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 "deleted group",
                 0);
         }
+    }
+
+    /**
+     * Reads the URL name which has been most recently mapped to the given structure id, or null
+     * if no URL name is mapped to the id.<p>
+     * 
+     * @param dbc the current database context 
+     * @param id a structure id 
+     * @return the name which has been most recently mapped to the given structure id 
+     * 
+     * @throws CmsDataAccessException if something goes wrong 
+     */
+    public String readNewestUrlNameForId(CmsDbContext dbc, CmsUUID id) throws CmsDataAccessException {
+
+        List<CmsUrlNameMappingEntry> entries = getVfsDriver(dbc).readUrlNameMappingEntries(
+            dbc,
+            dbc.currentProject().isOnlineProject(),
+            CmsUrlNameMappingFilter.ALL.filterStructureId(id));
+        if (entries.isEmpty()) {
+            return null;
+        }
+        Collections.sort(entries, new Comparator<CmsUrlNameMappingEntry>() {
+
+            public int compare(CmsUrlNameMappingEntry o1, CmsUrlNameMappingEntry o2) {
+
+                long date1 = o1.getDateChanged();
+                long date2 = o2.getDateChanged();
+                if (date1 < date2) {
+                    return -1;
+                }
+                if (date1 > date2) {
+                    return +1;
+                }
+                return 0;
+            }
+        });
+        CmsUrlNameMappingEntry lastEntry = entries.get(entries.size() - 1);
+        return lastEntry.getName();
     }
 
     /**
@@ -7342,6 +7452,26 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         result = filterPermissions(dbc, result, CmsResourceFilter.DEFAULT);
         return result;
+    }
+
+    /**
+     * Reads URL name mapping entries which match the given filter.<p>
+     * 
+     * @param dbc the database context
+     * @param online if true, read online URL name mappings, else offline ones 
+     * @param filter the filter for matching the URL name entries
+     * 
+     * @return the list of URL name mapping entries which match the given filter
+     * 
+     * @throws CmsDataAccessException if something goes wrong 
+     */
+    public List<CmsUrlNameMappingEntry> readUrlNameMappingEntries(
+        CmsDbContext dbc,
+        boolean online,
+        CmsUrlNameMappingFilter filter) throws CmsDataAccessException {
+
+        I_CmsVfsDriver vfsDriver = getVfsDriver(dbc);
+        return vfsDriver.readUrlNameMappingEntries(dbc, online, filter);
     }
 
     /**
@@ -9231,6 +9361,28 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
+     * Adds a new url name mapping for a structure id.<p>
+     * 
+     * Instead of taking the name directly, this method takes an iterator of strings 
+     * which generates candidate URL names on-the-fly. The first generated name which is
+     * not already mapped to another structure id will be chosen for the new URL name mapping.
+     * 
+     * @param dbc the current database context
+     * @param nameSeq the sequence of URL name candidates  
+     * @param structureId the structure id to which the url name should be mapped 
+     * @return the actual name which was mapped to the structure id 
+     * 
+     * @throws CmsDataAccessException if something goes wrong 
+     */
+    public String writeUrlNameMapping(CmsDbContext dbc, Iterator<String> nameSeq, CmsUUID structureId)
+    throws CmsDataAccessException {
+
+        String bestName = findBestNameForUrlNameMapping(dbc, nameSeq, structureId);
+        addOrReplaceUrlNameMapping(dbc, bestName, structureId);
+        return bestName;
+    }
+
+    /**
      * Updates the user information. <p>
      * 
      * The user id has to be a valid OpenCms user id.<br>
@@ -9260,6 +9412,30 @@ public final class CmsDriverManager implements I_CmsEventListener {
         eventData.put(I_CmsEventListener.KEY_USER_NAME, oldUser.getName());
         eventData.put(I_CmsEventListener.KEY_USER_ACTION, I_CmsEventListener.VALUE_USER_MODIFIED_ACTION_WRITE_USER);
         OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_USER_MODIFIED, eventData));
+    }
+
+    /**
+     * Adds or replaces a new url name mapping in the offline project.<p>
+     * 
+     * @param dbc the current database context 
+     * @param name
+     * @param structureId
+     * @throws CmsDataAccessException
+     */
+    protected void addOrReplaceUrlNameMapping(CmsDbContext dbc, String name, CmsUUID structureId)
+    throws CmsDataAccessException {
+
+        getVfsDriver(dbc).deleteUrlNameMappingEntries(
+            dbc,
+            false,
+            CmsUrlNameMappingFilter.ALL.filterStructureId(structureId).filterState(
+                CmsUrlNameMappingEntry.MAPPING_STATUS_NEW));
+        CmsUrlNameMappingEntry newEntry = new CmsUrlNameMappingEntry(
+            name,
+            structureId,
+            CmsUrlNameMappingEntry.MAPPING_STATUS_NEW,
+            System.currentTimeMillis());
+        getVfsDriver(dbc).addUrlNameMappingEntry(dbc, false, newEntry);
     }
 
     /**
@@ -9341,6 +9517,69 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
+     * Tries to find the best name for an URL name mapping for the given structure id.<p>
+     * 
+     * @param dbc the database context 
+     * @param nameSeq the sequence of name candidates 
+     * @param structureId the structure id to which an URL name should be mapped
+     *  
+     * @return the selected URL name candidate 
+     * 
+     * @throws CmsDataAccessException if something goes wrong 
+     */
+    protected String findBestNameForUrlNameMapping(CmsDbContext dbc, Iterator<String> nameSeq, CmsUUID structureId)
+    throws CmsDataAccessException {
+
+        String newName;
+        boolean alreadyInUse;
+        do {
+            newName = nameSeq.next();
+            CmsUrlNameMappingFilter filter = CmsUrlNameMappingFilter.ALL.filterName(newName).filterRejectStructureId(
+                structureId);
+            List<CmsUrlNameMappingEntry> entriesWithSameName = getVfsDriver(dbc).readUrlNameMappingEntries(
+                dbc,
+                false,
+                filter);
+            alreadyInUse = !entriesWithSameName.isEmpty();
+        } while (alreadyInUse);
+        return newName;
+    }
+
+    /**
+     * Helper method for finding the 'best' URL name to use for a new URL name mapping.<p>  
+     * 
+     * Since the name given as a parameter may be already used, this method will try to append numeric suffixes
+     * to the name to find a mapping name which is not used.<p>
+     * 
+     * @param dbc the current database context 
+     * @param name the name of the mapping 
+     * @param structureId the structure id to which the name is mapped
+     *  
+     * @return the best name which was found for the new mapping 
+     * 
+     * @throws CmsDataAccessException if something goes wrong 
+     */
+    protected String findBestNameForUrlNameMapping(CmsDbContext dbc, String name, CmsUUID structureId)
+    throws CmsDataAccessException {
+
+        List<CmsUrlNameMappingEntry> entriesStartingWithName = getVfsDriver(dbc).readUrlNameMappingEntries(
+            dbc,
+            false,
+            CmsUrlNameMappingFilter.ALL.filterNamePattern(name + "%").filterRejectStructureId(structureId));
+        Set<String> usedNames = new HashSet<String>();
+        for (CmsUrlNameMappingEntry entry : entriesStartingWithName) {
+            usedNames.add(entry.getName());
+        }
+        int counter = 0;
+        String numberedName;
+        do {
+            numberedName = getNumberedName(name, counter);
+            counter += 1;
+        } while (usedNames.contains(numberedName));
+        return numberedName;
+    }
+
+    /**
      * Returns the lock manager instance.<p>
      * 
      * @return the lock manager instance
@@ -9348,6 +9587,23 @@ public final class CmsDriverManager implements I_CmsEventListener {
     protected CmsLockManager getLockManager() {
 
         return m_lockManager;
+    }
+
+    /**
+     * Adds a numeric suffix to the end of a string, unless the number passed as a parameter is 0.<p>
+     *  
+     * @param name the base name 
+     * @param number the number from which to form the suffix 
+     * 
+     * @return the concatenation of the base name and possibly the numeric suffix 
+     */
+    protected String getNumberedName(String name, int number) {
+
+        if (number == 0) {
+            return name;
+        }
+        PrintfFormat fmt = new PrintfFormat("%0.6d");
+        return name + "_" + fmt.sprintf(number);
     }
 
     /**
@@ -10396,6 +10652,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     ace.getFlags());
             }
 
+            vfsDriver.deleteUrlNameMappingEntries(dbc, false, CmsUrlNameMappingFilter.ALL.filterStructureId(
+                res.getStructureId()).filterState(CmsUrlNameMappingEntry.MAPPING_STATUS_NEW));
             // restore the state to unchanged 
             res.setState(newState);
             m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), res, UPDATE_ALL, false);
@@ -10558,4 +10816,5 @@ public final class CmsDriverManager implements I_CmsEventListener {
             getVfsDriver(dbc).writeResource(dbc, projectId, resource, UPDATE_STRUCTURE_STATE);
         }
     }
+
 }

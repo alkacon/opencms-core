@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2010/08/06 14:07:18 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/11/11 13:08:18 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -18,7 +18,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH, please see the
+ * For further information about Alkacon Software GmbH, please see the 
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -110,7 +110,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 6.0.0 
  */
@@ -1161,6 +1161,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                         offlineResource));
                 }
             }
+            m_driverManager.publishUrlNameMapping(dbc, offlineResource);
         } catch (CmsException e) {
             throw new CmsDataAccessException(e.getMessageContainer(), e);
         } finally {

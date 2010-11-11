@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/Attic/CmsSitemapLinkStrategyHandler.java,v $
- * Date   : $Date: 2010/11/03 07:04:36 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/11/11 13:08:18 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Ruediger Kurz
  *
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 8.0.0
  */
@@ -89,12 +89,16 @@ public class CmsSitemapLinkStrategyHandler extends A_CmsLinkStrategyHandler {
                             CmsPropertyDefinition.PROPERTY_ADE_SITEMAP_DETAILVIEW,
                             true).getValue("");
                         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(detailViewProp)) {
+                            String detailName = cms.readNewestUrlNameForId(res.getStructureId());
+                            if (detailName == null) {
+                                detailName = res.getStructureId().toString();
+                            }
                             // if detail view found, adjust the uri
                             sitemapUri = detailViewProp;
                             if (!sitemapUri.endsWith("/")) {
                                 rfsName += "/";
                             }
-                            sitemapUri += res.getStructureId().toString();
+                            sitemapUri += detailName;
                             sitemapUri += "/";
                         }
                     }

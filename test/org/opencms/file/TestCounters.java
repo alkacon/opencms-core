@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestCounters.java,v $
- * Date   : $Date: 2010/10/26 13:14:54 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/11/11 13:08:18 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,11 +37,11 @@ import org.opencms.test.OpenCmsTestProperties;
 import junit.framework.Test;
 
 /**
- * Unit tests for resource type counters.<p>
+ * Unit tests for the counters.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class TestCounters extends OpenCmsTestCase {
 
@@ -56,7 +56,7 @@ public class TestCounters extends OpenCmsTestCase {
     }
 
     /**
-     * Test suite for this test class.<p>
+     * Test suite for this test class.<p> 
      * 
      * @return the test suite
      */
@@ -75,7 +75,7 @@ public class TestCounters extends OpenCmsTestCase {
 
         CmsObject cms = getCmsObject();
         for (int i = 0; i < 10; i++) {
-            int counter1 = cms.getNextResourceTypeCounterValue("type1");
+            int counter1 = cms.incrementCounter("type1");
             assertEquals(i, counter1);
         }
     }
@@ -89,8 +89,8 @@ public class TestCounters extends OpenCmsTestCase {
 
         CmsObject cms = getCmsObject();
         for (int i = 0; i < 10; i++) {
-            int counter2 = cms.getNextResourceTypeCounterValue("type2");
-            int counter3 = cms.getNextResourceTypeCounterValue("type3");
+            int counter2 = cms.incrementCounter("type2");
+            int counter3 = cms.incrementCounter("type3");
             assertEquals(i, counter2);
             assertEquals(i, counter3);
         }

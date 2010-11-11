@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/I_CmsXmlContentHandler.java,v $
- * Date   : $Date: 2010/09/22 14:27:47 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/11/11 13:08:17 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -79,6 +79,9 @@ public interface I_CmsXmlContentHandler {
 
     /** Prefix for property list mappings. */
     String MAPTO_PROPERTY_LIST = "propertyList:";
+
+    /** Prefix for URL name mappings. */
+    String MAPTO_URLNAME = "urlName";
 
     /** Prefix for property list mappings. */
     String MAPTO_PROPERTY_LIST_INDIVIDUAL = MAPTO_PROPERTY_LIST + CmsProperty.TYPE_INDIVIDUAL + ":";

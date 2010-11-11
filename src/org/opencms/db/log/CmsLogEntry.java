@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/log/CmsLogEntry.java,v $
- * Date   : $Date: 2010/07/23 08:29:34 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/11/11 13:08:18 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 7.9.2
  */
@@ -97,7 +97,7 @@ public class CmsLogEntry {
 
         m_userId = userId;
         m_date = date;
-        m_structureId = structureId;
+        m_structureId = structureId != null ? structureId : CmsUUID.getNullUUID();
         m_data = (data == null ? new String[0] : data);
         m_type = type;
     }

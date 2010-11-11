@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsVfsConfiguration.java,v $
- * Date   : $Date: 2010/09/06 13:40:14 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/11/11 13:08:18 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -67,7 +67,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 6.0.0
  */
@@ -190,11 +190,14 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
     /** The xmlcontents node name. */
     public static final String N_XMLCONTENTS = "xmlcontents";
 
+    /** The namegenerator node name. */
+    private static final String N_NAMEGENERATOR = "namegenerator";
+
     /** The configured XML content type manager. */
     CmsXmlContentTypeManager m_xmlContentTypeManager;
 
     /** The list of configured default files. */
-    private List<String> m_defaultFiles;
+    private List<String> m_defaultFiles; 
 
     /** Controls if file translation is enabled. */
     private boolean m_fileTranslationEnabled;
@@ -491,6 +494,10 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
         digester.addCallParam("*/" + N_VFS + "/" + N_RESOURCES + "/" + N_COLLECTORS + "/" + N_COLLECTOR, 0, A_CLASS);
         digester.addCallParam("*/" + N_VFS + "/" + N_RESOURCES + "/" + N_COLLECTORS + "/" + N_COLLECTOR, 1, A_ORDER);
 
+        // add the name generator 
+        digester.addCallMethod("*/" + N_VFS + "/" + N_RESOURCES + "/" + N_NAMEGENERATOR, "setNameGeneratorClass", 1);
+        digester.addCallParam("*/" + N_VFS + "/" + N_RESOURCES + "/" + N_NAMEGENERATOR, 0, A_CLASS);
+
         // add MIME type rules
         digester.addCallMethod(
             "*/" + N_VFS + "/" + N_RESOURCES + "/" + N_MIMETYPES + "/" + N_MIMETYPE,
@@ -643,6 +650,11 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
                 A_ORDER,
                 String.valueOf(collector.getOrder()));
         }
+
+        Element namegeneratorElement = resources.addElement(N_NAMEGENERATOR);
+        String nameGeneratorClass = m_resourceManager.getNameGenerator().getClass().getName();
+
+        namegeneratorElement.addAttribute(A_CLASS, nameGeneratorClass);
 
         // add MIME types
         Element mimeTypesElement = resources.addElement(N_MIMETYPES);

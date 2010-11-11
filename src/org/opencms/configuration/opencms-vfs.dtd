@@ -20,6 +20,7 @@
 	resourceloaders, 
 	resourcetypes,
 	collectors?,
+	namegenerator?,
 	mimetypes?,
 	relationtypes?,
 	html-converters?)>
@@ -51,6 +52,13 @@
 <!ELEMENT collectors (collector+)>
 <!ELEMENT collector EMPTY>
 <!ATTLIST collector class CDATA #REQUIRED order CDATA #REQUIRED>
+
+
+<!-- 
+  URL name generator class for XML contents. 
+-->
+<!ELEMENT namegenerator EMPTY>
+<!ATTLIST namegenerator class CDATA #REQUIRED>
 
 <!--
 # MIME type configuration.

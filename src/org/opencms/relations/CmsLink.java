@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsLink.java,v $
- * Date   : $Date: 2010/07/02 12:33:25 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/11/11 13:08:18 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,8 @@
 package org.opencms.relations;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
@@ -61,7 +63,7 @@ import org.dom4j.Element;
  * @author Carsten Weinholz
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -236,6 +238,24 @@ public class CmsLink {
             try {
                 CmsResource res = cms.readResource(m_structureId, CmsResourceFilter.ALL);
                 rootPath = res.getRootPath();
+                if (res.isFile()) {
+                    try {
+                        CmsProperty detailViewProp = cms.readPropertyObject(
+                            res,
+                            CmsPropertyDefinition.PROPERTY_ADE_SITEMAP_DETAILVIEW,
+                            true);
+                        if (!detailViewProp.isNullProperty()) {
+                            String detailView = detailViewProp.getValue();
+                            String urlName = cms.readNewestUrlNameForId(res.getStructureId());
+                            if (urlName == null) {
+                                urlName = res.getStructureId().toString();
+                            }
+                            rootPath = cms.getRequestContext().addSiteRoot(CmsStringUtil.joinPaths(detailView, urlName));
+                        }
+                    } catch (CmsException e) {
+                        // ignore 
+                    }
+                }
             } catch (CmsException e) {
                 CmsSitemapEntry entry = OpenCms.getSitemapManager().getEntryForId(cms, m_structureId);
                 if (entry == null) {
@@ -281,8 +301,13 @@ public class CmsLink {
                         m_target));
                 }
                 String rootPath = entry.getRootPath();
-                CmsUUID id = entry.getId();
 
+                CmsUUID id;
+                if (entry.getContentId() != null) {
+                    id = entry.getContentId();
+                } else {
+                    id = entry.getStructureId();
+                }
                 if (!id.equals(m_structureId)) {
                     // update structure id if needed
                     if (LOG.isDebugEnabled()) {

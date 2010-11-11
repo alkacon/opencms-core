@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapEntry.java,v $
- * Date   : $Date: 2010/10/12 15:02:41 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2010/11/11 13:08:18 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 7.6 
  */
@@ -75,6 +75,9 @@ public class CmsSitemapEntry {
 
     /** The content id, for detail pages. */
     private CmsUUID m_contentId;
+
+    /** The content name, for detail pages. */
+    private String m_contentName;
 
     /** The entry id. */
     private final CmsUUID m_id;
@@ -107,7 +110,18 @@ public class CmsSitemapEntry {
             entry.isRootEntry(),
             entry.getNewProperties(),
             entry.getComputedProperties(),
-            entry.getContentId());
+            entry.getContentId(),
+            entry.getContentName());
+    }
+
+    /**
+     * Returns the URL name of the content, for detail pages.<p>
+     *  
+     * @return the name of the content 
+     */
+    public String getContentName() {
+
+        return m_contentName;
     }
 
     /**
@@ -122,6 +136,7 @@ public class CmsSitemapEntry {
      * @param ownProperties the entry's individual properties 
      * @param computedProperties the entry's properties which were computed by inheritance
      * @param contentId optional content id
+     * @param contentName optional content name 
      **/
     public CmsSitemapEntry(
         CmsUUID id,
@@ -132,7 +147,8 @@ public class CmsSitemapEntry {
         boolean isRoot,
         Map<String, CmsSimplePropertyValue> ownProperties,
         Map<String, CmsComputedPropertyValue> computedProperties,
-        CmsUUID contentId) {
+        CmsUUID contentId,
+        String contentName) {
 
         m_id = id;
         m_structureId = structureId;
@@ -154,6 +170,7 @@ public class CmsSitemapEntry {
         }
         m_sitemap = ((id == null) || !id.equals(structureId));
         m_contentId = contentId;
+        m_contentName = contentName;
     }
 
     /**
@@ -304,7 +321,7 @@ public class CmsSitemapEntry {
         sb.append("/");
         sb.append(getOriginalUri());
         if (getContentId() != null) {
-            sb.append(getContentId()).append('/');
+            sb.append(getContentName()).append('/');
         }
         return sb.toString();
     }

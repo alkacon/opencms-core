@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2010/10/26 13:14:54 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/11/11 13:08:18 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -2101,32 +2101,6 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Returns the next counter value for a given resource type and increments the counter.<p>
-     * 
-     * @param context the request context 
-     * @param resourceType the resource type for which the counter should be returned
-     *  
-     * @return the resource type for which the counter value should be returned
-     *    
-     * @throws CmsException if something goes wrong 
-     */
-    public int getNextResourceTypeCounterValue(CmsRequestContext context, String resourceType) throws CmsException {
-
-        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        try {
-            return m_driverManager.getNextResourceTypeCounterValue(dbc, resourceType);
-        } catch (Exception e) {
-            dbc.report(
-                null,
-                Messages.get().container(Messages.ERR_GET_NEXT_RESOURCE_TYPE_COUNTER_VALUE_1, resourceType),
-                e);
-            return -1; // will never be reached  
-        } finally {
-            dbc.clear();
-        }
-    }
-
-    /**
      * Returns all child organizational units of the given parent organizational unit including 
      * hierarchical deeper organization units if needed.<p>
      *
@@ -2921,6 +2895,29 @@ public final class CmsSecurityManager {
         }
 
         return newUser;
+    }
+
+    /**
+     * Increments a counter and returns its old value.<p>
+     * 
+     * @param context the request context 
+     * @param name the name of the counter 
+     *  
+     * @return the value of the counter before incrementing 
+     *    
+     * @throws CmsException if something goes wrong 
+     */
+    public int incrementCounter(CmsRequestContext context, String name) throws CmsException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            return m_driverManager.incrementCounter(dbc, name);
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(Messages.ERR_INCREMENT_COUNTER_1, name), e);
+            return -1; // will never be reached  
+        } finally {
+            dbc.clear();
+        }
     }
 
     /**
@@ -3841,6 +3838,32 @@ public final class CmsSecurityManager {
     }
 
     /**
+     * Reads the structure id which is mapped to the given URL name, or null if the name is not 
+     * mapped to any structure IDs.<p>
+     * 
+     * @param context the request context
+     * @param name an URL name 
+     * 
+     * @return the structure ID which is mapped to the given name
+     *  
+     * @throws CmsException if something goes wrong 
+     */
+    public CmsUUID readIdForUrlName(CmsRequestContext context, String name) throws CmsException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            return m_driverManager.readIdForUrlName(dbc, name);
+        } catch (Exception e) {
+            CmsMessageContainer message = Messages.get().container(Messages.ERR_READ_ID_FOR_URLNAME_1, name);
+            dbc.report(null, message, e);
+            return null; // will never be reached 
+        } finally {
+            dbc.clear();
+        }
+
+    }
+
+    /**
      * Reads the locks that were saved to the database in the previous run of OpenCms.<p>
      * 
      * @throws CmsException if something goes wrong
@@ -3873,6 +3896,34 @@ public final class CmsSecurityManager {
             dbc.clear();
         }
         return result;
+    }
+
+    /**
+     * Reads the newest URL name which is mapped to the given structure id.<p>
+     * 
+     * If the structure id is not mapped to any name, null will be returned.<p>
+     *
+     * @param context the request context 
+     * @param id the structure id for which the newest mapped name should be returned
+     * 
+     * @return an URL name or null
+     *  
+     * @throws CmsException if something goes wrong 
+     */
+    public String readNewestUrlNameForId(CmsRequestContext context, CmsUUID id) throws CmsException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            return m_driverManager.readNewestUrlNameForId(dbc, id);
+        } catch (Exception e) {
+            CmsMessageContainer message = Messages.get().container(
+                Messages.ERR_READ_NEWEST_URLNAME_FOR_ID_1,
+                id.toString());
+            dbc.report(null, message, e);
+            return null; // will never be reached 
+        } finally {
+            dbc.clear();
+        }
     }
 
     /**
@@ -5918,6 +5969,37 @@ public final class CmsSecurityManager {
                 resourceName,
                 linkParameter,
                 new Date(timestamp)), e);
+        } finally {
+            dbc.clear();
+        }
+    }
+
+    /**
+     * Writes a new URL name mapping for a given resource.<p>
+     * 
+     * The first name from the given sequence which is not already mapped to another resource will be used for 
+     * the URL name mapping.<p>
+     * 
+     * @param context the request context 
+     * @param nameSeq the sequence of URL name candidates  
+     * @param structureId the structure id which should be mapped to the name 
+     * @return the name which was actually mapped to the structure id
+     *  
+     * @throws CmsException if something goes wrong 
+     */
+    public String writeUrlNameMapping(CmsRequestContext context, Iterator<String> nameSeq, CmsUUID structureId)
+    throws CmsException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            return m_driverManager.writeUrlNameMapping(dbc, nameSeq, structureId);
+        } catch (Exception e) {
+            CmsMessageContainer message = Messages.get().container(
+                Messages.ERR_ADD_URLNAME_MAPPING_2,
+                nameSeq.toString(),
+                structureId.toString());
+            dbc.report(null, message, e);
+            return null;
         } finally {
             dbc.clear();
         }

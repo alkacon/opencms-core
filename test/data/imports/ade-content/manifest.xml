@@ -506,5 +506,20 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+		<file>
+			<source>sites/default/contents/content_0003.xml</source>
+			<destination>sites/default/contents/content_0003.xml</destination>
+			<type>xmlcontent</type>
+			<uuidstructure>a88effb6-6375-49c1-9453-8c65b24307e1</uuidstructure>
+			<uuidresource>a88effb7-6375-49c1-9453-8c65b24307e1</uuidresource>
+			<datelastmodified>Wed, 13 Oct 2010 08:52:23 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 13 Oct 2010 08:21:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
 	</files>
 </export>

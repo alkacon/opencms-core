@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2010/10/26 13:14:54 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/11/11 13:08:18 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -11,7 +11,7 @@
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version. 
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -37,11 +37,16 @@ import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDbEntryNotFoundException;
 import org.opencms.db.CmsDbSqlException;
 import org.opencms.db.CmsDriverManager;
+import org.opencms.db.CmsPreparedStatementIntParameter;
+import org.opencms.db.CmsPreparedStatementStringParameter;
 import org.opencms.db.CmsResourceState;
 import org.opencms.db.CmsVfsOnlineResourceAlreadyExistsException;
 import org.opencms.db.I_CmsDriver;
+import org.opencms.db.I_CmsPreparedStatementParameter;
 import org.opencms.db.I_CmsProjectDriver;
 import org.opencms.db.I_CmsVfsDriver;
+import org.opencms.db.urlname.CmsUrlNameMappingEntry;
+import org.opencms.db.urlname.CmsUrlNameMappingFilter;
 import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsFolder;
@@ -67,6 +72,7 @@ import org.opencms.relations.CmsRelationType;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsFileUtil;
+import org.opencms.util.CmsPair;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -77,6 +83,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -92,7 +99,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 6.0.0 
  */
@@ -104,6 +111,12 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     /** The driver manager. */
     protected CmsDriverManager m_driverManager;
 
+    /** Contains the macro replacement value for the offline project. */
+    protected static final String OFFLINE = "OFFLINE";
+
+    /** Contains the macro replacement value for the online project. */
+    protected static final String ONLINE = "ONLINE";
+
     /** 
      * This field is temporarily used to compute the versions during publishing.<p>
      * 
@@ -113,6 +126,47 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
     /** The sql manager. */
     protected org.opencms.db.generic.CmsSqlManager m_sqlManager;
+
+    /**
+     * This method prepares the SQL conditions for mapping entries for a given URL name mapping filter.<p>
+     * 
+     * @param filter the filter from which the SQL conditions should be generated 
+     * 
+     * @return a pair consisting of an SQL string and a list of the prepared statement parameters for the SQL 
+     */
+    public static CmsPair<String, List<I_CmsPreparedStatementParameter>> prepareUrlNameMappingConditions(
+        CmsUrlNameMappingFilter filter) {
+
+        List<String> sqlConditions = new ArrayList<String>();
+        List<I_CmsPreparedStatementParameter> parameters = new ArrayList<I_CmsPreparedStatementParameter>();
+        if (filter.getName() != null) {
+            sqlConditions.add("NAME = ?");
+            parameters.add(new CmsPreparedStatementStringParameter(filter.getName()));
+        }
+
+        if (filter.getStructureId() != null) {
+            sqlConditions.add("STRUCTURE_ID = ?");
+            parameters.add(new CmsPreparedStatementStringParameter(filter.getStructureId().toString()));
+        }
+
+        if (filter.getNamePattern() != null) {
+            sqlConditions.add(" NAME LIKE ? ");
+            parameters.add(new CmsPreparedStatementStringParameter(filter.getNamePattern()));
+        }
+
+        if (filter.getState() != null) {
+            sqlConditions.add("STATE = ?");
+            parameters.add(new CmsPreparedStatementIntParameter(filter.getState().intValue()));
+        }
+
+        if (filter.getRejectStructureId() != null) {
+            sqlConditions.add(" STRUCTURE_ID <> ? ");
+            parameters.add(new CmsPreparedStatementStringParameter(filter.getRejectStructureId().toString()));
+        }
+
+        String conditionString = CmsStringUtil.listAsString(sqlConditions, " AND ");
+        return CmsPair.create(conditionString, parameters);
+    }
 
     /**
      * Escapes the database wildcards within the resource path.<p>
@@ -134,6 +188,31 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     }
 
     /**
+     * @see org.opencms.db.I_CmsVfsDriver#addUrlNameMappingEntry(org.opencms.db.CmsDbContext, boolean, org.opencms.db.urlname.CmsUrlNameMappingEntry)
+     */
+    public void addUrlNameMappingEntry(CmsDbContext dbc, boolean online, CmsUrlNameMappingEntry entry)
+    throws CmsDataAccessException {
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        String query = m_sqlManager.readQuery("C_ADD_URLNAME_MAPPING");
+        query = replaceProject(query, online);
+        try {
+            conn = m_sqlManager.getConnection(dbc);
+            stmt = m_sqlManager.getPreparedStatementForSql(conn, query);
+            stmt.setString(1, entry.getName());
+            stmt.setString(2, entry.getStructureId().toString());
+            stmt.setInt(3, entry.getState());
+            stmt.setLong(4, entry.getDateChanged());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw wrapException(stmt, e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, null);
+        }
+    }
+
+    /**
      * Counts the number of siblings of a resource.<p>
      * 
      * @param dbc the current database context
@@ -141,7 +220,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
      * @param resourceId the resource id to count the number of siblings from
      * 
      * @return number of siblings
-     * @throws CmsDataAccessException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong 
      */
     public int countSiblings(CmsDbContext dbc, CmsUUID projectId, CmsUUID resourceId) throws CmsDataAccessException {
 
@@ -175,8 +254,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#createContent(CmsDbContext, CmsUUID, CmsUUID, byte[])
-     */
+    * @see org.opencms.db.I_CmsVfsDriver#createContent(CmsDbContext, CmsUUID, CmsUUID, byte[])
+    */
     public void createContent(CmsDbContext dbc, CmsUUID projectId, CmsUUID resourceId, byte[] content)
     throws CmsDataAccessException {
 
@@ -1035,6 +1114,27 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     }
 
     /**
+     * @see org.opencms.db.I_CmsVfsDriver#deleteUrlNameMappingEntries(org.opencms.db.CmsDbContext, boolean, org.opencms.db.urlname.CmsUrlNameMappingFilter)
+     */
+    public void deleteUrlNameMappingEntries(CmsDbContext dbc, boolean online, CmsUrlNameMappingFilter filter)
+    throws CmsDataAccessException {
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = m_sqlManager.getConnection(dbc);
+            String query = m_sqlManager.readQuery("C_DELETE_URLNAME_MAPPINGS");
+            query = replaceProject(query, online);
+            stmt = getPreparedStatementForFilter(conn, query, filter);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw wrapException(stmt, e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, null);
+        }
+    }
+
+    /**
      * @see org.opencms.db.I_CmsVfsDriver#destroy()
      */
     public void destroy() throws Throwable {
@@ -1045,23 +1145,6 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SHUTDOWN_DRIVER_1, getClass().getName()));
         }
-    }
-
-    /**
-     * @see org.opencms.db.I_CmsVfsDriver#getNextResourceTypeCounterValue(org.opencms.db.CmsDbContext, java.lang.String)
-     */
-    public int getNextResourceTypeCounterValue(CmsDbContext dbc, String resourceType) throws CmsDataAccessException {
-
-        Integer counterObj = internalReadResourceTypeCounter(dbc, resourceType);
-        int result;
-        if (counterObj == null) {
-            internalCreateResourceTypeCounter(dbc, resourceType);
-            result = 0;
-        } else {
-            result = counterObj.intValue();
-            internalUpdateResourceTypeCounter(dbc, resourceType);
-        }
-        return result;
     }
 
     /**
@@ -1125,6 +1208,23 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     public CmsSqlManager getSqlManager() {
 
         return m_sqlManager;
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsVfsDriver#incrementCounter(org.opencms.db.CmsDbContext, java.lang.String)
+     */
+    public int incrementCounter(CmsDbContext dbc, String name) throws CmsDataAccessException {
+
+        Integer counterObj = internalReadCounter(dbc, name);
+        int result;
+        if (counterObj == null) {
+            internalCreateCounter(dbc, name, 1);
+            result = 0;
+        } else {
+            result = counterObj.intValue();
+            internalIncrementCounter(dbc, name);
+        }
+        return result;
     }
 
     /**
@@ -1650,6 +1750,37 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
         return folder;
 
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsVfsDriver#readNewestUrlNameForId(org.opencms.db.CmsDbContext, org.opencms.util.CmsUUID)
+     */
+    public String readNewestUrlNameForId(CmsDbContext dbc, CmsUUID id) throws CmsDataAccessException {
+
+        List<CmsUrlNameMappingEntry> entries = readUrlNameMappingEntries(
+            dbc,
+            dbc.currentProject().isOnlineProject(),
+            CmsUrlNameMappingFilter.ALL.filterStructureId(id));
+        if (entries.isEmpty()) {
+            return null;
+        }
+        Collections.sort(entries, new Comparator<CmsUrlNameMappingEntry>() {
+
+            public int compare(CmsUrlNameMappingEntry o1, CmsUrlNameMappingEntry o2) {
+
+                long date1 = o1.getDateChanged();
+                long date2 = o2.getDateChanged();
+                if (date1 < date2) {
+                    return -1;
+                }
+                if (date1 > date2) {
+                    return +1;
+                }
+                return 0;
+            }
+        });
+        CmsUrlNameMappingEntry lastEntry = entries.get(entries.size() - 1);
+        return lastEntry.getName();
     }
 
     /**
@@ -2361,6 +2492,44 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         }
 
         return vfsLinks;
+    }
+
+    /**
+     * Reads the URL name mapping entries which match a given filter.<p>
+     * 
+     * @param dbc the database context 
+     * @param online if true, reads from the online mapping, else from the offline mapping 
+     * @param filter the filter which the entries to be read should match 
+     * 
+     * @return the mapping entries which match the given filter 
+     * 
+     * @throws CmsDataAccessException if something goes wrong 
+     */
+    public List<CmsUrlNameMappingEntry> readUrlNameMappingEntries(
+        CmsDbContext dbc,
+        boolean online,
+        CmsUrlNameMappingFilter filter) throws CmsDataAccessException {
+
+        Connection conn = null;
+        ResultSet resultSet = null;
+        PreparedStatement stmt = null;
+        List<CmsUrlNameMappingEntry> result = new ArrayList<CmsUrlNameMappingEntry>();
+        try {
+            conn = m_sqlManager.getConnection(dbc);
+            String query = m_sqlManager.readQuery("C_READ_URLNAME_MAPPINGS");
+            query = replaceProject(query, online);
+            stmt = getPreparedStatementForFilter(conn, query, filter);
+            resultSet = stmt.executeQuery();
+            while (resultSet.next()) {
+                CmsUrlNameMappingEntry entry = internalCreateUrlNameMappingEntry(resultSet);
+                result.add(entry);
+            }
+            return result;
+        } catch (SQLException e) {
+            throw wrapException(stmt, e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, resultSet);
+        }
     }
 
     /**
@@ -3262,29 +3431,106 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     }
 
     /**
-     * Creates the counter for a given resource type.<p>
+     * Creates a new counter.<p>
      * 
      * @param dbc the database context 
-     * @param resourceType the resource type for which a counter should be created 
+     * @param name the name of the counter to create 
+     * @param value the inital value of the counter  
      * 
      * @throws CmsDbSqlException if something goes wrong 
      */
-    protected void internalCreateResourceTypeCounter(CmsDbContext dbc, String resourceType) throws CmsDbSqlException {
+    protected void internalCreateCounter(CmsDbContext dbc, String name, int value) throws CmsDbSqlException {
 
         PreparedStatement stmt = null;
         Connection conn = null;
         try {
             conn = m_sqlManager.getConnection(dbc);
-            stmt = m_sqlManager.getPreparedStatement(
-                conn,
-                CmsProject.ONLINE_PROJECT_ID,
-                "C_CREATE_RESOURCE_TYPE_COUNTER");
-            stmt.setString(1, resourceType);
+            stmt = m_sqlManager.getPreparedStatement(conn, CmsProject.ONLINE_PROJECT_ID, "C_CREATE_COUNTER");
+            stmt.setString(1, name);
+            stmt.setInt(2, value);
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw wrapException(stmt, e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
+        }
+    }
+
+    /**
+     * Creates an URL name mapping entry from a result set.<p>
+     * 
+     * @param resultSet a result set 
+     * @return the URL name mapping entry created from the result set 
+     * 
+     * @throws SQLException if something goes wrong 
+     */
+    protected CmsUrlNameMappingEntry internalCreateUrlNameMappingEntry(ResultSet resultSet) throws SQLException {
+
+        String name = resultSet.getString(1);
+        CmsUUID structureId = new CmsUUID(resultSet.getString(2));
+        int state = resultSet.getInt(3);
+        long dateChanged = resultSet.getLong(4);
+        return new CmsUrlNameMappingEntry(name, structureId, state, dateChanged);
+    }
+
+    /**
+     * Increments a counter.<p>
+     *  
+     * @param dbc the current db context 
+     * @param name the name of the counter which should be incremented  
+     * 
+     * @throws CmsDbSqlException if something goes wrong 
+     */
+    protected void internalIncrementCounter(CmsDbContext dbc, String name) throws CmsDbSqlException {
+
+        PreparedStatement stmt = null;
+        Connection conn = null;
+        ResultSet resultSet = null;
+        try {
+            conn = m_sqlManager.getConnection(dbc);
+            stmt = m_sqlManager.getPreparedStatement(conn, CmsProject.ONLINE_PROJECT_ID, "C_INCREMENT_COUNTER");
+            stmt.setString(1, name);
+            stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            throw wrapException(stmt, e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, resultSet);
+        }
+    }
+
+    /**
+     * Reads the current value of a counter.<p>
+     * 
+     * @param dbc the database context 
+     * @param name the name of the counter 
+     * @return the current value of the  counter, or null if the counter was not found 
+     * 
+     * @throws CmsDbSqlException if something goes wrong
+     */
+    protected Integer internalReadCounter(CmsDbContext dbc, String name) throws CmsDbSqlException {
+
+        PreparedStatement stmt = null;
+        Connection conn = null;
+        ResultSet resultSet = null;
+        try {
+            conn = m_sqlManager.getConnection(dbc);
+            stmt = m_sqlManager.getPreparedStatement(conn, CmsProject.ONLINE_PROJECT_ID, "C_READ_COUNTER");
+            stmt.setString(1, name);
+            resultSet = stmt.executeQuery();
+            Integer result = null;
+            if (resultSet.next()) {
+                int counter = resultSet.getInt(1);
+                result = new Integer(counter);
+                while (resultSet.next()) {
+                    // for MSSQL 
+                }
+            }
+            return result;
+        } catch (SQLException e) {
+            throw wrapException(stmt, e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, resultSet);
         }
     }
 
@@ -3401,41 +3647,6 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     }
 
     /**
-     * Reads the current value of a resource type counter.<p>
-     * 
-     * @param dbc the database context 
-     * @param resourceType the name of the resource type whose counter should be read 
-     * @return the current value of the resource type counter, or null if no resource type counter was found 
-     * 
-     * @throws CmsDbSqlException if something goes wrong
-     */
-    protected Integer internalReadResourceTypeCounter(CmsDbContext dbc, String resourceType) throws CmsDbSqlException {
-
-        PreparedStatement stmt = null;
-        Connection conn = null;
-        ResultSet resultSet = null;
-        try {
-            conn = m_sqlManager.getConnection(dbc);
-            stmt = m_sqlManager.getPreparedStatement(conn, CmsProject.ONLINE_PROJECT_ID, "C_READ_RESOURCE_TYPE_COUNTER");
-            stmt.setString(1, resourceType);
-            resultSet = stmt.executeQuery();
-            Integer result = null;
-            if (resultSet.next()) {
-                int counter = resultSet.getInt(1);
-                result = new Integer(counter);
-                while (resultSet.next()) {
-                    // for MSSQL 
-                }
-            }
-            return result;
-        } catch (SQLException e) {
-            throw wrapException(stmt, e);
-        } finally {
-            m_sqlManager.closeAll(dbc, conn, stmt, resultSet);
-        }
-    }
-
-    /**
      * Returns the structure state of the given resource.<p>
      * 
      * @param dbc the database context
@@ -3510,35 +3721,6 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
-        }
-    }
-
-    /**
-     * Increments the counter for a given resource type.<p>
-     *  
-     * @param dbc the current db context 
-     * @param resourceType the resource type for which the counter should be increased 
-     * 
-     * @throws CmsDbSqlException if something goes wrong 
-     */
-    protected void internalUpdateResourceTypeCounter(CmsDbContext dbc, String resourceType) throws CmsDbSqlException {
-
-        PreparedStatement stmt = null;
-        Connection conn = null;
-        ResultSet resultSet = null;
-        try {
-            conn = m_sqlManager.getConnection(dbc);
-            stmt = m_sqlManager.getPreparedStatement(
-                conn,
-                CmsProject.ONLINE_PROJECT_ID,
-                "C_UPDATE_RESOURCE_TYPE_COUNTER");
-            stmt.setString(1, resourceType);
-            stmt.executeUpdate();
-
-        } catch (SQLException e) {
-            throw wrapException(stmt, e);
-        } finally {
-            m_sqlManager.closeAll(dbc, conn, stmt, resultSet);
         }
     }
 
@@ -4222,6 +4404,53 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         return new CmsDbSqlException(Messages.get().container(
             Messages.ERR_GENERIC_SQL_1,
             CmsDbSqlException.getErrorQuery(stmt)), e);
+    }
+
+    /**
+     * Creates a prepared statement by combining a base query with the generated SQL conditions for a given
+     * URL name mapping filter.<p>
+     *  
+     * @param conn the connection to use for creating the prepared statement 
+     * @param baseQuery the base query to which the conditions should be appended 
+     * @param filter the filter from which to generate the conditions 
+     * 
+     * @return the created prepared statement 
+     * 
+     * @throws SQLException if something goes wrong 
+     */
+    PreparedStatement getPreparedStatementForFilter(Connection conn, String baseQuery, CmsUrlNameMappingFilter filter)
+    throws SQLException {
+
+        CmsPair<String, List<I_CmsPreparedStatementParameter>> conditionData = prepareUrlNameMappingConditions(filter);
+        String whereClause = "";
+        if (!conditionData.getFirst().equals("")) {
+            whereClause = " WHERE " + conditionData.getFirst();
+        }
+        String query = baseQuery + whereClause;
+        PreparedStatement stmt = m_sqlManager.getPreparedStatementForSql(conn, query);
+        int counter = 1;
+        for (I_CmsPreparedStatementParameter param : conditionData.getSecond()) {
+            param.insertIntoStatement(stmt, counter);
+            counter += 1;
+        }
+        return stmt;
+    }
+
+    /**
+     * Replaces the %(PROJECT) macro inside a query with either ONLINE or OFFLINE, depending on the value 
+     * of a flag.<p>
+     * 
+     * We use this instead of the ${PROJECT} replacement mechanism when we need explicit control over the 
+     * project, and don't want to implicitly use the project of the DB context.<p>
+     * 
+     * @param query the query in which the macro should be replaced 
+     * @param online if true, the macro will be replaced with "ONLINE", else "OFFLINE"
+     * 
+     * @return the query with the replaced macro 
+     */
+    private String replaceProject(String query, boolean online) {
+
+        return query.replace("%(PROJECT)", online ? ONLINE : OFFLINE);
     }
 
 }

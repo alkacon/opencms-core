@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2010/10/26 13:14:54 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/11/11 13:08:18 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,9 +63,11 @@ import org.opencms.security.I_CmsPermissionHandler;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
+import org.opencms.xml.content.CmsNumberSuffixNameSequence;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -96,7 +98,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 6.0.0 
  */
@@ -1220,19 +1222,6 @@ public final class CmsObject {
     }
 
     /**
-     * Returns the next counter value for a given resource type and increments that counter.<p>
-     * 
-     * @param resourceType the resource type for which the counter value should be returned 
-     * @return the next value of the counter 
-     * 
-     * @throws CmsException if something goes wrong 
-     */
-    public int getNextResourceTypeCounterValue(String resourceType) throws CmsException {
-
-        return m_securityManager.getNextResourceTypeCounterValue(m_context, resourceType);
-    }
-
-    /**
      * Returns the parent group of a group.<p>
      *
      * @param groupname the name of the group
@@ -1630,6 +1619,20 @@ public final class CmsObject {
             flags,
             dateCreated,
             additionalInfos);
+    }
+
+    /**
+     * Increments a counter and returns its old value.<p>
+     * 
+     * @param name the name of the counter 
+     *  
+     * @return the value of the counter before incrementing 
+     *    
+     * @throws CmsException if something goes wrong 
+     */
+    public int incrementCounter(String name) throws CmsException {
+
+        return m_securityManager.incrementCounter(m_context, name);
     }
 
     /**
@@ -2161,6 +2164,26 @@ public final class CmsObject {
     }
 
     /**
+     * This method retrieves the structure id which is mapped to a given URL name.<p>
+     * 
+     * If there is no structure id mapped to the given name, null will be returned.<p>
+     * 
+     * However if the parameter is a string which represents a valid uuid, it will be directly returned as a {@link CmsUUID} instance.<p> 
+     * 
+     * @param name the url name  
+     * @return the id which is mapped to the URL name 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public CmsUUID readIdForUrlName(String name) throws CmsException {
+
+        if (CmsUUID.isValidUUID(name)) {
+            return new CmsUUID(name);
+        }
+        return m_securityManager.readIdForUrlName(m_context, name);
+    }
+
+    /**
      * Returns the project manager group of a project.<p>
      *
      * @param project the project
@@ -2170,6 +2193,20 @@ public final class CmsObject {
     public CmsGroup readManagerGroup(CmsProject project) {
 
         return m_securityManager.readManagerGroup(m_context, project);
+    }
+
+    /**
+     * Reads the newest URL name which is mapped to the given structure id.<p>
+     * 
+     * If the structure id is not mapped to any name, null will be returned.<p>
+     * 
+     * @param id the structure id for which the newest mapped name should be returned
+     * @return an URL name or null 
+     * @throws CmsException if something goes wrong 
+     */
+    public String readNewestUrlNameForId(CmsUUID id) throws CmsException {
+
+        return m_securityManager.readNewestUrlNameForId(m_context, id);
     }
 
     /**
@@ -3281,6 +3318,42 @@ public final class CmsObject {
     }
 
     /**
+     * Writes a new URL name mapping for a given resource.<p>
+     * 
+     * The first name from the given name sequence which is not already mapped to another resource will be used
+     * for the URL name mapping.<p>
+     * 
+     * @param nameSeq an iterator for generating names for the mapping   
+     * @param structureId the structure id to which the name should be mapped
+     *   
+     * @return the name which was actually mapped to the structure id
+     *  
+     * @throws CmsException if something goes wrong 
+     */
+    public String writeUrlNameMapping(Iterator<String> nameSeq, CmsUUID structureId) throws CmsException {
+
+        return m_securityManager.writeUrlNameMapping(m_context, nameSeq, structureId);
+    }
+
+    /**
+     * Writes a new URL name mapping for a given resource.<p>
+     * 
+     * This method uses {@link CmsNumberSuffixNameSequence} to generate a sequence of name candidates 
+     * from the given base name.<p>
+     * 
+     * @param name the base name for the mapping 
+     * @param structureId the structure id to which the name should be mapped
+     *  
+     * @return the URL name that was actually used for the mapping
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public String writeUrlNameMapping(String name, CmsUUID structureId) throws CmsException {
+
+        return writeUrlNameMapping(new CmsNumberSuffixNameSequence(name), structureId);
+    }
+
+    /**
      * Updates the user information. <p>
      * 
      * The user id has to be a valid OpenCms user id.<br>
@@ -3411,4 +3484,5 @@ public final class CmsObject {
         CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
         getResourceType(resource).lockResource(this, m_securityManager, resource, type);
     }
+
 }

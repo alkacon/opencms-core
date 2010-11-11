@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsDefaultContainerPageNameGenerator.java,v $
- * Date   : $Date: 2010/10/28 07:38:56 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/11/11 13:08:18 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import org.apache.commons.collections.Factory;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -75,6 +75,8 @@ public class CmsDefaultContainerPageNameGenerator implements I_CmsContainerPageN
         nicePath = nicePath.replace('/', '_');
         String niceTitle = OpenCms.getResourceManager().getFileTranslator().translateResource(m_title);
         niceTitle = niceTitle.replace('/', '_');
+        // we don't want to increment the counter if the macro isn't actually used, so 
+        // we use a dynamic macro.
         resolver.addDynamicMacro("number", new Factory() {
 
             /**
@@ -84,7 +86,7 @@ public class CmsDefaultContainerPageNameGenerator implements I_CmsContainerPageN
 
                 try {
                     PrintfFormat fmt = new PrintfFormat("%0.6d");
-                    String result = fmt.sprintf(m_cms.getNextResourceTypeCounterValue(CmsResourceTypeXmlContainerPage.getStaticTypeName()));
+                    String result = fmt.sprintf(m_cms.incrementCounter(CmsResourceTypeXmlContainerPage.getStaticTypeName()));
                     return result;
                 } catch (CmsException e) {
                     throw new RuntimeException(e);

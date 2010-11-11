@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsInternalSitemapEntry.java,v $
- * Date   : $Date: 2010/10/14 13:06:51 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/11/11 13:08:18 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 8.0 
  */
@@ -80,7 +80,8 @@ public class CmsInternalSitemapEntry extends CmsSitemapEntry {
             entry.isRootEntry(),
             entry.getNewProperties(),
             entry.getSubEntries(),
-            entry.getContentId());
+            entry.getContentId(),
+            entry.getContentName());
 
         setRuntimeInfo("", entry.getPosition(), entry.getComputedProperties());
 
@@ -112,6 +113,7 @@ public class CmsInternalSitemapEntry extends CmsSitemapEntry {
      * @param properties the properties as a map of name/value pairs
      * @param subEntries the list of sub-entries
      * @param contentId optional content id
+     * @param contentName optional content name 
      **/
     public CmsInternalSitemapEntry(
         CmsUUID id,
@@ -122,9 +124,10 @@ public class CmsInternalSitemapEntry extends CmsSitemapEntry {
         boolean isRootEntry,
         Map<String, CmsSimplePropertyValue> properties,
         List<CmsInternalSitemapEntry> subEntries,
-        CmsUUID contentId) {
+        CmsUUID contentId,
+        String contentName) {
 
-        super(id, originalUri, resourceId, name, title, isRootEntry, properties, null, contentId);
+        super(id, originalUri, resourceId, name, title, isRootEntry, properties, null, contentId, contentName);
         m_subEntries = (subEntries == null
         ? Collections.<CmsInternalSitemapEntry> emptyList()
         : Collections.unmodifiableList(subEntries));
@@ -152,6 +155,7 @@ public class CmsInternalSitemapEntry extends CmsSitemapEntry {
             false,
             null,
             null,
+            null,
             null);
     }
 
@@ -177,7 +181,7 @@ public class CmsInternalSitemapEntry extends CmsSitemapEntry {
         sb.append(getEntryPoint());
         sb.append(getOriginalUri());
         if (getContentId() != null) {
-            sb.append(getContentId()).append('/');
+            sb.append(getContentName()).append('/');
         }
         return sb.toString();
     }
