@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsDefaultContainerPageNameGenerator.java,v $
- * Date   : $Date: 2010/11/11 13:08:18 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/11/11 14:12:15 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.xml.sitemap;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
@@ -45,7 +46,7 @@ import org.apache.commons.collections.Factory;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -69,6 +70,8 @@ public class CmsDefaultContainerPageNameGenerator implements I_CmsContainerPageN
     public String getNextName() throws CmsException {
 
         CmsMacroResolver resolver = new CmsMacroResolver();
+        String name = CmsResource.getName(m_sitePath);
+        String niceName = OpenCms.getResourceManager().getFileTranslator().translateResource(name);
         String nicePath = OpenCms.getResourceManager().getFileTranslator().translateResource(m_sitePath);
         nicePath = nicePath.replaceAll("/$", "");
         nicePath = nicePath.replaceAll("^/", "");
@@ -96,6 +99,7 @@ public class CmsDefaultContainerPageNameGenerator implements I_CmsContainerPageN
         });
         resolver.addMacro("sitepath", nicePath);
         resolver.addMacro("title", niceTitle);
+        resolver.addMacro("name", niceName);
         try {
             return resolver.resolveMacros(m_pattern);
         } catch (RuntimeException e) {
