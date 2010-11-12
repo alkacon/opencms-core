@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsToolbarPropertiesButton.java,v $
- * Date   : $Date: 2010/09/30 13:32:25 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/11/12 07:42:48 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.0
  */
@@ -63,6 +63,15 @@ public class CmsToolbarPropertiesButton extends A_CmsToolbarOptionButton {
      */
     @Override
     public boolean hasPermissions(CmsContainerPageElement element) {
+
+        return true;
+    }
+
+    /**
+     * @see org.opencms.ade.containerpage.client.ui.A_CmsToolbarOptionButton#isOptionAvailable(org.opencms.ade.containerpage.client.ui.CmsContainerPageElement)
+     */
+    @Override
+    public boolean isOptionAvailable(CmsContainerPageElement element) {
 
         return element.hasProperties();
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsElementOptionBar.java,v $
- * Date   : $Date: 2010/09/30 13:32:25 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/11/12 07:42:48 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -126,6 +126,9 @@ public class CmsElementOptionBar extends Composite implements HasMouseOverHandle
         if (buttons != null) {
             for (int i = 0; i < buttons.length; i++) {
                 CmsElementOptionButton option = buttons[i].createOptionForElement(element);
+                if (option == null) {
+                    continue;
+                }
                 optionBar.add(option);
                 if (buttons[i] instanceof CmsToolbarMoveButton) {
                     option.addMouseDownHandler(dndHandler);

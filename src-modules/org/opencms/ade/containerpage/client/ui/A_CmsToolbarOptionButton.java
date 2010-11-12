@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/A_CmsToolbarOptionButton.java,v $
- * Date   : $Date: 2010/09/30 13:32:25 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/11/12 07:42:48 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -75,6 +75,7 @@ public abstract class A_CmsToolbarOptionButton extends A_CmsToolbarButton {
 
     /**
      * Creates an element options button associated with this button and assigns the click-handler.<p>
+     * If this method returns null, no option button should be shown.<p> 
      * 
      * @param element the element to create the button for
      * 
@@ -82,6 +83,9 @@ public abstract class A_CmsToolbarOptionButton extends A_CmsToolbarButton {
      */
     public CmsElementOptionButton createOptionForElement(CmsContainerPageElement element) {
 
+        if (!isOptionAvailable(element)) {
+            return null;
+        }
         CmsElementOptionButton button = new CmsElementOptionButton(this, element);
         button.addClickHandler(m_elementClickHandler);
         button.setEnabled(hasPermissions(element));
@@ -98,6 +102,17 @@ public abstract class A_CmsToolbarOptionButton extends A_CmsToolbarButton {
      * @return <code>true</code> if the user has permissions
      */
     public abstract boolean hasPermissions(CmsContainerPageElement element);
+
+    /**
+     * Checks whether an option button should be shown for a container page element.<p>
+     * 
+     * @param element a container page element
+     * @return true if the option should be shown for the given element 
+     */
+    public boolean isOptionAvailable(CmsContainerPageElement element) {
+
+        return true;
+    }
 
     /**
      * Method is executed when the element option button is clicked.<p>
