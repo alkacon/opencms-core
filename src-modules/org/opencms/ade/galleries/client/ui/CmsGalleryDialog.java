@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsGalleryDialog.java,v $
- * Date   : $Date: 2010/10/29 12:18:49 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2010/11/12 13:48:38 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,8 +44,8 @@ import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
-import org.opencms.gwt.client.ui.CmsTabbedPanel.CmsTabLayout;
 import org.opencms.gwt.client.ui.I_CmsAutoHider;
+import org.opencms.gwt.client.ui.CmsTabbedPanel.CmsTabLayout;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -64,13 +64,14 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.HasText;
 
 /**
  * Provides the method for the gallery dialog.<p>
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.34 $
+ * @version $Revision: 1.35 $
  * 
  * @since 8.0.
  */
@@ -117,7 +118,7 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
     private CmsSitemapTab m_sitemapTab;
 
     /** The tabbed panel. */
-    private CmsTabbedPanel<A_CmsTab> m_tabbedPanel;
+    protected CmsTabbedPanel<A_CmsTab> m_tabbedPanel;
 
     /** The types tab. */
     private CmsTypesTab m_typesTab;
@@ -212,31 +213,38 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
      */
     public void fillTabs(GalleryTabId[] tabIds, CmsGalleryController controller) {
 
-        for (int i = 0; i < tabIds.length; i++) {
+        int i;
+        for (i = 0; i < tabIds.length; i++) {
             switch (tabIds[i]) {
                 case cms_tab_types:
                     m_typesTab = new CmsTypesTab(new CmsTypesTabHandler(controller), m_dndHandler);
+                    m_typesTab.setTabTextAccessor(getTabTextAccessor(i));
                     m_tabbedPanel.add(m_typesTab, Messages.get().key(Messages.GUI_TAB_TITLE_TYPES_0));
                     break;
                 case cms_tab_galleries:
                     m_galleriesTab = new CmsGalleriesTab(new CmsGalleriesTabHandler(controller));
+                    m_galleriesTab.setTabTextAccessor(getTabTextAccessor(i));
                     m_tabbedPanel.add(m_galleriesTab, Messages.get().key(Messages.GUI_TAB_TITLE_GALLERIES_0));
                     break;
                 case cms_tab_categories:
                     m_categoriesTab = new CmsCategoriesTab(new CmsCategoriesTabHandler(controller));
+                    m_categoriesTab.setTabTextAccessor(getTabTextAccessor(i));
                     m_tabbedPanel.add(m_categoriesTab, Messages.get().key(Messages.GUI_TAB_TITLE_CATEGORIES_0));
                     break;
                 case cms_tab_search:
                     m_searchTab = new CmsSearchTab(new CmsSearchTabHandler(controller), m_autoHideParent);
+                    m_searchTab.setTabTextAccessor(getTabTextAccessor(i));
                     m_tabbedPanel.add(m_searchTab, Messages.get().key(Messages.GUI_TAB_TITLE_SEARCH_0));
                     break;
                 case cms_tab_sitemap:
                     m_sitemapTab = new CmsSitemapTab(new CmsSitemapTabHandler(controller));
+                    m_sitemapTab.setTabTextAccessor(getTabTextAccessor(i));
                     m_tabbedPanel.add(m_sitemapTab, Messages.get().key(Messages.GUI_TAB_TITLE_SITEMAP_0));
 
                     break;
                 case cms_tab_vfstree:
                     m_vfsTab = new CmsVfsTab(new CmsVfsTabHandler(controller));
+                    m_vfsTab.setTabTextAccessor(getTabTextAccessor(i));
                     m_tabbedPanel.add(m_vfsTab, Messages.get().key(Messages.GUI_TAB_TITLE_VFS_0));
                     break;
 
@@ -245,6 +253,7 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
             }
         }
         m_resultsTab = new CmsResultsTab(new CmsResultsTabHandler(controller), m_dndHandler);
+        m_resultsTab.setTabTextAccessor(getTabTextAccessor(i));
         m_tabbedPanel.addWithLeftMargin(m_resultsTab, Messages.get().key(Messages.GUI_TAB_TITLE_RESULTS_0));
         m_tabbedPanel.addBeforeSelectionHandler(this);
         m_tabbedPanel.addSelectionHandler(this);
@@ -347,6 +356,12 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
 
         // event.cancel(), if the tab selection should be canceled, the tab will not be selected 
         // Integer index = event.getItem(); the index of the selected tab               
+
+        int selectedIndex = m_tabbedPanel.getSelectedIndex();
+        int newIndex = event.getItem().intValue();
+        if (selectedIndex != newIndex) {
+            m_tabbedPanel.getWidget(selectedIndex).onDeselection();
+        }
     }
 
     /**
@@ -429,6 +444,37 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
     public void setOnAttachCommand(Command onAttachCommand) {
 
         m_onAttachCommand = onAttachCommand;
+    }
+
+    /**
+     * Creates a tab text accessor for a given text.<p>
+     * 
+     * @param pos the index of the tab 
+     * 
+     * @return the tab text accessor for the tab at index pos 
+     */
+    protected HasText getTabTextAccessor(final int pos) {
+
+        HasText tabText = new HasText() {
+
+            /**
+             * @see com.google.gwt.user.client.ui.HasText#getText()
+             */
+            public String getText() {
+
+                return m_tabbedPanel.getTabText(pos);
+
+            }
+
+            /**
+             * @see com.google.gwt.user.client.ui.HasText#setText(java.lang.String)
+             */
+            public void setText(String text) {
+
+                m_tabbedPanel.setTabText(pos, text);
+            }
+        };
+        return tabText;
     }
 
     /**

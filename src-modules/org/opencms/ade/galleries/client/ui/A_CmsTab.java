@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/A_CmsTab.java,v $
- * Date   : $Date: 2010/07/08 06:50:25 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/11/12 13:48:38 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,18 +36,23 @@ import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HasText;
 
 /**
  * A tab for the gallery dialog.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
 public abstract class A_CmsTab extends Composite {
 
+    /** The tab text accessor. */
+    protected HasText m_tabTextAccessor;
+
+    /** The tab id. */
     private GalleryTabId m_tabId;
 
     /**
@@ -88,11 +93,29 @@ public abstract class A_CmsTab extends Composite {
     }
 
     /**
+     * Will be triggered when a tab is deselected.<p>
+     */
+    public void onDeselection() {
+
+        getTabHandler().onDeselection();
+    }
+
+    /**
      * Will be triggered when a tab is selected.<p>
      */
     public void onSelection() {
 
         getTabHandler().onSelection();
+    }
+
+    /**
+     * Sets the tab text accessor for this tab.<p>
+     * 
+     * @param tabText the tab text accessor 
+     */
+    public void setTabTextAccessor(HasText tabText) {
+
+        m_tabTextAccessor = tabText;
     }
 
     /**

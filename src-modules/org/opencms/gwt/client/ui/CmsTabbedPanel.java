@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsTabbedPanel.java,v $
- * Date   : $Date: 2010/10/15 13:30:53 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/11/12 13:48:38 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 8.0.0
  * 
@@ -244,6 +244,18 @@ public class CmsTabbedPanel<E extends Widget> extends Composite {
     }
 
     /**
+     * Returns the tab text for a given tab.<p>
+     * 
+     * @param pos the index of the tab 
+     * 
+     * @return the text of the tab 
+     */
+    public String getTabText(int pos) {
+
+        return m_tabPanel.getTabWidget(pos).getElement().getInnerText();
+    }
+
+    /**
      * Gets the child widget at the specified index.<p>
      * 
      * Wrapper function for {@link com.google.gwt.user.client.ui.TabLayoutPanel#getWidget(int)}
@@ -314,5 +326,17 @@ public class CmsTabbedPanel<E extends Widget> extends Composite {
     public void selectTab(int tabIndex) {
 
         m_tabPanel.selectTab(tabIndex);
+    }
+
+    /**
+     * Sets the text of a given tab.<p>
+     * 
+     * @param pos the index of the tab 
+     * @param text the new text for the tab 
+     */
+    public void setTabText(int pos, String text) {
+
+        m_tabPanel.setTabText(pos, text);
+
     }
 }
