@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsToolbarRemoveButton.java,v $
- * Date   : $Date: 2010/09/30 13:32:25 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/11/12 10:56:23 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -65,6 +65,15 @@ public class CmsToolbarRemoveButton extends A_CmsToolbarOptionButton {
 
         // TODO: get permissions from element
         return true;
+    }
+
+    /**
+     * @see org.opencms.ade.containerpage.client.ui.A_CmsToolbarOptionButton#isOptionAvailable(org.opencms.ade.containerpage.client.ui.CmsContainerPageElement)
+     */
+    @Override
+    public boolean isOptionAvailable(CmsContainerPageElement element) {
+
+        return !element.getParentTarget().isDetailView();
     }
 
     /**

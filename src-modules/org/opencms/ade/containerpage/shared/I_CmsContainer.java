@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/shared/Attic/I_CmsContainer.java,v $
- * Date   : $Date: 2010/09/22 14:27:48 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/11/12 10:56:24 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,7 @@ package org.opencms.ade.containerpage.shared;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -90,9 +90,17 @@ public interface I_CmsContainer {
     int getWidth();
 
     /**
+     * Returns true if this container is used for the detail view. 
+     * 
+     * @return true if this is a detail view container
+     */
+    boolean isDetailView();
+
+    /**
      * Sets the elements contained in this container.<p>
      * 
      * @param elements the elements
      */
     void setElements(String[] elements);
+
 }

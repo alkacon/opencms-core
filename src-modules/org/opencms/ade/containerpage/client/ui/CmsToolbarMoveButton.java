@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsToolbarMoveButton.java,v $
- * Date   : $Date: 2010/09/30 13:32:25 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/11/12 10:56:24 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -70,7 +70,9 @@ public class CmsToolbarMoveButton extends A_CmsToolbarOptionButton {
     public CmsElementOptionButton createOptionForElement(CmsContainerPageElement element) {
 
         CmsElementOptionButton button = super.createOptionForElement(element);
-        button.addMouseDownHandler(m_dndHandler);
+        if (button != null) {
+            button.addMouseDownHandler(m_dndHandler);
+        }
         return button;
     }
 
@@ -82,6 +84,15 @@ public class CmsToolbarMoveButton extends A_CmsToolbarOptionButton {
 
         // TODO: get permissions from element
         return true;
+    }
+
+    /**
+     * @see org.opencms.ade.containerpage.client.ui.A_CmsToolbarOptionButton#isOptionAvailable(org.opencms.ade.containerpage.client.ui.CmsContainerPageElement)
+     */
+    @Override
+    public boolean isOptionAvailable(CmsContainerPageElement element) {
+
+        return !element.getParentTarget().isDetailView();
     }
 
     /**

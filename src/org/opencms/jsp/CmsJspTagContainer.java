@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContainer.java,v $
- * Date   : $Date: 2010/10/22 12:06:20 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2010/11/12 10:56:23 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.29 $ 
+ * @version $Revision: 1.30 $ 
  * 
  * @since 7.6 
  */
@@ -100,7 +100,9 @@ public class CmsJspTagContainer extends TagSupport {
         /** The container type. */
         type,
         /** The container width. */
-        width;
+        width,
+        /** Flag for the detail view container. */
+        isDetailView;
     }
 
     /** HTML class used to identify container elements. */
@@ -150,18 +152,21 @@ public class CmsJspTagContainer extends TagSupport {
      * 
      * @param container the container to get the data tag for
      * @param widthStr the width of the container as a string 
+     * @param isDetailView true if this container is currently being used for the detail view
      * 
      * @return html data tag for the given container
      *
      * @throws JSONException if there is a problem with JSON manipulation
      */
-    protected static String getCntDataTag(CmsContainerBean container, String widthStr) throws JSONException {
+    protected static String getCntDataTag(CmsContainerBean container, String widthStr, boolean isDetailView)
+    throws JSONException {
 
         // add container data for the editor
         JSONObject jsonContainer = new JSONObject();
-        jsonContainer.put(JsonContainer.name.name(), container.getName());
-        jsonContainer.put(JsonContainer.type.name(), container.getType());
-        jsonContainer.put(JsonContainer.maxElem.name(), container.getMaxElements());
+        jsonContainer.put(CmsContainerJsonKeys.NAME, container.getName());
+        jsonContainer.put(CmsContainerJsonKeys.TYPE, container.getType());
+        jsonContainer.put(CmsContainerJsonKeys.MAXELEMENTS, container.getMaxElements());
+        jsonContainer.put(CmsContainerJsonKeys.DETAILVIEW, isDetailView);
         int width = -1;
         try {
             if (widthStr != null) {
@@ -170,13 +175,13 @@ public class CmsJspTagContainer extends TagSupport {
         } catch (NumberFormatException e) {
             //ignore; set width to -1
         }
-        jsonContainer.put(JsonContainer.width.name(), width);
+        jsonContainer.put(CmsContainerJsonKeys.WIDTH, width);
 
         JSONArray jsonElements = new JSONArray();
         for (CmsContainerElementBean element : container.getElements()) {
             jsonElements.put(element.getClientId());
         }
-        jsonContainer.put(JsonContainer.elements.name(), jsonElements);
+        jsonContainer.put(CmsContainerJsonKeys.ELEMENTS, jsonElements);
         // the container meta data is added to the javascript window object by the following tag, used within the container-page editor 
         return new StringBuffer("<script type=\"text/javascript\">if (").append(KEY_CONTAINER_DATA).append("!=null) {").append(
             KEY_CONTAINER_DATA).append(".push(").append(jsonContainer.toString()).append("); } </script>").toString();
@@ -255,6 +260,12 @@ public class CmsJspTagContainer extends TagSupport {
         // get the container
         CmsContainerBean container = cntPage.getContainers().get(containerName);
         boolean isOnline = cms.getRequestContext().currentProject().isOnlineProject();
+
+        boolean isUsedAsDetailView = false;
+        CmsSitemapEntry sitemapEntry = OpenCms.getSitemapManager().getRuntimeInfo(req);
+        if (m_detailView && (sitemapEntry != null) && (sitemapEntry.getContentId() != null)) {
+            isUsedAsDetailView = true;
+        }
         if (container == null) {
             // container not found
             if (LOG.isDebugEnabled()) {
@@ -268,7 +279,10 @@ public class CmsJspTagContainer extends TagSupport {
                 // add container data for the editor
                 try {
                     pageContext.getOut().print(
-                        getCntDataTag(new CmsContainerBean(containerName, containerType, maxElements, null), width));
+                        getCntDataTag(
+                            new CmsContainerBean(containerName, containerType, maxElements, null),
+                            width,
+                            isUsedAsDetailView));
                 } catch (JSONException e) {
                     // should never happen
                     throw new JspException(e);
@@ -303,7 +317,10 @@ public class CmsJspTagContainer extends TagSupport {
             // add container data for the editor
             try {
                 pageContext.getOut().print(
-                    getCntDataTag(new CmsContainerBean(containerName, containerType, maxElements, allElems), width));
+                    getCntDataTag(
+                        new CmsContainerBean(containerName, containerType, maxElements, allElems),
+                        width,
+                        isUsedAsDetailView));
             } catch (JSONException e) {
                 // should never happen
                 throw new JspException(e);

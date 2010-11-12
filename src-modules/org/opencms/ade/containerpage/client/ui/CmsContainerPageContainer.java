@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsContainerPageContainer.java,v $
- * Date   : $Date: 2010/11/03 08:33:16 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/11/12 10:56:23 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,8 +33,8 @@ package org.opencms.ade.containerpage.client.ui;
 
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.containerpage.shared.I_CmsContainer;
-import org.opencms.gwt.client.dnd.CmsDNDHandler.Orientation;
 import org.opencms.gwt.client.dnd.I_CmsDraggable;
+import org.opencms.gwt.client.dnd.CmsDNDHandler.Orientation;
 import org.opencms.gwt.client.ui.CmsHighlightingBorder;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
@@ -55,7 +55,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -73,6 +73,7 @@ public class CmsContainerPageContainer implements I_CmsDropContainer, HasWidgets
     /** The maximum number of elements in this container. */
     private int m_maxElements;
 
+    /** The overflowing element. */
     private Widget m_overflowingElement;
 
     /** The drag and drop placeholder. */
@@ -83,6 +84,9 @@ public class CmsContainerPageContainer implements I_CmsDropContainer, HasWidgets
 
     /** This container wrapped in a {@link com.google.gwt.user.client.ui.RootPanel}. */
     private RootPanel m_root;
+
+    /** True if this is a detail view container. */
+    private boolean m_isDetailView;
 
     /**
      * Constructor.<p>
@@ -95,6 +99,7 @@ public class CmsContainerPageContainer implements I_CmsDropContainer, HasWidgets
         m_containerId = containerData.getName();
         m_containerType = containerData.getType();
         m_maxElements = containerData.getMaxElements();
+        m_isDetailView = containerData.isDetailView();
         m_root.getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragTarget());
     }
 
@@ -283,6 +288,16 @@ public class CmsContainerPageContainer implements I_CmsDropContainer, HasWidgets
 
         m_placeholder = placeholder;
         repositionPlaceholder(x, y, orientation);
+    }
+
+    /**
+     * Returns true if this is a detail view container.<p>
+     * 
+     * @return true if this is a detail view container 
+     */
+    public boolean isDetailView() {
+
+        return m_isDetailView;
     }
 
     /**

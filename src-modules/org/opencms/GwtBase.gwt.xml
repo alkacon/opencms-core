@@ -45,6 +45,9 @@
 		<include name="CmsSitemapChangeNewSubSitemapEntry.java" />
 		<include name="I_CmsSitemapChange.java" />
 	</source>
+	<source path="jsp">
+		<include name="CmsContainerJsonKeys.java" />
+	</source>
 	<source path="util" >
 		<include name="CmsObjectUtil.java" />
 	</source>

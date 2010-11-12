@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerJso.java,v $
- * Date   : $Date: 2010/09/22 14:27:47 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/11/12 10:56:24 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,26 +41,11 @@ import com.google.gwt.core.client.JsArray;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
 public class CmsContainerJso extends JavaScriptObject implements I_CmsContainer {
-
-    /** Key 'elements' used within the JSON representation of a container object. */
-    public static final String JSONKEY_ELEMENTS = "elements";
-
-    /** Key 'maxElements' used within the JSON representation of a container object. */
-    public static final String JSONKEY_MAXELEMENTS = "maxElem";
-
-    /** Key 'name' used within the JSON representation of a container object. */
-    public static final String JSONKEY_NAME = "name";
-
-    /** Key 'type' used within the JSON representation of a container object. */
-    public static final String JSONKEY_TYPE = "type";
-
-    /** Key 'width' used within the JSON representation of a container object. */
-    public static final String JSONKEY_WIDTH = "width";
 
     /**
      * Constructor. Overlay types always have protected, zero-argument constructors.<p>
@@ -83,42 +68,49 @@ public class CmsContainerJso extends JavaScriptObject implements I_CmsContainer 
      * @see org.opencms.ade.containerpage.shared.I_CmsContainer#getElements()
      */
     public final native String[] getElements() /*-{
-        return this[@org.opencms.ade.containerpage.client.CmsContainerJso::JSONKEY_ELEMENTS];
+        return this[@org.opencms.jsp.CmsContainerJsonKeys::ELEMENTS];
     }-*/;
 
     /**
      * @see org.opencms.ade.containerpage.shared.I_CmsContainer#getMaxElements()
      */
     public final native int getMaxElements() /*-{
-        return this[@org.opencms.ade.containerpage.client.CmsContainerJso::JSONKEY_MAXELEMENTS];
+        return this[@org.opencms.jsp.CmsContainerJsonKeys::MAXELEMENTS];
     }-*/;
 
     /**
      * @see org.opencms.ade.containerpage.shared.I_CmsContainer#getName()
      */
     public final native String getName() /*-{
-        return this[@org.opencms.ade.containerpage.client.CmsContainerJso::JSONKEY_NAME];
+        return this[@org.opencms.jsp.CmsContainerJsonKeys::NAME];
     }-*/;
 
     /**
      * @see org.opencms.ade.containerpage.shared.I_CmsContainer#getType()
      */
     public final native String getType() /*-{
-        return this[@org.opencms.ade.containerpage.client.CmsContainerJso::JSONKEY_TYPE];
+        return this[@org.opencms.jsp.CmsContainerJsonKeys::TYPE];
     }-*/;
 
     /**
      * @see org.opencms.ade.containerpage.shared.I_CmsContainer#getWidth()
      */
     public final native int getWidth() /*-{
-        return this[@org.opencms.ade.containerpage.client.CmsContainerJso::JSONKEY_WIDTH];
+        return this[@org.opencms.jsp.CmsContainerJsonKeys::WIDTH];
+    }-*/;
+
+    /**
+     * @see org.opencms.ade.containerpage.shared.I_CmsContainer#isDetailView()
+     */
+    public final native boolean isDetailView() /*-{
+        return this[@org.opencms.jsp.CmsContainerJsonKeys::DETAILVIEW];
     }-*/;
 
     /**
      * @see org.opencms.ade.containerpage.shared.I_CmsContainer#setElements(java.lang.String[])
      */
     public final native void setElements(String[] elements) /*-{
-        this[@org.opencms.ade.containerpage.client.CmsContainerJso::JSONKEY_ELEMENTS]=elements;
+        this[@org.opencms.jsp.CmsContainerJsonKeys::ELEMENTS]=elements;
     }-*/;
 
 }

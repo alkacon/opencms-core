@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/I_CmsDropContainer.java,v $
- * Date   : $Date: 2010/11/03 08:33:16 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/11/12 10:56:24 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -100,6 +100,13 @@ public interface I_CmsDropContainer extends I_CmsDropTarget {
      * @param beforeIndex the before index
      */
     void insert(Widget w, int beforeIndex);
+
+    /**
+     * Returns true if this container is being currently used to display a detail view.<p>
+     * 
+     * @return true if this container is used to display a detail view
+     */
+    boolean isDetailView();
 
     /**
      * Refreshes position and dimension of the highlighting border. Call when anything changed during the drag process.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageDNDController.java,v $
- * Date   : $Date: 2010/11/03 08:33:16 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/11/12 10:56:24 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,10 +38,10 @@ import org.opencms.ade.containerpage.client.ui.I_CmsDropContainer;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
-import org.opencms.gwt.client.dnd.CmsDNDHandler.Orientation;
 import org.opencms.gwt.client.dnd.I_CmsDNDController;
 import org.opencms.gwt.client.dnd.I_CmsDraggable;
 import org.opencms.gwt.client.dnd.I_CmsDropTarget;
+import org.opencms.gwt.client.dnd.CmsDNDHandler.Orientation;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
@@ -70,7 +70,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -208,13 +208,11 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                 prepareTargetContainer((I_CmsDropContainer)target, draggable, handler.getPlaceholder());
             }
         }
-        m_dragInfos.put(
-            target,
-            new DragInfo(
-                handler.getDragHelper(),
-                handler.getPlaceholder(),
-                handler.getCursorOffsetX(),
-                handler.getCursorOffsetY()));
+        m_dragInfos.put(target, new DragInfo(
+            handler.getDragHelper(),
+            handler.getPlaceholder(),
+            handler.getCursorOffsetX(),
+            handler.getCursorOffsetY()));
         m_controller.getHandler().hideMenu();
         String clientId = draggable.getId();
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(clientId)) {
@@ -378,9 +376,11 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
 
             Element placeholder = temp.getPlaceholder(dropzone);
             Element helper = temp.getDragHelper(dropzone);
-            m_dragInfos.put(
-                dropzone,
-                new DragInfo(helper, placeholder, helper.getOffsetWidth() - 15, handler.getCursorOffsetY()));
+            m_dragInfos.put(dropzone, new DragInfo(
+                helper,
+                placeholder,
+                helper.getOffsetWidth() - 15,
+                handler.getCursorOffsetY()));
             handler.addTarget(dropzone);
             helper.getStyle().setDisplay(Display.NONE);
         }
@@ -408,7 +408,9 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         }
         for (CmsContainerPageContainer container : m_controller.getContainerTargets().values()) {
 
-            if ((container != m_initialDropTarget) && elementData.getContents().containsKey(container.getContainerId())) {
+            if ((container != m_initialDropTarget)
+                && !container.isDetailView()
+                && elementData.getContents().containsKey(container.getContainerId())) {
 
                 Element helper = null;
                 Element placeholder = null;
