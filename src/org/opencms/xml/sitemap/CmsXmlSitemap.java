@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsXmlSitemap.java,v $
- * Date   : $Date: 2010/11/11 13:08:18 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2010/11/12 07:05:51 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -95,7 +95,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.41 $ 
+ * @version $Revision: 1.42 $ 
  * 
  * @since 7.5.2
  * 
@@ -389,6 +389,14 @@ public class CmsXmlSitemap extends CmsXmlContent {
                     modified.addAll(deleteEntry(cms, (CmsSitemapChangeDelete)change));
                     break;
                 case NEW:
+                    CmsSitemapChangeNew changeNew = (CmsSitemapChangeNew)change;
+                    modified.add(newEntry(cms, changeNew, req));
+                    CmsSitemapChangeMove changeMoveNew = new CmsSitemapChangeMove(
+                        changeNew.getSitePath(),
+                        changeNew.getSitePath(),
+                        changeNew.getPosition());
+                    moveEntry(cms, changeMoveNew);
+                    break;
                 case SUBSITEMAP_NEW:
                     modified.add(newEntry(cms, (CmsSitemapChangeNew)change, req));
                     break;
@@ -943,7 +951,6 @@ public class CmsXmlSitemap extends CmsXmlContent {
         CmsResource resource;
         String sitePath = getSitePathForElement(cms, elem);
         String title = elem.element(XmlNode.Title.name()).getText();
-
         String sitemapUri = m_file.getRootPath();
         resource = OpenCms.getSitemapManager().createPage(
             cms,
