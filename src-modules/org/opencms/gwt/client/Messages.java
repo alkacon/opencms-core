@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/Attic/Messages.java,v $
- * Date   : $Date: 2010/10/14 09:46:44 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2010/11/15 15:33:55 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.client.util.CmsMessages;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 8.0.0
  */
@@ -78,6 +78,12 @@ public final class Messages {
     public static final String GUI_DATEBOX_TITLE_0 = "GUI_DATEBOX_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIALOG_CHANGES_PUBLISH_TEXT_0 = "GUI_DIALOG_CHANGES_PUBLISH_TEXT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIALOG_CHANGES_PUBLISH_TITLE_0 = "GUI_DIALOG_CHANGES_PUBLISH_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_DIALOG_RESET_TEXT_0 = "GUI_DIALOG_RESET_TEXT_0";
 
     /** Message constant for key in the resource bundle. */
@@ -106,6 +112,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOCKING_0 = "GUI_LOCKING_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_NO_0 = "GUI_NO_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_OK_0 = "GUI_OK_0";
@@ -175,6 +184,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_UNLOCKING_0 = "GUI_UNLOCKING_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_YES_0 = "GUI_YES_0";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.gwt.clientmessages";
