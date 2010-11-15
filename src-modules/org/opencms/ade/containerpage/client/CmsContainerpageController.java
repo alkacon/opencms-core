@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageController.java,v $
- * Date   : $Date: 2010/10/25 10:23:04 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2010/11/15 15:33:05 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,6 @@
 
 package org.opencms.ade.containerpage.client;
 
-import org.opencms.ade.containerpage.client.ui.CmsLeavePageDialog;
 import org.opencms.ade.containerpage.client.ui.CmsSubContainerElement;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.containerpage.shared.CmsCntPageData;
@@ -87,7 +86,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * 
  * @since 8.0.0
  */
@@ -824,7 +823,6 @@ public final class CmsContainerpageController {
         m_elements = new HashMap<String, CmsContainerElementData>();
         m_containerTypes = new HashSet<String>();
         m_containers = new HashMap<String, CmsContainerJso>();
-
         JsArray<CmsContainerJso> containers = CmsContainerJso.getContainers();
         for (int i = 0; i < containers.length(); i++) {
             CmsContainerJso container = containers.get(i);
@@ -1433,15 +1431,13 @@ public final class CmsContainerpageController {
             }
             nativeEvent.preventDefault();
             nativeEvent.stopPropagation();
-            CmsLeavePageDialog dialog = new CmsLeavePageDialog(uri, this, null);
-            dialog.center();
+            m_handler.leavePage(uri);
         }
         if ((event.getTypeInt() == Event.ONKEYDOWN) && (nativeEvent.getKeyCode() == 116)) {
             // user pressed F5
             nativeEvent.preventDefault();
             nativeEvent.stopPropagation();
-            CmsLeavePageDialog dialog = new CmsLeavePageDialog(Window.Location.getHref(), this, null);
-            dialog.center();
+            m_handler.leavePage(Window.Location.getHref());
         }
     }
 

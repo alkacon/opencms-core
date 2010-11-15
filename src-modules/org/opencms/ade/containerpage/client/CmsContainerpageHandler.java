@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageHandler.java,v $
- * Date   : $Date: 2010/10/22 12:12:43 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2010/11/15 15:33:05 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,19 +34,20 @@ package org.opencms.ade.containerpage.client;
 import org.opencms.ade.containerpage.client.ui.A_CmsToolbarMenu;
 import org.opencms.ade.containerpage.client.ui.CmsContainerPageElement;
 import org.opencms.ade.containerpage.client.ui.CmsContentEditorDialog;
-import org.opencms.ade.containerpage.client.ui.CmsLeavePageDialog;
 import org.opencms.ade.containerpage.client.ui.CmsSubContainerElement;
 import org.opencms.ade.containerpage.client.ui.CmsSubcontainerEditor;
 import org.opencms.ade.containerpage.client.ui.I_CmsToolbarButton;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.ade.publish.client.CmsPublishDialog;
 import org.opencms.gwt.client.dnd.I_CmsDNDController;
+import org.opencms.gwt.client.ui.CmsAcceptDeclineCancelDialog;
 import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.gwt.client.ui.CmsConfirmDialog;
 import org.opencms.gwt.client.ui.CmsContextMenuEntry;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsNotification;
+import org.opencms.gwt.client.ui.I_CmsAcceptDeclineCancelHandler;
 import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
 import org.opencms.gwt.client.ui.I_CmsContextMenuEntry;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
@@ -86,7 +87,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  * 
  * @since 8.0.0
  */
@@ -262,7 +263,7 @@ public class CmsContainerpageHandler {
     }
 
     /**
-     * Leaves the current page and opens the sitemap.<p>�
+     * Leaves the current page and opens the sitemap.<p>
      */
     public void gotoSitemap() {
 
@@ -271,13 +272,7 @@ public class CmsContainerpageHandler {
             return; // normally, we shouldn't even get to this point because the sitemap button should be disabled  
         }
         String target = m_controller.getData().getSitemapUri() + "?path=" + m_controller.getData().getSitePath();
-        if (m_controller.hasPageChanged()) {
-            CmsLeavePageDialog dialog = new CmsLeavePageDialog(target, m_controller, this);
-            dialog.center();
-        } else {
-            m_controller.leaveUnsaved(target);
-        }
-
+        leavePage(target);
     }
 
     /**
@@ -310,6 +305,52 @@ public class CmsContainerpageHandler {
 
         List<I_CmsContextMenuEntry> menuEntries = transformEntries(menuBeans, uri);
         m_editor.getContext().showMenu(menuEntries);
+    }
+
+    /**
+     * Call to leave the page. Will open save/leave/cancel dialog if page contains any changes.<p>
+     * 
+     * @param target the target
+     */
+    public void leavePage(final String target) {
+
+        if (!m_controller.hasPageChanged()) {
+            m_controller.leaveUnsaved(target);
+            return;
+        }
+        CmsAcceptDeclineCancelDialog leavingDialog = new CmsAcceptDeclineCancelDialog(Messages.get().key(
+            Messages.GUI_DIALOG_PAGE_NOT_SAVED_TITLE_0), Messages.get().key(Messages.GUI_DIALOG_PAGE_NOT_SAVED_0));
+        leavingDialog.setHandler(new I_CmsAcceptDeclineCancelHandler() {
+
+            /**
+             * @see org.opencms.gwt.client.ui.I_CmsAcceptDeclineCancelHandler#onAccept()
+             */
+            public void onAccept() {
+
+                m_controller.saveAndLeave(target);
+            }
+
+            /**
+             * @see org.opencms.gwt.client.ui.I_CmsCloseDialogHandler#onClose()
+             */
+            public void onClose() {
+
+                deactivateCurrentButton();
+                activateSelection();
+            }
+
+            /**
+             * @see org.opencms.gwt.client.ui.I_CmsAcceptDeclineCancelHandler#onDecline()
+             */
+            public void onDecline() {
+
+                m_controller.leaveUnsaved(target);
+            }
+        });
+        leavingDialog.setAcceptText(Messages.get().key(Messages.GUI_BUTTON_SAVE_TEXT_0));
+        leavingDialog.setDeclineText(Messages.get().key(Messages.GUI_BUTTON_LEAVEPAGE_TEXT_0));
+        leavingDialog.setCloseText(Messages.get().key(Messages.GUI_BUTTON_CANCEL_TEXT_0));
+        leavingDialog.center();
     }
 
     /**
@@ -539,18 +580,52 @@ public class CmsContainerpageHandler {
      */
     public void showPublishDialog() {
 
-        CmsPublishDialog.showPublishDialog(new CloseHandler<PopupPanel>() {
+        if (m_controller.hasPageChanged()) {
 
-            /**
-             * @see com.google.gwt.event.logical.shared.CloseHandler#onClose(com.google.gwt.event.logical.shared.CloseEvent)
-             */
-            public void onClose(CloseEvent<PopupPanel> event) {
+            CmsAcceptDeclineCancelDialog leavingDialog = new CmsAcceptDeclineCancelDialog(
+                org.opencms.gwt.client.Messages.get().key(
+                    org.opencms.gwt.client.Messages.GUI_DIALOG_CHANGES_PUBLISH_TITLE_0),
+                org.opencms.gwt.client.Messages.get().key(
+                    org.opencms.gwt.client.Messages.GUI_DIALOG_CHANGES_PUBLISH_TEXT_0));
+            leavingDialog.setHandler(new I_CmsAcceptDeclineCancelHandler() {
 
-                deactivateCurrentButton();
-                activateSelection();
+                /**
+                 * @see org.opencms.gwt.client.ui.I_CmsAcceptDeclineCancelHandler#onAccept()
+                 */
+                public void onAccept() {
 
-            }
-        });
+                    m_controller.syncSaveContainerpage();
+                    openPublish();
+                }
+
+                /**
+                 * @see org.opencms.gwt.client.ui.I_CmsCloseDialogHandler#onClose()
+                 */
+                public void onClose() {
+
+                    deactivateCurrentButton();
+                    activateSelection();
+                }
+
+                /**
+                 * @see org.opencms.gwt.client.ui.I_CmsAcceptDeclineCancelHandler#onDecline()
+                 */
+                public void onDecline() {
+
+                    openPublish();
+                }
+            });
+            leavingDialog.setAcceptText(org.opencms.gwt.client.Messages.get().key(
+                org.opencms.gwt.client.Messages.GUI_YES_0));
+            leavingDialog.setDeclineText(org.opencms.gwt.client.Messages.get().key(
+                org.opencms.gwt.client.Messages.GUI_NO_0));
+            leavingDialog.setCloseText(org.opencms.gwt.client.Messages.get().key(
+                org.opencms.gwt.client.Messages.GUI_CANCEL_0));
+            leavingDialog.center();
+        } else {
+            openPublish();
+        }
+
     }
 
     /**
@@ -567,6 +642,25 @@ public class CmsContainerpageHandler {
             m_editor.showToolbar(true);
             m_controller.setToolbarVisible(true);
         }
+    }
+
+    /**
+     * Opens the publish dialog without changes check.<p>
+     */
+    protected void openPublish() {
+
+        CmsPublishDialog.showPublishDialog(new CloseHandler<PopupPanel>() {
+
+            /**
+             * @see com.google.gwt.event.logical.shared.CloseHandler#onClose(com.google.gwt.event.logical.shared.CloseEvent)
+             */
+            public void onClose(CloseEvent<PopupPanel> event) {
+
+                deactivateCurrentButton();
+                activateSelection();
+
+            }
+        });
     }
 
     /**
