@@ -1,7 +1,7 @@
 /* This is needed since there is a bug in GWT that obfuscates the primary style name but not the secondary :( */
 @external dialogTop, dialogBottom, x-btn-text;
 
-.dragging, .dragOverlay, .menuPopup, .popup, .popupButtonPanel, .popupContent, .popupHead, .popupMainContent, .popupOverlay, .popupShadow{}
+.popup, .menuPopup{}
 
 .cmsContextMenu {
 	display: inline-block;
@@ -23,6 +23,7 @@
 .cmsMenuBar .cmsMenuItem { /* menu items */
 	cursor: pointer;
 	clear: both;
+	padding: 0px 2px;
 }
 .cmsMenuBar .cmsMenuItem.selected { /* selected menu items */ 
 	background: #E0EDFE;
@@ -40,7 +41,8 @@
 }
 .cmsMenuBar .cmsMenuItem .label { /* menu item label */
 	padding: 4px 4px 4px 0px;
-	margin: 0px 20px;
+	margin: 0px 0px 0px 22px;
+	font-size: 14px;
 }
 .cmsMenuBar .cmsMenuItem .arrow { /* symbol for sub menus */
 	float: right;

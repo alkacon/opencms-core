@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/A_CmsToolbarMenu.java,v $
- * Date   : $Date: 2010/05/31 09:15:22 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/11/15 15:45:41 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import org.opencms.gwt.client.ui.I_CmsButton;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
@@ -61,6 +61,8 @@ public abstract class A_CmsToolbarMenu extends CmsMenuButton implements I_CmsToo
     public A_CmsToolbarMenu(I_CmsButton.ButtonData buttonData, CmsContainerpageHandler handler) {
 
         super(buttonData.getTitle(), buttonData.getIconClass());
+        setToolbarMode(true);
+        setOpenRight(true);
         m_handler = handler;
         setTitle(buttonData.getTitle());
         m_iconClass = buttonData.getIconClass();

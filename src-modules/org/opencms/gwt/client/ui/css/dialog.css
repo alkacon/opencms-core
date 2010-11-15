@@ -44,12 +44,29 @@
     position:relative;
 }
 
+.contentSpacer{
+	margin-top: 5px;
+	margin-bottom: 10px;
+}
+
+.contentConnect{
+	position: absolute;
+	height: 5px;
+	top: 0px;
+	border-left: solid 1px value("constantsCss.borderColor");
+	border-right: solid 1px value("constantsCss.borderColor");
+	background: #F9F9F9;
+}
 
 @if user.agent ie6 {
 .popup, .popup * {
     /* fixes a glitch with relatively positioned elements in dialogs which sometimes vanish */
 	zoom:1;
 }
+}
+
+.hideCaption .Caption{
+	display: none;
 }
 
 @sprite .popupHead, .Caption{

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2010/10/29 12:20:19 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2010/11/15 15:45:41 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import com.google.gwt.resources.client.ImageResource.RepeatStyle;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.44 $
+ * @version $Revision: 1.45 $
  * 
  * @since 8.0.0
  */
@@ -261,8 +261,9 @@ public interface I_CmsLayoutBundle extends ClientBundle {
         String toolbarHeight();
     }
 
-    /** The context menu CSS classes. */
-    public interface I_CmsContextmenuCss extends I_CmsDialogCss {
+    /** The context menu item CSS classes. */
+    @Shared
+    public interface I_CmsContextmenuItemCss extends CssResource {
 
         /** 
          * Access method.<p>
@@ -270,6 +271,45 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String arrow();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String cmsMenuItem();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String disabled();
+
+        /** 
+         * Access method.<p>
+         *   
+         * @return the CSS class name
+         */
+        String image();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String label();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String selected();
+    }
+
+    /** The context menu CSS classes. */
+    public interface I_CmsContextmenuCss extends I_CmsPopupCss, I_CmsContextmenuItemCss {
 
         /** 
          * Access method.<p>
@@ -297,34 +337,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
-        String cmsMenuItem();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String disabled();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String image();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String label();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
         String menuInfoLabel();
 
         /** 
@@ -341,17 +353,44 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          */
         String menuPanel();
 
+    }
+
+    /** Basic popup CSS classes. */
+    @Shared
+    interface I_CmsPopupCss extends CssResource {
+
         /** 
          * Access method.<p>
          * 
          * @return the CSS class name
          */
-        String selected();
+        String menuPopup();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String popup();
     }
 
     /** Dialog CSS. */
     @Shared
-    interface I_CmsDialogCss extends CssResource {
+    interface I_CmsDialogCss extends I_CmsPopupCss {
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String contentConnect();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String contentSpacer();
 
         /** 
          * Access method.<p>
@@ -372,14 +411,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
-        String menuPopup();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String popup();
+        String hideCaption();
 
         /** 
          * Access method.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsMenuContent.java,v $
- * Date   : $Date: 2010/10/29 12:18:49 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/11/15 15:45:41 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,8 @@ package org.opencms.gwt.client.ui;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -43,7 +45,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  * 
@@ -53,7 +55,11 @@ public class CmsMenuContent extends PopupPanel implements I_CmsAutoHider {
     /** The default pop-up width. */
     private static final String DEFAULT_WIDTH = "650px";
 
-    private com.google.gwt.user.client.Element m_containerElement;
+    /** Connecting element. Used to visually connect the content with the menu button. */
+    private Element m_connect;
+
+    /** The container element, all content will be inserted into this element. */
+    private Element m_containerElement;
 
     /**
      * Constructor.<p>
@@ -68,7 +74,7 @@ public class CmsMenuContent extends PopupPanel implements I_CmsAutoHider {
         Element shadowDiv = DOM.createDiv();
         shadowDiv.setClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupShadow()
             + " "
-            + I_CmsLayoutBundle.INSTANCE.generalCss().cornerBottom());
+            + I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
         m_containerElement.setClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupContent()
             + " "
             + I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
@@ -84,6 +90,30 @@ public class CmsMenuContent extends PopupPanel implements I_CmsAutoHider {
 
         this();
         setWidget(content);
+    }
+
+    /**
+     * Show the connecting element at the appropriate position.<p>
+     * 
+     * @param width the required width
+     * @param showLeft <code>true</code> to show on the left hand side
+     */
+    public void showConnect(int width, boolean showLeft) {
+
+        if (m_connect == null) {
+            m_connect = DOM.createDiv();
+            m_connect.addClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().contentConnect());
+            getElement().appendChild(m_connect);
+        }
+        Style style = m_connect.getStyle();
+        style.setWidth(width, Unit.PX);
+        if (showLeft) {
+            style.clearRight();
+            style.setLeft(3, Unit.PX);
+        } else {
+            style.clearLeft();
+            style.setRight(3, Unit.PX);
+        }
     }
 
     /**

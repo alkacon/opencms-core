@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsMenuButton.java,v $
- * Date   : $Date: 2010/10/12 06:56:47 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2010/11/15 15:45:41 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,9 @@
 
 package org.opencms.gwt.client.ui;
 
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.util.CmsStringUtil;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Style;
@@ -57,7 +60,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 8.0.0
  */
@@ -98,6 +101,12 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
          * @return the CSS class name
          */
         String menu();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String toolbarMode();
     }
 
     /** The ui-binder instance for this class. */
@@ -124,6 +133,12 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
     /** Flag if the menu is open. */
     private boolean m_isOpen;
 
+    /** Flag if the menu opens to the right hand side. */
+    private boolean m_isOpenRight;
+
+    /** Flag if the button is in toolbar mode. */
+    private boolean m_isToolbarMode;
+
     /**
      * Constructor.<p>
      * 
@@ -134,7 +149,9 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
     public CmsMenuButton(String buttonText, String imageClass) {
 
         this();
-        m_button.setText(buttonText);
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(buttonText)) {
+            m_button.setText(buttonText);
+        }
         m_button.setImageClass(imageClass);
     }
 
@@ -146,10 +163,7 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
         initWidget(uiBinder.createAndBindUi(this));
         m_button.setSize(I_CmsButton.Size.big);
         m_content = new CmsMenuContent();
-
-        // important, so a click on the button won't trigger the auto-close 
-        m_content.addAutoHidePartner(getElement());
-
+        m_content.getElement().removeClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().menuPopup());
         m_isOpen = false;
 
         m_content.addCloseHandler(new CloseHandler<PopupPanel>() {
@@ -163,7 +177,7 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
                         m_resizeRegistration = null;
                     }
                 }
-
+                m_menuConnect.addClassName(m_style.hidden());
             }
 
         });
@@ -219,14 +233,30 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
     }
 
     /**
+     * Returns the isOpenRight.<p>
+     *
+     * @return the isOpenRight
+     */
+    public boolean isOpenRight() {
+
+        return m_isOpenRight;
+    }
+
+    /**
+     * Returns the isToolbarMode.<p>
+     *
+     * @return the isToolbarMode
+     */
+    public boolean isToolbarMode() {
+
+        return m_isToolbarMode;
+    }
+
+    /**
      * Opens the menu and fires the on toggle event.<p>
      */
     public void openMenu() {
 
-        int windowWidth = Window.getClientWidth();
-        int contentLeft = m_button.getAbsoluteLeft() - 5;
-        int contentTop = m_button.getAbsoluteTop() - Window.getScrollTop() + 34;
-        m_content.setPopupPosition(contentLeft - Window.getScrollLeft(), contentTop);
         m_menuConnect.getStyle().setWidth(m_button.getOffsetWidth() + 2, Style.Unit.PX);
 
         m_isOpen = true;
@@ -234,23 +264,19 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
 
         m_menuConnect.removeClassName(m_style.hidden());
         m_content.show();
-        int contentWidth = m_content.getOffsetWidth();
-        if ((contentWidth + 10 < windowWidth) && (contentWidth + contentLeft > windowWidth)) {
-            contentLeft = windowWidth - contentWidth - 10;
-            m_content.setPopupPosition(contentLeft, contentTop);
-        }
-        // overriding position absolute set by PopupPanel 
-        m_content.getElement().getStyle().setPosition(Position.FIXED);
 
+        // overriding position absolute set by PopupPanel 
+        if (m_isToolbarMode) {
+            m_content.getElement().getStyle().setPosition(Position.FIXED);
+        } else {
+            m_content.showConnect(m_button.getOffsetWidth() + 2, m_isOpenRight);
+        }
+        positionPopup();
         m_resizeRegistration = Window.addResizeHandler(new ResizeHandler() {
 
             public void onResize(ResizeEvent event) {
 
-                // TODO: verify if there are layout differences between IE and other browsers
-                m_content.setPopupPosition(
-                    m_button.getAbsoluteLeft() - Window.getScrollLeft() - 5,
-                    m_button.getAbsoluteTop() - Window.getScrollTop() + 34);
-
+                positionPopup();
             }
         });
     }
@@ -276,6 +302,36 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
     }
 
     /**
+     * Sets the isOpenRight.<p>
+     *
+     * @param isOpenRight the isOpenRight to set
+     */
+    public void setOpenRight(boolean isOpenRight) {
+
+        m_isOpenRight = isOpenRight;
+    }
+
+    /**
+     * Sets the isToolbarMode.<p>
+     *
+     * @param isToolbarMode the isToolbarMode to set
+     */
+    public void setToolbarMode(boolean isToolbarMode) {
+
+        m_isToolbarMode = isToolbarMode;
+        if (m_isToolbarMode) {
+            addStyleName(m_style.toolbarMode());
+            // important, so a click on the button won't trigger the auto-close 
+            m_content.addAutoHidePartner(getElement());
+            m_content.getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().menuPopup());
+        } else {
+            removeStyleName(m_style.toolbarMode());
+            m_content.removeAutoHidePartner(getElement());
+            m_content.getElement().removeClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().menuPopup());
+        }
+    }
+
+    /**
      * Shows the menu content as well as the menu connector.<p>
      */
     public void show() {
@@ -293,6 +349,16 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
     }
 
     /**
+     * Returns the popup content.<p>
+     * 
+     * @return the popup content
+     */
+    protected CmsMenuContent getPopupContent() {
+
+        return m_content;
+    }
+
+    /**
      * Hides the menu content without altering the button state.<p>
      */
     protected void hideMenu() {
@@ -306,6 +372,38 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
     }
 
     /**
+     * Positions the menu popup below the button.<p>
+     */
+    protected void positionPopup() {
+
+        int windowWidth = Window.getClientWidth();
+        int contentTop = m_button.getAbsoluteTop() + m_button.getOffsetHeight() + 1;
+        int contentWidth = m_content.getOffsetWidth();
+        int contentLeft = m_button.getAbsoluteLeft();
+        int buttonWidth = m_button.getOffsetWidth();
+        if (m_isOpenRight) {
+            contentLeft -= 5;
+        } else {
+            contentLeft += buttonWidth - contentWidth + 5;
+        }
+
+        if (m_isToolbarMode) {
+            contentTop = contentTop - Window.getScrollTop() + 3;
+        }
+
+        if ((contentWidth + 10 < windowWidth) && (contentWidth + contentLeft > windowWidth)) {
+            contentLeft = windowWidth - contentWidth - 10;
+            m_content.setPopupPosition(contentLeft, contentTop);
+        } else {
+            if (m_isToolbarMode) {
+                m_content.setPopupPosition(contentLeft - Window.getScrollLeft(), contentTop);
+            } else {
+                m_content.setPopupPosition(contentLeft, contentTop);
+            }
+        }
+    }
+
+    /**
      * Sets button to state up, hides menu fragments (not the content pop-up) and fires the toggle event.<p>
      */
     private void setButtonUp() {
@@ -313,15 +411,5 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
         m_isOpen = false;
         m_button.setDown(false);
         m_menuConnect.addClassName(m_style.hidden());
-    }
-
-    /**
-     * Returns the popup content.<p>
-     * 
-     * @return the popup content
-     */
-    protected CmsMenuContent getPopupContent() {
-
-        return m_content;
     }
 }

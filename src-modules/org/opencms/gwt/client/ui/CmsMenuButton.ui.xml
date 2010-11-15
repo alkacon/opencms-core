@@ -14,25 +14,32 @@
 		        display: inline;
 		    }
 		    .menu .button{
-				min-width: 60px;
-        		overflow: visible !important;
+				overflow: visible !important;
+    		}
+    		.menu.toolbarMode .button{
+    			min-width: 60px;
     		}
 		} @else {
 		    .menu{
 		        display: inline-block;
 		    }
-		    .menu .button{
+		    .menu.toolbarMode .button{
 				min-width: 60px;
 			}
 		}
-		.menu .connect{
+		.menu.toolbarMode .connect{
 			background: #CFCFCF;
+			height:35px;
+			width:50px;
+		}
+		
+		.menu .connect{
+			background: #F9F9F9;
 			border: 1px solid #AAAAAA;
 			position: absolute;
 			top: -2px;
 			left: -2px;
 			height:35px;
-			width:50px;
 			z-index:0;
 		}
 		.menu .connect.hidden{
@@ -40,7 +47,6 @@
 		}
 		.menu .button{
 			position: relative;
-			min-width: 60px;
 		}
 	</ui:style>
 	<ui:with field="main" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
