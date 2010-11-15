@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/toolbar/Attic/CmsToolbarPublishButton.java,v $
- * Date   : $Date: 2010/06/24 09:05:26 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/11/15 16:05:19 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,7 +33,10 @@ package org.opencms.ade.sitemap.client.toolbar;
 
 import org.opencms.ade.publish.client.CmsPublishDialog;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
+import org.opencms.gwt.client.Messages;
+import org.opencms.gwt.client.ui.CmsAcceptDeclineCancelDialog;
 import org.opencms.gwt.client.ui.CmsToggleButton;
+import org.opencms.gwt.client.ui.I_CmsAcceptDeclineCancelHandler;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.util.CmsDomUtil;
 
@@ -48,7 +51,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  */
@@ -76,16 +79,63 @@ public class CmsToolbarPublishButton extends CmsToggleButton {
                 CmsDomUtil.ensureMouseOut(getElement());
                 setDown(false);
                 setEnabled(false);
-                CmsPublishDialog.showPublishDialog(new CloseHandler<PopupPanel>() {
 
-                    /**
-                     * @see com.google.gwt.event.logical.shared.CloseHandler#onClose(CloseEvent)
-                     */
-                    public void onClose(CloseEvent<PopupPanel> closeEvent) {
+                if (controller.hasChanges()) {
 
-                        setEnabled(true);
-                    }
-                });
+                    CmsAcceptDeclineCancelDialog leavingDialog = new CmsAcceptDeclineCancelDialog(Messages.get().key(
+                        Messages.GUI_DIALOG_CHANGES_PUBLISH_TITLE_0), Messages.get().key(
+                        Messages.GUI_DIALOG_CHANGES_PUBLISH_TEXT_0));
+                    leavingDialog.setHandler(new I_CmsAcceptDeclineCancelHandler() {
+
+                        /**
+                         * @see org.opencms.gwt.client.ui.I_CmsAcceptDeclineCancelHandler#onAccept()
+                         */
+                        public void onAccept() {
+
+                            controller.commit(true);
+                            openPublish();
+                        }
+
+                        /**
+                         * @see org.opencms.gwt.client.ui.I_CmsCloseDialogHandler#onClose()
+                         */
+                        public void onClose() {
+
+                            setEnabled(true);
+                        }
+
+                        /**
+                         * @see org.opencms.gwt.client.ui.I_CmsAcceptDeclineCancelHandler#onDecline()
+                         */
+                        public void onDecline() {
+
+                            openPublish();
+                        }
+                    });
+                    leavingDialog.setAcceptText(Messages.get().key(Messages.GUI_YES_0));
+                    leavingDialog.setDeclineText(Messages.get().key(Messages.GUI_NO_0));
+                    leavingDialog.setCloseText(Messages.get().key(Messages.GUI_CANCEL_0));
+                    leavingDialog.center();
+                } else {
+                    openPublish();
+                }
+            }
+        });
+    }
+
+    /**
+     * Opens the publish dialog without changes check.<p>
+     */
+    protected void openPublish() {
+
+        CmsPublishDialog.showPublishDialog(new CloseHandler<PopupPanel>() {
+
+            /**
+             * @see com.google.gwt.event.logical.shared.CloseHandler#onClose(CloseEvent)
+             */
+            public void onClose(CloseEvent<PopupPanel> closeEvent) {
+
+                setEnabled(true);
             }
         });
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/toolbar/Attic/CmsToolbarGalleryButton.java,v $
- * Date   : $Date: 2010/10/21 12:48:56 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/11/15 16:05:19 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -67,6 +67,8 @@ public class CmsToolbarGalleryButton extends CmsMenuButton implements I_CmsToolb
     public CmsToolbarGalleryButton(final CmsSitemapToolbar toolbar, final CmsSitemapController controller) {
 
         super(I_CmsButton.ButtonData.ADD.getTitle(), I_CmsButton.ButtonData.ADD.getIconClass());
+        setToolbarMode(true);
+        setOpenRight(true);
         if (!controller.isEditable()) {
             setEnabled(false);
         }

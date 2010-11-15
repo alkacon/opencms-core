@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/toolbar/Attic/CmsToolbarClipboardButton.java,v $
- * Date   : $Date: 2010/09/08 08:34:01 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/11/15 16:05:19 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -70,6 +70,8 @@ public class CmsToolbarClipboardButton extends CmsMenuButton implements I_CmsToo
     public CmsToolbarClipboardButton(final CmsSitemapToolbar toolbar, final CmsSitemapController controller) {
 
         super(I_CmsButton.ButtonData.CLIPBOARD.getTitle(), I_CmsButton.ButtonData.CLIPBOARD.getIconClass());
+        setToolbarMode(true);
+        setOpenRight(true);
         if (!controller.isEditable()) {
             setEnabled(false);
             // TODO: the CmsMenuButon should also implement this method!
