@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/I_CmsSitemapCache.java,v $
- * Date   : $Date: 2010/10/12 15:02:41 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/11/15 15:15:13 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -140,6 +140,18 @@ public interface I_CmsSitemapCache {
      * @throws CmsException if something goes wrong 
      */
     String getExportName(String siteRoot) throws CmsException;
+
+    /**
+     * Returns the sitemap sitepath for given site root.<p>
+     * 
+     * @param cms the cms object 
+     * @param siteRoot the site root
+     * 
+     * @return the sitemap sitepath
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    String getSitemapForSiteRoot(CmsObject cms, String siteRoot) throws CmsException;
 
     /**
      * Returns the map from export names to site roots.<p>

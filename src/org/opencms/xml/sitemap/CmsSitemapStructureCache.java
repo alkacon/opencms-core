@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapStructureCache.java,v $
- * Date   : $Date: 2010/11/02 11:04:14 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2010/11/15 15:15:13 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -75,7 +75,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Moossen
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 8.0.0
  */
@@ -110,6 +110,9 @@ public class CmsSitemapStructureCache extends CmsVfsCache implements I_CmsSitema
 
     /** Map from site roots to export names. */
     private Map<String, String> m_exportNames;
+
+    /** Map from site roots to sitemap resources. */
+    private Map<String, String> m_rootSitemaps;
 
     /** Map from export names to site roots. */
     private Map<String, String> m_exportNamesReverse;
@@ -376,6 +379,15 @@ public class CmsSitemapStructureCache extends CmsVfsCache implements I_CmsSitema
     public String getName() {
 
         return m_name;
+    }
+
+    /**
+     * @see org.opencms.xml.sitemap.I_CmsSitemapCache#getSitemapForSiteRoot(org.opencms.file.CmsObject, java.lang.String)
+     */
+    public String getSitemapForSiteRoot(CmsObject cms, String siteRoot) throws CmsException {
+
+        getActiveSitemaps(cms);
+        return m_rootSitemaps.get(siteRoot);
     }
 
     /**
@@ -859,6 +871,7 @@ public class CmsSitemapStructureCache extends CmsVfsCache implements I_CmsSitema
         if (exportName != null) {
             addExportName(site.getSiteRoot(), exportName);
         }
+        m_rootSitemaps.put(site.getSiteRoot(), sitemapFile.getRootPath());
         //exportNames.put(site.getSiteRoot(), exportName); 
 
         for (Locale locale : xmlSitemap.getLocales()) {
@@ -954,6 +967,9 @@ public class CmsSitemapStructureCache extends CmsVfsCache implements I_CmsSitema
 
         m_exportNames = new HashMap<String, String>();
         register("siteExportNames", m_exportNames);
+
+        m_rootSitemaps = new HashMap<String, String>();
+        register("rootSitemaps", m_rootSitemaps);
     }
 
 }

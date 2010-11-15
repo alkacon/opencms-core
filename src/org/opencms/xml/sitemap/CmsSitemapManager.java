@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2010/11/11 13:08:18 $
- * Version: $Revision: 1.65 $
+ * Date   : $Date: 2010/11/15 15:15:13 $
+ * Version: $Revision: 1.66 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -86,7 +86,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.65 $
+ * @version $Revision: 1.66 $
  * 
  * @since 7.9.2
  */
@@ -252,8 +252,6 @@ public class CmsSitemapManager {
     public CmsResource createNewElement(CmsObject cms, String sitemapUri, ServletRequest request, String type)
     throws CmsException {
 
-        // TODO: implement this
-        int todo;
         return OpenCms.getADEManager().createNewElement(cms, sitemapUri, request, type);
     }
 
@@ -430,8 +428,6 @@ public class CmsSitemapManager {
     public Collection<CmsResource> getCreatableElements(CmsObject cms, String sitemapUri, ServletRequest request)
     throws CmsException {
 
-        // TODO: implement this
-        int todo;
         return OpenCms.getADEManager().getCreatableElements(cms, sitemapUri, request);
     }
 
@@ -1003,6 +999,21 @@ public class CmsSitemapManager {
             }
         }
         return sitemaps;
+    }
+
+    /**
+     * Returns the sitemap sitepath for given site root.<p>
+     * 
+     * @param cms the cms object 
+     * @param siteRoot the site root
+     * 
+     * @return the sitemap sitepath
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public String getSitemapForSiteRoot(CmsObject cms, String siteRoot) throws CmsException {
+
+        return m_cache.getSitemapForSiteRoot(cms, siteRoot);
     }
 
     /**

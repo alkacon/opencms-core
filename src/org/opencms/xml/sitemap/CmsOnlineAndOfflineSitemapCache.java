@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsOnlineAndOfflineSitemapCache.java,v $
- * Date   : $Date: 2010/10/12 15:02:41 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/11/15 15:15:13 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import java.util.Set;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -192,6 +192,14 @@ public class CmsOnlineAndOfflineSitemapCache implements I_CmsSitemapCache {
         m_offlineCache.shutdown();
         m_onlineCache.shutdown();
 
+    }
+
+    /**
+     * @see org.opencms.xml.sitemap.I_CmsSitemapCache#getSitemapForSiteRoot(org.opencms.file.CmsObject, java.lang.String)
+     */
+    public String getSitemapForSiteRoot(CmsObject cms, String siteRoot) throws CmsException {
+
+        return getInternalCache(cms).getSitemapForSiteRoot(cms, siteRoot);
     }
 
 }
