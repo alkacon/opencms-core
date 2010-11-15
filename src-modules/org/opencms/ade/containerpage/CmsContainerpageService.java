@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsContainerpageService.java,v $
- * Date   : $Date: 2010/10/22 12:12:55 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2010/11/15 15:16:30 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -86,7 +86,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * 
  * @since 8.0.0
  */
@@ -766,6 +766,13 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 sitemap = cms.getSitePath(sitemapRes);
                 sitePath = manager.getSitePathForResource(cms, cntPageRes, sitemapRes);
             }
+        }
+        if (sitemap == null) {
+            String sitemapRootPath = manager.getSitemapForSiteRoot(cms, cms.getRequestContext().getSiteRoot());
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(sitemapRootPath)) {
+                sitemap = cms.getRequestContext().removeSiteRoot(sitemapRootPath);
+            }
+            sitePath = "";
         }
         sitemap = (sitemap == null) ? "" : OpenCms.getLinkManager().substituteLink(cms, sitemap);
         return new CmsSitemapLocation(sitemap, sitePath);
