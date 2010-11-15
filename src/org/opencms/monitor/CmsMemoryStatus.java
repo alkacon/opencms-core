@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryStatus.java,v $
- * Date   : $Date: 2009/06/04 14:29:49 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/11/15 14:44:41 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,11 +36,11 @@ package org.opencms.monitor;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
-class CmsMemoryStatus {
+public class CmsMemoryStatus {
 
     private int m_count;
     private long m_freeMemory;

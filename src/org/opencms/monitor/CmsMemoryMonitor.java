@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2010/10/07 12:30:12 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/11/15 14:44:41 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -102,7 +102,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -1703,6 +1703,17 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     public byte[] getCachedXmlTemporaryEntity(String key) {
 
         return m_cacheXmlTemporaryEntity.get(key);
+    }
+
+    /**
+     * Returns the current memory status.<p>
+     * 
+     * @return the memory status
+     */
+    public CmsMemoryStatus getMemoryStatus() {
+
+        m_memoryCurrent.update();
+        return m_memoryCurrent;
     }
 
     /**
