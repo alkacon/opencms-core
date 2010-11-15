@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsConfirmDialog.java,v $
- * Date   : $Date: 2010/04/29 09:31:56 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/11/15 15:34:21 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,8 +32,6 @@
 package org.opencms.gwt.client.ui;
 
 import org.opencms.gwt.client.Messages;
-import org.opencms.gwt.client.rpc.CmsLog;
-import org.opencms.gwt.client.util.CmsClientStringUtil;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -43,7 +41,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 8.0.0
  */
@@ -75,6 +73,8 @@ public class CmsConfirmDialog extends CmsAlertDialog {
         m_okButton = new CmsPushButton();
         m_okButton.setText(Messages.get().key(Messages.GUI_OK_0));
         m_okButton.setUseMinWidth(true);
+        m_okButton.setSize(I_CmsButton.Size.small);
+        getCloseButton().setSize(I_CmsButton.Size.small);
         m_okButton.addClickHandler(new ClickHandler() {
 
             /**
@@ -82,17 +82,7 @@ public class CmsConfirmDialog extends CmsAlertDialog {
              */
             public void onClick(ClickEvent event) {
 
-                getOkButton().setEnabled(false);
-                if (getHandler() != null) {
-                    try {
-                        getHandler().onOk();
-                    } catch (Throwable t) {
-                        String message = CmsClientStringUtil.getMessage(t);
-                        CmsNotification.get().send(CmsNotification.Type.WARNING, message);
-                        CmsLog.log(message + "\n" + CmsClientStringUtil.getStackTrace(t, "\n"));
-                    }
-                }
-                hide();
+                onOk();
             }
         });
         addButton(m_okButton);
@@ -117,6 +107,26 @@ public class CmsConfirmDialog extends CmsAlertDialog {
 
         m_handler = handler;
         super.setHandler(handler);
+    }
+
+    /**
+     * Sets the accept button icon class.<p>
+     * 
+     * @param iconClass the icon class
+     */
+    public void setOkIconClass(String iconClass) {
+
+        m_okButton.setImageClass(iconClass);
+    }
+
+    /**
+     * Sets the accept button text.<p>
+     * 
+     * @param text the button text
+     */
+    public void setOkText(String text) {
+
+        m_okButton.setText(text);
     }
 
     /**
@@ -146,5 +156,17 @@ public class CmsConfirmDialog extends CmsAlertDialog {
     protected CmsPushButton getOkButton() {
 
         return m_okButton;
+    }
+
+    /**
+     * Executed on 'ok' click.<p>
+     */
+    protected void onOk() {
+
+        getOkButton().setEnabled(false);
+        if (getHandler() != null) {
+            getHandler().onOk();
+        }
+        hide();
     }
 }

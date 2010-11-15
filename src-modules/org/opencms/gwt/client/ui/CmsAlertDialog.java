@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsAlertDialog.java,v $
- * Date   : $Date: 2010/04/28 13:03:39 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/11/15 15:34:21 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.gwt.client.ui;
 
 import org.opencms.gwt.client.Messages;
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -42,7 +43,7 @@ import com.google.gwt.user.client.ui.HTML;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -113,30 +114,14 @@ public class CmsAlertDialog extends CmsPopupDialog {
              */
             public void onClick(ClickEvent event) {
 
-                getCloseButton().setEnabled(false);
-                if (getHandler() != null) {
-                    // TODO: what's about canceling with ESC or clicking on the x??
-                    getHandler().onClose();
-                }
-                hide();
+                onClose();
             }
         });
         addButton(m_closeButton);
         m_content = new HTML(content);
         setContent(m_content);
-        getDialog().setText(title);
-    }
-
-    /**
-     * Adds a secondary style name to the content widget.<p>
-     * 
-     * @param style the style name to add
-     * 
-     * @see com.google.gwt.user.client.ui.UIObject#addStyleName(java.lang.String)
-     */
-    public void addContentStyleName(String style) {
-
-        m_content.addStyleName(style);
+        m_content.addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().contentSpacer());
+        setText(title);
     }
 
     /**
@@ -151,30 +136,6 @@ public class CmsAlertDialog extends CmsPopupDialog {
     }
 
     /**
-     * Gets all of the content's style names, as a space-separated list.<p>
-     * 
-     * @return the style names
-     * 
-     * @see com.google.gwt.user.client.ui.UIObject#getStyleName()
-     */
-    public String getContentStyleName() {
-
-        return m_content.getStyleName();
-    }
-
-    /**
-     * Gets all of the content's primary style name.<p>
-     * 
-     * @return the primary style name
-     * 
-     * @see com.google.gwt.user.client.ui.UIObject#getStylePrimaryName()
-     */
-    public String getContentStylePrimaryName() {
-
-        return m_content.getStylePrimaryName();
-    }
-
-    /**
      * @see org.opencms.gwt.client.ui.CmsPopup#setAutoHideEnabled(boolean)
      */
     @Override
@@ -184,27 +145,23 @@ public class CmsAlertDialog extends CmsPopupDialog {
     }
 
     /**
-     * Clears all of the content's style names and sets it to the given style.<p>
+     * Sets the cancel/close button icon class.<p>
      * 
-     * @param style the style name to set
-     * 
-     * @see com.google.gwt.user.client.ui.UIObject#setStyleName(java.lang.String)
+     * @param iconClass the icon class
      */
-    public void setContentStyleName(String style) {
+    public void setCloseIconClass(String iconClass) {
 
-        m_content.setStyleName(style);
+        getCloseButton().setImageClass(iconClass);
     }
 
     /**
-     * Sets the primary style name of the content widget.<p>
+     * Sets the close button text.<p>
      * 
-     * @param style the style name to set
-     * 
-     * @see com.google.gwt.user.client.ui.UIObject#setStylePrimaryName(java.lang.String)
+     * @param text the button text
      */
-    public void setContentStylePrimaryName(String style) {
+    public void setCloseText(String text) {
 
-        m_content.setStylePrimaryName(style);
+        m_closeButton.setText(text);
     }
 
     /**
@@ -254,5 +211,17 @@ public class CmsAlertDialog extends CmsPopupDialog {
     protected I_CmsCloseDialogHandler getHandler() {
 
         return m_handler;
+    }
+
+    /**
+     * Executed on 'close' click. <p>
+     */
+    protected void onClose() {
+
+        getCloseButton().setEnabled(false);
+        if (getHandler() != null) {
+            getHandler().onClose();
+        }
+        hide();
     }
 }
