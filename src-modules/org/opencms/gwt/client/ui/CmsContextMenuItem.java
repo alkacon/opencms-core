@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsContextMenuItem.java,v $
- * Date   : $Date: 2010/07/21 11:02:34 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/11/15 15:51:24 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,14 +49,14 @@ import com.google.gwt.user.client.ui.HTML;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since version 8.0.0
  */
 public final class CmsContextMenuItem extends A_CmsContextMenuItem {
 
     /** The panel containing the menu item text and optional the arrow and or a image in front of the text. */
-    protected HTML m_panel;
+    private HTML m_panel;
 
     /** The command for this menu item. */
     private Command m_command;
@@ -106,6 +106,7 @@ public final class CmsContextMenuItem extends A_CmsContextMenuItem {
     @Override
     public void onClick(ClickEvent event) {
 
+        getParentMenu().hide();
         if (m_command != null) {
             m_command.execute();
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsContextMenu.java,v $
- * Date   : $Date: 2010/07/19 14:11:43 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/11/15 15:51:24 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,14 +52,14 @@ import com.google.gwt.user.client.ui.FlowPanel;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since version 8.0.0
  */
-public class CmsContextMenu extends Composite implements ResizeHandler {
+public class CmsContextMenu extends Composite implements ResizeHandler, I_CmsAutoHider {
 
-    /** Stores the selected item. */
-    protected A_CmsContextMenuItem m_selectedItem;
+    /** The menu auto hide parent. */
+    private I_CmsAutoHider m_autoHideParent;
 
     /** A Flag indicating if the position of the menu should be fixed. */
     private boolean m_isFixed;
@@ -68,22 +68,36 @@ public class CmsContextMenu extends Composite implements ResizeHandler {
     private FlowPanel m_panel = new FlowPanel();
 
     /** The popup for a sub menu. */
-    private CmsPopup m_popup = new CmsPopup();
+    private CmsPopup m_popup;
+
+    /** Stores the selected item. */
+    private A_CmsContextMenuItem m_selectedItem;
 
     /**
      * Constructor.<p>
      * 
      * @param menuData the data structure for the context menu 
      * @param isFixed indicating if the position of the menu should be fixed.
+     * @param autoHideParent the menu auto hide parent
      */
-    public CmsContextMenu(List<I_CmsContextMenuEntry> menuData, boolean isFixed) {
+    public CmsContextMenu(List<I_CmsContextMenuEntry> menuData, boolean isFixed, I_CmsAutoHider autoHideParent) {
 
         initWidget(m_panel);
         m_isFixed = isFixed;
+        m_popup = new CmsPopup();
         createContextMenu(menuData);
         setStyleName(I_CmsLayoutBundle.INSTANCE.contextmenuCss().cmsMenuBar());
+        m_autoHideParent = autoHideParent;
         Element e = m_popup.getDialog().getWidget().getParent().getElement();
         DOM.removeElementAttribute(e, "style");
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.I_CmsAutoHider#addAutoHidePartner(com.google.gwt.dom.client.Element)
+     */
+    public void addAutoHidePartner(com.google.gwt.dom.client.Element partner) {
+
+        m_autoHideParent.addAutoHidePartner(partner);
     }
 
     /**
@@ -118,6 +132,30 @@ public class CmsContextMenu extends Composite implements ResizeHandler {
     }
 
     /**
+     * @see org.opencms.gwt.client.ui.I_CmsAutoHider#hide()
+     */
+    public void hide() {
+
+        m_autoHideParent.hide();
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.I_CmsAutoHider#isAutoHideEnabled()
+     */
+    public boolean isAutoHideEnabled() {
+
+        return m_autoHideParent.isAutoHideEnabled();
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.I_CmsAutoHider#isAutoHideOnHistoryEventsEnabled()
+     */
+    public boolean isAutoHideOnHistoryEventsEnabled() {
+
+        return m_autoHideParent.isAutoHideOnHistoryEventsEnabled();
+    }
+
+    /**
      * Action on close.<p>
      * 
      * On close all sub menus should be hidden, the currently selected item should be deselected 
@@ -148,8 +186,8 @@ public class CmsContextMenu extends Composite implements ResizeHandler {
                  */
                 public void execute() {
 
-                    m_selectedItem.getSubMenu().setSubMenuPosition(m_selectedItem);
-                    m_selectedItem.getSubMenu().onResize(event);
+                    getSelectedItem().getSubMenu().setSubMenuPosition(getSelectedItem());
+                    getSelectedItem().getSubMenu().onResize(event);
                 }
             });
         }
@@ -173,6 +211,31 @@ public class CmsContextMenu extends Composite implements ResizeHandler {
         if (m_isFixed) {
             m_popup.getDialog().getElement().getStyle().setPosition(Position.FIXED);
         }
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.I_CmsAutoHider#removeAutoHidePartner(com.google.gwt.dom.client.Element)
+     */
+    public void removeAutoHidePartner(com.google.gwt.dom.client.Element partner) {
+
+        m_autoHideParent.removeAutoHidePartner(partner);
+
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.I_CmsAutoHider#setAutoHideEnabled(boolean)
+     */
+    public void setAutoHideEnabled(boolean autoHide) {
+
+        m_autoHideParent.setAutoHideEnabled(autoHide);
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.I_CmsAutoHider#setAutoHideOnHistoryEventsEnabled(boolean)
+     */
+    public void setAutoHideOnHistoryEventsEnabled(boolean enabled) {
+
+        m_autoHideParent.setAutoHideOnHistoryEventsEnabled(enabled);
     }
 
     /**
@@ -296,13 +359,15 @@ public class CmsContextMenu extends Composite implements ResizeHandler {
     private void createContextMenu(List<I_CmsContextMenuEntry> entries) {
 
         for (I_CmsContextMenuEntry entry : entries) {
-            CmsContextMenuItem item = null;
+            if (!entry.isVisible()) {
+                continue;
+            }
             if (entry.isSeparator()) {
                 addSeparator();
             } else {
                 if (entry.hasSubMenu()) {
-                    item = new CmsContextMenuItem(entry);
-                    item.setSubMenu(new CmsContextMenu(entry.getSubMenu(), m_isFixed));
+                    CmsContextMenuItem item = new CmsContextMenuItem(entry);
+                    item.setSubMenu(new CmsContextMenu(entry.getSubMenu(), m_isFixed, m_popup));
                     addItem(item);
                 } else {
                     addItem(new CmsContextMenuItem(entry));
