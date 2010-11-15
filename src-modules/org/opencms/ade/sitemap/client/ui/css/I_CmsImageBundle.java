@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/ui/css/Attic/I_CmsImageBundle.java,v $
- * Date   : $Date: 2010/11/04 07:54:07 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/11/15 16:05:59 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import com.google.gwt.resources.client.ImageResource.RepeatStyle;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 8.0.0
  */
@@ -58,7 +58,21 @@ public interface I_CmsImageBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
+        String context();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
         String hoverbar();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String hoverbarContext();
 
         /** 
          * Access method.<p>
@@ -164,6 +178,30 @@ public interface I_CmsImageBundle extends ClientBundle {
      */
     @Source("button.css")
     I_CmsButtonCss buttonCss();
+
+    /** 
+     * Access method.<p>
+     * 
+     * @return an image resource
+     */
+    @Source("images/context.png")
+    ImageResource hoverbarContext();
+
+    /** 
+     * Access method.<p>
+     * 
+     * @return an image resource
+     */
+    @Source("images/context_down.png")
+    ImageResource hoverbarContextDown();
+
+    /** 
+     * Access method.<p>
+     * 
+     * @return an image resource
+     */
+    @Source("images/context_disabled.png")
+    ImageResource hoverbarContextDisabled();
 
     /** 
      * Access method.<p>

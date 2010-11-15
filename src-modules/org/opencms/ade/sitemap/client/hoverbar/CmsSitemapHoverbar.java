@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsSitemapHoverbar.java,v $
- * Date   : $Date: 2010/10/29 13:10:49 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/11/15 16:05:59 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 8.0.0
  */
@@ -85,14 +85,15 @@ public class CmsSitemapHoverbar extends FlowPanel {
         addStyleName(I_CmsImageBundle.INSTANCE.buttonCss().hoverbar());
         if (controller.isEditable()) {
             add(new CmsHoverbarMoveButton(this));
-            add(new CmsHoverbarGotoSubSitemapButton(this));
-            add(new CmsHoverbarGotoButton(this));
-            add(new CmsHoverbarSubsitemapButton(this));
-            add(new CmsHoverbarDeleteButton(this));
-            add(new CmsHoverbarEditButton(this));
-            add(new CmsHoverbarNewButton(this));
-            add(new CmsHoverbarMergeButton(this));
-            add(new CmsHoverbarParentButton(this));
+            add(new CmsHoverbarContextMenuButton(this));
+            //            add(new CmsHoverbarGotoSubSitemapButton(this));
+            //            add(new CmsHoverbarGotoButton(this));
+            //            add(new CmsHoverbarSubsitemapButton(this));
+            //            add(new CmsHoverbarDeleteButton(this));
+            //            add(new CmsHoverbarEditButton(this));
+            //            add(new CmsHoverbarNewButton(this));
+            //            add(new CmsHoverbarMergeButton(this));
+            //            add(new CmsHoverbarParentButton(this));
         } else {
             add(new CmsHoverbarGotoButton(this));
         }

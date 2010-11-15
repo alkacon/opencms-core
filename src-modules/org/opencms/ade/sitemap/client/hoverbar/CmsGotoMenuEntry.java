@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsHoverbarGotoButton.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsGotoMenuEntry.java,v $
  * Date   : $Date: 2010/11/15 16:05:59 $
- * Version: $Revision: 1.3 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,44 +32,51 @@
 package org.opencms.ade.sitemap.client.hoverbar;
 
 import org.opencms.ade.sitemap.client.Messages;
-import org.opencms.ade.sitemap.client.ui.css.I_CmsImageBundle;
-import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Command;
 
 /**
- * Sitemap hoverbar "go to page" button.<p>
+ * Sitemap context menu delete entry.<p>
  * 
- * @author Michael Moossen
+ * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  */
-public class CmsHoverbarGotoButton extends CmsPushButton {
+public class CmsGotoMenuEntry extends A_CmsSitemapMenuEntry {
 
     /**
      * Constructor.<p>
      * 
      * @param hoverbar the hoverbar 
      */
-    public CmsHoverbarGotoButton(final CmsSitemapHoverbar hoverbar) {
+    public CmsGotoMenuEntry(CmsSitemapHoverbar hoverbar) {
 
-        // TODO: this should be a link so it can be opened in a new window or tab by the user
-        setImageClass(I_CmsImageBundle.INSTANCE.buttonCss().hoverbarGoto());
-        setTitle(Messages.get().key(Messages.GUI_HOVERBAR_GOTO_0));
-        setShowBorder(false);
-        addClickHandler(new ClickHandler() {
+        super(hoverbar);
+        setImageClass(I_CmsImageBundle.INSTANCE.contextMenuIcons().gotoPage());
+        setLabel(Messages.get().key(Messages.GUI_HOVERBAR_GOTO_0));
+        setActive(true);
+        setVisible(true);
+        setCommand(new Command() {
 
             /**
-             * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
+             * @see com.google.gwt.user.client.Command#execute()
              */
-            public void onClick(ClickEvent event) {
+            public void execute() {
 
-                hoverbar.deattach();
-                hoverbar.getController().askToLeave(hoverbar.getSitePath());
+                getHoverbar().getController().askToLeave(getHoverbar().getSitePath());
             }
         });
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.client.hoverbar.A_CmsSitemapMenuEntry#onAttach(org.opencms.ade.sitemap.client.hoverbar.CmsHoverbarAttachEvent)
+     */
+    @Override
+    public void onAttach(CmsHoverbarAttachEvent event) {
+
+        // nothing to do
     }
 }

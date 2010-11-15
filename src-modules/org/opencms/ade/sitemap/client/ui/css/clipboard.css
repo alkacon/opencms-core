@@ -1,3 +1,5 @@
+@external gwt-TabLayoutPanel;
+
 .clipboardTabPanel{
 	margin:10px 8px 8px;
 }
@@ -29,4 +31,8 @@
 
 .menuTabContainer > div{
 	border: none;	
+}
+
+.menuTabContainer > div >.gwt-TabLayoutPanel{
+	border: none;
 }
