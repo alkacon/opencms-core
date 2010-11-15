@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2010/11/03 13:25:40 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2010/11/15 16:04:36 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,9 @@ import org.opencms.file.CmsResource;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.rpc.CmsRpcPrefetcher;
+import org.opencms.gwt.client.ui.CmsConfirmDialog;
 import org.opencms.gwt.client.ui.CmsNotification;
+import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
 import org.opencms.gwt.client.util.CmsCollectionUtil;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.util.CmsStringUtil;
@@ -85,7 +87,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.28 $ 
  * 
  * @since 8.0.0
  */
@@ -294,6 +296,43 @@ public class CmsSitemapController {
     public HandlerRegistration addStartEditHandler(I_CmsSitemapStartEditHandler handler) {
 
         return m_handlerManager.addHandler(CmsSitemapStartEditEvent.getType(), handler);
+    }
+
+    /**
+     * Ask to save the page before leaving, if necessary.<p>
+     * 
+     * @param target the leaving target
+     */
+    public void askToLeave(final String target) {
+
+        if (hasChanges()) {
+            CmsConfirmDialog dialog = new CmsConfirmDialog(
+                Messages.get().key(Messages.GUI_CONFIRM_LEAVING_TITLE_0),
+                Messages.get().key(Messages.GUI_CONFIRM_DIRTY_LEAVING_0));
+            dialog.setOkText(org.opencms.gwt.client.Messages.get().key(org.opencms.gwt.client.Messages.GUI_SAVE_0));
+            dialog.setCloseText(org.opencms.gwt.client.Messages.get().key(org.opencms.gwt.client.Messages.GUI_CANCEL_0));
+            dialog.setHandler(new I_CmsConfirmDialogHandler() {
+
+                /**
+                 * @see org.opencms.gwt.client.ui.I_CmsCloseDialogHandler#onClose()
+                 */
+                public void onClose() {
+
+                    // doing nothing
+                }
+
+                /**
+                 * @see org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler#onOk()
+                 */
+                public void onOk() {
+
+                    saveAndLeavePage(target);
+                }
+            });
+            dialog.center();
+        } else {
+            Window.Location.assign(CmsCoreProvider.get().link(target));
+        }
     }
 
     /**
@@ -701,7 +740,7 @@ public class CmsSitemapController {
      * 
      * @return <code>true</code> if there is at least one change to commit
      */
-    public boolean isDirty() {
+    public boolean hasChanges() {
 
         return !m_changes.isEmpty();
     }
@@ -891,7 +930,7 @@ public class CmsSitemapController {
      */
     public void undo() {
 
-        if (!isDirty()) {
+        if (!hasChanges()) {
             return;
         }
 
@@ -912,7 +951,7 @@ public class CmsSitemapController {
         fireChange(revertChange);
 
         // post-state
-        if (!isDirty()) {
+        if (!hasChanges()) {
             m_handlerManager.fireEvent(new CmsSitemapLastUndoEvent());
             CmsCoreProvider.get().unlock();
         }
@@ -927,7 +966,7 @@ public class CmsSitemapController {
     protected void addChange(I_CmsClientSitemapChange change, boolean redo) {
 
         // state
-        if (!isDirty()) {
+        if (!hasChanges()) {
             if (CmsCoreProvider.get().lockAndCheckModification(getSitemapUri(), m_data.getTimestamp())) {
                 m_handlerManager.fireEvent(new CmsSitemapStartEditEvent());
             } else {

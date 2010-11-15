@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapDNDController.java,v $
- * Date   : $Date: 2010/11/04 07:54:07 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/11/15 16:04:36 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import com.google.gwt.user.client.DeferredCommand;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -147,7 +147,7 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
         // TODO: check if the synchronized lock action request causes lock-ups of the GUI
 
         // cancel if page can't be locked
-        boolean cancel = !m_controller.isDirty();
+        boolean cancel = !m_controller.hasChanges();
         cancel &= !CmsCoreProvider.get().lockAndCheckModification(
             CmsCoreProvider.get().getUri(),
             m_controller.getData().getTimestamp());
