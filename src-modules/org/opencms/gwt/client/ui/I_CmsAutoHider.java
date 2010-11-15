@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/I_CmsAutoHider.java,v $
- * Date   : $Date: 2010/10/29 12:18:21 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/11/15 15:44:54 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import com.google.gwt.dom.client.Element;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -52,6 +52,11 @@ public interface I_CmsAutoHider {
      * @see com.google.gwt.user.client.ui.PopupPanel#addAutoHidePartner(com.google.gwt.dom.client.Element)
      */
     void addAutoHidePartner(Element partner);
+
+    /**
+     * Hides the widget.<p>
+     */
+    void hide();
 
     /**
      * Returns if the auto hide feature is enabled.<p>

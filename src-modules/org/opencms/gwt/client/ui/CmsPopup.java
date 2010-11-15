@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsPopup.java,v $
- * Date   : $Date: 2010/10/29 12:18:49 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/11/15 15:44:54 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.gwt.client.ui;
 
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.Iterator;
 
@@ -56,7 +57,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 8.0.0
  */
@@ -251,7 +252,7 @@ public class CmsPopup implements I_CmsAutoHider {
     }
 
     /** The default width of this dialog. */
-    private static final String DEFAULT_WIDTH = "300px";
+    private static final int DEFAULT_WIDTH = 300;
 
     /** The wrapped pop up dialog. */
     private PopupDialog m_dialog;
@@ -261,20 +262,19 @@ public class CmsPopup implements I_CmsAutoHider {
      */
     public CmsPopup() {
 
-        m_dialog = new PopupDialog();
-        m_dialog.setWidth(DEFAULT_WIDTH);
+        this(DEFAULT_WIDTH);
     }
 
     /**
      * Constructor setting the width of the dialog.<p>
      * 
      * @param width the width to set
-     * @param unit the width unit 
      */
-    public CmsPopup(int width, Unit unit) {
+    public CmsPopup(int width) {
 
         m_dialog = new PopupDialog();
-        m_dialog.setWidth(width + unit.toString());
+        m_dialog.setWidth(width + Unit.PX.toString());
+        m_dialog.getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().hideCaption());
     }
 
     /**
@@ -285,7 +285,7 @@ public class CmsPopup implements I_CmsAutoHider {
     public CmsPopup(String caption) {
 
         this();
-        m_dialog.setText(caption);
+        setText(caption);
     }
 
     /**
@@ -293,12 +293,11 @@ public class CmsPopup implements I_CmsAutoHider {
      * 
      * @param caption the caption to set
      * @param width the width to set
-     * @param unit the width unit
      */
-    public CmsPopup(String caption, int width, Unit unit) {
+    public CmsPopup(String caption, int width) {
 
-        this(width, unit);
-        m_dialog.setText(caption);
+        this(width);
+        setText(caption);
     }
 
     /**
@@ -836,7 +835,12 @@ public class CmsPopup implements I_CmsAutoHider {
      */
     public void setText(String text) {
 
-        m_dialog.setText(text);
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(text)) {
+            m_dialog.getElement().removeClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().hideCaption());
+            m_dialog.setText(text);
+        } else {
+            m_dialog.getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().hideCaption());
+        }
     }
 
     /**
