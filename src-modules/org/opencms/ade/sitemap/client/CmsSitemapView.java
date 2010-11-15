@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapView.java,v $
- * Date   : $Date: 2010/10/29 12:21:20 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2010/11/15 16:03:50 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -75,7 +75,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.40 $ 
+ * @version $Revision: 1.41 $ 
  * 
  * @since 8.0.0
  */
@@ -231,7 +231,9 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler, ClosingHandler {
 
         openItemsOnPath(sitePath);
         CmsSitemapTreeItem item = getTreeItem(sitePath);
-        item.highlightTemporarily(1500);
+        if (item != null) {
+            item.highlightTemporarily(1500);
+        }
     }
 
     /**
@@ -352,7 +354,7 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler, ClosingHandler {
             return;
         }
         String openPath = m_controller.getData().getOpenPath();
-        if (openPath != null) {
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(openPath)) {
             highlightPath(openPath);
         }
     }
@@ -363,7 +365,7 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler, ClosingHandler {
     public void onWindowClosing(ClosingEvent event) {
 
         // unload event handling
-        if (!m_controller.isDirty()) {
+        if (!m_controller.hasChanges()) {
             return;
         }
         boolean savePage = Window.confirm(Messages.get().key(Messages.GUI_CONFIRM_DIRTY_LEAVING_0));
