@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageController.java,v $
- * Date   : $Date: 2010/11/15 15:33:05 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2010/11/16 13:04:07 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -86,7 +86,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  * 
  * @since 8.0.0
  */
@@ -315,6 +315,9 @@ public final class CmsContainerpageController {
     /** Flag if the container-page has changed. */
     /*DEFAULT*/boolean m_pageChanged;
 
+    /** The container page drag and drop controller. */
+    private I_CmsDNDController m_cntDndController;
+
     /** The container-page RPC service. */
     private I_CmsContainerpageServiceAsync m_containerpageService;
 
@@ -332,9 +335,6 @@ public final class CmsContainerpageController {
 
     /** The drag and drop handler. */
     private CmsDNDHandler m_dndHandler;
-
-    /** The container page drag and drop controller. */
-    private I_CmsDNDController m_cntDndController;
 
     /** The currently edited sub-container element. */
     private CmsSubContainerElement m_editingSubcontainer;
@@ -695,52 +695,6 @@ public final class CmsContainerpageController {
     }
 
     /**
-     * Retrieves a container element with a given set of properties.<p>
-     * 
-     * @param clientId the id of the container element
-     * @param properties the set of properties
-     *  
-     * @param callback the callback which should be executed when the element has been loaded 
-     */
-    private void getElementWithProperties(
-        final String clientId,
-        final Map<String, String> properties,
-        final I_CmsSimpleCallback<CmsContainerElementData> callback) {
-
-        CmsRpcAction<CmsContainerElementData> action = new CmsRpcAction<CmsContainerElementData>() {
-
-            /**
-             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
-             */
-            @Override
-            public void execute() {
-
-                start(200);
-                getContainerpageService().getElementWithProperties(
-                    CmsContainerpageController.getCurrentUri(),
-                    null,
-                    clientId,
-                    properties,
-                    m_containerBeans,
-                    this);
-
-            }
-
-            /**
-             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
-             */
-            @Override
-            protected void onResponse(CmsContainerElementData result) {
-
-                stop(false);
-                callback.execute(result);
-            }
-
-        };
-        action.execute();
-    }
-
-    /**
      * Returns the container-page handler.<p>
      *
      * @return the container-page handler
@@ -1059,24 +1013,12 @@ public final class CmsContainerpageController {
     }
 
     /**
-     * Removes all container elements with the given id from all containers and the client side cache.<p>
-     * 
-     * @param resourceId the resource id
+     * Shows list collector direct edit buttons (old direct edit style), if present.<p>
      */
-    protected void removeContainerElements(String resourceId) {
+    public void resetEditableListButtons() {
 
-        Iterator<org.opencms.ade.containerpage.client.ui.CmsContainerPageElement> it = getAllDragElements().iterator();
-        while (it.hasNext()) {
-            org.opencms.ade.containerpage.client.ui.CmsContainerPageElement containerElement = it.next();
-            if (resourceId.startsWith(containerElement.getId())) {
-                containerElement.removeFromParent();
-                setPageChanged();
-            }
-        }
-        for (String elementId : m_elements.keySet()) {
-            if (elementId.startsWith(resourceId)) {
-                m_elements.remove(elementId);
-            }
+        for (org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer container : m_targetContainers.values()) {
+            container.showEditableListButtons();
         }
     }
 
@@ -1269,16 +1211,6 @@ public final class CmsContainerpageController {
     }
 
     /**
-     * Shows list collector direct edit buttons (old direct edit style), if present.<p>
-     */
-    public void resetEditableListButtons() {
-
-        for (org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer container : m_targetContainers.values()) {
-            container.showEditableListButtons();
-        }
-    }
-
-    /**
      * Tells the controller that sub-container editing has started.<p>
      * 
      * @param subContainer the sub-container
@@ -1442,6 +1374,28 @@ public final class CmsContainerpageController {
     }
 
     /**
+     * Removes all container elements with the given id from all containers and the client side cache.<p>
+     * 
+     * @param resourceId the resource id
+     */
+    protected void removeContainerElements(String resourceId) {
+
+        Iterator<org.opencms.ade.containerpage.client.ui.CmsContainerPageElement> it = getAllDragElements().iterator();
+        while (it.hasNext()) {
+            org.opencms.ade.containerpage.client.ui.CmsContainerPageElement containerElement = it.next();
+            if (resourceId.startsWith(containerElement.getId())) {
+                containerElement.removeFromParent();
+                setPageChanged();
+            }
+        }
+        for (String elementId : m_elements.keySet()) {
+            if (elementId.startsWith(resourceId)) {
+                m_elements.remove(elementId);
+            }
+        }
+    }
+
+    /**
      * Sets the page changed flag and initializes the window closing handler if necessary.<p>
      * 
      * @param changed if <code>true</code> the page has changed
@@ -1549,6 +1503,52 @@ public final class CmsContainerpageController {
             result.add(container);
         }
         return result;
+    }
+
+    /**
+     * Retrieves a container element with a given set of properties.<p>
+     * 
+     * @param clientId the id of the container element
+     * @param properties the set of properties
+     *  
+     * @param callback the callback which should be executed when the element has been loaded 
+     */
+    private void getElementWithProperties(
+        final String clientId,
+        final Map<String, String> properties,
+        final I_CmsSimpleCallback<CmsContainerElementData> callback) {
+
+        CmsRpcAction<CmsContainerElementData> action = new CmsRpcAction<CmsContainerElementData>() {
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+             */
+            @Override
+            public void execute() {
+
+                start(200);
+                getContainerpageService().getElementWithProperties(
+                    CmsContainerpageController.getCurrentUri(),
+                    null,
+                    clientId,
+                    properties,
+                    m_containerBeans,
+                    this);
+
+            }
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+             */
+            @Override
+            protected void onResponse(CmsContainerElementData result) {
+
+                stop(false);
+                callback.execute(result);
+            }
+
+        };
+        action.execute();
     }
 
     /**
