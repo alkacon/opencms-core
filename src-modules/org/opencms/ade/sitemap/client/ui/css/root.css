@@ -11,3 +11,11 @@
 	position: relative;
 	margin: 0;
 }
+
+@if user.agent ie6 {
+	.root * {
+		zoom: 1; 
+	}
+}
+
+	
