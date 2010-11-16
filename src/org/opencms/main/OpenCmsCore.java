@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2010/11/11 13:08:18 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2010/11/16 14:23:05 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -148,7 +148,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 6.0.0 
  */
@@ -1551,7 +1551,13 @@ public final class OpenCmsCore {
             // set runtime variables
             rpcService.setCms(cms);
             try {
-                rpcService.service(req, res);
+                Object lock = req.getSession();
+                if (lock == null) {
+                    lock = new Object();
+                }
+                synchronized (lock) {
+                    rpcService.service(req, res);
+                }
             } finally {
                 // be sure to clear the cms context
                 rpcService.setCms(null);
