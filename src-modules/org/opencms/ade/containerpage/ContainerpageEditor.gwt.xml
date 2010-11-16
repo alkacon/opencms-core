@@ -6,5 +6,12 @@
 	
 	<source path="client" />
 	<source path="shared" />
+	<replace-with class="org.opencms.ade.containerpage.client.CmsDummyZIndexManager">
+        <when-type-assignable class="org.opencms.ade.containerpage.client.I_CmsContainerZIndexManager"/>
+    </replace-with>
+    <replace-with class="org.opencms.ade.containerpage.client.CmsContainerZIndexManager">
+        <when-type-assignable class="org.opencms.ade.containerpage.client.I_CmsContainerZIndexManager"/>
+      	<when-property-is name="user.agent" value="ie6"/>
+    </replace-with>
 	<entry-point class="org.opencms.ade.containerpage.client.CmsContainerpageEditor" />
 </module>

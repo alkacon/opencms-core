@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsDomUtil.java,v $
- * Date   : $Date: 2010/11/08 10:19:17 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2010/11/16 14:32:06 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentC
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.33 $
+ * @version $Revision: 1.34 $
  * 
  * @since 8.0.0
  */
@@ -273,6 +273,9 @@ public final class CmsDomUtil {
         opacity,
 
         /** CSS Property. */
+        minHeight,
+
+        /** CSS Property. */
         padding,
 
         /** CSS Property. */
@@ -309,7 +312,11 @@ public final class CmsDomUtil {
         wordSpacing,
 
         /** CSS Property. */
-        wordWrap;
+        wordWrap,
+
+        /** CSS Property. */
+        zIndex;
+
     }
 
     /**
@@ -877,6 +884,21 @@ public final class CmsDomUtil {
 
         return y - target.getAbsoluteTop() + target.getScrollTop() + target.getOwnerDocument().getScrollTop();
     }
+
+    /**
+     * Returns the Z index from the given style.<p>
+     * 
+     * This is a workaround for a bug with {@link com.google.gwt.dom.client.Style#getZIndex()} which occurs with IE in 
+     * hosted mode.<p>
+     * 
+     * @param style the style object from which the Z index property should be fetched 
+     * 
+     * @return the z index
+     */
+    public static native String getZIndex(com.google.gwt.dom.client.Style style)
+    /*-{
+        return "" + style.zIndex;
+    }-*/;
 
     /**
      * Utility method to determine if the given element has a set background.<p>

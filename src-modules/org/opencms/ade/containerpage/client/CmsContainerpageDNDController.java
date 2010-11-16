@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageDNDController.java,v $
- * Date   : $Date: 2010/11/12 10:56:24 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/11/16 14:32:06 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,11 +47,14 @@ import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.gwt.client.util.CmsStyleSaver;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.dom.client.Element;
@@ -70,7 +73,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
@@ -165,6 +168,12 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
     /** The original position of the draggable. */
     private int m_originalIndex;
 
+    /** Objects for restoring the min. heights of containers. */
+    private List<CmsStyleSaver> m_savedMinHeights = new ArrayList<CmsStyleSaver>();
+
+    /** The height value above which a container's min height will be set when the user starts dragging. */
+    public static final double MIN_HEIGHT_THRESHOLD = 50.0;
+
     /**
      * Constructor.<p>
      * 
@@ -189,7 +198,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
     */
     public void onDragCancel(I_CmsDraggable draggable, I_CmsDropTarget target, CmsDNDHandler handler) {
 
-        clear(handler);
+        stopDrag(handler);
     }
 
     /**
@@ -247,6 +256,10 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                 CmsDebugLog.getInstance().printLine(message);
             }
         });
+        if (target instanceof CmsContainerPageContainer) {
+            String id = ((CmsContainerPageContainer)target).getContainerId();
+            CmsContainerpageEditor.getZIndexManager().start(id);
+        }
         return true;
     }
 
@@ -290,7 +303,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                 if (m_controller.isSubcontainerEditing()) {
                     container.getElement().removeClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().emptySubContainer());
                 }
-            } else if (target instanceof CmsList) {
+            } else if (target instanceof CmsList<?>) {
                 m_controller.addToFavoriteList(draggable.getId());
             }
         } else if ((target instanceof I_CmsDropContainer)
@@ -308,7 +321,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             m_controller.addToRecentList(draggable.getId());
             m_controller.setPageChanged();
         }
-        clear(handler);
+        stopDrag(handler);
     }
 
     /**
@@ -337,6 +350,10 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         } else {
             hideOriginalPositionPlaceholder(draggable);
         }
+        if (target instanceof CmsContainerPageContainer) {
+            CmsContainerPageContainer cont = (CmsContainerPageContainer)target;
+            CmsContainerpageEditor.getZIndexManager().enter(cont.getContainerId());
+        }
         return true;
     }
 
@@ -356,6 +373,11 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         }
         showOriginalPositionPlaceholder(draggable);
         updateHighlighting();
+        if (target instanceof CmsContainerPageContainer) {
+            String id = ((CmsContainerPageContainer)target).getContainerId();
+            CmsContainerpageEditor.getZIndexManager().leave(id);
+        }
+
     }
 
     /**
@@ -449,35 +471,6 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         }
     }
 
-    private void clear(final CmsDNDHandler handler) {
-
-        for (I_CmsDropTarget target : m_dragInfos.keySet()) {
-            if (Position.RELATIVE.getCssName().equals(target.getElement().getStyle().getPosition())) {
-                target.getElement().getStyle().clearPosition();
-            }
-            m_dragInfos.get(target).getDragHelper().removeFromParent();
-            if (target instanceof I_CmsDropContainer) {
-                ((I_CmsDropContainer)target).removeHighlighting();
-            }
-        }
-        m_isNew = false;
-        m_controller.getHandler().showDropzone(false);
-        m_controller.getHandler().deactivateMenuButton();
-        m_controller.resetEditableListButtons();
-        m_dragInfos.clear();
-        DeferredCommand.addCommand(new Command() {
-
-            /**
-             * @see com.google.gwt.user.client.Command#execute()
-             */
-            public void execute() {
-
-                handler.clearTargets();
-            }
-        });
-
-    }
-
     /**
      * Hides the current drag helper and place-holder.<p>
      * 
@@ -568,6 +561,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         if (!Position.ABSOLUTE.getCssName().equals(positioning) && !Position.FIXED.getCssName().equals(positioning)) {
             target.getElement().getStyle().setPosition(Position.RELATIVE);
         }
+        setMinHeight(target);
         m_dragInfos.put(target, new DragInfo(dragHelper, placeholder, width - 15, handler.getCursorOffsetY()));
         handler.addTarget(target);
 
@@ -619,6 +613,36 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
     }
 
     /**
+     * Restores the minimum heights of containers.<p>
+     */
+    private void restoreMinHeights() {
+
+        for (CmsStyleSaver savedMinHeight : m_savedMinHeights) {
+            savedMinHeight.restore();
+        }
+        m_savedMinHeights.clear();
+    }
+
+    /**
+     * Saves the minimum height of a container and sets it to the current height.<p>
+     * 
+     * @param target the target container 
+     */
+    private void setMinHeight(I_CmsDropTarget target) {
+
+        if (target instanceof CmsContainerPageContainer) {
+            CmsContainerPageContainer cont = (CmsContainerPageContainer)target;
+            String realHeight = CmsDomUtil.getCurrentStyle(cont.getElement(), CmsDomUtil.Style.height);
+            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(realHeight)
+                && (Double.parseDouble(realHeight.replace("px", "")) > MIN_HEIGHT_THRESHOLD)) {
+                m_savedMinHeights.add(new CmsStyleSaver(cont.getElement(), "minHeight"));
+                Style style = cont.getElement().getStyle();
+                style.setProperty("minHeight", realHeight);
+            }
+        }
+    }
+
+    /**
      * Shows the draggable on it's original position.<p>
      * 
      * @param draggable the draggable
@@ -627,6 +651,41 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
 
         draggable.getElement().getStyle().setDisplay(Display.BLOCK);
         CmsDomUtil.showOverlay(draggable.getElement(), true);
+    }
+
+    /** 
+     * Function which is called when the drag process is stopped, either by cancelling or dropping.<p>
+     * 
+     * @param handler the drag and drop handler 
+     */
+    private void stopDrag(final CmsDNDHandler handler) {
+
+        CmsContainerpageEditor.getZIndexManager().stop();
+        restoreMinHeights();
+        for (I_CmsDropTarget target : m_dragInfos.keySet()) {
+            if (Position.RELATIVE.getCssName().equals(target.getElement().getStyle().getPosition())) {
+                target.getElement().getStyle().clearPosition();
+            }
+            m_dragInfos.get(target).getDragHelper().removeFromParent();
+            if (target instanceof I_CmsDropContainer) {
+                ((I_CmsDropContainer)target).removeHighlighting();
+            }
+        }
+        m_isNew = false;
+        m_controller.getHandler().showDropzone(false);
+        m_controller.getHandler().deactivateMenuButton();
+        m_controller.resetEditableListButtons();
+        m_dragInfos.clear();
+        DeferredCommand.addCommand(new Command() {
+
+            /**
+             * @see com.google.gwt.user.client.Command#execute()
+             */
+            public void execute() {
+
+                handler.clearTargets();
+            }
+        });
     }
 
     /**

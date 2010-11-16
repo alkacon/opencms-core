@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageController.java,v $
- * Date   : $Date: 2010/11/16 13:04:07 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2010/11/16 14:32:06 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.ade.containerpage.client;
 
+import org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer;
 import org.opencms.ade.containerpage.client.ui.CmsSubContainerElement;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.containerpage.shared.CmsCntPageData;
@@ -62,8 +63,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JsArray;
@@ -72,11 +73,12 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.Window.ClosingHandler;
 import com.google.gwt.user.client.ui.Widget;
@@ -86,7 +88,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  * 
  * @since 8.0.0
  */
@@ -777,6 +779,7 @@ public final class CmsContainerpageController {
         m_elements = new HashMap<String, CmsContainerElementData>();
         m_containerTypes = new HashSet<String>();
         m_containers = new HashMap<String, CmsContainerJso>();
+
         JsArray<CmsContainerJso> containers = CmsContainerJso.getContainers();
         for (int i = 0; i < containers.length(); i++) {
             CmsContainerJso container = containers.get(i);
@@ -785,6 +788,10 @@ public final class CmsContainerpageController {
         }
         m_containerBeans = createEmptyContainerBeans();
         m_targetContainers = m_containerpageUtil.consumeContainers(m_containers);
+        for (CmsContainerPageContainer cont : m_targetContainers.values()) {
+            Element elem = DOM.getElementById(cont.getContainerId());
+            CmsContainerpageEditor.getZIndexManager().addContainer(cont.getContainerId(), elem);
+        }
         resetEditableListButtons();
         Event.addNativePreviewHandler(new NativePreviewHandler() {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageEditor.java,v $
- * Date   : $Date: 2010/10/22 12:12:43 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2010/11/16 14:32:06 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,6 +54,7 @@ import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsDomUtil.Style;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Position;
@@ -67,7 +68,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * 
  * @since 8.0.0
  */
@@ -114,6 +115,19 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
 
     /** The tool-bar. */
     private CmsToolbar m_toolbar;
+
+    /** The Z index manager. */
+    private static final I_CmsContainerZIndexManager Z_INDEX_MANAGER = GWT.create(I_CmsContainerZIndexManager.class);
+
+    /** 
+     * Returns the Z index manager for the container page editor.<p> 
+     * 
+     * @return the Z index manager
+     **/
+    public static I_CmsContainerZIndexManager getZIndexManager() {
+
+        return Z_INDEX_MANAGER;
+    }
 
     /**
      * Returns the add gallery menu.<p>
