@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/Messages.java,v $
- * Date   : $Date: 2010/11/12 13:48:38 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2010/11/17 11:02:29 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.client.util.CmsMessages;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 8.0.0
  */
@@ -192,7 +192,7 @@ public final class Messages {
     public static final String GUI_TAB_TITLE_RESULTS_0 = "GUI_TAB_TITLE_RESULTS_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_TAB_TITLE_RESULTS_1 = "GUI_TAB_TITLE_RESULTS_1";
+    public static final String GUI_LABEL_NUM_RESULTS_1 = "GUI_LABEL_NUM_RESULTS_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TAB_TITLE_SEARCH_0 = "GUI_TAB_TITLE_SEARCH_0";

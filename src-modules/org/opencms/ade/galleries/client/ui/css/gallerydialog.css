@@ -116,3 +116,9 @@
 .searchTabDesMargin {
 	margin-bottom: 10px;
 }
+
+.infoLabel {
+	float: right;
+	margin-top: -20px;
+	margin-right: 30px;
+}	

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/A_CmsListTab.java,v $
- * Date   : $Date: 2010/07/20 10:28:08 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/11/17 11:02:29 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,6 +47,8 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HasText;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -55,7 +57,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.
  */
@@ -95,6 +97,9 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
 
     /** The select box to change the sort order. */
     private CmsSelectBox m_sortSelectBox;
+    
+    /** A label for displaying additional information about the tab. */
+    protected HasText m_infoLabel;
 
     /**
      * The default constructor with drag handler.<p>
@@ -116,6 +121,10 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
             m_sortSelectBox.addStyleName(DIALOG_CSS.selectboxWidth());
             m_sortSelectBox.truncate(TM_GALLERY_SORT, 200);
             m_options.add(m_sortSelectBox);
+            Label infoLabel = new Label();
+            infoLabel.setStyleName(DIALOG_CSS.infoLabel());
+            m_infoLabel = infoLabel;
+            m_options.add(infoLabel);
         }
         m_scrollList = createScrollList();
         m_list.add(m_scrollList);
