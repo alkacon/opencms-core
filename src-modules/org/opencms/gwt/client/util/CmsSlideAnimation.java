@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsSlideAnimation.java,v $
- * Date   : $Date: 2010/11/08 10:19:52 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/11/17 07:20:17 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,6 +38,7 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.user.client.Command;
 
 /**
  * Slide animation. Sliding the element into view or sliding it out.<p>
@@ -45,7 +46,7 @@ import com.google.gwt.dom.client.Style.Unit;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -73,7 +74,7 @@ public class CmsSlideAnimation extends A_CmsAnimation {
      * @param show <code>true</code> to show the element, <code>false</code> to hide it away
      * @param callback the callback executed after the animation is completed
      */
-    public CmsSlideAnimation(Element element, boolean show, I_CmsSimpleCallback<Void> callback) {
+    public CmsSlideAnimation(Element element, boolean show, Command callback) {
 
         super(callback);
         m_show = show;
@@ -82,39 +83,35 @@ public class CmsSlideAnimation extends A_CmsAnimation {
     }
 
     /**
-     * @see com.google.gwt.animation.client.Animation#onComplete()
+     * Slides the given element into view executing the callback afterwards.<p>
+     * 
+     * @param element the element to slide in
+     * @param callback the callback
+     * @param duration the animation duration
+     * 
+     * @return the running animation object
      */
-    @Override
-    protected void onComplete() {
+    public static CmsSlideAnimation slideIn(Element element, Command callback, int duration) {
 
-        onUpdate(1.0);
-        if (!m_show) {
-            m_elementStyle.setDisplay(Display.NONE);
-        }
-        m_elementStyle.clearHeight();
-        m_elementStyle.clearOverflow();
-        m_height = 0;
-        m_started = false;
-        m_callback.execute(null);
+        CmsSlideAnimation animation = new CmsSlideAnimation(element, true, callback);
+        animation.run(duration);
+        return animation;
     }
 
     /**
-     * @see com.google.gwt.animation.client.Animation#onUpdate(double)
+     * Slides the given element out of view executing the callback afterwards.<p>
+     * 
+     * @param element the element to slide out
+     * @param callback the callback
+     * @param duration the animation duration
+     * 
+     * @return the running animation object
      */
-    @Override
-    protected void onUpdate(double progress) {
+    public static CmsSlideAnimation slideOut(Element element, Command callback, int duration) {
 
-        if (!m_started) {
-            m_started = true;
-            m_elementStyle.setOverflow(Overflow.HIDDEN);
-            m_elementStyle.setDisplay(Display.BLOCK);
-        }
-        progress = progress * progress;
-        if (m_show) {
-            m_elementStyle.setHeight(progress * m_height, Unit.PX);
-        } else {
-            m_elementStyle.setHeight((-progress + 1) * m_height, Unit.PX);
-        }
+        CmsSlideAnimation animation = new CmsSlideAnimation(element, false, callback);
+        animation.run(duration);
+        return animation;
     }
 
     /**
@@ -138,5 +135,43 @@ public class CmsSlideAnimation extends A_CmsAnimation {
             m_height = CmsDomUtil.getCurrentStyleInt(m_element, org.opencms.gwt.client.util.CmsDomUtil.Style.height);
         }
         super.run(duration, startTime);
+    }
+
+    /**
+     * @see com.google.gwt.animation.client.Animation#onComplete()
+     */
+    @Override
+    protected void onComplete() {
+
+        onUpdate(1.0);
+        if (!m_show) {
+            m_elementStyle.setDisplay(Display.NONE);
+        }
+        m_elementStyle.clearHeight();
+        m_elementStyle.clearOverflow();
+        m_height = 0;
+        m_started = false;
+        if (m_callback != null) {
+            m_callback.execute();
+        }
+    }
+
+    /**
+     * @see com.google.gwt.animation.client.Animation#onUpdate(double)
+     */
+    @Override
+    protected void onUpdate(double progress) {
+
+        if (!m_started) {
+            m_started = true;
+            m_elementStyle.setOverflow(Overflow.HIDDEN);
+            m_elementStyle.setDisplay(Display.BLOCK);
+        }
+        progress = progress * progress;
+        if (m_show) {
+            m_elementStyle.setHeight(progress * m_height, Unit.PX);
+        } else {
+            m_elementStyle.setHeight((-progress + 1) * m_height, Unit.PX);
+        }
     }
 }

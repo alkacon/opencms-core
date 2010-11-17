@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/A_CmsAnimation.java,v $
- * Date   : $Date: 2010/04/30 06:57:55 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/11/17 07:20:17 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,27 +32,28 @@
 package org.opencms.gwt.client.util;
 
 import com.google.gwt.animation.client.Animation;
+import com.google.gwt.user.client.Command;
 
 /**
  * Abstract animation class.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
 public abstract class A_CmsAnimation extends Animation {
 
     /** The call-back function to execute on animation complete. */
-    protected I_CmsSimpleCallback<Void> m_callback;
+    protected Command m_callback;
 
     /**
      * Constructor. Setting the call-back to be executed on animation complete.<p>
      * 
      * @param callback the call-back function
      */
-    public A_CmsAnimation(I_CmsSimpleCallback<Void> callback) {
+    public A_CmsAnimation(Command callback) {
 
         m_callback = callback;
     }
@@ -65,7 +66,7 @@ public abstract class A_CmsAnimation extends Animation {
 
         super.onComplete();
         if (m_callback != null) {
-            m_callback.execute(null);
+            m_callback.execute();
         }
     }
 

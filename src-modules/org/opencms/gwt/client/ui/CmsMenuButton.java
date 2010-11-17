@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsMenuButton.java,v $
- * Date   : $Date: 2010/11/15 15:45:41 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2010/11/17 07:20:17 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.gwt.client.ui;
 
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.util.CmsSlideAnimation;
 import org.opencms.util.CmsStringUtil;
 
 import com.google.gwt.core.client.GWT;
@@ -60,7 +61,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @since 8.0.0
  */
@@ -272,6 +273,7 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
             m_content.showConnect(m_button.getOffsetWidth() + 2, m_isOpenRight);
         }
         positionPopup();
+        CmsSlideAnimation.slideIn(m_content.getElement(), null, 200);
         m_resizeRegistration = Window.addResizeHandler(new ResizeHandler() {
 
             public void onResize(ResizeEvent event) {

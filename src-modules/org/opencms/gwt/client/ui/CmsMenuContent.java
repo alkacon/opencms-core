@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsMenuContent.java,v $
- * Date   : $Date: 2010/11/15 15:45:41 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/11/17 07:20:17 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  * 
@@ -123,7 +123,7 @@ public class CmsMenuContent extends PopupPanel implements I_CmsAutoHider {
     protected com.google.gwt.user.client.Element getContainerElement() {
 
         if (m_containerElement == null) {
-            // should never happen
+            // will happen when called from super constructor
             m_containerElement = super.getContainerElement();
         }
         return m_containerElement.cast();

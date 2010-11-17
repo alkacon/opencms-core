@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsMoveAnimation.java,v $
- * Date   : $Date: 2010/11/08 10:20:51 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/11/17 07:20:17 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.gwt.client.util;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.user.client.Command;
 
 /**
  * Move animation. Moving the given element from it's start to it's end position
@@ -40,7 +41,7 @@ import com.google.gwt.dom.client.Style.Unit;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -71,13 +72,7 @@ public class CmsMoveAnimation extends A_CmsAnimation {
      * @param endLeft the end left
      * @param callback the call-back to execute on complete
      */
-    public CmsMoveAnimation(
-        Element element,
-        int startTop,
-        int startLeft,
-        int endTop,
-        int endLeft,
-        I_CmsSimpleCallback<Void> callback) {
+    public CmsMoveAnimation(Element element, int startTop, int startLeft, int endTop, int endLeft, Command callback) {
 
         super(callback);
         m_element = element;

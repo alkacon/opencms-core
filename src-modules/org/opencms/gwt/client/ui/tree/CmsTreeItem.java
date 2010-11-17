@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/tree/Attic/CmsTreeItem.java,v $
- * Date   : $Date: 2010/11/09 07:24:13 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2010/11/17 07:20:17 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,12 +44,12 @@ import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsSlideAnimation;
 import org.opencms.gwt.client.util.CmsStyleVariable;
-import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
@@ -74,7 +74,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Georg Westenberger
  * @author Michael Moossen
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 8.0.0
  */
@@ -632,31 +632,21 @@ public class CmsTreeItem extends CmsListItem {
         m_open = open;
 
         if ((m_tree != null) && m_tree.isAnimationEnabled()) {
-            CmsSlideAnimation ani = new CmsSlideAnimation(
-                m_children.getElement(),
-                m_open,
-                new I_CmsSimpleCallback<Void>() {
+            Command openCallback = new Command() {
 
-                    /**
-                     * Executed on animation complete.<p>
-                     * 
-                     * @param arg void
-                     */
-                    public void execute(Void arg) {
+                /**
+                 * @see com.google.gwt.user.client.Command#execute()
+                 */
+                public void execute() {
 
-                        executeOpen();
-                    }
-
-                    /**
-                     * @see org.opencms.gwt.client.util.I_CmsSimpleCallback#onError(java.lang.String)
-                     */
-                    public void onError(String message) {
-
-                        // nothing to do
-
-                    }
-                });
-            ani.run(ANIMATION_DURATION);
+                    executeOpen();
+                }
+            };
+            if (m_open) {
+                CmsSlideAnimation.slideIn(m_children.getElement(), openCallback, ANIMATION_DURATION);
+            } else {
+                CmsSlideAnimation.slideOut(m_children.getElement(), openCallback, ANIMATION_DURATION);
+            }
         } else {
             executeOpen();
         }

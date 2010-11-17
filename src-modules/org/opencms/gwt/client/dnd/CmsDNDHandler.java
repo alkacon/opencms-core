@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/dnd/Attic/CmsDNDHandler.java,v $
- * Date   : $Date: 2010/10/29 12:21:20 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/11/17 07:20:17 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,7 +35,6 @@ import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsDomUtil.Style;
 import org.opencms.gwt.client.util.CmsMoveAnimation;
-import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +45,7 @@ import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
@@ -56,7 +56,7 @@ import com.google.gwt.user.client.Event.NativePreviewHandler;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -456,30 +456,20 @@ public class CmsDNDHandler implements MouseDownHandler {
     protected void animateCancel(final I_CmsDraggable draggable, final I_CmsDNDController controller) {
 
         stopDragging();
-        I_CmsSimpleCallback<Void> callback = new I_CmsSimpleCallback<Void>() {
+        Command callback = new Command() {
 
             /**
-             * Call-back method.<p>
-             * 
-             * @param arg void
+             * @see com.google.gwt.user.client.Command#execute()
              */
-            public void execute(Void arg) {
+            public void execute() {
 
                 controller.onDragCancel(draggable, null, CmsDNDHandler.this);
                 draggable.onDragCancel();
                 clear();
             }
-
-            /**
-             * @see org.opencms.gwt.client.util.I_CmsSimpleCallback#onError(java.lang.String)
-             */
-            public void onError(String message) {
-
-                // nothing to do
-            }
         };
         if (!isAnimationEnabled()) {
-            callback.execute(null);
+            callback.execute();
             return;
         }
         Element parentElement = m_dragHelper.getParentElement();
@@ -504,31 +494,21 @@ public class CmsDNDHandler implements MouseDownHandler {
         final I_CmsDNDController controller) {
 
         stopDragging();
-        I_CmsSimpleCallback<Void> callback = new I_CmsSimpleCallback<Void>() {
+        Command callback = new Command() {
 
             /**
-             * Call-back method.<p>
-             * 
-             * @param arg void
+             * @see com.google.gwt.user.client.Command#execute()
              */
-            public void execute(Void arg) {
+            public void execute() {
 
                 target.onDrop(draggable);
                 controller.onDrop(draggable, target, CmsDNDHandler.this);
                 draggable.onDrop(target);
                 clear();
             }
-
-            /**
-             * @see org.opencms.gwt.client.util.I_CmsSimpleCallback#onError(java.lang.String)
-             */
-            public void onError(String message) {
-
-                // nothing to do
-            }
         };
         if (!isAnimationEnabled()) {
-            callback.execute(null);
+            callback.execute();
             return;
         }
         Element parentElement = m_dragHelper.getParentElement();
