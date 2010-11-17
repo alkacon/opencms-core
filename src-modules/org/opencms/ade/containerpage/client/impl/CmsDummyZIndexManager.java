@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerZIndexManager.java,v $
- * Date   : $Date: 2010/11/16 14:32:06 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/impl/Attic/CmsDummyZIndexManager.java,v $
+ * Date   : $Date: 2010/11/17 10:10:23 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -29,61 +29,29 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.containerpage.client;
+package org.opencms.ade.containerpage.client.impl;
 
-import java.util.HashMap;
-import java.util.Map;
+import org.opencms.ade.containerpage.client.I_CmsContainerZIndexManager;
 
 import com.google.gwt.dom.client.Element;
 
 /**
- * Implementation of the Z index manager for IE.<p>
+ * Dummy implementation of the Z index manager which does nothing, used for every other browser than IE.<p>
  * 
  * @author Georg Westenberger
  * 
  * @version $Revision: 1.1 $
  * 
- * @since 8.0.0
+ * @since 8.0
  */
-public class CmsContainerZIndexManager implements I_CmsContainerZIndexManager {
-
-    /** The element ancestor chains by container id. */
-    private Map<String, CmsZIndexChain> m_chains = new HashMap<String, CmsZIndexChain>();
-
-    /** The constant which should be added to the bumped z index. */
-    public static final int BUMP_OFFSET = 9999;
-
-    /** The maximum z index found in the container ancestors. */
-    private int m_maxZIndex;
-
-    /** The container whose ancestor chain's z-index is currently bumped, or null if there is no bumped ancestor chain. */
-    private String m_bumped;
-
-    /** The container from which the last drag operation started. */
-    private String m_startContainer;
+public class CmsDummyZIndexManager implements I_CmsContainerZIndexManager {
 
     /**
      * @see org.opencms.ade.containerpage.client.I_CmsContainerZIndexManager#addContainer(java.lang.String, com.google.gwt.dom.client.Element)
      */
     public void addContainer(String name, Element element) {
 
-        CmsZIndexChain chain = CmsZIndexChain.get(element);
-        m_chains.put(name, chain);
-        m_maxZIndex = Math.max(m_maxZIndex, chain.getMaxZIndex());
-    }
-
-    /**
-     * Bumps the z indices for the ancestor elements of a given container.<p>
-     * 
-     * @param containerName the name of the container 
-     */
-    public void bump(String containerName) {
-
-        reset();
-        if (containerName != null) {
-            m_chains.get(containerName).bump(BUMP_OFFSET + m_maxZIndex);
-            m_bumped = containerName;
-        }
+        // do nothing
     }
 
     /**
@@ -91,7 +59,7 @@ public class CmsContainerZIndexManager implements I_CmsContainerZIndexManager {
      */
     public void enter(String containerName) {
 
-        bump(containerName);
+        // do nothing
     }
 
     /**
@@ -99,18 +67,7 @@ public class CmsContainerZIndexManager implements I_CmsContainerZIndexManager {
      */
     public void leave(String containerName) {
 
-        bump(m_startContainer);
-    }
-
-    /**
-     * Resets the elements with bumped z indices.<p>
-     */
-    public void reset() {
-
-        if (m_bumped == null) {
-            return;
-        }
-        m_chains.get(m_bumped).reset();
+        // do nothing
     }
 
     /**
@@ -118,8 +75,7 @@ public class CmsContainerZIndexManager implements I_CmsContainerZIndexManager {
      */
     public void start(String containerName) {
 
-        m_startContainer = containerName;
-        bump(m_startContainer);
+        // do nothing
     }
 
     /**
@@ -127,7 +83,7 @@ public class CmsContainerZIndexManager implements I_CmsContainerZIndexManager {
      */
     public void stop() {
 
-        reset();
+        // do nothing
     }
 
 }
