@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItemWidget.java,v $
- * Date   : $Date: 2010/10/29 12:19:46 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2010/11/17 14:47:30 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -77,7 +77,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Tobias Herrmann
  * @author Michael Moossen
  * 
- * @version $Revision: 1.34 $
+ * @version $Revision: 1.35 $
  * 
  * @since 8.0.0
  */
@@ -653,12 +653,13 @@ implements HasMouseOutHandlers, HasClickHandlers, HasMouseOverHandlers, I_CmsTru
                     return;
                 }
 
-                if ((event.getCharCode() == 10) || (event.getCharCode() == 13)) {
+                int keycode = event.getNativeEvent().getKeyCode();
+
+                if ((keycode == 10) || (keycode == 13)) {
                     onEditTitleTextBox(box);
                     checked[0] = true;
                 }
-
-                if (event.getCharCode() == 27) {
+                if (keycode == 27) {
                     box.setText(originalTitle);
                     onEditTitleTextBox(box);
                     checked[0] = true;
