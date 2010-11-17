@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/Attic/CmsCategoryTreeEntry.java,v $
- * Date   : $Date: 2010/05/18 12:31:13 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/11/17 09:50:41 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -59,17 +59,6 @@ public class CmsCategoryTreeEntry extends CmsCategory {
 
     /** The path of the category. */
     private String m_path;
-
-    /**
-     * Constructor for serialization.<p>
-     * 
-     * @throws Exception will never happen 
-     */
-    public CmsCategoryTreeEntry()
-    throws Exception {
-
-        this("");
-    }
 
     /**
      * Clone constructor.<p>
@@ -99,6 +88,14 @@ public class CmsCategoryTreeEntry extends CmsCategory {
         super(null, CmsCategoryService.CENTRALIZED_REPOSITORY, null, null, null);
         m_path = path;
         m_basePath = CmsCategoryService.CENTRALIZED_REPOSITORY;
+    }
+
+    /**
+     * Constructor for serialization.<p>
+     */
+    protected CmsCategoryTreeEntry() {
+
+        // do nothing
     }
 
     /**

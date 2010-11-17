@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsCategory.java,v $
- * Date   : $Date: 2010/05/03 10:47:12 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/11/17 09:50:41 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import java.io.Serializable;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.9.2
  */
@@ -102,6 +102,14 @@ public class CmsCategory implements Comparable<CmsCategory>, Serializable {
         m_description = description;
         m_path = getCategoryPath(m_rootPath, baseFolder);
         m_basePath = m_rootPath.substring(0, m_rootPath.length() - m_path.length());
+    }
+
+    /**
+     * Empty default constructor which is only used for serialization.<p>
+     */
+    protected CmsCategory() {
+
+        // do nothing
     }
 
     /**
