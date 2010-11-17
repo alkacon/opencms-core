@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/A_CmsNotificationWidget.java,v $
- * Date   : $Date: 2010/11/17 07:19:50 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/11/17 09:58:01 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import com.google.gwt.user.client.ui.Composite;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -96,7 +96,6 @@ public abstract class A_CmsNotificationWidget extends Composite implements I_Cms
     /**
      * @see org.opencms.gwt.client.ui.I_CmsNotificationWidget#hide()
      */
-    @Override
     public void hide() {
 
         m_mode = null;
@@ -106,7 +105,6 @@ public abstract class A_CmsNotificationWidget extends Composite implements I_Cms
     /**
      * @see org.opencms.gwt.client.ui.I_CmsNotificationWidget#show(org.opencms.gwt.client.ui.CmsNotification.Mode, org.opencms.gwt.client.ui.CmsNotification.Type, java.lang.String)
      */
-    @Override
     public void show(Mode mode, Type type, String message) {
 
         if (mode == null) {
