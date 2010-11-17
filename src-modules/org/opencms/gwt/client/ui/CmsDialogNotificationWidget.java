@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsDialogNotificationWidget.java,v $
- * Date   : $Date: 2010/07/15 17:13:12 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/11/17 07:19:50 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,17 +31,15 @@
 
 package org.opencms.gwt.client.ui;
 
-import org.opencms.gwt.client.ui.CmsNotification.Mode;
-import org.opencms.gwt.client.ui.CmsNotification.NotificationAnimation;
 import org.opencms.gwt.client.ui.CmsNotification.Type;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.util.CmsFadeAnimation;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -49,11 +47,11 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
-public class CmsDialogNotificationWidget extends Composite implements I_CmsNotificationWidget {
+public class CmsDialogNotificationWidget extends A_CmsNotificationWidget {
 
     /**
      * @see com.google.gwt.uibinder.client.UiBinder
@@ -65,9 +63,6 @@ public class CmsDialogNotificationWidget extends Composite implements I_CmsNotif
     /** The ui-binder instance for this class. */
     private static I_CmsNotificationWidgetUiBinder uiBinder = GWT.create(I_CmsNotificationWidgetUiBinder.class);
 
-    /** The current animation. */
-    protected NotificationAnimation m_animation;
-
     /** The message. */
     @UiField
     protected Element m_container;
@@ -75,21 +70,6 @@ public class CmsDialogNotificationWidget extends Composite implements I_CmsNotif
     /** The message. */
     @UiField
     protected Element m_message;
-
-    /** The hide animation. */
-    private NotificationAnimation m_hideAnimation;
-
-    /** The current mode. */
-    private Mode m_mode;
-
-    /** The show animation. */
-    private NotificationAnimation m_showAnimation;
-
-    /** The timer to remove the last notification. */
-    private Timer m_timer;
-
-    /** The current type. */
-    private Type m_type;
 
     /**
      * Constructor.<p>
@@ -101,191 +81,87 @@ public class CmsDialogNotificationWidget extends Composite implements I_CmsNotif
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.I_CmsNotificationWidget#hide()
+     * @see org.opencms.gwt.client.ui.A_CmsNotificationWidget#animateHide()
      */
-    public void hide() {
+    @Override
+    protected void animateHide() {
 
-        m_mode = null;
-        hide(true);
-    }
+        setAnimation(CmsFadeAnimation.fadeOut(getElement(), new Command() {
 
-    /**
-     * @see org.opencms.gwt.client.ui.I_CmsNotificationWidget#show(org.opencms.gwt.client.ui.CmsNotification.Mode, org.opencms.gwt.client.ui.CmsNotification.Type, java.lang.String)
-     */
-    public void show(Mode mode, Type type, String message) {
+            /**
+             * @see com.google.gwt.user.client.Command#execute()
+             */
+            public void execute() {
 
-        final Type oldType = m_type;
-        boolean needsRestoration = false;
-        if (mode != null) {
-            if ((m_mode != null) && m_mode.equals(Mode.STICKY)) {
-                // sticky notification can only replaced by higher level sticky notifications
-                needsRestoration = mode.equals(Mode.NORMAL);
-                needsRestoration |= ((mode.equals(Mode.STICKY) && !canBeReplacedBy(type)));
+                onHideComplete();
             }
-            // remove last notification if still shown
-            hide(true);
-        }
-
-        // keep state
-        m_type = type;
-        final String stickyMessage;
-        if (mode == null) {
-            // restoring case
-            stickyMessage = null;
-        } else if (!needsRestoration) {
-            // normal case
-            m_mode = mode;
-            stickyMessage = null;
-        } else {
-            // needs restoration
-            stickyMessage = m_message.getInnerHTML();
-        }
-
-        // set the new notification message
-        m_message.setInnerHTML(message);
-
-        // set the right class
-        m_container.addClassName(classForType(type));
-
-        m_animation = getShowAnimation();
-        m_animation.run();
-
-        if ((mode != null) && ((mode != Mode.STICKY) || needsRestoration)) {
-            // create timer to hide the notification
-            m_timer = new Timer() {
-
-                /**
-                 * @see com.google.gwt.user.client.Timer#run()
-                 */
-                @Override
-                public void run() {
-
-                    hide(false);
-                    if (stickyMessage != null) {
-                        show(null, oldType, stickyMessage);
-                    }
-                }
-            };
-            m_timer.schedule(3000 * (type == Type.NORMAL ? 1 : 2));
-        }
+        }, 200));
     }
 
     /**
-     * Returns the showAnimation.<p>
-     *
-     * @return the showAnimation
+     * @see org.opencms.gwt.client.ui.A_CmsNotificationWidget#animateShow()
      */
-    protected NotificationAnimation getShowAnimation() {
+    @Override
+    protected void animateShow() {
 
-        if (m_showAnimation == null) {
-            m_showAnimation = new NotificationAnimation() {
+        getElement().getStyle().clearVisibility();
+        setAnimation(CmsFadeAnimation.fadeIn(getElement(), new Command() {
 
-                /**
-                 * @see org.opencms.gwt.client.ui.CmsNotification.NotificationAnimation#run()
-                 */
-                @Override
-                public void run() {
+            /**
+             * @see com.google.gwt.user.client.Command#execute()
+             */
+            public void execute() {
 
-                    setVisible(true);
-                    run(ANIMATION_DURATION);
-                }
-
-                /**
-                 * @see com.google.gwt.animation.client.Animation#onComplete()
-                 */
-                @Override
-                protected void onComplete() {
-
-                    super.onComplete();
-                    m_container.getStyle().clearOpacity();
-                    onShowComplete();
-                }
-
-                /**
-                 * @see com.google.gwt.animation.client.Animation#onUpdate(double)
-                 */
-                @Override
-                protected void onUpdate(double progress) {
-
-                    m_container.getStyle().setOpacity(progress);
-                }
-            };
-        }
-        return m_showAnimation;
+                onShowComplete();
+            }
+        }, 200));
     }
 
     /**
-     * Hides the notification message.<p>
-     * 
-     * @param force if <code>true</code> will also hide the message if mode is fixed
+     * @see org.opencms.gwt.client.ui.A_CmsNotificationWidget#getMessage()
      */
-    protected void hide(boolean force) {
+    @Override
+    protected String getMessage() {
 
-        // remove last notification if still shown
-        if (m_timer != null) {
-            m_timer.cancel();
-            m_timer = null;
-        }
-        if ((m_mode == Mode.STICKY) && !force) {
-            return;
-        }
-        m_type = null;
-        if (m_animation != null) {
-            m_animation.cancel();
-            m_animation = null;
-        }
-        if (!isVisible()) {
-            return;
-        }
-
-        if (!force) {
-            m_animation = getHideAnimation();
-            m_animation.run();
-        } else {
-            onHideComplete();
-        }
+        return m_message.getInnerHTML();
     }
 
     /**
      * Should be called by the hide animation on complete.<p>
      */
+    @Override
     protected void onHideComplete() {
 
-        m_animation = null;
+        setAnimation(null);
         restore();
     }
 
     /**
      * Should be called by the show animation on complete.<p>
      */
+    @Override
     protected void onShowComplete() {
 
-        m_animation = null;
+        setAnimation(null);
     }
 
     /**
-     * Checks if this widget can be replaced in the given mode by the given type.<p>
-     * 
-     * @param type the type
-     * 
-     * @return <code>true</code> if it can be replaced
+     * @see org.opencms.gwt.client.ui.A_CmsNotificationWidget#setClassForType(org.opencms.gwt.client.ui.CmsNotification.Type)
      */
-    private boolean canBeReplacedBy(Type type) {
+    @Override
+    protected void setClassForType(Type type) {
 
-        if (m_type == null) {
-            return true;
-        }
-        // do not overwrite a higher or equal level notification
-        switch (type) {
-            case ERROR:
-                return !m_type.equals(Type.ERROR);
-            case NORMAL:
-                return false;
-            case WARNING:
-                return m_type.equals(Type.NORMAL);
-            default:
-        }
-        return true;
+        // set the right class
+        getElement().addClassName(classForType(type));
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.A_CmsNotificationWidget#setMessage(java.lang.String)
+     */
+    @Override
+    protected void setMessage(String message) {
+
+        m_message.setInnerHTML(message);
     }
 
     /**
@@ -307,49 +183,6 @@ public class CmsDialogNotificationWidget extends Composite implements I_CmsNotif
             default:
                 return null;
         }
-    }
-
-    /**
-     * Returns the hideAnimation.<p>
-     *
-     * @return the hideAnimation
-     */
-    private NotificationAnimation getHideAnimation() {
-
-        if (m_hideAnimation == null) {
-            m_hideAnimation = new NotificationAnimation() {
-
-                /**
-                 * @see org.opencms.gwt.client.ui.CmsNotification.NotificationAnimation#run()
-                 */
-                @Override
-                public void run() {
-
-                    run(ANIMATION_DURATION);
-                }
-
-                /**
-                 * @see com.google.gwt.animation.client.Animation#onComplete()
-                 */
-                @Override
-                protected void onComplete() {
-
-                    super.onComplete();
-                    onHideComplete();
-                    m_container.getStyle().clearOpacity();
-                }
-
-                /**
-                 * @see com.google.gwt.animation.client.Animation#onUpdate(double)
-                 */
-                @Override
-                protected void onUpdate(double progress) {
-
-                    m_container.getStyle().setOpacity(1 - progress);
-                }
-            };
-        }
-        return m_hideAnimation;
     }
 
     /**

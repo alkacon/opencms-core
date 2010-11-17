@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsNotification.java,v $
- * Date   : $Date: 2010/05/06 13:38:11 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/11/17 07:19:50 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,14 +31,12 @@
 
 package org.opencms.gwt.client.ui;
 
-import com.google.gwt.animation.client.Animation;
-
 /**
  * User feedback provider.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -49,34 +47,11 @@ public final class CmsNotification {
      */
     public static enum Mode {
 
-        /** Sticky mode. */
-        STICKY,
-
         /** Normal mode. */
-        NORMAL;
-    }
+        NORMAL,
 
-    /**
-     * To animate notification messages.<p>
-     */
-    public abstract static class NotificationAnimation extends Animation {
-
-        /** The duration of the animations. */
-        protected static final int ANIMATION_DURATION = 200;
-
-        /**
-         * Execute the animation for the given widget.<p>
-         */
-        public abstract void run();
-
-        /**
-         * @see com.google.gwt.animation.client.Animation#onCancel()
-         */
-        @Override
-        protected void onCancel() {
-
-            onComplete();
-        }
+        /** Sticky mode. */
+        STICKY;
     }
 
     /**
@@ -94,8 +69,14 @@ public final class CmsNotification {
         WARNING;
     }
 
+    /** The duration of the animations. */
+    public static final int ANIMATION_DURATION = 200;
+
     /** The singleton instance. */
     private static CmsNotification INSTANCE;
+
+    /** The widget. */
+    private I_CmsNotificationWidget m_blockingWidget;
 
     /** The widget. */
     private I_CmsNotificationWidget m_widget;
@@ -122,6 +103,62 @@ public final class CmsNotification {
     }
 
     /**
+     * Returns if the message of the old mode and type needs to be restored after a new message has been shown.<p>
+     * 
+     * @param oldMode the old mode
+     * @param newMode the new mode
+     * @param oldType the old type
+     * @param newType the new type
+     * 
+     * @return <code>true</code> if the message needs to be restored
+     */
+    public static boolean shouldRestoreMessage(Mode oldMode, Mode newMode, Type oldType, Type newType) {
+
+        // only sticky messages will be restored
+        if (!Mode.STICKY.equals(oldMode)) {
+            return false;
+        }
+
+        // if new mode is not sticky also, restore
+        if (!Mode.STICKY.equals(newMode)) {
+            return true;
+        }
+
+        // if new type is superior to the old one, don't restore
+        if (isSuperiorType(oldType, newType)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Checks if the new type is superior to the old type.<p>
+     * 
+     * @param oldType the old type
+     * @param newType the new type
+     * 
+     * @return <code>true</code> if the new type is superior to the old type
+     */
+    private static boolean isSuperiorType(Type oldType, Type newType) {
+
+        if (oldType == null) {
+            return true;
+        }
+        // do not overwrite a higher or equal level notification
+        switch (newType) {
+            case ERROR:
+                return !oldType.equals(Type.ERROR);
+            case NORMAL:
+                return false;
+            case WARNING:
+                return oldType.equals(Type.NORMAL);
+            default:
+        }
+        return true;
+    }
+
+    /**
      * Returns the widget.<p>
      *
      * @return the widget
@@ -139,6 +176,9 @@ public final class CmsNotification {
         if (m_widget != null) {
             m_widget.hide();
         }
+        if (m_blockingWidget != null) {
+            m_blockingWidget.hide();
+        }
     }
 
     /**
@@ -151,6 +191,22 @@ public final class CmsNotification {
 
         if (m_widget != null) {
             m_widget.show(Mode.NORMAL, type, message);
+        }
+    }
+
+    /**
+     * Sends a new blocking notification.<p>
+     * 
+     * @param type the notification type
+     * @param message the message
+     */
+    public void sendBlocking(Type type, final String message) {
+
+        if (m_blockingWidget != null) {
+            m_blockingWidget.show(Mode.STICKY, type, message);
+        } else {
+            // use sticky as fall-back
+            sendSticky(type, message);
         }
     }
 
