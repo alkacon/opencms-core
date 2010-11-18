@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsDomUtil.java,v $
- * Date   : $Date: 2010/11/16 14:32:06 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2010/11/18 15:29:49 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentC
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.34 $
+ * @version $Revision: 1.35 $
  * 
  * @since 8.0.0
  */
@@ -673,6 +673,9 @@ public final class CmsDomUtil {
      */
     public static Element getAncestor(Element element, Tag tag) {
 
+        if ((element == null) || (tag == null)) {
+            return null;
+        }
         if (element.getTagName().equalsIgnoreCase(tag.name())) {
             return element;
         }
