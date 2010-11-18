@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishDialog.java,v $
- * Date   : $Date: 2010/10/12 06:56:11 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2010/11/18 15:29:10 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,6 @@ import org.opencms.ade.publish.shared.CmsPublishResource;
 import org.opencms.ade.publish.shared.rpc.I_CmsPublishService;
 import org.opencms.ade.publish.shared.rpc.I_CmsPublishServiceAsync;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
-import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.CmsPopupDialog;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.util.CmsUUID;
@@ -61,7 +60,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @since 8.0.0
  * 
@@ -91,7 +90,8 @@ public class CmsPublishDialog extends CmsPopupDialog {
         @Override
         public void execute() {
 
-            start(0);
+            setLoadingMessage(Messages.get().key(Messages.GUI_PUBLISHING_0));
+            start(0, true);
             List<CmsUUID> resourcesToPublish = new ArrayList<CmsUUID>(m_publishSelectPanel.getResourcesToPublish());
             List<CmsUUID> resourcesToRemove = new ArrayList<CmsUUID>(m_publishSelectPanel.getResourcesToRemove());
             getService().publishResources(resourcesToPublish, resourcesToRemove, m_force, this);
@@ -105,15 +105,6 @@ public class CmsPublishDialog extends CmsPopupDialog {
 
             onReceiveStatus(result);
             stop(true);
-        }
-
-        /**
-         * @see org.opencms.gwt.client.rpc.CmsRpcAction#show()
-         */
-        @Override
-        protected void show() {
-
-            CmsNotification.get().sendSticky(CmsNotification.Type.NORMAL, Messages.get().key(Messages.GUI_PUBLISHING_0));
         }
     }
 
@@ -141,7 +132,7 @@ public class CmsPublishDialog extends CmsPopupDialog {
         @Override
         public void execute() {
 
-            start(200);
+            start(0, false);
             getService().getPublishGroups(m_options, this);
         }
 
@@ -231,7 +222,7 @@ public class CmsPublishDialog extends CmsPopupDialog {
             @Override
             public void execute() {
 
-                start(200);
+                start(0, true);
                 getService().getInitData(this);
             }
 
@@ -251,6 +242,7 @@ public class CmsPublishDialog extends CmsPopupDialog {
                 publishDialog.catchNotifications();
             }
         }).execute();
+
     }
 
     /**

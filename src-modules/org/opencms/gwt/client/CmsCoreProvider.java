@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/Attic/CmsCoreProvider.java,v $
- * Date   : $Date: 2010/08/26 13:34:27 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/11/18 15:28:10 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 8.0.0
  * 
@@ -221,7 +221,8 @@ public final class CmsCoreProvider extends CmsCoreData {
             @Override
             public void execute() {
 
-                start(200);
+                setLoadingMessage(Messages.get().key(Messages.GUI_LOCKING_0));
+                start(200, false);
                 getService().lockTemp(uri, this);
             }
 
@@ -239,17 +240,6 @@ public final class CmsCoreProvider extends CmsCoreData {
                 // unable to lock
                 String text = Messages.get().key(Messages.GUI_LOCK_NOTIFICATION_2, uri, result);
                 CmsNotification.get().send(CmsNotification.Type.WARNING, text);
-            }
-
-            /**
-             * @see org.opencms.gwt.client.rpc.CmsRpcAction#show()
-             */
-            @Override
-            protected void show() {
-
-                CmsNotification.get().sendSticky(
-                    CmsNotification.Type.NORMAL,
-                    Messages.get().key(Messages.GUI_LOCKING_0));
             }
         };
         return lockAction.executeSync() == null;
@@ -275,7 +265,8 @@ public final class CmsCoreProvider extends CmsCoreData {
             @Override
             public void execute() {
 
-                start(200);
+                setLoadingMessage(Messages.get().key(Messages.GUI_LOCKING_0));
+                start(200, false);
                 getService().lockTempAndCheckModification(uri, modification, this);
             }
 
@@ -293,17 +284,6 @@ public final class CmsCoreProvider extends CmsCoreData {
                 // unable to lock
                 String text = Messages.get().key(Messages.GUI_LOCK_NOTIFICATION_2, uri, result);
                 CmsNotification.get().send(CmsNotification.Type.ERROR, text);
-            }
-
-            /**
-             * @see org.opencms.gwt.client.rpc.CmsRpcAction#show()
-             */
-            @Override
-            protected void show() {
-
-                CmsNotification.get().sendSticky(
-                    CmsNotification.Type.NORMAL,
-                    Messages.get().key(Messages.GUI_LOCKING_0));
             }
         };
         return lockAction.executeSync() == null;
@@ -395,7 +375,8 @@ public final class CmsCoreProvider extends CmsCoreData {
             @Override
             public void execute() {
 
-                start(200);
+                setLoadingMessage(Messages.get().key(Messages.GUI_UNLOCKING_0));
+                start(200, false);
                 getService().unlock(uri, this);
             }
 
@@ -413,17 +394,6 @@ public final class CmsCoreProvider extends CmsCoreData {
                 // unable to lock
                 String text = Messages.get().key(Messages.GUI_UNLOCK_NOTIFICATION_2, uri, result);
                 CmsNotification.get().send(CmsNotification.Type.WARNING, text);
-            }
-
-            /**
-             * @see org.opencms.gwt.client.rpc.CmsRpcAction#show()
-             */
-            @Override
-            protected void show() {
-
-                CmsNotification.get().sendSticky(
-                    CmsNotification.Type.NORMAL,
-                    Messages.get().key(Messages.GUI_UNLOCKING_0));
             }
         };
         return unlockAction.executeSync() == null;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2010/11/15 16:04:36 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2010/11/18 15:28:10 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,6 @@ import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.rpc.CmsRpcPrefetcher;
 import org.opencms.gwt.client.ui.CmsConfirmDialog;
-import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
 import org.opencms.gwt.client.util.CmsCollectionUtil;
 import org.opencms.gwt.client.util.CmsDebugLog;
@@ -87,7 +86,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.29 $ 
  * 
  * @since 8.0.0
  */
@@ -351,7 +350,8 @@ public class CmsSitemapController {
             @Override
             public void execute() {
 
-                start(0);
+                setLoadingMessage(Messages.get().key(Messages.GUI_SAVING_0));
+                start(0, true);
                 List<I_CmsSitemapChange> changes = getChangesToSave();
                 if (sync) {
                     getService().saveSync(getSitemapUri(), changes, getData().getClipboardData(), this);
@@ -371,15 +371,6 @@ public class CmsSitemapController {
                 resetChanges();
 
                 stop(true);
-            }
-
-            /**
-             * @see org.opencms.gwt.client.rpc.CmsRpcAction#show()
-             */
-            @Override
-            protected void show() {
-
-                CmsNotification.get().sendSticky(CmsNotification.Type.NORMAL, Messages.get().key(Messages.GUI_SAVING_0));
             }
         };
         saveAction.execute();
@@ -433,7 +424,7 @@ public class CmsSitemapController {
             @Override
             public void execute() {
 
-                start(0);
+                start(0, true);
                 List<I_CmsSitemapChange> changes = getChangesToSave();
                 getService().saveAndCreateSubSitemap(getSitemapUri(), changes, path, this);
 
@@ -568,7 +559,7 @@ public class CmsSitemapController {
             @Override
             public void execute() {
 
-                start(0);
+                start(0, true);
                 getService().getBrokenLinksToSitemapEntries(open, closed, this);
             }
 
@@ -583,7 +574,6 @@ public class CmsSitemapController {
             }
         };
         action.execute();
-
     }
 
     /**
@@ -603,7 +593,7 @@ public class CmsSitemapController {
             public void execute() {
 
                 // Make the call to the sitemap service
-                start(500);
+                start(500, false);
 
                 getService().getChildren(getSitemapUri(), originalPath, this);
             }
@@ -896,7 +886,7 @@ public class CmsSitemapController {
             @Override
             public void execute() {
 
-                start(0);
+                start(0, true);
                 List<I_CmsSitemapChange> changes = getChangesToSave();
                 getService().saveAndMergeSubSitemap(getSitemapUri(), changes, path, this);
             }

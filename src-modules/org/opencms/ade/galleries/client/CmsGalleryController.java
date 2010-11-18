@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleryController.java,v $
- * Date   : $Date: 2010/09/08 08:21:20 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2010/11/18 15:28:10 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * @author Polina Smagina
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.27 $ 
  * 
  * @since 8.0.0
  */
@@ -285,7 +285,7 @@ public class CmsGalleryController {
             @Override
             public void execute() {
 
-                start(0);
+                start(0, false);
                 getGalleryService().getSitemapSubEntries(path, this);
             }
 
@@ -315,7 +315,7 @@ public class CmsGalleryController {
             @Override
             public void execute() {
 
-                start(0);
+                start(0, false);
                 getGalleryService().getSubFolders(folder, this);
             }
 

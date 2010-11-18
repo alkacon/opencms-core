@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageController.java,v $
- * Date   : $Date: 2010/11/18 07:43:04 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2010/11/18 15:28:10 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  * 
  * @since 8.0.0
  */
@@ -1102,7 +1102,9 @@ public final class CmsContainerpageController {
                 @Override
                 public void execute() {
 
-                    start(0);
+                    setLoadingMessage(org.opencms.gwt.client.Messages.get().key(
+                        org.opencms.gwt.client.Messages.GUI_SAVING_0));
+                    start(0, true);
                     getContainerpageService().saveContainerpage(getCurrentUri(), getPageContent(), this);
                 }
 
@@ -1115,17 +1117,6 @@ public final class CmsContainerpageController {
                     stop(true);
                     setPageChanged(false, false);
                     Window.Location.reload();
-                }
-
-                /**
-                 * @see org.opencms.gwt.client.rpc.CmsRpcAction#show()
-                 */
-                @Override
-                protected void show() {
-
-                    CmsNotification.get().sendBlocking(
-                        CmsNotification.Type.NORMAL,
-                        org.opencms.gwt.client.Messages.get().key(org.opencms.gwt.client.Messages.GUI_SAVING_0));
                 }
             };
             action.execute();
@@ -1547,7 +1538,7 @@ public final class CmsContainerpageController {
             @Override
             public void execute() {
 
-                start(200);
+                start(200, false);
                 getContainerpageService().getElementWithProperties(
                     CmsContainerpageController.getCurrentUri(),
                     null,

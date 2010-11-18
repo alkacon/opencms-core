@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/rpc/Attic/CmsRpcAction.java,v $
- * Date   : $Date: 2010/05/20 09:46:29 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2010/11/18 15:28:10 $
+ * Version: $Revision: 1.15 $
  * 
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,11 +47,13 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 8.0
  */
 public abstract class CmsRpcAction<T> implements AsyncCallback<T> {
+
+    private String m_loadingMessage = Messages.get().key(Messages.GUI_LOADING_0);
 
     /** The result, used only for synchronized request. */
     private T m_result;
@@ -111,16 +113,27 @@ public abstract class CmsRpcAction<T> implements AsyncCallback<T> {
     }
 
     /**
+     * Sets the loading message.<p>
+     *
+     * @param loadingMessage the loading message to set
+     */
+    public void setLoadingMessage(String loadingMessage) {
+
+        m_loadingMessage = loadingMessage;
+    }
+
+    /**
      * Starts the timer for showing the 'loading' state.<p>
      * 
      * Note: Has to be called manually before calling the RPC service.<p>
      * 
      * @param delay the delay in milliseconds
+     * @param blocking shows an blocking overlay if <code>true</code> 
      */
-    public void start(int delay) {
+    public void start(int delay, final boolean blocking) {
 
         if (delay <= 0) {
-            show();
+            show(blocking);
             return;
         }
         m_timer = new Timer() {
@@ -131,7 +144,7 @@ public abstract class CmsRpcAction<T> implements AsyncCallback<T> {
             @Override
             public void run() {
 
-                show();
+                show(blocking);
             }
         };
         m_timer.schedule(delay);
@@ -202,9 +215,15 @@ public abstract class CmsRpcAction<T> implements AsyncCallback<T> {
      * Shows the 'loading message'.<p>
      * 
      * Overwrite to customize the message.<p>
+     * 
+     * @param blocking shows an blocking overlay if <code>true</code> 
      */
-    protected void show() {
+    protected void show(boolean blocking) {
 
-        CmsNotification.get().sendSticky(CmsNotification.Type.NORMAL, Messages.get().key(Messages.GUI_LOADING_0));
+        if (blocking) {
+            CmsNotification.get().sendBlocking(CmsNotification.Type.NORMAL, m_loadingMessage);
+        } else {
+            CmsNotification.get().sendSticky(CmsNotification.Type.NORMAL, m_loadingMessage);
+        }
     }
 }
