@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2010/11/15 15:45:41 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2010/11/18 15:26:56 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import com.google.gwt.resources.client.ImageResource.RepeatStyle;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.45 $
+ * @version $Revision: 1.46 $
  * 
  * @since 8.0.0
  */
@@ -917,6 +917,20 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
+        String blocking();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String loadingAnimation();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
         String notificationContainer();
 
         /** 
@@ -1110,35 +1124,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
-        String notificationContainer();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String notificationError();
-
-        /**
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String notificationMessage();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String notificationNormal();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String notificationWarning();
+        String notification();
 
         /** 
          * Access method.<p>
@@ -1465,6 +1451,14 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      */
     @Source("listtree.css")
     I_CmsListTreeCss listTreeCss();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/loading_big.gif")
+    ImageResource loadingBig();
 
     /**
      * Access method.<p>

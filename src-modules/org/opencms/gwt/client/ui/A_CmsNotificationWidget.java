@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/A_CmsNotificationWidget.java,v $
- * Date   : $Date: 2010/11/17 09:58:01 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/11/18 15:26:56 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import com.google.gwt.user.client.ui.Composite;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -134,7 +134,7 @@ public abstract class A_CmsNotificationWidget extends Composite implements I_Cms
         animateShow();
 
         // set timer to hide non sticky messages or restore superior message
-        if (Mode.STICKY.equals(m_mode) || CmsStringUtil.isNotEmptyOrWhitespaceOnly(restoreMessage)) {
+        if (Mode.NORMAL.equals(m_mode) || CmsStringUtil.isNotEmptyOrWhitespaceOnly(restoreMessage)) {
             m_timer = new Timer() {
 
                 /**

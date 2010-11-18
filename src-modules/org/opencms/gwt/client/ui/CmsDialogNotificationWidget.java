@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsDialogNotificationWidget.java,v $
- * Date   : $Date: 2010/11/17 07:19:50 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/11/18 15:26:55 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,11 +47,13 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
 public class CmsDialogNotificationWidget extends A_CmsNotificationWidget {
+
+    // TODO: improve for dialog
 
     /**
      * @see com.google.gwt.uibinder.client.UiBinder
@@ -78,6 +80,15 @@ public class CmsDialogNotificationWidget extends A_CmsNotificationWidget {
 
         initWidget(uiBinder.createAndBindUi(this));
         restore();
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.I_CmsNotificationWidget#setBlocking()
+     */
+    public void setBlocking() {
+
+        // TODO: implement
+
     }
 
     /**

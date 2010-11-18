@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsNotification.java,v $
- * Date   : $Date: 2010/11/17 07:19:50 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/11/18 15:26:55 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,7 @@ package org.opencms.gwt.client.ui;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -74,9 +74,6 @@ public final class CmsNotification {
 
     /** The singleton instance. */
     private static CmsNotification INSTANCE;
-
-    /** The widget. */
-    private I_CmsNotificationWidget m_blockingWidget;
 
     /** The widget. */
     private I_CmsNotificationWidget m_widget;
@@ -176,9 +173,6 @@ public final class CmsNotification {
         if (m_widget != null) {
             m_widget.hide();
         }
-        if (m_blockingWidget != null) {
-            m_blockingWidget.hide();
-        }
     }
 
     /**
@@ -202,11 +196,9 @@ public final class CmsNotification {
      */
     public void sendBlocking(Type type, final String message) {
 
-        if (m_blockingWidget != null) {
-            m_blockingWidget.show(Mode.STICKY, type, message);
-        } else {
-            // use sticky as fall-back
-            sendSticky(type, message);
+        sendSticky(type, message);
+        if (m_widget != null) {
+            m_widget.setBlocking();
         }
     }
 

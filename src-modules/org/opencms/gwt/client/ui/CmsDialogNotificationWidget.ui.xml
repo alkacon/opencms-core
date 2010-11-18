@@ -5,6 +5,7 @@
 	<g:HTMLPanel>
 		<div class="{style.notificationCss.notificationOverlay}" />
 		<div ui:field="m_container" class="{style.notificationCss.notificationContainer}" >
+			<span class="{style.notificationCss.loadingAnimation}"></span><br />
 			<span ui:field="m_message" class="{style.notificationCss.notificationMessage} {style.generalCss.cornerAll}"></span>
 		</div>
 	</g:HTMLPanel>

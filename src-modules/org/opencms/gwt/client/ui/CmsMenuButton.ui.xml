@@ -39,8 +39,8 @@
 			position: absolute;
 			top: -2px;
 			left: -2px;
-			height:35px;
-			z-index:0;
+			height: 35px;
+			z-index: 0;
 		}
 		.menu .connect.hidden{
 			display: none;	

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/I_CmsNotificationWidget.java,v $
- * Date   : $Date: 2010/04/29 07:13:40 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/11/18 15:26:55 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.gwt.client.ui.CmsNotification.Type;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -49,6 +49,11 @@ public interface I_CmsNotificationWidget {
      * Hides the widget.<p>
      */
     void hide();
+
+    /**
+     * Sets the widget into blocking mode.<p>
+     */
+    void setBlocking();
 
     /**
      * Sets the notification.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsToolbarNotificationWidget.java,v $
- * Date   : $Date: 2010/11/17 07:19:50 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/11/18 15:26:55 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -76,6 +76,14 @@ public class CmsToolbarNotificationWidget extends A_CmsNotificationWidget {
         initWidget(uiBinder.createAndBindUi(this));
         restore();
         CmsNotification.get().setWidget(this);
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.I_CmsNotificationWidget#setBlocking()
+     */
+    public void setBlocking() {
+
+        getElement().addClassName(I_CmsLayoutBundle.INSTANCE.notificationCss().blocking());
     }
 
     /**
@@ -173,11 +181,11 @@ public class CmsToolbarNotificationWidget extends A_CmsNotificationWidget {
 
         switch (type) {
             case ERROR:
-                return I_CmsLayoutBundle.INSTANCE.toolbarCss().notificationError();
+                return I_CmsLayoutBundle.INSTANCE.notificationCss().notificationError();
             case NORMAL:
-                return I_CmsLayoutBundle.INSTANCE.toolbarCss().notificationNormal();
+                return I_CmsLayoutBundle.INSTANCE.notificationCss().notificationNormal();
             case WARNING:
-                return I_CmsLayoutBundle.INSTANCE.toolbarCss().notificationWarning();
+                return I_CmsLayoutBundle.INSTANCE.notificationCss().notificationWarning();
             default:
                 return null;
         }
@@ -190,6 +198,6 @@ public class CmsToolbarNotificationWidget extends A_CmsNotificationWidget {
 
         getElement().getStyle().setVisibility(Visibility.HIDDEN);
         // back to plain style without error or warning
-        getElement().setClassName(I_CmsLayoutBundle.INSTANCE.toolbarCss().notificationContainer());
+        getElement().setClassName(I_CmsLayoutBundle.INSTANCE.toolbarCss().notification());
     }
 }
