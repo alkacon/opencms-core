@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsResultsTab.java,v $
- * Date   : $Date: 2010/11/17 11:02:29 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2010/11/18 15:28:37 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,7 +68,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Polina Smagina
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.35 $
+ * @version $Revision: 1.36 $
  * 
  * @since 8.0.
  */
@@ -80,7 +80,7 @@ public class CmsResultsTab extends A_CmsListTab {
      * @author Georg Westenberger
      * @author Ruediger Kurz
      * 
-     * @version $Revision: 1.35 $
+     * @version $Revision: 1.36 $
      * 
      * @since 8.0.0
      */
@@ -250,7 +250,10 @@ public class CmsResultsTab extends A_CmsListTab {
      */
     public void fillContent(CmsGallerySearchBean searchObj, List<CmsSearchParamPanel> paramPanels) {
 
-        String message = Messages.get().key(Messages.GUI_LABEL_NUM_RESULTS_1, new Integer(searchObj.getResultCount()));
+        String message = Messages.get().key(
+            Messages.GUI_LABEL_NUM_RESULTS_2,
+            new Integer(getResultsDisplayed(searchObj)),
+            new Integer(searchObj.getResultCount()));
         m_infoLabel.setText(message);
         m_hasMoreResults = searchObj.hasMore();
         if (searchObj.getPage() == 1) {
@@ -384,6 +387,19 @@ public class CmsResultsTab extends A_CmsListTab {
         } else {
             getList().removeStyleName(I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().tilingList());
         }
+    }
+
+    /**
+     * Returns the count of the currently displayed results.<p>
+     * 
+     * @param searchObj the search bean
+     * 
+     * @return the count of the currently displayed results
+     */
+    private int getResultsDisplayed(CmsGallerySearchBean searchObj) {
+
+        int resultsDisplayed = searchObj.getMatchesPerPage() * searchObj.getPage();
+        return (resultsDisplayed > searchObj.getResultCount()) ? searchObj.getResultCount() : resultsDisplayed;
     }
 
     /**

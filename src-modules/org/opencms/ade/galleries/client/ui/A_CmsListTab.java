@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/A_CmsListTab.java,v $
- * Date   : $Date: 2010/11/17 11:02:29 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/11/18 15:28:37 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.
  */
@@ -97,7 +97,7 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
 
     /** The select box to change the sort order. */
     private CmsSelectBox m_sortSelectBox;
-    
+
     /** A label for displaying additional information about the tab. */
     protected HasText m_infoLabel;
 
@@ -124,7 +124,7 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
             Label infoLabel = new Label();
             infoLabel.setStyleName(DIALOG_CSS.infoLabel());
             m_infoLabel = infoLabel;
-            m_options.add(infoLabel);
+            m_options.insert(infoLabel, 0);
         }
         m_scrollList = createScrollList();
         m_list.add(m_scrollList);
