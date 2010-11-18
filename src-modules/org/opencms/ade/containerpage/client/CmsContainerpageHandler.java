@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageHandler.java,v $
- * Date   : $Date: 2010/11/15 15:33:05 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2010/11/18 07:43:04 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -81,13 +81,14 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * The container-page handler.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  * 
  * @since 8.0.0
  */
@@ -165,6 +166,18 @@ public class CmsContainerpageHandler {
 
         if ((m_activeButton != null) && (m_activeButton instanceof A_CmsToolbarMenu)) {
             ((A_CmsToolbarMenu)m_activeButton).setActive(false);
+        }
+    }
+
+    /**
+     * Deactivates all toolbar buttons.<p>
+     */
+    public void deactivateToolbarButtons() {
+
+        for (Widget button : m_editor.getToolbar().getAll()) {
+            if (button instanceof I_CmsToolbarButton) {
+                ((I_CmsToolbarButton)button).setEnabled(false);
+            }
         }
     }
 

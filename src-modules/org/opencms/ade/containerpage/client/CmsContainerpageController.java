@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageController.java,v $
- * Date   : $Date: 2010/11/16 14:32:06 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2010/11/18 07:43:04 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,22 +63,21 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.AnchorElement;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.Window.ClosingHandler;
 import com.google.gwt.user.client.ui.Widget;
@@ -88,7 +87,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  * 
  * @since 8.0.0
  */
@@ -302,20 +301,11 @@ public final class CmsContainerpageController {
     /** The list of beans for the containers on the current page. */
     protected List<CmsContainer> m_containerBeans;
 
-    /** Closing handler registration. */
-    /*DEFAULT*/HandlerRegistration m_closingRegistration;
-
-    /** The container types within this page. */
-    /*DEFAULT*/Set<String> m_containerTypes;
-
     /** The container element data. All requested elements will be cached here.*/
-    /*DEFAULT*/Map<String, CmsContainerElementData> m_elements;
+    protected Map<String, CmsContainerElementData> m_elements;
 
     /** The container-page handler. */
     CmsContainerpageHandler m_handler;
-
-    /** Flag if the container-page has changed. */
-    /*DEFAULT*/boolean m_pageChanged;
 
     /** The container page drag and drop controller. */
     private I_CmsDNDController m_cntDndController;
@@ -329,6 +319,9 @@ public final class CmsContainerpageController {
     /** The container data. */
     private Map<String, CmsContainerJso> m_containers;
 
+    /** The container types within this page. */
+    private Set<String> m_containerTypes;
+
     /** The core RPC service instance. */
     private I_CmsCoreServiceAsync m_coreSvc;
 
@@ -340,6 +333,9 @@ public final class CmsContainerpageController {
 
     /** The currently edited sub-container element. */
     private CmsSubContainerElement m_editingSubcontainer;
+
+    /** Flag if the container-page has changed. */
+    private boolean m_pageChanged;
 
     /** The drag targets within this page. */
     private Map<String, org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer> m_targetContainers;
@@ -800,6 +796,26 @@ public final class CmsContainerpageController {
                 previewNativeEvent(event);
             }
         });
+        // adding on close handler
+        Window.addWindowClosingHandler(new ClosingHandler() {
+
+            /**
+             * @see com.google.gwt.user.client.Window.ClosingHandler#onWindowClosing(com.google.gwt.user.client.Window.ClosingEvent)
+             */
+            public void onWindowClosing(ClosingEvent event) {
+
+                deactivateOnClosing();
+                if (hasPageChanged()) {
+                    boolean savePage = Window.confirm("Do you want to save the page before leaving?");
+                    if (savePage) {
+                        syncSaveContainerpage();
+                    } else {
+                        unlockContainerpage();
+                    }
+                }
+
+            }
+        });
     }
 
     /**
@@ -1086,6 +1102,7 @@ public final class CmsContainerpageController {
                 @Override
                 public void execute() {
 
+                    start(0);
                     getContainerpageService().saveContainerpage(getCurrentUri(), getPageContent(), this);
                 }
 
@@ -1095,9 +1112,20 @@ public final class CmsContainerpageController {
                 @Override
                 protected void onResponse(Void result) {
 
-                    CmsNotification.get().send(Type.NORMAL, "Container page saved.");
+                    stop(true);
                     setPageChanged(false, false);
                     Window.Location.reload();
+                }
+
+                /**
+                 * @see org.opencms.gwt.client.rpc.CmsRpcAction#show()
+                 */
+                @Override
+                protected void show() {
+
+                    CmsNotification.get().sendBlocking(
+                        CmsNotification.Type.NORMAL,
+                        org.opencms.gwt.client.Messages.get().key(org.opencms.gwt.client.Messages.GUI_SAVING_0));
                 }
             };
             action.execute();
@@ -1250,6 +1278,15 @@ public final class CmsContainerpageController {
     protected void addElements(Map<String, CmsContainerElementData> elements) {
 
         m_elements.putAll(elements);
+    }
+
+    /**
+     * Disables option and toolbar buttons.<p>
+     */
+    protected void deactivateOnClosing() {
+
+        m_handler.deactivateCurrentButton();
+        m_handler.deactivateToolbarButtons();
     }
 
     /**
@@ -1415,25 +1452,6 @@ public final class CmsContainerpageController {
 
                 m_pageChanged = changed;
                 lockContainerpage();
-
-                m_closingRegistration = Window.addWindowClosingHandler(new ClosingHandler() {
-
-                    /**
-                     * @see com.google.gwt.user.client.Window.ClosingHandler#onWindowClosing(com.google.gwt.user.client.Window.ClosingEvent)
-                     */
-                    public void onWindowClosing(ClosingEvent event) {
-
-                        if (m_pageChanged) {
-                            boolean savePage = Window.confirm("Do you want to save the page before leaving?");
-                            if (savePage) {
-                                syncSaveContainerpage();
-                            } else {
-                                unlockContainerpage();
-                            }
-                        }
-
-                    }
-                });
                 m_handler.enableSaveReset(true);
             }
         } else {
@@ -1441,10 +1459,6 @@ public final class CmsContainerpageController {
             m_handler.enableSaveReset(false);
             if (unlock) {
                 unlockContainerpage();
-            }
-            if (m_closingRegistration != null) {
-                m_closingRegistration.removeHandler();
-                m_closingRegistration = null;
             }
         }
     }
