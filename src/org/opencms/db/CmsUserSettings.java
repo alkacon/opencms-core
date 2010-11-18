@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2009/09/09 14:26:32 $
- * Version: $Revision: 1.53.2.1 $
+ * Date   : $Date: 2010/11/18 10:09:39 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * @author  Andreas Zahner 
  * @author  Michael Emmerich 
  * 
- * @version $Revision: 1.53.2.1 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.0.0
  */
@@ -157,6 +157,9 @@ public class CmsUserSettings {
 
     /** Key for additional info explorer settings. */
     public static final String ADDITIONAL_INFO_EXPLORERSETTINGS = "USER_EXPLORERSETTINGS";
+
+    /** Key for additional info institution. */
+    public static final String ADDITIONAL_INFO_INSTITUTION = "USER_INSTITUTION";
 
     /** Key for additional info flags. */
     public static final String ADDITIONAL_INFO_PREFERENCES = "USER_PREFERENCES";

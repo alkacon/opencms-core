@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentShow.java,v $
- * Date   : $Date: 2009/06/04 14:29:02 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2010/11/18 10:09:38 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.jsp;
 
 import org.opencms.file.CmsObject;
 import org.opencms.flex.CmsFlexController;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.i18n.CmsMessages;
@@ -59,7 +60,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.32 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -74,6 +75,9 @@ public class CmsJspTagContentShow extends TagSupport {
     /** Name of the content node element to show. */
     private String m_element;
 
+    /** Indicates if HTML should be escaped. */
+    private boolean m_escapeHtml;
+
     /** Locale of the content node element to show. */
     private Locale m_locale;
 
@@ -84,6 +88,7 @@ public class CmsJspTagContentShow extends TagSupport {
      * @param context the current JSP page context
      * @param element the node name of the element to show
      * @param locale the locale of the element to show
+     * @param escape if the result html should be escaped or not
      * 
      * @return the value of the selected content element
      */
@@ -91,7 +96,8 @@ public class CmsJspTagContentShow extends TagSupport {
         I_CmsXmlContentContainer container,
         PageContext context,
         String element,
-        Locale locale) {
+        Locale locale,
+        boolean escape) {
 
         // get the current users OpenCms context
         CmsObject cms = CmsFlexController.getCmsObject(context.getRequest());
@@ -108,7 +114,7 @@ public class CmsJspTagContentShow extends TagSupport {
         String content;
         if (CmsMacroResolver.isMacro(element)) {
             // this is a macro, initialize a macro resolver
-            String resourcename = CmsJspTagContentLoad.getResourceName(cms, container);
+            String resourcename = CmsJspTagResourceLoad.getResourceName(cms, container);
             CmsMacroResolver resolver = CmsMacroResolver.newInstance().setCmsObject(cms).setJspPageContext(context).setResourceName(
                 resourcename).setKeepEmptyMacros(true);
             // resolve the macro
@@ -140,6 +146,10 @@ public class CmsJspTagContentShow extends TagSupport {
             // make sure that no null String is returned
             if (content == null) {
                 content = CmsMessages.formatUnknownKey(element);
+            }
+            if (escape) {
+                // HTML escape the value 
+                content = CmsEncoder.escapeHtml(content);
             }
         }
 
@@ -173,7 +183,7 @@ public class CmsJspTagContentShow extends TagSupport {
         I_CmsXmlContentContainer contentContainer = (I_CmsXmlContentContainer)ancestor;
 
         // now get the content element value to display
-        String content = contentShowTagAction(contentContainer, pageContext, getElement(), m_locale);
+        String content = contentShowTagAction(contentContainer, pageContext, getElement(), m_locale, m_escapeHtml);
 
         try {
             if (content != null) {
@@ -227,6 +237,19 @@ public class CmsJspTagContentShow extends TagSupport {
     public void setElement(String element) {
 
         m_element = element;
+    }
+
+    /**
+     * Set the escape html flag.<p>
+     * 
+     * @param value should be <code>"true"</code> or <code>"false"</code> (all values other then <code>"true"</code> are
+     * considered to be false)
+     */
+    public void setEscapeHtml(String value) {
+
+        if (value != null) {
+            m_escapeHtml = Boolean.valueOf(value.trim()).booleanValue();
+        }
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsUser.java,v $
- * Date   : $Date: 2009/09/07 12:41:40 $
- * Version: $Revision: 1.43.2.2 $
+ * Date   : $Date: 2010/11/18 10:09:38 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,7 +71,7 @@ import java.util.Map;
  * @author Michael Emmerich 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.43.2.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.0.0
  * 
@@ -211,6 +211,19 @@ public class CmsUser extends CmsPrincipal implements Cloneable {
         } else {
             return user.getFullName();
         }
+    }
+
+    /**
+     * Returns the institution information of this user.<p>
+     * 
+     * This information is stored in the "additional information" storage map
+     * using the key <code>{@link CmsUserSettings#ADDITIONAL_INFO_INSTITUTION}</code>.<p>
+     * 
+     * @return the institution information of this user
+     */
+    public String getInstitution() {
+
+        return (String)getAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_INSTITUTION);
     }
 
     /**
@@ -612,6 +625,16 @@ public class CmsUser extends CmsPrincipal implements Cloneable {
             firstname = firstname.trim();
         }
         m_firstname = firstname;
+    }
+
+    /**
+     * Sets the institution information of this user.<p>
+     * 
+     * @param institution the institution information to set
+     */
+    public void setInstitution(String institution) {
+
+        setAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_INSTITUTION, institution);
     }
 
     /**

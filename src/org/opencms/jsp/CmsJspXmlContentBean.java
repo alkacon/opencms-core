@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspXmlContentBean.java,v $
- * Date   : $Date: 2009/06/04 14:29:02 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/11/18 10:09:38 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.2.0 
  */
@@ -211,6 +211,6 @@ public class CmsJspXmlContentBean extends CmsJspActionElement {
      */
     public String contentshow(I_CmsXmlContentContainer container, String element, Locale locale) {
 
-        return CmsJspTagContentShow.contentShowTagAction(container, getJspContext(), element, locale);
+        return CmsJspTagContentShow.contentShowTagAction(container, getJspContext(), element, locale, false);
     }
 }

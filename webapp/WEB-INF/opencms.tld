@@ -225,6 +225,10 @@
             <name>locale</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>
+        <attribute>
+            <name>escapeHtml</name>
+            <rtexprvalue>true</rtexprvalue>            
+        </attribute>
     </tag>  
     
     <tag>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsMacroResolver.java,v $
- * Date   : $Date: 2010/10/28 07:38:56 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/11/18 10:09:39 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -67,7 +67,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -105,6 +105,9 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
 
     /** Key used to specify the full name of the current user as macro value. */
     public static final String KEY_CURRENT_USER_FULLNAME = "currentuser.fullname";
+
+    /** Key used to specify the institution of the current user as macro value. */
+    public static final String KEY_CURRENT_USER_INSTITUTION = "currentuser.institution";
 
     /** Key used to specify the last login date of the current user as macro value. */
     public static final String KEY_CURRENT_USER_LASTLOGIN = "currentuser.lastlogin";
@@ -776,6 +779,11 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
             if (CmsMacroResolver.KEY_CONTEXT_PATH.equals(macro)) {
                 // the key is the OpenCms context path
                 return OpenCms.getSystemInfo().getContextPath();
+            }
+
+            if (CmsMacroResolver.KEY_CURRENT_USER_INSTITUTION.equals(macro)) {
+                // the key is the current users institution
+                return m_cms.getRequestContext().currentUser().getInstitution();
             }
 
         }

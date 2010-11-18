@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagUser.java,v $
- * Date   : $Date: 2009/06/04 14:29:02 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2010/11/18 10:09:38 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -76,7 +76,8 @@ public class CmsJspTagUser extends TagSupport {
         "group",
         "currentgroup",
         "defaultgroup",
-        "otherstuff"};
+        "otherstuff",
+        "institution"};
 
     /** Array list for fast lookup. */
     private static final List USER_PROPERTIES_LIST = Arrays.asList(USER_PROPERTIES);
@@ -142,6 +143,9 @@ public class CmsJspTagUser extends TagSupport {
                     Object o = it.next();
                     result += " " + o + "=" + user.getAdditionalInfo((String)o);
                 }
+                break;
+            case 12: // institution
+                result = user.getInstitution();
                 break;
             default:
                 msgContainer = Messages.get().container(Messages.GUI_ERR_INVALID_USER_PROP_1, property);

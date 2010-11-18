@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsEditUserDialog.java,v $
- * Date   : $Date: 2009/10/12 08:12:03 $
- * Version: $Revision: 1.13.2.1 $
+ * Date   : $Date: 2010/11/18 10:09:39 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,7 +71,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.13.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -457,17 +457,17 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
             result.append(dialogBlockEnd());
             result.append(dialogBlockStart(key(Messages.GUI_USER_EDITOR_LABEL_ADDRESS_BLOCK_0)));
             result.append(createWidgetTableStart());
-            result.append(createDialogRowsHtml(6, 9));
+            result.append(createDialogRowsHtml(6, 10));
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
-            int row = isNewUser() ? 12 : 11;
+            int row = isNewUser() ? 13 : 12;
             if (!webuserOu) {
                 if (getSites().isEmpty()) {
                     row -= 1;
                 }
                 result.append(dialogBlockStart(key(Messages.GUI_USER_EDITOR_LABEL_SETTINGS_BLOCK_0)));
                 result.append(createWidgetTableStart());
-                result.append(createDialogRowsHtml(10, row));
+                result.append(createDialogRowsHtml(11, row));
                 result.append(createWidgetTableEnd());
                 result.append(dialogBlockEnd());
             } else {
@@ -531,6 +531,7 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
             addWidget(new CmsWidgetDialogParameter(m_user, "firstname", PAGES[0], new CmsInputWidget()));
             addWidget(new CmsWidgetDialogParameter(m_user, "email", PAGES[0], new CmsInputWidget()));
             addWidget(new CmsWidgetDialogParameter(this, "assignedOu", PAGES[0], new CmsDisplayWidget()));
+            addWidget(new CmsWidgetDialogParameter(m_user, "institution", "", PAGES[0], new CmsInputWidget(), 0, 1));
             addWidget(new CmsWidgetDialogParameter(m_user, "address", "", PAGES[0], new CmsInputWidget(), 0, 1));
             addWidget(new CmsWidgetDialogParameter(m_user, "zipcode", "", PAGES[0], new CmsInputWidget(), 0, 1));
             addWidget(new CmsWidgetDialogParameter(m_user, "city", "", PAGES[0], new CmsInputWidget(), 0, 1));
@@ -553,6 +554,7 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
             addWidget(new CmsWidgetDialogParameter(m_user, "firstname", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(m_user, "email", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(this, "assignedOu", PAGES[0], new CmsDisplayWidget()));
+            addWidget(new CmsWidgetDialogParameter(m_user, "institution", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(m_user, "address", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(m_user, "zipcode", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(m_user, "city", PAGES[0], new CmsDisplayWidget()));
