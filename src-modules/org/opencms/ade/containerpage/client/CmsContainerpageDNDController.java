@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageDNDController.java,v $
- * Date   : $Date: 2010/11/16 14:32:06 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/11/18 07:42:02 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,10 +38,10 @@ import org.opencms.ade.containerpage.client.ui.I_CmsDropContainer;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
+import org.opencms.gwt.client.dnd.CmsDNDHandler.Orientation;
 import org.opencms.gwt.client.dnd.I_CmsDNDController;
 import org.opencms.gwt.client.dnd.I_CmsDraggable;
 import org.opencms.gwt.client.dnd.I_CmsDropTarget;
-import org.opencms.gwt.client.dnd.CmsDNDHandler.Orientation;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
@@ -73,7 +73,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.0
  */
@@ -153,6 +153,9 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         }
     }
 
+    /** The height value above which a container's min height will be set when the user starts dragging. */
+    public static final double MIN_HEIGHT_THRESHOLD = 50.0;
+
     /** The container page controller. */
     private CmsContainerpageController m_controller;
 
@@ -171,9 +174,6 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
     /** Objects for restoring the min. heights of containers. */
     private List<CmsStyleSaver> m_savedMinHeights = new ArrayList<CmsStyleSaver>();
 
-    /** The height value above which a container's min height will be set when the user starts dragging. */
-    public static final double MIN_HEIGHT_THRESHOLD = 50.0;
-
     /**
      * Constructor.<p>
      * 
@@ -183,6 +183,23 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
 
         m_controller = controller;
         m_dragInfos = new HashMap<I_CmsDropTarget, DragInfo>();
+    }
+
+    /**
+     * @see org.opencms.gwt.client.dnd.I_CmsDNDController#onAnimationStart(org.opencms.gwt.client.dnd.I_CmsDraggable, org.opencms.gwt.client.dnd.I_CmsDropTarget, org.opencms.gwt.client.dnd.CmsDNDHandler)
+     */
+    public void onAnimationStart(I_CmsDraggable draggable, I_CmsDropTarget target, CmsDNDHandler handler) {
+
+        // hide dropzone if it is not the current target
+        if ((target == null) || !(target instanceof CmsList)) {
+            m_controller.getHandler().showDropzone(false);
+        }
+        // remove highlighting
+        for (I_CmsDropTarget dropTarget : m_dragInfos.keySet()) {
+            if (dropTarget instanceof I_CmsDropContainer) {
+                ((I_CmsDropContainer)dropTarget).removeHighlighting();
+            }
+        }
     }
 
     /**
@@ -217,11 +234,13 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                 prepareTargetContainer((I_CmsDropContainer)target, draggable, handler.getPlaceholder());
             }
         }
-        m_dragInfos.put(target, new DragInfo(
-            handler.getDragHelper(),
-            handler.getPlaceholder(),
-            handler.getCursorOffsetX(),
-            handler.getCursorOffsetY()));
+        m_dragInfos.put(
+            target,
+            new DragInfo(
+                handler.getDragHelper(),
+                handler.getPlaceholder(),
+                handler.getCursorOffsetX(),
+                handler.getCursorOffsetY()));
         m_controller.getHandler().hideMenu();
         String clientId = draggable.getId();
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(clientId)) {
@@ -398,11 +417,9 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
 
             Element placeholder = temp.getPlaceholder(dropzone);
             Element helper = temp.getDragHelper(dropzone);
-            m_dragInfos.put(dropzone, new DragInfo(
-                helper,
-                placeholder,
-                helper.getOffsetWidth() - 15,
-                handler.getCursorOffsetY()));
+            m_dragInfos.put(
+                dropzone,
+                new DragInfo(helper, placeholder, helper.getOffsetWidth() - 15, handler.getCursorOffsetY()));
             handler.addTarget(dropzone);
             helper.getStyle().setDisplay(Display.NONE);
         }
