@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/toolbar/Attic/CmsSitemapToolbar.java,v $
- * Date   : $Date: 2010/09/08 08:34:01 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/11/18 15:31:49 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.ade.sitemap.client.toolbar;
 
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
+import org.opencms.gwt.client.ui.CmsToggleButton;
 import org.opencms.gwt.client.ui.CmsToolbar;
 
 import com.google.gwt.user.client.ui.Widget;
@@ -41,7 +42,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
  */
@@ -54,14 +55,28 @@ public class CmsSitemapToolbar extends CmsToolbar {
      */
     public CmsSitemapToolbar(CmsSitemapController controller) {
 
+        addLeft(new CmsToolbarPublishButton(this, controller));
         addLeft(new CmsToolbarSaveButton(this, controller));
         addLeft(new CmsToolbarUndoButton(this, controller));
         addLeft(new CmsToolbarRedoButton(this, controller));
-        addLeft(new CmsToolbarResetButton(this, controller));
         addLeft(new CmsToolbarGalleryButton(this, controller));
         addLeft(new CmsToolbarClipboardButton(this, controller));
 
-        addRight(new CmsToolbarPublishButton(this, controller));
+        addRight(new CmsToolbarResetButton(this, controller));
+    }
+
+    /**
+     * Deactivates all toolbar buttons.<p>
+     */
+    public void deactivateAll() {
+
+        for (Widget button : getAll()) {
+            if (button instanceof I_CmsToolbarActivatable) {
+                ((I_CmsToolbarActivatable)button).setEnabled(false);
+            } else if (button instanceof CmsToggleButton) {
+                ((CmsToggleButton)button).setEnabled(false);
+            }
+        }
     }
 
     /**

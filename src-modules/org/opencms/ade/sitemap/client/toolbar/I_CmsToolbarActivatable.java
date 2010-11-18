@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/toolbar/Attic/I_CmsToolbarActivatable.java,v $
- * Date   : $Date: 2010/09/08 08:34:01 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/11/18 15:31:49 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -50,4 +50,11 @@ public interface I_CmsToolbarActivatable {
      * @param widget the widget
      */
     void onActivation(Widget widget);
+
+    /**
+     * Sets whether this button is enabled.<p>
+     * 
+     * @param enabled <code>true</code> to enable the button, <code>false</code> to disable it
+     */
+    void setEnabled(boolean enabled);
 }

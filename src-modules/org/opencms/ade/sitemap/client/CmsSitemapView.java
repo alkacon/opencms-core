@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapView.java,v $
- * Date   : $Date: 2010/11/15 16:03:50 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2010/11/18 15:31:06 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,6 +64,9 @@ import org.opencms.util.CmsStringUtil;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Event.NativePreviewEvent;
+import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.Window.ClosingHandler;
@@ -75,7 +78,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.41 $ 
+ * @version $Revision: 1.42 $ 
  * 
  * @since 8.0.0
  */
@@ -90,9 +93,6 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler, ClosingHandler {
 
     /** The controller. */
     protected CmsSitemapController m_controller;
-
-    /** The hover bar. */
-    protected CmsSitemapHoverbar m_hoverbar;
 
     /** The displayed sitemap tree. */
     protected CmsLazyTree<CmsSitemapTreeItem> m_tree;
@@ -128,7 +128,7 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler, ClosingHandler {
         CmsListItemWidget itemWidget = new CmsListItemWidget(infoBean);
         CmsSitemapTreeItem treeItem = new CmsSitemapTreeItem(itemWidget, entry, originalPath);
 
-        m_hoverbar.installOn(m_controller, treeItem);
+        CmsSitemapHoverbar.installOn(m_controller, treeItem);
 
         return treeItem;
     }
@@ -290,7 +290,7 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler, ClosingHandler {
         RootPanel.get().add(new CmsToolbarPlaceHolder());
 
         // hoverbar
-        m_hoverbar = new CmsSitemapHoverbar(m_controller);
+        //  m_hoverbar = new CmsSitemapHoverbar(m_controller);
 
         // title
         CmsHeader title = new CmsHeader(Messages.get().key(Messages.GUI_EDITOR_TITLE_0), CmsCoreProvider.get().getUri());
@@ -364,14 +364,25 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler, ClosingHandler {
      */
     public void onWindowClosing(ClosingEvent event) {
 
+        // deactivating toolbar buttons
+        m_toolbar.deactivateAll();
         // unload event handling
-        if (!m_controller.hasChanges()) {
-            return;
+        if (m_controller.hasChanges()) {
+            boolean savePage = Window.confirm(Messages.get().key(Messages.GUI_CONFIRM_DIRTY_LEAVING_0));
+            if (savePage) {
+                m_controller.commit(true);
+            }
         }
-        boolean savePage = Window.confirm(Messages.get().key(Messages.GUI_CONFIRM_DIRTY_LEAVING_0));
-        if (savePage) {
-            m_controller.commit(true);
-        }
+        Event.addNativePreviewHandler(new NativePreviewHandler() {
+
+            /**
+             * @see com.google.gwt.user.client.Event.NativePreviewHandler#onPreviewNativeEvent(com.google.gwt.user.client.Event.NativePreviewEvent)
+             */
+            public void onPreviewNativeEvent(NativePreviewEvent previewEvent) {
+
+                previewEvent.cancel();
+            }
+        });
     }
 
     /**
