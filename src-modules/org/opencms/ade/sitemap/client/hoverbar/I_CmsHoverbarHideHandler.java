@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsHoverbarDetachEvent.java,v $
- * Date   : $Date: 2010/06/14 12:52:21 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/I_CmsHoverbarHideHandler.java,v $
+ * Date   : $Date: 2010/11/18 15:32:41 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -31,10 +31,10 @@
 
 package org.opencms.ade.sitemap.client.hoverbar;
 
-import com.google.gwt.event.shared.GwtEvent;
+import com.google.gwt.event.shared.EventHandler;
 
 /**
- * Hoverbar detach event.<p>
+ * Hoverbar detach event handler.<p>
  * 
  * @author Michael Moossen
  * 
@@ -44,44 +44,12 @@ import com.google.gwt.event.shared.GwtEvent;
  * 
  * @see org.opencms.ade.sitemap.client.control.CmsSitemapController
  */
-public class CmsHoverbarDetachEvent extends GwtEvent<I_CmsHoverbarDetachHandler> {
-
-    /** Event type for sitemap change events. */
-    private static final Type<I_CmsHoverbarDetachHandler> TYPE = new Type<I_CmsHoverbarDetachHandler>();
+public interface I_CmsHoverbarHideHandler extends EventHandler {
 
     /**
-     * Constructor.<p>
-     */
-    public CmsHoverbarDetachEvent() {
-
-        // empty
-    }
-
-    /**
-     * Gets the event type associated with change events.<p>
+     * Will be triggered on detach.<p>
      * 
-     * @return the handler type
+     * @param event the event 
      */
-    public static Type<I_CmsHoverbarDetachHandler> getType() {
-
-        return TYPE;
-    }
-
-    /**
-     * @see com.google.gwt.event.shared.GwtEvent#getAssociatedType()
-     */
-    @Override
-    public final Type<I_CmsHoverbarDetachHandler> getAssociatedType() {
-
-        return TYPE;
-    }
-
-    /**
-     * @see com.google.gwt.event.shared.GwtEvent#dispatch(com.google.gwt.event.shared.EventHandler)
-     */
-    @Override
-    protected void dispatch(I_CmsHoverbarDetachHandler handler) {
-
-        handler.onDetach(this);
-    }
+    void onHide(CmsHoverbarHideEvent event);
 }

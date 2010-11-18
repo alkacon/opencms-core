@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsHoverbarNewButton.java,v $
- * Date   : $Date: 2010/10/07 07:56:34 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/11/18 15:32:41 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 8.0.0
  */
@@ -71,7 +71,7 @@ public class CmsHoverbarNewButton extends CmsPushButton {
              */
             public void onClick(ClickEvent event) {
 
-                hoverbar.deattach();
+                hoverbar.hide();
                 CmsSitemapController controller = hoverbar.getController();
                 CmsClientSitemapEntry entry = controller.getEntry(hoverbar.getSitePath());
                 controller.createSubEntry(entry);
@@ -79,12 +79,12 @@ public class CmsHoverbarNewButton extends CmsPushButton {
                 //(new CmsSitemapEntryEditor(new CmsNewEntryHandler(controller, entry))).start();
             }
         });
-        hoverbar.addAttachHandler(new I_CmsHoverbarAttachHandler() {
+        hoverbar.addShowHandler(new I_CmsHoverbarShowHandler() {
 
             /**
-             * @see org.opencms.ade.sitemap.client.hoverbar.I_CmsHoverbarAttachHandler#onAttach(org.opencms.ade.sitemap.client.hoverbar.CmsHoverbarAttachEvent)
+             * @see org.opencms.ade.sitemap.client.hoverbar.I_CmsHoverbarShowHandler#onShow(org.opencms.ade.sitemap.client.hoverbar.CmsHoverbarShowEvent)
              */
-            public void onAttach(CmsHoverbarAttachEvent event) {
+            public void onShow(CmsHoverbarShowEvent event) {
 
                 final String sitePath = hoverbar.getSitePath();
                 final CmsSitemapController controller = hoverbar.getController();

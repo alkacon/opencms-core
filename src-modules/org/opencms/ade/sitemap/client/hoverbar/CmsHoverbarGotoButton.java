@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsHoverbarGotoButton.java,v $
- * Date   : $Date: 2010/11/15 16:05:59 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/11/18 15:32:41 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  */
@@ -67,7 +67,7 @@ public class CmsHoverbarGotoButton extends CmsPushButton {
              */
             public void onClick(ClickEvent event) {
 
-                hoverbar.deattach();
+                hoverbar.hide();
                 hoverbar.getController().askToLeave(hoverbar.getSitePath());
             }
         });

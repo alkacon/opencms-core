@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsHoverbarMoveButton.java,v $
- * Date   : $Date: 2010/10/29 13:10:49 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/11/18 15:32:41 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 8.0.0
  */
@@ -69,12 +69,12 @@ public class CmsHoverbarMoveButton extends CmsPushButton implements I_CmsDragHan
         setImageClass(I_CmsImageBundle.INSTANCE.buttonCss().hoverbarMove());
         setTitle(Messages.get().key(Messages.GUI_HOVERBAR_MOVE_0));
         setShowBorder(false);
-        hoverbar.addAttachHandler(new I_CmsHoverbarAttachHandler() {
+        hoverbar.addShowHandler(new I_CmsHoverbarShowHandler() {
 
             /**
-             * @see org.opencms.ade.sitemap.client.hoverbar.I_CmsHoverbarAttachHandler#onAttach(org.opencms.ade.sitemap.client.hoverbar.CmsHoverbarAttachEvent)
+             * @see org.opencms.ade.sitemap.client.hoverbar.I_CmsHoverbarShowHandler#onShow(org.opencms.ade.sitemap.client.hoverbar.CmsHoverbarShowEvent)
              */
-            public void onAttach(CmsHoverbarAttachEvent event) {
+            public void onShow(CmsHoverbarShowEvent event) {
 
                 m_sitePath = hoverbar.getSitePath();
                 final CmsSitemapController controller = hoverbar.getController();
@@ -86,12 +86,12 @@ public class CmsHoverbarMoveButton extends CmsPushButton implements I_CmsDragHan
                 }
             }
         });
-        hoverbar.addDetachHandler(new I_CmsHoverbarDetachHandler() {
+        hoverbar.addHideHandler(new I_CmsHoverbarHideHandler() {
 
             /**
-             * @see org.opencms.ade.sitemap.client.hoverbar.I_CmsHoverbarDetachHandler#onDetach(org.opencms.ade.sitemap.client.hoverbar.CmsHoverbarDetachEvent)
+             * @see org.opencms.ade.sitemap.client.hoverbar.I_CmsHoverbarHideHandler#onHide(org.opencms.ade.sitemap.client.hoverbar.CmsHoverbarHideEvent)
              */
-            public void onDetach(CmsHoverbarDetachEvent event) {
+            public void onHide(CmsHoverbarHideEvent event) {
 
                 if (m_mouseDownHandlerReg != null) {
                     m_mouseDownHandlerReg.removeHandler();

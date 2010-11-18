@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsSitemapHoverbar.java,v $
- * Date   : $Date: 2010/11/15 16:05:59 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/11/18 15:32:41 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,7 +37,6 @@ import org.opencms.ade.sitemap.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.A_CmsHoverHandler;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsPushButton;
-import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 
 import java.util.Iterator;
 
@@ -53,17 +52,14 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 8.0.0
  */
-public class CmsSitemapHoverbar extends FlowPanel {
+public final class CmsSitemapHoverbar extends FlowPanel {
 
     /** The handler manager. */
-    protected HandlerManager m_handlerManager;
-
-    /** The hovered sitemap entry site path. */
-    protected String m_sitePath;
+    private HandlerManager m_handlerManager;
 
     /** The sitemap controller. */
     private CmsSitemapController m_controller;
@@ -71,21 +67,32 @@ public class CmsSitemapHoverbar extends FlowPanel {
     /** Flag if hover bar buttons are enabled. */
     private boolean m_enabled;
 
+    /** Flag to indicate the the hoverbar visibility is locked. */
+    private boolean m_locked;
+
+    /** Flag indicating if the hoverbar is currently hovered, the mouse cursor is over the bar. */
+    private boolean m_hovered;
+
+    /** The sitemap tree item. */
+    private CmsSitemapTreeItem m_treeItem;
+
     /**
      * Constructor.<p>
      * 
      * @param controller the controller
+     * @param treeItem the item to hover
      */
-    public CmsSitemapHoverbar(final CmsSitemapController controller) {
+    private CmsSitemapHoverbar(CmsSitemapController controller, CmsSitemapTreeItem treeItem) {
 
         m_controller = controller;
+        m_treeItem = treeItem;
         m_handlerManager = new HandlerManager(this);
         m_enabled = true;
-        setStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().buttonPanel());
-        addStyleName(I_CmsImageBundle.INSTANCE.buttonCss().hoverbar());
+        setStyleName(I_CmsImageBundle.INSTANCE.buttonCss().hoverbar());
         if (controller.isEditable()) {
-            add(new CmsHoverbarMoveButton(this));
             add(new CmsHoverbarContextMenuButton(this));
+            add(new CmsHoverbarMoveButton(this));
+
             //            add(new CmsHoverbarGotoSubSitemapButton(this));
             //            add(new CmsHoverbarGotoButton(this));
             //            add(new CmsHoverbarSubsitemapButton(this));
@@ -106,9 +113,9 @@ public class CmsSitemapHoverbar extends FlowPanel {
      * 
      * @return the handler registration
      */
-    public HandlerRegistration addAttachHandler(I_CmsHoverbarAttachHandler handler) {
+    public HandlerRegistration addShowHandler(I_CmsHoverbarShowHandler handler) {
 
-        return m_handlerManager.addHandler(CmsHoverbarAttachEvent.getType(), handler);
+        return m_handlerManager.addHandler(CmsHoverbarShowEvent.getType(), handler);
     }
 
     /**
@@ -118,18 +125,19 @@ public class CmsSitemapHoverbar extends FlowPanel {
      * 
      * @return the handler registration
      */
-    public HandlerRegistration addDetachHandler(I_CmsHoverbarDetachHandler handler) {
+    public HandlerRegistration addHideHandler(I_CmsHoverbarHideHandler handler) {
 
-        return m_handlerManager.addHandler(CmsHoverbarDetachEvent.getType(), handler);
+        return m_handlerManager.addHandler(CmsHoverbarHideEvent.getType(), handler);
     }
 
     /**
      * Detaches the hoverbar.<p>
      */
-    public void deattach() {
+    public void hide() {
 
-        removeFromParent();
-        m_handlerManager.fireEvent(new CmsHoverbarDetachEvent());
+        m_locked = false;
+        setVisible(false);
+        m_handlerManager.fireEvent(new CmsHoverbarHideEvent());
         // CmsDebugLog.getInstance().printLine("detached");
     }
 
@@ -150,7 +158,7 @@ public class CmsSitemapHoverbar extends FlowPanel {
      */
     public String getSitePath() {
 
-        return m_sitePath;
+        return m_treeItem.getSitePath();
     }
 
     /**
@@ -159,9 +167,12 @@ public class CmsSitemapHoverbar extends FlowPanel {
      * @param controller the controller 
      * @param treeItem the item to hover
      */
-    public void installOn(final CmsSitemapController controller, final CmsSitemapTreeItem treeItem) {
+    public static void installOn(final CmsSitemapController controller, final CmsSitemapTreeItem treeItem) {
 
         final CmsListItemWidget widget = treeItem.getListItemWidget();
+        final CmsSitemapHoverbar hoverbar = new CmsSitemapHoverbar(controller, treeItem);
+        hoverbar.setVisible(false);
+        widget.getContentPanel().add(hoverbar);
         A_CmsHoverHandler handler = new A_CmsHoverHandler() {
 
             /**
@@ -170,16 +181,12 @@ public class CmsSitemapHoverbar extends FlowPanel {
             @Override
             protected void onHoverIn(MouseOverEvent event) {
 
-                if (widget.getContentPanel().getWidgetIndex(CmsSitemapHoverbar.this) > -1) {
-                    // prevent attach when not needed
+                hoverbar.setHovered(true);
+                if (hoverbar.isVisible()) {
+                    // prevent show when not needed
                     return;
                 }
-                m_sitePath = treeItem.getSitePath();
-                if (getController().getEntry(m_sitePath) != null) {
-                    widget.getContentPanel().add(CmsSitemapHoverbar.this);
-                    m_handlerManager.fireEvent(new CmsHoverbarAttachEvent());
-                    // CmsDebugLog.getInstance().printLine("attached");
-                }
+                hoverbar.show();
             }
 
             /**
@@ -188,7 +195,10 @@ public class CmsSitemapHoverbar extends FlowPanel {
             @Override
             protected void onHoverOut(MouseOutEvent event) {
 
-                deattach();
+                hoverbar.setHovered(false);
+                if (!hoverbar.isLocked()) {
+                    hoverbar.hide();
+                }
             }
         };
         widget.addMouseOutHandler(handler);
@@ -221,4 +231,54 @@ public class CmsSitemapHoverbar extends FlowPanel {
             }
         }
     }
+
+    /**
+     * Shows the hoverbar firing the appropriate event.<p>
+     */
+    protected void show() {
+
+        setVisible(true);
+        m_handlerManager.fireEvent(new CmsHoverbarShowEvent());
+    }
+
+    /**
+     * Locks the hoverbar visibility.<p>
+     * 
+     * @param locked <code>true</code> to lock the hoverbar visibility
+     */
+    public void setLocked(boolean locked) {
+
+        m_locked = locked;
+    }
+
+    /**
+     * Returns if the hoverbar visibility is locked.<p>
+     * 
+     * @return <code>true</code> if the hoverbar visibility is locked
+     */
+    protected boolean isLocked() {
+
+        return m_locked;
+    }
+
+    /**
+     * Sets the hovered state.<p>
+     * 
+     * @param hovered <code>true</code> if hovered
+     */
+    protected void setHovered(boolean hovered) {
+
+        m_hovered = hovered;
+    }
+
+    /**
+     * Returns if the bar is hovered.<p>
+     * 
+     * @return <code>true</code> if hovered
+     */
+    public boolean isHovered() {
+
+        return m_hovered;
+    }
+
 }

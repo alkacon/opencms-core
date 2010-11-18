@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsGotoMenuEntry.java,v $
- * Date   : $Date: 2010/11/15 16:05:59 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/11/18 15:32:41 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import com.google.gwt.user.client.Command;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -72,10 +72,10 @@ public class CmsGotoMenuEntry extends A_CmsSitemapMenuEntry {
     }
 
     /**
-     * @see org.opencms.ade.sitemap.client.hoverbar.A_CmsSitemapMenuEntry#onAttach(org.opencms.ade.sitemap.client.hoverbar.CmsHoverbarAttachEvent)
+     * @see org.opencms.ade.sitemap.client.hoverbar.A_CmsSitemapMenuEntry#onShow(org.opencms.ade.sitemap.client.hoverbar.CmsHoverbarShowEvent)
      */
     @Override
-    public void onAttach(CmsHoverbarAttachEvent event) {
+    public void onShow(CmsHoverbarShowEvent event) {
 
         // nothing to do
     }

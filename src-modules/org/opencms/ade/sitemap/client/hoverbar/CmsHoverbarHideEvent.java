@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsHoverbarAttachEvent.java,v $
- * Date   : $Date: 2010/05/27 11:13:52 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsHoverbarHideEvent.java,v $
+ * Date   : $Date: 2010/11/18 15:32:41 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -34,7 +34,7 @@ package org.opencms.ade.sitemap.client.hoverbar;
 import com.google.gwt.event.shared.GwtEvent;
 
 /**
- * Hoverbar attach event.<p>
+ * Hoverbar detach event.<p>
  * 
  * @author Michael Moossen
  * 
@@ -44,15 +44,15 @@ import com.google.gwt.event.shared.GwtEvent;
  * 
  * @see org.opencms.ade.sitemap.client.control.CmsSitemapController
  */
-public class CmsHoverbarAttachEvent extends GwtEvent<I_CmsHoverbarAttachHandler> {
+public class CmsHoverbarHideEvent extends GwtEvent<I_CmsHoverbarHideHandler> {
 
     /** Event type for sitemap change events. */
-    private static final Type<I_CmsHoverbarAttachHandler> TYPE = new Type<I_CmsHoverbarAttachHandler>();
+    private static final Type<I_CmsHoverbarHideHandler> TYPE = new Type<I_CmsHoverbarHideHandler>();
 
     /**
      * Constructor.<p>
      */
-    public CmsHoverbarAttachEvent() {
+    public CmsHoverbarHideEvent() {
 
         // empty
     }
@@ -62,7 +62,7 @@ public class CmsHoverbarAttachEvent extends GwtEvent<I_CmsHoverbarAttachHandler>
      * 
      * @return the handler type
      */
-    public static Type<I_CmsHoverbarAttachHandler> getType() {
+    public static Type<I_CmsHoverbarHideHandler> getType() {
 
         return TYPE;
     }
@@ -71,7 +71,7 @@ public class CmsHoverbarAttachEvent extends GwtEvent<I_CmsHoverbarAttachHandler>
      * @see com.google.gwt.event.shared.GwtEvent#getAssociatedType()
      */
     @Override
-    public final Type<I_CmsHoverbarAttachHandler> getAssociatedType() {
+    public final Type<I_CmsHoverbarHideHandler> getAssociatedType() {
 
         return TYPE;
     }
@@ -80,8 +80,8 @@ public class CmsHoverbarAttachEvent extends GwtEvent<I_CmsHoverbarAttachHandler>
      * @see com.google.gwt.event.shared.GwtEvent#dispatch(com.google.gwt.event.shared.EventHandler)
      */
     @Override
-    protected void dispatch(I_CmsHoverbarAttachHandler handler) {
+    protected void dispatch(I_CmsHoverbarHideHandler handler) {
 
-        handler.onAttach(this);
+        handler.onHide(this);
     }
 }

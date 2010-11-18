@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/A_CmsSitemapMenuEntry.java,v $
- * Date   : $Date: 2010/11/15 16:05:59 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/11/18 15:32:41 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,11 +42,11 @@ import com.google.gwt.user.client.Command;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
-public abstract class A_CmsSitemapMenuEntry implements I_CmsContextMenuEntry, I_CmsHoverbarAttachHandler {
+public abstract class A_CmsSitemapMenuEntry implements I_CmsContextMenuEntry, I_CmsHoverbarShowHandler {
 
     /** The command for the entry. */
     private Command m_command;
@@ -77,7 +77,7 @@ public abstract class A_CmsSitemapMenuEntry implements I_CmsContextMenuEntry, I_
     public A_CmsSitemapMenuEntry(CmsSitemapHoverbar hoverbar) {
 
         m_hoverbar = hoverbar;
-        hoverbar.addAttachHandler(this);
+        hoverbar.addShowHandler(this);
     }
 
     /**
@@ -171,9 +171,9 @@ public abstract class A_CmsSitemapMenuEntry implements I_CmsContextMenuEntry, I_
     /**
      * Executed when the context-menu parent hoverbar is attached.<p>
      * 
-     * @see org.opencms.ade.sitemap.client.hoverbar.I_CmsHoverbarAttachHandler#onAttach(org.opencms.ade.sitemap.client.hoverbar.CmsHoverbarAttachEvent)
+     * @see org.opencms.ade.sitemap.client.hoverbar.I_CmsHoverbarShowHandler#onShow(org.opencms.ade.sitemap.client.hoverbar.CmsHoverbarShowEvent)
      */
-    public abstract void onAttach(CmsHoverbarAttachEvent event);
+    public abstract void onShow(CmsHoverbarShowEvent event);
 
     /** 
      * Sets if this menu entry is active.<p>
@@ -240,7 +240,7 @@ public abstract class A_CmsSitemapMenuEntry implements I_CmsContextMenuEntry, I_
      */
     protected void deattachHoverbar() {
 
-        m_hoverbar.deattach();
+        m_hoverbar.hide();
     }
 
     /**

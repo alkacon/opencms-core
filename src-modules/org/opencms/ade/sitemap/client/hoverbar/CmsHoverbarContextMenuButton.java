@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsHoverbarContextMenuButton.java,v $
- * Date   : $Date: 2010/11/15 16:05:59 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/11/18 15:32:41 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -86,18 +86,19 @@ public class CmsHoverbarContextMenuButton extends CmsMenuButton {
         m_button.setSize(Size.small);
         // set the widget
         setMenuWidget(m_menuPanel);
-        getPopupContent().removeAutoHidePartner(getElement());
+        //    getPopupContent().removeAutoHidePartner(getElement());
+        getPopupContent().addAutoHidePartner(getElement());
         getPopupContent().setWidth(POPUP_WIDTH + "px");
-        getPopupContent().setModal(true);
+        //getPopupContent().setModal(true);
         m_entries = new ArrayList<I_CmsContextMenuEntry>();
-        m_entries.add(new CmsDeleteMenuEntry(hoverbar));
-        m_entries.add(new CmsParentSitemapMenuEntry(hoverbar));
-        m_entries.add(new CmsSubSitemapMenuEntry(hoverbar));
-        m_entries.add(new CmsNewMenuEntry(hoverbar));
-        m_entries.add(new CmsMergeMenuEntry(hoverbar));
-        m_entries.add(new CmsGotoSubSitemapMenuEntry(hoverbar));
         m_entries.add(new CmsGotoMenuEntry(hoverbar));
         m_entries.add(new CmsEditMenuEntry(hoverbar));
+        m_entries.add(new CmsNewMenuEntry(hoverbar));
+        m_entries.add(new CmsSubSitemapMenuEntry(hoverbar));
+        m_entries.add(new CmsParentSitemapMenuEntry(hoverbar));
+        m_entries.add(new CmsGotoSubSitemapMenuEntry(hoverbar));
+        m_entries.add(new CmsMergeMenuEntry(hoverbar));
+        m_entries.add(new CmsDeleteMenuEntry(hoverbar));
         setTitle("Context menu");
         setVisible(true);
         addClickHandler(new ClickHandler() {
@@ -107,7 +108,11 @@ public class CmsHoverbarContextMenuButton extends CmsMenuButton {
              */
             public void onClick(ClickEvent event) {
 
-                showMenu(hoverbar);
+                if (!isOpen()) {
+                    showMenu(hoverbar);
+                } else {
+                    closeMenu();
+                }
             }
         });
     }
@@ -119,6 +124,8 @@ public class CmsHoverbarContextMenuButton extends CmsMenuButton {
      */
     protected void showMenu(final CmsSitemapHoverbar hoverbar) {
 
+        // lock the hoverbar visibility to avoid hide on mouse out
+        hoverbar.setLocked(true);
         CmsContextMenu menu = new CmsContextMenu(m_entries, false, getPopupContent());
         m_menuPanel.setWidget(0, 0, menu);
         // add the close handler for the menu
@@ -127,9 +134,22 @@ public class CmsHoverbarContextMenuButton extends CmsMenuButton {
 
             public void onClose(CloseEvent<PopupPanel> closeEvent) {
 
-                hoverbar.deattach();
+                onMenuClose(hoverbar);
             }
         });
         openMenu();
+    }
+
+    /**
+     * Rests the button state and hides the hoverbar.<p>
+     * 
+     * @param hoverbar the hoverbar
+     */
+    protected void onMenuClose(CmsSitemapHoverbar hoverbar) {
+
+        m_button.setDown(false);
+        if (!hoverbar.isHovered()) {
+            hoverbar.hide();
+        }
     }
 }

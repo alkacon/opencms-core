@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsHoverbarMergeButton.java,v $
- * Date   : $Date: 2010/10/07 07:56:34 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/11/18 15:32:41 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -72,7 +72,7 @@ public class CmsHoverbarMergeButton extends CmsPushButton {
              */
             public void onClick(ClickEvent event) {
 
-                hoverbar.deattach();
+                hoverbar.hide();
                 final String sitePath = hoverbar.getSitePath();
                 final CmsSitemapController controller = hoverbar.getController();
                 String confirmTitle = Messages.get().key(Messages.GUI_MERGE_SITEMAP_CONFIRM_TITLE_0);
@@ -99,12 +99,12 @@ public class CmsHoverbarMergeButton extends CmsPushButton {
                 confirmDialog.center();
             }
         });
-        hoverbar.addAttachHandler(new I_CmsHoverbarAttachHandler() {
+        hoverbar.addShowHandler(new I_CmsHoverbarShowHandler() {
 
             /**
-             * @see org.opencms.ade.sitemap.client.hoverbar.I_CmsHoverbarAttachHandler#onAttach(org.opencms.ade.sitemap.client.hoverbar.CmsHoverbarAttachEvent)
+             * @see org.opencms.ade.sitemap.client.hoverbar.I_CmsHoverbarShowHandler#onShow(org.opencms.ade.sitemap.client.hoverbar.CmsHoverbarShowEvent)
              */
-            public void onAttach(CmsHoverbarAttachEvent event) {
+            public void onShow(CmsHoverbarShowEvent event) {
 
                 final String sitePath = hoverbar.getSitePath();
                 final CmsSitemapController controller = hoverbar.getController();

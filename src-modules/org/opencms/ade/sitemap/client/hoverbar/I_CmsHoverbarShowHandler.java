@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/I_CmsHoverbarDetachHandler.java,v $
- * Date   : $Date: 2010/06/14 12:52:21 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/I_CmsHoverbarShowHandler.java,v $
+ * Date   : $Date: 2010/11/18 15:32:41 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -34,7 +34,7 @@ package org.opencms.ade.sitemap.client.hoverbar;
 import com.google.gwt.event.shared.EventHandler;
 
 /**
- * Hoverbar detach event handler.<p>
+ * Hoverbar attach event handler.<p>
  * 
  * @author Michael Moossen
  * 
@@ -44,12 +44,12 @@ import com.google.gwt.event.shared.EventHandler;
  * 
  * @see org.opencms.ade.sitemap.client.control.CmsSitemapController
  */
-public interface I_CmsHoverbarDetachHandler extends EventHandler {
+public interface I_CmsHoverbarShowHandler extends EventHandler {
 
     /**
-     * Will be triggered on detach.<p>
+     * Will be triggered on attach.<p>
      * 
      * @param event the event 
      */
-    void onDetach(CmsHoverbarDetachEvent event);
+    void onShow(CmsHoverbarShowEvent event);
 }

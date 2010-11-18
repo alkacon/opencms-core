@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/ui/css/Attic/button.css,v $
- * Date   : $Date: 2010/11/15 16:05:59 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/11/18 15:32:41 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,7 +34,7 @@
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -42,12 +42,19 @@
 
 .dragStarted, .dragPlaceholder{}
 
+.hoverbar{
+	position: absolute;
+	top: 5px;
+	right: 5px;
+	overflow: visible;
+}
+
 .dragStarted .hoverbar .cmsState{
 	display: none;
 }
 
 .dragStarted .hoverbar .cmsState.hoverbarMove{
-	display: block;
+	display: inline-block;
 }
 
 @sprite .cmsState-up-hovering .hoverbarContext, .context .hoverbarContext{
