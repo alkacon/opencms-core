@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsSubSitemapMenuEntry.java,v $
- * Date   : $Date: 2010/11/15 16:05:59 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/11/18 07:43:55 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import com.google.gwt.user.client.Command;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -108,11 +108,6 @@ public class CmsSubSitemapMenuEntry extends A_CmsSitemapMenuEntry {
         CmsSitemapController controller = getHoverbar().getController();
         boolean isLeaf = controller.getEntry(sitePath).getSubEntries().isEmpty();
         String sitemapProp = controller.getEntry(sitePath).getOwnProperty(CmsSitemapManager.Property.sitemap.name());
-        setVisible(CmsStringUtil.isEmptyOrWhitespaceOnly(sitemapProp) && !isLeaf);
-        if (controller.isRoot(sitePath)) {
-            setVisible(false);
-        } else {
-            setVisible(true);
-        }
+        setVisible(CmsStringUtil.isEmptyOrWhitespaceOnly(sitemapProp) && !isLeaf && !controller.isRoot(sitePath));
     }
 }
