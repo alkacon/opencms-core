@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/dnd/Attic/I_CmsDNDController.java,v $
- * Date   : $Date: 2010/09/23 08:18:33 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/11/18 07:40:32 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,11 +36,20 @@ package org.opencms.gwt.client.dnd;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
 public interface I_CmsDNDController {
+
+    /**
+     * Executed when end animation starts.<p>
+     * 
+     * @param draggable the draggable item
+     * @param target the current drop target
+     * @param handler the drag and drop handler instance
+     */
+    void onAnimationStart(I_CmsDraggable draggable, I_CmsDropTarget target, CmsDNDHandler handler);
 
     /**
      * Executed before drop.<p>

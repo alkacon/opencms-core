@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsFavoritesDNDController.java,v $
- * Date   : $Date: 2010/10/29 12:21:51 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/11/18 07:41:15 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,15 +47,25 @@ import com.google.gwt.user.client.DeferredCommand;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
 public class CmsFavoritesDNDController implements I_CmsDNDController {
 
+    /** The starting position. */
     private int m_startPosition;
 
+    /** The sortable list. */
     private CmsList<CmsListItem> m_list;
+
+    /**
+     * @see org.opencms.gwt.client.dnd.I_CmsDNDController#onAnimationStart(org.opencms.gwt.client.dnd.I_CmsDraggable, org.opencms.gwt.client.dnd.I_CmsDropTarget, org.opencms.gwt.client.dnd.CmsDNDHandler)
+     */
+    public void onAnimationStart(I_CmsDraggable draggable, I_CmsDropTarget target, CmsDNDHandler handler) {
+
+        // nothing to do
+    }
 
     /**
      * @see org.opencms.gwt.client.dnd.I_CmsDNDController#onBeforeDrop(org.opencms.gwt.client.dnd.I_CmsDraggable, org.opencms.gwt.client.dnd.I_CmsDropTarget, org.opencms.gwt.client.dnd.CmsDNDHandler)
