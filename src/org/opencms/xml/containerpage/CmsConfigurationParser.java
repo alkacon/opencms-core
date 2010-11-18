@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsConfigurationParser.java,v $
- * Date   : $Date: 2010/10/28 07:38:55 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/11/18 09:41:54 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,7 +71,7 @@ import org.apache.commons.collections.Transformer;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 7.6 
  */
@@ -106,6 +106,15 @@ public class CmsConfigurationParser {
 
     /** The tag name of the formatter width. */
     public static final String N_WIDTH = "Width";
+
+    /** Node name for the maximum depth configuration. */
+    public static final String N_MAXDEPTH = "MaxDepth";
+
+    /** The default maximum sitemap depth. */
+    public static final int DEFAULT_MAX_DEPTH = 15;
+
+    /** The maximum sitemap depth. */
+    private int m_maxDepth = DEFAULT_MAX_DEPTH;
 
     /** The instance cache. */
     private static CmsVfsMemoryObjectCache m_cache = new CmsVfsMemoryObjectCache();
@@ -235,6 +244,16 @@ public class CmsConfigurationParser {
     }
 
     /**
+     * Returns the maximum sitemap depth.<p>
+     * 
+     * @return the maximum sitemap depth 
+     */
+    public int getMaxDepth() {
+
+        return m_maxDepth;
+    }
+
+    /**
      * Gets the list of 'prototype resources' which are used for creating new content elements.
      * 
      * @param cms the CMS context
@@ -309,6 +328,14 @@ public class CmsConfigurationParser {
             m_nameGenerator = nameGeneratorNode.getStringValue(cms);
         }
 
+        I_CmsXmlContentValue maxDepthNode = content.getValue(N_MAXDEPTH, locale);
+        if (maxDepthNode != null) {
+            try {
+                m_maxDepth = Integer.parseInt(maxDepthNode.getStringValue(cms));
+            } catch (NumberFormatException e) {
+                // ignore, leave max depth at its default value 
+            }
+        }
     }
 
     /**

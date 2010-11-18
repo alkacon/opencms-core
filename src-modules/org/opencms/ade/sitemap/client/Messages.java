@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/Messages.java,v $
- * Date   : $Date: 2010/10/21 13:45:42 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2010/11/18 09:41:54 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.client.util.CmsMessages;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.29 $ 
  * 
  * @since 8.0.0
  */
@@ -223,10 +223,15 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ICON_TITLE_EXPORT_0 = "GUI_ICON_TITLE_EXPORT_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ICON_TITLE_SECURE_0 = "GUI_ICON_TITLE_SECURE_0";
-    
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITEMAP_TOO_DEEP_TITLE_0 = "GUI_SITEMAP_TOO_DEEP_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITEMAP_TOO_DEEP_MESSAGE_0 = "GUI_SITEMAP_TOO_DEEP_MESSAGE_0";
 
     /** Static instance member. */
     private static CmsMessages INSTANCE;

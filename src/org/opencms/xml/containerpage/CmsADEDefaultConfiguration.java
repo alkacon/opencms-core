@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADEDefaultConfiguration.java,v $
- * Date   : $Date: 2010/10/28 07:38:56 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/11/18 09:41:54 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,7 +71,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 7.6 
  */
@@ -215,6 +215,22 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
             res,
             cntType,
             width);
+    }
+
+    /**
+     * Returns the maximum sitemap depth.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param uri the URI for which the configuration should be retrieved
+     *  
+     * @return the maximum sitemap depth
+     *  
+     * @throws CmsException if something goes wrong 
+     */
+    public int getMaxDepth(CmsObject cms, String uri) throws CmsException {
+
+        CmsConfigurationParser config = getConfigurationParser(cms, uri);
+        return config.getMaxDepth();
     }
 
     /**

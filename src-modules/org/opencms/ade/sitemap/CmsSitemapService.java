@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsSitemapService.java,v $
- * Date   : $Date: 2010/11/08 10:21:39 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2010/11/18 09:41:54 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -100,7 +100,7 @@ import org.apache.commons.collections.map.MultiValueMap;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.41 $ 
+ * @version $Revision: 1.42 $ 
  * 
  * @since 8.0.0
  * 
@@ -318,6 +318,8 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
             CmsSite site = OpenCms.getSiteManager().getSiteForSiteRoot(siteRoot);
             boolean isSecure = site.hasSecureServer();
 
+            int maxDepth = sitemapMgr.getMaxDepth(cms, sitemap);
+
             result = new CmsSitemapData(
                 getDefaultTemplate(sitemapUri),
                 getTemplates(),
@@ -333,7 +335,8 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
                 parentSitemap,
                 getRoot(sitemap, parentSitemap, openPath, propertyConfig),
                 sitemap.getDateLastModified(),
-                openPath);
+                openPath,
+                maxDepth);
         } catch (Throwable e) {
             error(e);
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsSitemapData.java,v $
- * Date   : $Date: 2010/10/25 05:43:38 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/11/18 09:41:54 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0
  */
@@ -97,6 +97,9 @@ public class CmsSitemapData implements IsSerializable {
     /** The sitemap resource last modification date. */
     private long m_timestamp;
 
+    /** The maximum sitemap depth. */
+    private int m_maxDepth;
+
     /**
      * Constructor.<p>
      */
@@ -123,6 +126,7 @@ public class CmsSitemapData implements IsSerializable {
      * @param root the sitemap root
      * @param timestamp the sitemap resource last modification date
      * @param openPath the path at which the sitemap should be opened 
+     * @param maxDepth the maximum sitemap depth 
      */
     public CmsSitemapData(
         CmsSitemapTemplate defaultTemplate,
@@ -139,7 +143,8 @@ public class CmsSitemapData implements IsSerializable {
         String parentSitemap,
         CmsClientSitemapEntry root,
         long timestamp,
-        String openPath) {
+        String openPath,
+        int maxDepth) {
 
         m_defaultTemplate = defaultTemplate;
         m_templates = templates;
@@ -156,6 +161,7 @@ public class CmsSitemapData implements IsSerializable {
         m_exportName = exportName;
         m_exportRfsPrefix = exportRfsPrefix;
         m_isSecure = isSecure;
+        m_maxDepth = maxDepth;
     }
 
     /**
@@ -206,6 +212,16 @@ public class CmsSitemapData implements IsSerializable {
     public String getExportRfsPrefix() {
 
         return m_exportRfsPrefix;
+    }
+
+    /**
+     * Returns the maximum sitemap depth.<p>
+     * 
+     * @return the maximum sitemap depth
+     */
+    public int getMaxDepth() {
+
+        return m_maxDepth;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2010/11/15 15:15:13 $
- * Version: $Revision: 1.66 $
+ * Date   : $Date: 2010/11/18 09:41:54 $
+ * Version: $Revision: 1.67 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -86,7 +86,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.66 $
+ * @version $Revision: 1.67 $
  * 
  * @since 7.9.2
  */
@@ -235,7 +235,7 @@ public class CmsSitemapManager {
             return cms.getRequestContext().getUri();
         }
         return sitemap.getSitePath(cms);
-    } 
+    }
 
     /**
      * Creates a new element of a given type at the configured location.<p>
@@ -735,6 +735,21 @@ public class CmsSitemapManager {
     }
 
     /**
+     * Returns the maximum depth of a sitemap.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param resource the sitemap resource 
+     * @return the maximum depth for a sitemap 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public int getMaxDepth(CmsObject cms, CmsResource resource) throws CmsException {
+
+        CmsADEDefaultConfiguration conf = new CmsADEDefaultConfiguration();
+        return conf.getMaxDepth(cms, cms.getSitePath(resource));
+    }
+
+    /**
      * Returns the parent entry of a given sitemap entry.<p>
      * 
      * @param cms the current CMS context 
@@ -954,6 +969,21 @@ public class CmsSitemapManager {
     }
 
     /**
+     * Returns the sitemap sitepath for given site root.<p>
+     * 
+     * @param cms the cms object 
+     * @param siteRoot the site root
+     * 
+     * @return the sitemap sitepath
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public String getSitemapForSiteRoot(CmsObject cms, String siteRoot) throws CmsException {
+
+        return m_cache.getSitemapForSiteRoot(cms, siteRoot);
+    }
+
+    /**
      * Returns the sitemap URI for the given sitemap entry URI.<p>
      * 
      * @param cms the current CMS context
@@ -999,21 +1029,6 @@ public class CmsSitemapManager {
             }
         }
         return sitemaps;
-    }
-
-    /**
-     * Returns the sitemap sitepath for given site root.<p>
-     * 
-     * @param cms the cms object 
-     * @param siteRoot the site root
-     * 
-     * @return the sitemap sitepath
-     * 
-     * @throws CmsException if something goes wrong 
-     */
-    public String getSitemapForSiteRoot(CmsObject cms, String siteRoot) throws CmsException {
-
-        return m_cache.getSitemapForSiteRoot(cms, siteRoot);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsNewMenuEntry.java,v $
- * Date   : $Date: 2010/11/15 16:05:59 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/11/18 09:41:54 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.ade.sitemap.client.hoverbar;
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
+import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.sitemap.CmsSitemapManager;
@@ -45,7 +46,7 @@ import com.google.gwt.user.client.Command;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -71,7 +72,16 @@ public class CmsNewMenuEntry extends A_CmsSitemapMenuEntry {
 
                 CmsSitemapController controller = getHoverbar().getController();
                 CmsClientSitemapEntry entry = controller.getEntry(getHoverbar().getSitePath());
-                controller.createSubEntry(entry);
+                CmsClientSitemapEntry root = controller.getData().getRoot();
+                String rootRelativePath = entry.getSitePath().substring(root.getSitePath().length());
+                int numSlashes = rootRelativePath.replaceAll("[^/]", "").length();
+                if (numSlashes < controller.getData().getMaxDepth() - 1) {
+                    controller.createSubEntry(entry);
+                } else {
+                    String title = Messages.get().key(Messages.GUI_SITEMAP_TOO_DEEP_TITLE_0);
+                    String message = Messages.get().key(Messages.GUI_SITEMAP_TOO_DEEP_MESSAGE_0);
+                    (new CmsAlertDialog(title, message)).center();
+                }
             }
         });
     }
