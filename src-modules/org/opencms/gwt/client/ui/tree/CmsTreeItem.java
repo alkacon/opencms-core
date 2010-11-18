@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/tree/Attic/CmsTreeItem.java,v $
- * Date   : $Date: 2010/11/17 07:20:17 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2010/11/18 15:30:14 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Georg Westenberger
  * @author Michael Moossen
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.27 $ 
  * 
  * @since 8.0.0
  */
@@ -194,15 +194,27 @@ public class CmsTreeItem extends CmsListItem {
      * Returns the last opened item of a tree fragment.<p>
      * 
      * @param item the tree item
+     * @param stopLevel the level to stop at, set -1 to go to the very last opened item
      * 
      * @return the last visible item of a tree fragment
      */
-    protected static CmsTreeItem getLastOpenedItem(CmsTreeItem item) {
+    protected static CmsTreeItem getLastOpenedItem(CmsTreeItem item, int stopLevel) {
 
+        if (stopLevel != -1) {
+            // stop level is set
+            int currentLevel = getPathLevel(item.getPath());
+            if (currentLevel > stopLevel) {
+                // we are past the stop level, prevent further checks
+                stopLevel = -1;
+            } else if (currentLevel == stopLevel) {
+                // matches stop level
+                return item;
+            }
+        }
         if (item.getChildCount() > 0) {
             CmsTreeItem child = item.getChild(item.getChildCount() - 1);
             if (child.isOpen()) {
-                return CmsTreeItem.getLastOpenedItem(child);
+                return CmsTreeItem.getLastOpenedItem(child, stopLevel);
             }
         }
         return item;
@@ -565,12 +577,17 @@ public class CmsTreeItem extends CmsListItem {
                 // keeping old position
                 return getTree().getPlaceholderIndex();
             }
-            if (shouldInsertIntoSiblingList(draggable, parentItem, index)) {
+            int originalPathLevel = -1;
+            if (draggable instanceof CmsTreeItem) {
+                originalPathLevel = getPathLevel(((CmsTreeItem)draggable).getPath()) - 1;
+            }
+            if (shouldInsertIntoSiblingList(originalPathLevel, parentItem, index)) {
                 @SuppressWarnings("null")
                 CmsTreeItem previousSibling = parentItem.getChild(index - 1);
                 if (previousSibling.isOpen()) {
                     // insert as last into the last opened of the siblings tree fragment
-                    return CmsTreeItem.getLastOpenedItem(previousSibling).insertPlaceholderAsLastChild(placeholder);
+                    return CmsTreeItem.getLastOpenedItem(previousSibling, originalPathLevel).insertPlaceholderAsLastChild(
+                        placeholder);
                 }
             }
             // insert place holder at the parent before the current item
@@ -811,7 +828,7 @@ public class CmsTreeItem extends CmsListItem {
      * 
      * @return the path level
      */
-    private native int getPathLevel(String path)/*-{
+    protected static native int getPathLevel(String path)/*-{
         return path.match(/\//g).length - 1;
     }-*/;
 
@@ -824,17 +841,11 @@ public class CmsTreeItem extends CmsListItem {
      * 
      * @return <code>true</code> if the item should be inserted into the previous siblings children list
      */
-    private boolean shouldInsertIntoSiblingList(I_CmsDraggable draggable, CmsTreeItem parent, int index) {
+    private boolean shouldInsertIntoSiblingList(int originalPathLevel, CmsTreeItem parent, int index) {
 
         if ((index <= 0) || (parent == null)) {
             return false;
         }
-
-        if (draggable instanceof CmsTreeItem) {
-            int originalPathLevel = getPathLevel(((CmsTreeItem)draggable).getPath()); // Create Matcher
-
-            return originalPathLevel - 1 != getPathLevel(parent.getPath());
-        }
-        return true;
+        return originalPathLevel != getPathLevel(parent.getPath());
     }
 }

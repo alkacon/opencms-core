@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/tree/Attic/CmsTree.java,v $
- * Date   : $Date: 2010/10/29 12:20:19 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/11/18 15:30:14 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import com.google.gwt.user.client.ui.HasAnimation;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
@@ -287,8 +287,12 @@ public class CmsTree<I extends CmsTreeItem> extends CmsList<I> implements HasOpe
                     if (relativeTop > elementHeight) {
                         // insert as last into last opened tree-item
                         if (item.isOpen() && (item.getChildCount() > 0)) {
+                            int originalPathLevel = -1;
+                            if ((getDnDHandler() != null) && (getDnDHandler().getDraggable() instanceof CmsTreeItem)) {
+                                originalPathLevel = CmsTreeItem.getPathLevel(((CmsTreeItem)getDnDHandler().getDraggable()).getPath()) - 1;
+                            }
                             // insert into the tree as last visible item
-                            CmsTreeItem lastOpened = CmsTreeItem.getLastOpenedItem(item);
+                            CmsTreeItem lastOpened = CmsTreeItem.getLastOpenedItem(item, originalPathLevel);
                             m_placeholderIndex = lastOpened.insertPlaceholderAsLastChild(m_placeholder);
                         } else if (isRootDropEnabled()) {
                             getElement().insertAfter(m_placeholder, itemElement);
