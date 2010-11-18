@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsHoverbarContextMenuButton.java,v $
- * Date   : $Date: 2010/11/18 15:32:41 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/11/18 15:39:34 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -150,6 +150,8 @@ public class CmsHoverbarContextMenuButton extends CmsMenuButton {
         m_button.setDown(false);
         if (!hoverbar.isHovered()) {
             hoverbar.hide();
+        } else {
+            hoverbar.setLocked(false);
         }
     }
 }
