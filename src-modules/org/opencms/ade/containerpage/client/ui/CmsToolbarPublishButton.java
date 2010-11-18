@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/CmsToolbarPublishButton.java,v $
- * Date   : $Date: 2010/05/31 09:15:22 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/11/18 07:42:32 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import org.opencms.gwt.client.util.CmsDomUtil;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
@@ -63,7 +63,7 @@ public class CmsToolbarPublishButton extends A_CmsToolbarButton {
 
         // triggering a mouse-out event, as it won't be fired once the dialog has opened (the dialog will capture all events)
         CmsDomUtil.ensureMouseOut(getElement());
-        setButtonEnabled(false);
+        setEnabled(false);
         getHandler().showPublishDialog();
     }
 
@@ -72,7 +72,7 @@ public class CmsToolbarPublishButton extends A_CmsToolbarButton {
      */
     public void onToolbarDeactivate() {
 
-        setButtonEnabled(true);
+        setEnabled(true);
     }
 
 }

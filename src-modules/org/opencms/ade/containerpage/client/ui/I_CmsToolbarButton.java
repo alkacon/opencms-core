@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/I_CmsToolbarButton.java,v $
- * Date   : $Date: 2010/05/31 09:15:22 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/11/18 07:42:31 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import com.google.gwt.event.dom.client.HasClickHandlers;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -93,5 +93,5 @@ public interface I_CmsToolbarButton extends HasClickHandlers {
      * 
      * @param enabled if true, enable the button, else disable it
      */
-    void setButtonEnabled(boolean enabled);
+    void setEnabled(boolean enabled);
 }
