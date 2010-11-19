@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapTreeItem.java,v $
- * Date   : $Date: 2010/11/18 15:32:56 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2010/11/19 14:09:17 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.39 $ 
+ * @version $Revision: 1.40 $ 
  * 
  * @since 8.0.0
  * 
@@ -420,7 +420,11 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
 
         // since we keep a reference to the same entry we do not have to update it
         m_listItemWidget.setTitleLabel(entry.getTitle());
-        m_listItemWidget.setAdditionalInfoValue(1, entry.getVfsPath());
+        String shownPath = entry.getVfsPath();
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(shownPath)) {
+            shownPath = "-";
+        }
+        m_listItemWidget.setAdditionalInfoValue(1, shownPath);
         m_listItemWidget.updateTruncation();
         updateSitemapReferenceStatus(entry);
         updateColor(entry);

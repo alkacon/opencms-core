@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/rpc/Attic/I_CmsCoreServiceAsync.java,v $
- * Date   : $Date: 2010/09/09 15:02:20 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/11/19 14:09:18 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.gwt.shared.rpc;
 
+import org.opencms.db.CmsResourceState;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData;
@@ -50,7 +51,7 @@ import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 8.0.0
  * 
@@ -89,6 +90,14 @@ public interface I_CmsCoreServiceAsync {
      * @param callback the asynchronous callback
      */
     void getContextMenuEntries(String uri, AdeContext context, AsyncCallback<List<CmsContextMenuEntryBean>> callback);
+
+    /**
+     * Gets the resource state of a resource on a given path.<p>
+     * 
+     * @param path the resource path 
+     * @param callback the callback which receives the result  
+     */
+    void getResourceState(String path, AsyncCallback<CmsResourceState> callback);
 
     /**
      * Locks the given resource.<p>

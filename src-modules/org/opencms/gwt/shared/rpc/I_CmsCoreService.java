@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/rpc/Attic/I_CmsCoreService.java,v $
- * Date   : $Date: 2010/09/09 15:02:20 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2010/11/19 14:09:18 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.gwt.shared.rpc;
 
+import org.opencms.db.CmsResourceState;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
@@ -51,7 +52,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 8.0.0
  * 
@@ -102,6 +103,16 @@ public interface I_CmsCoreService extends RemoteService {
      * @throws CmsRpcException if something goes wrong
      */
     List<CmsContextMenuEntryBean> getContextMenuEntries(String uri, AdeContext context) throws CmsRpcException;
+
+    /**
+     * Gets the resource state for a resource with a given path.<p>
+     * 
+     * @param path the resource path
+     *  
+     * @return the resource state of the resource 
+     * @throws CmsRpcException
+     */
+    CmsResourceState getResourceState(String path) throws CmsRpcException;
 
     /**
      * Locks the given resource.<p>

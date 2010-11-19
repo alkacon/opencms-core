@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishDialog.java,v $
- * Date   : $Date: 2010/11/18 15:29:10 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2010/11/19 14:09:17 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * 
  * @since 8.0.0
  * 
@@ -182,7 +182,6 @@ public class CmsPublishDialog extends CmsPopupDialog {
     public CmsPublishDialog(CmsPublishData initData) {
 
         super(Messages.get().key(Messages.GUI_PUBLISH_DIALOG_TITLE_0), new DeckPanel());
-        initCss();
         setGlassEnabled(true);
         setAutoHideEnabled(false);
         setModal(true);
@@ -242,7 +241,6 @@ public class CmsPublishDialog extends CmsPopupDialog {
                 publishDialog.catchNotifications();
             }
         }).execute();
-
     }
 
     /**
@@ -354,7 +352,5 @@ public class CmsPublishDialog extends CmsPopupDialog {
                 addButton(button);
             }
         }
-
     }
-
 }

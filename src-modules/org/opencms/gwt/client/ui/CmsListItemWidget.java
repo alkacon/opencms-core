@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItemWidget.java,v $
- * Date   : $Date: 2010/11/17 14:47:30 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2010/11/19 14:09:17 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -77,41 +77,15 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Tobias Herrmann
  * @author Michael Moossen
  * 
- * @version $Revision: 1.35 $
+ * @version $Revision: 1.36 $
  * 
  * @since 8.0.0
  */
 public class CmsListItemWidget extends Composite
 implements HasMouseOutHandlers, HasClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
 
-    /** Background color values. */
-    public enum Background {
-        /** Color blue. */
-        BLUE,
-        /** Default color. */
-        DEFAULT,
-        /** Color red. */
-        RED,
-        /** Color yellow. */
-        YELLOW
-    }
-
-    /**
-     * The interface for handling edits of the title field.<p>
-     */
-    public interface I_CmsTitleEditHandler {
-
-        /** 
-         * This method is called when the user has finished editing the title field.<p>
-         * 
-         * @param title the label containing the title 
-         * @param box the 
-         */
-        void handleEdit(CmsLabel title, TextBox box);
-    }
-
     /** Additional info item HTML. */
-    protected static class AdditionalInfoItem extends Composite implements I_CmsTruncable {
+    public static class AdditionalInfoItem extends Composite implements I_CmsTruncable {
 
         /** Text metrics key. */
         private static final String TMA_TITLE = "AddInfoTitle";
@@ -132,7 +106,7 @@ implements HasMouseOutHandlers, HasClickHandlers, HasMouseOverHandlers, I_CmsTru
          * @param value info value
          * @param additionalStyle an additional class name
          */
-        AdditionalInfoItem(String title, String value, String additionalStyle) {
+        public AdditionalInfoItem(String title, String value, String additionalStyle) {
 
             super();
             FlowPanel panel = new FlowPanel();
@@ -186,6 +160,32 @@ implements HasMouseOutHandlers, HasClickHandlers, HasMouseOverHandlers, I_CmsTru
         }
     }
 
+    /** Background color values. */
+    public enum Background {
+        /** Color blue. */
+        BLUE,
+        /** Default color. */
+        DEFAULT,
+        /** Color red. */
+        RED,
+        /** Color yellow. */
+        YELLOW
+    }
+
+    /**
+     * The interface for handling edits of the title field.<p>
+     */
+    public interface I_CmsTitleEditHandler {
+
+        /** 
+         * This method is called when the user has finished editing the title field.<p>
+         * 
+         * @param title the label containing the title 
+         * @param box the 
+         */
+        void handleEdit(CmsLabel title, TextBox box);
+    }
+
     /**
      * @see com.google.gwt.uibinder.client.UiBinder
      */
@@ -236,6 +236,7 @@ implements HasMouseOutHandlers, HasClickHandlers, HasMouseOverHandlers, I_CmsTru
     @UiField
     protected FlowPanel m_titleRow;
 
+    /** Variable for the background style. */
     private CmsStyleVariable m_backgroundStyle;
 
     /** The child width in px for truncation. */

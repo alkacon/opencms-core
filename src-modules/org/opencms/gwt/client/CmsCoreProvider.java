@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/Attic/CmsCoreProvider.java,v $
- * Date   : $Date: 2010/11/18 15:28:10 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/11/19 14:09:17 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.gwt.client;
 
+import org.opencms.db.CmsResourceState;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.rpc.CmsRpcPrefetcher;
 import org.opencms.gwt.client.ui.CmsNotification;
@@ -47,7 +48,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 8.0.0
  * 
@@ -339,6 +340,39 @@ public final class CmsCoreProvider extends CmsCoreData {
             @Override
             protected void onResponse(String result) {
 
+                callback.onSuccess(result);
+            }
+        };
+        action.execute();
+    }
+
+    /**
+     * Fetches the state of a resource from the server.<p>
+     * 
+     * @param path the VFS path  
+     * @param callback the callback which should receive the result 
+     */
+    public void getResourceState(final String path, final AsyncCallback<CmsResourceState> callback) {
+
+        CmsRpcAction<CmsResourceState> action = new CmsRpcAction<CmsResourceState>() {
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+             */
+            @Override
+            public void execute() {
+
+                start(0, false);
+                getService().getResourceState(path, this);
+            }
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+             */
+            @Override
+            protected void onResponse(CmsResourceState result) {
+
+                stop(false);
                 callback.onSuccess(result);
             }
         };

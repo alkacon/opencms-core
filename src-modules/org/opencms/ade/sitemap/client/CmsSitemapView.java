@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapView.java,v $
- * Date   : $Date: 2010/11/18 15:31:06 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2010/11/19 14:09:17 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -10,7 +10,7 @@
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
+ * License as published by the Free Software Foundation; either 
  * version 2.1 of the License, or (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
@@ -31,6 +31,7 @@
 
 package org.opencms.ade.sitemap.client;
 
+import org.opencms.ade.publish.client.CmsPublishUtil;
 import org.opencms.ade.sitemap.client.control.CmsSitemapChangeEvent;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.client.control.CmsSitemapDNDController;
@@ -45,31 +46,36 @@ import org.opencms.ade.sitemap.client.ui.css.I_CmsImageBundle;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
+import org.opencms.db.CmsResourceState;
 import org.opencms.gwt.client.A_CmsEntryPoint;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.CmsHeader;
-import org.opencms.gwt.client.ui.CmsListItemWidget;
+import org.opencms.gwt.client.ui.CmsInfoLoadingListItemWidget;
 import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.CmsToolbarPlaceHolder;
+import org.opencms.gwt.client.ui.CmsInfoLoadingListItemWidget.I_AdditionalInfoLoader;
+import org.opencms.gwt.client.ui.CmsListItemWidget.AdditionalInfoItem;
 import org.opencms.gwt.client.ui.tree.A_CmsDeepLazyOpenHandler;
 import org.opencms.gwt.client.ui.tree.CmsLazyTree;
-import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem.LoadState;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
+import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem.LoadState;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsPair;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.Window.ClosingHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 
@@ -78,7 +84,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.42 $ 
+ * @version $Revision: 1.43 $ 
  * 
  * @since 8.0.0
  */
@@ -118,15 +124,72 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler, ClosingHandler {
      * 
      * @return the new created (still orphan) tree item 
      */
-    public CmsSitemapTreeItem create(CmsClientSitemapEntry entry, String originalPath) {
+    public CmsSitemapTreeItem create(final CmsClientSitemapEntry entry, String originalPath) {
 
         CmsListInfoBean infoBean = new CmsListInfoBean();
         infoBean.setTitle(entry.getTitle());
         infoBean.setSubTitle(entry.getSitePath());
         infoBean.addAdditionalInfo(Messages.get().key(Messages.GUI_NAME_0), entry.getName());
-        infoBean.addAdditionalInfo(Messages.get().key(Messages.GUI_VFS_PATH_0), entry.getVfsPath());
-        CmsListItemWidget itemWidget = new CmsListItemWidget(infoBean);
-        CmsSitemapTreeItem treeItem = new CmsSitemapTreeItem(itemWidget, entry, originalPath);
+        String shownPath = entry.getVfsPath();
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(shownPath)) {
+            shownPath = "-";
+        }
+        infoBean.addAdditionalInfo(Messages.get().key(Messages.GUI_VFS_PATH_0), shownPath);
+        CmsInfoLoadingListItemWidget itemWidget = new CmsInfoLoadingListItemWidget(infoBean);
+        final CmsSitemapTreeItem treeItem = new CmsSitemapTreeItem(itemWidget, entry, originalPath);
+        itemWidget.setAdditionalInfoLoader(new I_AdditionalInfoLoader() {
+
+            public void load(final AsyncCallback<List<AdditionalInfoItem>> callback) {
+
+                if (entry.getVfsPath() == null) {
+
+                    AdditionalInfoItem item = createResourceStateInfo(CmsResourceState.STATE_NEW);
+                    callback.onSuccess(Collections.<AdditionalInfoItem> singletonList(item));
+                } else {
+                    CmsCoreProvider.get().getResourceState(entry.getVfsPath(), new AsyncCallback<CmsResourceState>() {
+
+                        /**
+                         * @see com.google.gwt.user.client.rpc.AsyncCallback#onFailure(java.lang.Throwable)
+                         */
+                        public void onFailure(Throwable caught) {
+
+                            // do nothing
+
+                        }
+
+                        /**
+                         * @see com.google.gwt.user.client.rpc.AsyncCallback#onSuccess(Object o)
+                         */
+                        public void onSuccess(CmsResourceState result) {
+
+                            AdditionalInfoItem item = createResourceStateInfo(result);
+                            callback.onSuccess(Collections.singletonList(item));
+                        }
+                    });
+
+                }
+
+            }
+
+            /**
+             * Helper method for creating an additional info item from a resource state.<p>
+             * 
+             * @param state the resource state for creating the additional info item 
+             * 
+             * @return the additional info item 
+             */
+            protected AdditionalInfoItem createResourceStateInfo(CmsResourceState state) {
+
+                final String label = org.opencms.ade.publish.client.Messages.get().key(
+                    org.opencms.ade.publish.client.Messages.GUI_PUBLISH_RESOURCE_STATE_0);
+                AdditionalInfoItem item = new AdditionalInfoItem(
+                    label,
+                    CmsPublishUtil.getStateName(state),
+                    CmsPublishUtil.getStateStyle(state));
+                return item;
+
+            }
+        });
 
         CmsSitemapHoverbar.installOn(m_controller, treeItem);
 

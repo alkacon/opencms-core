@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsCoreService.java,v $
- * Date   : $Date: 2010/09/09 15:02:20 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2010/11/19 14:09:17 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,8 +31,10 @@
 
 package org.opencms.gwt;
 
+import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
@@ -74,7 +76,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 8.0.0
  * 
@@ -276,6 +278,27 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             error(e);
         }
         return result;
+    }
+
+    /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#getResourceState(java.lang.String)
+     */
+    public CmsResourceState getResourceState(String path) throws CmsRpcException {
+
+        CmsObject cms = getCmsObject();
+        try {
+            CmsResourceState result;
+            try {
+                CmsResource res = cms.readResource(path);
+                result = res.getState();
+            } catch (CmsVfsResourceNotFoundException e) {
+                result = CmsResourceState.STATE_DELETED;
+            }
+            return result;
+        } catch (CmsException e) {
+            error(e);
+            return null; // will never be reached 
+        }
     }
 
     /**

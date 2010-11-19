@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishEntryPoint.java,v $
- * Date   : $Date: 2010/03/29 08:47:35 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/11/19 14:09:17 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.client.A_CmsEntryPoint;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -58,6 +58,7 @@ public class CmsPublishEntryPoint extends A_CmsEntryPoint {
     public void onModuleLoad() {
 
         super.onModuleLoad();
+        I_CmsPublishLayoutBundle.INSTANCE.publishCss().ensureInjected();
         installPublishDialogFunction();
     }
 
