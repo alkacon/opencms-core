@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsMenuContent.java,v $
- * Date   : $Date: 2010/11/17 07:20:17 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/11/19 10:12:01 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  * 
@@ -97,8 +97,9 @@ public class CmsMenuContent extends PopupPanel implements I_CmsAutoHider {
      * 
      * @param width the required width
      * @param showLeft <code>true</code> to show on the left hand side
+     * @param showTop <code>true</code> to show on the top
      */
-    public void showConnect(int width, boolean showLeft) {
+    public void showConnect(int width, boolean showLeft, boolean showTop) {
 
         if (m_connect == null) {
             m_connect = DOM.createDiv();
@@ -113,6 +114,13 @@ public class CmsMenuContent extends PopupPanel implements I_CmsAutoHider {
         } else {
             style.clearLeft();
             style.setRight(3, Unit.PX);
+        }
+        if (showTop) {
+            style.clearBottom();
+            style.setTop(0, Unit.PX);
+        } else {
+            style.clearTop();
+            style.setBottom(0, Unit.PX);
         }
     }
 

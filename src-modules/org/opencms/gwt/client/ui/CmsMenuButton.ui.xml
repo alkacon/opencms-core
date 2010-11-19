@@ -42,6 +42,10 @@
 			height: 35px;
 			z-index: 0;
 		}
+		.menu.showAbove .connect{
+			bottom: -2px;
+			top: auto;
+		}
 		.menu .connect.hidden{
 			display: none;	
 		}

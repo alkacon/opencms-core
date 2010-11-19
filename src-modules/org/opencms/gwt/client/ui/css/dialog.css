@@ -52,7 +52,6 @@
 .contentConnect{
 	position: absolute;
 	height: 5px;
-	top: 0px;
 	border-left: solid 1px value("constantsCss.borderColor");
 	border-right: solid 1px value("constantsCss.borderColor");
 	background: #F9F9F9;

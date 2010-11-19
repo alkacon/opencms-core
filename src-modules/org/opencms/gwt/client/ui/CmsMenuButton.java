@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsMenuButton.java,v $
- * Date   : $Date: 2010/11/17 07:20:17 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2010/11/19 10:12:01 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.gwt.client.ui;
 
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.util.CmsPositionBean;
 import org.opencms.gwt.client.util.CmsSlideAnimation;
 import org.opencms.util.CmsStringUtil;
 
@@ -61,7 +62,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * 
  * @since 8.0.0
  */
@@ -102,6 +103,12 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
          * @return the CSS class name
          */
         String menu();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String showAbove();
 
         /** Access method.<p>
          * 
@@ -266,12 +273,6 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
         m_menuConnect.removeClassName(m_style.hidden());
         m_content.show();
 
-        // overriding position absolute set by PopupPanel 
-        if (m_isToolbarMode) {
-            m_content.getElement().getStyle().setPosition(Position.FIXED);
-        } else {
-            m_content.showConnect(m_button.getOffsetWidth() + 2, m_isOpenRight);
-        }
         positionPopup();
         CmsSlideAnimation.slideIn(m_content.getElement(), null, 200);
         m_resizeRegistration = Window.addResizeHandler(new ResizeHandler() {
@@ -378,31 +379,53 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
      */
     protected void positionPopup() {
 
-        int windowWidth = Window.getClientWidth();
-        int contentTop = m_button.getAbsoluteTop() + m_button.getOffsetHeight() + 1;
+        CmsPositionBean buttonPosition = CmsPositionBean.generatePositionInfo(m_button.getElement());
+        int contentTop;
         int contentWidth = m_content.getOffsetWidth();
-        int contentLeft = m_button.getAbsoluteLeft();
-        int buttonWidth = m_button.getOffsetWidth();
-        if (m_isOpenRight) {
-            contentLeft -= 5;
-        } else {
-            contentLeft += buttonWidth - contentWidth + 5;
+        int contentLeft = m_isOpenRight ? buttonPosition.getLeft() - 5 : buttonPosition.getLeft()
+            - contentWidth
+            + buttonPosition.getWidth()
+            + 5;
+        int windowWidth = Window.getClientWidth();
+        if (m_isToolbarMode) {
+            // overriding position absolute set by PopupPanel 
+            m_content.getElement().getStyle().setPosition(Position.FIXED);
+            contentTop = buttonPosition.getTop() + buttonPosition.getHeight() - Window.getScrollTop() + 4;
+            if ((contentWidth + 10 < windowWidth) && (contentWidth + contentLeft > windowWidth)) {
+                contentLeft = windowWidth - contentWidth - 10;
+            } else {
+                contentLeft -= Window.getScrollLeft();
+            }
+            m_content.setPopupPosition(contentLeft, contentTop);
+            return;
         }
 
-        if (m_isToolbarMode) {
-            contentTop = contentTop - Window.getScrollTop() + 3;
+        contentTop = buttonPosition.getTop() + buttonPosition.getHeight() + 1;
+
+        int contentHeight = m_content.getOffsetHeight();
+        int windowHeight = Window.getClientHeight();
+        boolean showBelowButton = true;
+        if ((contentHeight + 10 < windowHeight)
+            && (buttonPosition.getTop() - 1 > contentHeight)
+            && (contentHeight + contentTop + Window.getScrollTop() > windowHeight)) {
+            // content fits into the window height, there is enough space above the button and there is to little space below the button
+            // so show above
+            showBelowButton = false;
+            contentTop = buttonPosition.getTop() - 1 - contentHeight;
+            getElement().addClassName(m_style.showAbove());
+            m_menuConnect.removeClassName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerTop());
+            m_menuConnect.addClassName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerBottom());
+        } else {
+            getElement().removeClassName(m_style.showAbove());
+            m_menuConnect.addClassName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerTop());
+            m_menuConnect.removeClassName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerBottom());
         }
 
         if ((contentWidth + 10 < windowWidth) && (contentWidth + contentLeft > windowWidth)) {
             contentLeft = windowWidth - contentWidth - 10;
-            m_content.setPopupPosition(contentLeft, contentTop);
-        } else {
-            if (m_isToolbarMode) {
-                m_content.setPopupPosition(contentLeft - Window.getScrollLeft(), contentTop);
-            } else {
-                m_content.setPopupPosition(contentLeft, contentTop);
-            }
         }
+        m_content.setPopupPosition(contentLeft, contentTop);
+        m_content.showConnect(buttonPosition.getWidth() + 2, m_isOpenRight, showBelowButton);
     }
 
     /**
