@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2010/11/18 10:09:39 $
- * Version: $Revision: 1.60 $
+ * Date   : $Date: 2010/11/19 10:52:27 $
+ * Version: $Revision: 1.61 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -58,6 +58,7 @@ OpenCms x.x.x - Month Day, Year
 * Fixed issue #1919: Some Chinese translation for fckeditor zh-cn.js
 * Fixed issue #1902: Empty folder without default file renders blank page and no 404 error
 ! New OpenCms user address attribute "institution" and new <cms:contentshow> tag attribute "escapeHtml"
+! Added optional configurable user agreement dialog that has to be accepted after a successful workplace login
 
 OpenCms 7.9.2 - February 24th, 2010
 ! Added support for xsd:choice in XML content API and editor

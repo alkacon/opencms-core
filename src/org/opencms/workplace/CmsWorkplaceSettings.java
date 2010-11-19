@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceSettings.java,v $
- * Date   : $Date: 2009/06/04 14:29:22 $
- * Version: $Revision: 1.65 $
+ * Date   : $Date: 2010/11/19 10:51:08 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import java.util.Map;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.65 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -80,6 +80,7 @@ public class CmsWorkplaceSettings {
     private Map m_treeSite;
     private Map m_treeType;
     private CmsUser m_user;
+    private boolean m_userAgreementAccepted;
     private CmsUserSettings m_userSettings;
     private String m_viewStartup;
     private String m_viewUri;
@@ -384,6 +385,16 @@ public class CmsWorkplaceSettings {
     }
 
     /**
+     * Returns if the user agreement has been accepted in the current workplace session.<p>
+     *
+     * @return <code>true</code> if the user agreement has been accepted in the current workplace session, otherwise <code>false</code>
+     */
+    public boolean isUserAgreementAccepted() {
+
+        return m_userAgreementAccepted;
+    }
+
+    /**
      * Checks if the current view is the explorer view.<p>
      * 
      * @return true if the current view is the explorer view, otherwise false 
@@ -667,6 +678,16 @@ public class CmsWorkplaceSettings {
     public void setUser(CmsUser user) {
 
         m_user = user;
+    }
+
+    /**
+     * Sets if the user agreement has been accepted in the current workplace session.<p>
+     *
+     * @param userAgreementAccepted <code>true</code> if the user agreement has been accepted in the current workplace session, otherwise <code>false</code>
+     */
+    public void setUserAgreementAccepted(boolean userAgreementAccepted) {
+
+        m_userAgreementAccepted = userAgreementAccepted;
     }
 
     /**

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+
+	<xsd:element name="UserAgreementConfigurations" type="OpenCmsUserAgreementConfigurations"/>
+	
+	<xsd:complexType name="OpenCmsUserAgreementConfigurations">
+		<xsd:sequence>
+			<xsd:element name="UserAgreementConfiguration" type="OpenCmsUserAgreementConfiguration" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsUserAgreementConfiguration">
+		<xsd:sequence>
+			<xsd:element name="Show" type="OpenCmsBoolean" />
+			<xsd:element name="AgreeCount" type="OpenCmsString" />
+			<xsd:element name="Version" type="OpenCmsString" />
+			<xsd:element name="DialogTitle" type="OpenCmsString" />
+			<xsd:element name="Text" type="OpenCmsHtml" />
+			<xsd:element name="ButtonAccept" type="OpenCmsString" />
+			<xsd:element name="ButtonDecline" type="OpenCmsString" />
+			<xsd:element name="MessageDeclined" type="OpenCmsString" />
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
+	</xsd:complexType>
+
+	<xsd:annotation>
+		<xsd:appinfo>
+			<preview uri="%(previewtempfile)" />
+			<resourcebundle name="org.opencms.workplace.messages"/>
+			<defaults>
+				<default element="Version" value="1.0" />
+				<default element="DialogTitle" value="%(key.dialog.useragreement.default.title)" />
+				<default element="ButtonAccept" value="%(key.dialog.useragreement.default.accept)" />
+				<default element="ButtonDecline" value="%(key.dialog.useragreement.default.decline)" />
+			</defaults>
+			<layouts>
+				<layout element="AgreeCount" widget="SelectorWidget" configuration="1|2|3|4|5|10|-1:%(key.dialog.useragreement.count.unlimited)" />
+				<layout element="Text" widget="HtmlWidget" configuration="formatselect,link,anchor,source,image,height:400px,css:/system/workplace/commons/style/new_admin.css" />
+				<layout element="MessageDeclined" widget="TextareaWidget" configuration="4" />
+			</layouts>
+			<validationrules>
+				<rule element="Version" regex="[0-9]*\.?[0-9]+" type="error" message="%(key.dialog.useragreement.error.version)" />
+			</validationrules>
+			<mappings>
+				<mapping element="Show" mapto="property:login-form" />
+			</mappings>
+		</xsd:appinfo>
+	</xsd:annotation>  
+	
+</xsd:schema>

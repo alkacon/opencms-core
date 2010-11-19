@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Messages.java,v $
- * Date   : $Date: 2010/01/06 16:10:32 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/11/19 10:51:08 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -438,6 +438,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_UNSUPPORTED_ENCODING_SET_1 = "LOG_UNSUPPORTED_ENCODING_SET_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_USERAGREEMENT_SHOW_1 = "LOG_USERAGREEMENT_SHOW_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_USERAGREEMENT_WRONG_VERSION_2 = "LOG_USERAGREEMENT_WRONG_VERSION_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_WORKPLACE_INIT_NO_LOCALES_1 = "LOG_WORKPLACE_INIT_NO_LOCALES_1";

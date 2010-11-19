@@ -219,6 +219,173 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<destination>system/login/useragreement</destination>
+			<type>folder</type>
+			<uuidstructure>cc60d8c4-ee69-11df-9711-c9a60a7588dd</uuidstructure>
+			<datelastmodified>Tue, 16 Nov 2010 13:21:44 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 12 Nov 2010 14:33:21 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>template-elements</name>
+					<value><![CDATA[/system/login/useragreement/_conf/detail-ua.jsp]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ALL_OTHERS</uuidprincipal>
+					<flags>134</flags>
+					<permissionset>
+						<allowed>0</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<destination>system/login/useragreement/_conf</destination>
+			<type>folder</type>
+			<uuidstructure>88b00c4c-f184-11df-b1c0-c9a60a7588dd</uuidstructure>
+			<datelastmodified>Tue, 16 Nov 2010 13:22:17 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Nov 2010 13:22:17 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/login/useragreement/_conf/detail-ua.jsp</source>
+			<destination>system/login/useragreement/_conf/detail-ua.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>ba6fe525-f0bb-11df-b989-c9a60a7588dd</uuidstructure>
+			<uuidresource>ba6fe526-f0bb-11df-b989-c9a60a7588dd</uuidresource>
+			<datelastmodified>Tue, 16 Nov 2010 16:19:40 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 15 Nov 2010 13:24:52 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Detail JSP for user agreement dialog]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/login/useragreement/_conf/useragreement.xsd</source>
+			<destination>system/login/useragreement/_conf/useragreement.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>f74fe7b6-ee69-11df-9711-c9a60a7588dd</uuidstructure>
+			<uuidresource>f74fe7b7-ee69-11df-9711-c9a60a7588dd</uuidresource>
+			<datelastmodified>Thu, 18 Nov 2010 14:33:16 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 12 Nov 2010 14:34:33 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[XSD for a user agreement configuration]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/login/useragreement/de</destination>
+			<type>folder</type>
+			<uuidstructure>b057df7f-f184-11df-b1c0-c9a60a7588dd</uuidstructure>
+			<datelastmodified>Tue, 16 Nov 2010 13:23:37 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Nov 2010 13:23:24 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>locale</name>
+					<value><![CDATA[de]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/login/useragreement/de/configuration.html</source>
+			<destination>system/login/useragreement/de/configuration.html</destination>
+			<type>xmlcontent</type>
+			<uuidstructure>6aba466b-f0ba-11df-b989-c9a60a7588dd</uuidstructure>
+			<uuidresource>ed13adb2-ee6d-11df-9711-c9a60a7588dd</uuidresource>
+			<datelastmodified>Thu, 18 Nov 2010 14:42:14 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 12 Nov 2010 15:02:54 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[OpenCms User Agreement]]></value>
+				</property>
+				<property>
+					<name>login-form</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/login/useragreement/en</destination>
+			<type>folder</type>
+			<uuidstructure>c0ab6872-f184-11df-b1c0-c9a60a7588dd</uuidstructure>
+			<datelastmodified>Tue, 16 Nov 2010 13:24:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Nov 2010 13:23:51 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>locale</name>
+					<value><![CDATA[en]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/login/useragreement/en/configuration.html</destination>
+			<type>xmlcontent</type>
+			<uuidstructure>4514329a-f185-11df-b1c0-c9a60a7588dd</uuidstructure>
+			<uuidresource>ed13adb2-ee6d-11df-9711-c9a60a7588dd</uuidresource>
+			<datelastmodified>Thu, 18 Nov 2010 14:42:14 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 12 Nov 2010 15:02:54 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[OpenCms User Agreement]]></value>
+				</property>
+				<property>
+					<name>login-form</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>system/lost-found</destination>
 			<type>folder</type>
 			<uuidstructure>a1e19e57-450e-11de-8625-350e680a0242</uuidstructure>

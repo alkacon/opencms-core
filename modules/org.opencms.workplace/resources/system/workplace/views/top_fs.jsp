@@ -4,11 +4,17 @@
 %><%
 	CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
 	CmsFrameset wp = new CmsFrameset(cms);
+	CmsLoginUserAgreement ua = new CmsLoginUserAgreement(cms);
+
+if (ua.isShowUserAgreement()) {
+	response.sendRedirect(cms.link(ua.getConfigurationVfsPath()));
+	return;
+}
 
 if (wp.isReloadRequired()) {
-		response.sendRedirect(cms.link(cms.getRequestContext().getUri()));
-        return;
-} 
+	response.sendRedirect(cms.link(cms.getRequestContext().getUri()));
+	return;
+}
 
  %><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd">
 <html>
@@ -20,7 +26,7 @@ if (wp.isReloadRequired()) {
 
 <script type="text/javascript" src="<%= CmsWorkplace.getSkinUri() %>commons/explorer.js"></script>
 <script type="text/javascript" src="<%= CmsWorkplace.getSkinUri() %>commons/ajax.js"></script>
-<script type="text/javascript" src="<%= cms.link("/system/workplace/views/top_js.jsp") %>"></script> 
+<script type="text/javascript" src="<%= cms.link("/system/workplace/views/top_js.jsp") %>"></script>
 
 </head>
 
