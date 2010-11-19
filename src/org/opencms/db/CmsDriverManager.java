@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2010/11/17 14:07:53 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2010/11/19 10:06:51 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -8715,14 +8715,17 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 }
                 CmsUUID targetId = link.getStructureId();
                 String destPath = link.getTarget();
-                // the link target may not be a VFS path even if the link id is a structure id,
-                // so if possible, we read the resource for the id and set the relation target to its
-                // real root path. 
-                try {
-                    CmsResource destRes = readResource(dbc, targetId, CmsResourceFilter.ALL);
-                    destPath = destRes.getRootPath();
-                } catch (CmsVfsResourceNotFoundException e) {
-                    // ignore
+
+                if (targetId != null) {
+                    // the link target may not be a VFS path even if the link id is a structure id,
+                    // so if possible, we read the resource for the id and set the relation target to its
+                    // real root path. 
+                    try {
+                        CmsResource destRes = readResource(dbc, targetId, CmsResourceFilter.ALL);
+                        destPath = destRes.getRootPath();
+                    } catch (CmsVfsResourceNotFoundException e) {
+                        // ignore
+                    }
                 }
 
                 CmsRelation originalRelation = new CmsRelation(
