@@ -314,7 +314,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/modules/org.opencms.frontend.template3.demo/classes/org/opencms/frontend/template3/demo/workplace_en.messages</destination>
+			<destination>system/modules/org.opencms.frontend.template3.demo/classes/org/opencms/frontend/template3/demo/workplace_en.properties</destination>
 			<type>plain</type>
 			<uuidstructure>8c6e5234-9c8f-11de-beee-dd9f629b113b</uuidstructure>
 			<uuidresource>87241540-9c7c-11de-adde-dd9f629b113b</uuidresource>

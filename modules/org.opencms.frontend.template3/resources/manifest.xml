@@ -292,7 +292,7 @@
 			<type>plain</type>
 			<uuidstructure>c2b46908-9c7a-11de-adde-dd9f629b113b</uuidstructure>
 			<uuidresource>c2b46909-9c7a-11de-adde-dd9f629b113b</uuidresource>
-			<datelastmodified>Tue, 08 Sep 2009 13:23:13 GMT</datelastmodified>
+			<datelastmodified>Fri, 19 Nov 2010 13:35:37 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 18 Feb 2008 10:46:37 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -307,7 +307,7 @@
 			<type>plain</type>
 			<uuidstructure>c2c04feb-9c7a-11de-adde-dd9f629b113b</uuidstructure>
 			<uuidresource>c2c04fec-9c7a-11de-adde-dd9f629b113b</uuidresource>
-			<datelastmodified>Tue, 08 Sep 2009 13:23:13 GMT</datelastmodified>
+			<datelastmodified>Fri, 19 Nov 2010 13:23:56 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 19 Feb 2008 15:48:23 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -317,11 +317,11 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/modules/org.opencms.frontend.template3/classes/org/opencms/frontend/template3/workplace_en.messages</destination>
+			<destination>system/modules/org.opencms.frontend.template3/classes/org/opencms/frontend/template3/workplace_en.properties</destination>
 			<type>plain</type>
 			<uuidstructure>d4f83944-9c8e-11de-beee-dd9f629b113b</uuidstructure>
 			<uuidresource>c2b46909-9c7a-11de-adde-dd9f629b113b</uuidresource>
-			<datelastmodified>Tue, 08 Sep 2009 13:23:13 GMT</datelastmodified>
+			<datelastmodified>Fri, 19 Nov 2010 13:35:37 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 18 Feb 2008 10:46:37 GMT</datecreated>
 			<usercreated>Admin</usercreated>
