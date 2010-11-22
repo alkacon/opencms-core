@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsImageBundle.java,v $
- * Date   : $Date: 2010/11/15 15:45:41 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/11/22 13:50:23 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,11 +47,83 @@ import com.google.gwt.resources.client.ImageResource.RepeatStyle;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 8.0.0
  */
 public interface I_CmsImageBundle extends ClientBundle {
+
+    /** The context menu item CSS classes. */
+    @Shared
+    public interface I_CmsContextMenuIcons extends I_CmsContextmenuItemCss {
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String delete();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String edit();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String gotoPage();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String gotoParent();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String gotoSub();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String mergeSitemap();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String move();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String newElement();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String properties();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String selection();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String subSitemap();
+
+    }
 
     /** Bundles the image sprite CSS classes. */
     @Shared
@@ -305,80 +377,32 @@ public interface I_CmsImageBundle extends ClientBundle {
 
     }
 
-    /** The context menu item CSS classes. */
-    @Shared
-    public interface I_CmsContextMenuIcons extends I_CmsContextmenuItemCss {
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String mergeSitemap();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String gotoParent();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String subSitemap();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String gotoPage();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String gotoSub();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String delete();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String edit();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String move();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String newElement();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String properties();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String selection();
-
-    }
-
     /** The bundle instance. */
     I_CmsImageBundle INSTANCE = GWT.create(I_CmsImageBundle.class);
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/ade_favorites_20x20_a.png")
+    ImageResource addFavoriteIconActive();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/ade_favorites_20x20_sw.png")
+    ImageResource addFavoriteIconDeactivated();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/ade_favorites_20x20_i.png")
+    ImageResource addFavoriteIconInactive();
 
     /**
      * Access method.<p>
@@ -390,84 +414,20 @@ public interface I_CmsImageBundle extends ClientBundle {
     ImageResource backgroundSoft();
 
     /**
+     * Access method.<p>
+     * 
+     * @return the button CSS
+     */
+    @Source("contextMenuIcons.css")
+    I_CmsContextMenuIcons contextMenuIcons();
+
+    /**
      * Image resource accessor.<p>
      * 
      * @return an image resource
      */
     @Source("images/crop.png")
     ImageResource croppingIcon();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/goto_20x20.png")
-    ImageResource gotoPageIconActive();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/goto_disabled_20x20.png")
-    ImageResource gotoPageIconDeactivated();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/goto_sub_20x20.png")
-    ImageResource gotoSubIconActive();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/merge_sitemap_20x20.png")
-    ImageResource mergeSitemapIconActive();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/merge_sitemap_disabled_20x20.png")
-    ImageResource mergeSitemapIconDeactivated();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/parent_20x20.png")
-    ImageResource gotoParentIconActive();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/parent_disabled_20x20.png")
-    ImageResource gotoParentIconDeactivated();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/subsitemap_20x20.png")
-    ImageResource subSitemapIconActive();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/subsitemap_disabled_20x20.png")
-    ImageResource subSitemapIconDeactivated();
 
     /**
      * Access method.<p>
@@ -522,6 +482,46 @@ public interface I_CmsImageBundle extends ClientBundle {
      * 
      * @return the image resource
      */
+    @Source("images/goto_20x20.png")
+    ImageResource gotoPageIconActive();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/goto_disabled_20x20.png")
+    ImageResource gotoPageIconDeactivated();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/parent_20x20.png")
+    ImageResource gotoParentIconActive();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/parent_disabled_20x20.png")
+    ImageResource gotoParentIconDeactivated();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/goto_sub_20x20.png")
+    ImageResource gotoSubIconActive();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
     @Source("images/loading.gif")
     ImageResource loading();
 
@@ -548,6 +548,22 @@ public interface I_CmsImageBundle extends ClientBundle {
      */
     @Source("images/ade_add_sw.png")
     ImageResource magnifierIconInactive();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/merge_sitemap_20x20.png")
+    ImageResource mergeSitemapIconActive();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/merge_sitemap_disabled_20x20.png")
+    ImageResource mergeSitemapIconDeactivated();
 
     /**
      * Access method.<p>
@@ -706,10 +722,18 @@ public interface I_CmsImageBundle extends ClientBundle {
     /**
      * Access method.<p>
      * 
-     * @return the button CSS
+     * @return the image resource
      */
-    @Source("contextMenuIcons.css")
-    I_CmsContextMenuIcons contextMenuIcons();
+    @Source("images/subsitemap_20x20.png")
+    ImageResource subSitemapIconActive();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/subsitemap_disabled_20x20.png")
+    ImageResource subSitemapIconDeactivated();
 
     /** 
      * Access method.<p>

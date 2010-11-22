@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2010/11/18 15:26:56 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2010/11/22 13:50:23 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import com.google.gwt.resources.client.ImageResource.RepeatStyle;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.46 $
+ * @version $Revision: 1.47 $
  * 
  * @since 8.0.0
  */
@@ -910,7 +910,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
 
     /** Notification CSS. */
     @Shared
-    interface I_CmsNotificationCss extends CssResource {
+    interface I_CmsNotificationCss extends I_CmsPopupCss {
 
         /** 
          * Access method.<p>

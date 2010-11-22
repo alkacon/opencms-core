@@ -2,6 +2,7 @@
 	position: absolute;
 	z-index: 10;
 	background: transparent;
+	opacity: 0.6;
 }
 
 .highlightBox div{

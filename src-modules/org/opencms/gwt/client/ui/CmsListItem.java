@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItem.java,v $
- * Date   : $Date: 2010/10/29 13:09:50 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2010/11/22 13:50:23 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  *  
  * @since 8.0.0 
  */
@@ -197,72 +197,6 @@ public class CmsListItem extends Composite implements I_CmsListItem {
 
         return m_checkbox;
     }
-
-    /**
-     * @see org.opencms.gwt.client.ui.dnd.I_CmsDraggable#beforeDrop(CmsDropEvent, AsyncCallback)
-     */
-    //    public void beforeDrop(CmsDropEvent e, AsyncCallback<CmsDropEvent> callback) {
-    //
-    //        if (getParentList().getElement() == e.getTarget().getElement()) {
-    //            // if the same list there should not be any conflict
-    //            callback.onSuccess(e);
-    //            return;
-    //        }
-    //        if (!(e.getTarget() instanceof CmsList<?>)) {
-    //            // not a list so i can not check ids
-    //            callback.onSuccess(e);
-    //            return;
-    //        }
-    //
-    //        // get the id to use while dropping
-    //        String id = e.getPosition().getName();
-    //
-    //        // if the id already exists
-    //        CmsList<?> list = (CmsList<?>)e.getTarget();
-    //        if (list.getItem(id) == null) {
-    //            // the id does not exist, so everything is ok
-    //            callback.onSuccess(e);
-    //            return;
-    //        }
-    //
-    //        I_CmsDraggable draggable = e.getDraggable();
-    //        if (draggable instanceof CmsListItem) {
-    //            CmsListItem src = (CmsListItem)draggable;
-    //            if ((src.getParentList() == e.getTarget()) && id.equals(src.getId())) {
-    //                // just a position change
-    //                callback.onSuccess(e);
-    //                return;
-    //            }
-    //        }
-    //
-    //        String newName = id;
-    //        // TODO: use a nicer dialog, with blacklist for already used ids 
-    //        while ((newName != null) && (list.getItem(newName) != null)) {
-    //            // TODO: i18n
-    //            newName = Window.prompt("duplicated name, please enter a new one", newName);
-    //        }
-    //        if (newName == null) {
-    //            callback.onFailure(null);
-    //        } else {
-    //            e.getPosition().setName(newName);
-    //            callback.onSuccess(new CmsDropEvent(CmsListItem.this, e.getTarget(), e.getPosition()));
-    //        }
-    //    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.dnd.I_CmsDraggable#canDrop(org.opencms.gwt.client.ui.dnd.I_CmsDropTarget, CmsDropPosition)
-     */
-    //    public boolean canDrop(I_CmsDropTarget target, CmsDropPosition position) {
-    //
-    //        if (target != getParentList()) {
-    //            // another target does not matter
-    //            return true;
-    //        }
-    //        int pPos = position.getPosition();
-    //        int pos = CmsDomUtil.getPosition(getElement());
-    //        // since this is hidden, we prevent dropping if the place holder is just before or just after this
-    //        return (pPos < pos - 1) || (pPos > pos + 1);
-    //    }
 
     /**
      * @see org.opencms.gwt.client.dnd.I_CmsDraggable#getDragHelper(I_CmsDropTarget)

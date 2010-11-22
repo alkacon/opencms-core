@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsHighlightingBorder.java,v $
- * Date   : $Date: 2010/05/27 09:35:07 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/11/22 13:50:23 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import com.google.gwt.user.client.ui.HTML;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -93,6 +93,9 @@ public class CmsHighlightingBorder extends Composite {
 
     /** The border offset to the given position. */
     private static final int BORDER_OFFSET = 4;
+
+    /** The border width. */
+    private static final int BORDER_WIDTH = 2;
 
     /** The ui-binder instance. */
     private static I_CmsHighlightingBorderUiBinder uiBinder = GWT.create(I_CmsHighlightingBorderUiBinder.class);
@@ -141,8 +144,8 @@ public class CmsHighlightingBorder extends Composite {
         Style style = getElement().getStyle();
         style.setLeft(positionLeft - BORDER_OFFSET, Unit.PX);
         style.setTop(positionTop - BORDER_OFFSET, Unit.PX);
-        setHeight(height + 2 * BORDER_OFFSET);
-        setWidth(width + 2 * BORDER_OFFSET);
+        setHeight(height + 2 * BORDER_OFFSET - BORDER_WIDTH);
+        setWidth(width + 2 * BORDER_OFFSET - BORDER_WIDTH);
     }
 
     /**
@@ -189,8 +192,8 @@ public class CmsHighlightingBorder extends Composite {
         Style style = getElement().getStyle();
         style.setLeft(positionLeft - BORDER_OFFSET, Unit.PX);
         style.setTop(positionTop - BORDER_OFFSET, Unit.PX);
-        setHeight(height + 2 * BORDER_OFFSET);
-        setWidth(width + 2 * BORDER_OFFSET);
+        setHeight(height + 2 * BORDER_OFFSET - BORDER_WIDTH);
+        setWidth(width + 2 * BORDER_OFFSET - BORDER_WIDTH);
     }
 
     /**

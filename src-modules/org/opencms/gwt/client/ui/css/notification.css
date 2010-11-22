@@ -1,3 +1,5 @@
+.popup, .menuPopup{}
+
 div.blocking{
 	position: fixed;
 	height: 100%;
@@ -7,7 +9,7 @@ div.blocking{
 	z-index: 1;
 }
 
-.blocking .notificationContainer{
+.blocking div.notificationContainer{
 	top: 40%;
 }
 
@@ -41,7 +43,9 @@ div.blocking{
 		opacity: 0.5; 
 	}
 }
-
+.popup .notificationContainer{
+	top: 0px;
+}
 .notificationContainer {
 	text-align: center;
 	position:absolute;

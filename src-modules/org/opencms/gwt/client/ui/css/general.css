@@ -39,7 +39,7 @@
 }
 
 .hideOverlay div.disablingOverlay{
-	display: none;
+	background: transparent;
 }
 	
 .cmsState-up, .cmsState-up-hovering, .cmsState-up-disabled, .cmsState-down, .cmsState-down-hovering, .cmsState-down-disabled, .cmsHovering{};
