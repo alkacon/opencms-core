@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageDNDController.java,v $
- * Date   : $Date: 2010/11/22 13:51:06 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/11/22 15:08:28 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 8.0.0
  */
@@ -370,7 +370,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             }
         }
         if (target != m_initialDropTarget) {
-            showOriginalPositionPlaceholder(draggable);
+            showOriginalPositionPlaceholder(draggable, true);
         } else {
             hideOriginalPositionPlaceholder(draggable);
         }
@@ -395,7 +395,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                 ((I_CmsDropContainer)target).checkMaxElementsOnLeave();
             }
         }
-        showOriginalPositionPlaceholder(draggable);
+        showOriginalPositionPlaceholder(draggable, false);
         updateHighlighting();
         if (target instanceof CmsContainerPageContainer) {
             String id = ((CmsContainerPageContainer)target).getContainerId();
@@ -670,11 +670,12 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
      * Shows the draggable on it's original position.<p>
      * 
      * @param draggable the draggable
+     * @param withOverlay <code>true</code> to show the disabling overlay
      */
-    private void showOriginalPositionPlaceholder(I_CmsDraggable draggable) {
+    private void showOriginalPositionPlaceholder(I_CmsDraggable draggable, boolean withOverlay) {
 
         draggable.getElement().getStyle().setDisplay(Display.BLOCK);
-        CmsDomUtil.showOverlay(draggable.getElement(), true);
+        CmsDomUtil.showOverlay(draggable.getElement(), withOverlay);
     }
 
     /** 
