@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/dnd/Attic/CmsDNDHandler.java,v $
- * Date   : $Date: 2010/11/18 07:40:32 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/11/22 15:08:52 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,6 +42,7 @@ import java.util.List;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -50,13 +51,16 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
+import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * Drag and drop handler.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -70,6 +74,124 @@ public class CmsDNDHandler implements MouseDownHandler {
         HORIZONTAL,
         /** Only vertical drag and drop, the client-x position will be ignored. */
         VERTICAL
+    }
+
+    /**
+     * Timer to schedule automated scrolling.<p>
+     */
+    protected class CmsScrollTimer extends Timer {
+
+        /** The current scroll direction. */
+        private Direction m_direction;
+
+        /** Flag indicating if the scroll parent is the body element. */
+        private boolean m_isBody;
+
+        /** The element that should scrolled. */
+        private Element m_scrollParent;
+
+        /** The scroll speed. */
+        private int m_scrollSpeed;
+
+        /**
+         * Constructor.<p>
+         * 
+         * @param scrollParent the element that should scrolled
+         * @param scrollSpeed the scroll speed
+         * @param direction the scroll direction
+         */
+        public CmsScrollTimer(Element scrollParent, int scrollSpeed, Direction direction) {
+
+            m_scrollParent = scrollParent;
+            m_scrollSpeed = scrollSpeed;
+            m_isBody = m_scrollParent.getTagName().equalsIgnoreCase(CmsDomUtil.Tag.body.name());
+            m_direction = direction;
+        }
+
+        /**
+         * @see com.google.gwt.user.client.Timer#run()
+         */
+        @Override
+        public void run() {
+
+            int top, left;
+            if (m_isBody) {
+                top = Window.getScrollTop();
+                left = Window.getScrollLeft();
+            } else {
+                top = m_scrollParent.getScrollTop();
+                left = m_scrollParent.getScrollLeft();
+            }
+            Element element = getDragHelper();
+
+            boolean abort = false;
+            switch (m_direction) {
+                case down:
+                    top += m_scrollSpeed;
+                    element.getStyle().setTop(
+                        CmsDomUtil.getCurrentStyleInt(element, Style.top) + m_scrollSpeed,
+                        Unit.PX);
+                    break;
+                case up:
+                    if (top <= m_scrollSpeed) {
+                        abort = true;
+                        top = 0;
+                        element.getStyle().setTop(CmsDomUtil.getCurrentStyleInt(element, Style.top) - top, Unit.PX);
+                        break;
+                    }
+                    top -= m_scrollSpeed;
+                    element.getStyle().setTop(
+                        CmsDomUtil.getCurrentStyleInt(element, Style.top) - m_scrollSpeed,
+                        Unit.PX);
+                    break;
+                case left:
+                    if (left <= m_scrollSpeed) {
+                        abort = true;
+                        element.getStyle().setLeft(CmsDomUtil.getCurrentStyleInt(element, Style.left) - left, Unit.PX);
+                        left = 0;
+                        break;
+                    }
+                    left -= m_scrollSpeed;
+                    element.getStyle().setLeft(
+                        CmsDomUtil.getCurrentStyleInt(element, Style.left) - m_scrollSpeed,
+                        Unit.PX);
+                    break;
+                case right:
+                    left += m_scrollSpeed;
+                    element.getStyle().setLeft(
+                        CmsDomUtil.getCurrentStyleInt(element, Style.left) + m_scrollSpeed,
+                        Unit.PX);
+                    break;
+                default:
+                    break;
+
+            }
+
+            if (m_isBody) {
+                Window.scrollTo(left, top);
+            } else {
+                m_scrollParent.setScrollLeft(left);
+                m_scrollParent.setScrollTop(top);
+            }
+            if (abort) {
+                clearScrollTimer();
+            }
+        }
+    }
+
+    /** Scroll direction enumeration. */
+    protected enum Direction {
+        /** Scroll direction. */
+        down,
+
+        /** Scroll direction. */
+        left,
+
+        /** Scroll direction. */
+        right,
+
+        /** Scroll direction. */
+        up
     }
 
     /**
@@ -153,6 +275,15 @@ public class CmsDNDHandler implements MouseDownHandler {
 
     /** The preview handler registration. */
     private HandlerRegistration m_previewHandlerRegistration;
+
+    /** Current scroll direction. */
+    private Direction m_scrollDirection;
+
+    /** Flag if automatic scrolling is enabled. */
+    private boolean m_scrollEnabled = true;
+
+    /** Scroll timer. */
+    private Timer m_scrollTimer;
 
     /** The starting position absolute left. */
     private int m_startLeft;
@@ -315,6 +446,16 @@ public class CmsDNDHandler implements MouseDownHandler {
     }
 
     /**
+     * Returns if automated scrolling is enabled.<p>
+     *
+     * @return if automated scrolling is enabled
+     */
+    public boolean isScrollEnabled() {
+
+        return m_scrollEnabled;
+    }
+
+    /**
      * @see com.google.gwt.event.dom.client.MouseDownHandler#onMouseDown(com.google.gwt.event.dom.client.MouseDownEvent)
      */
     public void onMouseDown(MouseDownEvent event) {
@@ -448,6 +589,16 @@ public class CmsDNDHandler implements MouseDownHandler {
     }
 
     /**
+     * Sets the scrolling enabled.<p>
+     *
+     * @param scrollEnabled <code>true</code> to enable scrolling
+     */
+    public void setScrollEnabled(boolean scrollEnabled) {
+
+        m_scrollEnabled = scrollEnabled;
+    }
+
+    /**
      * Clears the drag process with a move animation of the drag element to it's original position.<p>
      * 
      * @param draggable the draggable 
@@ -543,6 +694,17 @@ public class CmsDNDHandler implements MouseDownHandler {
     }
 
     /**
+     * Cancels the scroll timer and removes the timer reference.<p>
+     */
+    protected void clearScrollTimer() {
+
+        if (m_scrollTimer != null) {
+            m_scrollTimer.cancel();
+            m_scrollTimer = null;
+        }
+    }
+
+    /**
      * Executed on mouse move while dragging.<p>
      * 
      * @param event the event
@@ -553,6 +715,7 @@ public class CmsDNDHandler implements MouseDownHandler {
         m_clientY = event.getClientY();
         checkTargets();
         positionHelper();
+        scrollAction();
     }
 
     /**
@@ -625,10 +788,66 @@ public class CmsDNDHandler implements MouseDownHandler {
     }
 
     /**
+     * Convenience method to get the appropriate scroll direction.<p>
+     * 
+     * @param offset the scroll parent border offset, if the cursor is within the border offset, scrolling should be triggered
+     * 
+     * @return the scroll direction
+     */
+    private Direction getScrollDirection(int offset) {
+
+        Element body = RootPanel.getBodyElement();
+        int windowHeight = Window.getClientHeight();
+        int bodyHeight = body.getClientHeight();
+        if (windowHeight < bodyHeight) {
+            if ((windowHeight - m_clientY < offset) && (Window.getScrollTop() < bodyHeight - windowHeight)) {
+                return Direction.down;
+            }
+            if ((m_clientY < offset) && (Window.getScrollTop() > 0)) {
+                return Direction.up;
+            }
+        }
+
+        int windowWidth = Window.getClientWidth();
+        int bodyWidth = body.getClientWidth();
+        if (windowWidth < bodyWidth) {
+            if ((windowWidth - m_clientX < offset) && (Window.getScrollLeft() < bodyWidth - windowWidth)) {
+                return Direction.right;
+            }
+            if ((m_clientX < offset) && (Window.getScrollLeft() > 0)) {
+                return Direction.left;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Handles automated scrolling.<p>
+     */
+    private void scrollAction() {
+
+        if (m_scrollEnabled) {
+
+            Direction direction = getScrollDirection(100);
+            if ((m_scrollTimer != null) && (m_scrollDirection != direction)) {
+                clearScrollTimer();
+            }
+            if ((direction != null) && (m_scrollTimer == null)) {
+                m_scrollTimer = new CmsScrollTimer(RootPanel.getBodyElement(), 20, direction);
+                m_scrollTimer.scheduleRepeating(10);
+            }
+
+            m_scrollDirection = direction;
+        }
+    }
+
+    /**
      * Sets dragging to false and removes the event preview handler.<p>
      */
     private void stopDragging() {
 
+        clearScrollTimer();
         m_dragging = false;
         if (m_previewHandlerRegistration != null) {
             m_previewHandlerRegistration.removeHandler();
