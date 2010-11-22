@@ -136,7 +136,7 @@ ul.clipboardList{
 	background: transparent;
 	border: none;
 }
-
+.toolbarSelection .dragging .optionBar .toolbarClipboard,
 .toolbarSelection .dragging .optionBar .toolbarRemove, 
 .toolbarSelection .dragging .optionBar .toolbarEdit, 
 .toolbarSelection .dragging .optionBar .toolbarNew, 
@@ -154,6 +154,17 @@ ul.clipboardList{
 .toolbarSelection .optionBar .toolbarSelection,
 .toolbarSelection .optionBar.cmsHovering .cmsState{
 	display: inline-block;
+}
+
+@sprite .optionBar .cmsState-up-hovering .toolbarClipboard, .optionBar .cmsState-down-hovering .toolbarClipboard, .optionBar .cmsState-down .toolbarClipboard{
+    gwt-image: "addFavoriteIconActive";
+}
+@sprite .optionBar .cmsState-up .toolbarClipboard{
+    gwt-image: "addFavoriteIconInactive";
+}
+
+@sprite .optionBar .cmsState-up-disabled .toolbarClipboard, .optionBar .cmsState-down-disabled .toolbarClipboard{
+    gwt-image: "addFavoriteIconDeactivated";
 }
 
 @sprite .optionBar .cmsState-up-hovering .toolbarRemove, .optionBar .cmsState-down-hovering .toolbarRemove, .optionBar .cmsState-down .toolbarRemove{

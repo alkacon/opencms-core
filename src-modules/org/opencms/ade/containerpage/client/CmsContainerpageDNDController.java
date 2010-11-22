@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageDNDController.java,v $
- * Date   : $Date: 2010/11/18 07:42:02 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/11/22 13:51:06 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,6 @@ import org.opencms.gwt.client.dnd.I_CmsDNDController;
 import org.opencms.gwt.client.dnd.I_CmsDraggable;
 import org.opencms.gwt.client.dnd.I_CmsDropTarget;
 import org.opencms.gwt.client.ui.CmsList;
-import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
@@ -57,6 +56,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Display;
@@ -73,7 +73,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 8.0.0
  */
@@ -162,6 +162,8 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
     /** Map of current drag info beans. */
     private Map<I_CmsDropTarget, DragInfo> m_dragInfos;
 
+    private Element m_dragOverlay;
+
     /** The ionitial drop target. */
     private I_CmsDropTarget m_initialDropTarget;
 
@@ -223,6 +225,9 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
      */
     public boolean onDragStart(I_CmsDraggable draggable, I_CmsDropTarget target, final CmsDNDHandler handler) {
 
+        m_dragOverlay = DOM.createDiv();
+        m_dragOverlay.addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragOverlay());
+        Document.get().getBody().appendChild(m_dragOverlay);
         m_isNew = false;
         m_originalIndex = -1;
         m_initialDropTarget = target;
@@ -360,7 +365,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         if (info != null) {
             hideCurrentHelpers(handler);
             replaceCurrentHelpers(handler, info);
-            if (target instanceof I_CmsDropContainer) {
+            if ((target != m_initialDropTarget) && (target instanceof I_CmsDropContainer)) {
                 ((I_CmsDropContainer)target).checkMaxElementsOnEnter();
             }
         }
@@ -386,7 +391,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             hideCurrentHelpers(handler);
             replaceCurrentHelpers(handler, info);
             handler.getPlaceholder().getStyle().setDisplay(Display.NONE);
-            if (target instanceof I_CmsDropContainer) {
+            if ((target != m_initialDropTarget) && (target instanceof I_CmsDropContainer)) {
                 ((I_CmsDropContainer)target).checkMaxElementsOnLeave();
             }
         }
@@ -410,19 +415,21 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         if (!handler.isDragging()) {
             return;
         }
-        if (handler.getDraggable() instanceof CmsContainerPageElement) {
-            CmsList<CmsListItem> dropzone = m_controller.getHandler().getDropzone();
-            m_controller.getHandler().showDropzone(true);
-            CmsListItem temp = m_controller.getContainerpageUtil().createListItem(elementData);
+        // removing favorites drop zone
 
-            Element placeholder = temp.getPlaceholder(dropzone);
-            Element helper = temp.getDragHelper(dropzone);
-            m_dragInfos.put(
-                dropzone,
-                new DragInfo(helper, placeholder, helper.getOffsetWidth() - 15, handler.getCursorOffsetY()));
-            handler.addTarget(dropzone);
-            helper.getStyle().setDisplay(Display.NONE);
-        }
+        //        if (handler.getDraggable() instanceof CmsContainerPageElement) {
+        //            CmsList<CmsListItem> dropzone = m_controller.getHandler().getDropzone();
+        //            m_controller.getHandler().showDropzone(true);
+        //            CmsListItem temp = m_controller.getContainerpageUtil().createListItem(elementData);
+        //
+        //            Element placeholder = temp.getPlaceholder(dropzone);
+        //            Element helper = temp.getDragHelper(dropzone);
+        //            m_dragInfos.put(
+        //                dropzone,
+        //                new DragInfo(helper, placeholder, helper.getOffsetWidth() - 15, handler.getCursorOffsetY()));
+        //            handler.addTarget(dropzone);
+        //            helper.getStyle().setDisplay(Display.NONE);
+        //        }
         if (m_controller.isSubcontainerEditing()) {
             CmsSubContainerElement subContainer = m_controller.getSubcontainer();
             if ((subContainer != m_initialDropTarget)
@@ -677,6 +684,8 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
      */
     private void stopDrag(final CmsDNDHandler handler) {
 
+        m_dragOverlay.removeFromParent();
+        m_dragOverlay = null;
         CmsContainerpageEditor.getZIndexManager().stop();
         restoreMinHeights();
         for (I_CmsDropTarget target : m_dragInfos.keySet()) {

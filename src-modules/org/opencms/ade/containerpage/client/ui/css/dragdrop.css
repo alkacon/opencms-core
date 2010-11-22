@@ -4,6 +4,7 @@
 
 .dragHandle{
 	position: absolute;
+	z-index: 1;
 	top: 2px;
 	right: 2px;
 	cursor: pointer;
@@ -46,6 +47,16 @@
 
 .overlayShow .placeholderOverlay{
 	display: block;
+}
+
+.dragOverlay{
+	position: fixed;
+	z-index: 1000000;
+	top: 0px;
+	left: 0px;
+	height: 100%;
+	width: 100%;
+	background: transparent;
 }
 
 @sprite .placeholderOverlay{
