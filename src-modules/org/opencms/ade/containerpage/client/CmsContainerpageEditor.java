@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageEditor.java,v $
- * Date   : $Date: 2010/11/16 14:32:06 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2010/11/22 11:43:50 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.ade.containerpage.client;
 
+import org.opencms.ade.containerpage.client.ui.CmsAddToFavoritesButton;
 import org.opencms.ade.containerpage.client.ui.CmsContentEditorDialog;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarClipboardMenu;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarContextButton;
@@ -68,7 +69,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * 
  * @since 8.0.0
  */
@@ -88,6 +89,9 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
 
     /** Edit button. */
     private CmsToolbarEditButton m_edit;
+
+    /** Add to favorites button. */
+    private CmsAddToFavoritesButton m_addToFavorites;
 
     /** Move button. */
     private CmsToolbarMoveButton m_move;
@@ -283,6 +287,8 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         m_edit.addClickHandler(clickHandler);
         m_toolbar.addLeft(m_edit);
 
+        m_addToFavorites = new CmsAddToFavoritesButton(containerpageHandler);
+
         m_remove = new CmsToolbarRemoveButton(containerpageHandler);
         m_remove.addClickHandler(clickHandler);
         m_toolbar.addLeft(m_remove);
@@ -331,6 +337,7 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
             m_move,
             m_edit,
             m_remove,
+            m_addToFavorites,
             m_properties);
         controller.init(containerpageHandler, dndHandler, containerpageUtil);
 

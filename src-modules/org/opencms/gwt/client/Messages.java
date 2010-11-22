@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/Attic/Messages.java,v $
- * Date   : $Date: 2010/11/18 07:43:51 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2010/11/22 11:43:50 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.client.util.CmsMessages;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 8.0.0
  */
@@ -142,6 +142,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TOOLBAR_ADD_0 = "GUI_TOOLBAR_ADD_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TOOLBAR_ADD_TO_FAVORITES_0 = "GUI_TOOLBAR_ADD_TO_FAVORITES_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TOOLBAR_CLIPBOARD_0 = "GUI_TOOLBAR_CLIPBOARD_0";

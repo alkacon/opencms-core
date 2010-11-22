@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageController.java,v $
- * Date   : $Date: 2010/11/18 15:28:10 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2010/11/22 11:43:50 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.30 $
+ * @version $Revision: 1.31 $
  * 
  * @since 8.0.0
  */
@@ -391,6 +391,7 @@ public final class CmsContainerpageController {
             @Override
             public void execute() {
 
+                CmsNotification.get().send(Type.NORMAL, "Adding to favorites");
                 getContainerpageService().addToFavoriteList(clientId, this);
             }
 

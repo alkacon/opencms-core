@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageHandler.java,v $
- * Date   : $Date: 2010/11/18 07:43:04 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2010/11/22 11:43:50 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -88,7 +88,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  * 
  * @since 8.0.0
  */
@@ -125,6 +125,16 @@ public class CmsContainerpageHandler {
     public void activateSelection() {
 
         m_editor.getSelection().setActive(true);
+    }
+
+    /**
+     * Adds the element with the given id to the favorite list.<p>
+     * 
+     * @param clientId the client id
+     */
+    public void addToFavorites(String clientId) {
+
+        m_controller.addToFavoriteList(clientId);
     }
 
     /**
