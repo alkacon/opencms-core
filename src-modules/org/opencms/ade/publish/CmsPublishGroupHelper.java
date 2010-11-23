@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/Attic/CmsPublishGroupHelper.java,v $
- * Date   : $Date: 2010/10/21 12:43:02 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/11/23 10:25:56 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.ade.publish;
 
 import org.opencms.file.CmsResource;
+import org.opencms.main.CmsLog;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -42,12 +43,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Helper class for splitting a publish list into publish groups.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -62,6 +65,8 @@ public class CmsPublishGroupHelper {
         /** group age constant. */
         young
     }
+
+    private static final Log LOG = CmsLog.getLog(CmsPublishGroupHelper.class);
 
     /** The gap between session groups. */
     protected static final int GROUP_SESSIONS_GAP = 8 * 60 * 60 * 1000;
@@ -114,7 +119,17 @@ public class CmsPublishGroupHelper {
      */
     public Map<Long, Integer> computeDaysForResources(List<CmsResource> resources) {
 
-        return computeDays(getModificationDates(resources));
+        Map<Long, Integer> result = computeDays(getModificationDates(resources));
+        if (LOG.isDebugEnabled()) {
+            for (CmsResource res : resources) {
+                LOG.debug("Resource "
+                    + res.getRootPath()
+                    + " is "
+                    + result.get(new Long(res.getDateLastModified()))
+                    + " days old.");
+            }
+        }
+        return result;
     }
 
     /**
@@ -139,27 +154,6 @@ public class CmsPublishGroupHelper {
             firstDay.add(Calendar.DAY_OF_MONTH, -1);
             result += 1;
         }
-        return result;
-    }
-
-    /**
-     * Returns a calendar object representing the start of the day in which a given time lies.<p>
-     * 
-     * @param time a long representing a time 
-     * 
-     * @return a calendar object which represents the day in which the time lies 
-     */
-    public Calendar getStartOfDay(long time) {
-
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(time);
-        int year = cal.get(Calendar.YEAR);
-        int month = cal.get(Calendar.MONTH);
-        int day = cal.get(Calendar.DAY_OF_MONTH);
-        Calendar result = Calendar.getInstance();
-        result.set(Calendar.YEAR, year);
-        result.set(Calendar.MONTH, month);
-        result.set(Calendar.DAY_OF_MONTH, day);
         return result;
     }
 
@@ -210,6 +204,27 @@ public class CmsPublishGroupHelper {
     }
 
     /**
+     * Returns a calendar object representing the start of the day in which a given time lies.<p>
+     * 
+     * @param time a long representing a time 
+     * 
+     * @return a calendar object which represents the day in which the time lies 
+     */
+    public Calendar getStartOfDay(long time) {
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(time);
+        int year = cal.get(Calendar.YEAR);
+        int month = cal.get(Calendar.MONTH);
+        int day = cal.get(Calendar.DAY_OF_MONTH);
+        Calendar result = Calendar.getInstance();
+        result.set(Calendar.YEAR, year);
+        result.set(Calendar.MONTH, month);
+        result.set(Calendar.DAY_OF_MONTH, day);
+        return result;
+    }
+
+    /**
      * Computes publish groups for a list of resources with age "medium".<p>
      * 
      * @param resources the list of resources
@@ -228,8 +243,10 @@ public class CmsPublishGroupHelper {
         List<CmsResource> currentGroup = new ArrayList<CmsResource>();
         result.add(currentGroup);
         for (CmsResource res : resources) {
+            LOG.debug("Processing medium-aged resource " + res.getRootPath());
             int day = days.get(new Long(res.getDateLastModified())).intValue();
             if (day != lastDay) {
+                LOG.debug("=== new group ===");
                 currentGroup = new ArrayList<CmsResource>();
                 result.add(currentGroup);
             }
@@ -259,10 +276,13 @@ public class CmsPublishGroupHelper {
             List<CmsResource> listToAddTo = null;
             if (day < 7) {
                 listToAddTo = youngRes;
+                LOG.debug("Classifying publish resource " + res.getRootPath() + " as young");
             } else if (day < 28) {
                 listToAddTo = mediumRes;
+                LOG.debug("Classifying publish resource " + res.getRootPath() + " as medium-aged");
             } else {
                 listToAddTo = oldRes;
+                LOG.debug("Classifying publish resource " + res.getRootPath() + " as old");
             }
             listToAddTo.add(res);
         }
@@ -291,8 +311,10 @@ public class CmsPublishGroupHelper {
 
         long lastDate = resources.get(0).getDateLastModified();
         for (CmsResource res : resources) {
+            LOG.debug("Processing young resource " + res.getRootPath());
             long resDate = res.getDateLastModified();
             if (lastDate - resDate > GROUP_SESSIONS_GAP) {
+                LOG.debug("=== new group ===");
                 currentGroup = new ArrayList<CmsResource>();
                 result.add(currentGroup);
             }
