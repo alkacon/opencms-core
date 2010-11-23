@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/Attic/CmsPublishGroupHelper.java,v $
- * Date   : $Date: 2010/11/23 10:25:56 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/11/23 11:37:29 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -318,6 +318,7 @@ public class CmsPublishGroupHelper {
                 currentGroup = new ArrayList<CmsResource>();
                 result.add(currentGroup);
             }
+            lastDate = resDate;
             currentGroup.add(res);
         }
         return result;
