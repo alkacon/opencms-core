@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2010/10/21 13:45:17 $
- * Version: $Revision: 1.1212 $
+ * Date   : $Date: 2010/11/24 12:48:44 $
+ * Version: $Revision: 1.1213 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@ OpenCms x.x.x - month day, year
 * Fixed issue #1910: An ISO-8859-1 to UTF-8 change in htmlmsg.properties
 * Fixed issue #1919: Some Chinese translation for fckeditor zh-cn.js
 * Fixed issue #1902: Empty folder without default file renders blank page and no 404 error
+- Collectors "allInFolderNavPos" and "allInSubTreeNavPos" only collect resources with property "NavPos" set
 
 OpenCms 7.5.3 - August 18, 2010
 ! External Links (pointers) now support handling of request parameters (loader parameter in opencms-vfs.xml)
