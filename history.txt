@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2010/11/24 13:02:55 $
- * Version: $Revision: 1.62 $
+ * Date   : $Date: 2010/11/24 18:06:11 $
+ * Version: $Revision: 1.63 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -59,6 +59,7 @@ OpenCms x.x.x - Month Day, Year
 * Fixed issue #1902: Empty folder without default file renders blank page and no 404 error
 ! New OpenCms user address attribute "institution" and new <cms:contentshow> tag attribute "escapeHtml"
 ! Added optional configurable user agreement dialog that has to be accepted after a successful workplace login
+* Fixed issue #1717: DB deadlock if OpenCms hits db.pool.default.maxActive when db.pool.default.whenExhaustedAction=block
 
 OpenCms 7.9.2 - February 24th, 2010
 ! Added support for xsd:choice in XML content API and editor

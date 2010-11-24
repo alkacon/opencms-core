@@ -1,6 +1,6 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/as400/CmsProjectDriver.java,v $
- * Date   : $Date: 2009/06/04 14:29:37 $
+ * Date   : $Date: 2010/11/24 18:06:11 $
  * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
@@ -45,6 +45,7 @@ public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
     /**
      * @see org.opencms.db.I_CmsProjectDriver#initSqlManager(String)
      */
+    @Override
     public org.opencms.db.generic.CmsSqlManager initSqlManager(String classname) {
 
         return CmsSqlManager.getInstance(classname);

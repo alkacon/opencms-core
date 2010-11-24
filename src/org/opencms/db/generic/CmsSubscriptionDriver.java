@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSubscriptionDriver.java,v $
- * Date   : $Date: 2010/08/11 06:47:55 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/11/24 18:06:11 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -80,7 +80,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -236,6 +236,8 @@ public class CmsSubscriptionDriver implements I_CmsDriver, I_CmsSubscriptionDriv
             ResultSet res = null;
             int count = 0;
 
+            List<Long> dates = new ArrayList<Long>();
+
             try {
                 conn = m_sqlManager.getConnection(poolName);
                 stmt = m_sqlManager.getPreparedStatement(conn, dbc.currentProject(), "C_VISITED_USER_COUNT_1");
@@ -266,14 +268,9 @@ public class CmsSubscriptionDriver implements I_CmsDriver, I_CmsSubscriptionDriv
                     stmt.setString(1, user.getId().toString());
                     stmt.setInt(2, count - maxCount);
                     res = stmt.executeQuery();
-                    long deleteDate = 0;
                     while (res.next()) {
                         // get last date of result set
-                        deleteDate = res.getLong(1);
-                    }
-                    if (deleteDate > 0) {
-                        filter = CmsVisitEntryFilter.ALL.filterUser(user.getId()).filterTo(deleteDate);
-                        deleteVisits(dbc, OpenCms.getSubscriptionManager().getPoolName(), filter);
+                        dates.add(Long.valueOf(res.getLong(1)));
                     }
                 }
             } catch (SQLException e) {
@@ -282,6 +279,14 @@ public class CmsSubscriptionDriver implements I_CmsDriver, I_CmsSubscriptionDriv
                     CmsDbSqlException.getErrorQuery(stmt)), e);
             } finally {
                 m_sqlManager.closeAll(dbc, conn, stmt, res);
+            }
+            long deleteDate = 0;
+            for (Long date : dates) {
+                deleteDate = date.longValue();
+                if (deleteDate > 0) {
+                    filter = CmsVisitEntryFilter.ALL.filterUser(user.getId()).filterTo(deleteDate);
+                    deleteVisits(dbc, OpenCms.getSubscriptionManager().getPoolName(), filter);
+                }
             }
         }
     }
@@ -337,8 +342,6 @@ public class CmsSubscriptionDriver implements I_CmsDriver, I_CmsSubscriptionDriv
         List<CmsResource> resources = new ArrayList<CmsResource>();
 
         try {
-            conn = m_sqlManager.getConnection(poolName);
-
             // path filter
             if (CmsStringUtil.isNotEmpty(filter.getParentPath())) {
                 CmsResource parent = m_driverManager.getVfsDriver(dbc).readResource(
@@ -358,6 +361,7 @@ public class CmsSubscriptionDriver implements I_CmsDriver, I_CmsSubscriptionDriv
                 conditions.append(END_CONDITION);
             }
 
+            conn = m_sqlManager.getConnection(poolName);
             String query = m_sqlManager.readQuery(dbc.currentProject(), "C_VISITED_USER_READ_4");
             query = CmsStringUtil.substitute(query, "%(CONDITIONS)", conditions.toString());
             stmt = m_sqlManager.getPreparedStatementForSql(conn, query);
@@ -610,37 +614,37 @@ public class CmsSubscriptionDriver implements I_CmsDriver, I_CmsSubscriptionDriv
                     false);
                 resources.add(currentResource);
             }
-
-            // filter the result if in visited/unvisited mode (faster as creating a query with even more joined tables)
-            if (!filter.getMode().isAll()) {
-                List<CmsResource> result = new ArrayList<CmsResource>(resources.size());
-                for (Iterator<CmsResource> i = resources.iterator(); i.hasNext();) {
-                    CmsResource resource = i.next();
-                    long visitedDate = 0;
-                    try {
-                        visitedDate = m_driverManager.getDateLastVisitedBy(dbc, poolName, filter.getUser(), resource);
-                    } catch (CmsException e) {
-                        throw new CmsDbSqlException(Messages.get().container(Messages.ERR_GENERIC_SQL_0), e);
-                    }
-                    if (filter.getMode().isUnVisited() && (visitedDate >= resource.getDateLastModified())) {
-                        // unvisited mode: resource was visited after the last modification, skip it
-                        continue;
-                    }
-                    if (filter.getMode().isVisited() && (resource.getDateLastModified() > visitedDate)) {
-                        // visited mode: resource was not visited after last modification, skip it
-                        continue;
-                    }
-                    // add the current resource to the result
-                    result.add(resource);
-                }
-                resources = result;
-            }
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
                 Messages.ERR_GENERIC_SQL_1,
                 CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
+        }
+
+        // filter the result if in visited/unvisited mode (faster as creating a query with even more joined tables)
+        if (!filter.getMode().isAll()) {
+            List<CmsResource> result = new ArrayList<CmsResource>(resources.size());
+            for (Iterator<CmsResource> i = resources.iterator(); i.hasNext();) {
+                CmsResource resource = i.next();
+                long visitedDate = 0;
+                try {
+                    visitedDate = m_driverManager.getDateLastVisitedBy(dbc, poolName, filter.getUser(), resource);
+                } catch (CmsException e) {
+                    throw new CmsDbSqlException(Messages.get().container(Messages.ERR_GENERIC_SQL_0), e);
+                }
+                if (filter.getMode().isUnVisited() && (visitedDate >= resource.getDateLastModified())) {
+                    // unvisited mode: resource was visited after the last modification, skip it
+                    continue;
+                }
+                if (filter.getMode().isVisited() && (resource.getDateLastModified() > visitedDate)) {
+                    // visited mode: resource was not visited after last modification, skip it
+                    continue;
+                }
+                // add the current resource to the result
+                result.add(resource);
+            }
+            resources = result;
         }
         return resources;
     }
