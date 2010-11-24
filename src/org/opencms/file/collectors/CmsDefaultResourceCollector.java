@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/CmsDefaultResourceCollector.java,v $
- * Date   : $Date: 2010/07/23 13:04:50 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/11/24 13:02:55 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 6.0.0 
  */
@@ -266,25 +266,18 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
             }
         }
 
-        List<CmsResource> result = null;
-        if (navElementMap.size() == foundResources.size()) {
-            // all found resources have the NavPos property set
-            // sort the nav. elements, and pull the found Cms resources
-            // from the map in the correct order into a list
-            List<CmsJspNavElement> navElementList = new ArrayList<CmsJspNavElement>(navElementMap.keySet());
-            result = new ArrayList<CmsResource>();
+        // all found resources have the NavPos property set
+        // sort the nav. elements, and pull the found Cms resources
+        // from the map in the correct order into a list
+        // only resources with the NavPos property set are used here 
+        List<CmsJspNavElement> navElementList = new ArrayList<CmsJspNavElement>(navElementMap.keySet());
+        List result = new ArrayList<CmsResource>();
 
-            Collections.sort(navElementList);
-            for (int i = 0, n = navElementList.size(); i < n; i++) {
+        Collections.sort(navElementList);
+        for (int i = 0, n = navElementList.size(); i < n; i++) {
 
-                CmsJspNavElement navElement = navElementList.get(i);
-                result.add(navElementMap.get(navElement));
-            }
-        } else {
-            // not all found resources have the NavPos property set
-            // sort the resources by release date as usual
-            result = foundResources;
-            Collections.sort(result, I_CmsResource.COMPARE_DATE_RELEASED);
+            CmsJspNavElement navElement = navElementList.get(i);
+            result.add(navElementMap.get(navElement));
         }
 
         return shrinkToFit(result, data.getCount());
