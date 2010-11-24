@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestGroupOperations.java,v $
- * Date   : $Date: 2009/09/07 12:41:44 $
- * Version: $Revision: 1.13.2.1 $
+ * Date   : $Date: 2010/11/24 15:00:19 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import junit.framework.TestSuite;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.13.2.1 $
+ * @version $Revision: 1.3 $
  */
 public class TestGroupOperations extends OpenCmsTestCase {
 
@@ -230,9 +230,10 @@ public class TestGroupOperations extends OpenCmsTestCase {
         CmsObject cms = getCmsObject();
         echo("Testing testGetUsersOfGroup");
 
-        List users = cms.getUsersOfGroup("Guests");
-        assertEquals("Export", ((CmsUser)users.get(0)).getName());
-        assertEquals("Guest", ((CmsUser)users.get(1)).getName());
+        List<CmsUser> users = cms.getUsersOfGroup("Guests");
+        CmsUser exportUser = cms.readUser("Export");
+        CmsUser guestUser = cms.readUser("Guest");
+        assertTrue(users.contains(exportUser) || users.contains(guestUser));
     }
 
     /**
