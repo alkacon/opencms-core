@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsHistoryDriver.java,v $
- * Date   : $Date: 2010/11/24 18:06:11 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/11/25 14:26:21 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -81,7 +81,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz  
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 6.9.1
  */
@@ -150,16 +150,17 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
                     // do nothing only move through all rows because of mssql odbc driver
                 }
             } else {
-                // make sure the statement and the result is closed
-                m_sqlManager.closeAll(dbc, null, stmt, res);
+                // make sure the connection is closed
+                m_sqlManager.closeAll(dbc, conn, stmt, res);
                 // nothing to delete
-                internalCleanup(dbc, conn, resource);
+                internalCleanup(dbc, resource);
                 return 0;
             }
-            m_sqlManager.closeAll(dbc, null, stmt, res);
+            m_sqlManager.closeAll(dbc, conn, stmt, res);
 
             if (time >= 0) {
                 int maxVersionByTime = -1;
+                conn = m_sqlManager.getConnection(dbc);
                 // get the maximal version to keep for this resource based on the time parameter
                 stmt = m_sqlManager.getPreparedStatement(conn, "C_STRUCTURE_HISTORY_MAXVER_BYTIME");
                 stmt.setString(1, resource.getStructureId().toString());
@@ -171,7 +172,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
                         // do nothing only move through all rows because of mssql odbc driver
                     }
                 }
-                m_sqlManager.closeAll(dbc, null, stmt, res);
+                m_sqlManager.closeAll(dbc, conn, stmt, res);
                 if (maxVersionByTime > 0) {
                     if (versionsToKeep < 0) {
                         versionsToKeep = (maxVersion - maxVersionByTime);
@@ -183,12 +184,13 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
 
             if (maxVersion - versionsToKeep <= 0) {
                 // nothing to delete
-                internalCleanup(dbc, conn, resource);
+                internalCleanup(dbc, resource);
                 return 0;
             }
 
             // get the minimal structure publish tag to keep for this sibling
             int minStrPublishTagToKeep = -1;
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_HISTORY_READ_MAXTAG_FOR_VERSION");
             stmt.setString(1, resource.getStructureId().toString());
             stmt.setInt(2, 1 + maxVersion - versionsToKeep);
@@ -200,20 +202,21 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
                 }
             } else {
                 // make sure the statement and the result is closed
-                m_sqlManager.closeAll(dbc, null, stmt, res);
+                m_sqlManager.closeAll(dbc, conn, stmt, res);
                 // nothing to delete
-                internalCleanup(dbc, conn, resource);
+                internalCleanup(dbc, resource);
                 return 0;
             }
-            m_sqlManager.closeAll(dbc, null, stmt, res);
+            m_sqlManager.closeAll(dbc, conn, stmt, res);
             if (minStrPublishTagToKeep < 1) {
                 // nothing to delete
-                internalCleanup(dbc, conn, resource);
+                internalCleanup(dbc, resource);
                 return 0;
             }
             minStrPublishTagToKeep++;
 
             // delete the properties
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PROPERTIES_HISTORY_DELETE");
             stmt.setString(1, resource.getStructureId().toString());
             stmt.setInt(2, minStrPublishTagToKeep);
@@ -240,14 +243,15 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
                 }
             } else {
                 // make sure the statement and the result is closed
-                m_sqlManager.closeAll(dbc, null, stmt, res);
+                m_sqlManager.closeAll(dbc, conn, stmt, res);
                 // nothing to delete
-                internalCleanup(dbc, conn, resource);
+                internalCleanup(dbc, resource);
                 return structureVersions;
             }
-            m_sqlManager.closeAll(dbc, null, stmt, res);
+            m_sqlManager.closeAll(dbc, conn, stmt, res);
 
             // delete the resource entries
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_HISTORY_DELETE");
             stmt.setString(1, resource.getResourceId().toString());
             stmt.setInt(2, minResPublishTagToKeep);
@@ -261,8 +265,8 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
             stmt.executeUpdate();
 
             // make sure the statement and the result is closed
-            m_sqlManager.closeAll(dbc, null, stmt, res);
-            internalCleanup(dbc, conn, resource);
+            m_sqlManager.closeAll(dbc, conn, stmt, res);
+            internalCleanup(dbc, resource);
             return Math.max(structureVersions, resourceVersions);
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
@@ -1630,6 +1634,53 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
     }
 
     /**
+     * Deletes all historical entries of subresources of a folder without any historical netry left.<p>
+     * 
+     * @param dbc the current database context
+     * @param resource the resource to check
+     * 
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    protected void internalCleanup(CmsDbContext dbc, I_CmsHistoryResource resource) throws CmsDataAccessException {
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet res = null;
+        Map<CmsUUID, Integer> tmpSubResources = new HashMap<CmsUUID, Integer>();
+
+        // if is folder and if no versions left
+        boolean isFolderAndNoVersionLeft = resource.getRootPath().endsWith("/")
+            && (readLastVersion(dbc, resource.getStructureId()) == 0);
+
+        // if the resource is a folder
+        if (isFolderAndNoVersionLeft) {
+            try {
+                conn = m_sqlManager.getConnection(dbc);
+                // get all direct subresources                    
+                stmt = m_sqlManager.getPreparedStatement(conn, "C_STRUCTURE_HISTORY_READ_SUBRESOURCES");
+                stmt.setString(1, resource.getStructureId().toString());
+                res = stmt.executeQuery();
+                while (res.next()) {
+                    CmsUUID structureId = new CmsUUID(res.getString(1));
+                    int version = res.getInt(2);
+                    tmpSubResources.put(structureId, Integer.valueOf(version));
+                }
+            } catch (SQLException e) {
+                throw new CmsDbSqlException(Messages.get().container(
+                    Messages.ERR_GENERIC_SQL_1,
+                    CmsDbSqlException.getErrorQuery(stmt)), e);
+            } finally {
+                m_sqlManager.closeAll(dbc, conn, stmt, res);
+            }
+        }
+        // delete all subresource versions
+        for (Map.Entry<CmsUUID, Integer> entry : tmpSubResources.entrySet()) {
+            I_CmsHistoryResource histResource = readResource(dbc, entry.getKey(), entry.getValue().intValue());
+            deleteEntries(dbc, histResource, 0, -1);
+        }
+    }
+
+    /**
      * Returns the amount of properties for a propertydefinition.<p>
      * 
      * @param dbc the current database context
@@ -1904,307 +1955,4 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
         return exists;
     }
 
-    /**
-     * Deletes all historical entries of subresources of a folder without any historical entry left.<p>
-     * 
-     * <b>Note: </b> This method is <code>private</code> because it DOES NOT close the connection. Please
-     * use this method with care.<p>
-     * 
-     * @param dbc the current dbc
-     * @param conn the current connection
-     * @param resource the resource to check
-     * 
-     * @throws SQLException if something goes wrong
-     * @throws CmsVfsResourceNotFoundException if one of the subresources could not be read
-     * @throws CmsDataAccessException if the deletion of a entry goes wrong
-     */
-    private void internalCleanup(CmsDbContext dbc, Connection conn, I_CmsHistoryResource resource)
-    throws SQLException, CmsVfsResourceNotFoundException, CmsDataAccessException {
-
-        PreparedStatement stmt = null;
-        ResultSet res = null;
-        Map<CmsUUID, Integer> tmpSubResources = new HashMap<CmsUUID, Integer>();
-
-        // if is folder and if no versions left
-        boolean isFolderAndNoVersionLeft = resource.getRootPath().endsWith("/")
-            && (internalReadLastVersion(dbc, conn, resource.getStructureId()) == 0);
-
-        // if the resource is a folder
-        if (isFolderAndNoVersionLeft) {
-            // get all direct subresources                    
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_STRUCTURE_HISTORY_READ_SUBRESOURCES");
-            stmt.setString(1, resource.getStructureId().toString());
-            res = stmt.executeQuery();
-            while (res.next()) {
-                CmsUUID structureId = new CmsUUID(res.getString(1));
-                int version = res.getInt(2);
-                tmpSubResources.put(structureId, Integer.valueOf(version));
-            }
-            m_sqlManager.closeAll(dbc, null, stmt, res);
-        }
-        // delete all subresource versions
-        for (Map.Entry<CmsUUID, Integer> entry : tmpSubResources.entrySet()) {
-            I_CmsHistoryResource histResource = internalReadResource(
-                dbc,
-                conn,
-                entry.getKey(),
-                entry.getValue().intValue());
-            internalDeleteEntries(dbc, conn, histResource, 0, -1);
-        }
-    }
-
-    /**
-     * Deletes all historical versions of a resource 
-     * keeping maximal <code>versionsToKeep</code> versions.<p>
-     *
-     * This method is a copy of the interface method 
-     * {@link I_CmsHistoryDriver#deleteEntries(CmsDbContext, I_CmsHistoryResource, int, long)},
-     * but is does not open a new connection is works on the given one.<p>
-     * 
-     * This method is necessary because the it is called recursively by the method 
-     * {@link CmsHistoryDriver#internalCleanup(CmsDbContext, Connection, I_CmsHistoryResource)}.
-     * If we would call the interface method 
-     * {@link I_CmsHistoryResource#deleteEntries(CmsDbContext, I_CmsHistoryResource, int, long)} 
-     * recursively a new connection will be opened inside an opened connection.<p>
-     * 
-     * That would drive OpenCms into a database deadlock when the maxActive connections is reached for the
-     * current pool.<p>
-     * 
-     * <b>Note: </b> This method is <code>private</code> because it DOES NOT close the connection. Please
-     * use this method with care.<p>
-     * 
-     * @param dbc the current database context
-     * @param conn the current database connection
-     * @param resource the historical resource to delete versions for 
-     * @param versionsToKeep the number of versions to keep
-     * @param time deleted resources older than this will also be deleted, is ignored if negative
-     * 
-     * @return the number of versions that were deleted
-     * 
-     * @throws CmsDataAccessException if something goes wrong
-     */
-    private int internalDeleteEntries(
-        CmsDbContext dbc,
-        Connection conn,
-        I_CmsHistoryResource resource,
-        int versionsToKeep,
-        long time) throws CmsDataAccessException {
-
-        PreparedStatement stmt = null;
-        ResultSet res = null;
-
-        try {
-            int maxVersion = -1;
-            // get the maximal version number for this resource
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_STRUCTURE_HISTORY_MAXVER");
-            stmt.setString(1, resource.getStructureId().toString());
-            res = stmt.executeQuery();
-            if (res.next()) {
-                maxVersion = res.getInt(1);
-                while (res.next()) {
-                    // do nothing only move through all rows because of mssql odbc driver
-                }
-            } else {
-                // make sure the statement and the result is closed
-                m_sqlManager.closeAll(dbc, null, stmt, res);
-                // nothing to delete
-                internalCleanup(dbc, conn, resource);
-                return 0;
-            }
-            m_sqlManager.closeAll(dbc, null, stmt, res);
-
-            if (time >= 0) {
-                int maxVersionByTime = -1;
-                // get the maximal version to keep for this resource based on the time parameter
-                stmt = m_sqlManager.getPreparedStatement(conn, "C_STRUCTURE_HISTORY_MAXVER_BYTIME");
-                stmt.setString(1, resource.getStructureId().toString());
-                stmt.setLong(2, time);
-                res = stmt.executeQuery();
-                if (res.next()) {
-                    maxVersionByTime = res.getInt(1);
-                    while (res.next()) {
-                        // do nothing only move through all rows because of mssql odbc driver
-                    }
-                }
-                m_sqlManager.closeAll(dbc, null, stmt, res);
-                if (maxVersionByTime > 0) {
-                    if (versionsToKeep < 0) {
-                        versionsToKeep = (maxVersion - maxVersionByTime);
-                    } else {
-                        versionsToKeep = Math.min(versionsToKeep, (maxVersion - maxVersionByTime));
-                    }
-                }
-            }
-
-            if (maxVersion - versionsToKeep <= 0) {
-                // nothing to delete
-                return 0;
-            }
-
-            // get the minimal structure publish tag to keep for this sibling
-            int minStrPublishTagToKeep = -1;
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_HISTORY_READ_MAXTAG_FOR_VERSION");
-            stmt.setString(1, resource.getStructureId().toString());
-            stmt.setInt(2, 1 + maxVersion - versionsToKeep);
-            res = stmt.executeQuery();
-            if (res.next()) {
-                minStrPublishTagToKeep = res.getInt(1);
-                while (res.next()) {
-                    // do nothing only move through all rows because of mssql odbc driver
-                }
-            } else {
-                // make sure the statement and the result is closed
-                m_sqlManager.closeAll(dbc, null, stmt, res);
-                // nothing to delete
-                internalCleanup(dbc, conn, resource);
-                return 0;
-            }
-            m_sqlManager.closeAll(dbc, null, stmt, res);
-            if (minStrPublishTagToKeep < 1) {
-                // nothing to delete
-                internalCleanup(dbc, conn, resource);
-                return 0;
-            }
-            minStrPublishTagToKeep++;
-
-            // delete the properties
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_PROPERTIES_HISTORY_DELETE");
-            stmt.setString(1, resource.getStructureId().toString());
-            stmt.setInt(2, minStrPublishTagToKeep);
-            stmt.executeUpdate();
-            m_sqlManager.closeAll(dbc, null, stmt, res);
-
-            // delete the structure entries
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_STRUCTURE_HISTORY_DELETE");
-            stmt.setString(1, resource.getStructureId().toString());
-            stmt.setInt(2, minStrPublishTagToKeep);
-            int structureVersions = stmt.executeUpdate();
-            m_sqlManager.closeAll(dbc, null, stmt, res);
-
-            // get the minimal resource publish tag to keep, 
-            // all entries with publish tag less than this will be deleted
-            int minResPublishTagToKeep = -1;
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_HISTORY_READ_MIN_USED_TAG");
-            stmt.setString(1, resource.getResourceId().toString());
-            res = stmt.executeQuery();
-            if (res.next()) {
-                minResPublishTagToKeep = res.getInt(1);
-                while (res.next()) {
-                    // do nothing only move through all rows because of mssql odbc driver
-                }
-            } else {
-                // make sure the statement and the result is closed
-                m_sqlManager.closeAll(dbc, null, stmt, res);
-                // nothing to delete
-                internalCleanup(dbc, conn, resource);
-                return structureVersions;
-            }
-            m_sqlManager.closeAll(dbc, null, stmt, res);
-
-            // delete the resource entries
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_HISTORY_DELETE");
-            stmt.setString(1, resource.getResourceId().toString());
-            stmt.setInt(2, minResPublishTagToKeep);
-            int resourceVersions = stmt.executeUpdate();
-            m_sqlManager.closeAll(dbc, null, stmt, res);
-
-            // delete the content entries
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_CONTENT_HISTORY_DELETE");
-            stmt.setString(1, resource.getResourceId().toString());
-            stmt.setInt(2, minResPublishTagToKeep);
-            stmt.executeUpdate();
-
-            // make sure the statement and the result is closed
-            m_sqlManager.closeAll(dbc, null, stmt, res);
-            internalCleanup(dbc, conn, resource);
-            return Math.max(structureVersions, resourceVersions);
-        } catch (SQLException e) {
-            throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1,
-                CmsDbSqlException.getErrorQuery(stmt)), e);
-        } finally {
-            m_sqlManager.closeAll(dbc, null, stmt, res);
-        }
-    }
-
-    /**
-     * Returns the last historical version of a resource.<p>
-     * 
-     * <b>Note: </b> This method is <code>private</code> because it DOES NOT close the connection. Please
-     * use this method with care.<p>
-     * 
-     * @param dbc the current database context
-     * @param conn the current database connection
-     * @param structureId the structure ID of the resource
-     * 
-     * @return the last historical version of a resource
-     * 
-     * @throws SQLException if something goes wrong 
-     */
-    private int internalReadLastVersion(CmsDbContext dbc, Connection conn, CmsUUID structureId) throws SQLException {
-
-        PreparedStatement stmt = null;
-        ResultSet res = null;
-        int lastVersion = 0;
-
-        stmt = m_sqlManager.getPreparedStatement(conn, "C_STRUCTURE_HISTORY_MAXVER");
-        stmt.setString(1, structureId.toString());
-        res = stmt.executeQuery();
-
-        if (res.next()) {
-            lastVersion = res.getInt(1);
-            while (res.next()) {
-                // do nothing only move through all rows because of mssql odbc driver
-            }
-            m_sqlManager.closeAll(dbc, null, stmt, res);
-        } else {
-            lastVersion = 0;
-        }
-
-        return lastVersion;
-    }
-
-    /**
-     * Reads a historical resource version without including the file content.<p>
-     *
-     * <b>Note: </b> This method is <code>private</code> because it DOES NOT close the connection. Please
-     * use this method with care.<p>
-     * 
-     * @param dbc the current database context
-     * @param conn the current database connection
-     * @param structureId the structure id of the resource to read
-     * @param version the desired version number
-     * 
-     * @return the historical resource version
-     * 
-     * @throws SQLException if something goes wrong 
-     * @throws CmsVfsResourceNotFoundException if the historical version for the given structure ID could not be read
-     */
-    private I_CmsHistoryResource internalReadResource(
-        CmsDbContext dbc,
-        Connection conn,
-        CmsUUID structureId,
-        int version) throws SQLException, CmsVfsResourceNotFoundException {
-
-        I_CmsHistoryResource resource = null;
-        PreparedStatement stmt = null;
-        ResultSet res = null;
-
-        stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_HISTORY_READ_VERSION");
-        stmt.setString(1, structureId.toString());
-        stmt.setInt(2, version);
-        res = stmt.executeQuery();
-        if (res.next()) {
-            resource = internalCreateResource(res);
-            while (res.next()) {
-                // do nothing only move through all rows because of mssql odbc driver
-            }
-            m_sqlManager.closeAll(dbc, null, stmt, res);
-        } else {
-            throw new CmsVfsResourceNotFoundException(Messages.get().container(
-                Messages.ERR_HISTORY_FILE_NOT_FOUND_1,
-                structureId));
-        }
-        return resource;
-    }
 }
