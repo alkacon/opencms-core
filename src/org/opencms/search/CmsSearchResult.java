@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchResult.java,v $
- * Date   : $Date: 2009/09/01 09:24:18 $
- * Version: $Revision: 1.28.2.1 $
+ * Date   : $Date: 2010/11/25 13:17:47 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import org.apache.lucene.document.Fieldable;
  * @author Alexander Kandzior
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.28.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -207,7 +207,7 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable<CmsSe
      *
      * @return the description
      * 
-     * @deprecated use {@link #getField(String)} instead with the name of the field, 
+     * @Deprecated use {@link #getField(String)} instead with the name of the field, 
      *      for example use {@link CmsSearchField#FIELD_DESCRIPTION} to get the description (if available)
      */
     public String getDescription() {
@@ -260,7 +260,7 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable<CmsSe
      *
      * @return the key words
      * 
-     * @deprecated use {@link #getField(String)} instead with the name of the field, 
+     * @Deprecated use {@link #getField(String)} instead with the name of the field, 
      *      for example use {@link CmsSearchField#FIELD_KEYWORDS} to get the keywords (if available)
      */
     public String getKeywords() {
@@ -325,7 +325,7 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable<CmsSe
      *
      * @return the title
      * 
-     * @deprecated use {@link #getField(String)} instead with the name of the field, 
+     * @Deprecated use {@link #getField(String)} instead with the name of the field, 
      *      for example use {@link CmsSearchField#FIELD_TITLE} to get the title (if available)
      */
     public String getTitle() {

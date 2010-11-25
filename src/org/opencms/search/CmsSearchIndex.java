@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2010/01/19 15:35:43 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/11/25 13:17:47 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -97,7 +97,7 @@ import org.apache.lucene.util.Version;
  * @author Alexander Kandzior 
  * @author Carsten Weinholz
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -197,6 +197,9 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
     /** Constant for additional parameter for the Lucene index setting. */
     public static final String LUCENE_USE_COMPOUND_FILE = "lucene.UseCompoundFile";
+
+    /** The Lucene Version used to create Query parsers and such. */
+    public static final Version LUCENE_VERSION = Version.LUCENE_30;
 
     /** Constant for additional parameter for controlling how many hits are loaded at maximum (default: 1000). */
     public static final String MAX_HITS = CmsSearchIndex.class.getName() + ".maxHits";
@@ -1232,7 +1235,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                     while (i.hasNext()) {
                         CmsSearchParameters.CmsSearchFieldQuery fq = i.next();
                         // add one sub-query for each defined field
-                        QueryParser p = new QueryParser(Version.LUCENE_CURRENT, fq.getFieldName(), getAnalyzer());
+                        QueryParser p = new QueryParser(LUCENE_VERSION, fq.getFieldName(), getAnalyzer());
                         if (BooleanClause.Occur.SHOULD.equals(fq.getOccur())) {
                             if (shouldOccur == null) {
                                 shouldOccur = new BooleanQuery();
@@ -1259,16 +1262,13 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                     // this is a "regular" query over one or more fields
                     // add one sub-query for each of the selected fields, e.g. "content", "title" etc.
                     for (int i = 0; i < params.getFields().size(); i++) {
-                        QueryParser p = new QueryParser(
-                            Version.LUCENE_CURRENT,
-                            params.getFields().get(i),
-                            getAnalyzer());
+                        QueryParser p = new QueryParser(LUCENE_VERSION, params.getFields().get(i), getAnalyzer());
                         booleanFieldsQuery.add(p.parse(params.getQuery()), BooleanClause.Occur.SHOULD);
                     }
                     fieldsQuery = getSearcher().rewrite(booleanFieldsQuery);
                 } else {
                     // if no fields are provided, just use the "content" field by default
-                    QueryParser p = new QueryParser(Version.LUCENE_CURRENT, CmsSearchField.FIELD_CONTENT, getAnalyzer());
+                    QueryParser p = new QueryParser(LUCENE_VERSION, CmsSearchField.FIELD_CONTENT, getAnalyzer());
                     fieldsQuery = getSearcher().rewrite(p.parse(params.getQuery()));
                 }
 
