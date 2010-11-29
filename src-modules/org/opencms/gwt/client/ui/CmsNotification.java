@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsNotification.java,v $
- * Date   : $Date: 2010/11/18 15:26:55 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/11/29 08:27:46 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,7 @@ package org.opencms.gwt.client.ui;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -141,6 +141,9 @@ public final class CmsNotification {
 
         if (oldType == null) {
             return true;
+        }
+        if (newType == null) {
+            return false;
         }
         // do not overwrite a higher or equal level notification
         switch (newType) {

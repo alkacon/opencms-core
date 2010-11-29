@@ -9,6 +9,10 @@ div.blocking{
 	z-index: 1;
 }
 
+.popup div.blocking{
+	position: absolute;
+}
+
 .blocking div.notificationContainer{
 	top: 40%;
 }

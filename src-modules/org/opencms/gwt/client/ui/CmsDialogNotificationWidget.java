@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsDialogNotificationWidget.java,v $
- * Date   : $Date: 2010/11/18 15:26:55 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/11/29 08:27:11 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -87,8 +87,7 @@ public class CmsDialogNotificationWidget extends A_CmsNotificationWidget {
      */
     public void setBlocking() {
 
-        // TODO: implement
-
+        getElement().addClassName(I_CmsLayoutBundle.INSTANCE.notificationCss().blocking());
     }
 
     /**
@@ -115,7 +114,7 @@ public class CmsDialogNotificationWidget extends A_CmsNotificationWidget {
     @Override
     protected void animateShow() {
 
-        getElement().getStyle().clearVisibility();
+        getElement().getStyle().clearDisplay();
         setAnimation(CmsFadeAnimation.fadeIn(getElement(), new Command() {
 
             /**
@@ -203,6 +202,7 @@ public class CmsDialogNotificationWidget extends A_CmsNotificationWidget {
 
         setVisible(false);
         // back to plain style without error or warning
+        getElement().setClassName("");
         m_container.setClassName(I_CmsLayoutBundle.INSTANCE.notificationCss().notificationContainer());
     }
 }
