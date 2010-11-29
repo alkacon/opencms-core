@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeDelete.java,v $
- * Date   : $Date: 2010/08/25 14:40:14 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/11/29 08:25:32 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import java.util.List;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
@@ -60,11 +60,11 @@ public class CmsClientSitemapChangeDelete implements I_CmsClientSitemapChange {
     /** The deleted entry with children. */
     private CmsClientSitemapEntry m_entry;
 
-    /** The tree item to which the change should be applied. */
-    private CmsSitemapTreeItem m_treeItem;
-
     /** Stores the entries site path at the time of the change event. */
     private String m_eventSitePath;
+
+    /** The tree item to which the change should be applied. */
+    private CmsSitemapTreeItem m_treeItem;
 
     /**
      * Constructor.<p>
@@ -108,8 +108,8 @@ public class CmsClientSitemapChangeDelete implements I_CmsClientSitemapChange {
         deleteParent.removeSubEntry(getEntry().getPosition());
         // apply to clipboard model
         List<CmsClientSitemapEntry> deleted = controller.getData().getClipboardData().getDeletions();
-        deleted.remove(deleted);
         deleted.add(0, getEntry());
+        removeDeletedFromModified(getEntry(), controller.getData().getClipboardData().getModifications());
     }
 
     /**
@@ -178,5 +178,19 @@ public class CmsClientSitemapChangeDelete implements I_CmsClientSitemapChange {
     public void setTreeItem(CmsSitemapTreeItem treeItem) {
 
         m_treeItem = treeItem;
+    }
+
+    /**
+     * Removes delted entry and all it's sub-entries from the modified list.<p>
+     * 
+     * @param entry the deleted entry
+     * @param modified the modified list
+     */
+    private void removeDeletedFromModified(CmsClientSitemapEntry entry, List<CmsClientSitemapEntry> modified) {
+
+        modified.remove(entry);
+        for (CmsClientSitemapEntry child : entry.getSubEntries()) {
+            removeDeletedFromModified(child, modified);
+        }
     }
 }

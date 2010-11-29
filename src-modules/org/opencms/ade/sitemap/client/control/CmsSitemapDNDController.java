@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapDNDController.java,v $
- * Date   : $Date: 2010/11/18 07:41:15 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/11/29 08:25:32 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,17 +51,17 @@ import org.opencms.gwt.client.util.CmsDomUtil.Tag;
 
 import java.util.List;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.DeferredCommand;
 
 /**
  * The sitemap drag and drop controller.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.0
  */
@@ -135,7 +135,7 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
         if (draggable instanceof CmsSitemapTreeItem) {
             ((CmsSitemapTreeItem)draggable).resetEntry();
         }
-        DeferredCommand.addCommand(new Command() {
+        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 
             /**
              * @see com.google.gwt.user.client.Command#execute()
@@ -248,7 +248,7 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
             entry.setPosition(m_insertIndex);
             m_controller.create(entry);
         }
-        DeferredCommand.addCommand(new Command() {
+        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 
             /**
              * @see com.google.gwt.user.client.Command#execute()

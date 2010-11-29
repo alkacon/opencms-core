@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeNew.java,v $
- * Date   : $Date: 2010/11/02 09:40:38 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/11/29 08:25:32 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import org.opencms.xml.sitemap.I_CmsSitemapChange.Type;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 8.0.0
  */
@@ -96,6 +96,9 @@ public class CmsClientSitemapChangeNew implements I_CmsClientSitemapChange {
         } else {
             newParent.insertSubEntry(getEntry(), getEntry().getPosition());
         }
+        // in case restored from deletion
+        controller.getData().getClipboardData().getDeletions().remove(getEntry());
+        controller.getData().getClipboardData().getModifications().add(0, getEntry());
     }
 
     /**

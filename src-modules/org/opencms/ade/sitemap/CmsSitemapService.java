@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsSitemapService.java,v $
- * Date   : $Date: 2010/11/18 09:41:54 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2010/11/29 08:25:32 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.ade.sitemap;
 
+import org.opencms.ade.sitemap.shared.CmsBrokenLinkData;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsSitemapBrokenLinkBean;
 import org.opencms.ade.sitemap.shared.CmsSitemapClipboardData;
@@ -100,7 +101,7 @@ import org.apache.commons.collections.map.MultiValueMap;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.42 $ 
+ * @version $Revision: 1.43 $ 
  * 
  * @since 8.0.0
  * 
@@ -132,11 +133,14 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
     }
 
     /**
-     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#getBrokenLinksToSitemapEntries(java.util.List, java.util.List)
+     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#getBrokenLinksToSitemapEntries(CmsClientSitemapEntry, java.util.List, java.util.List)
      */
-    public List<CmsSitemapBrokenLinkBean> getBrokenLinksToSitemapEntries(List<CmsUUID> open, List<CmsUUID> closed)
-    throws CmsRpcException {
+    public CmsBrokenLinkData getBrokenLinksToSitemapEntries(
+        CmsClientSitemapEntry deleteEntry,
+        List<CmsUUID> open,
+        List<CmsUUID> closed) throws CmsRpcException {
 
+        CmsBrokenLinkData result = null;
         try {
             CmsObject cms = getCmsObject();
             List<CmsInternalSitemapEntry> entries = getEntriesForIds(cms, open);
@@ -156,11 +160,18 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
                     linkMap.put(entry, source);
                 }
             }
-            return getBrokenLinkBeans(linkMap);
+
+            List<CmsClientSitemapEntry> closedEntryTrees = new ArrayList<CmsClientSitemapEntry>();
+            for (CmsUUID id : closed) {
+                closedEntryTrees.add(getSubTree(cms, sitemapManager.getEntryForId(cms, id).getSitePath(cms)));
+            }
+            result = new CmsBrokenLinkData();
+            result.setBrokenLinks(getBrokenLinkBeans(linkMap));
+            result.setClosedEntries(closedEntryTrees);
         } catch (Throwable e) {
             error(e);
         }
-        return null;
+        return result;
     }
 
     /**
@@ -848,7 +859,7 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
         for (CmsSitemapEntry subEntry : OpenCms.getSitemapManager().getSubEntries(cms, root)) {
             CmsClientSitemapEntry child = toClientEntry(subEntry, propertyConfig);
             children.add(child);
-            if (levels > 1) {
+            if ((levels > 1) || (levels == -1)) {
                 child.setSubEntries(getChildren(child.getSitePath(), levels - 1, propertyConfig));
             }
         }
@@ -1014,7 +1025,6 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
         if (parent == null) {
             root = toClientEntry(sitemap.getSiteEntries().get(0), propertyConfig);
         } else {
-            // TODO: check if this really loads enough entries 
             String entryPoint = xml.getEntryPoint(cms);
             // get the entry in the parent sitemap which references the current sitemap 
             CmsInternalSitemapEntry referencingEntry = (CmsInternalSitemapEntry)OpenCms.getSitemapManager().getEntryForUri(
@@ -1024,6 +1034,30 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
         }
         addChildrenRecursively(root, root, path, propertyConfig, 2);
         return root;
+    }
+
+    /**
+     * Returns the complete sub-tree for the given sitemap entry.<p>
+     * 
+     * @param cms the cms context to use for VFS operations
+     * @param startEntry the root to the sub-tree
+     * 
+     * @return the sub-tree
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    private CmsClientSitemapEntry getSubTree(CmsObject cms, String sitePath) throws CmsException {
+
+        CmsResource sitemapRes = cms.readResource(OpenCms.getSitemapManager().getSitemapForUri(cms, sitePath));
+        Map<String, CmsXmlContentProperty> propertyConfig = OpenCms.getSitemapManager().getElementPropertyConfiguration(
+            cms,
+            sitemapRes,
+            true);
+        CmsClientSitemapEntry startEntry = toClientEntry(
+            OpenCms.getSitemapManager().getEntryForUri(getCmsObject(), sitePath),
+            propertyConfig);
+        startEntry.setSubEntries(getChildren(sitePath, -1, propertyConfig));
+        return startEntry;
     }
 
     /**
@@ -1115,4 +1149,5 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
         return clientEntry;
 
     }
+
 }

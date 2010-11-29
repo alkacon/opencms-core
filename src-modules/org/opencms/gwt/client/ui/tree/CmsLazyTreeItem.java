@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/tree/Attic/CmsLazyTreeItem.java,v $
- * Date   : $Date: 2010/09/14 14:22:47 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/11/29 08:28:34 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Georg Westenberger
  * @author Michael Moossen
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -120,6 +120,16 @@ public class CmsLazyTreeItem extends CmsTreeItem {
     public LoadState getLoadState() {
 
         return m_loadState;
+    }
+
+    /**
+     * Returns if tree item children have been loaded.<p>
+     * 
+     * @return <code>true</code> if tree item children have been loaded
+     */
+    public boolean isLoaded() {
+
+        return LoadState.LOADED == m_loadState;
     }
 
     /**

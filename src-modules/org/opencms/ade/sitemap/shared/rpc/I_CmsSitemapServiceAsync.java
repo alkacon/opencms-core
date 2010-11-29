@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/rpc/Attic/I_CmsSitemapServiceAsync.java,v $
- * Date   : $Date: 2010/07/23 11:38:26 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2010/11/29 08:25:32 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,8 +31,8 @@
 
 package org.opencms.ade.sitemap.shared.rpc;
 
+import org.opencms.ade.sitemap.shared.CmsBrokenLinkData;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
-import org.opencms.ade.sitemap.shared.CmsSitemapBrokenLinkBean;
 import org.opencms.ade.sitemap.shared.CmsSitemapClipboardData;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.ade.sitemap.shared.CmsSitemapMergeInfo;
@@ -50,7 +50,7 @@ import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 8.0.0
  * 
@@ -61,7 +61,8 @@ import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
 public interface I_CmsSitemapServiceAsync {
 
     /**
-     * Returns a list of beans which represent the links which would be broken if the sitemap entries
+     * Returns broken link data bean, containing a list of all not yet loaded sub elements and a list of beans
+     * which represent the links which would be broken if the sitemap entries
      * passed as parameters were deleted.<p>
      * 
      * The "open" list entries will only be considered by themselves, while the sitemap entries with ids
@@ -70,15 +71,17 @@ public interface I_CmsSitemapServiceAsync {
      * This is necessary because the sitemap editor client code uses a lazily-loaded tree and thus does 
      * not have the full list of sitemap entries which are going to be deleted.<p>
      * 
+     * @param deleteEntry the entry to delete 
      * @param open the list of sitemap entry ids which should be considered by themselves 
      * @param closed the list of sitemap entry ids which should be considedered together with their descendants
      * @param callback the asynchronous callback  
      * 
      */
     void getBrokenLinksToSitemapEntries(
+        CmsClientSitemapEntry deleteEntry,
         List<CmsUUID> open,
         List<CmsUUID> closed,
-        AsyncCallback<List<CmsSitemapBrokenLinkBean>> callback);
+        AsyncCallback<CmsBrokenLinkData> callback);
 
     /**
      * Returns the sitemap children for the given path.<p>

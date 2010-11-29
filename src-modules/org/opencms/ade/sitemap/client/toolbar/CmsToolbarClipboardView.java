@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/toolbar/Attic/CmsToolbarClipboardView.java,v $
- * Date   : $Date: 2010/09/30 13:32:25 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/11/29 08:25:32 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -144,8 +144,8 @@ public class CmsToolbarClipboardView {
      */
     public void addDeleted(CmsClientSitemapEntry entry) {
 
-        removeDeleted(entry.getSitePath());
-        removeModified(entry.getSitePath());
+        removeDeleted(entry.getId().toString());
+        removeModified(entry.getId().toString());
         getDeleted().insertItem(createDeletedItem(entry), 0);
     }
 
@@ -157,8 +157,8 @@ public class CmsToolbarClipboardView {
      */
     public void addModified(CmsClientSitemapEntry entry, String previousPath) {
 
-        removeDeleted(previousPath);
-        removeModified(previousPath);
+        removeDeleted(entry.getId().toString());
+        removeModified(entry.getId().toString());
         getModified().insertItem(createModifiedItem(entry), 0);
     }
 
@@ -179,7 +179,7 @@ public class CmsToolbarClipboardView {
         final CmsListItemWidget itemWidget = new CmsListItemWidget(infoBean);
         CmsListItem listItem = new CmsClipboardDeletedItem(itemWidget, entry);
         listItem.initMoveHandle(CmsSitemapView.getInstance().getTree().getDnDHandler());
-        listItem.setId(entry.getSitePath());
+        listItem.setId(entry.getId().toString());
         return listItem;
     }
 
@@ -229,7 +229,7 @@ public class CmsToolbarClipboardView {
             }
         });
         itemWidget.addButton(button);
-        listItem.setId(entry.getSitePath());
+        listItem.setId(entry.getId().toString());
         return listItem;
     }
 
@@ -258,7 +258,7 @@ public class CmsToolbarClipboardView {
      * 
      * @param sitePath the former sitemap path of the entry
      */
-    protected void removeDeleted(String sitePath) {
+    private void removeDeleted(String sitePath) {
 
         CmsListItem item = getDeleted().getItem(sitePath);
         if (item != null) {
@@ -272,7 +272,7 @@ public class CmsToolbarClipboardView {
      * 
      * @param sitePath the former sitemap path of the entry
      */
-    protected void removeModified(String sitePath) {
+    private void removeModified(String sitePath) {
 
         CmsListItem item = getModified().getItem(sitePath);
         if (item != null) {

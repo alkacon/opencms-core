@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2010/11/18 15:28:10 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2010/11/29 08:25:32 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,6 +41,7 @@ import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeMergeSitemap;
 import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeMove;
 import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeNew;
 import org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange;
+import org.opencms.ade.sitemap.shared.CmsBrokenLinkData;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry.EditStatus;
 import org.opencms.ade.sitemap.shared.CmsSitemapBrokenLinkBean;
@@ -76,8 +77,8 @@ import java.util.Map;
 import java.util.Set;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -86,7 +87,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.29 $ 
+ * @version $Revision: 1.30 $ 
  * 
  * @since 8.0.0
  */
@@ -120,8 +121,8 @@ public class CmsSitemapController {
     /** The sitemap data. */
     protected CmsSitemapData m_data;
 
-    /** The handler manager. */
-    protected HandlerManager m_handlerManager;
+    /** The event bus. */
+    protected SimpleEventBus m_eventBus;
 
     /** The list of undone changes. */
     protected List<I_CmsClientSitemapChange> m_undone;
@@ -147,7 +148,7 @@ public class CmsSitemapController {
         m_hiddenProperties = new HashSet<String>();
         m_hiddenProperties.add(CmsSitemapManager.Property.sitemap.toString());
 
-        m_handlerManager = new HandlerManager(this);
+        m_eventBus = new SimpleEventBus();
     }
 
     /**
@@ -161,6 +162,15 @@ public class CmsSitemapController {
     public static String ensureUniqueName(CmsClientSitemapEntry parent, String newName) {
 
         Set<String> otherUrlNames = new HashSet<String>();
+        if (parent == null) {
+            CmsDebugLog.getInstance().printLine("Parent ==null");
+            return newName;
+
+        }
+        if (parent.getSubEntries() == null) {
+            CmsDebugLog.getInstance().printLine("No siblings");
+            return newName;
+        }
         for (CmsClientSitemapEntry sibling : parent.getSubEntries()) {
             otherUrlNames.add(sibling.getName());
         }
@@ -199,7 +209,7 @@ public class CmsSitemapController {
      */
     public HandlerRegistration addChangeHandler(I_CmsSitemapChangeHandler handler) {
 
-        return m_handlerManager.addHandler(CmsSitemapChangeEvent.getType(), handler);
+        return m_eventBus.addHandlerToSource(CmsSitemapChangeEvent.getType(), this, handler);
     }
 
     /**
@@ -211,7 +221,7 @@ public class CmsSitemapController {
      */
     public HandlerRegistration addClearUndoHandler(I_CmsSitemapClearUndoHandler handler) {
 
-        return m_handlerManager.addHandler(CmsSitemapClearUndoEvent.getType(), handler);
+        return m_eventBus.addHandlerToSource(CmsSitemapClearUndoEvent.getType(), this, handler);
     }
 
     /**
@@ -223,7 +233,7 @@ public class CmsSitemapController {
      */
     public HandlerRegistration addFirstUndoHandler(I_CmsSitemapFirstUndoHandler handler) {
 
-        return m_handlerManager.addHandler(CmsSitemapFirstUndoEvent.getType(), handler);
+        return m_eventBus.addHandlerToSource(CmsSitemapFirstUndoEvent.getType(), this, handler);
     }
 
     /**
@@ -235,7 +245,7 @@ public class CmsSitemapController {
      */
     public HandlerRegistration addLastRedoHandler(I_CmsSitemapLastRedoHandler handler) {
 
-        return m_handlerManager.addHandler(CmsSitemapLastRedoEvent.getType(), handler);
+        return m_eventBus.addHandlerToSource(CmsSitemapLastRedoEvent.getType(), this, handler);
     }
 
     /**
@@ -247,7 +257,7 @@ public class CmsSitemapController {
      */
     public HandlerRegistration addLastUndoHandler(I_CmsSitemapLastUndoHandler handler) {
 
-        return m_handlerManager.addHandler(CmsSitemapLastUndoEvent.getType(), handler);
+        return m_eventBus.addHandlerToSource(CmsSitemapLastUndoEvent.getType(), this, handler);
     }
 
     /**
@@ -259,7 +269,7 @@ public class CmsSitemapController {
      */
     public HandlerRegistration addLoadHandler(I_CmsSitemapLoadHandler handler) {
 
-        return m_handlerManager.addHandler(CmsSitemapLoadEvent.getType(), handler);
+        return m_eventBus.addHandlerToSource(CmsSitemapLoadEvent.getType(), this, handler);
     }
 
     /**
@@ -282,7 +292,7 @@ public class CmsSitemapController {
      */
     public HandlerRegistration addResetHandler(I_CmsSitemapResetHandler handler) {
 
-        return m_handlerManager.addHandler(CmsSitemapResetEvent.getType(), handler);
+        return m_eventBus.addHandlerToSource(CmsSitemapResetEvent.getType(), this, handler);
     }
 
     /**
@@ -294,7 +304,7 @@ public class CmsSitemapController {
      */
     public HandlerRegistration addStartEditHandler(I_CmsSitemapStartEditHandler handler) {
 
-        return m_handlerManager.addHandler(CmsSitemapStartEditEvent.getType(), handler);
+        return m_eventBus.addHandlerToSource(CmsSitemapStartEditEvent.getType(), this, handler);
     }
 
     /**
@@ -538,20 +548,23 @@ public class CmsSitemapController {
     }
 
     /**
-     * Fetches a list of beans from the server which represent the links which would be broken if the sitemap entries
+     * Fetches broken link data bean, containing a list of all not yet loaded sub elements and a list of beans 
+     * which represent the links that would be broken if the sitemap entries
      * in the "open" list and the descendants of the sitemap entries in the "closed" list were deleted.<p>
      * 
+     * @param deleteEntry the entry to delete 
      * @param open the list of sitemap entry ids which should be considered without their descendants  
      * @param closed the list of sitemap entry ids which should be considered with their descendantw 
      * 
      * @param callback the callback which will be called with the results 
      */
     public void getBrokenLinks(
+        final CmsClientSitemapEntry deleteEntry,
         final List<CmsUUID> open,
         final List<CmsUUID> closed,
         final AsyncCallback<List<CmsSitemapBrokenLinkBean>> callback) {
 
-        CmsRpcAction<List<CmsSitemapBrokenLinkBean>> action = new CmsRpcAction<List<CmsSitemapBrokenLinkBean>>() {
+        CmsRpcAction<CmsBrokenLinkData> action = new CmsRpcAction<CmsBrokenLinkData>() {
 
             /**
              * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
@@ -560,17 +573,18 @@ public class CmsSitemapController {
             public void execute() {
 
                 start(0, true);
-                getService().getBrokenLinksToSitemapEntries(open, closed, this);
+                getService().getBrokenLinksToSitemapEntries(deleteEntry, open, closed, this);
             }
 
             /**
              * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
              */
             @Override
-            protected void onResponse(List<CmsSitemapBrokenLinkBean> result) {
+            protected void onResponse(CmsBrokenLinkData result) {
 
                 stop(false);
-                callback.onSuccess(result);
+                addChildren(deleteEntry, result.getClosedEntries());
+                callback.onSuccess(result.getBrokenLinks());
             }
         };
         action.execute();
@@ -616,7 +630,7 @@ public class CmsSitemapController {
                     target.setSitePath("abc"); // hack to be able to execute updateSitePath
                     target.updateSitePath(sitePath);
                 }
-                m_handlerManager.fireEvent(new CmsSitemapLoadEvent(target, originalPath));
+                m_eventBus.fireEventFromSource(new CmsSitemapLoadEvent(target, originalPath), this);
                 stop(false);
                 recomputePropertyInheritance();
             }
@@ -846,7 +860,7 @@ public class CmsSitemapController {
 
         // state
         if (m_undone.isEmpty()) {
-            m_handlerManager.fireEvent(new CmsSitemapLastRedoEvent());
+            m_eventBus.fireEventFromSource(new CmsSitemapLastRedoEvent(), this);
         }
     }
 
@@ -926,7 +940,7 @@ public class CmsSitemapController {
 
         // pre-state
         if (m_undone.isEmpty()) {
-            m_handlerManager.fireEvent(new CmsSitemapFirstUndoEvent());
+            m_eventBus.fireEventFromSource(new CmsSitemapFirstUndoEvent(), this);
         }
 
         // undo
@@ -942,7 +956,7 @@ public class CmsSitemapController {
 
         // post-state
         if (!hasChanges()) {
-            m_handlerManager.fireEvent(new CmsSitemapLastUndoEvent());
+            m_eventBus.fireEventFromSource(new CmsSitemapLastUndoEvent(), this);
             CmsCoreProvider.get().unlock();
         }
     }
@@ -958,7 +972,7 @@ public class CmsSitemapController {
         // state
         if (!hasChanges()) {
             if (CmsCoreProvider.get().lockAndCheckModification(getSitemapUri(), m_data.getTimestamp())) {
-                m_handlerManager.fireEvent(new CmsSitemapStartEditEvent());
+                m_eventBus.fireEventFromSource(new CmsSitemapStartEditEvent(), this);
             } else {
                 // could not lock
                 return;
@@ -968,7 +982,7 @@ public class CmsSitemapController {
         if (!redo && !m_undone.isEmpty()) {
             // after a new change no changes can be redone
             m_undone.clear();
-            m_handlerManager.fireEvent(new CmsSitemapClearUndoEvent());
+            m_eventBus.fireEventFromSource(new CmsSitemapClearUndoEvent(), this);
         }
 
         // add it
@@ -979,6 +993,28 @@ public class CmsSitemapController {
 
         // refresh view, in dnd mode view already ok
         fireChange(change);
+    }
+
+    /**
+     * Adds loaded child entries to the given sub-tree.<p>
+     * 
+     * @param parent the start element of the sub-tree
+     * @param loadedEntries the loaded entries
+     */
+    protected void addChildren(CmsClientSitemapEntry parent, List<CmsClientSitemapEntry> loadedEntries) {
+
+        for (CmsClientSitemapEntry child : parent.getSubEntries()) {
+            if (child.getSubEntries().size() == 0) {
+                for (CmsClientSitemapEntry closed : loadedEntries) {
+                    if (closed.getId().equals(child.getId())) {
+                        child.setSubEntries(closed.getSubEntries());
+                        loadedEntries.remove(closed);
+                    }
+                }
+            } else {
+                addChildren(child, loadedEntries);
+            }
+        }
     }
 
     /**
@@ -1001,7 +1037,7 @@ public class CmsSitemapController {
      */
     protected void fireChange(I_CmsClientSitemapChange change) {
 
-        m_handlerManager.fireEvent(new CmsSitemapChangeEvent(change));
+        m_eventBus.fireEventFromSource(new CmsSitemapChangeEvent(change), this);
         recomputePropertyInheritance();
     }
 
@@ -1081,7 +1117,7 @@ public class CmsSitemapController {
         m_changes.clear();
         m_undone.clear();
         // state
-        m_handlerManager.fireEvent(new CmsSitemapResetEvent());
+        m_eventBus.fireEventFromSource(new CmsSitemapResetEvent(), this);
         CmsCoreProvider.get().unlock();
     }
 
