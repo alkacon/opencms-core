@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsDomUtil.java,v $
- * Date   : $Date: 2010/11/18 15:29:49 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2010/11/29 08:34:54 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentC
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.35 $
+ * @version $Revision: 1.36 $
  * 
  * @since 8.0.0
  */
@@ -1014,6 +1014,7 @@ public final class CmsDomUtil {
             return currentIndex;
         }
         int indexCorrection = 0;
+        int previousTop = 0;
         for (int index = 0; index < parent.getChildCount(); index++) {
             Node node = parent.getChild(index);
             if (!(node instanceof Element)) {
@@ -1033,27 +1034,47 @@ public final class CmsDomUtil {
             int width = 0;
             int top = 0;
             int height = 0;
-            if (x != -1) {
-                // check if the mouse pointer is within the width of the element 
-                left = CmsDomUtil.getRelativeX(x, child);
-                width = child.getOffsetWidth();
-                if ((left <= 0) || (left >= width)) {
-                    continue;
-                }
-            }
             if (y != -1) {
                 // check if the mouse pointer is within the height of the element 
                 top = CmsDomUtil.getRelativeY(y, child);
                 height = child.getOffsetHeight();
                 if ((top <= 0) || (top >= height)) {
+                    previousTop = top;
                     continue;
                 }
-            } else {
-                if (child == element) {
-                    return currentIndex;
+            }
+            if (x != -1) {
+                // check if the mouse pointer is within the width of the element 
+                left = CmsDomUtil.getRelativeX(x, child);
+                width = child.getOffsetWidth();
+                if ((left <= 0) || (left >= width)) {
+                    previousTop = top;
+                    continue;
                 }
+            }
 
+            boolean floatSort = false;
+            String floating = "";
+            if ((top != 0) && (top == previousTop)) {
+                floating = getCurrentStyle(child, Style.floatCss);
+                if ("left".equals(floating) || "right".equals(floating)) {
+                    floatSort = true;
+                }
+            }
+            previousTop = top;
+            if (child == element) {
+                return currentIndex;
+            }
+            if ((y == -1) || floatSort) {
+                boolean insertBefore = false;
                 if (left < width / 2) {
+                    if (!(floatSort && "right".equals(floating))) {
+                        insertBefore = true;
+                    }
+                } else if (floatSort && "right".equals(floating)) {
+                    insertBefore = true;
+                }
+                if (insertBefore) {
                     parent.insertBefore(element, child);
                     currentIndex = index - indexCorrection;
                     return currentIndex;
@@ -1063,10 +1084,6 @@ public final class CmsDomUtil {
                     return currentIndex;
                 }
             }
-            if (child == element) {
-                return currentIndex;
-            }
-
             if (top < height / 2) {
                 parent.insertBefore(element, child);
                 currentIndex = index - indexCorrection;
