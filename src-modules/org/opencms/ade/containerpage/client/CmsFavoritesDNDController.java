@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsFavoritesDNDController.java,v $
- * Date   : $Date: 2010/11/18 07:41:15 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/11/29 07:51:10 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,15 +39,15 @@ import org.opencms.gwt.client.dnd.I_CmsDropTarget;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItem;
 
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.DeferredCommand;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 
 /**
  * The favorites editing drag and drop controller.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -82,7 +82,7 @@ public class CmsFavoritesDNDController implements I_CmsDNDController {
     public void onDragCancel(I_CmsDraggable draggable, I_CmsDropTarget target, final CmsDNDHandler handler) {
 
         m_list.insertItem((CmsListItem)draggable, m_startPosition);
-        DeferredCommand.addCommand(new Command() {
+        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 
             /**
              * @see com.google.gwt.user.client.Command#execute()
@@ -127,7 +127,7 @@ public class CmsFavoritesDNDController implements I_CmsDNDController {
                 list.addItem((CmsListItem)draggable);
             }
         }
-        DeferredCommand.addCommand(new Command() {
+        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 
             /**
              * @see com.google.gwt.user.client.Command#execute()

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/ui/Attic/CmsBinaryPreviewContent.java,v $
- * Date   : $Date: 2010/07/08 06:49:42 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/11/29 07:52:34 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,12 +34,13 @@ package org.opencms.ade.galleries.client.preview.ui;
 import org.opencms.ade.galleries.client.ui.Messages;
 import org.opencms.ade.galleries.shared.CmsResourceInfoBean;
 import org.opencms.gwt.client.ui.input.CmsLabel;
+import org.opencms.gwt.client.util.CmsDateTimeUtil;
+import org.opencms.gwt.client.util.CmsDateTimeUtil.Format;
 import org.opencms.gwt.shared.CmsIconUtil;
 
 import java.util.Date;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -53,7 +54,7 @@ import com.google.gwt.user.client.ui.Label;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -180,7 +181,7 @@ public class CmsBinaryPreviewContent extends Composite {
     public void setDateModified(Date date) {
 
         if (date != null) {
-            m_dateMod.setText(DateTimeFormat.getMediumDateFormat().format(date));
+            m_dateMod.setText(CmsDateTimeUtil.getDate(date, Format.MEDIUM));
         } else {
             m_dateMod.setText("");
         }

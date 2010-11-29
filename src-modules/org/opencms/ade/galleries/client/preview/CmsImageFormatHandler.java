@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/preview/Attic/CmsImageFormatHandler.java,v $
- * Date   : $Date: 2010/08/26 13:34:11 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/11/29 07:52:34 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,15 +48,15 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
-import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.event.shared.SimpleEventBus;
 
 /**
  * Image format form handler.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -105,8 +105,8 @@ public class CmsImageFormatHandler implements HasValueChangeHandlers<CmsCropping
 
     private boolean m_freeFormat;
 
-    /** The handler manager, used for event handler registration. */
-    private HandlerManager m_handlerManager;
+    /** The event bus. */
+    private SimpleEventBus m_eventBus;
 
     /** The image height. */
     private int m_originalHeight = -1;
@@ -154,9 +154,7 @@ public class CmsImageFormatHandler implements HasValueChangeHandlers<CmsCropping
      */
     public void fireEvent(GwtEvent<?> event) {
 
-        if (m_handlerManager != null) {
-            m_handlerManager.fireEvent(event);
-        }
+        ensureHandlers().fireEventFromSource(event, this);
     }
 
     /**
@@ -446,7 +444,7 @@ public class CmsImageFormatHandler implements HasValueChangeHandlers<CmsCropping
      */
     protected final <H extends EventHandler> HandlerRegistration addHandler(final H handler, GwtEvent.Type<H> type) {
 
-        return ensureHandlers().addHandler(type, handler);
+        return ensureHandlers().addHandlerToSource(type, this, handler);
     }
 
     /** 
@@ -462,12 +460,12 @@ public class CmsImageFormatHandler implements HasValueChangeHandlers<CmsCropping
      * 
      * @return the handler manager
      */
-    private HandlerManager ensureHandlers() {
+    private SimpleEventBus ensureHandlers() {
 
-        if (m_handlerManager == null) {
-            m_handlerManager = new HandlerManager(this);
+        if (m_eventBus == null) {
+            m_eventBus = new SimpleEventBus();
         }
-        return m_handlerManager;
+        return m_eventBus;
     }
 
     /**
