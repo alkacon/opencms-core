@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsContainerpageService.java,v $
- * Date   : $Date: 2010/11/29 07:49:52 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2010/11/29 15:47:28 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,6 +54,7 @@ import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.explorer.CmsResourceUtil;
+import org.opencms.xml.containerpage.CmsADEManager;
 import org.opencms.xml.containerpage.CmsADESessionCache;
 import org.opencms.xml.containerpage.CmsContainerBean;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
@@ -86,7 +87,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * 
  * @since 8.0.0
  */
@@ -235,18 +236,18 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         Map<String, String> properties,
         Collection<CmsContainer> containers) throws CmsRpcException {
 
+        CmsContainerElementData element = null;
         try {
             CmsObject cms = getCmsObject();
             CmsElementUtil elemUtil = new CmsElementUtil(cms, uriParams, getRequest(), getResponse());
             CmsUUID serverId = OpenCms.getADEManager().convertToServerId(clientId);
             CmsContainerElementBean elementBean = createElement(serverId, properties);
             getSessionCache().setCacheContainerElement(elementBean.getClientId(), elementBean);
-            CmsContainerElementData element = elemUtil.getElementData(elementBean, containers);
-            return element;
+            element = elemUtil.getElementData(elementBean, containers);
         } catch (Throwable e) {
             error(e);
         }
-        return null; // will never be executed since error() throws an exception 
+        return element;
     }
 
     /**
@@ -460,8 +461,8 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         if (element != null) {
             return element;
         }
-        if (id.contains("#")) {
-            id = id.substring(0, id.indexOf("#"));
+        if (id.contains(CmsADEManager.CLIENT_ID_SEPERATOR)) {
+            id = id.substring(0, id.indexOf(CmsADEManager.CLIENT_ID_SEPERATOR));
             element = getSessionCache().getCacheContainerElement(id);
             if (element != null) {
                 return element;

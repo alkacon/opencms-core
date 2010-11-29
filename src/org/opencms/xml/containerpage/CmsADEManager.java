@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADEManager.java,v $
- * Date   : $Date: 2010/11/29 07:47:27 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2010/11/29 15:47:28 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @since 7.6
  */
@@ -95,6 +95,9 @@ public class CmsADEManager {
 
     /** The request attribute name for the formatter-info-bean. */
     public static final String ATTR_FORMATTER_INFO = "__formatterInfo";
+
+    /** The client side id/property-hash seperator. */
+    public static final String CLIENT_ID_SEPERATOR = "#";
 
     /** The name of the module parameter which may contain the name of the ADE configuration file. */
     public static final String MODULE_CONFIG_KEY = "ade.config";
@@ -166,8 +169,8 @@ public class CmsADEManager {
         }
         String serverId = id;
         try {
-            if (serverId.contains("#")) {
-                serverId = serverId.substring(0, serverId.indexOf("#"));
+            if (serverId.contains(CLIENT_ID_SEPERATOR)) {
+                serverId = serverId.substring(0, serverId.indexOf(CLIENT_ID_SEPERATOR));
             }
             return new CmsUUID(serverId);
         } catch (NumberFormatException e) {

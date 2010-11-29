@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsContainerElementBean.java,v $
- * Date   : $Date: 2010/02/15 08:23:27 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/11/29 15:47:28 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 7.6 
  */
@@ -83,7 +83,7 @@ public class CmsContainerElementBean {
         String clientId = m_elementId.toString();
         if (!m_properties.isEmpty()) {
             int hash = m_properties.toString().hashCode();
-            clientId += "#" + hash;
+            clientId += CmsADEManager.CLIENT_ID_SEPERATOR + hash;
         }
         m_clientId = clientId;
     }

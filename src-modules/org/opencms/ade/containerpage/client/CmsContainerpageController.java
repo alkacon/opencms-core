@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageController.java,v $
- * Date   : $Date: 2010/11/29 07:51:32 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2010/11/29 15:47:28 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.32 $
+ * @version $Revision: 1.33 $
  * 
  * @since 8.0.0
  */
@@ -295,6 +295,9 @@ public final class CmsContainerpageController {
         }
     }
 
+    /** The client side id/property-hash seperator. */
+    public static final String CLIENT_ID_SEPERATOR = "#";
+
     /** Instance of the data provider. */
     private static CmsContainerpageController INSTANCE;
 
@@ -391,7 +394,9 @@ public final class CmsContainerpageController {
             @Override
             public void execute() {
 
-                CmsNotification.get().send(Type.NORMAL, "Adding to favorites");
+                CmsNotification.get().send(
+                    Type.NORMAL,
+                    Messages.get().key(Messages.GUI_NOTIFICATION_ADD_TO_FAVORITES_0));
                 getContainerpageService().addToFavoriteList(clientId, this);
             }
 
@@ -483,8 +488,8 @@ public final class CmsContainerpageController {
      */
     public void deleteElement(String elementId, final String relatedElementId) {
 
-        if (elementId.contains("#")) {
-            elementId = elementId.substring(0, elementId.indexOf("#"));
+        if (elementId.contains(CLIENT_ID_SEPERATOR)) {
+            elementId = elementId.substring(0, elementId.indexOf(CLIENT_ID_SEPERATOR));
         }
         final String id = elementId;
         CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
@@ -807,7 +812,7 @@ public final class CmsContainerpageController {
 
                 deactivateOnClosing();
                 if (hasPageChanged()) {
-                    boolean savePage = Window.confirm("Do you want to save the page before leaving?");
+                    boolean savePage = Window.confirm(Messages.get().key(Messages.GUI_DIALOG_SAVE_BEFORE_LEAVING_0));
                     if (savePage) {
                         syncSaveContainerpage();
                     } else {
@@ -1028,8 +1033,8 @@ public final class CmsContainerpageController {
                 // if replacing element data has the same structure id, keep the 'new' state by setting the new type property
                 // this should only be the case when editing properties of a new element that has not been created in the VFS yet
                 String id = containerElement.getId();
-                if (id.contains("#")) {
-                    id = id.substring(0, id.indexOf("#"));
+                if (id.contains(CLIENT_ID_SEPERATOR)) {
+                    id = id.substring(0, id.indexOf(CLIENT_ID_SEPERATOR));
                 }
                 if (elementData.getClientId().startsWith(id)) {
                     replacer.setNewType(containerElement.getNewType());
@@ -1084,7 +1089,7 @@ public final class CmsContainerpageController {
                 @Override
                 protected void onResponse(Void result) {
 
-                    CmsNotification.get().send(Type.NORMAL, "Container page saved.");
+                    CmsNotification.get().send(Type.NORMAL, Messages.get().key(Messages.GUI_NOTIFICATION_PAGE_SAVED_0));
                     setPageChanged(false, true);
                     Window.Location.assign(targetUri);
                 }
@@ -1152,7 +1157,7 @@ public final class CmsContainerpageController {
             @Override
             protected void onResponse(Void result) {
 
-                CmsNotification.get().send(Type.NORMAL, "Favorites saved.");
+                CmsNotification.get().send(Type.NORMAL, Messages.get().key(Messages.GUI_NOTIFICATION_FAVORITES_SAVED_0));
             }
         };
         action.execute();
@@ -1190,7 +1195,9 @@ public final class CmsContainerpageController {
                 protected void onResponse(Map<String, CmsContainerElementData> result) {
 
                     m_elements.putAll(result);
-                    CmsNotification.get().send(Type.NORMAL, "Sub-container saved.");
+                    CmsNotification.get().send(
+                        Type.NORMAL,
+                        Messages.get().key(Messages.GUI_NOTIFICATION_SUB_CONTAINER_SAVED_0));
                 }
             };
             action.execute();
@@ -1254,7 +1261,7 @@ public final class CmsContainerpageController {
             m_editingSubcontainer = subContainer;
             return true;
         }
-        CmsNotification.get().send(Type.WARNING, "Resource could not be locked.");
+        CmsNotification.get().send(Type.WARNING, Messages.get().key(Messages.GUI_NOTIFICATION_UNABLE_TO_LOCK_0));
         return false;
     }
 
@@ -1367,7 +1374,7 @@ public final class CmsContainerpageController {
         if (CmsCoreProvider.get().lock(getCurrentUri())) {
             return true;
         } else {
-            CmsNotification.get().send(Type.WARNING, "Page could not be locked.");
+            CmsNotification.get().send(Type.WARNING, Messages.get().key(Messages.GUI_NOTIFICATION_UNABLE_TO_LOCK_0));
             return false;
         }
     }
@@ -1482,7 +1489,7 @@ public final class CmsContainerpageController {
                 @Override
                 protected void onResponse(Void result) {
 
-                    CmsNotification.get().send(Type.NORMAL, "Page saved");
+                    CmsNotification.get().send(Type.NORMAL, Messages.get().key(Messages.GUI_NOTIFICATION_PAGE_SAVED_0));
                     setPageChanged(false, false);
                 }
             };
@@ -1496,7 +1503,7 @@ public final class CmsContainerpageController {
     protected void unlockContainerpage() {
 
         if (CmsCoreProvider.get().unlock(getCurrentUri())) {
-            CmsDebugLog.getInstance().printLine("Page unlocked");
+            CmsDebugLog.getInstance().printLine(Messages.get().key(Messages.GUI_NOTIFICATION_PAGE_UNLOCKED_0));
         } else {
             // ignore
         }
@@ -1579,8 +1586,8 @@ public final class CmsContainerpageController {
         Set<String> result = new HashSet<String>();
         result.add(id);
         String serverId = id;
-        if (id.contains("#")) {
-            serverId = id.substring(0, id.indexOf("#"));
+        if (id.contains(CLIENT_ID_SEPERATOR)) {
+            serverId = id.substring(0, id.indexOf(CLIENT_ID_SEPERATOR));
         }
         Iterator<String> it = m_elements.keySet().iterator();
         while (it.hasNext()) {
