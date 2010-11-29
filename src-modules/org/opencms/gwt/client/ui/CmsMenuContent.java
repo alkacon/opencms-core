@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsMenuContent.java,v $
- * Date   : $Date: 2010/11/19 10:12:01 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/11/29 08:29:19 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,8 @@ import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -45,7 +47,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.0
  * 
@@ -90,6 +92,34 @@ public class CmsMenuContent extends PopupPanel implements I_CmsAutoHider {
 
         this();
         setWidget(content);
+    }
+
+    /**
+     * Replaces current notification widget by an overlay.<p>
+     */
+    public void catchNotifications() {
+
+        // remember current notification widget
+        final I_CmsNotificationWidget widget = CmsNotification.get().getWidget();
+        // create our own notification overlay
+        final CmsDialogNotificationWidget notificationWidget = new CmsDialogNotificationWidget();
+        getElement().appendChild(notificationWidget.getElement());
+        CmsNotification.get().setWidget(notificationWidget);
+
+        // when closing the dialog
+        addCloseHandler(new CloseHandler<PopupPanel>() {
+
+            /**
+             * @see CloseHandler#onClose(CloseEvent)
+             */
+            public void onClose(CloseEvent<PopupPanel> event) {
+
+                // restore the previous notification widget
+                CmsNotification.get().setWidget(widget);
+                // remove the overlay notification widget
+                notificationWidget.getElement().removeFromParent();
+            }
+        });
     }
 
     /**

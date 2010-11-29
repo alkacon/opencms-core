@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsSitemapHoverbar.java,v $
- * Date   : $Date: 2010/11/18 15:32:41 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/11/29 08:26:25 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,8 +42,8 @@ import java.util.Iterator;
 
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOverEvent;
-import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -52,14 +52,14 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 8.0.0
  */
 public final class CmsSitemapHoverbar extends FlowPanel {
 
-    /** The handler manager. */
-    private HandlerManager m_handlerManager;
+    /** The event bus. */
+    private SimpleEventBus m_eventBus;
 
     /** The sitemap controller. */
     private CmsSitemapController m_controller;
@@ -86,7 +86,7 @@ public final class CmsSitemapHoverbar extends FlowPanel {
 
         m_controller = controller;
         m_treeItem = treeItem;
-        m_handlerManager = new HandlerManager(this);
+        m_eventBus = new SimpleEventBus();
         m_enabled = true;
         setStyleName(I_CmsImageBundle.INSTANCE.buttonCss().hoverbar());
         if (controller.isEditable()) {
@@ -115,7 +115,7 @@ public final class CmsSitemapHoverbar extends FlowPanel {
      */
     public HandlerRegistration addShowHandler(I_CmsHoverbarShowHandler handler) {
 
-        return m_handlerManager.addHandler(CmsHoverbarShowEvent.getType(), handler);
+        return m_eventBus.addHandlerToSource(CmsHoverbarShowEvent.getType(), this, handler);
     }
 
     /**
@@ -127,7 +127,7 @@ public final class CmsSitemapHoverbar extends FlowPanel {
      */
     public HandlerRegistration addHideHandler(I_CmsHoverbarHideHandler handler) {
 
-        return m_handlerManager.addHandler(CmsHoverbarHideEvent.getType(), handler);
+        return m_eventBus.addHandlerToSource(CmsHoverbarHideEvent.getType(), this, handler);
     }
 
     /**
@@ -137,7 +137,7 @@ public final class CmsSitemapHoverbar extends FlowPanel {
 
         m_locked = false;
         setVisible(false);
-        m_handlerManager.fireEvent(new CmsHoverbarHideEvent());
+        m_eventBus.fireEventFromSource(new CmsHoverbarHideEvent(), this);
         // CmsDebugLog.getInstance().printLine("detached");
     }
 
@@ -238,7 +238,7 @@ public final class CmsSitemapHoverbar extends FlowPanel {
     protected void show() {
 
         setVisible(true);
-        m_handlerManager.fireEvent(new CmsHoverbarShowEvent());
+        m_eventBus.fireEventFromSource(new CmsHoverbarShowEvent(), this);
     }
 
     /**

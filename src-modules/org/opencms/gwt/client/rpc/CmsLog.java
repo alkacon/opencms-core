@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/rpc/Attic/CmsLog.java,v $
- * Date   : $Date: 2010/04/12 10:15:48 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/11/29 08:29:19 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,8 +35,8 @@ import org.opencms.gwt.shared.rpc.I_CmsLogService;
 import org.opencms.gwt.shared.rpc.I_CmsLogServiceAsync;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.DeferredCommand;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
@@ -44,7 +44,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
  * 
@@ -77,7 +77,7 @@ public final class CmsLog {
         final String ticket = String.valueOf(System.currentTimeMillis());
         // using a deferred command just to be more responsible 
         // since we do not expect any feed back from it
-        DeferredCommand.addCommand(new Command() {
+        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 
             /**
              * @see com.google.gwt.user.client.Command#execute()

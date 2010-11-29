@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/tree/Attic/CmsTree.java,v $
- * Date   : $Date: 2010/11/18 15:30:14 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/11/29 08:29:20 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,8 +42,8 @@ import com.google.gwt.event.logical.shared.HasOpenHandlers;
 import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.event.shared.GwtEvent;
-import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.HasAnimation;
 
@@ -54,7 +54,7 @@ import com.google.gwt.user.client.ui.HasAnimation;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.0
  */
@@ -101,8 +101,8 @@ public class CmsTree<I extends CmsTreeItem> extends CmsList<I> implements HasOpe
 
     }
 
-    /** The event handlers for the tree. */
-    protected HandlerManager m_handlers;
+    /** The event bus for the tree. */
+    protected SimpleEventBus m_eventBus;
 
     /** Flag to indicate is animations are enabled or not. */
     private boolean m_animate;
@@ -122,7 +122,7 @@ public class CmsTree<I extends CmsTreeItem> extends CmsList<I> implements HasOpe
     public CmsTree() {
 
         m_animate = false;
-        m_handlers = new HandlerManager(this);
+        m_eventBus = new SimpleEventBus();
     }
 
     /**
@@ -130,17 +130,8 @@ public class CmsTree<I extends CmsTreeItem> extends CmsList<I> implements HasOpe
      */
     public HandlerRegistration addOpenHandler(final OpenHandler<I> handler) {
 
-        m_handlers.addHandler(OpenEvent.getType(), handler);
-        return new HandlerRegistration() {
-
-            /**
-             * @see com.google.gwt.event.shared.HandlerRegistration#removeHandler()
-             */
-            public void removeHandler() {
-
-                m_handlers.removeHandler(OpenEvent.getType(), handler);
-            }
-        };
+        m_eventBus.addHandlerToSource(OpenEvent.getType(), this, handler);
+        return m_eventBus.addHandlerToSource(OpenEvent.getType(), this, handler);
     }
 
     /**
@@ -160,7 +151,7 @@ public class CmsTree<I extends CmsTreeItem> extends CmsList<I> implements HasOpe
     @Override
     public void fireEvent(GwtEvent<?> event) {
 
-        m_handlers.fireEvent(event);
+        m_eventBus.fireEventFromSource(event, this);
     }
 
     /**

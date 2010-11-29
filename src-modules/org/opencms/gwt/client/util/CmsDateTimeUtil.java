@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsDateTimeUtil.java,v $
- * Date   : $Date: 2010/03/08 15:03:43 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/11/29 08:29:19 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import com.google.gwt.i18n.client.DateTimeFormat;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0 
  * 
@@ -90,16 +90,16 @@ public final class CmsDateTimeUtil {
         DateTimeFormat df;
         switch (format) {
             case FULL:
-                df = DateTimeFormat.getFullDateFormat();
+                df = DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_FULL);
                 break;
             case LONG:
-                df = DateTimeFormat.getLongDateFormat();
+                df = DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_LONG);
                 break;
             case MEDIUM:
-                df = DateTimeFormat.getMediumDateFormat();
+                df = DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_MEDIUM);
                 break;
             case SHORT:
-                df = DateTimeFormat.getShortDateFormat();
+                df = DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_SHORT);
                 break;
             default:
                 // can never happen, just to prevent stupid warning
@@ -165,16 +165,16 @@ public final class CmsDateTimeUtil {
         DateTimeFormat df;
         switch (format) {
             case FULL:
-                df = DateTimeFormat.getFullTimeFormat();
+                df = DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.TIME_FULL);
                 break;
             case LONG:
-                df = DateTimeFormat.getLongTimeFormat();
+                df = DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.TIME_LONG);
                 break;
             case MEDIUM:
-                df = DateTimeFormat.getMediumTimeFormat();
+                df = DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.TIME_MEDIUM);
                 break;
             case SHORT:
-                df = DateTimeFormat.getShortTimeFormat();
+                df = DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.TIME_SHORT);
                 break;
             default:
                 // can never happen, just to prevent stupid warning
