@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/Attic/A_CmsToolbarMenu.java,v $
- * Date   : $Date: 2010/11/18 07:42:32 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/11/29 07:51:51 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import org.opencms.gwt.client.ui.I_CmsButton;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 8.0.0
  */
@@ -112,9 +112,9 @@ public abstract class A_CmsToolbarMenu extends CmsMenuButton implements I_CmsToo
         if (active) {
             m_handler.deactivateCurrentButton();
             m_handler.setActiveButton(this);
+            m_content.catchNotifications();
             onToolbarActivate();
             openMenu();
-
         } else {
             onToolbarDeactivate();
             closeMenu();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageController.java,v $
- * Date   : $Date: 2010/11/22 11:43:50 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2010/11/29 07:51:32 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,12 +68,12 @@ import java.util.Set;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JsArray;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.AnchorElement;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
@@ -87,7 +87,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.31 $
+ * @version $Revision: 1.32 $
  * 
  * @since 8.0.0
  */
@@ -664,7 +664,7 @@ public final class CmsContainerpageController {
     public void getElement(final String clientId, final I_CmsSimpleCallback<CmsContainerElementData> callback) {
 
         if (m_elements.containsKey(clientId)) {
-            DeferredCommand.addCommand(new Command() {
+            Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 
                 /**
                  * @see com.google.gwt.user.client.Command#execute()
@@ -888,6 +888,7 @@ public final class CmsContainerpageController {
             @Override
             public void execute() {
 
+                start(200, true);
                 getContainerpageService().getFavoriteList(getCurrentUri(), m_containerBeans, this);
             }
 
@@ -897,6 +898,7 @@ public final class CmsContainerpageController {
             @Override
             protected void onResponse(List<CmsContainerElementData> result) {
 
+                stop(false);
                 callback.execute(result);
             }
         };
@@ -918,6 +920,7 @@ public final class CmsContainerpageController {
             @Override
             public void execute() {
 
+                start(200, true);
                 getContainerpageService().getRecentList(getCurrentUri(), m_containerBeans, this);
             }
 
@@ -927,6 +930,7 @@ public final class CmsContainerpageController {
             @Override
             protected void onResponse(List<CmsContainerElementData> result) {
 
+                stop(false);
                 callback.execute(result);
             }
         };
