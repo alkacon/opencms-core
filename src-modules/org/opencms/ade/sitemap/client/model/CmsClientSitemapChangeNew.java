@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeNew.java,v $
- * Date   : $Date: 2010/11/29 10:33:35 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2010/11/29 15:51:09 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 8.0.0
  */
@@ -110,13 +110,8 @@ public class CmsClientSitemapChangeNew implements I_CmsClientSitemapChange {
     public void applyToView(CmsSitemapView view) {
 
         CmsSitemapTreeItem newParent = view.getTreeItem(CmsResource.getParentFolder(getEntry().getSitePath()));
-        CmsSitemapTreeItem newChild = (m_treeItem != null ? m_treeItem : view.create(
-            getEntry(),
-            getEntry().getSitePath()));
-        if (m_treeItem == null) {
-            newChild.clearChildren();
-            newChild.onFinishLoading();
-        }
+        getEntry().setChildrenLoadedInitially();
+        CmsSitemapTreeItem newChild = (m_treeItem != null ? m_treeItem : view.createSitemapItem(getEntry()));
         if (getEntry().getPosition() != -1) {
             newParent.insertChild(newChild, getEntry().getPosition());
         } else {

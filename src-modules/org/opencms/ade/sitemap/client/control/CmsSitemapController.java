@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2010/11/29 10:33:35 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2010/11/29 15:51:09 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,6 +71,7 @@ import org.opencms.xml.sitemap.properties.CmsSimplePropertyValue;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -87,7 +88,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.31 $ 
+ * @version $Revision: 1.32 $ 
  * 
  * @since 8.0.0
  */
@@ -398,12 +399,40 @@ public class CmsSitemapController {
      * 
      * @param newEntry the new entry
      */
-    public void create(CmsClientSitemapEntry newEntry) {
+    public void create(final CmsClientSitemapEntry newEntry) {
 
         assert (getEntry(newEntry.getSitePath()) == null);
         assert (getEntry(CmsResource.getParentFolder(newEntry.getSitePath())) != null);
         newEntry.setEditStatus(EditStatus.created);
-        addChange(new CmsClientSitemapChangeNew(newEntry), false);
+        if (newEntry.getId() == null) {
+            // get a new valid UUID from server
+            CmsRpcAction<CmsUUID> action = new CmsRpcAction<CmsUUID>() {
+
+                /**
+                 * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+                 */
+                @Override
+                public void execute() {
+
+                    start(0, true);
+                    CmsCoreProvider.getService().createUUID(this);
+                }
+
+                /**
+                 * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+                 */
+                @Override
+                protected void onResponse(CmsUUID result) {
+
+                    stop(false);
+                    newEntry.setId(result);
+                    addChange(new CmsClientSitemapChangeNew(newEntry), false);
+                }
+            };
+            action.execute();
+        } else {
+            addChange(new CmsClientSitemapChangeNew(newEntry), false);
+        }
     }
 
     /**
@@ -1022,10 +1051,15 @@ public class CmsSitemapController {
 
         for (CmsClientSitemapEntry child : parent.getSubEntries()) {
             if (child.getSubEntries().size() == 0) {
-                for (CmsClientSitemapEntry closed : loadedEntries) {
+                Iterator<CmsClientSitemapEntry> it = loadedEntries.iterator();
+                while (it.hasNext()) {
+                    CmsClientSitemapEntry closed = it.next();
                     if (closed.getId().equals(child.getId())) {
                         child.setSubEntries(closed.getSubEntries());
-                        loadedEntries.remove(closed);
+                        for (CmsClientSitemapEntry grandChild : closed.getSubEntries()) {
+                            CmsSitemapView.getInstance().createSitemapItem(grandChild);
+                        }
+                        it.remove();
                     }
                 }
             } else {
@@ -1123,7 +1157,7 @@ public class CmsSitemapController {
         for (CmsClientSitemapEntry child : entry.getSubEntries()) {
             recomputeProperties(child, myState);
         }
-        CmsSitemapView.getInstance().getTreeItem(entry.getSitePath());
+        //CmsSitemapView.getInstance().getTreeItem(entry.getSitePath());
     }
 
     /**

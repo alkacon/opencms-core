@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeDelete.java,v $
- * Date   : $Date: 2010/11/29 10:33:35 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/11/29 15:51:09 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,7 @@ import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.client.toolbar.CmsToolbarClipboardView;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.file.CmsResource;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.sitemap.CmsSitemapChangeDelete;
 import org.opencms.xml.sitemap.I_CmsSitemapChange;
 import org.opencms.xml.sitemap.I_CmsSitemapChange.Type;
@@ -49,7 +50,7 @@ import java.util.List;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 8.0.0
  */
@@ -108,8 +109,11 @@ public class CmsClientSitemapChangeDelete implements I_CmsClientSitemapChange {
         CmsClientSitemapEntry deleteParent = controller.getEntry(CmsResource.getParentFolder(getEntry().getSitePath()));
         deleteParent.removeSubEntry(getEntry().getPosition());
         // apply to clipboard model
-        List<CmsClientSitemapEntry> deleted = controller.getData().getClipboardData().getDeletions();
-        deleted.add(0, getEntry());
+        if (!(getEntry().isNew() && CmsStringUtil.isEmptyOrWhitespaceOnly(getEntry().getVfsPath()))) {
+            // only add deleted entries to the deleted list, that do have a linked vfs path
+            List<CmsClientSitemapEntry> deleted = controller.getData().getClipboardData().getDeletions();
+            deleted.add(0, getEntry());
+        }
         removeDeletedFromModified(getEntry(), controller.getData().getClipboardData().getModifications());
     }
 

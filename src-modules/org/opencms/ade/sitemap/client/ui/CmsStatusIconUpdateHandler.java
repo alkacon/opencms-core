@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/ui/Attic/CmsStatusIconUpdateHandler.java,v $
- * Date   : $Date: 2010/11/29 10:33:35 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/11/29 15:51:09 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,8 +32,8 @@
 package org.opencms.ade.sitemap.client.ui;
 
 import org.opencms.ade.sitemap.client.CmsSitemapTreeItem;
-import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.CmsSitemapTreeItem.StatusIcon;
+import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.control.I_CmsPropertyUpdateHandler;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.xml.sitemap.CmsSitemapManager;
@@ -47,7 +47,7 @@ import java.util.Map;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -74,4 +74,5 @@ public class CmsStatusIconUpdateHandler implements I_CmsPropertyUpdateHandler {
         }
         item.setStatus(icon);
     }
+
 }

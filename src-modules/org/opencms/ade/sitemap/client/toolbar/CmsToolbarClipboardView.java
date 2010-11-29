@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/toolbar/Attic/CmsToolbarClipboardView.java,v $
- * Date   : $Date: 2010/11/29 08:25:32 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/11/29 15:51:09 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,6 +44,7 @@ import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
+import org.opencms.util.CmsStringUtil;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -53,7 +54,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -144,9 +145,11 @@ public class CmsToolbarClipboardView {
      */
     public void addDeleted(CmsClientSitemapEntry entry) {
 
-        removeDeleted(entry.getId().toString());
+        if (!(entry.isNew() && CmsStringUtil.isEmptyOrWhitespaceOnly(entry.getVfsPath()))) {
+            removeDeleted(entry.getId().toString());
+            getDeleted().insertItem(createDeletedItem(entry), 0);
+        }
         removeModified(entry.getId().toString());
-        getDeleted().insertItem(createDeletedItem(entry), 0);
     }
 
     /**

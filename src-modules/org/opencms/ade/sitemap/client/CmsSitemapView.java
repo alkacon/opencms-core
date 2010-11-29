@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapView.java,v $
- * Date   : $Date: 2010/11/29 10:33:36 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2010/11/29 15:51:09 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -85,7 +85,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.45 $ 
+ * @version $Revision: 1.46 $ 
  * 
  * @since 8.0.0
  */
@@ -210,6 +210,27 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler, ClosingHandler {
     }
 
     /**
+     * Creates a sitemap tree item from a client sitemap entry.<p>
+     * 
+     * @param entry the entry from which the sitemap tree item should be created 
+     * 
+     * @return the new sitemap tree item 
+     */
+    public CmsSitemapTreeItem createSitemapItem(CmsClientSitemapEntry entry) {
+
+        CmsSitemapTreeItem result = create(entry, entry.getSitePath());
+        result.clearChildren();
+        for (CmsClientSitemapEntry child : entry.getSubEntries()) {
+            CmsSitemapTreeItem childItem = createSitemapItem(child);
+            result.addChild(childItem);
+        }
+        if (entry.getChildrenLoadedInitially()) {
+            result.onFinishLoading();
+        }
+        return result;
+    }
+
+    /**
      * Ensures the given item is visible in the viewport.<p>
      * 
      * @param item the item to see
@@ -289,6 +310,7 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler, ClosingHandler {
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(name)) {
                 continue;
             }
+
             result = (CmsSitemapTreeItem)result.getChild(name);
         }
         return result;
@@ -456,27 +478,6 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler, ClosingHandler {
                 previewEvent.cancel();
             }
         });
-    }
-
-    /**
-     * Creates a sitemap tree item from a client sitemap entry.<p>
-     * 
-     * @param entry the entry from which the sitemap tree item should be created 
-     * 
-     * @return the new sitemap tree item 
-     */
-    protected CmsSitemapTreeItem createSitemapItem(CmsClientSitemapEntry entry) {
-
-        CmsSitemapTreeItem result = create(entry, entry.getSitePath());
-        result.clearChildren();
-        for (CmsClientSitemapEntry child : entry.getSubEntries()) {
-            CmsSitemapTreeItem childItem = createSitemapItem(child);
-            result.addChild(childItem);
-        }
-        if (entry.getChildrenLoadedInitially()) {
-            result.onFinishLoading();
-        }
-        return result;
     }
 
     /**
