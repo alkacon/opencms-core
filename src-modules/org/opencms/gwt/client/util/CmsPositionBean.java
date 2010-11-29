@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsPositionBean.java,v $
- * Date   : $Date: 2010/09/30 13:32:25 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/11/29 08:29:41 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import com.google.gwt.user.client.ui.UIObject;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -153,8 +153,8 @@ public class CmsPositionBean {
         boolean first = true;
         int top = 0;
         int left = 0;
-        int height = 0;
-        int width = 0;
+        int bottom = 0;
+        int right = 0;
         Element child = panel.getFirstChildElement();
         while (child != null) {
             String positioning = child.getStyle().getPosition();
@@ -164,25 +164,25 @@ public class CmsPositionBean {
                     first = false;
                     top = child.getAbsoluteTop();
                     left = child.getAbsoluteLeft();
-                    height = child.getOffsetHeight();
-                    width = child.getOffsetWidth();
+                    bottom = top + child.getOffsetHeight();
+                    right = left + child.getOffsetWidth();
                 } else {
                     int wTop = child.getAbsoluteTop();
                     top = top < wTop ? top : wTop;
                     int wLeft = child.getAbsoluteLeft();
                     left = left < wLeft ? left : wLeft;
-                    int wHeight = child.getOffsetHeight();
-                    height = height > (wTop + wHeight - top) ? height : (wTop + wHeight - top);
-                    int wWidth = child.getOffsetWidth();
-                    width = width > (wLeft + wWidth - left) ? width : (wLeft + wWidth - left);
+                    int wBottom = wTop + child.getOffsetHeight();
+                    bottom = bottom > wBottom ? bottom : wBottom;
+                    int wRight = wLeft + child.getOffsetWidth();
+                    right = right > wRight ? right : wRight;
                 }
             }
             child = child.getNextSiblingElement();
         }
         if (!first) {
             CmsPositionBean result = new CmsPositionBean();
-            result.setHeight(height);
-            result.setWidth(width);
+            result.setHeight(bottom - top);
+            result.setWidth(right - left);
             result.setTop(top);
             result.setLeft(left);
             return result;
