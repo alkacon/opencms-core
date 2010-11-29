@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsSitemapTabHandler.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/ui/Attic/CmsSpecialTabHandler.java,v $
  * Date   : $Date: 2010/11/29 10:33:35 $
- * Version: $Revision: 1.3 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,33 +29,31 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.galleries.client;
+package org.opencms.ade.sitemap.client.ui;
 
-import org.opencms.ade.galleries.shared.CmsSitemapEntryBean;
-
-import java.util.List;
-
-import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.opencms.ade.galleries.client.A_CmsTabHandler;
+import org.opencms.ade.galleries.client.CmsGalleryController;
 
 /**
- * The tab handler class for the sitemap tab.<p>
+ * Tab handler for the special sitemap-specific tab.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  */
-public class CmsSitemapTabHandler extends A_CmsTabHandler {
+public class CmsSpecialTabHandler extends A_CmsTabHandler {
 
     /**
      * Constructor.<p>
      * 
      * @param controller the gallery controller 
      */
-    public CmsSitemapTabHandler(CmsGalleryController controller) {
+    public CmsSpecialTabHandler(CmsGalleryController controller) {
 
         super(controller);
+
     }
 
     /**
@@ -64,18 +62,8 @@ public class CmsSitemapTabHandler extends A_CmsTabHandler {
     @Override
     public void clearParams() {
 
-        // nothing to do here, does not apply to the sitemap tab
-    }
+        // TODO: Auto-generated method stub
 
-    /**
-     * Retrieves the sub-entries for a given sitemap path and passes them to a callback asynchronously.<p>
-     * 
-     * @param path the path for which the sitemap entries should be retrieved 
-     * @param callback
-     */
-    public void getSubEntries(String path, AsyncCallback<List<CmsSitemapEntryBean>> callback) {
-
-        m_controller.getSitemapSubEntries(path, callback);
     }
 
     /**
@@ -84,7 +72,7 @@ public class CmsSitemapTabHandler extends A_CmsTabHandler {
     @Override
     public void onSelection() {
 
-        //do nothing
+        // TODO: Auto-generated method stub
 
     }
 
@@ -94,19 +82,8 @@ public class CmsSitemapTabHandler extends A_CmsTabHandler {
     @Override
     public void onSort(String sortParams) {
 
-        //do nothing
-    }
+        // TODO: Auto-generated method stub
 
-    /**
-     * The function that should be called when a resource is selected.<p> 
-     * 
-     * @param resourcePath the resource path 
-     * @param title the title 
-     * @param resourceType the resource type 
-     */
-    public void selectResource(String resourcePath, String title, String resourceType) {
-
-        m_controller.selectResource(resourcePath, title, resourceType);
     }
 
 }

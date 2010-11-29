@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapStructureCache.java,v $
- * Date   : $Date: 2010/11/15 15:15:13 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2010/11/29 10:33:35 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -75,7 +75,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Moossen
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 8.0.0
  */
@@ -288,7 +288,8 @@ public class CmsSitemapStructureCache extends CmsVfsCache implements I_CmsSitema
      * @return a list of sitemap entries which point to a resource with the given root path 
      * @throws CmsException if something goes wrong 
      */
-    public List<CmsInternalSitemapEntry> getEntriesByRootVfsPath(CmsObject cms, String rootPath) throws CmsException {
+    public synchronized List<CmsInternalSitemapEntry> getEntriesByRootVfsPath(CmsObject cms, String rootPath)
+    throws CmsException {
 
         getActiveSitemaps(cms);
         CmsObject adminCms = internalCreateCmsObject(cms);
@@ -303,7 +304,8 @@ public class CmsSitemapStructureCache extends CmsVfsCache implements I_CmsSitema
     /**
      * @see org.opencms.xml.sitemap.I_CmsSitemapCache#getEntriesByStructureId(org.opencms.file.CmsObject, org.opencms.util.CmsUUID)
      */
-    public List<CmsInternalSitemapEntry> getEntriesByStructureId(CmsObject cms, CmsUUID id) throws CmsException {
+    public synchronized List<CmsInternalSitemapEntry> getEntriesByStructureId(CmsObject cms, CmsUUID id)
+    throws CmsException {
 
         getActiveSitemaps(cms);
         Locale locale = cms.getRequestContext().getLocale();
@@ -325,7 +327,7 @@ public class CmsSitemapStructureCache extends CmsVfsCache implements I_CmsSitema
      * 
      * @throws CmsException if something goes wrong 
      */
-    public CmsInternalSitemapEntry getEntryById(CmsObject cms, CmsUUID id) throws CmsException {
+    public synchronized CmsInternalSitemapEntry getEntryById(CmsObject cms, CmsUUID id) throws CmsException {
 
         // ensure sitemap data is cached
         getActiveSitemaps(cms);
@@ -343,7 +345,7 @@ public class CmsSitemapStructureCache extends CmsVfsCache implements I_CmsSitema
      * 
      * @throws CmsException if something goes wrong 
      */
-    public CmsInternalSitemapEntry getEntryByUri(CmsObject cms, String uri) throws CmsException {
+    public synchronized CmsInternalSitemapEntry getEntryByUri(CmsObject cms, String uri) throws CmsException {
 
         // ensure sitemap data is cached
         getActiveSitemaps(cms);
@@ -356,7 +358,7 @@ public class CmsSitemapStructureCache extends CmsVfsCache implements I_CmsSitema
     /**
      * @see org.opencms.xml.sitemap.I_CmsSitemapCache#getEntryPoints(org.opencms.file.CmsObject)
      */
-    public Map<String, String> getEntryPoints(CmsObject cms) throws CmsException {
+    public synchronized Map<String, String> getEntryPoints(CmsObject cms) throws CmsException {
 
         getActiveSitemaps(cms);
         return Collections.unmodifiableMap(m_entryPoints);
@@ -365,7 +367,7 @@ public class CmsSitemapStructureCache extends CmsVfsCache implements I_CmsSitema
     /**
      * @see org.opencms.xml.sitemap.I_CmsSitemapCache#getExportName(java.lang.String)
      */
-    public String getExportName(String siteRoot) throws CmsException {
+    public synchronized String getExportName(String siteRoot) throws CmsException {
 
         getActiveSitemaps(internalCreateOnlineCmsObject());
         return m_exportNames.get(siteRoot);
@@ -384,7 +386,7 @@ public class CmsSitemapStructureCache extends CmsVfsCache implements I_CmsSitema
     /**
      * @see org.opencms.xml.sitemap.I_CmsSitemapCache#getSitemapForSiteRoot(org.opencms.file.CmsObject, java.lang.String)
      */
-    public String getSitemapForSiteRoot(CmsObject cms, String siteRoot) throws CmsException {
+    public synchronized String getSitemapForSiteRoot(CmsObject cms, String siteRoot) throws CmsException {
 
         getActiveSitemaps(cms);
         return m_rootSitemaps.get(siteRoot);
@@ -393,7 +395,7 @@ public class CmsSitemapStructureCache extends CmsVfsCache implements I_CmsSitema
     /**
      * @see org.opencms.xml.sitemap.I_CmsSitemapCache#getSiteRootsForExportNames()
      */
-    public Map<String, String> getSiteRootsForExportNames() throws CmsException {
+    public synchronized Map<String, String> getSiteRootsForExportNames() throws CmsException {
 
         getActiveSitemaps(internalCreateOnlineCmsObject());
         return Collections.unmodifiableMap(m_exportNamesReverse);
@@ -408,7 +410,7 @@ public class CmsSitemapStructureCache extends CmsVfsCache implements I_CmsSitema
      * 
      * @throws CmsException if something goes wrong  
      */
-    public Set<String> getSiteRootsWithSitemap(CmsObject cms) throws CmsException {
+    public synchronized Set<String> getSiteRootsWithSitemap(CmsObject cms) throws CmsException {
 
         getActiveSitemaps(cms);
         return Collections.unmodifiableSet(m_siteRoots);
@@ -445,14 +447,17 @@ public class CmsSitemapStructureCache extends CmsVfsCache implements I_CmsSitema
      */
     protected void addEntryForStructureId(CmsUUID structureId, Locale locale, CmsInternalSitemapEntry entry) {
 
-        CmsPair<CmsUUID, Locale> key = new CmsPair<CmsUUID, Locale>(structureId, locale);
+        if (structureId != null) {
 
-        List<CmsInternalSitemapEntry> entries = m_byStructureId.get(key);
-        if (entries == null) {
-            entries = new ArrayList<CmsInternalSitemapEntry>();
-            m_byStructureId.put(key, entries);
+            CmsPair<CmsUUID, Locale> key = new CmsPair<CmsUUID, Locale>(structureId, locale);
+
+            List<CmsInternalSitemapEntry> entries = m_byStructureId.get(key);
+            if (entries == null) {
+                entries = new ArrayList<CmsInternalSitemapEntry>();
+                m_byStructureId.put(key, entries);
+            }
+            entries.add(entry);
         }
-        entries.add(entry);
     }
 
     /**

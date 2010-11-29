@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/A_CmsListTab.java,v $
- * Date   : $Date: 2010/11/18 15:28:37 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/11/29 10:33:35 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.
  */
@@ -80,6 +80,9 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
 
     private static I_CmsListTabUiBinder uiBinder = GWT.create(I_CmsListTabUiBinder.class);
 
+    /** A label for displaying additional information about the tab. */
+    protected HasText m_infoLabel;
+
     /** The borded panel to hold the scrollable list. */
     @UiField
     protected ScrollPanel m_list;
@@ -98,15 +101,22 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
     /** The select box to change the sort order. */
     private CmsSelectBox m_sortSelectBox;
 
-    /** A label for displaying additional information about the tab. */
-    protected HasText m_infoLabel;
-
     /**
      * The default constructor with drag handler.<p>
      * 
      * @param tabId the tab id 
      */
     public A_CmsListTab(GalleryTabId tabId) {
+
+        this(tabId.name());
+    }
+
+    /**
+     * Sets up a list tab with a given tab id.<p>
+     *  
+     * @param tabId the tab id 
+     */
+    public A_CmsListTab(String tabId) {
 
         super(tabId);
         uiBinder.createAndBindUi(this);
@@ -128,7 +138,6 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
         }
         m_scrollList = createScrollList();
         m_list.add(m_scrollList);
-
     }
 
     // TODO: add the search parameter display button

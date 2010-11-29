@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/Attic/Messages.java,v $
- * Date   : $Date: 2010/11/22 11:43:50 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2010/11/29 10:33:36 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.client.util.CmsMessages;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 8.0.0
  */
@@ -103,6 +103,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_GALLERY_SELECT_DIALOG_TITLE_0 = "GUI_GALLERY_SELECT_DIALOG_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LINK_CHECKBOX_EXTERNAL_0 = "GUI_LINK_CHECKBOX_EXTERNAL_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOADING_0 = "GUI_LOADING_0";
@@ -193,7 +196,6 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_YES_0 = "GUI_YES_0";
-
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.gwt.clientmessages";
 
@@ -201,7 +203,7 @@ public final class Messages {
     private static CmsMessages INSTANCE;
 
     /**
-     * Hides the public constructor for this utility class.<p>
+     * Hides the public constructor for this utility class.<p> 
      */
     private Messages() {
 

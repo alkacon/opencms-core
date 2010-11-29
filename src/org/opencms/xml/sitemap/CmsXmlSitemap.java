@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsXmlSitemap.java,v $
- * Date   : $Date: 2010/11/12 07:05:51 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2010/11/29 10:33:35 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -95,7 +95,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.42 $ 
+ * @version $Revision: 1.43 $ 
  * 
  * @since 7.5.2
  * 
@@ -488,6 +488,18 @@ public class CmsXmlSitemap extends CmsXmlContent {
     }
 
     /**
+     * Returns true if the sitemap change is going to create a redirect.<p>
+     * 
+     * @param change the sitemap change 
+     * @return true if the change will create a redirect
+     */
+    public boolean isCreatingRedirect(CmsSitemapChangeNew change) {
+
+        Map<String, CmsSimplePropertyValue> props = change.getProperties();
+        return (props.containsKey(CmsSitemapManager.Property.isRedirect.getName()));
+    }
+
+    /**
      * @see org.opencms.xml.A_CmsXmlDocument#validateXmlStructure(org.xml.sax.EntityResolver)
      */
     @Override
@@ -795,11 +807,11 @@ public class CmsXmlSitemap extends CmsXmlContent {
         Element vfsFile = entryElement.addElement(XmlNode.VfsFile.name());
         String vfsPath = change.getVfsPath();
         CmsResource resource = null;
-        if (vfsPath == null) {
+        if ((vfsPath == null) && !isCreatingRedirect(change)) {
             // We don't create the resource now because subsequent changes may change the entry's name or delete it.
             // Only after all the other changes are processed, we create the resources for new entries.
             m_newEntryElements.add(entryElement);
-        } else {
+        } else if (!isCreatingRedirect(change)) {
             resource = cms.readResource(vfsPath);
         }
         if (resource != null) {

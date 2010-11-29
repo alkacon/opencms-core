@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/super_src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2010/05/12 09:21:20 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/11/29 10:33:35 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ package org.opencms.xml.sitemap;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 7.9.2
  */
@@ -54,7 +54,9 @@ public class CmsSitemapManager {
         /** <code>template</code> property name. */
         template("template"),
         /** <code>template-inhertited</code> property name. */
-        templateInherited("template-inherited");
+         templateInherited("template-inherited"),
+        internalRedirect("internalRedirect"), externalRedirect(
+        "externalRedirect"), isRedirect("isRedirect");
 
         /** The name of the property. */
         private final String m_name;

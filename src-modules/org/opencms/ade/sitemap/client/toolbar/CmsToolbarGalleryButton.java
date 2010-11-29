@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/toolbar/Attic/CmsToolbarGalleryButton.java,v $
- * Date   : $Date: 2010/11/15 16:05:19 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/11/29 10:33:35 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,8 +32,12 @@
 package org.opencms.ade.sitemap.client.toolbar;
 
 import org.opencms.ade.galleries.client.CmsGalleryFactory;
+import org.opencms.ade.galleries.client.ui.CmsGalleryDialog;
 import org.opencms.ade.sitemap.client.CmsSitemapView;
+import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
+import org.opencms.ade.sitemap.client.ui.CmsSpecialTab;
+import org.opencms.ade.sitemap.client.ui.CmsSpecialTabHandler;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.CmsMenuButton;
 import org.opencms.gwt.client.ui.I_CmsButton;
@@ -49,7 +53,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -106,9 +110,17 @@ public class CmsToolbarGalleryButton extends CmsMenuButton implements I_CmsToolb
 
                 SimplePanel tabsContainer = new SimplePanel();
                 tabsContainer.addStyleName(I_CmsLayoutBundle.INSTANCE.clipboardCss().menuTabContainer());
-                tabsContainer.add(CmsGalleryFactory.createDialog(
+                CmsGalleryDialog gallery = CmsGalleryFactory.createDialog(
                     CmsSitemapView.getInstance().getTree().getDnDHandler(),
-                    m_content));
+                    m_content);
+                CmsSpecialTab special = new CmsSpecialTab(
+                    new CmsSpecialTabHandler(gallery.getController()),
+                    CmsSitemapView.getInstance().getTree().getDnDHandler());
+
+                String tabTitle = Messages.get().key(Messages.GUI_SPECIAL_TAB_TITLE_0);
+                gallery.addTab(special, tabTitle);
+                tabsContainer.add(gallery);
+
                 m_contentPanel = new FlowPanel();
                 m_contentPanel.setStyleName(I_CmsLayoutBundle.INSTANCE.clipboardCss().menuContent());
                 m_contentPanel.add(tabsContainer);

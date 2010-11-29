@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapView.java,v $
- * Date   : $Date: 2010/11/29 08:25:32 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2010/11/29 10:33:36 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,9 +60,11 @@ import org.opencms.gwt.client.ui.tree.A_CmsDeepLazyOpenHandler;
 import org.opencms.gwt.client.ui.tree.CmsLazyTree;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
 import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.gwt.shared.CmsLinkBean;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsPair;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.xml.sitemap.CmsSitemapManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -83,7 +85,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.44 $ 
+ * @version $Revision: 1.45 $ 
  * 
  * @since 8.0.0
  */
@@ -134,6 +136,7 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler, ClosingHandler {
             shownPath = "-";
         }
         infoBean.addAdditionalInfo(Messages.get().key(Messages.GUI_VFS_PATH_0), shownPath);
+
         CmsInfoLoadingListItemWidget itemWidget = new CmsInfoLoadingListItemWidget(infoBean);
         final CmsSitemapTreeItem treeItem = new CmsSitemapTreeItem(itemWidget, entry, originalPath);
         itemWidget.setAdditionalInfoLoader(new I_AdditionalInfoLoader() {
@@ -141,9 +144,20 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler, ClosingHandler {
             public void load(final AsyncCallback<List<AdditionalInfoItem>> callback) {
 
                 if (entry.getVfsPath() == null) {
-
+                    List<AdditionalInfoItem> infoItems = new ArrayList<AdditionalInfoItem>();
                     AdditionalInfoItem item = createResourceStateInfo(CmsResourceState.STATE_NEW);
-                    callback.onSuccess(Collections.<AdditionalInfoItem> singletonList(item));
+                    infoItems.add(item);
+                    if (entry.getOwnProperty(CmsSitemapManager.Property.isRedirect.getName()) != null) {
+                        CmsLinkBean link = entry.getRedirectInfo();
+                        String target = "-";
+                        if (link != null) {
+                            target = link.getLink();
+                        }
+                        String title = Messages.get().key(Messages.GUI_ADDINFO_REDIRECT_0);
+                        AdditionalInfoItem redirectInfo = new AdditionalInfoItem(title, target, null);
+                        infoItems.add(redirectInfo);
+                    }
+                    callback.onSuccess(infoItems);
                 } else {
                     CmsCoreProvider.get().getResourceState(entry.getVfsPath(), new AsyncCallback<CmsResourceState>() {
 

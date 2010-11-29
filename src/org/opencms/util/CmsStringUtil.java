@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
- * Date   : $Date: 2010/10/28 07:38:56 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/11/29 10:33:36 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * @author  Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -730,6 +730,25 @@ public final class CmsStringUtil {
     public static boolean isNotEmptyOrWhitespaceOnly(String value) {
 
         return (value != null) && (value.trim().length() > 0);
+    }
+
+    /**
+     * Checks whether one path is a prefix path of another, i.e. its path components are 
+     * the initial path components of the second path.<p>
+     * 
+     * It is not enough to just use {@link String#startsWith}, because we want /foo/bar to 
+     * be a prefix path of  /foo/bar/baz, but not of /foo/bar42.<p>
+     *  
+     * @param firstPath the first path 
+     * @param secondPath the second path 
+     * 
+     * @return true if the first path is a prefix path of the second path 
+     */
+    public static boolean isPrefixPath(String firstPath, String secondPath) {
+
+        firstPath = CmsStringUtil.joinPaths(firstPath, "/");
+        secondPath = CmsStringUtil.joinPaths(secondPath, "/");
+        return secondPath.startsWith(firstPath);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapResourceHandler.java,v $
- * Date   : $Date: 2010/10/20 15:22:48 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2010/11/29 10:33:35 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,10 +41,17 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.CmsResourceInitException;
 import org.opencms.main.I_CmsResourceInit;
 import org.opencms.main.OpenCms;
+import org.opencms.relations.CmsLink;
+import org.opencms.relations.CmsRelationType;
 import org.opencms.security.CmsPermissionViolationException;
 import org.opencms.site.CmsSite;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
+import org.opencms.xml.sitemap.properties.CmsSimplePropertyValue;
+
+import java.io.IOException;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -56,7 +63,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 7.9.2
  */
@@ -97,6 +104,11 @@ public class CmsSitemapResourceHandler implements I_CmsResourceInit {
             if ((entry == null) || entry.isVfs()) {
                 return resource;
             }
+
+            if (entry.isRedirect()) {
+                handleSitemapRedirect(cms, res, entry);
+            }
+
             // read the resource
             resource = cms.readResource(entry.getStructureId());
             if (resource != null) {
@@ -123,11 +135,9 @@ public class CmsSitemapResourceHandler implements I_CmsResourceInit {
                         try {
                             secureUrl = site.getSecureUrl();
                         } catch (Exception e) {
-                            LOG.error(
-                                Messages.get().getBundle().key(
-                                    org.opencms.main.Messages.ERR_SECURE_SITE_NOT_CONFIGURED_1,
-                                    resource.getRootPath()),
-                                e);
+                            LOG.error(Messages.get().getBundle().key(
+                                org.opencms.main.Messages.ERR_SECURE_SITE_NOT_CONFIGURED_1,
+                                resource.getRootPath()), e);
                             throw new CmsException(Messages.get().container(
                                 org.opencms.main.Messages.ERR_SECURE_SITE_NOT_CONFIGURED_1,
                                 resource.getRootPath()), e);
@@ -163,6 +173,8 @@ public class CmsSitemapResourceHandler implements I_CmsResourceInit {
         } catch (CmsPermissionViolationException e) {
             // trigger the permission denied handler
             throw e;
+        } catch (CmsResourceInitException e) {
+            throw e;
         } catch (Throwable e) {
             String uri = cms.getRequestContext().getUri();
             CmsMessageContainer msg = Messages.get().container(Messages.ERR_SITEMAP_1, uri);
@@ -170,5 +182,42 @@ public class CmsSitemapResourceHandler implements I_CmsResourceInit {
             throw new CmsResourceInitException(msg, e);
         }
         return resource;
+    }
+
+    /**
+     * Handles a request to a sitemap entry which has a redirect.<p>
+     *     
+     * @param cms the CMS context 
+     * @param res the response 
+     * @param entry the sitemap entry
+     *  
+     * @throws IOException if something goes wrong 
+     * @throws CmsResourceInitException if the redirect succeeds 
+     */
+    private void handleSitemapRedirect(CmsObject cms, HttpServletResponse res, CmsSitemapEntry entry)
+    throws IOException, CmsResourceInitException {
+
+        Map<String, String> props = entry.getProperties();
+        String extKey = CmsSitemapManager.Property.externalRedirect.getName();
+        String intKey = CmsSitemapManager.Property.internalRedirect.getName();
+        String extProp = props.get(extKey);
+        String intProp = props.get(intKey);
+        boolean hasInt = !CmsStringUtil.isEmptyOrWhitespaceOnly(intProp);
+        CmsLink actualLink = null;
+
+        String target = "";
+        if (hasInt) {
+            CmsUUID structureId = new CmsUUID(intProp);
+            // use "abcd" as a dummy URI so that the link URI if filled in correctly given the structure id  
+            actualLink = new CmsLink(null, CmsRelationType.HYPERLINK, structureId, "abcd", true);
+        } else {
+            actualLink = new CmsLink(null, CmsRelationType.HYPERLINK, null, extProp, false);
+        }
+        target = actualLink.getLink(cms);
+        res.sendRedirect(target);
+        throw new CmsResourceInitException(new CmsMessageContainer(
+            Messages.get(),
+            Messages.LOG_SITEMAP_REDIRECT_1,
+            target));
     }
 }

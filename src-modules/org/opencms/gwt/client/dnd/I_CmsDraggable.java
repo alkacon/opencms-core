@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/dnd/Attic/I_CmsDraggable.java,v $
- * Date   : $Date: 2010/09/14 14:22:30 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/11/29 10:33:36 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import com.google.gwt.dom.client.Element;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -82,6 +82,15 @@ public interface I_CmsDraggable {
      * @return the drag placeholder element
      */
     Element getPlaceholder(I_CmsDropTarget target);
+
+    /**
+     * Checks whether the drag item has a given tag.<p>
+     * 
+     * @param tag the tag to check
+     *  
+     * @return true if the drag item has the tag 
+     */
+    boolean hasTag(String tag);
 
     /**
      * Executed on drag cancel.<p>

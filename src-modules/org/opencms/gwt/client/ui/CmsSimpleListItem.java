@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsSimpleListItem.java,v $
- * Date   : $Date: 2010/09/14 14:22:47 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/11/29 10:33:35 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Michael Moossen
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -131,6 +131,14 @@ public class CmsSimpleListItem extends Composite implements I_CmsListItem {
     public Widget getWidget(int index) {
 
         return m_panel.getWidget(index);
+    }
+
+    /**
+     * @see org.opencms.gwt.client.dnd.I_CmsDraggable#hasTag(java.lang.String)
+     */
+    public boolean hasTag(String tag) {
+
+        return false;
     }
 
     /**

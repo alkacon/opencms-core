@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapEntry.java,v $
- * Date   : $Date: 2010/11/11 13:08:18 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2010/11/29 10:33:35 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 7.6 
  */
@@ -112,16 +112,6 @@ public class CmsSitemapEntry {
             entry.getComputedProperties(),
             entry.getContentId(),
             entry.getContentName());
-    }
-
-    /**
-     * Returns the URL name of the content, for detail pages.<p>
-     *  
-     * @return the name of the content 
-     */
-    public String getContentName() {
-
-        return m_contentName;
     }
 
     /**
@@ -206,6 +196,16 @@ public class CmsSitemapEntry {
     public CmsUUID getContentId() {
 
         return m_contentId;
+    }
+
+    /**
+     * Returns the URL name of the content, for detail pages.<p>
+     *  
+     * @return the name of the content 
+     */
+    public String getContentName() {
+
+        return m_contentName;
     }
 
     /**
@@ -385,6 +385,16 @@ public class CmsSitemapEntry {
     public int hashCode() {
 
         return m_id.hashCode();
+    }
+
+    /**
+     * Returns true if this sitemap entry is a redirect.<p>
+     * 
+     * @return true if this sitemap entry is a redirect 
+     */
+    public boolean isRedirect() {
+
+        return ((m_structureId == null) && (m_newProperties.containsKey(CmsSitemapManager.Property.isRedirect.getName())));
     }
 
     /**

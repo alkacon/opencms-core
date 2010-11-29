@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeDelete.java,v $
- * Date   : $Date: 2010/11/29 08:25:32 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/11/29 10:33:35 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,6 +41,7 @@ import org.opencms.xml.sitemap.CmsSitemapChangeDelete;
 import org.opencms.xml.sitemap.I_CmsSitemapChange;
 import org.opencms.xml.sitemap.I_CmsSitemapChange.Type;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -48,7 +49,7 @@ import java.util.List;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.0
  */
@@ -127,19 +128,19 @@ public class CmsClientSitemapChangeDelete implements I_CmsClientSitemapChange {
     }
 
     /**
-     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#getChangeForCommit()
-     */
-    public I_CmsSitemapChange getChangeForCommit() {
-
-        return new CmsSitemapChangeDelete(m_eventSitePath);
-    }
-
-    /**
      * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#getChangeForUndo()
      */
     public I_CmsClientSitemapChange getChangeForUndo() {
 
         return this;
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#getChangesForCommit()
+     */
+    public List<I_CmsSitemapChange> getChangesForCommit() {
+
+        return Collections.<I_CmsSitemapChange> singletonList(new CmsSitemapChangeDelete(m_eventSitePath));
     }
 
     /**

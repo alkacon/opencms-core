@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeEdit.java,v $
- * Date   : $Date: 2010/09/09 15:02:20 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/11/29 10:33:35 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,12 +40,15 @@ import org.opencms.xml.sitemap.CmsSitemapChangeEdit;
 import org.opencms.xml.sitemap.I_CmsSitemapChange;
 import org.opencms.xml.sitemap.I_CmsSitemapChange.Type;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Stores one edition change to the sitemap.<p> 
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
@@ -109,6 +112,7 @@ public class CmsClientSitemapChangeEdit implements I_CmsClientSitemapChange {
         editEntry.setVfsPath(getNewEntry().getVfsPath());
         editEntry.setProperties(getNewEntry().getProperties());
         editEntry.setNew(getNewEntry().isNew());
+        controller.getRedirectUpdater().handleSave(editEntry);
     }
 
     /**
@@ -124,24 +128,25 @@ public class CmsClientSitemapChangeEdit implements I_CmsClientSitemapChange {
     }
 
     /**
-     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#getChangeForCommit()
-     */
-    public I_CmsSitemapChange getChangeForCommit() {
-
-        // using the old entries site path, as the new entry may have been moved in the mean time
-        return new CmsSitemapChangeEdit(
-            getOldEntry().getSitePath(),
-            getNewEntry().getTitle(),
-            getNewEntry().getVfsPath(),
-            getNewEntry().getProperties());
-    }
-
-    /**
      * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#getChangeForUndo()
      */
     public I_CmsClientSitemapChange getChangeForUndo() {
 
         return this;
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#getChangesForCommit()
+     */
+    public List<I_CmsSitemapChange> getChangesForCommit() {
+
+        // using the old entries site path, as the new entry may have been moved in the mean time
+
+        return Collections.<I_CmsSitemapChange> singletonList(new CmsSitemapChangeEdit(
+            getOldEntry().getSitePath(),
+            getNewEntry().getTitle(),
+            getNewEntry().getVfsPath(),
+            getNewEntry().getProperties()));
     }
 
     /**

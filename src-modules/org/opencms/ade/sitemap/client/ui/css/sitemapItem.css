@@ -67,4 +67,10 @@
 	margin-left: 3px;  
 }
 
+@sprite .redirect { 
+	gwt-image: "images.iconRedirect";
+	margin-top: 3px;
+	margin-left: 3px;
+}
+
 

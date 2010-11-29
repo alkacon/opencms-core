@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/edit/Attic/CmsSitemapEntryEditor.java,v $
- * Date   : $Date: 2010/10/18 12:19:33 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2010/11/29 10:33:36 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,7 @@ import org.opencms.ade.sitemap.client.ui.CmsTemplateSelectBox;
 import org.opencms.ade.sitemap.client.ui.CmsTemplateSelectCell;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsSitemapTemplate;
+import org.opencms.gwt.client.ui.input.CmsLinkSelector;
 import org.opencms.gwt.client.ui.input.CmsTextBox;
 import org.opencms.gwt.client.ui.input.I_CmsFormField;
 import org.opencms.gwt.client.ui.input.I_CmsFormWidget;
@@ -46,6 +47,7 @@ import org.opencms.gwt.client.ui.input.form.CmsForm;
 import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
 import org.opencms.gwt.client.ui.input.form.CmsFormRow;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormHandler;
+import org.opencms.gwt.shared.CmsLinkBean;
 import org.opencms.util.CmsPair;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.CmsXmlContentProperty;
@@ -66,7 +68,7 @@ import java.util.Set;
  * 
  *  @author Georg Westenberger
  *  
- *  @version $Revision: 1.15 $
+ *  @version $Revision: 1.16 $
  *  
  *  @since 8.0.0
  */
@@ -90,6 +92,9 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
     /** The key for the default template. */
     private static final String DEFAULT_TEMPLATE_VALUE = "";
 
+    /** The field id for the link selector widget. */
+    private static final String FIELD_LINK = "field_link";
+
     /** The field id of the 'template' property. */
     private static final String FIELD_TEMPLATE = "template";
 
@@ -107,6 +112,9 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
 
     /** The handler for this sitemap entry editor. */
     protected I_CmsSitemapEntryEditorHandler m_handler;
+
+    /** The link selector widget. */
+    protected CmsLinkSelector m_linkSelector = new CmsLinkSelector();
 
     /** The configuration of the properties. */
     private Map<String, CmsXmlContentProperty> m_propertyConfig;
@@ -141,6 +149,9 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
                     return;
                 }
                 final String urlNameValue = getAndRemoveValue(fieldValues, FIELD_URLNAME);
+                fieldValues.remove(FIELD_LINK);
+                final CmsLinkBean link = m_linkSelector.getLinkBean();
+                CmsClientSitemapEntry.setRedirect(fieldValues, link);
                 simpleProps = convertProperties(fieldValues);
                 m_handler.handleSubmit(
                     titleValue,
@@ -223,9 +234,16 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
         form.addField(titleField);
 
         CmsClientSitemapEntry entry = m_handler.getEntry();
+        boolean isRedirect = entry.getProperties().containsKey(CmsSitemapManager.Property.isRedirect.getName());
+        if (isRedirect) {
+            CmsBasicFormField linkField = createLinkField();
+            form.addField(linkField);
+        }
         Collection<CmsXmlContentProperty> propertyDefs = m_propertyConfig.values();
-
         for (CmsXmlContentProperty propDef : propertyDefs) {
+            if (propDef.getPropertyName().equals(CmsSitemapManager.Property.template.getName()) && isRedirect) {
+                continue;
+            }
             addFieldForProperty(propDef, entry);
         }
 
@@ -409,6 +427,22 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
             return createTemplateField();
         }
         return CmsBasicFormField.createField(propDef);
+    }
+
+    /**
+     * Creates the field for editing the redirect target.<p>
+     *  
+     * @return the new field 
+     */
+    private CmsBasicFormField createLinkField() {
+
+        CmsClientSitemapEntry entry = m_handler.getEntry();
+
+        String description = Messages.get().key(Messages.GUI_REDIRECTION_FIELD_DESCRIPTION_0);
+        String label = Messages.get().key(Messages.GUI_REDIRECTION_FIELD_LABEL_0);
+        m_linkSelector.setLinkBean(entry.getRedirectInfo());
+        CmsBasicFormField result = new CmsBasicFormField(FIELD_LINK, description, label, null, m_linkSelector, false);
+        return result;
     }
 
     /**

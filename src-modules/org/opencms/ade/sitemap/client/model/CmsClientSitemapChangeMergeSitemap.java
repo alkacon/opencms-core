@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeMergeSitemap.java,v $
- * Date   : $Date: 2010/06/24 09:05:25 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/11/29 10:33:35 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,12 +41,14 @@ import org.opencms.xml.sitemap.CmsSitemapManager;
 import org.opencms.xml.sitemap.I_CmsSitemapChange;
 import org.opencms.xml.sitemap.I_CmsSitemapChange.Type;
 
+import java.util.List;
+
 /**
  * This class represents the change of merging a sub-sitemap back into a parent sitemap.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -112,17 +114,17 @@ public class CmsClientSitemapChangeMergeSitemap implements I_CmsClientSitemapCha
     }
 
     /**
-     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#getChangeForCommit()
+     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#getChangeForUndo()
      */
-    public I_CmsSitemapChange getChangeForCommit() {
+    public I_CmsClientSitemapChange getChangeForUndo() {
 
         throw new UnsupportedOperationException();
     }
 
     /**
-     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#getChangeForUndo()
+     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#getChangesForCommit()
      */
-    public I_CmsClientSitemapChange getChangeForUndo() {
+    public List<I_CmsSitemapChange> getChangesForCommit() {
 
         throw new UnsupportedOperationException();
     }

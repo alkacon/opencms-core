@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItem.java,v $
- * Date   : $Date: 2010/11/22 13:50:23 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2010/11/29 10:33:35 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,8 +42,10 @@ import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsListItemCss;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.util.CmsDomUtil;
 
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
@@ -61,7 +63,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.30 $
+ * @version $Revision: 1.31 $
  *  
  * @since 8.0.0 
  */
@@ -145,7 +147,11 @@ public class CmsListItem extends Composite implements I_CmsListItem {
     /** The list item widget, if this widget has one. */
     private CmsListItemWidget m_listItemWidget;
 
+    /** The move handle. */
     private MoveHandle m_moveHandle;
+
+    /** The list item's set of tags. */
+    private Set<String> m_tags;
 
     /** 
      * Default constructor.<p>
@@ -184,6 +190,19 @@ public class CmsListItem extends Composite implements I_CmsListItem {
     public void add(Widget w) {
 
         throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Adds a tag to the widget.<p>
+     * 
+     * @param tag the tag which should be added 
+     */
+    public void addTag(String tag) {
+
+        if (m_tags == null) {
+            m_tags = new HashSet<String>();
+        }
+        m_tags.add(tag);
     }
 
     /**
@@ -304,6 +323,14 @@ public class CmsListItem extends Composite implements I_CmsListItem {
             m_placeholder = cloneForPlaceholder(this);
         }
         return m_placeholder;
+    }
+
+    /**
+     * @see org.opencms.gwt.client.dnd.I_CmsDraggable#hasTag(java.lang.String)
+     */
+    public boolean hasTag(String tag) {
+
+        return (m_tags != null) && m_tags.contains(tag);
     }
 
     /**
@@ -499,6 +526,9 @@ public class CmsListItem extends Composite implements I_CmsListItem {
         initContent();
     }
 
+    /**
+     * Called when a drag operation for this widget is stopped.<p>
+     */
     private void clearDrag() {
 
         if (m_helper != null) {

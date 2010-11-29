@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsTextBox.java,v $
- * Date   : $Date: 2010/10/29 12:18:21 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2010/11/29 10:33:35 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import com.google.gwt.user.client.ui.TextBox;
  * @author Georg Westenberger
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * 
  * @since 8.0.0
  * 
@@ -333,6 +333,21 @@ HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
         }
         m_textbox.setValue(value);
         setGhostMode(true);
+    }
+
+    /**
+     * Enables or disables read-only mode.<p>
+     * 
+     * @param readOnly if true, enables read-only mode, else disables it
+     */
+    public void setReadOnly(boolean readOnly) {
+
+        m_textbox.setReadOnly(readOnly);
+        if (readOnly) {
+            addStyleName(CSS.textBoxReadOnly());
+        } else {
+            removeStyleName(CSS.textBoxReadOnly());
+        }
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsSitemapService.java,v $
- * Date   : $Date: 2010/11/29 08:25:32 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2010/11/29 10:33:35 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -101,7 +101,7 @@ import org.apache.commons.collections.map.MultiValueMap;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.43 $ 
+ * @version $Revision: 1.44 $ 
  * 
  * @since 8.0.0
  * 
@@ -1130,11 +1130,13 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
         clientEntry.setId(entry.getId());
         clientEntry.setName(entry.getName());
         clientEntry.setTitle(entry.getTitle());
-        String vfsPath;
-        try {
-            vfsPath = getCmsObject().getSitePath(getCmsObject().readResource(entry.getStructureId()));
-        } catch (CmsVfsResourceNotFoundException e) {
-            vfsPath = e.getLocalizedMessage(getCmsObject().getRequestContext().getLocale());
+        String vfsPath = null;
+        if (!entry.isRedirect()) {
+            try {
+                vfsPath = getCmsObject().getSitePath(getCmsObject().readResource(entry.getStructureId()));
+            } catch (CmsVfsResourceNotFoundException e) {
+                vfsPath = e.getLocalizedMessage(getCmsObject().getRequestContext().getLocale());
+            }
         }
         clientEntry.setVfsPath(vfsPath);
         Map<String, CmsSimplePropertyValue> clientProperties = CmsXmlContentPropertyHelper.convertPropertySimpleValues(
@@ -1149,5 +1151,4 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
         return clientEntry;
 
     }
-
 }

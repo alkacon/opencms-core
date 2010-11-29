@@ -1,0 +1,13 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:cmsi="urn:import:org.opencms.gwt.client.ui.input" 	
+	xmlns:cms="urn:import:org.opencms.gwt.client.ui">
+	<g:FlowPanel>
+		<g:HorizontalPanel ui:field="m_inputRow">
+			<cmsi:CmsTextBox ui:field="m_textbox"/>
+			<cms:CmsPushButton ui:field="m_editButton"/>
+		</g:HorizontalPanel>
+		<cmsi:CmsCheckBox ui:field="m_externalCheckbox"/>
+	</g:FlowPanel>	
+</ui:UiBinder> 

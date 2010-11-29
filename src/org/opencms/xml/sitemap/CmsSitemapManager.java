@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2010/11/18 09:41:54 $
- * Version: $Revision: 1.67 $
+ * Date   : $Date: 2010/11/29 10:33:35 $
+ * Version: $Revision: 1.68 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -86,7 +86,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.67 $
+ * @version $Revision: 1.68 $
  * 
  * @since 7.9.2
  */
@@ -102,7 +102,13 @@ public class CmsSitemapManager {
         /** <code>template</code> property name. */
         template("template"),
         /** <code>template-inhertited</code> property name. */
-        templateInherited("template-inherited");
+        templateInherited("template-inherited"),
+        /** <code>internalRedirect</code> property name. */
+        internalRedirect("internalRedirect"),
+        /** <code>externalRedirect</code> property name. */
+        externalRedirect("externalRedirect"),
+        /** <code>isRedirect</code> property name. */
+        isRedirect("isRedirect");
 
         /** The name of the property. */
         private final String m_name;
@@ -590,7 +596,7 @@ public class CmsSitemapManager {
 
         // retrieve it
         CmsSitemapEntry entry = m_cache.getEntryById(cms, id);
-        if (entry != null) {
+        if ((entry != null) && !entry.isRedirect()) {
             // security check
             cms.readResource(entry.getStructureId());
         }
@@ -633,9 +639,11 @@ public class CmsSitemapManager {
 
         // get the entry for the given path
         CmsInternalSitemapEntry entry = cache.getEntryByUri(cms, entryUri);
-        if (entry != null) {
+        if ((entry != null)) {
             // check permissions
-            cms.readResource(entry.getStructureId());
+            if (!entry.isRedirect()) {
+                cms.readResource(entry.getStructureId());
+            }
             return entry;
         }
 
@@ -1095,7 +1103,7 @@ public class CmsSitemapManager {
         List<CmsSitemapEntry> subEntries = new ArrayList<CmsSitemapEntry>();
         CmsInternalSitemapEntry entry = (CmsInternalSitemapEntry)getEntryForUri(cms, entryUri);
         for (CmsInternalSitemapEntry subEntry : entry.getSubEntries()) {
-            if (cms.existsResource(subEntry.getStructureId())) {
+            if (isValidSubEntry(cms, entry)) {
                 subEntries.add(subEntry);
             }
         }
@@ -1296,5 +1304,25 @@ public class CmsSitemapManager {
             }
         }
         return null;
+    }
+
+    /**
+     * Checks whether the given sitemap entry should be included in the list of sub-entries of its parent.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param entry the sitemap entry to check
+     *  
+     * @return true if the sitemap entry should be included in the list of sub-entries of its parent
+     */
+    private boolean isValidSubEntry(CmsObject cms, CmsInternalSitemapEntry entry) {
+
+        CmsUUID id = entry.getStructureId();
+        if (id != null) {
+            return cms.existsResource(id);
+        } else {
+            Map<String, CmsSimplePropertyValue> props = entry.getNewProperties();
+            return props.containsKey(CmsSitemapManager.Property.externalRedirect.getName())
+                || props.containsKey(CmsSitemapManager.Property.internalRedirect.getName());
+        }
     }
 }

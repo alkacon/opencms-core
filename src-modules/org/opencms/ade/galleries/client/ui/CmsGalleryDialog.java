@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsGalleryDialog.java,v $
- * Date   : $Date: 2010/11/12 13:48:38 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2010/11/29 10:33:35 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,7 +71,7 @@ import com.google.gwt.user.client.ui.HasText;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.35 $
+ * @version $Revision: 1.36 $
  * 
  * @since 8.0.
  */
@@ -125,6 +125,9 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
 
     /** The VFS folder tab. */
     private CmsVfsTab m_vfsTab;
+
+    /** The gallery controller. */
+    private CmsGalleryController m_controller;
 
     /**
      * The default constructor for the gallery dialog.<p> 
@@ -183,6 +186,17 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
         return addHandler(handler, ResizeEvent.getType());
     }
 
+    /** 
+     * Adds a new tab to the gallery dialog.<p>
+     * 
+     * @param tab the tab to add 
+     * @param name the label for the tab 
+     */
+    public void addTab(A_CmsTab tab, String name) {
+
+        m_tabbedPanel.add(tab, name);
+    }
+
     /**
      * Displays the search result in the result tab.<p>
      * 
@@ -213,6 +227,7 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
      */
     public void fillTabs(GalleryTabId[] tabIds, CmsGalleryController controller) {
 
+        m_controller = controller;
         int i;
         for (i = 0; i < tabIds.length; i++) {
             switch (tabIds[i]) {
@@ -247,7 +262,6 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
                     m_vfsTab.setTabTextAccessor(getTabTextAccessor(i));
                     m_tabbedPanel.add(m_vfsTab, Messages.get().key(Messages.GUI_TAB_TITLE_VFS_0));
                     break;
-
                 default:
                     break;
             }
@@ -267,6 +281,16 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
     public CmsCategoriesTab getCategoriesTab() {
 
         return m_categoriesTab;
+    }
+
+    /**
+     * Returns the gallery controller.<p>
+     * 
+     * @return the gallery controller 
+     */
+    public CmsGalleryController getController() {
+
+        return m_controller;
     }
 
     /**

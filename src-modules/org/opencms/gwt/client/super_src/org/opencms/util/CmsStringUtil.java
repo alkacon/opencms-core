@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/super_src/org/opencms/util/Attic/CmsStringUtil.java,v $
- * Date   : $Date: 2010/06/07 08:04:35 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/11/29 10:33:35 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,8 @@
 
 package org.opencms.util;
 
+import org.opencms.util.CmsStringUtil;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -43,7 +45,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
  * 
@@ -392,6 +394,27 @@ public final class CmsStringUtil {
         }
         return result;
     }
+    
+    /**
+     * Checks whether one path is a prefix path of another, i.e. its path components are 
+     * the initial path components of the second path.<p>
+     * 
+     * It is not enough to just use {@link String#startsWith}, because we want /foo/bar to 
+     * be a prefix path of  /foo/bar/baz, but not of /foo/bar42.<p>
+     *  
+     * @param firstPath the first path 
+     * @param secondPath the second path 
+     * 
+     * @return true if the first path is a prefix path of the second path 
+     */
+    public static boolean isPrefixPath(String firstPath, String secondPath) {
+
+        firstPath = CmsStringUtil.joinPaths(firstPath, "/");
+        secondPath = CmsStringUtil.joinPaths(secondPath, "/");
+        return secondPath.startsWith(firstPath);
+    }
+
+    
 
     /**
      * Splits a String into substrings along the provided <code>paramDelim</code> delimiter,

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/A_CmsTab.java,v $
- * Date   : $Date: 2010/11/12 13:48:38 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/11/29 10:33:35 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,7 +33,6 @@ package org.opencms.ade.galleries.client.ui;
 
 import org.opencms.ade.galleries.client.A_CmsTabHandler;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
-import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasText;
@@ -43,7 +42,7 @@ import com.google.gwt.user.client.ui.HasText;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
@@ -53,14 +52,14 @@ public abstract class A_CmsTab extends Composite {
     protected HasText m_tabTextAccessor;
 
     /** The tab id. */
-    private GalleryTabId m_tabId;
+    private String m_tabId;
 
     /**
      * Constructor.<p>
      * 
      * @param tabId the tab id
      */
-    protected A_CmsTab(GalleryTabId tabId) {
+    protected A_CmsTab(String tabId) {
 
         m_tabId = tabId;
     }
@@ -87,7 +86,7 @@ public abstract class A_CmsTab extends Composite {
      * 
      * @return the tab id
      */
-    public GalleryTabId getTabId() {
+    public String getTabId() {
 
         return m_tabId;
     }

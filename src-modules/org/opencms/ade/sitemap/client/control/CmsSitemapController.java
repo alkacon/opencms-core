@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2010/11/29 08:25:32 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2010/11/29 10:33:35 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,12 +43,12 @@ import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeNew;
 import org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsBrokenLinkData;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
-import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry.EditStatus;
 import org.opencms.ade.sitemap.shared.CmsSitemapBrokenLinkBean;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.ade.sitemap.shared.CmsSitemapMergeInfo;
 import org.opencms.ade.sitemap.shared.CmsSitemapTemplate;
 import org.opencms.ade.sitemap.shared.CmsSubSitemapInfo;
+import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry.EditStatus;
 import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService;
 import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapServiceAsync;
 import org.opencms.file.CmsResource;
@@ -87,7 +87,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.30 $ 
+ * @version $Revision: 1.31 $ 
  * 
  * @since 8.0.0
  */
@@ -133,6 +133,9 @@ public class CmsSitemapController {
     /** The list of property update handlers. */
     private List<I_CmsPropertyUpdateHandler> m_propertyUpdateHandlers = new ArrayList<I_CmsPropertyUpdateHandler>();
 
+    /** Object for keeping track of and updating redirects. */
+    private CmsRedirectUpdater m_redirectUpdater;
+
     /** The sitemap service instance. */
     private I_CmsSitemapServiceAsync m_service;
 
@@ -140,6 +143,7 @@ public class CmsSitemapController {
      * Constructor.<p>
      */
     public CmsSitemapController() {
+        m_redirectUpdater = new CmsRedirectUpdater();
 
         m_changes = new ArrayList<I_CmsClientSitemapChange>();
         m_undone = new ArrayList<I_CmsClientSitemapChange>();
@@ -147,8 +151,11 @@ public class CmsSitemapController {
 
         m_hiddenProperties = new HashSet<String>();
         m_hiddenProperties.add(CmsSitemapManager.Property.sitemap.toString());
-
+        m_hiddenProperties.add(CmsSitemapManager.Property.internalRedirect.toString());
+        m_hiddenProperties.add(CmsSitemapManager.Property.externalRedirect.toString());
+        m_hiddenProperties.add(CmsSitemapManager.Property.isRedirect.toString());
         m_eventBus = new SimpleEventBus();
+
     }
 
     /**
@@ -740,6 +747,16 @@ public class CmsSitemapController {
     }
 
     /**
+     * Returns the redirect updater.<p>
+     * 
+     * @return the redirect updater
+     */
+    public CmsRedirectUpdater getRedirectUpdater() {
+
+        return m_redirectUpdater;
+    }
+
+    /**
      * Checks if any change made.<p>
      * 
      * @return <code>true</code> if there is at least one change to commit
@@ -1130,7 +1147,7 @@ public class CmsSitemapController {
 
         List<I_CmsSitemapChange> changes = new ArrayList<I_CmsSitemapChange>();
         for (I_CmsClientSitemapChange change : m_changes) {
-            changes.add(change.getChangeForCommit());
+            changes.addAll(change.getChangesForCommit());
         }
         return changes;
     }

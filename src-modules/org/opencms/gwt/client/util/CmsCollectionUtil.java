@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsCollectionUtil.java,v $
- * Date   : $Date: 2010/06/29 09:38:46 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/11/29 10:33:36 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import java.util.Set;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -116,8 +116,8 @@ public final class CmsCollectionUtil {
      */
     public static <A, B> void updateMapAndRemoveNulls(Map<A, B> source, Map<A, B> target) {
 
+        assert source != target;
         for (Map.Entry<A, B> entry : source.entrySet()) {
-            assert source != target;
             A key = entry.getKey();
             B value = entry.getValue();
             if (value != null) {

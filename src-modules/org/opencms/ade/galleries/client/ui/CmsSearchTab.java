@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsSearchTab.java,v $
- * Date   : $Date: 2010/10/29 12:18:49 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2010/11/29 10:33:35 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import com.google.gwt.user.client.ui.Label;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 8.0.
  */
@@ -224,7 +224,7 @@ public class CmsSearchTab extends A_CmsTab {
     public CmsSearchTab(CmsSearchTabHandler tabHandler, I_CmsAutoHider autoHideParent) {
 
         // initialize the tab
-        super(GalleryTabId.cms_tab_search);
+        super(GalleryTabId.cms_tab_search.name());
         m_tab = uiBinder.createAndBindUi(this);
         initWidget(m_tab);
         m_tabHandler = tabHandler;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsSitemapTab.java,v $
- * Date   : $Date: 2010/07/20 10:28:08 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/11/29 10:33:35 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,9 @@ import org.opencms.ade.galleries.shared.CmsSitemapEntryBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
+import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsListItem;
+import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.tree.A_CmsLazyOpenHandler;
 import org.opencms.gwt.client.ui.tree.CmsLazyTree;
 import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem;
@@ -50,6 +52,8 @@ import org.opencms.util.CmsPair;
 import java.util.IdentityHashMap;
 import java.util.List;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
@@ -57,7 +61,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -119,6 +123,21 @@ public class CmsSitemapTab extends A_CmsListTab {
         info.setSubTitle(sitemapEntry.getSitePath());
         CmsListItemWidget liWidget = new CmsListItemWidget(info);
         liWidget.setIcon(CmsIconUtil.getResourceIconClasses("folder", false));
+
+        CmsPushButton selectButton = new CmsPushButton();
+        // TODO: use different icon
+        selectButton.setImageClass(I_CmsImageBundle.INSTANCE.style().newIcon());
+        selectButton.setShowBorder(false);
+        selectButton.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
+
+        selectButton.addClickHandler(new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
+
+                m_tabHandler.selectResource(sitemapEntry.getSitePath(), sitemapEntry.getTitle(), "sitemap");
+            }
+        });
+        liWidget.addButton(selectButton);
         CmsLazyTreeItem result = new CmsLazyTreeItem(liWidget);
         m_entryMap.put(result, sitemapEntry);
         return result;

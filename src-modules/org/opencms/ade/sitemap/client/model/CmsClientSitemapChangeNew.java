@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeNew.java,v $
- * Date   : $Date: 2010/11/29 08:25:32 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/11/29 10:33:35 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,12 +41,15 @@ import org.opencms.xml.sitemap.CmsSitemapChangeNew;
 import org.opencms.xml.sitemap.I_CmsSitemapChange;
 import org.opencms.xml.sitemap.I_CmsSitemapChange.Type;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Stores one addition change to the sitemap.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 8.0.0
  */
@@ -128,25 +131,25 @@ public class CmsClientSitemapChangeNew implements I_CmsClientSitemapChange {
     }
 
     /**
-     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#getChangeForCommit()
-     */
-    public I_CmsSitemapChange getChangeForCommit() {
-
-        // use the site path stored at the event time, as the entry may have been moved in the mean time
-        return new CmsSitemapChangeNew(
-            m_eventSitePath,
-            getEntry().getPosition(),
-            getEntry().getTitle(),
-            getEntry().getVfsPath(),
-            getEntry().getProperties());
-    }
-
-    /**
      * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#getChangeForUndo()
      */
     public I_CmsClientSitemapChange getChangeForUndo() {
 
         return this;
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#getChangesForCommit()
+     */
+    public List<I_CmsSitemapChange> getChangesForCommit() {
+
+        // use the site path stored at the event time, as the entry may have been moved in the mean time
+        return Collections.<I_CmsSitemapChange> singletonList(new CmsSitemapChangeNew(
+            m_eventSitePath,
+            getEntry().getPosition(),
+            getEntry().getTitle(),
+            getEntry().getVfsPath(),
+            getEntry().getProperties()));
     }
 
     /** 

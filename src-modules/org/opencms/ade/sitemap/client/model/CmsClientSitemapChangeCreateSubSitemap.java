@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeCreateSubSitemap.java,v $
- * Date   : $Date: 2010/10/07 07:56:35 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/11/29 10:33:35 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import java.util.List;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -122,17 +122,17 @@ public class CmsClientSitemapChangeCreateSubSitemap implements I_CmsClientSitema
     }
 
     /**
-     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#getChangeForCommit()
+     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#getChangeForUndo()
      */
-    public I_CmsSitemapChange getChangeForCommit() {
+    public I_CmsClientSitemapChange getChangeForUndo() {
 
         throw new UnsupportedOperationException();
     }
 
     /**
-     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#getChangeForUndo()
+     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#getChangesForCommit()
      */
-    public I_CmsClientSitemapChange getChangeForUndo() {
+    public List<I_CmsSitemapChange> getChangesForCommit() {
 
         throw new UnsupportedOperationException();
     }

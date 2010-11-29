@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/ui/css/Attic/I_CmsImageBundle.java,v $
- * Date   : $Date: 2010/11/16 14:15:00 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/11/29 10:33:36 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import com.google.gwt.resources.client.ImageResource.RepeatStyle;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 8.0.0
  */
@@ -362,6 +362,14 @@ public interface I_CmsImageBundle extends ClientBundle {
      */
     @Source("images/normal.png")
     ImageResource iconNormal();
+
+    /** 
+     * Access method.<p>
+     * 
+     * @return an image resource
+     */
+    @Source("images/redirect.png")
+    ImageResource iconRedirect();
 
     /** 
      * Access method.<p>

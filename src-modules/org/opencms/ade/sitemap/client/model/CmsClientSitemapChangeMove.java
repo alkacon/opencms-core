@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeMove.java,v $
- * Date   : $Date: 2010/10/29 12:21:20 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/11/29 10:33:35 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,12 +42,15 @@ import org.opencms.xml.sitemap.CmsSitemapChangeMove;
 import org.opencms.xml.sitemap.I_CmsSitemapChange;
 import org.opencms.xml.sitemap.I_CmsSitemapChange.Type;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Stores one move change to the sitemap.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 8.0.0
  */
@@ -147,6 +150,7 @@ public class CmsClientSitemapChangeMove implements I_CmsClientSitemapChange {
             m_entry.setEditStatus(m_newStatus);
         }
         moved.updateSitePath(getDestinationPath());
+        controller.getRedirectUpdater().handleMove(m_sourcePath, m_destinationPath);
     }
 
     /**
@@ -172,19 +176,22 @@ public class CmsClientSitemapChangeMove implements I_CmsClientSitemapChange {
     }
 
     /**
-     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#getChangeForCommit()
-     */
-    public I_CmsSitemapChange getChangeForCommit() {
-
-        return new CmsSitemapChangeMove(getSourcePath(), getDestinationPath(), getDestinationPosition());
-    }
-
-    /**
      * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#getChangeForUndo()
      */
     public I_CmsClientSitemapChange getChangeForUndo() {
 
         return this;
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#getChangesForCommit()
+     */
+    public List<I_CmsSitemapChange> getChangesForCommit() {
+
+        return Collections.<I_CmsSitemapChange> singletonList(new CmsSitemapChangeMove(
+            getSourcePath(),
+            getDestinationPath(),
+            getDestinationPosition()));
     }
 
     /**

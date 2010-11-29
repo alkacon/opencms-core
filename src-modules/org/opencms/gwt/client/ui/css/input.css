@@ -14,6 +14,10 @@
 
 .textBoxWidget, .checkBox {}
 
+.textBoxReadOnly {
+	background-color: #aaa;
+}
+
 .textBoxPanel, .textAreaContainer {
 	border: 1px solid value("constants.borderColor");
 	overflow:hidden;
@@ -37,6 +41,13 @@
 @sprite .cmsState-up-disabled .checkBoxImage {
 	gwt-image: "images.checkboxUncheckedDisabled";
 }
+
+@sprite .linkEdit {
+	gwt-image: "images.linkEdit"; 
+}
+
+
+
 @sprite .cmsState-down-disabled .checkBoxImage {
 	gwt-image: "images.checkboxCheckedDisabled";
 }

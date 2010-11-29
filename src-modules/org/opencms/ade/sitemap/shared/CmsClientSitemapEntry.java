@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsClientSitemapEntry.java,v $
- * Date   : $Date: 2010/10/22 08:18:28 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2010/11/29 10:33:35 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,7 +33,9 @@ package org.opencms.ade.sitemap.shared;
 
 import org.opencms.file.CmsResource;
 import org.opencms.gwt.client.util.CmsCollectionUtil;
+import org.opencms.gwt.shared.CmsLinkBean;
 import org.opencms.util.CmsUUID;
+import org.opencms.xml.sitemap.CmsSitemapManager;
 import org.opencms.xml.sitemap.properties.CmsComputedPropertyValue;
 import org.opencms.xml.sitemap.properties.CmsSimplePropertyValue;
 
@@ -49,7 +51,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @since 8.0.0
  */
@@ -66,6 +68,12 @@ public class CmsClientSitemapEntry implements IsSerializable {
         /** edit status constant. */
         normal
     }
+
+    /** Key for the "externalRedirect" property. */
+    protected static final String EXTERNAL_REDIRECT = CmsSitemapManager.Property.externalRedirect.getName();
+
+    /** Key for the "internalRedirect" property. */
+    protected static final String INTERNAL_REDIRECT = CmsSitemapManager.Property.internalRedirect.getName();
 
     /** True if the children of this entry have initially been loaded. */
     private boolean m_childrenLoadedInitially;
@@ -130,6 +138,22 @@ public class CmsClientSitemapEntry implements IsSerializable {
         setVfsPath(clone.getVfsPath());
         setPosition(clone.getPosition());
         setEditStatus(clone.getEditStatus());
+    }
+
+    /**
+     * Static utility method for copying redirect info from a bean to a property map.<p>
+     * 
+     * @param properties the target property map
+     * @param info the bean which contains the redirect info 
+     */
+    public static void setRedirect(Map<String, String> properties, CmsLinkBean info) {
+
+        properties.put(EXTERNAL_REDIRECT, null);
+        properties.put(INTERNAL_REDIRECT, null);
+        if (info != null) {
+            String key = info.isInternal() ? INTERNAL_REDIRECT : EXTERNAL_REDIRECT;
+            properties.put(key, info.getLink());
+        }
     }
 
     /**
@@ -238,6 +262,38 @@ public class CmsClientSitemapEntry implements IsSerializable {
     }
 
     /**
+     * Returns the redirect target.<p>
+     *   
+     * @return the redirect target 
+     */
+    public String getRedirect() {
+
+        CmsSimplePropertyValue redirect = m_properties.get(EXTERNAL_REDIRECT);
+        if (redirect == null) {
+            redirect = m_properties.get(INTERNAL_REDIRECT);
+        }
+        return redirect.getOwnValue();
+    }
+
+    /**
+     * Returns the redirect target as a bean.<p>
+     * 
+     * @return the redirect target as a bean
+     */
+    public CmsLinkBean getRedirectInfo() {
+
+        CmsSimplePropertyValue internal = m_properties.get(INTERNAL_REDIRECT);
+        CmsSimplePropertyValue external = m_properties.get(EXTERNAL_REDIRECT);
+        if (internal != null) {
+            return new CmsLinkBean(internal.getOwnValue(), true);
+        } else if (external != null) {
+            return new CmsLinkBean(external.getOwnValue(), false);
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * Returns the sitemap path.<p>
      *
      * @return the sitemap path
@@ -275,6 +331,16 @@ public class CmsClientSitemapEntry implements IsSerializable {
     public String getVfsPath() {
 
         return m_vfsPath;
+    }
+
+    /**
+     * Returns true if this entry has an internal redirect.<p>
+     * 
+     * @return true if this entry has an internal redirect 
+     */
+    public boolean hasInternalRedirect() {
+
+        return m_properties.get(INTERNAL_REDIRECT) != null;
     }
 
     /**
@@ -420,6 +486,36 @@ public class CmsClientSitemapEntry implements IsSerializable {
     public void setProperties(Map<String, CmsSimplePropertyValue> properties) {
 
         m_properties = properties;
+    }
+
+    /**
+     * Sets the redirect target from a bean.<p>
+     * 
+     * @param info the bean containing the redirect target 
+     */
+    public void setRedirect(CmsLinkBean info) {
+
+        m_properties.remove(EXTERNAL_REDIRECT);
+        m_properties.remove(INTERNAL_REDIRECT);
+        if (info != null) {
+            String key = info.isInternal() ? INTERNAL_REDIRECT : EXTERNAL_REDIRECT;
+            CmsSimplePropertyValue value = new CmsSimplePropertyValue(info.getLink(), info.getLink());
+            m_properties.put(key, value);
+        }
+    }
+
+    /**
+     * Sets the redirect target.<p>
+     * 
+     * @param link the redirect target
+     * @param internal if true, sets an internal redirect, else an external one 
+     */
+    public void setRedirect(String link, boolean internal) {
+
+        m_properties.remove(EXTERNAL_REDIRECT);
+        m_properties.remove(INTERNAL_REDIRECT);
+        String targetKey = internal ? INTERNAL_REDIRECT : EXTERNAL_REDIRECT;
+        m_properties.put(targetKey, new CmsSimplePropertyValue(link, link));
     }
 
     /**
