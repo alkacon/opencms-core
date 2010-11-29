@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADEManager.java,v $
- * Date   : $Date: 2010/10/07 07:56:34 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2010/11/29 07:47:27 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 7.6
  */
@@ -101,6 +101,9 @@ public class CmsADEManager {
 
     /** User additional info key constant. */
     protected static final String ADDINFO_ADE_FAVORITE_LIST = "ADE_FAVORITE_LIST";
+
+    /** User additional info key constant. */
+    protected static final String ADDINFO_ADE_RECENT_LIST = "ADE_RECENT_LIST";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsADEManager.class);
@@ -265,16 +268,20 @@ public class CmsADEManager {
                 if (properties.containsKey(propertyName)) {
                     properties.get(propertyName).setResourceValue(prop.getDefault());
                 } else {
-                    properties.put(propertyName, new CmsProperty(
+                    properties.put(
                         propertyName,
-                        null,
-                        CmsXmlContentPropertyHelper.getPropValueIds(cms, prop.getPropertyType(), prop.getDefault())));
+                        new CmsProperty(propertyName, null, CmsXmlContentPropertyHelper.getPropValueIds(
+                            cms,
+                            prop.getPropertyType(),
+                            prop.getDefault())));
                 }
             }
         } catch (Exception e) {
-            LOG.error(Messages.get().getBundle().key(
-                Messages.ERR_READ_ELEMENT_PROPERTY_CONFIGURATION_1,
-                element.getElementId()), e);
+            LOG.error(
+                Messages.get().getBundle().key(
+                    Messages.ERR_READ_ELEMENT_PROPERTY_CONFIGURATION_1,
+                    element.getElementId()),
+                e);
         }
         return properties;
     }
@@ -323,18 +330,12 @@ public class CmsADEManager {
                         favList.add(elementFromJson(array.getJSONObject(i)));
                     } catch (Throwable e) {
                         // should never happen, catches wrong or no longer existing values
-                        if (!LOG.isDebugEnabled()) {
-                            LOG.warn(e.getLocalizedMessage());
-                        }
-                        LOG.debug(e.getLocalizedMessage(), e);
+                        LOG.warn(e.getLocalizedMessage());
                     }
                 }
             } catch (Throwable e) {
                 // should never happen, catches json parsing
-                if (!LOG.isDebugEnabled()) {
-                    LOG.warn(e.getLocalizedMessage());
-                }
-                LOG.debug(e.getLocalizedMessage(), e);
+                LOG.warn(e.getLocalizedMessage());
             }
         } else {
             // save to be better next time
@@ -396,6 +397,44 @@ public class CmsADEManager {
     throws CmsException {
 
         return m_configuration.getNextNewFileName(cms, cntPageUri, request, type);
+    }
+
+    /**
+     * Returns the favorite list, or creates it if not available.<p>
+     *
+     * @param cms the cms context
+     * 
+     * @return the favorite list
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public List<CmsContainerElementBean> getRecentList(CmsObject cms) throws CmsException {
+
+        CmsUser user = cms.getRequestContext().currentUser();
+        Object obj = user.getAdditionalInfo(ADDINFO_ADE_RECENT_LIST);
+
+        List<CmsContainerElementBean> recentList = new ArrayList<CmsContainerElementBean>();
+        if (obj instanceof String) {
+            try {
+                JSONArray array = new JSONArray((String)obj);
+                for (int i = 0; i < array.length(); i++) {
+                    try {
+                        recentList.add(elementFromJson(array.getJSONObject(i)));
+                    } catch (Throwable e) {
+                        // should never happen, catches wrong or no longer existing values
+                        LOG.warn(e.getLocalizedMessage());
+                    }
+                }
+            } catch (Throwable e) {
+                // should never happen, catches json parsing
+                LOG.warn(e.getLocalizedMessage());
+            }
+        } else {
+            // save to be better next time
+            saveRecentList(cms, recentList);
+        }
+
+        return recentList;
     }
 
     /**
@@ -489,7 +528,7 @@ public class CmsADEManager {
      * Saves the favorite list, user based.<p>
      * 
      * @param cms the cms context
-     * @param favoriteList the element id list
+     * @param favoriteList the element list
      * 
      * @throws CmsException if something goes wrong 
      */
@@ -501,6 +540,25 @@ public class CmsADEManager {
         }
         CmsUser user = cms.getRequestContext().currentUser();
         user.setAdditionalInfo(ADDINFO_ADE_FAVORITE_LIST, data.toString());
+        cms.writeUser(user);
+    }
+
+    /**
+     * Saves the favorite list, user based.<p>
+     * 
+     * @param cms the cms context
+     * @param recentList the element list
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public void saveRecentList(CmsObject cms, List<CmsContainerElementBean> recentList) throws CmsException {
+
+        JSONArray data = new JSONArray();
+        for (CmsContainerElementBean element : recentList) {
+            data.put(elementToJson(element));
+        }
+        CmsUser user = cms.getRequestContext().currentUser();
+        user.setAdditionalInfo(ADDINFO_ADE_RECENT_LIST, data.toString());
         cms.writeUser(user);
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsContainerpageService.java,v $
- * Date   : $Date: 2010/11/15 15:16:30 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2010/11/29 07:49:52 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -86,7 +86,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * 
  * @since 8.0.0
  */
@@ -141,11 +141,12 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
         try {
             CmsContainerElementBean element = getCachedElement(clientId);
-            List<CmsContainerElementBean> list = getSessionCache().getRecentList();
+            List<CmsContainerElementBean> list = OpenCms.getADEManager().getRecentList(getCmsObject());
             if (list.contains(element)) {
                 list.remove(list.indexOf(element));
             }
             list.add(0, element);
+            OpenCms.getADEManager().saveRecentList(getCmsObject(), list);
         } catch (Throwable e) {
             error(e);
         }
@@ -274,7 +275,10 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
         List<CmsContainerElementData> result = null;
         try {
-            result = getListElementsData(getSessionCache().getRecentList(), containerpageUri, containers);
+            result = getListElementsData(
+                OpenCms.getADEManager().getRecentList(getCmsObject()),
+                containerpageUri,
+                containers);
         } catch (Throwable e) {
             error(e);
         }
@@ -349,7 +353,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     public void saveRecentList(List<String> clientIds) throws CmsRpcException {
 
         try {
-            getSessionCache().setCacheRecentList(getCachedElements(clientIds));
+            OpenCms.getADEManager().saveRecentList(getCmsObject(), getCachedElements(clientIds));
         } catch (Throwable e) {
             error(e);
         }
