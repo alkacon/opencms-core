@@ -408,6 +408,26 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>demo_t3/_config/new/new_twitter.html</source>
+			<destination>demo_t3/_config/new/new_twitter.html</destination>
+			<type>t3twitter</type>
+			<uuidstructure>fa987eb1-f618-11df-bac6-7b2444d59c19</uuidstructure>
+			<uuidresource>fa987eb2-f618-11df-bac6-7b2444d59c19</uuidresource>
+			<datelastmodified>Mon, 22 Nov 2010 14:38:35 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 22 Nov 2010 09:14:58 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[OpenCms Twitter Channel]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>demo_t3/_config/new/news.html</source>
 			<destination>demo_t3/_config/new/news.html</destination>
 			<type>t3news</type>

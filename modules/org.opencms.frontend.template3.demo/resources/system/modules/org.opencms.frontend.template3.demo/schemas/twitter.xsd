@@ -1,0 +1,45 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.template3.demo/schemas/nested/image.xsd"/>
+	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.template3.demo/schemas/nested/extendedlink.xsd"/>
+		
+	<xsd:element name="T3Twitters" type="OpenCmsT3Twitters"/>
+	
+	<xsd:complexType name="OpenCmsT3Twitters">
+		<xsd:sequence>
+			<xsd:element name="T3Twitter" type="OpenCmsT3Twitter" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsT3Twitter">
+		<xsd:sequence>
+			<xsd:element name="Title" type="OpenCmsString" />
+			<xsd:element name="Subtitle" type="OpenCmsString" />
+			<xsd:element name="Channel" type="OpenCmsString" />
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
+	</xsd:complexType>
+
+	<xsd:annotation>
+		<xsd:appinfo>
+			<resourcebundle name="org.opencms.frontend.template3.demo.workplace"/>
+			<preview uri="${previewtempfile}" />
+			<mappings>
+				<mapping element="Title" mapto="property:Title" />
+			</mappings>
+			<layouts></layouts>
+			<validationrules/>
+			<defaults/>
+			<relations></relations>
+			<formatters>
+				<formatter type="left" uri="/system/modules/org.opencms.frontend.template3.demo/elements/twitter.jsp" />
+				<formatter type="right" uri="/system/modules/org.opencms.frontend.template3.demo/elements/twitter.jsp" />
+			</formatters>
+			<properties>
+				<property name="background" nice-name="Background Color" type="string" widget="select" widget-config="43c43f:${key.twitter.background.green}|F60E0E:${key.twitter.background.red}|0E36F6:${key.twitter.background.blue}|999999:${key.twitter.background.gray}" />
+			</properties>
+		</xsd:appinfo>
+
+	</xsd:annotation>  
+</xsd:schema>

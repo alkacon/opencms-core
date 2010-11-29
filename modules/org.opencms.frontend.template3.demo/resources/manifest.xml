@@ -32,6 +32,7 @@
 			<resource uri="/system/workplace/resources/filetypes/t3event.png"/>
 			<resource uri="/system/workplace/resources/filetypes/t3item.png"/>
 			<resource uri="/system/workplace/resources/filetypes/t3news.png"/>
+			<resource uri="/system/workplace/resources/filetypes/twitter_16x16.png"/>
 		</resources>
 		<parameters/>
 		<resourcetypes>
@@ -63,6 +64,13 @@
             <type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="itemgallery" id="135">
 				<param name="folder.class">org.opencms.workplace.galleries.CmsAjaxHtmlGallery</param>
 			</type>
+			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="t3twitter" id="666">
+                    <param name="gallery.type.names">twittergallery</param>
+                    <param name="schema">/system/modules/org.opencms.frontend.template3.demo/schemas/twitter.xsd</param>
+                </type>
+                <type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="twittergallery" id="667">
+                    <param name="folder.class">org.opencms.workplace.galleries.CmsAjaxHtmlGallery</param>
+                </type>
 		</resourcetypes>
 		<explorertypes>
 			<explorertype name="t3article" key="fileicon.t3article" icon="t3article.png" reference="xmlcontent">
@@ -100,6 +108,12 @@
             </explorertype>
             <explorertype name="itemgallery" key="fileicon.itemgallery" icon="htmlgallery.gif" reference="downloadgallery">
                 <newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=itemgallery" order="40" autosetnavigation="false" autosettitle="false" info="desc.itemgallery" />
+            </explorertype>
+            <explorertype name="t3twitter" key="fileicon.t3twitter" icon="twitter_16x16.png" reference="xmlcontent">
+                    <newresource page="template3" uri="newresource_xmlcontent.jsp?newresourcetype=t3twitter" order="130" autosetnavigation="false" autosettitle="false" info="desc.t3twitter"/>
+                    <accesscontrol>
+                        <accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
+                    </accesscontrol>
             </explorertype>
 		</explorertypes>
 	</module>
@@ -393,6 +407,46 @@
 			<datelastmodified>Tue, 08 Sep 2009 13:35:52 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 19 Feb 2008 13:08:56 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3.demo/elements/twitter.jsp</source>
+			<destination>system/modules/org.opencms.frontend.template3.demo/elements/twitter.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>688dd829-f610-11df-900f-5572df086cee</uuidstructure>
+			<uuidresource>688dd82a-f610-11df-900f-5572df086cee</uuidresource>
+			<datelastmodified>Mon, 22 Nov 2010 08:53:31 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 22 Nov 2010 08:13:38 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.template3.demo/elements/twitterFrame.jsp</source>
+			<destination>system/modules/org.opencms.frontend.template3.demo/elements/twitterFrame.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>be88a5cc-f610-11df-900f-5572df086cee</uuidstructure>
+			<uuidresource>be88a5cd-f610-11df-900f-5572df086cee</uuidresource>
+			<datelastmodified>Mon, 22 Nov 2010 08:54:10 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 22 Nov 2010 08:16:02 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1150,6 +1204,21 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/modules/org.opencms.frontend.template3.demo/schemas/twitter.xsd</source>
+			<destination>system/modules/org.opencms.frontend.template3.demo/schemas/twitter.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>c39ad2f7-f60f-11df-900f-5572df086cee</uuidstructure>
+			<uuidresource>c39ad2f8-f60f-11df-900f-5572df086cee</uuidresource>
+			<datelastmodified>Mon, 22 Nov 2010 08:52:30 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 22 Nov 2010 08:09:02 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>system/modules/org.opencms.frontend.template3.demo/schemas/nested</destination>
 			<type>folder</type>
 			<uuidstructure>88233529-9c7c-11de-adde-dd9f629b113b</uuidstructure>
@@ -1393,6 +1462,30 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/twitter_16x16.png</source>
+			<destination>system/workplace/resources/filetypes/twitter_16x16.png</destination>
+			<type>image</type>
+			<uuidstructure>b1ce1162-f62c-11df-863e-7b2444d59c19</uuidstructure>
+			<uuidresource>b1ce1163-f62c-11df-863e-7b2444d59c19</uuidresource>
+			<datelastmodified>Mon, 22 Nov 2010 11:36:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 22 Nov 2010 11:36:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[twitter_16x16]]></value>
+				</property>
 				<property type="shared">
 					<name>image.size</name>
 					<value><![CDATA[w:16,h:16]]></value>
