@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsMessageContainer.java,v $
- * Date   : $Date: 2009/09/07 12:41:54 $
- * Version: $Revision: 1.13.2.1 $
+ * Date   : $Date: 2010/11/29 10:12:16 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import java.util.Locale;
  * 
  * @author Alexander Kandzior 
  *
- * @version $Revision: 1.13.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  *   
@@ -84,7 +84,7 @@ public class CmsMessageContainer implements Serializable {
      * @param key the message key to use
      * @param args the message arguments to use
      */
-    public CmsMessageContainer(I_CmsMessageBundle bundle, String key, Object[] args) {
+    public CmsMessageContainer(I_CmsMessageBundle bundle, String key, Object... args) {
 
         m_bundle = bundle;
         m_key = key;
