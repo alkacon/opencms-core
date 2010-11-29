@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsLink.java,v $
- * Date   : $Date: 2010/11/11 13:08:18 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/11/29 07:41:23 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import org.dom4j.Element;
  * @author Carsten Weinholz
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -305,6 +305,8 @@ public class CmsLink {
                 CmsUUID id;
                 if (entry.getContentId() != null) {
                     id = entry.getContentId();
+                } else if (entry.isSitemap()) {
+                    id = entry.getId();
                 } else {
                     id = entry.getStructureId();
                 }
