@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsLinkSelector.java,v $
- * Date   : $Date: 2010/11/29 10:33:35 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/11/29 15:13:19 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import com.google.gwt.user.client.ui.Panel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -83,24 +83,24 @@ public class CmsLinkSelector extends Composite implements I_CmsFormWidget, I_Cms
     /** The ui binder for this widget. */
     private static I_CmsLinkSelectorUiBinder uibinder = GWT.create(I_CmsLinkSelectorUiBinder.class);
 
-    /** The HTML id of the field. */
-    private String m_id;
-
-    /** The text box containing the current link. */
+    /** The button for editing the link. */
     @UiField
-    protected CmsTextBox m_textbox;
+    protected CmsPushButton m_editButton;
 
     /** The check box for setting the link to external or internal. */
     @UiField
     protected CmsCheckBox m_externalCheckbox;
 
-    /** The button for editing the link. */
-    @UiField
-    protected CmsPushButton m_editButton;
-
     /** The row containing the input field and the gallery edit button. */
     @UiField
     protected HorizontalPanel m_inputRow;
+
+    /** The text box containing the current link. */
+    @UiField
+    protected CmsTextBox m_textbox;
+
+    /** The HTML id of the field. */
+    private String m_id;
 
     /** True if the widget is in "internal" mode. */
     private boolean m_internal;
@@ -114,7 +114,7 @@ public class CmsLinkSelector extends Composite implements I_CmsFormWidget, I_Cms
         m_id = m_textbox.getId();
         String label = Messages.get().key(Messages.GUI_LINK_CHECKBOX_EXTERNAL_0);
         m_externalCheckbox.setText(label);
-        m_inputRow.setCellWidth(m_textbox, "320px");
+        m_inputRow.setCellWidth(m_textbox, "330px");
         m_editButton.setImageClass(I_CmsInputLayoutBundle.INSTANCE.inputCss().linkEdit());
         m_editButton.setShowBorder(false);
 

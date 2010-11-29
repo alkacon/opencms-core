@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsPopupDialog.java,v $
- * Date   : $Date: 2010/09/09 15:02:20 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/11/29 15:13:19 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.gwt.client.ui;
 
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -44,7 +45,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -169,6 +170,16 @@ public class CmsPopupDialog extends CmsPopup {
             getDialog().remove(m_buttonPanel);
             m_buttonPanel = null;
         }
+    }
+
+    /**
+     * Disables padding of the popup content.<p>
+     */
+    public void removePadding() {
+
+        getDialog().getWidget().getElement().getStyle().setPadding(0, Unit.PX);
+        m_buttonPanel.getElement().getStyle().setMarginRight(10, Unit.PX);
+        m_buttonPanel.getElement().getStyle().setMarginBottom(10, Unit.PX);
     }
 
     /**

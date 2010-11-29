@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/form/Attic/CmsFormDialog.java,v $
- * Date   : $Date: 2010/10/29 12:18:21 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/11/29 15:13:19 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,6 +41,7 @@ import java.util.Map;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 
@@ -49,7 +50,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 8.0.0
  */
@@ -77,11 +78,13 @@ public class CmsFormDialog extends CmsPopupDialog implements I_CmsFormDialog {
         setAutoHideEnabled(false);
         setModal(true);
         m_form = (CmsForm)getContent();
+        m_form.getElement().getStyle().setPadding(0, Unit.PX);
         addButton(createCancelButton());
         addButton(createResetButton());
         m_okButton = createOkButton();
         m_form.setFormDialog(this);
         addButton(m_okButton);
+        removePadding();
     }
 
     /**

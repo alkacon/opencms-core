@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapTreeItem.java,v $
- * Date   : $Date: 2010/11/29 10:33:36 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2010/11/29 15:13:19 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.42 $ 
+ * @version $Revision: 1.43 $ 
  * 
  * @since 8.0.0
  * 
@@ -80,10 +80,10 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
         export,
         /** no status icon. */
         none,
-        /** secure status icon. */
-        secure,
         /** redirect status icon. */
-        redirect
+        redirect,
+        /** secure status icon. */
+        secure
 
     }
 
@@ -375,7 +375,8 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
                 break;
             case redirect:
                 m_listItemWidget.setIcon(CSS.redirect());
-                m_listItemWidget.setIconTitle("Redirect");
+
+                m_listItemWidget.setIconTitle(Messages.get().key(Messages.GUI_ICON_REDIRECT_0));
                 break;
             case none:
             default:

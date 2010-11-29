@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/form/Attic/CmsForm.java,v $
- * Date   : $Date: 2010/10/15 13:30:53 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2010/11/29 15:13:19 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.gwt.client.ui.input.form;
 import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
 import org.opencms.gwt.client.ui.CmsToggleButton;
+import org.opencms.gwt.client.ui.CmsTabbedPanel.CmsTabLayout;
 import org.opencms.gwt.client.ui.css.I_CmsInputCss;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsTextBox;
@@ -57,7 +58,6 @@ import java.util.Set;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasKeyPressHandlers;
@@ -83,7 +83,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 8.0.0
  * 
@@ -118,7 +118,7 @@ public class CmsForm extends Composite {
     private Map<String, String> m_initialValues = new HashMap<String, String>();
 
     /** The main panel for this widget. */
-    private CmsTabbedPanel<Widget> m_panel = new CmsTabbedPanel<Widget>();
+    private CmsTabbedPanel<Widget> m_panel = new CmsTabbedPanel<Widget>(CmsTabLayout.small);
     /** 
     private boolean m_isSubmittable;
 
@@ -138,9 +138,10 @@ public class CmsForm extends Composite {
         m_panel.addStyleName(CSS.form());
         m_panel.setHeight("500px");
         m_panel.add(m_basicTab, Messages.get().key(Messages.GUI_FORM_TAB_BASIC_0));
-        m_basicTab.getElement().getStyle().setPaddingLeft(5, Unit.PX);
+
+        m_basicTab.addStyleName(CSS.formTab());
         m_panel.add(m_advancedTab, Messages.get().key(Messages.GUI_FORM_TAB_ADVANCED_0));
-        m_advancedTab.getElement().getStyle().setPaddingLeft(5, Unit.PX);
+        m_advancedTab.addStyleName(CSS.formTab());
         m_panel.addSelectionHandler(new SelectionHandler<Integer>() {
 
             /**

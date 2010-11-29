@@ -15,7 +15,7 @@
 .textBoxWidget, .checkBox {}
 
 .textBoxReadOnly {
-	background-color: #aaa;
+	background-color: #ddd;
 }
 
 .textBoxPanel, .textAreaContainer {
@@ -235,6 +235,12 @@
 
 .form {
 	width: 570px;
+	border: none;
+}
+
+.formTab {
+	margin-left: 15px;
+	margin-top: 10px;
 }
 
 .alignBottom {
