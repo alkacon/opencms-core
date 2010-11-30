@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/setup/TestCmsSetupBean.java,v $
- * Date   : $Date: 2009/06/04 14:35:31 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2010/11/30 15:35:22 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /** 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.0.0
  */
@@ -77,7 +77,7 @@ public class TestCmsSetupBean extends OpenCmsTestCase {
         CmsSetupBean bean = new CmsSetupBean();
         bean.init("", null, null);
 
-        String base = getTestDataPath(File.separator + "WEB-INF" + File.separator + CmsSystemInfo.FOLDER_CONFIG);
+        String base = getTestDataPath(File.separator + "WEB-INF" + File.separator + "base");
         String inputFile = base + CmsSystemInfo.FILE_PROPERTIES;
         String outputFile = base + "output.properties";
 
@@ -93,7 +93,7 @@ public class TestCmsSetupBean extends OpenCmsTestCase {
 
         Iterator it = oldProperties.entrySet().iterator();
         while (it.hasNext()) {
-            Map.Entry e = (Map.Entry)it.next();            
+            Map.Entry e = (Map.Entry)it.next();
             String key = (String)e.getKey();
             Object obj = e.getValue();
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/setup/TestCmsSetupXmlHelper.java,v $
- * Date   : $Date: 2009/06/04 14:35:31 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/11/30 15:35:22 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,7 +34,6 @@ package org.opencms.setup;
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsWorkplaceConfiguration;
 import org.opencms.configuration.I_CmsXmlConfiguration;
-import org.opencms.main.CmsSystemInfo;
 import org.opencms.setup.xml.CmsSetupXmlHelper;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.util.CmsFileUtil;
@@ -48,7 +47,7 @@ import org.dom4j.Document;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.1.8
  */
@@ -71,7 +70,7 @@ public class TestCmsSetupXmlHelper extends OpenCmsTestCase {
      */
     public void testXmlModification() throws Exception {
 
-        String base = getTestDataPath(File.separator + "WEB-INF" + File.separator + CmsSystemInfo.FOLDER_CONFIG);
+        String base = getTestDataPath(File.separator + "WEB-INF" + File.separator + "base");
         CmsSetupXmlHelper xmlHelper = new CmsSetupXmlHelper(base);
 
         // create test file

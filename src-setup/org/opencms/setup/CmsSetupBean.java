@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/CmsSetupBean.java,v $
- * Date   : $Date: 2010/11/30 09:33:56 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/11/30 15:35:22 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -121,7 +121,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Moossen 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -720,6 +720,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
      * Returns the value for a given key from the database properties.
      * 
      * @param key the property key
+     * 
      * @return the string value for a given key
      */
     public String getDbProperty(String key) {
@@ -1644,6 +1645,9 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
                 // save Properties to file "opencms.properties" 
                 setDatabase(m_databaseKey);
+                if (m_driverType == DRIVER_TYPE_JPA) {
+                    setEntityManagerPoolSize(getDbProperty(m_databaseKey + "." + CmsDbPool.KEY_ENTITY_MANAGER_POOL_SIZE));
+                }
                 saveProperties(getProperties(), CmsSystemInfo.FILE_PROPERTIES, true);
 
                 // if has sql driver the sql scripts will be eventualy executed
@@ -1691,7 +1695,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
                 getXmlHelper().setValue(CmsSystemConfiguration.DEFAULT_XML_FILE_NAME, xp.toString(), getWorkplaceSite());
 
-                if ((m_driverType == DRIVER_TYPE_JPA)) {
+                if (m_driverType == DRIVER_TYPE_JPA) {
                     // /opencms/system/runtimeclasses/runtimeinfo
                     xp = new StringBuffer(256);
                     xp.append("/").append(CmsConfigurationManager.N_ROOT);
@@ -1829,7 +1833,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
         String subscriptionDriver;
         String sqlManager;
 
-        if ((m_driverType == DRIVER_TYPE_JPA)) {
+        if (m_driverType == DRIVER_TYPE_JPA) {
             vfsDriver = "org.opencms.db.jpa.CmsVfsDriver";
             userDriver = "org.opencms.db.jpa.CmsUserDriver";
             projectDriver = "org.opencms.db.jpa.CmsProjectDriver";
@@ -2708,6 +2712,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /** 
      * This method sets the value for a given key in the extended properties.
+     * 
      * @param key The key of the property
      * @param value The value of the property
      */
@@ -2870,6 +2875,16 @@ public class CmsSetupBean implements I_CmsShellCommands {
             m_errors.add("Could not save properties to " + target + " \n");
             m_errors.add(e.toString() + "\n");
         }
+    }
+
+    /**
+     * @param dbProperty
+     */
+    private void setEntityManagerPoolSize(String poolSize) {
+
+        setExtProperty(
+            CmsDbPool.KEY_DATABASE_POOL + '.' + getPool() + '.' + CmsDbPool.KEY_ENTITY_MANAGER_POOL_SIZE,
+            poolSize);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbPool.java,v $
- * Date   : $Date: 2009/09/09 14:26:33 $
- * Version: $Revision: 1.51.2.1 $
+ * Date   : $Date: 2010/11/30 15:35:22 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import org.apache.commons.pool.impl.GenericObjectPool;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.51.2.1 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.0.0
  */
@@ -86,6 +86,9 @@ public final class CmsDbPool {
 
     /** Key for statement pooling. */
     public static final String KEY_DATABASE_STATEMENTS = KEY_DATABASE + "statements";
+
+    /** Key for the entity manager pool size. */
+    public static final String KEY_ENTITY_MANAGER_POOL_SIZE = "entityMangerPoolSize";
 
     /** Key for jdbc driver. */
     public static final String KEY_JDBC_DRIVER = "jdbcDriver";

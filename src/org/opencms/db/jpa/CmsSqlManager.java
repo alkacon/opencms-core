@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/jpa/CmsSqlManager.java,v $
- * Date   : $Date: 2010/11/30 09:33:52 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/11/30 15:35:22 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,14 +64,14 @@ import org.apache.commons.pool.impl.StackObjectPool;
  * @author Georgi Naplatanov
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0 
  */
 public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
 
     /** Default pool size for EntityManager instances. */
-    public static final int DEFAULT_MAX_IDLE = 300;
+    public static final int DEFAULT_ENTITY_MANAGER_POOL_SIZE = 250;
 
     /** The persistence unit name in the persistence.xml file for OpenCms'es persistence classes. */
     public static final String JPA_PERSISTENCE_UNIT = "OpenCmsJPAPool";
@@ -335,12 +335,12 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
             m_factoryTable = new Hashtable<String, EntityManagerFactory>();
             m_factoryTable.put(JPA_PERSISTENCE_UNIT, m_persistenceFactory);
             CmsPoolEntityManagerFactory entityMan = new CmsPoolEntityManagerFactory(m_persistenceFactory);
-            int maxIdle = config.getInt(CmsDbPool.KEY_DATABASE_POOL
+            int entityManagerPoolSize = config.getInt(CmsDbPool.KEY_DATABASE_POOL
                 + "."
                 + CmsDbPool.OPENCMS_DEFAULT_POOL_NAME
                 + "."
-                + CmsDbPool.KEY_MAX_IDLE, DEFAULT_MAX_IDLE);
-            m_openCmsEmPool = new StackObjectPool(entityMan, maxIdle * 10, 0);
+                + CmsDbPool.KEY_ENTITY_MANAGER_POOL_SIZE, DEFAULT_ENTITY_MANAGER_POOL_SIZE);
+            m_openCmsEmPool = new StackObjectPool(entityMan, entityManagerPoolSize, 0);
         }
     }
 
