@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/datebox/Attic/CmsDateBox.java,v $
- * Date   : $Date: 2010/11/29 08:29:19 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2010/11/30 11:18:56 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import com.google.gwt.user.client.ui.UIObject;
 /**
  * A text box that shows a date time picker widget when the user clicks on it.
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @author Ruediger Kurz
  */
@@ -83,7 +83,7 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
     /**
      * This inner class implements the handler for the date box widget.<p>
      * 
-     * @version $Revision: 1.14 $
+     * @version $Revision: 1.15 $
      * 
      * @author Ruediger Kurz
      */
@@ -619,11 +619,15 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
         if (!m_isValidTime && valid) {
             m_isValidTime = true;
             m_popup.getIgnoreList().remove(RootPanel.getBodyElement());
-            m_autoHideParent.removeAutoHidePartner(RootPanel.getBodyElement());
+            if (m_autoHideParent != null) {
+                m_autoHideParent.removeAutoHidePartner(RootPanel.getBodyElement());
+            }
         } else if (m_isValidTime && !valid) {
             m_isValidTime = false;
             m_popup.getIgnoreList().add(RootPanel.getBodyElement());
-            m_autoHideParent.addAutoHidePartner(RootPanel.getBodyElement());
+            if (m_autoHideParent != null) {
+                m_autoHideParent.addAutoHidePartner(RootPanel.getBodyElement());
+            }
         }
     }
 
