@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2010/11/29 15:51:09 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2010/11/30 08:56:13 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,6 +40,7 @@ import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeEdit;
 import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeMergeSitemap;
 import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeMove;
 import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeNew;
+import org.opencms.ade.sitemap.client.model.CmsClientSitemapCompositeChange;
 import org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsBrokenLinkData;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
@@ -88,7 +89,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.32 $ 
+ * @version $Revision: 1.33 $ 
  * 
  * @since 8.0.0
  */
@@ -144,6 +145,7 @@ public class CmsSitemapController {
      * Constructor.<p>
      */
     public CmsSitemapController() {
+
         m_redirectUpdater = new CmsRedirectUpdater();
 
         m_changes = new ArrayList<I_CmsClientSitemapChange>();
@@ -522,43 +524,10 @@ public class CmsSitemapController {
         Map<String, CmsSimplePropertyValue> properties,
         boolean isNew) {
 
-        // check changes
-        boolean changedTitle = ((title != null) && !title.trim().equals(entry.getTitle()));
-        boolean changedVfsRef = ((vfsReference != null) && !vfsReference.trim().equals(entry.getVfsPath()));
-
-        Map<String, CmsSimplePropertyValue> oldProps = new HashMap<String, CmsSimplePropertyValue>(
-            entry.getProperties());
-        Map<String, CmsSimplePropertyValue> newProps = new HashMap<String, CmsSimplePropertyValue>(
-            entry.getProperties());
-
-        CmsCollectionUtil.updateMapAndRemoveNulls(properties, newProps);
-        boolean changedProperties = !oldProps.equals(newProps);
-        //TODO: fix property comparison   
-        if (!changedTitle && !changedVfsRef && !changedProperties && isNew) {
-            // nothing to do
-            return;
+        CmsClientSitemapChangeEdit change = getChangeForEdit(entry, title, vfsReference, properties, isNew);
+        if (change != null) {
+            addChange(change, false);
         }
-
-        // create changes
-        CmsClientSitemapEntry newEntry = new CmsClientSitemapEntry(entry);
-        if (changedTitle) {
-            newEntry.setTitle(title);
-        }
-        newEntry.setEdited();
-
-        // We don't calculate isNew by comparing the old and new url names.
-        // This is because any editing of the URL name field should mark the entry as "not new", even if the final
-        // value is the same as the initial one. 
-        newEntry.setNew(entry.isNew() && isNew);
-        if (changedVfsRef) {
-            newEntry.setVfsPath(vfsReference);
-        }
-        if (changedProperties) {
-            newEntry.setProperties(newProps);
-        }
-
-        // apply changes
-        addChange(new CmsClientSitemapChangeEdit(entry, newEntry), false);
     }
 
     /**
@@ -579,8 +548,13 @@ public class CmsSitemapController {
         Map<String, CmsSimplePropertyValue> fieldValues,
         boolean editedName) {
 
-        edit(entry, newTitle, vfsPath, fieldValues, !editedName);
-        move(entry, getPath(entry, newUrlName), entry.getPosition());
+        CmsClientSitemapChangeEdit edit = getChangeForEdit(entry, newTitle, vfsPath, fieldValues, !editedName);
+        CmsClientSitemapChangeMove move = getChangeForMove(entry, getPath(entry, newUrlName), entry.getPosition());
+        CmsClientSitemapCompositeChange change = new CmsClientSitemapCompositeChange();
+        change.addChange(edit);
+        change.addChange(move);
+        addChange(change, false);
+
     }
 
     /**
@@ -865,16 +839,9 @@ public class CmsSitemapController {
      */
     public void move(CmsClientSitemapEntry entry, String toPath, int position) {
 
-        // check for valid data
-        if (!isValidEntryAndPath(entry, toPath)) {
-            // invalid data, do nothing 
-            CmsDebugLog.getInstance().printLine("invalid data, doing nothing");
-            return;
-        }
-        // check for relevance
-        if (isChangedPosition(entry, toPath, position)) {
-            // only register real changes
-            addChange(new CmsClientSitemapChangeMove(entry, toPath, position), false);
+        CmsClientSitemapChangeMove change = getChangeForMove(entry, toPath, position);
+        if (change != null) {
+            addChange(change, false);
         }
     }
 
@@ -1090,6 +1057,89 @@ public class CmsSitemapController {
 
         m_eventBus.fireEventFromSource(new CmsSitemapChangeEvent(change), this);
         recomputePropertyInheritance();
+    }
+
+    /**
+     * Creates a change object for an edit operation.<p>
+     *  
+     * @param entry the edited sitemap entry
+     * @param title the title 
+     * @param vfsReference the vfs path 
+     * @param properties the properties 
+     * @param isNew true if the entry's url name has not been edited before
+     *  
+     * @return the change object
+     */
+    protected CmsClientSitemapChangeEdit getChangeForEdit(
+        CmsClientSitemapEntry entry,
+        String title,
+        String vfsReference,
+        Map<String, CmsSimplePropertyValue> properties,
+        boolean isNew) {
+
+        // check changes
+        boolean changedTitle = ((title != null) && !title.trim().equals(entry.getTitle()));
+        boolean changedVfsRef = ((vfsReference != null) && !vfsReference.trim().equals(entry.getVfsPath()));
+
+        Map<String, CmsSimplePropertyValue> oldProps = new HashMap<String, CmsSimplePropertyValue>(
+            entry.getProperties());
+        Map<String, CmsSimplePropertyValue> newProps = new HashMap<String, CmsSimplePropertyValue>(
+            entry.getProperties());
+
+        CmsCollectionUtil.updateMapAndRemoveNulls(properties, newProps);
+        boolean changedProperties = !oldProps.equals(newProps);
+        //TODO: fix property comparison   
+        if (!changedTitle && !changedVfsRef && !changedProperties && isNew) {
+            // nothing to do
+            return null;
+        }
+
+        // create changes
+        CmsClientSitemapEntry newEntry = new CmsClientSitemapEntry(entry);
+        if (changedTitle) {
+            newEntry.setTitle(title);
+        }
+        newEntry.setEdited();
+
+        // We don't calculate isNew by comparing the old and new url names.
+        // This is because any editing of the URL name field should mark the entry as "not new", even if the final
+        // value is the same as the initial one. 
+        newEntry.setNew(entry.isNew() && isNew);
+        if (changedVfsRef) {
+            newEntry.setVfsPath(vfsReference);
+        }
+        if (changedProperties) {
+            newEntry.setProperties(newProps);
+        }
+
+        // apply changes
+        return new CmsClientSitemapChangeEdit(entry, newEntry);
+
+    }
+
+    /**
+     * Returns a change object for a move operation.<p>
+     *  
+     * @param entry the entry being moved 
+     * @param toPath the target path of the move operation 
+     * @param position the target position of the move operation
+     *  
+     * @return the change object
+     */
+    protected CmsClientSitemapChangeMove getChangeForMove(CmsClientSitemapEntry entry, String toPath, int position) {
+
+        // check for valid data
+        if (!isValidEntryAndPath(entry, toPath)) {
+            // invalid data, do nothing 
+            CmsDebugLog.getInstance().printLine("invalid data, doing nothing");
+            return null;
+        }
+        // check for relevance
+        if (isChangedPosition(entry, toPath, position)) {
+            // only register real changes
+            return new CmsClientSitemapChangeMove(entry, toPath, position);
+        }
+        return null;
     }
 
     /**
