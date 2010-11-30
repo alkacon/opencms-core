@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2010/11/24 18:06:11 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/11/30 09:33:54 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -99,7 +99,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 6.0.0 
  */
@@ -125,7 +125,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     protected List m_resOp = new ArrayList();
 
     /** The sql manager. */
-    protected org.opencms.db.generic.CmsSqlManager m_sqlManager;
+    protected CmsSqlManager m_sqlManager;
 
     /**
      * This method prepares the SQL conditions for mapping entries for a given URL name mapping filter.<p>
@@ -2218,6 +2218,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 Messages.ERR_READ_DELETED_RESOURCE_1,
                 dbc.removeSiteRoot(resource.getRootPath())));
         }
+
         return resource;
     }
 
@@ -2784,11 +2785,11 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#setSqlManager(org.opencms.db.generic.CmsSqlManager)
+     * @see org.opencms.db.I_CmsVfsDriver#setSqlManager(org.opencms.db.CmsSqlManager)
      */
-    public void setSqlManager(CmsSqlManager sqlManager) {
+    public void setSqlManager(org.opencms.db.CmsSqlManager sqlManager) {
 
-        m_sqlManager = sqlManager;
+        m_sqlManager = (CmsSqlManager)sqlManager;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsHistoryDriver.java,v $
- * Date   : $Date: 2010/04/20 13:44:57 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/11/30 09:33:53 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,6 @@
 
 package org.opencms.db;
 
-import org.opencms.db.generic.CmsSqlManager;
 import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
@@ -56,7 +55,7 @@ import java.util.List;
  * @author Thomas Weckert
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 6.9.1
  */
@@ -150,7 +149,7 @@ public interface I_CmsHistoryDriver {
      * 
      * @return the SQL manager for this driver
      */
-    org.opencms.db.generic.CmsSqlManager initSqlManager(String classname);
+    CmsSqlManager initSqlManager(String classname);
 
     /**
      * Reads all file headers of the resource with the given structure id.<p>

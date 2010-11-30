@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2010/11/24 18:06:11 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2010/11/30 09:33:54 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -110,22 +110,37 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 6.0.0 
  */
 public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
     /**
-     * This private class is a temporary storage for the method {@link CmsProjectDriver#readLocks(CmsDbContext)}
+     * This private class is a temporary storage for the method {@link CmsProjectDriver#readLocks(CmsDbContext)}.<p>
      */
     private class CmsTempResourceLock {
 
+        /** The lock type. */
         private int m_lockType;
+
+        /** The project id. */
         private CmsUUID m_projectId;
+
+        /** The resource path. */
         private String m_resourcePath;
+
+        /** The user id. */
         private CmsUUID m_userId;
 
+        /**
+         * The constructor.<p>
+         * 
+         * @param resourcePath resource path
+         * @param userId user id
+         * @param projectId project id
+         * @param lockType lock type
+         */
         public CmsTempResourceLock(String resourcePath, CmsUUID userId, CmsUUID projectId, int lockType) {
 
             m_resourcePath = resourcePath;
@@ -186,7 +201,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
     protected CmsDriverManager m_driverManager;
 
     /** The SQL manager. */
-    protected org.opencms.db.generic.CmsSqlManager m_sqlManager;
+    protected CmsSqlManager m_sqlManager;
 
     /**
      * @see org.opencms.db.I_CmsProjectDriver#createProject(org.opencms.db.CmsDbContext, CmsUUID, org.opencms.file.CmsUser, org.opencms.file.CmsGroup, org.opencms.file.CmsGroup, java.lang.String, java.lang.String, int, CmsProject.CmsProjectType)
@@ -828,7 +843,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         Map configuration = configurationManager.getConfiguration();
         String poolUrl = configuration.get("db.project.pool").toString();
         String classname = configuration.get("db.project.sqlmanager").toString();
-        m_sqlManager = this.initSqlManager(classname);
+        m_sqlManager = initSqlManager(classname);
         m_sqlManager.init(I_CmsProjectDriver.DRIVER_TYPE_ID, poolUrl);
 
         m_driverManager = driverManager;
@@ -2517,11 +2532,11 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsProjectDriver#setSqlManager(org.opencms.db.generic.CmsSqlManager)
+     * @see org.opencms.db.I_CmsProjectDriver#setSqlManager(org.opencms.db.CmsSqlManager)
      */
-    public void setSqlManager(CmsSqlManager manager) {
+    public void setSqlManager(org.opencms.db.CmsSqlManager manager) {
 
-        m_sqlManager = manager;
+        m_sqlManager = (CmsSqlManager)manager;
     }
 
     /**

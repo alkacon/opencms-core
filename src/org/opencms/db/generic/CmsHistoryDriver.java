@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsHistoryDriver.java,v $
- * Date   : $Date: 2010/11/25 14:26:21 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/11/30 09:33:54 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -81,7 +81,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz  
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 6.9.1
  */
@@ -94,7 +94,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
     protected CmsDriverManager m_driverManager;
 
     /** The SQL manager instance. */
-    protected org.opencms.db.generic.CmsSqlManager m_sqlManager;
+    protected CmsSqlManager m_sqlManager;
 
     /**
      * @see org.opencms.db.I_CmsHistoryDriver#createPropertyDefinition(org.opencms.db.CmsDbContext, java.lang.String, org.opencms.file.CmsPropertyDefinition.CmsPropertyType)
@@ -1277,11 +1277,11 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsHistoryDriver#setSqlManager(org.opencms.db.generic.CmsSqlManager)
+     * @see org.opencms.db.I_CmsHistoryDriver#setSqlManager(org.opencms.db.CmsSqlManager)
      */
-    public void setSqlManager(CmsSqlManager sqlManager) {
+    public void setSqlManager(org.opencms.db.CmsSqlManager sqlManager) {
 
-        m_sqlManager = sqlManager;
+        m_sqlManager = (CmsSqlManager)sqlManager;
     }
 
     /**

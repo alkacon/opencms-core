@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/CmsSetupBean.java,v $
- * Date   : $Date: 2010/08/05 12:55:10 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/11/30 09:33:56 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,12 +35,14 @@ import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsImportExportConfiguration;
 import org.opencms.configuration.CmsModuleConfiguration;
+import org.opencms.configuration.CmsPersistenceUnitConfiguration;
 import org.opencms.configuration.CmsSearchConfiguration;
 import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.configuration.CmsVfsConfiguration;
 import org.opencms.configuration.CmsWorkplaceConfiguration;
 import org.opencms.configuration.I_CmsXmlConfiguration;
 import org.opencms.db.CmsDbPool;
+import org.opencms.db.jpa.CmsSqlManager;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
@@ -117,8 +119,9 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior
  * @author Michael Moossen 
+ * @author Ruediger Kurz
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -132,6 +135,12 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /** DB provider constant for db2. */
     public static final String DB2_PROVIDER = "db2";
+
+    /** jpa type constant. */
+    public static final byte DRIVER_TYPE_JPA = 1;
+
+    /** jpa type constant. */
+    public static final byte DRIVER_TYPE_SQL = 0;
 
     /** Folder constant name.<p> */
     public static final String FOLDER_BACKUP = "backup" + File.separatorChar;
@@ -153,6 +162,12 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /** Name of the property file containing HTML fragments for setup wizard and error dialog. */
     public static final String HTML_MESSAGE_FILE = "org/opencms/setup/htmlmsg.properties";
+
+    /** The jpa CmsDbContextFactory for the opencms-system.xml node: runtimeclasses -> runtimeinfo. */
+    public static final String JPA_FACTOTY = "org.opencms.db.jpa.CmsDbContextFactory";
+
+    /** DB provider constant for jpa. */
+    public static final String JPA_PROVIDER = "jpa";
 
     /** DB provider constant for maxdb. */
     public static final String MAXDB_PROVIDER = "maxdb";
@@ -187,6 +202,9 @@ public class CmsSetupBean implements I_CmsShellCommands {
     /** Properties file key constant post fix. */
     protected static final String PROPKEY_DESCRIPTION = ".description";
 
+    /** True if OpenCms supports a generic JPA driver implementation. */
+    protected static final String PROPKEY_JPA_SUPPORTED = "jpaSupported";
+
     /** Properties file key constant post fix. */
     protected static final String PROPKEY_MODULES = ".modules";
 
@@ -196,20 +214,36 @@ public class CmsSetupBean implements I_CmsShellCommands {
     /** Properties file key constant post fix. */
     protected static final String PROPKEY_POSITION = ".position";
 
-    /** Required files per database server setup. */
-    static final String[] REQUIRED_DB_SETUP_FILES = {
-        "step_4_database_setup.jsp",
-        "database.properties",
-        "create_db.sql",
-        "create_tables.sql",
-        "drop_db.sql",
-        "drop_tables.sql"};
+    /** True if OpenCms supports a native SQL driver implementation. */
+    protected static final String PROPKEY_SQL_SUPPORTED = "sqlSupported";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSetupBean.class);
 
     /** Contains HTML fragments for the output in the JSP pages of the setup wizard. */
     private static Properties m_htmlProps;
+
+    /** Required files per database setup (for AS400 and DB2). */
+    private static final String[] REQUIRED_DB2_DB_SETUP_FILES = {
+        "step_4_database_setup.jsp",
+        "database.properties",
+        "create_tables.sql",
+        "drop_tables.sql"};
+
+    /** Required files per database setup (for jpa only supported dbs). */
+    private static final String[] REQUIRED_JPA_DB_SETUP_FILES = {
+        "step_4_database_setup.jsp",
+        "database.properties",
+        "drop_tables.sql"};
+
+    /** Required files per database setup (for sql supported dbs). */
+    private static final String[] REQUIRED_SQL_DB_SETUP_FILES = {
+        "step_4_database_setup.jsp",
+        "database.properties",
+        "create_db.sql",
+        "create_tables.sql",
+        "drop_db.sql",
+        "drop_tables.sql"};
 
     /** A map with all available modules. */
     protected Map<String, CmsModule> m_availableModules;
@@ -267,11 +301,20 @@ public class CmsSetupBean implements I_CmsShellCommands {
     /** The name of the default web application (in web.xml). */
     private String m_defaultWebApplication;
 
+    /** Driver implementation should be used (SQL or JPA). */
+    private byte m_driverType;
+
     /** Contains the error messages to be displayed in the setup wizard. */
     private List<String> m_errors;
 
     /** Contains the properties of "opencms.properties". */
     private ExtendedProperties m_extProperties;
+
+    /** The full key of the selected database including the "_jpa" or "_sql" information. */
+    private String m_fullDatabaseKey;
+
+    /** A reference to the persistence configuration. */
+    private CmsPersistenceUnitConfiguration m_peristenceConfigurator;
 
     /** The Database Provider used in setup. */
     private String m_provider;
@@ -533,11 +576,9 @@ public class CmsSetupBean implements I_CmsShellCommands {
         if (m_databaseKey == null) {
             m_databaseKey = getExtProperty("db.name");
         }
-
         if (CmsStringUtil.isEmpty(m_databaseKey)) {
             m_databaseKey = getSortedDatabases().get(0);
         }
-
         return m_databaseKey;
     }
 
@@ -563,10 +604,16 @@ public class CmsSetupBean implements I_CmsShellCommands {
      */
     public List<String> getDatabaseLibs(String databaseKey) {
 
-        return CmsStringUtil.splitAsList(
-            getDatabaseProperties().get(databaseKey).getProperty(databaseKey + ".libs"),
-            ',',
-            true);
+        List<String> lst;
+        if (JPA_PROVIDER.equalsIgnoreCase(m_provider)) {
+            lst = new ArrayList<String>();
+        } else {
+            lst = CmsStringUtil.splitAsList(
+                getDatabaseProperties().get(databaseKey).getProperty(databaseKey + ".libs"),
+                ',',
+                true);
+        }
+        return lst;
     }
 
     /**
@@ -588,11 +635,9 @@ public class CmsSetupBean implements I_CmsShellCommands {
      */
     public Map<String, Properties> getDatabaseProperties() {
 
-        if (m_databaseProperties != null) {
-            return m_databaseProperties;
+        if (m_databaseProperties == null) {
+            readDatabaseConfig();
         }
-
-        readDatabaseConfig();
         return m_databaseProperties;
     }
 
@@ -604,56 +649,9 @@ public class CmsSetupBean implements I_CmsShellCommands {
      */
     public List<String> getDatabases() {
 
-        File databaseSetupFolder = null;
-        File[] childResources = null;
-        File childResource = null;
-        File setupFile = null;
-        boolean hasMissingSetupFiles = false;
-
-        if (m_databaseKeys != null) {
-            return m_databaseKeys;
+        if (m_databaseKeys == null) {
+            readDatabaseConfig();
         }
-
-        try {
-            m_databaseKeys = new ArrayList<String>();
-            databaseSetupFolder = new File(m_webAppRfsPath + FOLDER_SETUP + FOLDER_DATABASE);
-
-            if (databaseSetupFolder.exists()) {
-                childResources = databaseSetupFolder.listFiles();
-
-                if (childResources != null) {
-                    for (int i = 0; i < childResources.length; i++) {
-                        childResource = childResources[i];
-                        hasMissingSetupFiles = false;
-
-                        if (childResource.exists() && childResource.isDirectory() && childResource.canRead()) {
-                            for (int j = 0; j < REQUIRED_DB_SETUP_FILES.length; j++) {
-                                setupFile = new File(childResource.getPath()
-                                    + File.separatorChar
-                                    + REQUIRED_DB_SETUP_FILES[j]);
-
-                                if (!setupFile.exists() || !setupFile.isFile() || !setupFile.canRead()) {
-                                    hasMissingSetupFiles = true;
-                                    System.err.println("["
-                                        + getClass().getName()
-                                        + "] missing or unreadable database setup file: "
-                                        + setupFile.getPath());
-                                    break;
-                                }
-                            }
-
-                            if (!hasMissingSetupFiles) {
-                                m_databaseKeys.add(childResource.getName().trim());
-                            }
-                        }
-                    }
-                }
-            }
-        } catch (Exception e) {
-            System.err.println(e.toString());
-            e.printStackTrace(System.err);
-        }
-
         return m_databaseKeys;
     }
 
@@ -843,6 +841,86 @@ public class CmsSetupBean implements I_CmsShellCommands {
     public String getEthernetAddress() {
 
         return getExtProperty("server.ethernet.address");
+    }
+
+    /**
+     * Returns the fullDatabaseKey.<p>
+     *
+     * @return the fullDatabaseKey
+     */
+    public String getFullDatabaseKey() {
+
+        if (m_fullDatabaseKey == null) {
+            m_fullDatabaseKey = getExtProperty("db.name") + "_sql";
+        }
+        if (CmsStringUtil.isEmpty(m_fullDatabaseKey) || m_fullDatabaseKey.equals("_sql")) {
+            m_fullDatabaseKey = getSortedDatabases().get(0) + "_sql";
+        }
+        return m_fullDatabaseKey;
+    }
+
+    /**
+     * Generates the HTML code for the drop down for db selection.<p>
+     * 
+     * @return the generated HTML 
+     */
+    public String getHtmlForDbSelection() {
+
+        StringBuffer buf = new StringBuffer(2048);
+
+        buf.append("<select name=\"fullDatabaseKey\" style=\"width: 250px;\" size=\"1\" onchange=\"location.href='../../step_3_database_selection.jsp?fullDatabaseKey='+this.options[this.selectedIndex].value;\">");
+        buf.append("<!-- --------------------- JSP CODE --------------------------- -->");
+
+        // get all available databases
+        List<String> databases = getSortedDatabases();
+
+        //  List all databases found in the dbsetup.properties
+        if ((databases != null) && (databases.size() > 0)) {
+
+            List<String> sqlDbs = new ArrayList<String>();
+            List<String> jpaDbs = new ArrayList<String>();
+
+            // devide sql dbs from jpa dbs
+            for (String dbKey : databases) {
+                boolean isJpaSupported = isJpaSupported(dbKey);
+                boolean isSqlSupported = isSqlSupported(dbKey);
+                if (isJpaSupported && isSqlSupported) {
+                    sqlDbs.add(dbKey);
+                    jpaDbs.add(dbKey);
+                } else if (isJpaSupported && !isSqlSupported) {
+                    jpaDbs.add(dbKey);
+                } else if (!isJpaSupported && isSqlSupported) {
+                    sqlDbs.add(dbKey);
+                }
+            }
+
+            // show the sql dbs first
+            for (String dbKey : sqlDbs) {
+                String dn = getDatabaseName(dbKey);
+                String selected = "";
+                if (getFullDatabaseKey().equals(dbKey + "_sql")) {
+                    selected = "selected";
+                }
+                buf.append("<option value='" + dbKey + "_sql' " + selected + ">" + dn);
+            }
+
+            // then show the jpa dbs
+            for (String dbKey : jpaDbs) {
+                String dn = getDatabaseName(dbKey);
+                String selected = "";
+                if (getFullDatabaseKey().equals(dbKey + "_jpa")) {
+                    selected = "selected";
+                }
+                buf.append("<option value='" + dbKey + "_jpa' " + selected + ">" + dn + " [JPA]");
+            }
+        } else {
+            buf.append("<option value='null'>no database found");
+        }
+
+        buf.append("<!-- --------------------------------------------------------- -->");
+        buf.append("</select>");
+
+        return buf.toString();
     }
 
     /** 
@@ -1227,6 +1305,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
         try {
             // explicit set to null to overwrite exiting values from session
             m_availableModules = null;
+            m_fullDatabaseKey = null;
             m_databaseKey = null;
             m_databaseKeys = null;
             m_databaseProperties = null;
@@ -1247,6 +1326,12 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
             setWebAppRfsPath(webAppRfsPath);
             m_errors = new ArrayList<String>();
+
+            // init persistence configurator
+            String inFileName = m_webAppRfsPath + CmsSystemInfo.FOLDER_WEBINF + CmsSystemInfo.FILE_PERSISTENCE;
+            m_peristenceConfigurator = new CmsPersistenceUnitConfiguration(
+                CmsSqlManager.JPA_PERSISTENCE_UNIT,
+                inFileName);
 
             if (CmsStringUtil.isNotEmpty(webAppRfsPath)) {
                 // workaround for JUnit test cases, this must not be executed in a test case
@@ -1323,6 +1408,32 @@ public class CmsSetupBean implements I_CmsShellCommands {
     public boolean isInitialized() {
 
         return m_extProperties != null;
+    }
+
+    /**
+     * Returns true if jpa is supported for the given dbKey.<p>
+     * 
+     * @param dbKey the database key to check the jpa support for
+     * 
+     * @return true if jpa is supported for the given dbKey
+     */
+    public boolean isJpaSupported(String dbKey) {
+
+        String key = dbKey + "." + PROPKEY_JPA_SUPPORTED;
+        return Boolean.valueOf(getDbProperty(key)).booleanValue();
+    }
+
+    /**
+     * Returns true if sql is supported for the given dbKey.<p>
+     * 
+     * @param dbKey the database key to check the sql support for
+     * 
+     * @return true if sql is supported for the given dbKey
+     */
+    public boolean isSqlSupported(String dbKey) {
+
+        String key = dbKey + "." + PROPKEY_SQL_SUPPORTED;
+        return Boolean.valueOf(getDbProperty(key)).booleanValue();
     }
 
     /**
@@ -1492,6 +1603,9 @@ public class CmsSetupBean implements I_CmsShellCommands {
             lockWizard();
             // save Properties to file "opencms.properties" 
             saveProperties(getProperties(), CmsSystemInfo.FILE_PROPERTIES, false);
+
+            setSchemaGeneration(false);
+            m_peristenceConfigurator.save();
         }
     }
 
@@ -1527,8 +1641,14 @@ public class CmsSetupBean implements I_CmsShellCommands {
                 backupConfiguration(
                     CmsConfigurationManager.DEFAULT_XML_FILE_NAME,
                     CmsConfigurationManager.DEFAULT_XML_FILE_NAME + CmsConfigurationManager.POSTFIX_ORI);
+
                 // save Properties to file "opencms.properties" 
+                setDatabase(m_databaseKey);
                 saveProperties(getProperties(), CmsSystemInfo.FILE_PROPERTIES, true);
+
+                // if has sql driver the sql scripts will be eventualy executed
+                setSchemaGeneration(!isSqlSupported(m_databaseKey));
+                m_peristenceConfigurator.save();
 
                 CmsSetupTestResult testResult = new CmsSetupTestSimapi().execute(this);
                 if (testResult.getResult().equals(I_CmsSetupTest.RESULT_FAILED)) {
@@ -1571,6 +1691,19 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
                 getXmlHelper().setValue(CmsSystemConfiguration.DEFAULT_XML_FILE_NAME, xp.toString(), getWorkplaceSite());
 
+                if ((m_driverType == DRIVER_TYPE_JPA)) {
+                    // /opencms/system/runtimeclasses/runtimeinfo
+                    xp = new StringBuffer(256);
+                    xp.append("/").append(CmsConfigurationManager.N_ROOT);
+                    xp.append("/").append(CmsSystemConfiguration.N_SYSTEM);
+                    xp.append("/").append(CmsSystemConfiguration.N_RUNTIMECLASSES);
+                    xp.append("/").append(CmsSystemConfiguration.N_RUNTIMEINFO);
+                    getXmlHelper().setAttribute(
+                        CmsSystemConfiguration.DEFAULT_XML_FILE_NAME,
+                        xp.toString(),
+                        "class",
+                        JPA_FACTOTY);
+                }
                 getXmlHelper().writeAll();
             } catch (Exception e) {
                 if (LOG.isErrorEnabled()) {
@@ -1689,14 +1822,30 @@ public class CmsSetupBean implements I_CmsShellCommands {
     public void setDatabase(String databaseKey) {
 
         m_databaseKey = databaseKey;
+        String vfsDriver;
+        String userDriver;
+        String projectDriver;
+        String historyDriver;
+        String subscriptionDriver;
+        String sqlManager;
 
-        String vfsDriver = getDbProperty(m_databaseKey + ".vfs.driver");
-        String userDriver = getDbProperty(m_databaseKey + ".user.driver");
-        String projectDriver = getDbProperty(m_databaseKey + ".project.driver");
-        String historyDriver = getDbProperty(m_databaseKey + ".history.driver");
-        String subscriptionDriver = getDbProperty(m_databaseKey + ".subscription.driver");
-        String sqlManager = getDbProperty(m_databaseKey + ".sqlmanager");
+        if ((m_driverType == DRIVER_TYPE_JPA)) {
+            vfsDriver = "org.opencms.db.jpa.CmsVfsDriver";
+            userDriver = "org.opencms.db.jpa.CmsUserDriver";
+            projectDriver = "org.opencms.db.jpa.CmsProjectDriver";
+            historyDriver = "org.opencms.db.jpa.CmsHistoryDriver";
+            sqlManager = "org.opencms.db.jpa.CmsSqlManager";
+            subscriptionDriver = "org.opencms.db.jpa.CmsSubscriptionDriver";
+        } else {
+            vfsDriver = getDbProperty(m_databaseKey + ".vfs.driver");
+            userDriver = getDbProperty(m_databaseKey + ".user.driver");
+            projectDriver = getDbProperty(m_databaseKey + ".project.driver");
+            historyDriver = getDbProperty(m_databaseKey + ".history.driver");
+            subscriptionDriver = getDbProperty(m_databaseKey + ".subscription.driver");
+            sqlManager = getDbProperty(m_databaseKey + ".sqlmanager");
+        }
 
+        // set the db properties
         setExtProperty("db.name", m_databaseKey);
         setExtProperty("db.vfs.driver", vfsDriver);
         setExtProperty("db.vfs.sqlmanager", sqlManager);
@@ -1708,7 +1857,6 @@ public class CmsSetupBean implements I_CmsShellCommands {
         setExtProperty("db.history.sqlmanager", sqlManager);
         setExtProperty("db.subscription.driver", subscriptionDriver);
         setExtProperty("db.subscription.sqlmanager", sqlManager);
-
     }
 
     /**
@@ -1788,6 +1936,13 @@ public class CmsSetupBean implements I_CmsShellCommands {
         // store the DB provider
         m_provider = provider;
 
+        // ensure that the driver type and the provider is set accordingly to the full database key
+        if (getFullDatabaseKey().toLowerCase().endsWith(JPA_PROVIDER) || JPA_PROVIDER.equalsIgnoreCase(m_provider)) {
+            m_driverType = DRIVER_TYPE_JPA;
+        } else {
+            m_driverType = DRIVER_TYPE_SQL;
+        }
+
         boolean isFormSubmitted = ((request.getParameter("submit") != null) && (conStr != null));
         if (conStr == null) {
             conStr = "";
@@ -1821,6 +1976,14 @@ public class CmsSetupBean implements I_CmsShellCommands {
             }
 
             if (isFormSubmitted) {
+                if (m_driverType == DRIVER_TYPE_JPA) {
+                    if (isJpaSupported(m_databaseKey) && !isSqlSupported(m_databaseKey)) {
+                        // driver name should be specified for only JPA supported databases
+                        String driverName = request.getParameter("jdbcDriver");
+                        setDbDriver(driverName);
+                    }
+                }
+
                 if (provider.equals(POSTGRESQL_PROVIDER)) {
                     setDb(database);
 
@@ -1850,6 +2013,14 @@ public class CmsSetupBean implements I_CmsShellCommands {
                         conStr += ";";
                     }
                     conStr += "libraries='" + database + "'";
+                } else if (isJpaSupported(m_databaseKey) && !isSqlSupported(m_databaseKey)) {
+                    conStr = request.getParameter("dbCreateConStr")
+                        + getDbProperty(m_databaseKey + "." + "separator")
+                        + request.getParameter("db");
+                    setDbProperty(getDatabase() + ".constr", conStr + getDbProperty(getDatabase() + ".newDb"));
+                    setDbWorkConStr(conStr);
+                    boolean createTbls = "true".equalsIgnoreCase(request.getParameter("createTables")) ? true : false;
+                    request.getSession().setAttribute("createTables", Boolean.valueOf(createTbls));
                 }
                 setDbWorkConStr(conStr);
                 if (provider.equals(POSTGRESQL_PROVIDER)) {
@@ -1922,7 +2093,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
                     || provider.equals(POSTGRESQL_PROVIDER)
                     || provider.equals(MAXDB_PROVIDER)) {
                     setDbWorkUser(dbName);
-                } else {
+                } else if (dbName != null) {
                     setDb(dbName);
                 }
             }
@@ -1951,9 +2122,14 @@ public class CmsSetupBean implements I_CmsShellCommands {
      */
     public void setDbWorkConStr(String dbWorkConStr) {
 
-        String driver = getDbProperty(m_databaseKey + ".driver");
+        String driver;
         String pool = '.' + getPool() + '.';
 
+        if (m_driverType == DRIVER_TYPE_JPA) {
+            driver = getDbDriver();
+        } else {
+            driver = getDbProperty(m_databaseKey + ".driver");
+        }
         setExtProperty(CmsDbPool.KEY_DATABASE_POOL + pool + CmsDbPool.KEY_JDBC_DRIVER, driver);
         setExtProperty(CmsDbPool.KEY_DATABASE_POOL + pool + CmsDbPool.KEY_JDBC_URL, dbWorkConStr);
         setExtProperty(CmsDbPool.KEY_DATABASE_POOL + pool + CmsDbPool.KEY_TEST_QUERY, getDbTestQuery());
@@ -1980,6 +2156,16 @@ public class CmsSetupBean implements I_CmsShellCommands {
         setExtProperty(CmsDbPool.KEY_DATABASE_POOL + '.' + getPool() + '.' + CmsDbPool.KEY_POOL_USER, dbWorkUser);
     }
 
+    /**
+     * Sets the driver type.<p>
+     * 
+     * @param type the type to set
+     */
+    public void setDriverType(String type) {
+
+        m_driverType = JPA_PROVIDER.equalsIgnoreCase(type) ? DRIVER_TYPE_JPA : DRIVER_TYPE_SQL;
+    }
+
     /** 
      * Set the mac ethernet address, required for UUID generation.<p>
      * 
@@ -1988,6 +2174,23 @@ public class CmsSetupBean implements I_CmsShellCommands {
     public void setEthernetAddress(String ethernetAddress) {
 
         setExtProperty("server.ethernet.address", ethernetAddress);
+    }
+
+    /**
+     * Sets the fullDatabaseKey.<p>
+     *
+     * @param fullDatabaseKey the fullDatabaseKey to set
+     */
+    public void setFullDatabaseKey(String fullDatabaseKey) {
+
+        m_fullDatabaseKey = fullDatabaseKey;
+
+        String driverPart = fullDatabaseKey.substring(fullDatabaseKey.lastIndexOf("_"), fullDatabaseKey.length());
+        if (driverPart.toLowerCase().contains(JPA_PROVIDER)) {
+            setDriverType(JPA_PROVIDER);
+        }
+        String keyPart = fullDatabaseKey.substring(0, fullDatabaseKey.lastIndexOf("_"));
+        setDatabase(keyPart);
     }
 
     /**
@@ -2102,6 +2305,10 @@ public class CmsSetupBean implements I_CmsShellCommands {
     public boolean validateJdbc() {
 
         boolean result = false;
+        // There is not defined libraries for supported databases from OpenJPA
+        if (m_driverType == DRIVER_TYPE_JPA) {
+            return true;
+        }
         String libFolder = getLibFolder();
         Iterator<String> it = getDatabaseLibs(getDatabase()).iterator();
         while (it.hasNext()) {
@@ -2404,73 +2611,84 @@ public class CmsSetupBean implements I_CmsShellCommands {
      */
     protected void readDatabaseConfig() {
 
-        String databaseKey = null;
-        FileInputStream input = null;
-        String configPath = null;
-        Properties databaseProperties = null;
-        File databaseSetupFolder = null;
-        File[] childResources = null;
-        File childResource = null;
-        File setupFile = null;
-        boolean hasMissingSetupFiles = false;
-
         m_databaseKeys = new ArrayList<String>();
         m_databaseProperties = new HashMap<String, Properties>();
 
+        FileInputStream input = null;
+        File childResource = null;
+
+        List<String> databaseKeys = new ArrayList<String>();
+        Map<String, Properties> databaseProperties = new HashMap<String, Properties>();
+
         try {
-            databaseSetupFolder = new File(m_webAppRfsPath + FOLDER_SETUP + FOLDER_DATABASE);
+            File databaseSetupFolder = new File(m_webAppRfsPath + FOLDER_SETUP + FOLDER_DATABASE);
 
-            if (databaseSetupFolder.exists()) {
-                childResources = databaseSetupFolder.listFiles();
+            File[] childResources = databaseSetupFolder.listFiles();
 
-                if (childResources != null) {
-                    for (int i = 0; i < childResources.length; i++) {
-                        childResource = childResources[i];
-                        hasMissingSetupFiles = false;
-
-                        if (childResource.exists() && childResource.isDirectory() && childResource.canRead()) {
-                            for (int j = 0; j < REQUIRED_DB_SETUP_FILES.length; j++) {
-                                setupFile = new File(childResource.getPath()
-                                    + File.separatorChar
-                                    + REQUIRED_DB_SETUP_FILES[j]);
-
-                                if (!setupFile.exists() || !setupFile.isFile() || !setupFile.canRead()) {
-                                    hasMissingSetupFiles = true;
-                                    System.err.println("["
-                                        + getClass().getName()
-                                        + "] missing or unreadable database setup file: "
-                                        + setupFile.getPath());
-                                    break;
-                                }
-
-                                if (!hasMissingSetupFiles) {
-                                    m_databaseKeys.add(childResource.getName().trim());
-                                }
-                            }
-                        }
+            // collect all possible db configurations
+            if (childResources != null) {
+                for (int i = 0; i < childResources.length; i++) {
+                    childResource = childResources[i];
+                    if (childResource.exists() && childResource.isDirectory() && childResource.canRead()) {
+                        databaseKeys.add(childResource.getName().trim());
                     }
                 }
+            }
 
-                for (int i = 0; i < m_databaseKeys.size(); i++) {
-                    databaseKey = m_databaseKeys.get(i);
-                    configPath = m_webAppRfsPath
+            // create the properties with all possible configurations
+            if (databaseSetupFolder.exists()) {
+                for (String key : databaseKeys) {
+                    String configPath = m_webAppRfsPath
                         + "setup"
                         + File.separatorChar
                         + "database"
                         + File.separatorChar
-                        + databaseKey
+                        + key
                         + File.separatorChar
                         + "database.properties";
-
                     try {
                         input = new FileInputStream(new File(configPath));
-                        databaseProperties = new Properties();
-                        databaseProperties.load(input);
-                        m_databaseProperties.put(databaseKey, databaseProperties);
+                        Properties databaseProps = new Properties();
+                        databaseProps.load(input);
+                        databaseProperties.put(key, databaseProps);
                     } catch (Exception e) {
                         System.err.println(e.toString());
                         e.printStackTrace(System.err);
                         continue;
+                    }
+                }
+            }
+
+            // add the properties and the keys to the memeber variables if all needed files exist
+            if (childResources != null) {
+                for (int i = 0; i < childResources.length; i++) {
+                    childResource = childResources[i];
+                    if (childResource.exists() && childResource.isDirectory() && childResource.canRead()) {
+                        String dataBasekey = childResource.getName().trim();
+                        Properties props = databaseProperties.get(dataBasekey);
+                        boolean supportsJPA = Boolean.valueOf(
+                            props.getProperty(dataBasekey + "." + PROPKEY_JPA_SUPPORTED)).booleanValue();
+                        boolean supportsSQL = Boolean.valueOf(
+                            props.getProperty(dataBasekey + "." + PROPKEY_SQL_SUPPORTED)).booleanValue();
+                        boolean isAS400orDB2 = dataBasekey.equalsIgnoreCase(AS400_PROVIDER)
+                            || dataBasekey.equalsIgnoreCase(DB2_PROVIDER);
+
+                        if (isAS400orDB2) {
+                            if (checkFilesExists(REQUIRED_DB2_DB_SETUP_FILES, childResource)) {
+                                m_databaseKeys.add(childResource.getName().trim());
+                                m_databaseProperties.put(dataBasekey, props);
+                            }
+                        } else if (supportsSQL) {
+                            if (checkFilesExists(REQUIRED_SQL_DB_SETUP_FILES, childResource)) {
+                                m_databaseKeys.add(childResource.getName().trim());
+                                m_databaseProperties.put(dataBasekey, props);
+                            }
+                        } else if (supportsJPA && !supportsSQL) {
+                            if (checkFilesExists(REQUIRED_JPA_DB_SETUP_FILES, childResource)) {
+                                m_databaseKeys.add(childResource.getName().trim());
+                                m_databaseProperties.put(dataBasekey, props);
+                            }
+                        }
                     }
                 }
             }
@@ -2496,6 +2714,38 @@ public class CmsSetupBean implements I_CmsShellCommands {
     protected void setExtProperty(String key, String value) {
 
         CmsCollectionsGenericWrapper.map(m_extProperties).put(key, value);
+    }
+
+    /**
+     * Checks if the necessary files for the configuration are existent or not.<p>
+     * 
+     * @param requiredFiles the required files
+     * @param childResource the folder to check
+     * 
+     * @return true if the files are existent
+     */
+    private boolean checkFilesExists(String[] requiredFiles, File childResource) {
+
+        File setupFile = null;
+        boolean hasMissingSetupFiles = false;
+
+        for (int j = 0; j < requiredFiles.length; j++) {
+            setupFile = new File(childResource.getPath() + File.separatorChar + requiredFiles[j]);
+
+            if (!setupFile.exists() || !setupFile.isFile() || !setupFile.canRead()) {
+                hasMissingSetupFiles = true;
+                System.err.println("["
+                    + getClass().getName()
+                    + "] missing or unreadable database setup file: "
+                    + setupFile.getPath());
+                break;
+            }
+
+            if (!hasMissingSetupFiles) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -2593,7 +2843,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
                                     // write it
                                     fw.write("\\\n" + createValueString(values));
                                 } else {
-                                    value = ((String)obj).trim();
+                                    value = String.valueOf(obj).trim();
                                     // escape commas and equals in value
                                     value = CmsStringUtil.substitute(value, ",", "\\,");
                                     value = CmsStringUtil.substitute(value, "=", "\\=");
@@ -2623,10 +2873,26 @@ public class CmsSetupBean implements I_CmsShellCommands {
     }
 
     /**
-     * Sets the path to the OpenCms home directory.<p>
+     * Lock/unlock schema generation in persistence xml file.<p>
      * 
-     * @param webInfRfsPath path to OpenCms home directory
+     * @param generate - true schema generation is on.
      */
+    private void setSchemaGeneration(boolean generate) {
+
+        if (generate) {
+            m_peristenceConfigurator.setPropertyValue(
+                CmsPersistenceUnitConfiguration.ATTR_GENERATE_SCHEMA,
+                CmsPersistenceUnitConfiguration.ATTR_GENERATE_SCHEMA_VALUE);
+        } else {
+            m_peristenceConfigurator.removeProperty(CmsPersistenceUnitConfiguration.ATTR_GENERATE_SCHEMA);
+        }
+    }
+
+    /**
+      * Sets the path to the OpenCms home directory.<p>
+      * 
+      * @param webInfRfsPath path to OpenCms home directory
+      */
     private void setWebAppRfsPath(String webInfRfsPath) {
 
         m_webAppRfsPath = webInfRfsPath;

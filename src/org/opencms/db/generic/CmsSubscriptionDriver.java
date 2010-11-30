@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSubscriptionDriver.java,v $
- * Date   : $Date: 2010/11/24 18:06:11 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/11/30 09:33:54 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -80,7 +80,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -185,7 +185,7 @@ public class CmsSubscriptionDriver implements I_CmsDriver, I_CmsSubscriptionDriv
 
         String poolUrl = config.get("db.subscription.pool").toString();
         String classname = config.get("db.subscription.sqlmanager").toString();
-        m_sqlManager = this.initSqlManager(classname);
+        m_sqlManager = initSqlManager(classname);
         m_sqlManager.init(I_CmsSubscriptionDriver.DRIVER_TYPE_ID, poolUrl);
 
         m_driverManager = driverManager;

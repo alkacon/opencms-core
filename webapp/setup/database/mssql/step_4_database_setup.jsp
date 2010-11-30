@@ -54,32 +54,12 @@ Alkacon OpenCms Setup Wizard - <%= Bean.getDatabaseName(Bean.getDatabase()) %> d
 <table border="0" cellpadding="2" cellspacing="0">
 	<tr>
 		<td>Select Database</td>
-		<td>
-			<select name="database" style="width: 250px;" size="1" onchange="location.href='../../step_3_database_selection.jsp?database='+this.options[this.selectedIndex].value;">
-			<!-- --------------------- JSP CODE --------------------------- -->
-			<%
-				/* get all available databases */
-				List databases = Bean.getSortedDatabases();
-				/* 	List all databases found in the dbsetup.properties */
-				if (databases !=null && databases.size() > 0)	{
-					for(int i=0;i<databases.size();i++)	{
-						String db = (String) databases.get(i);
-						String dn = Bean.getDatabaseName(db);
-						String selected = "";
-						if(Bean.getDatabase().equals(db))	{
-							selected = "selected";
-						}
-						out.println("<option value='"+db+"' "+selected+">"+dn);
-					}
-				}
-				else	{
-					out.println("<option value='null'>no database found");
-				}
-			%>
-			<!-- --------------------------------------------------------- -->
-			</select>
-		</td>
-		<td><%= Bean.getHtmlHelpIcon("6", "../../") %></td>
+		<td><%= Bean.getHtmlForDbSelection() %></td>
+		<% if (Bean.getFullDatabaseKey().endsWith("_jpa")) { %>
+			<td><%= Bean.getHtmlHelpIcon("7", "../../") %></td>
+		<% } else { %>
+			<td><%= Bean.getHtmlHelpIcon("6", "../../") %></td>
+		<% } %>
 	</tr>
 </table>
 <%= Bean.getHtmlPart("C_BLOCK_END") %>
@@ -88,7 +68,11 @@ Alkacon OpenCms Setup Wizard - <%= Bean.getDatabaseName(Bean.getDatabase()) %> d
 <tr><td style="vertical-align: middle;">
 
 <div class="dialogspacer" unselectable="on">&nbsp;</div>
-<iframe src="database_information.html" name="dbinfo" style="width: 100%; height: 80px; margin: 0; padding: 0; border-style: none;" frameborder="0" scrolling="no"></iframe>
+<% if (Bean.getFullDatabaseKey().contains("_jpa")) { %>
+	<iframe src="database_information_jpa.html" name="dbinfo" style="width: 100%; height: 80px; margin: 0; padding: 0; border-style: none;" frameborder="0" scrolling="no"></iframe>
+<% } else { %>
+	<iframe src="database_information.html" name="dbinfo" style="width: 100%; height: 82px; margin: 0; padding: 0; border-style: none;" frameborder="0" scrolling="no"></iframe>
+<% } %>
 <div class="dialogspacer" unselectable="on">&nbsp;</div>
 
 </td></tr>
@@ -174,7 +158,14 @@ Uncheck this option if an already existing database should be used.
 <b>MS-SQL installation notes:</b><br>&nbsp;<br>
 The path of resources is limite to 440 characters, so longer 
 resource paths will not work correctly.
+<%= Bean.getHtmlPart("C_HELP_END") %>
 
+<%= Bean.getHtmlPart("C_HELP_START", "7") %>
+<b>Traditional SQL drivers</b> are well tested and offer a 
+slight performance increase in comparison with JPA driver. 
+Because SQL drivers are specific for each RDBMS they may be not available for some databases.<br>&nbsp;<br>
+<b>JPA driver</b> is a new generation driver based on JPA specification (Java Persistence API). 
+It uses modern JPA implementation - <b>Apache OpenJPA</b> which is quite extensible and flexible.
 <%= Bean.getHtmlPart("C_HELP_END") %>
 
 <% } else	{ %>

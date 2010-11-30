@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSystemInfo.java,v $
- * Date   : $Date: 2009/09/17 12:54:25 $
- * Version: $Revision: 1.66.2.2 $
+ * Date   : $Date: 2010/11/30 09:33:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import java.util.Properties;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.66.2.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -71,6 +71,13 @@ public class CmsSystemInfo {
 
     /** Path to the "WEB-INF" folder relative to the directory of the application. */
     public static final String FOLDER_WEBINF = "WEB-INF" + File.separatorChar;
+
+    /** Relative path to persistence.xml file. */
+    public static final String FILE_PERSISTENCE = "classes"
+        + File.separatorChar
+        + "META-INF"
+        + File.separatorChar
+        + "persistence.xml";
 
     /** Default encoding. */
     private static final String DEFAULT_ENCODING = CmsEncoder.ENCODING_UTF_8;
@@ -107,6 +114,9 @@ public class CmsSystemInfo {
 
     /** The absolute path to the "packages" folder (in the "real" file system). */
     private String m_packagesRfsPath;
+
+    /** The absolute path to the persistence.xml file (in the "real" file system). */
+    private String m_persistenceFileRfsPath;
 
     /** The name of the OpenCms server. */
     private String m_serverName;
@@ -201,6 +211,19 @@ public class CmsSystemInfo {
             m_configurationFileRfsPath = getAbsoluteRfsPathRelativeToWebInf(FOLDER_CONFIG + FILE_PROPERTIES);
         }
         return m_configurationFileRfsPath;
+    }
+
+    /**
+     * Returns the absolute path to the "persistence.xml" file (in the "real" file system).<p>
+     * 
+     * @return the absolute path to the "persistence.xml" configuration file
+     */
+    public String getPersistenceFileRfsPath() {
+
+        if (m_persistenceFileRfsPath == null) {
+            m_persistenceFileRfsPath = getAbsoluteRfsPathRelativeToWebInf(FILE_PERSISTENCE);
+        }
+        return m_persistenceFileRfsPath;
     }
 
     /**
@@ -536,7 +559,6 @@ public class CmsSystemInfo {
 
         m_servletContainerSettings = settings;
     }
-
 
     /**
      * Sets the default encoding, called after the configuration files have been read.<p>

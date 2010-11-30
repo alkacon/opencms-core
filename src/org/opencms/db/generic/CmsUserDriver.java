@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2010/11/24 18:06:11 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2010/11/30 09:33:54 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -103,7 +103,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 6.0.0 
  */
@@ -153,7 +153,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     protected CmsDriverManager m_driverManager;
 
     /** The SQL manager. */
-    protected org.opencms.db.generic.CmsSqlManager m_sqlManager;
+    protected CmsSqlManager m_sqlManager;
 
     /**
      * @see org.opencms.db.I_CmsUserDriver#addResourceToOrganizationalUnit(org.opencms.db.CmsDbContext, org.opencms.security.CmsOrganizationalUnit, org.opencms.file.CmsResource)
@@ -435,13 +435,11 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                 // get the right offline project
                 try {
                     // this if setting up OpenCms
-                    setupProject = m_driverManager.readProject(
-                        new CmsDbContext(),
-                        I_CmsProjectDriver.SETUP_PROJECT_NAME);
+                    setupProject = m_driverManager.readProject(dbc, I_CmsProjectDriver.SETUP_PROJECT_NAME);
                 } catch (CmsException exc) {
                     // this if updating OpenCms
                     try {
-                        setupProject = m_driverManager.readProject(new CmsDbContext(), "Offline");
+                        setupProject = m_driverManager.readProject(dbc, "Offline");
                     } catch (CmsException exc2) {
                         // there is nothing to do, if no offline project found
                     }
@@ -2215,11 +2213,11 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#setSqlManager(org.opencms.db.generic.CmsSqlManager)
+     * @see org.opencms.db.I_CmsUserDriver#setSqlManager(org.opencms.db.CmsSqlManager)
      */
-    public void setSqlManager(CmsSqlManager sqlManager) {
+    public void setSqlManager(org.opencms.db.CmsSqlManager sqlManager) {
 
-        m_sqlManager = sqlManager;
+        m_sqlManager = (CmsSqlManager)sqlManager;
     }
 
     //    /**

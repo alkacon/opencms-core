@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishHistory.java,v $
- * Date   : $Date: 2010/01/05 14:05:44 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/11/30 09:33:56 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 6.5.5
  */
@@ -134,6 +134,10 @@ public class CmsPublishHistory {
                 m_publishEngine.getDriverManager().writePublishReport(dbc, publishJob);
                 // delete publish list of started job
                 m_publishEngine.getDriverManager().deletePublishList(dbc, publishJob.getPublishHistoryId());
+            } catch (CmsException e) {
+                dbc.rollback();
+                LOG.error(e.getLocalizedMessage(), e);
+                throw e;
             } finally {
                 dbc.clear();
             }
@@ -174,6 +178,7 @@ public class CmsPublishHistory {
                 OpenCms.getMemoryMonitor().cachePublishJobInHistory(job);
             }
         } catch (CmsException exc) {
+            dbc.rollback();
             if (LOG.isErrorEnabled()) {
                 LOG.error(exc.getLocalizedMessage(), exc);
             }
@@ -199,6 +204,10 @@ public class CmsPublishHistory {
                 OpenCms.getPublishManager().getEngine().getDriverManager().deletePublishJob(
                     dbc,
                     publishJob.getPublishHistoryId());
+            } catch (CmsException e) {
+                dbc.rollback();
+                LOG.error(e.getLocalizedMessage(), e);
+                throw e;
             } finally {
                 dbc.clear();
             }

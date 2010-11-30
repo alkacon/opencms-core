@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsSubscriptionDriver.java,v $
- * Date   : $Date: 2010/08/06 14:07:18 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/11/30 09:33:53 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,6 @@
 
 package org.opencms.db;
 
-import org.opencms.db.generic.CmsSqlManager;
 import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsResource;
@@ -47,7 +46,7 @@ import java.util.List;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -99,7 +98,7 @@ public interface I_CmsSubscriptionDriver {
      * 
      * @return the SQL manager for this driver
      */
-    org.opencms.db.generic.CmsSqlManager initSqlManager(String classname);
+    CmsSqlManager initSqlManager(String classname);
 
     /**
      * Mark the given resource as visited by the user.<p>

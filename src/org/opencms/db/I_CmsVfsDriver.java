@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2010/11/11 13:08:18 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/11/30 09:33:53 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,6 @@
 
 package org.opencms.db;
 
-import org.opencms.db.generic.CmsSqlManager;
 import org.opencms.db.urlname.CmsUrlNameMappingEntry;
 import org.opencms.db.urlname.CmsUrlNameMappingFilter;
 import org.opencms.file.CmsDataAccessException;
@@ -57,7 +56,7 @@ import java.util.Map;
  * @author Thomas Weckert  
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 6.0.0 
  */
@@ -343,7 +342,7 @@ public interface I_CmsVfsDriver {
      * 
      * @return the SQL manager for this driver
      */
-    org.opencms.db.generic.CmsSqlManager initSqlManager(String classname);
+    CmsSqlManager initSqlManager(String classname);
 
     /**
      * Moves the given resource to the specified destination path.<p>

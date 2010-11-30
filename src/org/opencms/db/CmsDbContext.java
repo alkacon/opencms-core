@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbContext.java,v $
- * Date   : $Date: 2010/04/20 13:44:57 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/11/30 09:33:53 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -30,7 +30,8 @@
  */
 
 package org.opencms.db;
-import org.opencms.file.CmsProject;
+
+import org.opencms.file.CmsProject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsException;
@@ -45,13 +46,13 @@ import org.opencms.util.CmsUUID;
 import java.util.HashMap;
 import java.util.Map;
 
-
 /**
  * Wraps context information to access the OpenCms database.<p> 
  * 
  * @author Alexander Kandzior 
+ * @author Ruediger Kurz
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 6.0.0
  */
@@ -295,6 +296,14 @@ public class CmsDbContext {
     }
 
     /**
+     * Rolls back current transaction.<p>
+     */
+    public void rollback() {
+
+        // This method is only implemented org.opencms.db.jpa.CmsDbContext
+    }
+
+    /**
      * Sets an attribute in the DB context.<p>
      * 
      * @param key the attribute key
@@ -328,7 +337,7 @@ public class CmsDbContext {
      * @throws CmsException if the <code>throwable</code> parameter is not <code>null</code> and a {@link CmsException}
      * @throws CmsVfsException if the <code>throwable</code> parameter is not <code>null</code> and no {@link CmsException}
      */
-    void throwException(CmsMessageContainer message, Throwable throwable) throws CmsVfsException, CmsException {
+    public void throwException(CmsMessageContainer message, Throwable throwable) throws CmsVfsException, CmsException {
 
         if (throwable instanceof CmsException) {
             throw ((CmsException)throwable).createException(message, throwable);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsRelationSystemValidator.java,v $
- * Date   : $Date: 2010/07/19 12:35:35 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/11/30 09:33:56 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,7 +69,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert
  * @author Michael Moossen
  *   
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.3.0 
  */
@@ -151,10 +151,11 @@ public class CmsRelationSystemValidator {
                 if (type instanceof I_CmsLinkParseable) {
                     filter = filter.addRequireType(type.getTypeId());
                     try {
-                        resources.addAll(m_driverManager.readResources(dbc, m_driverManager.readResource(
+                        resources.addAll(m_driverManager.readResources(
                             dbc,
-                            "/",
-                            filter), filter, true));
+                            m_driverManager.readResource(dbc, "/", filter),
+                            filter,
+                            true));
                     } catch (CmsException e) {
                         LOG.error(
                             Messages.get().getBundle().key(Messages.LOG_RETRIEVAL_RESOURCES_1, type.getTypeName()),
@@ -220,10 +221,12 @@ public class CmsRelationSystemValidator {
             String resourceName = resource.getRootPath();
 
             if (report != null) {
-                report.print(org.opencms.report.Messages.get().container(
-                    org.opencms.report.Messages.RPT_SUCCESSION_2,
-                    new Integer(index + 1),
-                    new Integer(size)), I_CmsReport.FORMAT_NOTE);
+                report.print(
+                    org.opencms.report.Messages.get().container(
+                        org.opencms.report.Messages.RPT_SUCCESSION_2,
+                        new Integer(index + 1),
+                        new Integer(size)),
+                    I_CmsReport.FORMAT_NOTE);
                 report.print(Messages.get().container(Messages.RPT_HTMLLINK_VALIDATING_0), I_CmsReport.FORMAT_NOTE);
                 report.print(org.opencms.report.Messages.get().container(
                     org.opencms.report.Messages.RPT_ARGUMENT_1,
@@ -288,16 +291,18 @@ public class CmsRelationSystemValidator {
     /**
      * Checks a link from a resource which has changed.<p>
      * 
+     * @param dbc the current dbc
      * @param resource the link source 
      * @param relation the relation 
      * @param link the link target 
      * @param project the current project 
      * @param fileLookup a lookup table which contains the files which are going to be published 
      * @param sitemapCache
-     *  
+     *   
      * @return true if the link will be valid after publishing 
      */
     protected boolean checkLinkForNewOrChangedLinkSource(
+        CmsDbContext dbc,
         CmsResource resource,
         CmsRelation relation,
         String link,
@@ -311,34 +316,32 @@ public class CmsRelationSystemValidator {
             // ... if the linked resource exists in the online project
             // search the target of link in the online project
             try {
-                CmsDbContext newDbc = new CmsDbContext();
-                link = m_driverManager.getVfsDriver(newDbc).readResource(
-                    newDbc,
+                link = m_driverManager.getVfsDriver(dbc).readResource(
+                    dbc,
                     project.getUuid(),
                     relation.getTargetId(),
                     true).getRootPath();
             } catch (CmsVfsResourceNotFoundException e) {
                 // reading by id failed, this means that the link variable still equals relation.getTargetPath() 
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().getBundle().key(
-                        Messages.LOG_LINK_VALIDATION_READBYID_FAILED_2,
-                        relation.getTargetId().toString(),
-                        project.getName()), e);
+                    LOG.debug(
+                        Messages.get().getBundle().key(
+                            Messages.LOG_LINK_VALIDATION_READBYID_FAILED_2,
+                            relation.getTargetId().toString(),
+                            project.getName()),
+                        e);
                 }
-                CmsDbContext newDbc = new CmsDbContext();
-                m_driverManager.getVfsDriver(newDbc).readResource(
-                    newDbc,
-                    project.getUuid(),
-                    relation.getTargetPath(),
-                    true);
+                m_driverManager.getVfsDriver(dbc).readResource(dbc, project.getUuid(), relation.getTargetPath(), true);
             }
         } catch (CmsException e) {
             // ... or if the linked resource is a resource that gets actually published
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(
-                    Messages.LOG_LINK_VALIDATION_READBYPATH_FAILED_2,
-                    relation.getTargetPath(),
-                    project.getName()), e);
+                LOG.debug(
+                    Messages.get().getBundle().key(
+                        Messages.LOG_LINK_VALIDATION_READBYPATH_FAILED_2,
+                        relation.getTargetPath(),
+                        project.getName()),
+                    e);
             }
             if (!fileLookup.containsKey(link)) {
                 // isValidLink = false;
@@ -365,16 +368,18 @@ public class CmsRelationSystemValidator {
     /**
      * Checks whether publishing will not invalidate a link.<p>
      * 
+     * @param dbc the current dbc
      * @param resource the target resource of the link if it is going to be deleted, else the source of the link 
      * @param relation the relation which should be checked 
      * @param link the link URI 
      * @param project the current project 
      * @param fileLookup a lookup table which contains the files which are going to be published 
-     * @param sitemapCache 
+     * @param sitemapCache
      * 
      * @return true if there will be no invalid link after publishing 
      */
     protected boolean checkLinkValid(
+        CmsDbContext dbc,
         CmsResource resource,
         CmsRelation relation,
         String link,
@@ -385,7 +390,7 @@ public class CmsRelationSystemValidator {
         if (resource.getState().isDeleted()) {
             return checkLinkForDeletedLinkTarget(link, fileLookup);
         } else {
-            return checkLinkForNewOrChangedLinkSource(resource, relation, link, project, fileLookup, sitemapCache);
+            return checkLinkForNewOrChangedLinkSource(dbc, resource, relation, link, project, fileLookup, sitemapCache);
         }
     }
 
@@ -453,9 +458,9 @@ public class CmsRelationSystemValidator {
         } catch (CmsException e) {
             LOG.error(Messages.get().getBundle().key(Messages.LOG_LINK_SEARCH_1, resource), e);
             if (report != null) {
-                report.println(Messages.get().container(
-                    Messages.LOG_LINK_SEARCH_1,
-                    dbc.removeSiteRoot(resource.getRootPath())), I_CmsReport.FORMAT_ERROR);
+                report.println(
+                    Messages.get().container(Messages.LOG_LINK_SEARCH_1, dbc.removeSiteRoot(resource.getRootPath())),
+                    I_CmsReport.FORMAT_ERROR);
             }
             return brokenRelations;
         }
@@ -483,7 +488,7 @@ public class CmsRelationSystemValidator {
                 }
                 continue;
             }
-            boolean isValidLink = checkLinkValid(resource, relation, link, project, fileLookup, sitemapCache);
+            boolean isValidLink = checkLinkValid(dbc, resource, relation, link, project, fileLookup, sitemapCache);
             if (!isValidLink) {
                 if (first) {
                     if (report != null) {
@@ -496,15 +501,19 @@ public class CmsRelationSystemValidator {
                 brokenRelations.add(relation);
                 if (report != null) {
                     if (!resource.getState().isDeleted()) {
-                        report.println(Messages.get().container(
-                            Messages.RPT_HTMLLINK_BROKEN_TARGET_2,
-                            relation.getSourcePath(),
-                            dbc.removeSiteRoot(link)), I_CmsReport.FORMAT_WARNING);
+                        report.println(
+                            Messages.get().container(
+                                Messages.RPT_HTMLLINK_BROKEN_TARGET_2,
+                                relation.getSourcePath(),
+                                dbc.removeSiteRoot(link)),
+                            I_CmsReport.FORMAT_WARNING);
                     } else {
-                        report.println(Messages.get().container(
-                            Messages.RPT_HTMLLINK_BROKEN_SOURCE_2,
-                            dbc.removeSiteRoot(link),
-                            relation.getTargetPath()), I_CmsReport.FORMAT_WARNING);
+                        report.println(
+                            Messages.get().container(
+                                Messages.RPT_HTMLLINK_BROKEN_SOURCE_2,
+                                dbc.removeSiteRoot(link),
+                                relation.getTargetPath()),
+                            I_CmsReport.FORMAT_WARNING);
                     }
                 }
             }

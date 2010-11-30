@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/CmsSetupXmlHelper.java,v $
- * Date   : $Date: 2010/03/03 15:33:20 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/11/30 09:33:56 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,6 +53,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 
+import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.Node;
@@ -70,7 +71,7 @@ import org.xml.sax.InputSource;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.1.8 
  */
@@ -148,6 +149,31 @@ public class CmsSetupXmlHelper {
         } else {
             return null;
         }
+    }
+
+    /**
+     * Replaces a attibute's value in the given node addressed by the xPath.<p>
+     * 
+     * @param document the document to replace the node attribute
+     * @param xPath the xPath to the node
+     * @param attribute the attribute to replace the value of
+     * @param value the new value to set
+     * 
+     * @return <code>true</code> if successful <code>false</code> otherwise
+     */
+    public static boolean setAttribute(Document document, String xPath, String attribute, String value) {
+
+        Node node = document.selectSingleNode(xPath);
+        Element e = (Element)node;
+        @SuppressWarnings("unchecked")
+        List<Attribute> attributes = e.attributes();
+        for (Attribute a : attributes) {
+            if (a.getName().equals(attribute)) {
+                a.setValue(value);
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -396,6 +422,24 @@ public class CmsSetupXmlHelper {
     public String getValue(String xmlFilename, String xPath) throws CmsXmlException {
 
         return getValue(getDocument(xmlFilename), xPath);
+    }
+
+    /**
+     * Replaces a attibute's value in the given node addressed by the xPath.<p>
+     * 
+     * @param xmlFilename the xml file name to get the document from
+     * @param xPath the xPath to the node
+     * @param attribute the attribute to replace the value of
+     * @param value the new value to set
+     * 
+     * @return <code>true</code> if successful <code>false</code> otherwise
+     * 
+     * @throws CmsXmlException if the xml document coudn't be read
+     */
+    public boolean setAttribute(String xmlFilename, String xPath, String attribute, String value)
+    throws CmsXmlException {
+
+        return setAttribute(getDocument(xmlFilename), xPath, attribute, value);
     }
 
     /**

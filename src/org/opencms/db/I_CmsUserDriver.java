@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsUserDriver.java,v $
- * Date   : $Date: 2010/08/05 12:55:10 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/11/30 09:33:53 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,6 @@
 
 package org.opencms.db;
 
-import org.opencms.db.generic.CmsSqlManager;
 import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsProject;
@@ -52,7 +51,7 @@ import java.util.Map;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 6.0.0 
  */
@@ -360,7 +359,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * 
      * @return the SQL manager for this driver
      */
-    org.opencms.db.generic.CmsSqlManager initSqlManager(String classname);
+    CmsSqlManager initSqlManager(String classname);
 
     //    /**
     //     * Mark the given resource as visited by the user.<p>

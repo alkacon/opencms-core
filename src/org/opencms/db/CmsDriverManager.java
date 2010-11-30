@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2010/11/19 10:06:51 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2010/11/30 09:33:53 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -139,7 +139,7 @@ import org.apache.commons.pool.ObjectPool;
  * The OpenCms driver manager.<p>
  * 
  * @author Alexander Kandzior 
- * @author Thomas Weckert  
+ * @author Thomas Weckert 
  * @author Carsten Weinholz 
  * @author Michael Emmerich 
  * @author Michael Moossen
@@ -385,8 +385,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
             if (CmsLog.INIT.isInfoEnabled()) {
                 CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DRIVER_MANAGER_START_PHASE1_0));
             }
-            if ((runtimeInfoFactory == null) && CmsLog.INIT.isDebugEnabled()) {
-                CmsLog.INIT.debug(Messages.get().getBundle().key(Messages.INIT_DRIVER_MANAGER_START_RT_0));
+            if (runtimeInfoFactory == null) {
+                throw new CmsInitException(org.opencms.main.Messages.get().container(
+                    org.opencms.main.Messages.ERR_CRITICAL_NO_DB_CONTEXT_0));
             }
         } catch (Exception exc) {
             CmsMessageContainer message = Messages.get().container(Messages.LOG_ERR_DRIVER_MANAGER_START_0);
@@ -395,6 +396,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
             }
             throw new CmsInitException(message, exc);
         }
+
+        // store the configuration
+        driverManager.m_propertyConfiguration = config;
 
         // set the security manager
         driverManager.m_securityManager = securityManager;
@@ -431,44 +435,57 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
 
         // initialize the runtime info factory with the generated driver manager
-        if (runtimeInfoFactory != null) {
-            runtimeInfoFactory.initialize(driverManager);
-        }
+        runtimeInfoFactory.initialize(driverManager);
 
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DRIVER_MANAGER_START_PHASE3_0));
         }
 
         // store the access objects
+        CmsDbContext dbc = runtimeInfoFactory.getDbContext();
         driverManager.m_vfsDriver = (I_CmsVfsDriver)driverManager.createDriver(
+            dbc,
             configurationManager,
             config,
             CONFIGURATION_VFS,
             ".vfs.driver");
+        dbc.clear();
+
+        dbc = runtimeInfoFactory.getDbContext();
         driverManager.m_userDriver = (I_CmsUserDriver)driverManager.createDriver(
+            dbc,
             configurationManager,
             config,
             CONFIGURATION_USER,
             ".user.driver");
+        dbc.clear();
+
+        dbc = runtimeInfoFactory.getDbContext();
         driverManager.m_projectDriver = (I_CmsProjectDriver)driverManager.createDriver(
+            dbc,
             configurationManager,
             config,
             CONFIGURATION_PROJECT,
             ".project.driver");
+        dbc.clear();
+
+        dbc = runtimeInfoFactory.getDbContext();
         driverManager.m_historyDriver = (I_CmsHistoryDriver)driverManager.createDriver(
+            dbc,
             configurationManager,
             config,
             CONFIGURATION_HISTORY,
             ".history.driver");
+        dbc.clear();
 
+        dbc = runtimeInfoFactory.getDbContext();
         driverManager.m_subscriptionDriver = (I_CmsSubscriptionDriver)driverManager.createDriver(
+            dbc,
             configurationManager,
             config,
             CONFIGURATION_SUBSCRIPTION,
             ".subscription.driver");
-
-        // store the configuration
-        driverManager.m_propertyConfiguration = config;
+        dbc.clear();
 
         // register the driver manager for required events
         org.opencms.main.OpenCms.addCmsEventListener(driverManager, new int[] {
@@ -838,11 +855,14 @@ public final class CmsDriverManager implements I_CmsEventListener {
         CmsResource clone = (CmsResource)resource.clone();
         clone.setFlags(flags);
         // log it
-        log(dbc, new CmsLogEntry(
+        log(
             dbc,
-            resource.getStructureId(),
-            CmsLogEntryType.RESOURCE_FLAGS,
-            new String[] {resource.getRootPath()}), false);
+            new CmsLogEntry(
+                dbc,
+                resource.getStructureId(),
+                CmsLogEntryType.RESOURCE_FLAGS,
+                new String[] {resource.getRootPath()}),
+            false);
         // write it
         writeResource(dbc, clone);
     }
@@ -872,11 +892,14 @@ public final class CmsDriverManager implements I_CmsEventListener {
         I_CmsResourceType newType = OpenCms.getResourceManager().getResourceType(type);
         clone.setType(newType.getTypeId());
         // log it
-        log(dbc, new CmsLogEntry(
+        log(
             dbc,
-            resource.getStructureId(),
-            CmsLogEntryType.RESOURCE_TYPE,
-            new String[] {resource.getRootPath()}), false);
+            new CmsLogEntry(
+                dbc,
+                resource.getStructureId(),
+                CmsLogEntryType.RESOURCE_TYPE,
+                new String[] {resource.getRootPath()}),
+            false);
         // write it
         writeResource(dbc, clone);
     }
@@ -2287,9 +2310,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         report.println(Messages.get().container(Messages.RPT_START_DELETE_VERSIONS_0), I_CmsReport.FORMAT_HEADLINE);
         if (versionsToKeep >= 0) {
-            report.println(Messages.get().container(
-                Messages.RPT_START_DELETE_ACT_VERSIONS_1,
-                new Integer(versionsToKeep)), I_CmsReport.FORMAT_HEADLINE);
+            report.println(
+                Messages.get().container(Messages.RPT_START_DELETE_ACT_VERSIONS_1, new Integer(versionsToKeep)),
+                I_CmsReport.FORMAT_HEADLINE);
 
             List<I_CmsHistoryResource> resources = getHistoryDriver(dbc).getAllNotDeletedEntries(dbc);
             if (resources.isEmpty()) {
@@ -2301,10 +2324,12 @@ public final class CmsDriverManager implements I_CmsEventListener {
             while (itResources.hasNext()) {
                 I_CmsHistoryResource histResource = itResources.next();
 
-                report.print(org.opencms.report.Messages.get().container(
-                    org.opencms.report.Messages.RPT_SUCCESSION_2,
-                    String.valueOf(m),
-                    String.valueOf(n)), I_CmsReport.FORMAT_NOTE);
+                report.print(
+                    org.opencms.report.Messages.get().container(
+                        org.opencms.report.Messages.RPT_SUCCESSION_2,
+                        String.valueOf(m),
+                        String.valueOf(n)),
+                    I_CmsReport.FORMAT_NOTE);
                 report.print(org.opencms.report.Messages.get().container(
                     org.opencms.report.Messages.RPT_ARGUMENT_1,
                     dbc.removeSiteRoot(histResource.getRootPath())));
@@ -2339,14 +2364,16 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
         if ((versionsDeleted >= 0) || (timeDeleted >= 0)) {
             if (timeDeleted >= 0) {
-                report.println(Messages.get().container(
-                    Messages.RPT_START_DELETE_DEL_VERSIONS_2,
-                    new Integer(versionsDeleted),
-                    new Date(timeDeleted)), I_CmsReport.FORMAT_HEADLINE);
+                report.println(
+                    Messages.get().container(
+                        Messages.RPT_START_DELETE_DEL_VERSIONS_2,
+                        new Integer(versionsDeleted),
+                        new Date(timeDeleted)),
+                    I_CmsReport.FORMAT_HEADLINE);
             } else {
-                report.println(Messages.get().container(
-                    Messages.RPT_START_DELETE_DEL_VERSIONS_1,
-                    new Integer(versionsDeleted)), I_CmsReport.FORMAT_HEADLINE);
+                report.println(
+                    Messages.get().container(Messages.RPT_START_DELETE_DEL_VERSIONS_1, new Integer(versionsDeleted)),
+                    I_CmsReport.FORMAT_HEADLINE);
             }
             List<I_CmsHistoryResource> resources = getHistoryDriver(dbc).getAllDeletedEntries(dbc);
             if (resources.isEmpty()) {
@@ -2358,10 +2385,12 @@ public final class CmsDriverManager implements I_CmsEventListener {
             while (itResources.hasNext()) {
                 I_CmsHistoryResource histResource = itResources.next();
 
-                report.print(org.opencms.report.Messages.get().container(
-                    org.opencms.report.Messages.RPT_SUCCESSION_2,
-                    String.valueOf(m),
-                    String.valueOf(n)), I_CmsReport.FORMAT_NOTE);
+                report.print(
+                    org.opencms.report.Messages.get().container(
+                        org.opencms.report.Messages.RPT_SUCCESSION_2,
+                        String.valueOf(m),
+                        String.valueOf(n)),
+                    I_CmsReport.FORMAT_NOTE);
                 report.print(org.opencms.report.Messages.get().container(
                     org.opencms.report.Messages.RPT_ARGUMENT_1,
                     dbc.removeSiteRoot(histResource.getRootPath())));
@@ -3150,6 +3179,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 Messages.INIT_DRIVER_MANAGER_DESTROY_1,
                 getClass().getName()));
         }
+
+        org.opencms.db.jpa.CmsSqlManager.destroy();
     }
 
     /**
@@ -4843,11 +4874,13 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * Initializes the driver and sets up all required modules and connections.<p>
      * 
      * @param configurationManager the configuration manager
+     * @param dbContextFactory the db context factory
      * 
      * @throws CmsException if something goes wrong
      * @throws Exception if something goes wrong
      */
-    public void init(CmsConfigurationManager configurationManager) throws CmsException, Exception {
+    public void init(CmsConfigurationManager configurationManager, I_CmsDbContextFactory dbContextFactory)
+    throws CmsException, Exception {
 
         // initialize the access-module.
         if (CmsLog.INIT.isInfoEnabled()) {
@@ -4866,14 +4899,16 @@ public final class CmsDriverManager implements I_CmsEventListener {
         m_htmlLinkValidator = new CmsRelationSystemValidator(this);
 
         // fills the defaults if needed
-        getUserDriver().fillDefaults(new CmsDbContext());
-        getProjectDriver().fillDefaults(new CmsDbContext());
+        CmsDbContext dbc1 = dbContextFactory.getDbContext();
+        getUserDriver().fillDefaults(dbc1);
+        getProjectDriver().fillDefaults(dbc1);
+
         // set the driver manager in the publish engine
         m_publishEngine.setDriverManager(this);
         // create the root organizational unit if needed
-        CmsDbContext dbc = new CmsDbContext(new CmsRequestContext(
-            readUser(new CmsDbContext(), OpenCms.getDefaultUsers().getUserAdmin()),
-            readProject(new CmsDbContext(), CmsProject.ONLINE_PROJECT_ID),
+        CmsDbContext dbc2 = dbContextFactory.getDbContext(new CmsRequestContext(
+            readUser(dbc1, OpenCms.getDefaultUsers().getUserAdmin()),
+            readProject(dbc1, CmsProject.ONLINE_PROJECT_ID),
             null,
             "",
             null,
@@ -4883,7 +4918,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
             null,
             null,
             ""));
-        getUserDriver().createRootOrganizationalUnit(dbc);
+        dbc1.clear();
+        getUserDriver().createRootOrganizationalUnit(dbc2);
+        dbc2.clear();
     }
 
     /**
@@ -4905,10 +4942,12 @@ public final class CmsDriverManager implements I_CmsEventListener {
             projectResources = readProjectResources(dbc, dbc.currentProject());
         } catch (CmsException e) {
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().getBundle().key(
-                    Messages.LOG_CHECK_RESOURCE_INSIDE_CURRENT_PROJECT_2,
-                    resourcename,
-                    dbc.currentProject().getName()), e);
+                LOG.error(
+                    Messages.get().getBundle().key(
+                        Messages.LOG_CHECK_RESOURCE_INSIDE_CURRENT_PROJECT_2,
+                        resourcename,
+                        dbc.currentProject().getName()),
+                    e);
             }
             return false;
         }
@@ -5410,9 +5449,12 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 CmsDriverManager.UPDATE_STRUCTURE_STATE,
                 false);
             // log it
-            log(dbc, new CmsLogEntry(dbc, source.getStructureId(), CmsLogEntryType.RESOURCE_MOVED, new String[] {
-                source.getRootPath(),
-                destination}), false);
+            log(
+                dbc,
+                new CmsLogEntry(dbc, source.getStructureId(), CmsLogEntryType.RESOURCE_MOVED, new String[] {
+                    source.getRootPath(),
+                    destination}),
+                false);
         }
 
         CmsResource destRes = readResource(dbc, destination, CmsResourceFilter.ALL);
@@ -5551,6 +5593,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     /**
      * Gets a new driver instance.<p>
      * 
+     * @param dbc the database context
      * @param configurationManager the configuration manager
      * @param driverName the driver name
      * @param successiveDrivers the list of successive drivers
@@ -5559,13 +5602,13 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @throws CmsInitException if the selected driver could not be initialized
      */
     public Object newDriverInstance(
+        CmsDbContext dbc,
         CmsConfigurationManager configurationManager,
         String driverName,
         List<String> successiveDrivers) throws CmsInitException {
 
         Class<?> driverClass = null;
         I_CmsDriver driver = null;
-        CmsDbContext dbc = new CmsDbContext();
 
         try {
             // try to get the class
@@ -5828,9 +5871,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
             lock = m_lockManager.getLock(dbc, resource, false);
             if (!lock.getSystemLock().isPublish()) {
                 if (report != null) {
-                    report.println(Messages.get().container(
-                        Messages.RPT_PUBLISH_REMOVED_RESOURCE_1,
-                        dbc.removeSiteRoot(resource.getRootPath())), I_CmsReport.FORMAT_WARNING);
+                    report.println(
+                        Messages.get().container(
+                            Messages.RPT_PUBLISH_REMOVED_RESOURCE_1,
+                            dbc.removeSiteRoot(resource.getRootPath())),
+                        I_CmsReport.FORMAT_WARNING);
                 }
                 if (LOG.isWarnEnabled()) {
                     LOG.warn(Messages.get().getBundle().key(
@@ -6035,14 +6080,16 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 }
             }
             // try to get the sub resources from the cache
-            cacheKey = getCacheKey(new String[] {
-                dbc.currentUser().getName(),
-                getFolders
-                ? (getFiles ? CmsCacheKey.CACHE_KEY_SUBALL : CmsCacheKey.CACHE_KEY_SUBFOLDERS)
-                : CmsCacheKey.CACHE_KEY_SUBFILES,
-                checkPermissions ? "+" + time : "-",
-                filter.getCacheId(),
-                resource.getRootPath()}, dbc);
+            cacheKey = getCacheKey(
+                new String[] {
+                    dbc.currentUser().getName(),
+                    getFolders
+                    ? (getFiles ? CmsCacheKey.CACHE_KEY_SUBALL : CmsCacheKey.CACHE_KEY_SUBFOLDERS)
+                    : CmsCacheKey.CACHE_KEY_SUBFILES,
+                    checkPermissions ? "+" + time : "-",
+                    filter.getCacheId(),
+                    resource.getRootPath()},
+                dbc);
 
             resourceList = m_monitor.getCachedResourceList(cacheKey);
         }
@@ -8873,9 +8920,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
             publishedResources = getProjectDriver(dbc).readPublishedResources(dbc, publishHistoryId);
         } catch (CmsException e) {
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().getBundle().key(
-                    Messages.ERR_READ_PUBLISHED_RESOURCES_FOR_ID_1,
-                    publishHistoryId), e);
+                LOG.error(
+                    Messages.get().getBundle().key(Messages.ERR_READ_PUBLISHED_RESOURCES_FOR_ID_1, publishHistoryId),
+                    e);
             }
         }
         if ((publishedResources == null) || publishedResources.isEmpty()) {
@@ -8965,12 +9012,15 @@ public final class CmsDriverManager implements I_CmsEventListener {
                             I_CmsReport.FORMAT_OK);
                     } catch (CmsException e) {
                         if (LOG.isErrorEnabled()) {
-                            LOG.error(Messages.get().getBundle().key(
-                                Messages.LOG_WRITE_EXPORT_POINT_ERROR_1,
-                                currentPublishedResource.getRootPath()), e);
+                            LOG.error(
+                                Messages.get().getBundle().key(
+                                    Messages.LOG_WRITE_EXPORT_POINT_ERROR_1,
+                                    currentPublishedResource.getRootPath()),
+                                e);
                         }
-                        report.println(org.opencms.report.Messages.get().container(
-                            org.opencms.report.Messages.RPT_FAILED_0), I_CmsReport.FORMAT_ERROR);
+                        report.println(
+                            org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_FAILED_0),
+                            I_CmsReport.FORMAT_ERROR);
                     }
                 }
             }
@@ -9475,6 +9525,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     /**
      * Helper method for creating a driver from configuration data.<p>
      * 
+     * @param dbc the db context
      * @param configManager the configuration manager 
      * @param config the configuration
      * @param driverChainKey the configuration key under which the driver chain is stored  
@@ -9483,6 +9534,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @return the newly created driver 
      */
     protected Object createDriver(
+        CmsDbContext dbc,
         CmsConfigurationManager configManager,
         ExtendedProperties config,
         String driverChainKey,
@@ -9496,7 +9548,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         if (driverName == null) {
             CmsLog.INIT.error(Messages.get().getBundle().key(Messages.INIT_DRIVER_FAILED_1, driverKey));
         }
-        return newDriverInstance(configManager, driverName, drivers);
+        return newDriverInstance(dbc, configManager, driverName, drivers);
     }
 
     /**
@@ -9973,11 +10025,13 @@ public final class CmsDriverManager implements I_CmsEventListener {
         boolean forFolder,
         int depth) throws CmsException {
 
-        String cacheKey = getCacheKey(new String[] {
-            inheritedOnly ? "+" : "-",
-            forFolder ? "+" : "-",
-            Integer.toString(depth),
-            resource.getStructureId().toString()}, dbc);
+        String cacheKey = getCacheKey(
+            new String[] {
+                inheritedOnly ? "+" : "-",
+                forFolder ? "+" : "-",
+                Integer.toString(depth),
+                resource.getStructureId().toString()},
+            dbc);
 
         CmsAccessControlList acl = m_monitor.getCachedACL(cacheKey);
 
@@ -10667,8 +10721,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     ace.getFlags());
             }
 
-            vfsDriver.deleteUrlNameMappingEntries(dbc, false, CmsUrlNameMappingFilter.ALL.filterStructureId(
-                res.getStructureId()).filterState(CmsUrlNameMappingEntry.MAPPING_STATUS_NEW));
+            vfsDriver.deleteUrlNameMappingEntries(
+                dbc,
+                false,
+                CmsUrlNameMappingFilter.ALL.filterStructureId(res.getStructureId()).filterState(
+                    CmsUrlNameMappingEntry.MAPPING_STATUS_NEW));
             // restore the state to unchanged 
             res.setState(newState);
             m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), res, UPDATE_ALL, false);
@@ -10831,5 +10888,4 @@ public final class CmsDriverManager implements I_CmsEventListener {
             getVfsDriver(dbc).writeResource(dbc, projectId, resource, UPDATE_STRUCTURE_STATE);
         }
     }
-
 }

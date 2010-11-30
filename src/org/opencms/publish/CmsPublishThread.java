@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishThread.java,v $
- * Date   : $Date: 2010/04/07 09:13:46 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/11/30 09:33:56 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.5.5 
  */
@@ -162,6 +162,7 @@ import org.apache.commons.logging.Log;
                 m_publishEngine.getDriverManager().publishJob(getCms(), dbc, m_publishJob.getPublishList(), m_report);
             } catch (Throwable e) {
                 // catch every thing including runtime exceptions
+                dbc.rollback();
                 m_report.println(e);
                 LOG.error(Messages.get().getBundle().key(Messages.LOG_PUBLISH_PROJECT_FAILED_0), e);
             } finally {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishEngine.java,v $
- * Date   : $Date: 2010/04/07 09:13:46 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/11/30 09:33:56 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -66,7 +66,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 6.5.5
  */
@@ -315,6 +315,7 @@ public final class CmsPublishEngine {
         try {
             m_adminUserId = m_driverManager.readUser(dbc, OpenCms.getDefaultUsers().getUserAdmin()).getId();
         } catch (CmsException e) {
+            dbc.rollback();
             LOG.error(e.getLocalizedMessage(), e);
         } finally {
             dbc.clear();
@@ -368,12 +369,15 @@ public final class CmsPublishEngine {
         }
 
         // write the log
+        CmsDbContext dbc = getDbContext(null);
         try {
-            m_driverManager.updateLog(getDbContext(null));
+            m_driverManager.updateLog(dbc);
         } catch (CmsDataAccessException e) {
             if (LOG.isErrorEnabled()) {
                 LOG.error(e.getLocalizedMessage(), e);
             }
+        } finally {
+            dbc.clear();
         }
 
         if (CmsLog.INIT.isInfoEnabled()) {
@@ -526,12 +530,18 @@ public final class CmsPublishEngine {
      */
     protected byte[] getReportContents(CmsPublishJobFinished publishJob) throws CmsException {
 
+        byte[] result = null;
         CmsDbContext dbc = m_dbContextFactory.getDbContext();
         try {
-            return m_driverManager.readPublishReportContents(dbc, publishJob.getPublishHistoryId());
+            result = m_driverManager.readPublishReportContents(dbc, publishJob.getPublishHistoryId());
+        } catch (CmsException e) {
+            dbc.rollback();
+            LOG.error(e.getLocalizedMessage(), e);
+            throw e;
         } finally {
             dbc.clear();
         }
+        return result;
     }
 
     /**
@@ -547,6 +557,7 @@ public final class CmsPublishEngine {
         try {
             return m_driverManager.readUser(dbc, userId);
         } catch (CmsException e) {
+            dbc.rollback();
             LOG.error(e.getLocalizedMessage(), e);
         } finally {
             dbc.clear();
@@ -610,6 +621,10 @@ public final class CmsPublishEngine {
                 CmsResource resource = itResources.next();
                 m_driverManager.lockResource(dbc, resource, CmsLockType.PUBLISH);
             }
+        } catch (CmsException e) {
+            dbc.rollback();
+            LOG.error(e.getLocalizedMessage(), e);
+            throw e;
         } finally {
             dbc.clear();
         }
@@ -644,6 +659,8 @@ public final class CmsPublishEngine {
             CmsEvent afterPublishEvent = new CmsEvent(I_CmsEventListener.EVENT_PUBLISH_PROJECT, eventData);
             OpenCms.fireCmsEvent(afterPublishEvent);
         } catch (Throwable t) {
+            dbc.rollback();
+            LOG.error(t);
             // catch every thing including runtime exceptions
             publishJob.getPublishReport().println(t);
         } finally {
@@ -738,6 +755,7 @@ public final class CmsPublishEngine {
                 OpenCms.getSessionManager().sendBroadcast(null, message, toUser);
             }
         } catch (CmsException e) {
+            dbc.rollback();
             LOG.error(e.getLocalizedMessage(), e);
         } finally {
             dbc.clear();
@@ -784,6 +802,10 @@ public final class CmsPublishEngine {
                 CmsResource resource = itResources.next();
                 m_driverManager.unlockResource(dbc, resource, true, true);
             }
+        } catch (CmsException e) {
+            dbc.rollback();
+            LOG.error(e.getLocalizedMessage(), e);
+            throw e;
         } finally {
             dbc.clear();
         }

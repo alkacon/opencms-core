@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsDataTypeUtil.java,v $
- * Date   : $Date: 2009/06/04 14:29:05 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/11/30 09:33:56 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import org.apache.commons.codec.binary.Base64;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.5.6 
  */
@@ -327,6 +327,18 @@ public final class CmsDataTypeUtil {
         parseable = parseable || (clazz.equals(Date.class));
         parseable = parseable || (clazz.equals(CmsUUID.class));
         return parseable;
+    }
+
+    /**
+     * Converts Number to int.<p>
+     * 
+     * @param n the number object
+     * 
+     * @return Number.inValue(), 0 - if the parameter is null
+     */
+    public static int numberToInt(Number n) {
+
+        return (n == null ? 0 : n.intValue());
     }
 
     /**
