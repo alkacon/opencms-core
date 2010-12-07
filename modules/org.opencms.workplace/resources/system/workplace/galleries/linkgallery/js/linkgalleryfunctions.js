@@ -158,6 +158,9 @@ function fillItems(data, modeName) {
 		// name of the file item
 		var itemName = "";
 		itemName += fileitem.linkpath.substring(fileitem.linkpath.lastIndexOf("/") + 1);
+		if (itemName.length > 50) {
+			itemName = itemName.substr(0, 49) + " ...";
+		}
 		
 		var mouseAttrsClick = "";
 		mouseAttrsClick += " onclick=\"markItem(";
@@ -187,10 +190,8 @@ function fillItems(data, modeName) {
 		
 		itemHtml +="<tr" + mouseAttrs + " " + mouseAttrsClick + " >";
 		itemHtml +="<td style=\"width\ : 32px; padding-right: 10px\" >";
-		//show the thumb for the link item
-		itemHtml += "<img alt=\"";
-		itemHtml += fileitem.title;
-		itemHtml += "\" title=\"\" src=\"";
+		// show the thumb for the link item
+		itemHtml += "<img alt=\"\" title=\"\" src=\"";
 		itemHtml += vfsPathPrefixItems  + "pointer.png";
 		itemHtml += "\" />"; 
 		itemHtml += "</td>";
