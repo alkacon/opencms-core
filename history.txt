@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2010/11/25 13:21:30 $
- * Version: $Revision: 1.64 $
+ * Date   : $Date: 2010/12/08 10:31:50 $
+ * Version: $Revision: 1.65 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -62,6 +62,7 @@ OpenCms x.x.x - Month Day, Year
 * Fixed issue #1717: DB deadlock if OpenCms hits db.pool.default.maxActive when db.pool.default.whenExhaustedAction=block
 - Updated Lucene to version 3.0.2
 * Fixed issue of missing Lucene class by adding Lucene memory classes
+* Fixed issue in galleries: Broken layout with long item file names or titles
 
 OpenCms 7.9.2 - February 24th, 2010
 ! Added support for xsd:choice in XML content API and editor
