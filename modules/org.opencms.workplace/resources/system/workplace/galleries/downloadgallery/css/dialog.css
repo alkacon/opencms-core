@@ -284,6 +284,7 @@ input.showborder, select.showborder {
 	font-size: 11px;
 	font-style: italic;
 	width: 100%;
+	white-space: nowrap;
 	overflow: hidden;
 }
 
