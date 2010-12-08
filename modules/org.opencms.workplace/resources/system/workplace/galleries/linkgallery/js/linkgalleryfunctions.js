@@ -156,10 +156,14 @@ function fillItems(data, modeName) {
 		var fileitem = foundItems[i];
 		
 		// name of the file item
-		var itemName = "";
-		itemName += fileitem.linkpath.substring(fileitem.linkpath.lastIndexOf("/") + 1);
+		var itemName = fileitem.linkpath.substring(fileitem.linkpath.lastIndexOf("/") + 1);
 		if (itemName.length > 50) {
 			itemName = itemName.substr(0, 49) + " ...";
+		}
+		// title of the file item
+		var itemTitle = fileitem.title;
+		if (itemTitle.length > 60) {
+			itemTitle = itemTitle.substr(0, 59) + " ...";
 		}
 		
 		var mouseAttrsClick = "";
@@ -195,19 +199,18 @@ function fillItems(data, modeName) {
 		itemHtml += vfsPathPrefixItems  + "pointer.png";
 		itemHtml += "\" />"; 
 		itemHtml += "</td>";
-		itemHtml += "<td >";
+		itemHtml += "<td>";
 		itemHtml += "<table style=\"width\ : 100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\"><tbody>";
 		itemHtml += "<tr>";
-		itemHtml += "<td style=\"width\ : 70%\">";
+		itemHtml += "<td colspan=\"2\" style=\"width\ : 95%\">";
 		itemHtml += "<span id=\"";
 		itemHtml += modeName;
 		itemHtml += "fileitemtitle";
 		itemHtml += i;
 		itemHtml += "\" ";
-		itemHtml += "class=\"title\">" + fileitem.title;
+		itemHtml += "class=\"title\">" + itemTitle;
 		itemHtml += "</span>";
 		itemHtml += "</td>";
-		itemHtml += "<td style=\"width\ : 20%\">&nbsp;</td>";
 		itemHtml += "<td style=\"width\ : 5%\">";
 		
 		itemHtml += "<span class=\"changeiconwrapper\">";
@@ -237,7 +240,7 @@ function fillItems(data, modeName) {
 		itemHtml += "</td>";
 		itemHtml += "</tr>";
 		itemHtml += "<tr>";
-		itemHtml += "<td style=\"width\ : 70%\">";
+		itemHtml += "<td style=\"width\ : 75%\">";
 		itemHtml += "<span id=\"";
 		itemHtml += modeName;
 		itemHtml += "fileitemlinkurl";
@@ -623,6 +626,9 @@ function refreshMarkedItem(data, modeName) {
 
 function updateTitleInItemlist(itemIndex, modeName, newTitle) {
 	var id = "#" + modeName + "fileitemtitle" + itemIndex;
+	if (newTitle.length > 60) {
+		newTitle= newTitle.substr(0, 59) + " ...";
+	}
 	$(id).html(newTitle);
 	$(id).addClass("title");
 }
