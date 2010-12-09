@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditorActionDefault.java,v $
- * Date   : $Date: 2010/01/18 10:02:36 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2010/12/09 11:54:41 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.workplace.editors;
 
+import org.opencms.configuration.CmsDefaultUserSettings;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
@@ -39,6 +40,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsFrameset;
 import org.opencms.workplace.CmsWorkplace;
+import org.opencms.workplace.commons.CmsPublishProject;
 
 import java.io.IOException;
 
@@ -49,7 +51,7 @@ import javax.servlet.jsp.JspException;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 6.0.0 
  */
@@ -75,18 +77,24 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
         // create the publish link to redirect to
         String publishLink = jsp.link(CmsWorkplace.PATH_DIALOGS + "publishresource.jsp");
         // define the parameters which are necessary for publishing the resource 
-        StringBuffer params = new StringBuffer(64);
-        params.append("?resource=");
-        params.append(editor.getParamResource());
-        params.append("&action=");
-        params.append(CmsDialog.DIALOG_CONFIRMED);
-        params.append("&directpublish=true&publishsiblings=true");
-        params.append("&title=");
+        StringBuffer params = new StringBuffer(256);
+        params.append("?").append(CmsDialog.PARAM_RESOURCE).append("=").append(editor.getParamResource());
+        params.append("&").append(CmsDialog.PARAM_ACTION).append("=").append(CmsDialog.DIALOG_CONFIRMED);
+        params.append("&").append(CmsPublishProject.PARAM_DIRECTPUBLISH).append("=").append(CmsStringUtil.TRUE);
+        params.append("&").append(CmsPublishProject.PARAM_PUBLISHSIBLINGS).append("=").append(
+            editor.getSettings().getUserSettings().getDialogPublishSiblings());
+        // set the related resources option
+        String pubRelated = CmsStringUtil.TRUE;
+        if (OpenCms.getWorkplaceManager().getDefaultUserSettings().getPublishRelatedResources() == CmsDefaultUserSettings.PUBLISH_RELATED_RESOURCES_MODE_FALSE) {
+            pubRelated = CmsStringUtil.FALSE;
+        }
+        params.append("&").append(CmsPublishProject.PARAM_RELATEDRESOURCES).append("=").append(pubRelated);
+        params.append("&").append(CmsDialog.PARAM_TITLE).append("=");
         params.append(CmsEncoder.escapeWBlanks(editor.key(Messages.GUI_MESSAGEBOX_TITLE_PUBLISHRESOURCE_0)
             + ": "
             + editor.getParamResource(), CmsEncoder.ENCODING_UTF_8));
         params.append("&").append(CmsDialog.PARAM_REDIRECT).append("=").append(CmsStringUtil.TRUE);
-        params.append("&closelink=");
+        params.append("&").append(CmsDialog.PARAM_CLOSELINK).append("=");
         if (Boolean.valueOf(editor.getParamDirectedit()).booleanValue()) {
             String linkTarget;
             if (!"".equals(editor.getParamBacklink())) {

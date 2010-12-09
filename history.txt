@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2010/12/08 10:41:19 $
- * Version: $Revision: 1.1214 $
+ * Date   : $Date: 2010/12/09 11:54:42 $
+ * Version: $Revision: 1.1215 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ OpenCms x.x.x - month day, year
 * Fixed issue #1902: Empty folder without default file renders blank page and no 404 error
 - Collectors "allInFolderNavPos" and "allInSubTreeNavPos" only collect resources with property "NavPos" set
 * Fixed issue in galleries: Broken layout with long item file names or titles
+* Fixed issue #1920: Inconsistent checkbox preselection in direct publish dialog
 
 OpenCms 7.5.3 - August 18, 2010
 ! External Links (pointers) now support handling of request parameters (loader parameter in opencms-vfs.xml)
