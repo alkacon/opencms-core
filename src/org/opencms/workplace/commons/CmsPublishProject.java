@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishProject.java,v $
- * Date   : $Date: 2009/06/04 14:29:13 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2010/12/09 11:54:50 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.36 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -90,6 +90,9 @@ public class CmsPublishProject extends CmsMultiDialog {
 
     /** The dialog type. */
     public static final String DIALOG_TYPE = "publishproject";
+
+    /** Request parameter name for the directpublish parameter. */
+    public static final String PARAM_DIRECTPUBLISH = "directpublish";
 
     /** Request parameter name for the publishsiblings parameter. */
     public static final String PARAM_PUBLISHSIBLINGS = "publishsiblings";
