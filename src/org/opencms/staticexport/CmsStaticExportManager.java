@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2010/01/18 10:03:44 $
- * Version: $Revision: 1.136 $
+ * Date   : $Date: 2010/12/10 08:26:33 $
+ * Version: $Revision: 1.137 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.136 $ 
+ * @version $Revision: 1.137 $ 
  * 
  * @since 6.0.0 
  */
@@ -2214,9 +2214,11 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                     } catch (CmsException e) {
                         // static export fails, because the guest user has no permission: 
                         if (LOG.isDebugEnabled()) {
-                            LOG.debug(Messages.get().getBundle().key(
-                                Messages.ERR_EXPORT_FILE_FAILED_1,
-                                new String[] {vfsName}), e);
+                            LOG.debug(
+                                Messages.get().getBundle().key(
+                                    Messages.ERR_EXPORT_FILE_FAILED_1,
+                                    new String[] {vfsName}),
+                                e);
                         }
                         return null;
                     }
@@ -2235,9 +2237,11 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                     } catch (Exception e) {
                         // ignore, still not found
                         if (LOG.isWarnEnabled()) {
-                            LOG.warn(Messages.get().getBundle().key(
-                                Messages.ERR_EXPORT_FILE_FAILED_1,
-                                new String[] {vfsName}), e);
+                            LOG.warn(
+                                Messages.get().getBundle().key(
+                                    Messages.ERR_EXPORT_FILE_FAILED_1,
+                                    new String[] {vfsName}),
+                                e);
                         }
                     }
                 }
@@ -2270,9 +2274,11 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                     } catch (CmsException e) {
                         // ignore, resource does not exist
                         if (LOG.isWarnEnabled()) {
-                            LOG.warn(Messages.get().getBundle().key(
-                                Messages.ERR_EXPORT_FILE_FAILED_1,
-                                new String[] {vfsName}), e);
+                            LOG.warn(
+                                Messages.get().getBundle().key(
+                                    Messages.ERR_EXPORT_FILE_FAILED_1,
+                                    new String[] {vfsName}),
+                                e);
                         }
                     }
                     // no match found, nothing to export
@@ -2540,11 +2546,13 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 }
                 count++;
                 if (report != null) {
-                    report.println(Messages.get().container(
-                        Messages.RPT_DELETE_EXPORT_FOLDER_3,
-                        new Integer(count),
-                        size,
-                        exportFolderName), I_CmsReport.FORMAT_NOTE);
+                    report.println(
+                        Messages.get().container(
+                            Messages.RPT_DELETE_EXPORT_FOLDER_3,
+                            new Integer(count),
+                            size,
+                            exportFolderName),
+                        I_CmsReport.FORMAT_NOTE);
                 } else {
                     // write log message
                     if (LOG.isInfoEnabled()) {
@@ -2570,11 +2578,13 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                     }
                     count++;
                     if (report != null) {
-                        report.println(Messages.get().container(
-                            Messages.RPT_DELETE_EXPORT_FOLDER_3,
-                            new Integer(count),
-                            size,
-                            exportFolderName), I_CmsReport.FORMAT_NOTE);
+                        report.println(
+                            Messages.get().container(
+                                Messages.RPT_DELETE_EXPORT_FOLDER_3,
+                                new Integer(count),
+                                size,
+                                exportFolderName),
+                            I_CmsReport.FORMAT_NOTE);
                     } else {
                         // write log message
                         if (LOG.isInfoEnabled()) {
@@ -2614,7 +2624,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             resources = cms.readResourcesWithProperty(CmsPropertyDefinition.PROPERTY_EXPORTNAME);
 
             synchronized (m_lockSetExportnames) {
-                m_exportnameResources = new HashMap(resources.size());
+                Map tempExportnames = new HashMap(resources.size());
                 for (int i = 0, n = resources.size(); i < n; i++) {
                     CmsResource res = (CmsResource)resources.get(i);
                     try {
@@ -2630,13 +2640,13 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                             if (exportname.charAt(0) != '/') {
                                 exportname = "/" + exportname;
                             }
-                            m_exportnameResources.put(exportname, foldername);
+                            tempExportnames.put(exportname, foldername);
                         }
                     } catch (CmsException e) {
                         // ignore, folder will not be added
                     }
                 }
-                m_exportnameResources = Collections.unmodifiableMap(m_exportnameResources);
+                m_exportnameResources = Collections.unmodifiableMap(tempExportnames);
             }
         } catch (CmsException e) {
             // ignore, no resources will be added at all
