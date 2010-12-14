@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/jpa/CmsVfsDriver.java,v $
- * Date   : $Date: 2010/11/30 09:33:53 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/12/14 10:12:11 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -121,7 +121,7 @@ import org.apache.commons.logging.Log;
  * @author Georgi Naplatanov
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0 
  */
@@ -473,7 +473,6 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     /**
      * @see org.opencms.db.I_CmsVfsDriver#addUrlNameMappingEntry(org.opencms.db.CmsDbContext, boolean, org.opencms.db.urlname.CmsUrlNameMappingEntry)
      */
-    @Override
     public void addUrlNameMappingEntry(CmsDbContext dbc, boolean online, CmsUrlNameMappingEntry entry) {
 
         I_CmsDAOUrlNameMappings m = online ? new CmsDAOOnlineUrlNameMappings() : new CmsDAOOfflineUrlNameMappings();
@@ -1342,7 +1341,6 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     /**
      * @see org.opencms.db.I_CmsVfsDriver#deleteUrlNameMappingEntries(org.opencms.db.CmsDbContext, boolean, org.opencms.db.urlname.CmsUrlNameMappingFilter)
      */
-    @Override
     public void deleteUrlNameMappingEntries(CmsDbContext dbc, boolean online, CmsUrlNameMappingFilter filter)
     throws CmsDataAccessException {
 
@@ -1404,9 +1402,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             for (I_CmsDAOResourceRelations rr : res) {
                 CmsRelation rel = internalReadRelation(rr);
                 try {
-                    ous.add(m_driverManager.readOrganizationalUnit(
-                        dbc,
-                        rel.getSourcePath().substring(CmsUserDriver.ORGUNIT_BASE_FOLDER.length())));
+                    ous.add(m_driverManager.readOrganizationalUnit(dbc, rel.getSourcePath().substring(
+                        CmsUserDriver.ORGUNIT_BASE_FOLDER.length())));
                 } catch (CmsException e) {
                     // should never happen
                     if (LOG.isErrorEnabled()) {
@@ -1431,7 +1428,6 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     /**
      * @see org.opencms.db.I_CmsVfsDriver#incrementCounter(org.opencms.db.CmsDbContext, java.lang.String)
      */
-    @Override
     public int incrementCounter(CmsDbContext dbc, String name) {
 
         CmsDAOCounters c = m_sqlManager.find(dbc, CmsDAOCounters.class, name);
@@ -2533,7 +2529,6 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     /**
      * @see org.opencms.db.I_CmsVfsDriver#readUrlNameMappingEntries(org.opencms.db.CmsDbContext, boolean, org.opencms.db.urlname.CmsUrlNameMappingFilter)
      */
-    @Override
     public List<CmsUrlNameMappingEntry> readUrlNameMappingEntries(
         CmsDbContext dbc,
         boolean online,

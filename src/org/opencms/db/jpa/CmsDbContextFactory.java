@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/jpa/CmsDbContextFactory.java,v $
- * Date   : $Date: 2010/11/30 09:33:53 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/12/14 10:12:11 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import org.opencms.file.CmsRequestContext;
  * @author Georgi Naplatanov
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -51,7 +51,6 @@ public class CmsDbContextFactory implements I_CmsDbContextFactory {
     /**
      * @see org.opencms.db.I_CmsDbContextFactory#getDbContext()
      */
-    @Override
     public CmsDbContext getDbContext() {
 
         return new org.opencms.db.jpa.CmsDbContext();
@@ -60,7 +59,6 @@ public class CmsDbContextFactory implements I_CmsDbContextFactory {
     /**
      * @see org.opencms.db.I_CmsDbContextFactory#getDbContext(org.opencms.file.CmsRequestContext)
      */
-    @Override
     public CmsDbContext getDbContext(CmsRequestContext context) {
 
         return new org.opencms.db.jpa.CmsDbContext(context);
@@ -69,7 +67,6 @@ public class CmsDbContextFactory implements I_CmsDbContextFactory {
     /**
      * @see org.opencms.db.I_CmsDbContextFactory#initialize(org.opencms.db.CmsDriverManager)
      */
-    @Override
     public void initialize(CmsDriverManager driverManager) {
 
         CmsSqlManager.init(driverManager.getPropertyConfiguration());
