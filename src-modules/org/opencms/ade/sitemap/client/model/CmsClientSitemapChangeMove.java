@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeMove.java,v $
- * Date   : $Date: 2010/11/29 10:33:35 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/12/17 08:45:30 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 8.0.0
  */
@@ -240,6 +240,14 @@ public class CmsClientSitemapChangeMove implements I_CmsClientSitemapChange {
     public Type getType() {
 
         return Type.MOVE;
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#isChangingDetailPages()
+     */
+    public boolean isChangingDetailPages() {
+
+        return false; // id stays the same when moving, so there's no need for updating detail page information  
     }
 
     /**

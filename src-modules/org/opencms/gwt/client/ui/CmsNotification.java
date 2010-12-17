@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsNotification.java,v $
- * Date   : $Date: 2010/11/29 08:27:46 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/12/17 08:45:29 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,12 +31,15 @@
 
 package org.opencms.gwt.client.ui;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+
 /**
  * User feedback provider.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -203,6 +206,27 @@ public final class CmsNotification {
         if (m_widget != null) {
             m_widget.setBlocking();
         }
+    }
+
+    /**
+     * Sends a new notification after all other events have been processed.<p>
+     * 
+     * @param type the notification type 
+     * @param message the message 
+     */
+    public void sendDeferred(final Type type, final String message) {
+
+        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
+            /**
+             * @see com.google.gwt.core.client.Scheduler.ScheduledCommand#execute()
+             */
+            public void execute() {
+
+                send(type, message);
+            }
+        });
+
     }
 
     /**

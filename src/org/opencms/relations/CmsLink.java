@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsLink.java,v $
- * Date   : $Date: 2010/11/29 07:41:23 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/12/17 08:45:30 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,8 +32,6 @@
 package org.opencms.relations;
 
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsProperty;
-import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
@@ -48,6 +46,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.util.CmsUriSplitter;
 import org.opencms.xml.sitemap.CmsSitemapEntry;
+import org.opencms.xml.sitemap.I_CmsDetailPageFinder;
 
 import java.util.Map;
 import java.util.Set;
@@ -63,7 +62,7 @@ import org.dom4j.Element;
  * @author Carsten Weinholz
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -83,6 +82,9 @@ public class CmsLink {
 
     /** Default link type. */
     public static final CmsRelationType DEFAULT_TYPE = CmsRelationType.XML_WEAK;
+
+    /** A dummy uri. */
+    public static final String DUMMY_URI = "@@@";
 
     /** Name of the anchor node. */
     public static final String NODE_ANCHOR = "anchor";
@@ -239,21 +241,10 @@ public class CmsLink {
                 CmsResource res = cms.readResource(m_structureId, CmsResourceFilter.ALL);
                 rootPath = res.getRootPath();
                 if (res.isFile()) {
-                    try {
-                        CmsProperty detailViewProp = cms.readPropertyObject(
-                            res,
-                            CmsPropertyDefinition.PROPERTY_ADE_SITEMAP_DETAILVIEW,
-                            true);
-                        if (!detailViewProp.isNullProperty()) {
-                            String detailView = detailViewProp.getValue();
-                            String urlName = cms.readNewestUrlNameForId(res.getStructureId());
-                            if (urlName == null) {
-                                urlName = res.getStructureId().toString();
-                            }
-                            rootPath = cms.getRequestContext().addSiteRoot(CmsStringUtil.joinPaths(detailView, urlName));
-                        }
-                    } catch (CmsException e) {
-                        // ignore 
+                    I_CmsDetailPageFinder finder = OpenCms.getSitemapManager().getDetailPageFinder();
+                    String detailPage = finder.getDetailPage(cms, res, cms.getRequestContext().getOriginalUri());
+                    if (detailPage != null) {
+                        rootPath = CmsStringUtil.joinPaths(detailPage, cms.getDetailName(res), "/");
                     }
                 }
             } catch (CmsException e) {

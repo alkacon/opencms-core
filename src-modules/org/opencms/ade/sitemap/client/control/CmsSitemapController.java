@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2010/11/30 08:56:13 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2010/12/17 08:45:30 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.ade.sitemap.client.control;
 import org.opencms.ade.sitemap.client.CmsSitemapTreeItem;
 import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.Messages;
+import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeBumpDetailPage;
 import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeCreateSubSitemap;
 import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeDelete;
 import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeEdit;
@@ -47,6 +48,7 @@ import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsSitemapBrokenLinkBean;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.ade.sitemap.shared.CmsSitemapMergeInfo;
+import org.opencms.ade.sitemap.shared.CmsSitemapSaveData;
 import org.opencms.ade.sitemap.shared.CmsSitemapTemplate;
 import org.opencms.ade.sitemap.shared.CmsSubSitemapInfo;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry.EditStatus;
@@ -60,9 +62,13 @@ import org.opencms.gwt.client.ui.CmsConfirmDialog;
 import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
 import org.opencms.gwt.client.util.CmsCollectionUtil;
 import org.opencms.gwt.client.util.CmsDebugLog;
+import org.opencms.gwt.client.util.CmsMultiResourceLock;
+import org.opencms.gwt.client.util.CmsSingleResourceLock;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.content.CmsXmlContentProperty;
+import org.opencms.xml.sitemap.CmsDetailPageInfo;
+import org.opencms.xml.sitemap.CmsDetailPageTable;
 import org.opencms.xml.sitemap.CmsSitemapManager;
 import org.opencms.xml.sitemap.I_CmsSitemapChange;
 import org.opencms.xml.sitemap.properties.CmsComputedPropertyValue;
@@ -70,6 +76,7 @@ import org.opencms.xml.sitemap.properties.CmsPropertyInheritanceState;
 import org.opencms.xml.sitemap.properties.CmsSimplePropertyValue;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -83,13 +90,15 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * Sitemap editor controller.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.33 $ 
+ * @version $Revision: 1.34 $ 
  * 
  * @since 8.0.0
  */
@@ -117,17 +126,32 @@ public class CmsSitemapController {
         }
     }
 
+    /** A map of *all* detail page info beans, indexed by page id. */
+    protected Map<CmsUUID, CmsDetailPageInfo> m_allDetailPageInfos = new HashMap<CmsUUID, CmsDetailPageInfo>();
+
     /** The list of changes. */
     protected List<I_CmsClientSitemapChange> m_changes;
 
     /** The sitemap data. */
     protected CmsSitemapData m_data;
 
+    /** The detail page table. */
+    protected CmsDetailPageTable m_detailPageTable;
+
     /** The event bus. */
     protected SimpleEventBus m_eventBus;
 
     /** The list of undone changes. */
     protected List<I_CmsClientSitemapChange> m_undone;
+
+    /** The lock for the configuration file. */
+    CmsSingleResourceLock m_configLock;
+
+    /** The lock for the sitemap file. */
+    CmsSingleResourceLock m_sitemapLock;
+
+    /** A counter to keep track of the number of detail page changes, for locking purposes. */
+    private int m_detailPageChangeCounter;
 
     /** The set of names of hidden properties. */
     private Set<String> m_hiddenProperties;
@@ -151,13 +175,17 @@ public class CmsSitemapController {
         m_changes = new ArrayList<I_CmsClientSitemapChange>();
         m_undone = new ArrayList<I_CmsClientSitemapChange>();
         m_data = (CmsSitemapData)CmsRpcPrefetcher.getSerializedObject(getService(), CmsSitemapData.DICT_NAME);
-
         m_hiddenProperties = new HashSet<String>();
         m_hiddenProperties.add(CmsSitemapManager.Property.sitemap.toString());
         m_hiddenProperties.add(CmsSitemapManager.Property.internalRedirect.toString());
         m_hiddenProperties.add(CmsSitemapManager.Property.externalRedirect.toString());
         m_hiddenProperties.add(CmsSitemapManager.Property.isRedirect.toString());
+        m_detailPageTable = m_data.getDetailPageTable();
+        RootPanel.get().add(new Label("detail pages: " + m_detailPageTable.size()));
+        m_configLock = new CmsSingleResourceLock(m_data.getConfigPath());
+        m_sitemapLock = new CmsSingleResourceLock(CmsCoreProvider.get().getUri());
         m_eventBus = new SimpleEventBus();
+        initDetailPageInfos();
 
     }
 
@@ -232,6 +260,17 @@ public class CmsSitemapController {
     public HandlerRegistration addClearUndoHandler(I_CmsSitemapClearUndoHandler handler) {
 
         return m_eventBus.addHandlerToSource(CmsSitemapClearUndoEvent.getType(), this, handler);
+    }
+
+    /**
+     * Adds a new detail page information bean.<p>
+     * 
+     * @param info the detail page information bean to add 
+     */
+    public void addDetailPageInfo(CmsDetailPageInfo info) {
+
+        m_detailPageTable.add(info);
+        m_allDetailPageInfos.put(info.getId(), info);
     }
 
     /**
@@ -355,6 +394,17 @@ public class CmsSitemapController {
     }
 
     /**
+     * Makes the given sitemap entry the default detail page for its detail page type.<p>
+     * 
+     * @param entry an entry representing a detail page 
+     */
+    public void bump(CmsClientSitemapEntry entry) {
+
+        CmsClientSitemapChangeBumpDetailPage change = new CmsClientSitemapChangeBumpDetailPage(entry);
+        addChange(change, false);
+    }
+
+    /**
      * Commits the changes.<p>
      * 
      * @param sync if to use a synchronized or an asynchronized request
@@ -372,11 +422,11 @@ public class CmsSitemapController {
 
                 setLoadingMessage(Messages.get().key(Messages.GUI_SAVING_0));
                 start(0, true);
-                List<I_CmsSitemapChange> changes = getChangesToSave();
+                CmsSitemapSaveData saveData = getSaveData();
                 if (sync) {
-                    getService().saveSync(getSitemapUri(), changes, getData().getClipboardData(), this);
+                    getService().saveSync(getSitemapUri(), saveData, this);
                 } else {
-                    getService().save(getSitemapUri(), changes, getData().getClipboardData(), this);
+                    getService().save(getSitemapUri(), saveData, this);
                 }
             }
 
@@ -451,7 +501,7 @@ public class CmsSitemapController {
         String sitePath = entry.getSitePath() + urlName + "/";
         newEntry.setSitePath(sitePath);
         newEntry.setVfsPath(null);
-        newEntry.setPosition(-1);
+        newEntry.setPosition(0);
         newEntry.setNew(true);
         create(newEntry);
         // leave properties empty
@@ -473,8 +523,8 @@ public class CmsSitemapController {
             public void execute() {
 
                 start(0, true);
-                List<I_CmsSitemapChange> changes = getChangesToSave();
-                getService().saveAndCreateSubSitemap(getSitemapUri(), changes, path, this);
+                CmsSitemapSaveData saveData = getSaveData();
+                getService().saveAndCreateSubSitemap(getSitemapUri(), saveData, path, this);
 
             }
 
@@ -491,7 +541,7 @@ public class CmsSitemapController {
 
             }
         };
-        if (CmsCoreProvider.get().lockAndCheckModification(getSitemapUri(), m_data.getTimestamp())) {
+        if (lockForSaving()) {
             subSitemapAction.execute();
         }
     }
@@ -649,6 +699,16 @@ public class CmsSitemapController {
     }
 
     /**
+     * Returns the configuration file lock.<p>
+     * 
+     * @return the configuration file lock 
+     */
+    public CmsSingleResourceLock getConfigLock() {
+
+        return m_configLock;
+    }
+
+    /**
     * Returns the sitemap data.<p>
     *
     * @return the sitemap data
@@ -684,6 +744,55 @@ public class CmsSitemapController {
             return m_data.getTemplates().get(templateInherited.getOwnValue());
         }
         return m_data.getDefaultTemplate();
+    }
+
+    /**
+     * Returns the detail page info for a given entry id.<p>
+     * 
+     * @param id a sitemap entry id 
+     * 
+     * @return the detail page info for that id 
+     */
+    public CmsDetailPageInfo getDetailPageInfo(CmsUUID id) {
+
+        return m_allDetailPageInfos.get(id);
+    }
+
+    /**
+     * Returns the detail page table.<p>
+     * 
+     * @return the detail page table 
+     */
+    public CmsDetailPageTable getDetailPageTable() {
+
+        return m_detailPageTable;
+    }
+
+    /**
+     * Returns all entries with an id from a given list.<p>
+     * 
+     * @param ids a list of sitemap entry ids 
+     * 
+     * @return all entries whose id is contained in the id list 
+     */
+    public Map<CmsUUID, CmsClientSitemapEntry> getEntriesById(Collection<CmsUUID> ids) {
+
+        // TODO: use some map of id -> entry instead
+        List<CmsClientSitemapEntry> entriesToProcess = new ArrayList<CmsClientSitemapEntry>();
+        Map<CmsUUID, CmsClientSitemapEntry> result = new HashMap<CmsUUID, CmsClientSitemapEntry>();
+
+        entriesToProcess.add(m_data.getRoot());
+        while (!entriesToProcess.isEmpty()) {
+            CmsClientSitemapEntry entry = entriesToProcess.remove(entriesToProcess.size() - 1);
+            if (ids.contains(entry.getId())) {
+                result.put(entry.getId(), entry);
+                if (result.size() == ids.size()) {
+                    return result;
+                }
+            }
+            entriesToProcess.addAll(entry.getSubEntries());
+        }
+        return result;
     }
 
     /**
@@ -770,6 +879,17 @@ public class CmsSitemapController {
     }
 
     /**
+     * Returns true if the id is the id of a detail page.<p>
+     * 
+     * @param id the sitemap entry id 
+     * @return true if the id is the id of a detail page entry
+     */
+    public boolean isDetailPage(CmsUUID id) {
+
+        return m_allDetailPageInfos.containsKey(id);
+    }
+
+    /**
      * Checks if the current sitemap is editable.<p>
      *
      * @return <code>true</code> if the current sitemap is editable
@@ -809,6 +929,21 @@ public class CmsSitemapController {
     public boolean isRoot(String sitePath) {
 
         return m_data.getRoot().getSitePath().equals(sitePath);
+    }
+
+    /**
+     * Locks the resources which need to be modified.<p>
+     * 
+     * @return true if the resources could be locked 
+     */
+    public boolean lockForSaving() {
+
+        CmsMultiResourceLock multiLock = new CmsMultiResourceLock();
+        multiLock.addLockRequest(m_sitemapLock, m_data.getTimestamp());
+        if (m_detailPageChangeCounter > 0) {
+            multiLock.addLockRequest(m_configLock);
+        }
+        return multiLock.lockAll();
     }
 
     /**
@@ -914,8 +1049,8 @@ public class CmsSitemapController {
             public void execute() {
 
                 start(0, true);
-                List<I_CmsSitemapChange> changes = getChangesToSave();
-                getService().saveAndMergeSubSitemap(getSitemapUri(), changes, path, this);
+                CmsSitemapSaveData saveData = getSaveData();
+                getService().saveAndMergeSubSitemap(getSitemapUri(), saveData, path, this);
             }
 
             /**
@@ -936,8 +1071,7 @@ public class CmsSitemapController {
 
         CmsSimplePropertyValue sitemapProp = entry.getProperties().get(CmsSitemapManager.Property.sitemap.name());
         String sitemapVal = sitemapProp == null ? null : sitemapProp.getOwnValue();
-        if (CmsCoreProvider.get().lockAndCheckModification(getSitemapUri(), m_data.getTimestamp())
-            && CmsCoreProvider.get().lock(sitemapVal)) {
+        if (lockForSaving() && CmsCoreProvider.get().lock(sitemapVal)) {
             mergeAction.execute();
         }
     }
@@ -962,15 +1096,20 @@ public class CmsSitemapController {
 
         // update data
         I_CmsClientSitemapChange revertChange = change.revert();
+        if (revertChange.isChangingDetailPages()) {
+            m_detailPageChangeCounter -= 1;
+        }
         revertChange.applyToModel(this);
 
         // refresh view
         fireChange(revertChange);
-
+        if (m_detailPageChangeCounter == 0) {
+            m_configLock.unlock();
+        }
         // post-state
         if (!hasChanges()) {
             m_eventBus.fireEventFromSource(new CmsSitemapLastUndoEvent(), this);
-            CmsCoreProvider.get().unlock();
+            m_sitemapLock.unlock();
         }
     }
 
@@ -982,14 +1121,22 @@ public class CmsSitemapController {
     */
     protected void addChange(I_CmsClientSitemapChange change, boolean redo) {
 
+        if (change.isChangingDetailPages()) {
+            m_detailPageChangeCounter += 1;
+        }
+
         // state
-        if (!hasChanges()) {
-            if (CmsCoreProvider.get().lockAndCheckModification(getSitemapUri(), m_data.getTimestamp())) {
+
+        if (lockForSaving()) {
+            if (!hasChanges()) {
                 m_eventBus.fireEventFromSource(new CmsSitemapStartEditEvent(), this);
-            } else {
-                // could not lock
-                return;
             }
+        } else {
+            if (change.isChangingDetailPages()) {
+                m_detailPageChangeCounter -= 1;
+            }
+            // could not lock
+            return;
         }
 
         if (!redo && !m_undone.isEmpty()) {
@@ -1172,6 +1319,17 @@ public class CmsSitemapController {
     }
 
     /**
+     * Initializes the detail page information.<p>
+     */
+    protected void initDetailPageInfos() {
+
+        for (CmsUUID id : m_data.getDetailPageTable().getAllIds()) {
+            CmsDetailPageInfo info = m_data.getDetailPageTable().get(id);
+            m_allDetailPageInfos.put(id, info);
+        }
+    }
+
+    /**
      * Internal method which is called when a new sub-sitemap has been successfully created.<p>
      * 
      * @param path the path in the current sitemap at which the sub-sitemap has been created
@@ -1219,7 +1377,7 @@ public class CmsSitemapController {
         m_undone.clear();
         // state
         m_eventBus.fireEventFromSource(new CmsSitemapResetEvent(), this);
-        CmsCoreProvider.get().unlock();
+        unlockAll();
     }
 
     /**
@@ -1234,6 +1392,21 @@ public class CmsSitemapController {
             changes.addAll(change.getChangesForCommit());
         }
         return changes;
+    }
+
+    /**
+     * Returns the save data bean.<p>
+     * 
+     * @return the save data bean
+     */
+    CmsSitemapSaveData getSaveData() {
+
+        List<I_CmsSitemapChange> changes = getChangesToSave();
+        List<CmsDetailPageInfo> detailPageInfo = null;
+        if (m_configLock.isLocked()) {
+            detailPageInfo = m_detailPageTable.toList();
+        }
+        return new CmsSitemapSaveData(changes, getData().getClipboardData(), detailPageInfo);
     }
 
     /**
@@ -1285,5 +1458,14 @@ public class CmsSitemapController {
             && (CmsResource.getParentFolder(toPath) != null)
             && (entry != null)
             && (getEntry(CmsResource.getParentFolder(toPath)) != null) && (getEntry(entry.getSitePath()) != null));
+    }
+
+    /** 
+     * Unlocks locked resources.<p>
+     */
+    private void unlockAll() {
+
+        m_sitemapLock.unlock();
+        getConfigLock().unlock();
     }
 }

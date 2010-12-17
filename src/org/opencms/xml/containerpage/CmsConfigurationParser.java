@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsConfigurationParser.java,v $
- * Date   : $Date: 2010/11/18 09:41:54 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/12/17 08:45:29 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,11 +41,16 @@ import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsFormatterUtil;
 import org.opencms.util.CmsPair;
+import org.opencms.util.CmsUUID;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.I_CmsXmlDocument;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.content.CmsXmlContentProperty;
+import org.opencms.xml.content.CmsXmlContentRootLocation;
+import org.opencms.xml.content.I_CmsXmlContentLocation;
+import org.opencms.xml.content.I_CmsXmlContentValueLocation;
+import org.opencms.xml.sitemap.CmsDetailPageInfo;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.ArrayList;
@@ -71,20 +76,29 @@ import org.apache.commons.collections.Transformer;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 7.6 
  */
 public class CmsConfigurationParser {
 
+    /** The default maximum sitemap depth. */
+    public static final int DEFAULT_MAX_DEPTH = 15;
+
     /** The tag name for the export name configuration. */
     public static final String N_ADE_EXPORTNAME = "ADEExportName";
+
+    /** The node name for the container page name generator class. */
+    public static final String N_ADE_NAME_GENERATOR = "ContainerPageNameGenerator";
 
     /** The tag name of the configuration for a single type. */
     public static final String N_ADE_TYPE = "ADEType";
 
     /** The tag name of the destination in the type configuration. */
     public static final String N_DESTINATION = "Destination";
+
+    /** The detail page node name. */
+    public static final String N_DETAIL_PAGE = "DetailPage";
 
     /** The tag name of the source file in the type configuration. */
     public static final String N_FOLDER = "Folder";
@@ -94,6 +108,12 @@ public class CmsConfigurationParser {
 
     /** The tag name of the formatter jsp. */
     public static final String N_JSP = "Jsp";
+
+    /** Node name for the maximum depth configuration. */
+    public static final String N_MAXDEPTH = "MaxDepth";
+
+    /** The Page node name. */
+    public static final String N_PAGE = "Page";
 
     /** The tag name of the source file in the type configuration. */
     public static final String N_PATTERN = "Pattern";
@@ -107,15 +127,6 @@ public class CmsConfigurationParser {
     /** The tag name of the formatter width. */
     public static final String N_WIDTH = "Width";
 
-    /** Node name for the maximum depth configuration. */
-    public static final String N_MAXDEPTH = "MaxDepth";
-
-    /** The default maximum sitemap depth. */
-    public static final int DEFAULT_MAX_DEPTH = 15;
-
-    /** The maximum sitemap depth. */
-    private int m_maxDepth = DEFAULT_MAX_DEPTH;
-
     /** The instance cache. */
     private static CmsVfsMemoryObjectCache m_cache = new CmsVfsMemoryObjectCache();
 
@@ -125,23 +136,29 @@ public class CmsConfigurationParser {
     /** Configuration data, read from xml content. */
     private Map<String, CmsConfigurationItem> m_configuration = new HashMap<String, CmsConfigurationItem>();
 
+    /** The xml document. */
+    private I_CmsXmlDocument m_content;
+
+    /** The detail pages from the configuration file. */
+    private List<CmsDetailPageInfo> m_detailPages;
+
     /** The configured export name. */
     private String m_exportName;
 
     /** The formatter configuration maps. */
     private Map<String, CmsPair<Map<String, String>, Map<Integer, String>>> m_formatterConfiguration = new HashMap<String, CmsPair<Map<String, String>, Map<Integer, String>>>();
 
+    /** The maximum sitemap depth. */
+    private int m_maxDepth = DEFAULT_MAX_DEPTH;
+
+    /** The container page name generator class. */
+    private String m_nameGenerator;
+
     /** New elements. */
     private Collection<CmsResource> m_newElements = new LinkedHashSet<CmsResource>();
 
     /** The list of properties read from the configuration file. */
     private List<CmsXmlContentProperty> m_props = new ArrayList<CmsXmlContentProperty>();
-
-    /** The container page name generator class. */
-    private String m_nameGenerator;
-
-    /** The node name for the container page name generator class. */
-    public static final String N_ADE_NAME_GENERATOR = "ContainerPageNameGenerator";
 
     /**
      * Default constructor.<p>
@@ -222,6 +239,16 @@ public class CmsConfigurationParser {
     }
 
     /**
+     * Returns the detail pages from the configuration.<p>
+     * 
+     * @return the detail pages from the configuration 
+     */
+    public List<CmsDetailPageInfo> getDetailPages() {
+
+        return Collections.unmodifiableList(m_detailPages);
+    }
+
+    /**
      * Returns the configured export name.<p>
      * 
      * @return the configured export name 
@@ -289,56 +316,6 @@ public class CmsConfigurationParser {
     }
 
     /**
-     * Parses a type configuration contained in an XML content.<p>
-     * 
-     * This method uses the first locale from the following list which has a corresponding
-     * element in the XML content:
-     * <ul>
-     *  <li>the request context's locale</li>
-     *  <li>the default locale</li>
-     *  <li>the first locale available in the XML content</li>
-     * </ul><p>
-     *
-     * @param cms the CmsObject to use for VFS operations
-     * @param content the XML content with the type configuration
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public void parseConfiguration(CmsObject cms, I_CmsXmlDocument content) throws CmsException {
-
-        Locale locale = getLocale(cms, content);
-        List<I_CmsXmlContentValue> typeValues = content.getValues(N_ADE_TYPE, locale);
-
-        for (I_CmsXmlContentValue xmlType : typeValues) {
-            parseType(cms, xmlType, locale);
-        }
-
-        List<I_CmsXmlContentValue> fieldValues = content.getValues(N_ADE_FIELD, locale);
-        for (I_CmsXmlContentValue xmlField : fieldValues) {
-            parseField(cms, xmlField, locale);
-        }
-
-        I_CmsXmlContentValue exportNameNode = content.getValue(N_ADE_EXPORTNAME, locale);
-        if (exportNameNode != null) {
-            m_exportName = exportNameNode.getStringValue(cms);
-        }
-
-        I_CmsXmlContentValue nameGeneratorNode = content.getValue(N_ADE_NAME_GENERATOR, locale);
-        if (nameGeneratorNode != null) {
-            m_nameGenerator = nameGeneratorNode.getStringValue(cms);
-        }
-
-        I_CmsXmlContentValue maxDepthNode = content.getValue(N_MAXDEPTH, locale);
-        if (maxDepthNode != null) {
-            try {
-                m_maxDepth = Integer.parseInt(maxDepthNode.getStringValue(cms));
-            } catch (NumberFormatException e) {
-                // ignore, leave max depth at its default value 
-            }
-        }
-    }
-
-    /**
      * Reads additional configuration data from a file.<p>
      * 
      * @param cms the CMS context 
@@ -401,55 +378,6 @@ public class CmsConfigurationParser {
     }
 
     /**
-     * Returns a named child value of a given XML content value.<p> 
-     * 
-     * @param value the XML content value whose sub-element value should be read
-     * @param subPath a path relative to the given value's path 
-     * 
-     * @return the XML content value  
-     */
-    protected I_CmsXmlContentValue getSubValue(I_CmsXmlContentValue value, String subPath) {
-
-        Locale locale = value.getLocale();
-
-        I_CmsXmlContentValue subValue = value.getDocument().getValue(
-            CmsXmlUtils.concatXpath(value.getPath(), subPath),
-            locale);
-        return subValue;
-    }
-
-    /**
-     * Returns a child content value of a given content value as a string.<p>
-     *  
-     * @param cms the CMS context 
-     * @param value the parent content value
-     * @param subPath the name of the child content value, relative to the parent's path 
-     * 
-     * @return the child content value as a string 
-     */
-    protected String getSubValueAsString(CmsObject cms, I_CmsXmlContentValue value, String subPath) {
-
-        I_CmsXmlContentValue subValue = getSubValue(value, subPath);
-        return subValue != null ? subValue.getStringValue(cms) : null;
-    }
-
-    /**
-     * Helper method for retrieving the sub-values of a given XML content value.
-     * 
-     * @param value the parent XML content value 
-     * @param subPath the path relative to parent value 
-     * 
-     * @return the list of sub-values with the given path below the parent value 
-     */
-    protected List<I_CmsXmlContentValue> getSubValues(I_CmsXmlContentValue value, String subPath) {
-
-        Locale locale = value.getLocale();
-        String path = CmsXmlUtils.concatXpath(value.getPath(), subPath);
-        return value.getDocument().getValues(path, locale);
-
-    }
-
-    /**
      * Helper method for retrieving the OpenCms type name for a given type id.<p>
      * 
      * @param typeId the id of the type
@@ -464,26 +392,125 @@ public class CmsConfigurationParser {
     }
 
     /**
+     * Parses a type configuration contained in an XML content.<p>
+     * 
+     * This method uses the first locale from the following list which has a corresponding
+     * element in the XML content:
+     * <ul>
+     *  <li>the request context's locale</li>
+     *  <li>the default locale</li>
+     *  <li>the first locale available in the XML content</li>
+     * </ul><p>
+     *
+     * @param cms the CmsObject to use for VFS operations
+     * @param content the XML content with the type configuration
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    private void parseConfiguration(CmsObject cms, I_CmsXmlDocument content) throws CmsException {
+
+        Locale locale = getLocale(cms, content);
+        m_content = content;
+        I_CmsXmlContentLocation root = new CmsXmlContentRootLocation(content, locale);
+
+        List<I_CmsXmlContentValueLocation> typeValues = root.getSubValues(N_ADE_TYPE);
+
+        for (I_CmsXmlContentValueLocation xmlType : typeValues) {
+            parseType(cms, xmlType, locale);
+        }
+
+        List<I_CmsXmlContentValueLocation> fieldValues = root.getSubValues(N_ADE_FIELD);
+        for (I_CmsXmlContentValueLocation xmlField : fieldValues) {
+            parseField(cms, xmlField, locale);
+        }
+
+        List<I_CmsXmlContentValueLocation> detailPageValues = root.getSubValues(N_DETAIL_PAGE);
+        for (I_CmsXmlContentValueLocation detailPageValue : detailPageValues) {
+            parseDetailPage(cms, detailPageValue);
+        }
+
+        I_CmsXmlContentValue exportNameNode = content.getValue(N_ADE_EXPORTNAME, locale);
+        if (exportNameNode != null) {
+            m_exportName = exportNameNode.getStringValue(cms);
+        }
+
+        I_CmsXmlContentValue nameGeneratorNode = content.getValue(N_ADE_NAME_GENERATOR, locale);
+        if (nameGeneratorNode != null) {
+            m_nameGenerator = nameGeneratorNode.getStringValue(cms);
+        }
+
+        m_detailPages = parseDetailPages(cms, root);
+
+        I_CmsXmlContentValue maxDepthNode = content.getValue(N_MAXDEPTH, locale);
+        if (maxDepthNode != null) {
+            try {
+                m_maxDepth = Integer.parseInt(maxDepthNode.getStringValue(cms));
+            } catch (NumberFormatException e) {
+                // ignore, leave max depth at its default value 
+            }
+        }
+
+    }
+
+    /**
+     * Parses a single detail page bean from the configuration.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param detailPageNode the location from which to read the detail page bean 
+     * 
+     * @return the parsed detail page bean  
+     */
+    private CmsDetailPageInfo parseDetailPage(CmsObject cms, I_CmsXmlContentValueLocation detailPageNode) {
+
+        String type = detailPageNode.getSubValue(N_TYPE).asString(cms);
+        I_CmsXmlContentValueLocation target = detailPageNode.getSubValue(N_PAGE);
+        CmsUUID targetId = target.asId(null);
+        String targetPath = cms.getRequestContext().addSiteRoot(target.asString(cms));
+        CmsDetailPageInfo result = new CmsDetailPageInfo(targetId, targetPath, type);
+        return result;
+    }
+
+    /** 
+     * Parses the detail pages from the configuration file.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param root the location from which to read the detail pages
+     *  
+     * @return the parsed detail page beans
+     */
+    private List<CmsDetailPageInfo> parseDetailPages(CmsObject cms, I_CmsXmlContentLocation root) {
+
+        List<I_CmsXmlContentValueLocation> values = root.getSubValues(N_DETAIL_PAGE);
+        List<CmsDetailPageInfo> result = new ArrayList<CmsDetailPageInfo>();
+        for (I_CmsXmlContentValueLocation detailPageNode : values) {
+            CmsDetailPageInfo info = parseDetailPage(cms, detailPageNode);
+            result.add(info);
+        }
+        return result;
+    }
+
+    /**
      * Parses a single field definition from a content value.<p>
      * 
      * @param cms the CMS context 
-     * @param xmlField the content value to parse the field from 
+     * @param field the content value to parse the field from 
      * @param locale the locale to use 
      */
-    private void parseField(CmsObject cms, I_CmsXmlContentValue xmlField, Locale locale) {
+    private void parseField(CmsObject cms, I_CmsXmlContentLocation field, Locale locale) {
 
-        String name = getSubValueAsString(cms, xmlField, "Name");
-        String type = getSubValueAsString(cms, xmlField, "Type");
-        String widget = getSubValueAsString(cms, xmlField, "Widget");
-        String widgetConfig = getSubValueAsString(cms, xmlField, "WidgetConfig");
-        String ruleRegex = getSubValueAsString(cms, xmlField, "RuleRegex");
-        String ruleType = getSubValueAsString(cms, xmlField, "RuleType");
-        String default1 = getSubValueAsString(cms, xmlField, "Default");
-        String error = getSubValueAsString(cms, xmlField, "Error");
-        String niceName = getSubValueAsString(cms, xmlField, "NiceName");
-        String description = getSubValueAsString(cms, xmlField, "Description");
-        String advanced = getSubValueAsString(cms, xmlField, "Advanced");
-        String selectInherit = getSubValueAsString(cms, xmlField, "SelectInherit");
+        String name = field.getSubValue("Name").asString(cms);
+        String type = field.getSubValue("Type").asString(cms);
+        String widget = field.getSubValue("Widget").asString(cms);
+        String widgetConfig = field.getSubValue("WidgetConfig").asString(cms);
+
+        String ruleRegex = field.getSubValue("RuleRegex").asString(cms);
+        String ruleType = field.getSubValue("RuleType").asString(cms);
+        String default1 = field.getSubValue("Default").asString(cms);
+        String error = field.getSubValue("Error").asString(cms);
+        String niceName = field.getSubValue("NiceName").asString(cms);
+        String description = field.getSubValue("Description").asString(cms);
+        String advanced = field.getSubValue("Advanced").asString(cms);
+        String selectInherit = field.getSubValue("SelectInherit").asString(cms);
         CmsXmlContentProperty prop = new CmsXmlContentProperty(
             name,
             type,
@@ -509,30 +536,26 @@ public class CmsConfigurationParser {
      * 
      * @throws CmsException if something goes wrong 
      */
-    private void parseType(CmsObject cms, I_CmsXmlContentValue xmlType, Locale locale) throws CmsException {
+    private void parseType(CmsObject cms, I_CmsXmlContentLocation xmlType, Locale locale) throws CmsException {
 
-        String source = getSubValueAsString(cms, xmlType, N_SOURCE);
-        String folder = getSubValueAsString(cms, xmlType, CmsXmlUtils.concatXpath(N_DESTINATION, N_FOLDER));
-        cms.getRequestContext().addSiteRoot(folder);
-        String pattern = getSubValueAsString(cms, xmlType, CmsXmlUtils.concatXpath(N_DESTINATION, N_PATTERN));
+        CmsUUID source = xmlType.getSubValue(N_SOURCE).asId(cms);
+        CmsUUID folder = xmlType.getSubValue(CmsXmlUtils.concatXpath(N_DESTINATION, N_FOLDER)).asId(cms);
+        String pattern = xmlType.getSubValue(CmsXmlUtils.concatXpath(N_DESTINATION, N_PATTERN)).asString(cms);
         CmsResource resource = cms.readResource(source);
         String type = getTypeName(resource.getTypeId());
-        CmsConfigurationItem configItem = new CmsConfigurationItem(
-            cms.readResource(source),
-            cms.readResource(folder),
-            pattern);
-        List<I_CmsXmlContentValue> fmtValues = getSubValues(xmlType, N_FORMATTER);
+        CmsConfigurationItem configItem = new CmsConfigurationItem(resource, cms.readResource(folder), pattern);
+        List<I_CmsXmlContentValueLocation> fmtValues = xmlType.getSubValues(N_FORMATTER);
         List<CmsFormatterConfigBean> formatterConfigBeans = new ArrayList<CmsFormatterConfigBean>();
-        for (I_CmsXmlContentValue fmtValue : fmtValues) {
-            String jsp = getSubValueAsString(cms, fmtValue, N_JSP);
-            String width = getSubValueAsString(cms, fmtValue, N_WIDTH);
-            String fmtType = getSubValueAsString(cms, fmtValue, N_TYPE);
+        for (I_CmsXmlContentValueLocation fmtValue : fmtValues) {
+            String jsp = fmtValue.getSubValue(N_JSP).asString(cms);
+            String width = fmtValue.getSubValue(N_WIDTH).asString(cms);
+            String fmtType = fmtValue.getSubValue(N_TYPE).asString(cms);
             formatterConfigBeans.add(new CmsFormatterConfigBean(jsp, fmtType, width));
         }
         if (!formatterConfigBeans.isEmpty()) {
             CmsPair<Map<String, String>, Map<Integer, String>> formatterMaps = CmsFormatterUtil.getFormatterMapsFromConfigBeans(
                 formatterConfigBeans,
-                xmlType.getDocument().getFile().getRootPath());
+                m_content.getFile().getRootPath());
             m_formatterConfiguration.put(type, formatterMaps);
         }
         m_configuration.put(type, configItem);

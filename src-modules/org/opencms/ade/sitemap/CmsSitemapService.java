@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsSitemapService.java,v $
- * Date   : $Date: 2010/11/29 10:33:35 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2010/12/17 08:45:29 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,10 +33,12 @@ package org.opencms.ade.sitemap;
 
 import org.opencms.ade.sitemap.shared.CmsBrokenLinkData;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
+import org.opencms.ade.sitemap.shared.CmsResourceTypeInfo;
 import org.opencms.ade.sitemap.shared.CmsSitemapBrokenLinkBean;
 import org.opencms.ade.sitemap.shared.CmsSitemapClipboardData;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.ade.sitemap.shared.CmsSitemapMergeInfo;
+import org.opencms.ade.sitemap.shared.CmsSitemapSaveData;
 import org.opencms.ade.sitemap.shared.CmsSitemapTemplate;
 import org.opencms.ade.sitemap.shared.CmsSubSitemapInfo;
 import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService;
@@ -50,6 +52,7 @@ import org.opencms.file.history.CmsHistoryResourceHandler;
 import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlSitemap;
+import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.CmsGwtService;
 import org.opencms.gwt.CmsRpcException;
@@ -62,11 +65,16 @@ import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
+import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.xml.CmsXmlContentDefinition;
+import org.opencms.xml.containerpage.CmsConfigurationFileFinder;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.content.CmsXmlContentPropertyHelper;
 import org.opencms.xml.content.I_CmsXmlContentHandler;
+import org.opencms.xml.sitemap.CmsDetailPageConfigurationWriter;
+import org.opencms.xml.sitemap.CmsDetailPageInfo;
+import org.opencms.xml.sitemap.CmsDetailPageTable;
 import org.opencms.xml.sitemap.CmsInternalSitemapEntry;
 import org.opencms.xml.sitemap.CmsSitemapBean;
 import org.opencms.xml.sitemap.CmsSitemapChangeDelete;
@@ -75,6 +83,7 @@ import org.opencms.xml.sitemap.CmsSitemapChangeNew;
 import org.opencms.xml.sitemap.CmsSitemapChangeNewSubSitemapEntry;
 import org.opencms.xml.sitemap.CmsSitemapEntry;
 import org.opencms.xml.sitemap.CmsSitemapManager;
+import org.opencms.xml.sitemap.CmsSitemapRuntimeInfo;
 import org.opencms.xml.sitemap.CmsXmlSitemap;
 import org.opencms.xml.sitemap.CmsXmlSitemapFactory;
 import org.opencms.xml.sitemap.I_CmsSitemapChange;
@@ -88,6 +97,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -101,7 +111,7 @@ import org.apache.commons.collections.map.MultiValueMap;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.44 $ 
+ * @version $Revision: 1.45 $ 
  * 
  * @since 8.0.0
  * 
@@ -279,7 +289,7 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
                 getCmsObject(),
                 path);
             List<I_CmsSitemapChange> parentChanges = getChangesForMergingSubSitemap(entry);
-            long timestamp = saveInternal(sitemapUri, parentChanges, true);
+            long timestamp = saveChangesInternal(sitemapUri, parentChanges, true);
             List<CmsClientSitemapEntry> mergedClientEntries = getChildren(path, 1, propertyConfig);
             String subSitemapId = entry.getProperties().get(CmsSitemapManager.Property.sitemap.name());
             CmsResource subSitemapRes = cms.readResource(new CmsUUID(subSitemapId));
@@ -303,6 +313,12 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
         CmsSitemapManager sitemapMgr = OpenCms.getSitemapManager();
         try {
             CmsResource sitemap = cms.readResource(sitemapUri);
+            CmsProperty configProp = cms.readPropertyObject(
+                sitemap,
+                CmsPropertyDefinition.PROPERTY_ADE_SITEMAP_CONFIG,
+                true);
+            String configFilePath = configProp.getValue();
+
             Map<String, CmsXmlContentProperty> propertyConfig = sitemapMgr.getElementPropertyConfiguration(
                 cms,
                 sitemap,
@@ -318,6 +334,14 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
 
             String entryPoint = sitemapMgr.getEntryPoint(cms, sitemapUri);
             CmsSitemapEntry entry = sitemapMgr.getEntryForUri(cms, entryPoint);
+            CmsSitemapRuntimeInfo sitemapInfo = entry.getSitemapInfo();
+            if (entry.hasSubSitemap()) {
+                // the entry itself belongs to the parent sitemap, but it has at least one child because of the way
+                // we create sub-sitemaps 
+                sitemapInfo = ((CmsInternalSitemapEntry)entry).getSubEntries().get(0).getSitemapInfo();
+            }
+            CmsDetailPageTable detailPages = sitemapInfo.getDetailPageTable();
+
             Map<String, CmsComputedPropertyValue> parentProperties = new HashMap<String, CmsComputedPropertyValue>(
                 entry.getParentComputedProperties());
 
@@ -328,6 +352,8 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
 
             CmsSite site = OpenCms.getSiteManager().getSiteForSiteRoot(siteRoot);
             boolean isSecure = site.hasSecureServer();
+            List<CmsResourceTypeInfo> resourceTypeInfos = new ArrayList<CmsResourceTypeInfo>();
+            resourceTypeInfos = getResourceTypeInfos(getCmsObject(), sitemapUri);
 
             int maxDepth = sitemapMgr.getMaxDepth(cms, sitemap);
 
@@ -341,13 +367,16 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
                 exportRfsPrefix,
                 isSecure,
                 getNoEditReason(cms, getRequest()),
-                isDisplayToolbar(getRequest()),
+                shouldDisplayToolbar(getRequest()),
                 OpenCms.getResourceManager().getResourceType(CmsResourceTypeXmlContainerPage.getStaticTypeName()).getTypeId(),
                 parentSitemap,
                 getRoot(sitemap, parentSitemap, openPath, propertyConfig),
                 sitemap.getDateLastModified(),
                 openPath,
-                maxDepth);
+                maxDepth,
+                detailPages,
+                resourceTypeInfos,
+                configFilePath);
         } catch (Throwable e) {
             error(e);
         }
@@ -355,17 +384,13 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
     }
 
     /**
-     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#save(String, List, CmsSitemapClipboardData)
+     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#save(java.lang.String, org.opencms.ade.sitemap.shared.CmsSitemapSaveData)
      */
-    public long save(String sitemapUri, List<I_CmsSitemapChange> changes, CmsSitemapClipboardData clipboardData)
-    throws CmsRpcException {
+    public long save(String sitemapUri, CmsSitemapSaveData saveData) throws CmsRpcException {
 
         long timestamp = 0;
         try {
-            timestamp = saveInternal(sitemapUri, changes, true);
-            if (clipboardData != null) {
-                setClipboardData(clipboardData);
-            }
+            timestamp = saveInternal(sitemapUri, saveData, true);
         } catch (Throwable e) {
             error(e);
         }
@@ -373,23 +398,14 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
     }
 
     /**
-     * Saves a list of changes to a sitemap and then creates a sub-sitemap of the given sitemap starting from a path.<p>
-     * 
-     * @param sitemapUri the URI of the parent sitemap 
-     * @param changes the changes which should be applied to the parent sitemap 
-     * @param path the path in the parent sitemap from which the sub-sitemap should be created 
-     * 
-     * @return the sub-sitemap creation result 
-     * 
-     * @throws CmsRpcException if something goes wrong 
+     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#saveAndCreateSubSitemap(java.lang.String, org.opencms.ade.sitemap.shared.CmsSitemapSaveData, java.lang.String)
      */
-    public CmsSubSitemapInfo saveAndCreateSubSitemap(String sitemapUri, List<I_CmsSitemapChange> changes, String path)
+    public CmsSubSitemapInfo saveAndCreateSubSitemap(String sitemapUri, CmsSitemapSaveData saveData, String path)
     throws CmsRpcException {
 
         try {
-            // don't unlock the sitemap because createSubSitemap still needs to modify it  
-            saveInternal(sitemapUri, changes, false);
-
+            // don't unlock the sitemap because createSubSitemap still needs to modify it
+            saveInternal(sitemapUri, saveData, false);
             return createSubSitemap(sitemapUri, path);
         } catch (Throwable e) {
             error(e);
@@ -398,13 +414,13 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
     }
 
     /**
-     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#saveAndMergeSubSitemap(java.lang.String, java.util.List, java.lang.String)
+     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#saveAndMergeSubSitemap(java.lang.String, org.opencms.ade.sitemap.shared.CmsSitemapSaveData, java.lang.String)
      */
-    public CmsSitemapMergeInfo saveAndMergeSubSitemap(String sitemapUri, List<I_CmsSitemapChange> changes, String path)
+    public CmsSitemapMergeInfo saveAndMergeSubSitemap(String sitemapUri, CmsSitemapSaveData saveData, String path)
     throws CmsRpcException {
 
         try {
-            saveInternal(sitemapUri, changes, false);
+            saveInternal(sitemapUri, saveData, false);
             return mergeSubSitemap(sitemapUri, path);
         } catch (Throwable e) {
             error(e);
@@ -413,12 +429,11 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
     }
 
     /**
-     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#saveSync(String, List, CmsSitemapClipboardData)
+     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#saveSync(java.lang.String, org.opencms.ade.sitemap.shared.CmsSitemapSaveData)
      */
-    public long saveSync(String sitemapUri, List<I_CmsSitemapChange> changes, CmsSitemapClipboardData clipboardData)
-    throws CmsRpcException {
+    public long saveSync(String sitemapUri, CmsSitemapSaveData saveData) throws CmsRpcException {
 
-        return save(sitemapUri, changes, clipboardData);
+        return save(sitemapUri, saveData);
     }
 
     /**
@@ -496,8 +511,13 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
         CmsRelationFilter filter = CmsRelationFilter.TARGETS.filterStructureId(targetId);
         List<CmsRelation> relations = cms.readRelations(filter);
         List<CmsResource> result = new ArrayList<CmsResource>();
+
         for (CmsRelation relation : relations) {
-            result.add(relation.getSource(cms, CmsResourceFilter.DEFAULT));
+            CmsResource source = relation.getSource(cms, CmsResourceFilter.DEFAULT);
+            // we have to delete detail pages from the configuration file anyway, so don't warn about it  
+            if (!CmsResourceTypeXmlSitemap.isSitemapConfig(source)) {
+                result.add(source);
+            }
         }
         return result;
     }
@@ -537,7 +557,7 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
      * 
      * @throws CmsException if something goes wrong 
      */
-    protected long saveInternal(String sitemapUri, List<I_CmsSitemapChange> changes, boolean unlockAfterSave)
+    protected long saveChangesInternal(String sitemapUri, List<I_CmsSitemapChange> changes, boolean unlockAfterSave)
     throws CmsException {
 
         long timestamp = 0;
@@ -557,6 +577,29 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
             cms.unlockResource(sitemapUri);
         }
         timestamp = cms.readResource(sitemap.getStructureId()).getDateLastModified();
+        return timestamp;
+    }
+
+    /**
+     * Helper function for saving sitemap data.<p>
+     * 
+     * @param sitemapUri the URI of the sitemap 
+     * @param saveData the data to be saved 
+     * @param unlock if true, unlock the sitemap file after saving 
+     * 
+     * @return the timestamp of saving the sitemap file
+     *  
+     * @throws CmsException if something goes wrong 
+     */
+    protected long saveInternal(String sitemapUri, CmsSitemapSaveData saveData, boolean unlock) throws CmsException {
+
+        long timestamp = saveChangesInternal(sitemapUri, saveData.getChanges(), unlock);
+        if (saveData.getClipboardData() != null) {
+            setClipboardData(saveData.getClipboardData());
+        }
+        if (saveData.getDetailPageInfo() != null) {
+            saveDetailPages(saveData.getDetailPageInfo(), sitemapUri);
+        }
         return timestamp;
     }
 
@@ -662,6 +705,24 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
     }
 
     /**
+     * Creates a resource type info bean for a given resource type.<p>
+     * 
+     * @param resType the resource type
+     *  
+     * @return the resource type info bean
+     */
+    private CmsResourceTypeInfo createResourceTypeInfo(I_CmsResourceType resType) {
+
+        String name = resType.getTypeName();
+        Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(getCmsObject());
+        if (locale == null) {
+            locale = new Locale("en");
+        }
+        String title = CmsWorkplaceMessages.getResourceTypeName(locale, name);
+        return new CmsResourceTypeInfo(resType.getTypeId(), name, title);
+    }
+
+    /**
      * Creates a new sub-sitemap resource from the given sitemap and path.<p>
      * 
      * @param sitemapUri the super sitemap URI
@@ -686,13 +747,13 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
             // create the actual sub-sitemap and fill it
             CmsResource subSitemapRes = createNewSitemap(sitemapUri);
             String subSitemapUri = cms.getSitePath(subSitemapRes);
-            saveInternal(subSitemapUri, subSitemapChanges, true);
+            saveChangesInternal(subSitemapUri, subSitemapChanges, true);
 
             // remove the entries which now belong to the sub-sitemap from the parent sitemap, 
             // and update the sub-sitemap's parent element in the parent sitemap by setting its
             // sitemap property to the resource id of the sub-sitemap 
             List<I_CmsSitemapChange> parentSitemapChanges = getChangesForParentOfSubSitemap(entry, subSitemapRes);
-            long timestamp = saveInternal(sitemapUri, parentSitemapChanges, true);
+            long timestamp = saveChangesInternal(sitemapUri, parentSitemapChanges, true);
 
             String sitemapVfsPath = cms.getRequestContext().removeSiteRoot(subSitemapRes.getRootPath());
             return new CmsSubSitemapInfo(sitemapVfsPath, timestamp);
@@ -997,6 +1058,29 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
     }
 
     /**
+     * Gets the resource type info beans for types for which new detail pages can be created.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param sitemapUri the sitemap URI 
+     * 
+     * @return the resource type info beans for types for which new detail pages can be created 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    private List<CmsResourceTypeInfo> getResourceTypeInfos(CmsObject cms, String sitemapUri) throws CmsException {
+
+        Collection<CmsResource> creatableResources = OpenCms.getADEManager().getCreatableElements(cms, sitemapUri, null);
+        List<CmsResourceTypeInfo> result = new ArrayList<CmsResourceTypeInfo>();
+        for (CmsResource res : creatableResources) {
+            int typeId = res.getTypeId();
+            I_CmsResourceType resourceType = OpenCms.getResourceManager().getResourceType(typeId);
+            CmsResourceTypeInfo info = createResourceTypeInfo(resourceType);
+            result.add(info);
+        }
+        return result;
+    }
+
+    /**
      * Returns the root sitemap entry for the given sitemap.<p>
      * 
      * @param sitemapRes the sitemap resource
@@ -1040,7 +1124,7 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
      * Returns the complete sub-tree for the given sitemap entry.<p>
      * 
      * @param cms the cms context to use for VFS operations
-     * @param startEntry the root to the sub-tree
+     * @param sitePath the starting path 
      * 
      * @return the sub-tree
      * 
@@ -1053,9 +1137,9 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
             cms,
             sitemapRes,
             true);
-        CmsClientSitemapEntry startEntry = toClientEntry(
-            OpenCms.getSitemapManager().getEntryForUri(getCmsObject(), sitePath),
-            propertyConfig);
+        CmsClientSitemapEntry startEntry = toClientEntry(OpenCms.getSitemapManager().getEntryForUri(
+            getCmsObject(),
+            sitePath), propertyConfig);
         startEntry.setSubEntries(getChildren(sitePath, -1, propertyConfig));
         return startEntry;
     }
@@ -1086,21 +1170,34 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
     }
 
     /**
-     * Checks if the toolbar should be displayed.<p>
+     * Saves the detail page information of a sitemap to the sitemap's configuration file.<p>
      * 
-     * @param request the current request to get the default locale from 
-     * 
-     * @return <code>true</code> if the toolbar should be displayed
+     * @param detailPages
+     * @param resource
+     * @throws CmsException
      */
-    private boolean isDisplayToolbar(HttpServletRequest request) {
+    private void saveDetailPages(List<CmsDetailPageInfo> detailPages, CmsResource resource) throws CmsException {
 
-        // display the toolbar by default
-        boolean displayToolbar = true;
-        if (CmsHistoryResourceHandler.isHistoryRequest(request)) {
-            // we do not want to display the toolbar in case of an historical request
-            displayToolbar = false;
-        }
-        return displayToolbar;
+        CmsObject cms = getCmsObject();
+        CmsDetailPageConfigurationWriter writer = new CmsDetailPageConfigurationWriter(cms, resource);
+        writer.updateAndSave(detailPages);
+    }
+
+    /**
+     * Saves the detail page information.<p>
+     * 
+     * @param detailPages a list of detail page beans 
+     * @param sitemapUri the sitemap URI 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    private void saveDetailPages(List<CmsDetailPageInfo> detailPages, String sitemapUri) throws CmsException {
+
+        CmsObject cms = getCmsObject();
+        CmsConfigurationFileFinder finder = new CmsConfigurationFileFinder(
+            CmsPropertyDefinition.PROPERTY_ADE_SITEMAP_CONFIG);
+        CmsResource configFile = finder.getConfigurationFile(cms, sitemapUri);
+        saveDetailPages(detailPages, configFile);
     }
 
     /**
@@ -1111,6 +1208,24 @@ public class CmsSitemapService extends CmsGwtService implements I_CmsSitemapServ
     private void setClipboardData(CmsSitemapClipboardData clipboardData) {
 
         getRequest().getSession().setAttribute(SESSION_ATTR_ADE_SITEMAP_CLIPBOARD_CACHE, clipboardData);
+    }
+
+    /**
+     * Checks if the toolbar should be displayed.<p>
+     * 
+     * @param request the current request to get the default locale from 
+     * 
+     * @return <code>true</code> if the toolbar should be displayed
+     */
+    private boolean shouldDisplayToolbar(HttpServletRequest request) {
+
+        // display the toolbar by default
+        boolean displayToolbar = true;
+        if (CmsHistoryResourceHandler.isHistoryRequest(request)) {
+            // we do not want to display the toolbar in case of an historical request
+            displayToolbar = false;
+        }
+        return displayToolbar;
     }
 
     /**

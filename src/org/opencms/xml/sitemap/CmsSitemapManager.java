@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2010/11/29 10:33:35 $
- * Version: $Revision: 1.68 $
+ * Date   : $Date: 2010/12/17 08:45:29 $
+ * Version: $Revision: 1.69 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -86,7 +86,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.68 $
+ * @version $Revision: 1.69 $
  * 
  * @since 7.9.2
  */
@@ -95,20 +95,21 @@ public class CmsSitemapManager {
     /** Property name constants. */
     public enum Property {
 
+        /** <code>externalRedirect</code> property name. */
+        externalRedirect("externalRedirect"),
+        /** <code>internalRedirect</code> property name. */
+        internalRedirect("internalRedirect"),
+        /** <code>isRedirect</code> property name. */
+        isRedirect("isRedirect"),
         /** <code>navigation</code> property name. */
         navigation("navigation"),
         /** <code>sitemap</code> property name. */
         sitemap("sitemap"),
+
         /** <code>template</code> property name. */
         template("template"),
         /** <code>template-inhertited</code> property name. */
-        templateInherited("template-inherited"),
-        /** <code>internalRedirect</code> property name. */
-        internalRedirect("internalRedirect"),
-        /** <code>externalRedirect</code> property name. */
-        externalRedirect("externalRedirect"),
-        /** <code>isRedirect</code> property name. */
-        isRedirect("isRedirect");
+        templateInherited("template-inherited");
 
         /** The name of the property. */
         private final String m_name;
@@ -154,6 +155,9 @@ public class CmsSitemapManager {
 
     /** The cache instance. */
     private CmsOnlineAndOfflineSitemapCache m_cache;
+
+    /** The detail page finder. */
+    private I_CmsDetailPageFinder m_detailPageFinder = new CmsSitemapDetailPageFinder();
 
     /** Lazy initialized sitemap type id. */
     private int m_sitemapTypeId;
@@ -258,7 +262,13 @@ public class CmsSitemapManager {
     public CmsResource createNewElement(CmsObject cms, String sitemapUri, ServletRequest request, String type)
     throws CmsException {
 
-        return OpenCms.getADEManager().createNewElement(cms, sitemapUri, request, type);
+        return new CmsADEDefaultConfiguration(CmsPropertyDefinition.PROPERTY_ADE_SITEMAP_CONFIG).createNewElement(
+            cms,
+            sitemapUri,
+            request,
+            type);
+        //return OpenCms.getADEManager().createNewElement(cms, sitemapUri, request, type);
+
     }
 
     /**
@@ -275,7 +285,8 @@ public class CmsSitemapManager {
      */
     public CmsResource createPage(CmsObject cms, String sitemapUri, String title, String sitePath) throws CmsException {
 
-        CmsADEDefaultConfiguration conf = new CmsADEDefaultConfiguration();
+        CmsADEDefaultConfiguration conf = new CmsADEDefaultConfiguration(
+            CmsPropertyDefinition.PROPERTY_ADE_SITEMAP_CONFIG);
         CmsConfigurationParser configParser = conf.getConfigurationParser(cms, sitemapUri);
         Map<String, CmsConfigurationItem> typeConfig = configParser.getTypeConfiguration();
         CmsConfigurationItem item = typeConfig.get(CmsResourceTypeXmlContainerPage.getStaticTypeName());
@@ -364,6 +375,21 @@ public class CmsSitemapManager {
     }
 
     /**
+     * Returns the list of detail page beans for the best detail pages of a given type.<p>
+     * 
+     * @param cms the CMS context 
+     * @param type the type for which the detail pages should be retrieved 
+     * 
+     * @return a list of detail page information beans for the given type  
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public List<CmsDetailPageInfo> getBestDetailPages(CmsObject cms, String type) throws CmsException {
+
+        return m_cache.getBestDetailPages(cms, type);
+    }
+
+    /**
      * Gets the sitemap entry for a structure id which has a root path closest to a root path passed in as a parameter.<p>
      * 
      * If there is no sitemap entry which references the resource with the given structure id, null will be returned.<p>
@@ -434,7 +460,11 @@ public class CmsSitemapManager {
     public Collection<CmsResource> getCreatableElements(CmsObject cms, String sitemapUri, ServletRequest request)
     throws CmsException {
 
-        return OpenCms.getADEManager().getCreatableElements(cms, sitemapUri, request);
+        return new CmsADEDefaultConfiguration(CmsPropertyDefinition.PROPERTY_ADE_SITEMAP_CONFIG).getCreatableElements(
+            cms,
+            sitemapUri,
+            request);
+
     }
 
     /**
@@ -520,6 +550,16 @@ public class CmsSitemapManager {
     }
 
     /**
+     * Gets the detail page finder.
+     *
+     * @return the detail page finder
+     */
+    public I_CmsDetailPageFinder getDetailPageFinder() {
+
+        return m_detailPageFinder;
+    }
+
+    /**
      * Returns the property configuration for a given resource.<p>
      * 
      * @param cms the current cms context
@@ -541,7 +581,8 @@ public class CmsSitemapManager {
             resource).getProperties();
         result.putAll(propertiesFromSchema);
         if (includeNonSchemaProperties) {
-            CmsADEDefaultConfiguration conf = new CmsADEDefaultConfiguration();
+            CmsADEDefaultConfiguration conf = new CmsADEDefaultConfiguration(
+                CmsPropertyDefinition.PROPERTY_ADE_SITEMAP_CONFIG);
             List<CmsXmlContentProperty> propertiesFromConfigFile = conf.getProperties(cms, cms.getSitePath(resource));
             for (CmsXmlContentProperty prop : propertiesFromConfigFile) {
                 result.put(prop.getPropertyName(), prop);
@@ -696,6 +737,7 @@ public class CmsSitemapManager {
             Collections.<String, CmsSimplePropertyValue> emptyMap(),
             detailId.toString());
         contentEntry.setRuntimeInfo(entry.getEntryPoint(), 0, newPropState.getInheritedProperties());
+        contentEntry.setSitemapInfo(entry.getSitemapInfo());
         return contentEntry;
     }
 
@@ -753,7 +795,8 @@ public class CmsSitemapManager {
      */
     public int getMaxDepth(CmsObject cms, CmsResource resource) throws CmsException {
 
-        CmsADEDefaultConfiguration conf = new CmsADEDefaultConfiguration();
+        CmsADEDefaultConfiguration conf = new CmsADEDefaultConfiguration(
+            CmsPropertyDefinition.PROPERTY_ADE_SITEMAP_CONFIG);
         return conf.getMaxDepth(cms, cms.getSitePath(resource));
     }
 
@@ -788,19 +831,19 @@ public class CmsSitemapManager {
      *  
      * @throws CmsException if something goes wrong 
      */
-    public CmsSitemapEntry getParentEntryOfSitemap(CmsObject cms, String sitemapUri) throws CmsException {
-
-        Map<String, String> entryPoints = m_cache.getEntryPoints(cms);
-        String sitemapRootUri = cms.getRequestContext().addSiteRoot(sitemapUri);
-        String entryPoint = entryPoints.get(sitemapRootUri);
-        entryPoint = cms.getRequestContext().removeSiteRoot(entryPoint);
-        CmsSitemapEntry entry = getEntryForUri(cms, entryPoint);
-        if (entry.isRootEntry()) {
-            return null;
-        }
-        String parentUri = CmsResource.getParentFolder(entryPoint);
-        return getEntryForUri(cms, parentUri);
-    }
+    //    public CmsSitemapEntry getParentEntryOfSitemap(CmsObject cms, String sitemapUri) throws CmsException {
+    //
+    //        Map<String, String> entryPoints = m_cache.getEntryPoints(cms);
+    //        String sitemapRootUri = cms.getRequestContext().addSiteRoot(sitemapUri);
+    //        String entryPoint = entryPoints.get(sitemapRootUri);
+    //        entryPoint = cms.getRequestContext().removeSiteRoot(entryPoint);
+    //        CmsSitemapEntry entry = getEntryForUri(cms, entryPoint);
+    //        if (entry.isRootEntry()) {
+    //            return null;
+    //        }
+    //        String parentUri = CmsResource.getParentFolder(entryPoint);
+    //        return getEntryForUri(cms, parentUri);
+    //    }
 
     /**
      * Returns the parent sitemap for the given sitemap, 
@@ -915,6 +958,21 @@ public class CmsSitemapManager {
     public CmsSitemapEntry getRuntimeInfo(ServletRequest req) {
 
         return (CmsSitemapEntry)req.getAttribute(ATTR_SITEMAP_ENTRY);
+    }
+
+    /**
+     * Returns the top-level sitemap runtime information for a given site. 
+     * @param cms the current CMS context 
+     * @param siteRoot the site root 
+     * @param locale the locale  
+     * @return the sitemap runtime information  
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public CmsSitemapRuntimeInfo getRuntimeInfoForSite(CmsObject cms, String siteRoot, Locale locale)
+    throws CmsException {
+
+        return m_cache.getRuntimeInfoForSite(cms, siteRoot, locale);
     }
 
     /**

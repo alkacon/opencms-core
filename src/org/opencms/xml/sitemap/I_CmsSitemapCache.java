@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/I_CmsSitemapCache.java,v $
- * Date   : $Date: 2010/11/15 15:15:13 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/12/17 08:45:29 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,7 @@ import org.opencms.main.CmsException;
 import org.opencms.util.CmsUUID;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -63,6 +64,18 @@ public interface I_CmsSitemapCache {
      * @throws CmsException if something goes wrong
      */
     Map<String, String> getActiveSitemaps(CmsObject cms) throws CmsException;
+
+    /**
+     * Returns the list of best detail page information beans for a given resource type.<p>
+     * 
+     * @param cms the CMS context 
+     * @param type the resource type 
+     * 
+     * @return the list of beans representing the best detail pages for that type
+     *  
+     * @throws CmsException if something goes wrong 
+     */
+    List<CmsDetailPageInfo> getBestDetailPages(CmsObject cms, String type) throws CmsException;
 
     /**
      * Returns the default sitemap properties.<p>
@@ -121,16 +134,6 @@ public interface I_CmsSitemapCache {
     CmsInternalSitemapEntry getEntryByUri(CmsObject cms, String uri) throws CmsException;
 
     /**
-     * Returns a map from URIs of active sitemaps to their entry points.<p>
-     * 
-     * @param cms the current CMS context 
-     * @return a map from sitemap URIs to entry points 
-     * 
-     * @throws CmsException if something goes wrong 
-     */
-    Map<String, String> getEntryPoints(CmsObject cms) throws CmsException;
-
-    /**
      * Returns the configured export name for a given site root (or null, if no export name is configured).<p>
      * 
      * @param siteRoot the site root 
@@ -140,6 +143,20 @@ public interface I_CmsSitemapCache {
      * @throws CmsException if something goes wrong 
      */
     String getExportName(String siteRoot) throws CmsException;
+
+    /**
+     * Returns the runtime info for the root sitemap of a given site in a given locale.<p>
+     * 
+     * This assumes that there is at most one root-level sitemap for a given site/locale pair.<p>
+     * 
+     * @param cms the CMS context 
+     * @param siteRoot the site root 
+     * @param locale the locale 
+     * @return the runtime info for the given site and locale 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    CmsSitemapRuntimeInfo getRuntimeInfoForSite(CmsObject cms, String siteRoot, Locale locale) throws CmsException;
 
     /**
      * Returns the sitemap sitepath for given site root.<p>

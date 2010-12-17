@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsCoreService.java,v $
- * Date   : $Date: 2010/11/19 14:09:17 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2010/12/17 08:45:29 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -76,7 +76,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 8.0.0
  * 
@@ -364,7 +364,8 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             cms.getRequestContext().getLocale().toString(),
             OpenCms.getWorkplaceManager().getWorkplaceLocale(cms).toString(),
             cms.getRequestContext().getUri(),
-            navigationUri);
+            navigationUri,
+            System.currentTimeMillis());
         return data;
     }
 

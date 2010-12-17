@@ -56,6 +56,12 @@
     height: auto;
 }
 
+@sprite .itemGreen > .itemContent {
+   gwt-image: "backgroundGreen";
+   background-position: 50% 50%;
+   height: auto;
+}
+
 .itemIcon{
 	height: 32px;
 	width: 32px;

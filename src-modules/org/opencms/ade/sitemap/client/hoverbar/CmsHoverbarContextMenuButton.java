@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsHoverbarContextMenuButton.java,v $
- * Date   : $Date: 2010/11/18 15:39:34 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/12/17 08:45:30 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,8 +35,8 @@ import org.opencms.ade.sitemap.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.CmsContextMenu;
 import org.opencms.gwt.client.ui.CmsContextMenuHandler;
 import org.opencms.gwt.client.ui.CmsMenuButton;
-import org.opencms.gwt.client.ui.I_CmsButton.Size;
 import org.opencms.gwt.client.ui.I_CmsContextMenuEntry;
+import org.opencms.gwt.client.ui.I_CmsButton.Size;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 
 import java.util.ArrayList;
@@ -55,20 +55,20 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
 public class CmsHoverbarContextMenuButton extends CmsMenuButton {
 
-    /** The main content widget. */
-    private FlexTable m_menuPanel;
+    /** The width of the context menu popup. */
+    protected static final int POPUP_WIDTH = 200;
 
     /** The context menu entries. */
     private List<I_CmsContextMenuEntry> m_entries;
 
-    /** The width of the context menu popup. */
-    protected static final int POPUP_WIDTH = 200;
+    /** The main content widget. */
+    private FlexTable m_menuPanel;
 
     /**
      * Constructor.<p>
@@ -99,6 +99,7 @@ public class CmsHoverbarContextMenuButton extends CmsMenuButton {
         m_entries.add(new CmsGotoSubSitemapMenuEntry(hoverbar));
         m_entries.add(new CmsMergeMenuEntry(hoverbar));
         m_entries.add(new CmsDeleteMenuEntry(hoverbar));
+        m_entries.add(new CmsBumpDetailPageMenuEntry(hoverbar));
         setTitle("Context menu");
         setVisible(true);
         addClickHandler(new ClickHandler() {
@@ -115,6 +116,21 @@ public class CmsHoverbarContextMenuButton extends CmsMenuButton {
                 }
             }
         });
+    }
+
+    /**
+     * Rests the button state and hides the hoverbar.<p>
+     * 
+     * @param hoverbar the hoverbar
+     */
+    protected void onMenuClose(CmsSitemapHoverbar hoverbar) {
+
+        m_button.setDown(false);
+        if (!hoverbar.isHovered()) {
+            hoverbar.hide();
+        } else {
+            hoverbar.setLocked(false);
+        }
     }
 
     /**
@@ -138,20 +154,5 @@ public class CmsHoverbarContextMenuButton extends CmsMenuButton {
             }
         });
         openMenu();
-    }
-
-    /**
-     * Rests the button state and hides the hoverbar.<p>
-     * 
-     * @param hoverbar the hoverbar
-     */
-    protected void onMenuClose(CmsSitemapHoverbar hoverbar) {
-
-        m_button.setDown(false);
-        if (!hoverbar.isHovered()) {
-            hoverbar.hide();
-        } else {
-            hoverbar.setLocked(false);
-        }
     }
 }

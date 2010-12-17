@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/Attic/CmsResourceTypeXmlSitemap.java,v $
- * Date   : $Date: 2010/07/07 14:05:51 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2010/12/17 08:45:30 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 7.6 
  */
@@ -75,6 +75,9 @@ public class CmsResourceTypeXmlSitemap extends CmsResourceTypeXmlContent {
 
     /** Fixed schema for sitemap pages. */
     public static final String SCHEMA = "/system/modules/org.opencms.ade.sitemap/schemas/sitemap.xsd";
+
+    /** The name of the sitemap configuration resource type. */
+    private static final String CONFIG_TYPE_NAME = "sitemap_config";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsResourceTypeXmlSitemap.class);
@@ -175,6 +178,24 @@ public class CmsResourceTypeXmlSitemap extends CmsResourceTypeXmlContent {
             result = (resource.getTypeId() == getSitemapTypeIdSafely());
         }
         return result;
+    }
+
+    /**
+     * Checks whether a resource is a sitemap configuration file.<p>
+     * 
+     * @param res the resource which should be tested
+     *  
+     * @return true if the resource is a sitemap configuration 
+     */
+    public static boolean isSitemapConfig(CmsResource res) {
+
+        try {
+            return OpenCms.getResourceManager().getResourceType(res.getTypeId()).getTypeName().equals(CONFIG_TYPE_NAME);
+        } catch (CmsLoaderException e) {
+            // sitemap config type not configured
+            LOG.error(e.getLocalizedMessage(), e);
+            return false;
+        }
     }
 
     /**

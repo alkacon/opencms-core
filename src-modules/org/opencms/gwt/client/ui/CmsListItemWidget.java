@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItemWidget.java,v $
- * Date   : $Date: 2010/11/19 14:09:17 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2010/12/17 08:45:29 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.gwt.client.ui;
 
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsListItemWidgetCss;
+import org.opencms.gwt.client.ui.input.CmsInlineLabel;
 import org.opencms.gwt.client.ui.input.CmsLabel;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsStyleVariable;
@@ -77,7 +78,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Tobias Herrmann
  * @author Michael Moossen
  * 
- * @version $Revision: 1.36 $
+ * @version $Revision: 1.37 $
  * 
  * @since 8.0.0
  */
@@ -166,6 +167,8 @@ implements HasMouseOutHandlers, HasClickHandlers, HasMouseOverHandlers, I_CmsTru
         BLUE,
         /** Default color. */
         DEFAULT,
+        /** Color green. */
+        GREEN,
         /** Color red. */
         RED,
         /** Color yellow. */
@@ -228,6 +231,9 @@ implements HasMouseOutHandlers, HasClickHandlers, HasMouseOverHandlers, I_CmsTru
     @UiField
     protected CmsLabel m_subtitle;
 
+    /** A label which is optionally displayed after the subtitle. */
+    protected CmsLabel m_subtitleSuffix;
+
     /** Title label. */
     @UiField
     protected CmsLabel m_title;
@@ -264,6 +270,7 @@ implements HasMouseOutHandlers, HasClickHandlers, HasMouseOverHandlers, I_CmsTru
         initWidget(uiBinder.createAndBindUi(this));
         m_handlerRegistrations = new ArrayList<HandlerRegistration>();
         m_backgroundStyle = new CmsStyleVariable(this);
+        m_subtitleSuffix = new CmsInlineLabel();
         init(infoBean);
     }
 
@@ -387,6 +394,16 @@ implements HasMouseOutHandlers, HasClickHandlers, HasMouseOverHandlers, I_CmsTru
     }
 
     /**
+     * Returns the label after the subtitle.<p>
+     * 
+     * @return the label after the subtitle
+     */
+    public CmsLabel getSubTitleSuffix() {
+
+        return m_subtitleSuffix;
+    }
+
+    /**
      * Returns the title label text.<p>
      * 
      * @return the title label text
@@ -465,6 +482,9 @@ implements HasMouseOutHandlers, HasClickHandlers, HasMouseOverHandlers, I_CmsTru
             case YELLOW:
                 m_backgroundStyle.setValue(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().itemYellow());
                 break;
+            case GREEN:
+                m_backgroundStyle.setValue(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().itemGreen());
+                break;
             case DEFAULT:
             default:
                 m_backgroundStyle.setValue(null);
@@ -516,6 +536,27 @@ implements HasMouseOutHandlers, HasClickHandlers, HasMouseOverHandlers, I_CmsTru
     public void setSubtitleLabel(String label) {
 
         m_subtitle.setText(label);
+    }
+
+    /**
+     * Sets the subtitle suffix text, and hides or displays the subtitle suffix depending on whether
+     * the text is null or not null.<p>
+     * 
+     * @param text the text to put into the subtitle suffix 
+     */
+    public void setSubtitleSuffixText(String text) {
+
+        if (text == null) {
+            if (m_subtitleSuffix.getParent() != null) {
+                m_subtitleSuffix.removeFromParent();
+            }
+        } else {
+            if (m_subtitleSuffix.getParent() == null) {
+                m_titleRow.add(m_subtitleSuffix);
+            }
+            m_subtitleSuffix.setText(text);
+        }
+        updateTruncation();
     }
 
     /**
@@ -595,7 +636,12 @@ implements HasMouseOutHandlers, HasClickHandlers, HasMouseOverHandlers, I_CmsTru
 
         // m_titleRow.getElement().getStyle().setWidth(width, Unit.PX);
         m_title.truncate(textMetricsPrefix + TM_TITLE, width - 10);
-        m_subtitle.truncate(textMetricsPrefix + TM_SUBTITLE, width - 10);
+        if (m_subtitleSuffix.getParent() != null) {
+            m_subtitleSuffix.truncate(textMetricsPrefix + "_STSUFFIX", 150);
+            m_subtitle.truncate(textMetricsPrefix + TM_SUBTITLE, width - 160);
+        } else {
+            m_subtitle.truncate(textMetricsPrefix + TM_SUBTITLE, width - 10);
+        }
         for (Widget addInfo : m_additionalInfo) {
             ((AdditionalInfoItem)addInfo).truncate(textMetricsPrefix, widgetWidth - 10);
         }

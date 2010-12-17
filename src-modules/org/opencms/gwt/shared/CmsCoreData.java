@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/Attic/CmsCoreData.java,v $
- * Date   : $Date: 2010/07/21 11:02:34 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/12/17 08:45:30 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -56,6 +56,9 @@ public class CmsCoreData implements IsSerializable {
 
     /** Name of the used js variable. */
     public static final String DICT_NAME = "org_opencms_gwt";
+
+    /** The time sent from the server when loading the data. */
+    protected long m_serverTime;
 
     /** The OpenCms context. */
     private String m_context;
@@ -96,7 +99,8 @@ public class CmsCoreData implements IsSerializable {
             clone.getLocale(),
             clone.getWpLocale(),
             clone.getUri(),
-            clone.getNavigationUri());
+            clone.getNavigationUri(),
+            clone.getServerTime());
     }
 
     /**
@@ -107,9 +111,17 @@ public class CmsCoreData implements IsSerializable {
      * @param locale the current request locale
      * @param wpLocale the workplace locale
      * @param uri the current uri
-     * @param navigationUri the current navigation URI 
+     * @param navigationUri the current navigation URI
+     * @param serverTime the current time  
      */
-    public CmsCoreData(String context, String siteRoot, String locale, String wpLocale, String uri, String navigationUri) {
+    public CmsCoreData(
+        String context,
+        String siteRoot,
+        String locale,
+        String wpLocale,
+        String uri,
+        String navigationUri,
+        long serverTime) {
 
         m_context = context;
         m_siteRoot = siteRoot;
@@ -117,6 +129,7 @@ public class CmsCoreData implements IsSerializable {
         m_wpLocale = wpLocale;
         m_uri = uri;
         m_navigationUri = navigationUri;
+        m_serverTime = serverTime;
     }
 
     /**
@@ -147,6 +160,16 @@ public class CmsCoreData implements IsSerializable {
     public String getNavigationUri() {
 
         return m_navigationUri;
+    }
+
+    /**
+     * Returns the time of the server when the data was loaded.<p>
+     * 
+     * @return the time of the server when the data was loaded 
+     */
+    public long getServerTime() {
+
+        return m_serverTime;
     }
 
     /**

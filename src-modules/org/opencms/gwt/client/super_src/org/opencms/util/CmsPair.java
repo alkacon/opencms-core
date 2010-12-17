@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/super_src/org/opencms/util/Attic/CmsPair.java,v $
- * Date   : $Date: 2010/07/20 10:28:08 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/12/17 08:45:29 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import java.util.Map;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -159,5 +159,22 @@ public class CmsPair<A, B> {
 
         return 50000429 * getFirst().hashCode() + getSecond().hashCode();
     }
+    
+    /**
+     * Helper method for constructing a pair which avoids having to explicitly write the generic type parameters.<p>
+     * 
+     * @param <A> the type for the first component 
+     * @param <B> the type for the second component
+     * 
+     * @param a the first component
+     * @param b the second component 
+     * 
+     * @return the pair (a, b)
+     */
+    public static <A, B> CmsPair<A, B> create(A a, B b) {
+
+        return new CmsPair<A, B>(a, b);
+    }
+
 
 }

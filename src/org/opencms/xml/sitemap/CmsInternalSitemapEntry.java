@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsInternalSitemapEntry.java,v $
- * Date   : $Date: 2010/11/11 13:08:18 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/12/17 08:45:29 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 8.0 
  */
@@ -60,6 +60,9 @@ public class CmsInternalSitemapEntry extends CmsSitemapEntry {
 
     /** The entry point. */
     private String m_entryPoint = "";
+
+    /** The sitemap info bean associated with this sitemap entry. */
+    private CmsSitemapRuntimeInfo m_sitemapInfo;
 
     /** The list of sub-entries. */
     private List<CmsInternalSitemapEntry> m_subEntries;
@@ -187,6 +190,15 @@ public class CmsInternalSitemapEntry extends CmsSitemapEntry {
     }
 
     /**
+     * @see org.opencms.xml.sitemap.CmsSitemapEntry#getSitemapInfo()
+     */
+    @Override
+    public CmsSitemapRuntimeInfo getSitemapInfo() {
+
+        return m_sitemapInfo;
+    }
+
+    /**
      * Returns the sub-entries.<p>
      *
      * @return the sub-entries
@@ -264,6 +276,16 @@ public class CmsInternalSitemapEntry extends CmsSitemapEntry {
 
         setEntryPoint(entryPoint);
         setRuntimeInfo(position, inheritedProperties);
+    }
+
+    /**
+     * Sets the sitemap info bean.<p>
+     * 
+     * @param info the sitemap info bean 
+     */
+    protected void setSitemapInfo(CmsSitemapRuntimeInfo info) {
+
+        m_sitemapInfo = info;
     }
 
     /**

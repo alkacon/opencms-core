@@ -8,6 +8,16 @@
 		.clear {
 			clear:both;
 			height: 0px; /* for IE */ 
+			
+		}
+		@if user.agent ie6 {
+		.brk {
+			height: 0px;
+		}
+		} @else {
+			.brk {
+			
+			}
 		}
 	</ui:style>
 	<cms:CmsHoverPanel styleName="{resources.listItemWidgetCss.itemContainer}" addStyleNames="{resources.generalCss.cornerAll} {resources.generalCss.textMedium}">
@@ -16,7 +26,8 @@
 				<g:SimplePanel styleName="{resources.listItemWidgetCss.itemIcon}" ui:field="m_iconPanel" />
 		    	<g:FlowPanel ui:field="m_titleRow" styleName="{resources.listItemWidgetCss.titleRow}" >
 		    	  <cmsInput:CmsLabel ui:field="m_title" styleName="{resources.listItemWidgetCss.itemTitle}"/>
-		    	  <cmsInput:CmsLabel ui:field="m_subtitle" />
+		    	  <g:Label styleName="{style.brk}" /><!-- Abuse label to force a newline. -->
+		    	  <cmsInput:CmsInlineLabel ui:field="m_subtitle" />
 		    	</g:FlowPanel>
 			</g:FlowPanel>
 			<g:FlowPanel styleName="{resources.listItemWidgetCss.itemAdditional}" ui:field="m_additionalInfo"></g:FlowPanel>

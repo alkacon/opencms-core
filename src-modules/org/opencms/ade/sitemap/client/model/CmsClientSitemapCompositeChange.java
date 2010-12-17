@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapCompositeChange.java,v $
- * Date   : $Date: 2010/11/30 08:56:13 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/12/17 08:45:29 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import java.util.List;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -141,6 +141,19 @@ public class CmsClientSitemapCompositeChange implements I_CmsClientSitemapChange
     public Type getType() {
 
         return null; // not needed
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#isChangingDetailPages()
+     */
+    public boolean isChangingDetailPages() {
+
+        for (I_CmsClientSitemapChange change : m_changes) {
+            if (change.isChangingDetailPages()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

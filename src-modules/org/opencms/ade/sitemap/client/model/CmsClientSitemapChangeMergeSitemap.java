@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeMergeSitemap.java,v $
- * Date   : $Date: 2010/11/29 10:33:35 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/12/17 08:45:30 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import java.util.List;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -133,6 +133,14 @@ public class CmsClientSitemapChangeMergeSitemap implements I_CmsClientSitemapCha
      * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#getType()
      */
     public Type getType() {
+
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#isChangingDetailPages()
+     */
+    public boolean isChangingDetailPages() {
 
         throw new UnsupportedOperationException();
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsLabel.java,v $
- * Date   : $Date: 2010/11/04 12:28:35 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/12/17 08:45:30 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,11 +57,27 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 8.0.0
  */
 public class CmsLabel extends Widget implements HasHorizontalAlignment, HasHTML, I_CmsTruncable, HasClickHandlers {
+
+    /**
+     * Interface for generating HTML titles (tooltips) for a label.<p>
+     */
+    public interface I_TitleGenerator {
+
+        /**
+         * Should return the title, or null if no title should be displayed.<p>
+         * 
+         * @param originalText the original untruncated text stored in the label 
+         * @param overflow true if the text is being truncated
+         *  
+         * @return the title to display, or null if no title should be displayed 
+         */
+        String getTitle(String originalText, boolean overflow);
+    }
 
     /** The CSS bundle instance used for this widget.<p> */
     protected static final I_CmsInputCss CSS = I_CmsInputLayoutBundle.INSTANCE.inputCss();
@@ -71,6 +87,12 @@ public class CmsLabel extends Widget implements HasHorizontalAlignment, HasHTML,
 
     /** Current horizontal alignment. */
     private HorizontalAlignmentConstant m_horzAlign;
+
+    /** The original untruncated text stored in the label. */
+    private String m_originalText;
+
+    /** The title generator. */
+    private I_TitleGenerator m_titleGenerator;
 
     /**
      * Creates an empty label.<p>
@@ -88,6 +110,7 @@ public class CmsLabel extends Widget implements HasHorizontalAlignment, HasHTML,
      */
     public CmsLabel(Element element) {
 
+        element.addClassName(I_CmsInputLayoutBundle.INSTANCE.inputCss().label());
         setElement(element);
         fixInline();
     }
@@ -173,9 +196,20 @@ public class CmsLabel extends Widget implements HasHorizontalAlignment, HasHTML,
      */
     public void setText(String text) {
 
+        m_originalText = text;
         getElement().setInnerText(text);
         // reset tooltip
         getElement().removeAttribute(CmsDomUtil.Attribute.title.name());
+    }
+
+    /**
+     * Sets the title generator.<p>
+     * 
+     * @param titleGen the new title generator 
+     */
+    public void setTitleGenerator(I_TitleGenerator titleGen) {
+
+        m_titleGenerator = titleGen;
     }
 
     /**
@@ -186,9 +220,11 @@ public class CmsLabel extends Widget implements HasHorizontalAlignment, HasHTML,
         Element element = getElement();
         String title = element.getAttribute(CmsDomUtil.Attribute.title.name());
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(title)) {
-            element.setInnerText(title);
-            element.removeAttribute(CmsDomUtil.Attribute.title.name());
+            element.setInnerText(m_originalText);
         }
+        updateTitle(false);
+
+        element.addClassName(I_CmsInputLayoutBundle.INSTANCE.inputCss().label());
 
         // measure the actual text width
         CmsTextMetrics tm = CmsTextMetrics.get(element, textMetricsKey);
@@ -197,9 +233,10 @@ public class CmsLabel extends Widget implements HasHorizontalAlignment, HasHTML,
         tm.release();
 
         if (labelWidth >= textWidth) {
-            // nothing to do
+            updateTitle(false);
             return;
         }
+        updateTitle(true);
 
         // if the text does not have enough space, fix it
         int maxChars = (int)((float)labelWidth / (float)textWidth * text.length());
@@ -220,10 +257,41 @@ public class CmsLabel extends Widget implements HasHorizontalAlignment, HasHTML,
         }
         // use html instead of text because of the entities
         element.setInnerHTML(newText);
-        // add tooltip with the original text
-        element.setAttribute(CmsDomUtil.Attribute.title.name(), text);
         // set the corresponding style
         element.addClassName(I_CmsInputLayoutBundle.INSTANCE.inputCss().labelTruncated());
+    }
+
+    /**
+     * Updates the title.<p>
+     * 
+     * @param truncating true if the label is being truncated 
+     */
+    public void updateTitle(boolean truncating) {
+
+        String title = getTitle(truncating);
+        Element element = getElement();
+        if (title == null) {
+            element.removeAttribute(CmsDomUtil.Attribute.title.name());
+        } else {
+            element.setAttribute(CmsDomUtil.Attribute.title.name(), title);
+        }
+    }
+
+    /**
+     * Returns the title to be displayed, which is either produced by a title generator,
+     * or is equal to the original text if no title generator is set and the label is being 
+     * truncated.<p>
+     * 
+     * @param truncating true if the label is being truncated 
+     * 
+     * @return the title to display 
+     */
+    protected String getTitle(boolean truncating) {
+
+        if (m_titleGenerator != null) {
+            return m_titleGenerator.getTitle(m_originalText, truncating);
+        }
+        return truncating ? m_originalText : null;
     }
 
     /**
@@ -244,8 +312,8 @@ public class CmsLabel extends Widget implements HasHorizontalAlignment, HasHTML,
                 String display = CmsDomUtil.getCurrentStyle(element, CmsDomUtil.Style.display);
                 if (display.equalsIgnoreCase("inline")) {
                     element.addClassName(CSS.inlineBlock());
-                    element.addClassName(CSS.alignBottom());
                 }
+                element.addClassName(CSS.alignBottom());
             }
         });
     }

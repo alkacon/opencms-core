@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsSitemapData.java,v $
- * Date   : $Date: 2010/11/18 09:41:54 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/12/17 08:45:29 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,8 +32,10 @@
 package org.opencms.ade.sitemap.shared;
 
 import org.opencms.xml.content.CmsXmlContentProperty;
+import org.opencms.xml.sitemap.CmsDetailPageTable;
 import org.opencms.xml.sitemap.properties.CmsComputedPropertyValue;
 
+import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
@@ -43,7 +45,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 8.0
  */
@@ -58,8 +60,14 @@ public class CmsSitemapData implements IsSerializable {
     /** The type of the container page resource. */
     private int m_cntPageType;
 
+    /** The path of the sitemap configuration file. */
+    private String m_configPath;
+
     /** The default template. */
     private CmsSitemapTemplate m_defaultTemplate;
+
+    /** The detail page table. */
+    private CmsDetailPageTable m_detailPageTable;
 
     /** Flag to control the display of the toolbar. */
     private boolean m_displayToolbar;
@@ -72,6 +80,9 @@ public class CmsSitemapData implements IsSerializable {
 
     /** A flag which indicates whether the site which contains the sitemap is a secure site. */
     private boolean m_isSecure;
+
+    /** The maximum sitemap depth. */
+    private int m_maxDepth;
 
     /** The reason why the current sitemap is not editable. */
     private String m_noEditReason;
@@ -88,6 +99,9 @@ public class CmsSitemapData implements IsSerializable {
     /** The sitemap properties. */
     private Map<String, CmsXmlContentProperty> m_properties;
 
+    /** The resource type information. */
+    private List<CmsResourceTypeInfo> m_resourceTypeInfos;
+
     /** The sitemap root. */
     private CmsClientSitemapEntry m_root;
 
@@ -96,9 +110,6 @@ public class CmsSitemapData implements IsSerializable {
 
     /** The sitemap resource last modification date. */
     private long m_timestamp;
-
-    /** The maximum sitemap depth. */
-    private int m_maxDepth;
 
     /**
      * Constructor.<p>
@@ -126,7 +137,10 @@ public class CmsSitemapData implements IsSerializable {
      * @param root the sitemap root
      * @param timestamp the sitemap resource last modification date
      * @param openPath the path at which the sitemap should be opened 
-     * @param maxDepth the maximum sitemap depth 
+     * @param maxDepth the maximum sitemap depth
+     * @param detailPageTable the detail page table 
+     * @param resourceTypeInfos the resource type information for the detail pages  
+     * @param configPath the path of the sitemap configuration file  
      */
     public CmsSitemapData(
         CmsSitemapTemplate defaultTemplate,
@@ -144,7 +158,12 @@ public class CmsSitemapData implements IsSerializable {
         CmsClientSitemapEntry root,
         long timestamp,
         String openPath,
-        int maxDepth) {
+        int maxDepth,
+        CmsDetailPageTable detailPageTable,
+        List<CmsResourceTypeInfo> resourceTypeInfos,
+        String configPath
+
+    ) {
 
         m_defaultTemplate = defaultTemplate;
         m_templates = templates;
@@ -162,6 +181,9 @@ public class CmsSitemapData implements IsSerializable {
         m_exportRfsPrefix = exportRfsPrefix;
         m_isSecure = isSecure;
         m_maxDepth = maxDepth;
+        m_detailPageTable = detailPageTable;
+        m_resourceTypeInfos = resourceTypeInfos;
+        m_configPath = configPath;
     }
 
     /**
@@ -184,6 +206,16 @@ public class CmsSitemapData implements IsSerializable {
         return m_cntPageType;
     }
 
+    /** 
+     * Returns the sitemap configuration path.<p>
+     * 
+     * @return the sitemap configuration path 
+     */
+    public String getConfigPath() {
+
+        return m_configPath;
+    }
+
     /**
      * Returns the default template.<p>
      *
@@ -192,6 +224,16 @@ public class CmsSitemapData implements IsSerializable {
     public CmsSitemapTemplate getDefaultTemplate() {
 
         return m_defaultTemplate;
+    }
+
+    /**
+     * Gets the detail page table.
+     *
+     * @return the detail page table
+     */
+    public CmsDetailPageTable getDetailPageTable() {
+
+        return m_detailPageTable;
     }
 
     /**
@@ -272,6 +314,16 @@ public class CmsSitemapData implements IsSerializable {
     public Map<String, CmsXmlContentProperty> getProperties() {
 
         return m_properties;
+    }
+
+    /**
+     * Gets the resource type info beans for the detail pages.<p>
+     *
+     * @return the resource type info beans for the detail pages 
+     */
+    public List<CmsResourceTypeInfo> getResourceTypeInfos() {
+
+        return m_resourceTypeInfos;
     }
 
     /**

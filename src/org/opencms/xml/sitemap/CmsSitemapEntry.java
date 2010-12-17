@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapEntry.java,v $
- * Date   : $Date: 2010/11/29 10:33:35 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2010/12/17 08:45:29 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 7.6 
  */
@@ -327,6 +327,16 @@ public class CmsSitemapEntry {
     }
 
     /**
+     * Gets the sitemap information bean.<p>
+     *   
+     * @return the sitemap information bean 
+     */
+    public CmsSitemapRuntimeInfo getSitemapInfo() {
+
+        throw new UnsupportedOperationException();
+    }
+
+    /**
      * Returns the current site uri.<p>
      * 
      * @param cms the current CMS context
@@ -385,6 +395,16 @@ public class CmsSitemapEntry {
     public int hashCode() {
 
         return m_id.hashCode();
+    }
+
+    /**
+     * Returns true if the entry references a sub-sitemap.<p>
+     * 
+     * @return true if the entry references a sub-sitemap 
+     */
+    public boolean hasSubSitemap() {
+
+        return m_newProperties.containsKey(CmsSitemapManager.Property.sitemap.getName());
     }
 
     /**

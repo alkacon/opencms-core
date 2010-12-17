@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2010/11/11 13:08:18 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/12/17 08:45:30 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -98,7 +98,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 6.0.0 
  */
@@ -1022,6 +1022,26 @@ public final class CmsObject {
     public List<CmsGroup> getChildren(String groupname, boolean includeSubChildren) throws CmsException {
 
         return m_securityManager.getChildren(m_context, groupname, includeSubChildren);
+    }
+
+    /**
+     * Returns the detail name of a resource.<p>
+     * 
+     * The detail view URI of a content element consists of its detail page URI and the detail name returned by this 
+     * method.<p>
+     * 
+     * @param res the resource for which the detail name should be retrieved
+     *   
+     * @return the detail name 
+     * @throws CmsException if something goes wrong 
+     */
+    public String getDetailName(CmsResource res) throws CmsException {
+
+        String urlName = readNewestUrlNameForId(res.getStructureId());
+        if (urlName == null) {
+            urlName = res.getStructureId().toString();
+        }
+        return urlName;
     }
 
     /**

@@ -226,7 +226,12 @@
 	.inlineBlock {
 		display: inline-block;
 	}
-}	
+}
+
+.label {
+	overflow: hidden;
+	white-space: nowrap;
+}
 
 .labelTruncated {
 	overflow: hidden;
@@ -304,6 +309,12 @@
 .weakText { 
 	color: #999;
 }
+
+.subtitleSuffix {
+	font-weight: bold;
+	margin-left: 8px;
+}
+
 
 
 

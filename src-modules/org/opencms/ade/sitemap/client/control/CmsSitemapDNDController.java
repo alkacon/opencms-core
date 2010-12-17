@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapDNDController.java,v $
- * Date   : $Date: 2010/11/29 10:33:35 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/12/17 08:45:30 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,12 +34,14 @@ package org.opencms.ade.sitemap.client.control;
 import org.opencms.ade.galleries.client.ui.CmsResultListItem;
 import org.opencms.ade.sitemap.client.CmsSitemapTreeItem;
 import org.opencms.ade.sitemap.client.CmsSitemapView;
+import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.toolbar.CmsSitemapToolbar;
 import org.opencms.ade.sitemap.client.toolbar.CmsToolbarClipboardView.CmsClipboardDeletedItem;
+import org.opencms.ade.sitemap.client.ui.CmsDetailPageListItem;
 import org.opencms.ade.sitemap.client.ui.CmsSpecialTab;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
-import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.ade.sitemap.shared.CmsResourceTypeInfo;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.dnd.I_CmsDNDController;
 import org.opencms.gwt.client.dnd.I_CmsDraggable;
@@ -65,7 +67,7 @@ import com.google.gwt.dom.client.Style.Unit;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 8.0.0
  */
@@ -160,9 +162,7 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
 
         // cancel if page can't be locked
         boolean cancel = !m_controller.hasChanges();
-        cancel &= !CmsCoreProvider.get().lockAndCheckModification(
-            CmsCoreProvider.get().getUri(),
-            m_controller.getData().getTimestamp());
+        cancel &= !m_controller.lockForSaving();
         if (cancel) {
             return false;
         }
@@ -220,6 +220,9 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
         if (draggable.hasTag(CmsSpecialTab.TAG_REDIRECT)) {
             handleDropRedirect(draggable, parent);
         }
+        if (draggable instanceof CmsDetailPageListItem) {
+            handleDropDetailPage(draggable, parent);
+        }
         Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 
             /**
@@ -258,6 +261,30 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
         if (target instanceof CmsTree<?>) {
             ((CmsTree<?>)target).cancelOpenTimer();
         }
+    }
+
+    /**
+     * Handles a dropped detail page.<p>
+     * 
+     * @param draggable the detail page which was dropped into the sitemap 
+     * @param parent the parent sitemap entry  
+     */
+    protected void handleDropDetailPage(I_CmsDraggable draggable, CmsClientSitemapEntry parent) {
+
+        CmsDetailPageListItem detailItem = (CmsDetailPageListItem)draggable;
+        CmsResourceTypeInfo typeInfo = detailItem.getResourceTypeInfo();
+        //m_controller.create(...)
+        CmsClientSitemapEntry entry = new CmsClientSitemapEntry();
+        String uniqueName = CmsSitemapController.ensureUniqueName(parent, "detail_" + typeInfo.getName());
+        entry.setName(uniqueName);
+        entry.setSitePath(m_insertPath + uniqueName + "/");
+        String title = Messages.get().key(Messages.GUI_DETAIL_PAGE_TITLE_1, typeInfo.getTitle());
+        entry.setTitle(title);
+        entry.setNew(true);
+        entry.setVfsPath(null);
+        entry.setPosition(m_insertIndex);
+        entry.setResourceTypeInfo(typeInfo);
+        m_controller.create(entry);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2010/11/22 13:50:23 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2010/12/17 08:45:29 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,8 +34,8 @@ package org.opencms.gwt.client.ui.css;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
-import com.google.gwt.resources.client.CssResource.Shared;
 import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.resources.client.CssResource.Shared;
 import com.google.gwt.resources.client.ImageResource.ImageOptions;
 import com.google.gwt.resources.client.ImageResource.RepeatStyle;
 
@@ -44,7 +44,7 @@ import com.google.gwt.resources.client.ImageResource.RepeatStyle;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.47 $
+ * @version $Revision: 1.48 $
  * 
  * @since 8.0.0
  */
@@ -261,53 +261,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
         String toolbarHeight();
     }
 
-    /** The context menu item CSS classes. */
-    @Shared
-    public interface I_CmsContextmenuItemCss extends CssResource {
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String arrow();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String cmsMenuItem();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String disabled();
-
-        /** 
-         * Access method.<p>
-         *   
-         * @return the CSS class name
-         */
-        String image();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String label();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String selected();
-    }
-
     /** The context menu CSS classes. */
     public interface I_CmsContextmenuCss extends I_CmsPopupCss, I_CmsContextmenuItemCss {
 
@@ -355,23 +308,51 @@ public interface I_CmsLayoutBundle extends ClientBundle {
 
     }
 
-    /** Basic popup CSS classes. */
+    /** The context menu item CSS classes. */
     @Shared
-    interface I_CmsPopupCss extends CssResource {
+    public interface I_CmsContextmenuItemCss extends CssResource {
 
         /** 
          * Access method.<p>
          * 
          * @return the CSS class name
          */
-        String menuPopup();
+        String arrow();
 
         /** 
          * Access method.<p>
          * 
          * @return the CSS class name
          */
-        String popup();
+        String cmsMenuItem();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String disabled();
+
+        /** 
+         * Access method.<p>
+         *   
+         * @return the CSS class name
+         */
+        String image();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String label();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String selected();
     }
 
     /** Dialog CSS. */
@@ -767,6 +748,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
+        String itemGreen();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
         String itemIcon();
 
         /** 
@@ -978,6 +966,25 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String page();
+    }
+
+    /** Basic popup CSS classes. */
+    @Shared
+    interface I_CmsPopupCss extends CssResource {
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String menuPopup();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String popup();
     }
 
     /** General CSS. */
@@ -1221,6 +1228,15 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     @Source("images/ui-bg_glass_65_aaaaaa_1x400.png")
     @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
     ImageResource backgroundDisabled();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/bgGreen.png")
+    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
+    ImageResource backgroundGreen();
 
     /**
      * Access method.<p>

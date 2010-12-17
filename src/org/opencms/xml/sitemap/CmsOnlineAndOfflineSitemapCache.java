@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsOnlineAndOfflineSitemapCache.java,v $
- * Date   : $Date: 2010/11/15 15:15:13 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/12/17 08:45:29 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,6 +39,7 @@ import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.util.CmsUUID;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -48,7 +49,7 @@ import java.util.Set;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
@@ -84,6 +85,14 @@ public class CmsOnlineAndOfflineSitemapCache implements I_CmsSitemapCache {
     public synchronized Map<String, String> getActiveSitemaps(CmsObject cms) throws CmsException {
 
         return getInternalCache(cms).getActiveSitemaps(cms);
+    }
+
+    /**
+     * @see org.opencms.xml.sitemap.I_CmsSitemapCache#getBestDetailPages(org.opencms.file.CmsObject, java.lang.String)
+     */
+    public List<CmsDetailPageInfo> getBestDetailPages(CmsObject cms, String type) throws CmsException {
+
+        return getInternalCache(cms).getBestDetailPages(cms, type);
     }
 
     /**
@@ -128,15 +137,6 @@ public class CmsOnlineAndOfflineSitemapCache implements I_CmsSitemapCache {
     }
 
     /**
-     * @see org.opencms.xml.sitemap.I_CmsSitemapCache#getEntryPoints(org.opencms.file.CmsObject)
-     */
-    public Map<String, String> getEntryPoints(CmsObject cms) throws CmsException {
-
-        return getInternalCache(cms).getEntryPoints(cms);
-
-    }
-
-    /**
      * @see org.opencms.xml.sitemap.I_CmsSitemapCache#getExportName(java.lang.String)
      */
     public String getExportName(String siteRoot) throws CmsException {
@@ -169,6 +169,23 @@ public class CmsOnlineAndOfflineSitemapCache implements I_CmsSitemapCache {
     }
 
     /**
+     * @see org.opencms.xml.sitemap.I_CmsSitemapCache#getRuntimeInfoForSite(org.opencms.file.CmsObject, java.lang.String, java.util.Locale)
+     */
+    public CmsSitemapRuntimeInfo getRuntimeInfoForSite(CmsObject cms, String siteRoot, Locale locale)
+    throws CmsException {
+
+        return getInternalCache(cms).getRuntimeInfoForSite(cms, siteRoot, locale);
+    }
+
+    /**
+     * @see org.opencms.xml.sitemap.I_CmsSitemapCache#getSitemapForSiteRoot(org.opencms.file.CmsObject, java.lang.String)
+     */
+    public String getSitemapForSiteRoot(CmsObject cms, String siteRoot) throws CmsException {
+
+        return getInternalCache(cms).getSitemapForSiteRoot(cms, siteRoot);
+    }
+
+    /**
      * @see org.opencms.xml.sitemap.I_CmsSitemapCache#getSiteRootsForExportNames()
      */
     public Map<String, String> getSiteRootsForExportNames() throws CmsException {
@@ -192,14 +209,6 @@ public class CmsOnlineAndOfflineSitemapCache implements I_CmsSitemapCache {
         m_offlineCache.shutdown();
         m_onlineCache.shutdown();
 
-    }
-
-    /**
-     * @see org.opencms.xml.sitemap.I_CmsSitemapCache#getSitemapForSiteRoot(org.opencms.file.CmsObject, java.lang.String)
-     */
-    public String getSitemapForSiteRoot(CmsObject cms, String siteRoot) throws CmsException {
-
-        return getInternalCache(cms).getSitemapForSiteRoot(cms, siteRoot);
     }
 
 }

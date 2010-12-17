@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlVfsFileValue.java,v $
- * Date   : $Date: 2010/05/20 09:14:15 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/12/17 08:45:30 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import org.dom4j.Element;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 7.0.0 
  */
@@ -241,6 +241,23 @@ public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
     public I_CmsXmlSchemaType newInstance(String name, String minOccurs, String maxOccurs) {
 
         return new CmsXmlVfsFileValue(name, minOccurs, maxOccurs);
+    }
+
+    /**
+     * Sets the value as a structure id.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param id the structure id which should be stored in the file value  
+     */
+    public void setIdValue(CmsObject cms, CmsUUID id) {
+
+        CmsRelationType type = getContentDefinition().getContentHandler().getRelationType(getPath());
+        CmsLink link = new CmsLink(TYPE_VFS_LINK, type, id, "@", true);
+        // link management check
+        link.checkConsistency(cms);
+        // update xml node
+        CmsLinkUpdateUtil.updateXmlForVfsFile(link, m_element.addElement(CmsXmlPage.NODE_LINK));
+
     }
 
     /**

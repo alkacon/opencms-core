@@ -44,12 +44,15 @@
 		<include name="CmsSitemapChangeDelete.java" />
 		<include name="CmsSitemapChangeNewSubSitemapEntry.java" />
 		<include name="I_CmsSitemapChange.java" />
+		<include name="CmsDetailPageTable.java" />
+		<include name="CmsDetailPageInfo.java" />
 	</source>
 	<source path="jsp">
 		<include name="CmsContainerJsonKeys.java" />
 	</source>
 	<source path="util" >
 		<include name="CmsObjectUtil.java" />
+		<include name="CmsMultiListMap.java" />
 	</source>
 	<source path="xml/content">
 		<include name="CmsXmlContentProperty.java" />

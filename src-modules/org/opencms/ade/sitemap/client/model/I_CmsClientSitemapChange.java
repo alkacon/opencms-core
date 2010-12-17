@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/I_CmsClientSitemapChange.java,v $
- * Date   : $Date: 2010/11/29 10:33:35 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/12/17 08:45:30 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -91,6 +91,13 @@ public interface I_CmsClientSitemapChange {
      * @return the change type
      */
     Type getType();
+
+    /**
+     * Returns true if this change is changing the detail page configuration.<p>
+     * 
+     * @return true if this change changes the detail page configuration 
+     */
+    boolean isChangingDetailPages();
 
     /**
      * Returns the revert of this change for undoing.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/Messages.java,v $
- * Date   : $Date: 2010/11/29 15:13:19 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2010/12/17 08:45:30 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.client.util.CmsMessages;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.31 $ 
+ * @version $Revision: 1.32 $ 
  * 
  * @since 8.0.0
  */
@@ -70,6 +70,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DEFAULT_TEMPLATE_TITLE_0 = "GUI_DEFAULT_TEMPLATE_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DETAIL_PAGE_TITLE_1 = "GUI_DETAIL_PAGE_TITLE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DIALOG_DELETE_TEXT_0 = "GUI_DIALOG_DELETE_TEXT_0";
@@ -148,6 +151,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LINK_WARNING_TITLE_0 = "GUI_LINK_WARNING_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MAIN_DETAIL_PAGE_TITLE_1 = "GUI_MAIN_DETAIL_PAGE_TITLE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MERGE_SITEMAP_CONFIRM_TEXT_0 = "GUI_MERGE_SITEMAP_CONFIRM_TEXT_0";

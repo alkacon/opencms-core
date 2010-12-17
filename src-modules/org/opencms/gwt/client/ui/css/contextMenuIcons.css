@@ -143,3 +143,19 @@
 @sprite .cmsMenuItem.disabled .subSitemap{
     gwt-image: "subSitemapIconDeactivated";
 }
+
+@sprite .cmsMenuItem .bump {
+	gwt-image: "bumpIconActive";
+	float: left;
+	margin-top: 3px; 
+}
+
+@sprite .cmsMenuItem.disabled .bump {
+	gwt-image: "bumpIconDeactivated";
+	float: left;
+	margin-top: 3px;
+}
+
+
+
+

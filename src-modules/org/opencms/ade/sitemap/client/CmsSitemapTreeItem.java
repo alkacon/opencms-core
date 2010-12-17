@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapTreeItem.java,v $
- * Date   : $Date: 2010/11/29 15:13:19 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2010/12/17 08:45:30 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,16 +45,24 @@ import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsListItemWidget.Background;
 import org.opencms.gwt.client.ui.CmsListItemWidget.I_CmsTitleEditHandler;
+import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsLabel;
+import org.opencms.gwt.client.ui.input.CmsLabel.I_TitleGenerator;
 import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
+import org.opencms.xml.sitemap.CmsDetailPageTable;
 import org.opencms.xml.sitemap.CmsSitemapManager;
 import org.opencms.xml.sitemap.properties.CmsComputedPropertyValue;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -63,7 +71,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.43 $ 
+ * @version $Revision: 1.44 $ 
  * 
  * @since 8.0.0
  * 
@@ -80,6 +88,7 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
         export,
         /** no status icon. */
         none,
+
         /** redirect status icon. */
         redirect,
         /** secure status icon. */
@@ -87,11 +96,90 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
 
     }
 
+    /**
+     * Label generator for the detail page info label.<p>
+     */
+    protected class DetailPageLabelTitleGenerator implements I_TitleGenerator {
+
+        /** The title to use for the detail page label.*/
+        private String m_detailPageTitle;
+
+        /**
+         * @see org.opencms.gwt.client.ui.input.CmsLabel.I_TitleGenerator#getTitle(java.lang.String, boolean)
+         */
+        public String getTitle(String originalText, boolean overflow) {
+
+            return m_detailPageTitle;
+        }
+
+        /** 
+         * Sets the title to use for the detail page label. 
+         * 
+         * @param detailPageTitle the title to use 
+         */
+        public void setDetailPageTitle(String detailPageTitle) {
+
+            m_detailPageTitle = detailPageTitle;
+        }
+    }
+
+    /** 
+     * Class which contains detail page info messages for a sitemap entry.<p>
+     */
+    class DetailPageMessages {
+
+        /** The message to display on the sitemap entry. */
+        private String m_message;
+
+        /** The title to display on the label which displays the message. */
+        private String m_title;
+
+        /**
+         * Constructs a new detail page message bean.<p>
+         * 
+         * @param message the message to display on the sitemap entry
+         * @param title  the title to display on the label which displays the message
+         */
+        public DetailPageMessages(String message, String title) {
+
+            super();
+            m_message = message;
+            m_title = title;
+        }
+
+        /**
+         * Returns the message to display on the sitemap entry.<p>
+         * 
+         * @return the message to display on the sitemap entry
+         */
+        public String getMessage() {
+
+            return m_message;
+        }
+
+        /**
+         * Returns the title to display on the label which displays the message.
+         * 
+         * @return  the title to display on the label which displays the message.
+         */
+        public String getTitle() {
+
+            return m_title;
+        }
+
+    }
+
     /** The CSS bundle used by this widget. */
     private static final I_CmsSitemapItemCss CSS = I_CmsLayoutBundle.INSTANCE.sitemapItemCss();
 
+    /** A map of sitemap tree items by entry id. */
+    private static Map<CmsUUID, CmsSitemapTreeItem> m_itemsById = new HashMap<CmsUUID, CmsSitemapTreeItem>();
+
     /** The current sitemap entry. */
     protected CmsClientSitemapEntry m_entry;
+
+    /** The detail page label title generator. */
+    private DetailPageLabelTitleGenerator m_detailPageLabelTitleGenerator;
 
     /** The list item widget of this item. */
     private CmsListItemWidget m_listItemWidget;
@@ -111,8 +199,11 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
         super(widget);
         m_decoratedPanel.addDecorationBoxStyle(CSS.sitemapEntryDecoration());
         m_listItemWidget = widget;
+        m_detailPageLabelTitleGenerator = new DetailPageLabelTitleGenerator();
+        m_listItemWidget.getSubTitleSuffix().setTitleGenerator(m_detailPageLabelTitleGenerator);
         m_originalPath = oriSitePath;
         m_entry = entry;
+        m_itemsById.put(entry.getId(), this);
         setId(getName(entry.getSitePath()));
         updateSitePath(entry.getSitePath());
         updateSitemapReferenceStatus(entry);
@@ -192,6 +283,50 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
                 titleLabel.setVisible(true);
             }
         });
+    }
+
+    /** 
+     * Looks up a sitemap tree item by entry id.<p>
+     * 
+     * @param id the sitemap entry id 
+     * @return the corresponding sitemap tree item, or null if there is none 
+     */
+    public static CmsSitemapTreeItem getItemById(CmsUUID id) {
+
+        return m_itemsById.get(id);
+    }
+
+    /**
+     * Returns the detail page data which should be displayed for a sitemap entry.<p>
+     * 
+     * @param entryId the sitemap entry id
+     *  
+     * @return a detail page message bean for that sitemap entry
+     */
+    public DetailPageMessages getDetailPageMessages(CmsUUID entryId) {
+
+        CmsDetailPageTable detailPageTable = CmsSitemapView.getInstance().getController().getDetailPageTable();
+        String type;
+        String text = "";
+        String suffixTitle = null;
+        switch (detailPageTable.getStatus(entryId)) {
+            case firstDetailPage:
+                type = detailPageTable.get(entryId).getType();
+                suffixTitle = Messages.get().key(Messages.GUI_MAIN_DETAIL_PAGE_TITLE_1, getNiceTypeName(type));
+                text = "(*" + type + ")";
+                break;
+            case otherDetailPage:
+                type = detailPageTable.get(entryId).getType();
+                suffixTitle = Messages.get().key(Messages.GUI_DETAIL_PAGE_TITLE_1, getNiceTypeName(type));
+                text = "(" + type + ")";
+                break;
+            case noDetailPage:
+            default:
+                text = null;
+                break;
+        }
+        return new DetailPageMessages(text, suffixTitle);
+
     }
 
     /**
@@ -358,6 +493,18 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
     }
 
     /**
+     * Sets the detail page description.<p>
+     * 
+     * @param text the detail page text 
+     */
+    public void setDetailPageStatus(String text) {
+
+        CmsLabel label = m_listItemWidget.getSubTitleSuffix();
+        label.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().subtitleSuffix());
+        m_listItemWidget.setSubtitleSuffixText(text);
+    }
+
+    /**
      * Changes the status icon of the sitemap item.<p>
      * 
      * @param status the value representing the status icon 
@@ -425,7 +572,6 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
             default:
                 setBackgroundColor(Background.DEFAULT);
         }
-
     }
 
     /**
@@ -442,9 +588,14 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
             shownPath = "-";
         }
         m_listItemWidget.setAdditionalInfoValue(1, shownPath);
-        m_listItemWidget.updateTruncation();
         updateSitemapReferenceStatus(entry);
         updateColor(entry);
+        updateSitePath();
+
+        DetailPageMessages detailPageMessages = getDetailPageMessages(entry.getId());
+        m_detailPageLabelTitleGenerator.setDetailPageTitle(detailPageMessages.getTitle());
+        m_listItemWidget.updateTruncation();
+        setDetailPageStatus(detailPageMessages.getMessage());
         setDropEnabled(!m_entry.getProperties().containsKey(CmsSitemapManager.Property.sitemap));
     }
 
@@ -465,6 +616,25 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
 
         String newSubTitle = getDisplayedUrl(sitePath);
 
+        //        CmsDetailPageTable detailPageTable = CmsSitemapView.getInstance().getController().getDetailPageTable();
+        //        String type;
+        //        String suffix = "";
+        //        switch (detailPageTable.getStatus(m_entry.getId())) {
+        //            case firstDetailPage:
+        //                type = detailPageTable.get(m_entry.getId()).getType();
+        //                suffix = "&nbsp;&nbsp;" + wrapBold("(*" + type + ")", "Default detail page for " + type);
+        //                break;
+        //            case otherDetailPage:
+        //                type = detailPageTable.get(m_entry.getId()).getType();
+        //                suffix = "&nbsp;&nbsp;" + wrapBold("(" + type + ")", "Detail page for " + type);
+        //                break;
+        //            case noDetailPage:
+        //            default:
+        //                suffix = "";
+        //                break;
+        //        }
+        //        newSubTitle = newSubTitle + suffix;
+
         m_listItemWidget.setSubtitleLabel(newSubTitle);
         String name = getName(sitePath);
         setId(name);
@@ -477,6 +647,21 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
         }
         m_listItemWidget.updateTruncation();
 
+    }
+
+    /**
+     * Helper method for adding the marker widget.<p>
+     * 
+     * @param text the text for the marker widget 
+     * 
+     * @return the new marker widget 
+     */
+    protected Widget addMarker(String text) {
+
+        Label label = new Label(text);
+        label.addStyleName(CSS.marker());
+        m_listItemWidget.addButton(label);
+        return label;
     }
 
     /**
@@ -518,6 +703,19 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
     }
 
     /**
+     * Returns the nice type name for a resource type.<p>
+     * 
+     * @param type the type identifier 
+     * 
+     * @return the nice type name 
+     */
+    protected String getNiceTypeName(String type) {
+
+        // TODO: return nice type name by getting information from the sitemap controller 
+        return type;
+    }
+
+    /**
      * Changes the look of this widget if the entry passed as a parameter has a reference to a sub-sitemap.<p>
      * 
      * @param entry the entry which should be checked 
@@ -546,5 +744,4 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
         }
         return null;
     }
-
 }

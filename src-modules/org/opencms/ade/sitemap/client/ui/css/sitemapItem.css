@@ -73,4 +73,12 @@
 	margin-left: 3px;
 }
 
+.marker {
+	position: absolute; 
+	visibility: visible !important;
+	font-weight: bold;
+	right: 100px;
+	top: 0px;
+}
+
 

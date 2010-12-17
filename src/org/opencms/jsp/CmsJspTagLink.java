@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagLink.java,v $
- * Date   : $Date: 2010/11/11 13:08:18 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/12/17 08:45:30 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,7 +32,6 @@
 package org.opencms.jsp;
 
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.main.CmsException;
@@ -40,6 +39,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.xml.sitemap.I_CmsDetailPageFinder;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.jsp.JspException;
@@ -55,20 +55,20 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsJspTagLink extends BodyTagSupport {
-
-    /** The value of the <code>detailview</code> attribute. */
-    private String m_detailView;
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsJspTagLink.class);
 
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = -2361021288258405388L;
+
+    /** The value of the <code>detailview</code> attribute. */
+    private String m_detailView;
 
     /**
      * Returns a link to a file in the OpenCms VFS 
@@ -117,27 +117,10 @@ public class CmsJspTagLink extends BodyTagSupport {
         try {
             // check for detail view
             CmsResource res = cms.readResource(uri);
-            // first try from the TAG property
-            String detailViewProp = detailView;
-            if (CmsStringUtil.isEmptyOrWhitespaceOnly(detailViewProp)) {
-                // then with the VFS property
-                detailViewProp = cms.readPropertyObject(
-                    res,
-                    CmsPropertyDefinition.PROPERTY_ADE_SITEMAP_DETAILVIEW,
-                    true).getValue("");
-            }
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(detailViewProp)) {
-                // if detail view found, adjust the uri
-                uri = detailViewProp;
-                if (!uri.endsWith("/")) {
-                    uri += "/";
-                }
-                String detailName = cms.readNewestUrlNameForId(res.getStructureId());
-                if (detailName == null) {
-                    detailName = res.getStructureId().toString();
-                }
-                uri += detailName;
-                uri += "/";
+            I_CmsDetailPageFinder finder = OpenCms.getSitemapManager().getDetailPageFinder();
+            String detailPage = finder.getDetailPage(cms, res, cms.getRequestContext().getOriginalUri());
+            if (detailPage != null) {
+                uri = CmsStringUtil.joinPaths(detailPage, cms.getDetailName(res), "/");
             }
         } catch (CmsException e) {
             LOG.debug(e.getLocalizedMessage(), e);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsInputCss.java,v $
- * Date   : $Date: 2010/11/29 15:13:19 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2010/12/17 08:45:29 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import com.google.gwt.resources.client.CssResource;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 8.0.0
  */
@@ -167,6 +167,13 @@ public interface I_CmsInputCss extends CssResource {
      * 
      * @return the css class
      */
+    String label();
+
+    /**
+     * Css class reader.<p>
+     * 
+     * @return the css class
+     */
     String labelTruncated();
 
     /**
@@ -289,6 +296,13 @@ public interface I_CmsInputCss extends CssResource {
      * @return the css class
      */
     String separator();
+
+    /**
+     * Css class reader.<p>
+     * 
+     * @return the css class
+     */
+    String subtitleSuffix();
 
     /** 
      * Css class reader.<p>

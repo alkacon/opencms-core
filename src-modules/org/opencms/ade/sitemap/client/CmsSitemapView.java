@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapView.java,v $
- * Date   : $Date: 2010/11/29 15:51:09 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2010/12/17 08:45:30 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,10 +52,10 @@ import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.CmsHeader;
 import org.opencms.gwt.client.ui.CmsInfoLoadingListItemWidget;
-import org.opencms.gwt.client.ui.CmsInfoLoadingListItemWidget.I_AdditionalInfoLoader;
-import org.opencms.gwt.client.ui.CmsListItemWidget.AdditionalInfoItem;
 import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.CmsToolbarPlaceHolder;
+import org.opencms.gwt.client.ui.CmsInfoLoadingListItemWidget.I_AdditionalInfoLoader;
+import org.opencms.gwt.client.ui.CmsListItemWidget.AdditionalInfoItem;
 import org.opencms.gwt.client.ui.tree.A_CmsDeepLazyOpenHandler;
 import org.opencms.gwt.client.ui.tree.CmsLazyTree;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
@@ -64,16 +64,20 @@ import org.opencms.gwt.shared.CmsLinkBean;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsPair;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
+import org.opencms.xml.sitemap.CmsDetailPageTable;
 import org.opencms.xml.sitemap.CmsSitemapManager;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.Window.ClosingHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -85,7 +89,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.46 $ 
+ * @version $Revision: 1.47 $ 
  * 
  * @since 8.0.0
  */
@@ -452,6 +456,8 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler, ClosingHandler {
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(openPath)) {
             highlightPath(openPath);
         }
+        updateEntriesById(m_controller.getDetailPageTable().getAllIds());
+
     }
 
     /** 
@@ -478,6 +484,36 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler, ClosingHandler {
                 previewEvent.cancel();
             }
         });
+    }
+
+    /**
+     * Updates the detail page view for a given changed entry.<p>
+     * 
+     * @param entry the entry which was changed 
+     */
+    public void updateDetailPageView(CmsClientSitemapEntry entry) {
+
+        CmsDetailPageTable detailPageTable = m_controller.getDetailPageTable();
+        List<CmsUUID> idsToUpdate = new ArrayList<CmsUUID>();
+        if (entry.isDetailPage()) {
+            idsToUpdate.add(entry.getId());
+            idsToUpdate.addAll(detailPageTable.getAllIds());
+        }
+        updateEntriesById(idsToUpdate);
+    }
+
+    /**
+     * Updates the entries whose id is in the given list of ids.<p>
+     * 
+     * @param ids a list of sitemap entry ids 
+     */
+    public void updateEntriesById(Collection<CmsUUID> ids) {
+
+        Map<CmsUUID, CmsClientSitemapEntry> entries = m_controller.getEntriesById(ids);
+        for (CmsClientSitemapEntry entry : entries.values()) {
+            CmsSitemapTreeItem item = CmsSitemapTreeItem.getItemById(entry.getId());
+            item.updateEntry(entry);
+        }
     }
 
     /**

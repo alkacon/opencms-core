@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADEDefaultConfiguration.java,v $
- * Date   : $Date: 2010/11/18 09:41:54 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/12/17 08:45:29 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,13 +37,11 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
-import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsFormatterUtil;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsPair;
-import org.opencms.util.CmsStringUtil;
 import org.opencms.util.PrintfFormat;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.xml.content.CmsXmlContentProperty;
@@ -71,7 +69,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 7.6 
  */
@@ -102,13 +100,35 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
     public static final String MACRO_NUMBER = "number";
 
     /** The log to use (static for performance reasons).<p> */
+    @SuppressWarnings("unused")
     private static final Log LOG = CmsLog.getLog(CmsADEDefaultConfiguration.class);
 
     /** The admin CMS context. */
     private CmsObject m_adminCms;
 
+    /** The property from which the configuration file name should be read. */
+    private String m_configFileProperty;
+
     /** The module configuration reader. */
     private CmsModuleADEConfigProvider m_moduleConfig;
+
+    /**
+     * The default constructor.<p>
+     */
+    public CmsADEDefaultConfiguration() {
+
+        m_configFileProperty = CmsPropertyDefinition.PROPERTY_ADE_CNTPAGE_CONFIG;
+    }
+
+    /**
+     * Creates a new configuration object which uses a custom property name for looking up the configuration file name.<p>
+     * 
+     * @param configFileProperty the name of the property containing the configuration file name 
+     */
+    public CmsADEDefaultConfiguration(String configFileProperty) {
+
+        m_configFileProperty = configFileProperty;
+    }
 
     /**
      * @see org.opencms.xml.containerpage.I_CmsADEConfiguration#createNewElement(CmsObject, String, ServletRequest, String)
@@ -129,18 +149,35 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
     }
 
     /**
+     * Returns the configuration data for a given XML content.<p>
+     * 
+     * @param cms the CMS context 
+     * @param cntPageUri the URI of the XML content 
+     * @return the configuration data for that XML content
+     *  
+     * @throws CmsException if something goes wrong 
+     */
+    public CmsConfigurationParser getConfigurationParser(CmsObject cms, String cntPageUri) throws CmsException {
+
+        return getConfigurationParser(cms, cntPageUri, m_configFileProperty);
+    }
+
+    /**
      * Returns the configuration parser instance.<p>
      * 
      * @param cms the current CMS context
      * @param cntPageUri the container page URI
+     * @param propName the name of the property which should contain the configuration file name 
      * 
      * @return the configuration parser instance
      * 
      * @throws CmsException if something goes wrong
      */
-    public CmsConfigurationParser getConfigurationParser(CmsObject cms, String cntPageUri) throws CmsException {
+    public CmsConfigurationParser getConfigurationParser(CmsObject cms, String cntPageUri, String propName)
+    throws CmsException {
 
-        CmsResource cfg = getConfigurationFile(cms, cntPageUri);
+        CmsConfigurationFileFinder finder = new CmsConfigurationFileFinder(propName);
+        CmsResource cfg = finder.getConfigurationFile(cms, cntPageUri);
         return CmsConfigurationParser.getParser(cms, cfg);
     }
 
@@ -311,70 +348,6 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
             m_adminCms = adminCms;
             if (moduleParamKey != null) {
                 m_moduleConfig = new CmsModuleADEConfigProvider(moduleParamKey);
-            }
-        }
-    }
-
-    /**
-     * Returns the configuration file to use.<p>
-     * 
-     * @param cms the current cms context
-     * @param containerPageUri the container page uri
-     * 
-     * @return the configuration file to use, or <code>null</code> if not found
-     */
-    protected CmsResource getConfigurationFile(CmsObject cms, String containerPageUri) {
-
-        String cfgPath = null;
-        try {
-            // get the resource type configuration file from the vfs tree
-            cfgPath = cms.readPropertyObject(containerPageUri, CmsPropertyDefinition.PROPERTY_ADE_CNTPAGE_CONFIG, true).getValue();
-        } catch (CmsException e) {
-            // should never happen 
-            LOG.error(e.getLocalizedMessage(), e);
-        }
-
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(cfgPath)) {
-            // if not found try at the template
-            try {
-                // retrieve the template uri
-                String templateUri = cms.readPropertyObject(
-                    containerPageUri,
-                    CmsPropertyDefinition.PROPERTY_TEMPLATE,
-                    true).getValue();
-                // get the resource type configuration file from the template itself
-                cfgPath = cms.readPropertyObject(templateUri, CmsPropertyDefinition.PROPERTY_ADE_CNTPAGE_CONFIG, true).getValue();
-            } catch (CmsException e) {
-                // should never happen
-                LOG.error(e.getLocalizedMessage(), e);
-            }
-        }
-
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(cfgPath)) {
-            // configuration could not be found
-            LOG.warn(Messages.get().getBundle().key(
-                Messages.ERR_CONFIG_NOT_SET_2,
-                containerPageUri,
-                CmsPropertyDefinition.PROPERTY_ADE_CNTPAGE_CONFIG));
-            return null;
-        }
-
-        try {
-            // read configuration file
-            return cms.readResource(cfgPath);
-        } catch (Exception e1) {
-            try {
-                CmsResource baseResource = cms.readResource(containerPageUri);
-                String baseRootPath = baseResource.getRootPath();
-                String siteRoot = OpenCms.getSiteManager().getSiteRoot(baseRootPath);
-                String rootCfgPath = CmsStringUtil.joinPaths(siteRoot, cfgPath);
-                return cms.readResource(rootCfgPath);
-            } catch (Exception e2) {
-                throw new CmsIllegalStateException(Messages.get().container(
-                    Messages.ERR_CONFIG_NOT_FOUND_3,
-                    containerPageUri,
-                    CmsPropertyDefinition.PROPERTY_ADE_CNTPAGE_CONFIG,
-                    cfgPath));
             }
         }
     }

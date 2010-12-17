@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsImageBundle.java,v $
- * Date   : $Date: 2010/11/22 13:50:23 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/12/17 08:45:29 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,9 +36,9 @@ import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsContextmenuItemCss;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.resources.client.CssResource.NotStrict;
 import com.google.gwt.resources.client.CssResource.Shared;
-import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.resources.client.ImageResource.ImageOptions;
 import com.google.gwt.resources.client.ImageResource.RepeatStyle;
 
@@ -47,7 +47,7 @@ import com.google.gwt.resources.client.ImageResource.RepeatStyle;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 8.0.0
  */
@@ -56,6 +56,12 @@ public interface I_CmsImageBundle extends ClientBundle {
     /** The context menu item CSS classes. */
     @Shared
     public interface I_CmsContextMenuIcons extends I_CmsContextmenuItemCss {
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String bump();
 
         /** Access method.<p>
          * 
@@ -412,6 +418,22 @@ public interface I_CmsImageBundle extends ClientBundle {
     @Source("images/ui-bg_highlight-soft_75_aaaaaa_1x100.png")
     @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
     ImageResource backgroundSoft();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the button CSS
+     */
+    @Source("images/bump_20x20.png")
+    ImageResource bumpIconActive();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the button CSS
+     */
+    @Source("images/bump_disabled_20x20.png")
+    ImageResource bumpIconDeactivated();
 
     /**
      * Access method.<p>

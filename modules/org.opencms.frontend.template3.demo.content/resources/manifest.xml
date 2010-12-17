@@ -4,7 +4,7 @@
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>7.9.2</opencms_version>
-		<createdate>Wed, 03 Feb 2010 14:07:05 GMT</createdate>
+		<createdate>Tue, 14 Dec 2010 14:55:17 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
 	</info>
@@ -14,7 +14,7 @@
 		<group>Template 3</group>
 		<class/>
 		<description><![CDATA[This module contains contents for the Template 3 Demo Site.]]></description>
-		<version>7.5.12</version>
+		<version>7.5.13</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated/>
@@ -23,7 +23,7 @@
 		<dependencies>
 			<dependency name="org.opencms.frontend.template3.demo" version="7.6"/>
 			<dependency name="org.opencms.frontend.template3" version="7.6"/>
-			<dependency name="org.opencms.ade.sitemap" version="7.6" />
+			<dependency name="org.opencms.ade.sitemap" version="7.6"/>
 		</dependencies>
 		<exportpoints/>
 		<resources>
@@ -132,6 +132,10 @@
 			<properties>
 				<property type="shared">
 					<name>ade.cntpage.config</name>
+					<value><![CDATA[/demo_t3/_config/restype.config]]></value>
+				</property>
+				<property type="shared">
+					<name>ade.sitemap.config</name>
 					<value><![CDATA[/demo_t3/_config/sitemap_restype.config]]></value>
 				</property>
 				<property>
@@ -146,7 +150,6 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
-		
 		<file>
 			<source>demo_t3/_config/options</source>
 			<destination>demo_t3/_config/options</destination>
@@ -188,12 +191,44 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>demo_t3/_config/sitemap</source>
+			<destination>demo_t3/_config/sitemap</destination>
+			<type>sitemap</type>
+			<uuidstructure>9d4f8d10-c7c3-11de-8b05-ab20365f6268</uuidstructure>
+			<uuidresource>9d4f8d11-c7c3-11de-8b05-ab20365f6268</uuidresource>
+			<datelastmodified>Tue, 14 Dec 2010 14:35:10 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 02 Nov 2009 15:23:03 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>ade.cntpage.config</name>
+					<value><![CDATA[/demo_t3/_config/restype.config]]></value>
+				</property>
+				<property type="shared">
+					<name>ade.sitemap.config</name>
+					<value><![CDATA[/demo_t3/_config/sitemap_restype.config]]></value>
+				</property>
+				<property>
+					<name>ade.sitemap.template</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.template3/templates/main.jsp]]></value>
+				</property>
+				<property type="shared">
+					<name>template-elements</name>
+					<value><![CDATA[/system/modules/org.opencms.ade.sitemap/sitemap.jsp]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>demo_t3/_config/sitemap_restype.config</source>
 			<destination>demo_t3/_config/sitemap_restype.config</destination>
 			<type>sitemap_config</type>
 			<uuidstructure>979addd7-e33e-11de-ad4c-9f305ad86e25</uuidstructure>
 			<uuidresource>979addd8-e33e-11de-ad4c-9f305ad86e25</uuidresource>
-			<datelastmodified>Mon, 07 Dec 2009 14:43:21 GMT</datelastmodified>
+			<datelastmodified>Tue, 14 Dec 2010 14:35:10 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 07 Dec 2009 14:41:23 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -202,34 +237,6 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Resource Type Configuration]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>demo_t3/_config/sitemap</source>
-			<destination>demo_t3/_config/sitemap</destination>
-			<type>sitemap</type>
-			<uuidstructure>9d4f8d10-c7c3-11de-8b05-ab20365f6268</uuidstructure>
-			<uuidresource>9d4f8d11-c7c3-11de-8b05-ab20365f6268</uuidresource>
-			<datelastmodified>Wed, 09 Dec 2009 10:48:04 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 02 Nov 2009 15:23:03 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>template-elements</name>
-					<value><![CDATA[/system/modules/org.opencms.ade.sitemap/sitemap.jsp]]></value>
-				</property>
-                <property type="shared">
-                    <name>ade.cntpage.config</name>
-					<value><![CDATA[/demo_t3/_config/sitemap_restype.config]]></value>
-                </property>
-  				<property>
-					<name>ade.sitemap.template</name>
-					<value><![CDATA[/system/modules/org.opencms.frontend.template3/templates/main.jsp]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -397,11 +404,11 @@
 			<properties>
 				<property>
 					<name>Description</name>
-					<value><![CDATA[Use as subcontainer new resource.]]></value>
+					<value><![CDATA[Edit description!]]></value>
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[New Subcontainer]]></value>
+					<value><![CDATA[New subcontainer]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -560,6 +567,10 @@
 			<properties>
 				<property type="shared">
 					<name>ade.cntpage.config</name>
+					<value><![CDATA[/demo_t3/_config/restype.config]]></value>
+				</property>
+				<property type="shared">
+					<name>ade.sitemap.config</name>
 					<value><![CDATA[/demo_t3/_config/sitemap_restype.config]]></value>
 				</property>
 			</properties>
@@ -618,7 +629,7 @@
 			<type>t3article</type>
 			<uuidstructure>5b57de09-9c82-11de-adde-dd9f629b113b</uuidstructure>
 			<uuidresource>5b57de0a-9c82-11de-adde-dd9f629b113b</uuidresource>
-			<datelastmodified>Mon, 07 Dec 2009 15:58:51 GMT</datelastmodified>
+			<datelastmodified>Tue, 14 Dec 2010 14:49:49 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 26 Feb 2008 14:16:12 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -869,815 +880,6 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>demo_t3/pages</destination>
-			<type>cntpagegallery</type>
-			<uuidstructure>68abb478-e347-11de-93a5-2fbc40eca8be</uuidstructure>
-			<datelastmodified>Tue, 08 Dec 2009 08:23:09 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 07 Dec 2009 15:44:30 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Container pages]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>demo_t3/pages/images.html</source>
-			<destination>demo_t3/pages/images.html</destination>
-			<type>containerpage</type>
-			<uuidstructure>e0ea4748-a1c6-11de-9d96-dd9f629b113b</uuidstructure>
-			<uuidresource>e0ea4749-a1c6-11de-9d96-dd9f629b113b</uuidresource>
-			<datelastmodified>Tue, 08 Dec 2009 08:40:13 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 15 Sep 2009 07:10:41 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Flower Images]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>demo_t3/pages/intro.html</source>
-			<destination>demo_t3/pages/intro.html</destination>
-			<type>containerpage</type>
-			<uuidstructure>3f3b9451-9d2a-11de-b26f-dd9f629b113b</uuidstructure>
-			<uuidresource>3f3b9452-9d2a-11de-b26f-dd9f629b113b</uuidresource>
-			<datelastmodified>Tue, 08 Dec 2009 08:25:47 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 09 Sep 2009 10:19:24 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Introduction]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>demo_t3/pages/search.html</source>
-			<destination>demo_t3/pages/search.html</destination>
-			<type>containerpage</type>
-			<uuidstructure>8ebab265-a127-11de-9057-dd9f629b113b</uuidstructure>
-			<uuidresource>8ebab266-a127-11de-9057-dd9f629b113b</uuidresource>
-			<datelastmodified>Tue, 08 Dec 2009 08:25:54 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 14 Sep 2009 12:10:13 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Search]]></value>
-				</property>
-				<property>
-					<name>search.index</name>
-					<value><![CDATA[Online project EN (VFS)]]></value>
-				</property>
-				<property>
-					<name>search.root</name>
-					<value><![CDATA[/demo_t3/]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>demo_t3/pages/dictionary</destination>
-			<type>folder</type>
-			<uuidstructure>5afaf0d3-9c82-11de-adde-dd9f629b113b</uuidstructure>
-			<datelastmodified>Mon, 07 Dec 2009 15:54:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 26 Feb 2008 11:59:33 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[3.0]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[Flower Dictionary]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Dictionary]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>demo_t3/pages/dictionary/common-yarrow.html</source>
-			<destination>demo_t3/pages/dictionary/common-yarrow.html</destination>
-			<type>containerpage</type>
-			<uuidstructure>36b11c8b-e4af-11de-842a-2fbc40eca8be</uuidstructure>
-			<uuidresource>36b11c8c-e4af-11de-842a-2fbc40eca8be</uuidresource>
-			<datelastmodified>Wed, 09 Dec 2009 10:42:38 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 09 Dec 2009 10:40:05 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Common Yarrow]]></value>
-				</property>
-			</properties>
-			<relations>
-				<relation>
-					<id>47448abc-dbb1-11dc-997c-9f7a6a6ce285</id>
-					<path>/system/categories/species/</path>
-					<type>CATEGORY</type>
-				</relation>
-				<relation>
-					<id>39116abc-dbb1-11dc-997c-9f7a6a6ce285</id>
-					<path>/system/categories/species/composite-plants/</path>
-					<type>CATEGORY</type>
-				</relation>
-			</relations>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>demo_t3/pages/dictionary/dahlia.html</source>
-			<destination>demo_t3/pages/dictionary/dahlia.html</destination>
-			<type>containerpage</type>
-			<uuidstructure>1af75545-e4af-11de-842a-2fbc40eca8be</uuidstructure>
-			<uuidresource>1af75546-e4af-11de-842a-2fbc40eca8be</uuidresource>
-			<datelastmodified>Wed, 09 Dec 2009 10:45:09 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 09 Dec 2009 10:39:19 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Dahlia]]></value>
-				</property>
-			</properties>
-			<relations>
-				<relation>
-					<id>47448abc-dbb1-11dc-997c-9f7a6a6ce285</id>
-					<path>/system/categories/species/</path>
-					<type>CATEGORY</type>
-				</relation>
-				<relation>
-					<id>39116abc-dbb1-11dc-997c-9f7a6a6ce285</id>
-					<path>/system/categories/species/composite-plants/</path>
-					<type>CATEGORY</type>
-				</relation>
-			</relations>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>demo_t3/pages/dictionary/gerbera.html</source>
-			<destination>demo_t3/pages/dictionary/gerbera.html</destination>
-			<type>containerpage</type>
-			<uuidstructure>2626cc28-e4af-11de-842a-2fbc40eca8be</uuidstructure>
-			<uuidresource>2626cc29-e4af-11de-842a-2fbc40eca8be</uuidresource>
-			<datelastmodified>Wed, 09 Dec 2009 10:45:17 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 09 Dec 2009 10:39:37 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Gerbera]]></value>
-				</property>
-			</properties>
-			<relations>
-				<relation>
-					<id>47448abc-dbb1-11dc-997c-9f7a6a6ce285</id>
-					<path>/system/categories/species/</path>
-					<type>CATEGORY</type>
-				</relation>
-				<relation>
-					<id>39116abc-dbb1-11dc-997c-9f7a6a6ce285</id>
-					<path>/system/categories/species/composite-plants/</path>
-					<type>CATEGORY</type>
-				</relation>
-			</relations>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>demo_t3/pages/dictionary/index.html</source>
-			<destination>demo_t3/pages/dictionary/index.html</destination>
-			<type>containerpage</type>
-			<uuidstructure>e067c85a-9d3c-11de-8a68-dd9f629b113b</uuidstructure>
-			<uuidresource>e067c85b-9d3c-11de-8a68-dd9f629b113b</uuidresource>
-			<datelastmodified>Tue, 08 Dec 2009 08:26:04 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 09 Sep 2009 12:32:45 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Dictionary]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>demo_t3/pages/dictionary/item_composite.html</source>
-			<destination>demo_t3/pages/dictionary/item_composite.html</destination>
-			<type>containerpage</type>
-			<uuidstructure>6afc98d0-9d5a-11de-b17e-dd9f629b113b</uuidstructure>
-			<uuidresource>6afc98d1-9d5a-11de-b17e-dd9f629b113b</uuidresource>
-			<datelastmodified>Tue, 08 Dec 2009 08:26:17 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 09 Sep 2009 16:04:13 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Composite Plants]]></value>
-				</property>
-			</properties>
-			<relations>
-				<relation>
-					<id>47448abc-dbb1-11dc-997c-9f7a6a6ce285</id>
-					<path>/system/categories/species/</path>
-					<type>CATEGORY</type>
-				</relation>
-				<relation>
-					<id>39116abc-dbb1-11dc-997c-9f7a6a6ce285</id>
-					<path>/system/categories/species/composite-plants/</path>
-					<type>CATEGORY</type>
-				</relation>
-			</relations>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>demo_t3/pages/dictionary/item_liliaceous.html</source>
-			<destination>demo_t3/pages/dictionary/item_liliaceous.html</destination>
-			<type>containerpage</type>
-			<uuidstructure>17315e7d-9e05-11de-87d2-dd9f629b113b</uuidstructure>
-			<uuidresource>17315e7e-9e05-11de-87d2-dd9f629b113b</uuidresource>
-			<datelastmodified>Tue, 08 Dec 2009 08:26:25 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 10 Sep 2009 12:25:56 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Liliaceous Plants]]></value>
-				</property>
-			</properties>
-			<relations>
-				<relation>
-					<id>47448abc-dbb1-11dc-997c-9f7a6a6ce285</id>
-					<path>/system/categories/species/</path>
-					<type>CATEGORY</type>
-				</relation>
-				<relation>
-					<id>39116abc-dbb1-11dc-997c-9f7a6a6ce285</id>
-					<path>/system/categories/species/composite-plants/</path>
-					<type>CATEGORY</type>
-				</relation>
-			</relations>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>demo_t3/pages/dictionary/item_rosaceous.html</source>
-			<destination>demo_t3/pages/dictionary/item_rosaceous.html</destination>
-			<type>containerpage</type>
-			<uuidstructure>01239df5-9e05-11de-87d2-dd9f629b113b</uuidstructure>
-			<uuidresource>01239df6-9e05-11de-87d2-dd9f629b113b</uuidresource>
-			<datelastmodified>Tue, 08 Dec 2009 08:26:33 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 10 Sep 2009 12:25:19 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Rosaceous Plants]]></value>
-				</property>
-			</properties>
-			<relations>
-				<relation>
-					<id>47448abc-dbb1-11dc-997c-9f7a6a6ce285</id>
-					<path>/system/categories/species/</path>
-					<type>CATEGORY</type>
-				</relation>
-				<relation>
-					<id>39116abc-dbb1-11dc-997c-9f7a6a6ce285</id>
-					<path>/system/categories/species/composite-plants/</path>
-					<type>CATEGORY</type>
-				</relation>
-			</relations>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>demo_t3/pages/dictionary/lily.html</source>
-			<destination>demo_t3/pages/dictionary/lily.html</destination>
-			<type>containerpage</type>
-			<uuidstructure>4d92f5f4-e4af-11de-842a-2fbc40eca8be</uuidstructure>
-			<uuidresource>4d92f5f5-e4af-11de-842a-2fbc40eca8be</uuidresource>
-			<datelastmodified>Wed, 09 Dec 2009 10:45:24 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 09 Dec 2009 10:40:43 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Lily]]></value>
-				</property>
-			</properties>
-			<relations>
-				<relation>
-					<id>47448abc-dbb1-11dc-997c-9f7a6a6ce285</id>
-					<path>/system/categories/species/</path>
-					<type>CATEGORY</type>
-				</relation>
-				<relation>
-					<id>39116abc-dbb1-11dc-997c-9f7a6a6ce285</id>
-					<path>/system/categories/species/composite-plants/</path>
-					<type>CATEGORY</type>
-				</relation>
-			</relations>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>demo_t3/pages/dictionary/meadowsweet.html</source>
-			<destination>demo_t3/pages/dictionary/meadowsweet.html</destination>
-			<type>containerpage</type>
-			<uuidstructure>678c96b0-e4af-11de-842a-2fbc40eca8be</uuidstructure>
-			<uuidresource>678c96b1-e4af-11de-842a-2fbc40eca8be</uuidresource>
-			<datelastmodified>Wed, 09 Dec 2009 10:45:31 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 09 Dec 2009 10:41:27 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Meadowsweet]]></value>
-				</property>
-			</properties>
-			<relations>
-				<relation>
-					<id>47448abc-dbb1-11dc-997c-9f7a6a6ce285</id>
-					<path>/system/categories/species/</path>
-					<type>CATEGORY</type>
-				</relation>
-				<relation>
-					<id>39116abc-dbb1-11dc-997c-9f7a6a6ce285</id>
-					<path>/system/categories/species/composite-plants/</path>
-					<type>CATEGORY</type>
-				</relation>
-			</relations>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>demo_t3/pages/dictionary/mountain-avens.html</source>
-			<destination>demo_t3/pages/dictionary/mountain-avens.html</destination>
-			<type>containerpage</type>
-			<uuidstructure>6016cc6d-e4af-11de-842a-2fbc40eca8be</uuidstructure>
-			<uuidresource>6016cc6e-e4af-11de-842a-2fbc40eca8be</uuidresource>
-			<datelastmodified>Wed, 09 Dec 2009 10:45:38 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 09 Dec 2009 10:41:15 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Mountain Avens]]></value>
-				</property>
-			</properties>
-			<relations>
-				<relation>
-					<id>47448abc-dbb1-11dc-997c-9f7a6a6ce285</id>
-					<path>/system/categories/species/</path>
-					<type>CATEGORY</type>
-				</relation>
-				<relation>
-					<id>39116abc-dbb1-11dc-997c-9f7a6a6ce285</id>
-					<path>/system/categories/species/composite-plants/</path>
-					<type>CATEGORY</type>
-				</relation>
-			</relations>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>demo_t3/pages/dictionary/radnor-lily.html</source>
-			<destination>demo_t3/pages/dictionary/radnor-lily.html</destination>
-			<type>containerpage</type>
-			<uuidstructure>52470827-e4af-11de-842a-2fbc40eca8be</uuidstructure>
-			<uuidresource>52470828-e4af-11de-842a-2fbc40eca8be</uuidresource>
-			<datelastmodified>Wed, 09 Dec 2009 10:45:46 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 09 Dec 2009 10:40:51 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Radnor Lily]]></value>
-				</property>
-			</properties>
-			<relations>
-				<relation>
-					<id>47448abc-dbb1-11dc-997c-9f7a6a6ce285</id>
-					<path>/system/categories/species/</path>
-					<type>CATEGORY</type>
-				</relation>
-				<relation>
-					<id>39116abc-dbb1-11dc-997c-9f7a6a6ce285</id>
-					<path>/system/categories/species/composite-plants/</path>
-					<type>CATEGORY</type>
-				</relation>
-			</relations>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>demo_t3/pages/dictionary/rose.html</source>
-			<destination>demo_t3/pages/dictionary/rose.html</destination>
-			<type>containerpage</type>
-			<uuidstructure>5bc6fa4a-e4af-11de-842a-2fbc40eca8be</uuidstructure>
-			<uuidresource>5bc6fa4b-e4af-11de-842a-2fbc40eca8be</uuidresource>
-			<datelastmodified>Wed, 09 Dec 2009 10:45:52 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 09 Dec 2009 10:41:07 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Rose]]></value>
-				</property>
-			</properties>
-			<relations>
-				<relation>
-					<id>47448abc-dbb1-11dc-997c-9f7a6a6ce285</id>
-					<path>/system/categories/species/</path>
-					<type>CATEGORY</type>
-				</relation>
-				<relation>
-					<id>39116abc-dbb1-11dc-997c-9f7a6a6ce285</id>
-					<path>/system/categories/species/composite-plants/</path>
-					<type>CATEGORY</type>
-				</relation>
-			</relations>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>demo_t3/pages/dictionary/tulip.html</source>
-			<destination>demo_t3/pages/dictionary/tulip.html</destination>
-			<type>containerpage</type>
-			<uuidstructure>3d74118e-e4af-11de-842a-2fbc40eca8be</uuidstructure>
-			<uuidresource>3d74118f-e4af-11de-842a-2fbc40eca8be</uuidresource>
-			<datelastmodified>Wed, 09 Dec 2009 10:45:59 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 09 Dec 2009 10:40:16 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Tulip]]></value>
-				</property>
-			</properties>
-			<relations>
-				<relation>
-					<id>47448abc-dbb1-11dc-997c-9f7a6a6ce285</id>
-					<path>/system/categories/species/</path>
-					<type>CATEGORY</type>
-				</relation>
-				<relation>
-					<id>39116abc-dbb1-11dc-997c-9f7a6a6ce285</id>
-					<path>/system/categories/species/composite-plants/</path>
-					<type>CATEGORY</type>
-				</relation>
-			</relations>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>demo_t3/pages/extra</destination>
-			<type>folder</type>
-			<uuidstructure>5b8a10b1-9c82-11de-adde-dd9f629b113b</uuidstructure>
-			<datelastmodified>Mon, 07 Dec 2009 15:54:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 26 Feb 2008 16:26:24 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[5.0]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[Flower Extranet]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Flower Extranet]]></value>
-				</property>
-				<property>
-					<name>login-form</name>
-					<value><![CDATA[/demo_t3/extra/login.html]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>demo_t3/pages/extra/index.html</source>
-			<destination>demo_t3/pages/extra/index.html</destination>
-			<type>containerpage</type>
-			<uuidstructure>7a07c56c-9e08-11de-9c36-dd9f629b113b</uuidstructure>
-			<uuidresource>7a07c56d-9e08-11de-9c36-dd9f629b113b</uuidresource>
-			<datelastmodified>Tue, 08 Dec 2009 08:26:47 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 10 Sep 2009 12:50:11 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Extranet of Flowers]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>demo_t3/pages/extra/login.html</source>
-			<destination>demo_t3/pages/extra/login.html</destination>
-			<type>containerpage</type>
-			<uuidstructure>d49ed78c-9e08-11de-9c36-dd9f629b113b</uuidstructure>
-			<uuidresource>d49ed78d-9e08-11de-9c36-dd9f629b113b</uuidresource>
-			<datelastmodified>Tue, 08 Dec 2009 08:26:55 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 10 Sep 2009 12:52:43 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Login for the Extranet]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>demo_t3/pages/extra/extranet</destination>
-			<type>folder</type>
-			<uuidstructure>5b8ecba3-9c82-11de-adde-dd9f629b113b</uuidstructure>
-			<datelastmodified>Mon, 07 Dec 2009 15:54:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 26 Feb 2008 16:34:27 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[1.0]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[Secret data]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Secret data]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol>
-				<accessentry>
-					<uuidprincipal>OVERWRITE_ALL</uuidprincipal>
-					<flags>258</flags>
-					<permissionset>
-						<allowed>0</allowed>
-						<denied>0</denied>
-					</permissionset>
-				</accessentry>
-				<accessentry>
-					<uuidprincipal>GROUP.Users</uuidprincipal>
-					<flags>34</flags>
-					<permissionset>
-						<allowed>31</allowed>
-						<denied>0</denied>
-					</permissionset>
-				</accessentry>
-			</accesscontrol>
-		</file>
-		<file>
-			<source>demo_t3/pages/extra/extranet/index.html</source>
-			<destination>demo_t3/pages/extra/extranet/index.html</destination>
-			<type>containerpage</type>
-			<uuidstructure>77af8842-9e09-11de-9c36-dd9f629b113b</uuidstructure>
-			<uuidresource>77af8843-9e09-11de-9c36-dd9f629b113b</uuidresource>
-			<datelastmodified>Tue, 08 Dec 2009 08:27:09 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 10 Sep 2009 12:57:16 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Secrets of Flower]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>demo_t3/pages/extra/extranet/rare.html</source>
-			<destination>demo_t3/pages/extra/extranet/rare.html</destination>
-			<type>containerpage</type>
-			<uuidstructure>1fbdecad-a1d5-11de-9d96-dd9f629b113b</uuidstructure>
-			<uuidresource>1fbdecae-a1d5-11de-9d96-dd9f629b113b</uuidresource>
-			<datelastmodified>Tue, 08 Dec 2009 08:32:05 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 15 Sep 2009 08:52:40 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Rare plants and flowers]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>demo_t3/pages/extra/extranet/utf-8.html</source>
-			<destination>demo_t3/pages/extra/extranet/utf-8.html</destination>
-			<type>containerpage</type>
-			<uuidstructure>569ae778-9e09-11de-9c36-dd9f629b113b</uuidstructure>
-			<uuidresource>569ae779-9e09-11de-9c36-dd9f629b113b</uuidresource>
-			<datelastmodified>Tue, 08 Dec 2009 08:37:07 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 10 Sep 2009 12:56:21 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[I18N Example]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>demo_t3/pages/today</destination>
-			<type>folder</type>
-			<uuidstructure>5bf555cc-9c82-11de-adde-dd9f629b113b</uuidstructure>
-			<datelastmodified>Mon, 07 Dec 2009 15:54:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 26 Feb 2008 09:29:59 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[2.0]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[Flower Today]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Flower Today]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>demo_t3/pages/today/events.html</source>
-			<destination>demo_t3/pages/today/events.html</destination>
-			<type>containerpage</type>
-			<uuidstructure>93de012d-a1c6-11de-9d96-dd9f629b113b</uuidstructure>
-			<uuidresource>93de012e-a1c6-11de-9d96-dd9f629b113b</uuidresource>
-			<datelastmodified>Tue, 08 Dec 2009 08:37:39 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 15 Sep 2009 07:08:32 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Events]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>demo_t3/pages/today/index.html</source>
-			<destination>demo_t3/pages/today/index.html</destination>
-			<type>containerpage</type>
-			<uuidstructure>6afd20df-a1c0-11de-9d96-dd9f629b113b</uuidstructure>
-			<uuidresource>6afd20e0-a1c0-11de-9d96-dd9f629b113b</uuidresource>
-			<datelastmodified>Tue, 08 Dec 2009 08:37:27 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 15 Sep 2009 06:24:26 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Flower Today]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>demo_t3/pages/today/news.html</source>
-			<destination>demo_t3/pages/today/news.html</destination>
-			<type>containerpage</type>
-			<uuidstructure>07358d03-a1c6-11de-9d96-dd9f629b113b</uuidstructure>
-			<uuidresource>07358d04-a1c6-11de-9d96-dd9f629b113b</uuidresource>
-			<datelastmodified>Tue, 08 Dec 2009 08:37:59 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 15 Sep 2009 07:04:36 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[News]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>demo_t3/pages/view</destination>
-			<type>folder</type>
-			<uuidstructure>5c5bdffc-9c82-11de-adde-dd9f629b113b</uuidstructure>
-			<datelastmodified>Mon, 07 Dec 2009 15:54:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 26 Feb 2008 14:45:24 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[4.0]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[Flower View]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Flower View]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>demo_t3/pages/view/index.html</source>
-			<destination>demo_t3/pages/view/index.html</destination>
-			<type>containerpage</type>
-			<uuidstructure>3608ae7b-a1d8-11de-9d96-dd9f629b113b</uuidstructure>
-			<uuidresource>3608ae7c-a1d8-11de-9d96-dd9f629b113b</uuidresource>
-			<datelastmodified>Tue, 08 Dec 2009 08:38:29 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 15 Sep 2009 09:14:45 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Flower View]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
 			<destination>demo_t3/documents</destination>
 			<type>downloadgallery</type>
 			<uuidstructure>51a0d952-9c86-11de-adde-dd9f629b113b</uuidstructure>
@@ -1807,7 +1009,7 @@
 			<destination>demo_t3/events</destination>
 			<type>eventgallery</type>
 			<uuidstructure>cb1e5da0-a11a-11de-9057-dd9f629b113b</uuidstructure>
-			<datelastmodified>Mon, 07 Dec 2009 15:54:00 GMT</datelastmodified>
+			<datelastmodified>Tue, 14 Dec 2010 14:27:49 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 14 Sep 2009 10:38:51 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1816,10 +1018,6 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Events]]></value>
-				</property>
-				<property>
-					<name>ade.sitemap.detailview</name>
-					<value><![CDATA[/demo_t3/today/events/]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -3954,10 +3152,6 @@
 					<name>Title</name>
 					<value><![CDATA[Flower news]]></value>
 				</property>
-				<property>
-					<name>ade.sitemap.detailview</name>
-					<value><![CDATA[/demo_t3/today/news/]]></value>
-				</property>
 			</properties>
 			<relations/>
 			<accesscontrol/>
@@ -4253,6 +3447,815 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<destination>demo_t3/pages</destination>
+			<type>cntpagegallery</type>
+			<uuidstructure>68abb478-e347-11de-93a5-2fbc40eca8be</uuidstructure>
+			<datelastmodified>Tue, 08 Dec 2009 08:23:09 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 07 Dec 2009 15:44:30 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Container pages]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demo_t3/pages/images.html</source>
+			<destination>demo_t3/pages/images.html</destination>
+			<type>containerpage</type>
+			<uuidstructure>e0ea4748-a1c6-11de-9d96-dd9f629b113b</uuidstructure>
+			<uuidresource>e0ea4749-a1c6-11de-9d96-dd9f629b113b</uuidresource>
+			<datelastmodified>Tue, 08 Dec 2009 08:40:13 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 15 Sep 2009 07:10:41 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Flower Images]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demo_t3/pages/intro.html</source>
+			<destination>demo_t3/pages/intro.html</destination>
+			<type>containerpage</type>
+			<uuidstructure>3f3b9451-9d2a-11de-b26f-dd9f629b113b</uuidstructure>
+			<uuidresource>3f3b9452-9d2a-11de-b26f-dd9f629b113b</uuidresource>
+			<datelastmodified>Tue, 08 Dec 2009 08:25:47 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 09 Sep 2009 10:19:24 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Introduction]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demo_t3/pages/search.html</source>
+			<destination>demo_t3/pages/search.html</destination>
+			<type>containerpage</type>
+			<uuidstructure>8ebab265-a127-11de-9057-dd9f629b113b</uuidstructure>
+			<uuidresource>8ebab266-a127-11de-9057-dd9f629b113b</uuidresource>
+			<datelastmodified>Tue, 08 Dec 2009 08:25:54 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 14 Sep 2009 12:10:13 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Search]]></value>
+				</property>
+				<property>
+					<name>search.index</name>
+					<value><![CDATA[Online project EN (VFS)]]></value>
+				</property>
+				<property>
+					<name>search.root</name>
+					<value><![CDATA[/demo_t3/]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>demo_t3/pages/dictionary</destination>
+			<type>folder</type>
+			<uuidstructure>5afaf0d3-9c82-11de-adde-dd9f629b113b</uuidstructure>
+			<datelastmodified>Mon, 07 Dec 2009 15:54:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 26 Feb 2008 11:59:33 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[3.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Flower Dictionary]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Dictionary]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demo_t3/pages/dictionary/common-yarrow.html</source>
+			<destination>demo_t3/pages/dictionary/common-yarrow.html</destination>
+			<type>containerpage</type>
+			<uuidstructure>36b11c8b-e4af-11de-842a-2fbc40eca8be</uuidstructure>
+			<uuidresource>36b11c8c-e4af-11de-842a-2fbc40eca8be</uuidresource>
+			<datelastmodified>Wed, 09 Dec 2009 10:42:38 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 09 Dec 2009 10:40:05 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Common Yarrow]]></value>
+				</property>
+			</properties>
+			<relations>
+				<relation>
+					<id>47448abc-dbb1-11dc-997c-9f7a6a6ce285</id>
+					<path>/system/categories/species/</path>
+					<type>CATEGORY</type>
+				</relation>
+				<relation>
+					<id>39116abc-dbb1-11dc-997c-9f7a6a6ce285</id>
+					<path>/system/categories/species/composite-plants/</path>
+					<type>CATEGORY</type>
+				</relation>
+			</relations>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demo_t3/pages/dictionary/dahlia.html</source>
+			<destination>demo_t3/pages/dictionary/dahlia.html</destination>
+			<type>containerpage</type>
+			<uuidstructure>1af75545-e4af-11de-842a-2fbc40eca8be</uuidstructure>
+			<uuidresource>1af75546-e4af-11de-842a-2fbc40eca8be</uuidresource>
+			<datelastmodified>Wed, 09 Dec 2009 10:45:09 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 09 Dec 2009 10:39:19 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Dahlia]]></value>
+				</property>
+			</properties>
+			<relations>
+				<relation>
+					<id>47448abc-dbb1-11dc-997c-9f7a6a6ce285</id>
+					<path>/system/categories/species/</path>
+					<type>CATEGORY</type>
+				</relation>
+				<relation>
+					<id>39116abc-dbb1-11dc-997c-9f7a6a6ce285</id>
+					<path>/system/categories/species/composite-plants/</path>
+					<type>CATEGORY</type>
+				</relation>
+			</relations>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demo_t3/pages/dictionary/gerbera.html</source>
+			<destination>demo_t3/pages/dictionary/gerbera.html</destination>
+			<type>containerpage</type>
+			<uuidstructure>2626cc28-e4af-11de-842a-2fbc40eca8be</uuidstructure>
+			<uuidresource>2626cc29-e4af-11de-842a-2fbc40eca8be</uuidresource>
+			<datelastmodified>Wed, 09 Dec 2009 10:45:17 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 09 Dec 2009 10:39:37 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Gerbera]]></value>
+				</property>
+			</properties>
+			<relations>
+				<relation>
+					<id>47448abc-dbb1-11dc-997c-9f7a6a6ce285</id>
+					<path>/system/categories/species/</path>
+					<type>CATEGORY</type>
+				</relation>
+				<relation>
+					<id>39116abc-dbb1-11dc-997c-9f7a6a6ce285</id>
+					<path>/system/categories/species/composite-plants/</path>
+					<type>CATEGORY</type>
+				</relation>
+			</relations>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demo_t3/pages/dictionary/index.html</source>
+			<destination>demo_t3/pages/dictionary/index.html</destination>
+			<type>containerpage</type>
+			<uuidstructure>e067c85a-9d3c-11de-8a68-dd9f629b113b</uuidstructure>
+			<uuidresource>e067c85b-9d3c-11de-8a68-dd9f629b113b</uuidresource>
+			<datelastmodified>Tue, 08 Dec 2009 08:26:04 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 09 Sep 2009 12:32:45 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Dictionary]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demo_t3/pages/dictionary/item_composite.html</source>
+			<destination>demo_t3/pages/dictionary/item_composite.html</destination>
+			<type>containerpage</type>
+			<uuidstructure>6afc98d0-9d5a-11de-b17e-dd9f629b113b</uuidstructure>
+			<uuidresource>6afc98d1-9d5a-11de-b17e-dd9f629b113b</uuidresource>
+			<datelastmodified>Tue, 08 Dec 2009 08:26:17 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 09 Sep 2009 16:04:13 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Composite Plants]]></value>
+				</property>
+			</properties>
+			<relations>
+				<relation>
+					<id>47448abc-dbb1-11dc-997c-9f7a6a6ce285</id>
+					<path>/system/categories/species/</path>
+					<type>CATEGORY</type>
+				</relation>
+				<relation>
+					<id>39116abc-dbb1-11dc-997c-9f7a6a6ce285</id>
+					<path>/system/categories/species/composite-plants/</path>
+					<type>CATEGORY</type>
+				</relation>
+			</relations>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demo_t3/pages/dictionary/item_liliaceous.html</source>
+			<destination>demo_t3/pages/dictionary/item_liliaceous.html</destination>
+			<type>containerpage</type>
+			<uuidstructure>17315e7d-9e05-11de-87d2-dd9f629b113b</uuidstructure>
+			<uuidresource>17315e7e-9e05-11de-87d2-dd9f629b113b</uuidresource>
+			<datelastmodified>Tue, 08 Dec 2009 08:26:25 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 10 Sep 2009 12:25:56 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Liliaceous Plants]]></value>
+				</property>
+			</properties>
+			<relations>
+				<relation>
+					<id>47448abc-dbb1-11dc-997c-9f7a6a6ce285</id>
+					<path>/system/categories/species/</path>
+					<type>CATEGORY</type>
+				</relation>
+				<relation>
+					<id>39116abc-dbb1-11dc-997c-9f7a6a6ce285</id>
+					<path>/system/categories/species/composite-plants/</path>
+					<type>CATEGORY</type>
+				</relation>
+			</relations>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demo_t3/pages/dictionary/item_rosaceous.html</source>
+			<destination>demo_t3/pages/dictionary/item_rosaceous.html</destination>
+			<type>containerpage</type>
+			<uuidstructure>01239df5-9e05-11de-87d2-dd9f629b113b</uuidstructure>
+			<uuidresource>01239df6-9e05-11de-87d2-dd9f629b113b</uuidresource>
+			<datelastmodified>Tue, 08 Dec 2009 08:26:33 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 10 Sep 2009 12:25:19 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Rosaceous Plants]]></value>
+				</property>
+			</properties>
+			<relations>
+				<relation>
+					<id>47448abc-dbb1-11dc-997c-9f7a6a6ce285</id>
+					<path>/system/categories/species/</path>
+					<type>CATEGORY</type>
+				</relation>
+				<relation>
+					<id>39116abc-dbb1-11dc-997c-9f7a6a6ce285</id>
+					<path>/system/categories/species/composite-plants/</path>
+					<type>CATEGORY</type>
+				</relation>
+			</relations>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demo_t3/pages/dictionary/lily.html</source>
+			<destination>demo_t3/pages/dictionary/lily.html</destination>
+			<type>containerpage</type>
+			<uuidstructure>4d92f5f4-e4af-11de-842a-2fbc40eca8be</uuidstructure>
+			<uuidresource>4d92f5f5-e4af-11de-842a-2fbc40eca8be</uuidresource>
+			<datelastmodified>Wed, 09 Dec 2009 10:45:24 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 09 Dec 2009 10:40:43 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Lily]]></value>
+				</property>
+			</properties>
+			<relations>
+				<relation>
+					<id>47448abc-dbb1-11dc-997c-9f7a6a6ce285</id>
+					<path>/system/categories/species/</path>
+					<type>CATEGORY</type>
+				</relation>
+				<relation>
+					<id>39116abc-dbb1-11dc-997c-9f7a6a6ce285</id>
+					<path>/system/categories/species/composite-plants/</path>
+					<type>CATEGORY</type>
+				</relation>
+			</relations>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demo_t3/pages/dictionary/meadowsweet.html</source>
+			<destination>demo_t3/pages/dictionary/meadowsweet.html</destination>
+			<type>containerpage</type>
+			<uuidstructure>678c96b0-e4af-11de-842a-2fbc40eca8be</uuidstructure>
+			<uuidresource>678c96b1-e4af-11de-842a-2fbc40eca8be</uuidresource>
+			<datelastmodified>Wed, 09 Dec 2009 10:45:31 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 09 Dec 2009 10:41:27 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Meadowsweet]]></value>
+				</property>
+			</properties>
+			<relations>
+				<relation>
+					<id>47448abc-dbb1-11dc-997c-9f7a6a6ce285</id>
+					<path>/system/categories/species/</path>
+					<type>CATEGORY</type>
+				</relation>
+				<relation>
+					<id>39116abc-dbb1-11dc-997c-9f7a6a6ce285</id>
+					<path>/system/categories/species/composite-plants/</path>
+					<type>CATEGORY</type>
+				</relation>
+			</relations>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demo_t3/pages/dictionary/mountain-avens.html</source>
+			<destination>demo_t3/pages/dictionary/mountain-avens.html</destination>
+			<type>containerpage</type>
+			<uuidstructure>6016cc6d-e4af-11de-842a-2fbc40eca8be</uuidstructure>
+			<uuidresource>6016cc6e-e4af-11de-842a-2fbc40eca8be</uuidresource>
+			<datelastmodified>Wed, 09 Dec 2009 10:45:38 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 09 Dec 2009 10:41:15 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Mountain Avens]]></value>
+				</property>
+			</properties>
+			<relations>
+				<relation>
+					<id>47448abc-dbb1-11dc-997c-9f7a6a6ce285</id>
+					<path>/system/categories/species/</path>
+					<type>CATEGORY</type>
+				</relation>
+				<relation>
+					<id>39116abc-dbb1-11dc-997c-9f7a6a6ce285</id>
+					<path>/system/categories/species/composite-plants/</path>
+					<type>CATEGORY</type>
+				</relation>
+			</relations>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demo_t3/pages/dictionary/radnor-lily.html</source>
+			<destination>demo_t3/pages/dictionary/radnor-lily.html</destination>
+			<type>containerpage</type>
+			<uuidstructure>52470827-e4af-11de-842a-2fbc40eca8be</uuidstructure>
+			<uuidresource>52470828-e4af-11de-842a-2fbc40eca8be</uuidresource>
+			<datelastmodified>Wed, 09 Dec 2009 10:45:46 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 09 Dec 2009 10:40:51 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Radnor Lily]]></value>
+				</property>
+			</properties>
+			<relations>
+				<relation>
+					<id>47448abc-dbb1-11dc-997c-9f7a6a6ce285</id>
+					<path>/system/categories/species/</path>
+					<type>CATEGORY</type>
+				</relation>
+				<relation>
+					<id>39116abc-dbb1-11dc-997c-9f7a6a6ce285</id>
+					<path>/system/categories/species/composite-plants/</path>
+					<type>CATEGORY</type>
+				</relation>
+			</relations>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demo_t3/pages/dictionary/rose.html</source>
+			<destination>demo_t3/pages/dictionary/rose.html</destination>
+			<type>containerpage</type>
+			<uuidstructure>5bc6fa4a-e4af-11de-842a-2fbc40eca8be</uuidstructure>
+			<uuidresource>5bc6fa4b-e4af-11de-842a-2fbc40eca8be</uuidresource>
+			<datelastmodified>Wed, 09 Dec 2009 10:45:52 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 09 Dec 2009 10:41:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Rose]]></value>
+				</property>
+			</properties>
+			<relations>
+				<relation>
+					<id>47448abc-dbb1-11dc-997c-9f7a6a6ce285</id>
+					<path>/system/categories/species/</path>
+					<type>CATEGORY</type>
+				</relation>
+				<relation>
+					<id>39116abc-dbb1-11dc-997c-9f7a6a6ce285</id>
+					<path>/system/categories/species/composite-plants/</path>
+					<type>CATEGORY</type>
+				</relation>
+			</relations>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demo_t3/pages/dictionary/tulip.html</source>
+			<destination>demo_t3/pages/dictionary/tulip.html</destination>
+			<type>containerpage</type>
+			<uuidstructure>3d74118e-e4af-11de-842a-2fbc40eca8be</uuidstructure>
+			<uuidresource>3d74118f-e4af-11de-842a-2fbc40eca8be</uuidresource>
+			<datelastmodified>Wed, 09 Dec 2009 10:45:59 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 09 Dec 2009 10:40:16 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Tulip]]></value>
+				</property>
+			</properties>
+			<relations>
+				<relation>
+					<id>47448abc-dbb1-11dc-997c-9f7a6a6ce285</id>
+					<path>/system/categories/species/</path>
+					<type>CATEGORY</type>
+				</relation>
+				<relation>
+					<id>39116abc-dbb1-11dc-997c-9f7a6a6ce285</id>
+					<path>/system/categories/species/composite-plants/</path>
+					<type>CATEGORY</type>
+				</relation>
+			</relations>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>demo_t3/pages/extra</destination>
+			<type>folder</type>
+			<uuidstructure>5b8a10b1-9c82-11de-adde-dd9f629b113b</uuidstructure>
+			<datelastmodified>Mon, 07 Dec 2009 15:54:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 26 Feb 2008 16:26:24 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[5.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Flower Extranet]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Flower Extranet]]></value>
+				</property>
+				<property>
+					<name>login-form</name>
+					<value><![CDATA[/demo_t3/extra/login.html]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demo_t3/pages/extra/index.html</source>
+			<destination>demo_t3/pages/extra/index.html</destination>
+			<type>containerpage</type>
+			<uuidstructure>7a07c56c-9e08-11de-9c36-dd9f629b113b</uuidstructure>
+			<uuidresource>7a07c56d-9e08-11de-9c36-dd9f629b113b</uuidresource>
+			<datelastmodified>Tue, 08 Dec 2009 08:26:47 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 10 Sep 2009 12:50:11 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Extranet of Flowers]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demo_t3/pages/extra/login.html</source>
+			<destination>demo_t3/pages/extra/login.html</destination>
+			<type>containerpage</type>
+			<uuidstructure>d49ed78c-9e08-11de-9c36-dd9f629b113b</uuidstructure>
+			<uuidresource>d49ed78d-9e08-11de-9c36-dd9f629b113b</uuidresource>
+			<datelastmodified>Tue, 08 Dec 2009 08:26:55 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 10 Sep 2009 12:52:43 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Login for the Extranet]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>demo_t3/pages/extra/extranet</destination>
+			<type>folder</type>
+			<uuidstructure>5b8ecba3-9c82-11de-adde-dd9f629b113b</uuidstructure>
+			<datelastmodified>Mon, 07 Dec 2009 15:54:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 26 Feb 2008 16:34:27 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[1.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Secret data]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Secret data]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>OVERWRITE_ALL</uuidprincipal>
+					<flags>258</flags>
+					<permissionset>
+						<allowed>0</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+				<accessentry>
+					<uuidprincipal>GROUP.Users</uuidprincipal>
+					<flags>34</flags>
+					<permissionset>
+						<allowed>31</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<source>demo_t3/pages/extra/extranet/index.html</source>
+			<destination>demo_t3/pages/extra/extranet/index.html</destination>
+			<type>containerpage</type>
+			<uuidstructure>77af8842-9e09-11de-9c36-dd9f629b113b</uuidstructure>
+			<uuidresource>77af8843-9e09-11de-9c36-dd9f629b113b</uuidresource>
+			<datelastmodified>Tue, 08 Dec 2009 08:27:09 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 10 Sep 2009 12:57:16 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Secrets of Flower]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demo_t3/pages/extra/extranet/rare.html</source>
+			<destination>demo_t3/pages/extra/extranet/rare.html</destination>
+			<type>containerpage</type>
+			<uuidstructure>1fbdecad-a1d5-11de-9d96-dd9f629b113b</uuidstructure>
+			<uuidresource>1fbdecae-a1d5-11de-9d96-dd9f629b113b</uuidresource>
+			<datelastmodified>Tue, 08 Dec 2009 08:32:05 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 15 Sep 2009 08:52:40 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Rare plants and flowers]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demo_t3/pages/extra/extranet/utf-8.html</source>
+			<destination>demo_t3/pages/extra/extranet/utf-8.html</destination>
+			<type>containerpage</type>
+			<uuidstructure>569ae778-9e09-11de-9c36-dd9f629b113b</uuidstructure>
+			<uuidresource>569ae779-9e09-11de-9c36-dd9f629b113b</uuidresource>
+			<datelastmodified>Tue, 08 Dec 2009 08:37:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 10 Sep 2009 12:56:21 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[I18N Example]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>demo_t3/pages/today</destination>
+			<type>folder</type>
+			<uuidstructure>5bf555cc-9c82-11de-adde-dd9f629b113b</uuidstructure>
+			<datelastmodified>Mon, 07 Dec 2009 15:54:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 26 Feb 2008 09:29:59 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[2.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Flower Today]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Flower Today]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demo_t3/pages/today/events.html</source>
+			<destination>demo_t3/pages/today/events.html</destination>
+			<type>containerpage</type>
+			<uuidstructure>93de012d-a1c6-11de-9d96-dd9f629b113b</uuidstructure>
+			<uuidresource>93de012e-a1c6-11de-9d96-dd9f629b113b</uuidresource>
+			<datelastmodified>Tue, 08 Dec 2009 08:37:39 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 15 Sep 2009 07:08:32 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Events]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demo_t3/pages/today/index.html</source>
+			<destination>demo_t3/pages/today/index.html</destination>
+			<type>containerpage</type>
+			<uuidstructure>6afd20df-a1c0-11de-9d96-dd9f629b113b</uuidstructure>
+			<uuidresource>6afd20e0-a1c0-11de-9d96-dd9f629b113b</uuidresource>
+			<datelastmodified>Tue, 08 Dec 2009 08:37:27 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 15 Sep 2009 06:24:26 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Flower Today]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demo_t3/pages/today/news.html</source>
+			<destination>demo_t3/pages/today/news.html</destination>
+			<type>containerpage</type>
+			<uuidstructure>07358d03-a1c6-11de-9d96-dd9f629b113b</uuidstructure>
+			<uuidresource>07358d04-a1c6-11de-9d96-dd9f629b113b</uuidresource>
+			<datelastmodified>Tue, 08 Dec 2009 08:37:59 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 15 Sep 2009 07:04:36 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[News]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>demo_t3/pages/view</destination>
+			<type>folder</type>
+			<uuidstructure>5c5bdffc-9c82-11de-adde-dd9f629b113b</uuidstructure>
+			<datelastmodified>Mon, 07 Dec 2009 15:54:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 26 Feb 2008 14:45:24 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[4.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Flower View]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Flower View]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demo_t3/pages/view/index.html</source>
+			<destination>demo_t3/pages/view/index.html</destination>
+			<type>containerpage</type>
+			<uuidstructure>3608ae7b-a1d8-11de-9d96-dd9f629b113b</uuidstructure>
+			<uuidresource>3608ae7c-a1d8-11de-9d96-dd9f629b113b</uuidresource>
+			<datelastmodified>Tue, 08 Dec 2009 08:38:29 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 15 Sep 2009 09:14:45 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Flower View]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>demo_t3/subcontainers</destination>
 			<type>folder</type>
 			<uuidstructure>a2c5da47-ea1d-11de-a78f-6352bb47a664</uuidstructure>
@@ -4284,11 +4287,11 @@
 			<properties>
 				<property>
 					<name>Description</name>
-					<value><![CDATA[Use in toolbox column.]]></value>
+					<value><![CDATA[Insert into left toolbox]]></value>
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Toolbox Container]]></value>
+					<value><![CDATA[Toolbox container]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -4730,10 +4733,10 @@
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<uuidstructure>cb6b00e4-0f28-11df-9dfe-d5d2a77384e9</uuidstructure>
-			<datelastmodified>Mon, 01 Feb 2010 11:56:13 GMT</datelastmodified>
+			<uuidstructure>351ec458-fc86-11df-acff-1df7189a4068</uuidstructure>
+			<datelastmodified>Tue, 30 Nov 2010 13:31:59 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 01 Feb 2010 11:56:13 GMT</datecreated>
+			<datecreated>Tue, 30 Nov 2010 13:31:59 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>

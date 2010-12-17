@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/rpc/Attic/CmsRpcAction.java,v $
- * Date   : $Date: 2010/11/18 15:28:10 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2010/12/17 08:45:30 $
+ * Version: $Revision: 1.16 $
  * 
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,7 @@ import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
 import org.opencms.gwt.client.util.CmsClientStringUtil;
 
+import com.google.gwt.event.shared.UmbrellaException;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -47,12 +48,13 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 8.0
  */
 public abstract class CmsRpcAction<T> implements AsyncCallback<T> {
 
+    /** The message displayed when loading. */
     private String m_loadingMessage = Messages.get().key(Messages.GUI_LOADING_0);
 
     /** The result, used only for synchronized request. */
@@ -107,6 +109,9 @@ public abstract class CmsRpcAction<T> implements AsyncCallback<T> {
         try {
             m_result = value;
             onResponse(value);
+        } catch (UmbrellaException exception) {
+            Throwable wrappedException = exception.getCauses().iterator().next();
+            onFailure(wrappedException);
         } catch (RuntimeException error) {
             onFailure(error);
         }

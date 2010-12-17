@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/Attic/CmsCoreProvider.java,v $
- * Date   : $Date: 2010/11/19 14:09:17 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2010/12/17 08:45:30 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 8.0.0
  * 
@@ -68,12 +68,16 @@ public final class CmsCoreProvider extends CmsCoreData {
     /** The core service instance. */
     private static I_CmsCoreServiceAsync SERVICE;
 
+    /** The client time when the data is loaded. */
+    private long m_clientTime;
+
     /**
      * Prevent instantiation.<p> 
      */
     protected CmsCoreProvider() {
 
         super((CmsCoreData)CmsRpcPrefetcher.getSerializedObject(getService(), DICT_NAME));
+        m_clientTime = System.currentTimeMillis();
     }
 
     /**
@@ -181,6 +185,49 @@ public final class CmsCoreProvider extends CmsCoreData {
     }
 
     /**
+     * Returns the approximate time on the server.<p>
+     * 
+     * @return the approximate server time  
+     */
+    public long getEstimatedServerTime() {
+
+        return m_clientTime + (System.currentTimeMillis() - m_clientTime);
+    }
+
+    /**
+     * Fetches the state of a resource from the server.<p>
+     * 
+     * @param path the VFS path  
+     * @param callback the callback which should receive the result 
+     */
+    public void getResourceState(final String path, final AsyncCallback<CmsResourceState> callback) {
+
+        CmsRpcAction<CmsResourceState> action = new CmsRpcAction<CmsResourceState>() {
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+             */
+            @Override
+            public void execute() {
+
+                start(0, false);
+                getService().getResourceState(path, this);
+            }
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+             */
+            @Override
+            protected void onResponse(CmsResourceState result) {
+
+                stop(false);
+                callback.onSuccess(result);
+            }
+        };
+        action.execute();
+    }
+
+    /**
      * Returns an absolute link given a site path.<p>
      * 
      * @param sitePath the site path
@@ -239,8 +286,8 @@ public final class CmsCoreProvider extends CmsCoreData {
                     return;
                 }
                 // unable to lock
-                String text = Messages.get().key(Messages.GUI_LOCK_NOTIFICATION_2, uri, result);
-                CmsNotification.get().send(CmsNotification.Type.WARNING, text);
+                final String text = Messages.get().key(Messages.GUI_LOCK_NOTIFICATION_2, uri, result);
+                CmsNotification.get().sendDeferred(CmsNotification.Type.WARNING, text);
             }
         };
         return lockAction.executeSync() == null;
@@ -284,7 +331,7 @@ public final class CmsCoreProvider extends CmsCoreData {
                 }
                 // unable to lock
                 String text = Messages.get().key(Messages.GUI_LOCK_NOTIFICATION_2, uri, result);
-                CmsNotification.get().send(CmsNotification.Type.ERROR, text);
+                CmsNotification.get().sendDeferred(CmsNotification.Type.ERROR, text);
             }
         };
         return lockAction.executeSync() == null;
@@ -340,39 +387,6 @@ public final class CmsCoreProvider extends CmsCoreData {
             @Override
             protected void onResponse(String result) {
 
-                callback.onSuccess(result);
-            }
-        };
-        action.execute();
-    }
-
-    /**
-     * Fetches the state of a resource from the server.<p>
-     * 
-     * @param path the VFS path  
-     * @param callback the callback which should receive the result 
-     */
-    public void getResourceState(final String path, final AsyncCallback<CmsResourceState> callback) {
-
-        CmsRpcAction<CmsResourceState> action = new CmsRpcAction<CmsResourceState>() {
-
-            /**
-             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
-             */
-            @Override
-            public void execute() {
-
-                start(0, false);
-                getService().getResourceState(path, this);
-            }
-
-            /**
-             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
-             */
-            @Override
-            protected void onResponse(CmsResourceState result) {
-
-                stop(false);
                 callback.onSuccess(result);
             }
         };
