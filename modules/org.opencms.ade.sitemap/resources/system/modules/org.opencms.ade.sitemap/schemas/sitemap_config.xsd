@@ -2,6 +2,7 @@
     <xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd" />
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.containerpage/schemas/type.xsd" />
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.containerpage/schemas/field.xsd" />
+    <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.sitemap/schemas/detailpage.xsd" />
     
     <xsd:element name="ADETypeConfigurations" type="OpenCmsADETypeConfigurations" />
 
@@ -18,6 +19,7 @@
             <xsd:element name="ADEExportName" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
             <xsd:element name="ContainerPageNameGenerator" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
             <xsd:element name="MaxDepth" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="DetailPage" type="OpenCmsDetailPage" minOccurs="0" maxOccurs="unbounded" />
         </xsd:sequence>
         <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
     </xsd:complexType>

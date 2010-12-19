@@ -35,7 +35,8 @@
 				<property name="isRedirect" type="string" widget="string"/>
 				<property name="internalRedirect" type="vfslist" widget="string" default="" select-inherit="false"/>
 				<property name="externalRedirect" type="string" widget="string" default="" select-inherit="false"/>
-
+<!--				<property name="detailType" type="string" widget="string" default="" select-inherit="false" />
+				<property name="detailIndex" type="string" widget="string" select-inherit="false" /> -->
 				<!-- TODO: should not we treat this properties separately?? -->
 				<!-- do *NOT* touch these properties -->
 				<property name="sitemap" type="vfslist"  widget="string" />
