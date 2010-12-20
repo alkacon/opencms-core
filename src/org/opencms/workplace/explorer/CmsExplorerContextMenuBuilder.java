@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerContextMenuBuilder.java,v $
- * Date   : $Date: 2010/07/19 14:11:43 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/12/20 14:56:00 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,8 +59,9 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * @author Andreas Zahner
+ * @author Ruediger Kurz
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.5.6 
  */
@@ -321,23 +322,8 @@ public class CmsExplorerContextMenuBuilder extends CmsWorkplace {
             } else if (CmsExplorerContextMenuItem.TYPE_ENTRY.equals(item.getType())) {
                 // this is a common menu entry
 
-                // first determine name, link and target or item
+                // first determine name
                 String itemName = key(item.getKey());
-                String itemLink = " ";
-                if (item.getUri().startsWith("/")) {
-                    itemLink = getJsp().link(item.getUri());
-                } else {
-                    itemLink = getJsp().link(CmsWorkplace.PATH_WORKPLACE + item.getUri());
-                }
-                String itemTarget = item.getTarget();
-                if (CmsStringUtil.isEmptyOrWhitespaceOnly(itemTarget)) {
-                    itemTarget = "";
-                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParamActtarget())
-                        && (item.getUri() != null)
-                        && item.getUri().startsWith("views/admin/admin-main.jsp")) {
-                        itemTarget = getParamActtarget();
-                    }
-                }
 
                 CmsMenuRule customMenuRule = null;
                 String itemRuleName = item.getRule();
@@ -391,6 +377,26 @@ public class CmsExplorerContextMenuBuilder extends CmsWorkplace {
                     // found a visibility mode
                     if (mode.isActive()) {
                         // item is active
+
+                        // determine link and target or item
+                        String itemLink = " ";
+                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(item.getUri())) {
+                            if (item.getUri().startsWith("/")) {
+                                itemLink = getJsp().link(item.getUri());
+                            } else {
+                                itemLink = getJsp().link(CmsWorkplace.PATH_WORKPLACE + item.getUri());
+                            }
+                        }
+                        String itemTarget = item.getTarget();
+                        if (CmsStringUtil.isEmptyOrWhitespaceOnly(itemTarget)) {
+                            itemTarget = "";
+                            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParamActtarget())
+                                && (item.getUri() != null)
+                                && item.getUri().startsWith("views/admin/admin-main.jsp")) {
+                                itemTarget = getParamActtarget();
+                            }
+                        }
+
                         if (insertSeparator) {
                             menu.append(HTML_SEPARATOR);
                             insertSeparator = false;

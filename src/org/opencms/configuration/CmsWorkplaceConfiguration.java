@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2010/09/06 13:40:14 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/12/20 14:56:00 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,7 +72,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 6.0.0
  */
@@ -707,6 +707,8 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         digester.addCallParam(xPath, 0, A_RULE);
         digester.addCallMethod(xPath, "setTarget", 1);
         digester.addCallParam(xPath, 0, A_TARGET);
+        digester.addCallMethod(xPath, "setName", 1);
+        digester.addCallParam(xPath, 0, A_NAME);
         digester.addCallMethod(xPath, "setIcon", 1);
         digester.addCallParam(xPath, 0, A_ICON);
         digester.addSetNext(xPath, "addContextMenuEntry");

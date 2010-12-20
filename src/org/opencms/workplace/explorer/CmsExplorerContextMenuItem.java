@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerContextMenuItem.java,v $
- * Date   : $Date: 2010/07/21 11:02:34 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/12/20 14:56:00 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import java.util.List;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -58,6 +58,9 @@ public class CmsExplorerContextMenuItem {
 
     /** The key (label) for the menu item. */
     private String m_key;
+
+    /** The name of the current item. */
+    private String m_name;
 
     /** The parent menu item. */
     private CmsExplorerContextMenuItem m_parent;
@@ -126,6 +129,16 @@ public class CmsExplorerContextMenuItem {
     public String getKey() {
 
         return m_key;
+    }
+
+    /**
+     * Returns the name.<p>
+     *
+     * @return the name
+     */
+    public String getName() {
+
+        return m_name;
     }
 
     /**
@@ -236,6 +249,16 @@ public class CmsExplorerContextMenuItem {
     public void setKey(String key) {
 
         m_key = key;
+    }
+
+    /**
+     * Sets the name.<p>
+     *
+     * @param name the name to set
+     */
+    public void setName(String name) {
+
+        m_name = name;
     }
 
     /**
