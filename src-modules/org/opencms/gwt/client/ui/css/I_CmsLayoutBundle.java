@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2010/12/21 10:23:32 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2010/12/21 15:50:36 $
+ * Version: $Revision: 1.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,43 +44,11 @@ import com.google.gwt.resources.client.ImageResource.RepeatStyle;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.49 $
+ * @version $Revision: 1.50 $
  * 
  * @since 8.0.0
  */
 public interface I_CmsLayoutBundle extends ClientBundle {
-
-    /** The context menu CSS classes. */
-    public interface I_CmsResourceStateCss extends CssResource {
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String stateChanged();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String stateDeleted();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String stateNew();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String noState();
-    }
 
     /** The context menu CSS classes. */
     public interface I_CmsAvailabilityCss extends CssResource {
@@ -1118,6 +1086,38 @@ public interface I_CmsLayoutBundle extends ClientBundle {
         String popup();
     }
 
+    /** The context menu CSS classes. */
+    public interface I_CmsResourceStateCss extends CssResource {
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String noState();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String stateChanged();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String stateDeleted();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String stateNew();
+    }
+
     /** General CSS. */
     @Shared
     interface I_CmsStateCss extends CssResource {
@@ -1389,13 +1389,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     /**
      * Access method.<p>
      * 
-     * @return the image bundle for the gwt module
-     */
-    I_CmsImageBundle gwtImages();
-
-    /**
-     * Access method.<p>
-     * 
      * @return the image resource
      */
     @Source("images/ui-bg_glass_75_ff7777_1x400.png")
@@ -1483,6 +1476,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      */
     @Source("general.css")
     I_CmsGeneralCss generalCss();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image bundle for the gwt module
+     */
+    I_CmsImageBundle gwtImages();
 
     /**
      * Access method.<p>
@@ -1617,14 +1617,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     /**
      * Access method.<p>
      * 
-     * @return the list item CSS
-     */
-    @Source("resourceState.css")
-    I_CmsResourceStateCss resourceStateCss();
-
-    /**
-     * Access method.<p>
-     * 
      * @return the list tree CSS
      */
     @Source("listtree.css")
@@ -1670,6 +1662,14 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      */
     @Source("images/plus.png")
     ImageResource plus();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the list item CSS
+     */
+    @Source("resourceState.css")
+    I_CmsResourceStateCss resourceStateCss();
 
     /**
      * Access method. These CSS classes are used to indicate the state of ui items, use them within a dedicated CSS resources.
