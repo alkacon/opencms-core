@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsInfoLoadingListItemWidget.java,v $
- * Date   : $Date: 2010/11/19 14:09:17 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/12/21 10:23:32 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.gwt.client.ui;
 
+import org.opencms.gwt.client.util.I_CmsAdditionalInfoLoader;
 import org.opencms.gwt.shared.CmsListInfoBean;
 
 import java.util.ArrayList;
@@ -51,7 +52,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -74,38 +75,25 @@ public class CmsInfoLoadingListItemWidget extends CmsListItemWidget {
     protected boolean m_loading;
 
     /**
-     * Interface for asynchronously loading additional info items.<p>
-     */
-    public interface I_AdditionalInfoLoader {
-
-        /**
-         * Triggers a load operation for additional info items.<p>
-         * 
-         * @param callback the callback to which the result of the load operation will be passed
-         */
-        void load(AsyncCallback<List<AdditionalInfoItem>> callback);
-    }
-
-    /**
      * Sets the loader for additional info items.<p>
      * 
      * @param loader the loader for additional info items 
      */
-    public void setAdditionalInfoLoader(I_AdditionalInfoLoader loader) {
+    public void setAdditionalInfoLoader(I_CmsAdditionalInfoLoader loader) {
 
         m_additionalInfoLoader = loader;
     }
 
     /** The loader for additional info items. */
-    protected I_AdditionalInfoLoader m_additionalInfoLoader = new DummyAdditionalInfoLoader();
+    protected I_CmsAdditionalInfoLoader m_additionalInfoLoader = new DummyAdditionalInfoLoader();
 
     /**
      * The default loader for additional info items, which does nothing.
      */
-    public class DummyAdditionalInfoLoader implements I_AdditionalInfoLoader {
+    public class DummyAdditionalInfoLoader implements I_CmsAdditionalInfoLoader {
 
         /**
-         * @see org.opencms.gwt.client.ui.CmsInfoLoadingListItemWidget.I_AdditionalInfoLoader#load(com.google.gwt.user.client.rpc.AsyncCallback)
+         * @see org.opencms.gwt.client.util.I_CmsAdditionalInfoLoader#load(com.google.gwt.user.client.rpc.AsyncCallback)
          */
         public void load(AsyncCallback<List<AdditionalInfoItem>> callback) {
 

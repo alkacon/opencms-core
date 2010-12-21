@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/Attic/CmsContextMenuEntryBean.java,v $
- * Date   : $Date: 2010/07/19 14:11:43 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/12/21 10:23:32 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,9 +45,6 @@ public class CmsContextMenuEntryBean implements IsSerializable {
     /** Signals if the menu entry is active. */
     private boolean m_active;
 
-    /** Signals if the menu entry is visible. */
-    private boolean m_visible;
-
     /** Stores the image path for the icon in front of the label. */
     private String m_imagePath;
 
@@ -57,6 +54,9 @@ public class CmsContextMenuEntryBean implements IsSerializable {
     /** Stores the label for the menu entry. */
     private String m_label;
 
+    /** The name of the menu entry. */
+    private String m_name;
+
     /** The reason for de-activation of the menu entry. */
     private String m_reason;
 
@@ -65,6 +65,9 @@ public class CmsContextMenuEntryBean implements IsSerializable {
 
     /** The items from the sub menu. */
     private List<CmsContextMenuEntryBean> m_subMenu;
+
+    /** Signals if the menu entry is visible. */
+    private boolean m_visible;
 
     /**
      * Default Constructor.<p>
@@ -82,6 +85,7 @@ public class CmsContextMenuEntryBean implements IsSerializable {
      * @param imagePath the image path for the icon in front of the label
      * @param jspPath the JSP path for the command 
      * @param label the label for the menu entry
+     * @param name the name for the menu entry
      * @param reason the reason why this item is deactivated
      * @param separator signals if this entry is a separator
      * @param subMenu contains the sub menu of the entry
@@ -92,6 +96,7 @@ public class CmsContextMenuEntryBean implements IsSerializable {
         String imagePath,
         String jspPath,
         String label,
+        String name,
         String reason,
         boolean separator,
         List<CmsContextMenuEntryBean> subMenu) {
@@ -101,6 +106,7 @@ public class CmsContextMenuEntryBean implements IsSerializable {
         m_imagePath = imagePath;
         m_jspPath = jspPath;
         m_label = label;
+        m_name = name;
         m_reason = reason;
         m_separator = separator;
         m_subMenu = subMenu;
@@ -137,6 +143,16 @@ public class CmsContextMenuEntryBean implements IsSerializable {
     }
 
     /**
+     * Returns the name of the entry.<p>
+     * 
+     * @return the name of the entry
+     */
+    public String getName() {
+
+        return m_name;
+    }
+
+    /**
      * Returns the reason for de-activation of the menu entry.<p>
      *  
      * @return the reason
@@ -157,6 +173,19 @@ public class CmsContextMenuEntryBean implements IsSerializable {
     }
 
     /**
+     * Returns <code>true</code> if this menu entry has a sub menu <code>false</code> otherwise.<p>
+     * 
+     * @return <code>true</code> if this menu entry has a sub menu <code>false</code> otherwise
+     */
+    public boolean hasSubMenu() {
+
+        if (!CmsCollectionUtil.isEmptyOrNull(m_subMenu)) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Returns <code>true</code> if this menu entry is active, <code>false</code> otherwise.<p>
      * 
      * @return <code>true</code> if this menu entry is active, <code>false</code> otherwise
@@ -164,16 +193,6 @@ public class CmsContextMenuEntryBean implements IsSerializable {
     public boolean isActive() {
 
         return m_active;
-    }
-
-    /**
-     * Returns <code>true</code> if this menu entry is visible, <code>false</code> otherwise.<p>
-     * 
-     * @return <code>true</code> if this menu entry is visible, <code>false</code> otherwise
-     */
-    public boolean isVisible() {
-
-        return m_visible;
     }
 
     /**
@@ -187,6 +206,16 @@ public class CmsContextMenuEntryBean implements IsSerializable {
     }
 
     /**
+     * Returns <code>true</code> if this menu entry is visible, <code>false</code> otherwise.<p>
+     * 
+     * @return <code>true</code> if this menu entry is visible, <code>false</code> otherwise
+     */
+    public boolean isVisible() {
+
+        return m_visible;
+    }
+
+    /**
      * Sets the active.<p>
      *
      * @param active the active to set
@@ -194,16 +223,6 @@ public class CmsContextMenuEntryBean implements IsSerializable {
     public void setActive(boolean active) {
 
         m_active = active;
-    }
-
-    /**
-     * Sets the visible flag.<p>
-     *
-     * @param visible the enabled to set
-     */
-    public void setVisible(boolean visible) {
-
-        m_visible = visible;
     }
 
     /**
@@ -237,6 +256,16 @@ public class CmsContextMenuEntryBean implements IsSerializable {
     }
 
     /**
+     * Sets the name of the entry.<p>
+     * 
+     * @param name the name to set
+     */
+    public void setName(String name) {
+
+        m_name = name;
+    }
+
+    /**
      * Sets the reason.<p>
      *
      * @param reason the reason to set
@@ -267,16 +296,12 @@ public class CmsContextMenuEntryBean implements IsSerializable {
     }
 
     /**
-     * Returns <code>true</code> if this menu entry has a sub menu <code>false</code> otherwise.<p>
-     * 
-     * @return <code>true</code> if this menu entry has a sub menu <code>false</code> otherwise
+     * Sets the visible flag.<p>
+     *
+     * @param visible the enabled to set
      */
-    public boolean hasSubMenu() {
+    public void setVisible(boolean visible) {
 
-        if (!CmsCollectionUtil.isEmptyOrNull(m_subMenu)) {
-            return true;
-        }
-        return false;
+        m_visible = visible;
     }
-
 }

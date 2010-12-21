@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsContextMenu.java,v $
- * Date   : $Date: 2010/11/29 08:29:19 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/12/21 10:23:32 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since version 8.0.0
  */
@@ -163,8 +163,10 @@ public class CmsContextMenu extends Composite implements ResizeHandler, I_CmsAut
      */
     public void onClose() {
 
-        if ((m_selectedItem != null) && m_selectedItem.hasSubmenu()) {
-            m_selectedItem.getSubMenu().onClose();
+        if ((m_selectedItem != null)) {
+            if (m_selectedItem.hasSubmenu()) {
+                m_selectedItem.getSubMenu().onClose();
+            }
             m_selectedItem.deselectItem();
         }
         m_popup.hide();
@@ -203,7 +205,6 @@ public class CmsContextMenu extends Composite implements ResizeHandler, I_CmsAut
         m_popup.add(item.getSubMenu());
         m_popup.addAutoHidePartner(item.getElement());
         m_popup.setModal(false);
-        m_popup.getDialog().getElement().addClassName(I_CmsLayoutBundle.INSTANCE.contextmenuCss().cmsContextMenuPopup());
         m_popup.show();
 
         setSubMenuPosition(item);

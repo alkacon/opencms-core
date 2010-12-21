@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/ui/Attic/CmsSpecialTab.java,v $
- * Date   : $Date: 2010/12/17 08:45:30 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/12/21 10:23:32 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import java.util.List;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -120,7 +120,7 @@ public class CmsSpecialTab extends A_CmsListTab {
         info.setTitle(title);
         info.setSubTitle(subtitle);
         CmsListItemWidget widget = new CmsListItemWidget(info);
-        widget.setIcon(CSS.normal());
+        widget.setIcon(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().normal());
         CmsDetailPageListItem listItem = new CmsDetailPageListItem(widget, typeInfo);
         listItem.addTag(TAG_SPECIAL);
         listItem.initMoveHandle(m_dndHandler);
@@ -159,7 +159,7 @@ public class CmsSpecialTab extends A_CmsListTab {
         info.setTitle(title);
         info.setSubTitle(subtitle);
         CmsListItemWidget widget = new CmsListItemWidget(info);
-        widget.setIcon(CSS.redirect());
+        widget.setIcon(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().redirect());
         CmsListItem item = new CmsListItem(widget);
         item.addTag(TAG_REDIRECT);
         item.addTag(TAG_SPECIAL);

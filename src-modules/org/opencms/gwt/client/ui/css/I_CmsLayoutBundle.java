@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2010/12/17 08:45:29 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2010/12/21 10:23:32 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,8 +34,8 @@ package org.opencms.gwt.client.ui.css;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
-import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.resources.client.CssResource.Shared;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.resources.client.ImageResource.ImageOptions;
 import com.google.gwt.resources.client.ImageResource.RepeatStyle;
 
@@ -44,11 +44,103 @@ import com.google.gwt.resources.client.ImageResource.RepeatStyle;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.48 $
+ * @version $Revision: 1.49 $
  * 
  * @since 8.0.0
  */
 public interface I_CmsLayoutBundle extends ClientBundle {
+
+    /** The context menu CSS classes. */
+    public interface I_CmsResourceStateCss extends CssResource {
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String stateChanged();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String stateDeleted();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String stateNew();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String noState();
+    }
+
+    /** The context menu CSS classes. */
+    public interface I_CmsAvailabilityCss extends CssResource {
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String checkBox();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String dateBox();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String fieldsetSpacer();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String inlineBlock();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String inputCombination();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String labelColumn();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String principalIcon();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String responsabilityLabel();
+    }
 
     /** Button CSS. */
     interface I_CmsButtonCss extends I_CmsStateCss {
@@ -276,13 +368,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
-        String cmsContextMenuPopup();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
         String cmsMenuBar();
 
         /** 
@@ -454,6 +539,24 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String dragStarted();
+    }
+
+    /** The context menu CSS classes. */
+    public interface I_CmsFieldsetCss extends CssResource {
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String fieldsetInvisible();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String fieldsetVisible();
     }
 
     /** General CSS, used for general re-occurring styles. */
@@ -694,6 +797,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          */
         String dragging();
 
+        /**
+         * CSS class accessor.<p>
+         * 
+         * @return a CSS class
+         **/
+        String export();
+
         /** 
          * Access method.<p>
          * 
@@ -778,6 +888,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          */
         String itemYellow();
 
+        /**
+         * CSS class accessor.<p>
+         * 
+         * @return a CSS class
+         **/
+        String normal();
+
         /** 
          * Access method.<p>
          * 
@@ -791,6 +908,20 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String permaVisible();
+
+        /**
+         * CSS class accessor.<p>
+         * 
+         * @return a CSS class
+         **/
+        String redirect();
+
+        /**
+         * CSS class accessor.<p>
+         * 
+         * @return a CSS class
+         **/
+        String secure();
 
         /** 
          * Access method.<p>
@@ -1196,6 +1327,14 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     /**
      * Access method.<p>
      * 
+     * @return the constants CSS
+     */
+    @Source("availability.css")
+    I_CmsAvailabilityCss availabilityCss();
+
+    /**
+     * Access method.<p>
+     * 
      * @return the image resource
      */
     @Source("images/ui-bg_glass_65_ffffff_1x400.png")
@@ -1246,6 +1385,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     @Source("images/ui-bg_glass_75_cccccc_1x400.png")
     @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
     ImageResource backgroundHover();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image bundle for the gwt module
+     */
+    I_CmsImageBundle gwtImages();
 
     /**
      * Access method.<p>
@@ -1313,6 +1459,14 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      */
     @Source("dragdrop.css")
     I_CmsDragCss dragdropCss();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the constants CSS
+     */
+    @Source("fieldset.css")
+    I_CmsFieldsetCss fieldsetCss();
 
     /**
      * Access method.<p>
@@ -1459,6 +1613,14 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     @Source("listItemWidget.css")
     @CssResource.NotStrict
     I_CmsListItemWidgetCss listItemWidgetCss();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the list item CSS
+     */
+    @Source("resourceState.css")
+    I_CmsResourceStateCss resourceStateCss();
 
     /**
      * Access method.<p>

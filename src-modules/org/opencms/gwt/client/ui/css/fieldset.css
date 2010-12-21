@@ -1,0 +1,11 @@
+.fieldsetVisible {
+	border: solid 1px #999999;
+	background: #fff;
+	min-height: 8px;
+}
+.fieldsetInvisible {
+	border: solid 1px #fff;
+	border-top: solid 1px #999999;
+	background: #fff;
+	min-height: 8px;
+}

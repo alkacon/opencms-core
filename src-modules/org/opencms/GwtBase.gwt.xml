@@ -47,6 +47,9 @@
 		<include name="CmsDetailPageTable.java" />
 		<include name="CmsDetailPageInfo.java" />
 	</source>
+	<source path="db" >
+		<include name="CmsResourceState.java" />
+	</source>
 	<source path="jsp">
 		<include name="CmsContainerJsonKeys.java" />
 	</source>

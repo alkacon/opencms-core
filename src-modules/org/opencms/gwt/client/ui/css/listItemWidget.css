@@ -19,6 +19,31 @@
 	font-size: value("constantsCss.fontSize");
 }
 
+
+
+@sprite .export {
+	gwt-image: "gwtImages.iconExport"; 
+	margin-top:  3px;
+	margin-left: 3px;
+}
+@sprite .normal {
+	gwt-image: "gwtImages.iconNormal";
+	margin-top: 3px;
+	margin-left: 3px;
+}
+@sprite .secure {
+	gwt-image: "gwtImages.iconSecure";
+	margin-top: 3px;
+	margin-left: 3px;  
+}
+@sprite .redirect { 
+	gwt-image: "gwtImages.iconRedirect";
+	margin-top: 3px;
+	margin-left: 3px;
+}
+
+
+
 @sprite .itemContent {
     gwt-image: "backgroundDefault";
     background-position: 50% 50%;

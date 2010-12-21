@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/I_CmsContextMenuEntry.java,v $
- * Date   : $Date: 2010/07/19 14:11:43 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/12/21 10:23:32 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import com.google.gwt.user.client.Command;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since version 8.0.0
  */
@@ -80,6 +80,13 @@ public interface I_CmsContextMenuEntry {
      * @return the label
      */
     String getLabel();
+
+    /**
+     * Returns the name of the entry.<p>
+     * 
+     * @return the name of the entry
+     */
+    String getName();
 
     /**
      * Returns the reason if the entry is de-activated .<p>

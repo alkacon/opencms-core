@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsResourceState.java,v $
- * Date   : $Date: 2009/09/09 14:26:35 $
- * Version: $Revision: 1.5.2.1 $
+ * Date   : $Date: 2010/12/21 10:23:33 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,16 +38,14 @@ import java.io.Serializable;
 /**
  *  Enumeration class for the different resource states.<p>
  *
- * @author Michael Moossen 
+ * @author Michael Moossen
+ * @author Ruediger Kurz
  * 
- * @version $Revision: 1.5.2.1 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.5.3 
  */
 public class CmsResourceState implements Serializable {
-
-    /** serializable version id. */
-    private static final long serialVersionUID = -2704354453252295414L;
 
     /** Indicates if a resource has been changed in the offline version when compared to the online version. */
     public static final CmsResourceState STATE_CHANGED = new CmsResourceState(1, 'C');
@@ -67,11 +65,25 @@ public class CmsResourceState implements Serializable {
     /** Indicates if a resource is unchanged in the offline version when compared to the online version. */
     public static final CmsResourceState STATE_UNCHANGED = new CmsResourceState(0, 'U');
 
+    /** serializable version id. */
+    private static final long serialVersionUID = -2704354453252295414L;
+
     /** The state abbreviation character. */
     private char m_abbrev;
 
     /** The integer state representation. */
     private int m_state;
+
+    /**
+     * Default constructor for serialization.<p>
+     * 
+     * @deprecated Don't use this constructor! 
+     * It is only used to transfer the resource state via RPC call.
+     */
+    protected CmsResourceState() {
+
+        // noop
+    }
 
     /**
      * protected constructor.<p>
@@ -110,6 +122,15 @@ public class CmsResourceState implements Serializable {
     }
 
     /**
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+
+        return (obj instanceof CmsResourceState) && (((CmsResourceState)obj).m_state == m_state);
+    }
+
+    /**
      * Returns resource state abbreviation.<p>
      * 
      * @return resource state abbreviation
@@ -127,6 +148,15 @@ public class CmsResourceState implements Serializable {
     public int getState() {
 
         return m_state;
+    }
+
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+
+        return new Integer(m_state).hashCode();
     }
 
     /**

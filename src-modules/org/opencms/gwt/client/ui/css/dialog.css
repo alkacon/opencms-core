@@ -1,7 +1,17 @@
-@external popupContent, Caption;
+@external popupContent, Caption, dialogBottom, dialogTop;
 .popup{
     z-index: 500;
     padding: 3px;
+    
+}
+
+.popup *{
+	font-family: value("constantsCss.fontFamily");
+	font-size: value("constantsCss.fontSize");
+}
+
+.popup .dialogBottom {
+	display: none;
 }
 .popup.menuPopup{
 	padding-top:0px;
@@ -64,7 +74,7 @@
 }
 }
 
-.hideCaption .Caption{
+.hideCaption .dialogTop{
 	display: none;
 }
 

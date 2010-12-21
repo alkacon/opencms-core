@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/Attic/Messages.java,v $
- * Date   : $Date: 2010/11/29 10:33:36 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2010/12/21 10:23:33 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,17 +38,17 @@ import org.opencms.gwt.client.util.CmsMessages;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 8.0.0
  */
 public final class Messages {
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_DATEBOX_INVALID_DATE_FORMAT_1 = "ERR_DATEBOX_INVALID_DATE_FORMAT_1";
+    public static final String ERR_DATEBOX_INVALID_DATE_FORMAT_0 = "ERR_DATEBOX_INVALID_DATE_FORMAT_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_DATEBOX_INVALID_TIME_FORMAT_1 = "ERR_DATEBOX_INVALID_TIME_FORMAT_1";
+    public static final String ERR_DATEBOX_INVALID_TIME_FORMAT_0 = "ERR_DATEBOX_INVALID_TIME_FORMAT_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_INVALID_UUID_1 = "ERR_INVALID_UUID_1";
@@ -103,6 +103,15 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_GALLERY_SELECT_DIALOG_TITLE_0 = "GUI_GALLERY_SELECT_DIALOG_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ICON_TITLE_EXPORT_0 = "GUI_ICON_TITLE_EXPORT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ICON_TITLE_REDIRECT_0 = "GUI_ICON_TITLE_REDIRECT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ICON_TITLE_SECURE_0 = "GUI_ICON_TITLE_SECURE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LINK_CHECKBOX_EXTERNAL_0 = "GUI_LINK_CHECKBOX_EXTERNAL_0";
@@ -196,6 +205,22 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_YES_0 = "GUI_YES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCE_STATE_CHANGED_0 = "GUI_RESOURCE_STATE_CHANGED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCE_STATE_DELETED_0 = "GUI_RESOURCE_STATE_DELETED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCE_STATE_NEW_0 = "GUI_RESOURCE_STATE_NEW_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCE_STATE_UNCHANGED_0 = "GUI_RESOURCE_STATE_UNCHANGED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCE_STATE_0 = "GUI_RESOURCE_STATE_0";
+
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.gwt.clientmessages";
 

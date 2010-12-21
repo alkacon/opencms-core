@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsRadioButtonGroupWidget.java,v $
- * Date   : $Date: 2010/10/29 12:18:21 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/12/21 10:23:32 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import com.google.gwt.user.client.ui.Panel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
  * 
@@ -183,6 +183,21 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsHasInit {
     public String getFormValueAsString() {
 
         return (String)getFormValue();
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#isEnabled()
+     */
+    @Override
+    public boolean isEnabled() {
+
+        boolean result = true;
+        for (Map.Entry<String, CmsRadioButton> entry : m_radioButtons.entrySet()) {
+            if (!entry.getValue().isEnabled()) {
+                result = false;
+            }
+        }
+        return result;
     }
 
     /**

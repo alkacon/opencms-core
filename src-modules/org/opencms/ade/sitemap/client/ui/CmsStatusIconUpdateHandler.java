@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/ui/Attic/CmsStatusIconUpdateHandler.java,v $
- * Date   : $Date: 2010/11/29 15:51:09 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2010/12/21 10:23:32 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,10 +32,10 @@
 package org.opencms.ade.sitemap.client.ui;
 
 import org.opencms.ade.sitemap.client.CmsSitemapTreeItem;
-import org.opencms.ade.sitemap.client.CmsSitemapTreeItem.StatusIcon;
 import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.control.I_CmsPropertyUpdateHandler;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
+import org.opencms.gwt.shared.CmsListInfoBean.PageIcon;
 import org.opencms.xml.sitemap.CmsSitemapManager;
 import org.opencms.xml.sitemap.properties.CmsComputedPropertyValue;
 
@@ -47,7 +47,7 @@ import java.util.Map;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -62,17 +62,16 @@ public class CmsStatusIconUpdateHandler implements I_CmsPropertyUpdateHandler {
         CmsSitemapTreeItem item = CmsSitemapView.getInstance().getTreeItem(entry.getSitePath());
         CmsComputedPropertyValue secureProp = myProps.get("secure");
         CmsComputedPropertyValue exportProp = myProps.get("export");
-        StatusIcon icon = StatusIcon.none;
+        PageIcon icon = PageIcon.none;
         if ((exportProp != null) && "true".equals(exportProp.getOwnValue())) {
-            icon = StatusIcon.export;
+            icon = PageIcon.export;
         }
         if ((secureProp != null) && "true".equals(secureProp.getOwnValue())) {
-            icon = StatusIcon.secure;
+            icon = PageIcon.secure;
         }
         if ((entry.getOwnProperty(CmsSitemapManager.Property.isRedirect.getName())) != null) {
-            icon = StatusIcon.redirect;
+            icon = PageIcon.redirect;
         }
-        item.setStatus(icon);
+        item.setPageIcon(icon);
     }
-
 }

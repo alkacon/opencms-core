@@ -1,0 +1,13 @@
+.stateNew {
+	color: #0000ff;
+
+}
+.stateChanged {
+	color: #ff0000;
+}
+
+.stateDeleted {
+	text-decoration: line-through;
+}
+
+.noState {}

@@ -35,23 +35,10 @@
 	border: 10px solid red;
 }
 
-.stateNew {
-	color: #0000ff;
-
-}
-
 .problemPanel {
 	font-weight: bold;
 	padding: 5px;
 	text-align: center;
-}
-
-.stateChanged {
-	color: #ff0000;
-}
-
-.stateDeleted {
-	text-decoration: line-through;
 }
 
 .groupPanel {
@@ -137,8 +124,6 @@
 		display: inline-block;
 	}
 }
-
-.noState {}
 
 .publishDialog, .publishDialog > * {
  /* this fixes the 'content vanishes while dragging' problem in IE */	

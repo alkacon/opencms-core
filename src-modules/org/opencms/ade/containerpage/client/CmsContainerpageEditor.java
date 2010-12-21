@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageEditor.java,v $
- * Date   : $Date: 2010/11/22 11:43:50 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2010/12/21 10:23:33 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,7 +69,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * 
  * @since 8.0.0
  */
@@ -313,9 +313,9 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
             m_sitemap.setEnabled(false);
         }
 
-        //        m_context = new CmsToolbarContextButton(containerpageHandler);
-        //        // m_context.addClickHandler(clickHandler);
-        //        m_toolbar.addRight(m_context);
+        m_context = new CmsToolbarContextButton(containerpageHandler);
+        m_context.addClickHandler(clickHandler);
+        m_toolbar.addRight(m_context);
 
         m_reset = new CmsToolbarResetButton(containerpageHandler);
         m_reset.addClickHandler(clickHandler);

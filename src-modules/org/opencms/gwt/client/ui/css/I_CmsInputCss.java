@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsInputCss.java,v $
- * Date   : $Date: 2010/12/17 08:45:29 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2010/12/21 10:23:32 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import com.google.gwt.resources.client.CssResource;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 8.0.0
  */
@@ -338,6 +338,20 @@ public interface I_CmsInputCss extends CssResource {
      * @return the css class
      */
     String textBoxPanel();
+
+    /**
+     * Css class reader.<p>
+     * 
+     * @return the css class
+     */
+    String textBoxPanelDisabled();
+
+    /**
+     * Css class reader.<p>
+     * 
+     * @return the css class
+     */
+    String textBoxPanelError();
 
     /**
      * Css class reader.<p>

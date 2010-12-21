@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsTextBox.java,v $
- * Date   : $Date: 2010/11/29 10:33:35 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2010/12/21 10:23:32 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,17 +38,27 @@ import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
+import org.opencms.util.CmsStringUtil;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.HasBlurHandlers;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.dom.client.HasFocusHandlers;
 import com.google.gwt.event.dom.client.HasKeyPressHandlers;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
+import com.google.gwt.event.dom.client.MouseOutEvent;
+import com.google.gwt.event.dom.client.MouseOutHandler;
+import com.google.gwt.event.dom.client.MouseOverEvent;
+import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -63,14 +73,14 @@ import com.google.gwt.user.client.ui.TextBox;
  * @author Georg Westenberger
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * 
  * @since 8.0.0
  * 
  */
 public class CmsTextBox extends Composite
-implements I_CmsFormWidget, I_CmsHasInit, HasBlurHandlers, HasValueChangeHandlers<String>, HasKeyPressHandlers,
-HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
+implements I_CmsFormWidget, I_CmsHasInit, HasFocusHandlers, HasBlurHandlers, HasValueChangeHandlers<String>,
+HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
 
     /** The CSS bundle used for this widget. */
     public static final I_CmsInputCss CSS = I_CmsInputLayoutBundle.INSTANCE.inputCss();
@@ -87,8 +97,17 @@ HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
     /** The text box used internally by this widget. */
     protected TextBox m_textbox = new TextBox();
 
+    /** A list of the click handler registrations for this text box. */
+    private List<HandlerRegistration> m_clickHandlerRegistrations = new ArrayList<HandlerRegistration>();
+
+    /** A list of the click handlers for this text box. */
+    private List<ClickHandler> m_clickHandlers = new ArrayList<ClickHandler>();
+
     /** The error display for this widget. */
     private CmsErrorWidget m_error = new CmsErrorWidget();
+
+    /** The width of the error message. */
+    private String m_errorMessageWidth;
 
     /** Flag for ghost mode. */
     private boolean m_ghostMode;
@@ -96,16 +115,46 @@ HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
     /** The container for the textbox container and error widget. */
     private FlowPanel m_panel = new FlowPanel();
 
+    /** Signals whether the error message will be shown on mouse over. */
+    private boolean m_preventShowError;
+
     /** The container for the text box. */
     private CmsPaddedPanel m_textboxContainer = new CmsPaddedPanel(DEFAULT_PADDING);
+
+    /** Stores the enable/disable state of the textbox. */
+    private boolean m_enabled;
 
     /**
      * Constructs a new instance of this widget.
      */
     public CmsTextBox() {
 
+        setEnabled(true);
         m_textbox.setStyleName(CSS.textBox());
         m_textbox.getElement().setId("CmsTextBox_" + (idCounter++));
+        m_textbox.addMouseOverHandler(new MouseOverHandler() {
+
+            /**
+             * @see com.google.gwt.event.dom.client.MouseOverHandler#onMouseOver(com.google.gwt.event.dom.client.MouseOverEvent)
+             */
+            public void onMouseOver(MouseOverEvent event) {
+
+                if (!isPreventShowError()) {
+                    showError();
+                }
+            }
+        });
+        m_textbox.addMouseOutHandler(new MouseOutHandler() {
+
+            /**
+             * @see com.google.gwt.event.dom.client.MouseOutHandler#onMouseOut(com.google.gwt.event.dom.client.MouseOutEvent)
+             */
+            public void onMouseOut(MouseOutEvent event) {
+
+                hideError();
+            }
+        });
+
         m_textboxContainer.setStyleName(CSS.textBoxPanel());
         m_textboxContainer.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
         m_textboxContainer.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().textMedium());
@@ -169,7 +218,10 @@ HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
      */
     public HandlerRegistration addClickHandler(ClickHandler handler) {
 
-        return addDomHandler(handler, ClickEvent.getType());
+        HandlerRegistration registration = addDomHandler(handler, ClickEvent.getType());
+        m_clickHandlerRegistrations.add(registration);
+        m_clickHandlers.add(handler);
+        return registration;
     }
 
     /**
@@ -249,6 +301,46 @@ HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
     }
 
     /**
+     * Returns <code>true</code> if this textbox has an error set.<p>
+     * 
+     * @return <code>true</code> if this textbox has an error set
+     */
+    public boolean hasError() {
+
+        return m_error.hasError();
+    }
+
+    /**
+     * Gets whether this widget is enabled.
+     * 
+     * @return <code>true</code> if the widget is enabled
+     */
+    public boolean isEnabled() {
+
+        return m_enabled;
+    }
+
+    /**
+     * Returns the preventShowError.<p>
+     *
+     * @return the preventShowError
+     */
+    public boolean isPreventShowError() {
+
+        return m_preventShowError;
+    }
+
+    /**
+     * Returns the read only flag.<p>
+     * 
+     * @return <code>true</code> if this text box is only readable
+     */
+    public boolean isReadOnly() {
+
+        return m_textbox.isReadOnly();
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#reset()
      */
     public void reset() {
@@ -277,7 +369,27 @@ HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
      */
     public void setEnabled(boolean enabled) {
 
-        m_textbox.setEnabled(enabled);
+        if (!m_enabled && enabled) {
+            // if the state changed to enable then add the stored handlers
+            // copy the stored handlers into a new list to avoid concurred access to the list
+            List<ClickHandler> handlers = new ArrayList<ClickHandler>(m_clickHandlers);
+            m_clickHandlers.clear();
+            for (ClickHandler handler : handlers) {
+                addClickHandler(handler);
+            }
+            m_textboxContainer.removeStyleName(CSS.textBoxPanelDisabled());
+            m_enabled = true;
+        } else if (m_enabled && !enabled) {
+            // if state changed to disable then remove all click handlers
+            for (HandlerRegistration registration : m_clickHandlerRegistrations) {
+                registration.removeHandler();
+            }
+            m_clickHandlerRegistrations.clear();
+            m_textboxContainer.addStyleName(CSS.textBoxPanelDisabled());
+            setErrorMessage(null);
+            m_enabled = false;
+        }
+        m_textbox.setEnabled(m_enabled);
     }
 
     /**
@@ -285,7 +397,29 @@ HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
      */
     public void setErrorMessage(String errorMessage) {
 
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(errorMessage)) {
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_errorMessageWidth)) {
+                m_error.setWidth(m_errorMessageWidth);
+            } else {
+                m_error.setWidth(getOffsetWidth() - 8 + Unit.PX.toString());
+            }
+            m_textboxContainer.removeStyleName(CSS.textBoxPanel());
+            m_textboxContainer.addStyleName(CSS.textBoxPanelError());
+        } else {
+            m_textboxContainer.removeStyleName(CSS.textBoxPanelError());
+            m_textboxContainer.addStyleName(CSS.textBoxPanel());
+        }
         m_error.setText(errorMessage);
+    }
+
+    /**
+     * Sets the width of the error message for this textbox.<p>
+     * 
+     * @param width the object's new width, in CSS units (e.g. "10px", "1em")
+     */
+    public void setErrorMessageWidth(String width) {
+
+        m_errorMessageWidth = width;
     }
 
     /**
@@ -336,6 +470,19 @@ HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
     }
 
     /**
+     * Sets the preventShowError.<p>
+     *
+     * @param preventShowError the preventShowError to set
+     */
+    public void setPreventShowError(boolean preventShowError) {
+
+        m_preventShowError = preventShowError;
+        if (preventShowError) {
+            m_error.setErrorVisible(false);
+        }
+    }
+
+    /**
      * Enables or disables read-only mode.<p>
      * 
      * @param readOnly if true, enables read-only mode, else disables it
@@ -378,6 +525,14 @@ HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
     }
 
     /**
+     * Hides the error for this textbox.<p>
+     */
+    protected void hideError() {
+
+        m_error.hideError();
+    }
+
+    /**
      * Enables or disables ghost mode.<p>
      * 
      * @param ghostMode if true, enables ghost mode, else disables it 
@@ -391,6 +546,23 @@ HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
         }
         m_ghostMode = ghostMode;
 
+    }
+
+    /**
+     * Shows the error for this textbox.<p>
+     */
+    protected void showError() {
+
+        m_error.showError();
+    }
+
+    /**
+     * @see com.google.gwt.event.dom.client.HasFocusHandlers#addFocusHandler(com.google.gwt.event.dom.client.FocusHandler)
+     */
+    @Override
+    public HandlerRegistration addFocusHandler(FocusHandler handler) {
+
+        return m_textbox.addFocusHandler(handler);
     }
 
 }

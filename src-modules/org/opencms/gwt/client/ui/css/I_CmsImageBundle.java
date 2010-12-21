@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsImageBundle.java,v $
- * Date   : $Date: 2010/12/17 08:45:29 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2010/12/21 10:23:32 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,9 +36,9 @@ import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsContextmenuItemCss;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
-import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.resources.client.CssResource.NotStrict;
 import com.google.gwt.resources.client.CssResource.Shared;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.resources.client.ImageResource.ImageOptions;
 import com.google.gwt.resources.client.ImageResource.RepeatStyle;
 
@@ -47,7 +47,7 @@ import com.google.gwt.resources.client.ImageResource.RepeatStyle;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 8.0.0
  */
@@ -61,8 +61,20 @@ public interface I_CmsImageBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
-        String bump();
+        String availabilitySmall();
 
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String availability();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String bump();
+        
         /** Access method.<p>
          * 
          * @return the CSS class name
@@ -411,6 +423,54 @@ public interface I_CmsImageBundle extends ClientBundle {
     ImageResource addFavoriteIconInactive();
 
     /**
+     * Image resource accessor.<p>
+     * 
+     * @return an image resource
+     */
+    @Source("images/arrow-bottom.png")
+    ImageResource arrowBottom();
+
+    /**
+     * Image resource accessor.<p>
+     * 
+     * @return an image resource
+     */
+    @Source("images/arrow-right.png")
+    ImageResource arrowRight();
+
+    /**
+     * Image resource accessor.<p>
+     * 
+     * @return an image resource
+     */
+    @Source("images/arrow-top.png")
+    ImageResource arrowTop();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/ocms_de_availability_a.png")
+    ImageResource availabilityIconActive();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/icon_16x16_availability.png")
+    ImageResource availabilityIconSmall();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/ocms_de_availability_sw.png")
+    ImageResource availabilityIconDeactivated();
+
+    /**
      * Access method.<p>
      * 
      * @return the image resource
@@ -538,6 +598,46 @@ public interface I_CmsImageBundle extends ClientBundle {
      */
     @Source("images/goto_sub_20x20.png")
     ImageResource gotoSubIconActive();
+
+    /**
+     * Image resource accessor.<p>
+     * 
+     * @return an image resource
+     */
+    @Source("images/group_16x16.png")
+    ImageResource groupSmall();
+
+    /** 
+     * Access method.<p>
+     * 
+     * @return an image resource
+     */
+    @Source("images/export.png")
+    ImageResource iconExport();
+
+    /** 
+     * Access method.<p>
+     * 
+     * @return an image resource
+     */
+    @Source("images/normal.png")
+    ImageResource iconNormal();
+
+    /** 
+     * Access method.<p>
+     * 
+     * @return an image resource
+     */
+    @Source("images/redirect.png")
+    ImageResource iconRedirect();
+
+    /** 
+     * Access method.<p>
+     * 
+     * @return an image resource
+     */
+    @Source("images/secure.png")
+    ImageResource iconSecure();
 
     /**
      * Access method.<p>
@@ -978,5 +1078,13 @@ public interface I_CmsImageBundle extends ClientBundle {
      */
     @Source("images/unlocked.gif")
     ImageResource unlocked();
+
+    /**
+     * Image resource accessor.<p>
+     * 
+     * @return an image resource
+     */
+    @Source("images/user_16x16.png")
+    ImageResource userSmall();
 
 }

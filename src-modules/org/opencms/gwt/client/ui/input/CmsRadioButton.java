@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsRadioButton.java,v $
- * Date   : $Date: 2010/10/26 08:13:44 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/12/21 10:23:32 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 8.0.0
  * 
@@ -155,6 +155,16 @@ public class CmsRadioButton extends Composite implements HasHorizontalAlignment,
     public boolean isChecked() {
 
         return m_button.isDown();
+    }
+
+    /**
+     * Returns <code>true</code> if this widget is enabled.<p>
+     * 
+     * @return <code>true</code> if this widget is enabled
+     */
+    public boolean isEnabled() {
+
+        return m_button.isEnabled();
     }
 
     /**

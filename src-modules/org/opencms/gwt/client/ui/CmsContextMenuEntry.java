@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsContextMenuEntry.java,v $
- * Date   : $Date: 2010/07/23 08:29:34 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/12/21 10:23:32 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import com.google.gwt.user.client.Command;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since version 8.0.0
  */
@@ -100,7 +100,6 @@ public class CmsContextMenuEntry implements I_CmsContextMenuEntry {
     /**
      * @see org.opencms.gwt.client.ui.I_CmsContextMenuEntry#getJspPath()
      */
-
     public String getJspPath() {
 
         return m_bean.getJspPath();
@@ -112,6 +111,14 @@ public class CmsContextMenuEntry implements I_CmsContextMenuEntry {
     public String getLabel() {
 
         return m_bean.getLabel();
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.I_CmsContextMenuEntry#getName()
+     */
+    public String getName() {
+
+        return m_bean.getName();
     }
 
     /**

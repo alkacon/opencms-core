@@ -118,6 +118,21 @@
 	color: value("constants.color");
 }
 
+.textBoxPanelDisabled {
+	background-color: #ddd;
+}
+
+.textBoxPanelDisabled * {
+	color: value("constants.colorDisabled");
+	cursor: default;
+}
+
+.textBoxPanelError {
+	border: 1px solid #B31B34;
+	background-color: #FFCCCC;
+	overflow:hidden;
+}
+
 .formLabel {
 	font-weight: bold;
 }
@@ -153,7 +168,14 @@
 }
 
 .error {
-	color: red;
+	text-align: left;
+	border: 1px solid #B31B34;
+	background-color: #EEE;
+	color: black;
+    margin-top: 2px;
+    padding: 3px;
+    position: absolute;
+    z-index: 31000;
 }
 
 @sprite .openerNoHover.selectBoxSelected {

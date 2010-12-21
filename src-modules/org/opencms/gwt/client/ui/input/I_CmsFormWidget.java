@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/I_CmsFormWidget.java,v $
- * Date   : $Date: 2010/10/29 12:18:21 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/12/21 10:23:32 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.client.ui.I_CmsAutoHider;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 8.0.0
  */
@@ -90,6 +90,13 @@ public interface I_CmsFormWidget {
      * @return the current value of the widget
      */
     String getFormValueAsString();
+
+    /**
+     * Returns <code>true</code> if this widget is enabled.<p>
+     * 
+     * @return <code>true</code> if this widget is enabled
+     */
+    boolean isEnabled();
 
     /**
      * Resets the widget to its default state.

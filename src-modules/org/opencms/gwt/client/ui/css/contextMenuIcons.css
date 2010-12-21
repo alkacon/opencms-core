@@ -1,5 +1,12 @@
 .arrow, .label, .image{}
 
+@sprite .availabilitySmall{
+    gwt-image: "availabilityIconSmall";
+    float: left;
+	margin: 5px 0px 3px 2px;
+	overflow: hidden;
+}
+
 @sprite .cmsMenuItem.selected .delete{
     gwt-image: "deleteIconActive";
 }
@@ -8,7 +15,6 @@
     float: left;
     margin-top: 3px;
 }
-
 @sprite .cmsMenuItem.disabled .delete{
     gwt-image: "deleteIconDeactivated";
 }
@@ -21,9 +27,20 @@
     float: left;
     margin-top: 3px;
 }
-
 @sprite .cmsMenuItem.disabled .edit{
     gwt-image: "editorIconDeactivated";
+}
+
+@sprite .cmsMenuItem.selected .availability{
+    gwt-image: "availabilityIconActive";
+}
+@sprite .cmsMenuItem .availability{
+    gwt-image: "availabilityIconActive";
+    float: left;
+    margin-top: 3px;
+}
+@sprite .cmsMenuItem.disabled .availability{
+    gwt-image: "availabilityIconDeactivated";
 }
 
 @sprite .cmsMenuItem.selected .move{
@@ -34,7 +51,6 @@
     float: left;
     margin-top: 3px;
 }
-
 @sprite .cmsMenuItem.disabled .move{
     gwt-image: "moveIconDeactivated";
 }
@@ -47,7 +63,6 @@
     float: left;
     margin-top: 3px;
 }
-
 @sprite .cmsMenuItem.disabled .newElement{
     gwt-image: "newIconDeactivated";
 }
@@ -60,7 +75,6 @@
     float: left;
     margin-top: 3px;
 }
-
 @sprite .cmsMenuItem.disabled .properties{
     gwt-image: "propertyIconDeactivated";
 }
@@ -74,7 +88,6 @@
     float: left;
     margin-top: 3px;
 }
-
 @sprite .cmsMenuItem.disabled .selection{
     gwt-image: "selectionIconDeactivated";
 }
@@ -87,7 +100,6 @@
     float: left;
     margin-top: 3px;
 }
-
 @sprite .cmsMenuItem.disabled .gotoPage{
     gwt-image: "gotoPageIconDeactivated";
 }
@@ -100,7 +112,6 @@
     float: left;
     margin-top: 3px;
 }
-
 @sprite .cmsMenuItem.disabled .gotoSub{
     gwt-image: "gotoPageIconDeactivated";
 }
@@ -126,7 +137,6 @@
     float: left;
     margin-top: 3px;
 }
-
 @sprite .cmsMenuItem.disabled .gotoParent{
     gwt-image: "gotoParentIconDeactivated";
 }
@@ -139,7 +149,6 @@
     float: left;
     margin-top: 3px;
 }
-
 @sprite .cmsMenuItem.disabled .subSitemap{
     gwt-image: "subSitemapIconDeactivated";
 }

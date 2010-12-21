@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapView.java,v $
- * Date   : $Date: 2010/12/17 08:45:30 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2010/12/21 10:23:33 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,6 @@
 
 package org.opencms.ade.sitemap.client;
 
-import org.opencms.ade.publish.client.CmsPublishUtil;
 import org.opencms.ade.sitemap.client.control.CmsSitemapChangeEvent;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.client.control.CmsSitemapDNDController;
@@ -52,14 +51,15 @@ import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.CmsHeader;
 import org.opencms.gwt.client.ui.CmsInfoLoadingListItemWidget;
+import org.opencms.gwt.client.ui.CmsListItemWidget.AdditionalInfoItem;
 import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.CmsToolbarPlaceHolder;
-import org.opencms.gwt.client.ui.CmsInfoLoadingListItemWidget.I_AdditionalInfoLoader;
-import org.opencms.gwt.client.ui.CmsListItemWidget.AdditionalInfoItem;
 import org.opencms.gwt.client.ui.tree.A_CmsDeepLazyOpenHandler;
 import org.opencms.gwt.client.ui.tree.CmsLazyTree;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
 import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.gwt.client.util.CmsResourceStateUtil;
+import org.opencms.gwt.client.util.I_CmsAdditionalInfoLoader;
 import org.opencms.gwt.shared.CmsLinkBean;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsPair;
@@ -75,9 +75,9 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.Window.ClosingHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -89,7 +89,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.47 $ 
+ * @version $Revision: 1.48 $ 
  * 
  * @since 8.0.0
  */
@@ -143,7 +143,7 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler, ClosingHandler {
 
         CmsInfoLoadingListItemWidget itemWidget = new CmsInfoLoadingListItemWidget(infoBean);
         final CmsSitemapTreeItem treeItem = new CmsSitemapTreeItem(itemWidget, entry, originalPath);
-        itemWidget.setAdditionalInfoLoader(new I_AdditionalInfoLoader() {
+        itemWidget.setAdditionalInfoLoader(new I_CmsAdditionalInfoLoader() {
 
             public void load(final AsyncCallback<List<AdditionalInfoItem>> callback) {
 
@@ -197,12 +197,12 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler, ClosingHandler {
              */
             protected AdditionalInfoItem createResourceStateInfo(CmsResourceState state) {
 
-                final String label = org.opencms.ade.publish.client.Messages.get().key(
-                    org.opencms.ade.publish.client.Messages.GUI_PUBLISH_RESOURCE_STATE_0);
+                final String label = org.opencms.gwt.client.Messages.get().key(
+                    org.opencms.gwt.client.Messages.GUI_RESOURCE_STATE_0);
                 AdditionalInfoItem item = new AdditionalInfoItem(
                     label,
-                    CmsPublishUtil.getStateName(state),
-                    CmsPublishUtil.getStateStyle(state));
+                    CmsResourceStateUtil.getStateName(state),
+                    CmsResourceStateUtil.getStateStyle(state));
                 return item;
 
             }

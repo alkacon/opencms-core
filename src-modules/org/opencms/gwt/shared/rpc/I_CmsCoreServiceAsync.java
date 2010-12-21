@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/rpc/Attic/I_CmsCoreServiceAsync.java,v $
- * Date   : $Date: 2010/11/19 14:09:18 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2010/12/21 10:23:32 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,12 +32,14 @@
 package org.opencms.gwt.shared.rpc;
 
 import org.opencms.db.CmsResourceState;
+import org.opencms.gwt.shared.CmsAvailabilityInfoBean;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData;
+import org.opencms.gwt.shared.CmsCoreData.AdeContext;
+import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsValidationQuery;
 import org.opencms.gwt.shared.CmsValidationResult;
-import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.util.CmsUUID;
 
 import java.util.List;
@@ -51,7 +53,7 @@ import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 8.0.0
  * 
@@ -67,6 +69,22 @@ public interface I_CmsCoreServiceAsync {
      * @param callback the async callback
      */
     void createUUID(AsyncCallback<CmsUUID> callback);
+
+    /**
+     * Gets a {@link CmsAvailabilityInfoBean} for a given resource.<p>
+     * 
+     * @param structureId the structure id to create the {@link CmsAvailabilityInfoBean} for
+     * @param callback the asynchronous callback
+     */
+    void getAvailabilityInfo(CmsUUID structureId, AsyncCallback<CmsAvailabilityInfoBean> callback);
+
+    /**
+     * Gets a {@link CmsAvailabilityInfoBean} for a given resource.<p>
+     * 
+     * @param vfsPath the vfs path to create the {@link CmsAvailabilityInfoBean} for
+     * @param callback the asynchronous callback
+     */
+    void getAvailabilityInfo(String vfsPath, AsyncCallback<CmsAvailabilityInfoBean> callback);
 
     /**
      * Returns the categories for the given search parameters.<p>
@@ -90,6 +108,22 @@ public interface I_CmsCoreServiceAsync {
      * @param callback the asynchronous callback
      */
     void getContextMenuEntries(String uri, AdeContext context, AsyncCallback<List<CmsContextMenuEntryBean>> callback);
+
+    /**
+     * Gets a {@link CmsListInfoBean} for a given resource.<p>
+     * 
+     * @param structureId the structure id to create the {@link CmsListInfoBean} for
+     * @param callback the asynchronous callback
+     */
+    void getPageInfo(CmsUUID structureId, AsyncCallback<CmsListInfoBean> callback);
+
+    /**
+     * Gets a {@link CmsListInfoBean} for a given resource.<p>
+     * 
+     * @param vfsPath the vfs path to create the {@link CmsListInfoBean} for
+     * @param callback the asynchronous callback
+     */
+    void getPageInfo(String vfsPath, AsyncCallback<CmsListInfoBean> callback);
 
     /**
      * Gets the resource state of a resource on a given path.<p>
@@ -136,6 +170,24 @@ public interface I_CmsCoreServiceAsync {
     void prefetch(AsyncCallback<CmsCoreData> callback);
 
     /**
+     * Applies the changes stored in the info bean to the vfs of OpenCms.<p>
+     * 
+     * @param structureId the structure id of the modified resource
+     * @param bean the bean with the information of the dialog
+     * @param callback the asynchronous callback
+     */
+    void setAvailabilityInfo(CmsUUID structureId, CmsAvailabilityInfoBean bean, AsyncCallback<Void> callback);
+
+    /**
+     * Applies the changes stored in the info bean to the vfs of OpenCms.<p>
+     * 
+     * @param vfsPath the vfs path of the modified resource
+     * @param bean the bean with the information of the dialog
+     * @param callback the asynchronous callback
+     */
+    void setAvailabilityInfo(String vfsPath, CmsAvailabilityInfoBean bean, AsyncCallback<Void> callback);
+
+    /**
      * Translates an URL name of a sitemap entry to a valid form containing no illegal characters.<p>
      * 
      * @param urlName the url name to be translated
@@ -169,7 +221,7 @@ public interface I_CmsCoreServiceAsync {
      * @param validationQueries a map from field names to validation queries 
      * @param values the map of all field values 
      * @param config the form validator configuration string
-     * @param callback the asnchronous callback  
+     * @param callback the asynchronous callback  
      */
     void validate(
         String formValidatorClass,

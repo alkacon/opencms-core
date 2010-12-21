@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/Messages.java,v $
- * Date   : $Date: 2010/11/19 14:09:17 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2010/12/21 10:23:32 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.client.util.CmsMessages;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -96,18 +96,6 @@ public final class Messages {
     public static final String GUI_PUBLISH_REMOVE_BUTTON_0 = "GUI_PUBLISH_REMOVE_BUTTON_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_PUBLISH_RESOURCE_STATE_0 = "GUI_PUBLISH_RESOURCE_STATE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_PUBLISH_RESOURCE_STATE_CHANGED_0 = "GUI_PUBLISH_RESOURCE_STATE_CHANGED_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_PUBLISH_RESOURCE_STATE_DELETED_0 = "GUI_PUBLISH_RESOURCE_STATE_DELETED_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_PUBLISH_RESOURCE_STATE_NEW_0 = "GUI_PUBLISH_RESOURCE_STATE_NEW_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_PUBLISH_TOP_PANEL_ALL_BUTTON_0 = "GUI_PUBLISH_TOP_PANEL_ALL_BUTTON_0";
 
     /** Message constant for key in the resource bundle. */
@@ -127,9 +115,6 @@ public final class Messages {
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.ade.publish.clientmessages";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_PUBLISH_RESOURCE_STATE_UNCHANGED_0 = "GUI_PUBLISH_RESOURCE_STATE_UNCHANGED_0";
 
     /** Static instance member. */
     private static CmsMessages INSTANCE;

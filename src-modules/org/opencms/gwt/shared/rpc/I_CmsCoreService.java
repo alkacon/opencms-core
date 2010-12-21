@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/rpc/Attic/I_CmsCoreService.java,v $
- * Date   : $Date: 2010/11/19 14:09:18 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2010/12/21 10:23:32 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,12 +33,14 @@ package org.opencms.gwt.shared.rpc;
 
 import org.opencms.db.CmsResourceState;
 import org.opencms.gwt.CmsRpcException;
+import org.opencms.gwt.shared.CmsAvailabilityInfoBean;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData;
+import org.opencms.gwt.shared.CmsCoreData.AdeContext;
+import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsValidationQuery;
 import org.opencms.gwt.shared.CmsValidationResult;
-import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.util.CmsUUID;
 
 import java.util.List;
@@ -52,7 +54,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 8.0.0
  * 
@@ -79,6 +81,28 @@ public interface I_CmsCoreService extends RemoteService {
     CmsUUID createUUID() throws CmsRpcException;
 
     /**
+     * Returns a {@link CmsAvailabilityInfoBean} for a given resource.<p>
+     * 
+     * @param structureId the structure id to create the {@link CmsAvailabilityInfoBean} for
+     * 
+     * @return the {@link CmsAvailabilityInfoBean} for a given resource
+     * 
+     * @throws CmsRpcException if the RPC call goes wrong 
+     */
+    CmsAvailabilityInfoBean getAvailabilityInfo(CmsUUID structureId) throws CmsRpcException;
+
+    /**
+     * Returns a {@link CmsAvailabilityInfoBean} for a given resource.<p>
+     * 
+     * @param vfsPath the vfs path to create the {@link CmsAvailabilityInfoBean} for
+     * 
+     * @return the {@link CmsAvailabilityInfoBean} for a given resource
+     * 
+     * @throws CmsRpcException if the RPC call goes wrong
+     */
+    CmsAvailabilityInfoBean getAvailabilityInfo(String vfsPath) throws CmsRpcException;
+
+    /**
      * Returns the categories for the given search parameters.<p>
      * 
      * @param fromCatPath the category path to start with, can be <code>null</code> or empty to use the root
@@ -103,6 +127,28 @@ public interface I_CmsCoreService extends RemoteService {
      * @throws CmsRpcException if something goes wrong
      */
     List<CmsContextMenuEntryBean> getContextMenuEntries(String uri, AdeContext context) throws CmsRpcException;
+
+    /**
+     * Returns a {@link CmsListInfoBean} for a given resource.<p>
+     * 
+     * @param structureId the structure id to create the {@link CmsListInfoBean} for
+     * 
+     * @return the {@link CmsListInfoBean} for a given resource
+     * 
+     * @throws CmsRpcException if the RPC call goes wrong 
+     */
+    CmsListInfoBean getPageInfo(CmsUUID structureId) throws CmsRpcException;
+
+    /**
+     * Returns a {@link CmsListInfoBean} for a given resource.<p>
+     * 
+     * @param vfsPath the vfs path to create the {@link CmsListInfoBean} for
+     * 
+     * @return the {@link CmsListInfoBean} for a given resource
+     * 
+     * @throws CmsRpcException if the RPC call goes wrong 
+     */
+    CmsListInfoBean getPageInfo(String vfsPath) throws CmsRpcException;
 
     /**
      * Gets the resource state for a resource with a given path.<p>
@@ -157,6 +203,26 @@ public interface I_CmsCoreService extends RemoteService {
      * @throws CmsRpcException if something goes wrong 
      */
     CmsCoreData prefetch() throws CmsRpcException;
+
+    /**
+     * Applies the changes stored in the info bean to the vfs of OpenCms.<p>
+     * 
+     * @param structureId the structure id of the modified resource
+     * @param bean the bean with the information of the dialog
+     * 
+     * @throws CmsRpcException if the RPC call goes wrong 
+     */
+    void setAvailabilityInfo(CmsUUID structureId, CmsAvailabilityInfoBean bean) throws CmsRpcException;
+
+    /**
+     * Applies the changes stored in the info bean to the vfs of OpenCms.<p>
+     * 
+     * @param vfsPath the vfs path of the modified resource
+     * @param bean the bean with the information of the dialog
+     * 
+     * @throws CmsRpcException if the RPC call goes wrong 
+     */
+    void setAvailabilityInfo(String vfsPath, CmsAvailabilityInfoBean bean) throws CmsRpcException;
 
     /**
      * Translates an URL name of a sitemap entry to a valid form containing no illegal characters.<p>

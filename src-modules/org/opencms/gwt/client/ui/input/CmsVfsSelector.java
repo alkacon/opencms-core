@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsVfsSelector.java,v $
- * Date   : $Date: 2010/10/29 12:18:21 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/12/21 10:23:32 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,7 +68,7 @@ import com.google.gwt.user.client.ui.Panel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -151,6 +151,15 @@ public class CmsVfsSelector extends Composite implements I_CmsFormWidget, I_CmsH
             result = null;
         }
         return result;
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#isEnabled()
+     */
+    public boolean isEnabled() {
+
+        // TODO: Auto-generated method stub
+        return false;
     }
 
     /**
@@ -299,5 +308,4 @@ public class CmsVfsSelector extends Composite implements I_CmsFormWidget, I_CmsH
             }
         };
     }
-
 }

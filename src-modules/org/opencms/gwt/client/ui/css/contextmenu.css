@@ -1,5 +1,5 @@
 /* This is needed since there is a bug in GWT that obfuscates the primary style name but not the secondary :( */
-@external dialogTop, dialogBottom, x-btn-text;
+@external x-btn-text;
 
 .popup, .menuPopup{}
 
@@ -59,12 +59,6 @@
 	zoom: 1;
 	overflow: hidden;
 	clear: both;
-}
-.cmsContextMenuPopup .dialogTop {
-	display: none;
-}
-.cmsContextMenuPopup .dialogBottom {
-	display: none;
 }
 .menuInfoLabel {
 	padding: 4px;

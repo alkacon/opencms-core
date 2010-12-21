@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/Attic/CmsListInfoBean.java,v $
- * Date   : $Date: 2010/03/19 10:11:54 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/12/21 10:23:32 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,8 @@
 
 package org.opencms.gwt.shared;
 
+import org.opencms.db.CmsResourceState;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,14 +45,34 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
 public class CmsListInfoBean implements IsSerializable {
 
+    /**
+     * Enum for the type of page icon which should be displayed.<p>
+     */
+    public enum PageIcon {
+        /** export page icon. */
+        export,
+        /** no page icon. */
+        none,
+        /** redirect status icon. */
+        redirect,
+        /** secure page icon. */
+        secure
+    }
+
     /** The additional info. */
     private Map<String, String> m_additionalInfo;
+
+    /** The page icon information: for the type of page icon which should be displayed. */
+    private PageIcon m_pageIcon = PageIcon.none;
+
+    /** Returns the resource state. */
+    private CmsResourceState m_resourceState;
 
     /** The sub-title. */
     private String m_subTitle;
@@ -120,6 +142,26 @@ public class CmsListInfoBean implements IsSerializable {
     }
 
     /**
+     * Returns the pageIcon.<p>
+     *
+     * @return the pageIcon
+     */
+    public PageIcon getPageIcon() {
+
+        return m_pageIcon;
+    }
+
+    /**
+     * Returns the resourceState.<p>
+     *
+     * @return the resourceState
+     */
+    public CmsResourceState getResourceState() {
+
+        return m_resourceState;
+    }
+
+    /**
      * Returns the sub-title.<p>
      *
      * @return the sub-title
@@ -159,6 +201,26 @@ public class CmsListInfoBean implements IsSerializable {
     public void setAdditionalInfo(Map<String, String> additionalInfo) {
 
         m_additionalInfo = additionalInfo;
+    }
+
+    /**
+     * Sets the pageIcon.<p>
+     *
+     * @param pageIcon the pageIcon to set
+     */
+    public void setPageIcon(PageIcon pageIcon) {
+
+        m_pageIcon = pageIcon;
+    }
+
+    /**
+     * Sets the resourceState.<p>
+     *
+     * @param resourceState the resourceState to set
+     */
+    public void setResourceState(CmsResourceState resourceState) {
+
+        m_resourceState = resourceState;
     }
 
     /**

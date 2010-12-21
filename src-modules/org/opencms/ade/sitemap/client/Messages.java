@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/Messages.java,v $
- * Date   : $Date: 2010/12/17 08:45:30 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2010/12/21 10:23:32 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.client.util.CmsMessages;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.32 $ 
+ * @version $Revision: 1.33 $ 
  * 
  * @since 8.0.0
  */
@@ -111,6 +111,9 @@ public final class Messages {
     public static final String GUI_EDITOR_TITLE_0 = "GUI_EDITOR_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_HOVERBAR_AVAILABILITY_0 = "GUI_HOVERBAR_AVAILABILITY_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_HOVERBAR_DELETE_0 = "GUI_HOVERBAR_DELETE_0";
 
     /** Message constant for key in the resource bundle. */
@@ -136,15 +139,6 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_HOVERBAR_SUBSITEMAP_0 = "GUI_HOVERBAR_SUBSITEMAP_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_ICON_REDIRECT_0 = "GUI_ICON_REDIRECT_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_ICON_TITLE_EXPORT_0 = "GUI_ICON_TITLE_EXPORT_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_ICON_TITLE_SECURE_0 = "GUI_ICON_TITLE_SECURE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_INHERIT_PROPERTY_2 = "GUI_INHERIT_PROPERTY_2";

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/A_CmsSitemapMenuEntry.java,v $
- * Date   : $Date: 2010/11/18 15:32:41 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/12/21 10:23:32 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import com.google.gwt.user.client.Command;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -108,6 +108,14 @@ public abstract class A_CmsSitemapMenuEntry implements I_CmsContextMenuEntry, I_
      * @see org.opencms.gwt.client.ui.I_CmsContextMenuEntry#getJspPath()
      */
     public String getJspPath() {
+
+        return null;
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.I_CmsContextMenuEntry#getName()
+     */
+    public String getName() {
 
         return null;
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsCoreService.java,v $
- * Date   : $Date: 2010/12/17 08:45:29 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2010/12/21 10:23:33 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,27 +33,44 @@ package org.opencms.gwt;
 
 import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
+import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsResourceNotFoundException;
+import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.flex.CmsFlexController;
+import org.opencms.gwt.shared.CmsAvailabilityInfoBean;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData;
+import org.opencms.gwt.shared.CmsCoreData.AdeContext;
+import org.opencms.gwt.shared.CmsListInfoBean;
+import org.opencms.gwt.shared.CmsPrincipalBean;
 import org.opencms.gwt.shared.CmsValidationQuery;
 import org.opencms.gwt.shared.CmsValidationResult;
-import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.rpc.I_CmsCoreService;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.lock.CmsLock;
+import org.opencms.main.CmsContextInfo;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsCategory;
 import org.opencms.relations.CmsCategoryService;
+import org.opencms.scheduler.CmsScheduledJobInfo;
+import org.opencms.scheduler.jobs.CmsPublishScheduledJob;
+import org.opencms.security.CmsAccessControlEntry;
+import org.opencms.security.CmsRole;
+import org.opencms.security.I_CmsPrincipal;
+import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
+import org.opencms.workplace.CmsWorkplaceAction;
 import org.opencms.workplace.explorer.CmsExplorerContextMenu;
 import org.opencms.workplace.explorer.CmsExplorerContextMenuItem;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
@@ -63,11 +80,17 @@ import org.opencms.workplace.explorer.menu.CmsMenuRule;
 import org.opencms.workplace.explorer.menu.I_CmsMenuItemRule;
 import org.opencms.xml.sitemap.CmsSitemapManager;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -75,8 +98,9 @@ import javax.servlet.http.HttpServletRequest;
  * Provides general core services.<p>
  * 
  * @author Michael Moossen
+ * @author Ruediger Kurz
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 8.0.0
  * 
@@ -177,6 +201,34 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     public CmsUUID createUUID() {
 
         return new CmsUUID();
+    }
+
+    /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#getAvailabilityInfo(org.opencms.util.CmsUUID)
+     */
+    public CmsAvailabilityInfoBean getAvailabilityInfo(CmsUUID structureId) throws CmsRpcException {
+
+        try {
+            CmsResource res = getCmsObject().readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
+            return getAvailabilityInfo(res);
+        } catch (CmsException e) {
+            error(e);
+            return null; // will never be reached 
+        }
+    }
+
+    /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#getAvailabilityInfo(java.lang.String)
+     */
+    public CmsAvailabilityInfoBean getAvailabilityInfo(String vfsPath) throws CmsRpcException {
+
+        try {
+            CmsResource res = getCmsObject().readResource(vfsPath, CmsResourceFilter.IGNORE_EXPIRATION);
+            return getAvailabilityInfo(res);
+        } catch (CmsException e) {
+            error(e);
+            return null; // will never be reached 
+        }
     }
 
     /**
@@ -281,6 +333,34 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     }
 
     /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#getPageInfo(org.opencms.util.CmsUUID)
+     */
+    public CmsListInfoBean getPageInfo(CmsUUID structureId) throws CmsRpcException {
+
+        try {
+            CmsResource res = getCmsObject().readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
+            return getPageInfo(res);
+        } catch (CmsException e) {
+            error(e);
+            return null; // will never be reached 
+        }
+    }
+
+    /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#getPageInfo(java.lang.String)
+     */
+    public CmsListInfoBean getPageInfo(String vfsPath) throws CmsRpcException {
+
+        try {
+            CmsResource res = getCmsObject().readResource(vfsPath, CmsResourceFilter.IGNORE_EXPIRATION);
+            return getPageInfo(res);
+        } catch (CmsException e) {
+            error(e);
+            return null; // will never be reached 
+        }
+    }
+
+    /**
      * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#getResourceState(java.lang.String)
      */
     public CmsResourceState getResourceState(String path) throws CmsRpcException {
@@ -367,6 +447,41 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             navigationUri,
             System.currentTimeMillis());
         return data;
+    }
+
+    /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#setAvailabilityInfo(org.opencms.util.CmsUUID, org.opencms.gwt.shared.CmsAvailabilityInfoBean)
+     */
+    public void setAvailabilityInfo(CmsUUID structureId, CmsAvailabilityInfoBean bean) throws CmsRpcException {
+
+        try {
+            CmsResource res = getCmsObject().readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
+            setAvailabilityInfo(res.getRootPath(), bean);
+        } catch (CmsException e) {
+            error(e);
+        }
+    }
+
+    /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#setAvailabilityInfo(java.lang.String, org.opencms.gwt.shared.CmsAvailabilityInfoBean)
+     */
+    public void setAvailabilityInfo(String uri, CmsAvailabilityInfoBean bean) throws CmsRpcException {
+
+        // get the cms object
+        CmsObject cms = getCmsObject();
+
+        try {
+            String resourceSitePath = cms.getRequestContext().removeSiteRoot(uri);
+            modifyPublishScheduled(resourceSitePath, bean.getDatePubScheduled());
+            modifyAvailability(resourceSitePath, bean.getDateReleased(), bean.getDateExpired());
+            modifyNotification(
+                resourceSitePath,
+                bean.getNotificationInterval(),
+                bean.isNotificationEnabled(),
+                bean.isModifySiblings());
+        } catch (CmsException e) {
+            error(e);
+        }
     }
 
     /**
@@ -539,6 +654,199 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     }
 
     /**
+     * Returns a bean that contains the infos for the {@link org.opencms.gwt.client.ui.CmsAvailabilityDialog}.<p>
+     * 
+     * @param res the resource to get the availability infos for
+     * 
+     * @return a bean for the {@link org.opencms.gwt.client.ui.CmsAvailabilityDialog}
+     * 
+     * @throws CmsRpcException if something goes wrong
+     */
+    private CmsAvailabilityInfoBean getAvailabilityInfo(CmsResource res) throws CmsRpcException {
+
+        CmsObject cms = getCmsObject();
+        try {
+            CmsAvailabilityInfoBean result = new CmsAvailabilityInfoBean();
+
+            result.setPageInfo(getPageInfo(res));
+
+            String resourceSitePath = cms.getRequestContext().removeSiteRoot(res.getRootPath());
+            result.setVfsPath(resourceSitePath);
+
+            I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(res.getTypeId());
+            result.setResType(type.getTypeName());
+
+            result.setDateReleased(res.getDateReleased());
+            result.setDateExpired(res.getDateExpired());
+
+            String notificationInterval = cms.readPropertyObject(
+                res,
+                CmsPropertyDefinition.PROPERTY_NOTIFICATION_INTERVAL,
+                false).getValue();
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(notificationInterval)) {
+                result.setNotificationInterval(Integer.valueOf(notificationInterval).intValue());
+            }
+
+            String notificationEnabled = cms.readPropertyObject(
+                res,
+                CmsPropertyDefinition.PROPERTY_ENABLE_NOTIFICATION,
+                false).getValue();
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(notificationEnabled)) {
+                result.setNotificationEnabled(Boolean.valueOf(notificationEnabled).booleanValue());
+            }
+
+            result.setHasSiblings(cms.readSiblings(resourceSitePath, CmsResourceFilter.ALL).size() > 1);
+
+            result.setResponsibles(getResponsibles(res.getRootPath()));
+
+            return result;
+        } catch (CmsException e) {
+            error(e);
+            return null; // will never be reached 
+        }
+    }
+
+    /**
+     * Locks the given resource and returns the lock.<p>
+     * 
+     * @param resource the resource to lock
+     * 
+     * @return the lock
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    private CmsLock getLockIfPossible(String resource) throws CmsException {
+
+        // lock the resource in the current project
+        CmsLock lock = getCmsObject().getLock(resource);
+        // prove is current lock from current but not in current project
+        if ((lock != null)
+            && lock.isOwnedBy(getCmsObject().getRequestContext().currentUser())
+            && !lock.isOwnedInProjectBy(
+                getCmsObject().getRequestContext().currentUser(),
+                getCmsObject().getRequestContext().currentProject())) {
+            // file is locked by current user but not in current project
+            // change the lock from this file
+            getCmsObject().changeLock(resource);
+        }
+        // lock resource from current user in current project
+        getCmsObject().lockResource(resource);
+        // get current lock
+        lock = getCmsObject().getLock(resource);
+        return lock;
+    }
+
+    /**
+     * Returns a bean to display the {@link org.opencms.gwt.client.ui.CmsListItemWidget}.<p>
+     * 
+     * @param res the resource to get the page info for
+     * 
+     * @return a bean to display the {@link org.opencms.gwt.client.ui.CmsListItemWidget}.<p>
+     * 
+     * @throws CmsRpcException if something goes wrong
+     */
+    private CmsListInfoBean getPageInfo(CmsResource res) throws CmsRpcException {
+
+        CmsObject cms = getCmsObject();
+        try {
+            CmsListInfoBean result = new CmsListInfoBean();
+
+            result.setResourceState(res.getState());
+
+            String resourceSitePath = cms.getRequestContext().removeSiteRoot(res.getRootPath());
+
+            String title = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(title)) {
+                result.setTitle(title);
+            } else {
+                result.setTitle("No title attribute set for this resource");
+            }
+            result.setSubTitle(resourceSitePath);
+
+            String export = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_EXPORT, true).getValue();
+            if ("true".equals(export)) {
+                result.setPageIcon(CmsListInfoBean.PageIcon.export);
+            }
+            String secure = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_SECURE, true).getValue();
+            if ("true".equals(secure)) {
+                result.setPageIcon(CmsListInfoBean.PageIcon.secure);
+            }
+            Map<String, String> additionalInfo = new HashMap<String, String>();
+            String resTypeName = OpenCms.getResourceManager().getResourceType(res.getTypeId()).getTypeName();
+            String key = OpenCms.getWorkplaceManager().getExplorerTypeSetting(resTypeName).getKey();
+            Locale currentLocale = getCmsObject().getRequestContext().getLocale();
+            String resTypeNiceName = OpenCms.getWorkplaceManager().getMessages(currentLocale).key(key);
+            additionalInfo.put("Type", resTypeNiceName);
+            result.setAdditionalInfo(additionalInfo);
+
+            return result;
+        } catch (CmsException e) {
+            error(e);
+            return null; // will never be reached 
+        }
+    }
+
+    /**
+     * Returns a map of principals of responsible users together with the resource path where the
+     * responsibility was found.<p> 
+     * 
+     * @param vfsPath the path pointing on the resource to get the responsible users for
+     * 
+     * @return a map of principal beans
+     * 
+     * @throws CmsRpcException if something goes wrong
+     */
+    private Map<CmsPrincipalBean, String> getResponsibles(String vfsPath) throws CmsRpcException {
+
+        Map<CmsPrincipalBean, String> result = new HashMap<CmsPrincipalBean, String>();
+        List<CmsResource> parentResources = new ArrayList<CmsResource>();
+
+        CmsObject cms = getCmsObject();
+        String resourceSitePath = cms.getRequestContext().removeSiteRoot(vfsPath);
+        try {
+            // get all parent folders of the current file
+            parentResources = cms.readPath(resourceSitePath, CmsResourceFilter.IGNORE_EXPIRATION);
+        } catch (CmsException e) {
+            error(e);
+        }
+
+        for (CmsResource resource : parentResources) {
+            String storedSiteRoot = cms.getRequestContext().getSiteRoot();
+            String sitePath = cms.getRequestContext().removeSiteRoot(resource.getRootPath());
+            try {
+
+                cms.getRequestContext().setSiteRoot("/");
+                List<CmsAccessControlEntry> entries = cms.getAccessControlEntries(resource.getRootPath(), false);
+                for (CmsAccessControlEntry ace : entries) {
+                    if (ace.isResponsible()) {
+                        I_CmsPrincipal principal = cms.lookupPrincipal(ace.getPrincipal());
+                        if (principal != null) {
+                            CmsPrincipalBean prinBean = new CmsPrincipalBean(
+                                principal.getName(),
+                                principal.getDescription(),
+                                principal.isGroup());
+                            if (!resource.getRootPath().equals(vfsPath)) {
+                                if (resource.getRootPath().startsWith(storedSiteRoot)) {
+                                    result.put(prinBean, sitePath);
+                                } else {
+                                    result.put(prinBean, resource.getRootPath());
+                                }
+                            } else {
+                                result.put(prinBean, null);
+                            }
+                        }
+                    }
+                }
+            } catch (CmsException e) {
+                error(e);
+            } finally {
+                cms.getRequestContext().setSiteRoot(storedSiteRoot);
+            }
+        }
+        return result;
+    }
+
+    /**
      * Collects the matching rules of all sub items of a parent context menu entry.<p>
      * 
      * @param item the context menu item to check the sub items for
@@ -564,6 +872,178 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
                     itemRules.add(rule);
                 }
             }
+        }
+    }
+
+    /**
+     * Modifies the availability of the given resource.<p>
+     * 
+     * @param vfsPath the resource to change
+     * @param dateReleased the date released
+     * @param dateExpired the date expired
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    private void modifyAvailability(String vfsPath, long dateReleased, long dateExpired) throws CmsException {
+
+        getLockIfPossible(vfsPath);
+        // modify release and expire date of the resource if needed
+        getCmsObject().setDateReleased(vfsPath, dateReleased, false);
+        getCmsObject().setDateExpired(vfsPath, dateExpired, false);
+    }
+
+    /**
+     * Modifies the notification properties of the given resource.<p>
+     * 
+     * @param resourceSitePath the site path of the resource to modify
+     * @param notificationInterval the modification interval
+     * @param notificationEnabled signals whether the notification is enabled or disabled
+     * @param modifySiblings signals whether siblings should be also modified
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    private void modifyNotification(
+        String resourceSitePath,
+        int notificationInterval,
+        boolean notificationEnabled,
+        boolean modifySiblings) throws CmsException {
+
+        List<CmsResource> resources = new ArrayList<CmsResource>();
+        if (modifySiblings) {
+            // modify all siblings of a resource
+            resources = getCmsObject().readSiblings(resourceSitePath, CmsResourceFilter.IGNORE_EXPIRATION);
+        } else {
+            // modify only resource without siblings
+            resources.add(getCmsObject().readResource(resourceSitePath, CmsResourceFilter.IGNORE_EXPIRATION));
+        }
+        for (CmsResource curResource : resources) {
+            String resourcePath = getCmsObject().getRequestContext().removeSiteRoot(curResource.getRootPath());
+            // lock resource if auto lock is enabled
+            getLockIfPossible(resourcePath);
+            // write notification settings
+            writeProperty(
+                resourcePath,
+                CmsPropertyDefinition.PROPERTY_NOTIFICATION_INTERVAL,
+                String.valueOf(notificationInterval));
+            writeProperty(
+                resourcePath,
+                CmsPropertyDefinition.PROPERTY_ENABLE_NOTIFICATION,
+                String.valueOf(notificationEnabled));
+        }
+
+    }
+
+    /**
+     * Modifies the publish scheduled.<p>
+     * 
+     * Creates a temporary project and adds the given resource to it. Afterwards a scheduled job is created
+     * and the project is assigned to it. Then the publish job is enqueued.<p>
+     * 
+     * @param resourceSitePath the site path of the resource to modify 
+     * @param pubDate the date when the resource should be published
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    private void modifyPublishScheduled(String resourceSitePath, long pubDate) throws CmsException {
+
+        if (pubDate != CmsAvailabilityInfoBean.DATE_PUBLISH_SCHEDULED_DEFAULT) {
+
+            CmsObject cms = getCmsObject();
+
+            String resource = resourceSitePath;
+            CmsUser user = getCmsObject().getRequestContext().currentUser();
+            Locale locale = getCmsObject().getRequestContext().getLocale();
+            Date date = new Date(pubDate);
+
+            // make copies from the admin cmsobject and the user cmsobject
+            // get the admin cms object
+            CmsWorkplaceAction action = CmsWorkplaceAction.getInstance();
+            CmsObject cmsAdmin = action.getCmsAdminObject();
+            // get the user cms object
+
+            // set the current user site to the admin cms object
+            cmsAdmin.getRequestContext().setSiteRoot(cms.getRequestContext().getSiteRoot());
+
+            // create the temporary project, which is deleted after publishing
+            // the publish scheduled date in project name
+            String dateTime = CmsDateUtil.getDateTime(date, DateFormat.SHORT, locale);
+            // the resource name to publish scheduled
+            String resName = CmsResource.getName(resource);
+            CmsMessages messages = OpenCms.getWorkplaceManager().getMessages(locale);
+            String projectName = messages.key(
+                org.opencms.workplace.commons.Messages.GUI_PUBLISH_SCHEDULED_PROJECT_NAME_2,
+                new Object[] {resName, dateTime});
+
+            // the HTML encoding for slashes is necessary because of the slashes in english date time format
+            // in project names slahes are not allowed, because these are separators for organizaional units
+            projectName = projectName.replace("/", "&#47;");
+            // create the project
+            CmsProject tmpProject = cmsAdmin.createProject(
+                projectName,
+                "",
+                CmsRole.WORKPLACE_USER.getGroupName(),
+                CmsRole.PROJECT_MANAGER.getGroupName(),
+                CmsProject.PROJECT_TYPE_TEMPORARY);
+            // make the project invisible for all users
+            tmpProject.setHidden(true);
+            // write the project to the database
+            cmsAdmin.writeProject(tmpProject);
+            // set project as current project
+            cmsAdmin.getRequestContext().setCurrentProject(tmpProject);
+            cms.getRequestContext().setCurrentProject(tmpProject);
+
+            // copy the resource to the project
+            cmsAdmin.copyResourceToProject(resource);
+
+            // get the lock if possible
+            getLockIfPossible(resource);
+
+            // create a new scheduled job
+            CmsScheduledJobInfo job = new CmsScheduledJobInfo();
+            // the job name
+            String jobName = projectName;
+            // set the job parameters
+            job.setJobName(jobName);
+            job.setClassName("org.opencms.scheduler.jobs.CmsPublishScheduledJob");
+            // create the cron expression
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            String cronExpr = ""
+                + calendar.get(Calendar.SECOND)
+                + " "
+                + calendar.get(Calendar.MINUTE)
+                + " "
+                + calendar.get(Calendar.HOUR_OF_DAY)
+                + " "
+                + calendar.get(Calendar.DAY_OF_MONTH)
+                + " "
+                + (calendar.get(Calendar.MONTH) + 1)
+                + " "
+                + "?"
+                + " "
+                + calendar.get(Calendar.YEAR);
+            // set the cron expression
+            job.setCronExpression(cronExpr);
+            // set the job active
+            job.setActive(true);
+            // create the context info
+            CmsContextInfo contextInfo = new CmsContextInfo();
+            contextInfo.setProjectName(projectName);
+            contextInfo.setUserName(cmsAdmin.getRequestContext().currentUser().getName());
+            // create the job schedule parameter
+            SortedMap<String, String> params = new TreeMap<String, String>();
+            // the user to send mail to
+            params.put(CmsPublishScheduledJob.PARAM_USER, user.getName());
+            // the job name
+            params.put(CmsPublishScheduledJob.PARAM_JOBNAME, jobName);
+            // the link check
+            params.put(CmsPublishScheduledJob.PARAM_LINKCHECK, "true");
+            // add the job schedule parameter
+            job.setParameters(params);
+            // add the context info to the scheduled job
+            job.setContextInfo(contextInfo);
+            // add the job to the scheduled job list
+            OpenCms.getScheduleManager().scheduleJob(cmsAdmin, job);
         }
     }
 
@@ -657,6 +1137,9 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
                 }
                 bean.setJspPath(jspPath);
 
+                // get the name of the item and set it to the bean
+                bean.setName(item.getName());
+
                 // get the image-URI and set it to the bean
                 String imagePath = item.getIcon();
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(imagePath)) {
@@ -704,4 +1187,63 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         return validationService.validate(getCmsObject(), value, config);
     }
 
+    /**
+     * Writes a property value for a resource.<p>
+     * 
+     * @param resourcePath the path of the resource
+     * @param propertyName the name of the property
+     * @param propertyValue the new value of the property
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    private void writeProperty(String resourcePath, String propertyName, String propertyValue) throws CmsException {
+
+        if (CmsStringUtil.isEmpty(propertyValue)) {
+            propertyValue = CmsProperty.DELETE_VALUE;
+        }
+
+        CmsProperty newProp = new CmsProperty();
+        newProp.setName(propertyName);
+        CmsProperty oldProp = getCmsObject().readPropertyObject(resourcePath, propertyName, false);
+        if (oldProp.isNullProperty()) {
+            // property value was not already set
+            if (OpenCms.getWorkplaceManager().isDefaultPropertiesOnStructure()) {
+                newProp.setStructureValue(propertyValue);
+            } else {
+                newProp.setResourceValue(propertyValue);
+            }
+        } else {
+            if (oldProp.getStructureValue() != null) {
+                newProp.setStructureValue(propertyValue);
+                newProp.setResourceValue(oldProp.getResourceValue());
+            } else {
+                newProp.setResourceValue(propertyValue);
+            }
+        }
+
+        newProp.setAutoCreatePropertyDefinition(true);
+
+        String oldStructureValue = oldProp.getStructureValue();
+        String newStructureValue = newProp.getStructureValue();
+        if (CmsStringUtil.isEmpty(oldStructureValue)) {
+            oldStructureValue = CmsProperty.DELETE_VALUE;
+        }
+        if (CmsStringUtil.isEmpty(newStructureValue)) {
+            newStructureValue = CmsProperty.DELETE_VALUE;
+        }
+
+        String oldResourceValue = oldProp.getResourceValue();
+        String newResourceValue = newProp.getResourceValue();
+        if (CmsStringUtil.isEmpty(oldResourceValue)) {
+            oldResourceValue = CmsProperty.DELETE_VALUE;
+        }
+        if (CmsStringUtil.isEmpty(newResourceValue)) {
+            newResourceValue = CmsProperty.DELETE_VALUE;
+        }
+
+        // change property only if it has been changed            
+        if (!oldResourceValue.equals(newResourceValue) || !oldStructureValue.equals(newStructureValue)) {
+            getCmsObject().writePropertyObject(resourcePath, newProp);
+        }
+    }
 }

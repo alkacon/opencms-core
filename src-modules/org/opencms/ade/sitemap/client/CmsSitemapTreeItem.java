@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapTreeItem.java,v $
- * Date   : $Date: 2010/12/17 08:45:30 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2010/12/21 10:23:33 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,11 +45,14 @@ import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsListItemWidget.Background;
 import org.opencms.gwt.client.ui.CmsListItemWidget.I_CmsTitleEditHandler;
+import org.opencms.gwt.client.ui.CmsListItemWidgetUtil;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsLabel;
 import org.opencms.gwt.client.ui.input.CmsLabel.I_TitleGenerator;
 import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
+import org.opencms.gwt.shared.CmsListInfoBean;
+import org.opencms.gwt.shared.CmsListInfoBean.PageIcon;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.sitemap.CmsDetailPageTable;
@@ -71,7 +74,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.44 $ 
+ * @version $Revision: 1.45 $ 
  * 
  * @since 8.0.0
  * 
@@ -79,22 +82,6 @@ import com.google.gwt.user.client.ui.Widget;
  * @see org.opencms.ade.sitemap.shared.CmsClientSitemapEntry
  */
 public class CmsSitemapTreeItem extends CmsLazyTreeItem {
-
-    /**
-     * Enum for the type of status icon which should be displayed.<p>
-     */
-    public enum StatusIcon {
-        /** export status icon. */
-        export,
-        /** no status icon. */
-        none,
-
-        /** redirect status icon. */
-        redirect,
-        /** secure status icon. */
-        secure
-
-    }
 
     /**
      * Label generator for the detail page info label.<p>
@@ -181,11 +168,11 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
     /** The detail page label title generator. */
     private DetailPageLabelTitleGenerator m_detailPageLabelTitleGenerator;
 
-    /** The list item widget of this item. */
-    private CmsListItemWidget m_listItemWidget;
-
     /** The original site path. */
     private String m_originalPath;
+
+    /** The page icon. */
+    private PageIcon m_pageIcon;
 
     /**
      * Default constructor.<p>
@@ -283,6 +270,23 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
                 titleLabel.setVisible(true);
             }
         });
+    }
+
+    /**
+     * Returns the current page info of this sitemap as {@link CmsListInfoBean}.<p>
+     * 
+     * @return the current page info of this sitemap as {@link CmsListInfoBean}
+     */
+    public CmsListInfoBean getCurrentPageInfo() {
+
+        CmsListInfoBean info = new CmsListInfoBean();
+
+        info.setPageIcon(m_pageIcon);
+        info.setTitle(m_entry.getTitle());
+        info.setSubTitle(getDisplayedUrl(m_entry.getSitePath()));
+        info.addAdditionalInfo(Messages.get().key(Messages.GUI_NAME_0), m_entry.getName());
+        info.addAdditionalInfo(Messages.get().key(Messages.GUI_VFS_PATH_0), m_entry.getVfsPath());
+        return info;
     }
 
     /** 
@@ -505,32 +509,14 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
     }
 
     /**
-     * Changes the status icon of the sitemap item.<p>
-     * 
-     * @param status the value representing the status icon 
+     * Sets the icon.<p>
+     *
+     * @param icon the icon to set
      */
-    public void setStatus(StatusIcon status) {
+    public void setPageIcon(PageIcon icon) {
 
-        switch (status) {
-            case export:
-                m_listItemWidget.setIcon(CSS.export());
-                m_listItemWidget.setIconTitle(Messages.get().key(Messages.GUI_ICON_TITLE_EXPORT_0));
-                break;
-            case secure:
-                m_listItemWidget.setIcon(CSS.secure());
-                m_listItemWidget.setIconTitle(Messages.get().key(Messages.GUI_ICON_TITLE_SECURE_0));
-                break;
-            case redirect:
-                m_listItemWidget.setIcon(CSS.redirect());
-
-                m_listItemWidget.setIconTitle(Messages.get().key(Messages.GUI_ICON_REDIRECT_0));
-                break;
-            case none:
-            default:
-                m_listItemWidget.setIcon(CSS.normal());
-                m_listItemWidget.setIconTitle(null);
-                break;
-        }
+        m_pageIcon = icon;
+        CmsListItemWidgetUtil.setPageIcon(m_listItemWidget, icon);
     }
 
     /**
@@ -572,6 +558,7 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
             default:
                 setBackgroundColor(Background.DEFAULT);
         }
+
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishUtil.java,v $
- * Date   : $Date: 2010/11/19 14:09:17 $
- * Version: $Revision: 1.7 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsResourceStateUtil.java,v $
+ * Date   : $Date: 2010/12/21 10:23:33 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,28 +29,32 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.publish.client;
+package org.opencms.gwt.client.util;
 
 import org.opencms.db.CmsResourceState;
+import org.opencms.gwt.client.Messages;
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsResourceStateCss;
 
 /**
  * Utility class for the publish dialog.<p>
  * 
  * @author Georg Westenberger
+ * @author Ruediger Kurz
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  */
-public final class CmsPublishUtil {
+public final class CmsResourceStateUtil {
 
     /** The CSS bundle for the publish dialog. <p> */
-    private static final I_CmsPublishCss CSS = I_CmsPublishLayoutBundle.INSTANCE.publishCss();
+    private static final I_CmsResourceStateCss CSS = I_CmsLayoutBundle.INSTANCE.resourceStateCss();
 
     /**
      * Hide constructor.<p>
      */
-    private CmsPublishUtil() {
+    private CmsResourceStateUtil() {
 
         // empty
     }
@@ -65,13 +69,13 @@ public final class CmsPublishUtil {
     public static String getStateName(CmsResourceState state) {
 
         if (state.equals(CmsResourceState.STATE_NEW)) {
-            return Messages.get().key(Messages.GUI_PUBLISH_RESOURCE_STATE_NEW_0);
+            return Messages.get().key(Messages.GUI_RESOURCE_STATE_NEW_0);
         } else if (state.equals(CmsResourceState.STATE_DELETED)) {
-            return Messages.get().key(Messages.GUI_PUBLISH_RESOURCE_STATE_DELETED_0);
+            return Messages.get().key(Messages.GUI_RESOURCE_STATE_DELETED_0);
         } else if (state.equals(CmsResourceState.STATE_CHANGED)) {
-            return Messages.get().key(Messages.GUI_PUBLISH_RESOURCE_STATE_CHANGED_0);
+            return Messages.get().key(Messages.GUI_RESOURCE_STATE_CHANGED_0);
         } else if (state.equals(CmsResourceState.STATE_UNCHANGED)) {
-            return Messages.get().key(Messages.GUI_PUBLISH_RESOURCE_STATE_UNCHANGED_0);
+            return Messages.get().key(Messages.GUI_RESOURCE_STATE_UNCHANGED_0);
         }
         return "";
     }

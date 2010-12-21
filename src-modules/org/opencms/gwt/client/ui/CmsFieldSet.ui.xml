@@ -1,0 +1,34 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:input="urn:import:org.opencms.gwt.client.ui.input">
+	<ui:with field="images" type="org.opencms.gwt.client.ui.css.I_CmsImageBundle" />
+	<ui:style>
+		.image {
+		  left: 5px;
+		  background: #fff;
+		  position: absolute;
+		  padding: 0;
+		  cursor: pointer;
+		  margin: -8px 0px 0px 5px;
+		  }
+		.legend {
+		  left: 20px;
+		  background: #fff;
+		  position: absolute;
+		  font-weight: bold;
+		  padding: 0 3px 0 3px;
+		  margin: -8px 0px 0px 5px;
+		  }
+		.content {
+		  margin: 12px 6px 4px 6px;
+		  }
+	</ui:style>
+	<g:FlowPanel ui:field="m_wrapper">
+		<g:FlowPanel ui:field="m_fieldset">
+			<g:Image ui:field="m_image" resource="{images.arrowBottom}" styleName="{style.image}"></g:Image>
+			<input:CmsLabel ui:field="m_legend" styleName="{style.legend}"></input:CmsLabel>
+			<g:FlowPanel ui:field="m_content" styleName="{style.content}"></g:FlowPanel>
+		</g:FlowPanel>
+	</g:FlowPanel>
+</ui:UiBinder> 

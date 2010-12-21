@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsToolbarNotificationWidget.java,v $
- * Date   : $Date: 2010/11/18 15:26:55 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/12/21 10:23:32 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,7 +33,7 @@ package org.opencms.gwt.client.ui;
 
 import org.opencms.gwt.client.ui.CmsNotification.Type;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
-import org.opencms.gwt.client.util.CmsSlideAnimation;
+import org.opencms.gwt.client.util.CmsFadeAnimation;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
@@ -48,7 +48,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -92,7 +92,7 @@ public class CmsToolbarNotificationWidget extends A_CmsNotificationWidget {
     @Override
     protected void animateHide() {
 
-        setAnimation(CmsSlideAnimation.slideOut(getElement(), new Command() {
+        setAnimation(CmsFadeAnimation.fadeOut(getElement(), new Command() {
 
             /**
              * @see com.google.gwt.user.client.Command#execute()
@@ -111,7 +111,7 @@ public class CmsToolbarNotificationWidget extends A_CmsNotificationWidget {
     protected void animateShow() {
 
         getElement().getStyle().clearVisibility();
-        setAnimation(CmsSlideAnimation.slideIn(getElement(), new Command() {
+        setAnimation(CmsFadeAnimation.fadeIn(getElement(), new Command() {
 
             /**
              * @see com.google.gwt.user.client.Command#execute()

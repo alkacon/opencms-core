@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsLinkSelector.java,v $
- * Date   : $Date: 2010/11/29 15:13:19 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/12/21 10:23:32 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import com.google.gwt.user.client.ui.Panel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -200,6 +200,15 @@ public class CmsLinkSelector extends Composite implements I_CmsFormWidget, I_Cms
             return null;
         }
         return new CmsLinkBean(m_textbox.getText(), m_internal);
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#isEnabled()
+     */
+    @Override
+    public boolean isEnabled() {
+
+        return !m_textbox.isReadOnly();
     }
 
     /** 

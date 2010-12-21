@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsContextMenuItemGXT.java,v $
- * Date   : $Date: 2010/08/06 14:08:14 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/I_CmsAdditionalInfoLoader.java,v $
+ * Date   : $Date: 2010/12/21 10:23:33 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -29,64 +29,30 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.gwt.client.ui;
+package org.opencms.gwt.client.util;
 
-import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.widget.menu.MenuItem;
-import com.google.gwt.user.client.Command;
+import org.opencms.gwt.client.ui.CmsListItemWidget.AdditionalInfoItem;
+
+import java.util.List;
+
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
- * A cms context menu item to use with gxt.<p>
- * 
+ * This interface defines an additional info loader for a {@link org.opencms.gwt.client.ui.CmsListItemWidget}.<p>
+ *
  * @author Ruediger Kurz
  * 
  * @version $Revision: 1.1 $
  * 
- * @since version 8.0.0
+ * @since 8.0.0
  */
-public class CmsContextMenuItemGXT extends MenuItem {
-
-    /** The command to execute. */
-    private Command m_cmd;
+public interface I_CmsAdditionalInfoLoader {
 
     /**
-     * @param label
+     * Triggers a load operation for additional info items.<p>
+     * 
+     * @param callback the callback to which the result of the load operation will be passed
      */
-    public CmsContextMenuItemGXT(String label) {
-
-        super(label);
-
-    }
-
-    /**
-     * @see com.extjs.gxt.ui.client.widget.menu.Item#handleClick(com.extjs.gxt.ui.client.event.ComponentEvent)
-     */
-    @Override
-    protected void handleClick(ComponentEvent be) {
-
-        super.handleClick(be);
-        m_cmd.execute();
-
-    }
-
-    /**
-     * Returns the cmd.<p>
-     *
-     * @return the cmd
-     */
-    public Command getCmd() {
-
-        return m_cmd;
-    }
-
-    /**
-     * Sets the cmd.<p>
-     *
-     * @param cmd the cmd to set
-     */
-    public void setCmd(Command cmd) {
-
-        m_cmd = cmd;
-    }
+    void load(AsyncCallback<List<AdditionalInfoItem>> callback);
 
 }

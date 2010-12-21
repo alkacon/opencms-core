@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/ui/css/Attic/I_CmsSitemapItemCss.java,v $
- * Date   : $Date: 2010/12/17 08:45:30 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2010/12/21 10:23:32 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import com.google.gwt.resources.client.CssResource;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 8.0.0
  */
@@ -71,13 +71,6 @@ public interface I_CmsSitemapItemCss extends CssResource {
      * 
      * @return a CSS class
      **/
-    String export();
-
-    /**
-     * CSS class accessor.<p>
-     * 
-     * @return a CSS class
-     **/
     String highlight();
 
     /**
@@ -99,28 +92,7 @@ public interface I_CmsSitemapItemCss extends CssResource {
      * 
      * @return a CSS class
      **/
-    String normal();
-
-    /**
-     * CSS class accessor.<p>
-     * 
-     * @return a CSS class
-     **/
     String positionIndicator();
-
-    /**
-     * CSS class accessor.<p>
-     * 
-     * @return a CSS class
-     **/
-    String redirect();
-
-    /**
-     * CSS class accessor.<p>
-     * 
-     * @return a CSS class
-     **/
-    String secure();
 
     /**
      * CSS class accessor.<p>

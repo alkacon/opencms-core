@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishGroupPanel.java,v $
- * Date   : $Date: 2010/07/07 12:40:49 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2010/12/21 10:23:32 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,6 +42,7 @@ import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsListItemWidgetCss;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
+import org.opencms.gwt.client.util.CmsResourceStateUtil;
 import org.opencms.gwt.client.util.CmsStyleVariable;
 import org.opencms.gwt.client.util.I_CmsHasSize;
 import org.opencms.gwt.shared.CmsIconUtil;
@@ -63,7 +64,7 @@ import com.google.gwt.user.client.ui.Label;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 8.0.0
  */
@@ -151,14 +152,15 @@ public class CmsPublishGroupPanel extends Composite implements I_CmsHasSize {
         CmsListInfoBean info = new CmsListInfoBean();
         info.setTitle(getTitle(resourceBean));
         info.setSubTitle(resourceBean.getName());
-        String stateLabel = Messages.get().key(Messages.GUI_PUBLISH_RESOURCE_STATE_0);
-        String stateName = CmsPublishUtil.getStateName(resourceBean.getState());
+        String stateLabel = org.opencms.gwt.client.Messages.get().key(
+            org.opencms.gwt.client.Messages.GUI_RESOURCE_STATE_0);
+        String stateName = CmsResourceStateUtil.getStateName(resourceBean.getState());
         // this can be null for the source resources of broken relations in the 'broken links' 
         // panel since these resources don't have to be new or deleted or changed
         if (stateName != null) {
             info.addAdditionalInfo(stateLabel, stateName);
         }
-        info.setValueStyle(stateLabel, CmsPublishUtil.getStateStyle(resourceBean.getState()));
+        info.setValueStyle(stateLabel, CmsResourceStateUtil.getStateStyle(resourceBean.getState()));
 
         CmsListItemWidget itemWidget = new CmsListItemWidget(info);
         if (resourceBean.getInfo() != null) {

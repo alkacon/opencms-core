@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsMultiCheckBox.java,v $
- * Date   : $Date: 2010/10/29 12:18:21 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2010/12/21 10:23:32 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import com.google.gwt.user.client.ui.Panel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 8.0.0
  *  
@@ -259,6 +259,21 @@ public class CmsMultiCheckBox extends Composite implements I_CmsFormWidget, I_Cm
             m_panel.add(checkboxWrapper);
         }
         m_panel.add(m_error);
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#isEnabled()
+     */
+    @Override
+    public boolean isEnabled() {
+
+        boolean result = true;
+        for (CmsCheckBox checkbox : m_checkboxes) {
+            if (!checkbox.isEnabled()) {
+                result = false;
+            }
+        }
+        return result;
     }
 
 }

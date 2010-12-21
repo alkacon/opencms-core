@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageHandler.java,v $
- * Date   : $Date: 2010/11/22 11:43:50 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2010/12/21 10:23:33 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,6 +42,7 @@ import org.opencms.ade.publish.client.CmsPublishDialog;
 import org.opencms.gwt.client.dnd.I_CmsDNDController;
 import org.opencms.gwt.client.ui.CmsAcceptDeclineCancelDialog;
 import org.opencms.gwt.client.ui.CmsAlertDialog;
+import org.opencms.gwt.client.ui.CmsAvailabilityDialog;
 import org.opencms.gwt.client.ui.CmsConfirmDialog;
 import org.opencms.gwt.client.ui.CmsContextMenuEntry;
 import org.opencms.gwt.client.ui.CmsList;
@@ -88,7 +89,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  * 
  * @since 8.0.0
  */
@@ -715,13 +716,31 @@ public class CmsContainerpageHandler {
                 entry.setSubMenu(transformEntries(bean.getSubMenu(), uri));
             }
 
-            Command cmd = new Command() {
+            Command cmd;
 
-                public void execute() {
+            String name = entry.getName();
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(name) && name.equals(CmsAvailabilityDialog.class.getName())) {
+                entry.setImageClass(org.opencms.gwt.client.ui.css.I_CmsImageBundle.INSTANCE.contextMenuIcons().availabilitySmall());
 
-                    Window.alert(entry.getJspPath());
-                }
-            };
+                cmd = new Command() {
+
+                    /**
+                     * @see com.google.gwt.user.client.Command#execute()
+                     */
+                    public void execute() {
+
+                        new CmsAvailabilityDialog(m_controller.getData().getContainerpageUri()).loadAndShow();
+                    }
+                };
+            } else {
+                cmd = new Command() {
+
+                    public void execute() {
+
+                        Window.alert(entry.getJspPath());
+                    }
+                };
+            }
             entry.setCommand(cmd);
             menuEntries.add(entry);
         }
