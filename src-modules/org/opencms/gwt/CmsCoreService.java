@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsCoreService.java,v $
- * Date   : $Date: 2010/12/21 10:23:33 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2010/12/21 13:03:43 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -86,6 +86,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -100,7 +101,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Michael Moossen
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 8.0.0
  * 
@@ -771,7 +772,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             if ("true".equals(secure)) {
                 result.setPageIcon(CmsListInfoBean.PageIcon.secure);
             }
-            Map<String, String> additionalInfo = new HashMap<String, String>();
+            Map<String, String> additionalInfo = new LinkedHashMap<String, String>();
             String resTypeName = OpenCms.getResourceManager().getResourceType(res.getTypeId()).getTypeName();
             String key = OpenCms.getWorkplaceManager().getExplorerTypeSetting(resTypeName).getKey();
             Locale currentLocale = getCmsObject().getRequestContext().getLocale();

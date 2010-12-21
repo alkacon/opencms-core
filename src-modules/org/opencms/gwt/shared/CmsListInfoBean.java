@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/Attic/CmsListInfoBean.java,v $
- * Date   : $Date: 2010/12/21 10:23:32 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/12/21 13:03:43 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.gwt.shared;
 import org.opencms.db.CmsResourceState;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
@@ -45,7 +46,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -124,7 +125,7 @@ public class CmsListInfoBean implements IsSerializable {
     public Map<String, String> getAdditionalInfo() {
 
         if (m_additionalInfo == null) {
-            m_additionalInfo = new HashMap<String, String>();
+            m_additionalInfo = new LinkedHashMap<String, String>();
         }
         return m_additionalInfo;
     }

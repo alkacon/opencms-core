@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapTreeItem.java,v $
- * Date   : $Date: 2010/12/21 10:23:33 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2010/12/21 13:03:43 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,6 +60,7 @@ import org.opencms.xml.sitemap.CmsSitemapManager;
 import org.opencms.xml.sitemap.properties.CmsComputedPropertyValue;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.google.gwt.core.client.Scheduler;
@@ -74,7 +75,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.45 $ 
+ * @version $Revision: 1.46 $ 
  * 
  * @since 8.0.0
  * 
@@ -284,8 +285,12 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
         info.setPageIcon(m_pageIcon);
         info.setTitle(m_entry.getTitle());
         info.setSubTitle(getDisplayedUrl(m_entry.getSitePath()));
-        info.addAdditionalInfo(Messages.get().key(Messages.GUI_NAME_0), m_entry.getName());
-        info.addAdditionalInfo(Messages.get().key(Messages.GUI_VFS_PATH_0), m_entry.getVfsPath());
+
+        Map<String, String> addInfo = new LinkedHashMap<String, String>();
+        addInfo.put(Messages.get().key(Messages.GUI_NAME_0), m_entry.getName());
+        addInfo.put(Messages.get().key(Messages.GUI_VFS_PATH_0), m_entry.getVfsPath());
+        info.setAdditionalInfo(addInfo);
+
         return info;
     }
 

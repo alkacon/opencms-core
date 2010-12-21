@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsAvailabilityDialog.java,v $
- * Date   : $Date: 2010/12/21 10:23:32 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/12/21 13:03:43 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,7 +72,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -205,6 +205,7 @@ public class CmsAvailabilityDialog extends CmsPopupDialog {
                 if (m_pageInfo == null) {
                     showDialog(availabilityInfo, availabilityInfo.getPageInfo());
                 } else {
+                    m_pageInfo.setResourceState(availabilityInfo.getPageInfo().getResourceState());
                     showDialog(availabilityInfo, m_pageInfo);
                 }
             }
@@ -290,8 +291,8 @@ public class CmsAvailabilityDialog extends CmsPopupDialog {
         }
 
         // create the info box
-        CmsListItemWidget info = new CmsListItemWidget(infoBean);
-        CmsListItemWidgetUtil.setPageIcon(info, infoBean.getPageIcon());
+        CmsListItemWidget info = new CmsListItemWidget(m_pageInfo);
+        CmsListItemWidgetUtil.setPageIcon(info, m_pageInfo.getPageIcon());
         m_panel.add(info);
 
         // create the publish scheduled field
