@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2010/10/20 15:22:48 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2010/12/21 10:59:56 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.i18n.CmsAcceptLanguageHeaderParser;
 import org.opencms.i18n.CmsI18nInfo;
 import org.opencms.i18n.CmsLocaleManager;
@@ -87,7 +88,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Moossen
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  */
@@ -2061,7 +2062,13 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
         if (data == null) {
             // export uri not in cache, must look up the file in the VFS and sitemap
-            data = getVfsNameInternal(cms, rfsName);
+            try {
+                data = getVfsNameInternal(cms, rfsName);
+            } catch (CmsVfsResourceNotFoundException e) {
+                // could happen but is the expected behavior because
+                // the accoring vfs resource for the given rfsname could not be found 
+                // maybe the rfsname has parameters set -> go on
+            }
         }
 
         if (data == null) {
@@ -2081,6 +2088,12 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                     // get the vfs base name, which is later used to read the resource in the vfs
                     data = getVfsNameInternal(cms, rfsBaseName);
                     data.setParameters(parameters);
+                }
+            } catch (CmsVfsResourceNotFoundException e) {
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(Messages.get().getBundle().key(
+                        Messages.LOG_NO_INTERNAL_VFS_RESOURCE_FOUND_1,
+                        new String[] {rfsName}));
                 }
             } catch (CmsException e) {
                 // ignore, resource does not exist
@@ -2149,8 +2162,11 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      * @param rfsName the name of the RFS resource
      * 
      * @return the name of the VFS resource
+     * 
+     * @throws CmsVfsResourceNotFoundException if something goes wrong 
      */
-    protected CmsStaticExportData getVfsNameInternal(CmsObject cms, String rfsName) {
+    protected CmsStaticExportData getVfsNameInternal(CmsObject cms, String rfsName)
+    throws CmsVfsResourceNotFoundException {
 
         return m_linkStrategyHandler.getVfsNameInternal(cms, rfsName);
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/Attic/I_CmsLinkStrategyHandler.java,v $
- * Date   : $Date: 2010/10/20 15:22:48 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/12/21 10:59:56 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,11 +32,12 @@
 package org.opencms.staticexport;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 
 /**
  * @author  Ruediger Kurz 
  *
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  */
@@ -63,8 +64,10 @@ public interface I_CmsLinkStrategyHandler {
      * @param rfsName the name of the RFS resource
      * 
      * @return the name of the VFS resource
+     * 
+     * @throws CmsVfsResourceNotFoundException if something goes wrong
      */
-    CmsStaticExportData getVfsNameInternal(CmsObject cms, String rfsName);
+    CmsStaticExportData getVfsNameInternal(CmsObject cms, String rfsName) throws CmsVfsResourceNotFoundException;
 
     /**
      * Checks if the static export is required for the given VFS resource.<p>

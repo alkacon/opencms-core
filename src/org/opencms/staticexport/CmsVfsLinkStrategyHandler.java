@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/Attic/CmsVfsLinkStrategyHandler.java,v $
- * Date   : $Date: 2010/11/03 07:04:36 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/12/21 10:59:56 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Ruediger Kurz
  *
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
  */
@@ -152,7 +152,7 @@ public class CmsVfsLinkStrategyHandler extends A_CmsLinkStrategyHandler {
     /**
      * @see org.opencms.staticexport.I_CmsLinkStrategyHandler#getVfsNameInternal(org.opencms.file.CmsObject, java.lang.String)
      */
-    public CmsStaticExportData getVfsNameInternal(CmsObject cms, String rfsName) {
+    public CmsStaticExportData getVfsNameInternal(CmsObject cms, String rfsName) throws CmsVfsResourceNotFoundException {
 
         String storedSiteRoot = cms.getRequestContext().getSiteRoot();
         try {
@@ -221,10 +221,12 @@ public class CmsVfsLinkStrategyHandler extends A_CmsLinkStrategyHandler {
                     }
                 }
             }
-            return null;
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
         } finally {
             cms.getRequestContext().setSiteRoot(storedSiteRoot);
         }
+        throw new CmsVfsResourceNotFoundException(Messages.get().container(Messages.ERR_CREATE_FOLDER_1, rfsName));
     }
 
     /**

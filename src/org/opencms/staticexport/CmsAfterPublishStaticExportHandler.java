@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsAfterPublishStaticExportHandler.java,v $
- * Date   : $Date: 2010/12/17 08:45:30 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2010/12/21 10:59:56 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlSitemap;
 import org.opencms.loader.I_CmsResourceLoader;
@@ -77,7 +78,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  * 
@@ -625,14 +626,23 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
         Iterator<String> i = publishedTemplateResources.iterator();
         while (i.hasNext()) {
             String rfsName = i.next();
-            CmsStaticExportData data = manager.getVfsNameInternal(cms, rfsName);
-            if (data == null) {
-                String rfsBaseName = rfsName;
-                int pos = rfsName.lastIndexOf('_');
-                if (pos >= 0) {
-                    rfsBaseName = rfsName.substring(0, pos);
+            CmsStaticExportData data = null;
+            try {
+                data = manager.getVfsNameInternal(cms, rfsName);
+                if (data == null) {
+                    String rfsBaseName = rfsName;
+                    int pos = rfsName.lastIndexOf('_');
+                    if (pos >= 0) {
+                        rfsBaseName = rfsName.substring(0, pos);
+                    }
+                    data = manager.getVfsNameInternal(cms, rfsBaseName);
                 }
-                data = manager.getVfsNameInternal(cms, rfsBaseName);
+            } catch (CmsVfsResourceNotFoundException e) {
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(Messages.get().getBundle().key(
+                        Messages.LOG_NO_INTERNAL_VFS_RESOURCE_FOUND_1,
+                        new String[] {rfsName}));
+                }
             }
             if (data != null) {
                 data.setRfsName(rfsName);

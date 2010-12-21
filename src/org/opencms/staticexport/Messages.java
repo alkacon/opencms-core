@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/Messages.java,v $
- * Date   : $Date: 2010/10/04 14:53:39 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2010/12/21 10:59:56 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -115,10 +115,10 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String INIT_INVALID_HEADER_1 = "INIT_INVALID_HEADER_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String INIT_LINKSUBSTITUTION_HANDLER_1 = "INIT_LINKSUBSTITUTION_HANDLER_1";
+    public static final String INIT_LINKSTRATEGY_HANDLER_1 = "INIT_LINKSTRATEGY_HANDLER_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String INIT_LINKSTRATEGY_HANDLER_1 = "INIT_LINKSTRATEGY_HANDLER_1";
+    public static final String INIT_LINKSUBSTITUTION_HANDLER_1 = "INIT_LINKSUBSTITUTION_HANDLER_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_SE_MANAGER_CREATED_0 = "INIT_SE_MANAGER_CREATED_0";
@@ -196,9 +196,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_FLUSHED_CACHES_1 = "LOG_FLUSHED_CACHES_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_RFSNAME_1 = "LOG_RFSNAME_1";
-
-    /** Message constant for key in the resource bundle. */
     public static final String LOG_FOLDER_DELETED_1 = "LOG_FOLDER_DELETED_1";
 
     /** Message constant for key in the resource bundle. */
@@ -223,6 +220,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_MALFORMED_URI_1 = "LOG_MALFORMED_URI_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String LOG_NO_INTERNAL_VFS_RESOURCE_FOUND_1 = "LOG_NO_INTERNAL_VFS_RESOURCE_FOUND_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_NUM_EXPORT_1 = "LOG_NUM_EXPORT_1";
 
     /** Message constant for key in the resource bundle. */
@@ -239,6 +239,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_RESOURCE_ACESS_ERROR_3 = "LOG_RESOURCE_ACESS_ERROR_3";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_RFSNAME_1 = "LOG_RFSNAME_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_SCRUBBING_EXPORT_FOLDERS_1 = "LOG_SCRUBBING_EXPORT_FOLDERS_1";

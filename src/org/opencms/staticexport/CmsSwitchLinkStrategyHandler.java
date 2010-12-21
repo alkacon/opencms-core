@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/Attic/CmsSwitchLinkStrategyHandler.java,v $
- * Date   : $Date: 2010/11/03 07:04:36 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2010/12/21 10:59:56 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.staticexport;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -50,7 +51,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Ruediger Kurz
  *
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 8.0.0
  */
@@ -152,7 +153,7 @@ public class CmsSwitchLinkStrategyHandler implements I_CmsLinkStrategyHandler {
     /**
      * @see org.opencms.staticexport.I_CmsLinkStrategyHandler#getVfsNameInternal(org.opencms.file.CmsObject, java.lang.String)
      */
-    public CmsStaticExportData getVfsNameInternal(CmsObject cms, String rfsName) {
+    public CmsStaticExportData getVfsNameInternal(CmsObject cms, String rfsName) throws CmsVfsResourceNotFoundException {
 
         // make the decision
         if (!isSitemapInUse(cms, rfsName, true)) {
