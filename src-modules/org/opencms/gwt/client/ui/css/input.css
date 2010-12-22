@@ -9,13 +9,13 @@
 
 .textboxGhostMode {
 	font-style: oblique;
-	color: #aaa !important;
+	color: value("constants.colorLight") !important;
 }
 
 .textBoxWidget, .checkBox {}
 
 .textBoxReadOnly {
-	background-color: #ddd;
+	background-color: value("constants.backgroundColorMiddle");
 }
 
 .textBoxPanel, .textAreaContainer {
@@ -119,7 +119,7 @@
 }
 
 .textBoxPanelDisabled {
-	background-color: #ddd;
+	background-color: value("constants.backgroundColorMiddle");
 }
 
 .textBoxPanelDisabled * {
@@ -128,8 +128,8 @@
 }
 
 .textBoxPanelError {
-	border: 1px solid #B31B34;
-	background-color: #FFCCCC;
+	border: 1px solid value("constants.borderColorRed");
+	background-color: value("constants.backgroundColorLightRed");
 	overflow:hidden;
 }
 
@@ -169,8 +169,8 @@
 
 .error {
 	text-align: left;
-	border: 1px solid #B31B34;
-	background-color: #EEE;
+	border: 1px solid value("constants.colorRed");
+	background-color: value("constants.backgroundColorMiddle");
 	color: black;
     margin-top: 2px;
     padding: 3px;
@@ -216,7 +216,7 @@
 }
 
 .selectHover {
-	background-color: #aaaaaa;
+	background-color: value("constants.backgroundColorBar");
 }
 
 .selectIcon { 
@@ -329,7 +329,7 @@
 }
 
 .weakText { 
-	color: #999;
+	color: value("constants.colorDisabled"); 
 }
 
 .subtitleSuffix {

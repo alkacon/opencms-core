@@ -1,9 +1,9 @@
 .stateNew {
-	color: #0000ff;
+	color: value("constantsCss.colorBlue");
 
 }
 .stateChanged {
-	color: #ff0000;
+	color: value("constantsCss.colorRed");
 }
 
 .stateDeleted {

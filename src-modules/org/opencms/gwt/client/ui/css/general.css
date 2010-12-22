@@ -60,11 +60,7 @@
 	}
 	
 	.shadow{
-		-moz-box-shadow: 2px 2px 6px #666666;
-	}
-	
-	.background{
-		background: -moz-linear-gradient(top,  #eeeeee,  #999999);
+		-moz-box-shadow: 2px 2px 6px value("constantsCss.shadowColorDark");
 	}
 
 } @elif user.agent safari {
@@ -82,10 +78,7 @@
 	}
 	
 	.shadow{
-		-webkit-box-shadow: 2px 2px 6px #666666;
-	}
-	.background{
-		background: -webkit-gradient(linear, left top, left bottom, from(#eeeeee), to(#999999));
+		-webkit-box-shadow: 2px 2px 6px value("constantsCss.shadowColorDark");
 	}
 } @elif user.agent opera {
 	/** opera */
@@ -102,22 +95,14 @@
 	}
 	
 	.shadow{
-		box-shadow: 2px 2px 6px #666666;
+		box-shadow: 2px 2px 6px value("constantsCss.shadowColorDark");
 	}
-	.background{}
 } @elif user.agent ie6 {
 
 	.shadow{
 		/** standard box-shadow is a gradient, but this is a solid color, so it has to be a bit lighter to look similar */ 
-		filter: literal("progid:DXImageTransform.Microsoft.DropShadow(color=#999999,offX=2,offY=2)");
+		filter: literal("progid:DXImageTransform.Microsoft.DropShadow(color=value('constantsCss.shadowColorMiddle'),offX=2,offY=2)");
 	}
-	
-	.background{
-	/*	filter: literal("progid:DXImageTransform.Microsoft.gradient(startColorstr='#eeeeee', endColorstr='#999999') !important"); */
-	}
-	
-	
-	
 	.cornerAll, .cornerBottom, .cornerTop{} 
 
 } @elif user.agent ie8 {
@@ -137,14 +122,11 @@
 	
 	.shadow{
 		/** standard box-shadow is a gradient, but this is a solid color, so it has to be a bit lighter to look similar */ 
-		-ms-filter: "progid:DXImageTransform.Microsoft.DropShadow(color=#999999,offX=2,offY=2)"; 
+		-ms-filter: "progid:DXImageTransform.Microsoft.DropShadow(color=value('constantsCss.shadowColorMiddle'),offX=2,offY=2)"; 
 	}
 	
-	.background{
-	/*	-ms-filter: "progid:DXImageTransform.Microsoft.Gradient(startColorstr='#eeeeee', endColorstr='#999999')"; */
-	}
 } @else {
-	.background, .cornerAll, .cornerBottom, .cornerTop, .shadow{}
+	.cornerAll, .cornerBottom, .cornerTop, .shadow{}
 }
 
 }

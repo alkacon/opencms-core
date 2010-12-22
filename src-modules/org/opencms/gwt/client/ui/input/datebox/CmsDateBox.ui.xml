@@ -3,92 +3,15 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:h="urn:import:com.google.gwt.user.datepicker.client"
 	xmlns:input="urn:import:org.opencms.gwt.client.ui.input">
-	<ui:style>
-		@external html-face, gwt-DatePicker, datePickerMonthSelector, datePickerMonth, datePickerPreviousButton, datePickerPreviousButton-up-hovering, datePickerPreviousButton-down-hovering, datePickerNextButton, datePickerNextButton-up-hovering, datePickerNextButton-down-hovering, datePickerDays, datePickerWeekdayLabel, datePickerWeekendLabel, datePickerDay, datePickerDayIsToday, datePickerDayIsWeekend, datePickerDayIsFiller, datePickerDayIsValue, datePickerDayIsDisabled, datePickerDayIsHighlighted, datePickerDayIsValueAndHighlighted;
-
-		.gwt-DatePicker {
-			border-bottom: #aaaaaa 1px solid;
-		}
-		.gwt-DatePicker td {
-			text-align: center;
-		}
-		.datePickerMonthSelector { /*the month selector widget*/
-			border-bottom: 1px solid #cccccc;
-		}
-		.datePickerMonth { /*the month in the month selector widget*/ } 
-		.datePickerPreviousButton { /*the previous month button*/ 
-			cursor: pointer;
-			width: 16px;
-		} 
-		.datePickerNextButton { /*the next month button*/ 
-			cursor: pointer;
-			width: 16px;
-		} 
-		.datePickerPreviousButton-up-hovering .html-face, .datePickerPreviousButton-down-hovering .html-face, .datePickerNextButton-up-hovering .html-face, .datePickerNextButton-down-hovering .html-face{
-			font-weight: bold;
-		}
-		.datePickerDays { /*the portion of the picker that shows the days*/}
-		.datePickerDays td{ /* the cell for a day */
-			padding: 4px;
-			font-size: 11px;
-		}
-		.datePickerWeekdayLabel { /*the label over weekdays*/ }
-		.datePickerWeekendLabel { /*the label over weekends*/
-			background: #dddddd;
-		}
-		.datePickerDay { /*a single day*/ 
-			cursor: pointer;
-		}
-		.datePickerDayIsToday { /*today's date*/ 
-			color: red;
-		}
-		.datePickerDayIsWeekend { /*a weekend day*/ 
-			background: #dddddd;
-		}
-		.datePickerDayIsFiller { /*a day in another month*/
-			color: #666666;
-		}
-		.datePickerDayIsValue { /*the selected day*/
-			background: #cccccc; 
-		}
-		.datePickerDayIsDisabled { /*a disabled day*/ }
-		.datePickerDayIsHighlighted { /*the currently highlighted day*/ 
-			background: #b9b9b9;
-		}
-		.datePickerDayIsValueAndHighlighted { /*the highlighted day if it is also selected*/ }
-
-		.dateTime { /* Align the time panel */
-			text-align: center;
-			padding: 3px 0px 4px 0px;
-		}
-		.time { /* Format the time input field. */
-			margin: 0px 10px 0px 5px;
-			display: inline-block;
-			text-align: left;
-			vertical-align: middle;
-			width: 50px;
-		}
-		@if user.agent ie6 { /* IE6 HACK for the inline-block */
-			.time {
-				display: inline;
-			}
-		}
-		.ampm { /* Format the am/pm outer div. */
-			margin-right: 5px;
-		}
-		.ampm div span { /* Make a margin to separate the radiobuttons. */
-			margin-right: 1px;
-		}
-	</ui:style>
-
+	<ui:with field="style" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
 	<g:FlowPanel>
 		<input:CmsTextBox ui:field="m_box"></input:CmsTextBox>
 		<g:FlowPanel ui:field="m_dateTimePanel">
 			<h:DatePicker ui:field="m_picker"></h:DatePicker>
-			<g:FlowPanel addStyleNames="{style.dateTime}">
-				<input:CmsTextBox ui:field="m_time" addStyleNames="{style.time}"></input:CmsTextBox>
-				<input:CmsRadioButton ui:field="m_am" addStyleNames="{style.ampm}"></input:CmsRadioButton>
-				<input:CmsRadioButton ui:field="m_pm" addStyleNames="{style.ampm}"></input:CmsRadioButton>
+			<g:FlowPanel addStyleNames="{style.dateBoxCss.dateTime}">
+				<input:CmsTextBox ui:field="m_time" addStyleNames="{style.dateBoxCss.time}"></input:CmsTextBox>
+				<input:CmsRadioButton ui:field="m_am" addStyleNames="{style.dateBoxCss.ampm}"></input:CmsRadioButton>
+				<input:CmsRadioButton ui:field="m_pm" addStyleNames="{style.dateBoxCss.ampm}"></input:CmsRadioButton>
 			</g:FlowPanel>
 		</g:FlowPanel>
 	</g:FlowPanel>

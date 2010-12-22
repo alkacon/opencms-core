@@ -1,6 +1,3 @@
-/* This is needed since there is a bug in GWT that obfuscates the primary style name but not the secondary :( */
-@external x-btn-text;
-
 .popup, .menuPopup{}
 
 .cmsContextMenu {
@@ -9,16 +6,12 @@
 	margin-left: 5px;
 }
 
-.cmsContextMenu .x-btn-text {
-	font-size: 14px;
-}
-
 .menuPanel{ /* the panel (table) the context menu is set as widget. */
-	background: #F9F9F9;
+	background: value("constantsCss.backgroundColorLight");
 	border-collapse:collapse;
 }
 .cmsMenuBar { /* the outer menu bar */
-	background: #F9F9F9;
+	background: value("constantsCss.backgroundColorLight");
 }
 .cmsMenuBar .cmsMenuItem { /* menu items */
 	cursor: pointer;
@@ -26,7 +19,7 @@
 	padding: 0px 2px;
 }
 .cmsMenuBar .cmsMenuItem.selected { /* selected menu items */ 
-	background: #E0EDFE;
+	background: value("constantsCss.backgroundColorLightBlue");
 }
 .cmsMenuBar .cmsMenuItem.disabled { /* menu item disabled */
 	color: gray;
@@ -55,7 +48,7 @@
 	margin: 0px;
 	padding: 0px;
 	border: none;
-	background-color: #777777;
+	background-color: value("constantsCss.backgroundColorDark");
 	zoom: 1;
 	overflow: hidden;
 	clear: both;

@@ -31,12 +31,12 @@
 .popup .popupContent{
    
     position: relative;
-    background: #ffffff;
+    background: value("constantsCss.backgroundColorWhite");
     border: solid 1px value("constantsCss.borderColor");
     font-family: value("constantsCss.fontFamily");
 }
 .popupOverlay{
-    background: #dddddd;
+    background: value("constantsCss.backgroundColorMiddle");
     z-index: 450;
 }
 .popupShadow{
@@ -45,7 +45,7 @@
     z-index: 0;
     top: 0px;
     left: 0px;
-    background: #aaaaaa;
+    background: value("constantsCss.backgroundColorBar");
 }
 
 .popupMainContent{
@@ -64,7 +64,7 @@
 	height: 5px;
 	border-left: solid 1px value("constantsCss.borderColor");
 	border-right: solid 1px value("constantsCss.borderColor");
-	background: #F9F9F9;
+	background: value("constantsCss.backgroundColorLight");
 }
 
 @if user.agent ie6 {

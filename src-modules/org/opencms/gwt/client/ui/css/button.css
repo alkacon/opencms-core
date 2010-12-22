@@ -77,7 +77,7 @@
 
 .cmsTextButton.cmsState-up-disabled{
     color: value("constantsCss.colorDisabled");
-    background: #bbbbbb;
+    background: value("constantsCss.backgroundColorDisabled");
 }
 
 

@@ -1,11 +1,11 @@
 .fieldsetVisible {
-	border: solid 1px #999999;
-	background: #fff;
+	border: solid 1px value("constantsCss.borderColor");
+	background: value("constantsCss.backgroundColorWhite");
 	min-height: 8px;
 }
 .fieldsetInvisible {
-	border: solid 1px #fff;
-	border-top: solid 1px #999999;
-	background: #fff;
+	border: solid 1px value("constantsCss.borderColorWhite");
+	border-top: solid 1px value("constantsCss.borderColor");
+	background: value("constantsCss.backgroundColorWhite");
 	min-height: 8px;
 }

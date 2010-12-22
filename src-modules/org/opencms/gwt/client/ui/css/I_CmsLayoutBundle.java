@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2010/12/21 15:50:36 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2010/12/22 09:01:11 $
+ * Version: $Revision: 1.51 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import com.google.gwt.resources.client.ImageResource.RepeatStyle;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.50 $
+ * @version $Revision: 1.51 $
  * 
  * @since 8.0.0
  */
@@ -185,6 +185,20 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
+        String backgroundColorDark();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String backgroundColorDisabled();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
         String backgroundColorLight();
 
         /** 
@@ -192,7 +206,35 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
+        String backgroundColorLightBlue();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String backgroundColorLightRed();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
         String backgroundColorList();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String backgroundColorMiddle();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String backgroundColorWhite();
 
         /** 
          * Access method.<p>
@@ -220,6 +262,20 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
+        String borderColorRed();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String borderColorWhite();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
         String borderRadius();
 
         /** 
@@ -234,7 +290,28 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
+        String colorBlue();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
         String colorDisabled();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String colorLight();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String colorRed();
 
         /** 
          * Access method.<p>
@@ -312,6 +389,20 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String pageWidth();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String shadowColorDark();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String shadowColorMiddle();
 
         /** 
          * Access method.<p>
@@ -406,6 +497,31 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String selected();
+    }
+
+    /** DateBox css. */
+    public interface I_CmsDateBoxCss extends CssResource {
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String dateTime();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String time();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String ampm();
     }
 
     /** Dialog CSS. */
@@ -530,13 +646,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     /** General CSS, used for general re-occurring styles. */
     @Shared
     interface I_CmsGeneralCss extends I_CmsStateCss {
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String background();
 
         /** 
          * Access method.<p>
@@ -1436,6 +1545,14 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      */
     @Source("contextmenu.css")
     I_CmsContextmenuCss contextmenuCss();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the constants CSS
+     */
+    @Source("datebox.css")
+    I_CmsDateBoxCss dateBoxCss();
 
     /**
      * Access method.<p>

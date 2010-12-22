@@ -5,16 +5,30 @@
 
 @def color #222222;
 @def colorDisabled #999999;
+@def colorLight #AAAAAA;
+@def colorRed #B31B34;
+@def colorBlue #003082;
 
+@def borderColorWhite #FFFFFF;
 @def borderColor #999999;
-@def borderColorInactive #aaaaaa;
+@def borderColorInactive #AAAAAA;
 @def borderColorActive #888888;
+@def borderColorRed #B31B34;
 @def borderRadius 3px;
 
+@def backgroundColorDisabled #bbbbbb;
 @def backgroundColorList #ffffff;
 
-@def backgroundColorBar #aaaaaa;
+@def backgroundColorWhite #FFFFFF;
 @def backgroundColorLight #F9F9F9;
+@def backgroundColorMiddle #DDDDDD;
+@def backgroundColorBar #AAAAAA;
+@def backgroundColorDark #999999;
+@def backgroundColorLightBlue #E0EDFE;
+@def backgroundColorLightRed #FFCCCC;
+
+@def shadowColorMiddle #999999;
+@def shadowColorDark #666666;
 
 @def pageWidth 930px;
 @def toolbarHeight 35px;
