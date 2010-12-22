@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlEntityResolver.java,v $
- * Date   : $Date: 2010/10/13 09:43:45 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/12/22 14:33:35 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -67,7 +67,7 @@ import org.xml.sax.InputSource;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -119,17 +119,35 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
     }
 
     /**
-     * Adds a sytem id URL to to internal permanent cache.<p>
+     * Adds a system ID URL to to internal permanent cache.<p>
      * 
      * This cache will NOT be cleared automatically.<p>
      * 
-     * @param systemId the system id to add
+     * @param systemId the system ID to add
      * @param content the content of the system id
      */
     public static void cacheSystemId(String systemId, byte[] content) {
 
         initCaches();
         m_cachePermanent.put(systemId, content);
+    }
+
+    /**
+     * Checks if a given system ID URL is in the internal permanent cache.<p>
+     * 
+     * This check is required to see if a XML content is based on a file that actually exists in the OpenCms VFS,
+     * or if the schema has been just cached without a VFS file.<p>
+     * 
+     * @param systemId the system id ID check
+     * 
+     * @return <code>true</code> if the system ID is in the internal permanent cache, <code>false</code> otherwise
+     */
+    public static boolean isCachedSystemId(String systemId) {
+
+        if (m_cachePermanent != null) {
+            return m_cachePermanent.containsKey(systemId);
+        }
+        return false;
     }
 
     /**
