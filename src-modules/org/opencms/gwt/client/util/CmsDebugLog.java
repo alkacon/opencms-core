@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsDebugLog.java,v $
- * Date   : $Date: 2010/11/29 08:29:19 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2010/12/22 10:34:19 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,8 @@
 
 package org.opencms.gwt.client.util;
 
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.BorderStyle;
 import com.google.gwt.dom.client.Style.Overflow;
@@ -47,7 +49,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -78,12 +80,12 @@ public final class CmsDebugLog extends Composite {
         style.setPadding(10, Unit.PX);
         style.setOverflow(Overflow.AUTO);
         style.setBorderStyle(BorderStyle.SOLID);
-        style.setBorderColor("#aaaaaa");
+        style.setBorderColor(I_CmsLayoutBundle.INSTANCE.constantsCss().borderColorInactive());
         style.setBorderWidth(1, Unit.PX);
         style.setPosition(Position.FIXED);
         style.setTop(50, Unit.PX);
         style.setRight(50, Unit.PX);
-        style.setBackgroundColor("#ffffff");
+        style.setBackgroundColor(I_CmsLayoutBundle.INSTANCE.constantsCss().backgroundColorWhite());
         style.setZIndex(10);
     }
 

@@ -2,60 +2,9 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:cms="urn:import:org.opencms.gwt.client.ui">
-	<ui:style field="m_style" type="org.opencms.gwt.client.ui.CmsMenuButton.I_MenuButtonCss">
-		.menu{
-			min-width: 1px;
-			overflow: visible;
-			position:relative;
-		}
-		
-		@if user.agent ie6 {
-    		.menu{
-		        display: inline;
-		    }
-		    .menu .button{
-				overflow: visible !important;
-    		}
-    		.menu.toolbarMode .button{
-    			min-width: 60px;
-    		}
-		} @else {
-		    .menu{
-		        display: inline-block;
-		    }
-		    .menu.toolbarMode .button{
-				min-width: 60px;
-			}
-		}
-		.menu.toolbarMode .connect{
-			background: #CFCFCF;
-			height:35px;
-			width:50px;
-		}
-		
-		.menu .connect{
-			background: #F9F9F9;
-			border: 1px solid #AAAAAA;
-			position: absolute;
-			top: -2px;
-			left: -2px;
-			height: 35px;
-			z-index: 0;
-		}
-		.menu.showAbove .connect{
-			bottom: -2px;
-			top: auto;
-		}
-		.menu .connect.hidden{
-			display: none;	
-		}
-		.menu .button{
-			position: relative;
-		}
-	</ui:style>
-	<ui:with field="main" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
-	<g:HTMLPanel styleName="{m_style.menu}">
-		<div ui:field="m_menuConnect" class="{m_style.connect} {m_style.hidden} {main.generalCss.cornerTop}"></div>
-		<cms:CmsPushButton ui:field="m_button" addStyleNames="{m_style.button}"></cms:CmsPushButton>
+	<ui:with field="style" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
+	<g:HTMLPanel styleName="{style.menuButtonCss.menu}">
+		<div ui:field="m_menuConnect" class="{style.menuButtonCss.connect} {style.menuButtonCss.hidden} {style.generalCss.cornerTop}"></div>
+		<cms:CmsPushButton ui:field="m_button" addStyleNames="{style.menuButtonCss.button}"></cms:CmsPushButton>
 	</g:HTMLPanel>
 </ui:UiBinder> 

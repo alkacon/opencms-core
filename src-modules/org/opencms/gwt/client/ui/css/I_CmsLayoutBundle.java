@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2010/12/22 09:01:11 $
- * Version: $Revision: 1.51 $
+ * Date   : $Date: 2010/12/22 10:34:19 $
+ * Version: $Revision: 1.52 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import com.google.gwt.resources.client.ImageResource.RepeatStyle;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.51 $
+ * @version $Revision: 1.52 $
  * 
  * @since 8.0.0
  */
@@ -178,6 +178,20 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
+        String backgroundColorMenuConnect();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String backgroundColorToolBarMenuConnect();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
         String backgroundColorBar();
 
         /** 
@@ -249,6 +263,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String borderColorActive();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String borderColorBlack();
 
         /** 
          * Access method.<p>
@@ -507,6 +528,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
+        String ampm();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
         String dateTime();
 
         /** 
@@ -515,13 +543,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String time();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String ampm();
     }
 
     /** Dialog CSS. */
@@ -633,6 +654,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
+        String content();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
         String fieldsetInvisible();
 
         /** 
@@ -641,6 +669,20 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String fieldsetVisible();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String image();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String legend();
     }
 
     /** General CSS, used for general re-occurring styles. */
@@ -1104,6 +1146,52 @@ public interface I_CmsLayoutBundle extends ClientBundle {
         String plus();
     }
 
+    /** The menu button CSS. */
+    public interface I_CmsMenuButton extends CssResource {
+
+        /**
+         *  Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String button();
+
+        /**
+         *  Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String connect();
+
+        /**
+         *  Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String hidden();
+
+        /**
+         *  Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String menu();
+
+        /**
+         *  Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String showAbove();
+
+        /**
+         *  Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String toolbarMode();
+    }
+
     /** Notification CSS. */
     @Shared
     interface I_CmsNotificationCss extends I_CmsPopupCss {
@@ -1225,6 +1313,59 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String stateNew();
+    }
+
+    /** The select area CSS. */
+    public interface I_CmsSelectArea extends CssResource {
+
+        /**
+         *  Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String main();
+
+        /**
+         *  Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String marker();
+
+        /**
+         *  Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String markerBlackBorder();
+
+        /**
+         *  Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String markerBorder();
+
+        /**
+         *  Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String markerWhiteBorder();
+
+        /**
+         *  Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String overlay();
+
+        /**
+         *  Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String showSelect();
     }
 
     /** General CSS. */
@@ -1750,6 +1891,14 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     /**
      * Access method.<p>
      * 
+     * @return the menu button CSS
+     */
+    @Source("menuButton.css")
+    I_CmsMenuButton menuButtonCss();
+
+    /**
+     * Access method.<p>
+     * 
      * @return the image resource
      */
     @Source("images/minus.png")
@@ -1787,6 +1936,14 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      */
     @Source("resourceState.css")
     I_CmsResourceStateCss resourceStateCss();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the select area CSS
+     */
+    @Source("selectArea.css")
+    I_CmsSelectArea selectAreaCss();
 
     /**
      * Access method. These CSS classes are used to indicate the state of ui items, use them within a dedicated CSS resources.

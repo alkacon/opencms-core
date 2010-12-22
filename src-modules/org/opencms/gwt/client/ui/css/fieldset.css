@@ -9,3 +9,21 @@
 	background: value("constantsCss.backgroundColorWhite");
 	min-height: 8px;
 }
+.image {
+	left: 5px;
+	position: absolute;
+	padding: 0;
+	cursor: pointer;
+	margin: -8px 0px 0px 5px;
+}
+.legend {
+	left: 20px;
+	background: value("constantsCss.backgroundColorWhite");
+	position: absolute;
+	font-weight: bold;
+	padding: 0 3px 0 3px;
+	margin: -8px 0px 0px 5px;
+}
+.content {
+	margin: 12px 6px 4px 6px;
+}

@@ -10,6 +10,7 @@
 @def colorBlue #003082;
 
 @def borderColorWhite #FFFFFF;
+@def borderColorBlack #000000;
 @def borderColor #999999;
 @def borderColorInactive #AAAAAA;
 @def borderColorActive #888888;
@@ -26,6 +27,8 @@
 @def backgroundColorDark #999999;
 @def backgroundColorLightBlue #E0EDFE;
 @def backgroundColorLightRed #FFCCCC;
+@def backgroundColorToolBarMenuConnect #CFCFCF;
+@def backgroundColorMenuConnect #F9F9F9;
 
 @def shadowColorMiddle #999999;
 @def shadowColorDark #666666;

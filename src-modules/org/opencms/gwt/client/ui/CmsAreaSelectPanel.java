@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsAreaSelectPanel.java,v $
- * Date   : $Date: 2010/08/26 13:34:27 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/12/22 10:34:19 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.gwt.client.ui;
 
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsPositionBean;
 import org.opencms.gwt.client.util.CmsPositionBean.Area;
 
@@ -58,7 +59,6 @@ import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.DOM;
@@ -74,7 +74,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -85,45 +85,6 @@ HasClickHandlers, HasMouseMoveHandlers, MouseDownHandler, MouseUpHandler, MouseM
     /** The ui-binder interface. */
     protected interface I_CmsAreaSelectPanelUiBinder extends UiBinder<HTMLPanel, CmsAreaSelectPanel> {
         // GWT interface, nothing to do
-    }
-
-    /** The CSS interface. */
-    protected interface I_CmsSelectStyle extends CssResource {
-
-        /**
-         *  Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String main();
-
-        /**
-         *  Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String marker();
-
-        /**
-         *  Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String markerBorder();
-
-        /**
-         *  Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String overlay();
-
-        /**
-         *  Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String showSelect();
     }
 
     /** States of the slect area panel. */
@@ -168,10 +129,6 @@ HasClickHandlers, HasMouseMoveHandlers, MouseDownHandler, MouseUpHandler, MouseM
     /** The panel holding added widgets. */
     @UiField
     protected FlowPanel m_panel;
-
-    /** The CSS resource. */
-    @UiField
-    protected I_CmsSelectStyle m_style;
 
     /** The currently selected area. */
     private CmsPositionBean m_currentSelection;
@@ -879,9 +836,9 @@ HasClickHandlers, HasMouseMoveHandlers, MouseDownHandler, MouseUpHandler, MouseM
     private void showSelect(boolean show) {
 
         if (show) {
-            m_main.addStyleName(m_style.showSelect());
+            m_main.addStyleName(I_CmsLayoutBundle.INSTANCE.selectAreaCss().showSelect());
             return;
         }
-        m_main.removeStyleName(m_style.showSelect());
+        m_main.removeStyleName(I_CmsLayoutBundle.INSTANCE.selectAreaCss().showSelect());
     }
 }

@@ -1,0 +1,32 @@
+.main{
+	position: relative;
+	overflow: hidden;
+}
+.main .overlay, .main .marker, .main .markerBorder{
+	display: none;
+}
+.main.showSelect .overlay, .main.showSelect .marker, .main.showSelect .markerBorder{
+	display: block;
+}
+.markerBlackBorder, .markerWhiteBorder{
+	position: absolute;
+	right: 0px;
+	top: 0px;
+	bottom: 0px;
+	left: 0px;
+}
+.markerBlackBorder{
+	position: absolute;
+	border: 1px solid value("constantsCss.borderColorBlack");
+}
+.markerWhiteBorder{
+	border: 1px dashed value("constantsCss.borderColorWhite");
+}
+.marker{
+	position:absolute;
+}
+.overlay{
+	position: absolute;
+	background: value("constantsCss.borderColorBlack");
+	opacity: 0.4;
+}

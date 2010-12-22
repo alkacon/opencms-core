@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsMenuButton.java,v $
- * Date   : $Date: 2010/11/19 10:12:01 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2010/12/22 10:34:19 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * 
  * @since 8.0.0
  */
@@ -134,10 +134,6 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
     /** Registration of the window resize handler. */
     protected HandlerRegistration m_resizeRegistration;
 
-    /** The menu CSS. */
-    @UiField
-    protected I_MenuButtonCss m_style;
-
     /** Flag if the menu is open. */
     private boolean m_isOpen;
 
@@ -185,7 +181,7 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
                         m_resizeRegistration = null;
                     }
                 }
-                m_menuConnect.addClassName(m_style.hidden());
+                m_menuConnect.addClassName(I_CmsLayoutBundle.INSTANCE.menuButtonCss().hidden());
             }
 
         });
@@ -227,7 +223,7 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
     public void hide() {
 
         m_content.setVisible(false);
-        m_menuConnect.addClassName(m_style.hidden());
+        m_menuConnect.addClassName(I_CmsLayoutBundle.INSTANCE.menuButtonCss().hidden());
     }
 
     /**
@@ -270,7 +266,7 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
         m_isOpen = true;
         m_button.setDown(true);
 
-        m_menuConnect.removeClassName(m_style.hidden());
+        m_menuConnect.removeClassName(I_CmsLayoutBundle.INSTANCE.menuButtonCss().hidden());
         m_content.show();
 
         positionPopup();
@@ -323,12 +319,12 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
 
         m_isToolbarMode = isToolbarMode;
         if (m_isToolbarMode) {
-            addStyleName(m_style.toolbarMode());
+            addStyleName(I_CmsLayoutBundle.INSTANCE.menuButtonCss().toolbarMode());
             // important, so a click on the button won't trigger the auto-close 
             m_content.addAutoHidePartner(getElement());
             m_content.getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().menuPopup());
         } else {
-            removeStyleName(m_style.toolbarMode());
+            removeStyleName(I_CmsLayoutBundle.INSTANCE.menuButtonCss().toolbarMode());
             m_content.removeAutoHidePartner(getElement());
             m_content.getElement().removeClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().menuPopup());
         }
@@ -340,7 +336,7 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
     public void show() {
 
         m_content.setVisible(true);
-        m_menuConnect.removeClassName(m_style.hidden());
+        m_menuConnect.removeClassName(I_CmsLayoutBundle.INSTANCE.menuButtonCss().hidden());
     }
 
     /**
@@ -367,7 +363,7 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
     protected void hideMenu() {
 
         m_content.hide();
-        m_menuConnect.addClassName(m_style.hidden());
+        m_menuConnect.addClassName(I_CmsLayoutBundle.INSTANCE.menuButtonCss().hidden());
         if (m_resizeRegistration != null) {
             m_resizeRegistration.removeHandler();
             m_resizeRegistration = null;
@@ -412,11 +408,11 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
             // so show above
             showBelowButton = false;
             contentTop = buttonPosition.getTop() - 1 - contentHeight;
-            getElement().addClassName(m_style.showAbove());
+            getElement().addClassName(I_CmsLayoutBundle.INSTANCE.menuButtonCss().showAbove());
             m_menuConnect.removeClassName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerTop());
             m_menuConnect.addClassName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerBottom());
         } else {
-            getElement().removeClassName(m_style.showAbove());
+            getElement().removeClassName(I_CmsLayoutBundle.INSTANCE.menuButtonCss().showAbove());
             m_menuConnect.addClassName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerTop());
             m_menuConnect.removeClassName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerBottom());
         }
@@ -435,6 +431,6 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
 
         m_isOpen = false;
         m_button.setDown(false);
-        m_menuConnect.addClassName(m_style.hidden());
+        m_menuConnect.addClassName(I_CmsLayoutBundle.INSTANCE.menuButtonCss().hidden());
     }
 }

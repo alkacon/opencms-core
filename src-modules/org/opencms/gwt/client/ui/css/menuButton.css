@@ -1,0 +1,49 @@
+.menu{
+	min-width: 1px;
+	overflow: visible;
+	position:relative;
+}
+
+@if user.agent ie6 {
+  	.menu{
+        display: inline;
+    }
+    .menu .button{
+		overflow: visible !important;
+  	}
+  	.menu.toolbarMode .button{
+  			min-width: 60px;
+  	}
+} @else {
+    .menu{
+        display: inline-block;
+    }
+    .menu.toolbarMode .button{
+		min-width: 60px;
+	}
+}
+.menu.toolbarMode .connect{
+	background: value("constantsCss.backgroundColorToolBarMenuConnect");
+	height:35px;
+	width:50px;
+}
+
+.menu .connect{
+	background: value("constantsCss.backgroundColorMenuConnect");
+	border: 1px solid value("constantsCss.borderColorInactive");
+	position: absolute;
+	top: -2px;
+	left: -2px;
+	height: 35px;
+	z-index: 0;
+}
+.menu.showAbove .connect{
+	bottom: -2px;
+	top: auto;
+}
+.menu .connect.hidden{
+	display: none;	
+}
+.menu .button{
+	position: relative;
+}
