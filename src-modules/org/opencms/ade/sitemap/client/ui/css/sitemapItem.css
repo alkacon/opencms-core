@@ -10,8 +10,8 @@
 	position: absolute;
 	z-index: 10;
 	margin-top: -3px;
-	border-left: solid 5px #000000;
-	border-right: solid 5px #000000;
+	border-left: solid 5px value("constants.css.borderColorBlack");
+	border-right: solid 5px value("constants.css.borderColorBlack");
 	opacity: 0.5;
 }
 
@@ -29,12 +29,12 @@
 
 .subSitemapRef {
 	background-image: none;
-	background-color: #ffffcc;
+	background-color: value("constants.css.backgroundColorSitemapRef");
 }
 
 .highlight {
 	background-image: none;
-	background-color: #ffcccc;
+	background-color: value("constants.css.backgroundColorSitemapHighlight");
 }
 
 

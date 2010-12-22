@@ -7,9 +7,9 @@
 .clipboardList{
 	overflow: auto;
 	min-height: 38px;
-	border: 1px solid #aaaaaa;
+	border: 1px solid value("constants.css.borderColorInactive");
 	padding: 0 2px;
-	background: #FFFFFF;
+	background: value("constants.css.backgroundColorWhite");
 }
 
 .itemList{

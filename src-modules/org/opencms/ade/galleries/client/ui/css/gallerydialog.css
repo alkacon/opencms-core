@@ -13,11 +13,11 @@
 }
 
 .criteriaList {
-	border:1px solid value("constantsCss.borderColor");
+	border:1px solid value("constants.css.borderColor");
 	height:405px;
 	overflow: auto;
 	position: relative;
-	background-color: value("constantsCss.backgroundColorList");
+	background-color: value("constants.css.backgroundColorWhite");
 	padding:0 2px;
 }
 
@@ -41,8 +41,8 @@
 	gwt-image: "backgroundDefault";
 	background-position: 50% 50%;
 	height: auto;
-	color:value("constantsCss.color");
-	border:1px solid value("constantsCss.borderColor");
+	color:value("constants.css.color");
+	border:1px solid value("constants.css.borderColor");
 	margin-right:1px;
 	margin-bottom:1px;
 	padding:2px;
@@ -110,8 +110,8 @@
 	bottom:0px; 
 	left:0px; 
 	padding: 5px 10px;
-	border: 1px solid #999999;
-	background: #ffffff;
+	border: 1px solid value("constants.css.borderColor");
+	background: value("constants.css.backgroundColorWhite");
 }
 .searchTabDesMargin {
 	margin-bottom: 10px;

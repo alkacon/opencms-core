@@ -6,8 +6,8 @@
 }
 
 .popup *{
-	font-family: value("constantsCss.fontFamily");
-	font-size: value("constantsCss.fontSize");
+	font-family: value("constants.css.fontFamily");
+	font-size: value("constants.css.fontSize");
 }
 
 .popup .dialogBottom {
@@ -31,12 +31,12 @@
 .popup .popupContent{
    
     position: relative;
-    background: value("constantsCss.backgroundColorWhite");
-    border: solid 1px value("constantsCss.borderColor");
-    font-family: value("constantsCss.fontFamily");
+    background: value("constants.css.backgroundColorWhite");
+    border: solid 1px value("constants.css.borderColor");
+    font-family: value("constants.css.fontFamily");
 }
 .popupOverlay{
-    background: value("constantsCss.backgroundColorMiddle");
+    background: value("constants.css.backgroundColorMiddle");
     z-index: 450;
 }
 .popupShadow{
@@ -45,11 +45,11 @@
     z-index: 0;
     top: 0px;
     left: 0px;
-    background: value("constantsCss.backgroundColorBar");
+    background: value("constants.css.backgroundColorBar");
 }
 
 .popupMainContent{
-    font-size: value("constantsCss.fontSize");
+    font-size: value("constants.css.fontSize");
     padding: 5px;
     position:relative;
 }
@@ -62,9 +62,9 @@
 .contentConnect{
 	position: absolute;
 	height: 5px;
-	border-left: solid 1px value("constantsCss.borderColor");
-	border-right: solid 1px value("constantsCss.borderColor");
-	background: value("constantsCss.backgroundColorLight");
+	border-left: solid 1px value("constants.css.borderColor");
+	border-right: solid 1px value("constants.css.borderColor");
+	background: value("constants.css.backgroundColorLight");
 }
 
 @if user.agent ie6 {
@@ -79,7 +79,7 @@
 }
 
 @sprite .popupHead, .Caption{
-    font-size: value("constantsCss.fontSizeBig");
+    font-size: value("constants.css.fontSizeBig");
     font-weight: bold;
     cursor: move;
     padding:5px;

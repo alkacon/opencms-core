@@ -7,11 +7,11 @@
 }
 
 .menuPanel{ /* the panel (table) the context menu is set as widget. */
-	background: value("constantsCss.backgroundColorLight");
+	background: value("constants.css.backgroundColorLight");
 	border-collapse:collapse;
 }
 .cmsMenuBar { /* the outer menu bar */
-	background: value("constantsCss.backgroundColorLight");
+	background: value("constants.css.backgroundColorLight");
 }
 .cmsMenuBar .cmsMenuItem { /* menu items */
 	cursor: pointer;
@@ -19,10 +19,10 @@
 	padding: 0px 2px;
 }
 .cmsMenuBar .cmsMenuItem.selected { /* selected menu items */ 
-	background: value("constantsCss.backgroundColorLightBlue");
+	background: value("constants.css.backgroundColorLightBlue");
 }
 .cmsMenuBar .cmsMenuItem.disabled { /* menu item disabled */
-	color: gray;
+	color: value("constants.css.colorDisabled");
 	cursor: default;
 }
 .cmsMenuBar .cmsMenuItem .image { /* image for a menu item */
@@ -48,7 +48,7 @@
 	margin: 0px;
 	padding: 0px;
 	border: none;
-	background-color: value("constantsCss.backgroundColorDark");
+	background-color: value("constants.css.backgroundColorDark");
 	zoom: 1;
 	overflow: hidden;
 	clear: both;
@@ -68,15 +68,15 @@
 @if user.agent gecko1_8 gecko{
 	/** firefox **/
 	.cmsMenuBar, .menuPanel{
-		-moz-border-radius: value("constantsCss.borderRadius");
+		-moz-border-radius: value("constants.css.borderRadius");
 	}
 	.cmsMenuBar .cmsMenuItem:last-child{
-		-moz-border-radius-bottomleft: value("constantsCss.borderRadius");
-		-moz-border-radius-bottomright: value("constantsCss.borderRadius");
+		-moz-border-radius-bottomleft: value("constants.css.borderRadius");
+		-moz-border-radius-bottomright: value("constants.css.borderRadius");
 	}
 	.cmsMenuBar .cmsMenuItem:first-child{
-		-moz-border-radius-topleft: value("constantsCss.borderRadius");
-		-moz-border-radius-topright: value("constantsCss.borderRadius");
+		-moz-border-radius-topleft: value("constants.css.borderRadius");
+		-moz-border-radius-topright: value("constants.css.borderRadius");
 	}
 	.menuPanel, .menuPopup .cmsMenuBar .cmsMenuItem:first-child {
 	    -moz-border-radius-topleft: 0px;
@@ -84,15 +84,15 @@
 } @elif user.agent safari {
 	/** chrome, safari etc. **/
 	.cmsMenuBar, .menuPanel{
-		-webkit-border-radius: value("constantsCss.borderRadius");
+		-webkit-border-radius: value("constants.css.borderRadius");
 	}
 	.cmsMenuBar .cmsMenuItem:last-child{
-		-webkit-border-bottom-left-radius: value("constantsCss.borderRadius");
-		-webkit-border-bottom-right-radius: value("constantsCss.borderRadius");
+		-webkit-border-bottom-left-radius: value("constants.css.borderRadius");
+		-webkit-border-bottom-right-radius: value("constants.css.borderRadius");
 	}
 	.cmsMenuBar .cmsMenuItem:first-child{
-		-webkit-border-top-left-radius: value("constantsCss.borderRadius");
-		-webkit-border-top-right-radius: value("constantsCss.borderRadius");
+		-webkit-border-top-left-radius: value("constants.css.borderRadius");
+		-webkit-border-top-right-radius: value("constants.css.borderRadius");
 	}
 	.menuPanel, .menuPopup .cmsMenuBar .cmsMenuItem:first-child {
     	-webkit-border-radius-topleft: 0px;
@@ -100,15 +100,15 @@
 } @elif user.agent opera {
 	/** opera */
 	.cmsMenuBar, .menuPanel{
-		border-radius: value("constantsCss.borderRadius");
+		border-radius: value("constants.css.borderRadius");
 	}
 	.cmsMenuBar .cmsMenuItem:last-child{
-		border-bottom-left-radius: value("constantsCss.borderRadius");
-		border-bottom-right-radius: value("constantsCss.borderRadius");
+		border-bottom-left-radius: value("constants.css.borderRadius");
+		border-bottom-right-radius: value("constants.css.borderRadius");
 	}
 	.cmsMenuBar .cmsMenuItem:first-child{
-		border-top-left-radius: value("constantsCss.borderRadius");
-		border-top-right-radius: value("constantsCss.borderRadius");
+		border-top-left-radius: value("constants.css.borderRadius");
+		border-top-right-radius: value("constants.css.borderRadius");
 	}
 	.menuPanel, .menuPopup .cmsMenuBar .cmsMenuItem:first-child {
 		border-top-left-radius: 0px;

@@ -8,6 +8,8 @@
 @def colorLight #AAAAAA;
 @def colorRed #B31B34;
 @def colorBlue #003082;
+@def colorWhite #FFFFFF;
+@def colorBlack #000000;
 
 @def borderColorWhite #FFFFFF;
 @def borderColorBlack #000000;
@@ -15,6 +17,7 @@
 @def borderColorInactive #AAAAAA;
 @def borderColorActive #888888;
 @def borderColorRed #B31B34;
+@def borderColorPage #A9A9A9;
 @def borderRadius 3px;
 
 @def backgroundColorDisabled #bbbbbb;
@@ -27,8 +30,13 @@
 @def backgroundColorDark #999999;
 @def backgroundColorLightBlue #E0EDFE;
 @def backgroundColorLightRed #FFCCCC;
+@def backgroundColorRed #B31B34;
 @def backgroundColorToolBarMenuConnect #CFCFCF;
 @def backgroundColorMenuConnect #F9F9F9;
+@def backgroundColorEmptyContainer #AACCFF;
+@def backgroundColorRoot #E1E1E1;
+@def backgroundColorSitemapRef #FFFFCC;
+@def backgroundColorSitemapHighlight #CCFFFF;
 
 @def shadowColorMiddle #999999;
 @def shadowColorDark #666666;

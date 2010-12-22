@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/I_CmsPublishLayoutBundle.java,v $
- * Date   : $Date: 2010/04/13 09:17:18 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2010/12/22 14:35:25 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,7 @@
 
 package org.opencms.ade.publish.client;
 
-import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.ui.css.I_CmsConstantsBundle;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
@@ -43,7 +43,7 @@ import com.google.gwt.resources.client.ImageResource;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -52,13 +52,20 @@ public interface I_CmsPublishLayoutBundle extends ClientBundle {
     /** The instance of the layout bundle. */
     I_CmsPublishLayoutBundle INSTANCE = GWT.create(I_CmsPublishLayoutBundle.class);
 
+    //    /**
+    //     * The accessor for the CSS constants bundle.<p>
+    //     * 
+    //     * @return the constants bundle
+    //     */
+    //    @Source("org/opencms/gwt/client/ui/css/constants.css")
+    //    I_CmsConstantsBundle.I_CmsConstantsCss constants();
+
     /**
      * The accessor for the CSS constants bundle.<p>
      * 
      * @return the constants bundle
      */
-    @Source("org/opencms/gwt/client/ui/css/constants.css")
-    I_CmsLayoutBundle.I_CmsConstantsCss constants();
+    I_CmsConstantsBundle constants();
 
     /**
      * The accessor for the CSS bundle.<p>

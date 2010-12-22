@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsGalleryDialog.java,v $
- * Date   : $Date: 2010/11/29 10:33:35 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2010/12/22 14:35:24 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,8 +44,8 @@ import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
-import org.opencms.gwt.client.ui.I_CmsAutoHider;
 import org.opencms.gwt.client.ui.CmsTabbedPanel.CmsTabLayout;
+import org.opencms.gwt.client.ui.I_CmsAutoHider;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -71,7 +71,7 @@ import com.google.gwt.user.client.ui.HasText;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.36 $
+ * @version $Revision: 1.37 $
  * 
  * @since 8.0.
  */
@@ -176,6 +176,7 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
         I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().ensureInjected();
         I_CmsLayoutBundle.INSTANCE.listTreeCss().ensureInjected();
         I_CmsLayoutBundle.INSTANCE.previewDialogCss().ensureInjected();
+        I_CmsLayoutBundle.INSTANCE.croppingDialogCss().ensureInjected();
     }
 
     /**

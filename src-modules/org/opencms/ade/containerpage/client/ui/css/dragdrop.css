@@ -14,7 +14,7 @@
 
 .emptySubContainer{
 	min-height: 50px;
-	background: #AACCFF;
+	background: value("constants.css.backgroundColorEmptyContainer");
 /*	gwt-image: 'overlayImage'; */
 }
 
@@ -38,10 +38,10 @@
 }
 
 .dragElementBackground{
-	background-color: #ffffff;
+	background-color: value("constants.css.backgroundColorWhite");
 }
 .dragElementBorder{
-	border: 1px solid #aaaaaa;
+	border: 1px solid value("constants.css.borderColorInactive");
 }
 .dragSubContainer{}
 

@@ -30,11 +30,11 @@
 	overflow: visible;
 	border-top:medium none;
 	font-weight:normal;
-	height: value("constantsCss.toolbarHeight");
+	height: value("constants.css.toolbarHeight");
 	position:absolute;
 	width:100%;
-	border-bottom:1px solid value("constantsCss.borderColor");
-	color:value("constantsCss.color");
+	border-bottom:1px solid value("constants.css.borderColor");
+	color:value("constants.css.color");
 	padding:0px;
 	margin:0px;
 }
@@ -42,7 +42,7 @@
 .toolbarContent{
 	padding:0px;
 	position:relative;
-	width:value("constantsCss.pageWidth");
+	width:value("constants.css.pageWidth");
 	margin:2px auto;
 }
 .toolbarPlaceholder {
@@ -62,7 +62,7 @@
 .notification {
 	text-align: center;
 	position:absolute;
-	top: value("constantsCss.toolbarHeight");
+	top: value("constants.css.toolbarHeight");
 	width:100%;
 }
 

@@ -5,57 +5,21 @@
 	xmlns:crop="urn:import:org.opencms.ade.galleries.client.preview.ui">
 	<ui:with field="galleryResources" type="org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle" />
 	<ui:with field="resources" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
-	<ui:style>
-		.info{
-			float: left;
-			margin-right: 10px;
-		}
-		.button{
-			float: right;
-			margin-left: 5px;
-		}
-		.panel{
-			position: absolute;
-			top: 0px;
-			left: 0px;
-			right: 0px;
-			bottom: 0px;
-			background: #ffffff;
-			display: none;
-		}
-		.croppingPanel{
-			margin:auto;
-			margin-top: 1px;
-			line-height: 1px;
-		}
-		.croppingPanel img{
-			display: block;
-			margin: 0px;
-			padding: 0px;
-			line-height: 1px;
-		}
-		.bottomPanel{
-			border: 1px solid #aaaaaa;
-			padding: 2px;
-			margin-top: 1px;
-			background: #ffffff;
-			
-		}
-		.topPanel{
-			border: 1px solid #aaaaaa;
-			height: 457px;
-		}
-
-	</ui:style>
-	<g:HTMLPanel addStyleNames="{resources.generalCss.cornerAll} {style.panel}">
-		<div class="{style.topPanel} {resources.generalCss.cornerAll}">
-			<cms:CmsAreaSelectPanel ui:field="m_croppingPanel" addStyleNames="{style.croppingPanel}">
+	<g:HTMLPanel addStyleNames="{resources.generalCss.cornerAll} {galleryResources.croppingDialogCss.panel}">
+		<div class="{galleryResources.croppingDialogCss.topPanel} {resources.generalCss.cornerAll}">
+			<cms:CmsAreaSelectPanel ui:field="m_croppingPanel" addStyleNames="{galleryResources.croppingDialogCss.croppingPanel}">
 				<g:Image ui:field="m_image"/>
 			</cms:CmsAreaSelectPanel>
 		</div>
-		<div class="{style.bottomPanel} {galleryResources.previewDialogCss.clearFix} {resources.generalCss.cornerAll}">
-			<g:Label ui:field="m_heightLabel" addStyleNames="{style.info}" /><g:Label ui:field="m_heightDisplay" addStyleNames="{style.info}" /><g:Label ui:field="m_widthLabel" addStyleNames="{style.info}" /><g:Label ui:field="m_widthDisplay" addStyleNames="{style.info}" /><g:Label ui:field="m_scaleLabel" addStyleNames="{style.info}" /><g:Label ui:field="m_scaleDisplay" addStyleNames="{style.info}" />
-			<cms:CmsPushButton ui:field="m_cancelButton" addStyleNames="{style.button}" /><cms:CmsPushButton ui:field="m_okButton" addStyleNames="{style.button}" />
+		<div class="{galleryResources.croppingDialogCss.bottomPanel} {galleryResources.previewDialogCss.clearFix} {resources.generalCss.cornerAll}">
+			<g:Label ui:field="m_heightLabel" addStyleNames="{galleryResources.croppingDialogCss.info}" />
+			<g:Label ui:field="m_heightDisplay" addStyleNames="{galleryResources.croppingDialogCss.info}" />
+			<g:Label ui:field="m_widthLabel" addStyleNames="{galleryResources.croppingDialogCss.info}" />
+			<g:Label ui:field="m_widthDisplay" addStyleNames="{galleryResources.croppingDialogCss.info}" />
+			<g:Label ui:field="m_scaleLabel" addStyleNames="{galleryResources.croppingDialogCss.info}" />
+			<g:Label ui:field="m_scaleDisplay" addStyleNames="{galleryResources.croppingDialogCss.info}" />
+			<cms:CmsPushButton ui:field="m_cancelButton" addStyleNames="{galleryResources.croppingDialogCss.button}" />
+			<cms:CmsPushButton ui:field="m_okButton" addStyleNames="{galleryResources.croppingDialogCss.button}" />
 		</div>
 	</g:HTMLPanel>
 </ui:UiBinder> 

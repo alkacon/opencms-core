@@ -17,16 +17,16 @@
 }
 .markerBlackBorder{
 	position: absolute;
-	border: 1px solid value("constantsCss.borderColorBlack");
+	border: 1px solid value("constants.css.borderColorBlack");
 }
 .markerWhiteBorder{
-	border: 1px dashed value("constantsCss.borderColorWhite");
+	border: 1px dashed value("constants.css.borderColorWhite");
 }
 .marker{
 	position:absolute;
 }
 .overlay{
 	position: absolute;
-	background: value("constantsCss.borderColorBlack");
+	background: value("constants.css.borderColorBlack");
 	opacity: 0.4;
 }

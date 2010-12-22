@@ -7,9 +7,9 @@
 	bottom: 0px;
 /*	min-height:483px;
 	min-width:648px;
-	border:1px solid value("constantsCss.borderColor");  */	
+	border:1px solid value("constants.css.borderColor");  */	
 	display: block;
-	background-color: value("constantsCss.backgroundColorList");
+	background-color: value("constants.css.backgroundColorList");
 	
 }
 
@@ -28,7 +28,7 @@
 
 /* Preview panel */
 .previewHolder {		
-	border:1px solid value("constantsCss.borderColor");	
+	border:1px solid value("constants.css.borderColor");	
 	margin:1px;
 }
 

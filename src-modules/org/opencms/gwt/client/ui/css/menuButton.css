@@ -23,14 +23,14 @@
 	}
 }
 .menu.toolbarMode .connect{
-	background: value("constantsCss.backgroundColorToolBarMenuConnect");
+	background: value("constants.css.backgroundColorToolBarMenuConnect");
 	height:35px;
 	width:50px;
 }
 
 .menu .connect{
-	background: value("constantsCss.backgroundColorMenuConnect");
-	border: 1px solid value("constantsCss.borderColorInactive");
+	background: value("constants.css.backgroundColorMenuConnect");
+	border: 1px solid value("constants.css.borderColorInactive");
 	position: absolute;
 	top: -2px;
 	left: -2px;

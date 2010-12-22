@@ -1,13 +1,13 @@
 .pageCenter {
 	padding: 0px;
 	position: relative;
-	width: value("constantsCss.pageWidth");
+	width: value("constants.css.pageWidth");
 	margin: 0 auto;
 }
 
 .root {
-	background-color: #E1E1E1;
-	font-family: value("constantsCss.fontFamily");
+	background-color: value("constants.css.backgroundColorRoot");
+	font-family: value("constants.css.fontFamily");
 	position: relative;
 	margin: 0;
 }

@@ -1,25 +1,25 @@
 @external cmsState, cmsState-up, cmsState-up-hovering, cmsState-up-disabled, cmsState-down, cmsState-down-hovering, cmsState-down-disabled;
 
 .cmsState{
-	border-color: value("constantsCss.borderColor");
-	color: value("constantsCss.color");
+	border-color: value("constants.css.borderColor");
+	color: value("constants.css.color");
 }
 
 .textSmall{
-	font-family: value("constantsCss.fontFamily");
-	font-size: value("constantsCss.fontSizeSmall");
+	font-family: value("constants.css.fontFamily");
+	font-size: value("constants.css.fontSizeSmall");
 }
 .textMedium{
-	font-family: value("constantsCss.fontFamily");
-	font-size: value("constantsCss.fontSize");
+	font-family: value("constants.css.fontFamily");
+	font-size: value("constants.css.fontSize");
 }
 .textBig{
-	font-family: value("constantsCss.fontFamily");
-	font-size: value("constantsCss.fontSizeBig");
+	font-family: value("constants.css.fontFamily");
+	font-size: value("constants.css.fontSizeBig");
 }
 
 .border {
-	border: 1px solid value("constantsCss.borderColor");
+	border: 1px solid value("constants.css.borderColor");
 }
 
 .cellpadding {
@@ -48,60 +48,60 @@
 @if user.agent gecko1_8 gecko{
 	/** firefox **/
 	.cornerAll{
-		-moz-border-radius: value("constantsCss.borderRadius");
+		-moz-border-radius: value("constants.css.borderRadius");
 	}
 	.cornerBottom{
-		-moz-border-radius-bottomleft: value("constantsCss.borderRadius");
-		-moz-border-radius-bottomright: value("constantsCss.borderRadius");
+		-moz-border-radius-bottomleft: value("constants.css.borderRadius");
+		-moz-border-radius-bottomright: value("constants.css.borderRadius");
 	}
 	.cornerTop{
-		-moz-border-radius-topleft: value("constantsCss.borderRadius");
-		-moz-border-radius-topright: value("constantsCss.borderRadius");
+		-moz-border-radius-topleft: value("constants.css.borderRadius");
+		-moz-border-radius-topright: value("constants.css.borderRadius");
 	}
 	
 	.shadow{
-		-moz-box-shadow: 2px 2px 6px value("constantsCss.shadowColorDark");
+		-moz-box-shadow: 2px 2px 6px value("constants.css.shadowColorDark");
 	}
 
 } @elif user.agent safari {
 	/** chrome, safari etc. **/
 	.cornerAll{
-		-webkit-border-radius: value("constantsCss.borderRadius");
+		-webkit-border-radius: value("constants.css.borderRadius");
 	}
 	.cornerBottom{
-		-webkit-border-bottom-left-radius: value("constantsCss.borderRadius");
-		-webkit-border-bottom-right-radius: value("constantsCss.borderRadius");
+		-webkit-border-bottom-left-radius: value("constants.css.borderRadius");
+		-webkit-border-bottom-right-radius: value("constants.css.borderRadius");
 	}
 	.cornerTop{
-		-webkit-border-top-left-radius: value("constantsCss.borderRadius");
-		-webkit-border-top-right-radius: value("constantsCss.borderRadius");
+		-webkit-border-top-left-radius: value("constants.css.borderRadius");
+		-webkit-border-top-right-radius: value("constants.css.borderRadius");
 	}
 	
 	.shadow{
-		-webkit-box-shadow: 2px 2px 6px value("constantsCss.shadowColorDark");
+		-webkit-box-shadow: 2px 2px 6px value("constants.css.shadowColorDark");
 	}
 } @elif user.agent opera {
 	/** opera */
 	.cornerAll{
-		border-radius: value("constantsCss.borderRadius");
+		border-radius: value("constants.css.borderRadius");
 	}
 	.cornerBottom{
-		border-bottom-left-radius: value("constantsCss.borderRadius");
-		border-bottom-right-radius: value("constantsCss.borderRadius");
+		border-bottom-left-radius: value("constants.css.borderRadius");
+		border-bottom-right-radius: value("constants.css.borderRadius");
 	}
 	.cornerTop{
-		border-top-left-radius: value("constantsCss.borderRadius");
-		border-top-right-radius: value("constantsCss.borderRadius");
+		border-top-left-radius: value("constants.css.borderRadius");
+		border-top-right-radius: value("constants.css.borderRadius");
 	}
 	
 	.shadow{
-		box-shadow: 2px 2px 6px value("constantsCss.shadowColorDark");
+		box-shadow: 2px 2px 6px value("constants.css.shadowColorDark");
 	}
 } @elif user.agent ie6 {
 
 	.shadow{
 		/** standard box-shadow is a gradient, but this is a solid color, so it has to be a bit lighter to look similar */ 
-		filter: literal("progid:DXImageTransform.Microsoft.DropShadow(color=value('constantsCss.shadowColorMiddle'),offX=2,offY=2)");
+		filter: literal("progid:DXImageTransform.Microsoft.DropShadow(color=value('constants.css.shadowColorMiddle'),offX=2,offY=2)");
 	}
 	.cornerAll, .cornerBottom, .cornerTop{} 
 
@@ -109,20 +109,20 @@
 	/** ie7, ie8 and the rest, add new @elif block if necessary **/
 	
 	.cornerAll{
-		border-radius: value("constantsCss.borderRadius");
+		border-radius: value("constants.css.borderRadius");
 	}
 	.cornerBottom{
-		border-bottom-left-radius: value("constantsCss.borderRadius");
-		border-bottom-right-radius: value("constantsCss.borderRadius");
+		border-bottom-left-radius: value("constants.css.borderRadius");
+		border-bottom-right-radius: value("constants.css.borderRadius");
 	}
 	.cornerTop{
-		border-top-left-radius: value("constantsCss.borderRadius");
-		border-top-right-radius: value("constantsCss.borderRadius");
+		border-top-left-radius: value("constants.css.borderRadius");
+		border-top-right-radius: value("constants.css.borderRadius");
 	}
 	
 	.shadow{
 		/** standard box-shadow is a gradient, but this is a solid color, so it has to be a bit lighter to look similar */ 
-		-ms-filter: "progid:DXImageTransform.Microsoft.DropShadow(color=value('constantsCss.shadowColorMiddle'),offX=2,offY=2)"; 
+		-ms-filter: "progid:DXImageTransform.Microsoft.DropShadow(color=value('constants.css.shadowColorMiddle'),offX=2,offY=2)"; 
 	}
 	
 } @else {

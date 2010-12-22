@@ -1,0 +1,21 @@
+.editor{}
+.dialog{
+	width: 460px;
+	border: 1px solid value("constants.css.borderColorInactive");
+	background: value("constants.css.backgroundColorWhite");
+}
+.inputRow{
+	height: 25px;
+	overflow: hidden;
+}
+.inputLabel{
+	font-weight: bold;
+	vertical-align: middle;
+	display: inline-block;
+	width: 150px;
+}
+.inputBox{
+	vertical-align: middle;
+	display: inline-block;
+	width: 300px;
+}

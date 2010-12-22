@@ -30,9 +30,9 @@
 ul.clipboardList{
 	overflow: auto;
 	min-height: 38px;
-	border: 1px solid #aaaaaa;
+	border: 1px solid value("constants.css.borderColorInactive");
 	padding: 0 2px;
-	background: #FFFFFF;
+	background: value("constants.css.backgroundColorWhite");
 }
 
 /** hiding buttons in clip-board menu while dragging **/
@@ -70,8 +70,8 @@ ul.clipboardList{
 	display: none;
 	margin: 0px 5px;
 	-moz-border-radius: 4px;
-	border: 1px solid #aaaaaa; 
-	background: #ffffff;
+	border: 1px solid value("constants.css.borderColorInactive");
+	background: value("constants.css.backgroundColorWhite");
 	height: 38px;
 	position: relative;
 	padding: 0px 2px;
@@ -93,7 +93,7 @@ ul.clipboardList{
 	gwt-image: "backgroundSoft";
 	height: auto;
 	-moz-border-radius: 2px;
-	border: 1px solid #aaaaaa;
+	border: 1px solid value("constants.css.borderColorInactive");
 }
 
 .optionBar .cmsState{
@@ -106,8 +106,8 @@ ul.clipboardList{
 }
 .subcontainerPlaceholder{
 	position:relative;
-	color: #ffffff;
-	background: #ffffff;
+	color: value("constants.css.colorWhite");
+	background: value("constants.css.backgroundColorWhite");
 }
 .subcontainerPlaceholder *{
 	visibility: hidden !important;

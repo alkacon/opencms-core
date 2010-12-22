@@ -8,15 +8,15 @@
 }
 
 .itemContainer{
-	border: 1px solid value("constantsCss.borderColor");
-	background: value("constantsCss.backgroundColorWhite");
+	border: 1px solid value("constants.css.borderColor");
+	background: value("constants.css.backgroundColorWhite");
 	line-height: 16px;
-	color: value("constantsCss.color");
+	color: value("constants.css.color");
 }
 
 .itemContainer * {
-	font-family: value("constantsCss.fontFamily");
-	font-size: value("constantsCss.fontSize");
+	font-family: value("constants.css.fontFamily");
+	font-size: value("constants.css.fontSize");
 }
 
 
@@ -151,27 +151,27 @@
 /** These styles are for dragging. */
 @if user.agent gecko1_8 gecko{
 	.dragging .itemContainer {
-		-moz-box-shadow: 2px 2px 6px value("constantsCss.shadowColorDark");
+		-moz-box-shadow: 2px 2px 6px value("constants.css.shadowColorDark");
 	}
 } @elif user.agent safari {
 	.dragging .itemContainer {
-		-webkit-box-shadow: 2px 2px 6px value("constantsCss.shadowColorDark");
+		-webkit-box-shadow: 2px 2px 6px value("constants.css.shadowColorDark");
 	}
 } @elif user.agent opera {
 	.dragging .itemContainer {
-		box-shadow: 2px 2px 6px value("constantsCss.shadowColorDark");
+		box-shadow: 2px 2px 6px value("constants.css.shadowColorDark");
 	}
 } @elif user.agent ie6 {
 	.dragging .itemContainer {
-		filter: literal("progid:DXImageTransform.Microsoft.DropShadow(color=value('constantsCss.shadowColorMiddle'),offX=2,offY=2)");
+		filter: literal("progid:DXImageTransform.Microsoft.DropShadow(color=value('constants.css.shadowColorMiddle'),offX=2,offY=2)");
 	}
 } @elif user.agent ie8 {
 	.dragging .itemContainer {
-		-ms-filter: "progid:DXImageTransform.Microsoft.DropShadow(color=value('constantsCss.shadowColorMiddle'),offX=2,offY=2)"; 
+		-ms-filter: "progid:DXImageTransform.Microsoft.DropShadow(color=value('constants.css.shadowColorMiddle'),offX=2,offY=2)"; 
 	}
 } @else {
 	.dragging .itemContainer {
-		box-shadow: 2px 2px 6px value("constantsCss.shadowColorDark");
+		box-shadow: 2px 2px 6px value("constants.css.shadowColorDark");
 	}
 } 
 

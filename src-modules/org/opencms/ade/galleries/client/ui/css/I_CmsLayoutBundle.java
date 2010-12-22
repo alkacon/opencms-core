@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2010/11/17 11:02:29 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2010/12/22 14:35:24 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,11 +40,51 @@ import com.google.gwt.resources.client.CssResource.Shared;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 8.0.0
  */
 public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLayoutBundle {
+
+    /** Cropping dialog CSS. */
+    public interface I_CmsCroppingDialogCss extends CssResource {
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String bottomPanel();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String button();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String croppingPanel();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String info();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String panel();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String topPanel();
+    }
 
     /** Gallery dialog CSS. */
     @Shared
@@ -333,6 +373,14 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
 
     /** The bundle instance. */
     I_CmsLayoutBundle INSTANCE = GWT.create(I_CmsLayoutBundle.class);
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the gallery dialog CSS
+     */
+    @Source("croppingDialog.css")
+    I_CmsCroppingDialogCss croppingDialogCss();
 
     /**
      * Access method.<p>

@@ -9,17 +9,17 @@
 
 .textboxGhostMode {
 	font-style: oblique;
-	color: value("constants.colorLight") !important;
+	color: value("constants.css.colorLight") !important;
 }
 
 .textBoxWidget, .checkBox {}
 
 .textBoxReadOnly {
-	background-color: value("constants.backgroundColorMiddle");
+	background-color: value("constants.css.backgroundColorMiddle");
 }
 
 .textBoxPanel, .textAreaContainer {
-	border: 1px solid value("constants.borderColor");
+	border: 1px solid value("constants.css.borderColor");
 	overflow:hidden;
 }
 
@@ -106,7 +106,7 @@
 	
 /* Style for edited text box */
 .changed{
-	color:blue !important;;
+	color: value("constants.css.colorBlue") !important;;
 }
 
 
@@ -115,21 +115,21 @@
 .radioButtonGroup *, .multiCheckBox *, .textBoxPanel *, .formLabel, .formWidgetContainer * {
 	font-size: inherit;
 	font-family: inherit;
-	color: value("constants.color");
+	color: value("constants.css.color");
 }
 
 .textBoxPanelDisabled {
-	background-color: value("constants.backgroundColorMiddle");
+	background-color: value("constants.css.backgroundColorMiddle");
 }
 
 .textBoxPanelDisabled * {
-	color: value("constants.colorDisabled");
+	color: value("constants.css.colorDisabled");
 	cursor: default;
 }
 
 .textBoxPanelError {
-	border: 1px solid value("constants.borderColorRed");
-	background-color: value("constants.backgroundColorLightRed");
+	border: 1px solid value("constants.css.borderColorRed");
+	background-color: value("constants.css.backgroundColorLightRed");
 	overflow:hidden;
 }
 
@@ -138,8 +138,8 @@
 }
 
 .selectBoxRoot *, .selectBoxSelector * {
-	font-family: value("constants.fontFamily");
-	font-size: value("constants.fontSize");
+	font-family: value("constants.css.fontFamily");
+	font-size: value("constants.css.fontSize");
 }
 
 
@@ -147,31 +147,31 @@
 @if user.agent gecko1_8 gecko{
 	/** firefox **/
 	.selectBoxSelector div{
-		-moz-border-radius: value("constants.borderRadius");
+		-moz-border-radius: value("constants.css.borderRadius");
 	}
 } @elif user.agent safari {
 	/** chrome, safari etc. **/
 	.selectBoxSelector div{
-		-webkit-border-radius: value("constants.borderRadius");
+		-webkit-border-radius: value("constants.css.borderRadius");
 	}
 } @elif user.agent opera {
 	/** opera */
 	.selectBoxSelector div{
-		border-radius: value("constants.borderRadius");
+		border-radius: value("constants.css.borderRadius");
 	}
 } @elif user.agent ie8 {
 	/** ie7, ie8 and the rest, add new @elif block if necessary **/
 	
 	.selectBoxSelector div{
-		border-radius: value("constants.borderRadius");
+		border-radius: value("constants.css.borderRadius");
 	}
 }
 
 .error {
 	text-align: left;
-	border: 1px solid value("constants.colorRed");
-	background-color: value("constants.backgroundColorMiddle");
-	color: black;
+	border: 1px solid value("constants.css.borderColorRed");
+	background-color: value("constants.css.backgroundColorMiddle");
+	color: value("constants.css.colorBlack");
     margin-top: 2px;
     padding: 3px;
     position: absolute;
@@ -181,7 +181,7 @@
 @sprite .openerNoHover.selectBoxSelected {
 	width: auto; 
 	min-height: 0px;
-	border: 1px solid value("constants.borderColor");
+	border: 1px solid value("constants.css.borderColor");
 	gwt-image: "images.backgroundLight";
 	background-position: 50% 50%;
 	outline: none;
@@ -190,15 +190,15 @@
 @sprite .openerHover.selectBoxSelected {
 	width: auto;
 	min-height: 0px;
-	border: 1px solid  value("constants.borderColor");
+	border: 1px solid value("constants.css.borderColor");
 	gwt-image: "images.backgroundDark";
 	background-position: 50% 50%;
 	outline: none;
 }
 
 .selectBoxSelector {
-	border: 1px solid value("constants.borderColor");
-	background-color: white;
+	border: 1px solid value("constants.css.borderColor");
+	background-color: value("constants.css.backgroundColorWhite");
 	padding-bottom: 2px;
 	z-index: 99999;
 }
@@ -210,13 +210,13 @@
 }
 
 .selectBoxCell {
-	background-color: white;
+	background-color: value("constants.css.backgroundColorWhite");
 	padding-left: 5px;
 	cursor: pointer;
 }
 
 .selectHover {
-	background-color: value("constants.backgroundColorBar");
+	background-color: value("constants.css.backgroundColorBar");
 }
 
 .selectIcon { 
@@ -320,7 +320,7 @@
 	height: 1px;
 	margin-top: 5px;
 	margin-bottom: 5px;
-	background-color: value("constants.borderColorInactive");
+	background-color: value("constants.css.borderColorInactive");
 }
 
 .formDescriptionLabel {
@@ -329,7 +329,7 @@
 }
 
 .weakText { 
-	color: value("constants.colorDisabled"); 
+	color: value("constants.css.colorDisabled"); 
 }
 
 .subtitleSuffix {

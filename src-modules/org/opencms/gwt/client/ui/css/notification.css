@@ -31,7 +31,7 @@ div.blocking{
 	width:100%; 
 	top: 0; 
 	left: 0; 
-	background-color: value("constantsCss.backgroundColorMiddle"); 
+	background-color: value("constants.css.backgroundColorMiddle"); 
 }
 
 @if user.agent ie6 { 
@@ -80,14 +80,14 @@ div.blocking{
 }
 
 .notificationError .notificationMessage { 
-	background-color: value("constantsCss.notificationErrorBg"); 
-	color: value("constantsCss.notificationErrorColor"); 
+	background-color: value("constants.css.notificationErrorBg"); 
+	color: value("constants.css.notificationErrorColor"); 
 }
 .notificationNormal .notificationMessage { 
-	background-color: value("constantsCss.notificationNormalBg"); 
-	color: value("constantsCss.notificationNormalColor"); 
+	background-color: value("constants.css.notificationNormalBg"); 
+	color: value("constants.css.notificationNormalColor"); 
 }
 .notificationWarning .notificationMessage { 
-	background-color: value("constantsCss.notificationWarningBg"); 
-	color: value("constantsCss.notificationWarningColor"); 
+	background-color: value("constants.css.notificationWarningBg"); 
+	color: value("constants.css.notificationWarningColor"); 
 }

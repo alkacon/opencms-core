@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2010/11/22 13:51:31 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2010/12/22 14:35:24 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,8 @@
 
 package org.opencms.ade.containerpage.client.ui.css;
 
+import org.opencms.gwt.client.ui.css.I_CmsConstantsBundle;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.resources.client.CssResource.Shared;
@@ -40,11 +42,45 @@ import com.google.gwt.resources.client.CssResource.Shared;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 8.0.0
  */
 public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsImageBundle {
+
+    /** Sub container editor CSS. */
+    public interface I_CmsSubContainer extends CssResource {
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String editor();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String dialog();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String inputRow();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String inputLabel();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String inputBox();
+    }
 
     /** Container-page CSS. */
     public interface I_CmsContainerpageCss
@@ -247,6 +283,13 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsIm
 
     }
 
+    /**
+     * The accessor for the CSS constants bundle.<p>
+     * 
+     * @return the constants bundle
+     */
+    I_CmsConstantsBundle constants();
+
     /** The bundle instance. */
     I_CmsLayoutBundle INSTANCE = GWT.create(I_CmsLayoutBundle.class);
 
@@ -257,6 +300,14 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsIm
      */
     @Source("containerpage.css")
     I_CmsContainerpageCss containerpageCss();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the container-page CSS
+     */
+    @Source("subcontainer.css")
+    I_CmsSubContainer subcontainerCss();
 
     /**
      * Access method.<p>
