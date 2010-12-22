@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsTextBox.java,v $
- * Date   : $Date: 2010/12/21 10:23:32 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2010/12/22 11:35:15 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import com.google.gwt.user.client.ui.TextBox;
  * @author Georg Westenberger
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * 
  * @since 8.0.0
  * 
@@ -559,7 +559,6 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
     /**
      * @see com.google.gwt.event.dom.client.HasFocusHandlers#addFocusHandler(com.google.gwt.event.dom.client.FocusHandler)
      */
-    @Override
     public HandlerRegistration addFocusHandler(FocusHandler handler) {
 
         return m_textbox.addFocusHandler(handler);
