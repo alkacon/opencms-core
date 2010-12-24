@@ -1,17 +1,12 @@
 .popup, .menuPopup{}
 
-.cmsContextMenu {
-	display: inline-block;
-	vertical-align: middle;
-	margin-left: 5px;
-}
-
 .menuPanel{ /* the panel (table) the context menu is set as widget. */
-	background: value("constants.css.backgroundColorLight");
+	background: value("constants.css.backgroundColorMenu");
 	border-collapse:collapse;
 }
 .cmsMenuBar { /* the outer menu bar */
-	background: value("constants.css.backgroundColorLight");
+	background: value("constants.css.backgroundColorMenu");
+	color: value("constants.css.textColor");
 }
 .cmsMenuBar .cmsMenuItem { /* menu items */
 	cursor: pointer;
@@ -19,10 +14,10 @@
 	padding: 0px 2px;
 }
 .cmsMenuBar .cmsMenuItem.selected { /* selected menu items */ 
-	background: value("constants.css.backgroundColorLightBlue");
+	background: value("constants.css.backgroundColorHighlight");
 }
 .cmsMenuBar .cmsMenuItem.disabled { /* menu item disabled */
-	color: value("constants.css.colorDisabled");
+	color: value("constants.css.textColorDisabled");
 	cursor: default;
 }
 .cmsMenuBar .cmsMenuItem .image { /* image for a menu item */
@@ -48,7 +43,8 @@
 	margin: 0px;
 	padding: 0px;
 	border: none;
-	background-color: value("constants.css.backgroundColorDark");
+	/** Use the border color as background color because this CSS class behaves like a border. */
+	background-color: value("constants.css.borderColorDivider");
 	zoom: 1;
 	overflow: hidden;
 	clear: both;

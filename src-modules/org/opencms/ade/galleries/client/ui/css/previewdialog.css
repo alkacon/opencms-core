@@ -9,7 +9,7 @@
 	min-width:648px;
 	border:1px solid value("constants.css.borderColor");  */	
 	display: block;
-	background-color: value("constants.css.backgroundColorList");
+	background-color: value("constants.css.backgroundColorDialog");
 	
 }
 

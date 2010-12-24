@@ -6,7 +6,7 @@
 }
 
 .root {
-	background-color: value("constants.css.backgroundColorRoot");
+	background-color: value("constants.css.backgroundColorSitemap");
 	font-family: value("constants.css.fontFamily");
 	position: relative;
 	margin: 0;

@@ -17,7 +17,7 @@
 	height:405px;
 	overflow: auto;
 	position: relative;
-	background-color: value("constants.css.backgroundColorWhite");
+	background-color: value("constants.css.backgroundColorDialog");
 	padding:0 2px;
 }
 
@@ -41,7 +41,6 @@
 	gwt-image: "backgroundDefault";
 	background-position: 50% 50%;
 	height: auto;
-	color:value("constants.css.color");
 	border:1px solid value("constants.css.borderColor");
 	margin-right:1px;
 	margin-bottom:1px;
@@ -111,7 +110,7 @@
 	left:0px; 
 	padding: 5px 10px;
 	border: 1px solid value("constants.css.borderColor");
-	background: value("constants.css.backgroundColorWhite");
+	background: value("constants.css.backgroundColorDialog");
 }
 .searchTabDesMargin {
 	margin-bottom: 10px;

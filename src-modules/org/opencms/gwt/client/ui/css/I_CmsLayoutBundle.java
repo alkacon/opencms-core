@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2010/12/22 14:35:24 $
- * Version: $Revision: 1.53 $
+ * Date   : $Date: 2010/12/24 15:24:02 $
+ * Version: $Revision: 1.54 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import com.google.gwt.resources.client.ImageResource.RepeatStyle;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.53 $
+ * @version $Revision: 1.54 $
  * 
  * @since 8.0.0
  */
@@ -172,13 +172,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
 
     /** The context menu CSS classes. */
     public interface I_CmsContextmenuCss extends I_CmsPopupCss, I_CmsContextmenuItemCss {
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String cmsContextMenu();
 
         /** 
          * Access method.<p>

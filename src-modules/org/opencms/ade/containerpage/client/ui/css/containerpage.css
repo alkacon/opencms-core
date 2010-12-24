@@ -30,9 +30,9 @@
 ul.clipboardList{
 	overflow: auto;
 	min-height: 38px;
-	border: 1px solid value("constants.css.borderColorInactive");
+	border: 1px solid value("constants.css.borderColor");
 	padding: 0 2px;
-	background: value("constants.css.backgroundColorWhite");
+	background: value("constants.css.backgroundColorDialog");
 }
 
 /** hiding buttons in clip-board menu while dragging **/
@@ -70,8 +70,8 @@ ul.clipboardList{
 	display: none;
 	margin: 0px 5px;
 	-moz-border-radius: 4px;
-	border: 1px solid value("constants.css.borderColorInactive");
-	background: value("constants.css.backgroundColorWhite");
+	border: 1px solid value("constants.css.borderColor");
+	background: value("constants.css.backgroundColorDialog");
 	height: 38px;
 	position: relative;
 	padding: 0px 2px;
@@ -93,7 +93,7 @@ ul.clipboardList{
 	gwt-image: "backgroundSoft";
 	height: auto;
 	-moz-border-radius: 2px;
-	border: 1px solid value("constants.css.borderColorInactive");
+	border: 1px solid value("constants.css.borderColorConnect");
 }
 
 .optionBar .cmsState{
@@ -106,8 +106,9 @@ ul.clipboardList{
 }
 .subcontainerPlaceholder{
 	position:relative;
-	color: value("constants.css.colorWhite");
-	background: value("constants.css.backgroundColorWhite");
+	/** Take the same color for text as for the background to make the text invisible. */
+	color: value("constants.css.backgroundColorDialog");
+	background: value("constants.css.backgroundColorDialog");
 }
 .subcontainerPlaceholder *{
 	visibility: hidden !important;

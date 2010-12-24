@@ -2,7 +2,7 @@
 
 .cmsState{
 	border-color: value("constants.css.borderColor");
-	color: value("constants.css.color");
+	color: value("constants.css.textColor");
 }
 
 .textSmall{

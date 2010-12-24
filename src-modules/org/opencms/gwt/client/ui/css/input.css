@@ -9,13 +9,13 @@
 
 .textboxGhostMode {
 	font-style: oblique;
-	color: value("constants.css.colorLight") !important;
+	color: value("constants.css.textColorDisabled") !important;
 }
 
 .textBoxWidget, .checkBox {}
 
 .textBoxReadOnly {
-	background-color: value("constants.css.backgroundColorMiddle");
+	background-color: value("constants.css.backgroundColorDisabled");
 }
 
 .textBoxPanel, .textAreaContainer {
@@ -106,7 +106,7 @@
 	
 /* Style for edited text box */
 .changed{
-	color: value("constants.css.colorBlue") !important;;
+	color: value("constants.css.textColorChanged") !important;
 }
 
 
@@ -115,21 +115,21 @@
 .radioButtonGroup *, .multiCheckBox *, .textBoxPanel *, .formLabel, .formWidgetContainer * {
 	font-size: inherit;
 	font-family: inherit;
-	color: value("constants.css.color");
+	color: value("constants.css.textColor");
 }
 
 .textBoxPanelDisabled {
-	background-color: value("constants.css.backgroundColorMiddle");
+	background-color: value("constants.css.backgroundColorDisabled");
 }
 
 .textBoxPanelDisabled * {
-	color: value("constants.css.colorDisabled");
+	color: value("constants.css.textColorDisabled");
 	cursor: default;
 }
 
 .textBoxPanelError {
-	border: 1px solid value("constants.css.borderColorRed");
-	background-color: value("constants.css.backgroundColorLightRed");
+	border: 1px solid value("constants.css.borderColorHighlight");
+	background-color: value("constants.css.backgroundColorInputError");
 	overflow:hidden;
 }
 
@@ -169,9 +169,9 @@
 
 .error {
 	text-align: left;
-	border: 1px solid value("constants.css.borderColorRed");
-	background-color: value("constants.css.backgroundColorMiddle");
-	color: value("constants.css.colorBlack");
+	border: 1px solid value("constants.css.borderColorHighlight");
+	background-color: value("constants.css.backgroundColorInfo");
+	color: value("constants.css.textColor");
     margin-top: 2px;
     padding: 3px;
     position: absolute;
@@ -198,7 +198,7 @@
 
 .selectBoxSelector {
 	border: 1px solid value("constants.css.borderColor");
-	background-color: value("constants.css.backgroundColorWhite");
+	background-color: value("constants.css.backgroundColorDialog");
 	padding-bottom: 2px;
 	z-index: 99999;
 }
@@ -210,13 +210,14 @@
 }
 
 .selectBoxCell {
-	background-color: value("constants.css.backgroundColorWhite");
+	color: value("constants.css.textColor");
+	background-color: value("constants.css.backgroundColorDialog");
 	padding-left: 5px;
 	cursor: pointer;
 }
 
 .selectHover {
-	background-color: value("constants.css.backgroundColorBar");
+	background-color: value("constants.css.backgroundColorHighlight");
 }
 
 .selectIcon { 
@@ -320,7 +321,8 @@
 	height: 1px;
 	margin-top: 5px;
 	margin-bottom: 5px;
-	background-color: value("constants.css.borderColorInactive");
+	/** Use the border color as background because this CSS class behaves like a border. */
+	background-color: value("constants.css.borderColorDivider");
 }
 
 .formDescriptionLabel {
@@ -329,7 +331,7 @@
 }
 
 .weakText { 
-	color: value("constants.css.colorDisabled"); 
+	color: value("constants.css.textColorDisabled"); 
 }
 
 .subtitleSuffix {

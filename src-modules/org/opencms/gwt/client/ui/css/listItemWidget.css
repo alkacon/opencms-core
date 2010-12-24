@@ -9,9 +9,9 @@
 
 .itemContainer{
 	border: 1px solid value("constants.css.borderColor");
-	background: value("constants.css.backgroundColorWhite");
+	background: value("constants.css.backgroundColorDialog");
 	line-height: 16px;
-	color: value("constants.css.color");
+	color: value("constants.css.textColor");
 }
 
 .itemContainer * {

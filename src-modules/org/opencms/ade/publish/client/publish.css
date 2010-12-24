@@ -29,12 +29,6 @@
 .itemToKeep {
 }
 
-.itemToRemove {
-	background-image: none;
-	background-color: value("constants.css.backgroundColorRed");
-	border: 10px solid value("constants.css.borderColorRed");
-}
-
 .problemPanel {
 	font-weight: bold;
 	padding: 5px;

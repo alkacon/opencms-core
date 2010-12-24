@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsDebugLog.java,v $
- * Date   : $Date: 2010/12/22 14:35:25 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2010/12/24 15:24:02 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -80,12 +80,12 @@ public final class CmsDebugLog extends Composite {
         style.setPadding(10, Unit.PX);
         style.setOverflow(Overflow.AUTO);
         style.setBorderStyle(BorderStyle.SOLID);
-        style.setBorderColor(I_CmsLayoutBundle.INSTANCE.constants().css().borderColorInactive());
+        style.setBorderColor(I_CmsLayoutBundle.INSTANCE.constants().css().borderColor());
         style.setBorderWidth(1, Unit.PX);
         style.setPosition(Position.FIXED);
         style.setTop(50, Unit.PX);
         style.setRight(50, Unit.PX);
-        style.setBackgroundColor(I_CmsLayoutBundle.INSTANCE.constants().css().backgroundColorWhite());
+        style.setBackgroundColor(I_CmsLayoutBundle.INSTANCE.constants().css().backgroundColorDialog());
         style.setZIndex(10);
     }
 

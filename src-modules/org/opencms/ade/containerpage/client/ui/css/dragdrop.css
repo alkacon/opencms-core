@@ -38,10 +38,10 @@
 }
 
 .dragElementBackground{
-	background-color: value("constants.css.backgroundColorWhite");
+	background-color: value("constants.css.backgroundColorDialog");
 }
 .dragElementBorder{
-	border: 1px solid value("constants.css.borderColorInactive");
+	border: 1px solid value("constants.css.borderColorConnect");
 }
 .dragSubContainer{}
 

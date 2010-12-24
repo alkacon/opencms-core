@@ -29,8 +29,8 @@
 }
 
 .menu .connect{
-	background: value("constants.css.backgroundColorMenuConnect");
-	border: 1px solid value("constants.css.borderColorInactive");
+	background: value("constants.css.backgroundColorMenu");
+	border: 1px solid value("constants.css.borderColorConnect");
 	position: absolute;
 	top: -2px;
 	left: -2px;

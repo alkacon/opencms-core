@@ -1,5 +1,5 @@
 .page {
-	background-color: value("constants.css.backgroundColorWhite");
-	border: 2px solid value("constants.css.borderColorPage");
+	background-color: value("constants.css.backgroundColorDialog");
+	border: 2px solid value("constants.css.borderColor");
 	padding: 10px;
 }

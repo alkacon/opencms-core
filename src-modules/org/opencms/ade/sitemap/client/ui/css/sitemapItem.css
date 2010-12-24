@@ -10,8 +10,8 @@
 	position: absolute;
 	z-index: 10;
 	margin-top: -3px;
-	border-left: solid 5px value("constants.css.borderColorBlack");
-	border-right: solid 5px value("constants.css.borderColorBlack");
+	border-left: solid 5px value("constants.css.borderColorDark");
+	border-right: solid 5px value("constants.css.borderColorDark");
 	opacity: 0.5;
 }
 
@@ -25,11 +25,6 @@
 
 .sitemapEntryDecoration {
 
-}
-
-.subSitemapRef {
-	background-image: none;
-	background-color: value("constants.css.backgroundColorSitemapRef");
 }
 
 .highlight {

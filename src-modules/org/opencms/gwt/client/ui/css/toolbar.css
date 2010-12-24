@@ -34,7 +34,7 @@
 	position:absolute;
 	width:100%;
 	border-bottom:1px solid value("constants.css.borderColor");
-	color:value("constants.css.color");
+	color:value("constants.css.textColor");
 	padding:0px;
 	margin:0px;
 }

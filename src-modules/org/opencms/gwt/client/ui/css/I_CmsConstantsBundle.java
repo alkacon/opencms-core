@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsConstantsBundle.java,v $
- * Date   : $Date: 2010/12/22 14:35:24 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2010/12/24 15:24:02 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,15 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
 
+/**
+ * Resource bundle to access CSS constants.
+ * 
+ * @author Ruediger Kurz
+ * 
+ * @version $Revision: 1.2 $
+ * 
+ * @since 8.0.0
+ */
 public interface I_CmsConstantsBundle extends ClientBundle {
 
     /** Constants CSS. */
@@ -43,315 +52,259 @@ public interface I_CmsConstantsBundle extends ClientBundle {
         /** 
          * Access method.<p>
          * 
-         * @return the CSS class name
+         * @return the CSS constant value
          */
-        String backgroundColorBar();
+        String backgroundColorDialog();
 
         /** 
          * Access method.<p>
          * 
-         * @return the CSS class name
-         */
-        String backgroundColorDark();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
+         * @return the CSS constant value
          */
         String backgroundColorDisabled();
 
         /** 
          * Access method.<p>
          * 
-         * @return the CSS class name
+         * @return the CSS constant value
          */
         String backgroundColorEmptyContainer();
 
         /** 
          * Access method.<p>
          * 
-         * @return the CSS class name
+         * @return the CSS constant value
          */
-        String backgroundColorLight();
+        String backgroundColorHighlight();
 
         /** 
          * Access method.<p>
          * 
-         * @return the CSS class name
+         * @return the CSS constant value
          */
-        String backgroundColorLightBlue();
+        String backgroundColorInfo();
 
         /** 
          * Access method.<p>
          * 
-         * @return the CSS class name
+         * @return the CSS constant value
          */
-        String backgroundColorLightRed();
+        String backgroundColorInputError();
 
         /** 
          * Access method.<p>
          * 
-         * @return the CSS class name
+         * @return the CSS constant value
          */
-        String backgroundColorList();
+        String backgroundColorMenu();
 
         /** 
          * Access method.<p>
          * 
-         * @return the CSS class name
+         * @return the CSS constant value
          */
-        String backgroundColorMenuConnect();
+        String backgroundColorPopupShadow();
 
         /** 
          * Access method.<p>
          * 
-         * @return the CSS class name
+         * @return the CSS constant value
          */
-        String backgroundColorMiddle();
+        String backgroundColorSitemap();
 
         /** 
          * Access method.<p>
          * 
-         * @return the CSS class name
-         */
-        String backgroundColorRed();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String backgroundColorRoot();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
+         * @return the CSS constant value
          */
         String backgroundColorSitemapHighlight();
 
         /** 
          * Access method.<p>
          * 
-         * @return the CSS class name
-         */
-        String backgroundColorSitemapRef();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
+         * @return the CSS constant value
          */
         String backgroundColorToolBarMenuConnect();
 
         /** 
          * Access method.<p>
          * 
-         * @return the CSS class name
-         */
-        String backgroundColorWhite();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
+         * @return the CSS constant value
          */
         String borderColor();
 
         /** 
          * Access method.<p>
          * 
-         * @return the CSS class name
+         * @return the CSS constant value
          */
-        String borderColorActive();
+        String borderColorConnect();
 
         /** 
          * Access method.<p>
          * 
-         * @return the CSS class name
+         * @return the CSS constant value
          */
-        String borderColorBlack();
+        String borderColorDark();
 
         /** 
          * Access method.<p>
          * 
-         * @return the CSS class name
+         * @return the CSS constant value
          */
-        String borderColorInactive();
+        String borderColorDivider();
 
         /** 
          * Access method.<p>
          * 
-         * @return the CSS class name
+         * @return the CSS constant value
          */
-        String borderColorPage();
+        String borderColorHighlight();
 
         /** 
          * Access method.<p>
          * 
-         * @return the CSS class name
+         * @return the CSS constant value
          */
-        String borderColorRed();
+        String borderColorLight();
 
         /** 
          * Access method.<p>
          * 
-         * @return the CSS class name
-         */
-        String borderColorWhite();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
+         * @return the CSS constant value
          */
         String borderRadius();
 
         /** 
          * Access method.<p>
          * 
-         * @return the CSS class name
-         */
-        String color();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String colorBlack();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String colorBlue();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String colorDisabled();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String colorLight();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String colorRed();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String colorWhite();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
+         * @return the CSS constant value
          */
         String fontFamily();
 
         /** 
          * Access method.<p>
          * 
-         * @return the CSS class name
+         * @return the CSS constant value
          */
         String fontSize();
 
         /** 
          * Access method.<p>
          * 
-         * @return the CSS class name
+         * @return the CSS constant value
          */
         String fontSizeBig();
 
         /** 
          * Access method.<p>
          * 
-         * @return the CSS class name
+         * @return the CSS constant value
          */
         String fontSizeSmall();
 
         /** 
          * Access method.<p>
          * 
-         * @return the CSS class name
+         * @return the CSS constant value
          */
         String notificationErrorBg();
 
         /** 
          * Access method.<p>
          * 
-         * @return the CSS class name
+         * @return the CSS constant value
          */
         String notificationErrorColor();
 
         /** 
          * Access method.<p>
          * 
-         * @return the CSS class name
+         * @return the CSS constant value
          */
         String notificationNormalBg();
 
         /** 
          * Access method.<p>
          * 
-         * @return the CSS class name
+         * @return the CSS constant value
          */
         String notificationNormalColor();
 
         /** 
          * Access method.<p>
          * 
-         * @return the CSS class name
+         * @return the CSS constant value
          */
         String notificationWarningBg();
 
         /** 
          * Access method.<p>
          * 
-         * @return the CSS class name
+         * @return the CSS constant value
          */
         String notificationWarningColor();
 
         /** 
          * Access method.<p>
          * 
-         * @return the CSS class name
+         * @return the CSS constant value
          */
         String pageWidth();
 
         /** 
          * Access method.<p>
          * 
-         * @return the CSS class name
+         * @return the CSS constant value
          */
         String shadowColorDark();
 
         /** 
          * Access method.<p>
          * 
-         * @return the CSS class name
+         * @return the CSS constant value
          */
         String shadowColorMiddle();
 
         /** 
          * Access method.<p>
          * 
-         * @return the CSS class name
+         * @return the CSS constant value
+         */
+        String textColor();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS constant value
+         */
+        String textColorChanged();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS constant value
+         */
+        String textColorDisabled();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS constant value
+         */
+        String textColorHighlight();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS constant value
+         */
+        String textColorNew();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS constant value
          */
         String toolbarHeight();
     }

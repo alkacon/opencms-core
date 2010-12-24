@@ -2,10 +2,10 @@
 .popup{
     z-index: 500;
     padding: 3px;
-    
 }
 
 .popup *{
+	color: value("constants.css.textColor");
 	font-family: value("constants.css.fontFamily");
 	font-size: value("constants.css.fontSize");
 }
@@ -29,14 +29,13 @@
 	z-index: 10;
 }
 .popup .popupContent{
-   
     position: relative;
-    background: value("constants.css.backgroundColorWhite");
+    background: value("constants.css.backgroundColorDialog");
     border: solid 1px value("constants.css.borderColor");
     font-family: value("constants.css.fontFamily");
 }
 .popupOverlay{
-    background: value("constants.css.backgroundColorMiddle");
+    background: value("constants.css.backgroundColorDisabled");
     z-index: 450;
 }
 .popupShadow{
@@ -45,7 +44,7 @@
     z-index: 0;
     top: 0px;
     left: 0px;
-    background: value("constants.css.backgroundColorBar");
+    background: value("constants.css.backgroundColorPopupShadow");
 }
 
 .popupMainContent{
@@ -64,7 +63,7 @@
 	height: 5px;
 	border-left: solid 1px value("constants.css.borderColor");
 	border-right: solid 1px value("constants.css.borderColor");
-	background: value("constants.css.backgroundColorLight");
+	background: value("constants.css.backgroundColorMenu");
 }
 
 @if user.agent ie6 {

@@ -2,7 +2,7 @@
 
 .gwt-TabLayoutPanel {	
 	display:block;
-    background:value("constants.css.backgroundColorLight") none repeat scroll 0 0;   
+    background:value("constants.css.backgroundColorMenu") none repeat scroll 0 0;   
     border:1px solid value("constants.css.borderColor");
 	height: 100%;
 	margin:0;
@@ -20,7 +20,6 @@
 	gwt-image: "backgroundSoft";
 	background-position: 50% 50%;
 	height: auto;
-	background-color: value("constants.css.backgroundColorBar");
 	display: block;	
 }
 
@@ -32,7 +31,7 @@
     overflow: hidden;		
 	background:transparent none repeat scroll 0 0;		
 	display:block;
-	color:value("constants.css.color");
+	color:value("constants.css.textColor");
 }
 
 .tabLeftMargin {
@@ -46,7 +45,7 @@
 	margin:0 0 -1px 2px;
 	padding:0;		
 	border:1px solid value("constants.css.borderColor");	
-	color:value("constants.css.color");
+	color:value("constants.css.textColor");
 	position:relative;
 	cursor:pointer;
 }
@@ -85,7 +84,7 @@
 }
 
 .gwt-TabLayoutPanel .gwt-TabLayoutPanelTab-selected,.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab-selected:hover {    
-    background: value("constants.css.backgroundColorLight") none repeat scroll 0 0;
+    background: value("constants.css.backgroundColorMenu") none repeat scroll 0 0;
 	cursor: default;
 	font-size:value("constants.css.fontSize");
 	font-family: value("constants.css.fontFamily");
