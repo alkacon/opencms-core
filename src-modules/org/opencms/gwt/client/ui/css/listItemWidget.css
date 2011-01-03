@@ -151,27 +151,27 @@
 /** These styles are for dragging. */
 @if user.agent gecko1_8 gecko{
 	.dragging .itemContainer {
-		-moz-box-shadow: 2px 2px 6px value("constants.css.shadowColorDark");
+		-moz-box-shadow: 2px 2px 6px value("constants.css.boxShadowColorOther");
 	}
 } @elif user.agent safari {
 	.dragging .itemContainer {
-		-webkit-box-shadow: 2px 2px 6px value("constants.css.shadowColorDark");
+		-webkit-box-shadow: 2px 2px 6px value("constants.css.boxShadowColorOther");
 	}
 } @elif user.agent opera {
 	.dragging .itemContainer {
-		box-shadow: 2px 2px 6px value("constants.css.shadowColorDark");
+		box-shadow: 2px 2px 6px value("constants.css.boxShadowColorOther");
 	}
 } @elif user.agent ie6 {
 	.dragging .itemContainer {
-		filter: literal("progid:DXImageTransform.Microsoft.DropShadow(color=value('constants.css.shadowColorMiddle'),offX=2,offY=2)");
+		filter: literal("progid:DXImageTransform.Microsoft.DropShadow(color=value('constants.css.boxShadowColorIE'),offX=2,offY=2)");
 	}
 } @elif user.agent ie8 {
 	.dragging .itemContainer {
-		-ms-filter: "progid:DXImageTransform.Microsoft.DropShadow(color=value('constants.css.shadowColorMiddle'),offX=2,offY=2)"; 
+		-ms-filter: "progid:DXImageTransform.Microsoft.DropShadow(color=value('constants.css.boxShadowColorIE'),offX=2,offY=2)"; 
 	}
 } @else {
 	.dragging .itemContainer {
-		box-shadow: 2px 2px 6px value("constants.css.shadowColorDark");
+		box-shadow: 2px 2px 6px value("constants.css.boxShadowColorOther");
 	}
 } 
 

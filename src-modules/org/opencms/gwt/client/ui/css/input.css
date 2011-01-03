@@ -322,7 +322,7 @@
 	margin-top: 5px;
 	margin-bottom: 5px;
 	/** Use the border color as background because this CSS class behaves like a border. */
-	background-color: value("constants.css.borderColorDivider");
+	background-color: value("constants.css.borderColor");
 }
 
 .formDescriptionLabel {

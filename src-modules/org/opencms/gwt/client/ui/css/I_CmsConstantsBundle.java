@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsConstantsBundle.java,v $
- * Date   : $Date: 2010/12/24 15:24:02 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/01/03 15:47:42 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import com.google.gwt.resources.client.CssResource;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -103,6 +103,13 @@ public interface I_CmsConstantsBundle extends ClientBundle {
          * 
          * @return the CSS constant value
          */
+        String backgroundColorOverlay();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS constant value
+         */
         String backgroundColorPopupShadow();
 
         /** 
@@ -138,27 +145,6 @@ public interface I_CmsConstantsBundle extends ClientBundle {
          * 
          * @return the CSS constant value
          */
-        String borderColorConnect();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS constant value
-         */
-        String borderColorDark();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS constant value
-         */
-        String borderColorDivider();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS constant value
-         */
         String borderColorHighlight();
 
         /** 
@@ -166,14 +152,63 @@ public interface I_CmsConstantsBundle extends ClientBundle {
          * 
          * @return the CSS constant value
          */
-        String borderColorLight();
+        String borderRadius();
 
         /** 
          * Access method.<p>
          * 
          * @return the CSS constant value
          */
-        String borderRadius();
+        String boxShadowColorIE();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS constant value
+         */
+        String boxShadowColorOther();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS constant value
+         */
+        String dateboxAnotherMonthBg();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS constant value
+         */
+        String dateboxDayFontSize();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS constant value
+         */
+        String dateboxHoveredDayBg();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS constant value
+         */
+        String dateboxSelectedDayBg();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS constant value
+         */
+        String dateboxTodayColor();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS constant value
+         */
+        String dateboxWeekendBg();
 
         /** 
          * Access method.<p>
@@ -250,27 +285,6 @@ public interface I_CmsConstantsBundle extends ClientBundle {
          * 
          * @return the CSS constant value
          */
-        String pageWidth();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS constant value
-         */
-        String shadowColorDark();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS constant value
-         */
-        String shadowColorMiddle();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS constant value
-         */
         String textColor();
 
         /** 
@@ -292,21 +306,7 @@ public interface I_CmsConstantsBundle extends ClientBundle {
          * 
          * @return the CSS constant value
          */
-        String textColorHighlight();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS constant value
-         */
         String textColorNew();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS constant value
-         */
-        String toolbarHeight();
     }
 
     /** The bundle instance. */

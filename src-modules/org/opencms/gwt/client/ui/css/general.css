@@ -60,7 +60,7 @@
 	}
 	
 	.shadow{
-		-moz-box-shadow: 2px 2px 6px value("constants.css.shadowColorDark");
+		-moz-box-shadow: 2px 2px 6px value("constants.css.boxShadowColorOther");
 	}
 
 } @elif user.agent safari {
@@ -78,7 +78,7 @@
 	}
 	
 	.shadow{
-		-webkit-box-shadow: 2px 2px 6px value("constants.css.shadowColorDark");
+		-webkit-box-shadow: 2px 2px 6px value("constants.css.boxShadowColorOther");
 	}
 } @elif user.agent opera {
 	/** opera */
@@ -95,13 +95,13 @@
 	}
 	
 	.shadow{
-		box-shadow: 2px 2px 6px value("constants.css.shadowColorDark");
+		box-shadow: 2px 2px 6px value("constants.css.boxShadowColorOther");
 	}
 } @elif user.agent ie6 {
 
 	.shadow{
 		/** standard box-shadow is a gradient, but this is a solid color, so it has to be a bit lighter to look similar */ 
-		filter: literal("progid:DXImageTransform.Microsoft.DropShadow(color=value('constants.css.shadowColorMiddle'),offX=2,offY=2)");
+		filter: literal("progid:DXImageTransform.Microsoft.DropShadow(color=value('constants.css.boxShadowColorIE'),offX=2,offY=2)");
 	}
 	.cornerAll, .cornerBottom, .cornerTop{} 
 
@@ -122,7 +122,7 @@
 	
 	.shadow{
 		/** standard box-shadow is a gradient, but this is a solid color, so it has to be a bit lighter to look similar */ 
-		-ms-filter: "progid:DXImageTransform.Microsoft.DropShadow(color=value('constants.css.shadowColorMiddle'),offX=2,offY=2)"; 
+		-ms-filter: "progid:DXImageTransform.Microsoft.DropShadow(color=value('constants.css.boxShadowColorIE'),offX=2,offY=2)"; 
 	}
 	
 } @else {

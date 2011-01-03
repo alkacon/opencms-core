@@ -21,7 +21,7 @@
 	padding: 0px;
 	margin: 0px;
 	font-family: Verdana,Helvetica,Arial,sans-serif;
-	font-size: 12px;
+	font-size: value("constants.css.fontSize");
 }
 
 @sprite .toolbarBackground{
@@ -30,7 +30,7 @@
 	overflow: visible;
 	border-top:medium none;
 	font-weight:normal;
-	height: value("constants.css.toolbarHeight");
+	height: 35px;
 	position:absolute;
 	width:100%;
 	border-bottom:1px solid value("constants.css.borderColor");
@@ -42,7 +42,7 @@
 .toolbarContent{
 	padding:0px;
 	position:relative;
-	width:value("constants.css.pageWidth");
+	width:930px;
 	margin:2px auto;
 }
 .toolbarPlaceholder {
@@ -62,7 +62,8 @@
 .notification {
 	text-align: center;
 	position:absolute;
-	top: value("constants.css.toolbarHeight");
+	/** Must have the value as the .toolbarBackground class. */
+	top: 35px;
 	width:100%;
 }
 

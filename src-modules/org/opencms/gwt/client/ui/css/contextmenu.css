@@ -30,7 +30,7 @@
 .cmsMenuBar .cmsMenuItem .label { /* menu item label */
 	padding: 4px 4px 4px 0px;
 	margin: 0px 0px 0px 22px;
-	font-size: 14px;
+	font-size: value("constants.css.fontSizeBig");
 }
 .cmsMenuBar .cmsMenuItem .arrow { /* symbol for sub menus */
 	float: right;
@@ -44,7 +44,7 @@
 	padding: 0px;
 	border: none;
 	/** Use the border color as background color because this CSS class behaves like a border. */
-	background-color: value("constants.css.borderColorDivider");
+	background-color: value("constants.css.borderColor");
 	zoom: 1;
 	overflow: hidden;
 	clear: both;

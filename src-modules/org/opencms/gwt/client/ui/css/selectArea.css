@@ -16,17 +16,19 @@
 	left: 0px;
 }
 .markerBlackBorder{
-	position: absolute;
-	border: 1px solid value("constants.css.borderColorDark");
+	/** Don't use a constant here. */
+	border: 1px solid #000000;
 }
 .markerWhiteBorder{
-	border: 1px dashed value("constants.css.borderColorLight");
+	/** Don't use a constant here. */
+	border: 1px dashed #FFFFFF;
 }
 .marker{
 	position:absolute;
 }
 .overlay{
 	position: absolute;
-	background: value("constants.css.borderColorDark");
+	/** Don't use a constant here. */
+	background: #000000;
 	opacity: 0.4;
 }

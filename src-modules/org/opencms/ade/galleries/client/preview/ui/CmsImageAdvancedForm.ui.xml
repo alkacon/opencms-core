@@ -5,36 +5,8 @@
 	xmlns:input="urn:import:org.opencms.gwt.client.ui.input">
 	<ui:with field="resources" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
 	<ui:with field="galleryResources" type="org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle" />
-	<ui:style>
-		.main{
-			position: absolute;
-			top: 0; 
-			bottom: 4px; 
-			left: 0; 
-			right: 0; 
-			overflow: auto;
-		}
-		.descriptionLabel{
-			margin: 4px 6px 0px;
-		}
-		.input{
-			display: inline-block;
-			width: 320px;
-			margin-right: 10px;
-			vertical-align: middle;
-		}
-		.selectBox{
-			display: inline-block;
-			width: 150px;
-			vertical-align: middle;
-		}
-		.selectBox *{
-			font-size: 10px;
-			line-height: 12px;
-		}
-	</ui:style>
-	<g:HTMLPanel styleName="{style.main}">
-		<g:Label styleName="{galleryResources.previewDialogCss.labelField}" addStyleNames="{style.descriptionLabel} {resources.generalCss.textMedium}" ui:field="m_labelSetLink" />
+	<g:HTMLPanel styleName="{galleryResources.imageAdvancedFormCss.main}">
+		<g:Label styleName="{galleryResources.previewDialogCss.labelField}" addStyleNames="{galleryResources.imageAdvancedFormCss.descriptionLabel} {resources.generalCss.textMedium}" ui:field="m_labelSetLink" />
 		<table class="{galleryResources.previewDialogCss.infoTable}">
 			<colgroup>
     			<col width="25%" />
@@ -42,14 +14,14 @@
 	  		</colgroup>
 			<tr>
 				<td><g:Label styleName="{galleryResources.previewDialogCss.labelField} {resources.generalCss.textMedium}"  ui:field="m_labelUrl" /></td>
-				<td><input:CmsTextBox addStyleNames="{style.input}" ui:field="m_inputUrl" /><cms:CmsPushButton ui:field="m_buttonBrowse" /></td>
+				<td><input:CmsTextBox addStyleNames="{galleryResources.imageAdvancedFormCss.input}" ui:field="m_inputUrl" /><cms:CmsPushButton ui:field="m_buttonBrowse" /></td>
 			</tr>
 			<tr>
 				<td><g:Label styleName="{galleryResources.previewDialogCss.labelField} {resources.generalCss.textMedium}"  ui:field="m_labelTarget" /></td>
-				<td><input:CmsSelectBox addStyleNames="{style.selectBox}" ui:field="m_selectTarget" /></td>
+				<td><input:CmsSelectBox addStyleNames="{galleryResources.imageAdvancedFormCss.selectBox}" ui:field="m_selectTarget" /></td>
 			</tr>
 		</table>
-		<g:Label styleName="{galleryResources.previewDialogCss.labelField}" addStyleNames="{style.descriptionLabel} {resources.generalCss.textMedium}"  ui:field="m_labelTagAttributes" />
+		<g:Label styleName="{galleryResources.previewDialogCss.labelField}" addStyleNames="{galleryResources.imageAdvancedFormCss.descriptionLabel} {resources.generalCss.textMedium}"  ui:field="m_labelTagAttributes" />
 		<table class="{galleryResources.previewDialogCss.infoTable}">
 			<colgroup>
     			<col width="25%" />
@@ -81,7 +53,7 @@
 			</tr>
 			<tr>
 				<td><g:Label styleName="{galleryResources.previewDialogCss.labelField} {resources.generalCss.textMedium}"  ui:field="m_labelTextDirection" /></td>
-				<td><input:CmsSelectBox addStyleNames="{style.selectBox}" ui:field="m_selectTextDirection" /></td>
+				<td><input:CmsSelectBox addStyleNames="{galleryResources.imageAdvancedFormCss.selectBox}" ui:field="m_selectTextDirection" /></td>
 			</tr>
 		</table>
 	</g:HTMLPanel>	

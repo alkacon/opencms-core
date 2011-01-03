@@ -5,7 +5,7 @@
 
 .groupHeader {
 	font-weight: bold;
-	font-size: 12px;
+	font-size: value("constants.css.fontSize");
     padding-top: 5px;
 }
 
@@ -68,7 +68,7 @@
 
 .noResources {
 	padding: 20px;
-	font-size: large;
+	font-size: value("constants.css.fontSizeBig");
 	text-align: center;
 }
 

@@ -41,7 +41,7 @@
 	background-color: value("constants.css.backgroundColorDialog");
 }
 .dragElementBorder{
-	border: 1px solid value("constants.css.borderColorConnect");
+	border: 1px solid value("constants.css.borderColor");
 }
 .dragSubContainer{}
 

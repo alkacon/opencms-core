@@ -1,0 +1,29 @@
+.label{
+	font-weight: bold;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipse;
+}
+.inputTextSmall{
+	width: 40px;
+}
+.inlineLabel{
+	font-weight: bold;
+	margin-right: 10px;
+}
+.inlineLabel, .inputTextSmall{
+	display: inline-block;
+	vertical-align: middle;
+}
+.floatCheckbox{
+	float: left;
+}
+.selectBox{
+	display: inline-block;
+	width: 70px;
+	vertical-align: middle;
+}
+.selectBox *{
+	font-size: value("constants.css.fontSizeSmall");
+	line-height: 12px;
+}

@@ -30,7 +30,7 @@
 
 .menu .connect{
 	background: value("constants.css.backgroundColorMenu");
-	border: 1px solid value("constants.css.borderColorConnect");
+	border: 1px solid value("constants.css.borderColor");
 	position: absolute;
 	top: -2px;
 	left: -2px;

@@ -93,7 +93,7 @@ ul.clipboardList{
 	gwt-image: "backgroundSoft";
 	height: auto;
 	-moz-border-radius: 2px;
-	border: 1px solid value("constants.css.borderColorConnect");
+	border: 1px solid value("constants.css.borderColor");
 }
 
 .optionBar .cmsState{

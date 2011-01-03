@@ -27,13 +27,13 @@
 	line-height: 1px;
 }
 .bottomPanel{
-	border: 1px solid value("constants.css.borderColorDivider");
+	border: 1px solid value("constants.css.borderColor");
 	padding: 2px;
 	margin-top: 1px;
 	background: value("constants.css.backgroundColorDialog");
 	
 }
 .topPanel{
-	border: 1px solid value("constants.css.borderColorDivider");
+	border: 1px solid value("constants.css.borderColor");
 	height: 457px;
 }

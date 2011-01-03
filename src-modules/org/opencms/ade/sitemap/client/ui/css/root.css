@@ -1,7 +1,7 @@
 .pageCenter {
 	padding: 0px;
 	position: relative;
-	width: value("constants.css.pageWidth");
+	width: 930px;
 	margin: 0 auto;
 }
 

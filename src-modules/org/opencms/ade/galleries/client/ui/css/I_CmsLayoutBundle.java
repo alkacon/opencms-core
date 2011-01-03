@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2010/12/22 14:35:24 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2011/01/03 15:47:42 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import com.google.gwt.resources.client.CssResource.Shared;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 8.0.0
  */
@@ -228,6 +228,68 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
         String tilingList();
     }
 
+    /** The advanced image editor form CSS. */
+    public interface I_CmsImageAdvancedFormCss extends CssResource {
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String descriptionLabel();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String input();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String main();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String selectBox();
+    }
+
+    /** The image editor form CSS. */
+    public interface I_CmsImageEditorFormCss extends CssResource {
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String floatCheckbox();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String inlineLabel();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String inputTextSmall();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String label();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String selectBox();
+    }
+
     /** Preview dialog CSS. */
     @Shared
     interface I_CmsPreviewDialogCss extends CssResource {
@@ -397,6 +459,22 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
      */
     @Source("galleryResultItem.css")
     I_CmsGalleryResultItemCss galleryResultItemCss();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image advanced form CSS
+     */
+    @Source("imageAdvancedForm.css")
+    I_CmsImageAdvancedFormCss imageAdvancedFormCss();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image editor form CSS
+     */
+    @Source("imageEditorForm.css")
+    I_CmsImageEditorFormCss imageEditorFormCss();
 
     /**
      * Access method.<p>

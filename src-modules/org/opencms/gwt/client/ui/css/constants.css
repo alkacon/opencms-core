@@ -1,6 +1,14 @@
+/**
+ * The font definitions.
+ */
+
+/** The font family for everything. */
 @def fontFamily literal("Verdana,Helvetica,Arial,sans-serif");
+/** The normal font size. */
 @def fontSize 12px;
+/** The small font size. */
 @def fontSizeSmall 10px;
+/** The big font size. */
 @def fontSizeBig 14px;
 
 
@@ -16,8 +24,6 @@
 @def textColorNew #003082;
 /** The changed text color. Use it only for displaying texts of changed resources. */
 @def textColorChanged #B31B34;
-/** The highlight text color. Use it for highlighting a text like the todays day inside the date picker. */
-@def textColorHighlight #B31B34;
 
 
 /**
@@ -26,25 +32,8 @@
 
 /** The default border color. */
 @def borderColor #999999;
-/** The divider border color. Use it to divide a dialog into vertical sections. */
-@def borderColorDivider #AAAAAA;
-/** 
- * The connect border color. Use it to connect UI components with image colors, shadows, etc.
- * NOTE: This color depends on images!
- */
-@def borderColorConnect #AAAAAA;
 /** The highlight border color. Use it for highlighting special UI components e.g. errors. */
 @def borderColorHighlight #B31B34;
-/** 
- * The light border color. It is only used for CmsAreaSelectPanel.
- * NOTE: Avoid using this color!  
- */
-@def borderColorLight #FFFFFF;
-/** 
- * The dark border color. It is only used for the CmsAreaSelectPanel and the CmsSitemapTreeItem.
- * NOTE: Avoid using this color!
- */
-@def borderColorDark #000000;
 /** The default border radius. */
 @def borderRadius 3px;
 
@@ -58,31 +47,21 @@
  * background color as the dialog/popup itself for example the CmsFieldset.
  */
 @def backgroundColorDialog #FFFFFF;
-/** 
- * The menu background color. Use it for menu backgrounds.
- * NOTE: This color is also used for the CmsTabbedPanel.
- */
+/** The menu background color. Use it for menu backgrounds. NOTE: This color is also used for the CmsTabbedPanel. */
 @def backgroundColorMenu #F9F9F9;
-/** The disabled background color. Use it for disabled UI components or for overlays. */
+/** The disabled background color. Use it for disabled UI components. */
 @def backgroundColorDisabled #DDDDDD;
-/** 
- * The info background color. Use it as background for user informations like error messages.
- * NOTE: This color is also used for the weekend days in the date picker.
- */
-@def backgroundColorInfo #DDDDDD;
+/** The overlay background color. Use it for overlays. */
+@def backgroundColorOverlay #DDDDDD;
+/** The info background color. Use it for user informations like error messages. */
+@def backgroundColorInfo #F9F9F9;
 /** The popup shadow background color. Use it for creating popup shadows. */
 @def backgroundColorPopupShadow #AAAAAA;
-/** The highlight background color. Use it for hover effects in a select box or in the date picker. */
+/** The highlight background color. Use it for hover effects like select box or menu hovering. */
 @def backgroundColorHighlight #E0EDFE;
-/** 
- * Connects the tool bar button with the popup.
- * NOTE: This color depends on images!
- */
+/** Connects the tool bar button with the popup. NOTE: This color depends on images! */
 @def backgroundColorToolBarMenuConnect #CFCFCF;
-/** 
- * The input error background color. Use this color to change the background color of an input component if the
- * input validation goes wrong.  
- */
+/** The input error background color. Use this color for input components if the validation goes wrong. */
 @def backgroundColorInputError #FFCCCC;
 /** This constant defines the background color of a empty sub container. */
 @def backgroundColorEmptyContainer #AACCFF;
@@ -91,15 +70,49 @@
 /** This constant defines the background color of the sitemap entry that is highlighted. */
 @def backgroundColorSitemapHighlight #CCFFFF;
 
-@def shadowColorMiddle #999999;
-@def shadowColorDark #666666;
 
-@def pageWidth 930px;
-@def toolbarHeight 35px;
+/**
+ * The shadow background color definitions.
+ */
+ 
+/** The box shadow color for the Internet explorer. */
+@def boxShadowColorIE #999999;
+/** The box shadow color for all other browsers. */
+@def boxShadowColorOther #666666;
 
+
+/**
+ * The notification color definitions.
+ */
+
+/** The text color for an error message. */
 @def notificationErrorColor #021324;
+/** The background for an error message. */
 @def notificationErrorBg #FF2800;
+/** The text color for a warning message. */
 @def notificationWarningColor #021324;
+/** The background for a warning message. */
 @def notificationWarningBg #FFC139;
+/** The text color for a normal message. */
 @def notificationNormalColor #021324;
+/** The background for a normal message. */
 @def notificationNormalBg #FFF1A8;
+
+
+/**
+ * The date box color definitions.
+ */
+
+/** The font size for a day. */
+@def dateboxDayFontSize 11px;
+/** The background color for the weekend days. */
+@def dateboxWeekendBg #DDDDDD;
+/** The text color for the todays day. */
+@def dateboxTodayColor #B31B34;
+/** A day in another month. */
+@def dateboxAnotherMonthBg #666666;
+/** The currently selected day. */
+@def dateboxSelectedDayBg #CCCCCC;
+/** The currently hovered day. */
+@def dateboxHoveredDayBg #E0EDFE;
+

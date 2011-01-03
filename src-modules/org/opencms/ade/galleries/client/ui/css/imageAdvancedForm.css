@@ -1,0 +1,26 @@
+.main{
+	position: absolute;
+	top: 0; 
+	bottom: 4px; 
+	left: 0; 
+	right: 0; 
+	overflow: auto;
+}
+.descriptionLabel{
+	margin: 4px 6px 0px;
+}
+.input{
+	display: inline-block;
+	width: 320px;
+	margin-right: 10px;
+	vertical-align: middle;
+}
+.selectBox{
+	display: inline-block;
+	width: 150px;
+	vertical-align: middle;
+}
+.selectBox *{
+	font-size: value("constants.css.fontSizeSmall");
+	line-height: 12px;
+}

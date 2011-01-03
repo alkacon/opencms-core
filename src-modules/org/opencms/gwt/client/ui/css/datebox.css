@@ -1,13 +1,13 @@
 @external html-face, gwt-DatePicker, datePickerMonthSelector, datePickerMonth, datePickerPreviousButton, datePickerPreviousButton-up-hovering, datePickerPreviousButton-down-hovering, datePickerNextButton, datePickerNextButton-up-hovering, datePickerNextButton-down-hovering, datePickerDays, datePickerWeekdayLabel, datePickerWeekendLabel, datePickerDay, datePickerDayIsToday, datePickerDayIsWeekend, datePickerDayIsFiller, datePickerDayIsValue, datePickerDayIsDisabled, datePickerDayIsHighlighted, datePickerDayIsValueAndHighlighted;
 
 .gwt-DatePicker {
-	border-bottom: value("constants.css.borderColorDivider") 1px solid;
+	border-bottom: value("constants.css.borderColor") 1px solid;
 }
 .gwt-DatePicker td {
 	text-align: center;
 }
 .datePickerMonthSelector { /*the month selector widget*/
-	border-bottom: 1px solid value("constants.css.borderColorDivider");
+	border-bottom: 1px solid value("constants.css.borderColor");
 }
 .datePickerMonth { /*the month in the month selector widget*/ } 
 .datePickerPreviousButton { /*the previous month button*/ 
@@ -24,30 +24,30 @@
 .datePickerDays { /*the portion of the picker that shows the days*/}
 .datePickerDays td{ /* the cell for a day */
 	padding: 4px;
-	font-size: 11px;
+	font-size: value("constants.css.dateboxDayFontSize");
 }
 .datePickerWeekdayLabel { /*the label over weekdays*/ }
 .datePickerWeekendLabel { /*the label over weekends*/
-	background: value("constants.css.backgroundColorInfo");
+	background: value("constants.css.dateboxWeekendBg");
 }
 .datePickerDay { /*a single day*/ 
 	cursor: pointer;
 }
-.datePickerDayIsToday { /*today's date*/ 
-	color: value("constants.css.textColorHighlight");
+.datePickerDayIsToday { /*today's date*/
+	color: value("constants.css.dateboxTodayColor");
 }
-.datePickerDayIsWeekend { /*a weekend day*/ 
-	background: value("constants.css.backgroundColorInfo");
+.datePickerDayIsWeekend { /*a weekend day*/
+	background: value("constants.css.dateboxWeekendBg");
 }
 .datePickerDayIsFiller { /*a day in another month*/
-	color: value("constants.css.textColorDisabled");
+	color: value("constants.css.dateboxAnotherMonthBg");
 }
 .datePickerDayIsValue { /*the selected day*/
-	background: value("constants.css.backgroundColorInfo"); 
+	background: value("constants.css.dateboxSelectedDayBg");
 }
 .datePickerDayIsDisabled { /*a disabled day*/ }
 .datePickerDayIsHighlighted { /*the currently highlighted day*/ 
-	background: value("constants.css.backgroundColorHighlight");
+	background: value("constants.css.dateboxHoveredDayBg");
 }
 .datePickerDayIsValueAndHighlighted { /*the highlighted day if it is also selected*/ }
 

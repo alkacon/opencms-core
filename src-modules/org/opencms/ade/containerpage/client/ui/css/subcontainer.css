@@ -1,7 +1,7 @@
 .editor{}
 .dialog{
 	width: 460px;
-	border: 1px solid value("constants.css.borderColorConnect");
+	border: 1px solid value("constants.css.borderColor");
 	background: value("constants.css.backgroundColorDialog");
 }
 .inputRow{
