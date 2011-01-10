@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResource.java,v $
- * Date   : $Date: 2010/01/18 10:03:14 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2011/01/10 09:44:29 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -91,7 +91,7 @@ import org.apache.commons.logging.Log;
  * @author Armen Markarian 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.41 $ 
+ * @version $Revision: 1.42 $ 
  * 
  * @since 6.0.0 
  */
@@ -1054,7 +1054,7 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
             setParamPage(null);
 
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(getParamNewFormUri())
-                || getParamNewResourceUri().indexOf("?" + PARAM_PAGE) != -1) {
+                || (getParamNewResourceUri().indexOf("?" + PARAM_PAGE) != -1)) {
                 setParamNewFormUri(getParamNewResourceUri());
                 setParamNewResourceUri(null);
             }
@@ -1092,11 +1092,13 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
         // get session attribute storing if we are in advanced mode
         String advAttr = (String)request.getSession(true).getAttribute(SESSION_ATTR_ADVANCED);
 
-        if (DIALOG_ADVANCED.equals(getParamAction()) || advAttr != null) {
+        if (DIALOG_ADVANCED.equals(getParamAction()) || (advAttr != null)) {
             // advanced mode to display all possible resource types
             if (advAttr == null) {
                 // set attribute that we are in advanced mode
                 request.getSession(true).setAttribute(SESSION_ATTR_ADVANCED, "true");
+                // remove eventual resource URI parameter value to avoid errors if a type was selected
+                setParamNewResourceUri(null);
             }
         } else {
 
