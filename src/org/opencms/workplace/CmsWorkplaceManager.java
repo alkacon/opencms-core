@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2010/01/18 10:03:35 $
- * Version: $Revision: 1.92 $
+ * Date   : $Date: 2011/01/10 15:21:33 $
+ * Version: $Revision: 1.93 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -106,7 +106,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.92 $ 
+ * @version $Revision: 1.93 $ 
  * 
  * @since 6.0.0 
  */
@@ -521,6 +521,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     /**
      * Creates a temporary file which is needed while working in an editor with preview option.<p>
      * 
+     * <i>Note</i>: This method is synchronized to avoid rare issues that might be caused by
+     * double requests fired by some browser/OS combinations.<p>
+     * 
      * @param cms the cms context
      * @param resourceName the name of the resource to copy
      * @param currentProjectId the id of the project to work with
@@ -529,7 +532,8 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
      * 
      * @throws CmsException if something goes wrong
      */
-    public String createTempFile(CmsObject cms, String resourceName, CmsUUID currentProjectId) throws CmsException {
+    public synchronized String createTempFile(CmsObject cms, String resourceName, CmsUUID currentProjectId)
+    throws CmsException {
 
         // check that the current user has write permissions
         if (!cms.hasPermissions(cms.readResource(resourceName, CmsResourceFilter.ALL), CmsPermissionSet.ACCESS_WRITE)) {
