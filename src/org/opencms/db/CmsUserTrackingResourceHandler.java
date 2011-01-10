@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserTrackingResourceHandler.java,v $
- * Date   : $Date: 2010/07/23 08:29:34 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/01/10 10:22:45 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner  
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0
  */
@@ -79,8 +79,8 @@ public class CmsUserTrackingResourceHandler implements I_CmsResourceInit {
      */
     public CmsResource initResource(CmsResource resource, CmsObject cms, HttpServletRequest req, HttpServletResponse res) {
 
-        if (resource.isFile()) {
-            // only files are marked
+        if ((resource != null) && resource.isFile()) {
+            // only do something if the resource was found and is a file (that can be marked)
             String mark = "";
             try {
                 // read the property value
