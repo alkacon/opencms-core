@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResource.java,v $
- * Date   : $Date: 2009/11/26 11:36:19 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/01/10 09:44:39 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -92,7 +92,7 @@ import org.apache.commons.logging.Log;
  * @author Armen Markarian 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -1088,6 +1088,8 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
             if (advAttr == null) {
                 // set attribute that we are in advanced mode
                 request.getSession(true).setAttribute(SESSION_ATTR_ADVANCED, "true");
+                // remove eventual resource URI parameter value to avoid errors if a type was selected
+                setParamNewResourceUri(null);
             }
         } else {
 
