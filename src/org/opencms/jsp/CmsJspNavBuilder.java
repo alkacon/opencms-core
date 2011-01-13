@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspNavBuilder.java,v $
- * Date   : $Date: 2009/12/07 15:12:14 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/01/13 08:59:24 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  * 
@@ -441,26 +441,28 @@ public class CmsJspNavBuilder {
     /**
      * Returns a navigation element for the named resource.<p>
      * 
-     * @param resource the resource name to get the navigation information for, 
+     * @param sitePath the resource name to get the navigation information for, 
      *              must be a full path name, e.g. "/docs/index.html"
      *              
      * @return a navigation element for the given resource
      */
-    public CmsJspNavElement getNavigationForResource(String resource) {
+    public CmsJspNavElement getNavigationForResource(String sitePath) {
 
         List<CmsProperty> properties;
+        CmsResource resource;
         try {
+            resource = m_cms.readResource(sitePath);
             properties = m_cms.readPropertyObjects(resource, false);
         } catch (Exception e) {
             // should never happen
             LOG.error(e.getLocalizedMessage(), e);
             return null;
         }
-        int level = CmsResource.getPathLevel(resource);
-        if (resource.endsWith("/")) {
+        int level = CmsResource.getPathLevel(sitePath);
+        if (sitePath.endsWith("/")) {
             level--;
         }
-        return new CmsJspNavElement(resource, CmsProperty.toMap(properties), level);
+        return new CmsJspNavElement(sitePath, resource, CmsProperty.toMap(properties), level);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspNavElement.java,v $
- * Date   : $Date: 2009/11/25 15:24:39 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/01/13 08:59:24 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import java.util.Map;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  * 
@@ -62,7 +62,8 @@ public class CmsJspNavElement implements Comparable<CmsJspNavElement> {
     private int m_navTreeLevel = Integer.MIN_VALUE;
     private float m_position;
     private Map<String, String> m_properties;
-    private String m_resource;
+    private CmsResource m_resource;
+    private String m_sitePath;
     private String m_text;
 
     /**
@@ -87,29 +88,66 @@ public class CmsJspNavElement implements Comparable<CmsJspNavElement> {
      * Create a new instance of the bean and calls the init method 
      * with the provided parameters.<p>
      * 
-     * @param resource will be passed to <code>init</code>
+     * @param sitePath will be passed to <code>init</code>
+     * @param resource the resource
      * @param properties will be passed to <code>init</code>
-     * 
-     * @see #init(String, Map)
      */
-    public CmsJspNavElement(String resource, Map<String, String> properties) {
+    public CmsJspNavElement(String sitePath, CmsResource resource, Map<String, String> properties) {
 
-        init(resource, properties, -1);
+        setResource(resource);
+        init(sitePath, properties);
     }
 
     /**
      * Create a new instance of the bean and calls the init method 
      * with the provided parameters.<p>
      * 
-     * @param resource will be passed to <code>init</code>
+     * @param sitePath will be passed to <code>init</code>
+     * @param resource the resource
      * @param properties will be passed to <code>init</code>
      * @param navTreeLevel will be passed to <code>init</code>
      * 
      * @see #init(String, Map, int)
      */
-    public CmsJspNavElement(String resource, Map<String, String> properties, int navTreeLevel) {
+    public CmsJspNavElement(String sitePath, CmsResource resource, Map<String, String> properties, int navTreeLevel) {
 
-        init(resource, properties, navTreeLevel);
+        setResource(resource);
+        init(sitePath, properties, navTreeLevel);
+    }
+
+    /**
+     * Create a new instance of the bean and calls the init method 
+     * with the provided parameters.<p>
+     * 
+     * @param sitePath will be passed to <code>init</code>
+     * @param properties will be passed to <code>init</code>
+     * 
+     * @see #init(String, Map)
+     * 
+     * @deprecated use {@link #CmsJspNavElement(String, CmsResource, Map)}
+     */
+    @Deprecated
+    public CmsJspNavElement(String sitePath, Map<String, String> properties) {
+
+        init(sitePath, properties, -1);
+    }
+
+    /**
+     * Create a new instance of the bean and calls the init method 
+     * with the provided parameters.<p>
+     * 
+     * @param sitePath will be passed to <code>init</code>
+     * @param properties will be passed to <code>init</code>
+     * @param navTreeLevel will be passed to <code>init</code>
+     * 
+     * @see #init(String, Map, int)
+     * 
+     * @deprecated use {@link #CmsJspNavElement(String, CmsResource, Map, int)}
+     */
+    @Deprecated
+    public CmsJspNavElement(String sitePath, Map<String, String> properties, int navTreeLevel) {
+
+        init(sitePath, properties, navTreeLevel);
     }
 
     /**
@@ -142,7 +180,7 @@ public class CmsJspNavElement implements Comparable<CmsJspNavElement> {
             return true;
         }
         if (obj instanceof CmsJspNavElement) {
-            return ((CmsJspNavElement)obj).m_resource.equals(m_resource);
+            return ((CmsJspNavElement)obj).m_sitePath.equals(m_sitePath);
         }
         return false;
     }
@@ -170,12 +208,12 @@ public class CmsJspNavElement implements Comparable<CmsJspNavElement> {
 
         if (m_fileName == null) {
             // use "lazy initializing"
-            if (!m_resource.endsWith("/")) {
-                m_fileName = m_resource.substring(m_resource.lastIndexOf("/") + 1, m_resource.length());
+            if (!m_sitePath.endsWith("/")) {
+                m_fileName = m_sitePath.substring(m_sitePath.lastIndexOf("/") + 1, m_sitePath.length());
             } else {
-                m_fileName = m_resource.substring(
-                    m_resource.substring(0, m_resource.length() - 1).lastIndexOf("/") + 1,
-                    m_resource.length());
+                m_fileName = m_sitePath.substring(
+                    m_sitePath.substring(0, m_sitePath.length() - 1).lastIndexOf("/") + 1,
+                    m_sitePath.length());
             }
         }
         return m_fileName;
@@ -258,7 +296,7 @@ public class CmsJspNavElement implements Comparable<CmsJspNavElement> {
 
         if (m_navTreeLevel < 0) {
             // use "lazy initializing"
-            m_navTreeLevel = CmsResource.getPathLevel(m_resource);
+            m_navTreeLevel = CmsResource.getPathLevel(m_sitePath);
         }
         return m_navTreeLevel;
     }
@@ -270,7 +308,7 @@ public class CmsJspNavElement implements Comparable<CmsJspNavElement> {
      */
     public String getParentFolderName() {
 
-        return CmsResource.getParentFolder(m_resource);
+        return CmsResource.getParentFolder(m_sitePath);
     }
 
     /**
@@ -304,13 +342,23 @@ public class CmsJspNavElement implements Comparable<CmsJspNavElement> {
     }
 
     /**
+     * Returns the resource.<p>
+     *
+     * @return the resource
+     */
+    public CmsResource getResource() {
+
+        return m_resource;
+    }
+
+    /**
      * Returns the resource name this navigation element was initialized with.<p>
      * 
      * @return the resource name this navigation element was initialized with
      */
     public String getResourceName() {
 
-        return m_resource;
+        return m_sitePath;
     }
 
     /**
@@ -333,7 +381,7 @@ public class CmsJspNavElement implements Comparable<CmsJspNavElement> {
     @Override
     public int hashCode() {
 
-        return m_resource.hashCode();
+        return m_sitePath.hashCode();
     }
 
     /**
@@ -372,7 +420,7 @@ public class CmsJspNavElement implements Comparable<CmsJspNavElement> {
      */
     public void init(String resource, Map<String, String> properties, int navTreeLevel) {
 
-        m_resource = resource;
+        m_sitePath = resource;
         m_properties = properties;
         m_navTreeLevel = navTreeLevel;
         // init the position value
@@ -394,7 +442,7 @@ public class CmsJspNavElement implements Comparable<CmsJspNavElement> {
      */
     public boolean isFolderLink() {
 
-        return m_resource.endsWith("/");
+        return m_sitePath.endsWith("/");
     }
 
     /**
@@ -414,7 +462,7 @@ public class CmsJspNavElement implements Comparable<CmsJspNavElement> {
             // use "lazy initializing"
             Object o1 = m_properties.get(CmsPropertyDefinition.PROPERTY_NAVTEXT);
             Object o2 = m_properties.get(CmsPropertyDefinition.PROPERTY_NAVPOS);
-            m_hasNav = Boolean.valueOf(((o1 != null) || (o2 != null)) && !CmsResource.isTemporaryFileName(m_resource));
+            m_hasNav = Boolean.valueOf(((o1 != null) || (o2 != null)) && !CmsResource.isTemporaryFileName(m_sitePath));
         }
         return m_hasNav.booleanValue();
     }
@@ -428,5 +476,15 @@ public class CmsJspNavElement implements Comparable<CmsJspNavElement> {
     public void setNavPosition(float value) {
 
         m_position = value;
+    }
+
+    /**
+     * Sets the resource.<p>
+     *
+     * @param resource the resource to set
+     */
+    protected void setResource(CmsResource resource) {
+
+        m_resource = resource;
     }
 }
