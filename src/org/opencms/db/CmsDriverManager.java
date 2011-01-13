@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2010/11/30 09:33:53 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2011/01/13 08:56:53 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -6774,6 +6774,21 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
 
         return pathList;
+    }
+
+    /**
+     * Reads the parent folder to a given structure id.<p>
+     * 
+     * @param dbc the current database context
+     * @param structureId the structure id of the child
+     * 
+     * @return the parent folder resource
+     * 
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    public CmsResource readParentFolder(CmsDbContext dbc, CmsUUID structureId) throws CmsDataAccessException {
+
+        return getVfsDriver(dbc).readParentFolder(dbc, dbc.currentProject().getUuid(), structureId);
     }
 
     /**

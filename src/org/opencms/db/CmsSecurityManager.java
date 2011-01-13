@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2010/11/30 09:33:53 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2011/01/13 08:56:53 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -2838,6 +2838,51 @@ public final class CmsSecurityManager {
 
     /**
      * Creates a new resource with the provided content and properties.<p>
+     * An exception is thrown if a resource with the given name already exists.<p> 
+     * 
+     * @param context the current request context
+     * @param resourcePath the name of the resource to create (full path)
+     * @param resource the new resource to create
+     * @param content the content for the new resource
+     * @param properties the properties for the new resource
+    * 
+     * @return the created resource
+     * 
+     * @throws CmsVfsResourceAlreadyExistsException if a resource with the given name already exists
+     * @throws CmsVfsException if the project in the given database context is the "Online" project
+     * @throws CmsException if something goes wrong
+     */
+    public CmsResource createResource(
+        CmsRequestContext context,
+        String resourcePath,
+        CmsResource resource,
+        byte[] content,
+        List<CmsProperty> properties) throws CmsVfsResourceAlreadyExistsException, CmsVfsException, CmsException {
+
+        if (existsResource(context, resourcePath, CmsResourceFilter.IGNORE_EXPIRATION)) {
+            // check if the resource already exists by name
+            throw new CmsVfsResourceAlreadyExistsException(org.opencms.db.generic.Messages.get().container(
+                org.opencms.db.generic.Messages.ERR_RESOURCE_WITH_NAME_ALREADY_EXISTS_1,
+                resource.getRootPath()));
+        }
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        CmsResource newResource = null;
+        try {
+            checkOfflineProject(dbc);
+            newResource = m_driverManager.createResource(dbc, resourcePath, resource, content, properties, false);
+        } catch (Exception e) {
+            dbc.report(
+                null,
+                Messages.get().container(Messages.ERR_IMPORT_RESOURCE_2, context.getSitePath(resource), resourcePath),
+                e);
+        } finally {
+            dbc.clear();
+        }
+        return newResource;
+    }
+
+    /**
+     * Creates a new resource with the provided content and properties.<p>
      * 
      * The <code>content</code> parameter may be null if the resource id already exists.
      * If so, the created resource will be made a sibling of the existing resource,
@@ -4082,6 +4127,33 @@ public final class CmsSecurityManager {
             dbc.report(
                 null,
                 Messages.get().container(Messages.ERR_READ_PATH_2, dbc.currentProject().getName(), path),
+                e);
+        } finally {
+            dbc.clear();
+        }
+        return result;
+    }
+
+    /**
+     * Returns the parent folder to the given structure id.<p>
+     * 
+     * @param context the current request context
+     * @param structureId the child structure id
+     * 
+     * @return the parent folder <code>{@link CmsResource}</code>
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public CmsResource readParentFolder(CmsRequestContext context, CmsUUID structureId) throws CmsException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        CmsResource result = null;
+        try {
+            result = m_driverManager.readParentFolder(dbc, structureId);
+        } catch (Exception e) {
+            dbc.report(
+                null,
+                Messages.get().container(Messages.ERR_READ_PARENT_FOLDER_2, dbc.currentProject().getName(), structureId),
                 e);
         } finally {
             dbc.clear();

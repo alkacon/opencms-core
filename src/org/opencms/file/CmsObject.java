@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2010/12/17 08:45:30 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2011/01/13 08:56:53 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -98,7 +98,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 6.0.0 
  */
@@ -1133,9 +1133,14 @@ public final class CmsObject {
         boolean includeOtherOus,
         String remoteAddress) throws CmsException {
 
-        return m_securityManager.getGroupsOfUser(m_context, username, (includeOtherOus
-        ? ""
-        : CmsOrganizationalUnit.getParentFqn(username)), includeOtherOus, false, directGroupsOnly, remoteAddress);
+        return m_securityManager.getGroupsOfUser(
+            m_context,
+            username,
+            (includeOtherOus ? "" : CmsOrganizationalUnit.getParentFqn(username)),
+            includeOtherOus,
+            false,
+            directGroupsOnly,
+            remoteAddress);
     }
 
     /**
@@ -1566,6 +1571,37 @@ public final class CmsObject {
     }
 
     /**
+     * Creates a resource with the given properties and content.
+     * Will throw an exception, if a resource with the given name already exists.<p>
+     *
+     * @param sitePath the site path for the resource
+     * @param resource the resource object to be imported
+     * @param content the content of the resource
+     * @param properties the properties of the resource
+     * 
+     * @return the imported resource
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public CmsResource createResource(
+        String sitePath,
+        CmsResource resource,
+        byte[] content,
+        List<CmsProperty> properties) throws CmsException {
+
+        resource.setUserLastModified(getRequestContext().currentUser().getId());
+        resource.setDateLastModified(System.currentTimeMillis());
+        // ensure resource record is updated
+        resource.setState(CmsResource.STATE_NEW);
+        return m_securityManager.createResource(
+            m_context,
+            m_context.addSiteRoot(sitePath),
+            resource,
+            content,
+            properties);
+    }
+
+    /**
      * Imports a resource to the OpenCms VFS.<p>
      * 
      * If a resource already exists in the VFS (i.e. has the same name and 
@@ -1687,6 +1723,20 @@ public final class CmsObject {
      *
      * This will be an exclusive, persistent lock that is removed only if the user unlocks it.<p>
      *
+     * @param resource the resource to lock
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void lockResource(CmsResource resource) throws CmsException {
+
+        getResourceType(resource).lockResource(this, m_securityManager, resource, CmsLockType.EXCLUSIVE);
+    }
+
+    /**
+     * Locks a resource.<p>
+     *
+     * This will be an exclusive, persistent lock that is removed only if the user unlocks it.<p>
+     *
      * @param resourcename the name of the resource to lock (full current site relative path)
      * 
      * @throws CmsException if something goes wrong
@@ -1694,6 +1744,23 @@ public final class CmsObject {
     public void lockResource(String resourcename) throws CmsException {
 
         lockResource(resourcename, CmsLockType.EXCLUSIVE);
+    }
+
+    /**
+     * Locks a resource temporary.<p>
+     *
+     * This will be an exclusive, temporary lock valid only for the current users session.
+     * Usually this should not be used directly, this method is intended for the OpenCms workplace only.<p>
+     *
+     * @param resource the resource to lock
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see CmsObject#lockResource(String)
+     */
+    public void lockResourceTemporary(CmsResource resource) throws CmsException {
+
+        getResourceType(resource).lockResource(this, m_securityManager, resource, CmsLockType.TEMPORARY);
     }
 
     /**
@@ -1886,6 +1953,27 @@ public final class CmsObject {
     public CmsFolder readAncestor(String resourcename, int type) throws CmsException {
 
         return readAncestor(resourcename, CmsResourceFilter.requireType(type));
+    }
+
+    /**
+     * Returns the default resource for the given folder.<p>
+     * <ol>
+     *   <li>the {@link CmsPropertyDefinition#PROPERTY_DEFAULT_FILE} is checked, and
+     *   <li>if still no file could be found, the configured default files in the 
+     *       <code>opencms-vfs.xml</code> configuration are iterated until a match is 
+     *       found, and
+     *   <li>if still no file could be found, <code>null</code> is returned
+     * </ol>
+     * 
+     * @param folderResource the folder
+     * 
+     * @return the default file for the given folder
+     * 
+     * @throws CmsSecurityException  if the user has no permissions to read the resulting file
+     */
+    public CmsResource readDefaultFile(CmsResource folderResource) throws CmsSecurityException {
+
+        return m_securityManager.readDefaultFile(m_context, folderResource);
     }
 
     /**
@@ -2241,6 +2329,20 @@ public final class CmsObject {
     public CmsUser readOwner(CmsProject project) throws CmsException {
 
         return m_securityManager.readOwner(m_context, project);
+    }
+
+    /**
+     * Returns the parent folder to the given structure id.<p>
+     * 
+     * @param structureId the child structure id
+     * 
+     * @return the parent folder <code>{@link CmsResource}</code>
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public CmsResource readParentFolder(CmsUUID structureId) throws CmsException {
+
+        return m_securityManager.readParentFolder(m_context, structureId);
     }
 
     /**
@@ -3164,6 +3266,18 @@ public final class CmsObject {
     public void unlockResource(String resourcename) throws CmsException {
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
+        getResourceType(resource).unlockResource(this, m_securityManager, resource);
+    }
+
+    /**
+     * Unlocks a resource.<p>
+     * 
+     * @param resource the resource to unlock
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void unlockResource(CmsResource resource) throws CmsException {
+
         getResourceType(resource).unlockResource(this, m_securityManager, resource);
     }
 
