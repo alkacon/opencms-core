@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsInputImageBundle.java,v $
- * Date   : $Date: 2010/11/29 10:33:35 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/01/14 13:46:57 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import com.google.gwt.resources.client.ImageResource.RepeatStyle;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 8.0.0
  */
@@ -56,7 +56,7 @@ public interface I_CmsInputImageBundle extends ClientBundle {
      * 
      * @return an image resource
      */
-    @Source("images/ui-bg_glass_75_cccccc_1x400.png")
+    @Source("images/backgrounds/hoverState.png")
     @ImageOptions(repeatStyle = RepeatStyle.Both)
     ImageResource backgroundDark();
 
@@ -65,7 +65,7 @@ public interface I_CmsInputImageBundle extends ClientBundle {
      * 
      * @return an image resource
      */
-    @Source("images/ui-bg_glass_75_e6e6e6_1x400.png")
+    @Source("images/backgrounds/standard.png")
     @ImageOptions(repeatStyle = RepeatStyle.Both)
     ImageResource backgroundLight();
 
@@ -124,22 +124,6 @@ public interface I_CmsInputImageBundle extends ClientBundle {
      */
     @Source("images/ocms_de_editor_a.png")
     ImageResource linkEdit();
-
-    /**
-     * Image resource accessor.<p>
-     * 
-     * @return an image resource
-     */
-    @Source("images/minus.png")
-    ImageResource minus();
-
-    /**
-     * Image resource accessor.<p>
-     * 
-     * @return an image resource
-     */
-    @Source("images/plus.png")
-    ImageResource plus();
 
     /** 
      * Image resource accessor.<p>

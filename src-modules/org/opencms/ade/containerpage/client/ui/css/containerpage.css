@@ -1,6 +1,6 @@
 @external cms_ade_subcontainer, cmsState, cmsState-up, cmsState-up-hovering, cmsState-up-disabled, cmsState-down, cmsState-down-hovering, cmsState-down-disabled, gwt-TabLayoutPanel;
 
-.cmsState, .cmsHovering, .toolbarAdd, .toolbarSitemap,
+.toolbarAdd, .toolbarSitemap,
 .toolbarReset, .toolbarExit, .toolbarPublish, .toolbarClipboard, .toolbarRecent, .toolbarSave, .toolbarContext{}
 
 .menuContent{
@@ -90,7 +90,7 @@ ul.clipboardList{
 }
 
 @sprite .toolbarSelection .optionBar.cmsHovering{
-	gwt-image: "backgroundSoft";
+	gwt-image: "backgrounds.softStandard";
 	height: auto;
 	-moz-border-radius: 2px;
 	border: 1px solid value("constants.css.borderColor");
@@ -115,7 +115,7 @@ ul.clipboardList{
 }
 
 @sprite .subcontainerOverlay{
-	gwt-image: 'overlayImage';
+	gwt-image: 'otherImages.placeholderOverlayTrans';
 	position: fixed;
 	top: 0;
 	left: 0;
@@ -158,79 +158,79 @@ ul.clipboardList{
 }
 
 @sprite .optionBar .cmsState-up-hovering .toolbarClipboard, .optionBar .cmsState-down-hovering .toolbarClipboard, .optionBar .cmsState-down .toolbarClipboard{
-    gwt-image: "addFavoriteIconActive";
+    gwt-image: "images.addFavoriteIconActive";
 }
 @sprite .optionBar .cmsState-up .toolbarClipboard{
-    gwt-image: "addFavoriteIconInactive";
+    gwt-image: "images.addFavoriteIconInactive";
 }
 
 @sprite .optionBar .cmsState-up-disabled .toolbarClipboard, .optionBar .cmsState-down-disabled .toolbarClipboard{
-    gwt-image: "addFavoriteIconDeactivated";
+    gwt-image: "images.addFavoriteIconDeactivated";
 }
 
 @sprite .optionBar .cmsState-up-hovering .toolbarRemove, .optionBar .cmsState-down-hovering .toolbarRemove, .optionBar .cmsState-down .toolbarRemove{
-    gwt-image: "deleteIconActive";
+    gwt-image: "images.deleteIconActive";
 }
 @sprite .optionBar .cmsState-up .toolbarRemove{
-    gwt-image: "deleteIconInactive";
+    gwt-image: "images.deleteIconInactive";
 }
 
 @sprite .optionBar .cmsState-up-disabled .toolbarRemove, .optionBar .cmsState-down-disabled .toolbarRemove{
-    gwt-image: "deleteIconDeactivated";
+    gwt-image: "images.deleteIconDeactivated";
 }
 
 @sprite .optionBar .cmsState-up-hovering .toolbarEdit, .optionBar .cmsState-down-hovering .toolbarEdit, .optionBar .cmsState-down .toolbarEdit{
-    gwt-image: "editorIconActive";
+    gwt-image: "images.editorIconActive";
 }
 @sprite .optionBar .cmsState-up .toolbarEdit{
-    gwt-image: "editorIconInactive";
+    gwt-image: "images.editorIconInactive";
 }
 
 @sprite .optionBar .cmsState-up-disabled .toolbarEdit, .optionBar .cmsState-down-disabled .toolbarEdit{
-    gwt-image: "editorIconDeactivated";
+    gwt-image: "images.editorIconDeactivated";
 }
 
 @sprite .optionBar .cmsState-up-hovering .toolbarMove, .optionBar .cmsState-down-hovering .toolbarMove, .optionBar .cmsState-down .toolbarMove{
-    gwt-image: "moveIconActive";
+    gwt-image: "images.moveIconActive";
 }
 @sprite .optionBar .cmsState-up .toolbarMove{
-    gwt-image: "moveIconInactive";
+    gwt-image: "images.moveIconInactive";
 }
 
 @sprite .optionBar .cmsState-up-disabled .toolbarMove, .optionBar .cmsState-down-disabled .toolbarMove{
-    gwt-image: "moveIconDeactivated";
+    gwt-image: "images.moveIconDeactivated";
 }
 
 @sprite .optionBar .cmsState-up-hovering .toolbarNew, .optionBar .cmsState-down-hovering .toolbarNew, .optionBar .cmsState-down .toolbarNew{
-    gwt-image: "newIconActive";
+    gwt-image: "images.newIconActive";
 }
 @sprite .optionBar .cmsState-up .toolbarNew{
-    gwt-image: "newIconInactive";
+    gwt-image: "images.newIconInactive";
 }
 
 @sprite .optionBar .cmsState-up-disabled .toolbarNew, .optionBar .cmsState-down-disabled .toolbarNew{
-    gwt-image: "newIconDeactivated";
+    gwt-image: "images.newIconDeactivated";
 }
 
 @sprite .optionBar .cmsState-up-hovering .toolbarProperties, .optionBar .cmsState-down-hovering .toolbarProperties, .optionBar .cmsState-down .toolbarProperties{
-    gwt-image: "propertyIconActive";
+    gwt-image: "images.propertyIconActive";
 }
 @sprite .optionBar .cmsState-up .toolbarProperties{
-    gwt-image: "propertyIconInactive";
+    gwt-image: "images.propertyIconInactive";
 }
 
 @sprite .optionBar .cmsState-up-disabled .toolbarProperties, .optionBar .cmsState-down-disabled .toolbarProperties{
-    gwt-image: "propertyIconDeactivated";
+    gwt-image: "images.propertyIconDeactivated";
 }
 
 
 @sprite .optionBar .cmsState-up-hovering .toolbarSelection, .optionBar .cmsState-down-hovering .toolbarSelection, .optionBar .cmsState-down .toolbarSelection{
-    gwt-image: "selectionIconActive";
+    gwt-image: "images.selectionIconActive";
 }
 @sprite .optionBar .cmsState-up .toolbarSelection{
-    gwt-image: "selectionIconInactive";
+    gwt-image: "images.selectionIconInactive";
 }
 
 @sprite .optionBar .cmsState-up-disabled .toolbarSelection, .optionBar .cmsState-down-disabled .toolbarSelection{
-    gwt-image: "selectionIconDeactivated";
+    gwt-image: "images.selectionIconDeactivated";
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/tree/Attic/CmsTreeItem.java,v $
- * Date   : $Date: 2010/11/18 15:30:14 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2011/01/14 13:47:46 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,9 +37,9 @@ import org.opencms.gwt.client.dnd.I_CmsDropTarget;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsToggleButton;
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsListTreeCss;
+import org.opencms.gwt.client.ui.css.I_CmsOtherImageBundle;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsSlideAnimation;
@@ -74,7 +74,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Georg Westenberger
  * @author Michael Moossen
  * 
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.28 $ 
  * 
  * @since 8.0.0
  */
@@ -779,7 +779,7 @@ public class CmsTreeItem extends CmsListItem {
      */
     protected Image getMinusImage() {
 
-        return new Image(I_CmsImageBundle.INSTANCE.minus());
+        return new Image(I_CmsOtherImageBundle.INSTANCE.minus());
     }
 
     /**
@@ -789,7 +789,7 @@ public class CmsTreeItem extends CmsListItem {
      */
     protected Image getPlusImage() {
 
-        return new Image(I_CmsImageBundle.INSTANCE.plus());
+        return new Image(I_CmsOtherImageBundle.INSTANCE.plus());
     }
 
     /**

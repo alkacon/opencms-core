@@ -37,11 +37,11 @@
 }
 
 @sprite .plus {
-	gwt-image: "plus";
+	gwt-image: "otherImages.plus";
 }
 
 @sprite .minus {
-	gwt-image: "minus";
+	gwt-image: "otherImages.minus";
 }
 
 

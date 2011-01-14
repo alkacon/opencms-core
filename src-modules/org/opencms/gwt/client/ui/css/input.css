@@ -281,13 +281,13 @@
 }
 
 @sprite .formRowOpenerClosed {
-	gwt-image: "images.plus"
+	gwt-image: "otherImages.plus"
 }
 
 
 
 @sprite .formRowOpenerOpen {
-	gwt-image: "images.minus"; 
+	gwt-image: "otherImages.minus"; 
 }
 
 @def fieldOpenerWidth 32px ; 

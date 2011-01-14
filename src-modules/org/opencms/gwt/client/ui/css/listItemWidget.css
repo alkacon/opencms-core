@@ -45,46 +45,40 @@
 
 
 @sprite .itemContent {
-    gwt-image: "backgroundDefault";
+    gwt-image: "backgrounds.standard";
     background-position: 50% 50%;
     height: auto;
 	position: relative;
 }
 
 @sprite .itemActive > .itemContent {
-    gwt-image: "backgroundHover";
+    gwt-image: "backgrounds.hoverState";
     background-position: 50% 50%;
     height: auto;
 }
 
 @sprite .disabledItem > .itemContent {
-	gwt-image: "backgroundDisabled";
+	gwt-image: "backgrounds.disabledState";
     background-position: 50% 50%;
     height: auto;
 }
 
 @sprite .itemBlue > .itemContent {
-    gwt-image: "backgroundBlue";
+    gwt-image: "backgrounds.newState";
     background-position: 50% 50%;
     height: auto;
 }
 
 @sprite .itemRed > .itemContent {
-    gwt-image: "backgroundRed";
+    gwt-image: "backgrounds.changedState";
     background-position: 50% 50%;
     height: auto;
 }
 
 @sprite .itemYellow > .itemContent {
-    gwt-image: "backgroundYellow";
+    gwt-image: "backgrounds.subSitemap";
     background-position: 50% 50%;
     height: auto;
-}
-
-@sprite .itemGreen > .itemContent {
-   gwt-image: "backgroundGreen";
-   background-position: 50% 50%;
-   height: auto;
 }
 
 .itemIcon{

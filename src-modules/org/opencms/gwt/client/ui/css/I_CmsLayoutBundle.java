@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2010/12/24 15:24:02 $
- * Version: $Revision: 1.54 $
+ * Date   : $Date: 2011/01/14 13:46:57 $
+ * Version: $Revision: 1.55 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,16 +35,13 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.resources.client.CssResource.Shared;
-import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.resources.client.ImageResource.ImageOptions;
-import com.google.gwt.resources.client.ImageResource.RepeatStyle;
 
 /**
  * Resource bundle to access CSS and image resources.
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.54 $
+ * @version $Revision: 1.55 $
  * 
  * @since 8.0.0
  */
@@ -707,13 +704,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
-        String itemGreen();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
         String itemIcon();
 
         /** 
@@ -1315,83 +1305,16 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     /**
      * Access method.<p>
      * 
-     * @return the image resource
+     * @return the image bundle for the backgrounds
      */
-    @Source("images/ui-bg_glass_65_ffffff_1x400.png")
-    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
-    ImageResource backgroundActive();
+    I_CmsBackgroundImageBundle backgrounds();
 
     /**
      * Access method.<p>
      * 
-     * @return the image resource
+     * @return the image bundle for the borders
      */
-    @Source("images/ui-bg_glass_75_88bbff_1x400.png")
-    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
-    ImageResource backgroundBlue();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/ui-bg_glass_75_e6e6e6_1x400.png")
-    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
-    ImageResource backgroundDefault();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/ui-bg_glass_65_aaaaaa_1x400.png")
-    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
-    ImageResource backgroundDisabled();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/bgGreen.png")
-    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
-    ImageResource backgroundGreen();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/ui-bg_glass_75_cccccc_1x400.png")
-    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
-    ImageResource backgroundHover();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/ui-bg_glass_75_ff7777_1x400.png")
-    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
-    ImageResource backgroundRed();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/ui-bg_highlight-soft_75_aaaaaa_1x100.png")
-    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
-    ImageResource backgroundSoft();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/ui-bg_glass_75_ffffcc_1x400.png")
-    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
-    ImageResource backgroundYellow();
+    I_CmsBorderImageBundle borders();
 
     /**
      * Access method.<p>
@@ -1479,78 +1402,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     @Source("header.css")
     I_CmsHeaderCss headerCss();
 
-    /** 
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/ocms_de_b_blue.gif")
-    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
-    ImageResource highlightBorderBottomBlue();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/ocms_de_b.gif")
-    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
-    ImageResource highlightBorderBottomRed();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/ocms_de_l_blue.gif")
-    @ImageOptions(repeatStyle = RepeatStyle.Vertical)
-    ImageResource highlightBorderLeftBlue();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/ocms_de_l.gif")
-    @ImageOptions(repeatStyle = RepeatStyle.Vertical)
-    ImageResource highlightBorderLeftRed();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/ocms_de_r_blue.gif")
-    @ImageOptions(repeatStyle = RepeatStyle.Vertical)
-    ImageResource highlightBorderRightBlue();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/ocms_de_r.gif")
-    @ImageOptions(repeatStyle = RepeatStyle.Vertical)
-    ImageResource highlightBorderRightRed();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
-    @Source("images/ocms_de_t_blue.gif")
-    ImageResource highlightBorderTopBlue();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/ocms_de_t.gif")
-    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
-    ImageResource highlightBorderTopRed();
-
     /**
      * Access method.<p>
      * 
@@ -1558,22 +1409,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      */
     @Source("highlight.css")
     I_CmsHighlightCss highlightCss();
-
-    /** 
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/ui-icons_222222_256x240.png")
-    ImageResource iconActive();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/ui-icons_444444_256x240.png")
-    ImageResource iconDefault();
 
     /**
      * Access method.<p>
@@ -1612,26 +1447,10 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     /**
      * Access method.<p>
      * 
-     * @return the image resource
-     */
-    @Source("images/loading_big.gif")
-    ImageResource loadingBig();
-
-    /**
-     * Access method.<p>
-     * 
      * @return the menu button CSS
      */
     @Source("menuButton.css")
     I_CmsMenuButton menuButtonCss();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/minus.png")
-    ImageResource minus();
 
     /**
      * Access method.<p>
@@ -1644,19 +1463,9 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     /**
      * Access method.<p>
      * 
-     * @return the image resource
+     * @return the image bundle for the backgrounds
      */
-    @Source("images/placeholderOverlay_trans.png")
-    @ImageOptions(repeatStyle = RepeatStyle.Both)
-    ImageResource overlayImage();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource 
-     */
-    @Source("images/plus.png")
-    ImageResource plus();
+    I_CmsOtherImageBundle otherImages();
 
     /**
      * Access method.<p>

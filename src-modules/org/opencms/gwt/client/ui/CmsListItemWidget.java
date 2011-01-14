@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItemWidget.java,v $
- * Date   : $Date: 2010/12/17 08:45:29 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2011/01/14 13:47:46 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -78,7 +78,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Tobias Herrmann
  * @author Michael Moossen
  * 
- * @version $Revision: 1.37 $
+ * @version $Revision: 1.38 $
  * 
  * @since 8.0.0
  */
@@ -167,8 +167,6 @@ implements HasMouseOutHandlers, HasClickHandlers, HasMouseOverHandlers, I_CmsTru
         BLUE,
         /** Default color. */
         DEFAULT,
-        /** Color green. */
-        GREEN,
         /** Color red. */
         RED,
         /** Color yellow. */
@@ -481,9 +479,6 @@ implements HasMouseOutHandlers, HasClickHandlers, HasMouseOverHandlers, I_CmsTru
                 break;
             case YELLOW:
                 m_backgroundStyle.setValue(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().itemYellow());
-                break;
-            case GREEN:
-                m_backgroundStyle.setValue(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().itemGreen());
                 break;
             case DEFAULT:
             default:

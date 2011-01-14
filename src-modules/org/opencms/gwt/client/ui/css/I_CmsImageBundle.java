@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsImageBundle.java,v $
- * Date   : $Date: 2010/12/21 10:23:32 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2011/01/14 13:46:56 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,15 +39,13 @@ import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.resources.client.CssResource.NotStrict;
 import com.google.gwt.resources.client.CssResource.Shared;
 import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.resources.client.ImageResource.ImageOptions;
-import com.google.gwt.resources.client.ImageResource.RepeatStyle;
 
 /**
  * Resource bundle to access CSS and image resources.
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 8.0.0
  */
@@ -74,7 +72,7 @@ public interface I_CmsImageBundle extends ClientBundle {
          * @return the CSS class name
          */
         String bump();
-        
+
         /** Access method.<p>
          * 
          * @return the CSS class name
@@ -473,15 +471,6 @@ public interface I_CmsImageBundle extends ClientBundle {
     /**
      * Access method.<p>
      * 
-     * @return the image resource
-     */
-    @Source("images/ui-bg_highlight-soft_75_aaaaaa_1x100.png")
-    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
-    ImageResource backgroundSoft();
-
-    /**
-     * Access method.<p>
-     * 
      * @return the button CSS
      */
     @Source("images/bump_20x20.png")
@@ -692,14 +681,6 @@ public interface I_CmsImageBundle extends ClientBundle {
      * 
      * @return the image resource
      */
-    @Source("images/minus.png")
-    ImageResource minus();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
     @Source("images/ocms_de_move_a.png")
     ImageResource moveIconActive();
 
@@ -750,23 +731,6 @@ public interface I_CmsImageBundle extends ClientBundle {
      */
     @Source("images/opencms_logo_16.png")
     ImageResource opencmsLogo();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/placeholderOverlay_trans.png")
-    @ImageOptions(repeatStyle = RepeatStyle.Both)
-    ImageResource overlayImage();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/plus.png")
-    ImageResource plus();
 
     /**
      * Access method.<p>
