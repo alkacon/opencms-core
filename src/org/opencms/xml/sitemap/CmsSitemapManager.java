@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2010/12/17 08:45:29 $
- * Version: $Revision: 1.69 $
+ * Date   : $Date: 2011/01/14 12:03:22 $
+ * Version: $Revision: 1.70 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -86,7 +86,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.69 $
+ * @version $Revision: 1.70 $
  * 
  * @since 7.9.2
  */
@@ -444,6 +444,26 @@ public class CmsSitemapManager {
         }
         return entry.getSitePath(cms);
 
+    }
+
+    /**
+     * The resource to copy for a new sitemap entry page.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param sitemapUri the sitemap URI
+     *  
+     * @return the copy resource
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public CmsResource getCopyPage(CmsObject cms, String sitemapUri) throws CmsException {
+
+        CmsADEDefaultConfiguration conf = new CmsADEDefaultConfiguration(
+            CmsPropertyDefinition.PROPERTY_ADE_SITEMAP_CONFIG);
+        CmsConfigurationParser configParser = conf.getConfigurationParser(cms, sitemapUri);
+        Map<String, CmsConfigurationItem> typeConfig = configParser.getTypeConfiguration();
+        CmsConfigurationItem item = typeConfig.get(CmsResourceTypeXmlContainerPage.getStaticTypeName());
+        return item.getSourceFile();
     }
 
     /**
