@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapChangeEdit.java,v $
- * Date   : $Date: 2010/10/28 07:38:56 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/01/14 11:59:10 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.xml.sitemap;
 
+import org.opencms.util.CmsUUID;
 import org.opencms.xml.sitemap.properties.CmsSimplePropertyValue;
 
 import java.util.Map;
@@ -45,7 +46,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -54,11 +55,17 @@ public class CmsSitemapChangeEdit implements I_CmsSitemapChange {
     /** Serialization unique id. */
     private static final long serialVersionUID = -2505651588029718797L;
 
+    /** The entry url name. */
+    private String m_name;
+
     /** The entry's new properties. */
     private Map<String, CmsSimplePropertyValue> m_properties;
 
     /** The entry's site path. */
     private String m_sitePath;
+
+    /** The structure id. */
+    private CmsUUID m_structureId;
 
     /** The entry's new title. */
     private String m_title;
@@ -69,17 +76,23 @@ public class CmsSitemapChangeEdit implements I_CmsSitemapChange {
     /**
      * Constructor.<p>
      * 
+     * @param structureId the structure id 
+     * @param name entry url name
      * @param sitePath the entry's site path
      * @param title the entry's new title
      * @param vfsPath the entry's new VFS path
      * @param properties the entry's new properties
      */
     public CmsSitemapChangeEdit(
+        CmsUUID structureId,
+        String name,
         String sitePath,
         String title,
         String vfsPath,
         Map<String, CmsSimplePropertyValue> properties) {
 
+        m_structureId = structureId;
+        m_name = name;
         m_sitePath = sitePath;
         m_title = title;
         m_vfsPath = vfsPath;
@@ -92,6 +105,16 @@ public class CmsSitemapChangeEdit implements I_CmsSitemapChange {
     protected CmsSitemapChangeEdit() {
 
         // empty
+    }
+
+    /**
+     * Returns the entry url name.<p>
+     *
+     * @return the entry url name
+     */
+    public String getName() {
+
+        return m_name;
     }
 
     /**
@@ -112,6 +135,14 @@ public class CmsSitemapChangeEdit implements I_CmsSitemapChange {
     public String getSitePath() {
 
         return m_sitePath;
+    }
+
+    /**
+     * @see org.opencms.xml.sitemap.I_CmsSitemapChange#getStructureId()
+     */
+    public CmsUUID getStructureId() {
+
+        return m_structureId;
     }
 
     /**

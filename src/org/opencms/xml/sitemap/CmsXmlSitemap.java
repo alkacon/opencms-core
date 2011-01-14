@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsXmlSitemap.java,v $
- * Date   : $Date: 2010/11/29 10:33:35 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2011/01/14 12:02:08 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -95,7 +95,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.43 $ 
+ * @version $Revision: 1.44 $ 
  * 
  * @since 7.5.2
  * 
@@ -392,9 +392,12 @@ public class CmsXmlSitemap extends CmsXmlContent {
                     CmsSitemapChangeNew changeNew = (CmsSitemapChangeNew)change;
                     modified.add(newEntry(cms, changeNew, req));
                     CmsSitemapChangeMove changeMoveNew = new CmsSitemapChangeMove(
+                        changeNew.getStructureId(),
                         changeNew.getSitePath(),
                         changeNew.getSitePath(),
-                        changeNew.getPosition());
+                        changeNew.getPosition(),
+                        changeNew.getName(),
+                        changeNew.getParentId());
                     moveEntry(cms, changeMoveNew);
                     break;
                 case SUBSITEMAP_NEW:
@@ -690,8 +693,10 @@ public class CmsXmlSitemap extends CmsXmlContent {
                 // create the sitemap
                 m_sitemaps.put(locale, new CmsSitemapBean(locale, entries));
             } catch (NullPointerException e) {
-                LOG.error(org.opencms.xml.content.Messages.get().getBundle().key(
-                    org.opencms.xml.content.Messages.LOG_XMLCONTENT_INIT_BOOKMARKS_0), e);
+                LOG.error(
+                    org.opencms.xml.content.Messages.get().getBundle().key(
+                        org.opencms.xml.content.Messages.LOG_XMLCONTENT_INIT_BOOKMARKS_0),
+                    e);
             }
         }
     }
@@ -791,7 +796,7 @@ public class CmsXmlSitemap extends CmsXmlContent {
             throw createEntryNotFoundException(cms, parentPath);
         }
         entryElement = parent.addElement(XmlNode.SiteEntry.name());
-        CmsUUID id = change.getId();
+        CmsUUID id = change.getStructureId();
         if (id == null) {
             id = new CmsUUID();
         }

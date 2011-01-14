@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapChangeNewSubSitemapEntry.java,v $
- * Date   : $Date: 2010/10/07 13:49:12 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/01/14 11:59:10 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import java.util.Map;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -61,24 +61,24 @@ public class CmsSitemapChangeNewSubSitemapEntry extends CmsSitemapChangeNew {
     /**
      * Constructor.<p>
      * 
+     * @param structureId the id of the new sub-sitemap entry 
      * @param sitePath the entry's site path
      * @param position the entry's position
      * @param title the entry's title
      * @param vfsPath the entry's VFS path
      * @param properties the entry's properties
      * @param entryPoint the entry point of the sitemap in which the entry should be inserted
-     * @param id the id of the new sub-sitemap entry 
      */
     public CmsSitemapChangeNewSubSitemapEntry(
+        CmsUUID structureId,
         String sitePath,
         int position,
         String title,
         String vfsPath,
         Map<String, CmsSimplePropertyValue> properties,
-        String entryPoint,
-        CmsUUID id) {
+        String entryPoint) {
 
-        super(sitePath, position, title, vfsPath, properties, id);
+        super(structureId, sitePath, position, title, vfsPath, properties);
         m_entryPoint = entryPoint;
     }
 

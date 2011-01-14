@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapChangeDelete.java,v $
- * Date   : $Date: 2010/10/28 07:38:56 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/01/14 11:59:10 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,8 @@
 
 package org.opencms.xml.sitemap;
 
+import org.opencms.util.CmsUUID;
+
 /**
  * Stores one deletion change to the sitemap.<p>
  * 
@@ -41,7 +43,7 @@ package org.opencms.xml.sitemap;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -53,13 +55,18 @@ public class CmsSitemapChangeDelete implements I_CmsSitemapChange {
     /** The deleted entry's site path . */
     private String m_sitePath;
 
+    /** The structure id. */
+    private CmsUUID m_structureId;
+
     /**
      * Constructor.<p>
      * 
+     * @param structureId the structure id
      * @param sitePath the deleted entry's site path
      */
-    public CmsSitemapChangeDelete(String sitePath) {
+    public CmsSitemapChangeDelete(CmsUUID structureId, String sitePath) {
 
+        m_structureId = structureId;
         m_sitePath = sitePath;
     }
 
@@ -79,6 +86,14 @@ public class CmsSitemapChangeDelete implements I_CmsSitemapChange {
     public String getSitePath() {
 
         return m_sitePath;
+    }
+
+    /**
+     * @see org.opencms.xml.sitemap.I_CmsSitemapChange#getStructureId()
+     */
+    public CmsUUID getStructureId() {
+
+        return m_structureId;
     }
 
     /**

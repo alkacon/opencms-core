@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapChangeNew.java,v $
- * Date   : $Date: 2010/10/28 07:38:56 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/01/14 11:59:10 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,17 +46,20 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
 public class CmsSitemapChangeNew implements I_CmsSitemapChange {
 
     /** Serialization unique id. */
-    private static final long serialVersionUID = -3407815812421655807L;
+    private static final long serialVersionUID = -3707815812421655807L;
 
-    /** The id of the new sitemap entry (may be null). */
-    private CmsUUID m_id;
+    /** The entry url name. */
+    private String m_name;
+
+    /** The parent entry id. */
+    private CmsUUID m_parentId;
 
     /** The entry's position. */
     private int m_position;
@@ -67,6 +70,9 @@ public class CmsSitemapChangeNew implements I_CmsSitemapChange {
     /** The entry's site path. */
     private String m_sitePath;
 
+    /** The id of the new sitemap entry (may be null). */
+    private CmsUUID m_structureId;
+
     /** The entry's title. */
     private String m_title;
 
@@ -76,13 +82,16 @@ public class CmsSitemapChangeNew implements I_CmsSitemapChange {
     /**
      * Constructor.<p>
      * 
+     * @param structureId the UUID of the sitemap entry 
      * @param sitePath the entry's site path
      * @param position the entry's position
      * @param title the entry's title
      * @param vfsPath the entry's VFS path
      * @param properties the entry's properties
+     * 
      */
     public CmsSitemapChangeNew(
+        CmsUUID structureId,
         String sitePath,
         int position,
         String title,
@@ -94,32 +103,39 @@ public class CmsSitemapChangeNew implements I_CmsSitemapChange {
         m_title = title;
         m_vfsPath = vfsPath;
         m_properties = properties;
+        m_structureId = structureId;
     }
 
     /**
      * Constructor.<p>
      * 
+     * @param structureId the UUID of the sitemap entry 
      * @param sitePath the entry's site path
+     * @param name the entry url name
      * @param position the entry's position
      * @param title the entry's title
      * @param vfsPath the entry's VFS path
+     * @param parentId the parent entry id
      * @param properties the entry's properties
-     * @param id the UUID of the sitemap entry 
      */
     public CmsSitemapChangeNew(
+        CmsUUID structureId,
         String sitePath,
+        String name,
         int position,
         String title,
         String vfsPath,
-        Map<String, CmsSimplePropertyValue> properties,
-        CmsUUID id) {
+        CmsUUID parentId,
+        Map<String, CmsSimplePropertyValue> properties) {
 
         m_sitePath = sitePath;
+        m_name = name;
         m_position = position;
         m_title = title;
         m_vfsPath = vfsPath;
         m_properties = properties;
-        m_id = id;
+        m_parentId = parentId;
+        m_structureId = structureId;
     }
 
     /**
@@ -131,15 +147,23 @@ public class CmsSitemapChangeNew implements I_CmsSitemapChange {
     }
 
     /**
-     * Gets the id of the new sitemap entry.<p>
-     * 
-     * If this is null, the sitemap entry will receive a freshly generated id.<p>
-     * 
-     * @return the id of the new sitemap entry 
+     * Returns the entry url name.<p>
+     *
+     * @return the entry url name
      */
-    public CmsUUID getId() {
+    public String getName() {
 
-        return m_id;
+        return m_name;
+    }
+
+    /**
+     * Returns the parent entry id.<p>
+     *
+     * @return the parent entry id
+     */
+    public CmsUUID getParentId() {
+
+        return m_parentId;
     }
 
     /**
@@ -173,6 +197,18 @@ public class CmsSitemapChangeNew implements I_CmsSitemapChange {
     }
 
     /**
+     * Gets the id of the new sitemap entry.<p>
+     * 
+     * If this is null, the sitemap entry will receive a freshly generated id.<p>
+     * 
+     * @return the id of the new sitemap entry 
+     */
+    public CmsUUID getStructureId() {
+
+        return m_structureId;
+    }
+
+    /**
      * Returns the entry's title.<p>
      *
      * @return the entry's title
@@ -201,6 +237,16 @@ public class CmsSitemapChangeNew implements I_CmsSitemapChange {
     }
 
     /**
+     * Sets the entry url name.<p>
+     *
+     * @param name the entry url name to set
+     */
+    public void setName(String name) {
+
+        m_name = name;
+    }
+
+    /**
      * @see java.lang.Object#toString()
      */
     @Override
@@ -208,5 +254,4 @@ public class CmsSitemapChangeNew implements I_CmsSitemapChange {
 
         return "NEW " + m_sitePath;
     }
-
 }

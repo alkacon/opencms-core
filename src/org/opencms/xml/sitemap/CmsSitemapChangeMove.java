@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapChangeMove.java,v $
- * Date   : $Date: 2010/10/28 07:38:56 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/01/14 11:59:10 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,8 @@
 
 package org.opencms.xml.sitemap;
 
+import org.opencms.util.CmsUUID;
+
 /**
  * Stores one move change to the sitemap.<p>
  * 
@@ -41,7 +43,7 @@ package org.opencms.xml.sitemap;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -56,21 +58,42 @@ public class CmsSitemapChangeMove implements I_CmsSitemapChange {
     /** The destination position. */
     private int m_destinationPosition;
 
+    /** The entry path name. */
+    private String m_name;
+
+    /** The parent entry id. */
+    private CmsUUID m_parentId;
+
     /** The source path. */
     private String m_sourcePath;
+
+    /** The structure id. */
+    private CmsUUID m_structureId;
 
     /**
      * Constructor.<p>
      * 
+     * @param structureId the structure id
      * @param sourcePath the source path
      * @param destinationPath the destination path
      * @param destinationPosition the destination position
+     * @param name the entry path name
+     * @param parentId the parent entry id
      */
-    public CmsSitemapChangeMove(String sourcePath, String destinationPath, int destinationPosition) {
+    public CmsSitemapChangeMove(
+        CmsUUID structureId,
+        String sourcePath,
+        String destinationPath,
+        int destinationPosition,
+        String name,
+        CmsUUID parentId) {
 
+        m_structureId = structureId;
         m_sourcePath = sourcePath;
         m_destinationPath = destinationPath;
         m_destinationPosition = destinationPosition;
+        m_name = name;
+        m_parentId = parentId;
     }
 
     /**
@@ -102,6 +125,26 @@ public class CmsSitemapChangeMove implements I_CmsSitemapChange {
     }
 
     /**
+     * Returns the entry path name.<p>
+     *
+     * @return the entry path name
+     */
+    public String getName() {
+
+        return m_name;
+    }
+
+    /**
+     * Returns the parent entry id.<p>
+     *
+     * @return the parent entry id
+     */
+    public CmsUUID getParentId() {
+
+        return m_parentId;
+    }
+
+    /**
      * Returns the source path.<p>
      *
      * @return the source path
@@ -109,6 +152,14 @@ public class CmsSitemapChangeMove implements I_CmsSitemapChange {
     public String getSourcePath() {
 
         return m_sourcePath;
+    }
+
+    /**
+     * @see org.opencms.xml.sitemap.I_CmsSitemapChange#getStructureId()
+     */
+    public CmsUUID getStructureId() {
+
+        return m_structureId;
     }
 
     /**

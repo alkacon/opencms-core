@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/I_CmsSitemapChange.java,v $
- * Date   : $Date: 2010/06/08 14:42:16 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/01/14 11:59:10 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,8 @@
 
 package org.opencms.xml.sitemap;
 
+import org.opencms.util.CmsUUID;
+
 import java.io.Serializable;
 
 /**
@@ -38,7 +40,7 @@ import java.io.Serializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -71,4 +73,11 @@ public interface I_CmsSitemapChange extends Serializable {
      * @return the change type
      */
     Type getType();
+
+    /**
+     * Returns the entry's uuid.<p>
+     * 
+     * @return the uuid
+     */
+    CmsUUID getStructureId();
 }
