@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapCompositeChange.java,v $
- * Date   : $Date: 2010/12/17 08:45:29 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/01/14 14:19:54 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,11 +34,9 @@ package org.opencms.ade.sitemap.client.model;
 import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.client.toolbar.CmsToolbarClipboardView;
-import org.opencms.xml.sitemap.I_CmsSitemapChange;
-import org.opencms.xml.sitemap.I_CmsSitemapChange.Type;
+import org.opencms.ade.sitemap.shared.CmsSitemapChange;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -46,7 +44,7 @@ import java.util.List;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -116,34 +114,6 @@ public class CmsClientSitemapCompositeChange implements I_CmsClientSitemapChange
     }
 
     /**
-     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#getChangeForUndo()
-     */
-    public I_CmsClientSitemapChange getChangeForUndo() {
-
-        return this;
-    }
-
-    /**
-     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#getChangesForCommit()
-     */
-    public List<I_CmsSitemapChange> getChangesForCommit() {
-
-        List<I_CmsSitemapChange> result = new ArrayList<I_CmsSitemapChange>();
-        for (I_CmsClientSitemapChange change : m_changes) {
-            result.addAll(change.getChangesForCommit());
-        }
-        return result;
-    }
-
-    /**
-     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#getType()
-     */
-    public Type getType() {
-
-        return null; // not needed
-    }
-
-    /**
      * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#isChangingDetailPages()
      */
     public boolean isChangingDetailPages() {
@@ -157,17 +127,19 @@ public class CmsClientSitemapCompositeChange implements I_CmsClientSitemapChange
     }
 
     /**
-     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#revert()
+     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#getChangeForCommit()
      */
-    public I_CmsClientSitemapChange revert() {
+    public CmsSitemapChange getChangeForCommit() {
 
-        List<I_CmsClientSitemapChange> reverseChanges = new ArrayList<I_CmsClientSitemapChange>(m_changes);
-        Collections.reverse(reverseChanges);
-        List<I_CmsClientSitemapChange> undoChanges = new ArrayList<I_CmsClientSitemapChange>();
-        for (I_CmsClientSitemapChange change : reverseChanges) {
-            undoChanges.add(change.revert());
+        CmsSitemapChange result = null;
+        for (I_CmsClientSitemapChange change : m_changes) {
+            if (result == null) {
+                result = change.getChangeForCommit();
+            } else {
+                result.addChangeData(change.getChangeForCommit());
+            }
         }
-        return new CmsClientSitemapCompositeChange(undoChanges);
+        return result;
     }
 
 }

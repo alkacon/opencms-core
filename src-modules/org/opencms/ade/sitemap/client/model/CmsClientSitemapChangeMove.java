@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeMove.java,v $
- * Date   : $Date: 2010/12/17 08:45:30 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2011/01/14 14:19:54 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,20 +37,16 @@ import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.client.toolbar.CmsToolbarClipboardView;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry.EditStatus;
+import org.opencms.ade.sitemap.shared.CmsSitemapChange;
 import org.opencms.file.CmsResource;
-import org.opencms.xml.sitemap.CmsSitemapChangeMove;
-import org.opencms.xml.sitemap.I_CmsSitemapChange;
-import org.opencms.xml.sitemap.I_CmsSitemapChange.Type;
-
-import java.util.Collections;
-import java.util.List;
+import org.opencms.util.CmsUUID;
 
 /**
  * Stores one move change to the sitemap.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 8.0.0
  */
@@ -58,6 +54,8 @@ public class CmsClientSitemapChangeMove implements I_CmsClientSitemapChange {
 
     /** If true, tell the view to ensure that the affected  item is visible. */
     protected boolean m_ensureVisible = true;
+
+    private CmsUUID m_destinationId;
 
     /** The destination path. */
     private String m_destinationPath;
@@ -71,9 +69,6 @@ public class CmsClientSitemapChangeMove implements I_CmsClientSitemapChange {
     /** The new edit status. */
     private EditStatus m_newStatus;
 
-    /** The original edit status. */
-    private EditStatus m_originalStatus;
-
     /** The source path. */
     private String m_sourcePath;
 
@@ -85,16 +80,21 @@ public class CmsClientSitemapChangeMove implements I_CmsClientSitemapChange {
      * 
      * @param entry the entry to change
      * @param destinationPath the destination path
+     * @param destinationId the id of the new parent
      * @param destinationPosition the destination position
      */
-    public CmsClientSitemapChangeMove(CmsClientSitemapEntry entry, String destinationPath, int destinationPosition) {
+    public CmsClientSitemapChangeMove(
+        CmsClientSitemapEntry entry,
+        String destinationPath,
+        CmsUUID destinationId,
+        int destinationPosition) {
 
         m_entry = entry;
         m_sourcePath = m_entry.getSitePath();
+        m_destinationId = destinationId;
         m_destinationPath = destinationPath;
         m_sourcePosition = m_entry.getPosition();
         m_destinationPosition = destinationPosition;
-        m_originalStatus = entry.getEditStatus();
     }
 
     /**
@@ -176,22 +176,27 @@ public class CmsClientSitemapChangeMove implements I_CmsClientSitemapChange {
     }
 
     /**
-     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#getChangeForUndo()
+     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#getChangeForCommit()
      */
-    public I_CmsClientSitemapChange getChangeForUndo() {
+    public CmsSitemapChange getChangeForCommit() {
 
-        return this;
+        CmsSitemapChange change = new CmsSitemapChange(m_entry.getId(), m_entry.getSitePath());
+        if (!m_destinationPath.equals(m_sourcePath)) {
+            change.setParentId(m_destinationId);
+            change.setName(CmsResource.getName(m_destinationPath));
+        }
+        change.setPosition(m_entry.getPosition());
+        return change;
     }
 
     /**
-     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#getChangesForCommit()
+     * Returns the id of the new parent.<p>
+     * 
+     * @return the id of the new parent
      */
-    public List<I_CmsSitemapChange> getChangesForCommit() {
+    public CmsUUID getDestinationId() {
 
-        return Collections.<I_CmsSitemapChange> singletonList(new CmsSitemapChangeMove(
-            getSourcePath(),
-            getDestinationPath(),
-            getDestinationPosition()));
+        return m_destinationId;
     }
 
     /**
@@ -235,32 +240,11 @@ public class CmsClientSitemapChangeMove implements I_CmsClientSitemapChange {
     }
 
     /**
-     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#getType()
-     */
-    public Type getType() {
-
-        return Type.MOVE;
-    }
-
-    /**
      * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#isChangingDetailPages()
      */
     public boolean isChangingDetailPages() {
 
         return false; // id stays the same when moving, so there's no need for updating detail page information  
-    }
-
-    /**
-     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#revert()
-     */
-    public I_CmsClientSitemapChange revert() {
-
-        CmsClientSitemapChangeMove result = new CmsClientSitemapChangeMove(
-            getEntry(),
-            getSourcePath(),
-            getSourcePosition(),
-            m_originalStatus);
-        return result;
     }
 
     /**

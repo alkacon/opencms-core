@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/rpc/Attic/I_CmsSitemapServiceAsync.java,v $
- * Date   : $Date: 2010/12/17 08:45:30 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2011/01/14 14:19:55 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,9 +33,10 @@ package org.opencms.ade.sitemap.shared.rpc;
 
 import org.opencms.ade.sitemap.shared.CmsBrokenLinkData;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
+import org.opencms.ade.sitemap.shared.CmsSitemapChange;
+import org.opencms.ade.sitemap.shared.CmsSitemapClipboardData;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.ade.sitemap.shared.CmsSitemapMergeInfo;
-import org.opencms.ade.sitemap.shared.CmsSitemapSaveData;
 import org.opencms.ade.sitemap.shared.CmsSubSitemapInfo;
 import org.opencms.util.CmsUUID;
 
@@ -49,11 +50,11 @@ import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 8.0.0
  * 
- * @see org.opencms.ade.sitemap.CmsSitemapService
+ * @see org.opencms.ade.sitemap.CmsVfsSitemapService
  * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService
  * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapServiceAsync
  */
@@ -111,49 +112,49 @@ public interface I_CmsSitemapServiceAsync {
     /**
      * Saves the changes to the given sitemap.<p>
      * 
-     * @param sitemapUri the sitemap URI
-     * @param saveData the sitemap data to save  
+     * @param sitemapUri the sitemap URI 
+     * @param changes the changes to save
+     * @param clipboardData the modified clipboard data, or <code>null</code> if it has not been modified
      * @param callback the async callback
      */
-    void save(String sitemapUri, CmsSitemapSaveData saveData, AsyncCallback<Long> callback);
+    void save(
+        String sitemapUri,
+        List<CmsSitemapChange> changes,
+        CmsSitemapClipboardData clipboardData,
+        AsyncCallback<Boolean> callback);
 
     /**
      * Saves a list of changes to a sitemap and then creates a sub-sitemap of the given sitemap starting from a path.<p>
      * 
-     * @param sitemapUri the URI of the parent sitemap
-     * @param saveData the sitemap data to save 
+     * @param sitemapUri the URI of the parent sitemap 
      * @param path the path in the parent sitemap from which the sub-sitemap should be created
      * @param callback the async callback  
      */
-    void saveAndCreateSubSitemap(
-        String sitemapUri,
-        CmsSitemapSaveData saveData,
-        String path,
-        AsyncCallback<CmsSubSitemapInfo> callback);
+    void createSubSitemap(String sitemapUri, String path, AsyncCallback<CmsSubSitemapInfo> callback);
 
     /**
      * Saves the current sitemap and merges one of its sub-sitemaps into it.<p>
      * 
      * @param sitemapUri the super sitemap URI
-     * @param saveData the sitemap data to save
      * @param path the path at which the sub-sitemap should be merged into the parent sitemap 
      * 
      * @param callback the async callback
      */
-    void saveAndMergeSubSitemap(
-        String sitemapUri,
-        CmsSitemapSaveData saveData,
-        String path,
-        AsyncCallback<CmsSitemapMergeInfo> callback);
+    void mergeSubSitemap(String sitemapUri, String path, AsyncCallback<CmsSitemapMergeInfo> callback);
 
     /**
      * Saves the changes to the given sitemap.<p>
      * 
-     * @param sitemapUri the sitemap URI
-     * @param saveData the sitemap data to save 
+     * @param sitemapUri the sitemap URI 
+     * @param changes the changes to save
+     * @param clipboardData the modified clipboard data, or <code>null</code> if it has not been modified
      * @param callback the async callback
      */
     @SynchronizedRpcRequest
-    void saveSync(String sitemapUri, CmsSitemapSaveData saveData, AsyncCallback<Long> callback);
+    void saveSync(
+        String sitemapUri,
+        List<CmsSitemapChange> changes,
+        CmsSitemapClipboardData clipboardData,
+        AsyncCallback<Boolean> callback);
 
 }

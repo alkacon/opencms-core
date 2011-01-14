@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsSitemapActionElement.java,v $
- * Date   : $Date: 2010/09/08 08:34:01 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/01/14 14:19:55 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,14 +35,8 @@ import org.opencms.ade.galleries.CmsGalleryActionElement;
 import org.opencms.ade.publish.CmsPublishActionElement;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService;
-import org.opencms.file.history.CmsHistoryResourceHandler;
-import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.CmsGwtActionElement;
 import org.opencms.gwt.CmsRpcException;
-import org.opencms.xml.sitemap.CmsXmlSitemap;
-import org.opencms.xml.sitemap.CmsXmlSitemapFactory;
-
-import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -55,7 +49,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -74,24 +68,6 @@ public class CmsSitemapActionElement extends CmsGwtActionElement {
     public CmsSitemapActionElement(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         super(context, req, res);
-    }
-
-    /**
-     * Checks whether the current request has a version parameter, and if so, dumps the raw XML 
-     * to the response.<p>
-     * 
-     * @return true if the raw XML has been dumped 
-     * @throws IOException if writing to the response fails  
-     */
-    public boolean dumpXml() throws IOException {
-
-        if (!hasVersion()) {
-            return false;
-        }
-        CmsFlexController.getController(getRequest()).getTopResponse().setContentType("text/plain");
-        CmsXmlSitemap sitemap = (CmsXmlSitemap)(getRequest().getAttribute(CmsXmlSitemapFactory.ATTRIBUTE_XML_SITEMAP));
-        getResponse().getWriter().print(sitemap.toString());
-        return true;
     }
 
     /**
@@ -132,7 +108,7 @@ public class CmsSitemapActionElement extends CmsGwtActionElement {
 
         if (m_sitemapData == null) {
             try {
-                m_sitemapData = CmsSitemapService.newInstance(getRequest()).prefetch(getCoreData().getUri());
+                m_sitemapData = CmsVfsSitemapService.newInstance(getRequest()).prefetch(getCoreData().getUri());
             } catch (CmsRpcException e) {
                 // ignore, should never happen, and it is already logged
             }
@@ -148,15 +124,5 @@ public class CmsSitemapActionElement extends CmsGwtActionElement {
     public String getTitle() {
 
         return Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_EDITOR_TITLE_1, getCoreData().getUri());
-    }
-
-    /**
-     * Checks if the current request has a version parameter.<p>
-     * 
-     * @return true if the current request has a version parameter 
-     */
-    private boolean hasVersion() {
-
-        return CmsHistoryResourceHandler.isHistoryRequest(getRequest());
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsClientSitemapEntry.java,v $
- * Date   : $Date: 2010/12/17 08:45:29 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2011/01/14 14:19:55 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * 
  * @since 8.0.0
  */
@@ -83,11 +83,17 @@ public class CmsClientSitemapEntry implements IsSerializable {
     /** The current edit status. */
     private EditStatus m_editStatus = EditStatus.normal;
 
+    /** Indicates if the entry folder is locked by another user. */
+    private boolean m_hasForeignFolderLock;
+
     /** The entry id. */
     private CmsUUID m_id;
 
     /** The map of inherited properties. */
     private Map<String, CmsComputedPropertyValue> m_inheritedProperties;
+
+    /** The lock of the entry resource. */
+    private CmsClientLock m_lock;
 
     /** The entry name. */
     private String m_name;
@@ -143,6 +149,7 @@ public class CmsClientSitemapEntry implements IsSerializable {
         setVfsPath(clone.getVfsPath());
         setPosition(clone.getPosition());
         setEditStatus(clone.getEditStatus());
+        setLock(clone.getLock());
     }
 
     /**
@@ -211,6 +218,16 @@ public class CmsClientSitemapEntry implements IsSerializable {
     public Map<String, CmsComputedPropertyValue> getInheritedProperties() {
 
         return m_inheritedProperties;
+    }
+
+    /**
+     * Returns the lock of the entry resource.<p>
+     *
+     * @return the lock of the entry resource
+     */
+    public CmsClientLock getLock() {
+
+        return m_lock;
     }
 
     /**
@@ -393,6 +410,16 @@ public class CmsClientSitemapEntry implements IsSerializable {
     }
 
     /**
+     * Returns if the entry folder is locked by another user.<p>
+     *
+     * @return <code>true</code> if the entry folder is locked by another user
+     */
+    public boolean hasForeignFolderLock() {
+
+        return m_hasForeignFolderLock;
+    }
+
+    /**
      * Returns the "new" flag of the sitemap entry.<p>
      * 
      * @return the "new" flag
@@ -456,6 +483,16 @@ public class CmsClientSitemapEntry implements IsSerializable {
     }
 
     /**
+     * Sets if the entry folder is locked by another user.<p>
+     *
+     * @param hasForeignFolderLock set <code>true</code> if the entry folder is locked by another user
+     */
+    public void setHasForeignFolderLock(boolean hasForeignFolderLock) {
+
+        m_hasForeignFolderLock = hasForeignFolderLock;
+    }
+
+    /**
      * Sets the id.<p>
      *
      * @param id the id to set
@@ -473,6 +510,16 @@ public class CmsClientSitemapEntry implements IsSerializable {
     public void setInheritedProperties(Map<String, CmsComputedPropertyValue> inheritedProperties) {
 
         m_inheritedProperties = inheritedProperties;
+    }
+
+    /**
+     * Sets the lock of the entry resource.<p>
+     *
+     * @param lock the lock of the entry resource to set
+     */
+    public void setLock(CmsClientLock lock) {
+
+        m_lock = lock;
     }
 
     /**

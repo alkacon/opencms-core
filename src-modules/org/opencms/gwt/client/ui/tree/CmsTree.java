@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/tree/Attic/CmsTree.java,v $
- * Date   : $Date: 2010/11/29 08:29:20 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2011/01/14 14:19:55 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import com.google.gwt.user.client.ui.HasAnimation;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 8.0.0
  */
@@ -334,7 +334,7 @@ public class CmsTree<I extends CmsTreeItem> extends CmsList<I> implements HasOpe
             m_openTimer.cancel();
         }
         m_openTimer = new OpenTimer(item);
-        m_openTimer.schedule(300);
+        m_openTimer.schedule(150);
     }
 
     /**

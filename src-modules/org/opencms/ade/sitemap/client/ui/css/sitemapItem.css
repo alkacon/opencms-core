@@ -50,3 +50,29 @@
 	right: 100px;
 	top: 0px;
 }
+
+.lockIcon{
+    left: 15px;
+    position: absolute;
+    top: 20px;
+    z-index: 2;
+}
+
+.lockClosed, .lockSharedClosed{
+	background: red;
+	height: 10px;
+	width: 10px;
+}
+
+.lockOpen{
+	background: green;
+	height: 10px;
+	width: 10px;
+}
+
+.lockSharedOpen{
+	background: lightgreen;
+	height: 10px;
+	width: 10px;
+}
+

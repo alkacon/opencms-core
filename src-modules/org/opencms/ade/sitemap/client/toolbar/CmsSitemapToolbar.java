@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/toolbar/Attic/CmsSitemapToolbar.java,v $
- * Date   : $Date: 2010/11/18 15:31:49 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/01/14 14:19:55 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 8.0.0
  */
@@ -56,13 +56,13 @@ public class CmsSitemapToolbar extends CmsToolbar {
     public CmsSitemapToolbar(CmsSitemapController controller) {
 
         addLeft(new CmsToolbarPublishButton(this, controller));
-        addLeft(new CmsToolbarSaveButton(this, controller));
-        addLeft(new CmsToolbarUndoButton(this, controller));
-        addLeft(new CmsToolbarRedoButton(this, controller));
+        //      addLeft(new CmsToolbarSaveButton(this, controller));
+        //      addLeft(new CmsToolbarUndoButton(this, controller));
+        //      addLeft(new CmsToolbarRedoButton(this, controller));
         addLeft(new CmsToolbarGalleryButton(this, controller));
         addLeft(new CmsToolbarClipboardButton(this, controller));
 
-        addRight(new CmsToolbarResetButton(this, controller));
+        //      addRight(new CmsToolbarResetButton(this, controller));
     }
 
     /**

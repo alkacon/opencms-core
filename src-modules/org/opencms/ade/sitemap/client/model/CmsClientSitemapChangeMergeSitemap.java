@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeMergeSitemap.java,v $
- * Date   : $Date: 2010/12/17 08:45:30 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/01/14 14:19:54 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,19 +36,16 @@ import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.client.control.CmsSitemapLoadEvent;
 import org.opencms.ade.sitemap.client.toolbar.CmsToolbarClipboardView;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
+import org.opencms.ade.sitemap.shared.CmsSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsSitemapMergeInfo;
 import org.opencms.xml.sitemap.CmsSitemapManager;
-import org.opencms.xml.sitemap.I_CmsSitemapChange;
-import org.opencms.xml.sitemap.I_CmsSitemapChange.Type;
-
-import java.util.List;
 
 /**
  * This class represents the change of merging a sub-sitemap back into a parent sitemap.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -114,30 +111,6 @@ public class CmsClientSitemapChangeMergeSitemap implements I_CmsClientSitemapCha
     }
 
     /**
-     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#getChangeForUndo()
-     */
-    public I_CmsClientSitemapChange getChangeForUndo() {
-
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#getChangesForCommit()
-     */
-    public List<I_CmsSitemapChange> getChangesForCommit() {
-
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#getType()
-     */
-    public Type getType() {
-
-        throw new UnsupportedOperationException();
-    }
-
-    /**
      * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#isChangingDetailPages()
      */
     public boolean isChangingDetailPages() {
@@ -146,10 +119,11 @@ public class CmsClientSitemapChangeMergeSitemap implements I_CmsClientSitemapCha
     }
 
     /**
-     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#revert()
+     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#getChangeForCommit()
      */
-    public I_CmsClientSitemapChange revert() {
+    public CmsSitemapChange getChangeForCommit() {
 
+        // TODO: implement
         throw new UnsupportedOperationException();
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapTreeItem.java,v $
- * Date   : $Date: 2010/12/21 13:03:43 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2011/01/14 14:19:55 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.client.hoverbar.CmsSitemapHoverbar;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsSitemapItemCss;
+import org.opencms.ade.sitemap.shared.CmsClientLock;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.file.CmsResource;
 import org.opencms.gwt.client.CmsCoreProvider;
@@ -66,6 +67,7 @@ import java.util.Map;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -75,7 +77,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.46 $ 
+ * @version $Revision: 1.47 $ 
  * 
  * @since 8.0.0
  * 
@@ -175,6 +177,8 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
     /** The page icon. */
     private PageIcon m_pageIcon;
 
+    private HTML m_lockIcon;
+
     /**
      * Default constructor.<p>
      * 
@@ -195,7 +199,10 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
         setId(getName(entry.getSitePath()));
         updateSitePath(entry.getSitePath());
         updateSitemapReferenceStatus(entry);
-        setDropEnabled(!m_entry.getProperties().containsKey(CmsSitemapManager.Property.sitemap));
+        updateDetailPageStatus();
+        setLockIcon(entry.getLock());
+        setDropEnabled(!m_entry.getProperties().containsKey(CmsSitemapManager.Property.sitemap)
+            && !m_entry.hasForeignFolderLock());
         widget.setTitleEditable(true);
         widget.setTitleEditHandler(new I_CmsTitleEditHandler() {
 
@@ -502,15 +509,66 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
     }
 
     /**
-     * Sets the detail page description.<p>
+     * Sets the lock icon.<p>
      * 
-     * @param text the detail page text 
+     * @param lock the current item lock
      */
-    public void setDetailPageStatus(String text) {
+    public void setLockIcon(CmsClientLock lock) {
 
+        if (m_lockIcon == null) {
+            m_lockIcon = new HTML();
+            m_listItemWidget.getContentPanel().add(m_lockIcon);
+        }
+        if ((lock == null) || lock.getLockType().isUnlocked()) {
+            m_lockIcon.setStyleName(CSS.lockIcon());
+        } else {
+            if (lock.isOwnedByUser()) {
+                switch (lock.getLockType()) {
+                    case EXCLUSIVE:
+                    case INHERITED:
+                    case TEMPORARY:
+                        m_lockIcon.setStyleName(CSS.lockIcon() + " " + CSS.lockOpen());
+                        break;
+                    case SHARED_EXCLUSIVE:
+                    case SHARED_INHERITED:
+                        m_lockIcon.setStyleName(CSS.lockIcon() + " " + CSS.lockSharedOpen());
+                        break;
+                    default:
+                        // remove for all other cases
+                        m_lockIcon.setStyleName(CSS.lockIcon());
+                }
+            } else {
+                switch (lock.getLockType()) {
+                    case EXCLUSIVE:
+                    case INHERITED:
+                    case TEMPORARY:
+                        m_lockIcon.setStyleName(CSS.lockIcon() + " " + CSS.lockClosed());
+                        break;
+                    case SHARED_EXCLUSIVE:
+                    case SHARED_INHERITED:
+                        m_lockIcon.setStyleName(CSS.lockIcon() + " " + CSS.lockSharedClosed());
+                        break;
+                    default:
+                        // remove for all other cases
+                        m_lockIcon.setStyleName(CSS.lockIcon());
+                }
+            }
+            // TODO: localization
+            m_lockIcon.setTitle("Lock owned by " + lock.getLockOwner());
+        }
+    }
+
+    /**
+     * Updates the detail page description.<p>
+     */
+    public void updateDetailPageStatus() {
+
+        DetailPageMessages detailPageMessages = getDetailPageMessages(m_entry.getId());
+        m_detailPageLabelTitleGenerator.setDetailPageTitle(detailPageMessages.getTitle());
+        m_listItemWidget.updateTruncation();
         CmsLabel label = m_listItemWidget.getSubTitleSuffix();
         label.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().subtitleSuffix());
-        m_listItemWidget.setSubtitleSuffixText(text);
+        m_listItemWidget.setSubtitleSuffixText(detailPageMessages.getMessage());
     }
 
     /**
@@ -552,17 +610,17 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
         if (entry.getProperties().containsKey("sitemap")) {
             return;
         }
-        switch (entry.getEditStatus()) {
-            case edited:
-                setBackgroundColor(Background.RED);
-                break;
-            case created:
-                setBackgroundColor(Background.BLUE);
-                break;
-            case normal:
-            default:
-                setBackgroundColor(Background.DEFAULT);
-        }
+        //        switch (entry.getEditStatus()) {
+        //            case edited:
+        //                setBackgroundColor(Background.RED);
+        //                break;
+        //            case created:
+        //                setBackgroundColor(Background.BLUE);
+        //                break;
+        //            case normal:
+        //            default:
+        //                setBackgroundColor(Background.DEFAULT);
+        //        }
 
     }
 
@@ -583,11 +641,8 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
         updateSitemapReferenceStatus(entry);
         updateColor(entry);
         updateSitePath();
-
-        DetailPageMessages detailPageMessages = getDetailPageMessages(entry.getId());
-        m_detailPageLabelTitleGenerator.setDetailPageTitle(detailPageMessages.getTitle());
-        m_listItemWidget.updateTruncation();
-        setDetailPageStatus(detailPageMessages.getMessage());
+        updateDetailPageStatus();
+        setLockIcon(entry.getLock());
         setDropEnabled(!m_entry.getProperties().containsKey(CmsSitemapManager.Property.sitemap));
     }
 

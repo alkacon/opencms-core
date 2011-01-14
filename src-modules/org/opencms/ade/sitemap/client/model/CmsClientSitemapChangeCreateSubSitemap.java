@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeCreateSubSitemap.java,v $
- * Date   : $Date: 2010/12/17 08:45:30 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/01/14 14:19:54 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,10 +35,9 @@ import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.client.toolbar.CmsToolbarClipboardView;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
+import org.opencms.ade.sitemap.shared.CmsSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsSubSitemapInfo;
 import org.opencms.xml.sitemap.CmsSitemapManager;
-import org.opencms.xml.sitemap.I_CmsSitemapChange;
-import org.opencms.xml.sitemap.I_CmsSitemapChange.Type;
 import org.opencms.xml.sitemap.properties.CmsSimplePropertyValue;
 
 import java.util.ArrayList;
@@ -52,7 +51,7 @@ import java.util.List;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -122,30 +121,6 @@ public class CmsClientSitemapChangeCreateSubSitemap implements I_CmsClientSitema
     }
 
     /**
-     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#getChangeForUndo()
-     */
-    public I_CmsClientSitemapChange getChangeForUndo() {
-
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#getChangesForCommit()
-     */
-    public List<I_CmsSitemapChange> getChangesForCommit() {
-
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#getType()
-     */
-    public Type getType() {
-
-        throw new UnsupportedOperationException();
-    }
-
-    /**
      * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#isChangingDetailPages()
      */
     public boolean isChangingDetailPages() {
@@ -154,9 +129,9 @@ public class CmsClientSitemapChangeCreateSubSitemap implements I_CmsClientSitema
     }
 
     /**
-     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#revert()
+     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#getChangeForCommit()
      */
-    public I_CmsClientSitemapChange revert() {
+    public CmsSitemapChange getChangeForCommit() {
 
         throw new UnsupportedOperationException();
     }

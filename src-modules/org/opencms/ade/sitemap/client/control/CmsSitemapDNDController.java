@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapDNDController.java,v $
- * Date   : $Date: 2010/12/17 08:45:30 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2011/01/14 14:19:54 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,10 +43,10 @@ import org.opencms.ade.sitemap.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsResourceTypeInfo;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
+import org.opencms.gwt.client.dnd.CmsDNDHandler.Orientation;
 import org.opencms.gwt.client.dnd.I_CmsDNDController;
 import org.opencms.gwt.client.dnd.I_CmsDraggable;
 import org.opencms.gwt.client.dnd.I_CmsDropTarget;
-import org.opencms.gwt.client.dnd.CmsDNDHandler.Orientation;
 import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.tree.CmsTree;
 import org.opencms.gwt.client.util.CmsDebugLog;
@@ -67,7 +67,7 @@ import com.google.gwt.dom.client.Style.Unit;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 8.0.0
  */
@@ -158,14 +158,16 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
      */
     public boolean onDragStart(I_CmsDraggable draggable, I_CmsDropTarget target, CmsDNDHandler handler) {
 
-        // TODO: check if the synchronized lock action request causes lock-ups of the GUI
+        // TODO: do proper locking
 
         // cancel if page can't be locked
-        boolean cancel = !m_controller.hasChanges();
-        cancel &= !m_controller.lockForSaving();
-        if (cancel) {
-            return false;
-        }
+        //        boolean cancel = !m_controller.hasChanges();
+        //        cancel &= !CmsCoreProvider.get().lockAndCheckModification(
+        //            CmsCoreProvider.get().getUri(),
+        //            m_controller.getData().getTimestamp());
+        //        if (cancel) {
+        //            return false;
+        //        }
         handler.setOrientation(Orientation.VERTICAL);
         hideItemContent(handler.getPlaceholder());
         handler.getDragHelper().getStyle().setOpacity(0.6);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsDebugLog.java,v $
- * Date   : $Date: 2010/12/24 15:24:02 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/01/14 14:19:55 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
@@ -59,7 +59,7 @@ public final class CmsDebugLog extends Composite {
     private static CmsDebugLog m_debug;
 
     /** Global debugging flag. */
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
 
     /** The wrapped widget. */
     protected HTML m_html;

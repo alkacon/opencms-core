@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapView.java,v $
- * Date   : $Date: 2010/12/21 10:23:33 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2011/01/14 14:19:55 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,6 +46,7 @@ import org.opencms.ade.sitemap.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.db.CmsResourceState;
+import org.opencms.file.CmsResource;
 import org.opencms.gwt.client.A_CmsEntryPoint;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
@@ -74,12 +75,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Event.NativePreviewEvent;
-import com.google.gwt.user.client.Event.NativePreviewHandler;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.Window.ClosingEvent;
-import com.google.gwt.user.client.Window.ClosingHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -89,12 +84,11 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.48 $ 
+ * @version $Revision: 1.49 $ 
  * 
  * @since 8.0.0
  */
-public final class CmsSitemapView extends A_CmsEntryPoint
-implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler, ClosingHandler {
+public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
 
     /** The singleton instance. */
     private static CmsSitemapView m_instance;
@@ -438,8 +432,6 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler, ClosingHandler {
         page.remove(loadingLabel);
         page.add(m_tree);
 
-        // unload event handling
-        Window.addWindowClosingHandler(this);
         m_controller.addPropertyUpdateHandler(new CmsStatusIconUpdateHandler());
         m_controller.recomputePropertyInheritance();
         rootItem.updateSitePath();
@@ -454,36 +446,8 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler, ClosingHandler {
         }
         String openPath = m_controller.getData().getOpenPath();
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(openPath)) {
-            highlightPath(openPath);
+            highlightPath(CmsResource.getFolderPath(openPath));
         }
-        updateEntriesById(m_controller.getDetailPageTable().getAllIds());
-
-    }
-
-    /** 
-     * @see com.google.gwt.user.client.Window.ClosingHandler#onWindowClosing(com.google.gwt.user.client.Window.ClosingEvent)
-     */
-    public void onWindowClosing(ClosingEvent event) {
-
-        // deactivating toolbar buttons
-        m_toolbar.deactivateAll();
-        // unload event handling
-        if (m_controller.hasChanges()) {
-            boolean savePage = Window.confirm(Messages.get().key(Messages.GUI_CONFIRM_DIRTY_LEAVING_0));
-            if (savePage) {
-                m_controller.commit(true);
-            }
-        }
-        Event.addNativePreviewHandler(new NativePreviewHandler() {
-
-            /**
-             * @see com.google.gwt.user.client.Event.NativePreviewHandler#onPreviewNativeEvent(com.google.gwt.user.client.Event.NativePreviewEvent)
-             */
-            public void onPreviewNativeEvent(NativePreviewEvent previewEvent) {
-
-                previewEvent.cancel();
-            }
-        });
     }
 
     /**

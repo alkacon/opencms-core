@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeNew.java,v $
- * Date   : $Date: 2010/12/17 08:45:30 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2011/01/14 14:19:54 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,21 +37,18 @@ import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.client.toolbar.CmsToolbarClipboardView;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsResourceTypeInfo;
+import org.opencms.ade.sitemap.shared.CmsSitemapChange;
 import org.opencms.file.CmsResource;
+import org.opencms.util.CmsUUID;
 import org.opencms.xml.sitemap.CmsDetailPageInfo;
-import org.opencms.xml.sitemap.CmsSitemapChangeNew;
-import org.opencms.xml.sitemap.I_CmsSitemapChange;
-import org.opencms.xml.sitemap.I_CmsSitemapChange.Type;
-
-import java.util.Collections;
-import java.util.List;
+import org.opencms.xml.sitemap.CmsDetailPageTable;
 
 /**
  * Stores one addition change to the sitemap.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 8.0.0
  */
@@ -63,25 +60,19 @@ public class CmsClientSitemapChangeNew implements I_CmsClientSitemapChange {
     /** The new entry with children. */
     private CmsClientSitemapEntry m_entry;
 
-    /** Stores the entries site path at the time of the change event. */
-    private String m_eventSitePath;
-
-    /** The original insertion position. */
-    private int m_originalPosition;
-
-    /** The corresponding tree item, if available from a delete operation. */
-    private CmsSitemapTreeItem m_treeItem;
+    /** The parent entry id. */
+    private CmsUUID m_parentId;
 
     /**
      * Constructor.<p>
      * 
      * @param entry the new entry
+     * @param parentId the parent entry id
      */
-    public CmsClientSitemapChangeNew(CmsClientSitemapEntry entry) {
+    public CmsClientSitemapChangeNew(CmsClientSitemapEntry entry, CmsUUID parentId) {
 
         m_entry = entry;
-        m_originalPosition = entry.getPosition();
-        m_eventSitePath = m_entry.getSitePath();
+        m_parentId = parentId;
     }
 
     /**
@@ -139,26 +130,29 @@ public class CmsClientSitemapChangeNew implements I_CmsClientSitemapChange {
     }
 
     /**
-     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#getChangeForUndo()
+     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#getChangeForCommit()
      */
-    public I_CmsClientSitemapChange getChangeForUndo() {
+    public CmsSitemapChange getChangeForCommit() {
 
-        return this;
-    }
-
-    /**
-     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#getChangesForCommit()
-     */
-    public List<I_CmsSitemapChange> getChangesForCommit() {
-
-        // use the site path stored at the event time, as the entry may have been moved in the mean time
-        return Collections.<I_CmsSitemapChange> singletonList(new CmsSitemapChangeNew(
-            m_eventSitePath,
-            m_originalPosition,
-            m_entry.getTitle(),
-            m_entry.getVfsPath(),
-            m_entry.getProperties(),
-            m_entry.getId()));
+        CmsSitemapChange change = new CmsSitemapChange(m_entry.getId(), m_entry.getSitePath());
+        change.setNew(true);
+        change.setParentId(m_parentId);
+        change.setName(m_entry.getName());
+        change.setPosition(m_entry.getPosition());
+        change.setTitle(m_entry.getTitle());
+        change.setProperties(m_entry.getProperties());
+        if (isChangingDetailPages()) {
+            CmsDetailPageTable table = CmsSitemapView.getInstance().getController().getDetailPageTable().copy();
+            if (!table.contains(m_entry.getId())) {
+                CmsDetailPageInfo info = new CmsDetailPageInfo(
+                    m_entry.getId(),
+                    m_entry.getSitePath(),
+                    m_entry.getTypeInfo().getName());
+                table.add(info);
+            }
+            change.setDetailPageInfos(table.toList());
+        }
+        return change;
     }
 
     /** 
@@ -172,39 +166,11 @@ public class CmsClientSitemapChangeNew implements I_CmsClientSitemapChange {
     }
 
     /**
-     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#getType()
-     */
-    public Type getType() {
-
-        return Type.NEW;
-    }
-
-    /**
      * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#isChangingDetailPages()
      */
     public boolean isChangingDetailPages() {
 
         return m_entry.isDetailPage();
-    }
-
-    /**
-     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#revert()
-     */
-    public I_CmsClientSitemapChange revert() {
-
-        CmsClientSitemapChangeDelete change = new CmsClientSitemapChangeDelete(getEntry());
-        change.setTreeItem(m_treeItem);
-        return change;
-    }
-
-    /**
-     * Sets the corresponding tree item from a delete operation.<p>
-     * 
-     * @param treeItem the item to set
-     */
-    public void setTreeItem(CmsSitemapTreeItem treeItem) {
-
-        m_treeItem = treeItem;
     }
 
     /**

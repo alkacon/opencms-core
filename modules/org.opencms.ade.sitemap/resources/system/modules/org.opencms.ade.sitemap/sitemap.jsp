@@ -1,9 +1,6 @@
 <%@ page import="org.opencms.ade.sitemap.CmsSitemapActionElement" contentType="text/plain" %><%@
  taglib prefix="cms" uri="http://www.opencms.org/taglib/cms" %><%
   CmsSitemapActionElement jsp = new CmsSitemapActionElement(pageContext, request, response);
-  if (jsp.dumpXml()) {
-  	return;
-  }
 %><!DOCTYPE HTML>
 <html>
   <head>

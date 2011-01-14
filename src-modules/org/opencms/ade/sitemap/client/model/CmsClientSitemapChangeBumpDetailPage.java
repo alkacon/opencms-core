@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeBumpDetailPage.java,v $
- * Date   : $Date: 2010/12/17 08:45:30 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/01/14 14:19:54 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,20 +35,16 @@ import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.client.toolbar.CmsToolbarClipboardView;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
+import org.opencms.ade.sitemap.shared.CmsSitemapChange;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.sitemap.CmsDetailPageTable;
-import org.opencms.xml.sitemap.I_CmsSitemapChange;
-import org.opencms.xml.sitemap.I_CmsSitemapChange.Type;
-
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Change object for making a detail page the default detail page for its type.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -56,9 +52,6 @@ public class CmsClientSitemapChangeBumpDetailPage implements I_CmsClientSitemapC
 
     /** The sitemap entry affected by the change. */
     private CmsClientSitemapEntry m_entry;
-
-    /** The original detail page index. */
-    private int m_originalIndex = -1;
 
     /**
      * Creates a new change for making a detail page a default detail page.<p>
@@ -87,7 +80,7 @@ public class CmsClientSitemapChangeBumpDetailPage implements I_CmsClientSitemapC
         CmsDetailPageTable detailPageTable = controller.getData().getDetailPageTable();
         CmsUUID id = m_entry.getId();
         if (detailPageTable.contains(id)) {
-            m_originalIndex = detailPageTable.bump(id);
+            detailPageTable.bump(id);
         }
     }
 
@@ -100,30 +93,6 @@ public class CmsClientSitemapChangeBumpDetailPage implements I_CmsClientSitemapC
     }
 
     /**
-     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#getChangeForUndo()
-     */
-    public I_CmsClientSitemapChange getChangeForUndo() {
-
-        return this;
-    }
-
-    /**
-     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#getChangesForCommit()
-     */
-    public List<I_CmsSitemapChange> getChangesForCommit() {
-
-        return Collections.<I_CmsSitemapChange> emptyList();
-    }
-
-    /**
-     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#getType()
-     */
-    public Type getType() {
-
-        return null;
-    }
-
-    /**
      * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#isChangingDetailPages()
      */
     public boolean isChangingDetailPages() {
@@ -132,11 +101,15 @@ public class CmsClientSitemapChangeBumpDetailPage implements I_CmsClientSitemapC
     }
 
     /**
-     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#revert()
+     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#getChangeForCommit()
      */
-    public I_CmsClientSitemapChange revert() {
+    @Override
+    public CmsSitemapChange getChangeForCommit() {
 
-        return new CmsClientSitemapChangeUndoBumpDetailPage(m_entry, m_originalIndex);
+        CmsDetailPageTable table = CmsSitemapView.getInstance().getController().getDetailPageTable().copy();
+        table.bump(m_entry.getId());
+        CmsSitemapChange change = new CmsSitemapChange();
+        change.setDetailPageInfos(table.toList());
+        return change;
     }
-
 }

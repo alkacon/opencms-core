@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsRedirectUpdater.java,v $
- * Date   : $Date: 2010/11/29 10:33:35 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/01/14 14:19:54 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,13 +44,11 @@ import java.util.List;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
 public class CmsRedirectUpdater {
-
-    private List<CmsClientSitemapEntry> m_deletedRedirects = new ArrayList<CmsClientSitemapEntry>();
 
     /** Registered items with internal redirects. */
     private List<CmsClientSitemapEntry> m_internalRedirects = new ArrayList<CmsClientSitemapEntry>();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/tree/Attic/CmsTreeItem.java,v $
- * Date   : $Date: 2011/01/14 13:47:46 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2011/01/14 14:19:55 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Georg Westenberger
  * @author Michael Moossen
  * 
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.29 $ 
  * 
  * @since 8.0.0
  */
@@ -562,7 +562,7 @@ public class CmsTreeItem extends CmsListItem {
         if (top < height) {
             // the mouse pointer is within the widget
             int diff = x - getListItemWidget().getAbsoluteLeft();
-            if ((draggable != this) && (diff > 0) && (diff < 32)) {
+            if ((draggable != this) && isDropEnabled() && (diff > 0) && (diff < 32)) {
                 // over icon
                 getTree().setOpenTimer(this);
                 m_children.getElement().insertBefore(placeholder, m_children.getElement().getFirstChild());

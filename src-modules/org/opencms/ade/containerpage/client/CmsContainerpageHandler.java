@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageHandler.java,v $
- * Date   : $Date: 2010/12/21 10:23:33 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2011/01/14 14:19:55 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -89,7 +89,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.30 $
+ * @version $Revision: 1.31 $
  * 
  * @since 8.0.0
  */
@@ -295,7 +295,7 @@ public class CmsContainerpageHandler {
         if (sitemapUri.equals("")) {
             return; // normally, we shouldn't even get to this point because the sitemap button should be disabled  
         }
-        String target = m_controller.getData().getSitemapUri() + "?path=" + m_controller.getData().getSitePath();
+        String target = sitemapUri + "?path=" + CmsContainerpageController.getCurrentUri();
         leavePage(target);
     }
 

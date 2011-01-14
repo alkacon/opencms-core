@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsHoverbarMoveButton.java,v $
- * Date   : $Date: 2010/11/18 15:32:41 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/01/14 14:19:54 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 8.0.0
  */
@@ -80,6 +80,8 @@ public class CmsHoverbarMoveButton extends CmsPushButton implements I_CmsDragHan
                 final CmsSitemapController controller = hoverbar.getController();
                 if (controller.isRoot(m_sitePath)) {
                     disable(Messages.get().key(Messages.GUI_DISABLED_ROOT_ITEM_0));
+                } else if (controller.getEntry(m_sitePath).hasForeignFolderLock()) {
+                    disable("The entry folder is locked.");
                 } else {
                     enable();
                     m_mouseDownHandlerReg = addMouseDownHandler(CmsSitemapView.getInstance().getTree().getDnDHandler());

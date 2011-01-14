@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeDelete.java,v $
- * Date   : $Date: 2010/12/17 08:45:30 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2011/01/14 14:19:54 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,16 +36,11 @@ import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.client.toolbar.CmsToolbarClipboardView;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
+import org.opencms.ade.sitemap.shared.CmsSitemapChange;
 import org.opencms.file.CmsResource;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
-import org.opencms.xml.sitemap.CmsDetailPageInfo;
-import org.opencms.xml.sitemap.CmsDetailPageTable;
-import org.opencms.xml.sitemap.CmsSitemapChangeDelete;
-import org.opencms.xml.sitemap.I_CmsSitemapChange;
-import org.opencms.xml.sitemap.I_CmsSitemapChange.Type;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -53,14 +48,11 @@ import java.util.List;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 8.0.0
  */
 public class CmsClientSitemapChangeDelete implements I_CmsClientSitemapChange {
-
-    /** The detail page info which was deleted by this change. */
-    private CmsDetailPageInfo m_detailPageInfo;
 
     /** If true, tell the view to ensure that the affected  item is visible. */
     private boolean m_ensureVisible;
@@ -68,26 +60,8 @@ public class CmsClientSitemapChangeDelete implements I_CmsClientSitemapChange {
     /** The deleted entry with children. */
     private CmsClientSitemapEntry m_entry;
 
-    /** Stores the entries site path at the time of the change event. */
-    private String m_eventSitePath;
-
-    /** The original detail page index. */
-    private int m_originalDetailPageIndex;
-
     /** The tree item to which the change should be applied. */
     private CmsSitemapTreeItem m_treeItem;
-
-    /**
-     * Constructor.<p>
-     * 
-     * @param entry the deleted entry
-     */
-    public CmsClientSitemapChangeDelete(CmsClientSitemapEntry entry) {
-
-        m_ensureVisible = true;
-        m_entry = entry;
-        m_eventSitePath = m_entry.getSitePath();
-    }
 
     /**
      * Constructor.<p>
@@ -98,6 +72,18 @@ public class CmsClientSitemapChangeDelete implements I_CmsClientSitemapChange {
     public CmsClientSitemapChangeDelete(CmsClientSitemapEntry entry, boolean ensureVisible) {
 
         m_ensureVisible = ensureVisible;
+        m_entry = entry;
+    }
+
+    /**
+     * Constructor.<p>
+     * 
+     * @param entry the deleted entry
+     * @param parentId the parent entry id
+     */
+    public CmsClientSitemapChangeDelete(CmsClientSitemapEntry entry, CmsUUID parentId) {
+
+        m_ensureVisible = true;
         m_entry = entry;
     }
 
@@ -124,13 +110,6 @@ public class CmsClientSitemapChangeDelete implements I_CmsClientSitemapChange {
             deleted.add(0, getEntry());
         }
         removeDeletedFromModified(getEntry(), controller.getData().getClipboardData().getModifications());
-        CmsDetailPageTable detailPages = controller.getDetailPageTable();
-        CmsUUID id = getEntry().getId();
-        if (detailPages.contains(id)) {
-            m_detailPageInfo = detailPages.get(id);
-            m_originalDetailPageIndex = detailPages.remove(id);
-        }
-
     }
 
     /**
@@ -149,19 +128,14 @@ public class CmsClientSitemapChangeDelete implements I_CmsClientSitemapChange {
     }
 
     /**
-     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#getChangeForUndo()
+     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#getChangeForCommit()
      */
-    public I_CmsClientSitemapChange getChangeForUndo() {
+    public CmsSitemapChange getChangeForCommit() {
 
-        return this;
-    }
-
-    /**
-     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#getChangesForCommit()
-     */
-    public List<I_CmsSitemapChange> getChangesForCommit() {
-
-        return Collections.<I_CmsSitemapChange> singletonList(new CmsSitemapChangeDelete(m_eventSitePath));
+        CmsSitemapChange change = new CmsSitemapChange(m_entry.getId(), m_entry.getSitePath());
+        change.setDelete(true);
+        //TODO: handle detail page delete
+        return change;
     }
 
     /**
@@ -175,30 +149,11 @@ public class CmsClientSitemapChangeDelete implements I_CmsClientSitemapChange {
     }
 
     /**
-     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#getType()
-     */
-    public Type getType() {
-
-        return Type.DELETE;
-    }
-
-    /**
      * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#isChangingDetailPages()
      */
     public boolean isChangingDetailPages() {
 
         return m_entry.isDetailPage();
-    }
-
-    /**
-     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#revert()
-     */
-    public I_CmsClientSitemapChange revert() {
-
-        CmsClientSitemapChangeUndoDelete change = new CmsClientSitemapChangeUndoDelete(getEntry());
-        change.setTreeItem(m_treeItem);
-        change.setDetailPageInfo(m_detailPageInfo, m_originalDetailPageIndex);
-        return change;
     }
 
     /**
@@ -212,7 +167,7 @@ public class CmsClientSitemapChangeDelete implements I_CmsClientSitemapChange {
     }
 
     /**
-     * Removes deleted entry and all it's sub-entries from the modified list.<p>
+     * Removes delted entry and all it's sub-entries from the modified list.<p>
      * 
      * @param entry the deleted entry
      * @param modified the modified list

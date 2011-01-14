@@ -38,12 +38,6 @@
 		<include name="CmsSourcedValue.java" />
 	</source>
 	<source path="xml/sitemap" >
-		<include name="CmsSitemapChangeEdit.java" />
-		<include name="CmsSitemapChangeNew.java" />
-		<include name="CmsSitemapChangeMove.java" />
-		<include name="CmsSitemapChangeDelete.java" />
-		<include name="CmsSitemapChangeNewSubSitemapEntry.java" />
-		<include name="I_CmsSitemapChange.java" />
 		<include name="CmsDetailPageTable.java" />
 		<include name="CmsDetailPageInfo.java" />
 	</source>

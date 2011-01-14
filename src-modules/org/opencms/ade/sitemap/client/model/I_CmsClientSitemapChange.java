@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/I_CmsClientSitemapChange.java,v $
- * Date   : $Date: 2010/12/17 08:45:30 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/01/14 14:19:54 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,17 +34,14 @@ package org.opencms.ade.sitemap.client.model;
 import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.client.toolbar.CmsToolbarClipboardView;
-import org.opencms.xml.sitemap.I_CmsSitemapChange;
-import org.opencms.xml.sitemap.I_CmsSitemapChange.Type;
-
-import java.util.List;
+import org.opencms.ade.sitemap.shared.CmsSitemapChange;
 
 /**
  * Stores one change to the sitemap.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -72,25 +69,11 @@ public interface I_CmsClientSitemapChange {
     void applyToView(CmsSitemapView view);
 
     /**
-     * Returns this change for undo.<p>
-     * 
-     * @return this change for undo
-     */
-    I_CmsClientSitemapChange getChangeForUndo();
-
-    /**
      * Returns this change for commit.<p>
      * 
      * @return this change for commit
      */
-    List<I_CmsSitemapChange> getChangesForCommit();
-
-    /**
-     * Returns the change type.<p>
-     * 
-     * @return the change type
-     */
-    Type getType();
+    CmsSitemapChange getChangeForCommit();
 
     /**
      * Returns true if this change is changing the detail page configuration.<p>
@@ -98,11 +81,4 @@ public interface I_CmsClientSitemapChange {
      * @return true if this change changes the detail page configuration 
      */
     boolean isChangingDetailPages();
-
-    /**
-     * Returns the revert of this change for undoing.<p>
-     * 
-     * @return the revert change
-     */
-    I_CmsClientSitemapChange revert();
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeEdit.java,v $
- * Date   : $Date: 2010/12/17 08:45:29 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2011/01/14 14:19:54 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,19 +36,14 @@ import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.client.toolbar.CmsToolbarClipboardView;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
-import org.opencms.xml.sitemap.CmsSitemapChangeEdit;
-import org.opencms.xml.sitemap.I_CmsSitemapChange;
-import org.opencms.xml.sitemap.I_CmsSitemapChange.Type;
-
-import java.util.Collections;
-import java.util.List;
+import org.opencms.ade.sitemap.shared.CmsSitemapChange;
 
 /**
  * Stores one edition change to the sitemap.<p> 
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 8.0.0
  */
@@ -74,6 +69,7 @@ public class CmsClientSitemapChangeEdit implements I_CmsClientSitemapChange {
         m_ensureVisible = true;
         m_oldEntry = new CmsClientSitemapEntry(oldEntry);
         m_newEntry = newEntry;
+        //      m_newEntry.setLock(oldEntry.getLock());
     }
 
     /**
@@ -128,25 +124,16 @@ public class CmsClientSitemapChangeEdit implements I_CmsClientSitemapChange {
     }
 
     /**
-     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#getChangeForUndo()
+     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#getChangeForCommit()
      */
-    public I_CmsClientSitemapChange getChangeForUndo() {
+    public CmsSitemapChange getChangeForCommit() {
 
-        return this;
-    }
-
-    /**
-     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#getChangesForCommit()
-     */
-    public List<I_CmsSitemapChange> getChangesForCommit() {
-
-        // using the old entries site path, as the new entry may have been moved in the mean time
-
-        return Collections.<I_CmsSitemapChange> singletonList(new CmsSitemapChangeEdit(
-            getOldEntry().getSitePath(),
-            getNewEntry().getTitle(),
-            getNewEntry().getVfsPath(),
-            getNewEntry().getProperties()));
+        CmsSitemapChange change = new CmsSitemapChange(m_newEntry.getId(), m_newEntry.getSitePath());
+        change.setProperties(m_newEntry.getProperties());
+        if (!m_oldEntry.getTitle().equals(m_newEntry.getTitle())) {
+            change.setTitle(m_newEntry.getTitle());
+        }
+        return change;
     }
 
     /**
@@ -170,26 +157,10 @@ public class CmsClientSitemapChangeEdit implements I_CmsClientSitemapChange {
     }
 
     /**
-     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#getType()
-     */
-    public Type getType() {
-
-        return Type.EDIT;
-    }
-
-    /**
      * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#isChangingDetailPages()
      */
     public boolean isChangingDetailPages() {
 
         return false; // detail page information can not be edited directly 
-    }
-
-    /**
-     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#revert()
-     */
-    public I_CmsClientSitemapChange revert() {
-
-        return new CmsClientSitemapChangeEdit(getNewEntry(), getOldEntry());
     }
 }
