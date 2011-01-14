@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapDetailPageFinder.java,v $
- * Date   : $Date: 2010/12/17 08:45:29 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/01/14 12:01:14 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import java.util.List;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -101,7 +101,10 @@ public class CmsSitemapDetailPageFinder implements I_CmsDetailPageFinder {
         if (detailPageInfo == null) {
             return (new CmsPropertyDetailPageFinder()).getDetailPage(cms, res, linkSource);
         }
-
-        return detailPageInfo.getUri();
+        String detailPageUri = detailPageInfo.getUri();
+        if (!CmsResource.isFolder(detailPageUri)) {
+            detailPageUri = CmsResource.getFolderPath(detailPageUri);
+        }
+        return detailPageUri;
     }
 }
