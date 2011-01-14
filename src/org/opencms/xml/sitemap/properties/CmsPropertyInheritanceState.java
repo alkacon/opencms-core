@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/properties/Attic/CmsPropertyInheritanceState.java,v $
- * Date   : $Date: 2010/10/15 12:50:04 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/01/14 12:05:15 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import java.util.Set;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -129,12 +129,10 @@ public class CmsPropertyInheritanceState {
         childValue = CmsComputedPropertyValue.normalize(childValue);
 
         // compute both components of the result 
-        CmsSourcedValue newOwn = CmsSourcedValue.overrideValue(
-            parentValue.getInheritSourcedValue(),
-            childValue.getOwnSourcedValue());
         CmsSourcedValue newInherit = CmsSourcedValue.overrideValue(
             parentValue.getInheritSourcedValue(),
             childValue.getInheritSourcedValue());
+        CmsSourcedValue newOwn = CmsSourcedValue.overrideValue(newInherit, childValue.getOwnSourcedValue());
 
         if ((newOwn == null) && (newInherit == null)) {
             return null;

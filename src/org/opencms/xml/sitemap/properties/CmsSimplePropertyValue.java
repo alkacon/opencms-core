@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/properties/Attic/CmsSimplePropertyValue.java,v $
- * Date   : $Date: 2010/10/14 13:06:51 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/01/14 12:05:15 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import java.io.Serializable;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -125,6 +125,26 @@ public class CmsSimplePropertyValue implements Serializable {
     public int hashCode() {
 
         return CmsObjectUtil.computeHashCode(m_ownValue, m_inheritValue);
+    }
+
+    /**
+     * Sets the property value which will be inherited by sub-entries.<p>
+     *
+     * @param inheritValue the property value which will be inherited by sub-entries to set
+     */
+    public void setInheritValue(String inheritValue) {
+
+        m_inheritValue = inheritValue;
+    }
+
+    /**
+     * Sets the own property value for an entry.<p>
+     *
+     * @param ownValue the own property value for an entry to set
+     */
+    public void setOwnValue(String ownValue) {
+
+        m_ownValue = ownValue;
     }
 
     /**
