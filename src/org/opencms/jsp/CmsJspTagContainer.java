@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContainer.java,v $
- * Date   : $Date: 2010/11/12 10:56:23 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2011/01/14 12:03:52 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
 import org.opencms.xml.containerpage.CmsXmlSubContainer;
 import org.opencms.xml.containerpage.CmsXmlSubContainerFactory;
 import org.opencms.xml.content.CmsXmlContentProperty;
-import org.opencms.xml.sitemap.CmsSitemapEntry;
+import org.opencms.xml.sitemap.CmsDetailPageResourceHandler;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.30 $ 
+ * @version $Revision: 1.31 $ 
  * 
  * @since 7.6 
  */
@@ -262,8 +262,8 @@ public class CmsJspTagContainer extends TagSupport {
         boolean isOnline = cms.getRequestContext().currentProject().isOnlineProject();
 
         boolean isUsedAsDetailView = false;
-        CmsSitemapEntry sitemapEntry = OpenCms.getSitemapManager().getRuntimeInfo(req);
-        if (m_detailView && (sitemapEntry != null) && (sitemapEntry.getContentId() != null)) {
+        CmsUUID detailContentId = CmsDetailPageResourceHandler.getDetailId(req);
+        if (m_detailView && (detailContentId != null)) {
             isUsedAsDetailView = true;
         }
         if (container == null) {
@@ -641,12 +641,9 @@ public class CmsJspTagContainer extends TagSupport {
         String containerType = getType();
         int containerWidth = getContainerWidth();
         ServletRequest req = pageContext.getRequest();
-        CmsUUID detailId = null;
         boolean isOnline = cms.getRequestContext().currentProject().isOnlineProject();
-        CmsSitemapEntry sitemap = OpenCms.getSitemapManager().getRuntimeInfo(req);
-        if (sitemap != null) {
-            detailId = sitemap.getContentId();
-        }
+        CmsUUID detailId = CmsDetailPageResourceHandler.getDetailId(req);
+
         if (detailId != null) {
             // read detail view 
             CmsResource resUri = cms.readResource(detailId);
