@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsConfigurationParser.java,v $
- * Date   : $Date: 2010/12/17 08:45:29 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2011/01/14 11:58:36 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -76,7 +76,7 @@ import org.apache.commons.collections.Transformer;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 7.6 
  */
@@ -392,6 +392,42 @@ public class CmsConfigurationParser {
     }
 
     /**
+     * Convenience method to retrieve the sub-value of an xml-element as id.<p>
+     * 
+     * @param cms the current cms object
+     * @param field the xml-element
+     * @param fieldName the element name
+     * 
+     * @return the value or <code>null</code> if the sub element by the given name is not present
+     */
+    private CmsUUID getSubValueID(CmsObject cms, I_CmsXmlContentLocation field, String fieldName) {
+
+        I_CmsXmlContentValueLocation subValue = field.getSubValue(fieldName);
+        if (subValue != null) {
+            return subValue.asId(cms);
+        }
+        return null;
+    }
+
+    /**
+     * Convenience method to retrieve the sub-value of an xml-element as string.<p>
+     * 
+     * @param cms the current cms object
+     * @param field the xml-element
+     * @param fieldName the element name
+     * 
+     * @return the value or <code>null</code> if the sub element by the given name is not present
+     */
+    private String getSubValueString(CmsObject cms, I_CmsXmlContentLocation field, String fieldName) {
+
+        I_CmsXmlContentValueLocation subValue = field.getSubValue(fieldName);
+        if (subValue != null) {
+            return subValue.asString(cms);
+        }
+        return null;
+    }
+
+    /**
      * Parses a type configuration contained in an XML content.<p>
      * 
      * This method uses the first locale from the following list which has a corresponding
@@ -462,8 +498,11 @@ public class CmsConfigurationParser {
      */
     private CmsDetailPageInfo parseDetailPage(CmsObject cms, I_CmsXmlContentValueLocation detailPageNode) {
 
-        String type = detailPageNode.getSubValue(N_TYPE).asString(cms);
+        String type = getSubValueString(cms, detailPageNode, N_TYPE);
         I_CmsXmlContentValueLocation target = detailPageNode.getSubValue(N_PAGE);
+        if ((target == null) || (type == null)) {
+            return null;
+        }
         CmsUUID targetId = target.asId(null);
         String targetPath = cms.getRequestContext().addSiteRoot(target.asString(cms));
         CmsDetailPageInfo result = new CmsDetailPageInfo(targetId, targetPath, type);
@@ -498,19 +537,19 @@ public class CmsConfigurationParser {
      */
     private void parseField(CmsObject cms, I_CmsXmlContentLocation field, Locale locale) {
 
-        String name = field.getSubValue("Name").asString(cms);
-        String type = field.getSubValue("Type").asString(cms);
-        String widget = field.getSubValue("Widget").asString(cms);
-        String widgetConfig = field.getSubValue("WidgetConfig").asString(cms);
+        String name = getSubValueString(cms, field, "Name");
+        String type = getSubValueString(cms, field, "Type");
+        String widget = getSubValueString(cms, field, "Widget");
+        String widgetConfig = getSubValueString(cms, field, "WidgetConfig");
 
-        String ruleRegex = field.getSubValue("RuleRegex").asString(cms);
-        String ruleType = field.getSubValue("RuleType").asString(cms);
-        String default1 = field.getSubValue("Default").asString(cms);
-        String error = field.getSubValue("Error").asString(cms);
-        String niceName = field.getSubValue("NiceName").asString(cms);
-        String description = field.getSubValue("Description").asString(cms);
-        String advanced = field.getSubValue("Advanced").asString(cms);
-        String selectInherit = field.getSubValue("SelectInherit").asString(cms);
+        String ruleRegex = getSubValueString(cms, field, "RuleRegex");
+        String ruleType = getSubValueString(cms, field, "RuleType");
+        String default1 = getSubValueString(cms, field, "Default");
+        String error = getSubValueString(cms, field, "Error");
+        String niceName = getSubValueString(cms, field, "NiceName");
+        String description = getSubValueString(cms, field, "Description");
+        String advanced = getSubValueString(cms, field, "Advanced");
+        String selectInherit = getSubValueString(cms, field, "SelectInherit");
         CmsXmlContentProperty prop = new CmsXmlContentProperty(
             name,
             type,
@@ -538,18 +577,18 @@ public class CmsConfigurationParser {
      */
     private void parseType(CmsObject cms, I_CmsXmlContentLocation xmlType, Locale locale) throws CmsException {
 
-        CmsUUID source = xmlType.getSubValue(N_SOURCE).asId(cms);
-        CmsUUID folder = xmlType.getSubValue(CmsXmlUtils.concatXpath(N_DESTINATION, N_FOLDER)).asId(cms);
-        String pattern = xmlType.getSubValue(CmsXmlUtils.concatXpath(N_DESTINATION, N_PATTERN)).asString(cms);
+        CmsUUID source = getSubValueID(cms, xmlType, N_SOURCE);
+        CmsUUID folder = getSubValueID(cms, xmlType, CmsXmlUtils.concatXpath(N_DESTINATION, N_FOLDER));
+        String pattern = getSubValueString(cms, xmlType, CmsXmlUtils.concatXpath(N_DESTINATION, N_PATTERN));
         CmsResource resource = cms.readResource(source);
         String type = getTypeName(resource.getTypeId());
         CmsConfigurationItem configItem = new CmsConfigurationItem(resource, cms.readResource(folder), pattern);
         List<I_CmsXmlContentValueLocation> fmtValues = xmlType.getSubValues(N_FORMATTER);
         List<CmsFormatterConfigBean> formatterConfigBeans = new ArrayList<CmsFormatterConfigBean>();
         for (I_CmsXmlContentValueLocation fmtValue : fmtValues) {
-            String jsp = fmtValue.getSubValue(N_JSP).asString(cms);
-            String width = fmtValue.getSubValue(N_WIDTH).asString(cms);
-            String fmtType = fmtValue.getSubValue(N_TYPE).asString(cms);
+            String jsp = getSubValueString(cms, fmtValue, N_JSP);
+            String width = getSubValueString(cms, fmtValue, N_WIDTH);
+            String fmtType = getSubValueString(cms, fmtValue, N_TYPE);
             formatterConfigBeans.add(new CmsFormatterConfigBean(jsp, fmtType, width));
         }
         if (!formatterConfigBeans.isEmpty()) {

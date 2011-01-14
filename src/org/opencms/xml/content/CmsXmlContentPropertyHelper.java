@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentPropertyHelper.java,v $
- * Date   : $Date: 2010/10/18 12:19:33 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2011/01/14 11:58:36 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -79,7 +79,7 @@ import org.dom4j.Element;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 7.9.2
  */
@@ -497,9 +497,9 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
                 result.put(entry.getKey(), entry.getValue());
             } catch (JSONException e) {
                 // should never happen
-                LOG.error(Messages.get().container(
-                    Messages.ERR_XMLCONTENT_UNKNOWN_ELEM_PATH_SCHEMA_1,
-                    widgetConfiguration), e);
+                LOG.error(
+                    Messages.get().container(Messages.ERR_XMLCONTENT_UNKNOWN_ELEM_PATH_SCHEMA_1, widgetConfiguration),
+                    e);
             }
         }
         return result;
@@ -557,7 +557,6 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
      * 
      * @return the read property map
      * 
-     * @see org.opencms.xml.sitemap.CmsXmlSitemap.XmlNode#SiteEntry
      * @see org.opencms.xml.containerpage.CmsXmlContainerPage.XmlNode#Elements
      */
     public static Map<String, String> readProperties(
@@ -576,9 +575,9 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
 
             // property itself
             int propIndex = CmsXmlUtils.getXpathIndexInt(property.getUniquePath(element));
-            String propPath = CmsXmlUtils.concatXpath(elemPath, CmsXmlUtils.createXpathElement(
-                property.getName(),
-                propIndex));
+            String propPath = CmsXmlUtils.concatXpath(
+                elemPath,
+                CmsXmlUtils.createXpathElement(property.getName(), propIndex));
             I_CmsXmlSchemaType propSchemaType = elemDef.getSchemaType(property.getName());
             I_CmsXmlContentValue propValue = propSchemaType.createValue(xmlContent, property, locale);
             xmlContent.addBookmarkForValue(propValue, propPath, locale, true);
@@ -595,9 +594,9 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
                 continue;
             }
             int valueIndex = CmsXmlUtils.getXpathIndexInt(value.getUniquePath(property));
-            String valuePath = CmsXmlUtils.concatXpath(propPath, CmsXmlUtils.createXpathElement(
-                value.getName(),
-                valueIndex));
+            String valuePath = CmsXmlUtils.concatXpath(
+                propPath,
+                CmsXmlUtils.createXpathElement(value.getName(), valueIndex));
             I_CmsXmlSchemaType valueSchemaType = propDef.getSchemaType(value.getName());
             I_CmsXmlContentValue valueValue = valueSchemaType.createValue(xmlContent, value, locale);
             xmlContent.addBookmarkForValue(valueValue, valuePath, locale, true);
@@ -617,9 +616,9 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
                     continue;
                 }
                 int valueFileListIndex = CmsXmlUtils.getXpathIndexInt(valueFileList.getUniquePath(value));
-                String valueFileListPath = CmsXmlUtils.concatXpath(valuePath, CmsXmlUtils.createXpathElement(
-                    valueFileList.getName(),
-                    valueFileListIndex));
+                String valueFileListPath = CmsXmlUtils.concatXpath(
+                    valuePath,
+                    CmsXmlUtils.createXpathElement(valueFileList.getName(), valueFileListIndex));
                 I_CmsXmlSchemaType valueFileListSchemaType = valueDef.getSchemaType(valueFileList.getName());
                 I_CmsXmlContentValue valueFileListValue = valueFileListSchemaType.createValue(
                     xmlContent,

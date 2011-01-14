@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentValueLocation.java,v $
- * Date   : $Date: 2010/12/17 08:45:29 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/01/14 11:58:36 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import java.util.Locale;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -63,6 +63,9 @@ public class CmsXmlContentValueLocation implements I_CmsXmlContentValueLocation 
      */
     public CmsXmlContentValueLocation(I_CmsXmlContentValue value) {
 
+        if (value == null) {
+            throw new UnsupportedOperationException("Can't create content value location with a null value.");
+        }
         m_value = value;
     }
 
@@ -108,7 +111,10 @@ public class CmsXmlContentValueLocation implements I_CmsXmlContentValueLocation 
         I_CmsXmlContentValue subValue = m_value.getDocument().getValue(
             CmsXmlUtils.concatXpath(m_value.getPath(), subPath),
             locale);
-        return new CmsXmlContentValueLocation(subValue);
+        if (subValue != null) {
+            return new CmsXmlContentValueLocation(subValue);
+        }
+        return null;
     }
 
     /**
@@ -122,7 +128,9 @@ public class CmsXmlContentValueLocation implements I_CmsXmlContentValueLocation 
             CmsXmlUtils.concatXpath(m_value.getPath(), subPath),
             locale);
         for (I_CmsXmlContentValue subValue : subValues) {
-            result.add(new CmsXmlContentValueLocation(subValue));
+            if (subValue != null) {
+                result.add(new CmsXmlContentValueLocation(subValue));
+            }
         }
         return result;
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentRootLocation.java,v $
- * Date   : $Date: 2010/12/17 08:45:29 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/01/14 11:58:36 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import java.util.Locale;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -103,7 +103,9 @@ public class CmsXmlContentRootLocation implements I_CmsXmlContentLocation {
         List<I_CmsXmlContentValue> values = m_document.getValues(subPath, m_locale);
         List<I_CmsXmlContentValueLocation> result = new ArrayList<I_CmsXmlContentValueLocation>();
         for (I_CmsXmlContentValue value : values) {
-            result.add(new CmsXmlContentValueLocation(value));
+            if (value != null) {
+                result.add(new CmsXmlContentValueLocation(value));
+            }
         }
         return result;
     }
