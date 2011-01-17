@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/ui/css/Attic/button.css,v $
- * Date   : $Date: 2010/11/18 15:32:41 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/01/17 16:16:09 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,7 +34,7 @@
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -58,96 +58,62 @@
 }
 
 @sprite .cmsState-up-hovering .hoverbarContext, .context .hoverbarContext{
-    gwt-image: "hoverbarContext";
+    gwt-image: "bigIcons.contextMenuBigIconActive";
 }
 @sprite .cmsState-down .hoverbarContext, .cmsState-down-hovering .hoverbarContext{
-	gwt-image: "hoverbarContextDown"
+	gwt-image: "bigIcons.contextMenuDownBigIcon";
 }
 @sprite .cmsState-up .hoverbarContext, .cmsState-up-disabled .hoverbarContext, .cmsState-down-disabled .hoverbarContext{
-    gwt-image: "hoverbarContextDisabled";
+    gwt-image: "bigIcons.contextMenuBigIconDeactivated";
 }
 
 
-@sprite .cmsState-up-hovering .hoverbarDelete, .cmsState-down-hovering .hoverbarDelete, .cmsState-down .hoverbarDelete, .context .hoverbarDelete{
-    gwt-image: "hoverbarDelete";
-}
-@sprite .cmsState-up .hoverbarDelete, .cmsState-up-disabled .hoverbarDelete, .cmsState-down-disabled .hoverbarDelete{
-    gwt-image: "hoverbarDeleteDisabled";
-}
 
 @sprite .cmsState-up-hovering .hoverbarParent, .cmsState-down-hovering .hoverbarParent, .cmsState-down .hoverbarParent, .context .hoverbarParent{
-    gwt-image: "hoverbarParent";
+    gwt-image: "bigIcons.gotoParentBigIconActive";
 }
 @sprite .cmsState-up .hoverbarParent, .cmsState-up-disabled .hoverbarParent, .cmsState-down-disabled .hoverbarParent{
-    gwt-image: "hoverbarParentDisabled";
+    gwt-image: "bigIcons.gotoParentBigIconDeactivated";
 }
 
 @sprite .cmsState-up-hovering .hoverbarGotoSub, .cmsState-down-hovering .hoverbarGotoSub, .cmsState-down .hoverbarGotoSub, .context .hoverbarGotoSub {
-    gwt-image: "hoverbarGotoSub";
+    gwt-image: "bigIcons.gotoSubSitemapBigIconActive";
 }
 @sprite .cmsState-up .hoverbarGotoSub, .cmsState-up-disabled .hoverbarGotoSub, .cmsState-down-disabled .hoverbarGotoSub {
-    gwt-image: "hoverbarGotoSubDisabled";
-}
-
-@sprite .cmsState-up-hovering .hoverbarEdit, .cmsState-down-hovering .hoverbarEdit, .cmsState-down .hoverbarEdit, .context .hoverbarEdit{
-    gwt-image: "hoverbarEdit";
-}
-@sprite .cmsState-up .hoverbarEdit, .cmsState-up-disabled .hoverbarEdit, .cmsState-down-disabled .hoverbarEdit{
-    gwt-image: "hoverbarEditDisabled";
-}
-
-@sprite .cmsState-up-hovering .hoverbarMergeSitemap, .cmsState-down-hovering .hoverbarMergeSitemap, .cmsState-down .hoverbarMergeSitemap, .context .hoverbarMergeSitemap {
-    gwt-image: "hoverbarMergeSitemap";
-}
-
-@sprite .cmsState-up .hoverbarMergeSitemap, .cmsState-up-disabled .hoverbarMergeSitemap, .cmsState-down-disabled .hoverbarMergeSitemap {
-    gwt-image: "hoverbarMergeSitemapDisabled";
+    gwt-image: "bigIcons.gotoBigIconDeactivated";
 }
 
 @sprite .cmsState-up-hovering .hoverbarGoto, .cmsState-down-hovering .hoverbarGoto, .cmsState-down .hoverbarGoto, .context .hoverbarGoto{
-    gwt-image: "hoverbarGoto";
+    gwt-image: "bigIcons.gotoPageBigIconActive";
 }
 @sprite .cmsState-up .hoverbarGoto, .cmsState-up-disabled .hoverbarGoto, .cmsState-down-disabled .hoverbarGoto{
-    gwt-image: "hoverbarGotoDisabled";
+    gwt-image: "bigIcons.gotoBigIconDeactivated";
 }
 
 @sprite .cmsState-up-hovering .hoverbarMove, .cmsState-down-hovering .hoverbarMove, .cmsState-down .hoverbarMove{
-    gwt-image: "hoverbarMove";
+    gwt-image: "bigIcons.moveBigIconActive";
 }
 @sprite .cmsState-up .hoverbarMove, .cmsState-up-disabled .hoverbarMove, .cmsState-down-disabled .hoverbarMove{
-    gwt-image: "hoverbarMoveDisabled";
+    gwt-image: "bigIcons.moveBigIconDeactivated";
 }
 
-@sprite .cmsState-up-hovering .hoverbarNew, .cmsState-down-hovering .hoverbarNew, .cmsState-down .hoverbarNew, .context .hoverbarNew{
-    gwt-image: "hoverbarNew";
-}
-@sprite .cmsState-up .hoverbarNew, .cmsState-up-disabled .hoverbarNew, .cmsState-down-disabled .hoverbarNew{
-    gwt-image: "hoverbarNewDisabled";
-}
-
-@sprite .cmsState-up-hovering .hoverbarSubsitemap, .cmsState-down-hovering .hoverbarSubsitemap, .cmsState-down .hoverbarSubsitemap, .context .hoverbarSubsitemap{
-    gwt-image: "hoverbarSubsitemap";
-}
-@sprite .cmsState-up .hoverbarSubsitemap, .cmsState-up-disabled .hoverbarSubsitemap, .cmsState-down-disabled .hoverbarSubsitemap{
-    gwt-image: "hoverbarSubsitemapDisabled";
-}
 
 @sprite .cmsState-up-disabled .toolbarUndo, .cmsState-down-disabled .toolbarUndo{
-	gwt-image: "toolbarUndoDisabled";
+	gwt-image: "bigIcons.undoBigIconDeactivated";
 }
 @sprite .cmsState-up .toolbarUndo{
-	gwt-image: "toolbarUndoDisabled";
+	gwt-image: "bigIcons.undoBigIconDeactivated";
 }
 @sprite .cmsState-up-hovering .toolbarUndo, .cmsState-down-hovering .toolbarUndo, .cmsState-down .toolbarUndo{
-    gwt-image: "toolbarUndo";
+    gwt-image: "bigIcons.redoBigIconActive";
 }
 
 @sprite .cmsState-up-disabled .toolbarRedo, .cmsState-down-disabled .toolbarRedo{
-	gwt-image: "toolbarRedoDisabled";
+	gwt-image: "bigIcons.redoBigIconDeactivated";
 }
 @sprite .cmsState-up .toolbarRedo{
-	gwt-image: "toolbarRedoDisabled";
+	gwt-image: "bigIcons.redoBigIconDeactivated";
 }
 @sprite .cmsState-up-hovering .toolbarRedo, .cmsState-down-hovering .toolbarRedo, .cmsState-down .toolbarRedo{
-    gwt-image: "toolbarRedo";
+    gwt-image: "bigIcons.redoBigIconActive";
 }

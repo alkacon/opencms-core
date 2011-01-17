@@ -3,7 +3,7 @@
 }
 
 @sprite .positionIndicator{
-	gwt-image: "images.positionIndicator";
+	gwt-image: "baseImages.otherImages.placeholderOverlayTrans";
 	height: 4px;
 	right: 6px;
 	left: 46px;
@@ -35,7 +35,7 @@
 
 
 @sprite .brokenLink {
-    gwt-image: "images.brokenLink";
+    gwt-image: "baseImages.bigIcons.brokenLinkBigIcon";
     margin-right: 4px;
 }
 

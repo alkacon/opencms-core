@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/client/Attic/CmsPublishGroupPanel.java,v $
- * Date   : $Date: 2010/12/21 10:23:32 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2011/01/17 16:16:09 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,7 @@ import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsSimpleListItem;
 import org.opencms.gwt.client.ui.I_CmsButton;
+import org.opencms.gwt.client.ui.css.I_CmsIconBundle;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsListItemWidgetCss;
@@ -64,7 +65,7 @@ import com.google.gwt.user.client.ui.Label;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 8.0.0
  */
@@ -164,7 +165,7 @@ public class CmsPublishGroupPanel extends Composite implements I_CmsHasSize {
 
         CmsListItemWidget itemWidget = new CmsListItemWidget(info);
         if (resourceBean.getInfo() != null) {
-            Image warningImage = new Image(I_CmsPublishLayoutBundle.INSTANCE.warning());
+            Image warningImage = new Image(I_CmsIconBundle.INSTANCE.warningIcon());
             warningImage.setTitle(resourceBean.getInfo().getValue());
             String permaVisible = I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible();
 

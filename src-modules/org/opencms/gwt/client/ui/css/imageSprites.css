@@ -2,97 +2,97 @@
 
 /**  */
 @sprite .magnifierIconActive, .cmsState-up-hovering .magnifierIcon, .cmsState-down-hovering .magnifierIcon, .cmsState-down .magnifierIcon{
-    gwt-image: "magnifierIconActive";
+    gwt-image: "bigIcons.magnifierBigIconActive";
     display: inline-block;
     vertical-align: middle;
 }
 @sprite .magnifierIconInactive, .cmsState-up .magnifierIcon, .cmsState-up-disabled .magnifierIcon, .cmsState-down-disabled .magnifierIcon{
-    gwt-image: "magnifierIconInactive";
+    gwt-image: "bigIcons.magnifierBigIconDeactivated";
     display: inline-block;
     vertical-align: middle;
 }
 
 @sprite .deleteIconActive, .cmsState-up-hovering .deleteIcon, .cmsState-down-hovering .deleteIcon, .cmsState-down .deleteIcon{
-    gwt-image: "deleteIconActive";
+    gwt-image: "icons.deleteIconActive";
     display: inline-block;
     vertical-align: middle;
 }
 @sprite .deleteIconInactive, .cmsState-up .deleteIcon{
-    gwt-image: "deleteIconInactive";
+    gwt-image: "icons.deleteIconInactive";
     display: inline-block;
     vertical-align: middle;
 }
 
 @sprite .deleteIconDeactivated, .cmsState-up-disabled .deleteIcon, .cmsState-down-disabled .deleteIcon{
-    gwt-image: "deleteIconDeactivated";
+    gwt-image: "icons.deleteIconDeactivated";
     display: inline-block;
     vertical-align: middle;
 }
 
 @sprite .editorIconActive, .cmsState-up-hovering .editorIcon, .cmsState-down-hovering .editorIcon, .cmsState-down .editorIcon{
-    gwt-image: "editorIconActive";
+    gwt-image: "icons.editorIconActive";
     display: inline-block;
     vertical-align: middle;
 }
 @sprite .editorIconInactive, .cmsState-up .editorIcon{
-    gwt-image: "editorIconInactive";
+    gwt-image: "icons.editorIconInactive";
     display: inline-block;
     vertical-align: middle;
 }
 
 @sprite .editorIconDeactivated, .cmsState-up-disabled .editorIcon, .cmsState-down-disabled .editorIcon{
-    gwt-image: "editorIconDeactivated";
+    gwt-image: "icons.editorIconDeactivated";
     display: inline-block;
     vertical-align: middle;
 }
 
 @sprite .moveIconActive, .cmsState-up-hovering .moveIcon, .cmsState-down-hovering .moveIcon, .cmsState-down .moveIcon{
-    gwt-image: "moveIconActive";
+    gwt-image: "icons.moveIconActive";
     display: inline-block;
     vertical-align: middle;
 }
 @sprite .moveIconInactive, .cmsState-up .moveIcon{
-    gwt-image: "moveIconInactive";
+    gwt-image: "icons.moveIconInactive";
     display: inline-block;
     vertical-align: middle;
 }
 
 @sprite .moveIconDeactivated, .cmsState-up-disabled .moveIcon, .cmsState-down-disabled .moveIcon{
-    gwt-image: "moveIconDeactivated";
+    gwt-image: "icons.moveIconDeactivated";
     display: inline-block;
     vertical-align: middle;
 }
 
 @sprite .newIconActive, .cmsState-up-hovering .newIcon, .cmsState-down-hovering .newIcon, .cmsState-down .newIcon{
-    gwt-image: "newIconActive";
+    gwt-image: "icons.newIconActive";
     display: inline-block;
     vertical-align: middle;
 }
 @sprite .newIconInactive, .cmsState-up .newIcon{
-    gwt-image: "newIconInactive";
+    gwt-image: "icons.newIconInactive";
     display: inline-block;
     vertical-align: middle;
 }
 
 @sprite .newIconDeactivated, .cmsState-up-disabled .newIcon, .cmsState-down-disabled .newIcon{
-    gwt-image: "newIconDeactivated";
+    gwt-image: "icons.newIconDeactivated";
     display: inline-block;
     vertical-align: middle;
 }
 
 @sprite .propertyIconActive, .cmsState-up-hovering .propertyIcon, .cmsState-down-hovering .propertyIcon, .cmsState-down .propertyIcon{
-    gwt-image: "propertyIconActive";
+    gwt-image: "icons.propertyIconActive";
     display: inline-block;
     vertical-align: middle;
 }
 @sprite .propertyIconInactive, .cmsState-up .propertyIcon{
-    gwt-image: "propertyIconInactive";
+    gwt-image: "icons.propertyIconInactive";
     display: inline-block;
     vertical-align: middle;
 }
 
 @sprite .propertyIconDeactivated, .cmsState-up-disabled .propertyIcon, .cmsState-down-disabled .propertyIcon{
-    gwt-image: "propertyIconDeactivated";
+    gwt-image: "icons.propertyIconDeactivated";
     display: inline-block;
     vertical-align: middle;
 }
@@ -100,21 +100,21 @@
 
 
 @sprite .cmsState-up-disabled .toolbarEdit, .cmsState-down-disabled .toolbarEdit{
-	gwt-image: "toolbarEditSW";
+	gwt-image: "bigIcons.editBigIconDeactivated";
 	display: inline-block;
     vertical-align: middle;
     cursor: wait;
     margin-top: 1px;
 }
 @sprite .cmsState-up .toolbarEdit{
-	gwt-image: "toolbarEditSW";
+	gwt-image: "bigIcons.editBigIconDeactivated";
 	display: inline-block;
     vertical-align: middle;
     cursor: pointer;
     margin-top: 1px;
 }
 @sprite .cmsState-up-hovering .toolbarEdit, .cmsState-down-hovering .toolbarEdit, .cmsState-down .toolbarEdit{
-    gwt-image: "toolbarEdit";
+    gwt-image: "bigIcons.editBigIconActive";
     display: inline-block;
     vertical-align: middle;
     cursor: pointer;
@@ -122,21 +122,21 @@
 }
 
 @sprite .cmsState-up-disabled .toolbarAdd, .cmsState-down-disabled .toolbarAdd{
-	gwt-image: "toolbarAddSW";
+	gwt-image: "bigIcons.addBigIconDeactivated";
 	display: inline-block;
     vertical-align: middle;
     cursor: wait;
     margin-top: 1px;
 }
 @sprite .cmsState-up .toolbarAdd{
-	gwt-image: "toolbarAddSW";
+	gwt-image: "bigIcons.addBigIconDeactivated";
 	display: inline-block;
     vertical-align: middle;
     cursor: pointer;
     margin-top: 1px;
 }
 @sprite .cmsState-up-hovering .toolbarAdd, .cmsState-down-hovering .toolbarAdd, .cmsState-down .toolbarAdd{
-    gwt-image: "toolbarAdd";
+    gwt-image: "bigIcons.addBigIconActive";
     display: inline-block;
     vertical-align: middle;
     cursor: pointer;
@@ -144,21 +144,21 @@
 }
 
 @sprite .cmsState-up-disabled .toolbarClipboard, .cmsState-down-disabled .toolbarClipboard{
-	gwt-image: "toolbarClipboardSW";
+	gwt-image: "bigIcons.favoriteBigIconDeactivated";
 	display: inline-block;
     vertical-align: middle;
     cursor: wait;
     margin-top: 1px;
 }
 @sprite .cmsState-up .toolbarClipboard{
-	gwt-image: "toolbarClipboardSW";
+	gwt-image: "bigIcons.favoriteBigIconDeactivated";
 	display: inline-block;
     vertical-align: middle;
     cursor: pointer;
     margin-top: 1px;
 }
 @sprite .cmsState-up-hovering .toolbarClipboard, .cmsState-down-hovering .toolbarClipboard, .cmsState-down .toolbarClipboard{
-    gwt-image: "toolbarClipboard";
+    gwt-image: "bigIcons.favoriteBigIconActive";
     display: inline-block;
     vertical-align: middle;
     cursor: pointer;
@@ -166,21 +166,21 @@
 }
 
 @sprite .cmsState-up-disabled .toolbarExit, .cmsState-down-disabled .toolbarExit{
-	gwt-image: "toolbarExitSW";
+	gwt-image: "bigIcons.exitBigIconDeactivated";
 	display: inline-block;
     vertical-align: middle;
     cursor: wait;
     margin-top: 1px;
 }
 @sprite .cmsState-up .toolbarExit{
-	gwt-image: "toolbarExitSW";
+	gwt-image: "bigIcons.exitBigIconDeactivated";
 	display: inline-block;
     vertical-align: middle;
     cursor: pointer;
     margin-top: 1px;
 }
 @sprite .cmsState-up-hovering .toolbarExit, .cmsState-down-hovering .toolbarExit, .cmsState-down .toolbarExit{
-    gwt-image: "toolbarExit";
+    gwt-image: "bigIcons.exitBigIconActive";
     display: inline-block;
     vertical-align: middle;
     cursor: pointer;
@@ -188,21 +188,21 @@
 }
 
 @sprite .cmsState-up-disabled .toolbarMove, .cmsState-down-disabled .toolbarMove{
-	gwt-image: "toolbarMoveSW";
+	gwt-image: "bigIcons.moveBigIconDeactivated";
 	display: inline-block;
     vertical-align: middle;
     cursor: wait;
     margin-top: 1px;
 }
 @sprite .cmsState-up .toolbarMove{
-	gwt-image: "toolbarMoveSW";
+	gwt-image: "bigIcons.moveBigIconDeactivated";
 	display: inline-block;
     vertical-align: middle;
     cursor: pointer;
     margin-top: 1px;
 }
 @sprite .cmsState-up-hovering .toolbarMove, .cmsState-down-hovering .toolbarMove, .cmsState-down .toolbarMove{
-    gwt-image: "toolbarMove";
+    gwt-image: "bigIcons.moveBigIconActive";
     display: inline-block;
     vertical-align: middle;
     cursor: pointer;
@@ -210,21 +210,21 @@
 }
 
 @sprite .cmsState-up-disabled .toolbarNew, .cmsState-down-disabled .toolbarNew{
-	gwt-image: "toolbarNewSW";
+	gwt-image: "bigIcons.newBigIconDeactivated";
 	display: inline-block;
     vertical-align: middle;
     cursor: wait;
     margin-top: 1px;
 }
 @sprite .cmsState-up .toolbarNew{
-	gwt-image: "toolbarNewSW";
+	gwt-image: "bigIcons.newBigIconDeactivated";
 	display: inline-block;
     vertical-align: middle;
     cursor: pointer;
     margin-top: 1px;
 }
 @sprite .cmsState-up-hovering .toolbarNew, .cmsState-down-hovering .toolbarNew, .cmsState-down .toolbarNew{
-    gwt-image: "toolbarNew";
+    gwt-image: "bigIcons.newBigIconActive";
     display: inline-block;
     vertical-align: middle;
     cursor: pointer;
@@ -232,21 +232,21 @@
 }
 
 @sprite .cmsState-up-disabled .toolbarProperties, .cmsState-down-disabled .toolbarProperties{
-	gwt-image: "toolbarPropertiesSW";
+	gwt-image: "bigIcons.propertyBigIconDeactivated";
 	display: inline-block;
     vertical-align: middle;
     cursor: wait;
     margin-top: 1px;
 }
 @sprite .cmsState-up .toolbarProperties{
-	gwt-image: "toolbarPropertiesSW";
+	gwt-image: "bigIcons.propertyBigIconDeactivated";
 	display: inline-block;
     vertical-align: middle;
     cursor: pointer;
     margin-top: 1px;
 }
 @sprite .cmsState-up-hovering .toolbarProperties, .cmsState-down-hovering .toolbarProperties, .cmsState-down .toolbarProperties{
-    gwt-image: "toolbarProperties";
+    gwt-image: "bigIcons.propertyBigIconActive";
     display: inline-block;
     vertical-align: middle;
     cursor: pointer;
@@ -254,65 +254,68 @@
 }
 
 @sprite .cmsState-up-disabled .toolbarPublish, .cmsState-down-disabled .toolbarPublish{
-	gwt-image: "toolbarPublishSW";
+	gwt-image: "bigIcons.publishBigIconDeactivated";
 	display: inline-block;
     vertical-align: middle;
     cursor: wait;
     margin-top: 1px;
 }
 @sprite .cmsState-up .toolbarPublish{
-	gwt-image: "toolbarPublishSW";
+	gwt-image: "bigIcons.publishBigIconDeactivated";
 	display: inline-block;
     vertical-align: middle;
     cursor: pointer;
     margin-top: 1px;
 }
 @sprite .cmsState-up-hovering .toolbarPublish, .cmsState-down-hovering .toolbarPublish, .cmsState-down .toolbarPublish{
-    gwt-image: "toolbarPublish";
+    gwt-image: "bigIcons.publishBigIconActive";
     display: inline-block;
     vertical-align: middle;
     cursor: pointer;
     margin-top: 1px;
 }
 
+/*
 @sprite .cmsState-up-disabled .toolbarRecent, .cmsState-down-disabled .toolbarRecent{
-	gwt-image: "toolbarRecentSW";
+	gwt-image: "bigIcons.recentBigIconDeactivated";
 	display: inline-block;
     vertical-align: middle;
     cursor: wait;
     margin-top: 1px;
 }
 @sprite .cmsState-up .toolbarRecent{
-	gwt-image: "toolbarRecentSW";
+	gwt-image: "bigIcons.recentBigIconDeactivated";
 	display: inline-block;
     vertical-align: middle;
     cursor: pointer;
     margin-top: 1px;
 }
 @sprite .cmsState-up-hovering .toolbarRecent, .cmsState-down-hovering .toolbarRecent, .cmsState-down .toolbarRecent{
-    gwt-image: "toolbarRecent";
+    gwt-image: "bigIcons.recentBigIconActive";
     display: inline-block;
     vertical-align: middle;
     cursor: pointer;
     margin-top: 1px;
 }
 
+*/
+
 @sprite .cmsState-up-disabled .toolbarRemove, .cmsState-down-disabled .toolbarRemove{
-	gwt-image: "toolbarRemoveSW";
+	gwt-image: "bigIcons.deleteBigIconDeactivated";
 	display: inline-block;
     vertical-align: middle;
     cursor: wait;
     margin-top: 1px;
 }
 @sprite .cmsState-up .toolbarRemove{
-	gwt-image: "toolbarRemoveSW";
+	gwt-image: "bigIcons.deleteBigIconDeactivated";
 	display: inline-block;
     vertical-align: middle;
     cursor: pointer;
     margin-top: 1px;
 }
 @sprite .cmsState-up-hovering .toolbarRemove, .cmsState-down-hovering .toolbarRemove, .cmsState-down .toolbarRemove{
-    gwt-image: "toolbarRemove";
+    gwt-image: "bigIcons.deleteBigIconActive";
     display: inline-block;
     vertical-align: middle;
     cursor: pointer;
@@ -320,21 +323,21 @@
 }
 
 @sprite .cmsState-up-disabled .toolbarSave, .cmsState-down-disabled .toolbarSave{
-	gwt-image: "toolbarSaveSW";
+	gwt-image: "bigIcons.saveBigIconDeactivated";
 	display: inline-block;
     vertical-align: middle;
     cursor: wait;
     margin-top: 1px;
 }
 @sprite .cmsState-up .toolbarSave{
-	gwt-image: "toolbarSaveSW";
+	gwt-image: "bigIcons.saveBigIconDeactivated";
 	display: inline-block;
     vertical-align: middle;
     cursor: pointer;
     margin-top: 1px;
 }
 @sprite .cmsState-up-hovering .toolbarSave, .cmsState-down-hovering .toolbarSave, .cmsState-down .toolbarSave{
-    gwt-image: "toolbarSave";
+    gwt-image: "bigIcons.saveBigIconActive";
     display: inline-block;
     vertical-align: middle;
     cursor: pointer;
@@ -342,21 +345,21 @@
 }
 
 @sprite .cmsState-up-disabled .toolbarSitemap, .cmsState-down-disabled .toolbarSitemap{
-	gwt-image: "toolbarSitemapSW";
+	gwt-image: "bigIcons.sitemapBigIconDeactivated";
 	display: inline-block;
     vertical-align: middle;
     cursor: wait;
     margin-top: 1px;
 }
 @sprite .cmsState-up .toolbarSitemap{
-	gwt-image: "toolbarSitemapSW";
+	gwt-image: "bigIcons.sitemapBigIconDeactivated";
 	display: inline-block;
     vertical-align: middle;
     cursor: pointer;
     margin-top: 1px;
 }
 @sprite .cmsState-up-hovering .toolbarSitemap, .cmsState-down-hovering .toolbarSitemap, .cmsState-down .toolbarSitemap{
-    gwt-image: "toolbarSitemap";
+    gwt-image: "bigIcons.sitemapBigIconActive";
     display: inline-block;
     vertical-align: middle;
     cursor: pointer;

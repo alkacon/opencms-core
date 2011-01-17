@@ -39,29 +39,29 @@
 }
 
 @sprite .cmsState-up-disabled .checkBoxImage {
-	gwt-image: "images.checkboxUncheckedDisabled";
+	gwt-image: "inputImages.checkboxUncheckedDisabled";
 }
 
 @sprite .linkEdit {
-	gwt-image: "images.linkEdit"; 
+	gwt-image: "baseImages.icons.editorIconActive"; 
 }
 
 
 
 @sprite .cmsState-down-disabled .checkBoxImage {
-	gwt-image: "images.checkboxCheckedDisabled";
+	gwt-image: "inputImages.checkboxCheckedDisabled";
 }
 @sprite .cmsState-up .checkBoxImage, .checkBoxImageUnchecked {
-	gwt-image: "images.checkboxUnchecked";
+	gwt-image: "inputImages.checkboxUnchecked";
 }
 @sprite .cmsState-down .checkBoxImage, .checkBoxImageChecked {
-	gwt-image: "images.checkboxChecked";
+	gwt-image: "inputImages.checkboxChecked";
 }
 @sprite .cmsState-up-hovering .checkBoxImage {
-	gwt-image: "images.checkboxUncheckedHover";
+	gwt-image: "inputImages.checkboxUncheckedHover";
 }
 @sprite .cmsState-down-hovering .checkBoxImage {
-	gwt-image: "images.checkboxCheckedHover";
+	gwt-image: "inputImages.checkboxCheckedHover";
 }
 
 
@@ -81,27 +81,27 @@
 
 
 @sprite .cmsState-up-disabled .radioButtonImage {
-	gwt-image: "images.radioUncheckedDisabled";
+	gwt-image: "inputImages.radioUncheckedDisabled";
 }
 
 @sprite .cmsState-down-disabled .radioButtonImage {
-	gwt-image: "images.radioCheckedDisabled";
+	gwt-image: "inputImages.radioCheckedDisabled";
 }
 
 @sprite .cmsState-up .radioButtonImage {
-	gwt-image: "images.radioUnchecked";
+	gwt-image: "inputImages.radioUnchecked";
 }
 
 @sprite .cmsState-down .radioButtonImage {
-	gwt-image: "images.radioChecked";
+	gwt-image: "inputImages.radioChecked";
 }
 
 @sprite .cmsState-up-hovering .radioButtonImage {
-	gwt-image: "images.radioUncheckedHover"; 
+	gwt-image: "inputImages.radioUncheckedHover"; 
 }
 
 @sprite .cmsState-down-hovering .radioButtonImage {
-	gwt-image: "images.radioCheckedHover";
+	gwt-image: "inputImages.radioCheckedHover";
 }
 	
 /* Style for edited text box */
@@ -182,7 +182,7 @@
 	width: auto; 
 	min-height: 0px;
 	border: 1px solid value("constants.css.borderColor");
-	gwt-image: "images.backgroundLight";
+	gwt-image: "background.standard";
 	background-position: 50% 50%;
 	outline: none;
 }
@@ -191,7 +191,7 @@
 	width: auto;
 	min-height: 0px;
 	border: 1px solid value("constants.css.borderColor");
-	gwt-image: "images.backgroundDark";
+	gwt-image: "background.hoverState";
 	background-position: 50% 50%;
 	outline: none;
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsInputLayoutBundle.java,v $
- * Date   : $Date: 2011/01/14 13:46:57 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/01/17 16:16:08 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import com.google.gwt.resources.client.ClientBundle;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  */
@@ -49,25 +49,25 @@ public interface I_CmsInputLayoutBundle extends ClientBundle {
     I_CmsInputLayoutBundle INSTANCE = GWT.create(I_CmsInputLayoutBundle.class);
 
     /**
+     * Image bundle accessor.<p>
+     * 
+     * @return an image bundle 
+     */
+    I_CmsBackgroundImageBundle background();
+
+    /**
+     * Image bundle accessor.<p>
+     * 
+     * @return an image bundle 
+     */
+    I_CmsImageBundle baseImages();
+
+    /**
      * The CSS constants bundle.<p>
      * 
      * @return a bundle of CSS constants 
      */
     I_CmsConstantsBundle constants();
-
-    /**
-     * Returns the image bundle for the input package.<p>
-     * 
-     * @return an image bundle
-     */
-    I_CmsInputImageBundle images();
-
-    /**
-     * Returns the other image bundle.<p>
-     * 
-     * @return an image bundle
-     */
-    I_CmsOtherImageBundle otherImages();
 
     /**
      * Accessor for css resource.<p>
@@ -76,5 +76,19 @@ public interface I_CmsInputLayoutBundle extends ClientBundle {
      */
     @Source("input.css")
     I_CmsInputCss inputCss();
+
+    /**
+     * Returns the image bundle for the input package.<p>
+     * 
+     * @return an image bundle
+     */
+    I_CmsInputImageBundle inputImages();
+
+    /**
+     * Returns the other image bundle.<p>
+     * 
+     * @return an image bundle
+     */
+    I_CmsOtherImageBundle otherImages();
 
 }

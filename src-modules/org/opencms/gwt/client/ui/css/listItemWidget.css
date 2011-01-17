@@ -22,22 +22,22 @@
 
 
 @sprite .export {
-	gwt-image: "gwtImages.iconExport"; 
+	gwt-image: "gwtImages.statusIconExport"; 
 	margin-top:  3px;
 	margin-left: 3px;
 }
 @sprite .normal {
-	gwt-image: "gwtImages.iconNormal";
+	gwt-image: "gwtImages.statusIconNormal";
 	margin-top: 3px;
 	margin-left: 3px;
 }
 @sprite .secure {
-	gwt-image: "gwtImages.iconSecure";
+	gwt-image: "gwtImages.statusIconSecure";
 	margin-top: 3px;
 	margin-left: 3px;  
 }
 @sprite .redirect { 
-	gwt-image: "gwtImages.iconRedirect";
+	gwt-image: "gwtImages.statusIconRedirect";
 	margin-top: 3px;
 	margin-left: 3px;
 }

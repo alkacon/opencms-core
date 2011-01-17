@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2011/01/14 13:46:56 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2011/01/17 16:16:09 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,7 +33,7 @@ package org.opencms.ade.containerpage.client.ui.css;
 
 import org.opencms.gwt.client.ui.css.I_CmsBackgroundImageBundle;
 import org.opencms.gwt.client.ui.css.I_CmsConstantsBundle;
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
+import org.opencms.gwt.client.ui.css.I_CmsIconBundle;
 import org.opencms.gwt.client.ui.css.I_CmsOtherImageBundle;
 
 import com.google.gwt.core.client.GWT;
@@ -46,7 +46,7 @@ import com.google.gwt.resources.client.CssResource.Shared;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 8.0.0
  */
@@ -334,7 +334,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      * 
      * @return the image bundle
      */
-    I_CmsImageBundle images();
+    I_CmsIconBundle images();
 
     /**
      * The accessor for the other images.<p>

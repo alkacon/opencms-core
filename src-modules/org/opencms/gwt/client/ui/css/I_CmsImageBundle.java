@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsImageBundle.java,v $
- * Date   : $Date: 2011/01/14 13:46:56 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2011/01/17 16:16:08 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,16 +36,16 @@ import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsContextmenuItemCss;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.resources.client.CssResource.NotStrict;
 import com.google.gwt.resources.client.CssResource.Shared;
-import com.google.gwt.resources.client.ImageResource;
 
 /**
  * Resource bundle to access CSS and image resources.
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 8.0.0
  */
@@ -59,13 +59,13 @@ public interface I_CmsImageBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
-        String availabilitySmall();
+        String availability();
 
         /** Access method.<p>
          * 
          * @return the CSS class name
          */
-        String availability();
+        String availabilitySmall();
 
         /** Access method.<p>
          * 
@@ -365,12 +365,6 @@ public interface I_CmsImageBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
-        String toolbarRecent();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
         String toolbarRemove();
 
         /** Access method.<p>
@@ -397,35 +391,11 @@ public interface I_CmsImageBundle extends ClientBundle {
     I_CmsImageBundle INSTANCE = GWT.create(I_CmsImageBundle.class);
 
     /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/ade_favorites_20x20_a.png")
-    ImageResource addFavoriteIconActive();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/ade_favorites_20x20_sw.png")
-    ImageResource addFavoriteIconDeactivated();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/ade_favorites_20x20_i.png")
-    ImageResource addFavoriteIconInactive();
-
-    /**
      * Image resource accessor.<p>
      * 
      * @return an image resource
      */
-    @Source("images/arrow-bottom.png")
+    @Source("images/arrowBottom.png")
     ImageResource arrowBottom();
 
     /**
@@ -433,7 +403,7 @@ public interface I_CmsImageBundle extends ClientBundle {
      * 
      * @return an image resource
      */
-    @Source("images/arrow-right.png")
+    @Source("images/arrowRight.png")
     ImageResource arrowRight();
 
     /**
@@ -441,48 +411,16 @@ public interface I_CmsImageBundle extends ClientBundle {
      * 
      * @return an image resource
      */
-    @Source("images/arrow-top.png")
+    @Source("images/arrowTop.png")
     ImageResource arrowTop();
 
     /**
-     * Access method.<p>
+     * Accessor for the big ícon resource bundle.<p>
      * 
-     * @return the image resource
+     * @return the big icon resource bundle 
      */
-    @Source("images/ocms_de_availability_a.png")
-    ImageResource availabilityIconActive();
 
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/icon_16x16_availability.png")
-    ImageResource availabilityIconSmall();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/ocms_de_availability_sw.png")
-    ImageResource availabilityIconDeactivated();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the button CSS
-     */
-    @Source("images/bump_20x20.png")
-    ImageResource bumpIconActive();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the button CSS
-     */
-    @Source("images/bump_disabled_20x20.png")
-    ImageResource bumpIconDeactivated();
+    I_CmsBigIconBundle bigIcons();
 
     /**
      * Access method.<p>
@@ -501,132 +439,19 @@ public interface I_CmsImageBundle extends ClientBundle {
     ImageResource croppingIcon();
 
     /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/ocms_de_delete_a.png")
-    ImageResource deleteIconActive();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/ocms_de_delete_sw.png")
-    ImageResource deleteIconDeactivated();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/ocms_de_delete_i.png")
-    ImageResource deleteIconInactive();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/ocms_de_editor_a.png")
-    ImageResource editorIconActive();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/ocms_de_editor_sw.png")
-    ImageResource editorIconDeactivated();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/ocms_de_editor_i.png")
-    ImageResource editorIconInactive();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/goto_20x20.png")
-    ImageResource gotoPageIconActive();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/goto_disabled_20x20.png")
-    ImageResource gotoPageIconDeactivated();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/parent_20x20.png")
-    ImageResource gotoParentIconActive();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/parent_disabled_20x20.png")
-    ImageResource gotoParentIconDeactivated();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/goto_sub_20x20.png")
-    ImageResource gotoSubIconActive();
-
-    /**
      * Image resource accessor.<p>
      * 
      * @return an image resource
      */
-    @Source("images/group_16x16.png")
+    @Source("images/groupSmall.png")
     ImageResource groupSmall();
 
-    /** 
-     * Access method.<p>
+    /**
+     * Accessor for the icon resource bundle.<p>
      * 
-     * @return an image resource
+     * @return the icon resource bundle
      */
-    @Source("images/export.png")
-    ImageResource iconExport();
-
-    /** 
-     * Access method.<p>
-     * 
-     * @return an image resource
-     */
-    @Source("images/normal.png")
-    ImageResource iconNormal();
-
-    /** 
-     * Access method.<p>
-     * 
-     * @return an image resource
-     */
-    @Source("images/redirect.png")
-    ImageResource iconRedirect();
-
-    /** 
-     * Access method.<p>
-     * 
-     * @return an image resource
-     */
-    @Source("images/secure.png")
-    ImageResource iconSecure();
+    I_CmsIconBundle icons();
 
     /**
      * Access method.<p>
@@ -649,119 +474,22 @@ public interface I_CmsImageBundle extends ClientBundle {
      * 
      * @return the image resource
      */
-    @Source("images/ade_add.png")
-    ImageResource magnifierIconActive();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/ade_add_sw.png")
-    ImageResource magnifierIconInactive();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/merge_sitemap_20x20.png")
-    ImageResource mergeSitemapIconActive();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/merge_sitemap_disabled_20x20.png")
-    ImageResource mergeSitemapIconDeactivated();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/ocms_de_move_a.png")
-    ImageResource moveIconActive();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/ocms_de_move_sw.png")
-    ImageResource moveIconDeactivated();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/ocms_de_move_i.png")
-    ImageResource moveIconInactive();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/ocms_de_new_a.png")
-    ImageResource newIconActive();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/ocms_de_new_sw.png")
-    ImageResource newIconDeactivated();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/ocms_de_new_i.png")
-    ImageResource newIconInactive();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/opencms_logo_16.png")
+    @Source("images/opencmsLogo.png")
     ImageResource opencmsLogo();
 
     /**
-     * Access method.<p>
+     * Accessor for the big ícon resource bundle.<p>
      * 
-     * @return the image resource
+     * @return the big icon resource bundle 
      */
-    @Source("images/ocms_de_prop_a.png")
-    ImageResource propertyIconActive();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/ocms_de_prop_sw.png")
-    ImageResource propertyIconDeactivated();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/ocms_de_prop_i.png")
-    ImageResource propertyIconInactive();
+    I_CmsOtherImageBundle otherImages();
 
     /**
      * Image resource accessor.<p>
      * 
      * @return an image resource
      */
-    @Source("images/cropremove.png")
+    @Source("images/removeCroppingIcon.png")
     ImageResource removeCroppingIcon();
 
     /**
@@ -772,29 +500,37 @@ public interface I_CmsImageBundle extends ClientBundle {
     @Source("images/reset.gif")
     ImageResource reset();
 
-    /**
+    /** 
      * Access method.<p>
      * 
-     * @return the image resource
+     * @return an image resource
      */
-    @Source("images/ocms_de_selection_a.png")
-    ImageResource selectionIconActive();
+    @Source("images/statusIconExport.png")
+    ImageResource statusIconExport();
 
-    /**
+    /** 
      * Access method.<p>
      * 
-     * @return the image resource
+     * @return an image resource
      */
-    @Source("images/ocms_de_selection_sw.png")
-    ImageResource selectionIconDeactivated();
+    @Source("images/statusIconNormal.png")
+    ImageResource statusIconNormal();
 
-    /**
+    /** 
      * Access method.<p>
      * 
-     * @return the image resource
+     * @return an image resource
      */
-    @Source("images/ocms_de_selection_i.png")
-    ImageResource selectionIconInactive();
+    @Source("images/statusIconRedirect.png")
+    ImageResource statusIconRedirect();
+
+    /** 
+     * Access method.<p>
+     * 
+     * @return an image resource
+     */
+    @Source("images/statusIconSecure.png")
+    ImageResource statusIconSecure();
 
     /**
      * Access method.<p>
@@ -810,236 +546,6 @@ public interface I_CmsImageBundle extends ClientBundle {
      * 
      * @return the image resource
      */
-    @Source("images/subsitemap_20x20.png")
-    ImageResource subSitemapIconActive();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
-    @Source("images/subsitemap_disabled_20x20.png")
-    ImageResource subSitemapIconDeactivated();
-
-    /** 
-     * Access method.<p>
-     * @return an image resource
-     */
-    @Source("images/toolbaricons/ade_add.png")
-    ImageResource toolbarAdd();
-
-    /** 
-     * Access method.<p>
-     * @return an image resource
-     */
-    @Source("images/toolbaricons/ade_add_sw.png")
-    ImageResource toolbarAddSW();
-
-    /** 
-     * Access method.<p>
-     * @return an image resource
-     */
-    @Source("images/toolbaricons/ade_favorites.png")
-    ImageResource toolbarClipboard();
-
-    /** 
-     * Access method.<p>
-     * @return an image resource
-     */
-    @Source("images/toolbaricons/ade_favorites_sw.png")
-    ImageResource toolbarClipboardSW();
-
-    /** 
-     * Access method.<p>
-     * @return an image resource
-     * 
-     * TODO: change the image
-     */
-    @Source("images/toolbaricons/ade_add.png")
-    ImageResource toolbarContext();
-
-    /** 
-     * Access method.<p>
-     * @return an image resource
-     * 
-     * TODO: change the image
-     */
-    @Source("images/toolbaricons/ade_add_sw.png")
-    ImageResource toolbarContextSW();
-
-    /** 
-     * Access method.<p>
-     * @return an image resource
-     */
-    @Source("images/toolbaricons/ade_edit.png")
-    ImageResource toolbarEdit();
-
-    /** 
-     * Access method.<p>
-     * @return an image resource
-     */
-    @Source("images/toolbaricons/ade_edit_sw.png")
-    ImageResource toolbarEditSW();
-
-    /** 
-     * Access method.<p>
-     * @return an image resource
-     */
-    @Source("images/toolbaricons/ade_exit.png")
-    ImageResource toolbarExit();
-
-    /** 
-     * Access method.<p>
-     * @return an image resource
-     */
-    @Source("images/toolbaricons/ade_exit_sw.png")
-    ImageResource toolbarExitSW();
-
-    /** 
-     * Access method.<p>
-     * @return an image resource
-     */
-    @Source("images/toolbaricons/ade_move.png")
-    ImageResource toolbarMove();
-
-    /** 
-     * Access method.<p>
-     * @return an image resource
-     */
-    @Source("images/toolbaricons/ade_move_sw.png")
-    ImageResource toolbarMoveSW();
-
-    /** 
-     * Access method.<p>
-     * @return an image resource
-     */
-    @Source("images/toolbaricons/ade_new.png")
-    ImageResource toolbarNew();
-
-    /** 
-     * Access method.<p>
-     * @return an image resource
-     */
-    @Source("images/toolbaricons/ade_new_sw.png")
-    ImageResource toolbarNewSW();
-
-    /** 
-     * Access method.<p>
-     * @return an image resource
-     */
-    @Source("images/toolbaricons/ade_prop.png")
-    ImageResource toolbarProperties();
-
-    /** 
-     * Access method.<p>
-     * @return an image resource
-     */
-    @Source("images/toolbaricons/ade_prop_sw.png")
-    ImageResource toolbarPropertiesSW();
-
-    /** 
-     * Access method.<p>
-     * @return an image resource
-     */
-    @Source("images/toolbaricons/ade_publish.png")
-    ImageResource toolbarPublish();
-
-    /** 
-     * Access method.<p>
-     * @return an image resource
-     */
-    @Source("images/toolbaricons/ade_publish_sw.png")
-    ImageResource toolbarPublishSW();
-
-    /** 
-     * Access method.<p>
-     * @return an image resource
-     */
-    @Source("images/toolbaricons/ade_recent.png")
-    ImageResource toolbarRecent();
-
-    /** 
-     * Access method.<p>
-     * @return an image resource
-     */
-    @Source("images/toolbaricons/ade_recent_sw.png")
-    ImageResource toolbarRecentSW();
-
-    /** 
-     * Access method.<p>
-     * @return an image resource
-     */
-    @Source("images/toolbaricons/ade_delete.png")
-    ImageResource toolbarRemove();
-
-    /** 
-     * Access method.<p>
-     * @return an image resource
-     */
-    @Source("images/toolbaricons/ade_delete_sw.png")
-    ImageResource toolbarRemoveSW();
-
-    /** 
-     * Access method.<p>
-     * @return an image resource
-     */
-    @Source("images/toolbaricons/ade_reset.png")
-    ImageResource toolbarReset();
-
-    /** 
-     * Access method.<p>
-     * @return an image resource
-     */
-    @Source("images/toolbaricons/ade_reset_sw.png")
-    ImageResource toolbarResetSW();
-
-    /** 
-     * Access method.<p>
-     * @return an image resource
-     */
-    @Source("images/toolbaricons/ade_save.png")
-    ImageResource toolbarSave();
-
-    /** 
-     * Access method.<p>
-     * @return an image resource
-     */
-    @Source("images/toolbaricons/ade_save_sw.png")
-    ImageResource toolbarSaveSW();
-
-    /** 
-     * Access method.<p>
-     * @return an image resource
-     */
-    @Source("images/toolbaricons/ade_selection.png")
-    ImageResource toolbarSelection();
-
-    /** 
-     * Access method.<p>
-     * @return an image resource
-     */
-    @Source("images/toolbaricons/ade_selection_sw.png")
-    ImageResource toolbarSelectionSW();
-
-    /** 
-     * Access method.<p>
-     * @return an image resource
-     */
-    @Source("images/toolbaricons/ade_sitemap.png")
-    ImageResource toolbarSitemap();
-
-    /** 
-     * Access method.<p>
-     * @return an image resource
-     */
-    @Source("images/toolbaricons/ade_sitemap_sw.png")
-    ImageResource toolbarSitemapSW();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the image resource
-     */
     @Source("images/unlocked.gif")
     ImageResource unlocked();
 
@@ -1048,7 +554,7 @@ public interface I_CmsImageBundle extends ClientBundle {
      * 
      * @return an image resource
      */
-    @Source("images/user_16x16.png")
+    @Source("images/userSmall.png")
     ImageResource userSmall();
 
 }

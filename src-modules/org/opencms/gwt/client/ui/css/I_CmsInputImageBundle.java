@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsInputImageBundle.java,v $
- * Date   : $Date: 2011/01/14 13:46:57 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/01/17 16:16:08 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,43 +31,19 @@
 
 package org.opencms.gwt.client.ui.css;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.resources.client.ImageResource.ImageOptions;
-import com.google.gwt.resources.client.ImageResource.RepeatStyle;
 
 /**
  * Image bundle for this package.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 8.0.0
  */
 public interface I_CmsInputImageBundle extends ClientBundle {
-
-    /** The bundle instance. */
-    I_CmsInputImageBundle INSTANCE = GWT.create(I_CmsInputImageBundle.class);
-
-    /** 
-     * Image resource accessor.<p>
-     * 
-     * @return an image resource
-     */
-    @Source("images/backgrounds/hoverState.png")
-    @ImageOptions(repeatStyle = RepeatStyle.Both)
-    ImageResource backgroundDark();
-
-    /** 
-     * Image resource accessor.<p>
-     * 
-     * @return an image resource
-     */
-    @Source("images/backgrounds/standard.png")
-    @ImageOptions(repeatStyle = RepeatStyle.Both)
-    ImageResource backgroundLight();
 
     /**
      * Image resource accessor.<p>
@@ -116,14 +92,6 @@ public interface I_CmsInputImageBundle extends ClientBundle {
      */
     @Source("images/checkboxUncheckedHover.png")
     ImageResource checkboxUncheckedHover();
-
-    /**
-     * Image resource accessor.<p>
-     * 
-     * @return an image resource
-     */
-    @Source("images/ocms_de_editor_a.png")
-    ImageResource linkEdit();
 
     /** 
      * Image resource accessor.<p>

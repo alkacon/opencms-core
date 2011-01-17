@@ -1,166 +1,166 @@
 .arrow, .label, .image{}
 
 @sprite .availabilitySmall{
-    gwt-image: "availabilityIconSmall";
+    gwt-image: "icons.availabilityIconSmall";
     float: left;
 	margin: 5px 0px 3px 2px;
 	overflow: hidden;
 }
 
 @sprite .cmsMenuItem.selected .delete{
-    gwt-image: "deleteIconActive";
+    gwt-image: "icons.deleteIconActive";
 }
 @sprite .cmsMenuItem .delete{
-    gwt-image: "deleteIconActive";
+    gwt-image: "icons.deleteIconActive";
     float: left;
     margin-top: 3px;
 }
 @sprite .cmsMenuItem.disabled .delete{
-    gwt-image: "deleteIconDeactivated";
+    gwt-image: "icons.deleteIconDeactivated";
 }
 
 @sprite .cmsMenuItem.selected .edit{
-    gwt-image: "editorIconActive";
+    gwt-image: "icons.editorIconActive";
 }
 @sprite .cmsMenuItem .edit{
-    gwt-image: "editorIconActive";
+    gwt-image: "icons.editorIconActive";
     float: left;
     margin-top: 3px;
 }
 @sprite .cmsMenuItem.disabled .edit{
-    gwt-image: "editorIconDeactivated";
+    gwt-image: "icons.editorIconDeactivated";
 }
 
 @sprite .cmsMenuItem.selected .availability{
-    gwt-image: "availabilityIconActive";
+    gwt-image: "icons.availabilityIconActive";
 }
 @sprite .cmsMenuItem .availability{
-    gwt-image: "availabilityIconActive";
+    gwt-image: "icons.availabilityIconActive";
     float: left;
     margin-top: 3px;
 }
 @sprite .cmsMenuItem.disabled .availability{
-    gwt-image: "availabilityIconDeactivated";
+    gwt-image: "icons.availabilityIconDeactivated";
 }
 
 @sprite .cmsMenuItem.selected .move{
-    gwt-image: "moveIconActive";
+    gwt-image: "icons.moveIconActive";
 }
 @sprite .cmsMenuItem .move{
-    gwt-image: "moveIconActive";
+    gwt-image: "icons.moveIconActive";
     float: left;
     margin-top: 3px;
 }
 @sprite .cmsMenuItem.disabled .move{
-    gwt-image: "moveIconDeactivated";
+    gwt-image: "icons.moveIconDeactivated";
 }
 
 @sprite .cmsMenuItem.selected .newElement{
-    gwt-image: "newIconActive";
+    gwt-image: "icons.newIconActive";
 }
 @sprite .cmsMenuItem .newElement{
-    gwt-image: "newIconActive";
+    gwt-image: "icons.newIconActive";
     float: left;
     margin-top: 3px;
 }
 @sprite .cmsMenuItem.disabled .newElement{
-    gwt-image: "newIconDeactivated";
+    gwt-image: "icons.newIconDeactivated";
 }
 
 @sprite .cmsMenuItem.selected .properties{
-    gwt-image: "propertyIconActive";
+    gwt-image: "icons.propertyIconActive";
 }
 @sprite .cmsMenuItem .properties{
-    gwt-image: "propertyIconActive";
+    gwt-image: "icons.propertyIconActive";
     float: left;
     margin-top: 3px;
 }
 @sprite .cmsMenuItem.disabled .properties{
-    gwt-image: "propertyIconDeactivated";
+    gwt-image: "icons.propertyIconDeactivated";
 }
 
 
 @sprite .cmsMenuItem.selected .selection{
-    gwt-image: "selectionIconActive";
+    gwt-image: "icons.selectionIconActive";
 }
 @sprite .cmsMenuItem .selection{
-    gwt-image: "selectionIconActive";
+    gwt-image: "icons.selectionIconActive";
     float: left;
     margin-top: 3px;
 }
 @sprite .cmsMenuItem.disabled .selection{
-    gwt-image: "selectionIconDeactivated";
+    gwt-image: "icons.selectionIconDeactivated";
 }
 
 @sprite .cmsMenuItem.selected .gotoPage{
-    gwt-image: "gotoPageIconActive";
+    gwt-image: "icons.gotoPageIconActive";
 }
 @sprite .cmsMenuItem .gotoPage{
-    gwt-image: "gotoPageIconActive";
+    gwt-image: "icons.gotoPageIconActive";
     float: left;
     margin-top: 3px;
 }
 @sprite .cmsMenuItem.disabled .gotoPage{
-    gwt-image: "gotoPageIconDeactivated";
+    gwt-image: "icons.gotoPageIconDeactivated";
 }
 
 @sprite .cmsMenuItem.selected .gotoSub{
-    gwt-image: "gotoSubIconActive";
+    gwt-image: "icons.gotoSubSitemapIconActive";
 }
 @sprite .cmsMenuItem .gotoSub{
-    gwt-image: "gotoSubIconActive";
+    gwt-image: "icons.gotoSubSitemapIconActive";
     float: left;
     margin-top: 3px;
 }
 @sprite .cmsMenuItem.disabled .gotoSub{
-    gwt-image: "gotoPageIconDeactivated";
+    gwt-image: "icons.gotoPageIconDeactivated";
 }
 
 @sprite .cmsMenuItem.selected .mergeSitemap{
-    gwt-image: "mergeSitemapIconActive";
+    gwt-image: "icons.mergeSitemapIconActive";
 }
 @sprite .cmsMenuItem .mergeSitemap{
-    gwt-image: "mergeSitemapIconActive";
+    gwt-image: "icons.mergeSitemapIconActive";
     float: left;
     margin-top: 3px;
 }
 
 @sprite .cmsMenuItem.disabled .mergeSitemap{
-    gwt-image: "mergeSitemapIconDeactivated";
+    gwt-image: "icons.mergeSitemapIconDeactivated";
 }
 
 @sprite .cmsMenuItem.selected .gotoParent{
-    gwt-image: "gotoParentIconActive";
+    gwt-image: "icons.gotoParentIconActive";
 }
 @sprite .cmsMenuItem .gotoParent{
-    gwt-image: "gotoParentIconActive";
+    gwt-image: "icons.gotoParentIconActive";
     float: left;
     margin-top: 3px;
 }
 @sprite .cmsMenuItem.disabled .gotoParent{
-    gwt-image: "gotoParentIconDeactivated";
+    gwt-image: "icons.gotoParentIconDeactivated";
 }
 
 @sprite .cmsMenuItem.selected .subSitemap{
-    gwt-image: "subSitemapIconActive";
+    gwt-image: "icons.subSitemapIconActive";
 }
 @sprite .cmsMenuItem .subSitemap{
-    gwt-image: "subSitemapIconActive";
+    gwt-image: "icons.subSitemapIconActive";
     float: left;
     margin-top: 3px;
 }
 @sprite .cmsMenuItem.disabled .subSitemap{
-    gwt-image: "subSitemapIconDeactivated";
+    gwt-image: "icons.subSitemapIconDeactivated";
 }
 
 @sprite .cmsMenuItem .bump {
-	gwt-image: "bumpIconActive";
+	gwt-image: "icons.bumpIconActive";
 	float: left;
 	margin-top: 3px; 
 }
 
 @sprite .cmsMenuItem.disabled .bump {
-	gwt-image: "bumpIconDeactivated";
+	gwt-image: "icons.bumpIconDeactivated";
 	float: left;
 	margin-top: 3px;
 }
