@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageHandler.java,v $
- * Date   : $Date: 2011/01/14 14:19:55 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2011/01/17 11:55:22 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -89,7 +89,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.31 $
+ * @version $Revision: 1.32 $
  * 
  * @since 8.0.0
  */
@@ -658,11 +658,11 @@ public class CmsContainerpageHandler {
     public void toggleToolbar() {
 
         if (m_editor.toolbarVisible()) {
-            deactivateCurrentButton();
+            // deactivateCurrentButton();
             m_editor.showToolbar(false);
             m_controller.setToolbarVisible(false);
         } else {
-            activateSelection();
+            // activateSelection();
             m_editor.showToolbar(true);
             m_controller.setToolbarVisible(true);
         }

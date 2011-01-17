@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageEditor.java,v $
- * Date   : $Date: 2010/12/22 14:35:25 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2011/01/17 11:55:22 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,6 @@ import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsToolbar;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.util.CmsDomUtil;
-import org.opencms.gwt.client.util.CmsDomUtil.Style;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
@@ -69,7 +68,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  * 
  * @since 8.0.0
  */
@@ -79,7 +78,7 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
     private CmsToolbarGalleryMenu m_add;
 
     /** Margin-top added to the document body element when the tool-bar is shown. */
-    private int m_bodyMarginTop;
+    //    private int m_bodyMarginTop;
 
     /** Clip-board menu. */
     private CmsToolbarClipboardMenu m_clipboard;
@@ -244,7 +243,7 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
             }
         };
 
-        m_bodyMarginTop = CmsDomUtil.getCurrentStyleInt(Document.get().getBody(), Style.marginTop);
+        //        m_bodyMarginTop = CmsDomUtil.getCurrentStyleInt(Document.get().getBody(), Style.marginTop);
         m_toolbar = new CmsToolbar();
 
         CmsPushButton toggleToolbarButton = new CmsPushButton();
@@ -355,11 +354,11 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         if (show) {
             body.addClassName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarShow());
             body.removeClassName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarHide());
-            body.getStyle().setMarginTop(m_bodyMarginTop + 36, Unit.PX);
+            // body.getStyle().setMarginTop(m_bodyMarginTop + 36, Unit.PX);
         } else {
             body.removeClassName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarShow());
             body.addClassName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarHide());
-            body.getStyle().setMarginTop(m_bodyMarginTop, Unit.PX);
+            // body.getStyle().setMarginTop(m_bodyMarginTop, Unit.PX);
         }
     }
 
