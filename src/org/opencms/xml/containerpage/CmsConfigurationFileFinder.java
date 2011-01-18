@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsConfigurationFileFinder.java,v $
- * Date   : $Date: 2010/12/17 08:45:29 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/01/18 08:10:31 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -97,8 +97,10 @@ public class CmsConfigurationFileFinder {
                     containerPageUri,
                     CmsPropertyDefinition.PROPERTY_TEMPLATE,
                     true).getValue();
-                // get the resource type configuration file from the template itself
-                cfgPath = cms.readPropertyObject(templateUri, m_propertyName, true).getValue();
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(templateUri)) {
+                    // get the resource type configuration file from the template itself
+                    cfgPath = cms.readPropertyObject(templateUri, m_propertyName, true).getValue();
+                }
             } catch (CmsException e) {
                 // should never happen
                 LOG.error(e.getLocalizedMessage(), e);

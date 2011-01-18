@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADEDefaultConfiguration.java,v $
- * Date   : $Date: 2010/12/17 08:45:29 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2011/01/18 08:10:31 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,6 +47,7 @@ import org.opencms.workplace.CmsWorkplace;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -69,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 7.6 
  */
@@ -178,6 +179,9 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
 
         CmsConfigurationFileFinder finder = new CmsConfigurationFileFinder(propName);
         CmsResource cfg = finder.getConfigurationFile(cms, cntPageUri);
+        if (cfg == null) {
+            return null;
+        }
         return CmsConfigurationParser.getParser(cms, cfg);
     }
 
@@ -301,7 +305,11 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
      */
     public List<CmsXmlContentProperty> getProperties(CmsObject cms, String cntPageUri) throws CmsException {
 
-        return getConfigurationParser(cms, cntPageUri).getDefinedProperties();
+        CmsConfigurationParser parser = getConfigurationParser(cms, cntPageUri);
+        if (parser != null) {
+            return parser.getDefinedProperties();
+        }
+        return Collections.emptyList();
     }
 
     /**
