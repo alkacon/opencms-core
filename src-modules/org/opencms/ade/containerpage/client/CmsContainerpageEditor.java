@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageEditor.java,v $
- * Date   : $Date: 2011/01/17 11:55:22 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2011/01/18 07:43:34 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,6 +53,7 @@ import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsToolbar;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.gwt.client.util.CmsFadeAnimation;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
@@ -61,6 +62,7 @@ import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.RootPanel;
 
 /**
@@ -68,7 +70,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  * 
  * @since 8.0.0
  */
@@ -350,14 +352,24 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
      */
     public void showToolbar(boolean show) {
 
-        Element body = Document.get().getBody();
+        final Element body = Document.get().getBody();
         if (show) {
             body.addClassName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarShow());
             body.removeClassName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarHide());
+            CmsFadeAnimation.fadeIn(m_toolbar.getElement(), null, 300);
             // body.getStyle().setMarginTop(m_bodyMarginTop + 36, Unit.PX);
         } else {
-            body.removeClassName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarShow());
-            body.addClassName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarHide());
+            CmsFadeAnimation.fadeOut(m_toolbar.getElement(), new Command() {
+
+                public void execute() {
+
+                    body.removeClassName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarShow());
+                    body.addClassName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarHide());
+
+                }
+            },
+                300);
+
             // body.getStyle().setMarginTop(m_bodyMarginTop, Unit.PX);
         }
     }
