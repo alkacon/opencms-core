@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsConfigurationItem.java,v $
- * Date   : $Date: 2010/09/22 14:27:47 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/01/18 15:56:40 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.xml.containerpage;
 
+import org.opencms.file.CmsAutoCreateFolder;
 import org.opencms.file.CmsResource;
 
 /**
@@ -43,7 +44,7 @@ import org.opencms.file.CmsResource;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 7.6 
  */
@@ -51,6 +52,9 @@ public class CmsConfigurationItem {
 
     /** The destination folder. */
     private final CmsResource m_folder;
+
+    /** The lazy folder object. */
+    private CmsAutoCreateFolder m_lazyFolder;
 
     /** The file pattern. */
     private final String m_pattern;
@@ -63,13 +67,19 @@ public class CmsConfigurationItem {
      * 
      * @param sourceFile the source file 
      * @param destinationFolder the destination folder 
+     * @param lazyFolder the lazy folder object 
      * @param pattern the file pattern
      **/
-    public CmsConfigurationItem(CmsResource sourceFile, CmsResource destinationFolder, String pattern) {
+    public CmsConfigurationItem(
+        CmsResource sourceFile,
+        CmsResource destinationFolder,
+        CmsAutoCreateFolder lazyFolder,
+        String pattern) {
 
         m_sourceFile = sourceFile;
         m_folder = destinationFolder;
         m_pattern = pattern;
+        m_lazyFolder = lazyFolder;
     }
 
     /**
@@ -80,6 +90,16 @@ public class CmsConfigurationItem {
     public CmsResource getFolder() {
 
         return m_folder;
+    }
+
+    /**
+     * Returns a helper object which represents a folder which may still have to be created.<p>
+     * 
+     * @return a lazy folder object 
+     */
+    public CmsAutoCreateFolder getLazyFolder() {
+
+        return m_lazyFolder;
     }
 
     /**

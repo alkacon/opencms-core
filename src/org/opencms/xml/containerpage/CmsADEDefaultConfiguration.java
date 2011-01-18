@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADEDefaultConfiguration.java,v $
- * Date   : $Date: 2011/01/18 08:10:31 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2011/01/18 15:56:40 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 7.6 
  */
@@ -139,7 +139,10 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
     throws CmsException {
 
         CmsConfigurationParser siteConfig = getConfigurationParser(cms, cntPageUri);
-        CmsConfigurationItem item = siteConfig.getTypeConfiguration().get(type);
+        CmsConfigurationItem item = null;
+        if (siteConfig != null) {
+            item = siteConfig.getTypeConfiguration().get(type);
+        }
         if ((item == null) && (m_moduleConfig != null)) {
             CmsConfigurationParser moduleConfig = m_moduleConfig.getConfigurationParser(getAdminCmsObject(cms));
             item = moduleConfig.getTypeConfiguration().get(type);
@@ -197,7 +200,9 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
             CmsConfigurationParser moduleConfigParser = m_moduleConfig.getConfigurationParser(getAdminCmsObject(cms));
             resources.addAll(moduleConfigParser.getNewElements(getAdminCmsObject(cms)));
         }
-        resources.addAll(siteConfigParser.getNewElements(cms));
+        if (siteConfigParser != null) {
+            resources.addAll(siteConfigParser.getNewElements(cms));
+        }
         return resources;
     }
 
@@ -240,7 +245,10 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
         String typeName = resType.getTypeName();
 
         CmsConfigurationParser parser = getConfigurationParser(cms, cms.getSitePath(res));
-        CmsPair<Map<String, String>, Map<Integer, String>> fmtConfig = parser.getFormatterConfigurationForType(typeName);
+        CmsPair<Map<String, String>, Map<Integer, String>> fmtConfig = null;
+        if (parser != null) {
+            fmtConfig = parser.getFormatterConfigurationForType(typeName);
+        }
         if (fmtConfig != null) {
             return CmsFormatterUtil.selectFormatter(fmtConfig.getFirst(), fmtConfig.getSecond(), cntType, width);
         }
@@ -287,9 +295,12 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
             types.putAll(moduleConfig.getTypeConfiguration());
         }
 
-        types.putAll(parser.getTypeConfiguration());
+        if (parser != null) {
+            types.putAll(parser.getTypeConfiguration());
+        }
         CmsConfigurationItem item = types.get(type);
-        String destination = cms.getSitePath(item.getFolder()) + item.getPattern();
+        CmsResource folderRes = item.getLazyFolder().getValue(cms);
+        String destination = cms.getSitePath(folderRes) + item.getPattern();
         return getNewFileName(cms, destination);
     }
 
@@ -420,6 +431,7 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
 
         CmsObject result = OpenCms.initCmsObject(m_adminCms);
         result.getRequestContext().setCurrentProject(cms.getRequestContext().currentProject());
+        result.getRequestContext().setSiteRoot(cms.getRequestContext().getSiteRoot());
         return result;
     }
 

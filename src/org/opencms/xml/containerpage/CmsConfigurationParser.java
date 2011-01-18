@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsConfigurationParser.java,v $
- * Date   : $Date: 2011/01/14 11:58:36 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2011/01/18 15:56:40 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.xml.containerpage;
 
 import org.opencms.cache.CmsVfsMemoryObjectCache;
+import org.opencms.file.CmsAutoCreateFolder;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -76,7 +77,7 @@ import org.apache.commons.collections.Transformer;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 7.6 
  */
@@ -286,15 +287,17 @@ public class CmsConfigurationParser {
      * @param cms the CMS context
      * 
      * @return the resources which are used as prototypes for creating new elements
+     * 
+     * @throws CmsException if something goes wrong 
      */
-    public Collection<CmsResource> getNewElements(CmsObject cms) {
+    public Collection<CmsResource> getNewElements(CmsObject cms) throws CmsException {
 
         Set<CmsResource> result = new LinkedHashSet<CmsResource>();
         for (Map.Entry<String, CmsConfigurationItem> entry : m_configuration.entrySet()) {
             CmsConfigurationItem item = entry.getValue();
             String type = entry.getKey();
             CmsResource source = item.getSourceFile();
-            CmsResource folderRes = item.getFolder();
+            CmsResource folderRes = item.getLazyFolder().getValue(cms);
             CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type);
             boolean editable = settings.isEditable(cms, folderRes);
             boolean controlPermission = settings.getAccess().getPermissions(cms, folderRes).requiresControlPermission();
@@ -582,7 +585,17 @@ public class CmsConfigurationParser {
         String pattern = getSubValueString(cms, xmlType, CmsXmlUtils.concatXpath(N_DESTINATION, N_PATTERN));
         CmsResource resource = cms.readResource(source);
         String type = getTypeName(resource.getTypeId());
-        CmsConfigurationItem configItem = new CmsConfigurationItem(resource, cms.readResource(folder), pattern);
+        CmsResource folderRes = null;
+        CmsAutoCreateFolder lazyFolder = null;
+        if (folder == null) {
+            String path = "/" + type;
+            lazyFolder = new CmsAutoCreateFolder(path);
+        } else {
+            folderRes = cms.readResource(folder);
+            lazyFolder = new CmsAutoCreateFolder(folderRes);
+        }
+
+        CmsConfigurationItem configItem = new CmsConfigurationItem(resource, folderRes, lazyFolder, pattern);
         List<I_CmsXmlContentValueLocation> fmtValues = xmlType.getSubValues(N_FORMATTER);
         List<CmsFormatterConfigBean> formatterConfigBeans = new ArrayList<CmsFormatterConfigBean>();
         for (I_CmsXmlContentValueLocation fmtValue : fmtValues) {

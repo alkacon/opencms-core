@@ -11,7 +11,7 @@
     
     <xsd:complexType name="OpenCmsADETypeDestination">
         <xsd:sequence>    
-            <xsd:element name="Folder" type="OpenCmsVfsFile" minOccurs="1" maxOccurs="1" />
+            <xsd:element name="Folder" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="1" />
             <xsd:element name="Pattern" type="OpenCmsString" minOccurs="1" maxOccurs="1" />
         </xsd:sequence>
         <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
