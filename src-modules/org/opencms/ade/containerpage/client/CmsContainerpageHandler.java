@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageHandler.java,v $
- * Date   : $Date: 2011/01/17 11:55:22 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2011/01/18 16:45:03 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,6 +39,7 @@ import org.opencms.ade.containerpage.client.ui.CmsSubcontainerEditor;
 import org.opencms.ade.containerpage.client.ui.I_CmsToolbarButton;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.ade.publish.client.CmsPublishDialog;
+import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.dnd.I_CmsDNDController;
 import org.opencms.gwt.client.ui.CmsAcceptDeclineCancelDialog;
 import org.opencms.gwt.client.ui.CmsAlertDialog;
@@ -89,7 +90,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.32 $
+ * @version $Revision: 1.33 $
  * 
  * @since 8.0.0
  */
@@ -291,7 +292,7 @@ public class CmsContainerpageHandler {
      */
     public void gotoSitemap() {
 
-        String sitemapUri = m_controller.getData().getSitemapUri();
+        String sitemapUri = CmsCoreProvider.get().link(m_controller.getData().getSitemapUri());
         if (sitemapUri.equals("")) {
             return; // normally, we shouldn't even get to this point because the sitemap button should be disabled  
         }
