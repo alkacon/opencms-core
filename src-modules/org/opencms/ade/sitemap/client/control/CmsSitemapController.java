@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2011/01/14 14:19:54 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2011/01/18 08:13:50 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,6 @@ import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.CmsNotification.Type;
 import org.opencms.gwt.client.util.CmsCollectionUtil;
 import org.opencms.gwt.client.util.CmsDebugLog;
-import org.opencms.gwt.client.util.CmsSingleResourceLock;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.content.CmsXmlContentProperty;
@@ -94,7 +93,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.35 $ 
+ * @version $Revision: 1.36 $ 
  * 
  * @since 8.0.0
  */
@@ -137,12 +136,6 @@ public class CmsSitemapController {
     /** The list of undone changes. */
     protected List<I_CmsClientSitemapChange> m_undone;
 
-    /** The lock for the configuration file. */
-    CmsSingleResourceLock m_configLock;
-
-    /** The lock for the sitemap file. */
-    CmsSingleResourceLock m_sitemapLock;
-
     /** The set of names of hidden properties. */
     private Set<String> m_hiddenProperties;
 
@@ -172,8 +165,6 @@ public class CmsSitemapController {
         m_hiddenProperties.add(CmsSitemapManager.Property.isRedirect.toString());
         m_detailPageTable = m_data.getDetailPageTable();
         RootPanel.get().add(new Label("detail pages: " + m_detailPageTable.size()));
-        m_configLock = new CmsSingleResourceLock(m_data.getConfigPath());
-        m_sitemapLock = new CmsSingleResourceLock(CmsCoreProvider.get().getUri());
         m_eventBus = new SimpleEventBus();
         initDetailPageInfos();
 
@@ -222,9 +213,9 @@ public class CmsSitemapController {
      * 
      * @return the URI of the current sitemap 
      */
-    protected static String getSitemapUri() {
+    protected String getEntryPoint() {
 
-        return CmsCoreProvider.get().getUri();
+        return m_data.getRoot().getSitePath();
 
     }
 
@@ -520,7 +511,7 @@ public class CmsSitemapController {
                 // Make the call to the sitemap service
                 start(500, false);
 
-                getService().getChildren(getSitemapUri(), originalPath, this);
+                getService().getChildren(getEntryPoint(), originalPath, this);
             }
 
             /**
@@ -875,7 +866,7 @@ public class CmsSitemapController {
 
                 setLoadingMessage(Messages.get().key(Messages.GUI_SAVING_0));
                 start(0, true);
-                getService().saveSync(getSitemapUri(), changes, getData().getClipboardData(), this);
+                getService().saveSync(getEntryPoint(), changes, getData().getClipboardData(), this);
 
             }
 

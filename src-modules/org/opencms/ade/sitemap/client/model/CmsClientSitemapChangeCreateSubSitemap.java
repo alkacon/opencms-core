@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeCreateSubSitemap.java,v $
- * Date   : $Date: 2011/01/14 14:19:54 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/01/18 08:13:50 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import java.util.List;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -103,7 +103,7 @@ public class CmsClientSitemapChangeCreateSubSitemap implements I_CmsClientSitema
     public void applyToModel(CmsSitemapController controller) {
 
         // apply to sitemap model 
-        controller.getData().setTimestamp(m_subSitemapInfo.getParentTimestamp());
+        //   controller.getData().setTimestamp(m_subSitemapInfo.getParentTimestamp());
         for (I_CmsClientSitemapChange change : m_internalChanges) {
             change.applyToModel(controller);
         }

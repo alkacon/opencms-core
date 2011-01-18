@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeMergeSitemap.java,v $
- * Date   : $Date: 2011/01/14 14:19:54 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/01/18 08:13:50 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import org.opencms.xml.sitemap.CmsSitemapManager;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -97,7 +97,7 @@ public class CmsClientSitemapChangeMergeSitemap implements I_CmsClientSitemapCha
         // apply to sitemap model 
         m_entry.setSubEntries(m_mergeInfo.getMergedEntries());
         m_internalChange.applyToModel(controller);
-        controller.getData().setTimestamp(m_mergeInfo.getTimestamp());
+        //       controller.getData().setTimestamp(m_mergeInfo.getTimestamp());
         // TODO: apply to clipboard model
     }
 

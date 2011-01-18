@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsSitemapData.java,v $
- * Date   : $Date: 2010/12/17 08:45:29 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2011/01/18 08:13:50 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 8.0
  */
@@ -59,9 +59,6 @@ public class CmsSitemapData implements IsSerializable {
 
     /** The type of the container page resource. */
     private int m_cntPageType;
-
-    /** The path of the sitemap configuration file. */
-    private String m_configPath;
 
     /** The default template. */
     private CmsSitemapTemplate m_defaultTemplate;
@@ -108,9 +105,6 @@ public class CmsSitemapData implements IsSerializable {
     /** The available templates. */
     private Map<String, CmsSitemapTemplate> m_templates;
 
-    /** The sitemap resource last modification date. */
-    private long m_timestamp;
-
     /**
      * Constructor.<p>
      */
@@ -135,12 +129,10 @@ public class CmsSitemapData implements IsSerializable {
      * @param cntPageType the type of the container page resource
      * @param parentSitemap the path to the parent sitemap or <code>null</code>
      * @param root the sitemap root
-     * @param timestamp the sitemap resource last modification date
      * @param openPath the path at which the sitemap should be opened 
      * @param maxDepth the maximum sitemap depth
      * @param detailPageTable the detail page table 
      * @param resourceTypeInfos the resource type information for the detail pages  
-     * @param configPath the path of the sitemap configuration file  
      */
     public CmsSitemapData(
         CmsSitemapTemplate defaultTemplate,
@@ -156,14 +148,10 @@ public class CmsSitemapData implements IsSerializable {
         int cntPageType,
         String parentSitemap,
         CmsClientSitemapEntry root,
-        long timestamp,
         String openPath,
         int maxDepth,
         CmsDetailPageTable detailPageTable,
-        List<CmsResourceTypeInfo> resourceTypeInfos,
-        String configPath
-
-    ) {
+        List<CmsResourceTypeInfo> resourceTypeInfos) {
 
         m_defaultTemplate = defaultTemplate;
         m_templates = templates;
@@ -175,7 +163,6 @@ public class CmsSitemapData implements IsSerializable {
         m_parentSitemap = parentSitemap;
         m_parentProperties = parentProperties;
         m_root = root;
-        m_timestamp = timestamp;
         m_openPath = openPath;
         m_exportName = exportName;
         m_exportRfsPrefix = exportRfsPrefix;
@@ -183,7 +170,6 @@ public class CmsSitemapData implements IsSerializable {
         m_maxDepth = maxDepth;
         m_detailPageTable = detailPageTable;
         m_resourceTypeInfos = resourceTypeInfos;
-        m_configPath = configPath;
     }
 
     /**
@@ -204,16 +190,6 @@ public class CmsSitemapData implements IsSerializable {
     public int getCntPageType() {
 
         return m_cntPageType;
-    }
-
-    /** 
-     * Returns the sitemap configuration path.<p>
-     * 
-     * @return the sitemap configuration path 
-     */
-    public String getConfigPath() {
-
-        return m_configPath;
     }
 
     /**
@@ -347,16 +323,6 @@ public class CmsSitemapData implements IsSerializable {
     }
 
     /**
-     * Returns the sitemap resource last modification date.<p>
-     *
-     * @return the sitemap resource last modification date
-     */
-    public long getTimestamp() {
-
-        return m_timestamp;
-    }
-
-    /**
      * Checks if to display the toolbar.<p>
      *
      * @return <code>true</code> if to display the toolbar
@@ -375,15 +341,4 @@ public class CmsSitemapData implements IsSerializable {
 
         return m_isSecure;
     }
-
-    /**
-     * Sets the timestamp.<p>
-     *
-     * @param timestamp the timestamp to set
-     */
-    public void setTimestamp(long timestamp) {
-
-        m_timestamp = timestamp;
-    }
-
 }

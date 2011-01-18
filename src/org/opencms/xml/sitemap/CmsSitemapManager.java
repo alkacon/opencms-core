@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2011/01/14 12:03:22 $
- * Version: $Revision: 1.70 $
+ * Date   : $Date: 2011/01/18 08:13:50 $
+ * Version: $Revision: 1.71 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,6 @@ import org.opencms.xml.containerpage.CmsConfigurationItem;
 import org.opencms.xml.containerpage.CmsConfigurationParser;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.content.CmsXmlContentPropertyHelper;
-import org.opencms.xml.sitemap.properties.CmsComputedPropertyValue;
 import org.opencms.xml.sitemap.properties.CmsPropertyInheritanceState;
 import org.opencms.xml.sitemap.properties.CmsSimplePropertyValue;
 
@@ -86,7 +85,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.70 $
+ * @version $Revision: 1.71 $
  * 
  * @since 7.9.2
  */
@@ -204,31 +203,31 @@ public class CmsSitemapManager {
         }
     }
 
-    /**
-     * Creates a dummy root entry for a sub-sitemap from a given sitemap entry.<p>
-     * 
-     * @param cms the CmsObject to use for VFS operations 
-     * @param entry the sitemap entry from which to create the dummy entry 
-
-     * @return a dummy sub-sitemap root
-     */
-    public static CmsInternalSitemapEntry copyAsSubSitemapRoot(CmsObject cms, CmsInternalSitemapEntry entry) {
-
-        CmsInternalSitemapEntry clone = new CmsInternalSitemapEntry(
-            entry.getId(),
-            "",
-            entry.getStructureId(),
-            "",
-            entry.getTitle(),
-            false,
-            entry.getNewProperties(),
-            new ArrayList<CmsInternalSitemapEntry>(),
-            entry.getContentId(),
-            entry.getContentName());
-
-        clone.setRuntimeInfo(entry.getSitePath(cms), 0, new HashMap<String, CmsComputedPropertyValue>());
-        return clone;
-    }
+    //    /**
+    //     * Creates a dummy root entry for a sub-sitemap from a given sitemap entry.<p>
+    //     * 
+    //     * @param cms the CmsObject to use for VFS operations 
+    //     * @param entry the sitemap entry from which to create the dummy entry 
+    //
+    //     * @return a dummy sub-sitemap root
+    //     */
+    //    public static CmsInternalSitemapEntry copyAsSubSitemapRoot(CmsObject cms, CmsInternalSitemapEntry entry) {
+    //
+    //        CmsInternalSitemapEntry clone = new CmsInternalSitemapEntry(
+    //            entry.getId(),
+    //            "",
+    //            entry.getStructureId(),
+    //            "",
+    //            entry.getTitle(),
+    //            false,
+    //            entry.getNewProperties(),
+    //            new ArrayList<CmsInternalSitemapEntry>(),
+    //            entry.getContentId(),
+    //            entry.getContentName());
+    //
+    //        clone.setRuntimeInfo(entry.getSitePath(cms), 0, new HashMap<String, CmsComputedPropertyValue>());
+    //        return clone;
+    //    }
 
     /**
      * Returns the navigation URI from a given request.<p>
@@ -348,6 +347,30 @@ public class CmsSitemapManager {
         cms.writePropertyObject(sitemapPath, titleProp);
         cms.unlockResource(sitemapPath);
         return newSitemapRes;
+    }
+
+    /**
+     * Finds the entry point to a sitemap.<p>
+     * 
+     * @param cms the CMS context
+     * @param openPath the resource path to find the sitemap to
+     * 
+     * @return the sitemap entry point
+     * 
+     * @throws CmsException
+     */
+    public String findEntryPoint(CmsObject cms, String openPath) throws CmsException {
+
+        String folderPath = CmsResource.getFolderPath(openPath);
+        if (folderPath.equals("/")) {
+            return folderPath;
+        }
+        CmsProperty subSitemapProp = cms.readPropertyObject(openPath, "is_sub_sitemap", false);
+        if (Boolean.parseBoolean(subSitemapProp.getValue())) {
+            return folderPath;
+        } else {
+            return findEntryPoint(cms, CmsResource.getParentFolder(folderPath));
+        }
     }
 
     /**
@@ -612,6 +635,34 @@ public class CmsSitemapManager {
     }
 
     /**
+     * Returns the property configuration for a given resource.<p>
+     * 
+     * @param cms the current cms context
+     * @param entryPoint the the sitemap entry point
+     * 
+     * @return the property configuration
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public Map<String, CmsXmlContentProperty> getElementPropertyConfiguration(CmsObject cms, String entryPoint)
+    throws CmsException {
+
+        Map<String, CmsXmlContentProperty> result = new LinkedHashMap<String, CmsXmlContentProperty>();
+        CmsADEDefaultConfiguration conf = new CmsADEDefaultConfiguration(
+            CmsPropertyDefinition.PROPERTY_ADE_SITEMAP_CONFIG);
+        accumulatePropertyConfiguration(cms, entryPoint, conf, result);
+
+        CmsResource defaultConfig = cms.readResource("/system/modules/org.opencms.ade.sitemap/config/sitemap.config");
+        List<CmsXmlContentProperty> propertiesFromConfigFile = CmsConfigurationParser.getParser(cms, defaultConfig).getDefinedProperties();
+        for (CmsXmlContentProperty prop : propertiesFromConfigFile) {
+            if (!result.containsKey(prop.getPropertyName())) {
+                result.put(prop.getPropertyName(), prop);
+            }
+        }
+        return CmsXmlContentPropertyHelper.copyPropertyConfiguration(result);
+    }
+
+    /**
      * Returns the sitemap entries which point to the container page at the given VFS root path.<p>
      * 
      * @param cms the current CMS context 
@@ -821,27 +872,6 @@ public class CmsSitemapManager {
     }
 
     /**
-     * Returns the parent entry of a given sitemap entry.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param entry the entry whose parent should be retrieved
-     *  
-     * @return the parent of the entry 
-     * 
-     * @throws CmsException if something goes wrong 
-     */
-    public CmsSitemapEntry getParentEntry(CmsObject cms, CmsSitemapEntry entry) throws CmsException {
-
-        if (entry.isRootEntry()) {
-            return null;
-        }
-        String uri = entry.getSitePath(cms);
-        String parentUri = CmsResource.getParentFolder(uri);
-        CmsSitemapEntry parent = getEntryForUri(cms, parentUri);
-        return parent;
-    }
-
-    /**
      * Returns the entry which refers to a sub-sitemap with a given URI.
      * 
      * @param cms the current CMS context 
@@ -864,6 +894,27 @@ public class CmsSitemapManager {
     //        String parentUri = CmsResource.getParentFolder(entryPoint);
     //        return getEntryForUri(cms, parentUri);
     //    }
+
+    /**
+     * Returns the parent entry of a given sitemap entry.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param entry the entry whose parent should be retrieved
+     *  
+     * @return the parent of the entry 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public CmsSitemapEntry getParentEntry(CmsObject cms, CmsSitemapEntry entry) throws CmsException {
+
+        if (entry.isRootEntry()) {
+            return null;
+        }
+        String uri = entry.getSitePath(cms);
+        String parentUri = CmsResource.getParentFolder(uri);
+        CmsSitemapEntry parent = getEntryForUri(cms, parentUri);
+        return parent;
+    }
 
     /**
      * Returns the parent sitemap for the given sitemap, 
@@ -1285,6 +1336,37 @@ public class CmsSitemapManager {
             }
         }
         return false;
+    }
+
+    /**
+     * Accumulates the sitemap property configuration from the sitemap entry point and it's parent sitemaps.<p>
+     * 
+     * @param cms the CMS context
+     * @param entryPoint the sitemap entry point
+     * @param conf the ADE configuration
+     * @param propertyConfig the property configuration to accululate
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    private void accumulatePropertyConfiguration(
+        CmsObject cms,
+        String entryPoint,
+        CmsADEDefaultConfiguration conf,
+        Map<String, CmsXmlContentProperty> propertyConfig) throws CmsException {
+
+        List<CmsXmlContentProperty> propertiesFromConfigFile = conf.getProperties(cms, entryPoint);
+        for (CmsXmlContentProperty prop : propertiesFromConfigFile) {
+            if (!propertyConfig.containsKey(prop.getPropertyName())) {
+                propertyConfig.put(prop.getPropertyName(), prop);
+            }
+        }
+        if (!entryPoint.equals("/")) {
+            accumulatePropertyConfiguration(
+                cms,
+                findEntryPoint(cms, CmsResource.getParentFolder(entryPoint)),
+                conf,
+                propertyConfig);
+        }
     }
 
     /**
