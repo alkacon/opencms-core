@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeCreateSubSitemap.java,v $
- * Date   : $Date: 2011/01/18 08:13:50 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/01/18 16:46:27 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,10 +35,9 @@ import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.client.toolbar.CmsToolbarClipboardView;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
+import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry.EntryType;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsSubSitemapInfo;
-import org.opencms.xml.sitemap.CmsSitemapManager;
-import org.opencms.xml.sitemap.properties.CmsSimplePropertyValue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +50,7 @@ import java.util.List;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
@@ -59,9 +58,6 @@ public class CmsClientSitemapChangeCreateSubSitemap implements I_CmsClientSitema
 
     /** The list of elementary changes which this change consists of. */
     private List<I_CmsClientSitemapChange> m_internalChanges;
-
-    /** The result of the sub-sitemap creation operation. */
-    private CmsSubSitemapInfo m_subSitemapInfo;
 
     /**
      * Constructor.<p>
@@ -71,20 +67,16 @@ public class CmsClientSitemapChangeCreateSubSitemap implements I_CmsClientSitema
      */
     public CmsClientSitemapChangeCreateSubSitemap(CmsClientSitemapEntry entry, CmsSubSitemapInfo info) {
 
-        String subSitemapPath = info.getSitemapPath();
         List<I_CmsClientSitemapChange> changes = new ArrayList<I_CmsClientSitemapChange>();
         for (CmsClientSitemapEntry childEntry : entry.getSubEntries()) {
             CmsClientSitemapChangeDelete deleteAction = new CmsClientSitemapChangeDelete(childEntry, false);
             changes.add(deleteAction);
         }
+        entry.setEntryType(EntryType.subSitemap);
         CmsClientSitemapEntry newEntry = new CmsClientSitemapEntry(entry);
-
-        CmsSimplePropertyValue sitemapProp = new CmsSimplePropertyValue(subSitemapPath, subSitemapPath);
-        newEntry.getProperties().put(CmsSitemapManager.Property.sitemap.name(), sitemapProp);
         CmsClientSitemapChangeEdit editAction = new CmsClientSitemapChangeEdit(entry, newEntry, false);
         changes.add(editAction);
         m_internalChanges = changes;
-        m_subSitemapInfo = info;
     }
 
     /**
@@ -103,11 +95,9 @@ public class CmsClientSitemapChangeCreateSubSitemap implements I_CmsClientSitema
     public void applyToModel(CmsSitemapController controller) {
 
         // apply to sitemap model 
-        //   controller.getData().setTimestamp(m_subSitemapInfo.getParentTimestamp());
         for (I_CmsClientSitemapChange change : m_internalChanges) {
             change.applyToModel(controller);
         }
-        // TODO: apply to clipboard model
     }
 
     /**
@@ -125,7 +115,7 @@ public class CmsClientSitemapChangeCreateSubSitemap implements I_CmsClientSitema
      */
     public boolean isChangingDetailPages() {
 
-        throw new UnsupportedOperationException();
+        return false;
     }
 
     /**

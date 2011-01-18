@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeMergeSitemap.java,v $
- * Date   : $Date: 2011/01/18 08:13:50 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/01/18 16:46:27 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,16 +36,16 @@ import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.client.control.CmsSitemapLoadEvent;
 import org.opencms.ade.sitemap.client.toolbar.CmsToolbarClipboardView;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
+import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry.EntryType;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsSitemapMergeInfo;
-import org.opencms.xml.sitemap.CmsSitemapManager;
 
 /**
  * This class represents the change of merging a sub-sitemap back into a parent sitemap.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -75,9 +75,8 @@ public class CmsClientSitemapChangeMergeSitemap implements I_CmsClientSitemapCha
         m_path = path;
         m_entry = entry;
         m_mergeInfo = mergeInfo;
-
+        m_entry.setEntryType(EntryType.folder);
         CmsClientSitemapEntry changedEntry = new CmsClientSitemapEntry(m_entry);
-        changedEntry.getProperties().remove(CmsSitemapManager.Property.sitemap.name());
         m_internalChange = new CmsClientSitemapChangeEdit(m_entry, changedEntry, false);
     }
 
@@ -86,7 +85,7 @@ public class CmsClientSitemapChangeMergeSitemap implements I_CmsClientSitemapCha
      */
     public void applyToClipboardView(CmsToolbarClipboardView view) {
 
-        // TODO: Auto-generated method stub
+        view.addModified(m_entry, m_entry.getSitePath());
     }
 
     /**
@@ -115,7 +114,7 @@ public class CmsClientSitemapChangeMergeSitemap implements I_CmsClientSitemapCha
      */
     public boolean isChangingDetailPages() {
 
-        throw new UnsupportedOperationException();
+        return false;
     }
 
     /**
@@ -123,7 +122,6 @@ public class CmsClientSitemapChangeMergeSitemap implements I_CmsClientSitemapCha
      */
     public CmsSitemapChange getChangeForCommit() {
 
-        // TODO: implement
         throw new UnsupportedOperationException();
     }
 }

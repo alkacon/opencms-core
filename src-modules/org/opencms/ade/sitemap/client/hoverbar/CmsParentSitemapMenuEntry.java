@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsParentSitemapMenuEntry.java,v $
- * Date   : $Date: 2011/01/14 14:19:54 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/01/18 16:46:27 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.ade.sitemap.client.hoverbar;
 
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
+import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 
 import com.google.gwt.user.client.Command;
@@ -42,7 +43,7 @@ import com.google.gwt.user.client.Command;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -66,7 +67,10 @@ public class CmsParentSitemapMenuEntry extends A_CmsSitemapMenuEntry {
              */
             public void execute() {
 
-                getHoverbar().getController().leaveEditor(getHoverbar().getController().getData().getParentSitemap());
+                String sitemapLocation = CmsCoreProvider.get().getUri()
+                    + "?path="
+                    + getHoverbar().getController().getData().getParentSitemap();
+                getHoverbar().getController().leaveEditor(sitemapLocation);
             }
         });
 

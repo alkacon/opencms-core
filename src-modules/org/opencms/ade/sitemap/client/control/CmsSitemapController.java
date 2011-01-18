@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2011/01/18 08:13:50 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2011/01/18 16:46:27 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -93,7 +93,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.36 $ 
+ * @version $Revision: 1.37 $ 
  * 
  * @since 8.0.0
  */
@@ -159,7 +159,6 @@ public class CmsSitemapController {
         m_data = (CmsSitemapData)CmsRpcPrefetcher.getSerializedObject(getService(), CmsSitemapData.DICT_NAME);
 
         m_hiddenProperties = new HashSet<String>();
-        m_hiddenProperties.add(CmsSitemapManager.Property.sitemap.toString());
         m_hiddenProperties.add(CmsSitemapManager.Property.internalRedirect.toString());
         m_hiddenProperties.add(CmsSitemapManager.Property.externalRedirect.toString());
         m_hiddenProperties.add(CmsSitemapManager.Property.isRedirect.toString());
@@ -355,6 +354,29 @@ public class CmsSitemapController {
      */
     public void createSubSitemap(final String path) {
 
+        CmsRpcAction<CmsSubSitemapInfo> subSitemapAction = new CmsRpcAction<CmsSubSitemapInfo>() {
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+             */
+            @Override
+            public void execute() {
+
+                start(0, true);
+                getService().createSubSitemap(getEntryPoint(), path, this);
+            }
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+             */
+            @Override
+            protected void onResponse(CmsSubSitemapInfo result) {
+
+                stop(false);
+                onCreateSubSitemap(path, result);
+            }
+        };
+        subSitemapAction.execute();
         //        CmsRpcAction<CmsSubSitemapInfo> subSitemapAction = new CmsRpcAction<CmsSubSitemapInfo>() {
         //
         //            /**
@@ -527,6 +549,7 @@ public class CmsSitemapController {
                     recomputePropertyInheritance();
                     return;
                 }
+
                 target.setSubEntries(result);
                 if (!originalPath.equals(sitePath)) {
                     target.setSitePath("abc"); // hack to be able to execute updateSitePath

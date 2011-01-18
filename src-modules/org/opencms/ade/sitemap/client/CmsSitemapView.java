@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapView.java,v $
- * Date   : $Date: 2011/01/14 14:19:55 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2011/01/18 16:46:27 $
+ * Version: $Revision: 1.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -84,7 +84,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.49 $ 
+ * @version $Revision: 1.50 $ 
  * 
  * @since 8.0.0
  */
@@ -413,7 +413,9 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
              */
             public void load(final CmsSitemapTreeItem target) {
 
-                m_controller.getChildren(target.getOriginalPath(), target.getSitePath());
+                if (target.getSitemapEntry().isFolderType()) {
+                    m_controller.getChildren(target.getOriginalPath(), target.getSitePath());
+                }
             }
         });
         if (m_controller.isEditable()) {

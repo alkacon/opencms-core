@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsClientSitemapEntry.java,v $
- * Date   : $Date: 2011/01/14 14:19:55 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2011/01/18 16:46:27 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * 
  * @since 8.0.0
  */
@@ -71,6 +71,18 @@ public class CmsClientSitemapEntry implements IsSerializable {
         normal
     }
 
+    /** An enum for the entry type. */
+    public enum EntryType {
+        /** The default type. An entry of type folder may have children. */
+        folder,
+
+        /** An entry of type leaf doesn't have any children. */
+        leaf,
+
+        /** An entry of type sub-sitemap is a reference to a sub-sitemap. */
+        subSitemap
+    }
+
     /** Key for the "externalRedirect" property. */
     protected static final String EXTERNAL_REDIRECT = CmsSitemapManager.Property.externalRedirect.getName();
 
@@ -82,6 +94,9 @@ public class CmsClientSitemapEntry implements IsSerializable {
 
     /** The current edit status. */
     private EditStatus m_editStatus = EditStatus.normal;
+
+    /** The entry type. */
+    private EntryType m_entryType;
 
     /** Indicates if the entry folder is locked by another user. */
     private boolean m_hasForeignFolderLock;
@@ -131,6 +146,7 @@ public class CmsClientSitemapEntry implements IsSerializable {
     public CmsClientSitemapEntry() {
 
         m_subEntries = new ArrayList<CmsClientSitemapEntry>();
+        m_entryType = EntryType.folder;
     }
 
     /**
@@ -150,6 +166,7 @@ public class CmsClientSitemapEntry implements IsSerializable {
         setPosition(clone.getPosition());
         setEditStatus(clone.getEditStatus());
         setLock(clone.getLock());
+        setEntryType(clone.getEntryType());
     }
 
     /**
@@ -198,6 +215,16 @@ public class CmsClientSitemapEntry implements IsSerializable {
     public EditStatus getEditStatus() {
 
         return m_editStatus;
+    }
+
+    /**
+     * Returns the entry type.<p>
+     *
+     * @return the entry type
+     */
+    public EntryType getEntryType() {
+
+        return m_entryType;
     }
 
     /**
@@ -376,6 +403,16 @@ public class CmsClientSitemapEntry implements IsSerializable {
     }
 
     /**
+     * Returns if the entry folder is locked by another user.<p>
+     *
+     * @return <code>true</code> if the entry folder is locked by another user
+     */
+    public boolean hasForeignFolderLock() {
+
+        return m_hasForeignFolderLock;
+    }
+
+    /**
      * Returns true if this entry has an internal redirect.<p>
      * 
      * @return true if this entry has an internal redirect 
@@ -410,13 +447,23 @@ public class CmsClientSitemapEntry implements IsSerializable {
     }
 
     /**
-     * Returns if the entry folder is locked by another user.<p>
-     *
-     * @return <code>true</code> if the entry folder is locked by another user
+     * Returns if this entry is of type folder.<p>
+     * 
+     * @return <code>true</code> if this entry is of type folder
      */
-    public boolean hasForeignFolderLock() {
+    public boolean isFolderType() {
 
-        return m_hasForeignFolderLock;
+        return EntryType.folder == m_entryType;
+    }
+
+    /**
+     * Returns if this entry is of type leaf.<p>
+     * 
+     * @return <code>true</code> if this entry is of type leaf
+     */
+    public boolean isLeafType() {
+
+        return EntryType.leaf == m_entryType;
     }
 
     /**
@@ -437,6 +484,16 @@ public class CmsClientSitemapEntry implements IsSerializable {
     public boolean isRoot() {
 
         return m_name.equals("");
+    }
+
+    /**
+     * Returns if this entry is of type sub-sitemap.<p>
+     * 
+     * @return <code>true</code> if this entry is of type sub-sitemap
+     */
+    public boolean isSubSitemapType() {
+
+        return EntryType.subSitemap == m_entryType;
     }
 
     /**
@@ -480,6 +537,16 @@ public class CmsClientSitemapEntry implements IsSerializable {
     public void setEditStatus(EditStatus status) {
 
         m_editStatus = status;
+    }
+
+    /**
+     * Sets the entry type.<p>
+     *
+     * @param entryType the entry type to set
+     */
+    public void setEntryType(EntryType entryType) {
+
+        m_entryType = entryType;
     }
 
     /**
@@ -632,10 +699,12 @@ public class CmsClientSitemapEntry implements IsSerializable {
         m_childrenLoadedInitially = true;
 
         m_subEntries.clear();
-        for (CmsClientSitemapEntry child : children) {
-            child.updateSitePath(m_sitePath + child.getName() + "/");
+        if (children != null) {
+            for (CmsClientSitemapEntry child : children) {
+                child.updateSitePath(m_sitePath + child.getName() + "/");
+            }
+            m_subEntries.addAll(children);
         }
-        m_subEntries.addAll(children);
     }
 
     /**
@@ -721,5 +790,4 @@ public class CmsClientSitemapEntry implements IsSerializable {
             m_subEntries.get(i).setPosition(i);
         }
     }
-
 }

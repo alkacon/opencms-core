@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapTreeItem.java,v $
- * Date   : $Date: 2011/01/14 14:19:55 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2011/01/18 16:46:27 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,6 @@ import org.opencms.gwt.shared.CmsListInfoBean.PageIcon;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.sitemap.CmsDetailPageTable;
-import org.opencms.xml.sitemap.CmsSitemapManager;
 import org.opencms.xml.sitemap.properties.CmsComputedPropertyValue;
 
 import java.util.HashMap;
@@ -77,7 +76,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.47 $ 
+ * @version $Revision: 1.48 $ 
  * 
  * @since 8.0.0
  * 
@@ -201,8 +200,7 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
         updateSitemapReferenceStatus(entry);
         updateDetailPageStatus();
         setLockIcon(entry.getLock());
-        setDropEnabled(!m_entry.getProperties().containsKey(CmsSitemapManager.Property.sitemap)
-            && !m_entry.hasForeignFolderLock());
+        setDropEnabled(m_entry.isFolderType() && !m_entry.hasForeignFolderLock());
         widget.setTitleEditable(true);
         widget.setTitleEditHandler(new I_CmsTitleEditHandler() {
 
@@ -380,6 +378,16 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
 
         m_listItemWidget.setBackground(Background.DEFAULT);
         return super.getDragHelper(target);
+    }
+
+    /**
+     * Returns the sitemap entry.<p>
+     * 
+     * @return the sitemap entry
+     */
+    public CmsClientSitemapEntry getSitemapEntry() {
+
+        return m_entry;
     }
 
     /**
@@ -643,7 +651,7 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
         updateSitePath();
         updateDetailPageStatus();
         setLockIcon(entry.getLock());
-        setDropEnabled(!m_entry.getProperties().containsKey(CmsSitemapManager.Property.sitemap));
+        setDropEnabled(m_entry.isFolderType() && !m_entry.hasForeignFolderLock());
     }
 
     /**
@@ -769,7 +777,7 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
      */
     protected void updateSitemapReferenceStatus(CmsClientSitemapEntry entry) {
 
-        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(entry.getOwnProperty(CmsSitemapManager.Property.sitemap.name()))) {
+        if (entry.isSubSitemapType()) {
             m_listItemWidget.setBackground(Background.YELLOW);
         } else {
             m_listItemWidget.setBackground(Background.DEFAULT);
