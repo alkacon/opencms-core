@@ -180,6 +180,7 @@
 
 @sprite .openerNoHover.selectBoxSelected {
 	width: auto; 
+	height:auto;
 	min-height: 0px;
 	border: 1px solid value("constants.css.borderColor");
 	gwt-image: "background.standard";
@@ -189,6 +190,7 @@
 
 @sprite .openerHover.selectBoxSelected {
 	width: auto;
+	height: auto;
 	min-height: 0px;
 	border: 1px solid value("constants.css.borderColor");
 	gwt-image: "background.hoverState";
