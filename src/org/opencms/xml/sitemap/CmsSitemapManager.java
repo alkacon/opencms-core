@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2011/01/18 08:13:50 $
- * Version: $Revision: 1.71 $
+ * Date   : $Date: 2011/01/18 16:45:27 $
+ * Version: $Revision: 1.72 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -85,7 +85,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.71 $
+ * @version $Revision: 1.72 $
  * 
  * @since 7.9.2
  */
@@ -145,6 +145,12 @@ public class CmsSitemapManager {
 
     /** Request attribute name constant for the current sitemap entry bean. */
     public static final String ATTR_SITEMAP_ENTRY = "__currentSitemapEntry";
+
+    /** Path to the default sitemap config. */
+    public static final String PATH_SITEMAP_DEFAULT_CONFIG = "/system/modules/org.opencms.ade.sitemap/config/sitemap.config";
+
+    /** The path to the sitemap editor jsp. */
+    public static final String PATH_SITEMAP_EDITOR_JSP = "/system/modules/org.opencms.ade.sitemap/sitemap.jsp";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSitemapManager.class);
@@ -365,7 +371,10 @@ public class CmsSitemapManager {
         if (folderPath.equals("/")) {
             return folderPath;
         }
-        CmsProperty subSitemapProp = cms.readPropertyObject(openPath, "is_sub_sitemap", false);
+        CmsProperty subSitemapProp = cms.readPropertyObject(
+            folderPath,
+            CmsPropertyDefinition.PROPERTY_ADE_SITEMAP_ENTRYPOINT,
+            false);
         if (Boolean.parseBoolean(subSitemapProp.getValue())) {
             return folderPath;
         } else {
@@ -652,7 +661,7 @@ public class CmsSitemapManager {
             CmsPropertyDefinition.PROPERTY_ADE_SITEMAP_CONFIG);
         accumulatePropertyConfiguration(cms, entryPoint, conf, result);
 
-        CmsResource defaultConfig = cms.readResource("/system/modules/org.opencms.ade.sitemap/config/sitemap.config");
+        CmsResource defaultConfig = cms.readResource(PATH_SITEMAP_DEFAULT_CONFIG);
         List<CmsXmlContentProperty> propertiesFromConfigFile = CmsConfigurationParser.getParser(cms, defaultConfig).getDefinedProperties();
         for (CmsXmlContentProperty prop : propertiesFromConfigFile) {
             if (!result.containsKey(prop.getPropertyName())) {

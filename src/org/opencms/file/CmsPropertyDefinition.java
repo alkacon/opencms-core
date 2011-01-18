@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsPropertyDefinition.java,v $
- * Date   : $Date: 2010/12/17 08:45:30 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2011/01/18 16:45:27 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import org.opencms.util.CmsUUID;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 6.0.0 
  */
@@ -105,6 +105,9 @@ public class CmsPropertyDefinition implements Cloneable, Comparable<CmsPropertyD
 
     /** Property for the sitemap detail view. */
     public static final String PROPERTY_ADE_SITEMAP = "ade.sitemap";
+
+    /** Property for the sitemap entry point, starting point of a sub-sitemap. */
+    public static final String PROPERTY_ADE_SITEMAP_ENTRYPOINT = "ade.sitemap.entrypoint";
 
     /** Property for the sitemap configuration file path. */
     public static final String PROPERTY_ADE_SITEMAP_CONFIG = "ade.sitemap.config";
