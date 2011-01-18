@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/Attic/A_CmsEntryPoint.java,v $
- * Date   : $Date: 2010/12/22 10:34:19 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2011/01/18 07:36:03 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,13 +41,14 @@ import org.opencms.gwt.client.util.CmsClientStringUtil;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.shared.UmbrellaException;
 
 /**
  * Handles exception handling and more for entry points.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.29 $ 
  * 
  * @since 8.0.0
  * 
@@ -105,7 +106,6 @@ public abstract class A_CmsEntryPoint implements EntryPoint {
 
         I_CmsInputLayoutBundle.INSTANCE.inputCss().ensureInjected();
 
-        I_CmsToolbarButtonLayoutBundle.INSTANCE.style().ensureInjected();
         I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().ensureInjected();
 
         initClasses();
@@ -129,6 +129,9 @@ public abstract class A_CmsEntryPoint implements EntryPoint {
              */
             public void onUncaughtException(Throwable t) {
 
+                if (t instanceof UmbrellaException) {
+                    t = ((UmbrellaException)t).getCauses().iterator().next();
+                }
                 String message = CmsClientStringUtil.getMessage(t);
                 CmsNotification.get().send(CmsNotification.Type.WARNING, message);
                 CmsLog.log(message + "\n" + CmsClientStringUtil.getStackTrace(t, "\n"));
