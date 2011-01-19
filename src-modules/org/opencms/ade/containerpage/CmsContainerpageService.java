@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/Attic/CmsContainerpageService.java,v $
- * Date   : $Date: 2011/01/18 16:45:03 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2011/01/19 13:46:55 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -66,7 +66,6 @@ import org.opencms.xml.containerpage.CmsXmlSubContainer;
 import org.opencms.xml.containerpage.CmsXmlSubContainerFactory;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.content.CmsXmlContentPropertyHelper;
-import org.opencms.xml.sitemap.CmsSitemapEntry;
 import org.opencms.xml.sitemap.CmsSitemapManager;
 
 import java.util.ArrayList;
@@ -87,7 +86,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * 
  * @since 8.0.0
  */
@@ -737,48 +736,6 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             }
         }
         return m_sessionCache;
-    }
-
-    /**
-     * Returns the sitemap URI of this request.<p>
-     * 
-     * @param cms the current cms object
-     * @param cntPageUri the URI of the container page 
-     * @param request the current request
-     * 
-     * @return the sitemap URI, empty if none available
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    private CmsSitemapLocation getSitemapLocation(CmsObject cms, String cntPageUri, HttpServletRequest request)
-    throws CmsException {
-
-        String sitemap = null;
-        String sitePath = cntPageUri;
-        CmsResource cntPageRes = cms.readResource(cntPageUri);
-        CmsSitemapManager manager = OpenCms.getSitemapManager();
-        CmsSitemapEntry sitemapInfo = manager.getRuntimeInfo(request);
-        if (sitemapInfo != null) {
-            sitemap = manager.getSitemapForUri(cms, sitemapInfo.getSitePath(cms));
-            sitePath = CmsSitemapManager.getNavigationUri(cms, request);
-        }
-        if (sitemap == null) {
-            List<CmsResource> sitemaps = manager.getSitemapsForResource(cms, cntPageRes);
-            if (sitemaps.size() > 0) {
-                CmsResource sitemapRes = sitemaps.get(0);
-                sitemap = cms.getSitePath(sitemapRes);
-                sitePath = manager.getSitePathForResource(cms, cntPageRes, sitemapRes);
-            }
-        }
-        if (sitemap == null) {
-            String sitemapRootPath = manager.getSitemapForSiteRoot(cms, cms.getRequestContext().getSiteRoot());
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(sitemapRootPath)) {
-                sitemap = cms.getRequestContext().removeSiteRoot(sitemapRootPath);
-            }
-            sitePath = "";
-        }
-        sitemap = (sitemap == null) ? "" : OpenCms.getLinkManager().substituteLink(cms, sitemap);
-        return new CmsSitemapLocation(sitemap, sitePath);
     }
 
     /**

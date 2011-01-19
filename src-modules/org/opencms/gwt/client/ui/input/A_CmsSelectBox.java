@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/A_CmsSelectBox.java,v $
- * Date   : $Date: 2010/12/21 10:23:32 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/01/19 13:46:55 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,9 +55,8 @@ import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.event.shared.GwtEvent;
-import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -76,7 +75,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 8.0.0
  * 
@@ -104,8 +103,8 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
     @UiField
     protected CmsErrorWidget m_error;
 
-    /** Handler manager for this widget's events. */
-    protected final HandlerManager m_handlerManager = new HandlerManager(this);
+    /** The event bus. */
+    protected SimpleEventBus m_eventBus;
 
     /** The open-close button. */
     protected CmsPushButton m_openClose;
@@ -153,6 +152,7 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
      */
     public A_CmsSelectBox() {
 
+        m_eventBus = new SimpleEventBus();
         m_panel = uiBinder.createAndBindUi(this);
         initWidget(m_panel);
         m_selectBoxState = new CmsStyleVariable(m_opener);
@@ -227,29 +227,7 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
      */
     public HandlerRegistration addValueChangeHandler(final ValueChangeHandler<String> handler) {
 
-        m_handlerManager.addHandler(ValueChangeEvent.getType(), handler);
-        return new HandlerRegistration() {
-
-            /**
-             * @see com.google.gwt.event.shared.HandlerRegistration#removeHandler()
-             */
-            public void removeHandler() {
-
-                m_handlerManager.removeHandler(ValueChangeEvent.getType(), handler);
-            }
-        };
-    }
-
-    /**
-     * @see com.google.gwt.user.client.ui.Widget#fireEvent(com.google.gwt.event.shared.GwtEvent)
-     */
-    @Override
-    public void fireEvent(GwtEvent<?> event) {
-
-        super.fireEvent(event);
-        if (m_handlerManager != null) {
-            m_handlerManager.fireEvent(event);
-        }
+        return super.addHandler(handler, ValueChangeEvent.getType());
     }
 
     /**
