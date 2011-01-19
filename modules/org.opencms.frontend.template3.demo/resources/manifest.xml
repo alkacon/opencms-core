@@ -115,6 +115,9 @@
                         <accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
                     </accesscontrol>
             </explorertype>
+            <explorertype name="twittergallery" key="fileicon.twittergallery" icon="htmlgallery.gif" reference="downloadgallery">
+                <newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=twittergallery" order="40" autosetnavigation="false" autosettitle="false" info="desc.twittergallery" />
+            </explorertype>
 		</explorertypes>
 	</module>
 	<files>
