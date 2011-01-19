@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsDetailPageResourceHandler.java,v $
- * Date   : $Date: 2011/01/14 12:03:52 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/01/19 09:52:24 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,6 +49,15 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 
+/**
+ * Resource init handler for detail-pages.<p>
+ * 
+ * @author Tobias Herrmann
+ * 
+ * @version $Revision: 1.2 $ 
+ * 
+ * @since 8.0.0
+ */
 public class CmsDetailPageResourceHandler implements I_CmsResourceInit {
 
     /** The log object for this class. */
@@ -65,7 +74,9 @@ public class CmsDetailPageResourceHandler implements I_CmsResourceInit {
         // empty
     }
 
-    @Override
+    /**
+     * @see org.opencms.main.I_CmsResourceInit#initResource(org.opencms.file.CmsResource, org.opencms.file.CmsObject, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     */
     public CmsResource initResource(CmsResource resource, CmsObject cms, HttpServletRequest req, HttpServletResponse res)
     throws CmsResourceInitException, CmsSecurityException {
 
