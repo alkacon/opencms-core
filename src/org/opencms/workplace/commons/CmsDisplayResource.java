@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsDisplayResource.java,v $
- * Date   : $Date: 2010/11/02 15:07:05 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/01/19 07:45:55 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,7 +37,6 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.history.I_CmsHistoryResource;
-import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
@@ -49,10 +48,8 @@ import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
-import org.opencms.xml.sitemap.CmsInternalSitemapEntry;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -74,7 +71,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -186,17 +183,17 @@ public class CmsDisplayResource extends CmsDialog {
             autoTimeWarp(resource);
 
             // code for display resource after all tests for displayability (exists, not deleted)
-            if (CmsResourceTypeXmlContainerPage.isContainerPage(resource)) {
-                // if we have a container page look for the first sitemap entry 
-                // and use that to display the container page  
-                List<CmsInternalSitemapEntry> entries = OpenCms.getSitemapManager().getEntriesForStructureId(
-                    getJsp().getCmsObject(),
-                    resource.getStructureId());
-                if (!entries.isEmpty()) {
-                    CmsInternalSitemapEntry entry = entries.get(0);
-                    resourceStr = entry.getRootPath();
-                }
-            }
+            //            if (CmsResourceTypeXmlContainerPage.isContainerPage(resource)) {
+            //                // if we have a container page look for the first sitemap entry 
+            //                // and use that to display the container page  
+            //                List<CmsInternalSitemapEntry> entries = OpenCms.getSitemapManager().getEntriesForStructureId(
+            //                    getJsp().getCmsObject(),
+            //                    resource.getStructureId());
+            //                if (!entries.isEmpty()) {
+            //                    CmsInternalSitemapEntry entry = entries.get(0);
+            //                    resourceStr = entry.getRootPath();
+            //                }
+            //            }
 
             String url = getJsp().link(resourceStr);
             // if in online project
