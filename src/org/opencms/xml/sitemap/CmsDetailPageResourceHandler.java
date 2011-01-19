@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsDetailPageResourceHandler.java,v $
- * Date   : $Date: 2011/01/19 09:52:24 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/01/19 09:53:03 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  */
@@ -121,7 +121,6 @@ public class CmsDetailPageResourceHandler implements I_CmsResourceInit {
             throw new CmsResourceInitException(msg, e);
         }
 
-        // TODO: Auto-generated method stub
         return null;
     }
 
