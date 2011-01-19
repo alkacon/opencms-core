@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2010/12/09 11:54:51 $
- * Version: $Revision: 1.66 $
+ * Date   : $Date: 2011/01/19 16:48:03 $
+ * Version: $Revision: 1.67 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -64,6 +64,7 @@ OpenCms x.x.x - Month Day, Year
 * Fixed issue of missing Lucene class by adding Lucene memory classes
 * Fixed issue in galleries: Broken layout with long item file names or titles
 * Fixed issue #1920: Inconsistent checkbox preselection in direct publish dialog
+* Fixed issue #1942: Publish scheduled jobs are missing after server restart
 
 OpenCms 7.9.2 - February 24th, 2010
 ! Added support for xsd:choice in XML content API and editor

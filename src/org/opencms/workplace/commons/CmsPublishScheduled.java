@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishScheduled.java,v $
- * Date   : $Date: 2010/05/27 07:13:09 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/01/19 16:48:03 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.workplace.commons;
 
+import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
@@ -74,7 +75,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author Mario Jaeger
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 7.5.1
  */
@@ -356,6 +357,8 @@ public class CmsPublishScheduled extends CmsDialog {
         job.setContextInfo(contextInfo);
         // add the job to the scheduled job list
         OpenCms.getScheduleManager().scheduleJob(cmsAdmin, job);
+        // update the XML configuration
+        OpenCms.writeConfiguration(CmsSystemConfiguration.class);
         return true;
     }
 }
