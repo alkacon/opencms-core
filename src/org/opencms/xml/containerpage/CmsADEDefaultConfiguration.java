@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADEDefaultConfiguration.java,v $
- * Date   : $Date: 2011/01/18 15:56:40 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2011/01/19 10:39:43 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 7.6 
  */
@@ -147,6 +147,7 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
             CmsConfigurationParser moduleConfig = m_moduleConfig.getConfigurationParser(getAdminCmsObject(cms));
             item = moduleConfig.getTypeConfiguration().get(type);
         }
+        item.getLazyFolder().getOrCreateFolder(cms);
         String newFileName = getNextNewFileName(cms, cntPageUri, request, type);
         cms.copyResource(cms.getSitePath(item.getSourceFile()), newFileName);
         return cms.readResource(newFileName);
@@ -299,7 +300,7 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
             types.putAll(parser.getTypeConfiguration());
         }
         CmsConfigurationItem item = types.get(type);
-        CmsResource folderRes = item.getLazyFolder().getValue(cms);
+        CmsResource folderRes = item.getLazyFolder().getFolder(cms);
         String destination = cms.getSitePath(folderRes) + item.getPattern();
         return getNewFileName(cms, destination);
     }

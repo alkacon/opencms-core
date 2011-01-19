@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsConfigurationItem.java,v $
- * Date   : $Date: 2011/01/18 15:56:40 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/01/19 10:39:43 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,6 @@
 
 package org.opencms.xml.containerpage;
 
-import org.opencms.file.CmsAutoCreateFolder;
 import org.opencms.file.CmsResource;
 
 /**
@@ -44,7 +43,7 @@ import org.opencms.file.CmsResource;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 7.6 
  */
@@ -54,7 +53,7 @@ public class CmsConfigurationItem {
     private final CmsResource m_folder;
 
     /** The lazy folder object. */
-    private CmsAutoCreateFolder m_lazyFolder;
+    private CmsLazyFolder m_lazyFolder;
 
     /** The file pattern. */
     private final String m_pattern;
@@ -73,7 +72,7 @@ public class CmsConfigurationItem {
     public CmsConfigurationItem(
         CmsResource sourceFile,
         CmsResource destinationFolder,
-        CmsAutoCreateFolder lazyFolder,
+        CmsLazyFolder lazyFolder,
         String pattern) {
 
         m_sourceFile = sourceFile;
@@ -97,7 +96,7 @@ public class CmsConfigurationItem {
      * 
      * @return a lazy folder object 
      */
-    public CmsAutoCreateFolder getLazyFolder() {
+    public CmsLazyFolder getLazyFolder() {
 
         return m_lazyFolder;
     }

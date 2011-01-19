@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADEManager.java,v $
- * Date   : $Date: 2011/01/18 15:56:40 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2011/01/19 10:39:43 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,7 +32,6 @@
 package org.opencms.xml.containerpage;
 
 import org.opencms.configuration.CmsSystemConfiguration;
-import org.opencms.file.CmsAutoCreateFolder;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
@@ -75,7 +74,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * 
  * @since 7.6
  */
@@ -126,8 +125,6 @@ public class CmsADEManager {
      * @param systemConfiguration the system configuration
      */
     public CmsADEManager(CmsObject adminCms, CmsMemoryMonitor memoryMonitor, CmsSystemConfiguration systemConfiguration) {
-
-        CmsAutoCreateFolder.initAdminCms(adminCms);
 
         // initialize the ade cache
         CmsADECacheSettings cacheSettings = systemConfiguration.getAdeCacheSettings();

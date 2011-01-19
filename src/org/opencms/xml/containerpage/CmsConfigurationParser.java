@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsConfigurationParser.java,v $
- * Date   : $Date: 2011/01/18 15:56:40 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2011/01/19 10:39:43 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,7 +32,6 @@
 package org.opencms.xml.containerpage;
 
 import org.opencms.cache.CmsVfsMemoryObjectCache;
-import org.opencms.file.CmsAutoCreateFolder;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -77,7 +76,7 @@ import org.apache.commons.collections.Transformer;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 7.6 
  */
@@ -297,10 +296,12 @@ public class CmsConfigurationParser {
             CmsConfigurationItem item = entry.getValue();
             String type = entry.getKey();
             CmsResource source = item.getSourceFile();
-            CmsResource folderRes = item.getLazyFolder().getValue(cms);
+            //CmsResource folderRes = item.getLazyFolder().getValue(cms);
+            CmsLazyFolder autoFolder = item.getLazyFolder();
+            CmsResource permissionCheckFolder = autoFolder.getPermissionCheckFolder(cms);
             CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type);
-            boolean editable = settings.isEditable(cms, folderRes);
-            boolean controlPermission = settings.getAccess().getPermissions(cms, folderRes).requiresControlPermission();
+            boolean editable = settings.isEditable(cms, permissionCheckFolder);
+            boolean controlPermission = settings.getAccess().getPermissions(cms, permissionCheckFolder).requiresControlPermission();
             if (editable && controlPermission) {
                 result.add(source);
             }
@@ -586,13 +587,13 @@ public class CmsConfigurationParser {
         CmsResource resource = cms.readResource(source);
         String type = getTypeName(resource.getTypeId());
         CmsResource folderRes = null;
-        CmsAutoCreateFolder lazyFolder = null;
+        CmsLazyFolder lazyFolder = null;
         if (folder == null) {
             String path = "/" + type;
-            lazyFolder = new CmsAutoCreateFolder(path);
+            lazyFolder = new CmsLazyFolder(path);
         } else {
             folderRes = cms.readResource(folder);
-            lazyFolder = new CmsAutoCreateFolder(folderRes);
+            lazyFolder = new CmsLazyFolder(folderRes);
         }
 
         CmsConfigurationItem configItem = new CmsConfigurationItem(resource, folderRes, lazyFolder, pattern);
