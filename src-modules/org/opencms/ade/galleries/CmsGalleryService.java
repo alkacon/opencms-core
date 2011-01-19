@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/Attic/CmsGalleryService.java,v $
- * Date   : $Date: 2010/09/22 14:27:48 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2011/01/19 10:34:03 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -76,8 +76,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -87,7 +87,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Polina Smagina
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.29 $ 
  * 
  * @since 8.0.0
  * 
@@ -670,30 +670,40 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         Map<I_CmsResourceType, I_CmsPreviewProvider> typeMapping = getTypeProviderMapping();
         Iterator<I_CmsResourceType> it = types.iterator();
         while (it.hasNext()) {
+
             I_CmsResourceType type = it.next();
-            CmsResourceTypeBean bean = new CmsResourceTypeBean();
+            try {
+                CmsResourceTypeBean bean = new CmsResourceTypeBean();
 
-            // unique id
-            bean.setType(type.getTypeName());
-            // type nice name            
-            Locale wpLocale = getWorkplaceLocale();
-            // type title and subtitle
-            bean.setTitle(CmsWorkplaceMessages.getResourceTypeName(wpLocale, type.getTypeName()));
-            bean.setDescription(CmsWorkplaceMessages.getResourceTypeDescription(wpLocale, type.getTypeName()));
-            // gallery id of corresponding galleries
-            ArrayList<String> galleryNames = new ArrayList<String>();
-            Iterator<I_CmsResourceType> galleryTypes = type.getGalleryTypes().iterator();
-            while (galleryTypes.hasNext()) {
-                I_CmsResourceType galleryType = galleryTypes.next();
-                galleryNames.add(galleryType.getTypeName());
+                // unique id
+                bean.setType(type.getTypeName());
+                // type nice name            
+                Locale wpLocale = getWorkplaceLocale();
+                // type title and subtitle
+                bean.setTitle(CmsWorkplaceMessages.getResourceTypeName(wpLocale, type.getTypeName()));
+                bean.setDescription(CmsWorkplaceMessages.getResourceTypeDescription(wpLocale, type.getTypeName()));
+                // gallery id of corresponding galleries
+                ArrayList<String> galleryNames = new ArrayList<String>();
+                Iterator<I_CmsResourceType> galleryTypes = type.getGalleryTypes().iterator();
+                while (galleryTypes.hasNext()) {
+                    I_CmsResourceType galleryType = galleryTypes.next();
+                    galleryNames.add(galleryType.getTypeName());
+                }
+                bean.setGalleryTypeNames(galleryNames);
+                I_CmsPreviewProvider preview = typeMapping.get(type);
+                if (preview != null) {
+                    bean.setPreviewProviderName(preview.getPreviewName());
+                }
+                list.add(bean);
+            } catch (Exception e) {
+                if (type != null) {
+                    log(
+                        Messages.get().getBundle(getWorkplaceLocale()).key(
+                            Messages.ERROR_BUILD_TYPE_LIST_1,
+                            type.getTypeName()),
+                        e);
+                }
             }
-            bean.setGalleryTypeNames(galleryNames);
-            I_CmsPreviewProvider preview = typeMapping.get(type);
-            if (preview != null) {
-                bean.setPreviewProviderName(preview.getPreviewName());
-            }
-            list.add(bean);
-
         }
         return list;
     }
