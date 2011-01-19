@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/rpc/Attic/I_CmsGalleryServiceAsync.java,v $
- * Date   : $Date: 2010/06/30 13:54:43 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/01/19 14:18:47 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,7 +34,6 @@ package org.opencms.ade.galleries.shared.rpc;
 import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
 import org.opencms.ade.galleries.shared.CmsGalleryFolderBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
-import org.opencms.ade.galleries.shared.CmsSitemapEntryBean;
 import org.opencms.ade.galleries.shared.CmsVfsEntryBean;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 
@@ -47,7 +46,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 8.0.0
  * 
@@ -105,14 +104,6 @@ public interface I_CmsGalleryServiceAsync {
      * @param callback the callback
      */
     void getSearch(CmsGallerySearchBean searchObj, AsyncCallback<CmsGallerySearchBean> callback);
-
-    /**
-     * Gets the sitemap sub-entries for a given sitemap path.<p>
-     * 
-     * @param path the sitemap path 
-     * @param callback the callback
-     */
-    void getSitemapSubEntries(String path, AsyncCallback<List<CmsSitemapEntryBean>> callback);
 
     /**
      * Gets the sub-folders of a folder.<p>

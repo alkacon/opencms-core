@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/ui/Attic/CmsGalleryDialog.java,v $
- * Date   : $Date: 2011/01/03 15:47:42 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2011/01/19 14:18:48 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,6 @@ import org.opencms.ade.galleries.client.CmsGalleriesTabHandler;
 import org.opencms.ade.galleries.client.CmsGalleryController;
 import org.opencms.ade.galleries.client.CmsResultsTabHandler;
 import org.opencms.ade.galleries.client.CmsSearchTabHandler;
-import org.opencms.ade.galleries.client.CmsSitemapTabHandler;
 import org.opencms.ade.galleries.client.CmsTypesTabHandler;
 import org.opencms.ade.galleries.client.CmsVfsTabHandler;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
@@ -71,7 +70,7 @@ import com.google.gwt.user.client.ui.HasText;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.38 $
+ * @version $Revision: 1.39 $
  * 
  * @since 8.0.
  */
@@ -113,9 +112,6 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
 
     /** The Full-text search tab. */
     private CmsSearchTab m_searchTab;
-
-    /** The sitemap tab. */
-    private CmsSitemapTab m_sitemapTab;
 
     /** The tabbed panel. */
     protected CmsTabbedPanel<A_CmsTab> m_tabbedPanel;
@@ -254,12 +250,6 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
                     m_searchTab.setTabTextAccessor(getTabTextAccessor(i));
                     m_tabbedPanel.add(m_searchTab, Messages.get().key(Messages.GUI_TAB_TITLE_SEARCH_0));
                     break;
-                case cms_tab_sitemap:
-                    m_sitemapTab = new CmsSitemapTab(new CmsSitemapTabHandler(controller));
-                    m_sitemapTab.setTabTextAccessor(getTabTextAccessor(i));
-                    m_tabbedPanel.add(m_sitemapTab, Messages.get().key(Messages.GUI_TAB_TITLE_SITEMAP_0));
-
-                    break;
                 case cms_tab_vfstree:
                     m_vfsTab = new CmsVfsTab(new CmsVfsTabHandler(controller));
                     m_vfsTab.setTabTextAccessor(getTabTextAccessor(i));
@@ -344,16 +334,6 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
     public CmsSearchTab getSearchTab() {
 
         return m_searchTab;
-    }
-
-    /**
-     * Returns the sitemap tab widget.<p>
-     * 
-     * @return the sitemap tab widget 
-     */
-    public CmsSitemapTab getSitemapTab() {
-
-        return m_sitemapTab;
     }
 
     /**

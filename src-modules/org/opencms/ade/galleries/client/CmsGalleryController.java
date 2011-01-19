@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/client/Attic/CmsGalleryController.java,v $
- * Date   : $Date: 2010/11/18 15:28:10 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2011/01/19 14:18:47 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,6 @@ import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
 import org.opencms.ade.galleries.shared.CmsGalleryFolderBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.CmsResourceTypeBean;
-import org.opencms.ade.galleries.shared.CmsSitemapEntryBean;
 import org.opencms.ade.galleries.shared.CmsVfsEntryBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
@@ -70,7 +69,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * @author Polina Smagina
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.28 $ 
  * 
  * @since 8.0.0
  */
@@ -269,37 +268,6 @@ public class CmsGalleryController {
         m_handler.onClearTypes(selectedTypes);
         m_searchObject.clearTypes();
         updateResultsTab(false);
-    }
-
-    /**
-     * Asynchronously retrieves the sub-entries of a sitemap path ands passes them to a callback.<p>
-     * 
-     * @param path the path for which the sub-entries should be retrieved 
-     * 
-     * @param callback the callback to which the sitemap entry beans should be passed 
-     */
-    public void getSitemapSubEntries(final String path, final AsyncCallback<List<CmsSitemapEntryBean>> callback) {
-
-        CmsRpcAction<List<CmsSitemapEntryBean>> action = new CmsRpcAction<List<CmsSitemapEntryBean>>() {
-
-            @Override
-            public void execute() {
-
-                start(0, false);
-                getGalleryService().getSitemapSubEntries(path, this);
-            }
-
-            @Override
-            protected void onResponse(List<CmsSitemapEntryBean> result) {
-
-                stop(false);
-                callback.onSuccess(result);
-            }
-
-        };
-
-        action.execute();
-
     }
 
     /**

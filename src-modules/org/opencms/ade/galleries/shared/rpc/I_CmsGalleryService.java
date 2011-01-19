@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/shared/rpc/Attic/I_CmsGalleryService.java,v $
- * Date   : $Date: 2010/06/30 13:54:43 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2011/01/19 14:18:47 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,7 +34,6 @@ package org.opencms.ade.galleries.shared.rpc;
 import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
 import org.opencms.ade.galleries.shared.CmsGalleryFolderBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
-import org.opencms.ade.galleries.shared.CmsSitemapEntryBean;
 import org.opencms.ade.galleries.shared.CmsVfsEntryBean;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
@@ -50,7 +49,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  * @author Polina Smagina
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 8.0.0
  * 
@@ -124,17 +123,6 @@ public interface I_CmsGalleryService extends RemoteService {
      * @throws CmsRpcException is something goes wrong
      */
     CmsGallerySearchBean getSearch(CmsGallerySearchBean searchObj) throws CmsRpcException;
-
-    /**
-     * Returns the sitemap sub-entries of a given sitemap path.<p>
-     * 
-     * @param path the sitemap path 
-     * 
-     * @return the sub-entries of the path 
-     * 
-     * @throws CmsRpcException if something goes wrong 
-     */
-    List<CmsSitemapEntryBean> getSitemapSubEntries(String path) throws CmsRpcException;
 
     /**
      * Gets the sub-folders of a folder.<p>
