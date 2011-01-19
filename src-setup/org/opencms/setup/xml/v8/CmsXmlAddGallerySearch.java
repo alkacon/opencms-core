@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/v8/Attic/CmsXmlAddGallerySearch.java,v $
- * Date   : $Date: 2010/02/24 12:44:22 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/01/19 13:45:03 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,6 @@ import org.opencms.search.galleries.CmsGallerySearchFieldConfiguration;
 import org.opencms.search.galleries.CmsGallerySearchFieldMapping;
 import org.opencms.search.galleries.CmsGallerySearchIndex;
 import org.opencms.setup.xml.A_CmsXmlSearch;
-import org.opencms.workplace.galleries.CmsGallerySearchServer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +58,7 @@ import org.dom4j.Node;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  */
@@ -111,7 +110,7 @@ public class CmsXmlAddGallerySearch extends A_CmsXmlSearch {
                     document,
                     xpath,
                     CmsGallerySearchIndex.class,
-                    CmsGallerySearchServer.ADVANCED_GALLERY_INDEX,
+                    CmsGallerySearchIndex.ADVANCED_GALLERY_INDEX,
                     "offline",
                     "Offline",
                     "all",
@@ -395,7 +394,7 @@ public class CmsXmlAddGallerySearch extends A_CmsXmlSearch {
             xp.append(CmsSearchConfiguration.N_INDEX);
             xp.append("[");
             xp.append(I_CmsXmlConfiguration.N_NAME);
-            xp.append("='").append(CmsGallerySearchServer.ADVANCED_GALLERY_INDEX).append("']");
+            xp.append("='").append(CmsGallerySearchIndex.ADVANCED_GALLERY_INDEX).append("']");
             m_xpaths.add(xp.toString());
             // /opencms/search/indexsources/indexsource[name='ADE_gallery_source']
             xp = new StringBuffer(256);

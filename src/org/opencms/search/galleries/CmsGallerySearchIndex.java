@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/galleries/CmsGallerySearchIndex.java,v $
- * Date   : $Date: 2010/11/02 09:07:38 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/01/19 13:44:21 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,11 +68,14 @@ import org.apache.lucene.util.Version;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 8.0.0 
  */
 public class CmsGallerySearchIndex extends CmsSearchIndex {
+
+    /** The advanced gallery index name. */
+    public static final String ADVANCED_GALLERY_INDEX = "ADE Gallery Index";
 
     /** The gallery document type name for xml-contents. */
     public static final String TYPE_XMLCONTENT_GALLERIES = "xmlcontent-galleries";

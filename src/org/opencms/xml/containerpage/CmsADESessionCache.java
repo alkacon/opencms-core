@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADESessionCache.java,v $
- * Date   : $Date: 2010/05/03 07:53:47 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/01/19 13:44:21 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,6 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsCollectionsGenericWrapper;
-import org.opencms.workplace.editors.ade.CmsSearchOptions;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -51,7 +50,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.9.2
  */
@@ -69,9 +68,6 @@ public final class CmsADESessionCache {
     /** The ADE recent list. */
     private List<CmsContainerElementBean> m_recentLists;
 
-    /** The ADE search options. */
-    private CmsSearchOptions m_searchOptions;
-
     /** The tool-bar visibility flag. */
     private boolean m_toolbarVisible;
 
@@ -85,9 +81,6 @@ public final class CmsADESessionCache {
         // container element cache
         Map<String, CmsContainerElementBean> lruMapCntElem = new HashMap<String, CmsContainerElementBean>();
         m_containerElements = Collections.synchronizedMap(lruMapCntElem);
-
-        // ADE search options
-        m_searchOptions = null;
 
         // ADE recent lists
         int maxElems = 10;
@@ -124,16 +117,6 @@ public final class CmsADESessionCache {
     }
 
     /**
-     * Returns the search options.<p>
-     * 
-     * @return the cached search options
-     */
-    public CmsSearchOptions getSearchOptions() {
-
-        return m_searchOptions;
-    }
-
-    /**
      * Returns the tool-bar visibility.<p>
      *
      * @return the tool-bar visibility
@@ -165,20 +148,6 @@ public final class CmsADESessionCache {
         m_recentLists.addAll(list);
         for (CmsContainerElementBean element : m_recentLists) {
             setCacheContainerElement(element.getClientId(), element);
-        }
-    }
-
-    /**
-     * Caches the given search options.<p>
-     * 
-     * @param opts the search options to cache
-     */
-    public void setCacheSearchOptions(CmsSearchOptions opts) {
-
-        if (opts == null) {
-            m_searchOptions = null;
-        } else {
-            m_searchOptions = opts.resetPage();
         }
     }
 
