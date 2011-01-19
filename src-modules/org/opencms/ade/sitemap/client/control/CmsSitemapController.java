@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2011/01/18 16:46:27 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2011/01/19 09:32:35 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,6 +38,7 @@ import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeBumpDetailPage
 import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeCreateSubSitemap;
 import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeDelete;
 import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeEdit;
+import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeMergeSitemap;
 import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeMove;
 import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeNew;
 import org.opencms.ade.sitemap.client.model.CmsClientSitemapCompositeChange;
@@ -48,6 +49,7 @@ import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry.EditStatus;
 import org.opencms.ade.sitemap.shared.CmsSitemapBrokenLinkBean;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
+import org.opencms.ade.sitemap.shared.CmsSitemapMergeInfo;
 import org.opencms.ade.sitemap.shared.CmsSitemapTemplate;
 import org.opencms.ade.sitemap.shared.CmsSubSitemapInfo;
 import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService;
@@ -93,7 +95,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.37 $ 
+ * @version $Revision: 1.38 $ 
  * 
  * @since 8.0.0
  */
@@ -828,43 +830,35 @@ public class CmsSitemapController {
      * 
      * @param path the path at which the sitemap should be merged into the current sitemap 
      */
-    public void saveAndMergeSubSitemap(final String path) {
+    public void mergeSubSitemap(final String path) {
 
-        //        CmsRpcAction<CmsSitemapMergeInfo> mergeAction = new CmsRpcAction<CmsSitemapMergeInfo>() {
-        //
-        //            /**
-        //             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
-        //             */
-        //            @Override
-        //            public void execute() {
-        //
-        //                start(0, true);
-        //                List<CmsSitemapChange> changes = getChangesToSave();
-        //                getService().saveAndMergeSubSitemap(getSitemapUri(), changes, path, this);
-        //            }
-        //
-        //            /**
-        //             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
-        //             */
-        //            @Override
-        //            protected void onResponse(CmsSitemapMergeInfo result) {
-        //
-        //                stop(false);
-        //                resetChanges();
-        //                CmsClientSitemapEntry target = getEntry(path);
-        //                I_CmsClientSitemapChange change = new CmsClientSitemapChangeMergeSitemap(path, target, result);
-        //                executeChange(change);
-        //
-        //            }
-        //        };
-        //        CmsClientSitemapEntry entry = getEntry(path);
-        //
-        //        CmsSimplePropertyValue sitemapProp = entry.getProperties().get(CmsSitemapManager.Property.sitemap.name());
-        //        String sitemapVal = sitemapProp == null ? null : sitemapProp.getOwnValue();
-        //        if (CmsCoreProvider.get().lockAndCheckModification(getSitemapUri(), m_data.getTimestamp())
-        //            && CmsCoreProvider.get().lock(sitemapVal)) {
-        //            mergeAction.execute();
-        //        }
+        CmsRpcAction<CmsSitemapMergeInfo> mergeAction = new CmsRpcAction<CmsSitemapMergeInfo>() {
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+             */
+            @Override
+            public void execute() {
+
+                start(0, true);
+                getService().mergeSubSitemap(getEntryPoint(), path, this);
+            }
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+             */
+            @Override
+            protected void onResponse(CmsSitemapMergeInfo result) {
+
+                stop(false);
+                CmsClientSitemapEntry target = getEntry(path);
+                I_CmsClientSitemapChange change = new CmsClientSitemapChangeMergeSitemap(path, target, result);
+                executeChange(change);
+
+            }
+        };
+        mergeAction.execute();
+
     }
 
     /**

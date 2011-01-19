@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsMergeMenuEntry.java,v $
- * Date   : $Date: 2011/01/18 16:46:27 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/01/19 09:32:35 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import com.google.gwt.user.client.Command;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -88,7 +88,7 @@ public class CmsMergeMenuEntry extends A_CmsSitemapMenuEntry {
                      */
                     public void onOk() {
 
-                        controller.saveAndMergeSubSitemap(sitePath);
+                        controller.mergeSubSitemap(sitePath);
                     }
                 });
                 confirmDialog.center();

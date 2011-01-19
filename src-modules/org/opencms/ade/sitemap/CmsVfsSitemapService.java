@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsVfsSitemapService.java,v $
- * Date   : $Date: 2011/01/18 16:46:27 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/01/19 09:32:35 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -106,7 +106,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  * 
@@ -154,13 +154,26 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             String folderName = CmsStringUtil.joinPaths(subSitemapPath, "_config");
             String sitemapConfigName = CmsStringUtil.joinPaths(folderName, "sitemap.config");
             String containerpageConfigName = CmsStringUtil.joinPaths(folderName, "containerpage.config");
-            cms.createResource(folderName, CmsResourceTypeFolder.getStaticTypeId());
+            if (!cms.existsResource(folderName)) {
+                cms.createResource(folderName, CmsResourceTypeFolder.getStaticTypeId());
+            }
+            int index = 1;
+            while (cms.existsResource(sitemapConfigName)) {
+                sitemapConfigName = CmsStringUtil.joinPaths(folderName, "sitemap_" + index + ".config");
+                index++;
+            }
             cms.createResource(
                 sitemapConfigName,
                 OpenCms.getResourceManager().getResourceType("sitemap_config").getTypeId());
+            index = 1;
+            while (cms.existsResource(containerpageConfigName)) {
+                containerpageConfigName = CmsStringUtil.joinPaths(folderName, "containerpage_" + index + ".config");
+                index++;
+            }
             cms.createResource(
                 containerpageConfigName,
                 OpenCms.getResourceManager().getResourceType("containerpage_config").getTypeId());
+
             List<CmsProperty> propertyObjects = new ArrayList<CmsProperty>();
             propertyObjects.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_ADE_SITEMAP_ENTRYPOINT, "true", "true"));
             propertyObjects.add(new CmsProperty(
@@ -344,7 +357,6 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 // if no path is supplied, start from root
                 openPath = "/";
             }
-            // TODO: read property config from 'sitemap-restype.xml' only
             String entryPoint = sitemapMgr.findEntryPoint(cms, openPath);
 
             Map<String, CmsXmlContentProperty> propertyConfig = sitemapMgr.getElementPropertyConfiguration(
@@ -973,8 +985,6 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     private CmsClientSitemapEntry getRootEntry(String entryPoint, Map<String, CmsXmlContentProperty> propertyConfig)
     throws CmsSecurityException, CmsException {
 
-        CmsResource defaultFile = getCmsObject().readDefaultFile(entryPoint);
-
         CmsJspNavElement navElement = getNavBuilder().getNavigationForResource(entryPoint);
 
         CmsClientSitemapEntry result = toClientEntry(navElement, propertyConfig, true);
@@ -1208,7 +1218,6 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         CmsObject cms = getCmsObject();
         CmsClientSitemapEntry clientEntry = new CmsClientSitemapEntry();
         CmsResource entryFolder = null;
-        // TODO: check for sub-sitemap entry point
         Map<String, CmsSimplePropertyValue> clientProperties = CmsXmlContentPropertyHelper.convertPropertySimpleValues(
             getCmsObject(),
             Collections.<String, CmsSimplePropertyValue> emptyMap(),
