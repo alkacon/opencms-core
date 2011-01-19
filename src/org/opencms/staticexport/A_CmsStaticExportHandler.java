@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/A_CmsStaticExportHandler.java,v $
- * Date   : $Date: 2010/10/04 14:53:39 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/01/19 11:10:42 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,6 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsResourceNotFoundException;
-import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -47,7 +46,6 @@ import org.opencms.security.CmsSecurityException;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
-import org.opencms.xml.sitemap.CmsInternalSitemapEntry;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -68,7 +66,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich
  * @author Rueidger Kurz
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.1.7 
  * 
@@ -405,8 +403,8 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
                 purgeFiles(relFilesToPurge, vfsName, scrubbedFiles);
 
                 // purge all sitemap references in case of a container page
-                List<File> relSitemapFiles = getRelatedSitemapFiles(cms, res, vfsName);
-                purgeFiles(relSitemapFiles, vfsName, scrubbedFiles);
+                //                List<File> relSitemapFiles = getRelatedSitemapFiles(cms, res, vfsName);
+                //                purgeFiles(relSitemapFiles, vfsName, scrubbedFiles);
 
                 // purge the file itself
                 purgeFile(rfsExportFileName, vfsName);
@@ -463,33 +461,33 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
      * @param res the originally resource to purge (the container page)
      * @param vfsName the vfs name of the originally resource to purge
      */
-    private List<File> getRelatedSitemapFiles(CmsObject cms, CmsPublishedResource res, String vfsName) {
-
-        List<File> files = new ArrayList<File>();
-        try {
-            if (res.getType() == CmsResourceTypeXmlContainerPage.getContainerPageTypeId()) {
-                List<CmsInternalSitemapEntry> entries = OpenCms.getSitemapManager().getEntriesForStructureId(
-                    cms,
-                    res.getStructureId());
-                for (CmsInternalSitemapEntry entry : entries) {
-                    String rfsName = OpenCms.getStaticExportManager().getRfsName(cms, entry.getRootPath());
-                    // add index_export.html or the index.html to the folder name
-                    rfsName = OpenCms.getStaticExportManager().addDefaultFileNameToFolder(rfsName, res.isFolder());
-                    // get 
-                    String rfsExportFileName = CmsFileUtil.normalizePath(OpenCms.getStaticExportManager().getExportPath(
-                        vfsName)
-                        + rfsName.substring(OpenCms.getStaticExportManager().getRfsPrefix(vfsName).length()));
-                    File file = new File(rfsExportFileName);
-                    if (file.exists() && !files.contains(file)) {
-                        files.add(file);
-                    }
-                }
-            }
-        } catch (CmsException e) {
-            LOG.error(e.getLocalizedMessage(), e);
-        }
-        return files;
-    }
+    //    private List<File> getRelatedSitemapFiles(CmsObject cms, CmsPublishedResource res, String vfsName) {
+    //
+    //        List<File> files = new ArrayList<File>();
+    //        try {
+    //            if (res.getType() == CmsResourceTypeXmlContainerPage.getContainerPageTypeId()) {
+    //                List<CmsInternalSitemapEntry> entries = OpenCms.getSitemapManager().getEntriesForStructureId(
+    //                    cms,
+    //                    res.getStructureId());
+    //                for (CmsInternalSitemapEntry entry : entries) {
+    //                    String rfsName = OpenCms.getStaticExportManager().getRfsName(cms, entry.getRootPath());
+    //                    // add index_export.html or the index.html to the folder name
+    //                    rfsName = OpenCms.getStaticExportManager().addDefaultFileNameToFolder(rfsName, res.isFolder());
+    //                    // get 
+    //                    String rfsExportFileName = CmsFileUtil.normalizePath(OpenCms.getStaticExportManager().getExportPath(
+    //                        vfsName)
+    //                        + rfsName.substring(OpenCms.getStaticExportManager().getRfsPrefix(vfsName).length()));
+    //                    File file = new File(rfsExportFileName);
+    //                    if (file.exists() && !files.contains(file)) {
+    //                        files.add(file);
+    //                    }
+    //                }
+    //            }
+    //        } catch (CmsException e) {
+    //            LOG.error(e.getLocalizedMessage(), e);
+    //        }
+    //        return files;
+    //    }
 
     /**
      * Returns the export file name starting from the OpenCms webapp folder.<p>
@@ -513,7 +511,6 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
      * 
      * @param files the list of files to purge
      * @param vfsName the vfs name of the originally file to purge
-     * @param rfsName the rfs name of the originally file to purge
      * @param scrubbedFiles the list which stores all the scrubbed files
      */
     private void purgeFiles(List<File> files, String vfsName, Set<String> scrubbedFiles) {
