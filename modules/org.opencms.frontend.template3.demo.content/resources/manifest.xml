@@ -1247,7 +1247,7 @@
 			<properties>
 				<property>
 					<name>NavPos</name>
-					<value><![CDATA[-0.5]]></value>
+					<value><![CDATA[10.0]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -1304,7 +1304,7 @@
 			<properties>
 				<property>
 					<name>NavPos</name>
-					<value><![CDATA[-0.75]]></value>
+					<value><![CDATA[20.0]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -1361,7 +1361,7 @@
 			<properties>
 				<property>
 					<name>NavPos</name>
-					<value><![CDATA[-0.875]]></value>
+					<value><![CDATA[30.0]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
