@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/template3/Attic/CmsTemplateMenu.java,v $
- * Date   : $Date: 2010/05/26 14:20:10 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/01/20 07:10:36 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,17 +31,14 @@
 
 package org.opencms.frontend.template3;
 
-import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.jsp.CmsJspNavElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.OpenCms;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.xml.sitemap.CmsSitemapEntry;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -63,7 +60,7 @@ import org.apache.commons.logging.Log;
  * 
  * @since 7.6
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  */
 public class CmsTemplateMenu extends CmsJspActionElement {
 
@@ -370,15 +367,6 @@ public class CmsTemplateMenu extends CmsJspActionElement {
      */
     protected CmsResource getResource() throws CmsException {
 
-        CmsObject cms = getCmsObject();
-        HttpServletRequest req = getRequest();
-        CmsResource resUri;
-        CmsSitemapEntry sitemap = OpenCms.getSitemapManager().getRuntimeInfo(req);
-        if ((sitemap != null) && (sitemap.getContentId() != null)) {
-            resUri = cms.readResource(sitemap.getContentId());
-        } else {
-            resUri = cms.readResource(cms.getRequestContext().getUri());
-        }
-        return resUri;
+        return getCmsObject().readResource(getCmsObject().getRequestContext().getUri());
     }
 }

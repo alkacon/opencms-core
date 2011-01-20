@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagProperty.java,v $
- * Date   : $Date: 2010/10/07 13:49:12 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2011/01/20 07:10:15 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,6 @@ import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.content.CmsXmlContentPropertyHelper;
-import org.opencms.xml.sitemap.CmsSitemapEntry;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -108,7 +107,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -129,14 +128,11 @@ public class CmsJspTagProperty extends TagSupport {
         SEARCH_ELEMENT_URI("search.element.uri"),
         /** Use search parent (same as {@link #SEARCH_URI}). */
         SEARCH_PARENT("search-parent"),
-        /** Use search sitemap entries. */
-        SEARCH_SITEMAP("search.sitemap"),
         /** Use seach this (same as {@link #SEARCH_ELEMENT_URI}). */
         SEARCH_THIS("search-this"),
         /** Use search uri. */
         SEARCH_URI("search.uri"),
         /** Use sitemap entries. */
-        SITEMAP("sitemap"),
         /** Use this (same as {@link #ELEMENT_URI}). */
         THIS("this"),
         /** Use uri. */
@@ -220,7 +216,6 @@ public class CmsJspTagProperty extends TagSupport {
         }
 
         String vfsUri = null;
-        CmsSitemapEntry sitemapUri = null;
         boolean search = false;
         if (useAction != null) {
             switch (useAction) {
@@ -261,23 +256,6 @@ public class CmsJspTagProperty extends TagSupport {
                         LOG.debug(e.getLocalizedMessage(), e);
                         return new HashMap<String, String>();
                     }
-                case SITEMAP:
-                    // try to find property on this sitemap entry
-                    sitemapUri = OpenCms.getSitemapManager().getRuntimeInfo(req);
-                    if (sitemapUri == null) {
-                        // fall back
-                        vfsUri = controller.getCmsObject().getRequestContext().getUri();
-                    }
-                    break;
-                case SEARCH_SITEMAP:
-                    // try to find property on this sitemap entry all parent entries
-                    sitemapUri = OpenCms.getSitemapManager().getRuntimeInfo(req);
-                    if (sitemapUri == null) {
-                        // fall back
-                        vfsUri = controller.getCmsObject().getRequestContext().getUri();
-                    }
-                    search = true;
-                    break;
                 default:
                     // just to prevent the warning since all cases are handled
             }
@@ -291,8 +269,6 @@ public class CmsJspTagProperty extends TagSupport {
         Map<String, String> value = new HashMap<String, String>();
         if (vfsUri != null) {
             value = CmsProperty.toMap(controller.getCmsObject().readPropertyObjects(vfsUri, search));
-        } else if (sitemapUri != null) {
-            value = sitemapUri.getProperties(search);
         }
         return value;
     }

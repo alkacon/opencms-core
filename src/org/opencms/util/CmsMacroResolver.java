@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsMacroResolver.java,v $
- * Date   : $Date: 2010/11/18 10:09:39 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2011/01/20 07:10:15 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,6 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
-import org.opencms.xml.sitemap.CmsSitemapEntry;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -67,7 +66,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -175,9 +174,7 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
         "webapp", // 5
         "webbasepath", // 6 
         "version", // 7
-        "element", // 8
-        "sitemap" // 9
-    };
+        "element"};
 
     /** The "magic" commands wrapped in a List. */
     public static final List<String> VALUE_NAMES = Collections.unmodifiableList(Arrays.asList(VALUE_NAMES_ARRAY));
@@ -546,10 +543,12 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
                         }
                     } catch (CmsException e) {
                         if (LOG.isWarnEnabled()) {
-                            LOG.warn(Messages.get().getBundle().key(
-                                Messages.LOG_PROPERTY_READING_FAILED_2,
-                                macro,
-                                controller.getCurrentRequest().getElementUri()), e);
+                            LOG.warn(
+                                Messages.get().getBundle().key(
+                                    Messages.LOG_PROPERTY_READING_FAILED_2,
+                                    macro,
+                                    controller.getCurrentRequest().getElementUri()),
+                                e);
                         }
                     }
                 }
@@ -650,15 +649,6 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
                                 }
                                 LOG.debug(e.getLocalizedMessage(), e);
                             }
-                        }
-                        break;
-                    case 9:
-                        // sitemap
-                        CmsSitemapEntry sitemap = OpenCms.getSitemapManager().getRuntimeInfo(
-                            m_jspPageContext.getRequest());
-                        value = m_cms.getRequestContext().getUri();
-                        if (sitemap != null) {
-                            value = sitemap.getSitePath(m_cms);
                         }
                         break;
                     default:

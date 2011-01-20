@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspActionElement.java,v $
- * Date   : $Date: 2010/02/03 15:10:54 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2011/01/20 07:10:15 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,6 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.editors.directedit.CmsDirectEditJspIncludeProvider;
 import org.opencms.workplace.editors.directedit.CmsDirectEditMode;
 import org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider;
-import org.opencms.xml.sitemap.CmsSitemapEntry;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
@@ -82,7 +81,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -93,9 +92,6 @@ public class CmsJspActionElement extends CmsJspBean {
     // user request context for localization is not at hand. 
     public static final CmsMessageContainer NOT_INITIALIZED = Messages.get().container(
         Messages.GUI_ERR_ACTIONELEM_NOT_INIT_0);
-
-    /** Sitemap based navigation builder. */
-    private CmsJspSitemapNavBuilder m_sitemapNav;
 
     /** JSP navigation builder. */
     private CmsJspNavBuilder m_vfsNav;
@@ -367,11 +363,10 @@ public class CmsJspActionElement extends CmsJspBean {
         if (isNotInitialized()) {
             return null;
         }
-        if (OpenCms.getSitemapManager().getRuntimeInfo(getRequest()) == null) {
-            return getVfsNavigation();
-        } else {
-            return getSitemapNavigation();
+        if (m_vfsNav == null) {
+            m_vfsNav = new CmsJspNavBuilder(getCmsObject());
         }
+        return m_vfsNav;
     }
 
     /**
@@ -381,47 +376,7 @@ public class CmsJspActionElement extends CmsJspBean {
      */
     public String getNavigationUri() {
 
-        CmsSitemapEntry sitemap = OpenCms.getSitemapManager().getRuntimeInfo(getRequest());
-        if (sitemap == null) {
-            return getCmsObject().getRequestContext().getUri();
-        }
-        return sitemap.getSitePath(getCmsObject());
-    }
-
-    /**
-     * Returns an initialized sitemap navigation builder instance.<p>
-     *  
-     * @return an initialized sitemap navigation builder instance, or <code>null</code> if request is not sitemap based
-     * 
-     * @see CmsJspActionElement#getVfsNavigation()
-     */
-    public CmsJspSitemapNavBuilder getSitemapNavigation() {
-
-        if (isNotInitialized() || (OpenCms.getSitemapManager().getRuntimeInfo(getRequest()) == null)) {
-            return null;
-        }
-        if (m_sitemapNav == null) {
-            m_sitemapNav = new CmsJspSitemapNavBuilder(getCmsObject(), getRequest());
-        }
-        return m_sitemapNav;
-    }
-
-    /**
-     * Returns an initialized {@link CmsJspNavBuilder} instance.<p>
-     *  
-     * @return an initialized navigation builder instance
-     * 
-     * @see org.opencms.jsp.CmsJspNavBuilder
-     */
-    public CmsJspNavBuilder getVfsNavigation() {
-
-        if (isNotInitialized()) {
-            return null;
-        }
-        if (m_vfsNav == null) {
-            m_vfsNav = new CmsJspNavBuilder(getCmsObject());
-        }
-        return m_vfsNav;
+        return getCmsObject().getRequestContext().getUri();
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsRelation.java,v $
- * Date   : $Date: 2010/02/10 14:28:28 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/01/20 07:10:15 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,7 +37,6 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.main.CmsException;
 import org.opencms.util.CmsUUID;
-import org.opencms.xml.sitemap.CmsSitemapEntry;
 
 import java.util.Comparator;
 
@@ -46,7 +45,7 @@ import java.util.Comparator;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.3.0 
  */
@@ -125,18 +124,6 @@ public class CmsRelation {
     }
 
     /**
-     * Creates a new relation object of the given type between the give resource and sitemap entry.<p>
-     * 
-     * @param source the source resource
-     * @param target the target sitemap entry
-     * @param type the relation type
-     */
-    public CmsRelation(CmsResource source, CmsSitemapEntry target, CmsRelationType type) {
-
-        this(source.getStructureId(), source.getRootPath(), target.getId(), target.getRootPath(), type);
-    }
-
-    /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
@@ -149,7 +136,7 @@ public class CmsRelation {
             CmsRelation other = (CmsRelation)obj;
             return (m_type == other.m_type)
             // && (m_dateBegin == other.m_dateBegin)
-                // && (m_dateEnd == other.m_dateEnd)
+            // && (m_dateEnd == other.m_dateEnd)
                 && (m_sourcePath.equals(other.m_sourcePath) || m_sourceId.equals(other.m_sourceId))
                 && (m_targetPath.equals(other.m_targetPath) || m_targetId.equals(other.m_targetId));
         }

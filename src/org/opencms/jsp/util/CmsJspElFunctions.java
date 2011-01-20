@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspElFunctions.java,v $
- * Date   : $Date: 2010/02/03 15:10:53 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/01/20 07:10:15 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,6 @@ import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
-import org.opencms.xml.sitemap.CmsSitemapEntry;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -62,7 +61,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 7.0.2
  * 
@@ -356,11 +355,7 @@ public final class CmsJspElFunctions {
         if (req == null) {
             return null;
         }
-        CmsSitemapEntry sitemap = OpenCms.getSitemapManager().getRuntimeInfo(req);
-        if (sitemap == null) {
-            return getCmsObject(input).getRequestContext().getUri();
-        }
-        return sitemap.getSitePath(getCmsObject(input));
+        return getCmsObject(input).getRequestContext().getUri();
     }
 
     /**
@@ -395,22 +390,6 @@ public final class CmsJspElFunctions {
             return result[0];
         }
         return null;
-    }
-
-    /**
-     * Returns the current sitemap bean if available, so it can be <code>null</code>.<p> 
-     * 
-     * @param input the request convertible object to get the sitemap bean from
-     * 
-     * @return the current sitemap bean, or <code>null</code>
-     */
-    public static CmsSitemapEntry getSitemap(Object input) {
-
-        ServletRequest req = convertRequest(input);
-        if (req == null) {
-            return null;
-        }
-        return OpenCms.getSitemapManager().getRuntimeInfo(req);
     }
 
     /**

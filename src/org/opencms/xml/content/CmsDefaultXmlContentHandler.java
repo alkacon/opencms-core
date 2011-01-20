@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2010/11/11 13:08:17 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2011/01/20 07:10:15 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,6 @@ import org.opencms.util.CmsHtmlConverter;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsPair;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.util.CmsUUID;
 import org.opencms.widgets.CmsCategoryWidget;
 import org.opencms.widgets.CmsDisplayWidget;
 import org.opencms.widgets.I_CmsWidget;
@@ -73,7 +72,6 @@ import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.CmsXmlGenericWrapper;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.containerpage.CmsFormatterConfigBean;
-import org.opencms.xml.sitemap.CmsSitemapEntry;
 import org.opencms.xml.types.CmsXmlNestedContentDefinition;
 import org.opencms.xml.types.CmsXmlVarLinkValue;
 import org.opencms.xml.types.CmsXmlVfsFileValue;
@@ -103,7 +101,7 @@ import org.dom4j.Element;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 6.0.0 
  */
@@ -2104,8 +2102,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             CmsCategoryService.getInstance().readCategory(cms, catPath, refPath);
             if (((CmsCategoryWidget)widget).isOnlyLeafs()) {
                 if (!CmsCategoryService.getInstance().readCategories(cms, catPath, false, refPath).isEmpty()) {
-                    errorHandler.addError(value, Messages.get().getBundle(value.getLocale()).key(
-                        Messages.GUI_CATEGORY_CHECK_NOLEAF_ERROR_0));
+                    errorHandler.addError(
+                        value,
+                        Messages.get().getBundle(value.getLocale()).key(Messages.GUI_CATEGORY_CHECK_NOLEAF_ERROR_0));
                 }
             }
         } catch (CmsDataAccessException e) {
@@ -2114,8 +2113,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             if (LOG.isDebugEnabled()) {
                 LOG.debug(e.getLocalizedMessage(), e);
             }
-            errorHandler.addError(value, Messages.get().getBundle(value.getLocale()).key(
-                Messages.GUI_CATEGORY_CHECK_EMPTY_ERROR_0));
+            errorHandler.addError(
+                value,
+                Messages.get().getBundle(value.getLocale()).key(Messages.GUI_CATEGORY_CHECK_EMPTY_ERROR_0));
         } catch (CmsException e) {
             // unexpected error
             if (LOG.isErrorEnabled()) {
@@ -2153,11 +2153,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         }
         try {
             String sitePath = cms.getRequestContext().removeSiteRoot(link.getTarget());
-            CmsSitemapEntry entry = OpenCms.getSitemapManager().getEntryForUri(cms, sitePath);
-            CmsUUID structureId = entry.getStructureId();
-
             // validate the link for error
-            CmsResource res = cms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
+            CmsResource res = cms.readResource(sitePath, CmsResourceFilter.IGNORE_EXPIRATION);
 
             // check the time range 
             if (res != null) {
@@ -2165,15 +2162,19 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                 if (!res.isReleased(time)) {
                     if (errorHandler != null) {
                         // generate warning message
-                        errorHandler.addWarning(value, Messages.get().getBundle(value.getLocale()).key(
-                            Messages.GUI_XMLCONTENT_CHECK_WARNING_NOT_RELEASED_0));
+                        errorHandler.addWarning(
+                            value,
+                            Messages.get().getBundle(value.getLocale()).key(
+                                Messages.GUI_XMLCONTENT_CHECK_WARNING_NOT_RELEASED_0));
                     }
                     return true;
                 } else if (res.isExpired(time)) {
                     if (errorHandler != null) {
                         // generate warning message
-                        errorHandler.addWarning(value, Messages.get().getBundle(value.getLocale()).key(
-                            Messages.GUI_XMLCONTENT_CHECK_WARNING_EXPIRED_0));
+                        errorHandler.addWarning(
+                            value,
+                            Messages.get().getBundle(value.getLocale()).key(
+                                Messages.GUI_XMLCONTENT_CHECK_WARNING_EXPIRED_0));
                     }
                     return true;
                 }
@@ -2181,8 +2182,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         } catch (CmsException e) {
             if (errorHandler != null) {
                 // generate error message
-                errorHandler.addError(value, Messages.get().getBundle(value.getLocale()).key(
-                    Messages.GUI_XMLCONTENT_CHECK_ERROR_0));
+                errorHandler.addError(
+                    value,
+                    Messages.get().getBundle(value.getLocale()).key(Messages.GUI_XMLCONTENT_CHECK_ERROR_0));
             }
             return true;
         }

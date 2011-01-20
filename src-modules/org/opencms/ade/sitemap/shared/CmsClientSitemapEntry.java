@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsClientSitemapEntry.java,v $
- * Date   : $Date: 2011/01/18 16:46:27 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2011/01/20 07:10:58 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,13 +47,12 @@ import java.util.Map;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-// TODO: Auto-generated Javadoc
 /**
- * GWT implementation of {@link org.opencms.xml.sitemap.CmsSitemapEntry}.<p>
+ * Sitemap entry data.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * 
  * @since 8.0.0
  */

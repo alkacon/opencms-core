@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/A_CmsXmlDocumentLoader.java,v $
- * Date   : $Date: 2010/09/13 12:24:50 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/01/20 07:10:15 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import javax.servlet.http.HttpServletResponse;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.2.0 
  */
@@ -158,7 +158,6 @@ abstract class A_CmsXmlDocumentLoader implements I_CmsResourceLoader, I_CmsResou
         CmsTemplateLoaderFacade loaderFacade = OpenCms.getResourceManager().getTemplateLoaderFacade(
             cms,
             resource,
-            req.getRequestURI(),
             getTemplatePropertyDefinition());
         return loaderFacade.getLoader().export(cms, loaderFacade.getLoaderStartResource(), req, res);
     }
@@ -229,7 +228,6 @@ abstract class A_CmsXmlDocumentLoader implements I_CmsResourceLoader, I_CmsResou
         CmsTemplateLoaderFacade loaderFacade = OpenCms.getResourceManager().getTemplateLoaderFacade(
             cms,
             resource,
-            req.getRequestURI(),
             getTemplatePropertyDefinition());
         loaderFacade.getLoader().load(cms, loaderFacade.getLoaderStartResource(), req, res);
     }

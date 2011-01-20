@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/galleries/Attic/CmsPreviewService.java,v $
- * Date   : $Date: 2010/08/26 13:34:11 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/01/20 07:10:58 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,6 @@ import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
-import org.opencms.xml.sitemap.CmsSitemapEntry;
 
 import java.util.Date;
 import java.util.Iterator;
@@ -63,7 +62,7 @@ import java.util.Map.Entry;
  * @author Polina Smagina
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 8.0.0
  */
@@ -134,8 +133,7 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
             if (pos > -1) {
                 resName = resourcePath.substring(0, pos);
             }
-            CmsSitemapEntry sitemapEntry = OpenCms.getSitemapManager().getEntryForUri(cms, resName);
-            CmsResource resource = cms.readResource(sitemapEntry.getStructureId());
+            CmsResource resource = cms.readResource(resName);
             readResourceInfo(cms, resource, resInfo);
             resInfo.setHash(resource.getStructureId().hashCode());
             CmsImageScaler scaler = new CmsImageScaler(cms, resource);
@@ -170,8 +168,7 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
             if (pos > -1) {
                 resName = resourcePath.substring(0, pos);
             }
-            CmsSitemapEntry sitemapEntry = OpenCms.getSitemapManager().getEntryForUri(cms, resName);
-            CmsResource resource = cms.readResource(sitemapEntry.getStructureId());
+            CmsResource resource = cms.readResource(resName);
             readResourceInfo(cms, resource, resInfo);
         } catch (CmsException e) {
             error(e);
@@ -224,8 +221,7 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
         if (pos > -1) {
             resName = resourcePath.substring(0, pos);
         }
-        CmsSitemapEntry sitemapEntry = OpenCms.getSitemapManager().getEntryForUri(cms, resName);
-        resource = cms.readResource(sitemapEntry.getStructureId());
+        resource = cms.readResource(resName);
 
         if (properties != null) {
             for (Entry<String, String> entry : properties.entrySet()) {

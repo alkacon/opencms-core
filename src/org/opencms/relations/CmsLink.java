@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsLink.java,v $
- * Date   : $Date: 2010/12/17 08:45:30 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2011/01/20 07:10:15 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,6 @@ import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.util.CmsUriSplitter;
-import org.opencms.xml.sitemap.CmsSitemapEntry;
 import org.opencms.xml.sitemap.I_CmsDetailPageFinder;
 
 import java.util.Map;
@@ -62,7 +61,7 @@ import org.dom4j.Element;
  * @author Carsten Weinholz
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -248,14 +247,10 @@ public class CmsLink {
                     }
                 }
             } catch (CmsException e) {
-                CmsSitemapEntry entry = OpenCms.getSitemapManager().getEntryForId(cms, m_structureId);
-                if (entry == null) {
-                    // not found
-                    throw new CmsVfsResourceNotFoundException(org.opencms.db.generic.Messages.get().container(
-                        org.opencms.db.generic.Messages.ERR_READ_RESOURCE_1,
-                        m_target));
-                }
-                rootPath = entry.getRootPath();
+                // not found
+                throw new CmsVfsResourceNotFoundException(org.opencms.db.generic.Messages.get().container(
+                    org.opencms.db.generic.Messages.ERR_READ_RESOURCE_1,
+                    m_target));
             }
             if (!rootPath.equals(m_target)) {
                 // update path if needed
@@ -281,37 +276,22 @@ public class CmsLink {
                 return;
             }
             // go on with the resource with the given path
-            String siteTarget = cms.getRequestContext().removeSiteRoot(m_target);
+            String siteRoot = cms.getRequestContext().getSiteRoot();
             try {
+                cms.getRequestContext().setSiteRoot("");
                 // now look for the resource with the given path
-                CmsSitemapEntry entry = OpenCms.getSitemapManager().getEntryForUri(cms, siteTarget);
-                if (entry == null) {
-                    // not found
-                    throw new CmsVfsResourceNotFoundException(org.opencms.db.generic.Messages.get().container(
-                        org.opencms.db.generic.Messages.ERR_READ_RESOURCE_1,
-                        m_target));
-                }
-                String rootPath = entry.getRootPath();
-
-                CmsUUID id;
-                if (entry.getContentId() != null) {
-                    id = entry.getContentId();
-                } else if (entry.isSitemap()) {
-                    id = entry.getId();
-                } else {
-                    id = entry.getStructureId();
-                }
-                if (!id.equals(m_structureId)) {
+                CmsResource res = cms.readResource(m_target, CmsResourceFilter.ALL);
+                if (!res.getStructureId().equals(m_structureId)) {
                     // update structure id if needed
                     if (LOG.isDebugEnabled()) {
                         LOG.debug(Messages.get().getBundle().key(
                             Messages.LOG_BROKEN_LINK_UPDATED_BY_NAME_3,
                             m_target,
                             m_structureId,
-                            id));
+                            res.getStructureId()));
                     }
-                    m_target = rootPath;
-                    m_structureId = id;
+                    m_target = res.getRootPath(); // could change by a translation rule
+                    m_structureId = res.getStructureId();
                     CmsLinkUpdateUtil.updateXml(this, m_element, true);
                 }
             } catch (CmsException e1) {
@@ -320,6 +300,8 @@ public class CmsLink {
                     LOG.debug(Messages.get().getBundle().key(Messages.LOG_BROKEN_LINK_BY_NAME_1, m_target), e1);
                 }
                 m_structureId = null;
+            } finally {
+                cms.getRequestContext().setSiteRoot(siteRoot);
             }
         }
     }

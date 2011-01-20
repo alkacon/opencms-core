@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsResourceManager.java,v $
- * Date   : $Date: 2010/11/11 13:08:18 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/01/20 07:10:15 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,6 @@ import org.opencms.configuration.CmsVfsConfiguration;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
-import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.collectors.I_CmsResourceCollector;
 import org.opencms.file.types.CmsResourceTypeBinary;
 import org.opencms.file.types.CmsResourceTypeFolder;
@@ -61,7 +60,6 @@ import org.opencms.util.I_CmsHtmlConverter;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.xml.content.CmsDefaultUrlNameSequenceGenerator;
 import org.opencms.xml.content.I_CmsUrlNameSequenceGenerator;
-import org.opencms.xml.sitemap.CmsSitemapEntry;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -85,7 +83,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -917,43 +915,7 @@ public class CmsResourceManager {
     public CmsTemplateLoaderFacade getTemplateLoaderFacade(CmsObject cms, CmsResource resource, String templateProperty)
     throws CmsException {
 
-        return getTemplateLoaderFacade(cms, resource, null, templateProperty);
-
-    }
-
-    /**
-     * Returns a template loader facade for the given file.<p>
-     * @param cms the current OpenCms user context
-     * @param resource the requested file
-     * @param templateProperty the property to read for the template
-     * @param originalUri the original uri which was requested 
-     * 
-     * @return a resource loader facade for the given file
-     * @throws CmsException if something goes wrong
-     */
-    public CmsTemplateLoaderFacade getTemplateLoaderFacade(
-        CmsObject cms,
-        CmsResource resource,
-        String originalUri,
-        String templateProperty) throws CmsException {
-
-        String templateProp = null;
-        if (originalUri != null) {
-            String context = OpenCms.getSystemInfo().getOpenCmsContext();
-            if (originalUri.startsWith(context + "/")) {
-                originalUri = originalUri.substring(context.length());
-            }
-            try {
-                CmsSitemapEntry entry = OpenCms.getSitemapManager().getEntryForUri(cms, originalUri);
-                templateProp = entry.getTemplate(null);
-            } catch (CmsVfsResourceNotFoundException e) {
-                LOG.debug(e.getLocalizedMessage(), e);
-            }
-        }
-        if (templateProp == null) {
-            templateProp = cms.readPropertyObject(resource, templateProperty, true).getValue();
-        }
-
+        String templateProp = cms.readPropertyObject(resource, templateProperty, true).getValue();
         if (templateProp == null) {
 
             // use default template, if template is not set

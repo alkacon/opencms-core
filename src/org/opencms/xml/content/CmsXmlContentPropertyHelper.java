@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentPropertyHelper.java,v $
- * Date   : $Date: 2011/01/14 11:58:36 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2011/01/20 07:10:15 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,13 +35,11 @@ import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
-import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsLink;
 import org.opencms.relations.CmsRelationType;
 import org.opencms.util.CmsMacroResolver;
@@ -52,7 +50,6 @@ import org.opencms.xml.CmsXmlGenericWrapper;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.content.CmsXmlContentProperty.PropType;
 import org.opencms.xml.page.CmsXmlPage;
-import org.opencms.xml.sitemap.CmsSitemapEntry;
 import org.opencms.xml.sitemap.properties.CmsComputedPropertyValue;
 import org.opencms.xml.sitemap.properties.CmsSimplePropertyValue;
 import org.opencms.xml.types.CmsXmlNestedContentDefinition;
@@ -79,7 +76,7 @@ import org.dom4j.Element;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 7.9.2
  */
@@ -302,12 +299,7 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
      */
     public static CmsUUID getIdForUri(CmsObject cms, String uri) throws CmsException {
 
-        CmsSitemapEntry entry = OpenCms.getSitemapManager().getEntryForUri(cms, uri);
-        if (entry.isSitemap()) {
-            return entry.getId();
-        } else {
-            return entry.getStructureId();
-        }
+        return cms.readResource(uri).getStructureId();
     }
 
     /**
@@ -455,22 +447,8 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
      */
     public static String getUriForId(CmsObject cms, CmsUUID id) throws CmsException {
 
-        String result = null;
-        try {
-            CmsResource res = cms.readResource(id);
-            result = cms.getSitePath(res);
-            return result;
-        } catch (CmsVfsResourceNotFoundException e) {
-            LOG.debug(e.getLocalizedMessage(), e);
-        }
-        CmsSitemapEntry entry = OpenCms.getSitemapManager().getEntryForId(cms, id);
-        if (entry == null) {
-            throw new CmsVfsResourceNotFoundException(Messages.get().container(
-                Messages.ERR_COULD_NOT_RESOLVE_ID_1,
-                id.toString()));
-        }
-        result = entry.getSitePath(cms);
-        return result;
+        CmsResource res = cms.readResource(id);
+        return cms.getSitePath(res);
     }
 
     /**
