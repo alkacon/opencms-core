@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2011/01/19 11:10:42 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2011/01/21 14:14:38 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,6 +61,8 @@ import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
+import org.opencms.xml.sitemap.CmsDetailPageUtil;
+import org.opencms.xml.sitemap.I_CmsDetailPageFinder;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -90,7 +92,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Moossen
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 6.0.0 
  */
@@ -1211,11 +1213,25 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      */
     public String getRfsName(CmsObject cms, String vfsName, String parameters) {
 
-        String rfsName = getRfsNameWithExportName(cms, vfsName);
+        String rfsName;
         try {
+            CmsResource vfsRes = null;
+            try {
+                vfsRes = cms.readResource(vfsName);
+                I_CmsDetailPageFinder finder = OpenCms.getSitemapManager().getDetailPageFinder();
+                String detailPage = finder.getDetailPage(cms, vfsRes, cms.getRequestContext().getOriginalUri());
+                if (detailPage != null) {
+                    vfsName = CmsStringUtil.joinPaths(detailPage, CmsDetailPageUtil.getBestUrlName(
+                        cms,
+                        vfsRes.getStructureId()), "/");
+                }
+            } catch (CmsVfsResourceNotFoundException e) {
+                // ignore
+            }
+            rfsName = getRfsNameWithExportName(cms, vfsName);
             String extension = CmsFileUtil.getExtension(rfsName);
             // check if the VFS resource is a JSP page with a ".jsp" ending 
-            // in this case the rfs name suffix must be build with special care,
+            // in this case the  name suffix must be build with special care,
             // usually it must be set to ".html"             
             boolean isJsp = extension.equals(".jsp");
             if (isJsp) {
@@ -1694,6 +1710,8 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      */
     public boolean isExportLink(CmsObject cms, String vfsName) {
 
+        LOG.info("isExportLink? " + vfsName);
+
         String cacheKey = getCacheKey(cms.getRequestContext().getSiteRoot(), vfsName);
         Boolean exportResource = getCacheExportLinks().get(cacheKey);
         if (exportResource != null) {
@@ -1707,7 +1725,11 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             CmsObject exportCms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
             exportCms.getRequestContext().setSiteRoot(cms.getRequestContext().getSiteRoot());
             // let's look up export property in VFS
-            String exportValue = exportCms.readPropertyObject(vfsName, CmsPropertyDefinition.PROPERTY_EXPORT, true).getValue();
+            CmsResource exportRes = CmsDetailPageUtil.lookupPage(exportCms, vfsName);
+            String exportValue = exportCms.readPropertyObject(
+                exportCms.getSitePath(exportRes),
+                CmsPropertyDefinition.PROPERTY_EXPORT,
+                true).getValue();
             if (exportValue == null) {
                 // no setting found for "export" property
                 if (getExportPropertyDefault()) {
@@ -2317,8 +2339,16 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
         try {
             // check if the resource folder (or a parent folder) has the "exportname" property set
+            String name = CmsResource.getName(vfsName).replaceAll("/$", "");
+            CmsUUID detailId = cms.readIdForUrlName(name);
+            String propertyReadPath;
+            if (detailId == null) {
+                propertyReadPath = CmsResource.getFolderPath(rfsName);
+            } else {
+                propertyReadPath = CmsResource.getFolderPath(rfsName.replaceAll("/$", ""));
+            }
             CmsProperty exportNameProperty = cms.readPropertyObject(
-                CmsResource.getFolderPath(rfsName),
+                propertyReadPath,
                 CmsPropertyDefinition.PROPERTY_EXPORTNAME,
                 true);
 
@@ -2336,7 +2366,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 }
                 String value = null;
                 boolean cont;
-                String resourceName = rfsName;
+                String resourceName = rfsName; // resourceName can be the detail page URI 
                 do {
                     // find out where the export name was set, to replace these parent folders in the RFS name
                     try {
@@ -2522,8 +2552,22 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      */
     protected CmsStaticExportData readResource(CmsObject cms, String uri) throws CmsException {
 
-        // find the site map entry
-        CmsResource resource = cms.readResource(uri);
+        CmsResource resource = null;
+
+        try {
+            resource = cms.readResource(uri);
+        } catch (CmsVfsResourceNotFoundException e) {
+
+            String urlName = CmsResource.getName(uri).replaceAll("/$", "");
+            CmsUUID id = cms.readIdForUrlName(urlName);
+            if (id == null) {
+                throw e;
+            }
+            resource = cms.readResource(id);
+
+            //String parent = CmsResource.getParentFolder(uri);
+            //resource = cms.readDefaultFile(parent);
+        }
         return new CmsStaticExportData(uri, null, resource, null);
     }
 

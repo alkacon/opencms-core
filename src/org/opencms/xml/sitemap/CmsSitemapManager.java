@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2011/01/18 16:45:27 $
- * Version: $Revision: 1.72 $
+ * Date   : $Date: 2011/01/21 14:14:38 $
+ * Version: $Revision: 1.73 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -85,7 +85,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.72 $
+ * @version $Revision: 1.73 $
  * 
  * @since 7.9.2
  */
@@ -162,7 +162,7 @@ public class CmsSitemapManager {
     private CmsOnlineAndOfflineSitemapCache m_cache;
 
     /** The detail page finder. */
-    private I_CmsDetailPageFinder m_detailPageFinder = new CmsSitemapDetailPageFinder();
+    private I_CmsDetailPageFinder m_detailPageFinder = new CmsPropertyDetailPageFinder();
 
     /** Lazy initialized sitemap type id. */
     private int m_sitemapTypeId;

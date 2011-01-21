@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsAfterPublishStaticExportHandler.java,v $
- * Date   : $Date: 2011/01/19 11:10:42 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2011/01/21 14:14:38 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,12 +47,14 @@ import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
+import org.opencms.xml.sitemap.CmsDetailPageUtil;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -73,7 +75,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  * 
@@ -115,6 +117,7 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
         List<CmsPublishedResource> resourcesToExport = getRelatedResources(cmsExportObject, resources);
         // first export all non-template resources
         templatesFound = exportNonTemplateResources(cmsExportObject, resourcesToExport, report);
+        LOG.warn("finished exporting non-template resources. ");
 
         // export template resources (check "plainoptimization" setting)
         if ((templatesFound) || (!OpenCms.getStaticExportManager().getQuickPlainExport())) {
@@ -163,6 +166,7 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
                         break;
                     }
                     // export
+                    LOG.warn("exporting template resources. ");
                     exportTemplateResources(cmsExportObject, publishedTemplateResources, report);
                 }
                 // if no new template links where found we are finished
@@ -657,6 +661,22 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
             }
 
             try {
+                CmsResource resource = data.getResource();
+                try {
+                    Collection<String> detailPages = CmsDetailPageUtil.getAllDetailPagesWithUrlName(cms, resource);
+                    for (String detailPageUri : detailPages) {
+                        String altRfsName = manager.getRfsName(cms, detailPageUri);
+                        CmsStaticExportData detailData = new CmsStaticExportData(
+                            data.getVfsName(),
+                            altRfsName,
+                            data.getResource(),
+                            data.getParameters());
+                        exportTemplateResource(detailData, cookies);
+                    }
+                } catch (CmsException e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
+
                 int status = exportTemplateResource(data, cookies);
 
                 // write the report

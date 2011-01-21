@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsPropertyDetailPageFinder.java,v $
- * Date   : $Date: 2010/12/17 08:45:29 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/01/21 14:14:38 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,10 +37,12 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -48,7 +50,7 @@ import java.util.List;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -59,10 +61,11 @@ public class CmsPropertyDetailPageFinder implements I_CmsDetailPageFinder {
      */
     public Collection<String> getAllDetailPages(CmsObject cms, CmsResource res) throws CmsException {
 
-        String detailPage = getDetailPage(cms, res, null);
+        List<String> detailPages = readDetailPages(cms, res);
+        String siteRoot = OpenCms.getSiteManager().getSiteRoot(res.getRootPath());
         List<String> result = new ArrayList<String>();
-        if (detailPage != null) {
-            result.add(detailPage);
+        for (String page : detailPages) {
+            result.add(CmsStringUtil.joinPaths(siteRoot, page));
         }
         return result;
     }
@@ -76,16 +79,34 @@ public class CmsPropertyDetailPageFinder implements I_CmsDetailPageFinder {
             // only xml contents can have detail pages 
             return null;
         }
-        String result = null;
+
+        List<String> detailPages = readDetailPages(cms, res);
+        if (detailPages.isEmpty()) {
+            return null;
+        }
+        String siteRoot = OpenCms.getSiteManager().getSiteRoot(res.getRootPath());
+        return CmsStringUtil.joinPaths(siteRoot, detailPages.get(0));
+    }
+
+    /**
+     * Helper method for reading detail pages from the ade.sitemap.detailview property.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param res the resource from which to read the property
+     * 
+     * @return a list of detail pages 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    private List<String> readDetailPages(CmsObject cms, CmsResource res) throws CmsException {
+
         CmsProperty detailViewProp = cms.readPropertyObject(
             res,
             CmsPropertyDefinition.PROPERTY_ADE_SITEMAP_DETAILVIEW,
             true);
-        if (!detailViewProp.isNullProperty() && !CmsStringUtil.isEmptyOrWhitespaceOnly(detailViewProp.getValue())) {
-            String detailView = detailViewProp.getValue();
-            result = cms.getRequestContext().addSiteRoot(detailView);
+        if (detailViewProp.isNullProperty() || CmsStringUtil.isEmptyOrWhitespaceOnly(detailViewProp.getValue())) {
+            return Collections.<String> emptyList();
         }
-        return result;
+        return CmsStringUtil.splitAsList(detailViewProp.getValue(), "|");
     }
-
 }

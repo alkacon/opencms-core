@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsDetailPageUtil.java,v $
- * Date   : $Date: 2010/12/17 08:45:29 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/01/21 14:14:38 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,9 +33,11 @@ package org.opencms.xml.sitemap;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -50,7 +52,7 @@ import java.util.List;
  * 
  * @author Georg Westenberger
  *
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -90,6 +92,25 @@ public final class CmsDetailPageUtil {
     }
 
     /**
+     * Returns either the newest URL name for a structure id, or  the structure id as a string if there is no URL name.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param id the structure id of a resource 
+     * 
+     * @return the best URL name for the structure id 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public static String getBestUrlName(CmsObject cms, CmsUUID id) throws CmsException {
+
+        String urlName = cms.readNewestUrlNameForId(id);
+        if (urlName != null) {
+            return urlName;
+        }
+        return id.toString();
+    }
+
+    /**
      * Gets the best detail page for a given resource and link source, with the URL name appended.<p>
      * 
      * @param cms the current CMS context 
@@ -109,6 +130,33 @@ public final class CmsDetailPageUtil {
         }
         String rootPath = CmsStringUtil.joinPaths(detailPage, cms.getDetailName(res), "/");
         return rootPath;
+    }
+
+    /**
+     * Looks up a page by URI (which may be a detail page URI, or a normal VFS uri).<p>
+     * 
+     * @param cms the current CMS context
+     * @param uri the detail page or VFS uri 
+     * 
+     * @return the resource with the given uri
+     *  
+     * @throws CmsException if something goes wrong 
+     */
+    public static CmsResource lookupPage(CmsObject cms, String uri) throws CmsException {
+
+        try {
+            CmsResource res = cms.readResource(uri);
+            return res;
+        } catch (CmsVfsResourceNotFoundException e) {
+            String detailName = CmsResource.getName(uri).replaceAll("/$", "");
+            CmsUUID detailId = cms.readIdForUrlName(detailName);
+            if (detailId != null) {
+                return cms.readResource(detailId);
+            }
+            throw new CmsVfsResourceNotFoundException(org.opencms.db.generic.Messages.get().container(
+                org.opencms.db.generic.Messages.ERR_READ_RESOURCE_1,
+                uri));
+        }
     }
 
 }

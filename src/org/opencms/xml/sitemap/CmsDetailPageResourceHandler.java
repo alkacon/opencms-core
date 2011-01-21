@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsDetailPageResourceHandler.java,v $
- * Date   : $Date: 2011/01/19 09:53:03 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/01/21 14:14:38 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,17 +54,17 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  */
 public class CmsDetailPageResourceHandler implements I_CmsResourceInit {
 
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsDetailPageResourceHandler.class);
-
     /** The attribute containing the detail view content id. */
     public static final String ATTR_DETAIL_CONTENT_ID = "__detail_content_id";
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsDetailPageResourceHandler.class);
 
     /**
      * Default constructor.<p>
@@ -72,6 +72,18 @@ public class CmsDetailPageResourceHandler implements I_CmsResourceInit {
     public CmsDetailPageResourceHandler() {
 
         // empty
+    }
+
+    /**
+     * Returns the current detail content id if available.<p>
+     * 
+     * @param req the current request
+     * 
+     * @return the content id or <code>null</code> if not available
+     */
+    public static CmsUUID getDetailId(ServletRequest req) {
+
+        return (CmsUUID)req.getAttribute(ATTR_DETAIL_CONTENT_ID);
     }
 
     /**
@@ -122,18 +134,6 @@ public class CmsDetailPageResourceHandler implements I_CmsResourceInit {
         }
 
         return null;
-    }
-
-    /**
-     * Returns the current detail content id if available.<p>
-     * 
-     * @param req the current request
-     * 
-     * @return the content id or <code>null</code> if not available
-     */
-    public static CmsUUID getDetailId(ServletRequest req) {
-
-        return (CmsUUID)req.getAttribute(ATTR_DETAIL_CONTENT_ID);
     }
 
 }

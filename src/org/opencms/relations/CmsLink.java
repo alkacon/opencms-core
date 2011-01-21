@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsLink.java,v $
- * Date   : $Date: 2011/01/20 07:10:15 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2011/01/21 14:14:38 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import org.dom4j.Element;
  * @author Carsten Weinholz
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -120,6 +120,9 @@ public class CmsLink {
 
     /** The query, if any. */
     private String m_query;
+
+    /** A variable for storing the resource which the link points to. */
+    private CmsResource m_resource;
 
     /** The site root of the (internal) link. */
     private String m_siteRoot;
@@ -226,6 +229,7 @@ public class CmsLink {
      */
     public void checkConsistency(CmsObject cms) {
 
+        m_resource = null;
         if (!m_internal || (cms == null)) {
             return;
         }
@@ -236,15 +240,21 @@ public class CmsLink {
             }
             // first look for the resource with the given structure id
             String rootPath = null;
+            CmsResource res;
             try {
-                CmsResource res = cms.readResource(m_structureId, CmsResourceFilter.ALL);
+                res = cms.readResource(m_structureId, CmsResourceFilter.ALL);
+                m_resource = res;
                 rootPath = res.getRootPath();
-                if (res.isFile()) {
-                    I_CmsDetailPageFinder finder = OpenCms.getSitemapManager().getDetailPageFinder();
-                    String detailPage = finder.getDetailPage(cms, res, cms.getRequestContext().getOriginalUri());
-                    if (detailPage != null) {
-                        rootPath = CmsStringUtil.joinPaths(detailPage, cms.getDetailName(res), "/");
+                if (!res.getRootPath().equals(m_target)) {
+                    // update path if needed
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(Messages.get().getBundle().key(
+                            Messages.LOG_BROKEN_LINK_UPDATED_BY_ID_3,
+                            m_structureId,
+                            m_target,
+                            res.getRootPath()));
                     }
+
                 }
             } catch (CmsException e) {
                 // not found
@@ -252,17 +262,9 @@ public class CmsLink {
                     org.opencms.db.generic.Messages.ERR_READ_RESOURCE_1,
                     m_target));
             }
-            if (!rootPath.equals(m_target)) {
-                // update path if needed
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().getBundle().key(
-                        Messages.LOG_BROKEN_LINK_UPDATED_BY_ID_3,
-                        m_structureId,
-                        m_target,
-                        rootPath));
-                }
+            if ((rootPath != null) && !rootPath.equals(m_target)) {
                 // set the new target
-                m_target = rootPath;
+                m_target = res.getRootPath();
                 setUri();
                 // update xml node
                 CmsLinkUpdateUtil.updateXml(this, m_element, true);
@@ -281,6 +283,7 @@ public class CmsLink {
                 cms.getRequestContext().setSiteRoot("");
                 // now look for the resource with the given path
                 CmsResource res = cms.readResource(m_target, CmsResourceFilter.ALL);
+                m_resource = res;
                 if (!res.getStructureId().equals(m_structureId)) {
                     // update structure id if needed
                     if (LOG.isDebugEnabled()) {
@@ -354,7 +357,6 @@ public class CmsLink {
     public String getLink(CmsObject cms) {
 
         if (m_internal) {
-
             // if we have a local link, leave it unchanged
             // cms may be null for unit tests
             if ((cms == null) || (m_uri.length() == 0) || (m_uri.charAt(0) == '#')) {
@@ -362,12 +364,15 @@ public class CmsLink {
             }
 
             checkConsistency(cms);
+            String target = replaceTargetWithDetailPageIfNecessary(cms, m_resource, m_target);
+            String uri = computeUri(target, m_query, m_anchor);
 
             CmsObjectWrapper wrapper = (CmsObjectWrapper)cms.getRequestContext().getAttribute(
                 CmsObjectWrapper.ATTRIBUTE_NAME);
             if (wrapper != null) {
                 // if an object wrapper is used, rewrite the URI
                 m_uri = wrapper.rewriteLink(m_uri);
+                uri = wrapper.rewriteLink(uri);
             }
 
             if ((cms.getRequestContext().getSiteRoot().length() == 0)
@@ -381,7 +386,7 @@ public class CmsLink {
                 // that would normally be created when running in a regular site.                
                 // If normal link processing would be used, the site information in the link
                 // would be lost.
-                return OpenCms.getLinkManager().substituteLink(cms, m_uri);
+                return OpenCms.getLinkManager().substituteLink(cms, uri);
             }
 
             // get the site root for this URI / link
@@ -389,16 +394,16 @@ public class CmsLink {
             // return the full URI prefixed with the opencms context
             String siteRoot = getSiteRoot();
             if (siteRoot == null) {
-                return OpenCms.getLinkManager().substituteLink(cms, m_uri);
+                return OpenCms.getLinkManager().substituteLink(cms, uri);
             }
 
             if (cms.getRequestContext().getAttribute(CmsRequestContext.ATTRIBUTE_FULLLINKS) != null) {
                 // full links should be generated even if we are in the same site
-                return OpenCms.getLinkManager().getServerLink(cms, m_uri);
+                return OpenCms.getLinkManager().getServerLink(cms, uri);
             }
 
             // return the link with the server prefix, if necessary 
-            return OpenCms.getLinkManager().substituteLink(cms, getSitePath(), siteRoot);
+            return OpenCms.getLinkManager().substituteLink(cms, getSitePath(uri), siteRoot);
         } else {
 
             // don't touch external links
@@ -501,16 +506,7 @@ public class CmsLink {
      */
     public String getSitePath() {
 
-        if (m_internal) {
-            String siteRoot = getSiteRoot();
-            if (siteRoot != null) {
-                return m_uri.substring(siteRoot.length());
-            } else {
-                return m_uri;
-            }
-        }
-
-        return null;
+        return getSitePath(m_uri);
     }
 
     /**
@@ -665,6 +661,78 @@ public class CmsLink {
     }
 
     /**
+     * Helper method for getting the site path for a uri.<p>
+     * 
+     * @param uri a VFS uri
+     * @return the site path 
+     */
+    protected String getSitePath(String uri) {
+
+        if (m_internal) {
+            String siteRoot = getSiteRoot();
+            if (siteRoot != null) {
+                return uri.substring(siteRoot.length());
+            } else {
+                return uri;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Helper method for creating a uri from its components.<p>
+     * 
+     * @param target the uri target
+     * @param query the uri query component 
+     * @param anchor the uri anchor component
+     * 
+     * @return the uri 
+     */
+    private String computeUri(String target, String query, String anchor) {
+
+        StringBuffer uri = new StringBuffer(64);
+        uri.append(target);
+        if (query != null) {
+            uri.append('?');
+            uri.append(query);
+        }
+        if (anchor != null) {
+            uri.append('#');
+            uri.append(anchor);
+        }
+        return uri.toString();
+
+    }
+
+    /**
+     * Replaces a link target with a detail page uri if necessary.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param res the resource for which the detail pages should be checked 
+     * @param target the link target which should be replaced with a detail page uri 
+     * 
+     * @return the detail page uri (if the target was replaced), or the original target.
+     */
+    private String replaceTargetWithDetailPageIfNecessary(CmsObject cms, CmsResource res, String target) {
+
+        if (res == null) {
+            return target;
+        }
+        try {
+            I_CmsDetailPageFinder finder = OpenCms.getSitemapManager().getDetailPageFinder();
+            String detailPage = finder.getDetailPage(cms, res, cms.getRequestContext().getOriginalUri());
+            if (detailPage == null) {
+                return target;
+            }
+            String urlName = cms.readNewestUrlNameForId(res.getStructureId());
+            return CmsStringUtil.joinPaths(detailPage, urlName, "/");
+        } catch (CmsException e) {
+            LOG.warn(e.getLocalizedMessage(), e);
+            return target;
+        }
+    }
+
+    /**
      * Sets the component member variables (target, anchor, query) 
      * by splitting the uri <code>scheme://authority/path#anchor?query</code>.<p>
      */
@@ -693,16 +761,6 @@ public class CmsLink {
      */
     private void setUri() {
 
-        StringBuffer uri = new StringBuffer(64);
-        uri.append(m_target);
-        if (m_query != null) {
-            uri.append('?');
-            uri.append(m_query);
-        }
-        if (m_anchor != null) {
-            uri.append('#');
-            uri.append(m_anchor);
-        }
-        m_uri = uri.toString();
+        m_uri = computeUri(m_target, m_query, m_anchor);
     }
 }
