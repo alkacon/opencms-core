@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsConfigurationParser.java,v $
- * Date   : $Date: 2011/01/19 10:39:43 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2011/01/21 11:06:52 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsFormatterUtil;
@@ -64,6 +65,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.collections.Transformer;
+import org.apache.commons.logging.Log;
 
 /**
  * Class for managing the creation of new content elements in ADE.<p>
@@ -76,7 +78,7 @@ import org.apache.commons.collections.Transformer;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 7.6 
  */
@@ -159,6 +161,9 @@ public class CmsConfigurationParser {
 
     /** The list of properties read from the configuration file. */
     private List<CmsXmlContentProperty> m_props = new ArrayList<CmsXmlContentProperty>();
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsConfigurationParser.class);
 
     /**
      * Default constructor.<p>
@@ -456,7 +461,11 @@ public class CmsConfigurationParser {
         List<I_CmsXmlContentValueLocation> typeValues = root.getSubValues(N_ADE_TYPE);
 
         for (I_CmsXmlContentValueLocation xmlType : typeValues) {
-            parseType(cms, xmlType, locale);
+            try {
+                parseType(cms, xmlType, locale);
+            } catch (Exception e) {
+                LOG.error(Messages.get().container(Messages.ERR_CONFIG_MALFORMED_TYPE_0), e);
+            }
         }
 
         List<I_CmsXmlContentValueLocation> fieldValues = root.getSubValues(N_ADE_FIELD);

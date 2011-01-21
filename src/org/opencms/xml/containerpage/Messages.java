@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Messages.java,v $
- * Date   : $Date: 2009/12/17 12:36:25 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/01/21 11:06:52 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -47,6 +47,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_DUPLICATE_NAME_1 = "ERR_DUPLICATE_NAME_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_CONFIG_MALFORMED_TYPE_0 = "ERR_CONFIG_MALFORMED_TYPE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CONFIG_NOT_FOUND_3 = "ERR_CONFIG_NOT_FOUND_3";
