@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeMove.java,v $
- * Date   : $Date: 2011/01/14 14:19:54 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2011/01/21 11:09:42 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,6 +38,7 @@ import org.opencms.ade.sitemap.client.toolbar.CmsToolbarClipboardView;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry.EditStatus;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange;
+import org.opencms.ade.sitemap.shared.CmsSitemapClipboardData;
 import org.opencms.file.CmsResource;
 import org.opencms.util.CmsUUID;
 
@@ -46,7 +47,7 @@ import org.opencms.util.CmsUUID;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 8.0.0
  */
@@ -151,6 +152,7 @@ public class CmsClientSitemapChangeMove implements I_CmsClientSitemapChange {
         }
         moved.updateSitePath(getDestinationPath());
         controller.getRedirectUpdater().handleMove(m_sourcePath, m_destinationPath);
+        applyToClipboardData(controller.getData().getClipboardData());
     }
 
     /**
@@ -185,7 +187,10 @@ public class CmsClientSitemapChangeMove implements I_CmsClientSitemapChange {
             change.setParentId(m_destinationId);
             change.setName(CmsResource.getName(m_destinationPath));
         }
-        change.setPosition(m_entry.getPosition());
+        change.setPosition(m_destinationPosition);
+        CmsSitemapClipboardData data = CmsSitemapView.getInstance().getController().getData().getClipboardData().copy();
+        applyToClipboardData(data);
+        change.setClipBoardData(data);
         return change;
     }
 
@@ -255,5 +260,16 @@ public class CmsClientSitemapChangeMove implements I_CmsClientSitemapChange {
     protected CmsClientSitemapEntry getEntry() {
 
         return m_entry;
+    }
+
+    /**
+     * Applys the change to the given clip-board data.<p>
+     * 
+     * @param clipboardData the clip-board data
+     */
+    private void applyToClipboardData(CmsSitemapClipboardData clipboardData) {
+
+        clipboardData.getModifications().remove(getEntry());
+        clipboardData.getModifications().add(0, getEntry());
     }
 }

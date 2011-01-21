@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeEdit.java,v $
- * Date   : $Date: 2011/01/14 14:19:54 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2011/01/21 11:09:42 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,13 +37,14 @@ import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.client.toolbar.CmsToolbarClipboardView;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange;
+import org.opencms.ade.sitemap.shared.CmsSitemapClipboardData;
 
 /**
  * Stores one edition change to the sitemap.<p> 
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 8.0.0
  */
@@ -109,6 +110,7 @@ public class CmsClientSitemapChangeEdit implements I_CmsClientSitemapChange {
         editEntry.setProperties(getNewEntry().getProperties());
         editEntry.setNew(getNewEntry().isNew());
         controller.getRedirectUpdater().handleSave(editEntry);
+        applyToClipboardData(controller.getData().getClipboardData());
     }
 
     /**
@@ -133,6 +135,9 @@ public class CmsClientSitemapChangeEdit implements I_CmsClientSitemapChange {
         if (!m_oldEntry.getTitle().equals(m_newEntry.getTitle())) {
             change.setTitle(m_newEntry.getTitle());
         }
+        CmsSitemapClipboardData data = CmsSitemapView.getInstance().getController().getData().getClipboardData().copy();
+        applyToClipboardData(data);
+        change.setClipBoardData(data);
         return change;
     }
 
@@ -162,5 +167,16 @@ public class CmsClientSitemapChangeEdit implements I_CmsClientSitemapChange {
     public boolean isChangingDetailPages() {
 
         return false; // detail page information can not be edited directly 
+    }
+
+    /**
+     * Applys the change to the given clip-board data.<p>
+     * 
+     * @param clipboardData the clip-board data
+     */
+    private void applyToClipboardData(CmsSitemapClipboardData clipboardData) {
+
+        clipboardData.getModifications().remove(getOldEntry());
+        clipboardData.getModifications().add(0, getNewEntry());
     }
 }

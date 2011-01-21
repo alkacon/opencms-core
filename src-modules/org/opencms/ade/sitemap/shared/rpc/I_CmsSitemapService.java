@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/rpc/Attic/I_CmsSitemapService.java,v $
- * Date   : $Date: 2011/01/14 14:19:55 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2011/01/21 11:09:42 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,7 +34,6 @@ package org.opencms.ade.sitemap.shared.rpc;
 import org.opencms.ade.sitemap.shared.CmsBrokenLinkData;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange;
-import org.opencms.ade.sitemap.shared.CmsSitemapClipboardData;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.ade.sitemap.shared.CmsSitemapMergeInfo;
 import org.opencms.ade.sitemap.shared.CmsSubSitemapInfo;
@@ -52,7 +51,7 @@ import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 8.0.0
  * 
@@ -62,6 +61,18 @@ import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
  */
 @RemoteServiceRelativePath("org.opencms.ade.sitemap.CmsVfsSitemapService.gwt")
 public interface I_CmsSitemapService extends RemoteService {
+
+    /**
+     * Creates a sub-sitemap of the given sitemap starting from a path.<p>
+     * 
+     * @param sitemapUri the URI of the parent sitemap 
+     * @param path the path in the parent sitemap from which the sub-sitemap should be created 
+     * 
+     * @return the sub-sitemap creation result 
+     * 
+     * @throws CmsRpcException if something goes wrong 
+     */
+    CmsSubSitemapInfo createSubSitemap(String sitemapUri, String path) throws CmsRpcException;
 
     /**
      * Returns broken link data bean, containing a list of all not yet loaded sub elements and a list of beans which
@@ -112,44 +123,7 @@ public interface I_CmsSitemapService extends RemoteService {
     CmsClientSitemapEntry getEntry(String sitemapUri, String root) throws CmsRpcException;
 
     /**
-     * Returns the initialization data for the given sitemap.<p>
-     * 
-     * @param sitemapUri the site relative path
-     *  
-     * @return the initialization data
-     * 
-     * @throws CmsRpcException if something goes wrong 
-     */
-    CmsSitemapData prefetch(String sitemapUri) throws CmsRpcException;
-
-    /**
-     * Saves the changes to the given sitemap.<p>
-     * 
-     * @param sitemapUri the sitemap URI 
-     * @param changes the changes to save
-     * @param clipboardData the modified clipboard data, or <code>null</code> if it has not been modified
-     * 
-     * @return the new timestamp
-     * 
-     * @throws CmsRpcException if something goes wrong 
-     */
-    boolean save(String sitemapUri, List<CmsSitemapChange> changes, CmsSitemapClipboardData clipboardData)
-    throws CmsRpcException;
-
-    /**
-     * Saves a list of changes to a sitemap and then creates a sub-sitemap of the given sitemap starting from a path.<p>
-     * 
-     * @param sitemapUri the URI of the parent sitemap 
-     * @param path the path in the parent sitemap from which the sub-sitemap should be created 
-     * 
-     * @return the sub-sitemap creation result 
-     * 
-     * @throws CmsRpcException if something goes wrong 
-     */
-    CmsSubSitemapInfo createSubSitemap(String sitemapUri, String path) throws CmsRpcException;
-
-    /**
-     * Saves the current sitemap and merges one of its sub-sitemaps into it.<p>
+     * Merges one of its sub-sitemaps into it.<p>
      * 
      * @param sitemapUri the URI of the current sitemap
      * @param path the path at which the sub-sitemap should be merged into the parent sitemap 
@@ -161,18 +135,39 @@ public interface I_CmsSitemapService extends RemoteService {
     CmsSitemapMergeInfo mergeSubSitemap(String sitemapUri, String path) throws CmsRpcException;
 
     /**
-     * Saves the changes to the given sitemap.<p>
+     * Returns the initialization data for the given sitemap.<p>
+     * 
+     * @param sitemapUri the site relative path
+     *  
+     * @return the initialization data
+     * 
+     * @throws CmsRpcException if something goes wrong 
+     */
+    CmsSitemapData prefetch(String sitemapUri) throws CmsRpcException;
+
+    /**
+     * Saves the change to the given sitemap.<p>
      * 
      * @param sitemapUri the sitemap URI 
-     * @param changes the changes to save
-     * @param clipboardData the modified clipboard data, or <code>null</code> if it has not been modified
+     * @param change the change to save
+     * 
+     * @return the new timestamp
+     * 
+     * @throws CmsRpcException if something goes wrong 
+     */
+    boolean save(String sitemapUri, CmsSitemapChange change) throws CmsRpcException;
+
+    /**
+     * Saves the change to the given sitemap.<p>
+     * 
+     * @param sitemapUri the sitemap URI 
+     * @param change the change to save
      * 
      * @return the new timestamp
      * 
      * @throws CmsRpcException if something goes wrong
      */
     @SynchronizedRpcRequest
-    boolean saveSync(String sitemapUri, List<CmsSitemapChange> changes, CmsSitemapClipboardData clipboardData)
-    throws CmsRpcException;
+    boolean saveSync(String sitemapUri, CmsSitemapChange change) throws CmsRpcException;
 
 }

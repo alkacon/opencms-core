@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2011/01/19 09:32:35 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2011/01/21 11:09:42 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,6 @@ import org.opencms.ade.sitemap.shared.CmsBrokenLinkData;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry.EditStatus;
 import org.opencms.ade.sitemap.shared.CmsSitemapBrokenLinkBean;
-import org.opencms.ade.sitemap.shared.CmsSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.ade.sitemap.shared.CmsSitemapMergeInfo;
 import org.opencms.ade.sitemap.shared.CmsSitemapTemplate;
@@ -95,7 +94,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.38 $ 
+ * @version $Revision: 1.39 $ 
  * 
  * @since 8.0.0
  */
@@ -320,12 +319,12 @@ public class CmsSitemapController {
 
                     stop(false);
                     newEntry.setId(result);
-                    applyChange(new CmsClientSitemapChangeNew(newEntry, parent.getId()), false);
+                    applyChange(new CmsClientSitemapChangeNew(newEntry, parent.getId(), false), false);
                 }
             };
             action.execute();
         } else {
-            applyChange(new CmsClientSitemapChangeNew(newEntry, parent.getId()), false);
+            applyChange(new CmsClientSitemapChangeNew(newEntry, parent.getId(), true), false);
         }
     }
 
@@ -878,12 +877,9 @@ public class CmsSitemapController {
             @Override
             public void execute() {
 
-                List<CmsSitemapChange> changes = new ArrayList<CmsSitemapChange>();
-                changes.add(change.getChangeForCommit());
-
                 setLoadingMessage(Messages.get().key(Messages.GUI_SAVING_0));
                 start(0, true);
-                getService().saveSync(getEntryPoint(), changes, getData().getClipboardData(), this);
+                getService().saveSync(getEntryPoint(), change.getChangeForCommit(), this);
 
             }
 

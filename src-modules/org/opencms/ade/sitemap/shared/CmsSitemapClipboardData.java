@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsSitemapClipboardData.java,v $
- * Date   : $Date: 2010/06/24 09:05:26 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/01/21 11:09:42 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0
  */
@@ -72,6 +72,20 @@ public class CmsSitemapClipboardData implements IsSerializable {
 
         m_deletions = deletions;
         m_modifications = modifications;
+    }
+
+    /**
+     * Provides a copy of the clip-board data.<p>
+     * 
+     * @return the copied data 
+     */
+    public CmsSitemapClipboardData copy() {
+
+        List<CmsClientSitemapEntry> deletions = new ArrayList<CmsClientSitemapEntry>();
+        deletions.addAll(m_deletions);
+        List<CmsClientSitemapEntry> modifications = new ArrayList<CmsClientSitemapEntry>();
+        modifications.addAll(m_modifications);
+        return new CmsSitemapClipboardData(deletions, modifications);
     }
 
     /**

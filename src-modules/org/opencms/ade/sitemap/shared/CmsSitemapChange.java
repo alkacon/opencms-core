@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsSitemapChange.java,v $
- * Date   : $Date: 2011/01/14 14:19:55 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/01/21 11:09:42 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,11 +46,14 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  */
 public class CmsSitemapChange implements IsSerializable, Comparable<CmsSitemapChange> {
+
+    /** The changed clip-board data. */
+    private CmsSitemapClipboardData m_clipBoardData;
 
     /** Detail page info's to change. */
     private List<CmsDetailPageInfo> m_detailPageInfos;
@@ -131,6 +134,9 @@ public class CmsSitemapChange implements IsSerializable, Comparable<CmsSitemapCh
         if (data.isDelete()) {
             m_isDelete = true;
         }
+        if (data.getClipBoardData() != null) {
+            m_clipBoardData = data.getClipBoardData();
+        }
     }
 
     /**
@@ -166,6 +172,16 @@ public class CmsSitemapChange implements IsSerializable, Comparable<CmsSitemapCh
             return m_entryId.equals(((CmsSitemapChange)obj).m_entryId);
         }
         return false;
+    }
+
+    /**
+     * Returns the clip-board data.<p>
+     *
+     * @return the clip-board data
+     */
+    public CmsSitemapClipboardData getClipBoardData() {
+
+        return m_clipBoardData;
     }
 
     /**
@@ -342,6 +358,16 @@ public class CmsSitemapChange implements IsSerializable, Comparable<CmsSitemapCh
     public boolean isNew() {
 
         return m_isNew;
+    }
+
+    /**
+     * Sets the clip-board data.<p>
+     *
+     * @param clipBoardData the clip-board data to set
+     */
+    public void setClipBoardData(CmsSitemapClipboardData clipBoardData) {
+
+        m_clipBoardData = clipBoardData;
     }
 
     /**
