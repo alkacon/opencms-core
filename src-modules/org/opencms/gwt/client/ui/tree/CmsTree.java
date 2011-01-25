@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/tree/Attic/CmsTree.java,v $
- * Date   : $Date: 2011/01/14 14:19:55 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2011/01/25 08:21:06 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import com.google.gwt.user.client.ui.HasAnimation;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 8.0.0
  */
@@ -130,7 +130,6 @@ public class CmsTree<I extends CmsTreeItem> extends CmsList<I> implements HasOpe
      */
     public HandlerRegistration addOpenHandler(final OpenHandler<I> handler) {
 
-        m_eventBus.addHandlerToSource(OpenEvent.getType(), this, handler);
         return m_eventBus.addHandlerToSource(OpenEvent.getType(), this, handler);
     }
 
