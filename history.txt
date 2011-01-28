@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2011/01/19 16:01:53 $
- * Version: $Revision: 1.1216 $
+ * Date   : $Date: 2011/01/28 15:14:26 $
+ * Version: $Revision: 1.1217 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,7 @@ OpenCms x.x.x - month day, year
 * Fixed issue in galleries: Broken layout with long item file names or titles
 * Fixed issue #1920: Inconsistent checkbox preselection in direct publish dialog
 * Fixed issue #1942: Publish scheduled jobs are missing after server restart
+* Fixed issue: Error when searching with the group field in the Module Management and at least one module without configured group
 
 OpenCms 7.5.3 - August 18, 2010
 ! External Links (pointers) now support handling of request parameters (loader parameter in opencms-vfs.xml)
