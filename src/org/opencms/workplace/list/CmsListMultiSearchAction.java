@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListMultiSearchAction.java,v $
- * Date   : $Date: 2009/11/12 07:41:54 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/01/28 15:22:25 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 7.6
  */
@@ -161,6 +161,7 @@ public class CmsListMultiSearchAction extends CmsListSearchAction {
                 CmsListColumnDefinition col = (CmsListColumnDefinition)itCols.next();
                 if (item.get(col.getId()) == null) {
                     matched = false;
+                    continue;
                 }
                 String colFilter = colVals.get(col.getId());
 

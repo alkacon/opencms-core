@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2011/01/19 16:48:03 $
- * Version: $Revision: 1.67 $
+ * Date   : $Date: 2011/01/28 15:22:25 $
+ * Version: $Revision: 1.68 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -65,6 +65,7 @@ OpenCms x.x.x - Month Day, Year
 * Fixed issue in galleries: Broken layout with long item file names or titles
 * Fixed issue #1920: Inconsistent checkbox preselection in direct publish dialog
 * Fixed issue #1942: Publish scheduled jobs are missing after server restart
+* Fixed issue: Error when searching with the group field in the Module Management and at least one module without configured group
 
 OpenCms 7.9.2 - February 24th, 2010
 ! Added support for xsd:choice in XML content API and editor
