@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsRadioButtonGroupWidget.java,v $
- * Date   : $Date: 2010/12/22 11:35:15 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/02/01 14:52:15 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,8 +47,8 @@ import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.GwtEvent;
-import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Panel;
@@ -62,7 +62,7 @@ import com.google.gwt.user.client.ui.Panel;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 8.0.0
  * 
@@ -73,8 +73,8 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsHasInit {
     /** The widget type identifier. */
     public static final String WIDGET_TYPE = "radio";
 
-    /** A collection of event handlers for this widget. */
-    HandlerManager m_handlers = new HandlerManager(this);
+    /** The event bus. */
+    protected SimpleEventBus m_eventBus;
 
     /** The error display used by this widget. */
     private CmsErrorWidget m_error = new CmsErrorWidget();
@@ -137,14 +137,7 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsHasInit {
      */
     public HandlerRegistration addValueChangeHandler(final ValueChangeHandler<String> handler) {
 
-        m_handlers.addHandler(ValueChangeEvent.getType(), handler);
-        return new HandlerRegistration() {
-
-            public void removeHandler() {
-
-                m_handlers.removeHandler(ValueChangeEvent.getType(), handler);
-            }
-        };
+        return m_eventBus.addHandlerToSource(ValueChangeEvent.getType(), this, handler);
     }
 
     /**
@@ -153,7 +146,7 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsHasInit {
     @Override
     public void fireEvent(GwtEvent<?> event) {
 
-        m_handlers.fireEvent(event);
+        m_eventBus.fireEventFromSource(event, this);
     }
 
     /**
@@ -273,6 +266,7 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsHasInit {
     protected void init(Map<String, String> items) {
 
         initWidget(m_panel);
+        m_eventBus = new SimpleEventBus();
         m_radioButtons = new HashMap<String, CmsRadioButton>();
         for (Map.Entry<String, String> entry : items.entrySet()) {
 
