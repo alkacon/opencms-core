@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsAvailabilityDialog.java,v $
- * Date   : $Date: 2010/12/21 13:03:43 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/02/01 15:02:53 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,7 +72,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -186,6 +186,7 @@ public class CmsAvailabilityDialog extends CmsPopupDialog {
             /**
              * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
              */
+            @Override
             public void execute() {
 
                 start(0, true);
@@ -199,6 +200,7 @@ public class CmsAvailabilityDialog extends CmsPopupDialog {
             /**
             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
             */
+            @Override
             public void onResponse(CmsAvailabilityInfoBean availabilityInfo) {
 
                 stop(false);
@@ -597,6 +599,7 @@ public class CmsAvailabilityDialog extends CmsPopupDialog {
             /**
              * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
              */
+            @Override
             public void execute() {
 
                 if (m_structureId != null) {
@@ -609,6 +612,7 @@ public class CmsAvailabilityDialog extends CmsPopupDialog {
             /**
             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
             */
+            @Override
             public void onResponse(Void result) {
 
                 // noop
