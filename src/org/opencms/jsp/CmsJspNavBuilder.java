@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspNavBuilder.java,v $
- * Date   : $Date: 2011/01/13 08:59:24 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/02/01 14:50:15 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  * 
@@ -369,13 +369,26 @@ public class CmsJspNavBuilder {
     }
 
     /**
-     * Collect all navigation elements from the files in the given folder.<p>
+     * Collect all navigation visible elements from the files in the given folder.<p>
      *
      * @param folder the selected folder
      * 
      * @return A sorted (ascending to navigation position) list of navigation elements
      */
     public List<CmsJspNavElement> getNavigationForFolder(String folder) {
+
+        return getNavigationForFolder(folder, false);
+    }
+
+    /**
+     * Collect all navigation elements from the files in the given folder.<p>
+     *
+     * @param folder the selected folder
+     * @param includeInvisible <code>true</code> to include elements not visible in navigation
+     * 
+     * @return A sorted (ascending to navigation position) list of navigation elements
+     */
+    public List<CmsJspNavElement> getNavigationForFolder(String folder, boolean includeInvisible) {
 
         folder = CmsResource.getFolderPath(folder);
         List<CmsJspNavElement> result = new ArrayList<CmsJspNavElement>();
@@ -391,7 +404,7 @@ public class CmsJspNavBuilder {
 
         for (CmsResource r : resources) {
             CmsJspNavElement element = getNavigationForResource(m_cms.getSitePath(r));
-            if ((element != null) && element.isInNavigation()) {
+            if ((element != null) && (includeInvisible || element.isInNavigation())) {
                 result.add(element);
             }
         }
