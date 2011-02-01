@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/edit/Attic/CmsEditEntryHandler.java,v $
- * Date   : $Date: 2010/11/30 08:56:13 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/02/01 15:25:05 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import java.util.Map;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -115,12 +115,7 @@ public class CmsEditEntryHandler extends A_CmsSitemapEntryEditorHandler {
         boolean editedName) {
 
         // edit
-        //m_controller.edit(m_entry, newTitle, vfsPath, fieldValues, !editedName);
         m_controller.editAndChangeName(m_entry, newTitle, newUrlName, vfsPath, fieldValues, editedName);
-
-        // move
-        //m_controller.move(m_entry, getPath(newUrlName), m_entry.getPosition());
-        //TODO: Check if this can lead to errors when UNDO-ing
 
     }
 

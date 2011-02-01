@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsClientLock.java,v $
- * Date   : $Date: 2011/01/14 14:19:55 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/02/01 15:25:05 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  */
@@ -115,7 +115,7 @@ public class CmsClientLock implements IsSerializable {
          * 
          * @return the lock type
          */
-        public static LockType valoueOf(int mode) {
+        public static LockType valueOf(int mode) {
 
             switch (mode) {
                 case 1:

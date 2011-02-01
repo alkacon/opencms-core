@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsSitemapChange.java,v $
- * Date   : $Date: 2011/01/21 11:09:42 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/02/01 15:25:05 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  */
@@ -63,6 +63,9 @@ public class CmsSitemapChange implements IsSerializable, Comparable<CmsSitemapCh
 
     /** Flag to indicate this is a deleting change. */
     private boolean m_isDelete;
+
+    /** Indicates if the entry to change is a leaf type entry. */
+    private boolean m_isLeafType;
 
     /** Flag to indicate this is a creating new change. */
     private boolean m_isNew;
@@ -351,6 +354,16 @@ public class CmsSitemapChange implements IsSerializable, Comparable<CmsSitemapCh
     }
 
     /**
+     * Returns if the entry to change is a leaf type entry.<p>
+     *
+     * @return <code>true</code> if the entry to change is a leaf type entry
+     */
+    public boolean isLeafType() {
+
+        return m_isLeafType;
+    }
+
+    /**
      * Returns if this is a creating new change.<p>
      * 
      * @return the is new flag
@@ -388,6 +401,16 @@ public class CmsSitemapChange implements IsSerializable, Comparable<CmsSitemapCh
     public void setDetailPageInfos(List<CmsDetailPageInfo> detailPageInfos) {
 
         m_detailPageInfos = detailPageInfos;
+    }
+
+    /**
+     * Sets if the entry to change is a leaf type entry.<p>
+     *
+     * @param isLeafEntry <code>true</code> if the entry to change is a leaf type entry
+     */
+    public void setLeafType(boolean isLeafEntry) {
+
+        m_isLeafType = isLeafEntry;
     }
 
     /**

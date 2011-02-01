@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/ui/Attic/CmsStatusIconUpdateHandler.java,v $
- * Date   : $Date: 2011/01/14 14:19:55 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/02/01 15:25:05 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import java.util.Map;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -66,6 +66,9 @@ public class CmsStatusIconUpdateHandler implements I_CmsPropertyUpdateHandler {
         CmsComputedPropertyValue secureProp = myProps.get("secure");
         CmsComputedPropertyValue exportProp = myProps.get("export");
         PageIcon icon = PageIcon.none;
+        if (!entry.isInNavigation()) {
+            icon = PageIcon.hidden;
+        }
         if ((exportProp != null) && "true".equals(exportProp.getOwnValue())) {
             icon = PageIcon.export;
         }

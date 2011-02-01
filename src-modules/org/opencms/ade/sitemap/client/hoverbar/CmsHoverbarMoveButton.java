@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsHoverbarMoveButton.java,v $
- * Date   : $Date: 2011/01/14 14:19:54 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/02/01 15:25:05 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsImageBundle;
+import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.gwt.client.dnd.I_CmsDragHandle;
 import org.opencms.gwt.client.dnd.I_CmsDraggable;
 import org.opencms.gwt.client.ui.CmsPushButton;
@@ -46,7 +47,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 8.0.0
  */
@@ -76,15 +77,25 @@ public class CmsHoverbarMoveButton extends CmsPushButton implements I_CmsDragHan
              */
             public void onShow(CmsHoverbarShowEvent event) {
 
-                m_sitePath = hoverbar.getSitePath();
-                final CmsSitemapController controller = hoverbar.getController();
-                if (controller.isRoot(m_sitePath)) {
-                    disable(Messages.get().key(Messages.GUI_DISABLED_ROOT_ITEM_0));
-                } else if (controller.getEntry(m_sitePath).hasForeignFolderLock()) {
-                    disable("The entry folder is locked.");
+                if (CmsSitemapView.getInstance().isNavigationMode()) {
+                    m_sitePath = hoverbar.getSitePath();
+                    final CmsSitemapController controller = hoverbar.getController();
+                    CmsClientSitemapEntry entry = controller.getEntry(m_sitePath);
+                    if (!entry.isInNavigation()) {
+                        CmsHoverbarMoveButton.this.setVisible(false);
+                    } else if (controller.isRoot(m_sitePath)) {
+                        disable(Messages.get().key(Messages.GUI_DISABLED_ROOT_ITEM_0));
+                        CmsHoverbarMoveButton.this.setVisible(true);
+                    } else if (entry.hasForeignFolderLock()) {
+                        disable("The entry folder is locked.");
+                        CmsHoverbarMoveButton.this.setVisible(true);
+                    } else {
+                        enable();
+                        m_mouseDownHandlerReg = addMouseDownHandler(CmsSitemapView.getInstance().getTree().getDnDHandler());
+                        CmsHoverbarMoveButton.this.setVisible(true);
+                    }
                 } else {
-                    enable();
-                    m_mouseDownHandlerReg = addMouseDownHandler(CmsSitemapView.getInstance().getTree().getDnDHandler());
+                    CmsHoverbarMoveButton.this.setVisible(false);
                 }
             }
         });

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeMove.java,v $
- * Date   : $Date: 2011/01/21 11:09:42 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2011/02/01 15:25:05 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import org.opencms.util.CmsUUID;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 8.0.0
  */
@@ -188,6 +188,7 @@ public class CmsClientSitemapChangeMove implements I_CmsClientSitemapChange {
             change.setName(CmsResource.getName(m_destinationPath));
         }
         change.setPosition(m_destinationPosition);
+        change.setLeafType(m_entry.isLeafType());
         CmsSitemapClipboardData data = CmsSitemapView.getInstance().getController().getData().getClipboardData().copy();
         applyToClipboardData(data);
         change.setClipBoardData(data);

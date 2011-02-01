@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsHoverbarContextMenuButton.java,v $
- * Date   : $Date: 2010/12/21 10:23:32 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/02/01 15:25:05 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -94,11 +94,12 @@ public class CmsHoverbarContextMenuButton extends CmsMenuButton {
         m_entries.add(new CmsGotoMenuEntry(hoverbar));
         m_entries.add(new CmsEditMenuEntry(hoverbar));
         m_entries.add(new CmsNewMenuEntry(hoverbar));
+        m_entries.add(new CmsAddToNavMenuEntry(hoverbar));
         m_entries.add(new CmsSubSitemapMenuEntry(hoverbar));
         m_entries.add(new CmsParentSitemapMenuEntry(hoverbar));
         m_entries.add(new CmsGotoSubSitemapMenuEntry(hoverbar));
         m_entries.add(new CmsMergeMenuEntry(hoverbar));
-        m_entries.add(new CmsDeleteMenuEntry(hoverbar));
+        m_entries.add(new CmsRemoveMenuEntry(hoverbar));
         m_entries.add(new CmsBumpDetailPageMenuEntry(hoverbar));
         m_entries.add(new CmsAvailabilityMenuEntry(hoverbar));
         setTitle("Context menu");

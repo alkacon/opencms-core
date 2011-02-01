@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapTreeItem.java,v $
- * Date   : $Date: 2011/01/18 16:46:27 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2011/02/01 15:25:05 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,6 +52,7 @@ import org.opencms.gwt.client.ui.input.CmsLabel;
 import org.opencms.gwt.client.ui.input.CmsLabel.I_TitleGenerator;
 import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
+import org.opencms.gwt.client.util.CmsStyleVariable;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsListInfoBean.PageIcon;
 import org.opencms.util.CmsStringUtil;
@@ -60,6 +61,7 @@ import org.opencms.xml.sitemap.CmsDetailPageTable;
 import org.opencms.xml.sitemap.properties.CmsComputedPropertyValue;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -76,7 +78,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.48 $ 
+ * @version $Revision: 1.49 $ 
  * 
  * @since 8.0.0
  * 
@@ -170,38 +172,43 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
     /** The detail page label title generator. */
     private DetailPageLabelTitleGenerator m_detailPageLabelTitleGenerator;
 
-    /** The original site path. */
-    private String m_originalPath;
+    private CmsStyleVariable m_inNavigationStyle;
+
+    private HTML m_lockIcon;
+
+    private CmsStyleVariable m_openerForNonNavigationStyle;
 
     /** The page icon. */
     private PageIcon m_pageIcon;
-
-    private HTML m_lockIcon;
 
     /**
      * Default constructor.<p>
      * 
      * @param widget the widget to use
      * @param entry the sitemap entry
-     * @param oriSitePath the original site path
      */
-    public CmsSitemapTreeItem(CmsListItemWidget widget, CmsClientSitemapEntry entry, String oriSitePath) {
+    public CmsSitemapTreeItem(CmsListItemWidget widget, CmsClientSitemapEntry entry) {
 
-        super(widget);
+        super(widget, false);
         m_decoratedPanel.addDecorationBoxStyle(CSS.sitemapEntryDecoration());
         m_listItemWidget = widget;
         m_detailPageLabelTitleGenerator = new DetailPageLabelTitleGenerator();
         m_listItemWidget.getSubTitleSuffix().setTitleGenerator(m_detailPageLabelTitleGenerator);
-        m_originalPath = oriSitePath;
         m_entry = entry;
+        m_inNavigationStyle = new CmsStyleVariable(this);
+        m_openerForNonNavigationStyle = new CmsStyleVariable(m_opener);
+        m_listItemWidget.addTitleStyleName(CSS.itemTitle());
+        updateInNavigation(entry);
         m_itemsById.put(entry.getId(), this);
         setId(getName(entry.getSitePath()));
         updateSitePath(entry.getSitePath());
         updateSitemapReferenceStatus(entry);
         updateDetailPageStatus();
         setLockIcon(entry.getLock());
+        if (!entry.isFolderType()) {
+            hideOpeners();
+        }
         setDropEnabled(m_entry.isFolderType() && !m_entry.hasForeignFolderLock());
-        widget.setTitleEditable(true);
         widget.setTitleEditHandler(new I_CmsTitleEditHandler() {
 
             /**
@@ -278,6 +285,17 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
         });
     }
 
+    /** 
+     * Looks up a sitemap tree item by entry id.<p>
+     * 
+     * @param id the sitemap entry id 
+     * @return the corresponding sitemap tree item, or null if there is none 
+     */
+    public static CmsSitemapTreeItem getItemById(CmsUUID id) {
+
+        return m_itemsById.get(id);
+    }
+
     /**
      * Returns the current page info of this sitemap as {@link CmsListInfoBean}.<p>
      * 
@@ -297,17 +315,6 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
         info.setAdditionalInfo(addInfo);
 
         return info;
-    }
-
-    /** 
-     * Looks up a sitemap tree item by entry id.<p>
-     * 
-     * @param id the sitemap entry id 
-     * @return the corresponding sitemap tree item, or null if there is none 
-     */
-    public static CmsSitemapTreeItem getItemById(CmsUUID id) {
-
-        return m_itemsById.get(id);
     }
 
     /**
@@ -353,6 +360,9 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
     public String getDisplayedUrl(String sitePath) {
 
         String context = CmsCoreProvider.get().getContext();
+        if (m_entry.isLeafType() && sitePath.endsWith("/")) {
+            sitePath = sitePath.substring(0, sitePath.length() - 1);
+        }
         if (m_entry.getInheritedProperties() == null) {
             return CmsStringUtil.joinPaths(context, sitePath);
         }
@@ -381,6 +391,15 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
     }
 
     /**
+     * @see org.opencms.gwt.client.ui.tree.CmsTreeItem#getPath()
+     */
+    @Override
+    public String getPath() {
+
+        return getSitePath();
+    }
+
+    /**
      * Returns the sitemap entry.<p>
      * 
      * @return the sitemap entry
@@ -388,25 +407,6 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
     public CmsClientSitemapEntry getSitemapEntry() {
 
         return m_entry;
-    }
-
-    /**
-     * Returns the original site path, in case this entry has been moved or renamed.<p>
-     *
-     * @return the original site path
-     */
-    public String getOriginalPath() {
-
-        return m_originalPath;
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.tree.CmsTreeItem#getPath()
-     */
-    @Override
-    public String getPath() {
-
-        return getSitePath();
     }
 
     /**
@@ -567,19 +567,6 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
     }
 
     /**
-     * Updates the detail page description.<p>
-     */
-    public void updateDetailPageStatus() {
-
-        DetailPageMessages detailPageMessages = getDetailPageMessages(m_entry.getId());
-        m_detailPageLabelTitleGenerator.setDetailPageTitle(detailPageMessages.getTitle());
-        m_listItemWidget.updateTruncation();
-        CmsLabel label = m_listItemWidget.getSubTitleSuffix();
-        label.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().subtitleSuffix());
-        m_listItemWidget.setSubtitleSuffixText(detailPageMessages.getMessage());
-    }
-
-    /**
      * Sets the icon.<p>
      *
      * @param icon the icon to set
@@ -633,6 +620,19 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
     }
 
     /**
+     * Updates the detail page description.<p>
+     */
+    public void updateDetailPageStatus() {
+
+        DetailPageMessages detailPageMessages = getDetailPageMessages(m_entry.getId());
+        m_detailPageLabelTitleGenerator.setDetailPageTitle(detailPageMessages.getTitle());
+        m_listItemWidget.updateTruncation();
+        CmsLabel label = m_listItemWidget.getSubTitleSuffix();
+        label.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().subtitleSuffix());
+        m_listItemWidget.setSubtitleSuffixText(detailPageMessages.getMessage());
+    }
+
+    /**
      * Refreshes the displayed data from the given sitemap entry.<p>
      * 
      * @param entry the sitemap entry to update
@@ -651,7 +651,24 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
         updateSitePath();
         updateDetailPageStatus();
         setLockIcon(entry.getLock());
+        updateInNavigation(entry);
         setDropEnabled(m_entry.isFolderType() && !m_entry.hasForeignFolderLock());
+    }
+
+    /**
+     * Updates the in navigation properties of the displayed entry.<p>
+     * 
+     * @param entry the sitemap entry 
+     */
+    public void updateInNavigation(CmsClientSitemapEntry entry) {
+
+        if (entry.isInNavigation()) {
+            m_inNavigationStyle.setValue(null);
+            m_listItemWidget.setTitleEditable(true);
+        } else {
+            m_inNavigationStyle.setValue(CSS.notInNavigationEntry());
+            m_listItemWidget.setTitleEditable(false);
+        }
     }
 
     /**
@@ -768,6 +785,31 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
 
         // TODO: return nice type name by getting information from the sitemap controller 
         return type;
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.tree.CmsLazyTreeItem#onChangeChildren()
+     */
+    @Override
+    protected void onChangeChildren() {
+
+        super.onChangeChildren();
+        if (m_openerForNonNavigationStyle == null) {
+            // happens when initializing
+            return;
+        }
+        Iterator<Widget> childIt = m_children.iterator();
+        while (childIt.hasNext()) {
+            Widget childWidget = childIt.next();
+            if (childWidget instanceof CmsSitemapTreeItem) {
+                CmsSitemapTreeItem treeItem = (CmsSitemapTreeItem)childWidget;
+                if (treeItem.getSitemapEntry().isInNavigation()) {
+                    m_openerForNonNavigationStyle.setValue(null);
+                    return;
+                }
+            }
+        }
+        m_openerForNonNavigationStyle.setValue(CSS.notInNavigationEntry());
     }
 
     /**

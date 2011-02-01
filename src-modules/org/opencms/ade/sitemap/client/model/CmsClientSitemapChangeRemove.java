@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeEdit.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeRemove.java,v $
  * Date   : $Date: 2011/02/01 15:25:05 $
- * Version: $Revision: 1.14 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,56 +38,47 @@ import org.opencms.ade.sitemap.client.toolbar.CmsToolbarClipboardView;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsSitemapClipboardData;
+import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
+
+import java.util.List;
 
 /**
- * Stores one edition change to the sitemap.<p> 
+ * Stores one deletion change to the sitemap.<p>
  * 
- * @author Michael Moossen
+ * @author Michael Moossen 
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  */
-public class CmsClientSitemapChangeEdit implements I_CmsClientSitemapChange {
+public class CmsClientSitemapChangeRemove implements I_CmsClientSitemapChange {
 
-    /** If true, tell the view to ensure that the affected  item is visible. */
-    private boolean m_ensureVisible;
+    /** The deleted entry with children. */
+    private CmsClientSitemapEntry m_entry;
 
-    /** The new entry without children. */
-    private CmsClientSitemapEntry m_newEntry;
-
-    /** The old entry without children. */
-    private CmsClientSitemapEntry m_oldEntry;
+    /** The tree item to which the change should be applied. */
+    private CmsSitemapTreeItem m_treeItem;
 
     /**
      * Constructor.<p>
      * 
-     * @param oldEntry the old entry
-     * @param newEntry the new entry
+     * @param entry the deleted entry
      */
-    public CmsClientSitemapChangeEdit(CmsClientSitemapEntry oldEntry, CmsClientSitemapEntry newEntry) {
+    public CmsClientSitemapChangeRemove(CmsClientSitemapEntry entry) {
 
-        m_ensureVisible = true;
-        m_oldEntry = new CmsClientSitemapEntry(oldEntry);
-        m_newEntry = newEntry;
-        //      m_newEntry.setLock(oldEntry.getLock());
+        m_entry = entry;
     }
 
     /**
      * Constructor.<p>
      * 
-     * @param oldEntry the old entry
-     * @param newEntry the new entry
-     * @param ensureVisible the ensure visible flag
+     * @param entry the deleted entry
+     * @param parentId the parent entry id
      */
-    public CmsClientSitemapChangeEdit(
-        CmsClientSitemapEntry oldEntry,
-        CmsClientSitemapEntry newEntry,
-        boolean ensureVisible) {
+    public CmsClientSitemapChangeRemove(CmsClientSitemapEntry entry, CmsUUID parentId) {
 
-        m_ensureVisible = ensureVisible;
-        m_oldEntry = new CmsClientSitemapEntry(oldEntry);
-        m_newEntry = newEntry;
+        m_entry = entry;
     }
 
     /**
@@ -95,7 +86,7 @@ public class CmsClientSitemapChangeEdit implements I_CmsClientSitemapChange {
      */
     public void applyToClipboardView(CmsToolbarClipboardView view) {
 
-        view.addModified(getNewEntry(), getOldEntry().getSitePath());
+        view.addDeleted(getEntry());
     }
 
     /**
@@ -104,12 +95,8 @@ public class CmsClientSitemapChangeEdit implements I_CmsClientSitemapChange {
     public void applyToModel(CmsSitemapController controller) {
 
         // apply to sitemap model 
-        CmsClientSitemapEntry editEntry = controller.getEntry(getOldEntry().getSitePath());
-        editEntry.setTitle(getNewEntry().getTitle());
-        editEntry.setVfsPath(getNewEntry().getVfsPath());
-        editEntry.setProperties(getNewEntry().getProperties());
-        editEntry.setNew(getNewEntry().isNew());
-        controller.getRedirectUpdater().handleSave(editEntry);
+        m_entry.setInNavigation(false);
+        // apply to clipboard model
         applyToClipboardData(controller.getData().getClipboardData());
     }
 
@@ -118,11 +105,8 @@ public class CmsClientSitemapChangeEdit implements I_CmsClientSitemapChange {
      */
     public void applyToView(CmsSitemapView view) {
 
-        CmsSitemapTreeItem editEntry = view.getTreeItem(getOldEntry().getSitePath());
-        if (m_ensureVisible) {
-            view.ensureVisible(editEntry);
-        }
-        editEntry.updateEntry(getNewEntry());
+        m_treeItem = view.getTreeItem(getEntry().getSitePath());
+        m_treeItem.updateEntry(m_entry);
     }
 
     /**
@@ -130,36 +114,23 @@ public class CmsClientSitemapChangeEdit implements I_CmsClientSitemapChange {
      */
     public CmsSitemapChange getChangeForCommit() {
 
-        CmsSitemapChange change = new CmsSitemapChange(m_newEntry.getId(), m_newEntry.getSitePath());
-        change.setProperties(m_newEntry.getProperties());
-        if (!m_oldEntry.getTitle().equals(m_newEntry.getTitle())) {
-            change.setTitle(m_newEntry.getTitle());
-        }
-        change.setLeafType(m_newEntry.isLeafType());
+        CmsSitemapChange change = new CmsSitemapChange(m_entry.getId(), m_entry.getSitePath());
+        change.setDelete(true);
         CmsSitemapClipboardData data = CmsSitemapView.getInstance().getController().getData().getClipboardData().copy();
         applyToClipboardData(data);
         change.setClipBoardData(data);
+        //TODO: handle detail page delete
         return change;
     }
 
     /**
-     * Returns the new entry.<p>
+     * Returns the deleted entry.<p>
      *
-     * @return the new entry
+     * @return the deleted entry
      */
-    public CmsClientSitemapEntry getNewEntry() {
+    public CmsClientSitemapEntry getEntry() {
 
-        return m_newEntry;
-    }
-
-    /**
-     * Returns the old entry.<p>
-     *
-     * @return the old entry
-     */
-    public CmsClientSitemapEntry getOldEntry() {
-
-        return m_oldEntry;
+        return m_entry;
     }
 
     /**
@@ -167,7 +138,31 @@ public class CmsClientSitemapChangeEdit implements I_CmsClientSitemapChange {
      */
     public boolean isChangingDetailPages() {
 
-        return false; // detail page information can not be edited directly 
+        return m_entry.isDetailPage();
+    }
+
+    /**
+     * Sets the corresponding tree item from a new operation.<p>
+     * 
+     * @param treeItem the item to set
+     */
+    public void setTreeItem(CmsSitemapTreeItem treeItem) {
+
+        m_treeItem = treeItem;
+    }
+
+    /**
+     * Removes delted entry and all it's sub-entries from the modified list.<p>
+     * 
+     * @param entry the deleted entry
+     * @param modified the modified list
+     */
+    private void removeDeletedFromModified(CmsClientSitemapEntry entry, List<CmsClientSitemapEntry> modified) {
+
+        modified.remove(entry);
+        for (CmsClientSitemapEntry child : entry.getSubEntries()) {
+            removeDeletedFromModified(child, modified);
+        }
     }
 
     /**
@@ -177,7 +172,11 @@ public class CmsClientSitemapChangeEdit implements I_CmsClientSitemapChange {
      */
     private void applyToClipboardData(CmsSitemapClipboardData clipboardData) {
 
-        clipboardData.getModifications().remove(getOldEntry());
-        clipboardData.getModifications().add(0, getNewEntry());
+        if (!(getEntry().isNew() && CmsStringUtil.isEmptyOrWhitespaceOnly(getEntry().getVfsPath()))) {
+            // only add deleted entries to the deleted list, that do have a linked vfs path
+            List<CmsClientSitemapEntry> deleted = clipboardData.getDeletions();
+            deleted.add(0, getEntry());
+        }
+        removeDeletedFromModified(getEntry(), clipboardData.getModifications());
     }
 }

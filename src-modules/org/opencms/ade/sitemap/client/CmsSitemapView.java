@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapView.java,v $
- * Date   : $Date: 2011/01/18 16:46:27 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2011/02/01 15:25:05 $
+ * Version: $Revision: 1.51 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,11 +55,12 @@ import org.opencms.gwt.client.ui.CmsInfoLoadingListItemWidget;
 import org.opencms.gwt.client.ui.CmsListItemWidget.AdditionalInfoItem;
 import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.CmsToolbarPlaceHolder;
-import org.opencms.gwt.client.ui.tree.A_CmsDeepLazyOpenHandler;
+import org.opencms.gwt.client.ui.tree.A_CmsLazyOpenHandler;
 import org.opencms.gwt.client.ui.tree.CmsLazyTree;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsResourceStateUtil;
+import org.opencms.gwt.client.util.CmsStyleVariable;
 import org.opencms.gwt.client.util.I_CmsAdditionalInfoLoader;
 import org.opencms.gwt.shared.CmsLinkBean;
 import org.opencms.gwt.shared.CmsListInfoBean;
@@ -84,11 +85,19 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.50 $ 
+ * @version $Revision: 1.51 $ 
  * 
  * @since 8.0.0
  */
 public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
+
+    /** The sitemap editor modes. */
+    public enum EditorMode {
+        /** The navigation mode. */
+        navigation,
+        /** The VFS mode. */
+        vfs
+    }
 
     /** The singleton instance. */
     private static CmsSitemapView m_instance;
@@ -101,6 +110,11 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
 
     /** The displayed sitemap tree. */
     protected CmsLazyTree<CmsSitemapTreeItem> m_tree;
+
+    /** The current sitemap editor mode. */
+    private EditorMode m_editorMode;
+
+    private CmsStyleVariable m_inNavigationStyle;
 
     /** The sitemap toolbar. */
     private CmsSitemapToolbar m_toolbar;
@@ -119,11 +133,10 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
      * Creates a new tree item from the given sitemap entry.<p>
      * 
      * @param entry the sitemap entry
-     * @param originalPath the original path in case it was renamed or moved
      * 
      * @return the new created (still orphan) tree item 
      */
-    public CmsSitemapTreeItem create(final CmsClientSitemapEntry entry, String originalPath) {
+    public CmsSitemapTreeItem create(final CmsClientSitemapEntry entry) {
 
         CmsListInfoBean infoBean = new CmsListInfoBean();
         infoBean.setTitle(entry.getTitle());
@@ -136,7 +149,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         infoBean.addAdditionalInfo(Messages.get().key(Messages.GUI_VFS_PATH_0), shownPath);
 
         CmsInfoLoadingListItemWidget itemWidget = new CmsInfoLoadingListItemWidget(infoBean);
-        final CmsSitemapTreeItem treeItem = new CmsSitemapTreeItem(itemWidget, entry, originalPath);
+        final CmsSitemapTreeItem treeItem = new CmsSitemapTreeItem(itemWidget, entry);
         itemWidget.setAdditionalInfoLoader(new I_CmsAdditionalInfoLoader() {
 
             public void load(final AsyncCallback<List<AdditionalInfoItem>> callback) {
@@ -216,7 +229,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
      */
     public CmsSitemapTreeItem createSitemapItem(CmsClientSitemapEntry entry) {
 
-        CmsSitemapTreeItem result = create(entry, entry.getSitePath());
+        CmsSitemapTreeItem result = create(entry);
         result.clearChildren();
         for (CmsClientSitemapEntry child : entry.getSubEntries()) {
             CmsSitemapTreeItem childItem = createSitemapItem(child);
@@ -253,6 +266,16 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
     public CmsSitemapController getController() {
 
         return m_controller;
+    }
+
+    /**
+     * Returns the editor mode.<p>
+     *
+     * @return the editor mode
+     */
+    public EditorMode getEditorMode() {
+
+        return m_editorMode;
     }
 
     /**
@@ -330,6 +353,16 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
     }
 
     /**
+     * Returns if the current sitemap editor mode is navigation.<p>
+     * 
+     * @return <code>true</code> if the current sitemap editor mode is navigation
+     */
+    public boolean isNavigationMode() {
+
+        return EditorMode.navigation == m_editorMode;
+    }
+
+    /**
      * @see org.opencms.ade.sitemap.client.control.I_CmsSitemapChangeHandler#onChange(org.opencms.ade.sitemap.client.control.CmsSitemapChangeEvent)
      */
     public void onChange(CmsSitemapChangeEvent changeEvent) {
@@ -346,7 +379,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         target.getTree().setAnimationEnabled(false);
         target.clearChildren();
         for (CmsClientSitemapEntry child : event.getEntry().getSubEntries()) {
-            target.addChild(create(child, event.getOriginalPath() + child.getName() + "/"));
+            target.addChild(create(child));
         }
         target.onFinishLoading();
         target.getTree().setAnimationEnabled(true);
@@ -361,7 +394,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
 
         super.onModuleLoad();
         m_instance = this;
-
+        m_inNavigationStyle = new CmsStyleVariable(RootPanel.get());
         // init
         I_CmsLayoutBundle.INSTANCE.rootCss().ensureInjected();
         I_CmsLayoutBundle.INSTANCE.pageCss().ensureInjected();
@@ -370,7 +403,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         I_CmsImageBundle.INSTANCE.buttonCss().ensureInjected();
 
         RootPanel.getBodyElement().addClassName(I_CmsLayoutBundle.INSTANCE.rootCss().root());
-
+        setEditorMode(EditorMode.navigation);
         // controller 
         m_controller = new CmsSitemapController();
         m_controller.addChangeHandler(this);
@@ -406,16 +439,14 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         rootItem.setOpen(true);
 
         // starting rendering
-        m_tree = new CmsLazyTree<CmsSitemapTreeItem>(new A_CmsDeepLazyOpenHandler<CmsSitemapTreeItem>() {
+        m_tree = new CmsLazyTree<CmsSitemapTreeItem>(new A_CmsLazyOpenHandler<CmsSitemapTreeItem>() {
 
             /**
              * @see org.opencms.gwt.client.ui.tree.I_CmsLazyOpenHandler#load(org.opencms.gwt.client.ui.tree.CmsLazyTreeItem)
              */
             public void load(final CmsSitemapTreeItem target) {
 
-                if (target.getSitemapEntry().isFolderType()) {
-                    m_controller.getChildren(target.getOriginalPath(), target.getSitePath());
-                }
+                m_controller.getChildren(target.getSitePath());
             }
         });
         if (m_controller.isEditable()) {
@@ -449,6 +480,21 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         String openPath = m_controller.getData().getOpenPath();
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(openPath)) {
             highlightPath(CmsResource.getFolderPath(openPath));
+        }
+    }
+
+    /**
+     * Sets the editor mode.<p>
+     *
+     * @param editorMode the editor mode to set
+     */
+    public void setEditorMode(EditorMode editorMode) {
+
+        m_editorMode = editorMode;
+        if (m_editorMode == EditorMode.vfs) {
+            m_inNavigationStyle.setValue(I_CmsLayoutBundle.INSTANCE.sitemapItemCss().showAllResources());
+        } else {
+            m_inNavigationStyle.setValue(null);
         }
     }
 

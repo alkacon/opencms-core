@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsBumpDetailPageMenuEntry.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsAddToNavMenuEntry.java,v $
  * Date   : $Date: 2011/02/01 15:25:05 $
- * Version: $Revision: 1.2 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.ade.sitemap.client.hoverbar;
 
+import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
@@ -38,27 +39,26 @@ import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import com.google.gwt.user.client.Command;
 
 /**
- * The context menu entry for "bumping" a detail page, i.e. making it the default detail page for its type.<p>
+ * Sitemap context menu add entry to navigation.<p>
  * 
- * @author Georg Westenberger
+ * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  */
-public class CmsBumpDetailPageMenuEntry extends A_CmsSitemapMenuEntry {
+public class CmsAddToNavMenuEntry extends A_CmsSitemapMenuEntry {
 
     /**
      * Constructor.<p>
      * 
      * @param hoverbar the hoverbar 
      */
-    public CmsBumpDetailPageMenuEntry(CmsSitemapHoverbar hoverbar) {
+    public CmsAddToNavMenuEntry(CmsSitemapHoverbar hoverbar) {
 
         super(hoverbar);
-        //setImageClass(I_CmsImageBundle.INSTANCE.contextMenuIcons().gotoPage());
-        setImageClass(I_CmsImageBundle.INSTANCE.contextMenuIcons().bump());
-        setLabel("Make default");
+        setImageClass(I_CmsImageBundle.INSTANCE.contextMenuIcons().delete());
+        setLabel(Messages.get().key(Messages.GUI_HOVERBAR_SHOW_IN_NAV_0));
         setActive(true);
         setCommand(new Command() {
 
@@ -67,12 +67,11 @@ public class CmsBumpDetailPageMenuEntry extends A_CmsSitemapMenuEntry {
              */
             public void execute() {
 
-                CmsSitemapController controller = getHoverbar().getController();
-                String path = getHoverbar().getSitePath();
-                CmsClientSitemapEntry entry = controller.getEntry(path);
-                controller.bump(entry);
+                String sitepath = getHoverbar().getSitePath();
+                getHoverbar().getController().addToNavigation(sitepath);
             }
         });
+
     }
 
     /**
@@ -84,7 +83,10 @@ public class CmsBumpDetailPageMenuEntry extends A_CmsSitemapMenuEntry {
         String sitePath = getHoverbar().getSitePath();
         CmsSitemapController controller = getHoverbar().getController();
         CmsClientSitemapEntry entry = controller.getEntry(sitePath);
-        boolean show = entry.isDetailPage() && controller.getDetailPageTable().isDefaultDetailPage(entry.getId());
+        boolean show = !controller.isRoot(sitePath)
+            && !entry.isInNavigation()
+            && !entry.isFolderDefaultPage()
+            && entry.isEditable();
         setVisible(show);
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2011/01/21 11:09:42 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2011/02/01 15:25:05 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,11 +36,11 @@ import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeBumpDetailPage;
 import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeCreateSubSitemap;
-import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeDelete;
 import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeEdit;
 import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeMergeSitemap;
 import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeMove;
 import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeNew;
+import org.opencms.ade.sitemap.client.model.CmsClientSitemapChangeRemove;
 import org.opencms.ade.sitemap.client.model.CmsClientSitemapCompositeChange;
 import org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsBrokenLinkData;
@@ -94,7 +94,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.39 $ 
+ * @version $Revision: 1.40 $ 
  * 
  * @since 8.0.0
  */
@@ -266,6 +266,18 @@ public class CmsSitemapController {
     }
 
     /**
+     * Adds the entry to the navigation.<p>
+     * 
+     * @param sitePath the sitepath of the entry
+     */
+    public void addToNavigation(String sitePath) {
+
+        CmsClientSitemapEntry entry = getEntry(sitePath);
+        CmsClientSitemapChangeMove move = getChangeForMove(entry, sitePath, entry.getPosition(), true);
+        applyChange(move, false);
+    }
+
+    /**
      * Ask to save the page before leaving, if necessary.<p>
      * 
      * @param target the leaving target
@@ -420,7 +432,7 @@ public class CmsSitemapController {
         CmsClientSitemapEntry entry = getEntry(sitePath);
         CmsClientSitemapEntry parent = getEntry(CmsResource.getParentFolder(entry.getSitePath()));
         assert (entry != null);
-        applyChange(new CmsClientSitemapChangeDelete(entry, parent.getId()), false);
+        applyChange(new CmsClientSitemapChangeRemove(entry, parent.getId()), false);
     }
 
     /**
@@ -464,7 +476,11 @@ public class CmsSitemapController {
         boolean editedName) {
 
         CmsClientSitemapChangeEdit edit = getChangeForEdit(entry, newTitle, vfsPath, fieldValues, !editedName);
-        CmsClientSitemapChangeMove move = getChangeForMove(entry, getPath(entry, newUrlName), entry.getPosition());
+        CmsClientSitemapChangeMove move = getChangeForMove(
+            entry,
+            getPath(entry, newUrlName),
+            entry.getPosition(),
+            false);
         CmsClientSitemapCompositeChange change = new CmsClientSitemapCompositeChange();
         change.addChange(edit);
         change.addChange(move);
@@ -516,12 +532,11 @@ public class CmsSitemapController {
     }
 
     /**
-     * Retrieves the children entries of the given node from the server.<p>
+     * Retrieves the child entries of the given node from the server.<p>
      * 
-     * @param originalPath the original site path of the sitemap entry to get the children for
-     * @param sitePath the current site path, in case if has been moved or renamed
+     * @param sitePath the site path
      */
-    public void getChildren(final String originalPath, final String sitePath) {
+    public void getChildren(final String sitePath) {
 
         CmsRpcAction<List<CmsClientSitemapEntry>> getChildrenAction = new CmsRpcAction<List<CmsClientSitemapEntry>>() {
 
@@ -534,7 +549,7 @@ public class CmsSitemapController {
                 // Make the call to the sitemap service
                 start(500, false);
 
-                getService().getChildren(getEntryPoint(), originalPath, this);
+                getService().getChildren(getEntryPoint(), sitePath, 1, this);
             }
 
             /**
@@ -552,13 +567,10 @@ public class CmsSitemapController {
                 }
 
                 target.setSubEntries(result);
-                if (!originalPath.equals(sitePath)) {
-                    target.setSitePath("abc"); // hack to be able to execute updateSitePath
-                    target.updateSitePath(sitePath);
-                }
-                m_eventBus.fireEventFromSource(new CmsSitemapLoadEvent(target, originalPath), CmsSitemapController.this);
+                m_eventBus.fireEventFromSource(new CmsSitemapLoadEvent(target, sitePath), CmsSitemapController.this);
                 stop(false);
                 recomputePropertyInheritance();
+
             }
         };
         getChildrenAction.execute();
@@ -805,7 +817,7 @@ public class CmsSitemapController {
      */
     public void move(CmsClientSitemapEntry entry, String toPath, int position) {
 
-        CmsClientSitemapChangeMove change = getChangeForMove(entry, toPath, position);
+        CmsClientSitemapChangeMove change = getChangeForMove(entry, toPath, position, false);
         if (change != null) {
             applyChange(change, false);
         }
@@ -992,6 +1004,7 @@ public class CmsSitemapController {
         CmsClientSitemapEntry newEntry = new CmsClientSitemapEntry(entry);
         if (changedTitle) {
             newEntry.setTitle(title);
+            newEntry.setInNavigation(true);
         }
         newEntry.setEdited();
 
@@ -1017,10 +1030,16 @@ public class CmsSitemapController {
      * @param entry the entry being moved 
      * @param toPath the target path of the move operation 
      * @param position the target position of the move operation
+     * @param forceMove <code>true</code> forces a move change, even if the position is unchanged 
+     * (needed to add a formerly hidden entry to navigation)
      *  
      * @return the change object
      */
-    protected CmsClientSitemapChangeMove getChangeForMove(CmsClientSitemapEntry entry, String toPath, int position) {
+    protected CmsClientSitemapChangeMove getChangeForMove(
+        CmsClientSitemapEntry entry,
+        String toPath,
+        int position,
+        boolean forceMove) {
 
         // check for valid data
         if (!isValidEntryAndPath(entry, toPath)) {
@@ -1029,7 +1048,7 @@ public class CmsSitemapController {
             return null;
         }
         // check for relevance
-        if (isChangedPosition(entry, toPath, position)) {
+        if (forceMove || isChangedPosition(entry, toPath, position)) {
             // only register real changes
             return new CmsClientSitemapChangeMove(
                 entry,

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/rpc/Attic/I_CmsSitemapService.java,v $
- * Date   : $Date: 2011/01/21 11:09:42 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2011/02/01 15:25:05 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 8.0.0
  * 
@@ -101,38 +101,27 @@ public interface I_CmsSitemapService extends RemoteService {
     /**
      * Returns the sitemap children for the given path.<p>
      * 
-     * @param sitemapUri the URI of the sitemap 
+     * @param entryPointUri the URI of the sitemap entry point
      * @param root the site relative root
+     * @param levels the count of child levels to read
      *  
      * @return the sitemap children
      * 
      * @throws CmsRpcException if something goes wrong 
      */
-    List<CmsClientSitemapEntry> getChildren(String sitemapUri, String root) throws CmsRpcException;
-
-    /**
-     * Returns the sitemap entry for the given path.<p>
-     * 
-     * @param sitemapUri the URI of the sitemap 
-     * @param root the site relative root
-     *  
-     * @return the sitemap entry
-     * 
-     * @throws CmsRpcException if something goes wrong 
-     */
-    CmsClientSitemapEntry getEntry(String sitemapUri, String root) throws CmsRpcException;
+    List<CmsClientSitemapEntry> getChildren(String entryPointUri, String root, int levels) throws CmsRpcException;
 
     /**
      * Merges one of its sub-sitemaps into it.<p>
      * 
-     * @param sitemapUri the URI of the current sitemap
+     * @param entryPoint the sitemap entry point
      * @param path the path at which the sub-sitemap should be merged into the parent sitemap 
      * 
      * @return the result of the merge operation
      * 
      * @throws CmsRpcException if something goes wrong 
      */
-    CmsSitemapMergeInfo mergeSubSitemap(String sitemapUri, String path) throws CmsRpcException;
+    CmsSitemapMergeInfo mergeSubSitemap(String entryPoint, String path) throws CmsRpcException;
 
     /**
      * Returns the initialization data for the given sitemap.<p>

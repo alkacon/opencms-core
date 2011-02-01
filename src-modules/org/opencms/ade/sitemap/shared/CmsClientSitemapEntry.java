@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsClientSitemapEntry.java,v $
- * Date   : $Date: 2011/01/20 07:10:58 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2011/02/01 15:25:05 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * 
  * @since 8.0.0
  */
@@ -105,6 +105,12 @@ public class CmsClientSitemapEntry implements IsSerializable {
 
     /** The map of inherited properties. */
     private Map<String, CmsComputedPropertyValue> m_inheritedProperties;
+
+    /** Flag to indicate if the entry is visible in navigation. */
+    private boolean m_inNavigation;
+
+    /** Indicates if this entry represents the default page of the parent folder. */
+    private boolean m_isFolderDefaultPage;
 
     /** The lock of the entry resource. */
     private CmsClientLock m_lock;
@@ -193,6 +199,7 @@ public class CmsClientSitemapEntry implements IsSerializable {
 
         entry.setPosition(m_subEntries.size());
         entry.updateSitePath(m_sitePath + entry.getName() + "/");
+        entry.setFolderDefaultPage(entry.isLeafType() && getVfsPath().equals(entry.getVfsPath()));
         m_subEntries.add(entry);
     }
 
@@ -446,6 +453,27 @@ public class CmsClientSitemapEntry implements IsSerializable {
     }
 
     /**
+     * Returns if the current lock state allows editing.<p>
+     * 
+     * @return <code>true</code> if the resource is editable
+     */
+    public boolean isEditable() {
+
+        return !hasForeignFolderLock()
+            && (((getLock() == null) || (getLock().getLockOwner() == null)) || getLock().isOwnedByUser());
+    }
+
+    /**
+     * Returns if the entry is the folder default page.<p>
+     *
+     * @return if the entry is the folder default page
+     */
+    public boolean isFolderDefaultPage() {
+
+        return m_isFolderDefaultPage;
+    }
+
+    /**
      * Returns if this entry is of type folder.<p>
      * 
      * @return <code>true</code> if this entry is of type folder
@@ -453,6 +481,16 @@ public class CmsClientSitemapEntry implements IsSerializable {
     public boolean isFolderType() {
 
         return EntryType.folder == m_entryType;
+    }
+
+    /**
+     * Returns if the entry is visible in navigation.<p>
+     *
+     * @return <code>true</code> if the entry is visible in navigation
+     */
+    public boolean isInNavigation() {
+
+        return m_inNavigation;
     }
 
     /**
@@ -549,6 +587,16 @@ public class CmsClientSitemapEntry implements IsSerializable {
     }
 
     /**
+     * Sets if the entry is the folder default page.<p>
+     *
+     * @param isFolderDefaultPage the isFolderDefaultPage to set
+     */
+    public void setFolderDefaultPage(boolean isFolderDefaultPage) {
+
+        m_isFolderDefaultPage = isFolderDefaultPage;
+    }
+
+    /**
      * Sets if the entry folder is locked by another user.<p>
      *
      * @param hasForeignFolderLock set <code>true</code> if the entry folder is locked by another user
@@ -576,6 +624,16 @@ public class CmsClientSitemapEntry implements IsSerializable {
     public void setInheritedProperties(Map<String, CmsComputedPropertyValue> inheritedProperties) {
 
         m_inheritedProperties = inheritedProperties;
+    }
+
+    /**
+     * Sets the entry visibility in navigation.<p>
+     *
+     * @param inNavigation set <code>true</code> for entries visible in navigation
+     */
+    public void setInNavigation(boolean inNavigation) {
+
+        m_inNavigation = inNavigation;
     }
 
     /**
@@ -699,10 +757,11 @@ public class CmsClientSitemapEntry implements IsSerializable {
 
         m_subEntries.clear();
         if (children != null) {
+            m_subEntries.addAll(children);
             for (CmsClientSitemapEntry child : children) {
                 child.updateSitePath(m_sitePath + child.getName() + "/");
             }
-            m_subEntries.addAll(children);
+
         }
     }
 

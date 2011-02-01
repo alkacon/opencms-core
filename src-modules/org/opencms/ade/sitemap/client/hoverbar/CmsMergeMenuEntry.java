@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsMergeMenuEntry.java,v $
- * Date   : $Date: 2011/01/19 09:32:35 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/02/01 15:25:05 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.ade.sitemap.client.hoverbar;
 
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
+import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.gwt.client.ui.CmsConfirmDialog;
 import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
@@ -44,7 +45,7 @@ import com.google.gwt.user.client.Command;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -104,6 +105,8 @@ public class CmsMergeMenuEntry extends A_CmsSitemapMenuEntry {
 
         String sitePath = getHoverbar().getSitePath();
         CmsSitemapController controller = getHoverbar().getController();
-        setVisible(controller.getEntry(sitePath).isSubSitemapType() && !controller.isRoot(sitePath));
+        CmsClientSitemapEntry entry = controller.getEntry(sitePath);
+        boolean show = entry.isSubSitemapType() && !controller.isRoot(sitePath);
+        setVisible(show);
     }
 }

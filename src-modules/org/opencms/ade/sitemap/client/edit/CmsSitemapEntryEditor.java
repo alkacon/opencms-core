@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/edit/Attic/CmsSitemapEntryEditor.java,v $
- * Date   : $Date: 2010/11/29 10:33:36 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2011/02/01 15:25:05 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,26 +68,11 @@ import java.util.Set;
  * 
  *  @author Georg Westenberger
  *  
- *  @version $Revision: 1.16 $
+ *  @version $Revision: 1.17 $
  *  
  *  @since 8.0.0
  */
 public class CmsSitemapEntryEditor extends CmsFormDialog {
-
-    /**
-     * The editor mode.<p>
-     */
-    public enum Mode {
-
-        /** Collision resolution while drag'n drop. */
-        DND,
-
-        /** Edition of an existing entry. */
-        EDIT,
-
-        /** Creation of a new entry. */
-        NEW;
-    }
 
     /** The key for the default template. */
     private static final String DEFAULT_TEMPLATE_VALUE = "";
@@ -177,7 +162,7 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
         Map<String, CmsComputedPropertyValue> parentProps = entry.getParentInheritedProperties();
         CmsComputedPropertyValue parentProp = parentProps.get(propDef.getPropertyName());
 
-        if ((selectInherit != null) && !Boolean.parseBoolean(selectInherit)) {
+        if (entry.isLeafType() || ((selectInherit != null) && !Boolean.parseBoolean(selectInherit))) {
             I_CmsFormField f1 = createField(propDef);
             f1.getWidget().setFormValueAsString(entry.getOwnProperty(name));
             f1.setId("#" + name);

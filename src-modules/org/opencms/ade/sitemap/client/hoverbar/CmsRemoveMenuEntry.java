@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsDeleteMenuEntry.java,v $
- * Date   : $Date: 2010/11/29 10:33:35 $
- * Version: $Revision: 1.4 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsRemoveMenuEntry.java,v $
+ * Date   : $Date: 2011/02/01 15:25:05 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,22 +54,22 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  */
-public class CmsDeleteMenuEntry extends A_CmsSitemapMenuEntry {
+public class CmsRemoveMenuEntry extends A_CmsSitemapMenuEntry {
 
     /**
      * Constructor.<p>
      * 
      * @param hoverbar the hoverbar 
      */
-    public CmsDeleteMenuEntry(CmsSitemapHoverbar hoverbar) {
+    public CmsRemoveMenuEntry(CmsSitemapHoverbar hoverbar) {
 
         super(hoverbar);
         setImageClass(I_CmsImageBundle.INSTANCE.contextMenuIcons().delete());
-        setLabel(Messages.get().key(Messages.GUI_HOVERBAR_DELETE_0));
+        setLabel(Messages.get().key(Messages.GUI_HOVERBAR_REMOVE_0));
         setActive(true);
         setCommand(new Command() {
 
@@ -92,74 +92,74 @@ public class CmsDeleteMenuEntry extends A_CmsSitemapMenuEntry {
                     closed,
                     new AsyncCallback<List<CmsSitemapBrokenLinkBean>>() {
 
-                    /**
-                     * @see com.google.gwt.user.client.rpc.AsyncCallback#onFailure(java.lang.Throwable)
-                     */
-                    public void onFailure(Throwable caught) {
+                        /**
+                         * @see com.google.gwt.user.client.rpc.AsyncCallback#onFailure(java.lang.Throwable)
+                         */
+                        public void onFailure(Throwable caught) {
 
-                        // do nothing; will never be called
-                    }
-
-                    /**
-                     * @see com.google.gwt.user.client.rpc.AsyncCallback#onSuccess(java.lang.Object)
-                     */
-                    public void onSuccess(List<CmsSitemapBrokenLinkBean> result) {
-
-                        if (result.size() > 0) {
-                            I_CmsConfirmDialogHandler handler = new I_CmsConfirmDialogHandler() {
-
-                                /**
-                                 * @see org.opencms.gwt.client.ui.I_CmsCloseDialogHandler#onClose()
-                                 */
-                                public void onClose() {
-
-                                    // do nothing 
-                                }
-
-                                /**
-                                 * @see org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler#onOk()
-                                 */
-                                public void onOk() {
-
-                                    controller.delete(sitePath);
-                                }
-                            };
-                            CmsLinkWarningDialog dialog = new CmsLinkWarningDialog(handler, result);
-                            dialog.center();
-
-                        } else {
-
-                            if (controller.getEntry(sitePath).getSubEntries().isEmpty()) {
-                                controller.delete(sitePath);
-                                return;
-                            }
-                            // show the dialog only if the entry has children 
-                            CmsConfirmDialog dialog = new CmsConfirmDialog(Messages.get().key(
-                                Messages.GUI_DIALOG_DELETE_TITLE_0), Messages.get().key(
-                                Messages.GUI_DIALOG_DELETE_TEXT_0));
-                            dialog.setHandler(new I_CmsConfirmDialogHandler() {
-
-                                /**
-                                 * @see org.opencms.gwt.client.ui.I_CmsCloseDialogHandler#onClose()
-                                 */
-                                public void onClose() {
-
-                                    // do nothing
-                                }
-
-                                /**
-                                 * @see org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler#onOk()
-                                 */
-                                public void onOk() {
-
-                                    controller.delete(sitePath);
-                                }
-                            });
-                            dialog.center();
+                            // do nothing; will never be called
                         }
-                    }
 
-                });
+                        /**
+                         * @see com.google.gwt.user.client.rpc.AsyncCallback#onSuccess(java.lang.Object)
+                         */
+                        public void onSuccess(List<CmsSitemapBrokenLinkBean> result) {
+
+                            if (result.size() > 0) {
+                                I_CmsConfirmDialogHandler handler = new I_CmsConfirmDialogHandler() {
+
+                                    /**
+                                     * @see org.opencms.gwt.client.ui.I_CmsCloseDialogHandler#onClose()
+                                     */
+                                    public void onClose() {
+
+                                        // do nothing 
+                                    }
+
+                                    /**
+                                     * @see org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler#onOk()
+                                     */
+                                    public void onOk() {
+
+                                        controller.delete(sitePath);
+                                    }
+                                };
+                                CmsLinkWarningDialog dialog = new CmsLinkWarningDialog(handler, result);
+                                dialog.center();
+
+                            } else {
+
+                                if (controller.getEntry(sitePath).getSubEntries().isEmpty()) {
+                                    controller.delete(sitePath);
+                                    return;
+                                }
+                                // show the dialog only if the entry has children 
+                                CmsConfirmDialog dialog = new CmsConfirmDialog(Messages.get().key(
+                                    Messages.GUI_DIALOG_DELETE_TITLE_0), Messages.get().key(
+                                    Messages.GUI_DIALOG_DELETE_TEXT_0));
+                                dialog.setHandler(new I_CmsConfirmDialogHandler() {
+
+                                    /**
+                                     * @see org.opencms.gwt.client.ui.I_CmsCloseDialogHandler#onClose()
+                                     */
+                                    public void onClose() {
+
+                                        // do nothing
+                                    }
+
+                                    /**
+                                     * @see org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler#onOk()
+                                     */
+                                    public void onOk() {
+
+                                        controller.delete(sitePath);
+                                    }
+                                });
+                                dialog.center();
+                            }
+                        }
+
+                    });
 
             }
         });
@@ -174,11 +174,9 @@ public class CmsDeleteMenuEntry extends A_CmsSitemapMenuEntry {
 
         String sitePath = getHoverbar().getSitePath();
         CmsSitemapController controller = getHoverbar().getController();
-        if (controller.isRoot(sitePath)) {
-            setVisible(false);
-        } else {
-            setVisible(true);
-        }
+        CmsClientSitemapEntry entry = controller.getEntry(sitePath);
+        boolean show = !controller.isRoot(sitePath) && entry.isInNavigation() && entry.isEditable();
+        setVisible(show);
     }
 
     /**

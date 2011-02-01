@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/rpc/Attic/I_CmsSitemapServiceAsync.java,v $
- * Date   : $Date: 2011/01/21 11:09:42 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2011/02/01 15:25:05 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 8.0.0
  * 
@@ -94,30 +94,22 @@ public interface I_CmsSitemapServiceAsync {
     /**
      * Returns the sitemap children for the given path.<p>
      * 
-     * @param sitemapUri the URI of the sitemap 
+     * @param entryPointUri the URI of the sitemap entry point
      * @param root the site relative root
+     * @param levels the count of child levels to read
      * @param callback the async callback
      */
-    void getChildren(String sitemapUri, String root, AsyncCallback<List<CmsClientSitemapEntry>> callback);
-
-    /**
-     * Returns the sitemap entry for the given path.<p>
-     * 
-     * @param sitemapUri the URI of the sitemap 
-     * @param root the site relative root
-     * @param callback the async callback
-     */
-    void getEntry(String sitemapUri, String root, AsyncCallback<CmsClientSitemapEntry> callback);
+    void getChildren(String entryPointUri, String root, int levels, AsyncCallback<List<CmsClientSitemapEntry>> callback);
 
     /**
      * Saves the current sitemap and merges one of its sub-sitemaps into it.<p>
      * 
-     * @param sitemapUri the super sitemap URI
+     * @param entryPoint the sitemap entry point
      * @param path the path at which the sub-sitemap should be merged into the parent sitemap 
      * 
      * @param callback the async callback
      */
-    void mergeSubSitemap(String sitemapUri, String path, AsyncCallback<CmsSitemapMergeInfo> callback);
+    void mergeSubSitemap(String entryPoint, String path, AsyncCallback<CmsSitemapMergeInfo> callback);
 
     /**
      * Returns the initialization data for the given sitemap.<p>
