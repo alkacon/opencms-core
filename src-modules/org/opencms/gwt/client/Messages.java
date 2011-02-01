@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/Attic/Messages.java,v $
- * Date   : $Date: 2010/12/21 10:23:33 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2011/02/01 15:07:26 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.client.util.CmsMessages;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 8.0.0
  */
@@ -106,6 +106,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ICON_TITLE_EXPORT_0 = "GUI_ICON_TITLE_EXPORT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ICON_TITLE_HIDDEN_0 = "GUI_ICON_TITLE_HIDDEN_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ICON_TITLE_REDIRECT_0 = "GUI_ICON_TITLE_REDIRECT_0";
