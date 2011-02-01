@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItemWidget.java,v $
- * Date   : $Date: 2011/02/01 15:05:40 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2011/02/01 15:06:13 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -78,7 +78,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Tobias Herrmann
  * @author Michael Moossen
  * 
- * @version $Revision: 1.39 $
+ * @version $Revision: 1.40 $
  * 
  * @since 8.0.0
  */
@@ -342,26 +342,6 @@ implements HasMouseOutHandlers, HasClickHandlers, HasMouseOverHandlers, I_CmsTru
     }
 
     /**
-     * Removes a style name from the subtitle label.<p>
-     * 
-     * @param styleName the style name to add 
-     */
-    public void removeSubtitleStyleName(String styleName) {
-
-        m_subtitle.removeStyleName(styleName);
-    }
-
-    /**
-     * Removes a style name from the title label.<p> 
-     * 
-     * @param styleName the style name to add 
-     */
-    public void removeTitleStyleName(String styleName) {
-
-        m_title.removeStyleName(styleName);
-    }
-
-    /**
      * Hides the icon of the list item widget.<p>
      */
     public void clearIcon() {
@@ -451,6 +431,26 @@ implements HasMouseOutHandlers, HasClickHandlers, HasMouseOverHandlers, I_CmsTru
             it.next().removeHandler();
         }
         m_handlerRegistrations.clear();
+    }
+
+    /**
+     * Removes a style name from the subtitle label.<p>
+     * 
+     * @param styleName the style name to add 
+     */
+    public void removeSubtitleStyleName(String styleName) {
+
+        m_subtitle.removeStyleName(styleName);
+    }
+
+    /**
+     * Removes a style name from the title label.<p> 
+     * 
+     * @param styleName the style name to add 
+     */
+    public void removeTitleStyleName(String styleName) {
+
+        m_title.removeStyleName(styleName);
     }
 
     /**
