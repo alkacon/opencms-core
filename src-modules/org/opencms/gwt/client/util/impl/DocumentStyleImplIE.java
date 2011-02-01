@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/impl/Attic/DocumentStyleImplIE.java,v $
- * Date   : $Date: 2010/04/23 09:08:13 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/02/01 14:58:56 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import com.google.gwt.dom.client.Element;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -75,7 +75,9 @@ public class DocumentStyleImplIE extends DocumentStyleImpl {
         var camelCase = name.replace(/\-(\w)/g, function(all, letter){
         return letter.toUpperCase();
         });
-        var ret = elem.currentStyle[ name ] || elem.currentStyle[ camelCase ];
+        var ret = "";
+        if (elem.currentStyle!=null){
+        ret = elem.currentStyle[ name ] || elem.currentStyle[ camelCase ];
         // From the awesome hack by Dean Edwards
         // http://erik.eae.net/archives/2007/07/27/18.54.15/#comment-102291
         // If we're not dealing with a regular pixel number
@@ -90,6 +92,7 @@ public class DocumentStyleImplIE extends DocumentStyleImpl {
         // Revert the changed values
         style.left = left;
         elem.runtimeStyle.left = rsLeft;
+        }
         }
         return ret;
         }
