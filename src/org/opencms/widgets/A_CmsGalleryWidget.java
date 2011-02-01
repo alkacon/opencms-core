@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/A_CmsGalleryWidget.java,v $
- * Date   : $Date: 2009/07/31 10:36:34 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2011/02/01 14:49:03 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import org.opencms.workplace.galleries.A_CmsAjaxGallery;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -127,8 +127,8 @@ public abstract class A_CmsGalleryWidget extends A_CmsWidget {
         }
         StringBuffer result = new StringBuffer(128);
         result.append("<td class=\"xmlTd\">");
-        result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr><td>");
-        result.append("<input class=\"xmlInputMedium");
+        result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr><td class=\"xmlTd\">");
+        result.append("<input class=\"xmlInput textInput");
         if (param.hasError()) {
             result.append(" xmlInputError");
         }
