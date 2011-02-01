@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/tree/Attic/CmsTreeItem.java,v $
- * Date   : $Date: 2011/01/14 14:19:55 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2011/02/01 14:57:48 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,15 +42,12 @@ import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsListTreeCss;
 import org.opencms.gwt.client.ui.css.I_CmsOtherImageBundle;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.util.CmsDomUtil;
-import org.opencms.gwt.client.util.CmsSlideAnimation;
 import org.opencms.gwt.client.util.CmsStyleVariable;
 
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
@@ -74,7 +71,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Georg Westenberger
  * @author Michael Moossen
  * 
- * @version $Revision: 1.29 $ 
+ * @version $Revision: 1.30 $ 
  * 
  * @since 8.0.0
  */
@@ -94,9 +91,6 @@ public class CmsTreeItem extends CmsListItem {
 
     /** The element showing the open/close icon. */
     protected CmsToggleButton m_opener;
-
-    /** Timer to open item while dragging and hovering. */
-    protected Timer m_timer;
 
     /** Flag to indicate if drag'n drop is enabled. 3-states: if <code>null</code> the tree decides. */
     private Boolean m_dropEnabled;
@@ -219,6 +213,18 @@ public class CmsTreeItem extends CmsListItem {
         }
         return item;
     }
+
+    /**
+     * Method determining the path level by counting the number of '/'.<p>
+     * Example: '/xxx/xxx/' has a path-level of 2.<p>
+     * 
+     * @param path the path to test
+     * 
+     * @return the path level
+     */
+    protected static native int getPathLevel(String path)/*-{
+        return path.match(/\//g).length - 1;
+    }-*/;
 
     /**
      * @see org.opencms.gwt.client.ui.CmsListItem#add(com.google.gwt.user.client.ui.Widget)
@@ -637,6 +643,20 @@ public class CmsTreeItem extends CmsListItem {
     }
 
     /**
+     * Sets the tree item style to leaf, hiding the list opener.<p>
+     * 
+     * @param isLeaf <code>true</code> to set to leaf style
+     */
+    public void setLeafStyle(boolean isLeaf) {
+
+        if (isLeaf) {
+            m_leafStyleVar.setValue(CSS.listTreeItemLeaf());
+        } else {
+            m_leafStyleVar.setValue(CSS.listTreeItemInternal());
+        }
+    }
+
+    /**
      * Opens or closes this tree item (i.e. shows or hides its descendants).<p>
      * 
      * @param open if <code>true</code>, open the tree item, else close it
@@ -647,26 +667,27 @@ public class CmsTreeItem extends CmsListItem {
             return;
         }
         m_open = open;
+        executeOpen();
 
-        if ((m_tree != null) && m_tree.isAnimationEnabled()) {
-            Command openCallback = new Command() {
-
-                /**
-                 * @see com.google.gwt.user.client.Command#execute()
-                 */
-                public void execute() {
-
-                    executeOpen();
-                }
-            };
-            if (m_open) {
-                CmsSlideAnimation.slideIn(m_children.getElement(), openCallback, ANIMATION_DURATION);
-            } else {
-                CmsSlideAnimation.slideOut(m_children.getElement(), openCallback, ANIMATION_DURATION);
-            }
-        } else {
-            executeOpen();
-        }
+        //        if ((m_tree != null) && m_tree.isAnimationEnabled()) {
+        //            Command openCallback = new Command() {
+        //
+        //                /**
+        //                 * @see com.google.gwt.user.client.Command#execute()
+        //                 */
+        //                public void execute() {
+        //
+        //                    executeOpen();
+        //                }
+        //            };
+        //            if (m_open) {
+        //                CmsSlideAnimation.slideIn(m_children.getElement(), openCallback, ANIMATION_DURATION);
+        //            } else {
+        //                CmsSlideAnimation.slideOut(m_children.getElement(), openCallback, ANIMATION_DURATION);
+        //            }
+        //        } else {
+        //            executeOpen();
+        //        }
     }
 
     /**
@@ -744,6 +765,8 @@ public class CmsTreeItem extends CmsListItem {
             public void onClick(ClickEvent e) {
 
                 setOpen(opener.isDown());
+                e.stopPropagation();
+                e.preventDefault();
             }
         });
         return opener;
@@ -756,7 +779,9 @@ public class CmsTreeItem extends CmsListItem {
 
         m_styleVar.setValue(m_open ? CSS.listTreeItemOpen() : CSS.listTreeItemClosed());
         m_children.getElement().getStyle().clearDisplay();
-        m_opener.setDown(m_open);
+        if (m_opener.isDown() != m_open) {
+            m_opener.setDown(m_open);
+        }
         if (m_open) {
             fireOpen();
         }
@@ -813,24 +838,8 @@ public class CmsTreeItem extends CmsListItem {
     protected void onChangeChildren() {
 
         int count = getChildCount();
-        if (count == 0) {
-            m_leafStyleVar.setValue(CSS.listTreeItemLeaf());
-        } else {
-            m_leafStyleVar.setValue(CSS.listTreeItemInternal());
-        }
+        setLeafStyle(count == 0);
     }
-
-    /**
-     * Method determining the path level by counting the number of '/'.<p>
-     * Example: '/xxx/xxx/' has a path-level of 2.<p>
-     * 
-     * @param path the path to test
-     * 
-     * @return the path level
-     */
-    protected static native int getPathLevel(String path)/*-{
-        return path.match(/\//g).length - 1;
-    }-*/;
 
     /**
      * Determines if the draggable should be inserted into the previous siblings children list.<p>

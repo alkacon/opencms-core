@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/tree/Attic/CmsLazyTreeItem.java,v $
- * Date   : $Date: 2010/11/29 08:28:34 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/02/01 14:57:48 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Georg Westenberger
  * @author Michael Moossen
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -89,27 +89,32 @@ public class CmsLazyTreeItem extends CmsTreeItem {
     /** The load state of this tree item. */
     private LoadState m_loadState = LoadState.UNLOADED;
 
+    /** Flag to show a load item while children are being loaded. */
+    private boolean m_useLoadItem;
+
     /**
      * Constructs a new lazy tree item with a main widget and a check box.<p>
      * 
      * @param checkbox the check box 
      * @param widget the main widget
+     * @param useLoadItem <code>true</code> to show a load item while children are being loaded
      */
-    public CmsLazyTreeItem(CmsCheckBox checkbox, Widget widget) {
+    public CmsLazyTreeItem(CmsCheckBox checkbox, Widget widget, boolean useLoadItem) {
 
         super(true, checkbox, widget);
-        addChild(m_loadingItem);
+        m_useLoadItem = useLoadItem;
     }
 
     /**
      * Constructs a new lazy tree item with a main widget.<p>
      * 
      * @param widget the main widget 
+     * @param useLoadItem <code>true</code> to show a load item while children are being loaded
      */
-    public CmsLazyTreeItem(Widget widget) {
+    public CmsLazyTreeItem(Widget widget, boolean useLoadItem) {
 
         super(true, widget);
-        addChild(m_loadingItem);
+        m_useLoadItem = useLoadItem;
     }
 
     /**
@@ -140,8 +145,10 @@ public class CmsLazyTreeItem extends CmsTreeItem {
         m_opener.setUpFace("", CSS.plus());
         m_opener.setDownFace("", CSS.minus());
         m_loadState = LoadState.LOADED;
-        m_loadingItem.removeFromParent();
-        //  onChangeChildren();
+        if (m_useLoadItem) {
+            m_loadingItem.removeFromParent();
+        }
+        onChangeChildren();
     }
 
     /**
@@ -150,6 +157,9 @@ public class CmsLazyTreeItem extends CmsTreeItem {
     public void onStartLoading() {
 
         m_loadState = LoadState.LOADING;
+        if (m_useLoadItem) {
+            addChild(m_loadingItem);
+        }
         m_opener.getUpFace().setImage(getLoadingImage());
         m_opener.getDownFace().setImage(getLoadingImage());
     }
@@ -164,5 +174,16 @@ public class CmsLazyTreeItem extends CmsTreeItem {
         Image image = new Image(I_CmsImageBundle.INSTANCE.loading());
         image.setPixelSize(11, 11);
         return image;
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.tree.CmsTreeItem#onChangeChildren()
+     */
+    @Override
+    protected void onChangeChildren() {
+
+        if (m_loadState == LoadState.LOADED) {
+            super.onChangeChildren();
+        }
     }
 }
