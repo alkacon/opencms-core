@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsMenuButton.java,v $
- * Date   : $Date: 2010/12/22 10:34:19 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2011/02/01 15:05:01 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * 
  * @since 8.0.0
  */
@@ -402,8 +402,8 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
         int windowHeight = Window.getClientHeight();
         boolean showBelowButton = true;
         if ((contentHeight + 10 < windowHeight)
-            && (buttonPosition.getTop() - 1 > contentHeight)
-            && (contentHeight + contentTop + Window.getScrollTop() > windowHeight)) {
+            && (buttonPosition.getTop() - Window.getScrollTop() > contentHeight)
+            && (contentHeight + contentTop - Window.getScrollTop() > windowHeight)) {
             // content fits into the window height, there is enough space above the button and there is to little space below the button
             // so show above
             showBelowButton = false;
