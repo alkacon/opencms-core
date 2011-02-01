@@ -26,6 +26,11 @@
 	margin-top:  3px;
 	margin-left: 3px;
 }
+@sprite .hidden {
+	gwt-image: "gwtImages.statusIconHidden"; 
+	margin-top:  3px;
+	margin-left: 3px;
+}
 @sprite .normal {
 	gwt-image: "gwtImages.statusIconNormal";
 	margin-top: 3px;

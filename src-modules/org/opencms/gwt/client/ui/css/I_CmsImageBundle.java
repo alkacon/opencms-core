@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsImageBundle.java,v $
- * Date   : $Date: 2011/01/17 16:16:08 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2011/02/01 14:51:52 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,16 +36,16 @@ import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsContextmenuItemCss;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
-import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.resources.client.CssResource.NotStrict;
 import com.google.gwt.resources.client.CssResource.Shared;
+import com.google.gwt.resources.client.ImageResource;
 
 /**
  * Resource bundle to access CSS and image resources.
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 8.0.0
  */
@@ -507,6 +507,14 @@ public interface I_CmsImageBundle extends ClientBundle {
      */
     @Source("images/statusIconExport.png")
     ImageResource statusIconExport();
+
+    /** 
+     * Access method.<p>
+     * 
+     * @return an image resource
+     */
+    @Source("images/statusIconHidden.png")
+    ImageResource statusIconHidden();
 
     /** 
      * Access method.<p>

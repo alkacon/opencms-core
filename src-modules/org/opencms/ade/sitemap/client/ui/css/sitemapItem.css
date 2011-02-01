@@ -27,6 +27,18 @@
 
 }
 
+.notInNavigationEntry{
+	display: none;
+}
+
+.notInNavigationEntry .itemTitle{
+	color: value("constants.css.textColorDisabled");
+}
+
+.showAllResources .notInNavigationEntry{
+	display: block;
+}
+
 .highlight {
 	background-image: none;
 	background-color: value("constants.css.backgroundColorSitemapHighlight");
@@ -52,27 +64,21 @@
 }
 
 .lockIcon{
-    left: 15px;
+    left: 12px;
     position: absolute;
-    top: 20px;
+    top: 12px;
     z-index: 2;
 }
 
-.lockClosed, .lockSharedClosed{
-	background: red;
-	height: 10px;
-	width: 10px;
+@sprite .lockClosed, .lockSharedClosed{
+	gwt-image: "baseImages.icons.lockOther";
 }
 
-.lockOpen{
-	background: green;
-	height: 10px;
-	width: 10px;
+@sprite .lockOpen{
+	gwt-image: "baseImages.icons.lockUser";
 }
 
-.lockSharedOpen{
-	background: lightgreen;
-	height: 10px;
-	width: 10px;
+@sprite .lockSharedOpen{
+	gwt-image: "baseImages.icons.lockShared";
 }
 
