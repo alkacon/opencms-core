@@ -36,7 +36,7 @@
 	<files>
 		<file>
 			<destination>demo_t3</destination>
-			<type>folder</type>
+			<type>entrypoint</type>
 			<uuidstructure>5ae56cfe-9c82-11de-adde-dd9f629b113b</uuidstructure>
 			<datelastmodified>Tue, 11 Jan 2011 13:52:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -57,9 +57,10 @@
 					<value><![CDATA[/demo_t3/_config/restype.config]]></value>
 				</property>
 				<property>
-					<name>ade.sitemap</name>
-					<value><![CDATA[/demo_t3/_config/sitemap]]></value>
+					<name>ade.sitemap.config</name>
+					<value><![CDATA[/demo_t3/_config/sitemap_restype.config]]></value>
 				</property>
+				
 				<property>
 					<name>default-file</name>
 					<value><![CDATA[intro.html]]></value>
@@ -150,38 +151,6 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>demo_t3/_config/empty_sitemap</source>
-			<destination>demo_t3/_config/empty_sitemap</destination>
-			<type>sitemap</type>
-			<uuidstructure>8ab30c52-6e16-11df-a133-716c971ea2c7</uuidstructure>
-			<uuidresource>8ab30c53-6e16-11df-a133-716c971ea2c7</uuidresource>
-			<datelastmodified>Tue, 11 Jan 2011 13:52:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 02 Jun 2010 07:14:53 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>ade.cntpage.config</name>
-					<value><![CDATA[/demo_t3/_config/restype.config]]></value>
-				</property>
-				<property type="shared">
-					<name>ade.sitemap.config</name>
-					<value><![CDATA[/demo_t3/_config/sitemap_restype.config]]></value>
-				</property>
-				<property>
-					<name>ade.sitemap.template</name>
-					<value><![CDATA[/system/modules/org.opencms.frontend.template3/templates/main.jsp]]></value>
-				</property>
-				<property type="shared">
-					<name>template-elements</name>
-					<value><![CDATA[/system/modules/org.opencms.ade.sitemap/sitemap.jsp]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
 			<source>demo_t3/_config/options</source>
 			<destination>demo_t3/_config/options</destination>
 			<type>t3options</type>
@@ -216,38 +185,6 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Resource Type Configuration]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>demo_t3/_config/sitemap</source>
-			<destination>demo_t3/_config/sitemap</destination>
-			<type>sitemap</type>
-			<uuidstructure>9d4f8d10-c7c3-11de-8b05-ab20365f6268</uuidstructure>
-			<uuidresource>9d4f8d11-c7c3-11de-8b05-ab20365f6268</uuidresource>
-			<datelastmodified>Tue, 11 Jan 2011 13:52:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 02 Nov 2009 15:23:03 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>ade.cntpage.config</name>
-					<value><![CDATA[/demo_t3/_config/restype.config]]></value>
-				</property>
-				<property type="shared">
-					<name>ade.sitemap.config</name>
-					<value><![CDATA[/demo_t3/_config/sitemap_restype.config]]></value>
-				</property>
-				<property>
-					<name>ade.sitemap.template</name>
-					<value><![CDATA[/system/modules/org.opencms.frontend.template3/templates/main.jsp]]></value>
-				</property>
-				<property type="shared">
-					<name>template-elements</name>
-					<value><![CDATA[/system/modules/org.opencms.ade.sitemap/sitemap.jsp]]></value>
 				</property>
 			</properties>
 			<relations/>

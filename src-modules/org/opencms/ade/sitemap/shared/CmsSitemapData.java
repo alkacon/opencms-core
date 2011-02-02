@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsSitemapData.java,v $
- * Date   : $Date: 2011/01/18 08:13:50 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2011/02/02 07:37:52 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 8.0
  */
@@ -53,6 +53,9 @@ public class CmsSitemapData implements IsSerializable {
 
     /** Name of the used js variable. */
     public static final String DICT_NAME = "org_opencms_ade_sitemap";
+
+    /** Flag to indicate whether detail pages can be edited. */
+    private boolean m_canEditDetailPages;
 
     /** The clipboard data. */
     private CmsSitemapClipboardData m_clipboardData;
@@ -133,6 +136,7 @@ public class CmsSitemapData implements IsSerializable {
      * @param maxDepth the maximum sitemap depth
      * @param detailPageTable the detail page table 
      * @param resourceTypeInfos the resource type information for the detail pages  
+     * @param canEditDetailPages flag to indicate whether detail pages can be edited
      */
     public CmsSitemapData(
         CmsSitemapTemplate defaultTemplate,
@@ -151,7 +155,8 @@ public class CmsSitemapData implements IsSerializable {
         String openPath,
         int maxDepth,
         CmsDetailPageTable detailPageTable,
-        List<CmsResourceTypeInfo> resourceTypeInfos) {
+        List<CmsResourceTypeInfo> resourceTypeInfos,
+        boolean canEditDetailPages) {
 
         m_defaultTemplate = defaultTemplate;
         m_templates = templates;
@@ -170,6 +175,17 @@ public class CmsSitemapData implements IsSerializable {
         m_maxDepth = maxDepth;
         m_detailPageTable = detailPageTable;
         m_resourceTypeInfos = resourceTypeInfos;
+        m_canEditDetailPages = canEditDetailPages;
+    }
+
+    /**
+     * Returns true if the detail pages can be edited.
+     *  
+     * @return true if the detail pages can be edited 
+     */
+    public boolean canEditDetailPages() {
+
+        return m_canEditDetailPages;
     }
 
     /**

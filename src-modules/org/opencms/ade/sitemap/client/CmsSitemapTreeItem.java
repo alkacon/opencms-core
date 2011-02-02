@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapTreeItem.java,v $
- * Date   : $Date: 2011/02/01 15:25:05 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2011/02/02 07:37:53 $
+ * Version: $Revision: 1.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,9 +44,9 @@ import org.opencms.gwt.client.dnd.I_CmsDropTarget;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
+import org.opencms.gwt.client.ui.CmsListItemWidgetUtil;
 import org.opencms.gwt.client.ui.CmsListItemWidget.Background;
 import org.opencms.gwt.client.ui.CmsListItemWidget.I_CmsTitleEditHandler;
-import org.opencms.gwt.client.ui.CmsListItemWidgetUtil;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsLabel;
 import org.opencms.gwt.client.ui.input.CmsLabel.I_TitleGenerator;
@@ -78,7 +78,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.49 $ 
+ * @version $Revision: 1.50 $ 
  * 
  * @since 8.0.0
  * 
@@ -368,10 +368,7 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
         }
         CmsComputedPropertyValue exportProp = m_entry.getInheritedProperties().get("export");
         if ((exportProp != null) && Boolean.parseBoolean(exportProp.getOwnValue())) {
-            String exportName = CmsSitemapView.getInstance().getController().getData().getExportName();
-            if (exportName == null) {
-                exportName = CmsCoreProvider.get().getSiteRoot();
-            }
+            String exportName = getExportName();
             String rfsPrefix = CmsSitemapView.getInstance().getController().getData().getExportRfsPrefix();
             if (rfsPrefix != null) {
                 return CmsStringUtil.joinPaths(rfsPrefix, exportName, sitePath);
@@ -824,6 +821,12 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
         } else {
             m_listItemWidget.setBackground(Background.DEFAULT);
         }
+    }
+
+    private String getExportName() {
+
+        //TODO: implement this using properties 
+        return CmsCoreProvider.get().getSiteRoot();
     }
 
     /**

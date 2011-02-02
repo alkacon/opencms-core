@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/ui/Attic/CmsSpecialTab.java,v $
- * Date   : $Date: 2010/12/21 10:23:32 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/02/02 07:37:52 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import java.util.List;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -81,17 +81,20 @@ public class CmsSpecialTab extends A_CmsListTab {
      * Creates the special tab.<p>
      * 
      * @param tabHandler the tab handler 
-     * @param dnd the drag-and-drop handler 
+     * @param dnd the drag-and-drop handler
+     * @param canEditDetailPages true if the items for new detail pages should be shown in the tab  
      */
-    public CmsSpecialTab(CmsSpecialTabHandler tabHandler, CmsDNDHandler dnd) {
+    public CmsSpecialTab(CmsSpecialTabHandler tabHandler, CmsDNDHandler dnd, boolean canEditDetailPages) {
 
         super(TAB_ID);
         m_dndHandler = dnd;
         m_tabHandler = tabHandler;
         addWidgetToList(makeRedirectItem());
-        for (CmsResourceTypeInfo typeInfo : CmsSitemapView.getInstance().getController().getData().getResourceTypeInfos()) {
-            CmsDetailPageListItem item = makeDetailPageItem(typeInfo);
-            addWidgetToList(item);
+        if (canEditDetailPages) {
+            for (CmsResourceTypeInfo typeInfo : CmsSitemapView.getInstance().getController().getData().getResourceTypeInfos()) {
+                CmsDetailPageListItem item = makeDetailPageItem(typeInfo);
+                addWidgetToList(item);
+            }
         }
     }
 

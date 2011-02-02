@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeBumpDetailPage.java,v $
- * Date   : $Date: 2011/01/14 14:19:54 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/02/02 07:37:52 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import org.opencms.xml.sitemap.CmsDetailPageTable;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -93,17 +93,8 @@ public class CmsClientSitemapChangeBumpDetailPage implements I_CmsClientSitemapC
     }
 
     /**
-     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#isChangingDetailPages()
-     */
-    public boolean isChangingDetailPages() {
-
-        return true;
-    }
-
-    /**
      * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#getChangeForCommit()
      */
-    @Override
     public CmsSitemapChange getChangeForCommit() {
 
         CmsDetailPageTable table = CmsSitemapView.getInstance().getController().getDetailPageTable().copy();
@@ -111,5 +102,13 @@ public class CmsClientSitemapChangeBumpDetailPage implements I_CmsClientSitemapC
         CmsSitemapChange change = new CmsSitemapChange();
         change.setDetailPageInfos(table.toList());
         return change;
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#isChangingDetailPages()
+     */
+    public boolean isChangingDetailPages() {
+
+        return true;
     }
 }

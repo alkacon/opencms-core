@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsConfigurationParser.java,v $
- * Date   : $Date: 2011/01/21 11:06:52 $
- * Version: $Revision: 1.18 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/adeconfig/Attic/CmsConfigurationParser.java,v $
+ * Date   : $Date: 2011/02/02 07:37:52 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,16 +29,15 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.xml.containerpage;
+package org.opencms.adeconfig;
 
-import org.opencms.cache.CmsVfsMemoryObjectCache;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsFormatterUtil;
 import org.opencms.util.CmsPair;
@@ -46,6 +45,10 @@ import org.opencms.util.CmsUUID;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.I_CmsXmlDocument;
+import org.opencms.xml.containerpage.CmsConfigurationItem;
+import org.opencms.xml.containerpage.CmsFormatterConfigBean;
+import org.opencms.xml.containerpage.CmsLazyFolder;
+import org.opencms.xml.containerpage.Messages;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.content.CmsXmlContentRootLocation;
@@ -58,13 +61,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.collections.Transformer;
 import org.apache.commons.logging.Log;
 
 /**
@@ -78,7 +81,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.1 $ 
  * 
  * @since 7.6 
  */
@@ -86,12 +89,6 @@ public class CmsConfigurationParser {
 
     /** The default maximum sitemap depth. */
     public static final int DEFAULT_MAX_DEPTH = 15;
-
-    /** The tag name for the export name configuration. */
-    public static final String N_ADE_EXPORTNAME = "ADEExportName";
-
-    /** The node name for the container page name generator class. */
-    public static final String N_ADE_NAME_GENERATOR = "ContainerPageNameGenerator";
 
     /** The tag name of the configuration for a single type. */
     public static final String N_ADE_TYPE = "ADEType";
@@ -129,14 +126,14 @@ public class CmsConfigurationParser {
     /** The tag name of the formatter width. */
     public static final String N_WIDTH = "Width";
 
-    /** The instance cache. */
-    private static CmsVfsMemoryObjectCache m_cache = new CmsVfsMemoryObjectCache();
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsConfigurationParser.class);
 
     /** The tag name for elements containing field configurations. */
     private static final String N_ADE_FIELD = "ADEField";
 
     /** Configuration data, read from xml content. */
-    private Map<String, CmsConfigurationItem> m_configuration = new HashMap<String, CmsConfigurationItem>();
+    private Map<String, CmsConfigurationItem> m_configuration = new LinkedHashMap<String, CmsConfigurationItem>();
 
     /** The xml document. */
     private I_CmsXmlDocument m_content;
@@ -144,26 +141,17 @@ public class CmsConfigurationParser {
     /** The detail pages from the configuration file. */
     private List<CmsDetailPageInfo> m_detailPages;
 
-    /** The configured export name. */
-    private String m_exportName;
-
-    /** The formatter configuration maps. */
-    private Map<String, CmsPair<Map<String, String>, Map<Integer, String>>> m_formatterConfiguration = new HashMap<String, CmsPair<Map<String, String>, Map<Integer, String>>>();
+    /** The formatter configurations. */
+    private Map<String, CmsTypeFormatterConfiguration> m_formatterConfiguration = new HashMap<String, CmsTypeFormatterConfiguration>();
 
     /** The maximum sitemap depth. */
     private int m_maxDepth = DEFAULT_MAX_DEPTH;
-
-    /** The container page name generator class. */
-    private String m_nameGenerator;
 
     /** New elements. */
     private Collection<CmsResource> m_newElements = new LinkedHashSet<CmsResource>();
 
     /** The list of properties read from the configuration file. */
     private List<CmsXmlContentProperty> m_props = new ArrayList<CmsXmlContentProperty>();
-
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsConfigurationParser.class);
 
     /**
      * Default constructor.<p>
@@ -188,49 +176,16 @@ public class CmsConfigurationParser {
         processFile(cms, config);
     }
 
-    /**
-     * Constructs a parser and caches it so that subsequent calls to this method with the same resource
-     * will return the same object if the resource hasn'T changed.<p>
+    /** 
+     * Returns the container page configuration data.<p>
      * 
-     * @param cms the CMS context 
-     * @param config the configuration resource 
-     * @return the configuration parser 
+     * @param sourceInfo the source information 
      * 
-     * @throws CmsException if something goes wrong 
+     * @return the container page configuration data 
      */
-    public static CmsConfigurationParser getParser(final CmsObject cms, final CmsResource config) throws CmsException {
+    public CmsContainerPageConfigurationData getContainerPageConfigurationData(CmsConfigurationSourceInfo sourceInfo) {
 
-        try {
-            Object cachedObj = m_cache.loadVfsObject(cms, config.getRootPath(), new Transformer() {
-
-                /**
-                 * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
-                 */
-                public Object transform(Object o) {
-
-                    try {
-                        return new CmsConfigurationParser(cms, config);
-                    } catch (CmsException e) {
-                        // the Transformer interface does not allow checked exceptions, so we wrap
-                        // them into runtime exceptions and then unwrap them again later.
-                        throw new CmsRuntimeException(e.getMessageContainer(), e);
-                    }
-                }
-            });
-            return (CmsConfigurationParser)cachedObj;
-        } catch (CmsRuntimeException e) {
-            throw (CmsException)e.getCause();
-        }
-    }
-
-    /**
-     * Returns the container page name generator class name.<p>
-     * 
-     * @return the container page name generator class name 
-     */
-    public String getContainerPageNameGeneratorClass() {
-
-        return m_nameGenerator;
+        return new CmsContainerPageConfigurationData(m_configuration, m_formatterConfiguration, sourceInfo);
     }
 
     /**
@@ -254,23 +209,13 @@ public class CmsConfigurationParser {
     }
 
     /**
-     * Returns the configured export name.<p>
-     * 
-     * @return the configured export name 
-     */
-    public String getExportName() {
-
-        return m_exportName;
-    }
-
-    /**
      * Returns the formatter configuration for a given element type.<p>
      * 
      * @param type a type name 
      * 
      * @return a pair of maps containing the formatter configuration for the type 
      */
-    public CmsPair<Map<String, String>, Map<Integer, String>> getFormatterConfigurationForType(String type) {
+    public CmsTypeFormatterConfiguration getFormatterConfigurationForType(String type) {
 
         return m_formatterConfiguration.get(type);
     }
@@ -301,7 +246,6 @@ public class CmsConfigurationParser {
             CmsConfigurationItem item = entry.getValue();
             String type = entry.getKey();
             CmsResource source = item.getSourceFile();
-            //CmsResource folderRes = item.getLazyFolder().getValue(cms);
             CmsLazyFolder autoFolder = item.getLazyFolder();
             CmsResource permissionCheckFolder = autoFolder.getPermissionCheckFolder(cms);
             CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type);
@@ -314,6 +258,37 @@ public class CmsConfigurationParser {
         return result;
     }
 
+    /** 
+     * Returns the property configuration.<p>
+     * 
+     * @return the property configuration indexed by property name
+     */
+    public Map<String, CmsXmlContentProperty> getPropertyConfigMap() {
+
+        Map<String, CmsXmlContentProperty> props = new HashMap<String, CmsXmlContentProperty>();
+        for (CmsXmlContentProperty propDef : m_props) {
+            props.put(propDef.getPropertyName(), propDef);
+        }
+        return props;
+    }
+
+    /**
+     * Creates a sitemap configuration data bean.<p>
+     * 
+     * @param sourceInfo the source information 
+     * 
+     * @return the sitemap configuration data bean 
+     */
+    public CmsSitemapConfigurationData getSitemapConfigurationData(CmsConfigurationSourceInfo sourceInfo) {
+
+        return new CmsSitemapConfigurationData(
+            m_configuration,
+            getPropertyConfigMap(),
+            groupDetailPagesByType(),
+            m_maxDepth,
+            sourceInfo);
+    }
+
     /**
      * Returns the configuration as an unmodifiable map.<p>
      * 
@@ -322,6 +297,24 @@ public class CmsConfigurationParser {
     public Map<String, CmsConfigurationItem> getTypeConfiguration() {
 
         return Collections.unmodifiableMap(m_configuration);
+    }
+
+    /**
+     * Gets the detail page configuration, grouped by type.<p>
+     * 
+     * @return a map from type names to lists of detail page information beans 
+     */
+    public Map<String, List<CmsDetailPageInfo>> groupDetailPagesByType() {
+
+        Map<String, List<CmsDetailPageInfo>> result = new HashMap<String, List<CmsDetailPageInfo>>();
+        for (CmsDetailPageInfo info : m_detailPages) {
+            String type = info.getType();
+            if (!result.containsKey(type)) {
+                result.put(type, new ArrayList<CmsDetailPageInfo>());
+            }
+            result.get(type).add(info);
+        }
+        return result;
     }
 
     /**
@@ -478,16 +471,6 @@ public class CmsConfigurationParser {
             parseDetailPage(cms, detailPageValue);
         }
 
-        I_CmsXmlContentValue exportNameNode = content.getValue(N_ADE_EXPORTNAME, locale);
-        if (exportNameNode != null) {
-            m_exportName = exportNameNode.getStringValue(cms);
-        }
-
-        I_CmsXmlContentValue nameGeneratorNode = content.getValue(N_ADE_NAME_GENERATOR, locale);
-        if (nameGeneratorNode != null) {
-            m_nameGenerator = nameGeneratorNode.getStringValue(cms);
-        }
-
         m_detailPages = parseDetailPages(cms, root);
 
         I_CmsXmlContentValue maxDepthNode = content.getValue(N_MAXDEPTH, locale);
@@ -508,8 +491,11 @@ public class CmsConfigurationParser {
      * @param detailPageNode the location from which to read the detail page bean 
      * 
      * @return the parsed detail page bean  
+     * 
+     * @throws CmsException if something goes wrong 
      */
-    private CmsDetailPageInfo parseDetailPage(CmsObject cms, I_CmsXmlContentValueLocation detailPageNode) {
+    private CmsDetailPageInfo parseDetailPage(CmsObject cms, I_CmsXmlContentValueLocation detailPageNode)
+    throws CmsException {
 
         String type = getSubValueString(cms, detailPageNode, N_TYPE);
         I_CmsXmlContentValueLocation target = detailPageNode.getSubValue(N_PAGE);
@@ -519,6 +505,12 @@ public class CmsConfigurationParser {
         CmsUUID targetId = target.asId(null);
         String targetPath = cms.getRequestContext().addSiteRoot(target.asString(cms));
         CmsDetailPageInfo result = new CmsDetailPageInfo(targetId, targetPath, type);
+        try {
+            cms.readResource(targetId);
+        } catch (CmsVfsResourceNotFoundException e) {
+            // if the resource doesn't exist, we set the result to null so it won't get added to the configuration data 
+            result = null;
+        }
         return result;
     }
 
@@ -529,14 +521,18 @@ public class CmsConfigurationParser {
      * @param root the location from which to read the detail pages
      *  
      * @return the parsed detail page beans
+     * 
+     * @throws CmsException if something goes wrong 
      */
-    private List<CmsDetailPageInfo> parseDetailPages(CmsObject cms, I_CmsXmlContentLocation root) {
+    private List<CmsDetailPageInfo> parseDetailPages(CmsObject cms, I_CmsXmlContentLocation root) throws CmsException {
 
         List<I_CmsXmlContentValueLocation> values = root.getSubValues(N_DETAIL_PAGE);
         List<CmsDetailPageInfo> result = new ArrayList<CmsDetailPageInfo>();
         for (I_CmsXmlContentValueLocation detailPageNode : values) {
             CmsDetailPageInfo info = parseDetailPage(cms, detailPageNode);
-            result.add(info);
+            if (info != null) {
+                result.add(info);
+            }
         }
         return result;
     }
@@ -618,7 +614,10 @@ public class CmsConfigurationParser {
             CmsPair<Map<String, String>, Map<Integer, String>> formatterMaps = CmsFormatterUtil.getFormatterMapsFromConfigBeans(
                 formatterConfigBeans,
                 m_content.getFile().getRootPath());
-            m_formatterConfiguration.put(type, formatterMaps);
+            CmsTypeFormatterConfiguration fmt = new CmsTypeFormatterConfiguration(
+                formatterMaps.getFirst(),
+                formatterMaps.getSecond());
+            m_formatterConfiguration.put(type, fmt);
         }
         m_configuration.put(type, configItem);
     }

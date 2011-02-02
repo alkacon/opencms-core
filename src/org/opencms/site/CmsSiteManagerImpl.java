@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteManagerImpl.java,v $
- * Date   : $Date: 2009/09/11 15:29:17 $
- * Version: $Revision: 1.11.2.2 $
+ * Date   : $Date: 2011/02/02 07:37:53 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.11.2.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.0.2
  */
@@ -609,6 +609,21 @@ public final class CmsSiteManagerImpl {
     public boolean isMatchingCurrentSite(CmsObject cms, CmsSiteMatcher matcher) {
 
         return m_siteMatcherSites.get(matcher) == getCurrentSite(cms);
+    }
+
+    /**
+     * Checks whether a given root path is a site root.<p>
+     * 
+     * @param rootPath a root path 
+     * 
+     * @return true if the given path is the path of a site root 
+     */
+    public boolean isSiteRoot(String rootPath) {
+
+        String siteRoot = getSiteRoot(rootPath);
+        rootPath = CmsStringUtil.joinPaths(rootPath, "/");
+        return rootPath.equals(siteRoot);
+
     }
 
     /**

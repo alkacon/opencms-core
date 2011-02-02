@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsDetailPageTable.java,v $
- * Date   : $Date: 2010/12/17 08:45:29 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/02/02 07:37:52 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import java.util.Map;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -81,6 +81,22 @@ public class CmsDetailPageTable implements Cloneable, Serializable {
         for (CmsDetailPageInfo info : infos) {
             m_map.addValue(info.getType(), info);
             m_infoById.put(info.getId(), info);
+        }
+    }
+
+    /**
+     * Constructs a detail page table from a raw map from type names to lists of detail page information beans.<p>
+     * 
+     * @param detailPageLists a map of detail page info bean lists  
+     */
+    public CmsDetailPageTable(Map<String, List<CmsDetailPageInfo>> detailPageLists) {
+
+        for (Map.Entry<String, List<CmsDetailPageInfo>> entry : detailPageLists.entrySet()) {
+            for (CmsDetailPageInfo info : entry.getValue()) {
+                m_map.addValue(info.getType(), info);
+                m_infoById.put(info.getId(), info);
+            }
+
         }
     }
 

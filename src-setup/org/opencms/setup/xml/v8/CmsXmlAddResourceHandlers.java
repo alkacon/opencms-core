@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/v8/CmsXmlAddResourceHandlers.java,v $
- * Date   : $Date: 2010/02/24 12:44:22 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/02/02 07:37:52 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,8 +35,6 @@ import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.configuration.I_CmsXmlConfiguration;
 import org.opencms.setup.xml.A_CmsSetupXmlUpdate;
-import org.opencms.setup.xml.CmsSetupXmlHelper;
-import org.opencms.xml.sitemap.CmsSitemapResourceHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +47,7 @@ import org.dom4j.Node;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  */
@@ -82,15 +80,7 @@ public class CmsXmlAddResourceHandlers extends A_CmsSetupXmlUpdate {
 
         Node node = document.selectSingleNode(xpath);
         if (node == null) {
-            if (xpath.equals(getXPathsToUpdate().get(0))) {
-                CmsSetupXmlHelper.setValue(
-                    document,
-                    xpath + "/@" + I_CmsXmlConfiguration.A_CLASS,
-                    CmsSitemapResourceHandler.class.getName());
-            } else {
-                return false;
-            }
-            return true;
+            return false;
         }
         return false;
     }
@@ -125,7 +115,6 @@ public class CmsXmlAddResourceHandlers extends A_CmsSetupXmlUpdate {
             xp.append("[@").append(I_CmsXmlConfiguration.A_CLASS);
             xp.append("='");
             m_xpaths = new ArrayList<String>();
-            m_xpaths.add(xp.toString() + CmsSitemapResourceHandler.class.getName() + "']");
         }
         return m_xpaths;
     }

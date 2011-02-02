@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsVfsConfiguration.java,v $
- * Date   : $Date: 2010/11/11 13:08:18 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/02/02 07:37:52 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,11 +32,9 @@
 package org.opencms.configuration;
 
 import org.opencms.file.CmsProperty;
-import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.collectors.I_CmsResourceCollector;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
-import org.opencms.file.types.CmsResourceTypeXmlSitemap;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.loader.CmsMimeType;
 import org.opencms.loader.CmsResourceManager;
@@ -67,7 +65,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 6.0.0
  */
@@ -197,7 +195,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
     CmsXmlContentTypeManager m_xmlContentTypeManager;
 
     /** The list of configured default files. */
-    private List<String> m_defaultFiles; 
+    private List<String> m_defaultFiles;
 
     /** Controls if file translation is enabled. */
     private boolean m_fileTranslationEnabled;
@@ -356,10 +354,6 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
                 // add default properties
                 List<CmsProperty> properties = resType.getConfiguredDefaultProperties();
                 if (properties != null) {
-                    if (resType instanceof CmsResourceTypeXmlSitemap) {
-                        properties = new ArrayList<CmsProperty>(properties);
-                        properties.remove(new CmsProperty(CmsPropertyDefinition.PROPERTY_TEMPLATE_ELEMENTS, null, null));
-                    }
                     if (properties.size() > 0) {
                         Element propertiesNode = resourceType.addElement(N_PROPERTIES);
                         Iterator<CmsProperty> p = properties.iterator();
@@ -397,8 +391,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
                 // add optional parameters
                 Map<String, String> prop = resType.getConfiguration();
                 if (prop != null) {
-                    if ((resType instanceof CmsResourceTypeXmlContainerPage)
-                        || (resType instanceof CmsResourceTypeXmlSitemap)) {
+                    if ((resType instanceof CmsResourceTypeXmlContainerPage)) {
                         prop = new HashMap<String, String>(prop);
                         prop.remove(CmsResourceTypeXmlContent.CONFIGURATION_SCHEMA);
                     }

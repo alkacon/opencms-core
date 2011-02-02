@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/v8/CmsXmlAddLoaders.java,v $
- * Date   : $Date: 2010/02/24 12:44:22 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/02/02 07:37:52 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,7 +35,6 @@ import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsVfsConfiguration;
 import org.opencms.configuration.I_CmsXmlConfiguration;
 import org.opencms.loader.CmsXmlContainerPageLoader;
-import org.opencms.loader.CmsXmlSitemapLoader;
 import org.opencms.setup.CmsSetupBean;
 import org.opencms.setup.xml.A_CmsXmlVfs;
 import org.opencms.setup.xml.CmsSetupXmlHelper;
@@ -52,7 +51,7 @@ import org.dom4j.Node;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  */
@@ -91,11 +90,6 @@ public class CmsXmlAddLoaders extends A_CmsXmlVfs {
                     document,
                     xpath + "/@" + I_CmsXmlConfiguration.A_CLASS,
                     CmsXmlContainerPageLoader.class.getName());
-            } else if (xpath.equals(getXPathsToUpdate().get(1))) {
-                CmsSetupXmlHelper.setValue(
-                    document,
-                    xpath + "/@" + I_CmsXmlConfiguration.A_CLASS,
-                    CmsXmlSitemapLoader.class.getName());
             }
             return true;
         }
@@ -132,7 +126,6 @@ public class CmsXmlAddLoaders extends A_CmsXmlVfs {
             xp.append("='");
             m_xpaths = new ArrayList<String>();
             m_xpaths.add(xp.toString() + CmsXmlContainerPageLoader.class.getName() + "']");
-            m_xpaths.add(xp.toString() + CmsXmlSitemapLoader.class.getName() + "']");
         }
         return m_xpaths;
     }

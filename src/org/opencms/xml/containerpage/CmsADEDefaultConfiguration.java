@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADEDefaultConfiguration.java,v $
- * Date   : $Date: 2011/01/19 10:39:43 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2011/02/02 07:37:51 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,8 +31,10 @@
 
 package org.opencms.xml.containerpage;
 
+import org.opencms.adeconfig.CmsContainerPageConfigurationData;
+import org.opencms.adeconfig.CmsSitemapConfigurationData;
+import org.opencms.adeconfig.CmsTypeFormatterConfiguration;
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.I_CmsResourceType;
@@ -41,16 +43,11 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsFormatterUtil;
 import org.opencms.util.CmsMacroResolver;
-import org.opencms.util.CmsPair;
 import org.opencms.util.PrintfFormat;
 import org.opencms.workplace.CmsWorkplace;
-import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -70,7 +67,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 7.6 
  */
@@ -107,18 +104,12 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
     /** The admin CMS context. */
     private CmsObject m_adminCms;
 
-    /** The property from which the configuration file name should be read. */
-    private String m_configFileProperty;
-
-    /** The module configuration reader. */
-    private CmsModuleADEConfigProvider m_moduleConfig;
-
     /**
      * The default constructor.<p>
      */
     public CmsADEDefaultConfiguration() {
 
-        m_configFileProperty = CmsPropertyDefinition.PROPERTY_ADE_CNTPAGE_CONFIG;
+        // do nothing 
     }
 
     /**
@@ -126,67 +117,26 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
      * 
      * @param configFileProperty the name of the property containing the configuration file name 
      */
+    @Deprecated
     public CmsADEDefaultConfiguration(String configFileProperty) {
 
-        m_configFileProperty = configFileProperty;
+        // do nothing 
     }
 
     /**
      * @see org.opencms.xml.containerpage.I_CmsADEConfiguration#createNewElement(CmsObject, String, ServletRequest, String)
      */
-    @SuppressWarnings("null")
     public CmsResource createNewElement(CmsObject cms, String cntPageUri, ServletRequest request, String type)
     throws CmsException {
 
-        CmsConfigurationParser siteConfig = getConfigurationParser(cms, cntPageUri);
-        CmsConfigurationItem item = null;
-        if (siteConfig != null) {
-            item = siteConfig.getTypeConfiguration().get(type);
-        }
-        if ((item == null) && (m_moduleConfig != null)) {
-            CmsConfigurationParser moduleConfig = m_moduleConfig.getConfigurationParser(getAdminCmsObject(cms));
-            item = moduleConfig.getTypeConfiguration().get(type);
-        }
+        CmsContainerPageConfigurationData config = OpenCms.getADEConfigurationManager().getContainerPageConfiguration(
+            cms,
+            cms.getRequestContext().addSiteRoot(cntPageUri));
+        CmsConfigurationItem item = config.getTypeConfiguration().get(type);
         item.getLazyFolder().getOrCreateFolder(cms);
         String newFileName = getNextNewFileName(cms, cntPageUri, request, type);
         cms.copyResource(cms.getSitePath(item.getSourceFile()), newFileName);
         return cms.readResource(newFileName);
-    }
-
-    /**
-     * Returns the configuration data for a given XML content.<p>
-     * 
-     * @param cms the CMS context 
-     * @param cntPageUri the URI of the XML content 
-     * @return the configuration data for that XML content
-     *  
-     * @throws CmsException if something goes wrong 
-     */
-    public CmsConfigurationParser getConfigurationParser(CmsObject cms, String cntPageUri) throws CmsException {
-
-        return getConfigurationParser(cms, cntPageUri, m_configFileProperty);
-    }
-
-    /**
-     * Returns the configuration parser instance.<p>
-     * 
-     * @param cms the current CMS context
-     * @param cntPageUri the container page URI
-     * @param propName the name of the property which should contain the configuration file name 
-     * 
-     * @return the configuration parser instance
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public CmsConfigurationParser getConfigurationParser(CmsObject cms, String cntPageUri, String propName)
-    throws CmsException {
-
-        CmsConfigurationFileFinder finder = new CmsConfigurationFileFinder(propName);
-        CmsResource cfg = finder.getConfigurationFile(cms, cntPageUri);
-        if (cfg == null) {
-            return null;
-        }
-        return CmsConfigurationParser.getParser(cms, cfg);
     }
 
     /**
@@ -195,32 +145,10 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
     public Collection<CmsResource> getCreatableElements(CmsObject cms, String cntPageUri, ServletRequest request)
     throws CmsException {
 
-        CmsConfigurationParser siteConfigParser = getConfigurationParser(cms, cntPageUri);
-        LinkedHashSet<CmsResource> resources = new LinkedHashSet<CmsResource>();
-        if (m_moduleConfig != null) {
-            CmsConfigurationParser moduleConfigParser = m_moduleConfig.getConfigurationParser(getAdminCmsObject(cms));
-            resources.addAll(moduleConfigParser.getNewElements(getAdminCmsObject(cms)));
-        }
-        if (siteConfigParser != null) {
-            resources.addAll(siteConfigParser.getNewElements(cms));
-        }
-        return resources;
-    }
-
-    /**
-     * Returns the configured export name.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param uri the URI for which the configuration should be retrieved 
-     * 
-     * @return the configured export name 
-     * 
-     * @throws CmsException if something goes wrong 
-     */
-    public String getExportName(CmsObject cms, String uri) throws CmsException {
-
-        CmsConfigurationParser config = getConfigurationParser(cms, uri);
-        return config.getExportName();
+        CmsContainerPageConfigurationData configData = OpenCms.getADEConfigurationManager().getContainerPageConfiguration(
+            cms,
+            cms.getRequestContext().addSiteRoot(cntPageUri));
+        return configData.getNewElements(cms);
     }
 
     /**
@@ -244,27 +172,26 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
 
         I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(res);
         String typeName = resType.getTypeName();
-
-        CmsConfigurationParser parser = getConfigurationParser(cms, cms.getSitePath(res));
-        CmsPair<Map<String, String>, Map<Integer, String>> fmtConfig = null;
-        if (parser != null) {
-            fmtConfig = parser.getFormatterConfigurationForType(typeName);
-        }
-        if (fmtConfig != null) {
-            return CmsFormatterUtil.selectFormatter(fmtConfig.getFirst(), fmtConfig.getSecond(), cntType, width);
-        }
-        if (m_moduleConfig != null) {
-            CmsConfigurationParser moduleConfig = m_moduleConfig.getConfigurationParser(getAdminCmsObject(cms));
-            fmtConfig = moduleConfig.getFormatterConfigurationForType(typeName);
-            if (fmtConfig != null) {
-                return CmsFormatterUtil.selectFormatter(fmtConfig.getFirst(), fmtConfig.getSecond(), cntType, width);
-            }
-        }
-        return OpenCms.getResourceManager().getResourceType(res).getFormatterForContainerTypeAndWidth(
+        String rootPath = cms.getRequestContext().addSiteRoot(cms.getRequestContext().getOriginalUri());
+        CmsContainerPageConfigurationData configData = OpenCms.getADEConfigurationManager().getContainerPageConfiguration(
             cms,
-            res,
-            cntType,
-            width);
+            rootPath);
+        Map<String, CmsTypeFormatterConfiguration> formatterConfig = configData.getFormatterConfiguration();
+        CmsTypeFormatterConfiguration typeFmtConfig = formatterConfig.get(typeName);
+        if (typeFmtConfig != null) {
+            String formatter = CmsFormatterUtil.selectFormatter(
+                typeFmtConfig.getContainerTypeFormatters(),
+                typeFmtConfig.getWidthFormatters(),
+                cntType,
+                width);
+            return formatter;
+        } else {
+            return OpenCms.getResourceManager().getResourceType(res).getFormatterForContainerTypeAndWidth(
+                cms,
+                res,
+                cntType,
+                width);
+        }
     }
 
     /**
@@ -279,8 +206,10 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
      */
     public int getMaxDepth(CmsObject cms, String uri) throws CmsException {
 
-        CmsConfigurationParser config = getConfigurationParser(cms, uri);
-        return config.getMaxDepth();
+        CmsSitemapConfigurationData sitemapConfig = OpenCms.getADEConfigurationManager().getSitemapConfiguration(
+            cms,
+            cms.getRequestContext().addSiteRoot(uri));
+        return sitemapConfig.getMaxDepth();
     }
 
     /**
@@ -289,39 +218,14 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
     public synchronized String getNextNewFileName(CmsObject cms, String cntPageUri, ServletRequest request, String type)
     throws CmsException {
 
-        CmsConfigurationParser parser = getConfigurationParser(cms, cntPageUri);
-        Map<String, CmsConfigurationItem> types = new HashMap<String, CmsConfigurationItem>();
-        if (m_moduleConfig != null) {
-            CmsConfigurationParser moduleConfig = m_moduleConfig.getConfigurationParser(getAdminCmsObject(cms));
-            types.putAll(moduleConfig.getTypeConfiguration());
-        }
-
-        if (parser != null) {
-            types.putAll(parser.getTypeConfiguration());
-        }
-        CmsConfigurationItem item = types.get(type);
+        CmsContainerPageConfigurationData cntPageConfig = OpenCms.getADEConfigurationManager().getContainerPageConfiguration(
+            cms,
+            cms.getRequestContext().addSiteRoot(cntPageUri));
+        Map<String, CmsConfigurationItem> typeConfig = cntPageConfig.getTypeConfiguration();
+        CmsConfigurationItem item = typeConfig.get(type);
         CmsResource folderRes = item.getLazyFolder().getFolder(cms);
         String destination = cms.getSitePath(folderRes) + item.getPattern();
         return getNewFileName(cms, destination);
-    }
-
-    /**
-     * Returns a list of properties defined in the configuration file.<p>
-     * 
-     * @param cms the CMS context 
-     * @param cntPageUri the uri of the page
-     *  
-     * @return the list of properties in the configuration file
-     *     
-     * @throws CmsException if something goes wrong 
-     */
-    public List<CmsXmlContentProperty> getProperties(CmsObject cms, String cntPageUri) throws CmsException {
-
-        CmsConfigurationParser parser = getConfigurationParser(cms, cntPageUri);
-        if (parser != null) {
-            return parser.getDefinedProperties();
-        }
-        return Collections.emptyList();
     }
 
     /**
@@ -360,15 +264,12 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
     }
 
     /**
-     * @see org.opencms.xml.containerpage.I_CmsADEConfiguration#init(org.opencms.file.CmsObject, java.lang.String)
+     * @see org.opencms.xml.containerpage.I_CmsADEConfiguration#init(org.opencms.file.CmsObject)
      */
-    public void init(CmsObject adminCms, String moduleParamKey) {
+    public void init(CmsObject adminCms) {
 
         if (m_adminCms == null) {
             m_adminCms = adminCms;
-            if (moduleParamKey != null) {
-                m_moduleConfig = new CmsModuleADEConfigProvider(moduleParamKey);
-            }
         }
     }
 
@@ -379,12 +280,6 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
      * will be replaced by the first 5-digit sequence for which the resulting file name is not already
      * used.<p>
      * 
-     * Although this method is synchronized, it may still return a used file name in the unlikely
-     * case that it is called after a previous call to this method, but before the resulting file name
-     * was used to create a file.<p>  
-     * 
-     * This method was adapted from the method {@link org.opencms.file.collectors.A_CmsResourceCollector}<code>#getCreateInFolder</code>.<p>
-     *
      * @param cms the CmsObject used for checking the existence of file names
      * @param pattern the pattern for new files
      * 
@@ -418,22 +313,6 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
             checkTempFileName = CmsWorkplace.getTemporaryFileName(checkFileName);
         } while (result.contains(checkFileName) || result.contains(checkTempFileName));
         return checkFileName;
-    }
-
-    /**
-     * Helper method for getting an admin CMS object with the same project as another CMS object.<p>
-     *   
-     * @param cms a CMS context 
-     * @return an admin CMS object with the same project as cms 
-     *  
-     * @throws CmsException if something goes wrong 
-     */
-    private CmsObject getAdminCmsObject(CmsObject cms) throws CmsException {
-
-        CmsObject result = OpenCms.initCmsObject(m_adminCms);
-        result.getRequestContext().setCurrentProject(cms.getRequestContext().currentProject());
-        result.getRequestContext().setSiteRoot(cms.getRequestContext().getSiteRoot());
-        return result;
     }
 
 }

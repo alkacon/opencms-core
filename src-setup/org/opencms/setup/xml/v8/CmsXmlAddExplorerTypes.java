@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/v8/Attic/CmsXmlAddExplorerTypes.java,v $
- * Date   : $Date: 2010/02/24 12:44:21 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/02/02 07:37:52 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,6 @@ import org.opencms.configuration.CmsWorkplaceConfiguration;
 import org.opencms.configuration.I_CmsXmlConfiguration;
 import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
-import org.opencms.file.types.CmsResourceTypeXmlSitemap;
 import org.opencms.setup.xml.A_CmsXmlWorkplace;
 import org.opencms.util.CmsStringUtil;
 
@@ -51,7 +50,7 @@ import org.dom4j.Node;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  */
@@ -266,10 +265,6 @@ public class CmsXmlAddExplorerTypes extends A_CmsXmlWorkplace {
                 xp.toString(),
                 "${etype}",
                 CmsResourceTypeXmlContainerPage.SUB_CONTAINER_TYPE_NAME));
-            m_xpaths.add(CmsStringUtil.substitute(
-                xp.toString(),
-                "${etype}",
-                CmsResourceTypeXmlSitemap.getStaticTypeName()));
             m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", "cntpagegallery"));
             m_xpaths.add(CmsStringUtil.substitute(
                 xp.toString(),

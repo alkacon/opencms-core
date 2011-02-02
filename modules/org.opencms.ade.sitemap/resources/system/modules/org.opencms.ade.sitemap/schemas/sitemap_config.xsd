@@ -16,8 +16,6 @@
         <xsd:sequence>
             <xsd:element name="ADEType" type="OpenCmsADEType" minOccurs="0" maxOccurs="unbounded" />
             <xsd:element name="ADEField" type="OpenCmsADEField" minOccurs="0" maxOccurs="unbounded" />
-            <xsd:element name="ADEExportName" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
-            <xsd:element name="ContainerPageNameGenerator" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
             <xsd:element name="MaxDepth" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
             <xsd:element name="DetailPage" type="OpenCmsDetailPage" minOccurs="0" maxOccurs="unbounded" />
         </xsd:sequence>

@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsModuleADEConfigProvider.java,v $
- * Date   : $Date: 2010/09/22 14:27:47 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/adeconfig/Attic/A_CmsModuleConfigProvider.java,v $
+ * Date   : $Date: 2011/02/02 07:37:52 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.xml.containerpage;
+package org.opencms.adeconfig;
 
 import org.opencms.cache.CmsVfsCache;
 import org.opencms.file.CmsObject;
@@ -48,7 +48,10 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 
 /**
- * A class for reading ADE configuration data from modules.<p>
+ * An abstract base class used for reading module-specific configuration files which are configured by module
+ * parameters.
+ * 
+ * @param <Config> the type of configuration data 
  * 
  * @author Georg Westenberger
  * 
@@ -56,27 +59,33 @@ import org.apache.commons.logging.Log;
  * 
  * @since 8.0.0
  */
-public class CmsModuleADEConfigProvider extends CmsVfsCache {
+public abstract class A_CmsModuleConfigProvider<Config extends I_CmsMergeable<Config>> extends CmsVfsCache {
 
     /** The logger for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsModuleADEConfigProvider.class);
+    private static final Log LOG = CmsLog.getLog(A_CmsModuleConfigProvider.class);
 
     /** The set of file names of the modules' configuration files. */
     Set<String> m_files = new HashSet<String>();
 
+    /** A CMS context with admin privileges. */
+    private CmsObject m_adminCms;
+
     /** The offline configuration data. */
-    private CmsConfigurationParser m_offlineConfig;
+    private Config m_offlineConfig;
 
     /** The online configuration data. */
-    private CmsConfigurationParser m_onlineConfig;
+    private Config m_onlineConfig;
 
     /**
      * Constructor.<p>
      * 
+     * @param adminCms a CMS context with admin privileges 
+     * 
      * @param key the name of the module parameter which contains the configuration file name 
      */
-    public CmsModuleADEConfigProvider(String key) {
+    protected A_CmsModuleConfigProvider(CmsObject adminCms, String key) {
 
+        m_adminCms = adminCms;
         CmsModuleManager manager = OpenCms.getModuleManager();
         List<CmsModule> modules = manager.getAllInstalledModules();
         for (CmsModule module : modules) {
@@ -94,17 +103,27 @@ public class CmsModuleADEConfigProvider extends CmsVfsCache {
      * @param cms the CMS context
      *  
      * @return the configuration of the installed modules 
+     * 
+     * @throws CmsException if something goes wrong 
      */
-    public synchronized CmsConfigurationParser getConfigurationParser(CmsObject cms) {
+    public synchronized Config getConfiguration(CmsObject cms) throws CmsException {
 
-        boolean online = cms.getRequestContext().currentProject().isOnlineProject();
-        CmsConfigurationParser result = internalGetConfiguration(online);
+        CmsObject acms = initCmsObject(cms);
+        boolean online = acms.getRequestContext().currentProject().isOnlineProject();
+        Config result = internalGetConfiguration(online);
         if (result == null) {
-            result = readConfiguration(cms);
+            result = readConfiguration(acms);
             internalSetConfiguration(online, result);
         }
         return result;
     }
+
+    /**
+     * Creates an empty configuration object.<p>
+     * 
+     * @return an empty configuration object 
+     */
+    protected abstract Config createEmptyConfiguration();
 
     /**
      * @see org.opencms.cache.CmsVfsCache#flush(boolean)
@@ -122,7 +141,7 @@ public class CmsModuleADEConfigProvider extends CmsVfsCache {
      * 
      * @return the online or offline configuration 
      */
-    protected CmsConfigurationParser internalGetConfiguration(boolean online) {
+    protected Config internalGetConfiguration(boolean online) {
 
         if (online) {
             return m_onlineConfig;
@@ -137,7 +156,7 @@ public class CmsModuleADEConfigProvider extends CmsVfsCache {
      * @param online if true, the online configuration will be set, else the offline configuration 
      * @param config the new configuration 
      */
-    protected void internalSetConfiguration(boolean online, CmsConfigurationParser config) {
+    protected void internalSetConfiguration(boolean online, Config config) {
 
         if (online) {
             m_onlineConfig = config;
@@ -149,24 +168,36 @@ public class CmsModuleADEConfigProvider extends CmsVfsCache {
     /**
      * Reads the configuration from the configured modules.
      * 
-     * @param cms the CMS context
+     * @param adminCms the CMS context
      *  
      * @return the configuration 
      */
-    protected CmsConfigurationParser readConfiguration(CmsObject cms) {
+    protected Config readConfiguration(CmsObject adminCms) {
 
-        CmsConfigurationParser parser = new CmsConfigurationParser();
+        Config result = createEmptyConfiguration();
         for (String path : m_files) {
             try {
-                CmsResource resource = cms.readResource(path);
-                CmsConfigurationParser otherParser = CmsConfigurationParser.getParser(cms, resource);
-                parser.update(otherParser);
+                CmsResource resource = adminCms.readResource(path);
+                Config config = readSingleConfiguration(adminCms, resource);
+                result = result.merge(config);
             } catch (CmsException e) {
                 LOG.error(e.getLocalizedMessage(), e);
             }
         }
-        return parser;
+        return result;
     }
+
+    /**
+     * Reads a single configuration file.<p>
+     * 
+     * @param adminCms the (admin) CMS context 
+     * @param res the configuration file to read
+     * 
+     * @return the configuration data from the file 
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    protected abstract Config readSingleConfiguration(CmsObject adminCms, CmsResource res) throws CmsException;
 
     /**
      * @see org.opencms.cache.CmsVfsCache#uncacheResource(org.opencms.file.CmsResource)
@@ -177,6 +208,22 @@ public class CmsModuleADEConfigProvider extends CmsVfsCache {
         if (m_files.contains(res.getRootPath())) {
             m_offlineConfig = null;
         }
+    }
+
+    /**
+     * Initializes an admin CMS context, with the project copied from another CMS context.<p>
+     * 
+     * @param cms the CMS context whose project should be used
+     *  
+     * @return the initialized admin CMS context
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    private CmsObject initCmsObject(CmsObject cms) throws CmsException {
+
+        CmsObject result = OpenCms.initCmsObject(m_adminCms);
+        result.getRequestContext().setCurrentProject(cms.getRequestContext().currentProject());
+        return result;
     }
 
 }

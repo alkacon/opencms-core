@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/v8/Attic/CmsXmlAddResourceTypes.java,v $
- * Date   : $Date: 2010/05/28 12:29:07 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/02/02 07:37:52 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,6 @@ import org.opencms.file.types.CmsResourceTypeFolderExtended;
 import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
-import org.opencms.file.types.CmsResourceTypeXmlSitemap;
 import org.opencms.setup.xml.A_CmsXmlVfs;
 import org.opencms.workplace.galleries.CmsAjaxDownloadGallery;
 import org.opencms.workplace.galleries.CmsAjaxHtmlGallery;
@@ -55,7 +54,7 @@ import org.dom4j.Node;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0
  */
@@ -113,13 +112,6 @@ public class CmsXmlAddResourceTypes extends A_CmsXmlVfs {
                     CmsResourceTypeXmlContent.CONFIGURATION_SCHEMA,
                     "/system/modules/org.opencms.ade.containerpage/schemas/type_config.xsd");
             } else if (xpath.equals(getXPathsToUpdate().get(2))) {
-                createResourceType(
-                    document,
-                    xpath,
-                    CmsResourceTypeXmlSitemap.getStaticTypeName(),
-                    CmsResourceTypeXmlSitemap.class,
-                    CmsResourceTypeXmlSitemap.getStaticTypeId());
-            } else if (xpath.equals(getXPathsToUpdate().get(3))) {
                 createResourceType(document, xpath, "cntpagegallery", CmsResourceTypeFolderExtended.class, 16);
                 // parameters
                 createRtParameter(
@@ -127,7 +119,7 @@ public class CmsXmlAddResourceTypes extends A_CmsXmlVfs {
                     xpath,
                     CmsResourceTypeFolderExtended.CONFIGURATION_FOLDER_CLASS,
                     CmsAjaxHtmlGallery.class.getName());
-            } else if (xpath.equals(getXPathsToUpdate().get(4))) {
+            } else if (xpath.equals(getXPathsToUpdate().get(3))) {
                 createResourceType(
                     document,
                     xpath,
@@ -145,7 +137,7 @@ public class CmsXmlAddResourceTypes extends A_CmsXmlVfs {
                     xpath,
                     CmsResourceTypeXmlContent.CONFIGURATION_SCHEMA,
                     "/system/modules/org.opencms.ade.containerpage/schemas/sub_container.xsd");
-            } else if (xpath.equals(getXPathsToUpdate().get(5))) {
+            } else if (xpath.equals(getXPathsToUpdate().get(4))) {
                 createResourceType(
                     document,
                     xpath,
@@ -192,7 +184,6 @@ public class CmsXmlAddResourceTypes extends A_CmsXmlVfs {
             m_xpaths = new ArrayList<String>();
             m_xpaths.add(xp.toString() + CmsResourceTypeXmlContainerPage.getStaticTypeName() + "']");
             m_xpaths.add(xp.toString() + CmsResourceTypeXmlContainerPage.CONFIGURATION_TYPE_NAME + "']");
-            m_xpaths.add(xp.toString() + CmsResourceTypeXmlSitemap.getStaticTypeName() + "']");
             m_xpaths.add(xp.toString() + "cntpagegallery" + "']");
             m_xpaths.add(xp.toString() + CmsResourceTypeXmlContainerPage.SUB_CONTAINER_TYPE_NAME + "']");
             m_xpaths.add(xp.toString() + CmsResourceTypeJsp.getContainerPageTemplateTypeName() + "']");

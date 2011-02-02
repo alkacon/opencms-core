@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/I_CmsADEConfiguration.java,v $
- * Date   : $Date: 2010/09/22 14:27:47 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/02/02 07:37:52 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import javax.servlet.ServletRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 7.6 
  */
@@ -160,8 +160,7 @@ public interface I_CmsADEConfiguration {
      * Initializes the configuration.<p>
      * 
      * @param cms the CMS object  
-     * @param moduleParamKey the name of the module parameter which contains the name of the ADE configuration file  
      */
-    void init(CmsObject cms, String moduleParamKey);
+    void init(CmsObject cms);
 
 }

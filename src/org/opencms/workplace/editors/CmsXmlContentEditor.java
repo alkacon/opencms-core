@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2010/09/22 14:27:47 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/02/02 07:37:52 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,7 +37,6 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.collectors.A_CmsResourceCollector;
 import org.opencms.file.collectors.I_CmsResourceCollector;
-import org.opencms.file.types.CmsResourceTypeXmlSitemap;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.json.JSONArray;
@@ -66,7 +65,6 @@ import org.opencms.xml.content.CmsXmlContentErrorHandler;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.content.CmsXmlContentTab;
 import org.opencms.xml.content.CmsXmlContentValueSequence;
-import org.opencms.xml.sitemap.CmsXmlSitemapFactory;
 import org.opencms.xml.types.CmsXmlNestedContentDefinition;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
@@ -93,7 +91,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -1510,12 +1508,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 setParamTempfile(createTempFile());
                 // initialize a content object from the created temporary file
                 m_file = getCms().readFile(this.getParamTempfile(), CmsResourceFilter.ALL);
-                if (CmsResourceTypeXmlSitemap.isSitemap(m_file)) {
-                    m_content = CmsXmlSitemapFactory.unmarshal(getCloneCms(), m_file);
-                } else {
-                    m_content = CmsXmlContentFactory.unmarshal(getCloneCms(), m_file);
-                }
-
+                m_content = CmsXmlContentFactory.unmarshal(getCloneCms(), m_file);
                 // check the XML content against the given XSD
                 try {
                     m_content.validateXmlStructure(new CmsXmlEntityResolver(getCms()));

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/toolbar/Attic/CmsToolbarGalleryButton.java,v $
- * Date   : $Date: 2010/11/29 10:33:35 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/02/02 07:37:52 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -113,9 +113,11 @@ public class CmsToolbarGalleryButton extends CmsMenuButton implements I_CmsToolb
                 CmsGalleryDialog gallery = CmsGalleryFactory.createDialog(
                     CmsSitemapView.getInstance().getTree().getDnDHandler(),
                     m_content);
+                boolean canEditDetailPages = CmsSitemapView.getInstance().getController().getData().canEditDetailPages();
                 CmsSpecialTab special = new CmsSpecialTab(
                     new CmsSpecialTabHandler(gallery.getController()),
-                    CmsSitemapView.getInstance().getTree().getDnDHandler());
+                    CmsSitemapView.getInstance().getTree().getDnDHandler(),
+                    canEditDetailPages);
 
                 String tabTitle = Messages.get().key(Messages.GUI_SPECIAL_TAB_TITLE_0);
                 gallery.addTab(special, tabTitle);

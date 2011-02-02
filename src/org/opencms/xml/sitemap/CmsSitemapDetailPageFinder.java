@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapDetailPageFinder.java,v $
- * Date   : $Date: 2011/01/14 12:01:14 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/02/02 07:37:52 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,16 +31,19 @@
 
 package org.opencms.xml.sitemap;
 
+import org.opencms.adeconfig.CmsADEConfigurationManager;
+import org.opencms.adeconfig.CmsSitemapConfigurationData;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
-import org.opencms.loader.CmsResourceManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This class uses information from the detail page information stored in the sitemap to find the detail page for 
@@ -48,7 +51,7 @@ import java.util.List;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -59,13 +62,20 @@ public class CmsSitemapDetailPageFinder implements I_CmsDetailPageFinder {
      */
     public Collection<String> getAllDetailPages(CmsObject cms, CmsResource res) throws CmsException {
 
-        CmsSitemapManager manager = OpenCms.getSitemapManager();
-        CmsResourceManager resManager = OpenCms.getResourceManager();
-        String resourceType = resManager.getResourceType(res.getTypeId()).getTypeName();
-        List<CmsDetailPageInfo> detailPages = manager.getBestDetailPages(cms, resourceType);
+        CmsADEConfigurationManager confManager = OpenCms.getADEConfigurationManager();
+        String typeName = OpenCms.getResourceManager().getResourceType(res.getTypeId()).getTypeName();
+        Map<String, List<CmsDetailPageInfo>> bestDetailPagesByType = confManager.getAllDetailPages(cms);
+        List<CmsDetailPageInfo> pageInfos = bestDetailPagesByType.get(typeName);
+        if (pageInfos == null) {
+            return Collections.<String> emptyList();
+        }
         List<String> result = new ArrayList<String>();
-        for (CmsDetailPageInfo info : detailPages) {
-            result.add(info.getUri());
+        for (CmsDetailPageInfo pageInfo : pageInfos) {
+            String uri = pageInfo.getUri();
+            if (!CmsResource.isFolder(uri)) {
+                uri = CmsResource.getFolderPath(uri);
+            }
+            result.add(uri);
         }
         return result;
     }
@@ -78,33 +88,21 @@ public class CmsSitemapDetailPageFinder implements I_CmsDetailPageFinder {
         if (!CmsResourceTypeXmlContent.isXmlContent(res)) {
             return null;
         }
-
-        CmsSitemapManager sitemapManager = OpenCms.getSitemapManager();
-        CmsSitemapEntry entry = sitemapManager.getEntryForUri(cms, linkSource);
-        String type = OpenCms.getResourceManager().getResourceType(res.getTypeId()).getTypeName();
-        CmsDetailPageInfo detailPageInfo = null;
-
-        if (entry.isSitemap()) {
-            detailPageInfo = entry.getSitemapInfo().getBestDetailPage(type);
-        }
-        if (detailPageInfo == null) {
-            CmsSitemapRuntimeInfo info = sitemapManager.getRuntimeInfoForSite(
-                cms,
-                cms.getRequestContext().getSiteRoot(),
-                cms.getRequestContext().getLocale());
-
-            if (info != null) {
-                detailPageInfo = info.getBestDetailPage(type);
-            }
-        }
-
-        if (detailPageInfo == null) {
+        CmsADEConfigurationManager confManager = OpenCms.getADEConfigurationManager();
+        String rootLinkSource = cms.getRequestContext().addSiteRoot(linkSource);
+        CmsSitemapConfigurationData sitemapConf = confManager.getSitemapConfiguration(cms, rootLinkSource);
+        String typeName = OpenCms.getResourceManager().getResourceType(res.getTypeId()).getTypeName();
+        List<CmsDetailPageInfo> pageInfos = sitemapConf.getDetailPageInfo().get(typeName);
+        if ((pageInfos == null) || pageInfos.isEmpty()) {
             return (new CmsPropertyDetailPageFinder()).getDetailPage(cms, res, linkSource);
         }
-        String detailPageUri = detailPageInfo.getUri();
+
+        CmsDetailPageInfo info = pageInfos.get(0);
+        String detailPageUri = info.getUri();
         if (!CmsResource.isFolder(detailPageUri)) {
             detailPageUri = CmsResource.getFolderPath(detailPageUri);
         }
         return detailPageUri;
     }
+
 }

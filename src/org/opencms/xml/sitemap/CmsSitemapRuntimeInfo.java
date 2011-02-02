@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapRuntimeInfo.java,v $
- * Date   : $Date: 2010/12/17 08:45:29 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/02/02 07:37:52 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,8 +31,8 @@
 
 package org.opencms.xml.sitemap;
 
+import org.opencms.adeconfig.CmsConfigurationParser;
 import org.opencms.file.types.I_CmsResourceType;
-import org.opencms.xml.containerpage.CmsConfigurationParser;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -44,7 +44,7 @@ import java.util.Locale;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  * 

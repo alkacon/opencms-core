@@ -30,7 +30,9 @@
     <resources>
       <resource uri="/system/modules/org.opencms.ade.sitemap/"/>
     </resources>
-    <parameters/>
+    <parameters>
+      <param name="sitemap.config">/system/modules/org.opencms.ade.sitemap/config/sitemap.config</param>
+    </parameters>
   </module>
   <files>
     <file>

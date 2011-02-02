@@ -13,7 +13,6 @@
 				<loader class="org.opencms.loader.CmsXmlPageLoader" />
 				<loader class="org.opencms.loader.CmsXmlContentLoader" />
 				<loader class="org.opencms.loader.CmsXmlContainerPageLoader" />
-				<loader class="org.opencms.loader.CmsXmlSitemapLoader" />
 			</resourceloaders>
 			<resourcetypes>
 				<type class="org.opencms.file.types.CmsResourceTypeUnknownFolder" name="unknown_folder" id="-2" />
@@ -92,6 +91,8 @@
 				<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="tablegallery" id="12">
 					<param name="folder.class">org.opencms.workplace.galleries.CmsAjaxTableGallery</param>
 				</type>
+				<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="entrypoint" id="23" />
+				
 				<type class="org.opencms.file.types.CmsResourceTypeXmlContainerPage" name="containerpage" id="13">
                     <param name="formatter_gallery_preview">/system/workplace/editors/ade/container-preview-formatter.jsp</param>
 				    <param name="gallery.type.names">cntpagegallery</param>
@@ -100,7 +101,7 @@
                     <param name="gallery.type.names">downloadgallery</param>
                     <param name="schema">/system/modules/org.opencms.ade.containerpage/schemas/type_config.xsd</param>
                 </type>
-				<type class="org.opencms.file.types.CmsResourceTypeXmlSitemap" name="sitemap" id="15" />
+				<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="sitemap" id="15" />
 				<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="cntpagegallery" id="16">
                     <param name="folder.class">org.opencms.workplace.galleries.CmsAjaxHtmlGallery</param>
                 </type>

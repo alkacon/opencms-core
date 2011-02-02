@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCms.java,v $
- * Date   : $Date: 2010/07/23 08:29:34 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/02/02 07:37:52 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.main;
 
+import org.opencms.adeconfig.CmsADEConfigurationManager;
 import org.opencms.db.CmsDefaultUsers;
 import org.opencms.db.CmsExportPoint;
 import org.opencms.db.CmsLoginManager;
@@ -100,7 +101,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -171,6 +172,16 @@ public final class OpenCms {
     public static void fireCmsEvent(int type, Map<String, Object> data) {
 
         OpenCmsCore.getInstance().getEventManager().fireEvent(type, data);
+    }
+
+    /**
+     * Returns the ADE configuration manager instance.<p>
+     * 
+     * @return the instance of the ADE configuration manager 
+     */
+    public static CmsADEConfigurationManager getADEConfigurationManager() {
+
+        return OpenCmsCore.getInstance().getADEConfigurationManager();
     }
 
     /**
