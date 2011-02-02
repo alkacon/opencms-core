@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Attic/CmsMultiListMap.java,v $
- * Date   : $Date: 2010/12/17 08:45:30 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/02/02 07:38:40 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import java.util.Set;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -103,6 +103,23 @@ public class CmsMultiListMap<A, B> implements Map<A, List<B>>, Serializable {
     public void clear() {
 
         m_impl.clear();
+    }
+
+    /**
+    * @see java.lang.Object#clone()
+     */
+    @Override
+    public CmsMultiListMap<A, B> clone() {
+
+        Map<A, List<B>> map = new HashMap<A, List<B>>();
+        for (Map.Entry<A, List<B>> entry : m_impl.entrySet()) {
+            List<B> list = new ArrayList<B>();
+            for (B b : entry.getValue()) {
+                list.add(b);
+            }
+            map.put(entry.getKey(), list);
+        }
+        return new CmsMultiListMap<A, B>(map);
     }
 
     /**
