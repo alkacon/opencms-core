@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsListener.java,v $
- * Date   : $Date: 2011/02/02 07:37:52 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/02/02 07:45:07 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,8 +31,6 @@
 
 package org.opencms.main;
 
-import java.util.Date;
-
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.http.HttpSessionEvent;
@@ -52,7 +50,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -87,7 +85,6 @@ public class OpenCmsListener implements ServletContextListener, HttpSessionListe
         try {
             // upgrade the OpenCms runlevel
             OpenCmsCore.getInstance().upgradeRunlevel(event.getServletContext());
-            System.out.println("Initialized: " + new Date());
         } catch (CmsInitException e) {
             if (e.isNewError()) {
                 // only log new init errors
