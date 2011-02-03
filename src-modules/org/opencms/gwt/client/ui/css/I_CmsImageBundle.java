@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsImageBundle.java,v $
- * Date   : $Date: 2011/02/01 14:51:52 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2011/02/03 08:59:46 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import com.google.gwt.resources.client.ImageResource;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 8.0.0
  */
@@ -126,6 +126,12 @@ public interface I_CmsImageBundle extends ClientBundle {
          * @return the CSS class name
          */
         String properties();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String refresh();
 
         /** Access method.<p>
          * 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsIconBundle.java,v $
- * Date   : $Date: 2011/01/28 09:30:10 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/02/03 08:59:46 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import com.google.gwt.resources.client.ImageResource;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -312,6 +312,30 @@ public interface I_CmsIconBundle extends ClientBundle {
      */
     @Source("images/icons/propertyIconInactive.png")
     ImageResource propertyIconInactive();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/icons/refreshIconActive.png")
+    ImageResource refreshIconActive();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/icons/refreshIconDeactivated.png")
+    ImageResource refreshIconDeactivated();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/icons/refreshIconInactive.png")
+    ImageResource refreshIconInactive();
 
     /**
      * Access method.<p>

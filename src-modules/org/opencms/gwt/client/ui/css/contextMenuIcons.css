@@ -79,6 +79,17 @@
     gwt-image: "icons.propertyIconDeactivated";
 }
 
+@sprite .cmsMenuItem.selected .refresh{
+    gwt-image: "icons.refreshIconActive";
+}
+@sprite .cmsMenuItem .refresh{
+    gwt-image: "icons.refreshIconActive";
+    float: left;
+    margin-top: 3px;
+}
+@sprite .cmsMenuItem.disabled .refresh{
+    gwt-image: "icons.refreshIconDeactivated";
+}
 
 @sprite .cmsMenuItem.selected .selection{
     gwt-image: "icons.selectionIconActive";
