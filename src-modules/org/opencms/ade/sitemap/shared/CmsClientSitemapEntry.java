@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsClientSitemapEntry.java,v $
- * Date   : $Date: 2011/02/03 08:59:03 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2011/02/03 15:16:16 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  * 
  * @since 8.0.0
  */
@@ -801,6 +801,28 @@ public class CmsClientSitemapEntry implements IsSerializable {
             sb.append(child.toString());
         }
         return sb.toString();
+    }
+
+    /**
+     * Updates all entry properties apart from it's position-info and sub-entries.<p>
+     * 
+     * @param source the source entry to update from
+     */
+    public void update(CmsClientSitemapEntry source) {
+
+        setId(source.getId());
+        setName(source.getName());
+        setProperties(new HashMap<String, CmsSimplePropertyValue>(source.getProperties()));
+        setSitePath(source.getSitePath());
+        setTitle(source.getTitle());
+        setVfsPath(source.getVfsPath());
+        setPosition(source.getPosition());
+        setEditStatus(source.getEditStatus());
+        setLock(source.getLock());
+        setEntryType(source.getEntryType());
+        setInNavigation(source.isInNavigation());
+        setHasForeignFolderLock(source.hasForeignFolderLock());
+        setParentInheritedProperties(source.getParentInheritedProperties());
     }
 
     /**

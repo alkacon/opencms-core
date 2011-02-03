@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2011/02/03 08:59:03 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2011/02/03 15:16:16 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -94,7 +94,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.41 $ 
+ * @version $Revision: 1.42 $ 
  * 
  * @since 8.0.0
  */
@@ -548,12 +548,13 @@ public class CmsSitemapController {
                 }
 
                 target.setSubEntries(result.getSubEntries());
+                CmsSitemapTreeItem item = CmsSitemapTreeItem.getItemById(target.getId());
+                target.update(result);
+                item.updateEntry(target);
                 m_eventBus.fireEventFromSource(
                     new CmsSitemapLoadEvent(target, sitePath, setOpen),
                     CmsSitemapController.this);
                 stop(false);
-                CmsSitemapTreeItem item = CmsSitemapTreeItem.getItemById(target.getId());
-                item.updateEntry(target);
                 recomputePropertyInheritance();
             }
         };
@@ -864,6 +865,19 @@ public class CmsSitemapController {
         recomputeProperties(m_data.getRoot(), propState);
         CmsSitemapView.getInstance().getTree().getItem(0).updateSitePath();
 
+    }
+
+    /**
+     * Deletes the given entry and all its descendants.<p>
+     * 
+     * @param sitePath the site path of the entry to delete
+     */
+    public void removeFromNavigation(String sitePath) {
+
+        CmsClientSitemapEntry entry = getEntry(sitePath);
+        CmsClientSitemapEntry parent = getEntry(CmsResource.getParentFolder(entry.getSitePath()));
+        assert (entry != null);
+        applyChange(new CmsClientSitemapChangeRemove(entry, parent.getId()), false);
     }
 
     /**
