@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsHoverbarMoveButton.java,v $
- * Date   : $Date: 2011/02/01 15:25:05 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/02/03 15:13:15 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 8.0.0
  */
@@ -77,10 +77,11 @@ public class CmsHoverbarMoveButton extends CmsPushButton implements I_CmsDragHan
              */
             public void onShow(CmsHoverbarShowEvent event) {
 
-                if (CmsSitemapView.getInstance().isNavigationMode()) {
-                    m_sitePath = hoverbar.getSitePath();
-                    final CmsSitemapController controller = hoverbar.getController();
-                    CmsClientSitemapEntry entry = controller.getEntry(m_sitePath);
+                m_sitePath = hoverbar.getSitePath();
+                final CmsSitemapController controller = hoverbar.getController();
+                CmsClientSitemapEntry entry = controller.getEntry(m_sitePath);
+                if (CmsSitemapView.getInstance().isNavigationMode() && (entry != null)) {
+
                     if (!entry.isInNavigation()) {
                         CmsHoverbarMoveButton.this.setVisible(false);
                     } else if (controller.isRoot(m_sitePath)) {

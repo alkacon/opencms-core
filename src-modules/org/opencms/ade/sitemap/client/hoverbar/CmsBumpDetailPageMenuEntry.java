@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsBumpDetailPageMenuEntry.java,v $
- * Date   : $Date: 2011/02/02 07:37:52 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/02/03 15:13:15 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,7 +34,6 @@ package org.opencms.ade.sitemap.client.hoverbar;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
-import org.opencms.xml.sitemap.CmsDetailPageTable;
 
 import com.google.gwt.user.client.Command;
 
@@ -43,7 +42,7 @@ import com.google.gwt.user.client.Command;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -85,11 +84,10 @@ public class CmsBumpDetailPageMenuEntry extends A_CmsSitemapMenuEntry {
         String sitePath = getHoverbar().getSitePath();
         CmsSitemapController controller = getHoverbar().getController();
         CmsClientSitemapEntry entry = controller.getEntry(sitePath);
-        boolean visible = false;
-        if (entry.isDetailPage() && controller.getData().canEditDetailPages()) {
-            CmsDetailPageTable table = controller.getDetailPageTable();
-            visible = !table.isDefaultDetailPage(entry.getId());
-        }
-        setVisible(visible);
+        boolean show = (entry != null)
+            && entry.isDetailPage()
+            && controller.getData().canEditDetailPages()
+            && controller.getDetailPageTable().isDefaultDetailPage(entry.getId());
+        setVisible(show);
     }
 }

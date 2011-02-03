@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsSubSitemapMenuEntry.java,v $
- * Date   : $Date: 2011/02/01 15:25:05 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/02/03 15:13:15 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import com.google.gwt.user.client.Command;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -107,6 +107,7 @@ public class CmsSubSitemapMenuEntry extends A_CmsSitemapMenuEntry {
         CmsSitemapController controller = getHoverbar().getController();
         CmsClientSitemapEntry entry = controller.getEntry(sitePath);
         boolean show = !controller.isRoot(sitePath)
+            && (entry != null)
             && entry.isInNavigation()
             && entry.isFolderType()
             && entry.isEditable();
