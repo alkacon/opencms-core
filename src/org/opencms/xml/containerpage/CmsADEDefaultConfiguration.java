@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADEDefaultConfiguration.java,v $
- * Date   : $Date: 2011/02/02 07:37:51 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2011/02/03 15:14:22 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -67,7 +67,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 7.6 
  */
@@ -287,7 +287,7 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
      * 
      * @throws CmsException if something goes wrong
      */
-    protected String getNewFileName(CmsObject cms, String pattern) throws CmsException {
+    public static String getNewFileName(CmsObject cms, String pattern) throws CmsException {
 
         // this method was adapted from A_CmsResourceCollector#getCreateInFolder
         pattern = cms.getRequestContext().removeSiteRoot(pattern);
