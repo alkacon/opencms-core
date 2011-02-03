@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsVfsSitemapService.java,v $
- * Date   : $Date: 2011/02/02 07:37:52 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/02/03 08:58:13 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.ade.sitemap;
 import org.opencms.ade.sitemap.shared.CmsBrokenLinkData;
 import org.opencms.ade.sitemap.shared.CmsClientLock;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
+import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry.EntryType;
 import org.opencms.ade.sitemap.shared.CmsResourceTypeInfo;
 import org.opencms.ade.sitemap.shared.CmsSitemapBrokenLinkBean;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange;
@@ -42,7 +43,6 @@ import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.ade.sitemap.shared.CmsSitemapMergeInfo;
 import org.opencms.ade.sitemap.shared.CmsSitemapTemplate;
 import org.opencms.ade.sitemap.shared.CmsSubSitemapInfo;
-import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry.EntryType;
 import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService;
 import org.opencms.adeconfig.CmsConfigurationSourceInfo;
 import org.opencms.adeconfig.CmsContainerPageConfigurationData;
@@ -109,7 +109,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 8.0.0
  * 
@@ -173,8 +173,9 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 containerpageConfigName = CmsStringUtil.joinPaths(folderName, "containerpage_" + index + ".config");
                 index++;
             }
-            cms.createResource(containerpageConfigName, OpenCms.getResourceManager().getResourceType(
-                "containerpage_config").getTypeId());
+            cms.createResource(
+                containerpageConfigName,
+                OpenCms.getResourceManager().getResourceType("containerpage_config").getTypeId());
 
             CmsResource subSitemapRes = cms.readResource(subSitemapPath);
 
@@ -194,10 +195,10 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             cms.unlockResource(subSitemapFolder);
 
             CmsSitemapClipboardData clipboard = getClipboardData();
-            CmsClientSitemapEntry entry = toClientEntry(getNavBuilder().getNavigationForResource(
-                cms.getSitePath(subSitemapFolder)), OpenCms.getSitemapManager().getElementPropertyConfiguration(
-                cms,
-                entryPoint), false);
+            CmsClientSitemapEntry entry = toClientEntry(
+                getNavBuilder().getNavigationForResource(cms.getSitePath(subSitemapFolder)),
+                OpenCms.getSitemapManager().getElementPropertyConfiguration(cms, entryPoint),
+                false);
             clipboard.getModifications().remove(entry);
             clipboard.getModifications().add(entry);
             setClipboardData(clipboard);
@@ -255,10 +256,9 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     /**
      * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#getChildren(java.lang.String, java.lang.String, int)
      */
-    public List<CmsClientSitemapEntry> getChildren(String entryPointUri, String root, int levels)
-    throws CmsRpcException {
+    public CmsClientSitemapEntry getChildren(String entryPointUri, String root, int levels) throws CmsRpcException {
 
-        List<CmsClientSitemapEntry> children = null;
+        CmsClientSitemapEntry entry = null;
 
         try {
             CmsObject cms = getCmsObject();
@@ -266,13 +266,14 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 cms,
                 entryPointUri);
             CmsJspNavElement navElement = getNavBuilder().getNavigationForResource(root);
+            entry = toClientEntry(navElement, propertyConfig, false);
             if (!isSubSitemap(navElement)) {
-                children = getChildren(root, levels, propertyConfig);
+                entry.setSubEntries(getChildren(root, levels, propertyConfig));
             }
         } catch (Throwable e) {
             error(e);
         }
-        return children;
+        return entry;
     }
 
     /**
@@ -336,10 +337,10 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 CmsResourceTypeFolder.RESOURCE_TYPE_NAME).getTypeId());
             cms.unlockResource(subSitemapFolder);
             CmsSitemapClipboardData clipboard = getClipboardData();
-            CmsClientSitemapEntry entry = toClientEntry(getNavBuilder().getNavigationForResource(
-                cms.getSitePath(subSitemapFolder)), OpenCms.getSitemapManager().getElementPropertyConfiguration(
-                cms,
-                entryPoint), false);
+            CmsClientSitemapEntry entry = toClientEntry(
+                getNavBuilder().getNavigationForResource(cms.getSitePath(subSitemapFolder)),
+                OpenCms.getSitemapManager().getElementPropertyConfiguration(cms, entryPoint),
+                false);
             clipboard.getModifications().remove(entry);
             clipboard.getModifications().add(entry);
             setClipboardData(clipboard);
@@ -541,9 +542,9 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             ensureLock(configFile);
         }
         if (change.isNew()) {
-            createNewEntry(entryPoint, change /*, entryFolders */);
+            createNewEntry(entryPoint, change);
         } else if (change.getEntryId() != null) {
-            modifyEntry(change /*, entryFolders */);
+            modifyEntry(change);
         }
         if (change.hasDetailPageInfos() && (configFile != null)) {
             saveDetailPages(change.getDetailPageInfos(), configFile);
@@ -620,20 +621,14 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
         CmsObject cms = getCmsObject();
         if (change.getParentId() != null) {
-            CmsResource parentFolder = cms.readParentFolder(change.getParentId());
+            CmsResource parentFolder = cms.readResource(change.getParentId());
             String entryFolderPath = CmsStringUtil.joinPaths(cms.getSitePath(parentFolder), change.getName() + "/");
-            CmsResource entryFolder = cms.createResource(entryFolderPath, CmsResourceTypeFolder.getStaticTypeId());
-            cms.writePropertyObjects(
-                entryFolderPath,
-                generateInheritProperties(change, entryFolder /*, entryFolders */));
-            CmsResource copyPage = OpenCms.getSitemapManager().getCopyPage(cms, entryPoint);
-            byte[] content = cms.readFile(copyPage).getContents();
-            CmsResource entryResource = new CmsResource(
+            CmsResource entryFolder = new CmsResource(
                 change.getEntryId(),
                 new CmsUUID(),
-                CmsStringUtil.joinPaths(entryFolder.getRootPath(), "index.html"),
-                copyPage.getTypeId(),
-                false,
+                entryFolderPath,
+                CmsResourceTypeFolder.getStaticTypeId(),
+                true,
                 0,
                 cms.getRequestContext().currentProject().getUuid(),
                 CmsResource.STATE_NEW,
@@ -644,14 +639,24 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 CmsResource.DATE_RELEASED_DEFAULT,
                 CmsResource.DATE_EXPIRED_DEFAULT,
                 1,
-                content.length,
+                0,
                 System.currentTimeMillis(),
                 0);
+
+            cms.createResource(entryFolderPath, entryFolder, null, generateInheritProperties(change, entryFolder));
+            CmsResource copyPage = OpenCms.getSitemapManager().getCopyPage(cms, entryPoint);
+            byte[] content = cms.readFile(copyPage).getContents();
+
             cms.createResource(
                 CmsStringUtil.joinPaths(entryFolderPath, "index.html"),
-                entryResource,
+                copyPage.getTypeId(),
                 content,
                 generateOwnProperties(change));
+            try {
+                cms.unlockResource(entryFolder);
+            } catch (CmsException e) {
+                LOG.debug("Error unlocking new folder", e);
+            }
         }
     }
 
@@ -780,10 +785,9 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         Map<String, String> inheritProperties = CmsProperty.toMap(getCmsObject().readPropertyObjects(root, true));
         Map<String, CmsComputedPropertyValue> clientProperties = new HashMap<String, CmsComputedPropertyValue>();
         for (String propertyName : propertyConfig.keySet()) {
-            clientProperties.put(propertyName, new CmsComputedPropertyValue(null, new CmsSourcedValue(
-                inheritProperties.get(propertyName),
-                "",
-                false)));
+            clientProperties.put(
+                propertyName,
+                new CmsComputedPropertyValue(null, new CmsSourcedValue(inheritProperties.get(propertyName), "", false)));
         }
         return clientProperties;
     }
@@ -1157,12 +1161,15 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         CmsResource entryFolder = null;
         try {
             // lock all resources necessary first to avoid doing changes only half way through
-            if (hasPageChanges(change) || change.isLeafType()) {
+            if (hasPageChanges(change) && !change.isLeafType()) {
+                entryPage = cms.readDefaultFile(change.getEntryId().toString());
+                ensureLock(entryPage);
+            } else if (change.isLeafType()) {
                 entryPage = cms.readResource(change.getEntryId());
                 ensureLock(entryPage);
             }
-            if (hasFolderChanges(change)) {
-                entryFolder = cms.readParentFolder(change.getEntryId());
+            if (hasFolderChanges(change) && !change.isLeafType()) {
+                entryFolder = cms.readResource(change.getEntryId());
                 ensureLock(entryFolder);
             }
             if (change.isLeafType()) {
@@ -1177,7 +1184,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 if (change.hasNewParent() || change.hasChangedName()) {
                     String destinationPath;
                     if (change.hasNewParent()) {
-                        CmsResource futureParent = cms.readParentFolder(change.getParentId());
+                        CmsResource futureParent = cms.readResource(change.getParentId());
                         destinationPath = CmsStringUtil.joinPaths(cms.getSitePath(futureParent), change.getName());
                     } else {
                         destinationPath = CmsStringUtil.joinPaths(
@@ -1225,7 +1232,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     private void removeEntryFromNavigation(CmsSitemapChange change) throws CmsException {
 
         CmsObject cms = getCmsObject();
-        CmsResource entryFolder = cms.readParentFolder(change.getEntryId());
+        CmsResource entryFolder = cms.readResource(change.getEntryId());
         ensureLock(entryFolder);
         List<CmsProperty> properties = new ArrayList<CmsProperty>();
         properties.add(new CmsProperty(
@@ -1305,23 +1312,21 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             if (!isRoot && isSubSitemap(navElement)) {
                 clientEntry.setEntryType(EntryType.subSitemap);
             }
-
+            clientEntry.setId(entryFolder.getStructureId());
         } else if (isRoot) {
-            entryFolder = cms.readResource("/");
             entryPage = navElement.getResource();
+            entryFolder = cms.readParentFolder(entryPage.getStructureId());
             clientEntry.setName("");
             clientProperties = generatePropertyValues(
                 propertyConfig,
                 navElement.getProperties(),
                 CmsProperty.toMap(cms.readPropertyObjects(entryFolder, false)));
+            clientEntry.setId(entryFolder.getStructureId());
         } else {
             entryPage = navElement.getResource();
             clientEntry.setName(entryPage.getName());
             clientEntry.setEntryType(EntryType.leaf);
-        }
-
-        if (entryPage == null) {
-            return null;
+            clientEntry.setId(entryPage.getStructureId());
         }
 
         String path = cms.getSitePath(entryPage);
@@ -1330,9 +1335,9 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             clientEntry.setHasForeignFolderLock(!folderLock.isUnlocked()
                 && !folderLock.isOwnedBy(cms.getRequestContext().currentUser()));
         }
-        clientEntry.setId(entryPage.getStructureId());
+
         if (navElement.isInNavigation()) {
-        clientEntry.setTitle(navElement.getNavText());
+            clientEntry.setTitle(navElement.getNavText());
         } else {
             //TODO: this needs improving
             String title = navElement.getProperty(CmsPropertyDefinition.PROPERTY_TITLE);
@@ -1345,7 +1350,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         navElement.getProperties();
 
         clientEntry.setProperties(clientProperties);
-        clientEntry.setSitePath(CmsResource.getFolderPath(path));
+        clientEntry.setSitePath(entryFolder != null ? cms.getSitePath(entryFolder) : path);
         clientEntry.setLock(generateClientLock(entryPage));
         clientEntry.setInNavigation(isRoot || navElement.isInNavigation());
         return clientEntry;
