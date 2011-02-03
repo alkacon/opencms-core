@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapLoadEvent.java,v $
- * Date   : $Date: 2010/05/27 11:13:52 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/02/03 08:59:03 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import com.google.gwt.event.shared.GwtEvent;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  * 
@@ -57,16 +57,21 @@ public class CmsSitemapLoadEvent extends GwtEvent<I_CmsSitemapLoadHandler> {
     /** The entry's original path, in case if moved or renamed. */
     private String m_originalPath;
 
+    /** Flag to indicate if the entry should be opened. */
+    private boolean m_setOpen;
+
     /**
      * Constructor.<p>
      * 
      * @param entry the entry that loaded its children
      * @param originalPath the entry's original path, in case if moved or renamed
+     * @param setOpen if the entry should be opened
      */
-    public CmsSitemapLoadEvent(CmsClientSitemapEntry entry, String originalPath) {
+    public CmsSitemapLoadEvent(CmsClientSitemapEntry entry, String originalPath, boolean setOpen) {
 
         m_entry = entry;
         m_originalPath = originalPath;
+        m_setOpen = setOpen;
     }
 
     /**
@@ -106,6 +111,16 @@ public class CmsSitemapLoadEvent extends GwtEvent<I_CmsSitemapLoadHandler> {
     public String getOriginalPath() {
 
         return m_originalPath;
+    }
+
+    /**
+     * Returns if the entry should be opened.<p>
+     *
+     * @return <code>true</code> if the entry should be opened
+     */
+    public boolean isSetOpen() {
+
+        return m_setOpen;
     }
 
     /**

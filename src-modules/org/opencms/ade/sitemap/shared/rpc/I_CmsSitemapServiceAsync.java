@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/rpc/Attic/I_CmsSitemapServiceAsync.java,v $
- * Date   : $Date: 2011/02/01 15:25:05 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2011/02/03 08:59:03 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 8.0.0
  * 
@@ -99,7 +99,7 @@ public interface I_CmsSitemapServiceAsync {
      * @param levels the count of child levels to read
      * @param callback the async callback
      */
-    void getChildren(String entryPointUri, String root, int levels, AsyncCallback<List<CmsClientSitemapEntry>> callback);
+    void getChildren(String entryPointUri, String root, int levels, AsyncCallback<CmsClientSitemapEntry> callback);
 
     /**
      * Saves the current sitemap and merges one of its sub-sitemaps into it.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/rpc/Attic/I_CmsSitemapService.java,v $
- * Date   : $Date: 2011/02/01 15:25:05 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2011/02/03 08:59:03 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 8.0.0
  * 
@@ -109,7 +109,7 @@ public interface I_CmsSitemapService extends RemoteService {
      * 
      * @throws CmsRpcException if something goes wrong 
      */
-    List<CmsClientSitemapEntry> getChildren(String entryPointUri, String root, int levels) throws CmsRpcException;
+    CmsClientSitemapEntry getChildren(String entryPointUri, String root, int levels) throws CmsRpcException;
 
     /**
      * Merges one of its sub-sitemaps into it.<p>

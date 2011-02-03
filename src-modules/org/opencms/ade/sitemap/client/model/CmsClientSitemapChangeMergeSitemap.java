@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeMergeSitemap.java,v $
- * Date   : $Date: 2011/01/21 11:09:42 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/02/03 08:59:03 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import org.opencms.ade.sitemap.shared.CmsSitemapMergeInfo;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -94,7 +94,7 @@ public class CmsClientSitemapChangeMergeSitemap implements I_CmsClientSitemapCha
     public void applyToModel(CmsSitemapController controller) {
 
         // apply to sitemap model 
-        m_entry.setSubEntries(m_mergeInfo.getMergedEntries());
+        m_entry.setSubEntries(m_mergeInfo.getMergedEntry().getSubEntries());
         m_internalChange.applyToModel(controller);
     }
 
@@ -104,7 +104,7 @@ public class CmsClientSitemapChangeMergeSitemap implements I_CmsClientSitemapCha
     public void applyToView(CmsSitemapView view) {
 
         m_internalChange.applyToView(view);
-        view.onLoad(new CmsSitemapLoadEvent(m_entry, m_path));
+        view.onLoad(new CmsSitemapLoadEvent(m_entry, m_path, true));
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsClientSitemapEntry.java,v $
- * Date   : $Date: 2011/02/01 15:25:05 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2011/02/03 08:59:03 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  * 
  * @since 8.0.0
  */
@@ -172,6 +172,7 @@ public class CmsClientSitemapEntry implements IsSerializable {
         setEditStatus(clone.getEditStatus());
         setLock(clone.getLock());
         setEntryType(clone.getEntryType());
+        setInNavigation(clone.isInNavigation());
     }
 
     /**

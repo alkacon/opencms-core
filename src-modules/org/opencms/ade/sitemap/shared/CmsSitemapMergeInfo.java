@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsSitemapMergeInfo.java,v $
- * Date   : $Date: 2010/06/08 14:42:16 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/02/03 08:59:03 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,8 +31,6 @@
 
 package org.opencms.ade.sitemap.shared;
 
-import java.util.List;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
@@ -40,14 +38,14 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
 public class CmsSitemapMergeInfo implements IsSerializable {
 
     /** The entries to be merged into the parent sitemap. */
-    private List<CmsClientSitemapEntry> m_mergedEntries;
+    private CmsClientSitemapEntry m_mergedEntry;
 
     /** The timestamp of the last modification to the parent sitemap. */
     private long m_timestamp;
@@ -55,12 +53,12 @@ public class CmsSitemapMergeInfo implements IsSerializable {
     /**
      * Constructor.<p>
      * 
-     * @param mergedEntries the entries which have been merged into the parent sitemap
+     * @param mergedEntry the entries which have been merged into the parent sitemap
      * @param timestamp the modification time of the parent sitemap  
      */
-    public CmsSitemapMergeInfo(List<CmsClientSitemapEntry> mergedEntries, long timestamp) {
+    public CmsSitemapMergeInfo(CmsClientSitemapEntry mergedEntry, long timestamp) {
 
-        m_mergedEntries = mergedEntries;
+        m_mergedEntry = mergedEntry;
         m_timestamp = timestamp;
     }
 
@@ -73,13 +71,13 @@ public class CmsSitemapMergeInfo implements IsSerializable {
     }
 
     /**
-     * Returns the list of entries to be merged back into the parent sitemap.<p>
+     * Returns the entry to be merged back into the parent sitemap.<p>
      * 
-     * @return the list of entries to be merged
+     * @return the entry to be merged
      */
-    public List<CmsClientSitemapEntry> getMergedEntries() {
+    public CmsClientSitemapEntry getMergedEntry() {
 
-        return m_mergedEntries;
+        return m_mergedEntry;
     }
 
     /**

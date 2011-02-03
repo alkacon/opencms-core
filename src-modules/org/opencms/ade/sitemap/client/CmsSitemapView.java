@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapView.java,v $
- * Date   : $Date: 2011/02/01 15:25:05 $
- * Version: $Revision: 1.51 $
+ * Date   : $Date: 2011/02/03 08:59:03 $
+ * Version: $Revision: 1.52 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,9 +55,10 @@ import org.opencms.gwt.client.ui.CmsInfoLoadingListItemWidget;
 import org.opencms.gwt.client.ui.CmsListItemWidget.AdditionalInfoItem;
 import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.CmsToolbarPlaceHolder;
-import org.opencms.gwt.client.ui.tree.A_CmsLazyOpenHandler;
 import org.opencms.gwt.client.ui.tree.CmsLazyTree;
+import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
+import org.opencms.gwt.client.ui.tree.I_CmsLazyOpenHandler;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsResourceStateUtil;
 import org.opencms.gwt.client.util.CmsStyleVariable;
@@ -76,6 +77,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -85,7 +87,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.51 $ 
+ * @version $Revision: 1.52 $ 
  * 
  * @since 8.0.0
  */
@@ -383,7 +385,9 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         }
         target.onFinishLoading();
         target.getTree().setAnimationEnabled(true);
-
+        if (event.isSetOpen()) {
+            target.setOpen(true);
+        }
     }
 
     /**
@@ -439,14 +443,28 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         rootItem.setOpen(true);
 
         // starting rendering
-        m_tree = new CmsLazyTree<CmsSitemapTreeItem>(new A_CmsLazyOpenHandler<CmsSitemapTreeItem>() {
+        m_tree = new CmsLazyTree<CmsSitemapTreeItem>(new I_CmsLazyOpenHandler<CmsSitemapTreeItem>() {
 
             /**
              * @see org.opencms.gwt.client.ui.tree.I_CmsLazyOpenHandler#load(org.opencms.gwt.client.ui.tree.CmsLazyTreeItem)
              */
             public void load(final CmsSitemapTreeItem target) {
 
-                m_controller.getChildren(target.getSitePath());
+                m_controller.getChildren(target.getSitePath(), true);
+            }
+
+            /**
+             * @see org.opencms.gwt.client.ui.tree.I_CmsLazyOpenHandler#onOpen(com.google.gwt.event.logical.shared.OpenEvent)
+             */
+            public void onOpen(OpenEvent<CmsSitemapTreeItem> event) {
+
+                CmsSitemapTreeItem target = event.getTarget();
+                if (target.getLoadState() != CmsLazyTreeItem.LoadState.UNLOADED) {
+                    return;
+                }
+                target.onStartLoading();
+                target.setOpen(false);
+                load(target);
             }
         });
         if (m_controller.isEditable()) {

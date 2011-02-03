@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2011/02/01 15:25:05 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2011/02/03 08:59:03 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -94,7 +94,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.40 $ 
+ * @version $Revision: 1.41 $ 
  * 
  * @since 8.0.0
  */
@@ -209,17 +209,6 @@ public class CmsSitemapController {
     }
 
     /**
-     * Returns the URI of the current sitemap.<p>
-     * 
-     * @return the URI of the current sitemap 
-     */
-    protected String getEntryPoint() {
-
-        return m_data.getRoot().getSitePath();
-
-    }
-
-    /**
      * Adds a new change event handler.<p>
      * 
      * @param handler the handler to add
@@ -275,16 +264,6 @@ public class CmsSitemapController {
         CmsClientSitemapEntry entry = getEntry(sitePath);
         CmsClientSitemapChangeMove move = getChangeForMove(entry, sitePath, entry.getPosition(), true);
         applyChange(move, false);
-    }
-
-    /**
-     * Ask to save the page before leaving, if necessary.<p>
-     * 
-     * @param target the leaving target
-     */
-    public void leaveEditor(final String target) {
-
-        Window.Location.assign(CmsCoreProvider.get().link(target));
     }
 
     /**
@@ -356,6 +335,7 @@ public class CmsSitemapController {
         newEntry.setVfsPath(null);
         newEntry.setPosition(0);
         newEntry.setNew(true);
+        newEntry.setInNavigation(true);
         create(newEntry);
         // leave properties empty
     }
@@ -535,10 +515,11 @@ public class CmsSitemapController {
      * Retrieves the child entries of the given node from the server.<p>
      * 
      * @param sitePath the site path
+     * @param setOpen if the entry should be opened
      */
-    public void getChildren(final String sitePath) {
+    public void getChildren(final String sitePath, final boolean setOpen) {
 
-        CmsRpcAction<List<CmsClientSitemapEntry>> getChildrenAction = new CmsRpcAction<List<CmsClientSitemapEntry>>() {
+        CmsRpcAction<CmsClientSitemapEntry> getChildrenAction = new CmsRpcAction<CmsClientSitemapEntry>() {
 
             /**
             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
@@ -556,7 +537,7 @@ public class CmsSitemapController {
             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
             */
             @Override
-            public void onResponse(List<CmsClientSitemapEntry> result) {
+            public void onResponse(CmsClientSitemapEntry result) {
 
                 CmsClientSitemapEntry target = getEntry(sitePath);
                 if (target == null) {
@@ -566,11 +547,14 @@ public class CmsSitemapController {
                     return;
                 }
 
-                target.setSubEntries(result);
-                m_eventBus.fireEventFromSource(new CmsSitemapLoadEvent(target, sitePath), CmsSitemapController.this);
+                target.setSubEntries(result.getSubEntries());
+                m_eventBus.fireEventFromSource(
+                    new CmsSitemapLoadEvent(target, sitePath, setOpen),
+                    CmsSitemapController.this);
                 stop(false);
+                CmsSitemapTreeItem item = CmsSitemapTreeItem.getItemById(target.getId());
+                item.updateEntry(target);
                 recomputePropertyInheritance();
-
             }
         };
         getChildrenAction.execute();
@@ -790,6 +774,16 @@ public class CmsSitemapController {
     }
 
     /**
+     * Ask to save the page before leaving, if necessary.<p>
+     * 
+     * @param target the leaving target
+     */
+    public void leaveEditor(final String target) {
+
+        Window.Location.assign(CmsCoreProvider.get().link(target));
+    }
+
+    /**
      * Marks all entries as old.<p>
      * 
      * This means editing those entries' titles will not change their URL names.
@@ -806,34 +800,6 @@ public class CmsSitemapController {
             CmsSitemapView.getInstance().getTreeItem(entry.getSitePath()).updateColor(entry);
             entriesToProcess.addAll(entry.getSubEntries());
         }
-    }
-
-    /**
-     * Moves the given sitemap entry with all its descendants to the new position.<p>
-     * 
-     * @param entry the sitemap entry to move
-     * @param toPath the destination path
-     * @param position the new position between its siblings
-     */
-    public void move(CmsClientSitemapEntry entry, String toPath, int position) {
-
-        CmsClientSitemapChangeMove change = getChangeForMove(entry, toPath, position, false);
-        if (change != null) {
-            applyChange(change, false);
-        }
-    }
-
-    /**
-     * Recomputes the inherited properties for the whole loaded portion of the tree.<p>
-     */
-    public void recomputePropertyInheritance() {
-
-        Map<String, CmsXmlContentProperty> propertyConfig = m_data.getProperties();
-        Map<String, CmsComputedPropertyValue> parentProperties = m_data.getParentProperties();
-        CmsPropertyInheritanceState propState = new CmsPropertyInheritanceState(parentProperties, propertyConfig, false);
-        recomputeProperties(m_data.getRoot(), propState);
-        CmsSitemapView.getInstance().getTree().getItem(0).updateSitePath();
-
     }
 
     /**
@@ -870,6 +836,71 @@ public class CmsSitemapController {
         };
         mergeAction.execute();
 
+    }
+
+    /**
+     * Moves the given sitemap entry with all its descendants to the new position.<p>
+     * 
+     * @param entry the sitemap entry to move
+     * @param toPath the destination path
+     * @param position the new position between its siblings
+     */
+    public void move(CmsClientSitemapEntry entry, String toPath, int position) {
+
+        CmsClientSitemapChangeMove change = getChangeForMove(entry, toPath, position, false);
+        if (change != null) {
+            applyChange(change, false);
+        }
+    }
+
+    /**
+     * Recomputes the inherited properties for the whole loaded portion of the tree.<p>
+     */
+    public void recomputePropertyInheritance() {
+
+        Map<String, CmsXmlContentProperty> propertyConfig = m_data.getProperties();
+        Map<String, CmsComputedPropertyValue> parentProperties = m_data.getParentProperties();
+        CmsPropertyInheritanceState propState = new CmsPropertyInheritanceState(parentProperties, propertyConfig, false);
+        recomputeProperties(m_data.getRoot(), propState);
+        CmsSitemapView.getInstance().getTree().getItem(0).updateSitePath();
+
+    }
+
+    /**
+     * Updates the given entry.<p>
+     * 
+     * @param sitePath the entry sitepath
+     */
+    public void updateEntry(String sitePath) {
+
+        getChildren(sitePath, CmsSitemapTreeItem.getItemById(getEntry(sitePath).getId()).isOpen());
+    }
+
+    /**
+     * Adds loaded child entries to the given sub-tree.<p>
+     * 
+     * @param parent the start element of the sub-tree
+     * @param loadedEntries the loaded entries
+     */
+    protected void addChildren(CmsClientSitemapEntry parent, List<CmsClientSitemapEntry> loadedEntries) {
+
+        for (CmsClientSitemapEntry child : parent.getSubEntries()) {
+            if (child.getSubEntries().size() == 0) {
+                Iterator<CmsClientSitemapEntry> it = loadedEntries.iterator();
+                while (it.hasNext()) {
+                    CmsClientSitemapEntry closed = it.next();
+                    if (closed.getId().equals(child.getId())) {
+                        child.setSubEntries(closed.getSubEntries());
+                        for (CmsClientSitemapEntry grandChild : closed.getSubEntries()) {
+                            CmsSitemapView.getInstance().createSitemapItem(grandChild);
+                        }
+                        it.remove();
+                    }
+                }
+            } else {
+                addChildren(child, loadedEntries);
+            }
+        }
     }
 
     /**
@@ -912,33 +943,6 @@ public class CmsSitemapController {
             }
         };
         saveAction.execute();
-    }
-
-    /**
-     * Adds loaded child entries to the given sub-tree.<p>
-     * 
-     * @param parent the start element of the sub-tree
-     * @param loadedEntries the loaded entries
-     */
-    protected void addChildren(CmsClientSitemapEntry parent, List<CmsClientSitemapEntry> loadedEntries) {
-
-        for (CmsClientSitemapEntry child : parent.getSubEntries()) {
-            if (child.getSubEntries().size() == 0) {
-                Iterator<CmsClientSitemapEntry> it = loadedEntries.iterator();
-                while (it.hasNext()) {
-                    CmsClientSitemapEntry closed = it.next();
-                    if (closed.getId().equals(child.getId())) {
-                        child.setSubEntries(closed.getSubEntries());
-                        for (CmsClientSitemapEntry grandChild : closed.getSubEntries()) {
-                            CmsSitemapView.getInstance().createSitemapItem(grandChild);
-                        }
-                        it.remove();
-                    }
-                }
-            } else {
-                addChildren(child, loadedEntries);
-            }
-        }
     }
 
     /**
@@ -1004,7 +1008,6 @@ public class CmsSitemapController {
         CmsClientSitemapEntry newEntry = new CmsClientSitemapEntry(entry);
         if (changedTitle) {
             newEntry.setTitle(title);
-            newEntry.setInNavigation(true);
         }
         newEntry.setEdited();
 
@@ -1057,6 +1060,17 @@ public class CmsSitemapController {
                 position);
         }
         return null;
+    }
+
+    /**
+     * Returns the URI of the current sitemap.<p>
+     * 
+     * @return the URI of the current sitemap 
+     */
+    protected String getEntryPoint() {
+
+        return m_data.getRoot().getSitePath();
+
     }
 
     /**
