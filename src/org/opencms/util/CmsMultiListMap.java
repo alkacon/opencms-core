@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Attic/CmsMultiListMap.java,v $
- * Date   : $Date: 2011/02/02 07:38:40 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/02/03 10:09:06 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import java.util.Set;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -106,23 +106,6 @@ public class CmsMultiListMap<A, B> implements Map<A, List<B>>, Serializable {
     }
 
     /**
-    * @see java.lang.Object#clone()
-     */
-    @Override
-    public CmsMultiListMap<A, B> clone() {
-
-        Map<A, List<B>> map = new HashMap<A, List<B>>();
-        for (Map.Entry<A, List<B>> entry : m_impl.entrySet()) {
-            List<B> list = new ArrayList<B>();
-            for (B b : entry.getValue()) {
-                list.add(b);
-            }
-            map.put(entry.getKey(), list);
-        }
-        return new CmsMultiListMap<A, B>(map);
-    }
-
-    /**
      * @see java.util.Map#containsKey(java.lang.Object)
      */
     public boolean containsKey(Object key) {
@@ -136,6 +119,24 @@ public class CmsMultiListMap<A, B> implements Map<A, List<B>>, Serializable {
     public boolean containsValue(Object value) {
 
         return m_impl.containsValue(value);
+    }
+
+    /**
+     * Copies the multi-map.<p> 
+     * 
+     * @return a fresh copy of the map
+     */
+    public CmsMultiListMap<A, B> copy() {
+
+        Map<A, List<B>> map = new HashMap<A, List<B>>();
+        for (Map.Entry<A, List<B>> entry : m_impl.entrySet()) {
+            List<B> list = new ArrayList<B>();
+            for (B b : entry.getValue()) {
+                list.add(b);
+            }
+            map.put(entry.getKey(), list);
+        }
+        return new CmsMultiListMap<A, B>(map);
     }
 
     /**
