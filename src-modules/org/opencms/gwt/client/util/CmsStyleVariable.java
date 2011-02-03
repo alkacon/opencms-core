@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsStyleVariable.java,v $
- * Date   : $Date: 2010/10/29 12:16:43 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/02/03 09:50:13 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import com.google.gwt.user.client.ui.UIObject;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  * 
@@ -62,6 +62,16 @@ public class CmsStyleVariable {
     public CmsStyleVariable(UIObject... uis) {
 
         m_uis = uis;
+    }
+
+    /**
+     * Returns the current style value.<p>
+     * 
+     * @return the current style value, or <code>null</code> if non is set
+     */
+    public String getValue() {
+
+        return m_style;
     }
 
     /**

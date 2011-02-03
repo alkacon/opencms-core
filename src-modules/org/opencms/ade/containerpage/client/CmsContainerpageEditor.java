@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageEditor.java,v $
- * Date   : $Date: 2011/01/18 07:43:34 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2011/02/03 09:50:13 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,12 +52,10 @@ import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsToolbar;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
-import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsFadeAnimation;
+import org.opencms.gwt.client.util.CmsStyleVariable;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -70,7 +68,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  * 
  * @since 8.0.0
  */
@@ -120,6 +118,9 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
 
     /** The tool-bar. */
     private CmsToolbar m_toolbar;
+
+    /** Style to toggle toolbar visibility. */
+    protected CmsStyleVariable m_toolbarVisibility;
 
     /** The Z index manager. */
     private static final I_CmsContainerZIndexManager Z_INDEX_MANAGER = GWT.create(I_CmsContainerZIndexManager.class);
@@ -250,7 +251,8 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
 
         CmsPushButton toggleToolbarButton = new CmsPushButton();
         toggleToolbarButton.setImageClass(I_CmsImageBundle.INSTANCE.style().opencmsLogo());
-        RootPanel.get().add(toggleToolbarButton);
+        RootPanel root = RootPanel.get();
+        root.add(toggleToolbarButton);
         toggleToolbarButton.addClickHandler(new ClickHandler() {
 
             /**
@@ -324,13 +326,12 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         m_toolbar.addRight(m_reset);
 
         containerpageHandler.enableSaveReset(false);
-
-        RootPanel.get().add(m_toolbar);
+        m_toolbarVisibility = new CmsStyleVariable(root);
+        m_toolbarVisibility.setValue(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarHide());
+        root.add(m_toolbar);
         if (controller.getData().isToolbarVisible()) {
             showToolbar(true);
             containerpageHandler.activateSelection();
-        } else {
-            showToolbar(false);
         }
 
         CmsContainerpageUtil containerpageUtil = new CmsContainerpageUtil(
@@ -352,10 +353,8 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
      */
     public void showToolbar(boolean show) {
 
-        final Element body = Document.get().getBody();
         if (show) {
-            body.addClassName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarShow());
-            body.removeClassName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarHide());
+            m_toolbarVisibility.setValue(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarShow());
             CmsFadeAnimation.fadeIn(m_toolbar.getElement(), null, 300);
             // body.getStyle().setMarginTop(m_bodyMarginTop + 36, Unit.PX);
         } else {
@@ -363,9 +362,7 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
 
                 public void execute() {
 
-                    body.removeClassName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarShow());
-                    body.addClassName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarHide());
-
+                    m_toolbarVisibility.setValue(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarHide());
                 }
             },
                 300);
@@ -379,11 +376,9 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
      * 
      * @return <code>true</code> if the tool-bar is visible
      */
-    public boolean toolbarVisible() {
+    public boolean isToolbarVisible() {
 
-        return !CmsDomUtil.hasClass(
-            org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarHide(),
-            Document.get().getBody());
+        return !org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarHide().equals(
+            m_toolbarVisibility.getValue());
     }
-
 }
