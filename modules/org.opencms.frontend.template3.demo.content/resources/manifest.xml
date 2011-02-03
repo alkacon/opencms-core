@@ -28,7 +28,6 @@
 		<exportpoints/>
 		<resources>
 			<resource uri="/demo_t3/"/>
-			<resource uri="/index.html"/>
 			<resource uri="/system/categories/species/"/>
 		</resources>
 		<parameters/>
@@ -97,31 +96,20 @@
 			<source>demo_t3/index.html</source>
 			<destination>demo_t3/index.html</destination>
 			<type>containerpage</type>
-			<uuidstructure>d1c9f2ae-1c96-11e0-8a74-811251bcfe15</uuidstructure>
-			<uuidresource>d1c9f2af-1c96-11e0-8a74-811251bcfe15</uuidresource>
+			<uuidstructure>3f3b9451-9d2a-11de-b26f-dd9f629b113b</uuidstructure>
+			<uuidresource>3f3b9452-9d2a-11de-b26f-dd9f629b113b</uuidresource>
 			<datelastmodified>Tue, 11 Jan 2011 13:52:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 10 Jan 2011 08:51:31 GMT</datecreated>
+			<datecreated>Wed, 09 Sep 2009 10:19:24 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Rose]]></value>
+					<value><![CDATA[Introduction]]></value>
 				</property>
 			</properties>
-			<relations>
-				<relation>
-					<id>47448abc-dbb1-11dc-997c-9f7a6a6ce285</id>
-					<path>/system/categories/species/</path>
-					<type>CATEGORY</type>
-				</relation>
-				<relation>
-					<id>39116abc-dbb1-11dc-997c-9f7a6a6ce285</id>
-					<path>/system/categories/species/composite-plants/</path>
-					<type>CATEGORY</type>
-				</relation>
-			</relations>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -4962,26 +4950,6 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Rosaceous Plants]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>index.html</source>
-			<destination>index.html</destination>
-			<type>containerpage</type>
-			<uuidstructure>3f3b9451-9d2a-11de-b26f-dd9f629b113b</uuidstructure>
-			<uuidresource>3f3b9452-9d2a-11de-b26f-dd9f629b113b</uuidresource>
-			<datelastmodified>Tue, 11 Jan 2011 13:52:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 09 Sep 2009 10:19:24 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Introduction]]></value>
 				</property>
 			</properties>
 			<relations/>
