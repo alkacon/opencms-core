@@ -1,0 +1,9 @@
+.details {
+	margin: 15px 0px 5px 0px;
+}
+
+.details > div{
+	width: 500px;
+	overflow: auto;
+	white-space: nowrap;
+}

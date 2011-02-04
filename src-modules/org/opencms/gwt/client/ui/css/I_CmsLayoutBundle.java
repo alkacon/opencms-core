@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2011/02/01 14:51:52 $
- * Version: $Revision: 1.56 $
+ * Date   : $Date: 2011/02/04 08:36:01 $
+ * Version: $Revision: 1.57 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import com.google.gwt.resources.client.CssResource.Shared;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.56 $
+ * @version $Revision: 1.57 $
  * 
  * @since 8.0.0
  */
@@ -371,6 +371,17 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String dragStarted();
+    }
+
+    /** The error dialog CSS classes. */
+    public interface I_CmsErrorDialogCss extends CssResource {
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String details();
     }
 
     /** The context menu CSS classes. */
@@ -1369,6 +1380,14 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      */
     @Source("dragdrop.css")
     I_CmsDragCss dragdropCss();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the error dialog CSS
+     */
+    @Source("errorDialog.css")
+    I_CmsErrorDialogCss errorDialogCss();
 
     /**
      * Access method.<p>
