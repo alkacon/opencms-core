@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChacc.java,v $
- * Date   : $Date: 2010/08/20 13:59:39 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2011/02/04 08:19:15 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
+import org.opencms.file.history.CmsHistoryPrincipal;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -81,7 +82,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.38 $ 
+ * @version $Revision: 1.39 $ 
  * 
  * @since 6.0.0 
  */
@@ -638,7 +639,18 @@ public class CmsChacc extends CmsDialog {
                 String image;
                 if (entry.getKey() instanceof I_CmsPrincipal) {
                     I_CmsPrincipal principal = (I_CmsPrincipal)entry.getKey();
-                    if (principal instanceof CmsGroup) {
+                    if (principal instanceof CmsHistoryPrincipal) {
+                        if (principal.isGroup()) {
+                            name = ((CmsHistoryPrincipal)principal).getDescription()
+                                + " ("
+                                + principal.getSimpleName()
+                                + ")";
+                            image = "commons/group.png";
+                        } else {
+                            name = ((CmsHistoryPrincipal)principal).getName();
+                            image = "commons/user.png";
+                        }
+                    } else if (principal instanceof CmsGroup) {
                         name = ((CmsGroup)principal).getDescription(getLocale())
                             + " ("
                             + principal.getSimpleName()
@@ -1419,7 +1431,20 @@ public class CmsChacc extends CmsDialog {
         String name;
         String ou = null;
         int flags = 0;
-        if ((principal != null) && principal.isGroup()) {
+        if ((principal != null) && (principal instanceof CmsHistoryPrincipal)) {
+            // there is a history principal entry, handle it
+            if (principal.isGroup()) {
+                name = key(org.opencms.security.Messages.GUI_ORGUNIT_DISPLAY_NAME_2, new Object[] {
+                    ((CmsHistoryPrincipal)principal).getDescription(),
+                    principal.getSimpleName()});
+                ou = CmsOrganizationalUnit.getParentFqn(id);
+                flags = CmsAccessControlEntry.ACCESS_FLAGS_GROUP;
+            } else {
+                name = ((CmsHistoryPrincipal)principal).getName();
+                ou = CmsOrganizationalUnit.getParentFqn(id);
+                flags = CmsAccessControlEntry.ACCESS_FLAGS_USER;
+            }
+        } else if ((principal != null) && principal.isGroup()) {
             name = key(org.opencms.security.Messages.GUI_ORGUNIT_DISPLAY_NAME_2, new Object[] {
                 ((CmsGroup)principal).getDescription(getLocale()),
                 principal.getSimpleName()});
