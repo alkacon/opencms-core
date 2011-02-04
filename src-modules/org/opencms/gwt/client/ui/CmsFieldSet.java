@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsFieldSet.java,v $
- * Date   : $Date: 2010/12/21 10:23:32 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/02/04 08:35:37 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,7 +35,9 @@ import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsLabel;
 import org.opencms.gwt.client.util.CmsSlideAnimation;
+import org.opencms.gwt.client.util.CmsStyleVariable;
 
+import com.google.gwt.animation.client.Animation;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -50,7 +52,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * A panel that behaves like a HTML fieldset.<p>
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @author Ruediger Kurz
  * 
@@ -66,6 +68,9 @@ public class CmsFieldSet extends Composite {
     /** The ui-binder instance. */
     private static I_CmsFieldSetUiBinder uiBinder = GWT.create(I_CmsFieldSetUiBinder.class);
 
+    /** Signals whether the fieldset is collapsed or expanded. */
+    protected boolean m_collapsed;
+
     /** The content of the fieldset. */
     @UiField
     protected FlowPanel m_content;
@@ -78,9 +83,6 @@ public class CmsFieldSet extends Composite {
     @UiField
     protected Image m_image;
 
-    /** Signals whether the fieldset is collapsed or expanded. */
-    protected boolean m_collapsed;
-
     /** The legend of the fieldset. */
     @UiField
     protected CmsLabel m_legend;
@@ -88,6 +90,11 @@ public class CmsFieldSet extends Composite {
     /** The legend of the fieldset. */
     @UiField
     protected FlowPanel m_wrapper;
+
+    private Animation m_animation;
+
+    /** The fieldset visibility style. */
+    private CmsStyleVariable m_visibilityStyle;
 
     /**
      * Default constructor.<p>
@@ -99,9 +106,8 @@ public class CmsFieldSet extends Composite {
     public CmsFieldSet() {
 
         initWidget(uiBinder.createAndBindUi(this));
-
-        m_fieldset.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
-        m_fieldset.addStyleName(I_CmsLayoutBundle.INSTANCE.fieldsetCss().fieldsetVisible());
+        m_visibilityStyle = new CmsStyleVariable(m_fieldset);
+        setCollapsed(false);
     }
 
     /**
@@ -125,6 +131,27 @@ public class CmsFieldSet extends Composite {
     }
 
     /**
+     * Sets the fieldset collapsed, hiding the content.<p>
+     * 
+     * @param collapsed <code>true</code> to collapse the fieldset
+     */
+    public void setCollapsed(boolean collapsed) {
+
+        m_collapsed = collapsed;
+        if (!m_collapsed) {
+            // show content
+            m_visibilityStyle.setValue(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll()
+                + " "
+                + I_CmsLayoutBundle.INSTANCE.fieldsetCss().fieldsetVisible());
+            m_image.setResource(I_CmsImageBundle.INSTANCE.arrowBottom());
+        } else {
+            // hide content
+            m_visibilityStyle.setValue(I_CmsLayoutBundle.INSTANCE.fieldsetCss().fieldsetInvisible());
+            m_image.setResource(I_CmsImageBundle.INSTANCE.arrowRight());
+        }
+    }
+
+    /**
      * Sets the text for the legend of this field set.<p>
      * 
      * @param legendText the legend text
@@ -142,41 +169,38 @@ public class CmsFieldSet extends Composite {
      * @param e the event
      */
     @UiHandler("m_image")
-    protected void addClickHandler(ClickEvent e) {
+    protected void handleClick(ClickEvent e) {
 
+        if (m_animation != null) {
+            m_animation.cancel();
+        }
         if (m_collapsed) {
 
             // slide in
-            m_fieldset.removeStyleName(I_CmsLayoutBundle.INSTANCE.fieldsetCss().fieldsetInvisible());
-            m_fieldset.addStyleName(I_CmsLayoutBundle.INSTANCE.fieldsetCss().fieldsetVisible());
-            m_fieldset.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
+            setCollapsed(!m_collapsed);
 
-            CmsSlideAnimation.slideIn(m_content.getElement(), new Command() {
+            m_animation = CmsSlideAnimation.slideIn(m_content.getElement(), new Command() {
 
                 /**
                  * @see com.google.gwt.user.client.Command#execute()
                  */
                 public void execute() {
 
-                    m_image.setResource(I_CmsImageBundle.INSTANCE.arrowBottom());
-                    m_collapsed = false;
+                    // nothing to do
                 }
             }, 300);
         } else {
 
             // slide out
-            CmsSlideAnimation.slideOut(m_content.getElement(), new Command() {
+            m_animation = CmsSlideAnimation.slideOut(m_content.getElement(), new Command() {
 
                 /**
                  * @see com.google.gwt.user.client.Command#execute()
                  */
                 public void execute() {
 
-                    m_fieldset.removeStyleName(I_CmsLayoutBundle.INSTANCE.fieldsetCss().fieldsetVisible());
-                    m_fieldset.removeStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
-                    m_fieldset.addStyleName(I_CmsLayoutBundle.INSTANCE.fieldsetCss().fieldsetInvisible());
-                    m_image.setResource(I_CmsImageBundle.INSTANCE.arrowRight());
-                    m_collapsed = true;
+                    setCollapsed(!m_collapsed);
+
                 }
             }, 300);
         }
