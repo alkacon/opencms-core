@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsClientStringUtil.java,v $
- * Date   : $Date: 2010/05/10 06:28:15 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/02/07 14:54:49 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,12 +31,13 @@
 
 package org.opencms.gwt.client.util;
 
+
 /**
  * Additional string related helper methods.<p>
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  * 
@@ -81,8 +82,21 @@ public final class CmsClientStringUtil {
      */
     public static String getStackTrace(Throwable t, String separator) {
 
+        return getStackTraceAsString(t.getStackTrace(), separator);
+    }
+
+    /**
+     * Returns the stack trace as a string.<p>
+     * 
+     * @param trace the stack trace
+     * @param separator the separator between the lines of the stack trace 
+     * 
+     * @return a string representing a stack trace 
+     */
+    public static String getStackTraceAsString(StackTraceElement[] trace, String separator) {
+
         String result = "";
-        for (StackTraceElement elem : t.getStackTrace()) {
+        for (StackTraceElement elem : trace) {
             result += elem.toString();
             result += separator;
         }
