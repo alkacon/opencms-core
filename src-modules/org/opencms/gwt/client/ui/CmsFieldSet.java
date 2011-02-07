@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsFieldSet.java,v $
- * Date   : $Date: 2011/02/04 08:35:37 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/02/07 14:56:03 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * A panel that behaves like a HTML fieldset.<p>
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @author Ruediger Kurz
  * 
@@ -118,6 +118,16 @@ public class CmsFieldSet extends Composite {
     public void addContent(Widget w) {
 
         m_content.add(w);
+    }
+
+    /**
+     * Returns the content panel.<p>
+     * 
+     * @return the content panel
+     */
+    public FlowPanel getContentPanel() {
+
+        return m_content;
     }
 
     /**
