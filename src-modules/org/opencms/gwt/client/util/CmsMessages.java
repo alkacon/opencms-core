@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsMessages.java,v $
- * Date   : $Date: 2010/05/06 13:11:19 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/02/07 14:54:07 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import com.google.gwt.i18n.client.Dictionary;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0
  * 
@@ -306,41 +306,41 @@ public class CmsMessages {
             for (int i = 0; i < args.length; i++) {
                 if (args[i] instanceof Date) {
                     Date date = (Date)args[i];
-                    result = result.replace(getRegEx(i), CmsDateTimeUtil.getDateTime(
-                        date,
-                        CmsDateTimeUtil.Format.MEDIUM));
-                    result = result.replace(getRegEx(i, "time"), CmsDateTimeUtil.getTime(
-                        date,
-                        CmsDateTimeUtil.Format.MEDIUM));
-                    result = result.replace(getRegEx(i, "time", "short"), CmsDateTimeUtil.getTime(
-                        date,
-                        CmsDateTimeUtil.Format.SHORT));
-                    result = result.replace(getRegEx(i, "time", "medium"), CmsDateTimeUtil.getTime(
-                        date,
-                        CmsDateTimeUtil.Format.MEDIUM));
-                    result = result.replace(getRegEx(i, "time", "long"), CmsDateTimeUtil.getTime(
-                        date,
-                        CmsDateTimeUtil.Format.LONG));
-                    result = result.replace(getRegEx(i, "time", "full"), CmsDateTimeUtil.getTime(
-                        date,
-                        CmsDateTimeUtil.Format.FULL));
-                    result = result.replace(getRegEx(i, "date"), CmsDateTimeUtil.getDate(
-                        date,
-                        CmsDateTimeUtil.Format.MEDIUM));
-                    result = result.replace(getRegEx(i, "date", "short"), CmsDateTimeUtil.getDate(
-                        date,
-                        CmsDateTimeUtil.Format.SHORT));
-                    result = result.replace(getRegEx(i, "date", "medium"), CmsDateTimeUtil.getDate(
-                        date,
-                        CmsDateTimeUtil.Format.MEDIUM));
-                    result = result.replace(getRegEx(i, "date", "long"), CmsDateTimeUtil.getDate(
-                        date,
-                        CmsDateTimeUtil.Format.LONG));
-                    result = result.replace(getRegEx(i, "date", "full"), CmsDateTimeUtil.getDate(
-                        date,
-                        CmsDateTimeUtil.Format.FULL));
+                    result = result.replace(
+                        getRegEx(i),
+                        CmsDateTimeUtil.getDateTime(date, CmsDateTimeUtil.Format.MEDIUM));
+                    result = result.replace(
+                        getRegEx(i, "time"),
+                        CmsDateTimeUtil.getTime(date, CmsDateTimeUtil.Format.MEDIUM));
+                    result = result.replace(
+                        getRegEx(i, "time", "short"),
+                        CmsDateTimeUtil.getTime(date, CmsDateTimeUtil.Format.SHORT));
+                    result = result.replace(
+                        getRegEx(i, "time", "medium"),
+                        CmsDateTimeUtil.getTime(date, CmsDateTimeUtil.Format.MEDIUM));
+                    result = result.replace(
+                        getRegEx(i, "time", "long"),
+                        CmsDateTimeUtil.getTime(date, CmsDateTimeUtil.Format.LONG));
+                    result = result.replace(
+                        getRegEx(i, "time", "full"),
+                        CmsDateTimeUtil.getTime(date, CmsDateTimeUtil.Format.FULL));
+                    result = result.replace(
+                        getRegEx(i, "date"),
+                        CmsDateTimeUtil.getDate(date, CmsDateTimeUtil.Format.MEDIUM));
+                    result = result.replace(
+                        getRegEx(i, "date", "short"),
+                        CmsDateTimeUtil.getDate(date, CmsDateTimeUtil.Format.SHORT));
+                    result = result.replace(
+                        getRegEx(i, "date", "medium"),
+                        CmsDateTimeUtil.getDate(date, CmsDateTimeUtil.Format.MEDIUM));
+                    result = result.replace(
+                        getRegEx(i, "date", "long"),
+                        CmsDateTimeUtil.getDate(date, CmsDateTimeUtil.Format.LONG));
+                    result = result.replace(
+                        getRegEx(i, "date", "full"),
+                        CmsDateTimeUtil.getDate(date, CmsDateTimeUtil.Format.FULL));
                 } else {
-                    result = result.replace(getRegEx(i), args[i].toString());
+                    result = result.replace(getRegEx(i), String.valueOf(args[i]));
                 }
             }
         }
