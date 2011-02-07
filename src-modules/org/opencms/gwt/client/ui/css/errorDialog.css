@@ -1,4 +1,5 @@
 .details {
+	clear: both;
 	margin: 15px 0px 5px 0px;
 }
 
@@ -6,4 +7,13 @@
 	width: 500px;
 	overflow: auto;
 	white-space: nowrap;
+}
+@sprite .errorIcon{
+	gwt-image: "gwtImages.errorIcon";
+	margin: 0px 0px 0px 3px;
+	display: block;
+	float: left;
+}
+.message{
+	margin: 5px 0px 5px 45px;
 }

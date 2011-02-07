@@ -26,6 +26,13 @@
 	padding: 2px 0px;
 }
 
+.clearAll{
+	height: 0px;
+	clear: both;
+	margin: 0px;
+	border: none;
+}
+
 @sprite div.disablingOverlay{
 	gwt-image: 'otherImages.placeholderOverlayTrans';
 	display: block;

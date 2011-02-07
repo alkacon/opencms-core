@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsErrorDialog.java,v $
- * Date   : $Date: 2011/02/04 08:36:01 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/02/07 14:56:38 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,10 +33,10 @@ package org.opencms.gwt.client.ui;
 
 import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
-import org.opencms.gwt.client.util.CmsClientStringUtil;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Panel;
@@ -46,7 +46,7 @@ import com.google.gwt.user.client.ui.Panel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -55,12 +55,17 @@ public class CmsErrorDialog extends CmsPopupDialog {
     /** The 'close' button. */
     private CmsPushButton m_closeButton;
 
+    private CmsFieldSet m_detailsFieldset;
+
+    private HTML m_messageHtml;
+
     /**
      * Constructor.<p>
      * 
-     * @param t the error to notify to the user
+     * @param message the error message
+     * @param details the error details
      */
-    public CmsErrorDialog(Throwable t) {
+    public CmsErrorDialog(String message, String details) {
 
         super();
         setAutoHideEnabled(false);
@@ -75,6 +80,7 @@ public class CmsErrorDialog extends CmsPopupDialog {
             /**
              * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
              */
+            @Override
             public void onClick(ClickEvent event) {
 
                 onClose();
@@ -83,15 +89,33 @@ public class CmsErrorDialog extends CmsPopupDialog {
         addButton(m_closeButton);
 
         Panel content = new FlowPanel();
-        content.add(new HTML(
-            Messages.get().key(Messages.GUI_TICKET_MESSAGE_2, CmsClientStringUtil.getMessage(t), "xxx")));
-        CmsFieldSet fieldset = new CmsFieldSet();
-        fieldset.addStyleName(I_CmsLayoutBundle.INSTANCE.errorDialogCss().details());
-        fieldset.setLegend("Details");
-        fieldset.addContent(new HTML(CmsClientStringUtil.getStackTrace(t, "<br />\n")));
-        fieldset.setCollapsed(true);
-        content.add(fieldset);
+        m_messageHtml = createMessageHtml(message);
+        content.add(m_messageHtml);
+        m_detailsFieldset = createDetailsFieldSet(details);
+        content.add(m_detailsFieldset);
         setContent(content);
+        this.show();
+        this.center();
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.CmsPopup#center()
+     */
+    @Override
+    public void center() {
+
+        super.center();
+        onShow();
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.CmsPopup#show()
+     */
+    @Override
+    public void show() {
+
+        super.show();
+        onShow();
     }
 
     /**
@@ -102,4 +126,48 @@ public class CmsErrorDialog extends CmsPopupDialog {
         m_closeButton.setEnabled(false);
         hide();
     }
+
+    /**
+     * Creates a field-set containing the error details.<p>
+     * 
+     * @param details the error details
+     * 
+     * @return the field-set widget
+     */
+    private CmsFieldSet createDetailsFieldSet(String details) {
+
+        CmsFieldSet fieldset = new CmsFieldSet();
+        fieldset.addStyleName(I_CmsLayoutBundle.INSTANCE.errorDialogCss().details());
+        fieldset.setLegend(Messages.get().key(Messages.GUI_DETAILS_0));
+        fieldset.addContent(new HTML(details));
+        fieldset.setCollapsed(true);
+        return fieldset;
+    }
+
+    /**
+     * Creates the message HTML widget containing error icon and message.<p>
+     * 
+     * @param message the message
+     * 
+     * @return the HTML widget
+     */
+    private HTML createMessageHtml(String message) {
+
+        StringBuffer buffer = new StringBuffer(64);
+        buffer.append("<div class=\"").append(I_CmsLayoutBundle.INSTANCE.errorDialogCss().errorIcon()).append(
+            "\"></div><p class=\"").append(I_CmsLayoutBundle.INSTANCE.errorDialogCss().message()).append("\">").append(
+            message).append("</p><hr class=\"").append(I_CmsLayoutBundle.INSTANCE.generalCss().clearAll()).append(
+            "\" />");
+        return new HTML(buffer.toString());
+    }
+
+    /**
+     * Checks the available space and sets max-height to the details field-set.
+     */
+    private void onShow() {
+
+        int maxHeight = Window.getClientHeight() - 180 - m_messageHtml.getOffsetHeight();
+        m_detailsFieldset.getContentPanel().getElement().getStyle().setPropertyPx("maxHeight", maxHeight);
+    }
+
 }
