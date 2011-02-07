@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/rpc/Attic/CmsRpcAction.java,v $
- * Date   : $Date: 2010/12/17 08:45:30 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2011/02/07 14:57:01 $
+ * Version: $Revision: 1.17 $
  * 
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,10 +31,10 @@
 
 package org.opencms.gwt.client.rpc;
 
+import org.opencms.gwt.CmsRpcException;
 import org.opencms.gwt.client.Messages;
-import org.opencms.gwt.client.ui.CmsConfirmDialog;
+import org.opencms.gwt.client.ui.CmsErrorDialog;
 import org.opencms.gwt.client.ui.CmsNotification;
-import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
 import org.opencms.gwt.client.util.CmsClientStringUtil;
 
 import com.google.gwt.event.shared.UmbrellaException;
@@ -48,7 +48,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 8.0
  */
@@ -90,15 +90,22 @@ public abstract class CmsRpcAction<T> implements AsyncCallback<T> {
      */
     public void onFailure(Throwable t) {
 
+        String message;
+        StackTraceElement[] trace;
+        if (t instanceof CmsRpcException) {
+            CmsRpcException ex = (CmsRpcException)t;
+            message = ex.getOriginalMessage();
+            trace = ex.getOriginalStackTrace();
+        } else {
+            message = CmsClientStringUtil.getMessage(t);
+            trace = t.getStackTrace();
+        }
         // send the ticket to the server
-        String message = CmsClientStringUtil.getMessage(t);
-        String ticket = CmsLog.log(message + "\n" + CmsClientStringUtil.getStackTrace(t, "\n"));
+        String ticket = CmsLog.log(message + "\n" + CmsClientStringUtil.getStackTraceAsString(trace, "\n"));
 
-        // remove the nice overlay
+        // remove the overlay
         stop(false);
-
-        // give feedback
-        provideFeedback(ticket, message);
+        provideFeedback(ticket, t);
     }
 
     /**
@@ -187,33 +194,40 @@ public abstract class CmsRpcAction<T> implements AsyncCallback<T> {
      * Provides some feedback to the user in case of failure.<p>
      * 
      * @param ticket the generated ticket
-     * @param message the error message
+     * @param throwable the thrown error
      */
-    protected void provideFeedback(String ticket, String message) {
+    protected void provideFeedback(String ticket, Throwable throwable) {
 
-        String title = Messages.get().key(Messages.GUI_ERROR_0);
-        String text = Messages.get().key(Messages.GUI_TICKET_MESSAGE_2, message, ticket);
-
-        CmsConfirmDialog dialog = new CmsConfirmDialog(title, text);
-        dialog.center();
-        dialog.setHandler(new I_CmsConfirmDialogHandler() {
-
-            /**
-             * @see org.opencms.gwt.client.ui.I_CmsCloseDialogHandler#onClose()
-             */
-            public void onClose() {
-
-                // do nothing
+        String message;
+        String cause = null;
+        String className;
+        StackTraceElement[] trace;
+        if (throwable instanceof CmsRpcException) {
+            CmsRpcException ex = (CmsRpcException)throwable;
+            message = ex.getOriginalMessage();
+            cause = ex.getOriginalCauseMessage();
+            className = ex.getOriginalClassName();
+            trace = ex.getOriginalStackTrace();
+        } else {
+            message = CmsClientStringUtil.getMessage(throwable);
+            if (throwable.getCause() != null) {
+                cause = CmsClientStringUtil.getMessage(throwable.getCause());
             }
+            className = throwable.getClass().getName();
+            trace = throwable.getStackTrace();
+        }
 
-            /**
-             * @see org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler#onOk()
-             */
-            public void onOk() {
+        String lineBreak = "<br />\n";
+        String errorMessage = message == null
+        ? className + ": " + Messages.get().key(Messages.GUI_NO_DESCIPTION_0)
+        : message;
+        if (cause != null) {
+            errorMessage += lineBreak + Messages.get().key(Messages.GUI_REASON_0) + ":" + cause;
+        }
 
-                execute();
-            }
-        });
+        String details = Messages.get().key(Messages.GUI_TICKET_MESSAGE_3, ticket, className, message)
+            + CmsClientStringUtil.getStackTraceAsString(trace, lineBreak);
+        new CmsErrorDialog(errorMessage, details).center();
     }
 
     /**

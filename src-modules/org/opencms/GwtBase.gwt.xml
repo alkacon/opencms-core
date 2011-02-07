@@ -27,6 +27,9 @@
         </any>
     </replace-with>
     
+    <source path="gwt">
+    	<include name="CmsRpcException.java" />
+    </source>
 	<source path="gwt/client" />
 	<source path="gwt/shared" />
 	<super-source path="gwt/client/super_src/" />

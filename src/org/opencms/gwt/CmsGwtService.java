@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/gwt/CmsGwtService.java,v $
- * Date   : $Date: 2010/10/20 13:21:10 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2011/02/07 14:53:33 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import com.google.gwt.user.server.rpc.SerializationPolicy;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 8.0.0
  */
@@ -107,7 +107,7 @@ public class CmsGwtService extends RemoteServiceServlet {
     public void error(Throwable t) throws CmsRpcException {
 
         logError(t);
-        throw new CmsRpcException(t.getLocalizedMessage());
+        throw new CmsRpcException(t);
     }
 
     /**
