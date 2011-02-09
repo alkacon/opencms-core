@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsErrorDialog.java,v $
- * Date   : $Date: 2011/02/07 14:56:38 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/02/09 13:20:50 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import com.google.gwt.user.client.ui.Panel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -91,8 +91,10 @@ public class CmsErrorDialog extends CmsPopupDialog {
         Panel content = new FlowPanel();
         m_messageHtml = createMessageHtml(message);
         content.add(m_messageHtml);
-        m_detailsFieldset = createDetailsFieldSet(details);
-        content.add(m_detailsFieldset);
+        if (details != null) {
+            m_detailsFieldset = createDetailsFieldSet(details);
+            content.add(m_detailsFieldset);
+        }
         setContent(content);
         this.show();
         this.center();
@@ -167,7 +169,9 @@ public class CmsErrorDialog extends CmsPopupDialog {
     private void onShow() {
 
         int maxHeight = Window.getClientHeight() - 180 - m_messageHtml.getOffsetHeight();
-        m_detailsFieldset.getContentPanel().getElement().getStyle().setPropertyPx("maxHeight", maxHeight);
+        if (m_detailsFieldset != null) {
+            m_detailsFieldset.getContentPanel().getElement().getStyle().setPropertyPx("maxHeight", maxHeight);
+        }
     }
 
 }
