@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsErrorDialog.java,v $
- * Date   : $Date: 2011/02/09 14:54:32 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/02/09 14:56:14 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import com.google.gwt.user.client.ui.Panel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -84,7 +84,6 @@ public class CmsErrorDialog extends CmsPopupDialog {
             /**
              * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
              */
-            @Override
             public void onClick(ClickEvent event) {
 
                 onClose();
