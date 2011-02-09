@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsErrorDialog.java,v $
- * Date   : $Date: 2011/02/09 13:20:50 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/02/09 14:54:32 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,8 @@ import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.OpenEvent;
+import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -46,7 +48,7 @@ import com.google.gwt.user.client.ui.Panel;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -55,8 +57,10 @@ public class CmsErrorDialog extends CmsPopupDialog {
     /** The 'close' button. */
     private CmsPushButton m_closeButton;
 
+    /** The details fieldset. */
     private CmsFieldSet m_detailsFieldset;
 
+    /** The message HTML. */
     private HTML m_messageHtml;
 
     /**
@@ -93,11 +97,21 @@ public class CmsErrorDialog extends CmsPopupDialog {
         content.add(m_messageHtml);
         if (details != null) {
             m_detailsFieldset = createDetailsFieldSet(details);
+            m_detailsFieldset.addOpenHandler(new OpenHandler<CmsFieldSet>() {
+
+                /**
+                 * On open.<p>
+                 * 
+                 * @param event the open event
+                 */
+                public void onOpen(OpenEvent<CmsFieldSet> event) {
+
+                    center();
+                }
+            });
             content.add(m_detailsFieldset);
         }
         setContent(content);
-        this.show();
-        this.center();
     }
 
     /**
@@ -142,7 +156,7 @@ public class CmsErrorDialog extends CmsPopupDialog {
         fieldset.addStyleName(I_CmsLayoutBundle.INSTANCE.errorDialogCss().details());
         fieldset.setLegend(Messages.get().key(Messages.GUI_DETAILS_0));
         fieldset.addContent(new HTML(details));
-        fieldset.setCollapsed(true);
+        fieldset.setOpen(true);
         return fieldset;
     }
 
