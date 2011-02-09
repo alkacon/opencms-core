@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsFieldSet.java,v $
- * Date   : $Date: 2011/02/07 14:56:03 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/02/09 14:53:56 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,6 +40,12 @@ import org.opencms.gwt.client.util.CmsStyleVariable;
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.logical.shared.HasOpenHandlers;
+import com.google.gwt.event.logical.shared.OpenEvent;
+import com.google.gwt.event.logical.shared.OpenHandler;
+import com.google.gwt.event.shared.GwtEvent;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -52,13 +58,14 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * A panel that behaves like a HTML fieldset.<p>
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @author Ruediger Kurz
+ * @author Tobias Herrmann
  * 
  * @since 8.0.0
  */
-public class CmsFieldSet extends Composite {
+public class CmsFieldSet extends Composite implements HasOpenHandlers<CmsFieldSet> {
 
     /** The ui-binder interface for this composite. */
     protected interface I_CmsFieldSetUiBinder extends UiBinder<Widget, CmsFieldSet> {
@@ -68,12 +75,15 @@ public class CmsFieldSet extends Composite {
     /** The ui-binder instance. */
     private static I_CmsFieldSetUiBinder uiBinder = GWT.create(I_CmsFieldSetUiBinder.class);
 
-    /** Signals whether the fieldset is collapsed or expanded. */
-    protected boolean m_collapsed;
+    /** Signals whether the fieldset is opened. */
+    protected boolean m_opened;
 
     /** The content of the fieldset. */
     @UiField
     protected FlowPanel m_content;
+
+    /** The event bus for the fieldset. */
+    protected SimpleEventBus m_eventBus;
 
     /** The wrapping panel for this fieldset. */
     @UiField
@@ -91,6 +101,7 @@ public class CmsFieldSet extends Composite {
     @UiField
     protected FlowPanel m_wrapper;
 
+    /** The running slide in/out animation. */
     private Animation m_animation;
 
     /** The fieldset visibility style. */
@@ -107,7 +118,9 @@ public class CmsFieldSet extends Composite {
 
         initWidget(uiBinder.createAndBindUi(this));
         m_visibilityStyle = new CmsStyleVariable(m_fieldset);
-        setCollapsed(false);
+        m_eventBus = new SimpleEventBus();
+        setOpen(true);
+
     }
 
     /**
@@ -118,6 +131,23 @@ public class CmsFieldSet extends Composite {
     public void addContent(Widget w) {
 
         m_content.add(w);
+    }
+
+    /**
+     * @see com.google.gwt.event.logical.shared.HasOpenHandlers#addOpenHandler(com.google.gwt.event.logical.shared.OpenHandler)
+     */
+    public HandlerRegistration addOpenHandler(OpenHandler<CmsFieldSet> handler) {
+
+        return m_eventBus.addHandlerToSource(OpenEvent.getType(), this, handler);
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.Widget#fireEvent(com.google.gwt.event.shared.GwtEvent)
+     */
+    @Override
+    public void fireEvent(GwtEvent<?> event) {
+
+        m_eventBus.fireEventFromSource(event, this);
     }
 
     /**
@@ -141,14 +171,24 @@ public class CmsFieldSet extends Composite {
     }
 
     /**
-     * Sets the fieldset collapsed, hiding the content.<p>
+     * Returns if the fieldset is opened.<p>
      * 
-     * @param collapsed <code>true</code> to collapse the fieldset
+     * @return <code>true</code> if the fieldset is opened
      */
-    public void setCollapsed(boolean collapsed) {
+    public boolean isOpen() {
 
-        m_collapsed = collapsed;
-        if (!m_collapsed) {
+        return m_opened;
+    }
+
+    /**
+     * Sets the fieldset open, showing the content.<p>
+     * 
+     * @param open <code>true</code> to open the fieldset
+     */
+    public void setOpen(boolean open) {
+
+        m_opened = open;
+        if (m_opened) {
             // show content
             m_visibilityStyle.setValue(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll()
                 + " "
@@ -184,10 +224,10 @@ public class CmsFieldSet extends Composite {
         if (m_animation != null) {
             m_animation.cancel();
         }
-        if (m_collapsed) {
+        if (!m_opened) {
 
-            // slide in
-            setCollapsed(!m_collapsed);
+            // show content
+            setOpen(true);
 
             m_animation = CmsSlideAnimation.slideIn(m_content.getElement(), new Command() {
 
@@ -196,12 +236,12 @@ public class CmsFieldSet extends Composite {
                  */
                 public void execute() {
 
-                    // nothing to do
+                    OpenEvent.fire(CmsFieldSet.this, CmsFieldSet.this);
                 }
             }, 300);
         } else {
 
-            // slide out
+            // hide content
             m_animation = CmsSlideAnimation.slideOut(m_content.getElement(), new Command() {
 
                 /**
@@ -209,8 +249,7 @@ public class CmsFieldSet extends Composite {
                  */
                 public void execute() {
 
-                    setCollapsed(!m_collapsed);
-
+                    setOpen(false);
                 }
             }, 300);
         }
