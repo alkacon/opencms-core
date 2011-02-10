@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2011/02/02 07:37:52 $
- * Version: $Revision: 1.74 $
+ * Date   : $Date: 2011/02/10 16:33:07 $
+ * Version: $Revision: 1.75 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,11 +43,9 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.monitor.CmsMemoryMonitor;
-import org.opencms.util.CmsUUID;
 import org.opencms.xml.containerpage.CmsConfigurationItem;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.content.CmsXmlContentPropertyHelper;
-import org.opencms.xml.sitemap.properties.CmsSimplePropertyValue;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -66,7 +64,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.74 $
+ * @version $Revision: 1.75 $
  * 
  * @since 7.9.2
  */
@@ -131,33 +129,22 @@ public class CmsSitemapManager {
     public static final String PATH_SITEMAP_DEFAULT_CONFIG = "/system/modules/org.opencms.ade.sitemap/config/sitemap.config";
 
     /** The path to the sitemap editor jsp. */
-    public static final String PATH_SITEMAP_EDITOR_JSP = "/system/modules/org.opencms.ade.sitemap/sitemap.jsp";
+    public static final String PATH_SITEMAP_EDITOR_JSP = "/system/modules/org.opencms.ade.sitemap/pages/sitemap.jsp";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSitemapManager.class);
 
-    /** The internal admin CmsObject. */
-    private CmsObject m_adminCms;
-
     /** The detail page finder. */
     private I_CmsDetailPageFinder m_detailPageFinder = new CmsSitemapDetailPageFinder();
-
-    /** Lazy initialized sitemap type id. */
-    private int m_sitemapTypeId;
 
     /**
      * Creates a new sitemap manager.<p>
      * 
-     * @param adminCms The admin context
      * @param memoryMonitor the memory monitor instance
      * @param systemConfiguration the system configuration
      */
-    public CmsSitemapManager(
-        CmsObject adminCms,
-        CmsMemoryMonitor memoryMonitor,
-        CmsSystemConfiguration systemConfiguration) {
+    public CmsSitemapManager(CmsMemoryMonitor memoryMonitor, CmsSystemConfiguration systemConfiguration) {
 
-        m_adminCms = adminCms;
         // initialize the sitemap cache
         CmsSitemapCacheSettings cacheSettings = systemConfiguration.getSitemapCacheSettings();
         if (cacheSettings == null) {
@@ -166,32 +153,6 @@ public class CmsSitemapManager {
         CmsVfsMemoryObjectCache structureIdCache = new CmsVfsMemoryObjectCache();
 
     }
-
-    //    /**
-    //     * Creates a dummy root entry for a sub-sitemap from a given sitemap entry.<p>
-    //     * 
-    //     * @param cms the CmsObject to use for VFS operations 
-    //     * @param entry the sitemap entry from which to create the dummy entry 
-    //
-    //     * @return a dummy sub-sitemap root
-    //     */
-    //    public static CmsInternalSitemapEntry copyAsSubSitemapRoot(CmsObject cms, CmsInternalSitemapEntry entry) {
-    //
-    //        CmsInternalSitemapEntry clone = new CmsInternalSitemapEntry(
-    //            entry.getId(),
-    //            "",
-    //            entry.getStructureId(),
-    //            "",
-    //            entry.getTitle(),
-    //            false,
-    //            entry.getNewProperties(),
-    //            new ArrayList<CmsInternalSitemapEntry>(),
-    //            entry.getContentId(),
-    //            entry.getContentName());
-    //
-    //        clone.setRuntimeInfo(entry.getSitePath(cms), 0, new HashMap<String, CmsComputedPropertyValue>());
-    //        return clone;
-    //    }
 
     /**
      * Returns the navigation URI from a given request.<p>
@@ -251,17 +212,18 @@ public class CmsSitemapManager {
      * The resource to copy for a new sitemap entry page.<p>
      * 
      * @param cms the current CMS context 
-     * @param sitemapUri the sitemap URI
+     * @param entryPoint the sitemap entry-point
+     * 
      *  
      * @return the copy resource
      * 
      * @throws CmsException if something goes wrong
      */
-    public CmsResource getCopyPage(CmsObject cms, String sitemapUri) throws CmsException {
+    public CmsResource getCopyPage(CmsObject cms, String entryPoint) throws CmsException {
 
         CmsSitemapConfigurationData config = OpenCms.getADEConfigurationManager().getSitemapConfiguration(
             cms,
-            cms.getRequestContext().addSiteRoot(sitemapUri));
+            cms.getRequestContext().addSiteRoot(entryPoint));
         Map<String, CmsConfigurationItem> typeConfig = config.getTypeConfiguration();
         CmsConfigurationItem item = typeConfig.get(CmsResourceTypeXmlContainerPage.getStaticTypeName());
         return item.getSourceFile();
@@ -466,81 +428,5 @@ public class CmsSitemapManager {
     public CmsSitemapEntry getRuntimeInfo(ServletRequest req) {
 
         return (CmsSitemapEntry)req.getAttribute(ATTR_SITEMAP_ENTRY);
-    }
-
-    /**
-     * Returns the sitemap URI for the given sitemap entry URI.<p>
-     * 
-     * @param cms the current CMS context
-     * @param uri the sitemap entry URI to get the sitemap URI for
-     * 
-     * @return the sitemap URI for the given sitemap entry URI
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    @SuppressWarnings("null")
-    public String getSitemapForUri(CmsObject cms, String uri) throws CmsException {
-
-        //TODO: implement this
-        throw new RuntimeException("not implemented yet");
-    }
-
-    /**
-     * Clean up at shutdown time. Only intended to be called at system shutdown.<p>
-     * 
-     * @see org.opencms.main.OpenCmsCore#shutDown
-     */
-    public void shutdown() {
-
-    }
-
-    /**
-     * Searches a sitemap entry with a given resource structure id.<p>
-     * 
-     * The search starts from a list of sitemap entries passed as an argument, and does not follow references to sub-sitemaps.<p>
-     * 
-     * @param rootEntries the entries from which the search should be started 
-     * @param resourceId the structure id to search for 
-     * 
-     * @return a sitemap entry with the given structure id, or null if none were found 
-     */
-    private CmsInternalSitemapEntry getSitemapEntryByStructureId(
-        List<CmsInternalSitemapEntry> rootEntries,
-        CmsUUID resourceId) {
-
-        LinkedList<CmsInternalSitemapEntry> entriesToProcess = new LinkedList<CmsInternalSitemapEntry>();
-        entriesToProcess.addAll(rootEntries);
-        while (!entriesToProcess.isEmpty()) {
-            CmsInternalSitemapEntry currentEntry = entriesToProcess.removeFirst();
-            if (currentEntry.getStructureId().equals(resourceId)) {
-                return currentEntry;
-            }
-            CmsSimplePropertyValue sitemapProp = currentEntry.getNewProperties().get(
-                CmsSitemapManager.Property.sitemap.name());
-            if (sitemapProp == null) {
-                entriesToProcess.addAll(currentEntry.getSubEntries());
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Checks whether the given sitemap entry should be included in the list of sub-entries of its parent.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param entry the sitemap entry to check
-     *  
-     * @return true if the sitemap entry should be included in the list of sub-entries of its parent
-     */
-    private boolean isValidSubEntry(CmsObject cms, CmsInternalSitemapEntry entry) {
-
-        CmsUUID id = entry.getStructureId();
-        if (id != null) {
-            return cms.existsResource(id);
-        } else {
-            Map<String, CmsSimplePropertyValue> props = entry.getNewProperties();
-            return props.containsKey(CmsSitemapManager.Property.externalRedirect.getName())
-                || props.containsKey(CmsSitemapManager.Property.internalRedirect.getName());
-        }
     }
 }
