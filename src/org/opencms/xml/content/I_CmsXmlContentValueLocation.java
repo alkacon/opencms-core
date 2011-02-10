@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/I_CmsXmlContentValueLocation.java,v $
- * Date   : $Date: 2010/12/17 08:45:29 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/02/10 16:32:44 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,13 +33,14 @@ package org.opencms.xml.content;
 
 import org.opencms.file.CmsObject;
 import org.opencms.util.CmsUUID;
+import org.opencms.xml.types.I_CmsXmlContentValue;
 
 /**
  * Interface representing an XML content location which corresponds to an actual content value.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -61,5 +62,12 @@ public interface I_CmsXmlContentValueLocation extends I_CmsXmlContentLocation {
      * @return the string value of the content value 
      */
     String asString(CmsObject cms);
+
+    /**
+     * Returns the content value at the given location.<p>
+     * 
+     * @return the content value at the given location 
+     */
+    I_CmsXmlContentValue getValue();
 
 }

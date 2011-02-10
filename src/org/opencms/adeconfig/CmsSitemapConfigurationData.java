@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/adeconfig/Attic/CmsSitemapConfigurationData.java,v $
- * Date   : $Date: 2011/02/02 07:37:52 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/02/10 16:32:44 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,23 +31,32 @@
 
 package org.opencms.adeconfig;
 
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
+import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
+import org.opencms.security.CmsPermissionSet;
+import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.xml.containerpage.CmsConfigurationItem;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.sitemap.CmsDetailPageInfo;
 import org.opencms.xml.sitemap.CmsDetailPageTable;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Configuration data class for the sitemap.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -62,6 +71,9 @@ public class CmsSitemapConfigurationData implements I_CmsMergeable<CmsSitemapCon
     /** The maximum sitemap depth. */
     private int m_maxDepth;
 
+    /** New elements. */
+    private Collection<CmsConfigurationItem> m_newElements = new LinkedHashSet<CmsConfigurationItem>();
+
     /** The property configuration. */
     private Map<String, CmsXmlContentProperty> m_propertyDefinitions;
 
@@ -75,6 +87,7 @@ public class CmsSitemapConfigurationData implements I_CmsMergeable<CmsSitemapCon
 
         this(
             new HashMap<String, CmsConfigurationItem>(),
+            new LinkedHashSet<CmsConfigurationItem>(),
             new HashMap<String, CmsXmlContentProperty>(),
             new HashMap<String, List<CmsDetailPageInfo>>(),
             -1,
@@ -86,6 +99,7 @@ public class CmsSitemapConfigurationData implements I_CmsMergeable<CmsSitemapCon
      * Creates a new configuration data object.<p>
      * 
      * @param typeConfiguration the type configuration 
+     * @param newElements the new elements configuration
      * @param propertyDefinitions the property configuration 
      * @param detailPageLists the detail page configuration 
      * @param maxDepth the maximum sitemap depth
@@ -93,16 +107,55 @@ public class CmsSitemapConfigurationData implements I_CmsMergeable<CmsSitemapCon
      */
     public CmsSitemapConfigurationData(
         Map<String, CmsConfigurationItem> typeConfiguration,
+        Collection<CmsConfigurationItem> newElements,
         Map<String, CmsXmlContentProperty> propertyDefinitions,
         Map<String, List<CmsDetailPageInfo>> detailPageLists,
         int maxDepth,
         CmsConfigurationSourceInfo lastSource) {
 
         m_typeConfiguration = typeConfiguration;
+        m_newElements = newElements;
         m_propertyDefinitions = propertyDefinitions;
         m_detailPageLists = detailPageLists;
         m_maxDepth = maxDepth;
         m_lastSource = lastSource;
+    }
+
+    /**
+     * Returns the newElements.<p>
+     *
+     * @return the newElements
+     */
+    public Collection<CmsConfigurationItem> getNewElements() {
+
+        return Collections.unmodifiableCollection(m_newElements);
+    }
+
+    /**
+     * Gets the list of 'prototype resources' which are used for creating new content elements.
+     * 
+     * @param cms the CMS context
+     * 
+     * @return the resources which are used as prototypes for creating new elements
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public Collection<CmsResource> getNewElements(CmsObject cms) throws CmsException {
+
+        Set<CmsResource> result = new LinkedHashSet<CmsResource>();
+        for (CmsConfigurationItem item : m_newElements) {
+
+            CmsResource source = item.getSourceFile();
+            boolean hasView = cms.hasPermissions(source, CmsPermissionSet.ACCESS_VIEW);
+            String type = OpenCms.getResourceManager().getResourceType(source.getTypeId()).getTypeName();
+            CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type);
+            boolean editable = settings.isEditable(cms, source);
+            boolean controlPermission = settings.getAccess().getPermissions(cms, source).requiresControlPermission();
+            if (editable && controlPermission && hasView) {
+                result.add(source);
+            }
+        }
+        return result;
     }
 
     /**
@@ -174,6 +227,10 @@ public class CmsSitemapConfigurationData implements I_CmsMergeable<CmsSitemapCon
         typeConfig.putAll(m_typeConfiguration);
         typeConfig.putAll(data.m_typeConfiguration);
 
+        Collection<CmsConfigurationItem> newElements = new LinkedHashSet<CmsConfigurationItem>();
+        newElements.addAll(m_newElements);
+        newElements.addAll(data.m_newElements);
+
         Map<String, CmsXmlContentProperty> propertyDefs = new LinkedHashMap<String, CmsXmlContentProperty>();
         propertyDefs.putAll(m_propertyDefinitions);
         propertyDefs.putAll(data.m_propertyDefinitions);
@@ -187,6 +244,7 @@ public class CmsSitemapConfigurationData implements I_CmsMergeable<CmsSitemapCon
 
         CmsSitemapConfigurationData result = new CmsSitemapConfigurationData(
             typeConfig,
+            newElements,
             propertyDefs,
             detailPageLists,
             maxDepth,

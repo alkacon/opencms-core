@@ -13,6 +13,7 @@
     
     <xsd:complexType name="OpenCmsADEType">
         <xsd:sequence>    
+        	<xsd:element name="IsDefault" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
             <xsd:element name="Source" type="OpenCmsVfsFile" minOccurs="1" maxOccurs="1" />
             <xsd:element name="Destination" type="OpenCmsADETypeDestination" minOccurs="1" maxOccurs="1" />
             <xsd:element name="Formatter" type="OpenCmsADETypeFormatter" minOccurs="0" maxOccurs="unbounded" />

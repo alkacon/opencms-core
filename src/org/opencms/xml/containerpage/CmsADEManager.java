@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADEManager.java,v $
- * Date   : $Date: 2011/02/02 07:37:51 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2011/02/10 16:32:44 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,6 @@
 
 package org.opencms.xml.containerpage;
 
-import org.opencms.adeconfig.CmsADEConfigurationManager;
 import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
@@ -75,7 +74,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * 
  * @since 7.6
  */
@@ -118,8 +117,6 @@ public class CmsADEManager {
     /** The configuration instance. */
     private I_CmsADEConfiguration m_configuration;
 
-    private CmsADEConfigurationManager m_configurationManager;
-
     /**
      * Creates a new ADE manager.<p>
      *
@@ -127,10 +124,7 @@ public class CmsADEManager {
      * @param memoryMonitor the memory monitor instance
      * @param systemConfiguration the system configuration
      */
-    public CmsADEManager(CmsObject adminCms, CmsMemoryMonitor memoryMonitor, CmsSystemConfiguration systemConfiguration)
-    throws CmsException {
-
-        m_configurationManager = new CmsADEConfigurationManager(adminCms);
+    public CmsADEManager(CmsObject adminCms, CmsMemoryMonitor memoryMonitor, CmsSystemConfiguration systemConfiguration) {
 
         // initialize the ade cache
         CmsADECacheSettings cacheSettings = systemConfiguration.getAdeCacheSettings();
@@ -277,16 +271,20 @@ public class CmsADEManager {
                 if (properties.containsKey(propertyName)) {
                     properties.get(propertyName).setResourceValue(prop.getDefault());
                 } else {
-                    properties.put(propertyName, new CmsProperty(
+                    properties.put(
                         propertyName,
-                        null,
-                        CmsXmlContentPropertyHelper.getPropValueIds(cms, prop.getPropertyType(), prop.getDefault())));
+                        new CmsProperty(propertyName, null, CmsXmlContentPropertyHelper.getPropValueIds(
+                            cms,
+                            prop.getPropertyType(),
+                            prop.getDefault())));
                 }
             }
         } catch (Exception e) {
-            LOG.error(Messages.get().getBundle().key(
-                Messages.ERR_READ_ELEMENT_PROPERTY_CONFIGURATION_1,
-                element.getElementId()), e);
+            LOG.error(
+                Messages.get().getBundle().key(
+                    Messages.ERR_READ_ELEMENT_PROPERTY_CONFIGURATION_1,
+                    element.getElementId()),
+                e);
         }
         return properties;
     }

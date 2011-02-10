@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsConfigurationItem.java,v $
- * Date   : $Date: 2011/01/19 10:39:43 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/02/10 16:32:44 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import org.opencms.file.CmsResource;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 7.6 
  */
@@ -51,6 +51,9 @@ public class CmsConfigurationItem {
 
     /** The destination folder. */
     private final CmsResource m_folder;
+
+    /** Flag to indicate if this item is default for it's resource-type. */
+    private boolean m_isDefault;
 
     /** The lazy folder object. */
     private CmsLazyFolder m_lazyFolder;
@@ -68,13 +71,16 @@ public class CmsConfigurationItem {
      * @param destinationFolder the destination folder 
      * @param lazyFolder the lazy folder object 
      * @param pattern the file pattern
+     * @param isDefault <code>true</code> if this item is default for it's resource-type
      **/
     public CmsConfigurationItem(
         CmsResource sourceFile,
         CmsResource destinationFolder,
         CmsLazyFolder lazyFolder,
-        String pattern) {
+        String pattern,
+        boolean isDefault) {
 
+        m_isDefault = isDefault;
         m_sourceFile = sourceFile;
         m_folder = destinationFolder;
         m_pattern = pattern;
@@ -119,5 +125,15 @@ public class CmsConfigurationItem {
     public CmsResource getSourceFile() {
 
         return m_sourceFile;
+    }
+
+    /**
+     * Returns if this item is default for it's resource-type.<p>
+     *
+     * @return <code>true</code> if this item is default for it's resource-type
+     */
+    public boolean isDefault() {
+
+        return m_isDefault;
     }
 }

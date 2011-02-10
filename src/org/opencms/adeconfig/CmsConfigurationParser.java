@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/adeconfig/Attic/CmsConfigurationParser.java,v $
- * Date   : $Date: 2011/02/02 07:37:52 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/02/10 16:32:44 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,6 @@ import org.opencms.main.OpenCms;
 import org.opencms.util.CmsFormatterUtil;
 import org.opencms.util.CmsPair;
 import org.opencms.util.CmsUUID;
-import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.I_CmsXmlDocument;
 import org.opencms.xml.containerpage.CmsConfigurationItem;
@@ -55,6 +54,7 @@ import org.opencms.xml.content.CmsXmlContentRootLocation;
 import org.opencms.xml.content.I_CmsXmlContentLocation;
 import org.opencms.xml.content.I_CmsXmlContentValueLocation;
 import org.opencms.xml.sitemap.CmsDetailPageInfo;
+import org.opencms.xml.types.CmsXmlBooleanValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.ArrayList;
@@ -66,7 +66,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
@@ -81,7 +80,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 7.6 
  */
@@ -110,6 +109,9 @@ public class CmsConfigurationParser {
 
     /** Node name for the maximum depth configuration. */
     public static final String N_MAXDEPTH = "MaxDepth";
+
+    /** The Name node name. */
+    public static final String N_IS_DEFAULT = "IsDefault";
 
     /** The Page node name. */
     public static final String N_PAGE = "Page";
@@ -148,7 +150,7 @@ public class CmsConfigurationParser {
     private int m_maxDepth = DEFAULT_MAX_DEPTH;
 
     /** New elements. */
-    private Collection<CmsResource> m_newElements = new LinkedHashSet<CmsResource>();
+    private Collection<CmsConfigurationItem> m_newElements = new LinkedHashSet<CmsConfigurationItem>();
 
     /** The list of properties read from the configuration file. */
     private List<CmsXmlContentProperty> m_props = new ArrayList<CmsXmlContentProperty>();
@@ -230,34 +232,6 @@ public class CmsConfigurationParser {
         return m_maxDepth;
     }
 
-    /**
-     * Gets the list of 'prototype resources' which are used for creating new content elements.
-     * 
-     * @param cms the CMS context
-     * 
-     * @return the resources which are used as prototypes for creating new elements
-     * 
-     * @throws CmsException if something goes wrong 
-     */
-    public Collection<CmsResource> getNewElements(CmsObject cms) throws CmsException {
-
-        Set<CmsResource> result = new LinkedHashSet<CmsResource>();
-        for (Map.Entry<String, CmsConfigurationItem> entry : m_configuration.entrySet()) {
-            CmsConfigurationItem item = entry.getValue();
-            String type = entry.getKey();
-            CmsResource source = item.getSourceFile();
-            CmsLazyFolder autoFolder = item.getLazyFolder();
-            CmsResource permissionCheckFolder = autoFolder.getPermissionCheckFolder(cms);
-            CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type);
-            boolean editable = settings.isEditable(cms, permissionCheckFolder);
-            boolean controlPermission = settings.getAccess().getPermissions(cms, permissionCheckFolder).requiresControlPermission();
-            if (editable && controlPermission) {
-                result.add(source);
-            }
-        }
-        return result;
-    }
-
     /** 
      * Returns the property configuration.<p>
      * 
@@ -283,6 +257,7 @@ public class CmsConfigurationParser {
 
         return new CmsSitemapConfigurationData(
             m_configuration,
+            m_newElements,
             getPropertyConfigMap(),
             groupDetailPagesByType(),
             m_maxDepth,
@@ -342,8 +317,8 @@ public class CmsConfigurationParser {
         for (Map.Entry<String, CmsConfigurationItem> entry : parser.m_configuration.entrySet()) {
             m_configuration.put(entry.getKey(), entry.getValue());
         }
-        for (CmsResource res : parser.m_newElements) {
-            m_newElements.add(res);
+        for (CmsConfigurationItem item : parser.m_newElements) {
+            m_newElements.add(item);
         }
         m_formatterConfiguration.putAll(parser.m_formatterConfiguration);
     }
@@ -391,6 +366,24 @@ public class CmsConfigurationParser {
     protected String getTypeName(int typeId) throws CmsException {
 
         return OpenCms.getResourceManager().getResourceType(typeId).getTypeName();
+    }
+
+    /**
+     * Convenience method to retrieve the sub-value of an xml-element as boolean.<p>
+     * 
+     * @param cms the current cms object
+     * @param field the xml-element
+     * @param fieldName the element name
+     * 
+     * @return the value or <code>null</code> if the sub element by the given name is not present
+     */
+    private boolean getSubValueBoolean(CmsObject cms, I_CmsXmlContentLocation field, String fieldName) {
+
+        I_CmsXmlContentValueLocation subValue = field.getSubValue(fieldName);
+        if ((subValue != null) && (subValue.getValue() instanceof CmsXmlBooleanValue)) {
+            return ((CmsXmlBooleanValue)subValue.getValue()).getBooleanValue();
+        }
+        return false;
     }
 
     /**
@@ -586,11 +579,15 @@ public class CmsConfigurationParser {
      */
     private void parseType(CmsObject cms, I_CmsXmlContentLocation xmlType, Locale locale) throws CmsException {
 
+        boolean isDefault = getSubValueBoolean(cms, xmlType, N_IS_DEFAULT);
         CmsUUID source = getSubValueID(cms, xmlType, N_SOURCE);
+        CmsResource resource = cms.readResource(source);
+
+        String type = getTypeName(resource.getTypeId());
+
         CmsUUID folder = getSubValueID(cms, xmlType, CmsXmlUtils.concatXpath(N_DESTINATION, N_FOLDER));
         String pattern = getSubValueString(cms, xmlType, CmsXmlUtils.concatXpath(N_DESTINATION, N_PATTERN));
-        CmsResource resource = cms.readResource(source);
-        String type = getTypeName(resource.getTypeId());
+
         CmsResource folderRes = null;
         CmsLazyFolder lazyFolder = null;
         if (folder == null) {
@@ -601,7 +598,7 @@ public class CmsConfigurationParser {
             lazyFolder = new CmsLazyFolder(folderRes);
         }
 
-        CmsConfigurationItem configItem = new CmsConfigurationItem(resource, folderRes, lazyFolder, pattern);
+        CmsConfigurationItem configItem = new CmsConfigurationItem(resource, folderRes, lazyFolder, pattern, isDefault);
         List<I_CmsXmlContentValueLocation> fmtValues = xmlType.getSubValues(N_FORMATTER);
         List<CmsFormatterConfigBean> formatterConfigBeans = new ArrayList<CmsFormatterConfigBean>();
         for (I_CmsXmlContentValueLocation fmtValue : fmtValues) {
@@ -619,7 +616,12 @@ public class CmsConfigurationParser {
                 formatterMaps.getSecond());
             m_formatterConfiguration.put(type, fmt);
         }
+
+        m_newElements.add(configItem);
+        if (!isDefault && m_configuration.containsKey(type)) {
+            // this type is not marked as default, so don't override any previous type configuration
+            return;
+        }
         m_configuration.put(type, configItem);
     }
-
 }
