@@ -98,10 +98,11 @@
 				    <param name="gallery.type.names">cntpagegallery</param>
                 </type>
                 <type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="containerpage_config" id="14">
-                    <param name="gallery.type.names">downloadgallery</param>
                     <param name="schema">/system/modules/org.opencms.ade.containerpage/schemas/type_config.xsd</param>
                 </type>
-				<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="sitemap" id="15" />
+                <type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="xmlredirect" id="15">
+					<param name="schema">/system/modules/org.opencms.ade.sitemap/schemas/redirect.xsd</param>
+            	</type>
 				<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="cntpagegallery" id="16">
                     <param name="folder.class">org.opencms.workplace.galleries.CmsAjaxHtmlGallery</param>
                 </type>
@@ -111,8 +112,7 @@
                 </type>
                 <type class="org.opencms.file.types.CmsResourceTypeJsp" name="containerpage_template" id="21" />
                 <type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="sitemap_config" id="22">
-				    <param name="gallery.type.names">downloadgallery</param>
-                    <param name="schema">/system/modules/org.opencms.ade.sitemap/schemas/sitemap_config.xsd</param>
+				    <param name="schema">/system/modules/org.opencms.ade.sitemap/schemas/sitemap_config.xsd</param>
                 </type>
                 
             </resourcetypes>
