@@ -148,6 +148,12 @@
 }
 
 /** These styles are for dragging. */
+li.dragging{
+	list-style-type: none !important;
+	position: absolute !important;
+	margin: 0px !important;
+	z-index: 100 !important;
+}
 @if user.agent gecko1_8 gecko{
 	.dragging .itemContainer {
 		-moz-box-shadow: 2px 2px 6px value("constants.css.boxShadowColorOther");

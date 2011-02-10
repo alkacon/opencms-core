@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsListItem.java,v $
- * Date   : $Date: 2010/12/21 10:23:32 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2011/02/10 16:36:37 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.32 $
+ * @version $Revision: 1.33 $
  *  
  * @since 8.0.0 
  */
@@ -235,7 +235,6 @@ public class CmsListItem extends Composite implements I_CmsListItem {
             for (com.google.gwt.dom.client.Element elem : elems) {
                 elem.removeFromParent();
             }
-            m_helper.addClassName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().dragging());
 
             // we append the drag helper to the body to prevent any kind of issues 
             // (ie when the parent is styled with overflow:hidden)
@@ -253,10 +252,8 @@ public class CmsListItem extends Composite implements I_CmsListItem {
             m_provisionalParent.appendChild(m_helper);
             Style style = m_helper.getStyle();
             style.setWidth(m_helper.getOffsetWidth(), Unit.PX);
-            // position absolute
-            style.setPosition(Position.ABSOLUTE);
-            style.setMargin(0, Unit.PX);
-            style.setZIndex(100);
+            // the dragging class will set position absolute
+            m_helper.addClassName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().dragging());
             style.setTop(elementTop - parentTop, Unit.PX);
             m_provisionalParent.getStyle().setPosition(Position.ABSOLUTE);
             m_provisionalParent.getStyle().setTop(parentTop, Unit.PX);
