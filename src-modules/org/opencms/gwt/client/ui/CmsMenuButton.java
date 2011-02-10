@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsMenuButton.java,v $
- * Date   : $Date: 2011/02/01 15:05:01 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2011/02/10 16:36:57 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * 
  * @since 8.0.0
  */
@@ -215,6 +215,16 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
             m_resizeRegistration.removeHandler();
             m_resizeRegistration = null;
         }
+    }
+
+    /**
+     * Disables the menu button.<p>
+     * 
+     * @param disabledReason the reason to set in the button title
+     */
+    public void disable(String disabledReason) {
+
+        m_button.disable(disabledReason);
     }
 
     /**
