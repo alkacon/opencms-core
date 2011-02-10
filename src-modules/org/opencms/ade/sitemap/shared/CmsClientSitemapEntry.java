@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsClientSitemapEntry.java,v $
- * Date   : $Date: 2011/02/03 15:16:16 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2011/02/10 16:35:54 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  * 
  * @since 8.0.0
  */
@@ -90,6 +90,8 @@ public class CmsClientSitemapEntry implements IsSerializable {
 
     /** True if the children of this entry have initially been loaded. */
     private boolean m_childrenLoadedInitially;
+
+    private String m_detailpageTypeName;
 
     /** The current edit status. */
     private EditStatus m_editStatus = EditStatus.normal;
@@ -138,9 +140,6 @@ public class CmsClientSitemapEntry implements IsSerializable {
 
     /** The title. */
     private String m_title;
-
-    /** The resource type info bean. */
-    private CmsResourceTypeInfo m_typeInfo;
 
     /** The VFS path. */
     private String m_vfsPath;
@@ -212,6 +211,16 @@ public class CmsClientSitemapEntry implements IsSerializable {
     public boolean getChildrenLoadedInitially() {
 
         return m_childrenLoadedInitially;
+    }
+
+    /**
+     * Returns the detail resource type name.<p>
+     * 
+     * @return the detail resource type name
+     */
+    public String getDetailpageTypeName() {
+
+        return m_detailpageTypeName;
     }
 
     /**
@@ -350,16 +359,6 @@ public class CmsClientSitemapEntry implements IsSerializable {
     }
 
     /**
-     * Returns the resource tpe information for this sitemap entry.<p>
-     * 
-     * @return the resource type information for this sitemap entry 
-     */
-    public CmsResourceTypeInfo getResourceTypeInfo() {
-
-        return m_typeInfo;
-    }
-
-    /**
      * Returns the sitemap path.<p>
      *
      * @return the sitemap path
@@ -387,16 +386,6 @@ public class CmsClientSitemapEntry implements IsSerializable {
     public String getTitle() {
 
         return m_title;
-    }
-
-    /**
-     * Gets the resource type info bean.
-     *
-     * @return the resource type info bean 
-     */
-    public CmsResourceTypeInfo getTypeInfo() {
-
-        return m_typeInfo;
     }
 
     /**
@@ -450,7 +439,7 @@ public class CmsClientSitemapEntry implements IsSerializable {
     public boolean isDetailPage() {
 
         CmsSitemapView view = CmsSitemapView.getInstance();
-        return (m_typeInfo != null) || view.getController().isDetailPage(m_id);
+        return (m_detailpageTypeName != null) || view.getController().isDetailPage(m_id);
     }
 
     /**
@@ -554,6 +543,16 @@ public class CmsClientSitemapEntry implements IsSerializable {
     public void setChildrenLoadedInitially() {
 
         m_childrenLoadedInitially = true;
+    }
+
+    /**
+     * Sets the detail resource type name.<p>
+     * 
+     * @param detailpageTypeName the detail resource type name
+     */
+    public void setDetailpageTypeName(String detailpageTypeName) {
+
+        m_detailpageTypeName = detailpageTypeName;
     }
 
     /**
@@ -725,16 +724,6 @@ public class CmsClientSitemapEntry implements IsSerializable {
         m_properties.remove(INTERNAL_REDIRECT);
         String targetKey = internal ? INTERNAL_REDIRECT : EXTERNAL_REDIRECT;
         m_properties.put(targetKey, new CmsSimplePropertyValue(link, link));
-    }
-
-    /**
-     * Sets the resource type info.
-     *
-     * @param typeInfo the new resource type info
-     */
-    public void setResourceTypeInfo(CmsResourceTypeInfo typeInfo) {
-
-        m_typeInfo = typeInfo;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeNew.java,v $
- * Date   : $Date: 2011/02/03 08:59:03 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2011/02/10 16:35:54 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,6 @@ import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.client.toolbar.CmsToolbarClipboardView;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
-import org.opencms.ade.sitemap.shared.CmsResourceTypeInfo;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsSitemapClipboardData;
 import org.opencms.file.CmsResource;
@@ -49,7 +48,7 @@ import org.opencms.xml.sitemap.CmsDetailPageTable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 8.0.0
  */
@@ -67,18 +66,33 @@ public class CmsClientSitemapChangeNew implements I_CmsClientSitemapChange {
     /** Flag to indicate whether the new entry is restored from deleted entries. */
     private boolean m_restoreFromDeleted;
 
+    /** The new entry copy resource structure id. */
+    private CmsUUID m_newCopyResourceId;
+
+    /** The new entry resource type id. */
+    private int m_newResourceTypeId;
+
     /**
      * Constructor.<p>
      * 
      * @param entry the new entry
      * @param parentId the parent entry id
      * @param restoreFromDeleted flag to indicate whether the new entry is restored from deleted entries
+     * @param resourceTypeId the resource type id
+     * @param copyResourceId the copy resource id
      */
-    public CmsClientSitemapChangeNew(CmsClientSitemapEntry entry, CmsUUID parentId, boolean restoreFromDeleted) {
+    public CmsClientSitemapChangeNew(
+        CmsClientSitemapEntry entry,
+        CmsUUID parentId,
+        boolean restoreFromDeleted,
+        int resourceTypeId,
+        CmsUUID copyResourceId) {
 
         m_entry = entry;
         m_parentId = parentId;
         m_restoreFromDeleted = restoreFromDeleted;
+        m_newResourceTypeId = resourceTypeId;
+        m_newCopyResourceId = copyResourceId;
     }
 
     /**
@@ -106,8 +120,7 @@ public class CmsClientSitemapChangeNew implements I_CmsClientSitemapChange {
         if (entry.isDetailPage()) {
             CmsDetailPageInfo info = controller.getDetailPageInfo(entry.getId());
             if (info == null) {
-                CmsResourceTypeInfo typeInfo = entry.getResourceTypeInfo();
-                info = new CmsDetailPageInfo(m_entry.getId(), m_entry.getSitePath(), typeInfo.getName());
+                info = new CmsDetailPageInfo(m_entry.getId(), m_entry.getSitePath(), entry.getDetailpageTypeName());
             }
             controller.addDetailPageInfo(info);
         }
@@ -146,13 +159,15 @@ public class CmsClientSitemapChangeNew implements I_CmsClientSitemapChange {
         change.setPosition(m_entry.getPosition());
         change.setTitle(m_entry.getTitle());
         change.setProperties(m_entry.getProperties());
+        change.setNewResourceTypeId(m_newResourceTypeId);
+        change.setNewCopyResourceId(m_newCopyResourceId);
         if (isChangingDetailPages()) {
             CmsDetailPageTable table = CmsSitemapView.getInstance().getController().getDetailPageTable().copy();
             if (!table.contains(m_entry.getId())) {
                 CmsDetailPageInfo info = new CmsDetailPageInfo(
                     m_entry.getId(),
                     m_entry.getSitePath(),
-                    m_entry.getTypeInfo().getName());
+                    m_entry.getDetailpageTypeName());
                 table.add(info);
             }
             change.setDetailPageInfos(table.toList());

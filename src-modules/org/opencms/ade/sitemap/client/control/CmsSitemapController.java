@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2011/02/03 15:16:16 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2011/02/10 16:35:54 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -94,7 +94,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.42 $ 
+ * @version $Revision: 1.43 $ 
  * 
  * @since 8.0.0
  */
@@ -284,6 +284,21 @@ public class CmsSitemapController {
      */
     public void create(final CmsClientSitemapEntry newEntry) {
 
+        create(
+            newEntry,
+            m_data.getDefaultNewElementInfo().getId(),
+            m_data.getDefaultNewElementInfo().getCopyResourceId());
+    }
+
+    /**
+     * Registers a new sitemap entry.<p>
+     * 
+     * @param newEntry the new entry
+     * @param resourceTypeId the resource type id
+     * @param copyResourceId the copy resource id
+     */
+    public void create(final CmsClientSitemapEntry newEntry, final int resourceTypeId, final CmsUUID copyResourceId) {
+
         final CmsClientSitemapEntry parent = getEntry(CmsResource.getParentFolder(newEntry.getSitePath()));
         assert (getEntry(newEntry.getSitePath()) == null);
         assert (parent != null);
@@ -310,12 +325,19 @@ public class CmsSitemapController {
 
                     stop(false);
                     newEntry.setId(result);
-                    applyChange(new CmsClientSitemapChangeNew(newEntry, parent.getId(), false), false);
+                    applyChange(new CmsClientSitemapChangeNew(
+                        newEntry,
+                        parent.getId(),
+                        false,
+                        resourceTypeId,
+                        copyResourceId), false);
                 }
             };
             action.execute();
         } else {
-            applyChange(new CmsClientSitemapChangeNew(newEntry, parent.getId(), true), false);
+            applyChange(
+                new CmsClientSitemapChangeNew(newEntry, parent.getId(), true, resourceTypeId, copyResourceId),
+                false);
         }
     }
 

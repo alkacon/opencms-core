@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/toolbar/Attic/CmsSitemapToolbar.java,v $
- * Date   : $Date: 2011/02/01 15:25:05 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/02/10 16:35:54 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,11 +42,14 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 8.0.0
  */
 public class CmsSitemapToolbar extends CmsToolbar {
+
+    /** The new menu button. */
+    private CmsToolbarNewButton m_newMenuButton;
 
     /**
      * Constructor.<p>
@@ -56,13 +59,10 @@ public class CmsSitemapToolbar extends CmsToolbar {
     public CmsSitemapToolbar(CmsSitemapController controller) {
 
         addLeft(new CmsToolbarPublishButton(this, controller));
-        //      addLeft(new CmsToolbarSaveButton(this, controller));
-        //      addLeft(new CmsToolbarUndoButton(this, controller));
-        //      addLeft(new CmsToolbarRedoButton(this, controller));
-        addLeft(new CmsToolbarGalleryButton(this, controller));
+        m_newMenuButton = new CmsToolbarNewButton(this, controller);
+        addLeft(m_newMenuButton);
         addLeft(new CmsToolbarClipboardButton(this, controller));
         addLeft(new CmsToolbarShowNonNavigationButton());
-        //      addRight(new CmsToolbarResetButton(this, controller));
     }
 
     /**
@@ -91,6 +91,21 @@ public class CmsSitemapToolbar extends CmsToolbar {
                 continue;
             }
             ((I_CmsToolbarActivatable)w).onActivation(widget);
+        }
+    }
+
+    /**
+     * Enables/disables the new menu button.<p>
+     * 
+     * @param enabled <code>true</code> to enable the button
+     * @param disabledReason the reason, why the button is disabled
+     */
+    public void setNewEnabled(boolean enabled, String disabledReason) {
+
+        if (enabled) {
+            m_newMenuButton.setEnabled(true);
+        } else {
+            m_newMenuButton.disable(disabledReason);
         }
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapView.java,v $
- * Date   : $Date: 2011/02/03 08:59:03 $
- * Version: $Revision: 1.52 $
+ * Date   : $Date: 2011/02/10 16:35:54 $
+ * Version: $Revision: 1.53 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.52 $ 
+ * @version $Revision: 1.53 $ 
  * 
  * @since 8.0.0
  */
@@ -407,7 +407,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         I_CmsImageBundle.INSTANCE.buttonCss().ensureInjected();
 
         RootPanel.getBodyElement().addClassName(I_CmsLayoutBundle.INSTANCE.rootCss().root());
-        setEditorMode(EditorMode.navigation);
+
         // controller 
         m_controller = new CmsSitemapController();
         m_controller.addChangeHandler(this);
@@ -415,7 +415,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
 
         // toolbar
         m_toolbar = new CmsSitemapToolbar(m_controller);
-
+        setEditorMode(EditorMode.navigation);
         RootPanel.get().add(m_toolbar);
         RootPanel.get().add(new CmsToolbarPlaceHolder());
 
@@ -510,8 +510,10 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
 
         m_editorMode = editorMode;
         if (m_editorMode == EditorMode.vfs) {
+            m_toolbar.setNewEnabled(false, "The NEW function is only available in navigation view.");
             m_inNavigationStyle.setValue(I_CmsLayoutBundle.INSTANCE.sitemapItemCss().showAllResources());
         } else {
+            m_toolbar.setNewEnabled(true, null);
             m_inNavigationStyle.setValue(null);
         }
     }

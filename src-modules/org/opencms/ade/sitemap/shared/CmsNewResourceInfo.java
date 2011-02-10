@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsResourceTypeInfo.java,v $
- * Date   : $Date: 2010/12/17 08:45:29 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsNewResourceInfo.java,v $
+ * Date   : $Date: 2011/02/10 16:35:54 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -31,6 +31,8 @@
 
 package org.opencms.ade.sitemap.shared;
 
+import org.opencms.util.CmsUUID;
+
 import java.io.Serializable;
 
 /**
@@ -42,16 +44,21 @@ import java.io.Serializable;
  * 
  * @since 8.0.0
  */
-public class CmsResourceTypeInfo implements Serializable {
+public class CmsNewResourceInfo implements Serializable {
 
     /** ID for serialization. */
     private static final long serialVersionUID = -4731814848380350682L;
 
+    /** The structure id of the copy resource. */
+    private CmsUUID m_copyResourceId;
+
+    private String m_description;
+
     /** The id. */
     private int m_id;
 
-    /** The name. */
-    private String m_name;
+    /** The type name. */
+    private String m_typeName;
 
     /** The title. */
     private String m_title;
@@ -60,23 +67,46 @@ public class CmsResourceTypeInfo implements Serializable {
      * Instantiates a new resource type information bean.
      *
      * @param id the id
-     * @param name the name
+     * @param typeName the type name
      * @param title the title
+     * @param description the description
+     * @param copyResourceId the structure id of the copy resource
      */
-    public CmsResourceTypeInfo(int id, String name, String title) {
+    public CmsNewResourceInfo(int id, String typeName, String title, String description, CmsUUID copyResourceId) {
 
-        super();
         m_id = id;
-        m_name = name;
+        m_typeName = typeName;
         m_title = title;
+        m_copyResourceId = copyResourceId;
+        m_description = description;
+    }
+
+    /**
+     * Returns the description.<p>
+     *
+     * @return the description
+     */
+    public String getDescription() {
+
+        return m_description;
     }
 
     /**
      * Empty default constructor for serialization.<p>
      */
-    protected CmsResourceTypeInfo() {
+    protected CmsNewResourceInfo() {
 
         // do nothing
+    }
+
+    /**
+     * Returns the structure id of the copy resource.<p>
+     *
+     * @return the structure id of the copy resource
+     */
+    public CmsUUID getCopyResourceId() {
+
+        return m_copyResourceId;
     }
 
     /**
@@ -90,13 +120,13 @@ public class CmsResourceTypeInfo implements Serializable {
     }
 
     /**
-     * Gets the name.
+     * Gets the type name.
      *
-     * @return the name
+     * @return the type name
      */
-    public String getName() {
+    public String getTypeName() {
 
-        return m_name;
+        return m_typeName;
     }
 
     /**

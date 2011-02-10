@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeRemove.java,v $
- * Date   : $Date: 2011/02/01 15:25:05 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/02/10 16:35:54 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,17 +38,14 @@ import org.opencms.ade.sitemap.client.toolbar.CmsToolbarClipboardView;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsSitemapClipboardData;
-import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
-
-import java.util.List;
 
 /**
  * Stores one deletion change to the sitemap.<p>
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -86,7 +83,7 @@ public class CmsClientSitemapChangeRemove implements I_CmsClientSitemapChange {
      */
     public void applyToClipboardView(CmsToolbarClipboardView view) {
 
-        view.addDeleted(getEntry());
+        view.addModified(getEntry(), getEntry().getSitePath());
     }
 
     /**
@@ -152,31 +149,13 @@ public class CmsClientSitemapChangeRemove implements I_CmsClientSitemapChange {
     }
 
     /**
-     * Removes delted entry and all it's sub-entries from the modified list.<p>
-     * 
-     * @param entry the deleted entry
-     * @param modified the modified list
-     */
-    private void removeDeletedFromModified(CmsClientSitemapEntry entry, List<CmsClientSitemapEntry> modified) {
-
-        modified.remove(entry);
-        for (CmsClientSitemapEntry child : entry.getSubEntries()) {
-            removeDeletedFromModified(child, modified);
-        }
-    }
-
-    /**
      * Applys the change to the given clip-board data.<p>
      * 
      * @param clipboardData the clip-board data
      */
     private void applyToClipboardData(CmsSitemapClipboardData clipboardData) {
 
-        if (!(getEntry().isNew() && CmsStringUtil.isEmptyOrWhitespaceOnly(getEntry().getVfsPath()))) {
-            // only add deleted entries to the deleted list, that do have a linked vfs path
-            List<CmsClientSitemapEntry> deleted = clipboardData.getDeletions();
-            deleted.add(0, getEntry());
-        }
-        removeDeletedFromModified(getEntry(), clipboardData.getModifications());
+        clipboardData.getModifications().remove(getEntry());
+        clipboardData.getModifications().add(0, getEntry());
     }
 }

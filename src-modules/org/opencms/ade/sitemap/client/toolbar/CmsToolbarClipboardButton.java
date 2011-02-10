@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/toolbar/Attic/CmsToolbarClipboardButton.java,v $
- * Date   : $Date: 2010/11/15 16:05:19 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/02/10 16:35:54 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,33 +33,19 @@ package org.opencms.ade.sitemap.client.toolbar;
 
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
-import org.opencms.ade.sitemap.client.ui.css.I_CmsLayoutBundle;
-import org.opencms.gwt.client.ui.CmsList;
-import org.opencms.gwt.client.ui.CmsMenuButton;
-import org.opencms.gwt.client.ui.CmsTabbedPanel;
 import org.opencms.gwt.client.ui.I_CmsButton;
-import org.opencms.gwt.client.ui.I_CmsListItem;
-
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Sitemap toolbar clipboard button.<p>
  * 
  * @author Michael Moossen
+ * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
-public class CmsToolbarClipboardButton extends CmsMenuButton implements I_CmsToolbarActivatable {
-
-    /** The content panel. */
-    protected FlowPanel m_content;
+public class CmsToolbarClipboardButton extends A_CmsToolbarListMenuButton {
 
     /**
      * Constructor.<p>
@@ -69,83 +55,27 @@ public class CmsToolbarClipboardButton extends CmsMenuButton implements I_CmsToo
      */
     public CmsToolbarClipboardButton(final CmsSitemapToolbar toolbar, final CmsSitemapController controller) {
 
-        super(I_CmsButton.ButtonData.CLIPBOARD.getTitle(), I_CmsButton.ButtonData.CLIPBOARD.getIconClass());
-        setToolbarMode(true);
-        setOpenRight(true);
-        if (!controller.isEditable()) {
-            setEnabled(false);
-            // TODO: the CmsMenuButon should also implement this method!
-            // disable(controller.getData().getNoEditReason());
-        }
-
-        addClickHandler(new ClickHandler() {
-
-            /**
-             * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
-             */
-            public void onClick(ClickEvent event) {
-
-                if (!isOpen()) {
-                    toolbar.onButtonActivation(CmsToolbarClipboardButton.this);
-                    if (m_content == null) {
-                        // lazy initialization
-                        CmsToolbarClipboardView view = new CmsToolbarClipboardView(
-                            CmsToolbarClipboardButton.this,
-                            controller);
-                        CmsTabbedPanel<FlowPanel> tabs = new CmsTabbedPanel<FlowPanel>();
-                        tabs.add(
-                            createTab(Messages.get().key(Messages.GUI_CLIPBOARD_MODIFIED_DESC_0), view.getModified()),
-                            Messages.get().key(Messages.GUI_CLIPBOARD_MODIFIED_TITLE_0));
-                        tabs.add(
-                            createTab(Messages.get().key(Messages.GUI_CLIPBOARD_DELETED_DESC_0), view.getDeleted()),
-                            Messages.get().key(Messages.GUI_CLIPBOARD_DELETED_TITLE_0));
-
-                        SimplePanel tabsContainer = new SimplePanel();
-                        tabsContainer.addStyleName(I_CmsLayoutBundle.INSTANCE.clipboardCss().menuTabContainer());
-                        tabsContainer.add(tabs);
-
-                        m_content = new FlowPanel();
-                        m_content.setStyleName(I_CmsLayoutBundle.INSTANCE.clipboardCss().menuContent());
-                        m_content.add(tabsContainer);
-                        setMenuWidget(m_content);
-                    }
-
-                    openMenu();
-                } else {
-                    closeMenu();
-                }
-            }
-        });
+        super(
+            I_CmsButton.ButtonData.CLIPBOARD.getTitle(),
+            I_CmsButton.ButtonData.CLIPBOARD.getIconClass(),
+            toolbar,
+            controller);
     }
 
     /**
-     * Creates a new tab.<p>
-     * 
-     * @param description the description 
-     * @param list list of items
-     * 
-     * @return the new created tab
+     * @see org.opencms.ade.sitemap.client.toolbar.A_CmsToolbarListMenuButton#initContent()
      */
-    public FlowPanel createTab(String description, CmsList<? extends I_CmsListItem> list) {
+    @Override
+    protected void initContent() {
 
-        FlowPanel tab = new FlowPanel();
-        tab.setStyleName(I_CmsLayoutBundle.INSTANCE.clipboardCss().clipboardTabPanel());
-        Label descriptionLabel = new Label(description);
-        descriptionLabel.setStyleName(I_CmsLayoutBundle.INSTANCE.clipboardCss().description());
-        descriptionLabel.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().textBig());
-        tab.add(descriptionLabel);
-        list.setStyleName(I_CmsLayoutBundle.INSTANCE.clipboardCss().itemList());
-        list.addStyleName(I_CmsLayoutBundle.INSTANCE.clipboardCss().clipboardList());
-        list.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
-        tab.add(list);
-        return tab;
-    }
-
-    /**
-     * @see org.opencms.ade.sitemap.client.toolbar.I_CmsToolbarActivatable#onActivation(com.google.gwt.user.client.ui.Widget)
-     */
-    public void onActivation(Widget widget) {
-
-        closeMenu();
+        CmsToolbarClipboardView view = new CmsToolbarClipboardView(this, getController());
+        createTab(
+            Messages.get().key(Messages.GUI_CLIPBOARD_MODIFIED_TITLE_0),
+            Messages.get().key(Messages.GUI_CLIPBOARD_MODIFIED_DESC_0),
+            view.getModified());
+        createTab(
+            Messages.get().key(Messages.GUI_CLIPBOARD_DELETED_TITLE_0),
+            Messages.get().key(Messages.GUI_CLIPBOARD_DELETED_DESC_0),
+            view.getDeleted());
     }
 }

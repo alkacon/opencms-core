@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapDNDController.java,v $
- * Date   : $Date: 2011/01/14 14:19:54 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2011/02/10 16:35:54 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,23 +31,20 @@
 
 package org.opencms.ade.sitemap.client.control;
 
-import org.opencms.ade.galleries.client.ui.CmsResultListItem;
 import org.opencms.ade.sitemap.client.CmsSitemapTreeItem;
 import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.toolbar.CmsSitemapToolbar;
-import org.opencms.ade.sitemap.client.toolbar.CmsToolbarClipboardView.CmsClipboardDeletedItem;
-import org.opencms.ade.sitemap.client.ui.CmsDetailPageListItem;
-import org.opencms.ade.sitemap.client.ui.CmsSpecialTab;
+import org.opencms.ade.sitemap.client.ui.CmsCreatableListItem;
+import org.opencms.ade.sitemap.client.ui.CmsCreatableListItem.EntryType;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
-import org.opencms.ade.sitemap.shared.CmsResourceTypeInfo;
+import org.opencms.ade.sitemap.shared.CmsNewResourceInfo;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.dnd.CmsDNDHandler.Orientation;
 import org.opencms.gwt.client.dnd.I_CmsDNDController;
 import org.opencms.gwt.client.dnd.I_CmsDraggable;
 import org.opencms.gwt.client.dnd.I_CmsDropTarget;
-import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.tree.CmsTree;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
@@ -67,7 +64,7 @@ import com.google.gwt.dom.client.Style.Unit;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 8.0.0
  */
@@ -158,16 +155,6 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
      */
     public boolean onDragStart(I_CmsDraggable draggable, I_CmsDropTarget target, CmsDNDHandler handler) {
 
-        // TODO: do proper locking
-
-        // cancel if page can't be locked
-        //        boolean cancel = !m_controller.hasChanges();
-        //        cancel &= !CmsCoreProvider.get().lockAndCheckModification(
-        //            CmsCoreProvider.get().getUri(),
-        //            m_controller.getData().getTimestamp());
-        //        if (cancel) {
-        //            return false;
-        //        }
         handler.setOrientation(Orientation.VERTICAL);
         hideItemContent(handler.getPlaceholder());
         handler.getDragHelper().getStyle().setOpacity(0.6);
@@ -175,9 +162,7 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
         m_insertPath = null;
         m_originalIndex = -1;
         m_originalPath = null;
-        if ((draggable instanceof CmsClipboardDeletedItem)
-            || (draggable instanceof CmsResultListItem)
-            || draggable.hasTag(CmsSpecialTab.TAG_SPECIAL)) {
+        if (draggable instanceof CmsCreatableListItem) {
             m_toolbar.onButtonActivation(null);
 
             // fixing placeholder indent not being present in non tree items
@@ -210,20 +195,11 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
             return;
         }
         CmsClientSitemapEntry parent = CmsSitemapView.getInstance().getController().getEntry(m_insertPath);
-        if (draggable instanceof CmsClipboardDeletedItem) {
-            handleDropFromClipboard(draggable, parent);
-        }
         if (draggable instanceof CmsSitemapTreeItem) {
-            handleDropSitemapEntry(draggable, target, parent);
+            handleDropSitemapEntry((CmsSitemapTreeItem)draggable, target, parent);
         }
-        if (draggable instanceof CmsResultListItem) {
-            handleDropSearchResult(draggable, parent);
-        }
-        if (draggable.hasTag(CmsSpecialTab.TAG_REDIRECT)) {
-            handleDropRedirect(draggable, parent);
-        }
-        if (draggable instanceof CmsDetailPageListItem) {
-            handleDropDetailPage(draggable, parent);
+        if (draggable instanceof CmsCreatableListItem) {
+            handleDropNewEntry((CmsCreatableListItem)draggable, parent);
         }
         Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 
@@ -268,16 +244,14 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
     /**
      * Handles a dropped detail page.<p>
      * 
-     * @param draggable the detail page which was dropped into the sitemap 
+     * @param createItem the detail page which was dropped into the sitemap 
      * @param parent the parent sitemap entry  
      */
-    protected void handleDropDetailPage(I_CmsDraggable draggable, CmsClientSitemapEntry parent) {
+    private void handleDropNewEntry(CmsCreatableListItem createItem, CmsClientSitemapEntry parent) {
 
-        CmsDetailPageListItem detailItem = (CmsDetailPageListItem)draggable;
-        CmsResourceTypeInfo typeInfo = detailItem.getResourceTypeInfo();
-        //m_controller.create(...)
+        CmsNewResourceInfo typeInfo = createItem.getResourceTypeInfo();
         CmsClientSitemapEntry entry = new CmsClientSitemapEntry();
-        String uniqueName = CmsSitemapController.ensureUniqueName(parent, "detail_" + typeInfo.getName());
+        String uniqueName = CmsSitemapController.ensureUniqueName(parent, typeInfo.getTypeName());
         entry.setName(uniqueName);
         entry.setSitePath(m_insertPath + uniqueName + "/");
         String title = Messages.get().key(Messages.GUI_DETAIL_PAGE_TITLE_1, typeInfo.getTitle());
@@ -285,8 +259,15 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
         entry.setNew(true);
         entry.setVfsPath(null);
         entry.setPosition(m_insertIndex);
-        entry.setResourceTypeInfo(typeInfo);
-        m_controller.create(entry);
+        entry.setInNavigation(true);
+        if (EntryType.detailpage == createItem.getEntryType()) {
+            entry.setDetailpageTypeName(typeInfo.getTypeName());
+        }
+        if (EntryType.redirect == createItem.getEntryType()) {
+            CmsSimplePropertyValue prop = new CmsSimplePropertyValue("true", null);
+            entry.getProperties().put(CmsSitemapManager.Property.isRedirect.getName(), prop);
+        }
+        m_controller.create(entry, typeInfo.getId(), typeInfo.getCopyResourceId());
     }
 
     /**
@@ -316,78 +297,22 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
     }
 
     /**
-     * Handles a drop operation from the clipboard.<p>
-     * 
-     * @param draggable the dropped item 
-     * @param parent the parent sitemap entry 
-     */
-    private void handleDropFromClipboard(I_CmsDraggable draggable, CmsClientSitemapEntry parent) {
-
-        // reinserting a deleted item
-        CmsClientSitemapEntry entry = ((CmsClipboardDeletedItem)draggable).getEntry();
-        String uniqueName = CmsSitemapController.ensureUniqueName(parent, entry.getName());
-        entry.setName(uniqueName);
-        entry.updateSitePath(m_insertPath + entry.getName() + "/");
-        entry.setPosition(m_insertIndex);
-        m_controller.create(entry);
-    }
-
-    /**
-     * Handles dropping a "redirect item" into the sitemap.<p>
-     * 
-     * @param draggable the dropped item 
-     * @param parent the parent sitemap entry 
-     */
-    private void handleDropRedirect(I_CmsDraggable draggable, CmsClientSitemapEntry parent) {
-
-        CmsListItem specialItem = (CmsListItem)draggable;
-        CmsClientSitemapEntry entry = new CmsClientSitemapEntry();
-        String uniqueName = CmsSitemapController.ensureUniqueName(parent, "redirect");
-        entry.setName(uniqueName);
-        entry.setSitePath(m_insertPath + uniqueName + "/");
-        entry.setTitle(specialItem.getListItemWidget().getTitleLabel());
-        entry.setNew(true);
-        entry.setVfsPath(null);
-        entry.setPosition(m_insertIndex);
-        CmsSimplePropertyValue prop = new CmsSimplePropertyValue("true", null);
-        entry.getProperties().put(CmsSitemapManager.Property.isRedirect.getName(), prop);
-        m_controller.create(entry);
-    }
-
-    /**
-     * Handles a drop operation from the galleries' search results.<p>
-     * 
-     * @param draggable the dropped item 
-     * @param parent the parent sitemap entry 
-     */
-    private void handleDropSearchResult(I_CmsDraggable draggable, CmsClientSitemapEntry parent) {
-
-        CmsResultListItem galleryItem = (CmsResultListItem)draggable;
-
-        CmsClientSitemapEntry entry = new CmsClientSitemapEntry();
-        String uniqueName = CmsSitemapController.ensureUniqueName(parent, galleryItem.getName());
-        entry.setName(uniqueName);
-        entry.setSitePath(m_insertPath + uniqueName + "/");
-        entry.setTitle(galleryItem.getListItemWidget().getTitleLabel());
-        entry.setVfsPath(galleryItem.getVfsPath());
-        entry.setPosition(m_insertIndex);
-        m_controller.create(entry);
-    }
-
-    /**
      * Handles the drop for a sitemap item which was dragged to a different position.<p>
      * 
-     * @param draggable the dropped item  
+     * @param sitemapEntry the dropped item  
      * @param target the drop target 
      * @param parent the parent sitemap entry
      */
-    private void handleDropSitemapEntry(I_CmsDraggable draggable, I_CmsDropTarget target, CmsClientSitemapEntry parent) {
+    private void handleDropSitemapEntry(
+        CmsSitemapTreeItem sitemapEntry,
+        I_CmsDropTarget target,
+        CmsClientSitemapEntry parent) {
 
-        if (isChangedPosition(draggable, target, true)) {
+        if (isChangedPosition(sitemapEntry, target, true)) {
             // moving a tree entry around
-            CmsClientSitemapEntry entry = m_controller.getEntry(((CmsSitemapTreeItem)draggable).getSitePath());
+            CmsClientSitemapEntry entry = m_controller.getEntry((sitemapEntry).getSitePath());
             String uniqueName = CmsSitemapController.ensureUniqueName(parent, entry.getName());
-            if (!uniqueName.equals(entry.getName()) && isChangedPosition(draggable, target, false)) {
+            if (!uniqueName.equals(entry.getName()) && isChangedPosition(sitemapEntry, target, false)) {
                 m_controller.editAndChangeName(
                     entry,
                     entry.getTitle(),
@@ -402,7 +327,7 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
                 m_controller.move(entry, m_insertPath + entry.getName() + "/", m_insertIndex);
             }
         } else {
-            ((CmsSitemapTreeItem)draggable).resetEntry();
+            sitemapEntry.resetEntry();
         }
     }
 

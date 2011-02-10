@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/ui/Attic/CmsDetailPageListItem.java,v $
- * Date   : $Date: 2010/12/17 08:45:30 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/ui/Attic/CmsCreatableListItem.java,v $
+ * Date   : $Date: 2011/02/10 16:35:54 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -31,12 +31,13 @@
 
 package org.opencms.ade.sitemap.client.ui;
 
-import org.opencms.ade.sitemap.shared.CmsResourceTypeInfo;
+import org.opencms.ade.sitemap.shared.CmsNewResourceInfo;
 import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
+import org.opencms.util.CmsUUID;
 
 /**
- * A list item widget class which also contains a resource type info bean, for use in creating detail pages.<p>
+ * A list item widget class which also contains a resource type info bean, for use in creating new sitemap entries.<p>
  * 
  * @author Georg Westenberger
  * 
@@ -44,21 +45,56 @@ import org.opencms.gwt.client.ui.CmsListItemWidget;
  * 
  * @since 8.0.0
  */
-public class CmsDetailPageListItem extends CmsListItem {
+public class CmsCreatableListItem extends CmsListItem {
+
+    /** The types of creatable sitemap entries. */
+    public enum EntryType {
+        /** A detail page. */
+        detailpage,
+        /** A redirect entry. */
+        redirect,
+        /** A regular entry. */
+        regular
+    }
+
+    /** The sitemap entry type to create. */
+    private EntryType m_entryType;
 
     /** The resource type info bean. */
-    private CmsResourceTypeInfo m_typeInfo;
+    private CmsNewResourceInfo m_typeInfo;
 
     /**
      * Creates a new list item with a given resource type info bean.<p>
      * 
      * @param content the content for the list item widget 
      * @param typeInfo the resource type info bean 
+     * @param entryType the type of the creatable sitemap entry type
      */
-    public CmsDetailPageListItem(CmsListItemWidget content, CmsResourceTypeInfo typeInfo) {
+    public CmsCreatableListItem(CmsListItemWidget content, CmsNewResourceInfo typeInfo, EntryType entryType) {
 
         super(content);
         m_typeInfo = typeInfo;
+        m_entryType = entryType;
+    }
+
+    /**
+     * Returns the copy resource structure id.<p>
+     * 
+     * @return the copy resource structure id
+     */
+    public CmsUUID getCopyResourceId() {
+
+        return m_typeInfo.getCopyResourceId();
+    }
+
+    /**
+     * Returns the new sitemap entry type.<p>
+     * 
+     * @return the new sitemap entry type
+     */
+    public EntryType getEntryType() {
+
+        return m_entryType;
     }
 
     /**
@@ -66,8 +102,28 @@ public class CmsDetailPageListItem extends CmsListItem {
      * 
      * @return the resource type info bean
      */
-    public CmsResourceTypeInfo getResourceTypeInfo() {
+    public CmsNewResourceInfo getResourceTypeInfo() {
 
         return m_typeInfo;
+    }
+
+    /**
+     * Returns the resource type id.<p>
+     * 
+     * @return the resource type id
+     */
+    public int getTypeId() {
+
+        return m_typeInfo.getId();
+    }
+
+    /**
+     * Returns the resource type name.<p>
+     * 
+     * @return the resource type name
+     */
+    public String getTypeName() {
+
+        return m_typeInfo.getTypeName();
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsSitemapChange.java,v $
- * Date   : $Date: 2011/02/01 15:25:05 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/02/10 16:35:54 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 8.0.0
  */
@@ -72,6 +72,12 @@ public class CmsSitemapChange implements IsSerializable, Comparable<CmsSitemapCh
 
     /** The entry name. */
     private String m_name;
+
+    /** The new entry copy resource structure id. */
+    private CmsUUID m_newCopyResourceId;
+
+    /** The new entry resource type id. */
+    private int m_newResourceTypeId;
 
     /** The entry parent id. */
     private CmsUUID m_parentId;
@@ -215,6 +221,26 @@ public class CmsSitemapChange implements IsSerializable, Comparable<CmsSitemapCh
     public String getName() {
 
         return m_name;
+    }
+
+    /**
+     * Returns the new entry copy resource structure id.<p>
+     *
+     * @return the new entry copy resource structure id
+     */
+    public CmsUUID getNewCopyResourceId() {
+
+        return m_newCopyResourceId;
+    }
+
+    /**
+     * Returns the new entry resource type id.<p>
+     *
+     * @return the new entry resource type id
+     */
+    public int getNewResourceTypeId() {
+
+        return m_newResourceTypeId;
     }
 
     /**
@@ -431,6 +457,26 @@ public class CmsSitemapChange implements IsSerializable, Comparable<CmsSitemapCh
     public void setNew(boolean isNew) {
 
         m_isNew = isNew;
+    }
+
+    /**
+     * Sets the new entry copy resource structure id.<p>
+     *
+     * @param newCopyResourceId the new entry copy resource structure id to set
+     */
+    public void setNewCopyResourceId(CmsUUID newCopyResourceId) {
+
+        m_newCopyResourceId = newCopyResourceId;
+    }
+
+    /**
+     * Sets the new entry resource type id.<p>
+     *
+     * @param newResourceTypeId the new entry resource type id to set
+     */
+    public void setNewResourceTypeId(int newResourceTypeId) {
+
+        m_newResourceTypeId = newResourceTypeId;
     }
 
     /**

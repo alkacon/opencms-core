@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsSitemapData.java,v $
- * Date   : $Date: 2011/02/02 07:37:52 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2011/02/10 16:35:54 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 8.0
  */
@@ -59,9 +59,6 @@ public class CmsSitemapData implements IsSerializable {
 
     /** The clipboard data. */
     private CmsSitemapClipboardData m_clipboardData;
-
-    /** The type of the container page resource. */
-    private int m_cntPageType;
 
     /** The default template. */
     private CmsSitemapTemplate m_defaultTemplate;
@@ -84,6 +81,11 @@ public class CmsSitemapData implements IsSerializable {
     /** The maximum sitemap depth. */
     private int m_maxDepth;
 
+    private CmsNewResourceInfo m_defaultNewElementInfo;
+
+    /** The new element information. */
+    private List<CmsNewResourceInfo> m_newElementInfos;
+
     /** The reason why the current sitemap is not editable. */
     private String m_noEditReason;
 
@@ -100,7 +102,7 @@ public class CmsSitemapData implements IsSerializable {
     private Map<String, CmsXmlContentProperty> m_properties;
 
     /** The resource type information. */
-    private List<CmsResourceTypeInfo> m_resourceTypeInfos;
+    private List<CmsNewResourceInfo> m_resourceTypeInfos;
 
     /** The sitemap root. */
     private CmsClientSitemapEntry m_root;
@@ -129,7 +131,8 @@ public class CmsSitemapData implements IsSerializable {
      * @param isSecure true if there is a secure server configuration for the site which contains the sitemap 
      * @param noEditReason the reason why the current sitemap is not editable
      * @param displayToolbar the flag to control the display of the toolbar
-     * @param cntPageType the type of the container page resource
+     * @param defaultNewElementInfo the type of the container page resource
+     * @param newElementInfos the new element information
      * @param parentSitemap the path to the parent sitemap or <code>null</code>
      * @param root the sitemap root
      * @param openPath the path at which the sitemap should be opened 
@@ -149,13 +152,14 @@ public class CmsSitemapData implements IsSerializable {
         boolean isSecure,
         String noEditReason,
         boolean displayToolbar,
-        int cntPageType,
+        CmsNewResourceInfo defaultNewElementInfo,
+        List<CmsNewResourceInfo> newElementInfos,
         String parentSitemap,
         CmsClientSitemapEntry root,
         String openPath,
         int maxDepth,
         CmsDetailPageTable detailPageTable,
-        List<CmsResourceTypeInfo> resourceTypeInfos,
+        List<CmsNewResourceInfo> resourceTypeInfos,
         boolean canEditDetailPages) {
 
         m_defaultTemplate = defaultTemplate;
@@ -164,7 +168,7 @@ public class CmsSitemapData implements IsSerializable {
         m_clipboardData = clipboardData;
         m_noEditReason = noEditReason;
         m_displayToolbar = displayToolbar;
-        m_cntPageType = cntPageType;
+        m_defaultNewElementInfo = defaultNewElementInfo;
         m_parentSitemap = parentSitemap;
         m_parentProperties = parentProperties;
         m_root = root;
@@ -176,6 +180,7 @@ public class CmsSitemapData implements IsSerializable {
         m_detailPageTable = detailPageTable;
         m_resourceTypeInfos = resourceTypeInfos;
         m_canEditDetailPages = canEditDetailPages;
+        m_newElementInfos = newElementInfos;
     }
 
     /**
@@ -203,9 +208,9 @@ public class CmsSitemapData implements IsSerializable {
      *
      * @return the type of the container page resource
      */
-    public int getCntPageType() {
+    public CmsNewResourceInfo getDefaultNewElementInfo() {
 
-        return m_cntPageType;
+        return m_defaultNewElementInfo;
     }
 
     /**
@@ -269,6 +274,16 @@ public class CmsSitemapData implements IsSerializable {
     }
 
     /**
+     * Returns the new element information.<p>
+     *
+     * @return the new element information
+     */
+    public List<CmsNewResourceInfo> getNewElementInfos() {
+
+        return m_newElementInfos;
+    }
+
+    /**
      * Gets the path at which the sitemap should be opened (may be null).<p>
      * 
      * @return the path at which the sitemap should be opened 
@@ -313,7 +328,7 @@ public class CmsSitemapData implements IsSerializable {
      *
      * @return the resource type info beans for the detail pages 
      */
-    public List<CmsResourceTypeInfo> getResourceTypeInfos() {
+    public List<CmsNewResourceInfo> getResourceTypeInfos() {
 
         return m_resourceTypeInfos;
     }
