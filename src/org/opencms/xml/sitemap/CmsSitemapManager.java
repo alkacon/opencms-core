@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2011/02/10 16:33:07 $
- * Version: $Revision: 1.75 $
+ * Date   : $Date: 2011/02/11 14:27:15 $
+ * Version: $Revision: 1.76 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,12 +38,10 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
-import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.monitor.CmsMemoryMonitor;
-import org.opencms.xml.containerpage.CmsConfigurationItem;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.content.CmsXmlContentPropertyHelper;
 
@@ -64,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.75 $
+ * @version $Revision: 1.76 $
  * 
  * @since 7.9.2
  */
@@ -206,27 +204,6 @@ public class CmsSitemapManager {
         CmsResource entryPoint = OpenCms.getADEConfigurationManager().getEntryPoint(cms, openRootPath);
         String result = cms.getSitePath(entryPoint);
         return result;
-    }
-
-    /**
-     * The resource to copy for a new sitemap entry page.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param entryPoint the sitemap entry-point
-     * 
-     *  
-     * @return the copy resource
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public CmsResource getCopyPage(CmsObject cms, String entryPoint) throws CmsException {
-
-        CmsSitemapConfigurationData config = OpenCms.getADEConfigurationManager().getSitemapConfiguration(
-            cms,
-            cms.getRequestContext().addSiteRoot(entryPoint));
-        Map<String, CmsConfigurationItem> typeConfig = config.getTypeConfiguration();
-        CmsConfigurationItem item = typeConfig.get(CmsResourceTypeXmlContainerPage.getStaticTypeName());
-        return item.getSourceFile();
     }
 
     /**
