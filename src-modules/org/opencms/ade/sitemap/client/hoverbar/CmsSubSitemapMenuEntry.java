@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/hoverbar/Attic/CmsSubSitemapMenuEntry.java,v $
- * Date   : $Date: 2011/02/03 15:13:15 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/02/11 14:33:42 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.ade.sitemap.client.hoverbar;
 
+import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
@@ -45,7 +46,7 @@ import com.google.gwt.user.client.Command;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -103,14 +104,18 @@ public class CmsSubSitemapMenuEntry extends A_CmsSitemapMenuEntry {
     @Override
     public void onShow(CmsHoverbarShowEvent event) {
 
-        String sitePath = getHoverbar().getSitePath();
-        CmsSitemapController controller = getHoverbar().getController();
-        CmsClientSitemapEntry entry = controller.getEntry(sitePath);
-        boolean show = !controller.isRoot(sitePath)
-            && (entry != null)
-            && entry.isInNavigation()
-            && entry.isFolderType()
-            && entry.isEditable();
-        setVisible(show);
+        if (CmsSitemapView.getInstance().isNavigationMode()) {
+            String sitePath = getHoverbar().getSitePath();
+            CmsSitemapController controller = getHoverbar().getController();
+            CmsClientSitemapEntry entry = controller.getEntry(sitePath);
+            boolean show = !controller.isRoot(sitePath)
+                && (entry != null)
+                && entry.isInNavigation()
+                && entry.isFolderType()
+                && entry.isEditable();
+            setVisible(show);
+        } else {
+            setVisible(false);
+        }
     }
 }
