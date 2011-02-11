@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/edit/Attic/CmsSitemapEntryEditor.java,v $
- * Date   : $Date: 2011/02/01 15:25:05 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2011/02/11 14:29:55 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,7 +68,7 @@ import java.util.Set;
  * 
  *  @author Georg Westenberger
  *  
- *  @version $Revision: 1.17 $
+ *  @version $Revision: 1.18 $
  *  
  *  @since 8.0.0
  */
@@ -459,9 +459,12 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
             selectCell.setTemplate(template);
             result.addOption(selectCell);
         }
-        CmsTemplateSelectCell defaultCell = new CmsTemplateSelectCell();
-        defaultCell.setTemplate(getDefaultTemplate());
-        result.addOption(defaultCell);
+        CmsSitemapTemplate defaultTemplate = getDefaultTemplate();
+        if (defaultTemplate != null) {
+            CmsTemplateSelectCell defaultCell = new CmsTemplateSelectCell();
+            defaultCell.setTemplate(defaultTemplate);
+            result.addOption(defaultCell);
+        }
         return result;
     }
 
@@ -517,13 +520,16 @@ public class CmsSitemapEntryEditor extends CmsFormDialog {
     private CmsSitemapTemplate getDefaultTemplate() {
 
         CmsSitemapTemplate template = m_controller.getDefaultTemplate(m_handler.getEntry().getSitePath());
-        // replace site path with empty string and title with "default" 
-        String defaultTitle = message(Messages.GUI_DEFAULT_TEMPLATE_TITLE_0);
-        return new CmsSitemapTemplate(
-            defaultTitle,
-            template.getDescription(),
-            DEFAULT_TEMPLATE_VALUE,
-            template.getImgPath());
+        if (template != null) {
+            // replace site path with empty string and title with "default" 
+            String defaultTitle = message(Messages.GUI_DEFAULT_TEMPLATE_TITLE_0);
+            return new CmsSitemapTemplate(
+                defaultTitle,
+                template.getDescription(),
+                DEFAULT_TEMPLATE_VALUE,
+                template.getImgPath());
+        }
+        return null;
     }
 
     /**
