@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/rpc/Attic/I_CmsCoreServiceAsync.java,v $
- * Date   : $Date: 2010/12/21 10:23:32 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2011/02/11 17:06:27 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,6 +38,8 @@ import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.CmsListInfoBean;
+import org.opencms.gwt.shared.CmsUploadFileBean;
+import org.opencms.gwt.shared.CmsUploadProgessInfo;
 import org.opencms.gwt.shared.CmsValidationQuery;
 import org.opencms.gwt.shared.CmsValidationResult;
 import org.opencms.util.CmsUUID;
@@ -53,7 +55,7 @@ import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 8.0.0
  * 
@@ -62,6 +64,25 @@ import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
  * @see org.opencms.gwt.shared.rpc.I_CmsCoreServiceAsync
  */
 public interface I_CmsCoreServiceAsync {
+
+    /**
+     * Cancels the upload.<p>
+     * 
+     * @param callback the asynchronous callback
+     */
+    void cancelUpload(AsyncCallback<Void> callback);
+
+    /**
+     * Checks the availability of a resource in the VFS, using the 
+     * {@link org.opencms.file.CmsResourceFilter#IGNORE_EXPIRATION} filter.<p>
+     * 
+     * Calculates the VFS path for each filename in the given list and checks its availability.<p>
+     * 
+     * @param fileNames the filenames to check
+     * @param targetFolder the folder to check
+     * @param callback the async callback
+     */
+    void checkUploadFiles(List<String> fileNames, String targetFolder, AsyncCallback<CmsUploadFileBean> callback);
 
     /**
      * Creates a new UUID.<p>
@@ -132,6 +153,13 @@ public interface I_CmsCoreServiceAsync {
      * @param callback the callback which receives the result  
      */
     void getResourceState(String path, AsyncCallback<CmsResourceState> callback);
+
+    /**
+     * Returns the upload progress information.<p>
+     * 
+     * @param callback the asynchronous callback
+     */
+    void getUploadProgressInfo(AsyncCallback<CmsUploadProgessInfo> callback);
 
     /**
      * Locks the given resource.<p>

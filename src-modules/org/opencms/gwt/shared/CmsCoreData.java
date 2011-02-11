@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/Attic/CmsCoreData.java,v $
- * Date   : $Date: 2010/12/17 08:45:30 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/02/11 17:06:27 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 8.0.0
  */
@@ -72,6 +72,9 @@ public class CmsCoreData implements IsSerializable {
     /** The current site root. */
     private String m_siteRoot;
 
+    /** The uri pointing on the upload JSP. */
+    private String m_uploadUri;
+
     /** The current uri. */
     private String m_uri;
 
@@ -100,6 +103,7 @@ public class CmsCoreData implements IsSerializable {
             clone.getWpLocale(),
             clone.getUri(),
             clone.getNavigationUri(),
+            clone.getUploadUri(),
             clone.getServerTime());
     }
 
@@ -112,6 +116,7 @@ public class CmsCoreData implements IsSerializable {
      * @param wpLocale the workplace locale
      * @param uri the current uri
      * @param navigationUri the current navigation URI
+     * @param uploadUri the uri pointing on the upload JSP
      * @param serverTime the current time  
      */
     public CmsCoreData(
@@ -121,6 +126,7 @@ public class CmsCoreData implements IsSerializable {
         String wpLocale,
         String uri,
         String navigationUri,
+        String uploadUri,
         long serverTime) {
 
         m_context = context;
@@ -129,6 +135,7 @@ public class CmsCoreData implements IsSerializable {
         m_wpLocale = wpLocale;
         m_uri = uri;
         m_navigationUri = navigationUri;
+        m_uploadUri = uploadUri;
         m_serverTime = serverTime;
     }
 
@@ -180,6 +187,16 @@ public class CmsCoreData implements IsSerializable {
     public String getSiteRoot() {
 
         return m_siteRoot;
+    }
+
+    /**
+     * Returns the uploadUri.<p>
+     *
+     * @return the uploadUri
+     */
+    public String getUploadUri() {
+
+        return m_uploadUri;
     }
 
     /**

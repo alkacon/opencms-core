@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/rpc/Attic/I_CmsCoreService.java,v $
- * Date   : $Date: 2010/12/21 10:23:32 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2011/02/11 17:06:27 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,6 +39,8 @@ import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.CmsListInfoBean;
+import org.opencms.gwt.shared.CmsUploadFileBean;
+import org.opencms.gwt.shared.CmsUploadProgessInfo;
 import org.opencms.gwt.shared.CmsValidationQuery;
 import org.opencms.gwt.shared.CmsValidationResult;
 import org.opencms.util.CmsUUID;
@@ -54,7 +56,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 8.0.0
  * 
@@ -70,6 +72,25 @@ public interface I_CmsCoreService extends RemoteService {
 
     /** A constant that signals that we are in the sitemap context. */
     String CONTEXT_SITEMAP = "sitemap";
+
+    /**
+     * Cancels the upload.<p>
+     */
+    void cancelUpload();
+
+    /**
+     * Checks the availability of a resource in the VFS, using the 
+     * {@link org.opencms.file.CmsResourceFilter#IGNORE_EXPIRATION} filter.<p>
+     * 
+     * Calculates the VFS path for each filename in the given list and checks its availability.<p>
+     * 
+     * @param fileNames the filenames to check
+     * @param targetFolder the folder to check
+     * 
+     * @return a {@link CmsUploadFileBean} that holds the list of resource names (without the path) 
+     * that already exist in the VFS and a list of filenames that are invalid
+     */
+    CmsUploadFileBean checkUploadFiles(List<String> fileNames, String targetFolder);
 
     /**
     * Creates a new UUID.<p>
@@ -159,6 +180,15 @@ public interface I_CmsCoreService extends RemoteService {
      * @throws CmsRpcException
      */
     CmsResourceState getResourceState(String path) throws CmsRpcException;
+
+    /**
+     * Returns the upload progress information.<p>
+     * 
+     * @return the upload progress information
+     * 
+     * @throws CmsRpcException if something goes wrong 
+     */
+    CmsUploadProgessInfo getUploadProgressInfo() throws CmsRpcException;
 
     /**
      * Locks the given resource.<p>

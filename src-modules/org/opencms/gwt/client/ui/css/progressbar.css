@@ -1,0 +1,53 @@
+.meterWrap{
+    position: relative;
+}
+
+.meterWrap, .meterValue, .meterText {
+    /* The width and height of your image */
+    width: 100%;
+    height: 20px;
+}
+
+
+/** browser specific styles **/
+@if user.agent gecko1_8 gecko {
+	/** firefox **/
+	.meterWrap, .meterValue {
+		-moz-border-radius: 5px;
+	}
+} @elif user.agent safari {
+	/** chrome, safari etc. **/
+	.meterWrap, .meterValue {
+		-webkit-border-radius: 5px;
+	}
+} @elif user.agent opera {
+	/** opera */
+	.meterWrap, .meterValue {
+		border-radius: 5px;
+	}
+} @elif user.agent ie8 {
+	/** ie7, ie8 and the rest, add new @elif block if necessary **/
+	.meterWrap, .meterValue {
+		border-radius: 5px;
+	}
+} @else {
+	.meterWrap, .meterValue {}
+}
+
+@sprite .meterWrap, .meterValue {
+	gwt-image: "backgrounds.progress";
+	background-position: 50% 50%;
+    background-repeat: repeat-x;
+    height: 20px;
+}
+            
+.meterText {
+    position: absolute;
+    top:0; left:0;
+
+    padding-top: 4px;
+                
+    color: #fff;
+    text-align: center;
+    width: 100%;
+}

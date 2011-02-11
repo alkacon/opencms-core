@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsImageBundle.java,v $
- * Date   : $Date: 2011/02/07 14:56:38 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2011/02/11 17:06:28 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import com.google.gwt.resources.client.ImageResource;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @since 8.0.0
  */
@@ -459,6 +459,14 @@ public interface I_CmsImageBundle extends ClientBundle {
      */
     @Source("images/errorIcon.png")
     ImageResource errorIcon();
+
+    /**
+     * Image resource accessor.<p>
+     * 
+     * @return an image resource
+     */
+    @Source("images/warningIcon.png")
+    ImageResource warningIcon();
 
     /**
      * Accessor for the icon resource bundle.<p>

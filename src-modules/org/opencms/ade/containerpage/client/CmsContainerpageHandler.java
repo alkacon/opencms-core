@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageHandler.java,v $
- * Date   : $Date: 2011/02/03 09:50:13 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2011/02/11 17:06:28 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,6 +49,9 @@ import org.opencms.gwt.client.ui.CmsContextMenuEntry;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsNotification;
+import org.opencms.gwt.client.ui.CmsPopupDialog;
+import org.opencms.gwt.client.ui.CmsUploadButton;
+import org.opencms.gwt.client.ui.CmsUploadDialog;
 import org.opencms.gwt.client.ui.I_CmsAcceptDeclineCancelHandler;
 import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
 import org.opencms.gwt.client.ui.I_CmsContextMenuEntry;
@@ -90,7 +93,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.34 $
+ * @version $Revision: 1.35 $
  * 
  * @since 8.0.0
  */
@@ -717,22 +720,39 @@ public class CmsContainerpageHandler {
                 entry.setSubMenu(transformEntries(bean.getSubMenu(), uri));
             }
 
-            Command cmd;
+            Command cmd = null;
 
             String name = entry.getName();
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(name) && name.equals(CmsAvailabilityDialog.class.getName())) {
-                entry.setImageClass(org.opencms.gwt.client.ui.css.I_CmsImageBundle.INSTANCE.contextMenuIcons().availabilitySmall());
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(name)) {
 
-                cmd = new Command() {
+                if (name.equals(CmsAvailabilityDialog.class.getName())) {
+                    entry.setImageClass(org.opencms.gwt.client.ui.css.I_CmsImageBundle.INSTANCE.contextMenuIcons().availabilitySmall());
 
-                    /**
-                     * @see com.google.gwt.user.client.Command#execute()
-                     */
-                    public void execute() {
+                    cmd = new Command() {
 
-                        new CmsAvailabilityDialog(m_controller.getData().getContainerpageUri()).loadAndShow();
-                    }
-                };
+                        /**
+                         * @see com.google.gwt.user.client.Command#execute()
+                         */
+                        public void execute() {
+
+                            new CmsAvailabilityDialog(m_controller.getData().getContainerpageUri()).loadAndShow();
+                        }
+                    };
+                } else if (name.equals(CmsUploadDialog.class.getName())) {
+                    cmd = new Command() {
+
+                        /**
+                         * @see com.google.gwt.user.client.Command#execute()
+                         */
+                        public void execute() {
+
+                            CmsPopupDialog dialog = new CmsPopupDialog();
+                            CmsUploadButton upload = new CmsUploadButton();
+                            dialog.setContent(upload);
+                            dialog.center();
+                        }
+                    };
+                }
             } else {
                 cmd = new Command() {
 

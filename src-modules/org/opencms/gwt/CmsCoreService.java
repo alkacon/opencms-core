@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsCoreService.java,v $
- * Date   : $Date: 2010/12/21 13:03:43 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2011/02/11 17:06:28 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,9 +49,14 @@ import org.opencms.gwt.shared.CmsCoreData;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsPrincipalBean;
+import org.opencms.gwt.shared.CmsUploadFileBean;
+import org.opencms.gwt.shared.CmsUploadProgessInfo;
 import org.opencms.gwt.shared.CmsValidationQuery;
 import org.opencms.gwt.shared.CmsValidationResult;
 import org.opencms.gwt.shared.rpc.I_CmsCoreService;
+import org.opencms.gwt.upload.CmsUploadBean;
+import org.opencms.gwt.upload.CmsUploadException;
+import org.opencms.gwt.upload.CmsUploadListener;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.lock.CmsLock;
@@ -95,13 +100,16 @@ import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.fileupload.InvalidFileNameException;
+import org.apache.commons.fileupload.util.Streams;
+
 /**
  * Provides general core services.<p>
  * 
  * @author Michael Moossen
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 8.0.0
  * 
@@ -194,6 +202,53 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         srv.setCms(CmsFlexController.getCmsObject(request));
         srv.setRequest(request);
         return srv;
+    }
+
+    /**
+     * Cancels the upload.<p>
+     */
+    public void cancelUpload() {
+
+        if (getRequest().getSession().getAttribute(CmsUploadBean.SESSION_ATTRIBUTE_LISTENER_ID) != null) {
+            CmsUUID listenerId = (CmsUUID)getRequest().getSession().getAttribute(
+                CmsUploadBean.SESSION_ATTRIBUTE_LISTENER_ID);
+            CmsUploadListener listener = CmsUploadBean.getCurrentListener(listenerId);
+            if ((listener != null) && !listener.isCanceled()) {
+                listener.setException(new CmsUploadException("Upload canceled by the user."));
+            }
+        }
+    }
+
+    /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#checkUploadFiles(java.util.List, java.lang.String)
+     */
+    public CmsUploadFileBean checkUploadFiles(List<String> fileNames, String targetFolder) {
+
+        List<String> existingResourceNames = new ArrayList<String>();
+        List<String> invalidFileNames = new ArrayList<String>();
+        boolean isActive = false;
+
+        // check if there is an active upload
+        if (getRequest().getSession().getAttribute(CmsUploadBean.SESSION_ATTRIBUTE_LISTENER_ID) == null) {
+
+            // check for existing files
+            for (String fileName : fileNames) {
+
+                try {
+                    Streams.checkFileName(fileName);
+                    String newResName = CmsResource.getName(fileName.replace('\\', '/'));
+                    String newResPath = getNewResourceName(newResName, targetFolder);
+                    if (getCmsObject().existsResource(newResPath, CmsResourceFilter.IGNORE_EXPIRATION)) {
+                        existingResourceNames.add(fileName);
+                    }
+                } catch (InvalidFileNameException e) {
+                    invalidFileNames.add(fileName);
+                }
+            }
+        } else {
+            isActive = true;
+        }
+        return new CmsUploadFileBean(existingResourceNames, invalidFileNames, isActive);
     }
 
     /**
@@ -383,6 +438,25 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     }
 
     /**
+     * Returns the upload progress information.<p>
+     * 
+     * @return the upload progress information
+     */
+    public CmsUploadProgessInfo getUploadProgressInfo() {
+
+        CmsUploadProgessInfo info = new CmsUploadProgessInfo(0, 0, false, 0, 0);
+        if (getRequest().getSession().getAttribute(CmsUploadBean.SESSION_ATTRIBUTE_LISTENER_ID) != null) {
+            CmsUUID listenerId = (CmsUUID)getRequest().getSession().getAttribute(
+                CmsUploadBean.SESSION_ATTRIBUTE_LISTENER_ID);
+            CmsUploadListener listener = CmsUploadBean.getCurrentListener(listenerId);
+            if (listener != null) {
+                info = listener.getInfo();
+            }
+        }
+        return info;
+    }
+
+    /**
      * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#lock(java.lang.String)
      */
     public String lock(String uri) throws CmsRpcException {
@@ -439,6 +513,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
 
         CmsObject cms = getCmsObject();
         String navigationUri = CmsSitemapManager.getNavigationUri(cms, getRequest());
+        String uploadUri = OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, CmsUploadBean.UPLOAD_JSP_URI);
         CmsCoreData data = new CmsCoreData(
             OpenCms.getSystemInfo().getOpenCmsContext(),
             cms.getRequestContext().getSiteRoot(),
@@ -446,6 +521,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             OpenCms.getWorkplaceManager().getWorkplaceLocale(cms).toString(),
             cms.getRequestContext().getUri(),
             navigationUri,
+            uploadUri,
             System.currentTimeMillis());
         return data;
     }
@@ -735,6 +811,19 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         // get current lock
         lock = getCmsObject().getLock(resource);
         return lock;
+    }
+
+    /**
+     * Returns the VFS path for the given filename and folder.<p>
+     * 
+     * @param fileName the filename to combine with the folder
+     * @param folder the folder to combine with the filename
+     * 
+     * @return the VFS path for the given filename and folder
+     */
+    private String getNewResourceName(String fileName, String folder) {
+
+        return folder + getCmsObject().getRequestContext().getFileTranslator().translateResource(fileName);
     }
 
     /**

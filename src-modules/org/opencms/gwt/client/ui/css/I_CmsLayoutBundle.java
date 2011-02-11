@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/css/Attic/I_CmsLayoutBundle.java,v $
- * Date   : $Date: 2011/02/07 14:56:38 $
- * Version: $Revision: 1.58 $
+ * Date   : $Date: 2011/02/11 17:06:28 $
+ * Version: $Revision: 1.59 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import com.google.gwt.resources.client.CssResource.Shared;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.58 $
+ * @version $Revision: 1.59 $
  * 
  * @since 8.0.0
  */
@@ -1043,6 +1043,31 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     }
 
     /** The context menu CSS classes. */
+    public interface I_CmsProgressBarCss extends CssResource {
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String meterText();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String meterValue();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String meterWrap();
+    }
+
+    /** The context menu CSS classes. */
     public interface I_CmsResourceStateCss extends CssResource {
 
         /** 
@@ -1330,6 +1355,122 @@ public interface I_CmsLayoutBundle extends ClientBundle {
         String toolbarShow();
     }
 
+    /** The context menu CSS classes. */
+    public interface I_CmsUploadCss extends CssResource {
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String dialogInfo();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String dialogMessage();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String fileInfoTable();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String fileInputPanel();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String loadingAnimation();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String loadingPanel();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String loadingText();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String mainContentWidget();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String progressInfo();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String summary();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String uploadButton();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String uploadDialogContent();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String uploadFileInput();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String uploadForm();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String warningIcon();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String warningMessage();
+    }
+
     /** The bundle instance. */
     I_CmsLayoutBundle INSTANCE = GWT.create(I_CmsLayoutBundle.class);
 
@@ -1517,6 +1658,14 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     /**
      * Access method.<p>
      * 
+     * @return the constants CSS
+     */
+    @Source("progressbar.css")
+    I_CmsProgressBarCss progressBarCss();
+
+    /**
+     * Access method.<p>
+     * 
      * @return the list item CSS
      */
     @Source("resourceState.css")
@@ -1554,5 +1703,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      */
     @Source("toolbar.css")
     I_CmsToolbarCss toolbarCss();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the constants CSS
+     */
+    @Source("upload.css")
+    I_CmsUploadCss uploadCss();
 
 }

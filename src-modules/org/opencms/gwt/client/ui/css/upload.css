@@ -1,0 +1,97 @@
+@external popupContent;
+
+.uploadButton {
+	overflow: hidden;
+	position: relative;
+	display: inline-block;
+}
+
+.uploadFileInput {
+	position: absolute;
+	opacity: 0;
+	font-size: 40px;
+	right: -10px;
+	top: -10;
+	z-index: 30000;
+}
+
+.uploadDialogContent .popupContent {
+	background: none repeat scroll 0 0 #F9F9F9;
+}
+
+.mainContentWidget {
+    background-color: #FFFFFF;
+    border: 1px solid #999999;
+    overflow: auto;
+    padding: 0 2px;
+    position: relative;
+}
+
+.dialogInfo {
+}
+
+.summary {
+	padding-top: 3px;
+}
+
+.fileInfoTable {
+	width: 100%;
+}
+
+.uploadForm {
+	float: left;
+}
+
+.progressInfo {
+	padding-top: 4px;
+	width: 100%;
+}
+
+.fileInputPanel {
+	overflow: hidden;
+	position: relative;
+}
+
+.dialogMessage {
+	line-height: 16px;
+	margin: 0px;
+}
+
+.loadingAnimation{
+	margin-top: 20px;
+}
+
+.loadingPanel {
+    left: 0;
+    top: 0;
+	display: inline-block;
+    height: 100%;
+    position: absolute;
+    width: 100%;
+    z-index: 30000;
+    background-color: #ffffff;
+    text-align: center;
+}
+
+@sprite .warningIcon{
+	gwt-image: "gwtImages.warningIcon";
+	margin: 0px 0px 0px 3px;
+	display: block;
+	float: left;
+}
+
+
+.warningMessage{
+	line-height: 16px;
+	margin: 0px 0px 0px 45px;
+}
+
+.loadingText {
+}
+
+@sprite .loadingAnimation{
+	gwt-image: "otherImages.loadingBig";
+	background-position: 50% 50%;
+    background-repeat: no-repeat;
+	display: inline-block;
+}
