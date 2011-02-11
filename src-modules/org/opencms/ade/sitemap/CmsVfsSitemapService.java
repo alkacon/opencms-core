@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsVfsSitemapService.java,v $
- * Date   : $Date: 2011/02/10 16:35:54 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2011/02/11 14:28:01 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -109,7 +109,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 8.0.0
  * 
@@ -391,26 +391,41 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             CmsSite site = OpenCms.getSiteManager().getSiteForSiteRoot(siteRoot);
             boolean isSecure = site.hasSecureServer();
 
-            CmsSitemapConfigurationData sitemapConfig = OpenCms.getADEConfigurationManager().getSitemapConfiguration(
-                cms,
-                cms.getRequestContext().addSiteRoot(openPath));
-            CmsResource copyResource = OpenCms.getSitemapManager().getCopyPage(cms, entryPoint);
-            CmsDetailPageTable detailPages = sitemapConfig.getDetailPageTable();
-            List<CmsNewResourceInfo> resourceTypeInfos = new ArrayList<CmsNewResourceInfo>();
-            resourceTypeInfos = getResourceTypeInfos(getCmsObject(), entryPoint, copyResource.getStructureId());
             String parentSitemap = null;
             if (!entryPoint.equals("/")) {
                 parentSitemap = sitemapMgr.findEntryPoint(cms, CmsResource.getParentFolder(entryPoint));
             }
-            boolean canEditDetailPages = !(sitemapConfig.getLastSource().isModuleConfiguration());
-
-            String noEdit = CmsProject.isOnlineProject(cms.getRequestContext().currentProject().getUuid())
-            ? "Can't edit sitemap in online project."
-            : "";
-
-            CmsNewResourceInfo defaultNewInfo = createNewResourceInfo(
+            CmsSitemapConfigurationData sitemapConfig = OpenCms.getADEConfigurationManager().getSitemapConfiguration(
                 cms,
-                sitemapConfig.getTypeConfiguration().get(CmsResourceTypeXmlContainerPage.getStaticTypeName()));
+                cms.getRequestContext().addSiteRoot(openPath));
+            String noEdit = "";
+            CmsNewResourceInfo defaultNewInfo = null;
+            List<CmsNewResourceInfo> newResourceInfos = null;
+            CmsDetailPageTable detailPages = null;
+            List<CmsNewResourceInfo> resourceTypeInfos = null;
+            boolean canEditDetailPages = false;
+            boolean isOnlineProject = CmsProject.isOnlineProject(cms.getRequestContext().currentProject().getUuid());
+            if (sitemapConfig == null) {
+                noEdit = "No sitemap configuration available.";
+            } else {
+                detailPages = sitemapConfig.getDetailPageTable();
+                if (!isOnlineProject) {
+                    CmsConfigurationItem containerpageConfigItem = sitemapConfig.getTypeConfiguration().get(
+                        CmsResourceTypeXmlContainerPage.getStaticTypeName());
+                    if (containerpageConfigItem != null) {
+                        resourceTypeInfos = getResourceTypeInfos(
+                            getCmsObject(),
+                            entryPoint,
+                            containerpageConfigItem.getSourceFile().getStructureId());
+                        defaultNewInfo = createNewResourceInfo(cms, containerpageConfigItem);
+                    }
+                    canEditDetailPages = !(sitemapConfig.getLastSource().isModuleConfiguration());
+                    newResourceInfos = getNewResourceInfos(cms, entryPoint);
+                }
+            }
+            if (isOnlineProject) {
+                noEdit = "Can't edit sitemap in online project.";
+            }
 
             result = new CmsSitemapData(
                 getDefaultTemplate(entryPoint),
@@ -424,7 +439,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 noEdit,
                 isDisplayToolbar(getRequest()),
                 defaultNewInfo,
-                getNewResourceInfos(cms, entryPoint),
+                newResourceInfos,
                 parentSitemap,
                 getRootEntry(entryPoint, propertyConfig),
                 openPath,
