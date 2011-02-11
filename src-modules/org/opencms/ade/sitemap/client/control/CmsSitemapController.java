@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2011/02/10 16:35:54 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2011/02/11 14:28:55 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -94,7 +94,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.43 $ 
+ * @version $Revision: 1.44 $ 
  * 
  * @since 8.0.0
  */
@@ -947,38 +947,40 @@ public class CmsSitemapController {
     */
     protected void applyChange(final I_CmsClientSitemapChange change, boolean redo) {
 
-        // save the sitemap
-        CmsRpcAction<Boolean> saveAction = new CmsRpcAction<Boolean>() {
+        if (change.getChangeForCommit() != null) {
+            // save the sitemap
+            CmsRpcAction<Boolean> saveAction = new CmsRpcAction<Boolean>() {
 
-            /**
-            * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
-            */
-            @Override
-            public void execute() {
+                /**
+                * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+                */
+                @Override
+                public void execute() {
 
-                setLoadingMessage(Messages.get().key(Messages.GUI_SAVING_0));
-                start(0, true);
-                getService().saveSync(getEntryPoint(), change.getChangeForCommit(), this);
+                    setLoadingMessage(Messages.get().key(Messages.GUI_SAVING_0));
+                    start(0, true);
+                    getService().saveSync(getEntryPoint(), change.getChangeForCommit(), this);
 
-            }
-
-            /**
-            * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
-            */
-            @Override
-            public void onResponse(Boolean result) {
-
-                if (result.booleanValue()) {
-                    stop(true);
-                    change.applyToModel(CmsSitemapController.this);
-                    fireChange(change);
-                } else {
-                    stop(false);
-                    CmsNotification.get().send(Type.WARNING, "Could not apply changes");
                 }
-            }
-        };
-        saveAction.execute();
+
+                /**
+                * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+                */
+                @Override
+                public void onResponse(Boolean result) {
+
+                    if (result.booleanValue()) {
+                        stop(true);
+                        change.applyToModel(CmsSitemapController.this);
+                        fireChange(change);
+                    } else {
+                        stop(false);
+                        CmsNotification.get().send(Type.WARNING, "Could not apply changes");
+                    }
+                }
+            };
+            saveAction.execute();
+        }
     }
 
     /**
