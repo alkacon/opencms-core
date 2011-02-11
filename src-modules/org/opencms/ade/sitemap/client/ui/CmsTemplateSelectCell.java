@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/ui/Attic/CmsTemplateSelectCell.java,v $
- * Date   : $Date: 2010/10/07 07:56:35 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/02/11 15:46:30 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -65,7 +65,7 @@ public class CmsTemplateSelectCell extends A_CmsSelectCell implements I_CmsTrunc
     }
 
     /** The parameter for the OpenCms image scaler. */
-    private static final String SCALE_PARAMS = "?__scale=t:0,w:64,h:64";
+    private static final String SCALE_PARAMS = "?__scale=t:0,c:transparent,w:64,h:64";
 
     /** The UiBinder instance used for this widget.<p>*/
     private static I_CmsTemplateSelectCellUiBinder uiBinder = GWT.create(I_CmsTemplateSelectCellUiBinder.class);
