@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapView.java,v $
- * Date   : $Date: 2011/02/11 14:28:26 $
- * Version: $Revision: 1.54 $
+ * Date   : $Date: 2011/02/11 15:47:22 $
+ * Version: $Revision: 1.55 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.54 $ 
+ * @version $Revision: 1.55 $ 
  * 
  * @since 8.0.0
  */
@@ -400,7 +400,6 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         m_instance = this;
         RootPanel rootPanel = RootPanel.get();
         m_inNavigationStyle = new CmsStyleVariable(rootPanel);
-        m_inNavigationStyle.setValue(I_CmsLayoutBundle.INSTANCE.sitemapItemCss().showAllResources());
         m_editorMode = EditorMode.navigation;
         // init
         I_CmsLayoutBundle.INSTANCE.rootCss().ensureInjected();
