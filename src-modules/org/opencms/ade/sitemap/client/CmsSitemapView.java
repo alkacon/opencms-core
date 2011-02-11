@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapView.java,v $
- * Date   : $Date: 2011/02/10 16:35:54 $
- * Version: $Revision: 1.53 $
+ * Date   : $Date: 2011/02/11 14:28:26 $
+ * Version: $Revision: 1.54 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.53 $ 
+ * @version $Revision: 1.54 $ 
  * 
  * @since 8.0.0
  */
@@ -398,7 +398,10 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
 
         super.onModuleLoad();
         m_instance = this;
-        m_inNavigationStyle = new CmsStyleVariable(RootPanel.get());
+        RootPanel rootPanel = RootPanel.get();
+        m_inNavigationStyle = new CmsStyleVariable(rootPanel);
+        m_inNavigationStyle.setValue(I_CmsLayoutBundle.INSTANCE.sitemapItemCss().showAllResources());
+        m_editorMode = EditorMode.navigation;
         // init
         I_CmsLayoutBundle.INSTANCE.rootCss().ensureInjected();
         I_CmsLayoutBundle.INSTANCE.pageCss().ensureInjected();
@@ -406,7 +409,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         I_CmsLayoutBundle.INSTANCE.sitemapItemCss().ensureInjected();
         I_CmsImageBundle.INSTANCE.buttonCss().ensureInjected();
 
-        RootPanel.getBodyElement().addClassName(I_CmsLayoutBundle.INSTANCE.rootCss().root());
+        rootPanel.addStyleName(I_CmsLayoutBundle.INSTANCE.rootCss().root());
 
         // controller 
         m_controller = new CmsSitemapController();
@@ -415,9 +418,8 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
 
         // toolbar
         m_toolbar = new CmsSitemapToolbar(m_controller);
-        setEditorMode(EditorMode.navigation);
-        RootPanel.get().add(m_toolbar);
-        RootPanel.get().add(new CmsToolbarPlaceHolder());
+        rootPanel.add(m_toolbar);
+        rootPanel.add(new CmsToolbarPlaceHolder());
 
         // hoverbar
         //  m_hoverbar = new CmsSitemapHoverbar(m_controller);
@@ -425,11 +427,11 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         // title
         CmsHeader title = new CmsHeader(Messages.get().key(Messages.GUI_EDITOR_TITLE_0), CmsCoreProvider.get().getUri());
         title.addStyleName(I_CmsLayoutBundle.INSTANCE.rootCss().pageCenter());
-        RootPanel.get().add(title);
+        rootPanel.add(title);
 
         // content page
         final CmsPage page = new CmsPage();
-        RootPanel.get().add(page);
+        rootPanel.add(page);
 
         // initial content
         final Label loadingLabel = new Label(org.opencms.gwt.client.Messages.get().key(
