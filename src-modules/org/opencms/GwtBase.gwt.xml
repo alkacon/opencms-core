@@ -4,11 +4,6 @@
 	<inherits name="com.google.gwt.user.User" />
 	<inherits name="com.google.gwt.json.JSON" />
 	
-	<!-- Include GWTUpload library -->
-  	<inherits name="gwtupload.GWTUpload"/>
-  	<!-- Load dynamically predefined styles in the library when the application starts -->
-  	<stylesheet src="Upload.css"/>
-	
 	<define-property name="fileapi.support" values="yes,no" />
 	<property-provider name="fileapi.support"><![CDATA[
 			var input=document.createElement('input');
