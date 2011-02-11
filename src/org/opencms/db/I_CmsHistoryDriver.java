@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsHistoryDriver.java,v $
- * Date   : $Date: 2010/01/18 10:01:22 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/02/11 11:00:13 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,10 +33,11 @@ package org.opencms.db;
 
 import org.opencms.db.generic.CmsSqlManager;
 import org.opencms.file.CmsDataAccessException;
+import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
-import org.opencms.file.history.CmsHistoryProject;
 import org.opencms.file.history.CmsHistoryPrincipal;
+import org.opencms.file.history.CmsHistoryProject;
 import org.opencms.file.history.I_CmsHistoryResource;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsUUID;
@@ -55,7 +56,7 @@ import java.util.List;
  * @author Thomas Weckert
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 6.9.1
  */
@@ -134,7 +135,7 @@ public interface I_CmsHistoryDriver {
      * @throws CmsDataAccessException if something goes wrong
      */
     List getAllNotDeletedEntries(CmsDbContext dbc) throws CmsDataAccessException;
-    
+
     /**
      * Returns the SqlManager of this driver.<p>
      * 
@@ -290,7 +291,7 @@ public interface I_CmsHistoryDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    List readProjectResources(CmsDbContext dbc, int publishTag) throws CmsDataAccessException;
+    List<String> readProjectResources(CmsDbContext dbc, int publishTag) throws CmsDataAccessException;
 
     /**
      * Returns all projects from the history.<p>
@@ -386,7 +387,7 @@ public interface I_CmsHistoryDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    void writeProperties(CmsDbContext dbc, CmsResource resource, List properties, int publishTag)
+    void writeProperties(CmsDbContext dbc, CmsResource resource, List<CmsProperty> properties, int publishTag)
     throws CmsDataAccessException;
 
     /**

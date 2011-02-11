@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2010/08/12 10:19:01 $
- * Version: $Revision: 1.140 $
+ * Date   : $Date: 2011/02/11 11:00:12 $
+ * Version: $Revision: 1.141 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -99,7 +99,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.140 $
+ * @version $Revision: 1.141 $
  * 
  * @since 6.0.0  
  */
@@ -127,7 +127,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     protected CmsDriverManager m_driverManager;
 
     /** The SQL manager. */
-    protected org.opencms.db.generic.CmsSqlManager m_sqlManager;
+    protected CmsSqlManager m_sqlManager;
 
     /**
      * @see org.opencms.db.I_CmsUserDriver#addResourceToOrganizationalUnit(org.opencms.db.CmsDbContext, org.opencms.security.CmsOrganizationalUnit, org.opencms.file.CmsResource)
@@ -409,13 +409,11 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                 // get the right offline project
                 try {
                     // this if setting up OpenCms
-                    setupProject = m_driverManager.readProject(
-                        new CmsDbContext(),
-                        I_CmsProjectDriver.SETUP_PROJECT_NAME);
+                    setupProject = m_driverManager.readProject(dbc, I_CmsProjectDriver.SETUP_PROJECT_NAME);
                 } catch (CmsException exc) {
                     // this if updating OpenCms
                     try {
-                        setupProject = m_driverManager.readProject(new CmsDbContext(), "Offline");
+                        setupProject = m_driverManager.readProject(dbc, "Offline");
                     } catch (CmsException exc2) {
                         // there is nothing to do, if no offline project found
                     }
@@ -874,10 +872,10 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     /**
      * @see org.opencms.db.I_CmsUserDriver#getUsers(org.opencms.db.CmsDbContext, org.opencms.security.CmsOrganizationalUnit, boolean)
      */
-    public List getUsers(CmsDbContext dbc, CmsOrganizationalUnit orgUnit, boolean recursive)
+    public List<CmsUser> getUsers(CmsDbContext dbc, CmsOrganizationalUnit orgUnit, boolean recursive)
     throws CmsDataAccessException {
 
-        List users = new ArrayList();
+        List<CmsUser> users = new ArrayList<CmsUser>();
         ResultSet res = null;
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -907,6 +905,10 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
+        for (CmsUser user : users) {
+            Map info = readUserInfos(dbc, user.getId());
+            user.setAdditionalInfo(info);
+        }
         return users;
     }
 
@@ -931,7 +933,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
         String poolUrl = config.get("db.user.pool").toString();
         String classname = config.get("db.user.sqlmanager").toString();
-        m_sqlManager = this.initSqlManager(classname);
+        m_sqlManager = initSqlManager(classname);
         m_sqlManager.init(I_CmsUserDriver.DRIVER_TYPE_ID, poolUrl);
 
         m_driverManager = driverManager;
@@ -1298,8 +1300,6 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                 }
                 throw new CmsDbEntryNotFoundException(message);
             }
-
-            return user;
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
                 Messages.ERR_GENERIC_SQL_1,
@@ -1307,6 +1307,10 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
+
+        Map info = readUserInfos(dbc, user.getId());
+        user.setAdditionalInfo(info);
+        return user;
     }
 
     /**
@@ -1349,6 +1353,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
 
+        Map info = readUserInfos(dbc, user.getId());
+        user.setAdditionalInfo(info);
         return user;
     }
 
@@ -1385,8 +1391,6 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                 }
                 throw new CmsDbEntryNotFoundException(message);
             }
-
-            return user;
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
                 Messages.ERR_GENERIC_SQL_1,
@@ -1394,6 +1398,10 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
+
+        Map info = readUserInfos(dbc, user.getId());
+        user.setAdditionalInfo(info);
+        return user;
     }
 
     /**
@@ -1469,7 +1477,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             sqlQuery = "C_GROUPS_GET_ALL_USERS_OF_GROUP_2";
         }
 
-        List users = new ArrayList();
+        List<CmsUser> users = new ArrayList<CmsUser>();
 
         PreparedStatement stmt = null;
         ResultSet res = null;
@@ -1494,6 +1502,10 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
 
+        for (CmsUser user : users) {
+            Map info = readUserInfos(dbc, user.getId());
+            user.setAdditionalInfo(info);
+        }
         return users;
     }
 
@@ -1719,6 +1731,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         PreparedStatement stmt = null;
         Connection conn = null;
         ResultSet res = null;
+        CmsAccessControlEntry ace = null;
 
         try {
             conn = m_sqlManager.getConnection(dbc);
@@ -1728,34 +1741,49 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             stmt.setString(2, acEntry.getPrincipal().toString());
 
             res = stmt.executeQuery();
-            if (!res.next()) {
-                m_driverManager.getUserDriver(dbc).createAccessControlEntry(
-                    dbc,
-                    project,
-                    acEntry.getResource(),
-                    acEntry.getPrincipal(),
-                    acEntry.getAllowedPermissions(),
-                    acEntry.getDeniedPermissions(),
-                    acEntry.getFlags());
-                return;
+            if (res.next()) {
+                ace = internalCreateAce(res);
             }
 
-            // otherwise update the already existing entry
-            stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_UPDATE_5");
-
-            stmt.setInt(1, acEntry.getAllowedPermissions());
-            stmt.setInt(2, acEntry.getDeniedPermissions());
-            stmt.setInt(3, acEntry.getFlags());
-            stmt.setString(4, acEntry.getResource().toString());
-            stmt.setString(5, acEntry.getPrincipal().toString());
-
-            stmt.executeUpdate();
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
                 Messages.ERR_GENERIC_SQL_1,
                 CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
+        }
+
+        if (ace == null) {
+            m_driverManager.getUserDriver(dbc).createAccessControlEntry(
+                dbc,
+                project,
+                acEntry.getResource(),
+                acEntry.getPrincipal(),
+                acEntry.getAllowedPermissions(),
+                acEntry.getDeniedPermissions(),
+                acEntry.getFlags());
+            return;
+        } else {
+            try {
+                conn = m_sqlManager.getConnection(dbc);
+
+                // otherwise update the already existing entry
+                stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_UPDATE_5");
+
+                stmt.setInt(1, acEntry.getAllowedPermissions());
+                stmt.setInt(2, acEntry.getDeniedPermissions());
+                stmt.setInt(3, acEntry.getFlags());
+                stmt.setString(4, acEntry.getResource().toString());
+                stmt.setString(5, acEntry.getPrincipal().toString());
+
+                stmt.executeUpdate();
+            } catch (SQLException e) {
+                throw new CmsDbSqlException(Messages.get().container(
+                    Messages.ERR_GENERIC_SQL_1,
+                    CmsDbSqlException.getErrorQuery(stmt)), e);
+            } finally {
+                m_sqlManager.closeAll(dbc, conn, stmt, null);
+            }
         }
     }
 
@@ -2339,7 +2367,6 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_DBG_CREATE_USER_1, userName));
         }
 
-        Map info = readUserInfos(dbc, userId);
         return new CmsUser(
             userId,
             ou + userName,
@@ -2350,7 +2377,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             res.getLong(m_sqlManager.readQuery("C_USERS_USER_LASTLOGIN_0")),
             res.getInt(m_sqlManager.readQuery("C_USERS_USER_FLAGS_0")),
             res.getLong(m_sqlManager.readQuery("C_USERS_USER_DATECREATED_0")),
-            info);
+            null);
     }
 
     /**

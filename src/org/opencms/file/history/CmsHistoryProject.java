@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/history/CmsHistoryProject.java,v $
- * Date   : $Date: 2010/01/18 10:03:53 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/02/11 11:00:13 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import java.util.List;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  *
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 6.9.1
  */
@@ -308,5 +308,15 @@ public class CmsHistoryProject extends CmsProject {
     public int hashCode() {
 
         return (new Long(m_datePublished)).hashCode();
+    }
+
+    /**
+     * Sets the projectResources.<p>
+     *
+     * @param projectResources the projectResources to set
+     */
+    public void setProjectResources(List<String> projectResources) {
+
+        m_projectResources = projectResources;
     }
 }

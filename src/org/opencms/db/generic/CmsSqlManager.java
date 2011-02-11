@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSqlManager.java,v $
- * Date   : $Date: 2010/01/18 10:03:59 $
- * Version: $Revision: 1.72 $
+ * Date   : $Date: 2011/02/11 11:00:12 $
+ * Version: $Revision: 1.73 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.72 $
+ * @version $Revision: 1.73 $
  * 
  * @since 6.0.0 
  */
@@ -135,7 +135,8 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
     protected static String replaceProjectPattern(CmsUUID projectId, String query) {
 
         // make the statement project dependent
-        String replacePattern = ((projectId == null) || projectId.equals(CmsProject.ONLINE_PROJECT_ID)) ? "_ONLINE_"
+        String replacePattern = ((projectId == null) || projectId.equals(CmsProject.ONLINE_PROJECT_ID))
+        ? "_ONLINE_"
         : "_OFFLINE_";
         return CmsStringUtil.substitute(query, QUERY_PROJECT_SEARCH_PATTERN, replacePattern);
     }
@@ -148,7 +149,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
      * @param stmnt the statement
      * @param res the result set
      */
-    public synchronized void closeAll(CmsDbContext dbc, Connection con, Statement stmnt, ResultSet res) {
+    public void closeAll(CmsDbContext dbc, Connection con, Statement stmnt, ResultSet res) {
 
         // NOTE: we have to close Connections/Statements that way, because a dbcp PoolablePreparedStatement
         // is not a DelegatedStatement; for that reason its not removed from the trace of the connection when it is closed.
@@ -160,18 +161,18 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
         }
 
         try {
-            // first, close the connection and (eventually) implicitly all assigned statements and result sets
-            if ((con != null) && !con.isClosed()) {
-                con.close();
+            // first, close the result set          
+            if (res != null) {
+                res.close();
             }
         } catch (SQLException e) {
             LOG.debug(e.getLocalizedMessage(), e);
         } finally {
-            con = null;
+            res = null;
         }
 
         try {
-            // close the statement and (normally) implicitly all assigned result sets
+            // close the statement
             if (stmnt != null) {
                 stmnt.close();
             }
@@ -182,14 +183,14 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
         }
 
         try {
-            // close the result set          
-            if (res != null) {
-                res.close();
+            // close the connection
+            if ((con != null) && !con.isClosed()) {
+                con.close();
             }
         } catch (SQLException e) {
             LOG.debug(e.getLocalizedMessage(), e);
         } finally {
-            res = null;
+            con = null;
         }
     }
 
@@ -243,7 +244,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
      * 
      * @throws SQLException if a database access error occurs
      */
-    public synchronized PreparedStatement getPreparedStatement(Connection con, CmsProject project, String queryKey)
+    public PreparedStatement getPreparedStatement(Connection con, CmsProject project, String queryKey)
     throws SQLException {
 
         return getPreparedStatement(con, project.getUuid(), queryKey);
@@ -261,7 +262,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
      * 
      * @throws SQLException if a database access error occurs
      */
-    public synchronized PreparedStatement getPreparedStatement(Connection con, CmsUUID projectId, String queryKey)
+    public PreparedStatement getPreparedStatement(Connection con, CmsUUID projectId, String queryKey)
     throws SQLException {
 
         String rawSql = readQuery(projectId, queryKey);
@@ -276,7 +277,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
      * @return PreparedStatement a new PreparedStatement containing the pre-compiled SQL statement 
      * @throws SQLException if a database access error occurs
      */
-    public synchronized PreparedStatement getPreparedStatement(Connection con, String queryKey) throws SQLException {
+    public PreparedStatement getPreparedStatement(Connection con, String queryKey) throws SQLException {
 
         String rawSql = readQuery(CmsUUID.getNullUUID(), queryKey);
         return getPreparedStatementForSql(con, rawSql);
@@ -290,7 +291,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
      * @return PreparedStatement a new PreparedStatement containing the pre-compiled SQL statement 
      * @throws SQLException if a database access error occurs
      */
-    public synchronized PreparedStatement getPreparedStatementForSql(Connection con, String query) throws SQLException {
+    public PreparedStatement getPreparedStatementForSql(Connection con, String query) throws SQLException {
 
         // unfortunately, this wrapper is essential, because some JDBC driver 
         // implementations don't accept the delegated objects of DBCP's connection pool. 

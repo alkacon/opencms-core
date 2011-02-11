@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2010/04/28 14:10:04 $
- * Version: $Revision: 1.261 $
+ * Date   : $Date: 2011/02/11 11:00:12 $
+ * Version: $Revision: 1.262 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -99,11 +99,71 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.261 $
+ * @version $Revision: 1.262 $
  * 
  * @since 6.0.0 
  */
 public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
+
+    /**
+     * This private class is a temporary storage for the method {@link CmsProjectDriver#readLocks(CmsDbContext)}.<p>
+     */
+    private class CmsTempResourceLock {
+
+        private int m_lockType;
+        private CmsUUID m_projectId;
+        private String m_resourcePath;
+        private CmsUUID m_userId;
+
+        public CmsTempResourceLock(String resourcePath, CmsUUID userId, CmsUUID projectId, int lockType) {
+
+            m_resourcePath = resourcePath;
+            m_userId = userId;
+            m_projectId = projectId;
+            m_lockType = lockType;
+        }
+
+        /**
+         * Returns the lockType.<p>
+         *
+         * @return the lockType
+         */
+        public int getLockType() {
+
+            return m_lockType;
+        }
+
+        /**
+         * Returns the projectId.<p>
+         *
+         * @return the projectId
+         */
+        public CmsUUID getProjectId() {
+
+            return m_projectId;
+        }
+
+        /**
+         * Returns the resourcePath.<p>
+         *
+         * @return the resourcePath
+         */
+        public String getResourcePath() {
+
+            return m_resourcePath;
+        }
+
+        /**
+         * Returns the userId.<p>
+         *
+         * @return the userId
+         */
+        public CmsUUID getUserId() {
+
+            return m_userId;
+        }
+
+    }
 
     /** Attribute name for reading the project of a resource. */
     public static final String DBC_ATTR_READ_PROJECT_FOR_RESOURCE = "DBC_ATTR_READ_PROJECT_FOR_RESOURCE";
@@ -1570,11 +1630,12 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
     /**
      * @see org.opencms.db.I_CmsProjectDriver#readLocks(org.opencms.db.CmsDbContext)
      */
-    public List readLocks(CmsDbContext dbc) throws CmsDataAccessException {
+    public List<CmsLock> readLocks(CmsDbContext dbc) throws CmsDataAccessException {
 
         Connection conn = null;
         PreparedStatement stmt = null;
-        List locks = new ArrayList(256);
+        List<CmsTempResourceLock> tmpLocks = new ArrayList<CmsTempResourceLock>(256);
+        List<CmsLock> locks = new ArrayList<CmsLock>(256);
         try {
             conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCE_LOCKS_READALL");
@@ -1584,20 +1645,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 CmsUUID userId = new CmsUUID(rs.getString(m_sqlManager.readQuery("C_RESOURCE_LOCKS_USER_ID")));
                 CmsUUID projectId = new CmsUUID(rs.getString(m_sqlManager.readQuery("C_RESOURCE_LOCKS_PROJECT_ID")));
                 int lockType = rs.getInt(m_sqlManager.readQuery("C_RESOURCE_LOCKS_LOCK_TYPE"));
-                CmsProject project;
-                try {
-                    project = readProject(dbc, projectId);
-                } catch (CmsDataAccessException dae) {
-                    // the project does not longer exist, ignore this lock (should usually not happen)
-                    project = null;
-                }
-                if (project != null) {
-                    CmsLock lock = new CmsLock(resourcePath, userId, project, CmsLockType.valueOf(lockType));
-                    locks.add(lock);
-                }
-            }
-            if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(Messages.LOG_DBG_READ_LOCKS_1, new Integer(locks.size())));
+                CmsTempResourceLock tmpLock = new CmsTempResourceLock(resourcePath, userId, projectId, lockType);
+                tmpLocks.add(tmpLock);
             }
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
@@ -1605,6 +1654,27 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
+        }
+
+        for (CmsTempResourceLock tmpLock : tmpLocks) {
+            CmsProject project;
+            try {
+                project = readProject(dbc, tmpLock.getProjectId());
+            } catch (CmsDataAccessException dae) {
+                // the project does not longer exist, ignore this lock (should usually not happen)
+                project = null;
+            }
+            if (project != null) {
+                CmsLock lock = new CmsLock(
+                    tmpLock.getResourcePath(),
+                    tmpLock.getUserId(),
+                    project,
+                    CmsLockType.valueOf(tmpLock.getLockType()));
+                locks.add(lock);
+            }
+        }
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_DBG_READ_LOCKS_1, new Integer(locks.size())));
         }
         return locks;
     }

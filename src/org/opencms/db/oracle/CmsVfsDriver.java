@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsVfsDriver.java,v $
- * Date   : $Date: 2010/04/19 15:19:34 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2011/02/11 11:00:13 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
  * @author Thomas Weckert  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.44 $
+ * @version $Revision: 1.45 $
  * 
  * @since 6.0.0 
  */
@@ -134,7 +134,7 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
                 stmt.setInt(3, publishTag);
                 stmt.setInt(4, keepOnline ? 1 : 0);
                 stmt.executeUpdate();
-                m_sqlManager.closeAll(dbc, null, stmt, null);
+                m_sqlManager.closeAll(dbc, conn, stmt, null);
 
                 // now update the file content
                 internalWriteContent(dbc, CmsProject.ONLINE_PROJECT_ID, resourceId, contents, publishTag);

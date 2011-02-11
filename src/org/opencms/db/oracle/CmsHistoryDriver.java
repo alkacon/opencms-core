@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsHistoryDriver.java,v $
- * Date   : $Date: 2010/04/19 15:19:34 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/02/11 11:00:13 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,13 +36,16 @@ import org.opencms.db.CmsDbSqlException;
 import org.opencms.db.I_CmsHistoryDriver;
 import org.opencms.db.generic.CmsSqlManager;
 import org.opencms.file.CmsDataAccessException;
+import org.opencms.file.history.CmsHistoryProject;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Oracle implementation of the history driver methods.<p>
@@ -51,7 +54,7 @@ import java.util.List;
  * @author Michael Emmerich   
  * @author Carsten Weinholz  
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 6.9.1
  */
@@ -70,23 +73,23 @@ public class CmsHistoryDriver extends org.opencms.db.generic.CmsHistoryDriver {
      * @see org.opencms.db.generic.CmsHistoryDriver#readProjects(org.opencms.db.CmsDbContext)
      */
     @Override
-    public List readProjects(CmsDbContext dbc) throws CmsDataAccessException {
+    public List<CmsHistoryProject> readProjects(CmsDbContext dbc) throws CmsDataAccessException {
 
-        List projects = new ArrayList();
+        List<CmsHistoryProject> projects = new ArrayList<CmsHistoryProject>();
         ResultSet res = null;
         PreparedStatement stmt = null;
         Connection conn = null;
 
+        Map<Integer, CmsHistoryProject> tmpProjects = new HashMap<Integer, CmsHistoryProject>();
+
         try {
-            I_CmsHistoryDriver historyDriver = m_driverManager.getHistoryDriver(dbc);
             // create the statement
             conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_PROJECTS_READLAST_HISTORY");
             stmt.setInt(1, 300);
             res = stmt.executeQuery();
             while (res.next()) {
-                List resources = historyDriver.readProjectResources(dbc, res.getInt("PUBLISH_TAG"));
-                projects.add(internalCreateProject(res, resources));
+                tmpProjects.put(Integer.valueOf(res.getInt("PUBLISH_TAG")), internalCreateProject(res, null));
             }
         } catch (SQLException e) {
             throw new CmsDbSqlException(org.opencms.db.generic.Messages.get().container(
@@ -95,7 +98,12 @@ public class CmsHistoryDriver extends org.opencms.db.generic.CmsHistoryDriver {
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
-
-        return (projects);
+        I_CmsHistoryDriver historyDriver = m_driverManager.getHistoryDriver(dbc);
+        for (Map.Entry<Integer, CmsHistoryProject> entry : tmpProjects.entrySet()) {
+            List<String> resources = historyDriver.readProjectResources(dbc, entry.getKey().intValue());
+            entry.getValue().setProjectResources(resources);
+            projects.add(entry.getValue());
+        }
+        return projects;
     }
 }

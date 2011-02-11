@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsUserDriver.java,v $
- * Date   : $Date: 2010/01/18 10:03:20 $
- * Version: $Revision: 1.62 $
+ * Date   : $Date: 2011/02/11 11:00:13 $
+ * Version: $Revision: 1.63 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
  * @author Thomas Weckert  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.62 $
+ * @version $Revision: 1.63 $
  * 
  * @since 6.0.0 
  */
@@ -138,6 +138,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
+    @Override
     protected void internalUpdateUserInfo(CmsDbContext dbc, CmsUUID userId, String key, Object value)
     throws CmsDataAccessException {
 
