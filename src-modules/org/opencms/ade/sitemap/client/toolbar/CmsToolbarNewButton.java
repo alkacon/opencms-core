@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/toolbar/Attic/CmsToolbarNewButton.java,v $
- * Date   : $Date: 2011/02/10 16:35:54 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/02/11 14:35:17 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,7 @@ import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.client.ui.CmsCreatableListItem;
 import org.opencms.ade.sitemap.client.ui.CmsCreatableListItem.EntryType;
+import org.opencms.ade.sitemap.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.sitemap.shared.CmsNewResourceInfo;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItem;
@@ -44,12 +45,15 @@ import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsListItem;
 import org.opencms.gwt.shared.CmsListInfoBean;
 
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.SimplePanel;
+
 /**
  * Sitemap toolbar new menu button.<p>
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -84,11 +88,15 @@ public class CmsToolbarNewButton extends A_CmsToolbarListMenuButton {
     @Override
     protected void initContent() {
 
+        boolean hasTabs = false;
         m_newElementsList = new CmsList<I_CmsListItem>();
         for (CmsNewResourceInfo info : getController().getData().getNewElementInfos()) {
             m_newElementsList.add(makeNewElementItem(info));
         }
-        createTab("New pages", "Create a new page", m_newElementsList);
+        if (m_newElementsList.getWidgetCount() > 0) {
+            hasTabs = true;
+            createTab("New pages", "Create a new page", m_newElementsList);
+        }
         m_specialList = new CmsList<I_CmsListItem>();
         // TODO: add redirect item
         //       m_specialList.add(makeRedirectItem());
@@ -98,7 +106,21 @@ public class CmsToolbarNewButton extends A_CmsToolbarListMenuButton {
                 m_specialList.add(item);
             }
         }
-        createTab(Messages.get().key(Messages.GUI_SPECIAL_TAB_TITLE_0), "The special tab", m_specialList);
+        if (m_specialList.getWidgetCount() > 0) {
+            hasTabs = true;
+            createTab(Messages.get().key(Messages.GUI_SPECIAL_TAB_TITLE_0), "The special tab", m_specialList);
+        }
+        if (!hasTabs) {
+            // no new elements available, show appropriate message
+
+            //TODO: improve styling, add localization
+            Label messageLabel = new Label("No creatable elements configured.");
+            messageLabel.addStyleName(I_CmsLayoutBundle.INSTANCE.clipboardCss().menuTabContainer());
+            SimplePanel content = new SimplePanel();
+            content.setStyleName(I_CmsLayoutBundle.INSTANCE.clipboardCss().menuContent());
+            content.setWidget(messageLabel);
+            setMenuWidget(messageLabel);
+        }
     }
 
     /**
