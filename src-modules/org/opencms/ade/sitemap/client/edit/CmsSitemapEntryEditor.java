@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/edit/Attic/CmsSitemapEntryEditor.java,v $
- * Date   : $Date: 2011/02/14 10:02:24 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2011/02/14 16:24:21 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,7 +68,7 @@ import java.util.Set;
  * 
  *  @author Georg Westenberger
  *  
- *  @version $Revision: 1.19 $
+ *  @version $Revision: 1.20 $
  *  
  *  @since 8.0.0
  */
@@ -205,10 +205,9 @@ public class CmsSitemapEntryEditor implements I_CmsFormWidgetMultiFactory {
             form.addField(TAB_1, linkField);
         }
 
-        CmsSitemapPropertyFormBuilder builder = new CmsSitemapPropertyFormBuilder();
+        A_CmsPropertyFormBuilder builder = createFormBuilder();
         builder.setWidgetFactory(this);
 
-        builder.setAdvanced(!m_handler.isSimpleMode());
         builder.setForm(form);
         builder.setPropertyDefinitions(CmsSitemapView.getInstance().getController().getData().getProperties());
         builder.setAllPropertyNames(CmsSitemapView.getInstance().getController().getData().getAllPropertyNames());
@@ -279,6 +278,28 @@ public class CmsSitemapEntryEditor implements I_CmsFormWidgetMultiFactory {
         return result;
     }
 
+    /**
+     * Helper method for extracting new values for the 'template' and 'template-inherited' properties from the
+     * raw form data.<p>
+     * 
+     * @param fieldValues the string map produced by the form 
+     * 
+     * @return a pair containing the 'template' and 'template-inherit' property, in that order
+     */
+    protected CmsPair<String, String> getTemplateProperties(Map<String, String> fieldValues) {
+
+        String shouldInheritTemplateStr = getAndRemoveValue(fieldValues, FIELD_TEMPLATE_INHERIT_CHECKBOX);
+        String template = fieldValues.get(CmsSitemapManager.Property.template.toString());
+        if (template.equals(DEFAULT_TEMPLATE_VALUE)) {
+            // return nulls to cause the properties to be deleted  
+            return new CmsPair<String, String>(null, null);
+        }
+
+        // only inherit the template if checkbox is checked 
+        String templateInherited = Boolean.parseBoolean(shouldInheritTemplateStr) ? template : null;
+        return new CmsPair<String, String>(template, templateInherited);
+    }
+
     //    protected CmsForm createForm1() {
     //
     //        CmsForm result = new CmsForm() {
@@ -305,28 +326,6 @@ public class CmsSitemapEntryEditor implements I_CmsFormWidgetMultiFactory {
     //        config += "|forbidden:" + forbiddenNamesStr;
     //
     //    }
-
-    /**
-     * Helper method for extracting new values for the 'template' and 'template-inherited' properties from the
-     * raw form data.<p>
-     * 
-     * @param fieldValues the string map produced by the form 
-     * 
-     * @return a pair containing the 'template' and 'template-inherit' property, in that order
-     */
-    protected CmsPair<String, String> getTemplateProperties(Map<String, String> fieldValues) {
-
-        String shouldInheritTemplateStr = getAndRemoveValue(fieldValues, FIELD_TEMPLATE_INHERIT_CHECKBOX);
-        String template = fieldValues.get(CmsSitemapManager.Property.template.toString());
-        if (template.equals(DEFAULT_TEMPLATE_VALUE)) {
-            // return nulls to cause the properties to be deleted  
-            return new CmsPair<String, String>(null, null);
-        }
-
-        // only inherit the template if checkbox is checked 
-        String templateInherited = Boolean.parseBoolean(shouldInheritTemplateStr) ? template : null;
-        return new CmsPair<String, String>(template, templateInherited);
-    }
 
     /**
      * Gets the title from a map of field values.<p>
@@ -390,6 +389,16 @@ public class CmsSitemapEntryEditor implements I_CmsFormWidgetMultiFactory {
     protected void showUrlNameError(String message) {
 
         m_dialog.getForm().getField(FIELD_URLNAME).getWidget().setErrorMessage(message);
+    }
+
+    /**
+     * Creates the form builder instance.<p>
+     * 
+     * @return the form builder to use
+     **/
+    private A_CmsPropertyFormBuilder createFormBuilder() {
+
+        return new CmsNavModePropertyFormBuilder();
     }
 
     /**
