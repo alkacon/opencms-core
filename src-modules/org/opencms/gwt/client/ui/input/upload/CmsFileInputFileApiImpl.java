@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/upload/Attic/CmsFileInputFileApiImpl.java,v $
- * Date   : $Date: 2011/02/11 17:06:27 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/02/14 08:46:20 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import com.google.gwt.dom.client.InputElement;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -48,7 +48,6 @@ public class CmsFileInputFileApiImpl implements I_CmsFileInputService {
     /**
      * @see org.opencms.gwt.client.ui.input.upload.I_CmsFileInputService#getFiles(com.google.gwt.dom.client.InputElement)
      */
-    @Override
     public native JsArray<CmsFileInfo> getFiles(InputElement inputElement) /*-{
         return inputElement.files;
     }-*/;
@@ -56,7 +55,6 @@ public class CmsFileInputFileApiImpl implements I_CmsFileInputService {
     /**
      * @see org.opencms.gwt.client.ui.input.upload.I_CmsFileInputService#isAllowMultipleFiles(com.google.gwt.dom.client.InputElement)
      */
-    @Override
     public boolean isAllowMultipleFiles(InputElement inputElement) {
 
         return inputElement.hasAttribute("multiple");
@@ -65,7 +63,6 @@ public class CmsFileInputFileApiImpl implements I_CmsFileInputService {
     /**
      * @see org.opencms.gwt.client.ui.input.upload.I_CmsFileInputService#setAllowMultipleFiles(com.google.gwt.dom.client.InputElement, boolean)
      */
-    @Override
     public void setAllowMultipleFiles(InputElement inputElement, boolean allow) {
 
         if (allow) {
@@ -78,7 +75,6 @@ public class CmsFileInputFileApiImpl implements I_CmsFileInputService {
     /**
      * @see org.opencms.gwt.client.ui.input.upload.I_CmsFileInputService#supportsFileAPI()
      */
-    @Override
     public boolean supportsFileAPI() {
 
         return true;
