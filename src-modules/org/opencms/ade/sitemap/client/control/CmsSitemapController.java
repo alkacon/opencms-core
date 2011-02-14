@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapController.java,v $
- * Date   : $Date: 2011/02/14 10:02:24 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2011/02/14 13:46:59 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -89,33 +89,11 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.45 $ 
+ * @version $Revision: 1.46 $ 
  * 
  * @since 8.0.0
  */
 public class CmsSitemapController {
-
-    /**
-     * Debug class used for debugging property updates by changing the color of the affected sitemap entries.<p>
-     */
-    public static class DebugPropertyUpdateHandler implements I_CmsPropertyUpdateHandler {
-
-        /**
-         * @see org.opencms.ade.sitemap.client.control.I_CmsPropertyUpdateHandler#handlePropertyUpdate(org.opencms.ade.sitemap.shared.CmsClientSitemapEntry)
-         */
-        public void handlePropertyUpdate(CmsClientSitemapEntry entry) {
-
-            String colorProp = CmsSitemapView.getInstance().getController().getEffectiveProperty(entry, "color");
-            String color = "gray";
-            if (colorProp != null) {
-                color = colorProp;
-            }
-            CmsSitemapTreeItem item = CmsSitemapView.getInstance().getTreeItem(entry.getSitePath());
-            com.google.gwt.dom.client.Style style = item.getListItemWidget().getContentPanel().getElement().getStyle();
-            style.setBackgroundImage("none");
-            style.setBackgroundColor(color);
-        }
-    }
 
     /** A map of *all* detail page info beans, indexed by page id. */
     protected Map<CmsUUID, CmsDetailPageInfo> m_allDetailPageInfos = new HashMap<CmsUUID, CmsDetailPageInfo>();

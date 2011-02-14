@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsClientSitemapEntry.java,v $
- * Date   : $Date: 2011/02/14 10:02:24 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2011/02/14 13:46:59 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.30 $
+ * @version $Revision: 1.31 $
  * 
  * @since 8.0.0
  */
@@ -84,6 +84,9 @@ public class CmsClientSitemapEntry implements IsSerializable {
 
     /** Key for the "internalRedirect" property. */
     protected static final String INTERNAL_REDIRECT = CmsSitemapManager.Property.internalRedirect.getName();
+
+    /** The cached export name. */
+    private String m_cachedExportName;
 
     /** True if the children of this entry have initially been loaded. */
     private boolean m_childrenLoadedInitially;
@@ -262,6 +265,16 @@ public class CmsClientSitemapEntry implements IsSerializable {
     public EntryType getEntryType() {
 
         return m_entryType;
+    }
+
+    /**
+     * Returns the cached export name for this entry.<p>
+     * 
+     * @return the cached export name for this entry 
+     */
+    public String getExportName() {
+
+        return m_cachedExportName;
     }
 
     /**
@@ -634,6 +647,16 @@ public class CmsClientSitemapEntry implements IsSerializable {
     public void setEntryType(EntryType entryType) {
 
         m_entryType = entryType;
+    }
+
+    /**
+     * Sets the export name for this entry.<p>
+     * 
+     * @param exportName the export name for this entry 
+     */
+    public void setExportName(String exportName) {
+
+        m_cachedExportName = exportName;
     }
 
     /**

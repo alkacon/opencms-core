@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapTreeItem.java,v $
- * Date   : $Date: 2011/02/14 10:02:24 $
- * Version: $Revision: 1.51 $
+ * Date   : $Date: 2011/02/14 13:46:59 $
+ * Version: $Revision: 1.52 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -79,7 +79,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.51 $ 
+ * @version $Revision: 1.52 $ 
  * 
  * @since 8.0.0
  * 
@@ -368,9 +368,13 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
         if (m_entry.isLeafType() && sitePath.endsWith("/")) {
             sitePath = sitePath.substring(0, sitePath.length() - 1);
         }
-        String exportProp = CmsSitemapView.getInstance().getController().getEffectiveProperty(m_entry, "export");
+        CmsSitemapController controller = CmsSitemapView.getInstance().getController();
+        String exportProp = controller.getEffectiveProperty(m_entry, "export");
         if ("true".equals(exportProp)) {
-            String exportName = getExportName();
+            String exportName = m_entry.getExportName();
+            if (exportName == null) {
+                exportName = getExportName();
+            }
             String rfsPrefix = CmsSitemapView.getInstance().getController().getData().getExportRfsPrefix();
             if (rfsPrefix != null) {
                 return CmsStringUtil.joinPaths(rfsPrefix, exportName, sitePath);

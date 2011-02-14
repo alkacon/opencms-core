@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsDetailPageTable.java,v $
- * Date   : $Date: 2011/02/14 10:02:24 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/02/14 13:46:59 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import com.google.common.collect.ArrayListMultimap;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -71,7 +71,7 @@ public class CmsDetailPageTable implements Cloneable, Serializable {
     private Map<CmsUUID, CmsDetailPageInfo> m_infoById = new HashMap<CmsUUID, CmsDetailPageInfo>();
 
     /** The detail page info beans, indexed by type. */
-    private ArrayListMultimap<String, CmsDetailPageInfo> m_map = ArrayListMultimap.<String, CmsDetailPageInfo> create();
+    private ArrayListMultimap<String, CmsDetailPageInfo> m_map = ArrayListMultimap.create();
 
     /**
      * Creates a detail page table from a list of detail page info bean.<p>

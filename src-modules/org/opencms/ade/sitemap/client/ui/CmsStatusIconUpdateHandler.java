@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/ui/Attic/CmsStatusIconUpdateHandler.java,v $
- * Date   : $Date: 2011/02/14 10:02:24 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/02/14 13:46:59 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import org.opencms.gwt.shared.CmsListInfoBean.PageIcon;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 8.0.0
  */
@@ -62,6 +62,8 @@ public class CmsStatusIconUpdateHandler implements I_CmsPropertyUpdateHandler {
         CmsSitemapController controller = CmsSitemapView.getInstance().getController();
         String secureProp = controller.getEffectiveProperty(entry, "secure");
         String exportProp = controller.getEffectiveProperty(entry, "export");
+        String exportName = controller.getEffectiveProperty(entry, "exportname");
+        entry.setExportName(exportName);
 
         PageIcon icon = PageIcon.none;
         if (!entry.isInNavigation()) {
@@ -77,5 +79,6 @@ public class CmsStatusIconUpdateHandler implements I_CmsPropertyUpdateHandler {
         //            icon = PageIcon.redirect;
         //        }
         item.setPageIcon(icon);
+        item.updateSitePath();
     }
 }
