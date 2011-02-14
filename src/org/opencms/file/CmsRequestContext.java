@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsRequestContext.java,v $
- * Date   : $Date: 2011/02/14 10:10:13 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/02/14 10:10:56 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import java.util.Map;
  * @author Michael Emmerich 
  * @author Ruediger Kurz
  *
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 6.0.0 
  */
@@ -216,6 +216,7 @@ public final class CmsRequestContext {
      * 
      * @deprecated use {@link #getCurrentProject()} instead
      */
+    @Deprecated
     public CmsProject currentProject() {
 
         return getCurrentProject();
@@ -228,6 +229,7 @@ public final class CmsRequestContext {
      * 
      * @deprecated use {@link #getCurrentUser()} instead
      */
+    @Deprecated
     public CmsUser currentUser() {
 
         return getCurrentUser();
