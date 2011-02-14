@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsCoreService.java,v $
- * Date   : $Date: 2011/02/14 11:46:56 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2011/02/14 13:05:55 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -109,7 +109,7 @@ import org.apache.commons.fileupload.util.Streams;
  * @author Michael Moossen
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.28 $ 
  * 
  * @since 8.0.0
  * 
@@ -214,7 +214,8 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
                 CmsUploadBean.SESSION_ATTRIBUTE_LISTENER_ID);
             CmsUploadListener listener = CmsUploadBean.getCurrentListener(listenerId);
             if ((listener != null) && !listener.isCanceled()) {
-                listener.setException(new CmsUploadException("Upload canceled by the user."));
+                listener.setException(new CmsUploadException(Messages.get().getBundle().key(
+                    Messages.ERR_UPLOAD_USER_CANCELED_0)));
             }
         }
     }

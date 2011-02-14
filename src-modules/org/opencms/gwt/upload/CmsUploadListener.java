@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/upload/Attic/CmsUploadListener.java,v $
- * Date   : $Date: 2011/02/11 17:06:28 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/02/14 13:05:55 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.gwt.upload;
 
+import org.opencms.gwt.Messages;
 import org.opencms.gwt.shared.CmsUploadProgessInfo;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsUUID;
@@ -45,7 +46,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Ruediger Kurz 
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0 
  */
@@ -75,7 +76,7 @@ public class CmsUploadListener implements ProgressListener, Serializable {
     private int m_item;
 
     /** The timeout watch dog for this listener. */
-    private CmsTimeoutWatchDog m_watcher;
+    private CmsUploadTimeoutWatcher m_watcher;
 
     /**
      * The public constructor for the listener.<p>
@@ -204,14 +205,12 @@ public class CmsUploadListener implements ProgressListener, Serializable {
         // If other request has set an exception, it is thrown so the commons-fileupload's 
         // parser stops and the connection is closed.
         if (isCanceled()) {
-            String eName = m_exception.getClass().getName().replaceAll("^.+\\.", "");
-            LOG.info("UUID: "
-                + m_id
-                + " The upload has been canceled after "
-                + m_bytesRead
-                + " bytes received, raising an exception ("
-                + eName
-                + ") to close the socket");
+            String eName = m_exception.getClass().getName();
+            LOG.info(Messages.get().getBundle().key(
+                Messages.INFO_UPLOAD_USER_CANCELED_3,
+                getId(),
+                new Long(m_bytesRead),
+                eName));
             m_exceptionTrhown = true;
             throw m_exception;
         }
@@ -236,10 +235,13 @@ public class CmsUploadListener implements ProgressListener, Serializable {
 
         if (m_watcher == null) {
             try {
-                m_watcher = new CmsTimeoutWatchDog(this);
+                m_watcher = new CmsUploadTimeoutWatcher(this);
                 m_watcher.start();
             } catch (Exception e) {
-                LOG.info("UUID: " + getId() + " unable to create watchdog: " + e.getMessage());
+                LOG.info(Messages.get().getBundle().key(
+                    Messages.INFO_UPLOAD_CREATE_WATCH_DOG_2,
+                    getId(),
+                    e.getMessage()));
             }
         }
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/Attic/Messages.java,v $
- * Date   : $Date: 2011/02/07 14:56:39 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2011/02/14 13:05:55 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.client.util.CmsMessages;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 8.0.0
  */
@@ -144,10 +144,25 @@ public final class Messages {
     public static final String GUI_PLEASE_WAIT_0 = "GUI_PLEASE_WAIT_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_REASON_0 = "GUI_REASON_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_RESET_0 = "GUI_RESET_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_REASON_0 = "GUI_REASON_0";
+    public static final String GUI_RESOURCE_STATE_0 = "GUI_RESOURCE_STATE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCE_STATE_CHANGED_0 = "GUI_RESOURCE_STATE_CHANGED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCE_STATE_DELETED_0 = "GUI_RESOURCE_STATE_DELETED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCE_STATE_NEW_0 = "GUI_RESOURCE_STATE_NEW_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCE_STATE_UNCHANGED_0 = "GUI_RESOURCE_STATE_UNCHANGED_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SAVE_0 = "GUI_SAVE_0";
@@ -216,22 +231,73 @@ public final class Messages {
     public static final String GUI_UNLOCKING_0 = "GUI_UNLOCKING_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_UPLOAD_BUTTON_TITLE_0 = "GUI_UPLOAD_BUTTON_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UPLOAD_BUTTON_ADD_FILES_0 = "GUI_UPLOAD_BUTTON_ADD_FILES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UPLOAD_BUTTON_OK_DISABLE_CHECKING_0 = "GUI_UPLOAD_BUTTON_OK_DISABLE_CHECKING_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UPLOAD_BUTTON_OK_DISABLE_UPLOADING_0 = "GUI_UPLOAD_BUTTON_OK_DISABLE_UPLOADING_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UPLOAD_CLIENT_LOADING_0 = "GUI_UPLOAD_CLIENT_LOADING_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UPLOAD_DIALOG_TITLE_0 = "GUI_UPLOAD_DIALOG_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UPLOAD_FILES_PLURAL_0 = "GUI_UPLOAD_FILES_PLURAL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UPLOAD_FILES_SINGULAR_0 = "GUI_UPLOAD_FILES_SINGULAR_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UPLOAD_FINISH_UPLOADED_0 = "GUI_UPLOAD_FINISH_UPLOADED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UPLOAD_FINISH_UPLOADED_VALUE_4 = "GUI_UPLOAD_FINISH_UPLOADED_VALUE_4";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UPLOAD_INFO_FINISHING_0 = "GUI_UPLOAD_INFO_FINISHING_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UPLOAD_INFO_OVERWRITE_0 = "GUI_UPLOAD_INFO_OVERWRITE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UPLOAD_INFO_SELECTION_0 = "GUI_UPLOAD_INFO_SELECTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UPLOAD_INFO_UPLOADING_0 = "GUI_UPLOAD_INFO_UPLOADING_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UPLOAD_NOTIFICATION_NO_FILES_0 = "GUI_UPLOAD_NOTIFICATION_NO_FILES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UPLOAD_NOTIFICATION_RUNNING_0 = "GUI_UPLOAD_NOTIFICATION_RUNNING_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UPLOAD_PROGRESS_CURRENT_FILE_0 = "GUI_UPLOAD_PROGRESS_CURRENT_FILE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UPLOAD_PROGRESS_CURRENT_VALUE_3 = "GUI_UPLOAD_PROGRESS_CURRENT_VALUE_3";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UPLOAD_PROGRESS_UPLOADING_0 = "GUI_UPLOAD_PROGRESS_UPLOADING_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UPLOAD_PROGRESS_UPLOADING_VALUE_2 = "GUI_UPLOAD_PROGRESS_UPLOADING_VALUE_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UPLOAD_SUMMARY_FILES_0 = "GUI_UPLOAD_SUMMARY_FILES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UPLOAD_SUMMARY_FILES_VALUE_3 = "GUI_UPLOAD_SUMMARY_FILES_VALUE_3";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_YES_0 = "GUI_YES_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_RESOURCE_STATE_CHANGED_0 = "GUI_RESOURCE_STATE_CHANGED_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_RESOURCE_STATE_DELETED_0 = "GUI_RESOURCE_STATE_DELETED_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_RESOURCE_STATE_NEW_0 = "GUI_RESOURCE_STATE_NEW_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_RESOURCE_STATE_UNCHANGED_0 = "GUI_RESOURCE_STATE_UNCHANGED_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_RESOURCE_STATE_0 = "GUI_RESOURCE_STATE_0";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.gwt.clientmessages";

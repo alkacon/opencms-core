@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/upload/Attic/CmsUploadException.java,v $
- * Date   : $Date: 2011/02/11 17:06:28 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/02/14 13:05:55 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,14 +32,23 @@
 package org.opencms.gwt.upload;
 
 /**
+ * An exception that should be thrown if there is any problem during the upload process.<p>
  * 
+ * @author  Ruediger Kurz 
+ * 
+ * @version $Revision: 1.2 $ 
+ * 
+ * @since 8.0.0 
  */
 public class CmsUploadException extends RuntimeException {
 
+    /** The serial version UID. */
     private static final long serialVersionUID = -4125185020719761746L;
 
     /**
-     * @param msg
+     * Public constructor with a message String as argument.<p>
+     * 
+     * @param msg the message for this exception
      */
     public CmsUploadException(String msg) {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/gwt/Messages.java,v $
- * Date   : $Date: 2010/09/09 15:02:20 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/02/14 13:05:55 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,11 +39,14 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
 public final class Messages extends A_CmsMessageBundle {
+
+    /** Message constant for key in the resource bundle. */
+    public static final String DEBUG_UPLOAD_FINISHED_WATCHER_1 = "DEBUG_UPLOAD_FINISHED_WATCH_DOG_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_INSTANTIATION_FAILED_1 = "ERR_INSTANTIATION_FAILED_1";
@@ -55,10 +58,46 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_RESOURCE_MODIFIED_AFTER_OPEN_1 = "ERR_RESOURCE_MODIFIED_AFTER_OPEN_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_UPLOAD_CREATING_0 = "ERR_UPLOAD_CREATING_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_UPLOAD_FROZEN_1 = "ERR_UPLOAD_FROZEN_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_UPLOAD_INTERRUPT_WATCHER_1 = "ERR_UPLOAD_INTERRUPT_WATCH_DOG_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_UPLOAD_JSON_0 = "ERR_UPLOAD_JSON_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_UPLOAD_NO_MULTIPART_0 = "ERR_UPLOAD_NO_MULTIPART_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_UPLOAD_SIZE_LIMIT_2 = "ERR_UPLOAD_SIZE_LIMIT_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_UPLOAD_UNEXPECTED_0 = "ERR_UPLOAD_UNEXPECTED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_UPLOAD_USER_CANCELED_0 = "ERR_UPLOAD_USER_CANCELED_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_VALIDATOR_INCORRECT_TYPE_1 = "ERR_VALIDATOR_INCORRECT_TYPE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_VALIDATOR_INSTANTIATION_FAILED_1 = "ERR_VALIDATOR_INSTANTIATION_FAILED_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String INFO_UPLOAD_CREATE_WATCH_DOG_2 = "INFO_UPLOAD_CREATE_WATCH_DOG_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String INFO_UPLOAD_FROZEN_WATCHER_1 = "INFO_UPLOAD_FROZEN_WATCH_DOG_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String INFO_UPLOAD_SUCCESS_0 = "INFO_UPLOAD_SUCCESS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String INFO_UPLOAD_USER_CANCELED_3 = "INFO_UPLOAD_USER_CANCELED_3";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_CLIENT_WITH_TICKET_4 = "LOG_CLIENT_WITH_TICKET_4";

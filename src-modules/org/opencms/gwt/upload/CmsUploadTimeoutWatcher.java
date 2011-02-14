@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/upload/Attic/CmsTimeoutWatchDog.java,v $
- * Date   : $Date: 2011/02/11 17:06:28 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/upload/Attic/CmsUploadTimeoutWatcher.java,v $
+ * Date   : $Date: 2011/02/14 13:05:55 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -31,6 +31,7 @@
 
 package org.opencms.gwt.upload;
 
+import org.opencms.gwt.Messages;
 import org.opencms.main.CmsLog;
 
 import java.io.Serializable;
@@ -43,10 +44,10 @@ import org.apache.commons.logging.Log;
  * when an upload process is frozen and sets an exception in order to
  * be canceled. This doesn't work in Google application engine.<p>
  */
-public class CmsTimeoutWatchDog extends Thread implements Serializable {
+public class CmsUploadTimeoutWatcher extends Thread implements Serializable {
 
     /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsTimeoutWatchDog.class);
+    private static final Log LOG = CmsLog.getLog(CmsUploadTimeoutWatcher.class);
 
     /** The serial version UID. */
     private static final long serialVersionUID = -649803529271569237L;
@@ -68,7 +69,7 @@ public class CmsTimeoutWatchDog extends Thread implements Serializable {
      * 
      * @param listener the listener to watch
      */
-    public CmsTimeoutWatchDog(CmsUploadListener listener) {
+    public CmsUploadTimeoutWatcher(CmsUploadListener listener) {
 
         m_listener = listener;
     }
@@ -92,19 +93,18 @@ public class CmsTimeoutWatchDog extends Thread implements Serializable {
         try {
             Thread.sleep(WATCHER_INTERVAL);
         } catch (InterruptedException e) {
-            LOG.error("TimeoutWatchDog: sleep Exception: " + m_listener.toString() + e.getMessage());
+            LOG.error(Messages.get().container(Messages.ERR_UPLOAD_INTERRUPT_WATCHER_1, m_listener.toString()), e);
         }
         if (m_listener != null) {
             if (((m_listener.getBytesRead() > 0) && (m_listener.getPercent() >= 100)) || m_listener.isCanceled()) {
-                LOG.debug("Upload process has finished, stoping watcher: " + m_listener.toString());
+                LOG.debug(Messages.get().container(Messages.DEBUG_UPLOAD_FINISHED_WATCHER_1, m_listener.toString()));
                 m_listener = null;
             } else {
                 if (isFrozen()) {
-                    LOG.info("TimeoutWatchDog: the recepcion seems frozen: " + m_listener.toString());
-                    m_listener.setException(new CmsUploadException("No new data received after "
-                        + CmsUploadBean.DEFAULT_UPLOAD_TIMEOUT
-                        / 1000
-                        + " seconds"));
+                    LOG.info(Messages.get().container(Messages.INFO_UPLOAD_FROZEN_WATCHER_1, m_listener.toString()));
+                    m_listener.setException(new CmsUploadException(Messages.get().getBundle().key(
+                        Messages.ERR_UPLOAD_FROZEN_1,
+                        new Integer(CmsUploadBean.DEFAULT_UPLOAD_TIMEOUT / 1000))));
                 } else {
                     run();
                 }

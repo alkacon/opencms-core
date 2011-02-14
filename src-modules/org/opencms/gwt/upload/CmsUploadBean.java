@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/upload/Attic/CmsUploadBean.java,v $
- * Date   : $Date: 2011/02/14 11:46:56 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/02/14 13:05:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -80,7 +80,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Ruediger Kurz 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0.0 
  */
@@ -97,9 +97,6 @@ public class CmsUploadBean extends CmsJspBean {
 
     /** Upload JSP URI. */
     public static final String UPLOAD_JSP_URI = "/system/modules/org.opencms.gwt/upload.jsp";
-
-    /** Key name for the request attribute to indicate a multipart request was already parsed. */
-    protected static final String REQUEST_ATTRIBUTE_MULTIPART = "__CmsUploadBean.MULTIPART";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsUploadBean.class);
@@ -143,46 +140,56 @@ public class CmsUploadBean extends CmsJspBean {
      */
     public void start() {
 
-        CmsUploadListener listener = new CmsUploadListener(getRequest().getContentLength());
-        addListener(listener);
+        // check if the request is a multipart request
+        if (ServletFileUpload.isMultipartContent(getRequest())) {
 
-        boolean errorOccurred = true;
+            CmsUploadListener listener = new CmsUploadListener(getRequest().getContentLength());
+            addListener(listener);
 
-        try {
-            // parse the request: stores the file items and the parameters of the request locally
-            parseRequest(listener);
-            writeResponse(generateResponse(true, null, listener.getInfo()));
-            errorOccurred = false;
-        } catch (CmsUploadException e) {
-            writeResponse(generateResponse(false, e, listener.getInfo()));
-            LOG.debug(e.getMessage(), e);
-        } finally {
-            removeListener(listener.getId());
-        }
+            boolean errorOccurred = true;
 
-        try {
-            if (m_multiPartFileItems != null) {
+            try {
+                // parse the request: stores the file items and the parameters of the request locally
+                parseRequest(listener);
+                writeResponse(generateResponse(null, listener.getInfo()));
+                errorOccurred = false;
+            } catch (CmsUploadException e) {
+                writeResponse(generateResponse(e, listener.getInfo()));
+                LOG.debug(e.getMessage(), e);
+            } finally {
+                removeListener(listener.getId());
+            }
 
-                String targetFolder = getTargetFolder();
+            try {
+                if (m_multiPartFileItems != null) {
 
-                // iterate over the list of files to upload and create each single resource
-                for (FileItem fi : m_multiPartFileItems) {
-                    if ((fi != null) && (!fi.isFormField())) {
-                        // found the file object
-                        String newResname = CmsResource.getName(fi.getName().replace('\\', '/'));
-                        newResname = getNewResourceName(newResname, targetFolder);
-                        byte[] content = fi.get();
-                        fi.delete();
-                        createSingleResource(newResname, content);
+                    String targetFolder = getTargetFolder();
+
+                    // iterate over the list of files to upload and create each single resource
+                    for (FileItem fi : m_multiPartFileItems) {
+                        if ((fi != null) && (!fi.isFormField())) {
+                            // found the file object
+                            String newResname = CmsResource.getName(fi.getName().replace('\\', '/'));
+                            newResname = getNewResourceName(newResname, targetFolder);
+                            byte[] content = fi.get();
+                            fi.delete();
+                            createSingleResource(newResname, content);
+                        }
                     }
                 }
+            } catch (CmsException e) {
+                if (!errorOccurred) {
+                    CmsUploadException ex = new CmsUploadException(org.opencms.gwt.Messages.get().getBundle().key(
+                        org.opencms.gwt.Messages.ERR_UPLOAD_CREATING_0));
+                    writeResponse(generateResponse(ex, null));
+                }
+                LOG.error(
+                    org.opencms.gwt.Messages.get().getBundle().key(org.opencms.gwt.Messages.ERR_UPLOAD_CREATING_0),
+                    e);
             }
-        } catch (CmsException e) {
-            if (!errorOccurred) {
-                CmsUploadException ex = new CmsUploadException("Error while creating resources on the VFS of OpenCms");
-                writeResponse(generateResponse(false, ex, null));
-            }
-            LOG.error(e.getMessage(), e);
+        } else {
+            LOG.error(new CmsException(org.opencms.gwt.Messages.get().container(
+                org.opencms.gwt.Messages.ERR_UPLOAD_NO_MULTIPART_0)));
         }
     }
 
@@ -306,17 +313,29 @@ public class CmsUploadBean extends CmsJspBean {
         }
     }
 
-    private JSONObject generateResponse(boolean success, Exception ex, CmsUploadProgessInfo info) {
+    /**
+     * Generates the JSON object for the response.<p>
+     * 
+     * Assumes that the upload was successful if the exception parameter is <code>null</code>.<p>
+     * 
+     * @param ex the exception that was thrown during upload
+     * @param info the current progress info object
+     * 
+     * @return the JSON object that will be parsed by the client
+     */
+    private JSONObject generateResponse(Exception ex, CmsUploadProgessInfo info) {
 
         JSONObject result = new JSONObject();
 
         try {
-            if (success) {
-                result.put(I_CmsUploadConstants.KEY_SUCCESS, success);
-                result.put(I_CmsUploadConstants.KEY_MESSAGE, "Upload was scuccessful.");
+            if (ex == null) {
+                result.put(I_CmsUploadConstants.KEY_SUCCESS, Boolean.TRUE);
+                result.put(
+                    I_CmsUploadConstants.KEY_MESSAGE,
+                    org.opencms.gwt.Messages.get().getBundle().key(org.opencms.gwt.Messages.INFO_UPLOAD_SUCCESS_0));
                 result.put(I_CmsUploadConstants.KEY_STACKTRACE, "");
             } else {
-                result.put(I_CmsUploadConstants.KEY_SUCCESS, success);
+                result.put(I_CmsUploadConstants.KEY_SUCCESS, Boolean.FALSE);
                 result.put(I_CmsUploadConstants.KEY_MESSAGE, ex.getMessage());
                 result.put(I_CmsUploadConstants.KEY_STACKTRACE, CmsException.getStackTraceAsString(ex));
             }
@@ -331,7 +350,7 @@ public class CmsUploadBean extends CmsJspBean {
             result.put(I_CmsUploadConstants.KEY_RUNNING, info.isRunning());
 
         } catch (JSONException e) {
-            LOG.error("Faild to fill the JSON object", e);
+            LOG.error(org.opencms.gwt.Messages.get().getBundle().key(org.opencms.gwt.Messages.ERR_UPLOAD_JSON_0), e);
         }
         return result;
     }
@@ -392,18 +411,13 @@ public class CmsUploadBean extends CmsJspBean {
     private void parseRequest(CmsUploadListener listener) {
 
         m_parameterMap = null;
-
-        // ensure a multipart request is parsed only once (for "forward" scenarios with reports)
-        if (null == getRequest().getAttribute(REQUEST_ATTRIBUTE_MULTIPART)) {
-            // read the files
-            m_multiPartFileItems = readMultipartFileItems(getRequest(), listener);
-            if (m_multiPartFileItems != null) {
-                // this was indeed a multipart form request
-                m_parameterMap = CmsRequestUtil.readParameterMapFromMultiPart(
-                    getCmsObject().getRequestContext().getEncoding(),
-                    m_multiPartFileItems);
-                getRequest().setAttribute(REQUEST_ATTRIBUTE_MULTIPART, Boolean.TRUE);
-            }
+        // read the files
+        m_multiPartFileItems = readMultipartFileItems(getRequest(), listener);
+        if (m_multiPartFileItems != null) {
+            // this was indeed a multipart form request
+            m_parameterMap = CmsRequestUtil.readParameterMapFromMultiPart(
+                getCmsObject().getRequestContext().getEncoding(),
+                m_multiPartFileItems);
         }
         if (m_parameterMap == null) {
             // the request was a "normal" request
@@ -425,9 +439,6 @@ public class CmsUploadBean extends CmsJspBean {
      */
     private List<FileItem> readMultipartFileItems(HttpServletRequest request, CmsUploadListener listener) {
 
-        if (!ServletFileUpload.isMultipartContent(request)) {
-            return null;
-        }
         DiskFileItemFactory factory = new DiskFileItemFactory();
         // maximum size that will be stored in memory
         factory.setSizeThreshold(4096);
@@ -448,10 +459,10 @@ public class CmsUploadBean extends CmsJspBean {
         } catch (SizeLimitExceededException e) {
             int actualSize = (int)(e.getActualSize() / 1024);
             int maxSize = (int)(e.getPermittedSize() / 1024);
-            CmsUploadException ex = new CmsUploadException("Size limit reached - actual size: "
-                + actualSize
-                + " maximum size: "
-                + maxSize);
+            CmsUploadException ex = new CmsUploadException(org.opencms.gwt.Messages.get().getBundle().key(
+                org.opencms.gwt.Messages.ERR_UPLOAD_SIZE_LIMIT_2,
+                new Integer(actualSize),
+                new Integer(maxSize)));
             listener.setException(ex);
             throw ex;
         } catch (CmsUploadException e) {
@@ -459,7 +470,8 @@ public class CmsUploadBean extends CmsJspBean {
             throw e;
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
-            CmsUploadException ex = new CmsUploadException("Unexpected upload exception occurred");
+            CmsUploadException ex = new CmsUploadException(org.opencms.gwt.Messages.get().getBundle().key(
+                org.opencms.gwt.Messages.ERR_UPLOAD_UNEXPECTED_0));
             listener.setException(ex);
             throw ex;
         }

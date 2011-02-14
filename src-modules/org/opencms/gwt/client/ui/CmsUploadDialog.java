@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsUploadDialog.java,v $
- * Date   : $Date: 2011/02/11 17:06:28 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/02/14 13:05:55 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -83,7 +83,7 @@ import com.google.gwt.user.client.ui.Hidden;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -163,15 +163,16 @@ public class CmsUploadDialog extends CmsPopupDialog {
             int fileCount = m_orderedFilenamesToUpload.size();
             m_bar.setValue(100);
             m_fileinfo.removeAllRows();
-            m_fileinfo.setHTML(0, 0, "<b>Uploaded:</b>");
-            m_fileinfo.setText(0, 1, fileCount
-                + " of "
-                + fileCount
-                + " "
-                + getFileText()
-                + "(total size: "
-                + length
-                + ")");
+            m_fileinfo.setHTML(0, 0, "<b>" + Messages.get().key(Messages.GUI_UPLOAD_FINISH_UPLOADED_0) + "</b>");
+            m_fileinfo.setText(
+                0,
+                1,
+                Messages.get().key(
+                    Messages.GUI_UPLOAD_FINISH_UPLOADED_VALUE_4,
+                    new Integer(fileCount),
+                    new Integer(fileCount),
+                    getFileText(),
+                    length));
         }
 
         /**
@@ -199,8 +200,10 @@ public class CmsUploadDialog extends CmsPopupDialog {
 
             if (!m_started) {
                 m_started = true;
-                m_fileinfo.setHTML(0, 0, "<b>Current file:</b>");
-                m_fileinfo.setHTML(1, 0, "<b>Uploading:</b>");
+                m_fileinfo.setHTML(0, 0, "<b>"
+                    + Messages.get().key(Messages.GUI_UPLOAD_PROGRESS_CURRENT_FILE_0)
+                    + "</b>");
+                m_fileinfo.setHTML(1, 0, "<b>" + Messages.get().key(Messages.GUI_UPLOAD_PROGRESS_UPLOADING_0) + "</b>");
                 m_fileinfo.setHTML(2, 0, "");
 
                 m_fileinfo.setText(0, 1, "");
@@ -210,9 +213,20 @@ public class CmsUploadDialog extends CmsPopupDialog {
                 m_fileinfo.getColumnFormatter().setWidth(0, "100px");
                 m_fileinfo.getColumnFormatter().setWidth(1, "auto");
             }
+
             m_fileinfo.setText(0, 1, currFilename);
-            m_fileinfo.setText(1, 1, currFile + " of " + fileCount + " " + getFileText());
-            m_fileinfo.setText(2, 1, readBytes + " of " + contentLength);
+            m_fileinfo.setText(
+                1,
+                1,
+                Messages.get().key(
+                    Messages.GUI_UPLOAD_PROGRESS_CURRENT_VALUE_3,
+                    new Integer(currFile),
+                    new Integer(fileCount),
+                    getFileText()));
+            m_fileinfo.setText(
+                2,
+                1,
+                Messages.get().key(Messages.GUI_UPLOAD_PROGRESS_UPLOADING_VALUE_2, readBytes, contentLength));
         }
 
         /**
@@ -285,7 +299,7 @@ public class CmsUploadDialog extends CmsPopupDialog {
     protected String m_targetFolder;
 
     /** Stores all files that were added. */
-    private Map<String, CmsFileInfo> m_allFiles = new HashMap<String, CmsFileInfo>();
+    private Map<String, CmsFileInfo> m_allFiles;
 
     /** Signals that the client currently loading. */
     private boolean m_clientLoading;
@@ -318,7 +332,7 @@ public class CmsUploadDialog extends CmsPopupDialog {
     private CmsUploadHandler m_formHandler;
 
     /** Stores the list items of all added files. */
-    private Map<String, CmsListItem> m_listItems = new HashMap<String, CmsListItem>();
+    private Map<String, CmsListItem> m_listItems;
 
     /** Signals if the dialog has already been loaded. */
     private boolean m_loaded;
@@ -352,12 +366,17 @@ public class CmsUploadDialog extends CmsPopupDialog {
      */
     public CmsUploadDialog() {
 
-        setText("Upload files");
+        setText(Messages.get().key(Messages.GUI_UPLOAD_DIALOG_TITLE_0));
         setModal(true);
         setGlassEnabled(true);
         catchNotifications();
         setWidth("439px");
         addStyleName(I_CmsLayoutBundle.INSTANCE.uploadCss().uploadDialogContent());
+
+        // create a map that stores all files (upload, existing, invalid)
+        m_allFiles = new HashMap<String, CmsFileInfo>();
+        // create a map the holds all the list items for the selection dialog
+        m_listItems = new HashMap<String, CmsListItem>();
 
         // create the "OK" and "Cancel" buttons
         createButtons();
@@ -429,15 +448,13 @@ public class CmsUploadDialog extends CmsPopupDialog {
         m_okButton.enable();
 
         // set the user info
-        setDialogInfo(
-            "Please use the \"Add more files...\" button to append more files to the list of files to upload. You can also deselect files by uncheck the cheboxes infront of the fileitems.",
-            false);
+        displayDialogInfo(Messages.get().key(Messages.GUI_UPLOAD_INFO_SELECTION_0), false);
         // set the selection summary
         updateSummary();
 
         // add a new upload button
         CmsUploadButton uploadButton = new CmsUploadButton(this);
-        uploadButton.setText("Add more Files...");
+        uploadButton.setText(Messages.get().key(Messages.GUI_UPLOAD_BUTTON_ADD_FILES_0));
         m_fileInputPanel.add(uploadButton);
 
         // show the popup
@@ -531,7 +548,7 @@ public class CmsUploadDialog extends CmsPopupDialog {
             }
 
             // upload the files
-            m_okButton.disable("Currently uploading files");
+            m_okButton.disable(Messages.get().key(Messages.GUI_UPLOAD_BUTTON_OK_DISABLE_UPLOADING_0));
             m_state = DialogState.upload;
             showProgress();
             fileUpload(CmsCoreProvider.get().getUploadUri(), m_targetFolder, this, filesToUpload);
@@ -539,7 +556,7 @@ public class CmsUploadDialog extends CmsPopupDialog {
             // m_form.submit();
         } else {
             m_okButton.enable();
-            CmsNotification.get().send(Type.WARNING, "No files selected for upload!");
+            CmsNotification.get().send(Type.WARNING, Messages.get().key(Messages.GUI_UPLOAD_NOTIFICATION_NO_FILES_0));
         }
     }
 
@@ -558,7 +575,7 @@ public class CmsUploadDialog extends CmsPopupDialog {
      */
     protected void commitSelectedFiles() {
 
-        m_okButton.disable("Currently checking for already existing resources");
+        m_okButton.disable(Messages.get().key(Messages.GUI_UPLOAD_BUTTON_OK_DISABLE_CHECKING_0));
         m_state = DialogState.check;
 
         m_firstContentHeight = CmsDomUtil.getCurrentStyleInt(m_contentWrapper.getElement(), CmsDomUtil.Style.height);
@@ -585,7 +602,9 @@ public class CmsUploadDialog extends CmsPopupDialog {
 
                 if (result.isActive()) {
                     m_state = DialogState.active;
-                    CmsNotification.get().send(Type.WARNING, "Another upload is running, please try again.");
+                    CmsNotification.get().send(
+                        Type.WARNING,
+                        Messages.get().key(Messages.GUI_UPLOAD_NOTIFICATION_RUNNING_0));
                 } else {
                     m_state = DialogState.selection;
                     if (!result.getExistingResourceNames().isEmpty() || !result.getInvalidFileNames().isEmpty()) {
@@ -636,13 +655,15 @@ public class CmsUploadDialog extends CmsPopupDialog {
     protected String getFileText() {
 
         if (m_filesToUpload.size() > 1) {
-            return "files";
+            return Messages.get().key(Messages.GUI_UPLOAD_FILES_PLURAL_0);
         }
-        return "file";
+        return Messages.get().key(Messages.GUI_UPLOAD_FILES_SINGULAR_0);
     }
 
     /**
-     * @param results
+     * Parses the response of the server and decides what to do.<p>
+     * 
+     * @param results a JSON Object
      */
     protected void parseResponse(String results) {
 
@@ -665,6 +686,7 @@ public class CmsUploadDialog extends CmsPopupDialog {
             //            String running = jsonObject.get(I_CmsUploadConstants.KEY_RUNNING).isBoolean().toString();
 
             if (success) {
+                displayDialogInfo(Messages.get().key(Messages.GUI_UPLOAD_INFO_FINISHING_0), false);
                 m_progressInfo.finish();
             } else {
                 showErrorReport(message, stacktrace);
@@ -683,9 +705,7 @@ public class CmsUploadDialog extends CmsPopupDialog {
         // update the dialog
         m_state = DialogState.overwrite;
         m_okButton.enable();
-        setDialogInfo(
-            "The following files are already existent on the VFS of OpenCms. You can choose those files that should be overwritten in the list bellow.",
-            true);
+        displayDialogInfo(Messages.get().key(Messages.GUI_UPLOAD_INFO_OVERWRITE_0), true);
         // hide the form with the upload button
         m_form.getElement().getStyle().setDisplay(Display.NONE);
 
@@ -754,11 +774,12 @@ public class CmsUploadDialog extends CmsPopupDialog {
         m_contentLength = getContentLength();
         StringBuffer buffer = new StringBuffer(64);
         buffer.append("<p class=\"").append(I_CmsLayoutBundle.INSTANCE.uploadCss().dialogMessage()).append("\">");
-        buffer.append("<b>Files to upload:</b> ");
-        buffer.append(m_filesToUpload.size());
-        buffer.append(" " + getFileText() + " selected (");
-        buffer.append(formatBytes(new Long(m_contentLength).intValue()));
-        buffer.append(")");
+        buffer.append("<b>" + Messages.get().key(Messages.GUI_UPLOAD_SUMMARY_FILES_0) + "</b> ");
+        buffer.append(Messages.get().key(
+            Messages.GUI_UPLOAD_SUMMARY_FILES_VALUE_3,
+            new Integer(m_filesToUpload.size()),
+            getFileText(),
+            formatBytes(new Long(m_contentLength).intValue())));
         buffer.append("</p>");
         m_selectionSummary.setHTML(buffer.toString());
     }
@@ -920,18 +941,46 @@ public class CmsUploadDialog extends CmsPopupDialog {
     }
 
     /**
+     * Sets the user info.<p>
+     *  
+     * @param msg the message to display
+     * @param warning signals whether the message should be a warning or nor
+     */
+    private void displayDialogInfo(String msg, boolean warning) {
+
+        StringBuffer buffer = new StringBuffer(64);
+        if (!warning) {
+            buffer.append("<p class=\"");
+            buffer.append(I_CmsLayoutBundle.INSTANCE.uploadCss().dialogMessage());
+            buffer.append("\">");
+            buffer.append(msg);
+            buffer.append("</p>");
+        } else {
+            buffer.append("<div class=\"");
+            buffer.append(I_CmsLayoutBundle.INSTANCE.uploadCss().warningIcon());
+            buffer.append("\"></div>");
+            buffer.append("<p class=\"");
+            buffer.append(I_CmsLayoutBundle.INSTANCE.uploadCss().warningMessage());
+            buffer.append("\">");
+            buffer.append(msg);
+            buffer.append("</p>");
+        }
+        m_dialogInfo.setHTML(buffer.toString());
+    }
+
+    /**
      * Sends a post request to the upload JSP.<p>
      * 
      * @param uploadUri the URI of the JSP that performs the upload
      * @param targetFolder the target folder to upload
      * @param dialog this dialog
-     * @param filesNamesToUpload the file names to upload
+     * @param filesToUpload the file names to upload
      */
     private native void fileUpload(
         String uploadUri,
         String targetFolder,
         CmsUploadDialog dialog,
-        JsArray<CmsFileInfo> filesNamesToUpload) /*-{
+        JsArray<CmsFileInfo> filesToUpload) /*-{
         // is executed when there was an error during reading the file
         function errorHandler(evt) {
         alert("Error");
@@ -947,8 +996,8 @@ public class CmsUploadDialog extends CmsPopupDialog {
         body += fileData + "\r\n";
         body += "--" + boundary + "\r\n";
         // are there any more files?, continue reading the next file
-        if (filesNamesToUpload.length > ++curIndex){
-        file = filesNamesToUpload[curIndex];
+        if (filesToUpload.length > ++curIndex){
+        file = filesToUpload[curIndex];
         this.readAsBinaryString(file);
         }else{
         // there are no more files left
@@ -989,10 +1038,10 @@ public class CmsUploadDialog extends CmsPopupDialog {
         var body = "--" + boundary + "\r\n";
 
         // the main procedure
-        if (filesNamesToUpload) {
+        if (filesToUpload) {
 
         var curIndex = 0;
-        var file = filesNamesToUpload[curIndex];
+        var file = filesToUpload[curIndex];
         var reader = new FileReader();
 
         // Handle loaded and errors
@@ -1073,28 +1122,6 @@ public class CmsUploadDialog extends CmsPopupDialog {
         }
     }
 
-    private void setDialogInfo(String msg, boolean warning) {
-
-        StringBuffer buffer = new StringBuffer(64);
-        if (!warning) {
-            buffer.append("<p class=\"");
-            buffer.append(I_CmsLayoutBundle.INSTANCE.uploadCss().dialogMessage());
-            buffer.append("\">");
-            buffer.append(msg);
-            buffer.append("</p>");
-        } else {
-            buffer.append("<div class=\"");
-            buffer.append(I_CmsLayoutBundle.INSTANCE.uploadCss().warningIcon());
-            buffer.append("\"></div>");
-            buffer.append("<p class=\"");
-            buffer.append(I_CmsLayoutBundle.INSTANCE.uploadCss().warningMessage());
-            buffer.append("\">");
-            buffer.append(msg);
-            buffer.append("</p>");
-        }
-        m_dialogInfo.setHTML(buffer.toString());
-    }
-
     /**
      * Sets the height for the content and centers the dialog afterwards.<p>
      */
@@ -1131,13 +1158,13 @@ public class CmsUploadDialog extends CmsPopupDialog {
     private void showProgress() {
 
         removeContent();
-        setDialogInfo("You can follow the upload process here.", false);
+        displayDialogInfo(Messages.get().key(Messages.GUI_UPLOAD_INFO_UPLOADING_0), false);
         m_selectionSummary.removeFromParent();
         m_progressInfo = new CmsUploadProgressInfo();
         m_contentWrapper.add(m_progressInfo);
         m_updateProgressTimer.scheduleRepeating(UPDATE_PROGRESS_INTERVALL);
         setHeight();
-        startLoadingAnimation("Please wait: Client is loading files into memory.");
+        startLoadingAnimation(Messages.get().key(Messages.GUI_UPLOAD_CLIENT_LOADING_0));
     }
 
     /**

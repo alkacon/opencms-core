@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/shared/Attic/CmsUploadProgessInfo.java,v $
- * Date   : $Date: 2011/02/11 17:06:27 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/02/14 13:05:55 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,20 +38,25 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
 public class CmsUploadProgessInfo implements IsSerializable {
 
+    /** Stores the bytes that are already read. */
     private long m_bytesRead;
 
+    /** The total content length. */
     private long m_contentLength;
 
+    /** The index of the current file. */
     private int m_currentFile;
 
+    /** The current percentage. */
     private int m_percent;
 
+    /** Signals whether the upload is running or not. */
     private boolean m_running;
 
     /**

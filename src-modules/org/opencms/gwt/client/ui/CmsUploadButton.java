@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsUploadButton.java,v $
- * Date   : $Date: 2011/02/11 17:06:28 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/02/14 13:05:55 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.gwt.client.ui;
 
+import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.upload.CmsFileInput;
 
@@ -51,7 +52,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -91,10 +92,10 @@ public class CmsUploadButton extends FlowPanel implements HasMouseOverHandlers, 
     private CmsFileInput m_fileInput;
 
     /** The handler for this panel. */
-    private CmsUploadButtonHandler m_handler = new CmsUploadButtonHandler();
+    private CmsUploadButtonHandler m_handler;
 
     /** The upload button. */
-    private CmsPushButton m_uploadButton = new CmsPushButton();
+    private CmsPushButton m_uploadButton;
 
     /** The upload dialog. */
     private CmsUploadDialog m_uploadDialog;
@@ -108,13 +109,18 @@ public class CmsUploadButton extends FlowPanel implements HasMouseOverHandlers, 
      */
     public CmsUploadButton() {
 
+        // create a handler for this button
+        m_handler = new CmsUploadButtonHandler();
+        // create the push button
+        m_uploadButton = new CmsPushButton();
+
         setStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsState());
         addStyleName(I_CmsLayoutBundle.INSTANCE.uploadCss().uploadButton());
 
         addMouseOutHandler(m_handler);
         addMouseOverHandler(m_handler);
 
-        m_uploadButton.setText("Upload...");
+        m_uploadButton.setText(Messages.get().key(Messages.GUI_UPLOAD_BUTTON_TITLE_0));
         add(m_uploadButton);
 
         createFileInput();
