@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsSelectBox.java,v $
- * Date   : $Date: 2010/10/29 12:18:21 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2011/02/14 10:02:24 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import java.util.Map;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.30 $ 
+ * @version $Revision: 1.31 $ 
  * 
  * @since 8.0.0
  * 
@@ -165,6 +165,9 @@ public class CmsSelectBox extends A_CmsSelectBox<CmsLabelSelectCell> implements 
      */
     public void setGhostValue(String value, boolean ghostMode) {
 
+        if (value == null) {
+            value = "";
+        }
         String otherOptionText = m_items.get(value);
         String message = Messages.get().key(Messages.GUI_SELECTBOX_EMPTY_SELECTION_1, otherOptionText);
         setTextForNullSelection(message);

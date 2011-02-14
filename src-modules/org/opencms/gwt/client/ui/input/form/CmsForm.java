@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/form/Attic/CmsForm.java,v $
- * Date   : $Date: 2010/11/29 15:13:19 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2011/02/14 10:02:24 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,20 +31,14 @@
 
 package org.opencms.gwt.client.ui.input.form;
 
-import org.opencms.gwt.client.Messages;
-import org.opencms.gwt.client.ui.CmsTabbedPanel;
-import org.opencms.gwt.client.ui.CmsToggleButton;
-import org.opencms.gwt.client.ui.CmsTabbedPanel.CmsTabLayout;
 import org.opencms.gwt.client.ui.css.I_CmsInputCss;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
-import org.opencms.gwt.client.ui.input.CmsTextBox;
 import org.opencms.gwt.client.ui.input.I_CmsFormField;
 import org.opencms.gwt.client.ui.input.I_CmsFormWidget;
 import org.opencms.gwt.client.ui.input.I_CmsHasBlur;
 import org.opencms.gwt.client.validation.CmsValidationController;
 import org.opencms.gwt.client.validation.I_CmsValidationHandler;
 import org.opencms.gwt.shared.CmsValidationResult;
-import org.opencms.util.CmsPair;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -56,24 +50,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasKeyPressHandlers;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * 
@@ -83,12 +73,12 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 8.0.0
  * 
  */
-public class CmsForm extends Composite {
+public class CmsForm {
 
     /** The CSS bundle used for this form. **/
     private static final I_CmsInputCss CSS = I_CmsInputLayoutBundle.INSTANCE.inputCss();
@@ -114,11 +104,12 @@ public class CmsForm extends Composite {
     /** The tab for basic form fields. */
     private FlowPanel m_basicTab = new FlowPanel();
 
+    /** The fields indexed by model id. */
+    private Multimap<String, I_CmsFormField> m_fieldsByModelId = ArrayListMultimap.create();
+
     /** The initial values of the form fields. */
     private Map<String, String> m_initialValues = new HashMap<String, String>();
 
-    /** The main panel for this widget. */
-    private CmsTabbedPanel<Widget> m_panel = new CmsTabbedPanel<Widget>(CmsTabLayout.small);
     /** 
     private boolean m_isSubmittable;
 
@@ -128,117 +119,73 @@ public class CmsForm extends Composite {
     /** The server-side form validator class to use. */
     private String m_validatorClass;
 
+    /** The form widget container. */
+    private A_CmsFormFieldPanel m_widget;
+
     /**
-     * The default constructor.<p>
+     * Creates a new form with an existing form widget container.<p>
      * 
+     * @param panel the form widget container 
      */
-    public CmsForm() {
+    public CmsForm(A_CmsFormFieldPanel panel) {
 
-        initWidget(m_panel);
-        m_panel.addStyleName(CSS.form());
-        m_panel.setHeight("500px");
-        m_panel.add(m_basicTab, Messages.get().key(Messages.GUI_FORM_TAB_BASIC_0));
-
-        m_basicTab.addStyleName(CSS.formTab());
-        m_panel.add(m_advancedTab, Messages.get().key(Messages.GUI_FORM_TAB_ADVANCED_0));
-        m_advancedTab.addStyleName(CSS.formTab());
-        m_panel.addSelectionHandler(new SelectionHandler<Integer>() {
-
-            /**
-             *  
-             * @param event the tab selection event 
-             */
-            public void onSelection(SelectionEvent<Integer> event) {
-
-                for (I_CmsFormField field : m_fields.values()) {
-                    I_CmsFormWidget w = field.getWidget();
-                    if (w instanceof CmsTextBox) {
-                        ((CmsTextBox)w).updateLayout();
-                    }
-                }
-            }
-        });
+        m_widget = panel;
     }
 
     /**
-     * Adds a double field, with an opener icon next to the first field which can be used to show or hide the second field.<p>
+     * Creates a new form and optionally sets the form widget container to a simple form field panel.<p>
      * 
-     * @param field1 the first field 
-     * @param field2 the second field 
-     * 
-     * @return the form rows corresponding to the fields which were added 
+     * @param initPanel if true, initializes the form widget container 
      */
-    public CmsPair<CmsFormRow, CmsFormRow> addDoubleField(final I_CmsFormField field1, final I_CmsFormField field2) {
+    public CmsForm(boolean initPanel) {
 
-        String initialValue = field1.getWidget().getFormValueAsString();
-        m_initialValues.put(field1.getId(), initialValue);
+        if (initPanel) {
+            setWidget(new CmsSimpleFormFieldPanel());
+        }
+    }
 
-        initializeFormFieldWidget(field1);
-        final CmsFormRow row1 = addField(field1);
-        initializeFormFieldWidget(field2);
-        final CmsFormRow row2 = addField(field2);
-        row2.getLabel().addStyleName(CSS.weakText());
+    /**
+     * Adds a form field.<p>
+     * 
+     * @param field the field to add 
+     * @param initialValue the initial field value 
+     */
+    public void addField(I_CmsFormField field, String initialValue) {
 
-        row1.setOpenerVisible(true);
-        row1.setOpenerOpen(true);
-        row2.setOpenerVisible(false);
-
-        boolean initiallyOpen = shouldDoubleFieldBeInitiallyOpen(field1, field2);
-        row2.setVisible(initiallyOpen);
-        field2.setIgnore(!initiallyOpen);
-        final CmsToggleButton opener = row1.getOpener();
-        opener.setDown(initiallyOpen);
-        opener.addClickHandler(new ClickHandler() {
-
-            public void onClick(ClickEvent event) {
-
-                field2.setIgnore(!opener.isDown());
-                if (!opener.isDown()) {
-                    // we set it to empty and not to the value of the first field
-                    // here because the user may still edit the first field's value later 
-                    field2.getWidget().setFormValueAsString(null);
-                } else {
-                    field2.getWidget().setFormValueAsString(field1.getWidget().getFormValueAsString());
-                }
-                row2.setVisible(opener.isDown());
-            }
-        });
-        return new CmsPair<CmsFormRow, CmsFormRow>(row1, row2);
+        addField("", field, initialValue);
     }
 
     /**
      * Adds a form field to the form.<p>
      * 
+     * @param fieldGroup the form field group key  
      * @param formField the form field which should be added
-     * @return the form row which has been created 
      */
-    public CmsFormRow addField(final I_CmsFormField formField) {
+    public void addField(String fieldGroup, final I_CmsFormField formField) {
 
         String initialValue = formField.getWidget().getFormValueAsString();
         m_initialValues.put(formField.getId(), initialValue);
-        String description = formField.getDescription();
-        String labelText = formField.getLabel();
         initializeFormFieldWidget(formField);
-        final I_CmsFormWidget widget = formField.getWidget();
         m_fields.put(formField.getId(), formField);
-        CmsFormRow row = addRow(labelText, description, (Widget)widget, formField.isAdvanced());
-        row.setOpenerVisible(false);
-        return row;
+        String modelId = formField.getModelId();
+        m_fieldsByModelId.put(modelId, formField);
+        m_widget.addField(formField, fieldGroup);
 
     }
 
     /**
      * Adds a form field to the form and sets its initial value.<p>
      * 
+     * @param fieldGroup the form field group key 
      * @param formField the form field which should be added 
      * @param initialValue the initial value of the form field, or null if the field shouldn't have an initial value 
      */
-    public void addField(I_CmsFormField formField, String initialValue) {
+    public void addField(String fieldGroup, I_CmsFormField formField, String initialValue) {
 
         if (initialValue != null) {
             formField.getWidget().setFormValueAsString(initialValue);
         }
-        addField(formField);
+        addField(fieldGroup, formField);
     }
 
     /**
@@ -268,27 +215,6 @@ public class CmsForm extends Composite {
     }
 
     /**
-     * Adds a new row with a given label and input widget to the form.<p>
-     * 
-     * @param labelText the label text for the form field
-     * @param description the description of the form field 
-     * @param widget the widget for the form field 
-     * @param advanced if true, add the row to the advanced tab, else the basic tab 
-     *  
-     * @return the newly added form row 
-     */
-    public CmsFormRow addRow(String labelText, String description, Widget widget, boolean advanced) {
-
-        CmsFormRow row = new CmsFormRow();
-        Label label = row.getLabel();
-        label.setText(labelText);
-        label.setTitle(description);
-        row.getWidgetContainer().add(widget);
-        getPanel(advanced).add(row);
-        return row;
-    }
-
-    /**
      * Adds a separator below the last added form field.<p>
      * 
      * @param advanced if true, adds the separator to the advanced tab, else to the basic tab 
@@ -313,10 +239,6 @@ public class CmsForm extends Composite {
             String key = entry.getKey();
             String value = null;
             I_CmsFormField field = entry.getValue();
-            if (field.isIgnored()) {
-                result.put(key, null);
-                continue;
-            }
             I_CmsFormWidget widget = field.getWidget();
             value = widget.getFormValueAsString();
             result.put(key, value);
@@ -335,22 +257,6 @@ public class CmsForm extends Composite {
         validationController.setFormValidator(m_validatorClass);
         validationController.setFormValidatorConfig(createValidatorConfig());
         startValidation(validationController);
-    }
-
-    /**
-     * Returns the fields which are not ignored.<p>
-     * 
-     * @return a collection of fields 
-     */
-    public Collection<I_CmsFormField> getActiveFields() {
-
-        List<I_CmsFormField> result = new ArrayList<I_CmsFormField>();
-        for (I_CmsFormField field : m_fields.values()) {
-            if (!field.isIgnored()) {
-                result.add(field);
-            }
-        }
-        return result;
     }
 
     /**
@@ -387,6 +293,16 @@ public class CmsForm extends Composite {
     }
 
     /**
+     * Returns the form widget container.<p>
+     * 
+     * @return the form widget container 
+     */
+    public A_CmsFormFieldPanel getWidget() {
+
+        return m_widget;
+    }
+
+    /**
      * Returns true if none of the fields in a collection are marked as invalid.<p>
      *
      * @param fields the form fields
@@ -401,24 +317,6 @@ public class CmsForm extends Composite {
             }
         }
         return true;
-    }
-
-    /**
-     * Resets all form fields to their initial values.<p>
-     */
-    public void reset() {
-
-        for (Map.Entry<String, I_CmsFormField> entry : m_fields.entrySet()) {
-            String id = entry.getKey();
-            I_CmsFormField field = entry.getValue();
-            field.setValidationStatus(I_CmsFormField.ValidationStatus.unknown);
-            field.getWidget().setFormValueAsString(m_initialValues.get(id));
-            field.getWidget().setErrorMessage(null);
-        }
-        m_formDialog.setOkButtonEnabled(noFieldsInvalid(m_fields.values()));
-        for (I_CmsFormResetHandler resetHandler : m_resetHandlers) {
-            resetHandler.onResetForm();
-        }
     }
 
     /**
@@ -452,12 +350,23 @@ public class CmsForm extends Composite {
     }
 
     /**
+     * Sets the form widget container. 
+     * 
+     * @param widget the form widget container 
+     */
+    public void setWidget(A_CmsFormFieldPanel widget) {
+
+        assert m_widget == null;
+        m_widget = widget;
+    }
+
+    /**
      * Validates the form fields and submits their values if the validation was successful.<p>
      */
     public void validateAndSubmit() {
 
         CmsValidationController validationController = new CmsValidationController(
-            getActiveFields(),
+            m_fields.values(),
             new I_CmsValidationHandler() {
 
                 /**
@@ -513,6 +422,18 @@ public class CmsForm extends Composite {
     }
 
     /**
+     * Gets the fields with a given model id.<p>
+     * 
+     * @param modelId the model id 
+     * 
+     * @return the fields with the given model id 
+     */
+    protected Collection<I_CmsFormField> getFieldsByModelId(String modelId) {
+
+        return m_fieldsByModelId.get(modelId);
+    }
+
+    /**
      * Returns either the basic or advanced tab based on a boolean value.<p>
      *  
      * @param advanced if true, the advanced tab will be returned, else the basic tab
@@ -525,34 +446,13 @@ public class CmsForm extends Composite {
     }
 
     /**
-     * @see com.google.gwt.user.client.ui.Widget#onLoad()
-     */
-    @Override
-    protected void onLoad() {
-
-        removeAdvancedTabIfEmpty();
-    }
-
-    /**
-     * Removes the "advanced" tab if it's empty.<p>
-     */
-    protected void removeAdvancedTabIfEmpty() {
-
-        if (m_advancedTab.getWidgetCount() == 0) {
-            m_panel.removeTab(1);
-        }
-
-    }
-
-    /**
-     * Applies a validation result to a form field.<p>
+     * Updates the field validation status.<p>
      * 
-     * @param fieldId the field id to which the validation result should be applied 
-     * @param result the result of the validation operation 
+     * @param field the form field 
+     * @param result the validation result 
      */
-    protected void updateFieldValidationStatus(String fieldId, CmsValidationResult result) {
+    protected void updateFieldValidationStatus(I_CmsFormField field, CmsValidationResult result) {
 
-        I_CmsFormField field = m_fields.get(fieldId);
         if (result.hasNewValue()) {
             field.getWidget().setFormValueAsString(result.getNewValue());
         }
@@ -564,10 +464,37 @@ public class CmsForm extends Composite {
     }
 
     /**
-     * Creates a validation handler which updates the OK button state when validation results come in.<p>
+     * Applies a validation result to a form field.<p>
      * 
-     * @return a validation handler 
+     * @param fieldId the field id to which the validation result should be applied 
+     * @param result the result of the validation operation 
      */
+    protected void updateFieldValidationStatus(String fieldId, CmsValidationResult result) {
+
+        I_CmsFormField field = m_fields.get(fieldId);
+        updateFieldValidationStatus(field, result);
+    }
+
+    /**
+     * Updates the model validation status.<p>
+     * 
+     * @param modelId the model id
+     * @param result the validation result  
+     */
+    protected void updateModelValidationStatus(String modelId, CmsValidationResult result) {
+
+        Collection<I_CmsFormField> fields = getFieldsByModelId(modelId);
+        for (I_CmsFormField field : fields) {
+            updateFieldValidationStatus(field, result);
+        }
+
+    }
+
+    /**
+    * Creates a validation handler which updates the OK button state when validation results come in.<p>
+    * 
+    * @return a validation handler 
+    */
     private I_CmsValidationHandler createValidationHandler() {
 
         return new I_CmsValidationHandler() {
@@ -583,9 +510,9 @@ public class CmsForm extends Composite {
             /**
              * @see org.opencms.gwt.client.validation.I_CmsValidationHandler#onValidationResult(java.lang.String, org.opencms.gwt.shared.CmsValidationResult)
              */
-            public void onValidationResult(String fieldId, CmsValidationResult result) {
+            public void onValidationResult(String modelId, CmsValidationResult result) {
 
-                updateFieldValidationStatus(fieldId, result);
+                updateModelValidationStatus(modelId, result);
             }
         };
     }
@@ -649,24 +576,8 @@ public class CmsForm extends Composite {
                         });
                     }
                 }
-
             });
         }
-    }
-
-    /**
-     * Returns true when a double field should be initially opened.<p>
-     * 
-     * @param field1 the first field 
-     * @param field2 the second field 
-     * 
-     * @return true if the double field should be initially opened 
-     */
-    private boolean shouldDoubleFieldBeInitiallyOpen(I_CmsFormField field1, I_CmsFormField field2) {
-
-        String value1 = field1.getWidget().getFormValueAsString();
-        String value2 = field2.getWidget().getFormValueAsString();
-        return !((value2 == null) || value2.equals(value1));
     }
 
     /**
@@ -678,4 +589,5 @@ public class CmsForm extends Composite {
 
         validationController.startValidation();
     }
+
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/Attic/CmsRegexValidator.java,v $
- * Date   : $Date: 2010/06/14 15:07:18 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/02/14 10:02:24 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import org.opencms.gwt.shared.CmsValidationResult;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 8.0.0
  */
@@ -79,6 +79,10 @@ public class CmsRegexValidator implements I_CmsValidator {
      * @return true if the validation succeeded 
      */
     private static boolean matchRuleRegex(String regex, String value) {
+
+        if (value == null) {
+            value = "";
+        }
 
         if (regex == null) {
             return true;

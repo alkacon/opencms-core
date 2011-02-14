@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/edit/Attic/I_CmsSitemapEntryEditorHandler.java,v $
- * Date   : $Date: 2010/10/07 07:56:35 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/02/14 10:02:24 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,19 +31,18 @@
 
 package org.opencms.ade.sitemap.client.edit;
 
+import org.opencms.ade.sitemap.client.control.CmsPropertyModification;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
-import org.opencms.xml.sitemap.properties.CmsSimplePropertyValue;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * An interface for sitemap entry editor modes.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -99,24 +98,19 @@ public interface I_CmsSitemapEntryEditorHandler {
     String getTitle();
 
     /**
-     * Handles the cancel action for the sitemap entry editor.<p>
-     */
-    void handleCancel();
-
-    /**
      * Handles the submit action for the sitemap entry editor.<p>
      * 
      * @param newTitle the new title 
      * @param newUrlName the new url name 
      * @param vfsPath the new vfs path 
-     * @param properties the new properties 
+     * @param propertyChanges the property changes  
      * @param editedName if true, the URL name has been edited 
      */
     void handleSubmit(
         String newTitle,
         String newUrlName,
         String vfsPath,
-        Map<String, CmsSimplePropertyValue> properties,
+        List<CmsPropertyModification> propertyChanges,
         boolean editedName);
 
     /**
@@ -125,5 +119,12 @@ public interface I_CmsSitemapEntryEditorHandler {
      * @return <code>true</code> if the handled entry has an editable name
      */
     boolean hasEditableName();
+
+    /** 
+     * Should return true if the sitemap editor is running in simple mode.<p>
+     * 
+     * @return true if the sitemap editor is running in simple mode 
+     */
+    boolean isSimpleMode();
 
 }

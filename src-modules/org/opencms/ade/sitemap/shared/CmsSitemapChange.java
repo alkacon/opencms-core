@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsSitemapChange.java,v $
- * Date   : $Date: 2011/02/10 16:35:54 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/02/14 10:02:24 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,8 +34,9 @@ package org.opencms.ade.sitemap.shared;
 import org.opencms.file.CmsResource;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.sitemap.CmsDetailPageInfo;
-import org.opencms.xml.sitemap.properties.CmsSimplePropertyValue;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -46,7 +47,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 8.0.0
  */
@@ -54,6 +55,12 @@ public class CmsSitemapChange implements IsSerializable, Comparable<CmsSitemapCh
 
     /** The changed clip-board data. */
     private CmsSitemapClipboardData m_clipBoardData;
+
+    /** The default file id. */
+    private CmsUUID m_defaultFileId;
+
+    /** The default file's properties. */
+    private Map<String, CmsClientProperty> m_defaultFileInternalProperties = new HashMap<String, CmsClientProperty>();
 
     /** Detail page info's to change. */
     private List<CmsDetailPageInfo> m_detailPageInfos;
@@ -79,20 +86,20 @@ public class CmsSitemapChange implements IsSerializable, Comparable<CmsSitemapCh
     /** The new entry resource type id. */
     private int m_newResourceTypeId;
 
+    /** The changed entry's own properties. */
+    private Map<String, CmsClientProperty> m_ownInternalProperties = new HashMap<String, CmsClientProperty>();
+
     /** The entry parent id. */
     private CmsUUID m_parentId;
 
     /** The entry position.*/
     private int m_position = -1;
 
-    /** The edited entry properties. */
-    private Map<String, CmsSimplePropertyValue> m_properties;
+    /** The list of property modifications. */
+    private List<CmsPropertyModificationData> m_propertyModifications = new ArrayList<CmsPropertyModificationData>();
 
     /** The entry site path. */
     private String m_sitePath;
-
-    /** The entry's title. */
-    private String m_title;
 
     /**
      * Constructor needed for serialization.<p>
@@ -135,7 +142,7 @@ public class CmsSitemapChange implements IsSerializable, Comparable<CmsSitemapCh
             m_position = data.m_position;
         }
         if (data.hasChangedProperties()) {
-            m_properties.putAll(data.m_properties);
+            m_propertyModifications.addAll(data.m_propertyModifications);
         }
         if (data.hasNewParent()) {
             m_parentId = data.m_parentId;
@@ -146,6 +153,20 @@ public class CmsSitemapChange implements IsSerializable, Comparable<CmsSitemapCh
         if (data.getClipBoardData() != null) {
             m_clipBoardData = data.getClipBoardData();
         }
+    }
+
+    /**
+     * Adds a property change for a changed title.<p>
+     * 
+     * @param title the changed title 
+     */
+    public void addChangeTitle(String title) {
+
+        CmsPropertyModificationData propChange = new CmsPropertyModificationData(
+            m_entryId.toString() + "/NavText/S",
+            title);
+        m_propertyModifications.add(propChange);
+        m_ownInternalProperties.put("NavText", new CmsClientProperty("NavText", title, null));
     }
 
     /**
@@ -191,6 +212,29 @@ public class CmsSitemapChange implements IsSerializable, Comparable<CmsSitemapCh
     public CmsSitemapClipboardData getClipBoardData() {
 
         return m_clipBoardData;
+    }
+
+    /**
+     * Gets the default file id.<p>
+     * 
+     * @return the default file id 
+     */
+    public CmsUUID getDefaultFileId() {
+
+        return m_defaultFileId;
+    }
+
+    //    /** The entry's title. */
+    //    private String m_title;
+
+    /**
+     * Returns the change'S properties for the default file.<p>
+     * 
+     * @return the properties for the default file 
+     */
+    public Map<String, CmsClientProperty> getDefaultFileProperties() {
+
+        return m_defaultFileInternalProperties;
     }
 
     /**
@@ -244,6 +288,26 @@ public class CmsSitemapChange implements IsSerializable, Comparable<CmsSitemapCh
     }
 
     /**
+     * Returns the properties for the entry itself.<p> 
+     * 
+     * @return the properties for the entry itself 
+     */
+    public Map<String, CmsClientProperty> getOwnInternalProperties() {
+
+        return m_ownInternalProperties;
+    }
+
+    /**
+     * Returns the change's properties for the entry itself.<p>
+     * 
+     * @return the change's properties for the entry itself 
+     */
+    public Map<String, CmsClientProperty> getOwnProperties() {
+
+        return m_ownInternalProperties;
+    }
+
+    /**
      * Returns the entry parent id.<p>
      *
      * @return the entry parent id
@@ -264,23 +328,13 @@ public class CmsSitemapChange implements IsSerializable, Comparable<CmsSitemapCh
     }
 
     /**
-     * Returns the entry properties.<p>
-     *
-     * @return the entry properties
+     * Gets the list of property changes.<p>
+     * 
+     * @return the list of property changes 
      */
-    public Map<String, CmsSimplePropertyValue> getProperties() {
+    public List<CmsPropertyModificationData> getPropertyChanges() {
 
-        return m_properties;
-    }
-
-    /**
-     * Returns the title.<p>
-     *
-     * @return the title
-     */
-    public String getTitle() {
-
-        return m_title;
+        return m_propertyModifications;
     }
 
     /**
@@ -290,13 +344,17 @@ public class CmsSitemapChange implements IsSerializable, Comparable<CmsSitemapCh
      */
     public boolean hasChangedInheritProperties() {
 
-        if (hasChangedProperties()) {
-            for (CmsSimplePropertyValue prop : m_properties.values()) {
-                if (prop.getInheritValue() != null) {
-                    return true;
-                }
-            }
-        }
+        //        return m_properties.get(
+        //        
+        //
+        //        if (hasChangedProperties()) {
+        //            for (CmsSimplePropertyValue prop : m_properties.values()) {
+        //                if (prop.getInheritValue() != null) {
+        //                    return true;
+        //                }
+        //            }
+        //        }
+        //        return false;
         return false;
     }
 
@@ -321,23 +379,23 @@ public class CmsSitemapChange implements IsSerializable, Comparable<CmsSitemapCh
     }
 
     /**
+     * Returns the title.<p>
+     *
+     * @return the title
+     */
+    //    public String getTitle() {
+    //
+    //        return m_title;
+    //    }
+
+    /**
      * Returns if there are changed properties.<p>
      * 
      * @return <code>true</code> if there are changed properties
      */
     public boolean hasChangedProperties() {
 
-        return m_properties != null;
-    }
-
-    /**
-     * Returns if the entry title has changed.<p>
-     * 
-     * @return <code>true</code> if the entry title has changed
-     */
-    public boolean hasChangedTitle() {
-
-        return m_title != null;
+        return (m_propertyModifications != null) && (m_propertyModifications.size() > 0);
     }
 
     /**
@@ -368,6 +426,16 @@ public class CmsSitemapChange implements IsSerializable, Comparable<CmsSitemapCh
 
         return m_parentId != null;
     }
+
+    /**
+     * Returns if the entry title has changed.<p>
+     * 
+     * @return <code>true</code> if the entry title has changed
+     */
+    //    public boolean hasChangedTitle() {
+    //
+    //        return m_title != null;
+    //    }
 
     /**
      * Returns if this is a deleting change.<p>
@@ -407,6 +475,26 @@ public class CmsSitemapChange implements IsSerializable, Comparable<CmsSitemapCh
     public void setClipBoardData(CmsSitemapClipboardData clipBoardData) {
 
         m_clipBoardData = clipBoardData;
+    }
+
+    /** 
+     * Sets the default file id. <p>
+     * 
+     * @param id the default file id 
+     */
+    public void setDefaultFileId(CmsUUID id) {
+
+        m_defaultFileId = id;
+    }
+
+    /**
+     * Sets the properties for the default file.<p>
+     * 
+     * @param props the properties for the default file 
+     */
+    public void setDefaultFileInternalProperties(Map<String, CmsClientProperty> props) {
+
+        m_defaultFileInternalProperties = props;
     }
 
     /**
@@ -479,6 +567,16 @@ public class CmsSitemapChange implements IsSerializable, Comparable<CmsSitemapCh
         m_newResourceTypeId = newResourceTypeId;
     }
 
+    /** 
+     * Sets the changed properties of the entry itself.<p>
+     * 
+     * @param props the entry's changed properties 
+     */
+    public void setOwnInternalProperties(Map<String, CmsClientProperty> props) {
+
+        m_ownInternalProperties = props;
+    }
+
     /**
      * Sets the entry parent id.<p>
      *
@@ -499,14 +597,24 @@ public class CmsSitemapChange implements IsSerializable, Comparable<CmsSitemapCh
         m_position = position;
     }
 
-    /**
-     * Sets the entry properties.<p>
-     *
-     * @param properties the entry properties to set
-     */
-    public void setProperties(Map<String, CmsSimplePropertyValue> properties) {
+    //    /**
+    //     * Sets the entry properties.<p>
+    //     *
+    //     * @param properties the entry properties to set
+    //     */
+    //    public void setProperties(Map<String, CmsSimplePropertyValue> properties) {
+    //
+    //        m_properties = properties;
+    //    }
 
-        m_properties = properties;
+    /**
+     * Sets the list of property changes.<p>
+     * 
+     * @param propertyChanges the property changes 
+     */
+    public void setPropertyChanges(List<CmsPropertyModificationData> propertyChanges) {
+
+        m_propertyModifications = propertyChanges;
     }
 
     /**
@@ -519,13 +627,13 @@ public class CmsSitemapChange implements IsSerializable, Comparable<CmsSitemapCh
         m_sitePath = sitePath;
     }
 
-    /**
+    /** 
      * Sets the title.<p>
-     *
-     * @param title the title to set
+     *  
+     * @param title the title 
      */
     public void setTitle(String title) {
 
-        m_title = title;
+        addChangeTitle(title);
     }
 }

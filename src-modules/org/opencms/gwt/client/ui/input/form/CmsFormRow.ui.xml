@@ -4,7 +4,6 @@
 	xmlns:cms="urn:import:org.opencms.gwt.client.ui">
 	<ui:with field="style" type="org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle" />
 	<g:FlowPanel styleName="{style.inputCss.formRow}">
-		<cms:CmsToggleButton ui:field="m_opener"  styleName="{style.inputCss.formOpener}" />
 		<g:Label ui:field="m_label"  styleName="{style.inputCss.formLabel}"/>
 		<g:SimplePanel ui:field="m_widgetContainer"  styleName="{style.inputCss.formWidgetContainer}" />
 	</g:FlowPanel>

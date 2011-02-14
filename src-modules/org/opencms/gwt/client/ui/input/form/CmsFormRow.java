@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/form/Attic/CmsFormRow.java,v $
- * Date   : $Date: 2010/10/07 07:56:34 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/02/14 10:02:24 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,12 +31,10 @@
 
 package org.opencms.gwt.client.ui.input.form;
 
-import org.opencms.gwt.client.ui.CmsToggleButton;
 import org.opencms.gwt.client.ui.css.I_CmsInputCss;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
@@ -52,7 +50,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger 
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 8.0.0
  */
@@ -78,10 +76,6 @@ public class CmsFormRow extends Composite {
     @UiField
     protected Label m_label;
 
-    /** The opener of the form row. */
-    @UiField
-    protected CmsToggleButton m_opener;
-
     /** The widget container for the form row. */
     @UiField
     protected Panel m_widgetContainer;
@@ -92,10 +86,7 @@ public class CmsFormRow extends Composite {
     public CmsFormRow() {
 
         initWidget(uiBinder.createAndBindUi(this));
-        m_opener.setDown(false);
 
-        m_opener.setUpFace("", CSS.formRowOpenerClosed());
-        m_opener.setDownFace("", CSS.formRowOpenerOpen());
     }
 
     /** 
@@ -139,16 +130,6 @@ public class CmsFormRow extends Composite {
     }
 
     /**
-     * Returns the opener of the form row.<p>
-     * 
-     * @return the opener of the form row 
-     */
-    public CmsToggleButton getOpener() {
-
-        return m_opener;
-    }
-
-    /**
      * Returns the widget container for the form row.<p>
      * 
      * @return the widget container for the form row
@@ -156,26 +137,6 @@ public class CmsFormRow extends Composite {
     public Panel getWidgetContainer() {
 
         return m_widgetContainer;
-    }
-
-    /**
-     * Opens or closes the opener.<p>
-     * 
-     * @param open if true opens the opener, else closes it.<p>
-     */
-    public void setOpenerOpen(boolean open) {
-
-        m_opener.setDown(open);
-    }
-
-    /**
-     * Shows or hides the opener.<p>
-     * 
-     * @param openerVisible if true, shows the opener, else hides it.
-     */
-    public void setOpenerVisible(boolean openerVisible) {
-
-        m_opener.getElement().getStyle().setVisibility(openerVisible ? Visibility.VISIBLE : Visibility.HIDDEN);
     }
 
 }

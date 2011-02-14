@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapTreeItem.java,v $
- * Date   : $Date: 2011/02/02 07:37:53 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2011/02/14 10:02:24 $
+ * Version: $Revision: 1.51 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -16,7 +16,7 @@
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
+ * Lesser General Public License for more details. 
  *
  * For further information about Alkacon Software, please see the
  * company website: http://www.alkacon.com
@@ -31,12 +31,14 @@
 
 package org.opencms.ade.sitemap.client;
 
+import org.opencms.ade.sitemap.client.control.CmsPropertyModification;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.client.hoverbar.CmsSitemapHoverbar;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsSitemapItemCss;
 import org.opencms.ade.sitemap.shared.CmsClientLock;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
+import org.opencms.ade.sitemap.shared.CmsDetailPageTable;
 import org.opencms.file.CmsResource;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.dnd.I_CmsDragHandle;
@@ -57,9 +59,8 @@ import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsListInfoBean.PageIcon;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
-import org.opencms.xml.sitemap.CmsDetailPageTable;
-import org.opencms.xml.sitemap.properties.CmsComputedPropertyValue;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -78,7 +79,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.50 $ 
+ * @version $Revision: 1.51 $ 
  * 
  * @since 8.0.0
  * 
@@ -266,7 +267,7 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
                                     text,
                                     newUrlName,
                                     m_entry.getVfsPath(),
-                                    m_entry.getProperties(),
+                                    Collections.<CmsPropertyModification> emptyList(),
                                     false);
                             }
 
@@ -274,8 +275,12 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
                         action.execute();
                     } else {
                         CmsSitemapController controller = CmsSitemapView.getInstance().getController();
-                        controller.edit(m_entry, text, m_entry.getVfsPath(), m_entry.getProperties(), false);
-                        //CmsSitemapView.getInstance().getController().addChange(edit, false);
+                        controller.edit(
+                            m_entry,
+                            text,
+                            m_entry.getVfsPath(),
+                            Collections.<CmsPropertyModification> emptyList(),
+                            false);
                     }
 
                 }
@@ -363,11 +368,8 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
         if (m_entry.isLeafType() && sitePath.endsWith("/")) {
             sitePath = sitePath.substring(0, sitePath.length() - 1);
         }
-        if (m_entry.getInheritedProperties() == null) {
-            return CmsStringUtil.joinPaths(context, sitePath);
-        }
-        CmsComputedPropertyValue exportProp = m_entry.getInheritedProperties().get("export");
-        if ((exportProp != null) && Boolean.parseBoolean(exportProp.getOwnValue())) {
+        String exportProp = CmsSitemapView.getInstance().getController().getEffectiveProperty(m_entry, "export");
+        if ("true".equals(exportProp)) {
             String exportName = getExportName();
             String rfsPrefix = CmsSitemapView.getInstance().getController().getData().getExportRfsPrefix();
             if (rfsPrefix != null) {
@@ -598,21 +600,6 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
      * @param entry the entry whose data should be used to update the color of the sitemap tree item.<p>
      */
     public void updateColor(CmsClientSitemapEntry entry) {
-
-        if (entry.getProperties().containsKey("sitemap")) {
-            return;
-        }
-        //        switch (entry.getEditStatus()) {
-        //            case edited:
-        //                setBackgroundColor(Background.RED);
-        //                break;
-        //            case created:
-        //                setBackgroundColor(Background.BLUE);
-        //                break;
-        //            case normal:
-        //            default:
-        //                setBackgroundColor(Background.DEFAULT);
-        //        }
 
     }
 

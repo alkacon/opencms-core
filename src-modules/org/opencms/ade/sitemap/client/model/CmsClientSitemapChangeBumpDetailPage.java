@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeBumpDetailPage.java,v $
- * Date   : $Date: 2011/02/02 07:37:52 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/02/14 10:02:24 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,17 +35,17 @@ import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.client.toolbar.CmsToolbarClipboardView;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
+import org.opencms.ade.sitemap.shared.CmsDetailPageTable;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange;
 import org.opencms.util.CmsUUID;
-import org.opencms.xml.sitemap.CmsDetailPageTable;
 
 /**
  * Change object for making a detail page the default detail page for its type.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.3 $
- * 
+ * @version $Revision: 1.4 $
+ *  
  * @since 8.0.0
  */
 public class CmsClientSitemapChangeBumpDetailPage implements I_CmsClientSitemapChange {

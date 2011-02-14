@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/form/Attic/CmsFormDialog.java,v $
- * Date   : $Date: 2011/02/01 14:59:58 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2011/02/14 10:02:24 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,6 @@ import java.util.Map;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 
@@ -50,7 +49,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 8.0.0
  */
@@ -68,23 +67,20 @@ public class CmsFormDialog extends CmsPopupDialog implements I_CmsFormDialog {
     /** 
      * Constructs a new form dialog with a given title.<p>
      * 
-     * @param title the title of the form dialog 
+     * @param title the title of the form dialog
+     * @param form the form to use  
      */
-    public CmsFormDialog(String title) {
+    public CmsFormDialog(String title, CmsForm form) {
 
         super(title, null);
-        m_form = createForm();
-        setContent(m_form);
         setGlassEnabled(true);
         setAutoHideEnabled(false);
         setModal(true);
-        m_form.getElement().getStyle().setPadding(0, Unit.PX);
         addButton(createCancelButton());
-        addButton(createResetButton());
         m_okButton = createOkButton();
-        m_form.setFormDialog(this);
         addButton(m_okButton);
-        removePadding();
+        m_form = form;
+        m_form.setFormDialog(this);
     }
 
     /**
@@ -101,9 +97,10 @@ public class CmsFormDialog extends CmsPopupDialog implements I_CmsFormDialog {
         String title,
         I_CmsFormHandler formHandler) {
 
-        CmsFormDialog dialog = new CmsFormDialog(title);
+        CmsSimpleFormFieldPanel simplePanel = new CmsSimpleFormFieldPanel();
+        CmsForm form = new CmsForm(simplePanel);
+        CmsFormDialog dialog = new CmsFormDialog("Edit Properties", form);
         dialog.setFormHandler(formHandler);
-        CmsForm form = dialog.getForm();
         Map<String, I_CmsFormField> formFields = CmsBasicFormField.createFields(propertyConfig.values());
 
         for (I_CmsFormField field : formFields.values()) {
@@ -119,6 +116,7 @@ public class CmsFormDialog extends CmsPopupDialog implements I_CmsFormDialog {
     @Override
     public void center() {
 
+        initContent();
         super.center();
         notifyWidgetsOfOpen();
     }
@@ -177,18 +175,18 @@ public class CmsFormDialog extends CmsPopupDialog implements I_CmsFormDialog {
     @Override
     public void show() {
 
+        initContent();
         super.show();
         notifyWidgetsOfOpen();
     }
 
     /**
-     * Creates the form to display in the dialog.<p>
-     * 
-     * @return a new form 
+     * Initializes the form content.<p>
      */
-    protected CmsForm createForm() {
+    protected void initContent() {
 
-        return new CmsForm();
+        setContent(m_form.getWidget());
+        removePadding();
     }
 
     /**
@@ -248,30 +246,6 @@ public class CmsFormDialog extends CmsPopupDialog implements I_CmsFormDialog {
             public void onClick(ClickEvent event) {
 
                 m_form.validateAndSubmit();
-            }
-        });
-        return button;
-    }
-
-    /** 
-     * Creates the Reset button.<p>
-     * 
-     * @return the Reset button
-     */
-    private CmsPushButton createResetButton() {
-
-        CmsPushButton button = new CmsPushButton();
-
-        button.setText(Messages.get().key(Messages.GUI_RESET_0));
-        button.setUseMinWidth(true);
-        button.addClickHandler(new ClickHandler() {
-
-            /**
-             * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
-             */
-            public void onClick(ClickEvent event) {
-
-                m_form.reset();
             }
         });
         return button;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/util/Attic/CmsDomUtil.java,v $
- * Date   : $Date: 2010/11/29 08:34:54 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2011/02/14 10:02:24 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,10 +46,12 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
+import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant;
 
 /**
@@ -57,7 +59,7 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentC
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.36 $
+ * @version $Revision: 1.37 $
  * 
  * @since 8.0.0
  */
@@ -270,10 +272,10 @@ public final class CmsDomUtil {
         marginTop,
 
         /** CSS Property. */
-        opacity,
+        minHeight,
 
         /** CSS Property. */
-        minHeight,
+        opacity,
 
         /** CSS Property. */
         padding,
@@ -949,6 +951,26 @@ public final class CmsDomUtil {
     public static boolean hasClass(String className, Element element) {
 
         return internalHasClass(className.trim(), element);
+    }
+
+    /**
+     * Gives an element the overflow:auto property.<p>
+     * 
+     * @param elem a DOM element
+     */
+    public static void makeScrollable(Element elem) {
+
+        elem.getStyle().setOverflow(Overflow.AUTO);
+    }
+
+    /**
+     * Gives the element of a widget the overflow:auto property.<p>
+     * 
+     * @param widget the widget to make scrollable
+     */
+    public static void makeScrollable(Widget widget) {
+
+        makeScrollable(widget.getElement());
     }
 
     /**

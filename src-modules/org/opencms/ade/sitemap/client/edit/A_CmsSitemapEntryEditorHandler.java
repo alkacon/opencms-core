@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/edit/Attic/A_CmsSitemapEntryEditorHandler.java,v $
- * Date   : $Date: 2010/06/14 08:08:41 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/02/14 10:02:24 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -93,13 +93,5 @@ public abstract class A_CmsSitemapEntryEditorHandler implements I_CmsSitemapEntr
     public String getTitle() {
 
         return m_entry.getTitle();
-    }
-
-    /**
-     * @see org.opencms.ade.sitemap.client.edit.I_CmsSitemapEntryEditorHandler#handleCancel()
-     */
-    public void handleCancel() {
-
-        // do nothing
     }
 }

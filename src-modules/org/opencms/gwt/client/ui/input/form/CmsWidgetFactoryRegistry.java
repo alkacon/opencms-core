@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/form/Attic/CmsWidgetFactoryRegistry.java,v $
- * Date   : $Date: 2010/05/06 09:51:37 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/02/14 10:02:24 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,12 +42,12 @@ import java.util.Map;
  * 
  *  @author Georg Westenberger 
  *  
- *  @version $Revision: 1.1 $
+ *  @version $Revision: 1.2 $
  *  
- *  @since 8.0.0
+ *  @since 8.0.0 
  *
  */
-public final class CmsWidgetFactoryRegistry {
+public final class CmsWidgetFactoryRegistry implements I_CmsFormWidgetMultiFactory {
 
     /** The singleton instance. */
     private static CmsWidgetFactoryRegistry instance;

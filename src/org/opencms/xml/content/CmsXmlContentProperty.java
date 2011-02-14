@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentProperty.java,v $
- * Date   : $Date: 2010/10/07 13:49:12 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2011/02/14 10:02:24 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,11 +39,11 @@ import java.io.Serializable;
  * Warning: This class is used by GWT client-side code (See GwtBase.gwt.xml for a list of
  * classes used by GWT client-side code). If you change this class, either make sure that 
  * your changes are compatible with GWT, or write a separate client version of the class 
- * and put it into super_src. 
+ * and put it into super_src.  
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 7.9.2
  */
@@ -95,9 +95,6 @@ public class CmsXmlContentProperty implements Serializable {
     /** The serialization uid. */
     private static final long serialVersionUID = -4588082362096864995L;
 
-    /** The value of the "advanced" property. */
-    private String m_advanced;
-
     /** Default value. */
     private String m_default;
 
@@ -144,8 +141,6 @@ public class CmsXmlContentProperty implements Serializable {
      * @param niceName the nice-name
      * @param description  the description
      * @param error the error message
-     * @param advanced the "advanced" property 
-     * @param selectInherit the property which indicates whether the user can control the inheritance of this property 
      */
     public CmsXmlContentProperty(
         String propertyName,
@@ -157,9 +152,7 @@ public class CmsXmlContentProperty implements Serializable {
         String default1,
         String niceName,
         String description,
-        String error,
-        String advanced,
-        String selectInherit) {
+        String error) {
 
         super();
         m_propertyName = propertyName;
@@ -172,8 +165,6 @@ public class CmsXmlContentProperty implements Serializable {
         m_niceName = niceName;
         m_description = description;
         m_error = error;
-        m_advanced = advanced;
-        m_selectInherit = selectInherit;
     }
 
     /**
@@ -201,19 +192,7 @@ public class CmsXmlContentProperty implements Serializable {
             m_default,
             m_niceName,
             m_description,
-            m_error,
-            m_advanced,
-            m_selectInherit);
-    }
-
-    /**
-     * Returns the value of the "advanced" property.<p>
-     *
-     * @return the "advanced" property 
-     */
-    public String getAdvanced() {
-
-        return m_advanced;
+            m_error);
     }
 
     /**

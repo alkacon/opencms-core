@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsDetailPageTable.java,v $
- * Date   : $Date: 2011/02/02 07:37:52 $
- * Version: $Revision: 1.2 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsDetailPageTable.java,v $
+ * Date   : $Date: 2011/02/14 10:02:24 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,10 +29,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.xml.sitemap;
+package org.opencms.ade.sitemap.shared;
 
-import org.opencms.util.CmsMultiListMap;
 import org.opencms.util.CmsUUID;
+import org.opencms.xml.sitemap.CmsDetailPageInfo;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -41,12 +41,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.collect.ArrayListMultimap;
+
 /**
  * A data structure for managing the detail page ordering for different types in a given sitemap.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.1 $
  * 
  * @since 8.0.0
  */
@@ -69,7 +71,7 @@ public class CmsDetailPageTable implements Cloneable, Serializable {
     private Map<CmsUUID, CmsDetailPageInfo> m_infoById = new HashMap<CmsUUID, CmsDetailPageInfo>();
 
     /** The detail page info beans, indexed by type. */
-    private CmsMultiListMap<String, CmsDetailPageInfo> m_map = new CmsMultiListMap<String, CmsDetailPageInfo>();
+    private ArrayListMultimap<String, CmsDetailPageInfo> m_map = ArrayListMultimap.<String, CmsDetailPageInfo> create();
 
     /**
      * Creates a detail page table from a list of detail page info bean.<p>
@@ -79,7 +81,7 @@ public class CmsDetailPageTable implements Cloneable, Serializable {
     public CmsDetailPageTable(List<CmsDetailPageInfo> infos) {
 
         for (CmsDetailPageInfo info : infos) {
-            m_map.addValue(info.getType(), info);
+            m_map.put(info.getType(), info);
             m_infoById.put(info.getId(), info);
         }
     }
@@ -93,7 +95,7 @@ public class CmsDetailPageTable implements Cloneable, Serializable {
 
         for (Map.Entry<String, List<CmsDetailPageInfo>> entry : detailPageLists.entrySet()) {
             for (CmsDetailPageInfo info : entry.getValue()) {
-                m_map.addValue(info.getType(), info);
+                m_map.put(info.getType(), info);
                 m_infoById.put(info.getId(), info);
             }
 
@@ -115,7 +117,7 @@ public class CmsDetailPageTable implements Cloneable, Serializable {
      */
     public void add(CmsDetailPageInfo info) {
 
-        m_map.addValue(info.getType(), info);
+        m_map.put(info.getType(), info);
         m_infoById.put(info.getId(), info);
     }
 
@@ -210,9 +212,10 @@ public class CmsDetailPageTable implements Cloneable, Serializable {
     public List<CmsDetailPageInfo> getBestDetailPages() {
 
         List<CmsDetailPageInfo> result = new ArrayList<CmsDetailPageInfo>();
-        for (Map.Entry<String, List<CmsDetailPageInfo>> entry : m_map.entrySet()) {
-            if (!entry.getValue().isEmpty()) {
-                result.add(entry.getValue().get(0));
+        for (String key : m_map.keySet()) {
+            List<CmsDetailPageInfo> vals = m_map.get(key);
+            if (!vals.isEmpty()) {
+                result.add(vals.get(0));
             }
         }
         return result;
@@ -330,9 +333,8 @@ public class CmsDetailPageTable implements Cloneable, Serializable {
     public List<CmsDetailPageInfo> toList() {
 
         List<CmsDetailPageInfo> result = new ArrayList<CmsDetailPageInfo>();
-        for (Map.Entry<String, List<CmsDetailPageInfo>> entry : m_map.entrySet()) {
-            List<CmsDetailPageInfo> infos = entry.getValue();
-            for (CmsDetailPageInfo info : infos) {
+        for (String key : m_map.keySet()) {
+            for (CmsDetailPageInfo info : m_map.get(key)) {
                 result.add(info);
             }
         }

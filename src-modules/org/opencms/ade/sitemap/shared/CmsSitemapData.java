@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsSitemapData.java,v $
- * Date   : $Date: 2011/02/10 16:35:54 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2011/02/14 10:02:24 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,8 +32,6 @@
 package org.opencms.ade.sitemap.shared;
 
 import org.opencms.xml.content.CmsXmlContentProperty;
-import org.opencms.xml.sitemap.CmsDetailPageTable;
-import org.opencms.xml.sitemap.properties.CmsComputedPropertyValue;
 
 import java.util.List;
 import java.util.Map;
@@ -45,7 +43,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 8.0
  */
@@ -54,11 +52,17 @@ public class CmsSitemapData implements IsSerializable {
     /** Name of the used js variable. */
     public static final String DICT_NAME = "org_opencms_ade_sitemap";
 
+    /** The list of property names. */
+    private List<String> m_allPropertyNames;
+
     /** Flag to indicate whether detail pages can be edited. */
     private boolean m_canEditDetailPages;
 
     /** The clipboard data. */
     private CmsSitemapClipboardData m_clipboardData;
+
+    /** The default info bean for new elements. **/
+    private CmsNewResourceInfo m_defaultNewElementInfo;
 
     /** The default template. */
     private CmsSitemapTemplate m_defaultTemplate;
@@ -81,8 +85,6 @@ public class CmsSitemapData implements IsSerializable {
     /** The maximum sitemap depth. */
     private int m_maxDepth;
 
-    private CmsNewResourceInfo m_defaultNewElementInfo;
-
     /** The new element information. */
     private List<CmsNewResourceInfo> m_newElementInfos;
 
@@ -92,8 +94,8 @@ public class CmsSitemapData implements IsSerializable {
     /** The path at which the sitemap should be opened, or null. */
     private String m_openPath;
 
-    /** A map of properties which the root entry of the sitemap should inherit. */
-    private Map<String, CmsComputedPropertyValue> m_parentProperties;
+    /** The properties of the root's parent. */
+    private Map<String, CmsClientProperty> m_parentProperties;
 
     /** The path to the parent sitemap or <code>null</code>. */
     private String m_parentSitemap;
@@ -126,7 +128,7 @@ public class CmsSitemapData implements IsSerializable {
      * @param properties the properties
      * @param clipboardData the clipboard data
      * @param parentProperties the root entry's parent's inherited properties 
-     * @param exportName the configured export name for the site which contains the sitemap
+     * @param allPropNames the names of all properties 
      * @param exportRfsPrefix the export RFS prefix 
      * @param isSecure true if there is a secure server configuration for the site which contains the sitemap 
      * @param noEditReason the reason why the current sitemap is not editable
@@ -146,8 +148,8 @@ public class CmsSitemapData implements IsSerializable {
         Map<String, CmsSitemapTemplate> templates,
         Map<String, CmsXmlContentProperty> properties,
         CmsSitemapClipboardData clipboardData,
-        Map<String, CmsComputedPropertyValue> parentProperties,
-        String exportName,
+        Map<String, CmsClientProperty> parentProperties,
+        List<String> allPropNames,
         String exportRfsPrefix,
         boolean isSecure,
         String noEditReason,
@@ -173,13 +175,14 @@ public class CmsSitemapData implements IsSerializable {
         m_parentProperties = parentProperties;
         m_root = root;
         m_openPath = openPath;
-        m_exportName = exportName;
         m_exportRfsPrefix = exportRfsPrefix;
         m_isSecure = isSecure;
         m_maxDepth = maxDepth;
         m_detailPageTable = detailPageTable;
         m_resourceTypeInfos = resourceTypeInfos;
         m_canEditDetailPages = canEditDetailPages;
+        m_allPropertyNames = allPropNames;
+
         m_newElementInfos = newElementInfos;
     }
 
@@ -191,6 +194,16 @@ public class CmsSitemapData implements IsSerializable {
     public boolean canEditDetailPages() {
 
         return m_canEditDetailPages;
+    }
+
+    /**
+     * Returns the names of all properties.<p>
+     * 
+     * @return the names of all properties 
+     */
+    public List<String> getAllPropertyNames() {
+
+        return m_allPropertyNames;
     }
 
     /**
@@ -264,16 +277,6 @@ public class CmsSitemapData implements IsSerializable {
     }
 
     /**
-     * Returns the reason why the current sitemap is not editable.<p>
-     *
-     * @return the reason why the current sitemap is not editable
-     */
-    public String getNoEditReason() {
-
-        return m_noEditReason;
-    }
-
-    /**
      * Returns the new element information.<p>
      *
      * @return the new element information
@@ -281,6 +284,16 @@ public class CmsSitemapData implements IsSerializable {
     public List<CmsNewResourceInfo> getNewElementInfos() {
 
         return m_newElementInfos;
+    }
+
+    /**
+     * Returns the reason why the current sitemap is not editable.<p>
+     *
+     * @return the reason why the current sitemap is not editable
+     */
+    public String getNoEditReason() {
+
+        return m_noEditReason;
     }
 
     /**
@@ -294,11 +307,11 @@ public class CmsSitemapData implements IsSerializable {
     }
 
     /**
-     * Returns the properties which the root entry of this sitemap should inherit.<p>
+     * Returns the properties of the sitemap root's parent.<p>
      * 
-     * @return the set of inherited properties 
+     * @return the properties of the sitemap root'S parent
      */
-    public Map<String, CmsComputedPropertyValue> getParentProperties() {
+    public Map<String, CmsClientProperty> getParentProperties() {
 
         return m_parentProperties;
     }

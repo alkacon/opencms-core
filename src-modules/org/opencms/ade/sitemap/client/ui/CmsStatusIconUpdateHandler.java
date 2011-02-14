@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/ui/Attic/CmsStatusIconUpdateHandler.java,v $
- * Date   : $Date: 2011/02/01 15:25:05 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/02/14 10:02:24 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,13 +33,10 @@ package org.opencms.ade.sitemap.client.ui;
 
 import org.opencms.ade.sitemap.client.CmsSitemapTreeItem;
 import org.opencms.ade.sitemap.client.CmsSitemapView;
+import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.client.control.I_CmsPropertyUpdateHandler;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.gwt.shared.CmsListInfoBean.PageIcon;
-import org.opencms.xml.sitemap.CmsSitemapManager;
-import org.opencms.xml.sitemap.properties.CmsComputedPropertyValue;
-
-import java.util.Map;
 
 /**
  * A class which changes the status icon of a sitemap item when the "secure" or "export" properties
@@ -47,7 +44,7 @@ import java.util.Map;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 8.0.0
  */
@@ -58,26 +55,27 @@ public class CmsStatusIconUpdateHandler implements I_CmsPropertyUpdateHandler {
      */
     public void handlePropertyUpdate(CmsClientSitemapEntry entry) {
 
-        Map<String, CmsComputedPropertyValue> myProps = entry.getInheritedProperties();
         CmsSitemapTreeItem item = CmsSitemapView.getInstance().getTreeItem(entry.getSitePath());
         if (item == null) {
             return;
         }
-        CmsComputedPropertyValue secureProp = myProps.get("secure");
-        CmsComputedPropertyValue exportProp = myProps.get("export");
+        CmsSitemapController controller = CmsSitemapView.getInstance().getController();
+        String secureProp = controller.getEffectiveProperty(entry, "secure");
+        String exportProp = controller.getEffectiveProperty(entry, "export");
+
         PageIcon icon = PageIcon.none;
         if (!entry.isInNavigation()) {
             icon = PageIcon.hidden;
         }
-        if ((exportProp != null) && "true".equals(exportProp.getOwnValue())) {
+        if ("true".equals(exportProp)) {
             icon = PageIcon.export;
         }
-        if ((secureProp != null) && "true".equals(secureProp.getOwnValue())) {
+        if ("true".equals(secureProp)) {
             icon = PageIcon.secure;
         }
-        if ((entry.getOwnProperty(CmsSitemapManager.Property.isRedirect.getName())) != null) {
-            icon = PageIcon.redirect;
-        }
+        //        if ((entry.getOwnProperty(CmsSitemapManager.Property.isRedirect.getName())) != null) {
+        //            icon = PageIcon.redirect;
+        //        }
         item.setPageIcon(icon);
     }
 }

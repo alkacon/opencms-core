@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/adeconfig/Attic/CmsSitemapConfigurationData.java,v $
- * Date   : $Date: 2011/02/10 16:32:44 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/02/14 10:02:24 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,6 @@ import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.xml.containerpage.CmsConfigurationItem;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.sitemap.CmsDetailPageInfo;
-import org.opencms.xml.sitemap.CmsDetailPageTable;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -56,7 +55,7 @@ import java.util.Set;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -122,6 +121,36 @@ public class CmsSitemapConfigurationData implements I_CmsMergeable<CmsSitemapCon
     }
 
     /**
+     * Gets the detail page configuration.<p>
+     * 
+     * @return the detail page configuration 
+     */
+    public Map<String, List<CmsDetailPageInfo>> getDetailPageInfo() {
+
+        return Collections.unmodifiableMap(m_detailPageLists);
+    }
+
+    /**
+     * Gets the configuration source.<p>
+     * 
+     * @return the configuration source information 
+     */
+    public CmsConfigurationSourceInfo getLastSource() {
+
+        return m_lastSource;
+    }
+
+    /** 
+     * Gets the maximum sitemap depth.<p>
+     *  
+     * @return the maximum sitemap depth 
+     */
+    public int getMaxDepth() {
+
+        return m_maxDepth;
+    }
+
+    /**
      * Returns the newElements.<p>
      *
      * @return the newElements
@@ -156,46 +185,6 @@ public class CmsSitemapConfigurationData implements I_CmsMergeable<CmsSitemapCon
             }
         }
         return result;
-    }
-
-    /**
-     * Gets the detail page configuration.<p>
-     * 
-     * @return the detail page configuration 
-     */
-    public Map<String, List<CmsDetailPageInfo>> getDetailPageInfo() {
-
-        return Collections.unmodifiableMap(m_detailPageLists);
-    }
-
-    /**
-     * Gets the detail page table.<p>
-     * 
-     * @return the detail page table 
-     */
-    public CmsDetailPageTable getDetailPageTable() {
-
-        return new CmsDetailPageTable(m_detailPageLists);
-    }
-
-    /**
-     * Gets the configuration source.<p>
-     * 
-     * @return the configuration source information 
-     */
-    public CmsConfigurationSourceInfo getLastSource() {
-
-        return m_lastSource;
-    }
-
-    /** 
-     * Gets the maximum sitemap depth.<p>
-     *  
-     * @return the maximum sitemap depth 
-     */
-    public int getMaxDepth() {
-
-        return m_maxDepth;
     }
 
     /**

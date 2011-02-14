@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsUrlNameValidationService.java,v $
- * Date   : $Date: 2010/06/14 15:07:18 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/02/14 10:02:24 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,10 +34,6 @@ package org.opencms.ade.sitemap;
 import org.opencms.file.CmsObject;
 import org.opencms.gwt.I_CmsValidationService;
 import org.opencms.gwt.shared.CmsValidationResult;
-import org.opencms.util.CmsStringUtil;
-
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Validation class which both translates a sitemap URL name and checks whether it already exists in a '|'-separated 
@@ -45,7 +41,7 @@ import java.util.Set;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -56,17 +52,42 @@ public class CmsUrlNameValidationService implements I_CmsValidationService {
      */
     public CmsValidationResult validate(CmsObject cms, String value, String config) {
 
-        CmsValidationResult result;
-        Set<String> otherUrlNames = new HashSet<String>(CmsStringUtil.splitAsList(config, "|"));
+        //TODO: implement this correctly
+
+        //
+        //        CmsValidationResult result;
+        //        CmsUUID id = new CmsUUID(config);
+        //        CmsResource res = cms.readResource(id);
+        //        String parentPath = CmsResource.getParentFolder(cms.getSitePath(res));
+        //        
+        //        if (res.getName().equals(value)) {
+        //            return new CmsValidationREsult 
+        //        }
+        //        
+        //        
+        //        
+        //        
+        //        
+        //        
+        //        
+        //        
+        //         
+        //        
+        //        
+        //        Set<String> otherUrlNames = new HashSet<String>(CmsStringUtil.splitAsList(config, "|"));
+        //        String name = cms.getRequestContext().getFileTranslator().translateResource(value);
+        //        name = name.replace('/', '_');
+        //        if (otherUrlNames.contains(name)) {
+        //            result = new CmsValidationResult(Messages.get().getBundle().key(
+        //                Messages.ERR_URL_NAME_ALREADY_EXISTS_1,
+        //                name));
+        //        } else {
+        //            result = new CmsValidationResult(null, name);
+        //        }
+        //        return result;
         String name = cms.getRequestContext().getFileTranslator().translateResource(value);
         name = name.replace('/', '_');
-        if (otherUrlNames.contains(name)) {
-            result = new CmsValidationResult(Messages.get().getBundle().key(
-                Messages.ERR_URL_NAME_ALREADY_EXISTS_1,
-                name));
-        } else {
-            result = new CmsValidationResult(null, name);
-        }
-        return result;
+        return new CmsValidationResult(null, name);
+
     }
 }

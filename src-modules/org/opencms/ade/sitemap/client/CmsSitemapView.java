@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/Attic/CmsSitemapView.java,v $
- * Date   : $Date: 2011/02/11 15:47:22 $
- * Version: $Revision: 1.55 $
+ * Date   : $Date: 2011/02/14 10:02:24 $
+ * Version: $Revision: 1.56 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,6 +44,7 @@ import org.opencms.ade.sitemap.client.ui.CmsStatusIconUpdateHandler;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsImageBundle;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
+import org.opencms.ade.sitemap.shared.CmsDetailPageTable;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsResource;
@@ -52,9 +53,9 @@ import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.CmsHeader;
 import org.opencms.gwt.client.ui.CmsInfoLoadingListItemWidget;
-import org.opencms.gwt.client.ui.CmsListItemWidget.AdditionalInfoItem;
 import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.CmsToolbarPlaceHolder;
+import org.opencms.gwt.client.ui.CmsListItemWidget.AdditionalInfoItem;
 import org.opencms.gwt.client.ui.tree.CmsLazyTree;
 import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
@@ -63,13 +64,10 @@ import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsResourceStateUtil;
 import org.opencms.gwt.client.util.CmsStyleVariable;
 import org.opencms.gwt.client.util.I_CmsAdditionalInfoLoader;
-import org.opencms.gwt.shared.CmsLinkBean;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsPair;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
-import org.opencms.xml.sitemap.CmsDetailPageTable;
-import org.opencms.xml.sitemap.CmsSitemapManager;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -87,7 +85,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.55 $ 
+ * @version $Revision: 1.56 $ 
  * 
  * @since 8.0.0
  */
@@ -160,16 +158,16 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
                     List<AdditionalInfoItem> infoItems = new ArrayList<AdditionalInfoItem>();
                     AdditionalInfoItem item = createResourceStateInfo(CmsResourceState.STATE_NEW);
                     infoItems.add(item);
-                    if (entry.getOwnProperty(CmsSitemapManager.Property.isRedirect.getName()) != null) {
-                        CmsLinkBean link = entry.getRedirectInfo();
-                        String target = "-";
-                        if (link != null) {
-                            target = link.getLink();
-                        }
-                        String title = Messages.get().key(Messages.GUI_ADDINFO_REDIRECT_0);
-                        AdditionalInfoItem redirectInfo = new AdditionalInfoItem(title, target, null);
-                        infoItems.add(redirectInfo);
-                    }
+                    //                    if (entry.getOwnProperty(CmsSitemapManager.Property.isRedirect.getName()) != null) {
+                    //                        CmsLinkBean link = entry.getRedirectInfo();
+                    //                        String target = "-";
+                    //                        if (link != null) {
+                    //                            target = link.getLink();
+                    //                        }
+                    //                        String title = Messages.get().key(Messages.GUI_ADDINFO_REDIRECT_0);
+                    //                        AdditionalInfoItem redirectInfo = new AdditionalInfoItem(title, target, null);
+                    //                        infoItems.add(redirectInfo);
+                    //                    }
                     callback.onSuccess(infoItems);
                 } else {
                     CmsCoreProvider.get().getResourceState(entry.getVfsPath(), new AsyncCallback<CmsResourceState>() {
@@ -364,6 +362,11 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         return EditorMode.navigation == m_editorMode;
     }
 
+    public boolean isSimpleMode() {
+
+        return getEditorMode().equals(EditorMode.navigation);
+    }
+
     /**
      * @see org.opencms.ade.sitemap.client.control.I_CmsSitemapChangeHandler#onChange(org.opencms.ade.sitemap.client.control.CmsSitemapChangeEvent)
      */
@@ -388,6 +391,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         if (event.isSetOpen()) {
             target.setOpen(true);
         }
+        m_controller.recomputeProperties();
     }
 
     /**
@@ -485,7 +489,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         page.add(m_tree);
 
         m_controller.addPropertyUpdateHandler(new CmsStatusIconUpdateHandler());
-        m_controller.recomputePropertyInheritance();
+        m_controller.recomputeProperties();
         rootItem.updateSitePath();
 
         // check if editable
@@ -500,6 +504,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(openPath)) {
             highlightPath(CmsResource.getFolderPath(openPath));
         }
+
     }
 
     /**

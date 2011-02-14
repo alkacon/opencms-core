@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeMove.java,v $
- * Date   : $Date: 2011/02/01 15:25:05 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2011/02/14 10:02:24 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,9 +36,9 @@ import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.client.toolbar.CmsToolbarClipboardView;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
-import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry.EditStatus;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsSitemapClipboardData;
+import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry.EditStatus;
 import org.opencms.file.CmsResource;
 import org.opencms.util.CmsUUID;
 
@@ -47,7 +47,7 @@ import org.opencms.util.CmsUUID;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 8.0.0
  */
@@ -56,6 +56,7 @@ public class CmsClientSitemapChangeMove implements I_CmsClientSitemapChange {
     /** If true, tell the view to ensure that the affected  item is visible. */
     protected boolean m_ensureVisible = true;
 
+    /** The destination id. */
     private CmsUUID m_destinationId;
 
     /** The destination path. */
@@ -183,6 +184,7 @@ public class CmsClientSitemapChangeMove implements I_CmsClientSitemapChange {
     public CmsSitemapChange getChangeForCommit() {
 
         CmsSitemapChange change = new CmsSitemapChange(m_entry.getId(), m_entry.getSitePath());
+        change.setDefaultFileId(m_entry.getDefaultFileId());
         if (!m_destinationPath.equals(m_sourcePath)) {
             change.setParentId(m_destinationId);
             change.setName(CmsResource.getName(m_destinationPath));

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeRemove.java,v $
- * Date   : $Date: 2011/02/10 16:35:54 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/02/14 10:02:24 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import org.opencms.util.CmsUUID;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -69,7 +69,7 @@ public class CmsClientSitemapChangeRemove implements I_CmsClientSitemapChange {
 
     /**
      * Constructor.<p>
-     * 
+     *  
      * @param entry the deleted entry
      * @param parentId the parent entry id
      */
@@ -112,6 +112,7 @@ public class CmsClientSitemapChangeRemove implements I_CmsClientSitemapChange {
     public CmsSitemapChange getChangeForCommit() {
 
         CmsSitemapChange change = new CmsSitemapChange(m_entry.getId(), m_entry.getSitePath());
+        change.setDefaultFileId(m_entry.getDefaultFileId());
         change.setDelete(true);
         CmsSitemapClipboardData data = CmsSitemapView.getInstance().getController().getData().getClipboardData().copy();
         applyToClipboardData(data);

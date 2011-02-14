@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeDelete.java,v $
- * Date   : $Date: 2011/01/21 11:09:42 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2011/02/14 10:02:24 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import java.util.List;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 8.0.0
  */
@@ -129,6 +129,7 @@ public class CmsClientSitemapChangeDelete implements I_CmsClientSitemapChange {
     public CmsSitemapChange getChangeForCommit() {
 
         CmsSitemapChange change = new CmsSitemapChange(m_entry.getId(), m_entry.getSitePath());
+        change.setDefaultFileId(m_entry.getDefaultFileId());
         change.setDelete(true);
         CmsSitemapClipboardData data = CmsSitemapView.getInstance().getController().getData().getClipboardData().copy();
         applyToClipboardData(data);
@@ -166,20 +167,6 @@ public class CmsClientSitemapChangeDelete implements I_CmsClientSitemapChange {
     }
 
     /**
-     * Removes delted entry and all it's sub-entries from the modified list.<p>
-     * 
-     * @param entry the deleted entry
-     * @param modified the modified list
-     */
-    private void removeDeletedFromModified(CmsClientSitemapEntry entry, List<CmsClientSitemapEntry> modified) {
-
-        modified.remove(entry);
-        for (CmsClientSitemapEntry child : entry.getSubEntries()) {
-            removeDeletedFromModified(child, modified);
-        }
-    }
-
-    /**
      * Applys the change to the given clip-board data.<p>
      * 
      * @param clipboardData the clip-board data
@@ -192,5 +179,19 @@ public class CmsClientSitemapChangeDelete implements I_CmsClientSitemapChange {
             deleted.add(0, getEntry());
         }
         removeDeletedFromModified(getEntry(), clipboardData.getModifications());
+    }
+
+    /**
+     * Removes delted entry and all it's sub-entries from the modified list.<p>
+     * 
+     * @param entry the deleted entry
+     * @param modified the modified list
+     */
+    private void removeDeletedFromModified(CmsClientSitemapEntry entry, List<CmsClientSitemapEntry> modified) {
+
+        modified.remove(entry);
+        for (CmsClientSitemapEntry child : entry.getSubEntries()) {
+            removeDeletedFromModified(child, modified);
+        }
     }
 }

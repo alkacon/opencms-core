@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/edit/Attic/CmsEditEntryHandler.java,v $
- * Date   : $Date: 2011/02/01 15:25:05 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/02/14 10:02:24 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,36 +32,41 @@
 package org.opencms.ade.sitemap.client.edit;
 
 import org.opencms.ade.sitemap.client.Messages;
+import org.opencms.ade.sitemap.client.control.CmsPropertyModification;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.file.CmsResource;
-import org.opencms.xml.sitemap.properties.CmsSimplePropertyValue;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 /**
  * The mode handler for the 'edit entry' mode of the sitemap entry editor.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
 public class CmsEditEntryHandler extends A_CmsSitemapEntryEditorHandler {
 
+    /** True if the sitemap editor is in simple mode. */
+    private boolean m_isSimpleMode;
+
     /**
      * Creates a new instance of this class.<p>
      * 
      * @param controller the sitemap controller for this mode 
-     * @param entry the sitemap entry for this mode 
+     * @param entry the sitemap entry for this mode
+     * @param isSimpleMode true if the sitemap entry editor is in simple mode  
      */
-    public CmsEditEntryHandler(CmsSitemapController controller, CmsClientSitemapEntry entry) {
+    public CmsEditEntryHandler(CmsSitemapController controller, CmsClientSitemapEntry entry, boolean isSimpleMode) {
 
         super(controller, entry);
+        m_isSimpleMode = isSimpleMode;
+
     }
 
     /**
@@ -105,17 +110,17 @@ public class CmsEditEntryHandler extends A_CmsSitemapEntryEditorHandler {
     }
 
     /**
-     * @see org.opencms.ade.sitemap.client.edit.I_CmsSitemapEntryEditorHandler#handleSubmit(java.lang.String, java.lang.String, java.lang.String, java.util.Map, boolean)
+     * @see org.opencms.ade.sitemap.client.edit.I_CmsSitemapEntryEditorHandler#handleSubmit(java.lang.String, java.lang.String, java.lang.String, java.util.List, boolean)
      */
     public void handleSubmit(
         String newTitle,
         String newUrlName,
         String vfsPath,
-        Map<String, CmsSimplePropertyValue> fieldValues,
+        List<CmsPropertyModification> propertyChanges,
         boolean editedName) {
 
         // edit
-        m_controller.editAndChangeName(m_entry, newTitle, newUrlName, vfsPath, fieldValues, editedName);
+        m_controller.editAndChangeName(m_entry, newTitle, newUrlName, vfsPath, propertyChanges, editedName);
 
     }
 
@@ -125,6 +130,14 @@ public class CmsEditEntryHandler extends A_CmsSitemapEntryEditorHandler {
     public boolean hasEditableName() {
 
         return !getEntry().isRoot();
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.client.edit.I_CmsSitemapEntryEditorHandler#isSimpleMode()
+     */
+    public boolean isSimpleMode() {
+
+        return m_isSimpleMode;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsClientSitemapEntry.java,v $
- * Date   : $Date: 2011/02/10 16:35:54 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2011/02/14 10:02:24 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,12 +33,9 @@ package org.opencms.ade.sitemap.shared;
 
 import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.file.CmsResource;
-import org.opencms.gwt.client.util.CmsCollectionUtil;
 import org.opencms.gwt.shared.CmsLinkBean;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.sitemap.CmsSitemapManager;
-import org.opencms.xml.sitemap.properties.CmsComputedPropertyValue;
-import org.opencms.xml.sitemap.properties.CmsSimplePropertyValue;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -52,7 +49,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  * 
  * @since 8.0.0
  */
@@ -91,6 +88,10 @@ public class CmsClientSitemapEntry implements IsSerializable {
     /** True if the children of this entry have initially been loaded. */
     private boolean m_childrenLoadedInitially;
 
+    /** The default file id. */
+    private CmsUUID m_defaultFileId;
+
+    /** The detail page type name. */
     private String m_detailpageTypeName;
 
     /** The current edit status. */
@@ -105,11 +106,14 @@ public class CmsClientSitemapEntry implements IsSerializable {
     /** The entry id. */
     private CmsUUID m_id;
 
-    /** The map of inherited properties. */
-    private Map<String, CmsComputedPropertyValue> m_inheritedProperties;
-
     /** Flag to indicate if the entry is visible in navigation. */
     private boolean m_inNavigation;
+
+    /** The default file properties. */
+    private Map<String, CmsClientProperty> m_internalDefaultFileProperties = new HashMap<String, CmsClientProperty>();
+
+    /** The properties for the entry itself. */
+    private Map<String, CmsClientProperty> m_internalOwnProperties = new HashMap<String, CmsClientProperty>();
 
     /** Indicates if this entry represents the default page of the parent folder. */
     private boolean m_isFolderDefaultPage;
@@ -123,14 +127,8 @@ public class CmsClientSitemapEntry implements IsSerializable {
     /** True if this entry has been just created, and its name hasn't been directly changed. */
     private boolean m_new;
 
-    /** The map of inherited properties of the entry's parent. */
-    private Map<String, CmsComputedPropertyValue> m_parentInheritedProperties;
-
     /** The relative position between siblings. */
     private int m_position;
-
-    /** The map of the entry's own properties. */
-    private Map<String, CmsSimplePropertyValue> m_properties = new HashMap<String, CmsSimplePropertyValue>();
 
     /** The sitemap path. */
     private String m_sitePath;
@@ -162,9 +160,12 @@ public class CmsClientSitemapEntry implements IsSerializable {
 
         this();
         setId(clone.getId());
+        setDefaultFileId(clone.getDefaultFileId());
         setName(clone.getName());
-        setProperties(new HashMap<String, CmsSimplePropertyValue>(clone.getProperties()));
         setSitePath(clone.getSitePath());
+        setOwnInternalProperties(new HashMap<String, CmsClientProperty>(clone.getOwnInternalProperties()));
+        setDefaultFileInternalProperties(new HashMap<String, CmsClientProperty>(
+            clone.getDefaultFileInternalProperties()));
         setTitle(clone.getTitle());
         setVfsPath(clone.getVfsPath());
         setPosition(clone.getPosition());
@@ -191,10 +192,10 @@ public class CmsClientSitemapEntry implements IsSerializable {
     }
 
     /**
-     * Adds the given entry to the children.<p>
-     * 
-     * @param entry the entry to add
-     */
+    * Adds the given entry to the children.<p>
+    * 
+    * @param entry the entry to add
+    */
     public void addSubEntry(CmsClientSitemapEntry entry) {
 
         entry.setPosition(m_subEntries.size());
@@ -211,6 +212,26 @@ public class CmsClientSitemapEntry implements IsSerializable {
     public boolean getChildrenLoadedInitially() {
 
         return m_childrenLoadedInitially;
+    }
+
+    /**
+     * Gets the default file id.<p> 
+     *  
+     * @return the default file id, or null if there is no detail page 
+     */
+    public CmsUUID getDefaultFileId() {
+
+        return m_defaultFileId;
+    }
+
+    /**
+     * Returns the properties for the default file.<p>
+     * 
+     * @return the properties for the default file 
+     */
+    public Map<String, CmsClientProperty> getDefaultFileInternalProperties() {
+
+        return m_internalDefaultFileProperties;
     }
 
     /**
@@ -254,16 +275,6 @@ public class CmsClientSitemapEntry implements IsSerializable {
     }
 
     /**
-     * Returns the map of inherited properties for this entry.<p>
-     * 
-     * @return the map of inherited properties for this entry 
-     */
-    public Map<String, CmsComputedPropertyValue> getInheritedProperties() {
-
-        return m_inheritedProperties;
-    }
-
-    /**
      * Returns the lock of the entry resource.<p>
      *
      * @return the lock of the entry resource
@@ -284,26 +295,31 @@ public class CmsClientSitemapEntry implements IsSerializable {
     }
 
     /**
+     * Returns the properties for the entry itself.<p>
+     * 
+     * @return the properties for the entry itself 
+     */
+    public Map<String, CmsClientProperty> getOwnInternalProperties() {
+
+        return m_internalOwnProperties;
+    }
+
+    /**
      * Returns the individual value for a property of this entry.<p>
      * 
      * @param propName the name of the property 
      *  
      * @return the individual value for the property propName 
      */
-    public String getOwnProperty(String propName) {
+    //    public String getOwnProperty(String propName) {
+    //
+    //        CmsSimplePropertyValue prop = m_properties.get(propName);
+    //        return prop == null ? null : prop.getOwnValue();
+    //    }
 
-        CmsSimplePropertyValue prop = m_properties.get(propName);
-        return prop == null ? null : prop.getOwnValue();
-    }
+    public CmsPathValue getOwnPropertyPathValue(String propName) {
 
-    /**
-     * Gets the inherited properties of the entry's parent.<p>
-     * 
-     * @return the inherited entries of the parent 
-     */
-    public Map<String, CmsComputedPropertyValue> getParentInheritedProperties() {
-
-        return m_parentInheritedProperties;
+        return null;
     }
 
     /**
@@ -317,27 +333,19 @@ public class CmsClientSitemapEntry implements IsSerializable {
     }
 
     /**
-     * Returns a map of this entry's own properties.<p>
-     * 
-     * @return a map of this entry's own properties
-     */
-    public Map<String, CmsSimplePropertyValue> getProperties() {
-
-        return m_properties;
-    }
-
-    /**
      * Returns the redirect target.<p>
      *   
      * @return the redirect target 
      */
     public String getRedirect() {
 
-        CmsSimplePropertyValue redirect = m_properties.get(EXTERNAL_REDIRECT);
-        if (redirect == null) {
-            redirect = m_properties.get(INTERNAL_REDIRECT);
-        }
-        return redirect.getOwnValue();
+        //        CmsSimplePropertyValue redirect = m_properties.get(EXTERNAL_REDIRECT);
+        //        if (redirect == null) {
+        //            redirect = m_properties.get(INTERNAL_REDIRECT);
+        //        }
+        //        return redirect.getOwnValue();
+
+        return null;
     }
 
     /**
@@ -347,16 +355,26 @@ public class CmsClientSitemapEntry implements IsSerializable {
      */
     public CmsLinkBean getRedirectInfo() {
 
-        CmsSimplePropertyValue internal = m_properties.get(INTERNAL_REDIRECT);
-        CmsSimplePropertyValue external = m_properties.get(EXTERNAL_REDIRECT);
-        if (internal != null) {
-            return new CmsLinkBean(internal.getOwnValue(), true);
-        } else if (external != null) {
-            return new CmsLinkBean(external.getOwnValue(), false);
-        } else {
-            return null;
-        }
+        //        CmsSimplePropertyValue internal = m_properties.get(INTERNAL_REDIRECT);
+        //        CmsSimplePropertyValue external = m_properties.get(EXTERNAL_REDIRECT);
+        //        if (internal != null) {
+        //            return new CmsLinkBean(internal.getOwnValue(), true);
+        //        } else if (external != null) {
+        //            return new CmsLinkBean(external.getOwnValue(), false);
+        //        } else {
+        return null;
+        //        }
     }
+
+    //    /**
+    //     * Returns a map of this entry's own properties.<p>
+    //     * 
+    //     * @return a map of this entry's own properties
+    //     */
+    //    public Map<String, CmsSimplePropertyValue> getProperties() {
+    //
+    //        return m_properties;
+    //    }
 
     /**
      * Returns the sitemap path.<p>
@@ -415,7 +433,8 @@ public class CmsClientSitemapEntry implements IsSerializable {
      */
     public boolean hasInternalRedirect() {
 
-        return m_properties.get(INTERNAL_REDIRECT) != null;
+        return false;
+        //        return m_properties.get(INTERNAL_REDIRECT) != null;
     }
 
     /**
@@ -524,6 +543,17 @@ public class CmsClientSitemapEntry implements IsSerializable {
     }
 
     /**
+     * Removes empty properties.<p>
+     */
+    public void normalizeProperties() {
+
+        CmsClientProperty.removeEmptyProperties(m_internalOwnProperties);
+        if (m_internalDefaultFileProperties != null) {
+            CmsClientProperty.removeEmptyProperties(m_internalDefaultFileProperties);
+        }
+    }
+
+    /**
      * Removes the child at the given position.<p>
      * 
      * @param position the index of the child to remove
@@ -543,6 +573,26 @@ public class CmsClientSitemapEntry implements IsSerializable {
     public void setChildrenLoadedInitially() {
 
         m_childrenLoadedInitially = true;
+    }
+
+    /** 
+     * Sets the default file id.
+     * 
+     * @param defaultFileId the new default file id 
+     **/
+    public void setDefaultFileId(CmsUUID defaultFileId) {
+
+        m_defaultFileId = defaultFileId;
+    }
+
+    /**
+     * Sets the properties for the default file.<p>
+     * 
+     * @param properties the properties for the default file 
+     */
+    public void setDefaultFileInternalProperties(Map<String, CmsClientProperty> properties) {
+
+        m_internalDefaultFileProperties = properties;
     }
 
     /**
@@ -617,16 +667,6 @@ public class CmsClientSitemapEntry implements IsSerializable {
     }
 
     /**
-     * Sets the map of inherited properties for this entry.<p>
-     * 
-     * @param inheritedProperties the new map of inherited properties for this entry 
-     */
-    public void setInheritedProperties(Map<String, CmsComputedPropertyValue> inheritedProperties) {
-
-        m_inheritedProperties = inheritedProperties;
-    }
-
-    /**
      * Sets the entry visibility in navigation.<p>
      *
      * @param inNavigation set <code>true</code> for entries visible in navigation
@@ -667,14 +707,24 @@ public class CmsClientSitemapEntry implements IsSerializable {
     }
 
     /**
+     * Sets the properties for the entry itself.<p>
+     * 
+     * @param properties the properties for the entry itself 
+     */
+    public void setOwnInternalProperties(Map<String, CmsClientProperty> properties) {
+
+        m_internalOwnProperties = properties;
+    }
+
+    /**
      * Sets the properties inherited by the entry's parent.<p>
      * 
      * @param parentProperties the properties inherited by the entry's parent 
      */
-    public void setParentInheritedProperties(Map<String, CmsComputedPropertyValue> parentProperties) {
-
-        m_parentInheritedProperties = parentProperties;
-    }
+    //    public void setParentInheritedProperties(Map<String, CmsComputedPropertyValue> parentProperties) {
+    //
+    //        m_parentInheritedProperties = parentProperties;
+    //    }
 
     /**
      * Sets the position.<p>
@@ -691,10 +741,10 @@ public class CmsClientSitemapEntry implements IsSerializable {
      *
      * @param properties the properties to set
      */
-    public void setProperties(Map<String, CmsSimplePropertyValue> properties) {
-
-        m_properties = properties;
-    }
+    //    public void setProperties(Map<String, CmsSimplePropertyValue> properties) {
+    //
+    //        m_properties = properties;
+    //    }
 
     /**
      * Sets the redirect target from a bean.<p>
@@ -703,13 +753,13 @@ public class CmsClientSitemapEntry implements IsSerializable {
      */
     public void setRedirect(CmsLinkBean info) {
 
-        m_properties.remove(EXTERNAL_REDIRECT);
-        m_properties.remove(INTERNAL_REDIRECT);
-        if (info != null) {
-            String key = info.isInternal() ? INTERNAL_REDIRECT : EXTERNAL_REDIRECT;
-            CmsSimplePropertyValue value = new CmsSimplePropertyValue(info.getLink(), info.getLink());
-            m_properties.put(key, value);
-        }
+        //        m_properties.remove(EXTERNAL_REDIRECT);
+        //        m_properties.remove(INTERNAL_REDIRECT);
+        //        if (info != null) {
+        //            String key = info.isInternal() ? INTERNAL_REDIRECT : EXTERNAL_REDIRECT;
+        //            CmsSimplePropertyValue value = new CmsSimplePropertyValue(info.getLink(), info.getLink());
+        //            m_properties.put(key, value);
+        //        }
     }
 
     /**
@@ -720,10 +770,11 @@ public class CmsClientSitemapEntry implements IsSerializable {
      */
     public void setRedirect(String link, boolean internal) {
 
-        m_properties.remove(EXTERNAL_REDIRECT);
-        m_properties.remove(INTERNAL_REDIRECT);
-        String targetKey = internal ? INTERNAL_REDIRECT : EXTERNAL_REDIRECT;
-        m_properties.put(targetKey, new CmsSimplePropertyValue(link, link));
+        //
+        //        m_properties.remove(EXTERNAL_REDIRECT);
+        //        m_properties.remove(INTERNAL_REDIRECT);
+        //        String targetKey = internal ? INTERNAL_REDIRECT : EXTERNAL_REDIRECT;
+        //        m_properties.put(targetKey, new CmsSimplePropertyValue(link, link));
     }
 
     /**
@@ -763,6 +814,9 @@ public class CmsClientSitemapEntry implements IsSerializable {
     public void setTitle(String title) {
 
         m_title = title;
+        if (m_internalOwnProperties.containsKey("NavText")) {
+            m_internalOwnProperties.put("NavText", new CmsClientProperty("NavText", title, null));
+        }
     }
 
     /**
@@ -801,7 +855,9 @@ public class CmsClientSitemapEntry implements IsSerializable {
 
         setId(source.getId());
         setName(source.getName());
-        setProperties(new HashMap<String, CmsSimplePropertyValue>(source.getProperties()));
+        setOwnInternalProperties(new HashMap<String, CmsClientProperty>(source.getOwnInternalProperties()));
+        setDefaultFileInternalProperties(new HashMap<String, CmsClientProperty>(
+            source.getDefaultFileInternalProperties()));
         setSitePath(source.getSitePath());
         setTitle(source.getTitle());
         setVfsPath(source.getVfsPath());
@@ -811,20 +867,7 @@ public class CmsClientSitemapEntry implements IsSerializable {
         setEntryType(source.getEntryType());
         setInNavigation(source.isInNavigation());
         setHasForeignFolderLock(source.hasForeignFolderLock());
-        setParentInheritedProperties(source.getParentInheritedProperties());
-    }
-
-    /**
-     * Updates the properties of the sitemap entry.<p>
-     * 
-     * Entries of the map of properties passed as an argument which have a null value
-     * will cause the corresponding property to be deleted.
-     * 
-     * @param newProperties the properties which should be updated
-     */
-    public void updateProperties(Map<String, CmsSimplePropertyValue> newProperties) {
-
-        CmsCollectionUtil.updateMapAndRemoveNulls(newProperties, m_properties);
+        //setParentInheritedProperties(source.getParentInheritedProperties());
     }
 
     /**
@@ -860,4 +903,5 @@ public class CmsClientSitemapEntry implements IsSerializable {
             m_subEntries.get(i).setPosition(i);
         }
     }
+
 }

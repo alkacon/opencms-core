@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/control/Attic/CmsSitemapDNDController.java,v $
- * Date   : $Date: 2011/02/10 16:35:54 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2011/02/14 10:02:24 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,17 +41,16 @@ import org.opencms.ade.sitemap.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsNewResourceInfo;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
-import org.opencms.gwt.client.dnd.CmsDNDHandler.Orientation;
 import org.opencms.gwt.client.dnd.I_CmsDNDController;
 import org.opencms.gwt.client.dnd.I_CmsDraggable;
 import org.opencms.gwt.client.dnd.I_CmsDropTarget;
+import org.opencms.gwt.client.dnd.CmsDNDHandler.Orientation;
 import org.opencms.gwt.client.ui.tree.CmsTree;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsDomUtil.Tag;
-import org.opencms.xml.sitemap.CmsSitemapManager;
-import org.opencms.xml.sitemap.properties.CmsSimplePropertyValue;
 
+import java.util.Collections;
 import java.util.List;
 
 import com.google.gwt.core.client.Scheduler;
@@ -64,7 +63,7 @@ import com.google.gwt.dom.client.Style.Unit;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 8.0.0
  */
@@ -242,35 +241,6 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
     }
 
     /**
-     * Handles a dropped detail page.<p>
-     * 
-     * @param createItem the detail page which was dropped into the sitemap 
-     * @param parent the parent sitemap entry  
-     */
-    private void handleDropNewEntry(CmsCreatableListItem createItem, CmsClientSitemapEntry parent) {
-
-        CmsNewResourceInfo typeInfo = createItem.getResourceTypeInfo();
-        CmsClientSitemapEntry entry = new CmsClientSitemapEntry();
-        String uniqueName = CmsSitemapController.ensureUniqueName(parent, typeInfo.getTypeName());
-        entry.setName(uniqueName);
-        entry.setSitePath(m_insertPath + uniqueName + "/");
-        String title = Messages.get().key(Messages.GUI_DETAIL_PAGE_TITLE_1, typeInfo.getTitle());
-        entry.setTitle(title);
-        entry.setNew(true);
-        entry.setVfsPath(null);
-        entry.setPosition(m_insertIndex);
-        entry.setInNavigation(true);
-        if (EntryType.detailpage == createItem.getEntryType()) {
-            entry.setDetailpageTypeName(typeInfo.getTypeName());
-        }
-        if (EntryType.redirect == createItem.getEntryType()) {
-            CmsSimplePropertyValue prop = new CmsSimplePropertyValue("true", null);
-            entry.getProperties().put(CmsSitemapManager.Property.isRedirect.getName(), prop);
-        }
-        m_controller.create(entry, typeInfo.getId(), typeInfo.getCopyResourceId());
-    }
-
-    /**
      * Adjust the original position indicator by styling the draggable element for this purpose.<p>
      * 
      * @param draggable the draggable
@@ -297,6 +267,35 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
     }
 
     /**
+     * Handles a dropped detail page.<p>
+     * 
+     * @param createItem the detail page which was dropped into the sitemap 
+     * @param parent the parent sitemap entry  
+     */
+    private void handleDropNewEntry(CmsCreatableListItem createItem, CmsClientSitemapEntry parent) {
+
+        CmsNewResourceInfo typeInfo = createItem.getResourceTypeInfo();
+        CmsClientSitemapEntry entry = new CmsClientSitemapEntry();
+        String uniqueName = CmsSitemapController.ensureUniqueName(parent, typeInfo.getTypeName());
+        entry.setName(uniqueName);
+        entry.setSitePath(m_insertPath + uniqueName + "/");
+        String title = Messages.get().key(Messages.GUI_DETAIL_PAGE_TITLE_1, typeInfo.getTitle());
+        entry.setTitle(title);
+        entry.setNew(true);
+        entry.setVfsPath(null);
+        entry.setPosition(m_insertIndex);
+        entry.setInNavigation(true);
+        if (EntryType.detailpage == createItem.getEntryType()) {
+            entry.setDetailpageTypeName(typeInfo.getTypeName());
+        }
+        //        if (EntryType.redirect == createItem.getEntryType()) {
+        //            CmsSimplePropertyValue prop = new CmsSimplePropertyValue("true", null);
+        //            entry.getProperties().put(CmsSitemapManager.Property.isRedirect.getName(), prop);
+        //        }
+        m_controller.create(entry, typeInfo.getId(), typeInfo.getCopyResourceId());
+    }
+
+    /**
      * Handles the drop for a sitemap item which was dragged to a different position.<p>
      * 
      * @param sitemapEntry the dropped item  
@@ -318,7 +317,7 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
                     entry.getTitle(),
                     uniqueName,
                     entry.getVfsPath(),
-                    entry.getProperties(),
+                    Collections.<CmsPropertyModification> emptyList(),
                     !entry.isNew());
                 m_controller.move(entry, m_insertPath + uniqueName + "/", m_insertIndex);
             } else {

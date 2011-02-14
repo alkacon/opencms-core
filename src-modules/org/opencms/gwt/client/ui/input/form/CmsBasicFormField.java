@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/input/form/Attic/CmsBasicFormField.java,v $
- * Date   : $Date: 2010/10/14 09:46:44 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/02/14 10:02:24 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -30,10 +30,10 @@
  */
 
 package org.opencms.gwt.client.ui.input.form;
-
-import org.opencms.gwt.client.ui.input.CmsRegexValidator;
+import org.opencms.gwt.client.ui.input.CmsRegexValidator;
 import org.opencms.gwt.client.ui.input.I_CmsFormField;
 import org.opencms.gwt.client.ui.input.I_CmsFormWidget;
+import org.opencms.gwt.client.ui.input.I_CmsStringModel;
 import org.opencms.gwt.client.validation.I_CmsValidator;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.CmsXmlContentProperty;
@@ -43,19 +43,17 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+
 /**
  * Basic implementation of the I_CmsFormField class.<p>
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 8.0.0 
  */
 public class CmsBasicFormField implements I_CmsFormField {
-
-    /** Indicates whether this is an advanced or basic form field. */
-    private boolean m_advanced;
 
     /** The default value of the form field. */
     private Object m_defaultValue;
@@ -66,11 +64,11 @@ public class CmsBasicFormField implements I_CmsFormField {
     /** Id of the form field.*/
     private String m_id;
 
-    /** The "ignore" flag. */
-    private boolean m_ignore;
-
     /** Label of the form field. */
     private String m_label;
+
+    /** The string model. */
+    private I_CmsStringModel m_model;
 
     /** The current validation status (only used if the field has a validator). */
     private I_CmsFormField.ValidationStatus m_validationStatus = I_CmsFormField.ValidationStatus.unknown;
@@ -89,15 +87,8 @@ public class CmsBasicFormField implements I_CmsFormField {
      * @param label the label of the form field
      * @param defaultValue the default value of the form field 
      * @param widget the widget of the form field
-     * @param advanced if true, this is an advanced, else a basic form field 
      */
-    public CmsBasicFormField(
-        String id,
-        String description,
-        String label,
-        Object defaultValue,
-        I_CmsFormWidget widget,
-        boolean advanced) {
+    public CmsBasicFormField(String id, String description, String label, Object defaultValue, I_CmsFormWidget widget) {
 
         super();
         m_id = id;
@@ -105,7 +96,6 @@ public class CmsBasicFormField implements I_CmsFormField {
         m_label = label;
         m_widget = widget;
         m_defaultValue = defaultValue;
-        m_advanced = advanced;
     }
 
     /**
@@ -121,18 +111,40 @@ public class CmsBasicFormField implements I_CmsFormField {
     }
 
     /**
+     * Utility method for creating a basic form field.<p>
+     * 
+     * @param propertyConfig the property configuration 
+     * @param additionalParams the additional parameters 
+     * 
+     * @return the newly created form fields 
+     */
+    public static CmsBasicFormField createField(
+        CmsXmlContentProperty propertyConfig,
+        Map<String, String> additionalParams) {
+
+        return createField(
+            propertyConfig,
+            propertyConfig.getPropertyName(),
+            CmsWidgetFactoryRegistry.instance(),
+            additionalParams);
+    }
+
+    /**
      * Utility method for creating a single basic form field from an id and a property configuration. 
      * 
      * @param propertyConfig the configuration of the property
+     * @param fieldId the field id
+     * @param factory a factory for creating form  widgets  
      * @param additionalParams 
      *   
      * @return the newly created form field 
      */
     public static CmsBasicFormField createField(
         CmsXmlContentProperty propertyConfig,
+        String fieldId,
+        I_CmsFormWidgetMultiFactory factory,
         Map<String, String> additionalParams) {
 
-        String id = propertyConfig.getPropertyName();
         String widgetConfigStr = propertyConfig.getWidgetConfiguration();
         if (widgetConfigStr == null) {
             widgetConfigStr = "";
@@ -140,20 +152,24 @@ public class CmsBasicFormField implements I_CmsFormField {
 
         String label = propertyConfig.getNiceName();
         if (label == null) {
-            label = id;
+            label = propertyConfig.getPropertyName();
+        }
+
+        String description = propertyConfig.getDescription();
+        if (CmsStringUtil.isEmpty(description)) {
+            description = fieldId;
         }
 
         Map<String, String> widgetConfig = CmsStringUtil.splitAsMap(widgetConfigStr, "|", ":");
         widgetConfig.putAll(additionalParams);
         String widgetType = propertyConfig.getWidget();
-        I_CmsFormWidget widget = CmsWidgetFactoryRegistry.instance().createFormWidget(widgetType, widgetConfig);
+        I_CmsFormWidget widget = factory.createFormWidget(widgetType, widgetConfig);
         CmsBasicFormField field = new CmsBasicFormField(
-            id,
-            propertyConfig.getDescription(),
+            fieldId,
+            description,
             label,
             propertyConfig.getDefault(),
-            widget,
-            "true".equals(propertyConfig.getAdvanced()));
+            widget);
         String ruleRegex = propertyConfig.getRuleRegex();
         if (!CmsStringUtil.isEmpty(ruleRegex)) {
             field.setValidator(new CmsRegexValidator(ruleRegex, propertyConfig.getError()));
@@ -178,6 +194,14 @@ public class CmsBasicFormField implements I_CmsFormField {
         }
         return result;
 
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormField#bind(org.opencms.gwt.client.ui.input.I_CmsStringModel)
+     */
+    public void bind(I_CmsStringModel model) {
+
+        m_model = model;
     }
 
     /**
@@ -213,6 +237,28 @@ public class CmsBasicFormField implements I_CmsFormField {
     }
 
     /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormField#getModelId()
+     */
+    public String getModelId() {
+
+        if (m_model != null) {
+            return m_model.getId();
+        }
+        return getId();
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormField#getModelValue()
+     */
+    public String getModelValue() {
+
+        if (m_model != null) {
+            return m_model.getValue();
+        }
+        return getWidget().getFormValueAsString();
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.input.I_CmsFormField#getValidationStatus()
      */
     public I_CmsFormField.ValidationStatus getValidationStatus() {
@@ -237,35 +283,11 @@ public class CmsBasicFormField implements I_CmsFormField {
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsFormField#isAdvanced()
-     */
-    public boolean isAdvanced() {
-
-        return m_advanced;
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsFormField#isIgnored()
-     */
-    public boolean isIgnored() {
-
-        return m_ignore;
-    }
-
-    /**
      * @see org.opencms.gwt.client.ui.input.I_CmsFormField#setId(java.lang.String)
      */
     public void setId(String id) {
 
         m_id = id;
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsFormField#setIgnore(boolean)
-     */
-    public void setIgnore(boolean ignore) {
-
-        m_ignore = ignore;
     }
 
     /**
@@ -284,6 +306,26 @@ public class CmsBasicFormField implements I_CmsFormField {
     public void setValidator(I_CmsValidator validator) {
 
         m_validator = validator;
+    }
+
+    /**
+     * Updates the model from the widget's value.<p>
+     */
+    public void updateModelFromWidget() {
+
+        if (m_model != null) {
+            m_model.setValue(m_widget.getFormValueAsString());
+        }
+    }
+
+    /**
+     * Updates the widget using the model's value.<p>
+     */
+    public void updateWidgetFromModel() {
+
+        if (m_model != null) {
+            m_widget.setFormValueAsString(m_model.getValue());
+        }
     }
 
 }

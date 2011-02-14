@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeEdit.java,v $
- * Date   : $Date: 2011/02/01 15:25:05 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2011/02/14 10:02:24 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,18 +33,23 @@ package org.opencms.ade.sitemap.client.model;
 
 import org.opencms.ade.sitemap.client.CmsSitemapTreeItem;
 import org.opencms.ade.sitemap.client.CmsSitemapView;
+import org.opencms.ade.sitemap.client.control.CmsPropertyModification;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.client.toolbar.CmsToolbarClipboardView;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
+import org.opencms.ade.sitemap.shared.CmsPropertyModificationData;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsSitemapClipboardData;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Stores one edition change to the sitemap.<p> 
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 8.0.0
  */
@@ -59,19 +64,8 @@ public class CmsClientSitemapChangeEdit implements I_CmsClientSitemapChange {
     /** The old entry without children. */
     private CmsClientSitemapEntry m_oldEntry;
 
-    /**
-     * Constructor.<p>
-     * 
-     * @param oldEntry the old entry
-     * @param newEntry the new entry
-     */
-    public CmsClientSitemapChangeEdit(CmsClientSitemapEntry oldEntry, CmsClientSitemapEntry newEntry) {
-
-        m_ensureVisible = true;
-        m_oldEntry = new CmsClientSitemapEntry(oldEntry);
-        m_newEntry = newEntry;
-        //      m_newEntry.setLock(oldEntry.getLock());
-    }
+    /** The list of property changes. */
+    private List<CmsPropertyModification> m_propertyChanges;
 
     /**
      * Constructor.<p>
@@ -91,6 +85,25 @@ public class CmsClientSitemapChangeEdit implements I_CmsClientSitemapChange {
     }
 
     /**
+     * Constructor.<p>
+     * 
+     * @param oldEntry the old entry
+     * @param propChanges the property changes 
+     * @param newEntry the new entry
+     */
+    public CmsClientSitemapChangeEdit(
+        CmsClientSitemapEntry oldEntry,
+        List<CmsPropertyModification> propChanges,
+        CmsClientSitemapEntry newEntry) {
+
+        m_ensureVisible = true;
+        m_oldEntry = new CmsClientSitemapEntry(oldEntry);
+        m_propertyChanges = propChanges;
+        m_newEntry = newEntry;
+        //      m_newEntry.setLock(oldEntry.getLock());
+    }
+
+    /**
      * @see org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange#applyToClipboardView(org.opencms.ade.sitemap.client.toolbar.CmsToolbarClipboardView)
      */
     public void applyToClipboardView(CmsToolbarClipboardView view) {
@@ -107,7 +120,11 @@ public class CmsClientSitemapChangeEdit implements I_CmsClientSitemapChange {
         CmsClientSitemapEntry editEntry = controller.getEntry(getOldEntry().getSitePath());
         editEntry.setTitle(getNewEntry().getTitle());
         editEntry.setVfsPath(getNewEntry().getVfsPath());
-        editEntry.setProperties(getNewEntry().getProperties());
+        //editEntry.setProperties(getNewEntry().getProperties());
+        for (CmsPropertyModification propMod : m_propertyChanges) {
+            propMod.execute();
+        }
+        editEntry.normalizeProperties();
         editEntry.setNew(getNewEntry().isNew());
         controller.getRedirectUpdater().handleSave(editEntry);
         applyToClipboardData(controller.getData().getClipboardData());
@@ -131,11 +148,17 @@ public class CmsClientSitemapChangeEdit implements I_CmsClientSitemapChange {
     public CmsSitemapChange getChangeForCommit() {
 
         CmsSitemapChange change = new CmsSitemapChange(m_newEntry.getId(), m_newEntry.getSitePath());
-        change.setProperties(m_newEntry.getProperties());
-        if (!m_oldEntry.getTitle().equals(m_newEntry.getTitle())) {
-            change.setTitle(m_newEntry.getTitle());
-        }
+        change.setDefaultFileId(m_newEntry.getDefaultFileId());
         change.setLeafType(m_newEntry.isLeafType());
+        List<CmsPropertyModificationData> propertyChangeData = new ArrayList<CmsPropertyModificationData>();
+        for (CmsPropertyModification propChange : m_propertyChanges) {
+            propertyChangeData.add(propChange.getData());
+        }
+        change.setPropertyChanges(propertyChangeData);
+        if (!m_oldEntry.getTitle().equals(m_newEntry.getTitle())) {
+            change.addChangeTitle(m_newEntry.getTitle());
+        }
+
         CmsSitemapClipboardData data = CmsSitemapView.getInstance().getController().getData().getClipboardData().copy();
         applyToClipboardData(data);
         change.setClipBoardData(data);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequestKey.java,v $
- * Date   : $Date: 2010/09/30 10:09:14 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/02/14 10:02:24 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,7 +35,6 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.loader.I_CmsResourceLoader;
 import org.opencms.main.CmsLog;
-import org.opencms.main.OpenCms;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.xml.containerpage.CmsADEManager;
@@ -52,7 +51,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -108,14 +107,8 @@ public class CmsFlexRequestKey {
         // calculate the device
         m_device = CmsFlexController.getController(req).getCmsCache().getDeviceSelector().getDeviceType(req);
 
-        // get the current sitemap entry
-        Object obj = OpenCms.getSitemapManager().getRuntimeInfo(req);
-        if (obj != null) {
-            m_sitemapEntry = obj.toString();
-        }
-
         // get the current container element
-        obj = req.getAttribute(CmsADEManager.ATTR_CURRENT_ELEMENT);
+        Object obj = req.getAttribute(CmsADEManager.ATTR_CURRENT_ELEMENT);
         if (obj != null) {
             m_containerElement = obj.toString();
         }

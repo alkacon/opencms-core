@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsCoreService.java,v $
- * Date   : $Date: 2011/02/11 17:06:28 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2011/02/14 10:02:24 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -30,8 +30,7 @@
  */
 
 package org.opencms.gwt;
-
-import org.opencms.db.CmsResourceState;
+import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
@@ -46,13 +45,13 @@ import org.opencms.gwt.shared.CmsAvailabilityInfoBean;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData;
-import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsPrincipalBean;
 import org.opencms.gwt.shared.CmsUploadFileBean;
 import org.opencms.gwt.shared.CmsUploadProgessInfo;
 import org.opencms.gwt.shared.CmsValidationQuery;
 import org.opencms.gwt.shared.CmsValidationResult;
+import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.rpc.I_CmsCoreService;
 import org.opencms.gwt.upload.CmsUploadBean;
 import org.opencms.gwt.upload.CmsUploadException;
@@ -83,7 +82,6 @@ import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 import org.opencms.workplace.explorer.menu.CmsMenuRule;
 import org.opencms.workplace.explorer.menu.I_CmsMenuItemRule;
-import org.opencms.xml.sitemap.CmsSitemapManager;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -100,6 +98,7 @@ import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
 
+
 import org.apache.commons.fileupload.InvalidFileNameException;
 import org.apache.commons.fileupload.util.Streams;
 
@@ -109,7 +108,7 @@ import org.apache.commons.fileupload.util.Streams;
  * @author Michael Moossen
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 8.0.0
  * 
@@ -512,7 +511,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     public CmsCoreData prefetch() {
 
         CmsObject cms = getCmsObject();
-        String navigationUri = CmsSitemapManager.getNavigationUri(cms, getRequest());
+        String navigationUri = cms.getRequestContext().getUri();
         String uploadUri = OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, CmsUploadBean.UPLOAD_JSP_URI);
         CmsCoreData data = new CmsCoreData(
             OpenCms.getSystemInfo().getOpenCmsContext(),

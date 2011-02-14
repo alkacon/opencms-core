@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsTabbedPanel.java,v $
- * Date   : $Date: 2010/11/12 13:48:38 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2011/02/14 10:02:24 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -22,7 +22,7 @@
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
- * project website: http://www.opencms.org
+ * project website: http://www.opencms.org 
  * 
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
@@ -34,8 +34,10 @@ package org.opencms.gwt.client.ui;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsDomUtil;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Unit;
@@ -58,7 +60,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 8.0.0
  * 
@@ -103,6 +105,9 @@ public class CmsTabbedPanel<E extends Widget> extends Composite {
 
     /** The TabLayoutPanel widget. */
     private TabLayoutPanel m_tabPanel;
+
+    /** A map from ids to tabs. */
+    private Map<String, E> m_tabsById = new HashMap<String, E>();
 
     /**
      * The default constructor for an empty tabbed panel. <p>
@@ -184,6 +189,19 @@ public class CmsTabbedPanel<E extends Widget> extends Composite {
     }
 
     /**
+     * Adds a tab with a user-defined id.<p>
+     * 
+     * @param tabContent
+     * @param tabName
+     * @param tabId
+     */
+    public void addNamed(E tabContent, String tabName, String tabId) {
+
+        add(tabContent, tabName);
+        m_tabsById.put(tabId, tabContent);
+    }
+
+    /**
      * Adds a SelectionEvent handler to the tabbed panel.<p>
      * 
      * Wrapper function for {@link com.google.gwt.user.client.ui.TabLayoutPanel#addSelectionHandler(SelectionHandler)}
@@ -229,6 +247,18 @@ public class CmsTabbedPanel<E extends Widget> extends Composite {
 
         return m_tabPanel.getSelectedIndex();
 
+    }
+
+    /**
+     * Finds a tab with a given id.<p>
+     * 
+     * @param tabId a tab id
+     *  
+     * @return the tab with the given id 
+     */
+    public E getTabById(String tabId) {
+
+        return m_tabsById.get(tabId);
     }
 
     /**

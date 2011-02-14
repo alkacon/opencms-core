@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/containerpage/client/Attic/CmsContainerpageHandler.java,v $
- * Date   : $Date: 2011/02/11 17:06:28 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2011/02/14 10:02:24 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -93,7 +93,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.35 $
+ * @version $Revision: 1.36 $
  * 
  * @since 8.0.0
  */
@@ -133,16 +133,6 @@ public class CmsContainerpageHandler {
     }
 
     /**
-     * Adds the element with the given id to the favorite list.<p>
-     * 
-     * @param clientId the client id
-     */
-    public void addToFavorites(String clientId) {
-
-        m_controller.addToFavoriteList(clientId);
-    }
-
-    /**
      * Adds the given list item widget to the favorite list widget.<p>
      * 
      * @param listItem the list item
@@ -150,6 +140,16 @@ public class CmsContainerpageHandler {
     public void addToFavorites(CmsListItem listItem) {
 
         m_editor.getClipboard().addToFavorites(listItem);
+    }
+
+    /**
+     * Adds the element with the given id to the favorite list.<p>
+     * 
+     * @param clientId the client id
+     */
+    public void addToFavorites(String clientId) {
+
+        m_controller.addToFavoriteList(clientId);
     }
 
     /**
@@ -231,8 +231,9 @@ public class CmsContainerpageHandler {
                     }
                 };
                 String title = Messages.get().key(Messages.GUI_PROPERTY_DIALOG_TITLE_0);
-                CmsFormDialog dialog = new CmsFormDialog(title);
-                CmsForm form = dialog.getForm();
+
+                CmsForm form = new CmsForm(true);
+                CmsFormDialog dialog = new CmsFormDialog(title, form);
                 form.addLabel(Messages.get().key(Messages.GUI_PROPERTY_DIALOG_TEXT_0), false);
 
                 Map<String, I_CmsFormField> formFields = CmsBasicFormField.createFields(propertyConfig.values());
@@ -726,18 +727,18 @@ public class CmsContainerpageHandler {
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(name)) {
 
                 if (name.equals(CmsAvailabilityDialog.class.getName())) {
-                    entry.setImageClass(org.opencms.gwt.client.ui.css.I_CmsImageBundle.INSTANCE.contextMenuIcons().availabilitySmall());
+                entry.setImageClass(org.opencms.gwt.client.ui.css.I_CmsImageBundle.INSTANCE.contextMenuIcons().availabilitySmall());
 
-                    cmd = new Command() {
+                cmd = new Command() {
 
-                        /**
-                         * @see com.google.gwt.user.client.Command#execute()
-                         */
-                        public void execute() {
+                    /**
+                     * @see com.google.gwt.user.client.Command#execute()
+                     */
+                    public void execute() {
 
-                            new CmsAvailabilityDialog(m_controller.getData().getContainerpageUri()).loadAndShow();
-                        }
-                    };
+                        new CmsAvailabilityDialog(m_controller.getData().getContainerpageUri()).loadAndShow();
+                    }
+                };
                 } else if (name.equals(CmsUploadDialog.class.getName())) {
                     cmd = new Command() {
 

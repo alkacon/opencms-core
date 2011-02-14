@@ -2,8 +2,11 @@
 <!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.0.2//EN" "http://google-web-toolkit.googlecode.com/svn/tags/2.0.2/distro-source/core/src/gwt-module.dtd">
 <module>
 	<inherits name="com.google.gwt.user.User" />
-	<inherits name="com.google.gwt.json.JSON" />
+    <inherits name="com.google.gwt.json.JSON" />
+	<inherits name="com.google.common.collect.Collect" />
 	
+	
+		
 	<define-property name="fileapi.support" values="yes,no" />
 	<property-provider name="fileapi.support"><![CDATA[
 			var input=document.createElement('input');
@@ -59,7 +62,6 @@
 		<include name="CmsSourcedValue.java" />
 	</source>
 	<source path="xml/sitemap" >
-		<include name="CmsDetailPageTable.java" />
 		<include name="CmsDetailPageInfo.java" />
 	</source>
 	<source path="db" >
@@ -70,7 +72,6 @@
 	</source>
 	<source path="util" >
 		<include name="CmsObjectUtil.java" />
-		<include name="CmsMultiListMap.java" />
 	</source>
 	<source path="xml/content">
 		<include name="CmsXmlContentProperty.java" />

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/ui/Attic/CmsTemplateSelectCell.java,v $
- * Date   : $Date: 2011/02/11 15:46:30 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/02/14 10:02:24 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.ade.sitemap.client.ui;
 import org.opencms.ade.sitemap.shared.CmsSitemapTemplate;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.I_CmsTruncable;
+import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.input.A_CmsSelectCell;
 import org.opencms.gwt.client.ui.input.CmsLabel;
 import org.opencms.util.CmsStringUtil;
@@ -51,7 +52,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 8.0.0
  */
@@ -127,6 +128,14 @@ public class CmsTemplateSelectCell extends A_CmsSelectCell implements I_CmsTrunc
         // TODO: use a default image if the image is not set, ie. null !!!
         m_imageBox.add(new Image(CmsStringUtil.joinPaths(CmsCoreProvider.get().getContext(), template.getImgPath()
             + SCALE_PARAMS)));
+        String stylename = I_CmsInputLayoutBundle.INSTANCE.inputCss().weakText();
+        if (template.isShowWeakText()) {
+            m_topLabel.addStyleName(stylename);
+            m_bottomLabel.addStyleName(stylename);
+        } else {
+            m_topLabel.removeStyleName(stylename);
+            m_bottomLabel.removeStyleName(stylename);
+        }
     }
 
     /**
@@ -136,4 +145,5 @@ public class CmsTemplateSelectCell extends A_CmsSelectCell implements I_CmsTrunc
 
         m_topLabel.truncate(textMetricsKey + "_TOP_LABEL", labelWidth);
     }
+
 }

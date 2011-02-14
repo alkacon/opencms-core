@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2011/01/13 08:56:53 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2011/02/14 10:02:24 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -98,7 +98,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 6.0.0 
  */
@@ -552,6 +552,37 @@ public final class CmsObject {
     public CmsPropertyDefinition createPropertyDefinition(String name) throws CmsException {
 
         return (m_securityManager.createPropertyDefinition(m_context, name));
+    }
+
+    /**
+     * Creates a resource with the given properties and content.
+     * Will throw an exception, if a resource with the given name already exists.<p>
+     *
+     * @param sitePath the site path for the resource
+     * @param resource the resource object to be imported
+     * @param content the content of the resource
+     * @param properties the properties of the resource
+     * 
+     * @return the imported resource
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public CmsResource createResource(
+        String sitePath,
+        CmsResource resource,
+        byte[] content,
+        List<CmsProperty> properties) throws CmsException {
+
+        resource.setUserLastModified(getRequestContext().currentUser().getId());
+        resource.setDateLastModified(System.currentTimeMillis());
+        // ensure resource record is updated
+        resource.setState(CmsResource.STATE_NEW);
+        return m_securityManager.createResource(
+            m_context,
+            m_context.addSiteRoot(sitePath),
+            resource,
+            content,
+            properties);
     }
 
     /**
@@ -1133,14 +1164,9 @@ public final class CmsObject {
         boolean includeOtherOus,
         String remoteAddress) throws CmsException {
 
-        return m_securityManager.getGroupsOfUser(
-            m_context,
-            username,
-            (includeOtherOus ? "" : CmsOrganizationalUnit.getParentFqn(username)),
-            includeOtherOus,
-            false,
-            directGroupsOnly,
-            remoteAddress);
+        return m_securityManager.getGroupsOfUser(m_context, username, (includeOtherOus
+        ? ""
+        : CmsOrganizationalUnit.getParentFqn(username)), includeOtherOus, false, directGroupsOnly, remoteAddress);
     }
 
     /**
@@ -1568,37 +1594,6 @@ public final class CmsObject {
     public void importRelation(String resourceName, String targetPath, String relationType) throws CmsException {
 
         createRelation(resourceName, targetPath, relationType, true);
-    }
-
-    /**
-     * Creates a resource with the given properties and content.
-     * Will throw an exception, if a resource with the given name already exists.<p>
-     *
-     * @param sitePath the site path for the resource
-     * @param resource the resource object to be imported
-     * @param content the content of the resource
-     * @param properties the properties of the resource
-     * 
-     * @return the imported resource
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public CmsResource createResource(
-        String sitePath,
-        CmsResource resource,
-        byte[] content,
-        List<CmsProperty> properties) throws CmsException {
-
-        resource.setUserLastModified(getRequestContext().currentUser().getId());
-        resource.setDateLastModified(System.currentTimeMillis());
-        // ensure resource record is updated
-        resource.setState(CmsResource.STATE_NEW);
-        return m_securityManager.createResource(
-            m_context,
-            m_context.addSiteRoot(sitePath),
-            resource,
-            content,
-            properties);
     }
 
     /**
@@ -3259,6 +3254,18 @@ public final class CmsObject {
     /**
      * Unlocks a resource.<p>
      * 
+     * @param resource the resource to unlock
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void unlockResource(CmsResource resource) throws CmsException {
+
+        getResourceType(resource).unlockResource(this, m_securityManager, resource);
+    }
+
+    /**
+     * Unlocks a resource.<p>
+     * 
      * @param resourcename the name of the resource to unlock (full current site relative path)
      * 
      * @throws CmsException if something goes wrong
@@ -3266,18 +3273,6 @@ public final class CmsObject {
     public void unlockResource(String resourcename) throws CmsException {
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
-        getResourceType(resource).unlockResource(this, m_securityManager, resource);
-    }
-
-    /**
-     * Unlocks a resource.<p>
-     * 
-     * @param resource the resource to unlock
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public void unlockResource(CmsResource resource) throws CmsException {
-
         getResourceType(resource).unlockResource(this, m_securityManager, resource);
     }
 
@@ -3392,6 +3387,23 @@ public final class CmsObject {
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
         getResourceType(resource).writePropertyObject(this, m_securityManager, resource, property);
+    }
+
+    /**
+     * Writes a list of properties for a specified resource.<p>
+     * 
+     * Code calling this method has to ensure that the no properties 
+     * <code>a, b</code> are contained in the specified list so that <code>a.equals(b)</code>, 
+     * otherwise an exception is thrown.<p>
+     * 
+     * @param res the resource
+     * @param properties the list of properties to write
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void writePropertyObjects(CmsResource res, List<CmsProperty> properties) throws CmsException {
+
+        getResourceType(res).writePropertyObjects(this, m_securityManager, res, properties);
     }
 
     /**

@@ -1,10 +1,10 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/sitemap/Attic/CmsSitemapManager.java,v $
- * Date   : $Date: 2011/02/11 14:27:15 $
- * Version: $Revision: 1.76 $
+ * Date   : $Date: 2011/02/14 10:02:23 $
+ * Version: $Revision: 1.77 $
  *
  * This library is part of OpenCms -
- * the Open Source Content Management System
+ * the Open Source Content Management System 
  *
  * Copyright (c) 2002 - 2009 Alkacon Software GmbH (http://www.alkacon.com)
  *
@@ -45,13 +45,9 @@ import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.content.CmsXmlContentPropertyHelper;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletRequest;
-import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 
@@ -62,7 +58,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.76 $
+ * @version $Revision: 1.77 $
  * 
  * @since 7.9.2
  */
@@ -149,24 +145,6 @@ public class CmsSitemapManager {
             cacheSettings = new CmsSitemapCacheSettings();
         }
         CmsVfsMemoryObjectCache structureIdCache = new CmsVfsMemoryObjectCache();
-
-    }
-
-    /**
-     * Returns the navigation URI from a given request.<p>
-     * 
-     * @param cms the current CMS context
-     * @param request the current request 
-     *  
-     * @return the current uri for the navigation
-     */
-    public static String getNavigationUri(CmsObject cms, HttpServletRequest request) {
-
-        CmsSitemapEntry sitemap = OpenCms.getSitemapManager().getRuntimeInfo(request);
-        if (sitemap == null) {
-            return cms.getRequestContext().getUri();
-        }
-        return sitemap.getSitePath(cms);
     }
 
     /**
@@ -227,53 +205,6 @@ public class CmsSitemapManager {
             LOG.debug(e.getLocalizedMessage(), e);
             return null;
         }
-    }
-
-    /**
-     * Returns a list of the descendants of a given sitemap entry.<p>
-     * 
-     * Whether the list includes the entry itself can be controlled by a boolean parameter.<p>
-     * 
-     * @param rootEntry the root entry whose descendants should be found
-     * @param includeRoot if true, the root entry will be included in the resulting list 
-     * 
-     * @return a list of descendant sitemap entries 
-     */
-    public List<CmsInternalSitemapEntry> getDescendants(CmsInternalSitemapEntry rootEntry, boolean includeRoot) {
-
-        List<CmsInternalSitemapEntry> result = new ArrayList<CmsInternalSitemapEntry>();
-        LinkedList<CmsInternalSitemapEntry> entriesToProcess = new LinkedList<CmsInternalSitemapEntry>();
-        if (includeRoot) {
-            entriesToProcess.add(rootEntry);
-
-        } else {
-            entriesToProcess.addAll(rootEntry.getSubEntries());
-        }
-        while (!entriesToProcess.isEmpty()) {
-            CmsInternalSitemapEntry currentEntry = entriesToProcess.removeFirst();
-            result.add(currentEntry);
-            entriesToProcess.addAll(currentEntry.getSubEntries());
-        }
-        return result;
-    }
-
-    /**
-     * Returns the descendants of a list of sitemap entries.<p>
-     * 
-     * Whether the resulting list includes the root entries can be controlled with a boolean parameter.<p>
-     * 
-     * @param rootEntries the root entries whose descendants should be found 
-     * @param includeRoots if true, the original root entries will be included in the result list 
-     * 
-     * @return the list of descendants of the root entries 
-     */
-    public List<CmsInternalSitemapEntry> getDescendants(List<CmsInternalSitemapEntry> rootEntries, boolean includeRoots) {
-
-        List<CmsInternalSitemapEntry> result = new ArrayList<CmsInternalSitemapEntry>();
-        for (CmsInternalSitemapEntry entry : rootEntries) {
-            result.addAll(getDescendants(entry, includeRoots));
-        }
-        return result;
     }
 
     /**
@@ -384,26 +315,29 @@ public class CmsSitemapManager {
     //    }
 
     /**
-     * Returns the properties of a sitemap entry as {@link CmsProperty} instances.<p>
+     * Returns the sitemap URI for the given sitemap entry URI.<p>
      * 
-     * @param entry the sitemap entry whose properties should be returned 
+     * @param cms the current CMS context
+     * @param uri the sitemap entry URI to get the sitemap URI for
      * 
-     * @return a map from property names to {@link CmsProperty} objects 
+     * @return the sitemap URI for the given sitemap entry URI
+     * 
+     * @throws CmsException if something goes wrong
      */
-    public Map<String, CmsProperty> getProperties(CmsSitemapEntry entry) {
+    @SuppressWarnings("null")
+    public String getSitemapForUri(CmsObject cms, String uri) throws CmsException {
 
-        return CmsXmlContentPropertyHelper.createCmsProperties(entry.getComputedProperties());
+        //TODO: implement this
+        throw new RuntimeException("not implemented yet");
     }
 
     /**
-     * Reads the current sitemap URI bean from the request.<p>
+     * Clean up at shutdown time. Only intended to be called at system shutdown.<p>
      * 
-     * @param req the servlet request
-     * 
-     * @return the sitemap URI bean, or <code>null</code> if not found
+     * @see org.opencms.main.OpenCmsCore#shutDown
      */
-    public CmsSitemapEntry getRuntimeInfo(ServletRequest req) {
+    public void shutdown() {
 
-        return (CmsSitemapEntry)req.getAttribute(ATTR_SITEMAP_ENTRY);
     }
+
 }

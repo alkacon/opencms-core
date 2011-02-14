@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/client/model/Attic/CmsClientSitemapChangeNew.java,v $
- * Date   : $Date: 2011/02/10 16:35:54 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2011/02/14 10:02:24 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,19 +36,19 @@ import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.client.toolbar.CmsToolbarClipboardView;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
+import org.opencms.ade.sitemap.shared.CmsDetailPageTable;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsSitemapClipboardData;
 import org.opencms.file.CmsResource;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.sitemap.CmsDetailPageInfo;
-import org.opencms.xml.sitemap.CmsDetailPageTable;
 
 /**
  * Stores one addition change to the sitemap.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @since 8.0.0
  */
@@ -60,17 +60,17 @@ public class CmsClientSitemapChangeNew implements I_CmsClientSitemapChange {
     /** The new entry with children. */
     private CmsClientSitemapEntry m_entry;
 
-    /** The parent entry id. */
-    private CmsUUID m_parentId;
-
-    /** Flag to indicate whether the new entry is restored from deleted entries. */
-    private boolean m_restoreFromDeleted;
-
     /** The new entry copy resource structure id. */
     private CmsUUID m_newCopyResourceId;
 
     /** The new entry resource type id. */
     private int m_newResourceTypeId;
+
+    /** The parent entry id. */
+    private CmsUUID m_parentId;
+
+    /** Flag to indicate whether the new entry is restored from deleted entries. */
+    private boolean m_restoreFromDeleted;
 
     /**
      * Constructor.<p>
@@ -79,7 +79,7 @@ public class CmsClientSitemapChangeNew implements I_CmsClientSitemapChange {
      * @param parentId the parent entry id
      * @param restoreFromDeleted flag to indicate whether the new entry is restored from deleted entries
      * @param resourceTypeId the resource type id
-     * @param copyResourceId the copy resource id
+     * @param copyResourceId the copy resource id 
      */
     public CmsClientSitemapChangeNew(
         CmsClientSitemapEntry entry,
@@ -153,12 +153,14 @@ public class CmsClientSitemapChangeNew implements I_CmsClientSitemapChange {
     public CmsSitemapChange getChangeForCommit() {
 
         CmsSitemapChange change = new CmsSitemapChange(m_entry.getId(), m_entry.getSitePath());
+        change.setDefaultFileId(m_entry.getDefaultFileId());
         change.setNew(!m_restoreFromDeleted);
         change.setParentId(m_parentId);
         change.setName(m_entry.getName());
         change.setPosition(m_entry.getPosition());
+        change.setOwnInternalProperties(m_entry.getOwnInternalProperties());
+        change.setDefaultFileInternalProperties(m_entry.getDefaultFileInternalProperties());
         change.setTitle(m_entry.getTitle());
-        change.setProperties(m_entry.getProperties());
         change.setNewResourceTypeId(m_newResourceTypeId);
         change.setNewCopyResourceId(m_newCopyResourceId);
         if (isChangingDetailPages()) {

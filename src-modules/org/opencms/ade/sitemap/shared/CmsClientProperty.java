@@ -1,0 +1,236 @@
+/*
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsClientProperty.java,v $
+ * Date   : $Date: 2011/02/14 10:02:24 $
+ * Version: $Revision: 1.1 $
+ *
+ * This library is part of OpenCms -
+ * the Open Source Content Management System
+ *
+ * Copyright (C) 2002 - 2009 Alkacon Software (http://www.alkacon.com)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about Alkacon Software, please see the
+ * company website: http://www.alkacon.com
+ *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+package org.opencms.ade.sitemap.shared;
+
+import org.opencms.util.CmsStringUtil;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import com.google.gwt.user.client.rpc.IsSerializable;
+
+/**
+ * A client-side bean for representing an OpenCms property.<p>
+ * 
+ * @author Georg Westenberger
+ * 
+ * @version $Revision: 1.1 $
+ * 
+ * @since 8.0.0
+ */
+public class CmsClientProperty implements IsSerializable {
+
+    /** The path component identifying a resource value. */
+    public static final String PATH_RESOURCE_VALUE = "R";
+
+    /** The path component identifying a structure value. */
+    public static final String PATH_STRUCTURE_VALUE = "S";
+
+    /** The name of the property. */
+    private String m_name;
+
+    /** The resource value of the property. */
+    private String m_resourceValue;
+
+    /** The structure value of the property. */
+    private String m_structureValue;
+
+    /** 
+     * Copy constructor.<p>
+     * 
+     * @param property the object from which to copy the data 
+     */
+    public CmsClientProperty(CmsClientProperty property) {
+
+        m_name = property.m_name;
+        m_structureValue = property.m_structureValue;
+        m_resourceValue = property.m_resourceValue;
+    }
+
+    /**
+     * Creates a new client property bean.<p>
+     * 
+     * @param name the property name 
+     * @param structureValue the structure value 
+     * @param resourceValue the resource value 
+     */
+    public CmsClientProperty(String name, String structureValue, String resourceValue) {
+
+        m_name = name;
+        m_structureValue = structureValue;
+        m_resourceValue = resourceValue;
+    }
+
+    /**
+     * Empty default constructor, used for serialization.<p>
+     */
+    protected CmsClientProperty() {
+
+        //empty constructor for serialization 
+    }
+
+    /**
+     * Helper method for copying a map of properties.<p>
+     * 
+     * @param props the property map to copy 
+     * 
+     * @return a copy of the property map  
+     */
+    public static Map<String, CmsClientProperty> copyProperties(Map<String, CmsClientProperty> props) {
+
+        Map<String, CmsClientProperty> result = new HashMap<String, CmsClientProperty>();
+        for (Map.Entry<String, CmsClientProperty> entry : props.entrySet()) {
+            String key = entry.getKey();
+            CmsClientProperty copiedValue = new CmsClientProperty(entry.getValue());
+            result.put(key, copiedValue);
+        }
+        return result;
+    }
+
+    /**
+     * Checks if a property is null or empty.<p>
+     *  
+     * @param prop the property to check 
+     * 
+     * @return true if the property is null or empty 
+     */
+    public static boolean isPropertyEmpty(CmsClientProperty prop) {
+
+        return (prop == null) || prop.isEmpty();
+    }
+
+    /**
+     * Helper method for removing empty properties from a map.<p>
+     * 
+     * @param props the map from which to remove empty properties 
+     */
+    public static void removeEmptyProperties(Map<String, CmsClientProperty> props) {
+
+        Iterator<Map.Entry<String, CmsClientProperty>> iter = props.entrySet().iterator();
+        while (iter.hasNext()) {
+            Map.Entry<String, CmsClientProperty> entry = iter.next();
+            CmsClientProperty value = entry.getValue();
+            if (value.isEmpty()) {
+                iter.remove();
+            }
+        }
+    }
+
+    /**
+     * Returns the effective value of the property.<p>
+     *  
+     * @return the effective value of the property 
+     */
+    public String getEffectiveValue() {
+
+        return getPathValue().getValue();
+    }
+
+    /**
+     * Returns the name of the property.<p>
+     * 
+     * @return the name of the property 
+     */
+    public String getName() {
+
+        return m_name;
+    }
+
+    /**
+     * Returns the effective path value of the property.<p>
+     * 
+     * @return the effective path value of the property 
+     */
+    public CmsPathValue getPathValue() {
+
+        if (m_structureValue != null) {
+            return new CmsPathValue(m_structureValue, PATH_STRUCTURE_VALUE);
+        } else if (m_resourceValue != null) {
+            return new CmsPathValue(m_resourceValue, PATH_RESOURCE_VALUE);
+        } else {
+            return new CmsPathValue(null, PATH_STRUCTURE_VALUE);
+        }
+    }
+
+    /**
+     * Returns the resource value of the property.<p>
+     * 
+     * @return the resource value 
+     */
+    public String getResourceValue() {
+
+        return m_resourceValue;
+    }
+
+    /***
+     * Returns the structure value of the property.<p>
+     * 
+     * @return  the structure value 
+     */
+    public String getStructureValue() {
+
+        return m_structureValue;
+    }
+
+    /**
+     * Checks if both values of the property are empty.<p>
+     * 
+     * @return true if both values of the property are empty
+     */
+    public boolean isEmpty() {
+
+        return CmsStringUtil.isEmpty(m_resourceValue) && CmsStringUtil.isEmpty(m_structureValue);
+
+    }
+
+    /**
+     * Sets the resource value .<P>
+     * 
+     * @param resourceValue the new resource value 
+     */
+    public void setResourceValue(String resourceValue) {
+
+        m_resourceValue = resourceValue;
+    }
+
+    /**
+     * Sets the structure value.<p>
+     * 
+     * @param structureValue the new structure value 
+     */
+    public void setStructureValue(String structureValue) {
+
+        m_structureValue = structureValue;
+    }
+
+}

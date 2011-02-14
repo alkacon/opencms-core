@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/adeconfig/Attic/CmsConfigurationParser.java,v $
- * Date   : $Date: 2011/02/10 16:32:44 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/02/14 10:02:24 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -80,7 +80,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.6 
  */
@@ -104,14 +104,14 @@ public class CmsConfigurationParser {
     /** The tag name of a formatter configuration. */
     public static final String N_FORMATTER = "Formatter";
 
+    /** The Name node name. */
+    public static final String N_IS_DEFAULT = "IsDefault";
+
     /** The tag name of the formatter jsp. */
     public static final String N_JSP = "Jsp";
 
     /** Node name for the maximum depth configuration. */
     public static final String N_MAXDEPTH = "MaxDepth";
-
-    /** The Name node name. */
-    public static final String N_IS_DEFAULT = "IsDefault";
 
     /** The Page node name. */
     public static final String N_PAGE = "Page";
@@ -550,8 +550,6 @@ public class CmsConfigurationParser {
         String error = getSubValueString(cms, field, "Error");
         String niceName = getSubValueString(cms, field, "NiceName");
         String description = getSubValueString(cms, field, "Description");
-        String advanced = getSubValueString(cms, field, "Advanced");
-        String selectInherit = getSubValueString(cms, field, "SelectInherit");
         CmsXmlContentProperty prop = new CmsXmlContentProperty(
             name,
             type,
@@ -562,9 +560,7 @@ public class CmsConfigurationParser {
             default1,
             niceName,
             description,
-            error,
-            advanced,
-            selectInherit);
+            error);
         m_props.add(prop);
     }
 
@@ -624,4 +620,5 @@ public class CmsConfigurationParser {
         }
         m_configuration.put(type, configItem);
     }
+
 }

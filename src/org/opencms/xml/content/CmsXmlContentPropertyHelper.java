@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentPropertyHelper.java,v $
- * Date   : $Date: 2011/01/20 07:10:15 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2011/02/14 10:02:24 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,7 +33,6 @@ package org.opencms.xml.content;
 
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.json.JSONException;
@@ -50,8 +49,6 @@ import org.opencms.xml.CmsXmlGenericWrapper;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.content.CmsXmlContentProperty.PropType;
 import org.opencms.xml.page.CmsXmlPage;
-import org.opencms.xml.sitemap.properties.CmsComputedPropertyValue;
-import org.opencms.xml.sitemap.properties.CmsSimplePropertyValue;
 import org.opencms.xml.types.CmsXmlNestedContentDefinition;
 import org.opencms.xml.types.CmsXmlVfsFileValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
@@ -59,13 +56,11 @@ import org.opencms.xml.types.I_CmsXmlSchemaType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
@@ -76,13 +71,13 @@ import org.dom4j.Element;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 7.9.2
  */
 public final class CmsXmlContentPropertyHelper implements Cloneable {
 
-    /** Element Property json property constants. */
+    /** Element Property json property  constants. */
     public enum JsonProperty {
 
         /** Property's default value. */
@@ -159,95 +154,6 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
     }
 
     /**
-     * Converts a map from strings to CmsSimplePropertyValue instances between client format and server format.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param props the map of properties to convert 
-     * @param propConfig the property configuration 
-     * @param toClient if true, convert from server format to client format, else convert the other way 
-     * 
-     * @return the convert properties 
-     */
-    public static Map<String, CmsSimplePropertyValue> convertPropertySimpleValues(
-        CmsObject cms,
-        Map<String, CmsSimplePropertyValue> props,
-        Map<String, CmsXmlContentProperty> propConfig,
-        boolean toClient) {
-
-        Map<String, CmsSimplePropertyValue> result = new HashMap<String, CmsSimplePropertyValue>();
-        for (Map.Entry<String, CmsSimplePropertyValue> entry : props.entrySet()) {
-            CmsXmlContentProperty propDef = propConfig.get(entry.getKey());
-            String type = "string";
-            if (propDef != null) {
-                type = propDef.getPropertyType();
-            }
-            CmsSimplePropertyValue convertedValue = convertSimplePropertyValue(cms, entry.getValue(), type, toClient);
-            result.put(entry.getKey(), convertedValue);
-        }
-        return result;
-    }
-
-    /**
-     * Converts a Map of simple properties to a map of strings.<p>
-     * 
-     * @param newProps a map of simple properties 
-     * @return the converted map of strings 
-     */
-    public static Map<String, String> convertSimpleToStringProperties(Map<String, CmsSimplePropertyValue> newProps) {
-
-        Map<String, String> result = new HashMap<String, String>();
-        for (Map.Entry<String, CmsSimplePropertyValue> entry : newProps.entrySet()) {
-            String propName = entry.getKey();
-            CmsSimplePropertyValue propValue = entry.getValue();
-
-            if (propValue.getInheritValue() == null) {
-                result.put("*" + propName, propValue.getOwnValue());
-                continue;
-            }
-
-            result.put(propName, propValue.getOwnValue());
-            if ((propValue.getInheritValue() != null) && !propValue.getInheritValue().equals(propValue.getOwnValue())) {
-                result.put("#" + propName, propValue.getInheritValue());
-            }
-        }
-        return result;
-    }
-
-    /**
-     * Converts a Map of strings to a map of simple properties.<p>
-     * 
-     * @param oldProps a string map 
-     * @return a map of simple properties 
-     */
-    public static Map<String, CmsSimplePropertyValue> convertStringToSimpleProperties(Map<String, String> oldProps) {
-
-        Set<String> baseNames = new HashSet<String>();
-        for (String key : oldProps.keySet()) {
-            baseNames.add(getPropertyBaseName(key));
-        }
-        Map<String, CmsSimplePropertyValue> result = new HashMap<String, CmsSimplePropertyValue>();
-        for (String propName : baseNames) {
-            String ownValue = oldProps.get(propName);
-            String inheritValue = oldProps.get("#" + propName);
-            String starValue = oldProps.get("*" + propName);
-            if (starValue != null) {
-                // a property name with a prefix of '*' signifies that the property should not be inherited from this
-                // sitemap entry 
-                result.put(propName, new CmsSimplePropertyValue(starValue, null));
-                continue;
-            }
-
-            // ownName and inheritName can't both be null
-            if (inheritValue == null) {
-                inheritValue = ownValue;
-            }
-            CmsSimplePropertyValue property = new CmsSimplePropertyValue(ownValue, inheritValue);
-            result.put(propName, property);
-        }
-        return result;
-    }
-
-    /**
      * Creates a deep copy of a property configuration map.<p>
      * 
      * @param propConfig the property configuration which should be copied 
@@ -262,27 +168,6 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
             String key = entry.getKey();
             CmsXmlContentProperty propDef = entry.getValue();
             result.put(key, propDef.copy());
-        }
-        return result;
-    }
-
-    /**
-     * Helper method for converting a map of {@link CmsComputedPropertyValue} objects to a map of {@link CmsProperty} objects.<p>
-     * 
-     * @param props a map of properties 
-     * 
-     * @return a map of {@link CmsProperty} objects 
-     */
-    public static Map<String, CmsProperty> createCmsProperties(Map<String, CmsComputedPropertyValue> props) {
-
-        Map<String, CmsProperty> result = new HashMap<String, CmsProperty>();
-        for (Map.Entry<String, CmsComputedPropertyValue> propEntry : props.entrySet()) {
-            CmsComputedPropertyValue propValue = propEntry.getValue();
-            CmsProperty cmsProperty = new CmsProperty(
-                propEntry.getKey(),
-                propValue.getOwnValue(),
-                propValue.getInheritValue());
-            result.put(propEntry.getKey(), cmsProperty);
         }
         return result;
     }
@@ -339,55 +224,6 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
 
         CmsMacroResolver resolver = getMacroResolverForProperties(cms, contentHandler);
         return resolveMacrosInProperties(propertiesConf, resolver);
-    }
-
-    /**
-     * Returns the property information for the given resource (type) as a JSON object.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param resource the resource
-     * 
-     * @return the property information
-     * 
-     * @throws CmsException if something goes wrong
-     * @throws JSONException if something goes wrong generating the JSON
-     */
-    public static JSONObject getPropertyInfoJSON(CmsObject cms, CmsResource resource)
-    throws CmsException, JSONException {
-
-        // TODO: delete when no longer needed
-        JSONObject jsonProperties = new JSONObject();
-
-        I_CmsXmlContentHandler contentHandler = CmsXmlContentDefinition.getContentHandlerForResource(cms, resource);
-        CmsUserSettings settings = new CmsUserSettings(cms.getRequestContext().currentUser());
-        CmsMessages messages = contentHandler.getMessages(settings.getLocale());
-        CmsMacroResolver resolver = new CmsMacroResolver();
-        resolver.setCmsObject(cms);
-        resolver.setMessages(messages);
-        resolver.setKeepEmptyMacros(true);
-
-        Map<String, CmsXmlContentProperty> propertiesConf = contentHandler.getProperties();
-        Iterator<Map.Entry<String, CmsXmlContentProperty>> itProperties = propertiesConf.entrySet().iterator();
-        while (itProperties.hasNext()) {
-            Map.Entry<String, CmsXmlContentProperty> entry = itProperties.next();
-            String propertyName = entry.getKey();
-            CmsXmlContentProperty conf = entry.getValue();
-            JSONObject jsonProperty = new JSONObject();
-
-            jsonProperty.put(JsonProperty.defaultValue.name(), conf.getDefault());
-            jsonProperty.put(JsonProperty.type.name(), conf.getPropertyType());
-            jsonProperty.put(JsonProperty.widget.name(), conf.getWidget());
-            jsonProperty.put(
-                JsonProperty.widgetConf.name(),
-                getWidgetConfigurationAsJSON(resolver.resolveMacros(conf.getWidgetConfiguration())));
-            jsonProperty.put(JsonProperty.ruleType.name(), conf.getRuleType());
-            jsonProperty.put(JsonProperty.ruleRegex.name(), conf.getRuleRegex());
-            jsonProperty.put(JsonProperty.niceName.name(), resolver.resolveMacros(conf.getNiceName()));
-            jsonProperty.put(JsonProperty.description.name(), resolver.resolveMacros(conf.getDescription()));
-            jsonProperty.put(JsonProperty.error.name(), resolver.resolveMacros(conf.getError()));
-            jsonProperties.put(propertyName, jsonProperty);
-        }
-        return jsonProperties;
     }
 
     /**
@@ -475,9 +311,9 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
                 result.put(entry.getKey(), entry.getValue());
             } catch (JSONException e) {
                 // should never happen
-                LOG.error(
-                    Messages.get().container(Messages.ERR_XMLCONTENT_UNKNOWN_ELEM_PATH_SCHEMA_1, widgetConfiguration),
-                    e);
+                LOG.error(Messages.get().container(
+                    Messages.ERR_XMLCONTENT_UNKNOWN_ELEM_PATH_SCHEMA_1,
+                    widgetConfiguration), e);
             }
         }
         return result;
@@ -553,9 +389,9 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
 
             // property itself
             int propIndex = CmsXmlUtils.getXpathIndexInt(property.getUniquePath(element));
-            String propPath = CmsXmlUtils.concatXpath(
-                elemPath,
-                CmsXmlUtils.createXpathElement(property.getName(), propIndex));
+            String propPath = CmsXmlUtils.concatXpath(elemPath, CmsXmlUtils.createXpathElement(
+                property.getName(),
+                propIndex));
             I_CmsXmlSchemaType propSchemaType = elemDef.getSchemaType(property.getName());
             I_CmsXmlContentValue propValue = propSchemaType.createValue(xmlContent, property, locale);
             xmlContent.addBookmarkForValue(propValue, propPath, locale, true);
@@ -572,9 +408,9 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
                 continue;
             }
             int valueIndex = CmsXmlUtils.getXpathIndexInt(value.getUniquePath(property));
-            String valuePath = CmsXmlUtils.concatXpath(
-                propPath,
-                CmsXmlUtils.createXpathElement(value.getName(), valueIndex));
+            String valuePath = CmsXmlUtils.concatXpath(propPath, CmsXmlUtils.createXpathElement(
+                value.getName(),
+                valueIndex));
             I_CmsXmlSchemaType valueSchemaType = propDef.getSchemaType(value.getName());
             I_CmsXmlContentValue valueValue = valueSchemaType.createValue(xmlContent, value, locale);
             xmlContent.addBookmarkForValue(valueValue, valuePath, locale, true);
@@ -594,9 +430,9 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
                     continue;
                 }
                 int valueFileListIndex = CmsXmlUtils.getXpathIndexInt(valueFileList.getUniquePath(value));
-                String valueFileListPath = CmsXmlUtils.concatXpath(
-                    valuePath,
-                    CmsXmlUtils.createXpathElement(valueFileList.getName(), valueFileListIndex));
+                String valueFileListPath = CmsXmlUtils.concatXpath(valuePath, CmsXmlUtils.createXpathElement(
+                    valueFileList.getName(),
+                    valueFileListIndex));
                 I_CmsXmlSchemaType valueFileListSchemaType = valueDef.getSchemaType(valueFileList.getName());
                 I_CmsXmlContentValue valueFileListValue = valueFileListSchemaType.createValue(
                     xmlContent,
@@ -635,28 +471,6 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
             propertiesMap.put(propName.getTextTrim(), val);
         }
         return propertiesMap;
-    }
-
-    /**
-     * Reads properties from an XML content and returns them as a map from strings to {@link CmsSimplePropertyValue} objects.<p>
-     * 
-     * @param xmlContent the XML content 
-     * @param locale the locale in which to read 
-     * @param element the element from which the properties should be read 
-     * @param elemPath the path of the element 
-     * @param elemDef the content definition 
-     * 
-     * @return the properties which were read from the XML content 
-     */
-    public static Map<String, CmsSimplePropertyValue> readSimpleProperties(
-        CmsXmlContent xmlContent,
-        Locale locale,
-        Element element,
-        String elemPath,
-        CmsXmlContentDefinition elemDef) {
-
-        Map<String, String> stringProps = readProperties(xmlContent, locale, element, elemPath, elemDef);
-        return convertStringToSimpleProperties(stringProps);
     }
 
     /**
@@ -703,9 +517,7 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
             property.getDefault(),
             resolver.resolveMacros(property.getNiceName()),
             resolver.resolveMacros(property.getDescription()),
-            resolver.resolveMacros(property.getError()),
-            property.getAdvanced(),
-            property.getSelectInherit());
+            resolver.resolveMacros(property.getError()));
         return result;
     }
 
@@ -757,26 +569,6 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
                 addFileListPropertyValue(cms, valueElement, propValue);
             }
         }
-    }
-
-    /**
-     * Saves a map from strings to {@link CmsSimplePropertyValue} objects in an XML content.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param parentElement the parent element in the XML content 
-     * @param properties the map of properties which should be saved 
-     * @param resource the resource to get the property configuration from
-     * @param propertiesConf the property configuration 
-     */
-    public static void saveSimpleProperties(
-        CmsObject cms,
-        Element parentElement,
-        Map<String, CmsSimplePropertyValue> properties,
-        CmsResource resource,
-        Map<String, CmsXmlContentProperty> propertiesConf) {
-
-        Map<String, String> stringProps = convertSimpleToStringProperties(properties);
-        saveProperties(cms, parentElement, stringProps, resource, propertiesConf);
     }
 
     /**
@@ -894,33 +686,6 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
             result.put(propName, newValue);
         }
         return result;
-    }
-
-    /**
-     * Converts a {@link CmsSimplePropertyValue} object between client and server format.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param propValue the property value to translate 
-     * @param type the type of the property 
-     * @param toClient if true, converts from server to client format, else converts from client format to server format 
-     * 
-     * @return the converted property value 
-     */
-    protected static CmsSimplePropertyValue convertSimplePropertyValue(
-        CmsObject cms,
-        CmsSimplePropertyValue propValue,
-        String type,
-        boolean toClient) {
-
-        String ownValue = propValue.getOwnValue();
-        String inheritValue = propValue.getInheritValue();
-        if ((ownValue != null) && ownValue.equals(inheritValue)) {
-            String converted = convertStringPropertyValue(cms, ownValue, type, toClient);
-            return new CmsSimplePropertyValue(converted, converted);
-        }
-        String ownValueConverted = convertStringPropertyValue(cms, ownValue, type, toClient);
-        String inheritValueConverted = convertStringPropertyValue(cms, inheritValue, type, toClient);
-        return new CmsSimplePropertyValue(ownValueConverted, inheritValueConverted);
     }
 
     /**

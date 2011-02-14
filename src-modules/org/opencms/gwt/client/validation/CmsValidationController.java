@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/validation/Attic/CmsValidationController.java,v $
- * Date   : $Date: 2010/11/18 15:29:23 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/02/14 10:02:24 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import java.util.Set;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  *
  * @since 8.0.0
  */
@@ -292,11 +292,10 @@ public class CmsValidationController implements I_CmsValidationController {
 
                 final Map<String, String> values = new HashMap<String, String>();
                 for (I_CmsFormField field : m_fields) {
-                    values.put(field.getId(), field.getWidget().getFormValueAsString());
+                    values.put(field.getId(), field.getModelValue());
                 }
                 start(0, false);
                 CmsCoreProvider.getService().validate(formValidationHandler, m_validationQueries, values, config, this);
-
             }
 
             /**

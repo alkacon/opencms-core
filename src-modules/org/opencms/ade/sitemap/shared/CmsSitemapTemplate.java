@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/shared/Attic/CmsSitemapTemplate.java,v $
- * Date   : $Date: 2010/04/22 14:32:08 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/02/14 10:02:24 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0
  */
@@ -49,6 +49,9 @@ public class CmsSitemapTemplate implements IsSerializable {
 
     /** The image path. */
     private String m_imgPath;
+
+    /** True if the template should be displayed with weak text. */
+    private boolean m_showWeakText;
 
     /** The site path. */
     private String m_sitePath;
@@ -118,5 +121,25 @@ public class CmsSitemapTemplate implements IsSerializable {
     public String getTitle() {
 
         return m_title;
+    }
+
+    /**
+     * Returns true if the template should be shown with weak text.<p>
+     * 
+     * @return true if the template should be shown with weak text
+     */
+    public boolean isShowWeakText() {
+
+        return m_showWeakText;
+    }
+
+    /**
+     * Sets the display of weak text to true or false.<p>
+     * 
+     * @param showWeakText if true, the template should be displayed with weak text
+     */
+    public void setShowWeakText(boolean showWeakText) {
+
+        m_showWeakText = showWeakText;
     }
 }
