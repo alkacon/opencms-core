@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/flex/TestCmsFlexResponse.java,v $
- * Date   : $Date: 2009/09/07 12:41:51 $
- * Version: $Revision: 1.6.2.1 $
+ * Date   : $Date: 2011/02/14 11:46:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import junit.framework.TestSuite;
  * 
  * @author Jason Trump
  *  
- * @version $Revision: 1.6.2.1 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.0.1
  */
@@ -367,7 +367,7 @@ public class TestCmsFlexResponse extends OpenCmsTestCase {
 
         super.setUp();
         CmsObject cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
-        if (!OpenCms.getDefaultUsers().isUserGuest(cms.getRequestContext().currentUser().getName())) {
+        if (!OpenCms.getDefaultUsers().isUserGuest(cms.getRequestContext().getCurrentUser().getName())) {
             fail("'Guest' user could not be properly initialized!");
         }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/menu/CmsMirMultiStandard.java,v $
- * Date   : $Date: 2009/06/04 14:29:06 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/02/14 11:46:54 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import org.opencms.workplace.explorer.CmsResourceUtil;
  * 
  * @author Andreas Zahner  
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.5.6
  */
@@ -54,7 +54,7 @@ public class CmsMirMultiStandard extends A_CmsMenuItemRule {
      */
     public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, CmsResourceUtil[] resourceUtil) {
 
-        if (cms.getRequestContext().currentProject().isOnlineProject()) {
+        if (cms.getRequestContext().getCurrentProject().isOnlineProject()) {
             return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE.addMessageKey(Messages.GUI_CONTEXTMENU_TITLE_INACTIVE_ONLINEPROJECT_0);
         }
         return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;

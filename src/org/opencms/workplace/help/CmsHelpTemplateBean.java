@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/help/CmsHelpTemplateBean.java,v $
- * Date   : $Date: 2010/03/01 10:21:47 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/02/14 11:46:56 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -83,7 +83,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -163,10 +163,10 @@ public class CmsHelpTemplateBean extends CmsDialog {
 
         try {
             m_onlineProject = getCms().readProject(CmsProject.ONLINE_PROJECT_ID);
-            m_offlineProject = jsp.getRequestContext().currentProject();
+            m_offlineProject = jsp.getRequestContext().getCurrentProject();
         } catch (CmsException e) {
             // failed to get online project
-            m_onlineProject = getCms().getRequestContext().currentProject();
+            m_onlineProject = getCms().getRequestContext().getCurrentProject();
         }
     }
 
@@ -724,7 +724,7 @@ public class CmsHelpTemplateBean extends CmsDialog {
     protected void checkRole() throws CmsRoleViolationException {
 
         // needed since these pages are static exported
-        if (!OpenCms.getDefaultUsers().isUserExport(getCms().getRequestContext().currentUser().getName())) {
+        if (!OpenCms.getDefaultUsers().isUserExport(getCms().getRequestContext().getCurrentUser().getName())) {
             // only for users that are not the export user
             OpenCms.getRoleManager().checkRole(getCms(), CmsRole.WORKPLACE_USER);
         }

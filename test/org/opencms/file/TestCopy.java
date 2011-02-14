@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestCopy.java,v $
- * Date   : $Date: 2009/09/07 12:41:41 $
- * Version: $Revision: 1.24.2.1 $
+ * Date   : $Date: 2011/02/14 11:46:54 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.24.2.1 $
+ * @version $Revision: 1.3 $
  */
 public class TestCopy extends OpenCmsTestCase {
 
@@ -194,13 +194,13 @@ public class TestCopy extends OpenCmsTestCase {
             String resName = cms.getSitePath(res);
 
             // project must be current project
-            assertProject(cms, resName, cms.getRequestContext().currentProject());
+            assertProject(cms, resName, cms.getRequestContext().getCurrentProject());
             // state must be "new"
             assertState(cms, resName, CmsResource.STATE_NEW);
             // date created must be new
             assertDateCreatedAfter(cms, resName, timestamp);
             // user created must be current user
-            assertUserCreated(cms, resName, cms.getRequestContext().currentUser());
+            assertUserCreated(cms, resName, cms.getRequestContext().getCurrentUser());
             // assert lock state
             assertLock(cms, resName);
             // must have sibling count of 1
@@ -233,7 +233,7 @@ public class TestCopy extends OpenCmsTestCase {
         assertFilter(cms, source, OpenCmsTestResourceFilter.FILTER_EQUAL);
 
         // project must be current project
-        assertProject(cms, destination, cms.getRequestContext().currentProject());
+        assertProject(cms, destination, cms.getRequestContext().getCurrentProject());
         // state must be "new"
         assertState(cms, destination, CmsResource.STATE_NEW);
         // date created must be new
@@ -241,9 +241,9 @@ public class TestCopy extends OpenCmsTestCase {
         // for a copied folder, also the date last modified must be new
         assertDateLastModifiedAfter(cms, destination, timestamp);
         // user created must be current user
-        assertUserCreated(cms, destination, cms.getRequestContext().currentUser());
+        assertUserCreated(cms, destination, cms.getRequestContext().getCurrentUser());
         // user last modified must be current user
-        assertUserLastModified(cms, destination, cms.getRequestContext().currentUser());
+        assertUserLastModified(cms, destination, cms.getRequestContext().getCurrentUser());
         // assert lock state
         assertLock(cms, destination, CmsLockType.EXCLUSIVE);
         // now assert the filter for the rest of the attributes        
@@ -308,7 +308,7 @@ public class TestCopy extends OpenCmsTestCase {
         cms.lockResource(sourceFolder + file);
 
         // switch user
-        CmsUser user = cms.getRequestContext().currentUser();
+        CmsUser user = cms.getRequestContext().getCurrentUser();
         cms = getCmsObject();
 
         assertLock(cms, sourceFolder + file, CmsLockType.EXCLUSIVE, user);
@@ -522,7 +522,7 @@ public class TestCopy extends OpenCmsTestCase {
         assertFilter(cms, source, OpenCmsTestResourceFilter.FILTER_EQUAL);
 
         // project must be current project
-        assertProject(cms, destination, cms.getRequestContext().currentProject());
+        assertProject(cms, destination, cms.getRequestContext().getCurrentProject());
         // state must be "new"
         assertState(cms, destination, CmsResource.STATE_NEW);
         // date created must be new
@@ -530,7 +530,7 @@ public class TestCopy extends OpenCmsTestCase {
         // date last modified must be original date
         assertDateLastModified(cms, destination, original.getDateLastModified());
         // user created must be current user
-        assertUserCreated(cms, destination, cms.getRequestContext().currentUser());
+        assertUserCreated(cms, destination, cms.getRequestContext().getCurrentUser());
         // user last modified must be original user
         assertUserLastModified(cms, destination, cms.readUser(original.getUserLastModified()));
         // now assert the filter for the rest of the attributes        

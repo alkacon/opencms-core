@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/A_CmsAuthorizationHandler.java,v $
- * Date   : $Date: 2009/09/11 15:29:15 $
- * Version: $Revision: 1.7.2.1 $
+ * Date   : $Date: 2011/02/14 11:46:54 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Moossen
  * @author Carsten Weinholz
  *
- * @version $Revision: 1.7.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.5.4 
  */
@@ -92,7 +92,7 @@ public abstract class A_CmsAuthorizationHandler implements I_CmsAuthorizationHan
         // update the request context
         cms = OpenCmsCore.getInstance().updateContext(request, cms);
 
-        CmsUser user = cms.getRequestContext().currentUser();
+        CmsUser user = cms.getRequestContext().getCurrentUser();
         if (!user.isGuestUser() && !OpenCms.getDefaultUsers().isUserExport(user.getName())) {
             // create the session info object, only for 'real' users
             CmsSessionInfo sessionInfo = new CmsSessionInfo(

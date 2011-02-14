@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsContextInfo.java,v $
- * Date   : $Date: 2009/09/11 15:29:14 $
- * Version: $Revision: 1.18.2.1 $
+ * Date   : $Date: 2011/02/14 11:46:54 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import java.util.Locale;
  * Contains user information for automated creation of a  
  * {@link org.opencms.file.CmsRequestContext} during system runtime.<p>
  * 
- * @version $Revision: 1.18.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -132,8 +132,8 @@ public class CmsContextInfo {
      */
     public CmsContextInfo(CmsRequestContext requestContext) {
 
-        setUserName(requestContext.currentUser().getName());
-        setProjectName(requestContext.currentProject().getName());
+        setUserName(requestContext.getCurrentUser().getName());
+        setProjectName(requestContext.getCurrentProject().getName());
         setRequestedUri(requestContext.getUri());
         setSiteRoot(requestContext.getSiteRoot());
         setLocale(requestContext.getLocale());
@@ -286,7 +286,7 @@ public class CmsContextInfo {
      * @return the project
      * 
      * @see #getProjectName()
-     * @see CmsRequestContext#currentProject()
+     * @see CmsRequestContext#getCurrentProject()
      */
     public CmsProject getProject() {
 
@@ -299,7 +299,7 @@ public class CmsContextInfo {
      * @return the project name
      * 
      * @see #getProject()
-     * @see CmsRequestContext#currentProject()
+     * @see CmsRequestContext#getCurrentProject()
      */
     public String getProjectName() {
 
@@ -364,7 +364,7 @@ public class CmsContextInfo {
      * @return the user
      * 
      * @see #getUserName()
-     * @see CmsRequestContext#currentUser()
+     * @see CmsRequestContext#getCurrentUser()
      */
     public CmsUser getUser() {
 
@@ -377,7 +377,7 @@ public class CmsContextInfo {
      * @return the username
      * 
      * @see #getUser()
-     * @see CmsRequestContext#currentUser()
+     * @see CmsRequestContext#getCurrentUser()
      */
     public String getUserName() {
 
@@ -449,7 +449,7 @@ public class CmsContextInfo {
      *
      * @param projectName the project name to set
      * 
-     * @see CmsRequestContext#currentProject()
+     * @see CmsRequestContext#getCurrentProject()
      */
     public void setProjectName(String projectName) {
 
@@ -518,7 +518,7 @@ public class CmsContextInfo {
      *
      * @param userName the username to set
      * 
-     * @see CmsRequestContext#currentUser()
+     * @see CmsRequestContext#getCurrentUser()
      */
     public void setUserName(String userName) {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsWorkplaceEditorManager.java,v $
- * Date   : $Date: 2009/06/04 14:29:35 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2011/02/14 11:46:56 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -190,7 +190,7 @@ public class CmsWorkplaceEditorManager {
     public String getWidgetEditor(CmsRequestContext context, String userAgent) {
 
         // step 1: check if the user specified a preferred editor for the resource type xmlpage
-        CmsUserSettings settings = new CmsUserSettings(context.currentUser());
+        CmsUserSettings settings = new CmsUserSettings(context.getCurrentUser());
         String resourceType = CmsResourceTypeXmlPage.getStaticTypeName();
         String preferredEditorSetting = settings.getPreferredEditor(resourceType);
         if (preferredEditorSetting == null) {
@@ -283,7 +283,7 @@ public class CmsWorkplaceEditorManager {
     protected String getEditorUri(CmsRequestContext context, String resourceType, String userAgent) {
 
         // step 1: check if the user specified a preferred editor for the given resource type
-        CmsUserSettings settings = new CmsUserSettings(context.currentUser());
+        CmsUserSettings settings = new CmsUserSettings(context.getCurrentUser());
         String preferredEditorSetting = settings.getPreferredEditor(resourceType);
         if (preferredEditorSetting == null) {
             // no preferred editor setting found for this resource type, look for mapped resource type preferred editor

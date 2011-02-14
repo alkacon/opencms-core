@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspLoginBean.java,v $
- * Date   : $Date: 2009/06/04 14:29:02 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2011/02/14 11:46:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -124,7 +124,7 @@ public class CmsJspLoginBean extends CmsJspActionElement {
      */
     public CmsUser getUser() {
 
-        return getRequestContext().currentUser();
+        return getRequestContext().getCurrentUser();
     }
 
     /**
@@ -134,7 +134,7 @@ public class CmsJspLoginBean extends CmsJspActionElement {
      */
     public String getUserName() {
 
-        return getRequestContext().currentUser().getName();
+        return getRequestContext().getCurrentUser().getName();
     }
 
     /**
@@ -145,7 +145,7 @@ public class CmsJspLoginBean extends CmsJspActionElement {
      */
     public boolean isLoggedIn() {
 
-        return !getCmsObject().getRequestContext().currentUser().isGuestUser();
+        return !getCmsObject().getRequestContext().getCurrentUser().isGuestUser();
     }
 
     /**
@@ -336,7 +336,7 @@ public class CmsJspLoginBean extends CmsJspActionElement {
         if (LOG.isInfoEnabled()) {
             LOG.info(Messages.get().getBundle().key(
                 Messages.LOG_LOGOUT_SUCCESFUL_3,
-                getRequestContext().currentUser().getName(),
+                getRequestContext().getCurrentUser().getName(),
                 getRequestContext().addSiteRoot(getRequestContext().getUri()),
                 getRequestContext().getRemoteAddress()));
         }

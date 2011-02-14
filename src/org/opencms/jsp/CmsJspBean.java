@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspBean.java,v $
- * Date   : $Date: 2009/06/04 14:29:03 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2011/02/14 11:46:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -297,7 +297,7 @@ public class CmsJspBean {
         if (LOG.isErrorEnabled()) {
             LOG.error(Messages.get().getBundle().key(Messages.LOG_ERR_JSP_BEAN_0), t);
         }
-        if (!(m_isSupressingExceptions || getRequestContext().currentProject().isOnlineProject())) {
+        if (!(m_isSupressingExceptions || getRequestContext().getCurrentProject().isOnlineProject())) {
             if (LOG.isDebugEnabled()) {
                 // no stack trace needed since it was already logged with the "error" log message above  
                 LOG.debug(Messages.get().getBundle().key(

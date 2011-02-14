@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/jobs/CmsPublishScheduledJob.java,v $
- * Date   : $Date: 2009/10/14 11:03:11 $
- * Version: $Revision: 1.2.2.2 $
+ * Date   : $Date: 2011/02/14 11:46:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Mario Jaeger
  * 
- * @version $Revision: 1.2.2.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.5.1
  */
@@ -93,7 +93,7 @@ public class CmsPublishScheduledJob implements I_CmsScheduledJob {
         String finishMessage;
         String linkcheck = (String)parameters.get(PARAM_LINKCHECK);
         String jobName = (String)parameters.get(PARAM_JOBNAME);
-        CmsProject project = cms.getRequestContext().currentProject();
+        CmsProject project = cms.getRequestContext().getCurrentProject();
         CmsLogReport report = new CmsLogReport(cms.getRequestContext().getLocale(), CmsPublishScheduledJob.class);
 
         try {
@@ -114,8 +114,8 @@ public class CmsPublishScheduledJob implements I_CmsScheduledJob {
                 CmsLock lock = cms.getLock(resource);
                 // prove is current lock from current but not in current project
                 if ((lock != null)
-                    && lock.isInProject(cms.getRequestContext().currentProject())
-                    && !lock.isOwnedBy(cms.getRequestContext().currentUser())) {
+                    && lock.isInProject(cms.getRequestContext().getCurrentProject())
+                    && !lock.isOwnedBy(cms.getRequestContext().getCurrentUser())) {
                     // file is locked in current project but not by current user
                     // unlock this file
                     cms.changeLock(resource);

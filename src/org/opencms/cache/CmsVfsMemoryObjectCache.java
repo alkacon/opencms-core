@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/cache/CmsVfsMemoryObjectCache.java,v $
- * Date   : $Date: 2010/10/06 13:27:38 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/02/14 11:46:57 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 6.1.3
  */
@@ -181,7 +181,7 @@ public class CmsVfsMemoryObjectCache extends CmsVfsCache {
     private String getCacheKeyForCurrentProject(CmsObject cms, String rootPath) {
 
         // check the project
-        boolean project = (cms != null) ? cms.getRequestContext().currentProject().isOnlineProject() : false;
+        boolean project = (cms != null) ? cms.getRequestContext().getCurrentProject().isOnlineProject() : false;
         return getCacheKey(rootPath, project);
     }
 

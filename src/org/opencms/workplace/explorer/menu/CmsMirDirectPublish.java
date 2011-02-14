@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/menu/CmsMirDirectPublish.java,v $
- * Date   : $Date: 2009/06/04 14:29:07 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2011/02/14 11:46:54 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner  
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.5.6
  */
@@ -68,8 +68,8 @@ public class CmsMirDirectPublish extends A_CmsMenuItemRule {
         CmsLock lock = resourceUtil[0].getLock();
         if (lock.isNullLock()
             || (lock.isExclusiveOwnedInProjectBy(
-                cms.getRequestContext().currentUser(),
-                cms.getRequestContext().currentProject()))) {
+                cms.getRequestContext().getCurrentUser(),
+                cms.getRequestContext().getCurrentProject()))) {
             // resource is not locked or exclusively locked by current user in current project
 
             try {

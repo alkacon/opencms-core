@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/gwt/CmsGwtServiceContext.java,v $
- * Date   : $Date: 2010/10/20 13:21:10 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/02/14 11:46:55 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import com.google.gwt.user.server.rpc.SerializationPolicyLoader;
  * @author Michael Moossen 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  * 
@@ -230,7 +230,7 @@ public class CmsGwtServiceContext implements I_CmsEventListener {
      */
     private SerializationPolicy getSerializationPolicy(CmsObject cms) {
 
-        boolean online = cms.getRequestContext().currentProject().isOnlineProject();
+        boolean online = cms.getRequestContext().getCurrentProject().isOnlineProject();
         if (online && (m_serPolicyOnline != null)) {
             return m_serPolicyOnline;
         } else if (!online && (m_serPolicyOffline != null)) {

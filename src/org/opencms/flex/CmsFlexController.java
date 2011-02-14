@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexController.java,v $
- * Date   : $Date: 2009/09/14 14:29:46 $
- * Version: $Revision: 1.43.2.1 $
+ * Date   : $Date: 2011/02/14 11:46:56 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.43.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -239,7 +239,7 @@ public class CmsFlexController {
         if (req == null) {
             return false;
         }
-        return getController(req).getCmsObject().getRequestContext().currentProject().isOnlineProject();
+        return getController(req).getCmsObject().getRequestContext().getCurrentProject().isOnlineProject();
     }
 
     /**

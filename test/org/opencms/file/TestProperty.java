@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestProperty.java,v $
- * Date   : $Date: 2009/09/07 12:41:41 $
- * Version: $Revision: 1.28.2.1 $
+ * Date   : $Date: 2011/02/14 11:46:54 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import junit.framework.TestSuite;
  * Unit test for the "writeProperty" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich 
- * @version $Revision: 1.28.2.1 $
+ * @version $Revision: 1.3 $
  */
 public class TestProperty extends OpenCmsTestCase {
 
@@ -283,13 +283,13 @@ public class TestProperty extends OpenCmsTestCase {
         // now evaluate the result
         tc.assertFilter(cms, resource1, OpenCmsTestResourceFilter.FILTER_WRITEPROPERTY);
         // project must be current project
-        tc.assertProject(cms, resource1, cms.getRequestContext().currentProject());
+        tc.assertProject(cms, resource1, cms.getRequestContext().getCurrentProject());
         // state must be "changed"
         tc.assertState(cms, resource1, tc.getPreCalculatedState(resource1));
         // date last modified must be after the test timestamp
         tc.assertDateLastModifiedAfter(cms, resource1, timestamp);
         // the user last modified must be the current user
-        tc.assertUserLastModified(cms, resource1, cms.getRequestContext().currentUser());
+        tc.assertUserLastModified(cms, resource1, cms.getRequestContext().getCurrentUser());
         // the properties must be new
         tc.assertPropertyNew(cms, resource1, propertyList1);
     }
@@ -316,13 +316,13 @@ public class TestProperty extends OpenCmsTestCase {
         // now evaluate the result
         tc.assertFilter(cms, resource1, OpenCmsTestResourceFilter.FILTER_WRITEPROPERTY);
         // project must be current project
-        tc.assertProject(cms, resource1, cms.getRequestContext().currentProject());
+        tc.assertProject(cms, resource1, cms.getRequestContext().getCurrentProject());
         // state must be "changed"
         tc.assertState(cms, resource1, tc.getPreCalculatedState(resource1));
         // date last modified must be after the test timestamp
         tc.assertDateLastModifiedAfter(cms, resource1, timestamp);
         // the user last modified must be the current user
-        tc.assertUserLastModified(cms, resource1, cms.getRequestContext().currentUser());
+        tc.assertUserLastModified(cms, resource1, cms.getRequestContext().getCurrentUser());
         // the property must be new
         tc.assertPropertyNew(cms, resource1, property1);
     }
@@ -349,13 +349,13 @@ public class TestProperty extends OpenCmsTestCase {
         // now evaluate the result
         tc.assertFilter(cms, resource1, OpenCmsTestResourceFilter.FILTER_WRITEPROPERTY);
         // project must be current project
-        tc.assertProject(cms, resource1, cms.getRequestContext().currentProject());
+        tc.assertProject(cms, resource1, cms.getRequestContext().getCurrentProject());
         // state must be "changed"
         tc.assertState(cms, resource1, tc.getPreCalculatedState(resource1));
         // date last modified must be after the test timestamp
         tc.assertDateLastModifiedAfter(cms, resource1, timestamp);
         // the user last modified must be the current user
-        tc.assertUserLastModified(cms, resource1, cms.getRequestContext().currentUser());
+        tc.assertUserLastModified(cms, resource1, cms.getRequestContext().getCurrentUser());
         // the properties must have been removed
         tc.assertPropertyRemoved(cms, resource1, propertyList1);
     }
@@ -382,13 +382,13 @@ public class TestProperty extends OpenCmsTestCase {
         // now evaluate the result
         tc.assertFilter(cms, resource1, OpenCmsTestResourceFilter.FILTER_WRITEPROPERTY);
         // project must be current project
-        tc.assertProject(cms, resource1, cms.getRequestContext().currentProject());
+        tc.assertProject(cms, resource1, cms.getRequestContext().getCurrentProject());
         // state must be "changed"
         tc.assertState(cms, resource1, tc.getPreCalculatedState(resource1));
         // date last modified must be after the test timestamp
         tc.assertDateLastModifiedAfter(cms, resource1, timestamp);
         // the user last modified must be the current user
-        tc.assertUserLastModified(cms, resource1, cms.getRequestContext().currentUser());
+        tc.assertUserLastModified(cms, resource1, cms.getRequestContext().getCurrentUser());
         // the property must be removed
         tc.assertPropertyRemoved(cms, resource1, property1);
     }
@@ -415,13 +415,13 @@ public class TestProperty extends OpenCmsTestCase {
         // now evaluate the result
         tc.assertFilter(cms, resource1, OpenCmsTestResourceFilter.FILTER_WRITEPROPERTY);
         // project must be current project
-        tc.assertProject(cms, resource1, cms.getRequestContext().currentProject());
+        tc.assertProject(cms, resource1, cms.getRequestContext().getCurrentProject());
         // state must be "changed"
         tc.assertState(cms, resource1, CmsResource.STATE_CHANGED);
         // date last modified must be after the test timestamp
         tc.assertDateLastModifiedAfter(cms, resource1, timestamp);
         // the user last modified must be the current user
-        tc.assertUserLastModified(cms, resource1, cms.getRequestContext().currentUser());
+        tc.assertUserLastModified(cms, resource1, cms.getRequestContext().getCurrentUser());
         // the property must have the new value
         tc.assertPropertyChanged(cms, resource1, propertyList1);
     }
@@ -448,13 +448,13 @@ public class TestProperty extends OpenCmsTestCase {
         // now evaluate the result
         tc.assertFilter(cms, resource1, OpenCmsTestResourceFilter.FILTER_WRITEPROPERTY);
         // project must be current project
-        tc.assertProject(cms, resource1, cms.getRequestContext().currentProject());
+        tc.assertProject(cms, resource1, cms.getRequestContext().getCurrentProject());
         // state must be "changed"
         tc.assertState(cms, resource1, tc.getPreCalculatedState(resource1));
         // date last modified must be after the test timestamp
         tc.assertDateLastModifiedAfter(cms, resource1, timestamp);
         // the user last modified must be the current user
-        tc.assertUserLastModified(cms, resource1, cms.getRequestContext().currentUser());
+        tc.assertUserLastModified(cms, resource1, cms.getRequestContext().getCurrentUser());
         // the property must have the new value
         tc.assertPropertyChanged(cms, resource1, property1);
     }
@@ -623,11 +623,11 @@ public class TestProperty extends OpenCmsTestCase {
         // ensure created resource type
         assertResourceType(cms, resourcename, OpenCmsTestCase.ARTICLE_TYPEID);
         // project must be current project
-        assertProject(cms, resourcename, cms.getRequestContext().currentProject());
+        assertProject(cms, resourcename, cms.getRequestContext().getCurrentProject());
         // state must be "new"
         assertState(cms, resourcename, CmsResource.STATE_NEW);
         // the user last modified must be the current user
-        assertUserLastModified(cms, resourcename, cms.getRequestContext().currentUser());
+        assertUserLastModified(cms, resourcename, cms.getRequestContext().getCurrentUser());
 
         CmsProperty property1, property2;
         property1 = new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, "Test title", null);
@@ -649,7 +649,7 @@ public class TestProperty extends OpenCmsTestCase {
         assertTrue(property1.isIdentical(property2));
 
         // publish the project
-        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
+        cms.unlockProject(cms.getRequestContext().getCurrentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 

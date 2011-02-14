@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestMoveRename.java,v $
- * Date   : $Date: 2009/09/07 12:41:43 $
- * Version: $Revision: 1.22.2.1 $
+ * Date   : $Date: 2011/02/14 11:46:54 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import junit.framework.TestSuite;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.22.2.1 $
+ * @version $Revision: 1.3 $
  */
 public class TestMoveRename extends OpenCmsTestCase {
 
@@ -149,7 +149,7 @@ public class TestMoveRename extends OpenCmsTestCase {
         // assert the folder
 
         // project must be current project
-        assertProject(cms, destinationFolder, cms.getRequestContext().currentProject());
+        assertProject(cms, destinationFolder, cms.getRequestContext().getCurrentProject());
         // state must be "changed"
         assertState(cms, destinationFolder, CmsResource.STATE_CHANGED);
         // assert lock state
@@ -163,7 +163,7 @@ public class TestMoveRename extends OpenCmsTestCase {
         // assert the file
 
         // project must be current project
-        assertProject(cms, destinationFolder + file, cms.getRequestContext().currentProject());
+        assertProject(cms, destinationFolder + file, cms.getRequestContext().getCurrentProject());
         // state must still be "deleted"
         assertState(cms, destinationFolder + file, CmsResource.STATE_DELETED);
         // assert lock state
@@ -231,7 +231,7 @@ public class TestMoveRename extends OpenCmsTestCase {
         // destination resource
 
         // project must be current project
-        assertProject(cms, destination, cms.getRequestContext().currentProject());
+        assertProject(cms, destination, cms.getRequestContext().getCurrentProject());
         // state must be "changed"
         assertState(cms, destination, CmsResource.STATE_NEW);
         // assert lock state
@@ -272,7 +272,7 @@ public class TestMoveRename extends OpenCmsTestCase {
         assertFalse(cms.getLockedResources("/folder1", CmsLockFilter.FILTER_ALL).contains(source));
 
         // project must be current project
-        assertProject(cms, destination, cms.getRequestContext().currentProject());
+        assertProject(cms, destination, cms.getRequestContext().getCurrentProject());
         // state must be "changed"
         assertState(cms, destination, CmsResource.STATE_CHANGED);
         // assert lock state
@@ -282,7 +282,7 @@ public class TestMoveRename extends OpenCmsTestCase {
         // now assert the filter for the rest of the attributes        
         assertFilter(cms, destination, OpenCmsTestResourceFilter.FILTER_MOVE_DESTINATION);
 
-        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
+        cms.unlockProject(cms.getRequestContext().getCurrentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
     }
@@ -506,7 +506,7 @@ public class TestMoveRename extends OpenCmsTestCase {
         // destination2 resource
 
         // project must be current project
-        assertProject(cms, destination2, cms.getRequestContext().currentProject());
+        assertProject(cms, destination2, cms.getRequestContext().getCurrentProject());
         // state must be "changed"
         assertState(cms, destination2, CmsResource.STATE_CHANGED);
         // assert lock state

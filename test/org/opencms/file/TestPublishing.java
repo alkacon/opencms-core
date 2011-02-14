@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPublishing.java,v $
- * Date   : $Date: 2009/09/07 12:41:45 $
- * Version: $Revision: 1.31.2.1 $
+ * Date   : $Date: 2011/02/14 11:46:54 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -67,7 +67,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.31.2.1 $
+ * @version $Revision: 1.3 $
  */
 public class TestPublishing extends OpenCmsTestCase {
 
@@ -853,7 +853,7 @@ public class TestPublishing extends OpenCmsTestCase {
         OpenCms.getPublishManager().waitWhileRunning();
 
         CmsProject online = cms.readProject(CmsProject.ONLINE_PROJECT_ID);
-        CmsProject offline = cms.getRequestContext().currentProject();
+        CmsProject offline = cms.getRequestContext().getCurrentProject();
 
         // store the online versions
         cms.getRequestContext().setCurrentProject(online);
@@ -956,7 +956,7 @@ public class TestPublishing extends OpenCmsTestCase {
         OpenCms.getPublishManager().waitWhileRunning();
 
         CmsProject online = cms.readProject(CmsProject.ONLINE_PROJECT_ID);
-        CmsProject offline = cms.getRequestContext().currentProject();
+        CmsProject offline = cms.getRequestContext().getCurrentProject();
 
         // store the online versions
         cms.getRequestContext().setCurrentProject(online);
@@ -1477,7 +1477,7 @@ public class TestPublishing extends OpenCmsTestCase {
         cms.lockResource(res1);
         cms.setDateLastModified(res1, timestamp, false);
 
-        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
+        cms.unlockProject(cms.getRequestContext().getCurrentProject().getUuid());
 
         // create a new project
         CmsProject project = getTestProject(cms);
@@ -1487,7 +1487,7 @@ public class TestPublishing extends OpenCmsTestCase {
         // and change another resource in this project
         cms.lockResource(res2);
         cms.setDateLastModified(res2, timestamp, false);
-        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
+        cms.unlockProject(cms.getRequestContext().getCurrentProject().getUuid());
         storeResources(cms, res2);
 
         // when the project is published, only the second resource will be published
@@ -1561,7 +1561,7 @@ public class TestPublishing extends OpenCmsTestCase {
         cms.lockResource(res1);
         cms.setDateLastModified(res1, System.currentTimeMillis(), false);
 
-        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
+        cms.unlockProject(cms.getRequestContext().getCurrentProject().getUuid());
         storeResources(cms, res1);
 
         // create a new project
@@ -2021,7 +2021,7 @@ public class TestPublishing extends OpenCmsTestCase {
         cms.copyResource(source, sibling, CmsResource.COPY_AS_SIBLING);
 
         // be sure everything is published
-        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
+        cms.unlockProject(cms.getRequestContext().getCurrentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
@@ -2092,7 +2092,7 @@ public class TestPublishing extends OpenCmsTestCase {
             fail("Resource "
                 + source
                 + " not found in project "
-                + cms.getRequestContext().currentProject().toString()
+                + cms.getRequestContext().getCurrentProject().toString()
                 + ":"
                 + e);
         }
@@ -2105,7 +2105,7 @@ public class TestPublishing extends OpenCmsTestCase {
             fail("Resource "
                 + source
                 + " not found in project "
-                + cms.getRequestContext().currentProject().toString()
+                + cms.getRequestContext().getCurrentProject().toString()
                 + ":"
                 + e);
         }

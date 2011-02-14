@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSessionManager.java,v $
- * Date   : $Date: 2009/06/04 14:29:38 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2011/02/14 11:46:54 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  *
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -277,7 +277,7 @@ public class CmsSessionManager {
             return;
         }
         // create the broadcast
-        CmsBroadcast broadcast = new CmsBroadcast(cms.getRequestContext().currentUser(), message);
+        CmsBroadcast broadcast = new CmsBroadcast(cms.getRequestContext().getCurrentUser(), message);
         // send the broadcast to all authenticated sessions
         Iterator i = m_sessionStorageProvider.getAll().iterator();
         while (i.hasNext()) {
@@ -307,7 +307,7 @@ public class CmsSessionManager {
         CmsSessionInfo sessionInfo = m_sessionStorageProvider.get(new CmsUUID(sessionId));
         if (sessionInfo != null) {
             // double check for concurrent modification
-            sessionInfo.getBroadcastQueue().add(new CmsBroadcast(cms.getRequestContext().currentUser(), message));
+            sessionInfo.getBroadcastQueue().add(new CmsBroadcast(cms.getRequestContext().getCurrentUser(), message));
         }
     }
 
@@ -578,7 +578,7 @@ public class CmsSessionManager {
             return;
         }
 
-        if (!cms.getRequestContext().currentUser().isGuestUser()) {
+        if (!cms.getRequestContext().getCurrentUser().isGuestUser()) {
             // Guest user requests don't need to update the OpenCms user session information
 
             // get the session info object for the user

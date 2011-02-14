@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/adeconfig/Attic/A_CmsModuleConfigProvider.java,v $
- * Date   : $Date: 2011/02/02 07:37:52 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/02/14 11:46:55 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -109,7 +109,7 @@ public abstract class A_CmsModuleConfigProvider<Config extends I_CmsMergeable<Co
     public synchronized Config getConfiguration(CmsObject cms) throws CmsException {
 
         CmsObject acms = initCmsObject(cms);
-        boolean online = acms.getRequestContext().currentProject().isOnlineProject();
+        boolean online = acms.getRequestContext().getCurrentProject().isOnlineProject();
         Config result = internalGetConfiguration(online);
         if (result == null) {
             result = readConfiguration(acms);
@@ -222,7 +222,7 @@ public abstract class A_CmsModuleConfigProvider<Config extends I_CmsMergeable<Co
     private CmsObject initCmsObject(CmsObject cms) throws CmsException {
 
         CmsObject result = OpenCms.initCmsObject(m_adminCms);
-        result.getRequestContext().setCurrentProject(cms.getRequestContext().currentProject());
+        result.getRequestContext().setCurrentProject(cms.getRequestContext().getCurrentProject());
         return result;
     }
 

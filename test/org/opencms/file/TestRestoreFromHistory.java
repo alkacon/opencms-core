@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestRestoreFromHistory.java,v $
- * Date   : $Date: 2009/09/07 12:41:44 $
- * Version: $Revision: 1.18.2.1 $
+ * Date   : $Date: 2011/02/14 11:46:54 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import junit.framework.TestSuite;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.18.2.1 $
+ * @version $Revision: 1.3 $
  */
 public class TestRestoreFromHistory extends OpenCmsTestCase {
 
@@ -119,7 +119,7 @@ public class TestRestoreFromHistory extends OpenCmsTestCase {
         this.storeResources(cms, resourcename);
 
         // publish the project
-        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
+        cms.unlockProject(cms.getRequestContext().getCurrentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
@@ -154,7 +154,7 @@ public class TestRestoreFromHistory extends OpenCmsTestCase {
             update.setContents(contentStr.getBytes());
             cms.writeFile(update);
             this.storeResources(cms, resourcename);
-            cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
+            cms.unlockProject(cms.getRequestContext().getCurrentProject().getUuid());
             OpenCms.getPublishManager().publishProject(cms);
             OpenCms.getPublishManager().waitWhileRunning();
         }
@@ -189,7 +189,7 @@ public class TestRestoreFromHistory extends OpenCmsTestCase {
         }
 
         // publish the project
-        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
+        cms.unlockProject(cms.getRequestContext().getCurrentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
@@ -203,7 +203,7 @@ public class TestRestoreFromHistory extends OpenCmsTestCase {
         // now delete and publish the resource
         cms.lockResource(resourcename);
         cms.deleteResource(resourcename, CmsResource.DELETE_PRESERVE_SIBLINGS);
-        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
+        cms.unlockProject(cms.getRequestContext().getCurrentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
@@ -257,7 +257,7 @@ public class TestRestoreFromHistory extends OpenCmsTestCase {
         }
 
         // publish the project
-        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
+        cms.unlockProject(cms.getRequestContext().getCurrentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
@@ -270,7 +270,7 @@ public class TestRestoreFromHistory extends OpenCmsTestCase {
         // now move and publish the resource
         cms.lockResource(resourcename);
         cms.moveResource(resourcename, newresname);
-        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
+        cms.unlockProject(cms.getRequestContext().getCurrentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
@@ -337,7 +337,7 @@ public class TestRestoreFromHistory extends OpenCmsTestCase {
         }
 
         // publish the project
-        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
+        cms.unlockProject(cms.getRequestContext().getCurrentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
@@ -367,7 +367,7 @@ public class TestRestoreFromHistory extends OpenCmsTestCase {
         assertPropertyChanged(cms, resourcename, props2);
 
         // publish the project
-        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
+        cms.unlockProject(cms.getRequestContext().getCurrentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 

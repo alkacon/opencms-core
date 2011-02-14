@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestReplace.java,v $
- * Date   : $Date: 2010/01/20 09:16:55 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/02/14 11:46:54 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import junit.framework.TestSuite;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class TestReplace extends OpenCmsTestCase {
 
@@ -115,13 +115,13 @@ public class TestReplace extends OpenCmsTestCase {
         cms.replaceResource(path, CmsResourceTypePlain.getStaticTypeId(), contentStr.getBytes(), null);
 
         // project must be current project
-        assertProject(cms, path, cms.getRequestContext().currentProject());
+        assertProject(cms, path, cms.getRequestContext().getCurrentProject());
         // state must be "new"
         assertState(cms, path, CmsResource.STATE_CHANGED);
         // date lastmodified must be new
         assertDateLastModifiedAfter(cms, path, timestamp);
         // user lastmodified must be current user
-        assertUserLastModified(cms, path, cms.getRequestContext().currentUser());
+        assertUserLastModified(cms, path, cms.getRequestContext().getCurrentUser());
         // assert lock state
         assertLock(cms, path, CmsLockType.EXCLUSIVE);
         // assert new content
@@ -139,7 +139,7 @@ public class TestReplace extends OpenCmsTestCase {
 
         CmsObject cms = getCmsObject();
         echo("Testing replacement of file for jsp without permissions");
-        CmsProject offlineProject = cms.getRequestContext().currentProject();
+        CmsProject offlineProject = cms.getRequestContext().getCurrentProject();
 
         String path = "/types/text.txt";
         String contentStr = "Hello this is the new content";

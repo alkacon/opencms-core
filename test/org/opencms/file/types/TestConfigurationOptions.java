@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/types/TestConfigurationOptions.java,v $
- * Date   : $Date: 2009/09/07 12:41:37 $
- * Version: $Revision: 1.10.2.1 $
+ * Date   : $Date: 2011/02/14 11:46:56 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import junit.framework.TestSuite;
  * Unit tests for the resource type configuration options.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.10.2.1 $
+ * @version $Revision: 1.3 $
  */
 public class TestConfigurationOptions extends OpenCmsTestCase {
 
@@ -150,11 +150,11 @@ public class TestConfigurationOptions extends OpenCmsTestCase {
         // ensure created resource type
         assertResourceType(cms, resourcename, OpenCmsTestCase.ARTICLE_TYPEID);
         // project must be current project
-        assertProject(cms, resourcename, cms.getRequestContext().currentProject());
+        assertProject(cms, resourcename, cms.getRequestContext().getCurrentProject());
         // state must be "new"
         assertState(cms, resourcename, CmsResource.STATE_NEW);
         // the user last modified must be the current user
-        assertUserLastModified(cms, resourcename, cms.getRequestContext().currentUser());
+        assertUserLastModified(cms, resourcename, cms.getRequestContext().getCurrentUser());
 
         CmsProperty property1, property2;
         property1 = new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, "Test title", null);
@@ -176,7 +176,7 @@ public class TestConfigurationOptions extends OpenCmsTestCase {
         assertTrue(property1.isIdentical(property2));
 
         // publish the project
-        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
+        cms.unlockProject(cms.getRequestContext().getCurrentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 

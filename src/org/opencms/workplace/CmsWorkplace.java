@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2009/11/12 12:47:21 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/02/14 11:46:55 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -372,7 +372,7 @@ public abstract class CmsWorkplace {
 
         if (m_styleUri == null) {
 
-            CmsProject project = jsp.getCmsObject().getRequestContext().currentProject();
+            CmsProject project = jsp.getCmsObject().getRequestContext().getCurrentProject();
             try {
                 jsp.getCmsObject().getRequestContext().setCurrentProject(
                     jsp.getCmsObject().readProject(CmsProject.ONLINE_PROJECT_ID));
@@ -396,7 +396,7 @@ public abstract class CmsWorkplace {
     public static String getStyleUri(CmsJspActionElement jsp, String filename) {
 
         if (m_styleUri == null) {
-            CmsProject project = jsp.getCmsObject().getRequestContext().currentProject();
+            CmsProject project = jsp.getCmsObject().getRequestContext().getCurrentProject();
             try {
                 jsp.getCmsObject().getRequestContext().setCurrentProject(
                     jsp.getCmsObject().readProject(CmsProject.ONLINE_PROJECT_ID));
@@ -460,16 +460,16 @@ public abstract class CmsWorkplace {
         if (update) {
             try {
                 // read the user from db to get the latest user information if required
-                user = cms.readUser(cms.getRequestContext().currentUser().getId());
+                user = cms.readUser(cms.getRequestContext().getCurrentUser().getId());
             } catch (CmsException e) {
                 // can usually be ignored
                 if (LOG.isInfoEnabled()) {
                     LOG.info(e.getLocalizedMessage());
                 }
-                user = cms.getRequestContext().currentUser();
+                user = cms.getRequestContext().getCurrentUser();
             }
         } else {
-            user = cms.getRequestContext().currentUser();
+            user = cms.getRequestContext().getCurrentUser();
         }
         // store the user and it's settings in the Workplace settings
         settings.setUser(user);
@@ -503,7 +503,7 @@ public abstract class CmsWorkplace {
         settings = initUserSettings(cms, settings, update);
 
         // save current project
-        settings.setProject(cms.getRequestContext().currentProject().getUuid());
+        settings.setProject(cms.getRequestContext().getCurrentProject().getUuid());
 
         // switch to users preferred site      
         String siteRoot = settings.getUserSettings().getStartSite();
@@ -1021,7 +1021,7 @@ public abstract class CmsWorkplace {
 
         CmsResource res = getCms().readResource(resource, CmsResourceFilter.ALL);
         CmsLock lock = getCms().getLock(res);
-        boolean lockable = lock.isLockableBy(getCms().getRequestContext().currentUser());
+        boolean lockable = lock.isLockableBy(getCms().getRequestContext().getCurrentUser());
 
         if (OpenCms.getWorkplaceManager().autoLockResources()) {
             // autolock is enabled, check the lock state of the resource
@@ -2021,7 +2021,7 @@ public abstract class CmsWorkplace {
         CmsRequestContext reqCont = cms.getRequestContext();
 
         // check project setting        
-        if (!settings.getProject().equals(reqCont.currentProject().getUuid())) {
+        if (!settings.getProject().equals(reqCont.getCurrentProject().getUuid())) {
             try {
                 reqCont.setCurrentProject(cms.readProject(settings.getProject()));
             } catch (CmsDbEntryNotFoundException e) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2011/01/13 08:56:53 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2011/02/14 11:46:56 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -450,7 +450,7 @@ public final class CmsSecurityManager {
         // check if this is a "direct publish" attempt        
         if (!publishList.isDirectPublish()) {
             // check if the user is a manager of the current project, in this case he has publish permissions
-            checkManagerOfProjectRole(dbc, dbc.getRequestContext().currentProject());
+            checkManagerOfProjectRole(dbc, dbc.getRequestContext().getCurrentProject());
         } else {
             // direct publish, create exception containers
             CmsMultiException resourceIssues = new CmsMultiException();
@@ -786,7 +786,7 @@ public final class CmsSecurityManager {
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
             checkOfflineProject(dbc);
-            checkManagerOfProjectRole(dbc, context.currentProject());
+            checkManagerOfProjectRole(dbc, context.getCurrentProject());
 
             m_driverManager.copyResourceToProject(dbc, resource);
         } catch (Exception e) {
@@ -795,7 +795,7 @@ public final class CmsSecurityManager {
                 Messages.get().container(
                     Messages.ERR_COPY_RESOURCE_TO_PROJECT_2,
                     context.getSitePath(resource),
-                    context.currentProject().getName()),
+                    context.getCurrentProject().getName()),
                 e);
         } finally {
             dbc.clear();
@@ -1698,7 +1698,7 @@ public final class CmsSecurityManager {
                     null,
                     Messages.get().container(
                         Messages.ERR_GET_PUBLISH_LIST_PROJECT_1,
-                        context.currentProject().getName()),
+                        context.getCurrentProject().getName()),
                     e);
             }
         } finally {
@@ -2564,11 +2564,11 @@ public final class CmsSecurityManager {
         List<CmsResource> result = null;
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
-            result = m_driverManager.getUsersPubList(dbc, context.currentUser().getId());
+            result = m_driverManager.getUsersPubList(dbc, context.getCurrentUser().getId());
         } catch (Exception e) {
             dbc.report(
                 null,
-                Messages.get().container(Messages.ERR_READ_USER_PUBLIST_1, context.currentUser().getName()),
+                Messages.get().container(Messages.ERR_READ_USER_PUBLIST_1, context.getCurrentUser().getName()),
                 e);
 
         } finally {
@@ -3125,8 +3125,8 @@ public final class CmsSecurityManager {
         try {
             return getAllManageableProjects(
                 context,
-                readOrganizationalUnit(context, context.currentProject().getOuFqn()),
-                false).contains(context.currentProject());
+                readOrganizationalUnit(context, context.getCurrentProject().getOuFqn()),
+                false).contains(context.getCurrentProject());
         } catch (CmsException e) {
             // should never happen
             if (LOG.isErrorEnabled()) {
@@ -5008,7 +5008,7 @@ public final class CmsSecurityManager {
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
             checkOfflineProject(dbc);
-            checkManagerOfProjectRole(dbc, context.currentProject());
+            checkManagerOfProjectRole(dbc, context.getCurrentProject());
 
             m_driverManager.removeResourceFromProject(dbc, resource);
         } catch (Exception e) {
@@ -5017,7 +5017,7 @@ public final class CmsSecurityManager {
                 Messages.get().container(
                     Messages.ERR_COPY_RESOURCE_TO_PROJECT_2,
                     context.getSitePath(resource),
-                    context.currentProject().getName()),
+                    context.getCurrentProject().getName()),
                 e);
         } finally {
             dbc.clear();
@@ -5037,13 +5037,13 @@ public final class CmsSecurityManager {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
-            m_driverManager.removeResourceFromUsersPubList(dbc, context.currentUser().getId(), structureIds);
+            m_driverManager.removeResourceFromUsersPubList(dbc, context.getCurrentUser().getId(), structureIds);
         } catch (Exception e) {
             dbc.report(
                 null,
                 Messages.get().container(
                     Messages.ERR_REMOVE_RESOURCE_FROM_PUBLIST_2,
-                    context.currentUser().getName(),
+                    context.getCurrentUser().getName(),
                     structureIds),
                 e);
 
@@ -6320,7 +6320,7 @@ public final class CmsSecurityManager {
             throw new CmsLockException(Messages.get().container(
                 Messages.ERR_PERM_NOTLOCKED_2,
                 context.getSitePath(resource),
-                context.currentUser().getName()));
+                context.getCurrentUser().getName()));
         }
     }
 
@@ -6439,7 +6439,7 @@ public final class CmsSecurityManager {
                 org.opencms.security.Messages.ERR_CANT_DELETE_DEFAULT_USER_1,
                 user.getName()));
         }
-        if (context.currentUser().equals(user)) {
+        if (context.getCurrentUser().equals(user)) {
             throw new CmsSecurityException(Messages.get().container(Messages.ERR_USER_CANT_DELETE_ITSELF_USER_0));
         }
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
@@ -6451,9 +6451,9 @@ public final class CmsSecurityManager {
             // expects an offline project, if not data will become inconsistent
             checkOfflineProject(dbc);
             if (replacement == null) {
-                m_driverManager.deleteUser(dbc, context.currentProject(), user.getName(), null);
+                m_driverManager.deleteUser(dbc, context.getCurrentProject(), user.getName(), null);
             } else {
-                m_driverManager.deleteUser(dbc, context.currentProject(), user.getName(), replacement.getName());
+                m_driverManager.deleteUser(dbc, context.getCurrentProject(), user.getName(), replacement.getName());
             }
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_DELETE_USER_1, user.getName()), e);

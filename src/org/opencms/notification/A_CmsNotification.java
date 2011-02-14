@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/notification/A_CmsNotification.java,v $
- * Date   : $Date: 2009/06/04 14:29:52 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/02/14 11:46:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import org.apache.commons.mail.EmailException;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.5.3
  */
@@ -174,7 +174,7 @@ public abstract class A_CmsNotification extends CmsHtmlMail {
             // define macro resolver
             m_macroResolver.addMacro("firstname", m_receiver.getFirstname());
             m_macroResolver.addMacro("lastname", m_receiver.getLastname());
-            m_macroResolver.addMacro("project", m_cms.getRequestContext().currentProject().getName());
+            m_macroResolver.addMacro("project", m_cms.getRequestContext().getCurrentProject().getName());
 
             StringBuffer msg = new StringBuffer();
 

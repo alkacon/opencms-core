@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListEditResourceAction.java,v $
- * Date   : $Date: 2009/06/04 14:29:27 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/02/14 11:46:56 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import org.opencms.workplace.explorer.CmsResourceUtil;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -126,7 +126,7 @@ public class CmsListEditResourceAction extends CmsListDirectAction {
                 if (OpenCms.getWorkplaceManager().getEditorHandler().getEditorUri(getResourceName(), getWp().getJsp()) != null) {
                     // check lock state
                     CmsLock lock = getResourceUtil().getLock();
-                    if (lock.isNullLock() || lock.isOwnedBy((getWp().getCms().getRequestContext().currentUser()))) {
+                    if (lock.isNullLock() || lock.isOwnedBy((getWp().getCms().getRequestContext().getCurrentUser()))) {
                         return isEnabled();
                     }
                 }

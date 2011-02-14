@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleManager.java,v $
- * Date   : $Date: 2010/02/24 07:18:37 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/02/14 11:46:56 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -76,7 +76,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -539,7 +539,7 @@ public class CmsModuleManager {
             OpenCms.getWorkplaceManager().removeExplorerTypeSettings(module);
         }
 
-        CmsProject previousProject = cms.getRequestContext().currentProject();
+        CmsProject previousProject = cms.getRequestContext().getCurrentProject();
         // try to create a new offline project for deletion 
         CmsProject deleteProject = null;
         try {
@@ -570,7 +570,7 @@ public class CmsModuleManager {
 
             // check locks
             List<String> lockedResources = new ArrayList<String>();
-            CmsLockFilter filter1 = CmsLockFilter.FILTER_ALL.filterNotLockableByUser(cms.getRequestContext().currentUser());
+            CmsLockFilter filter1 = CmsLockFilter.FILTER_ALL.filterNotLockableByUser(cms.getRequestContext().getCurrentUser());
             CmsLockFilter filter2 = CmsLockFilter.FILTER_INHERITED;
             List<String> moduleResources = module.getResources();
             for (int iLock = 0; iLock < moduleResources.size(); iLock++) {
@@ -652,7 +652,7 @@ public class CmsModuleManager {
                         if (lock.isUnlocked()) {
                             // lock the resource
                             cms.lockResource(currentResource);
-                        } else if (lock.isLockableBy(cms.getRequestContext().currentUser())) {
+                        } else if (lock.isLockableBy(cms.getRequestContext().getCurrentUser())) {
                             // steal the resource
                             cms.changeLock(currentResource);
                         }

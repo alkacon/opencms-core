@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateParts.java,v $
- * Date   : $Date: 2009/10/14 14:38:05 $
- * Version: $Revision: 1.24.2.2 $
+ * Date   : $Date: 2011/02/14 11:46:56 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.24.2.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -171,7 +171,7 @@ public final class CmsTemplateParts implements I_CmsEventListener {
                 element,
                 layout,
                 jsp.getRequestContext().getLocale(),
-                jsp.getRequestContext().currentProject().getUuid());
+                jsp.getRequestContext().getCurrentProject().getUuid());
             // try to get the part
             part = (String)m_parts.get(partKey);
             if (part == null) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/publish/Attic/CmsPublish.java,v $
- * Date   : $Date: 2010/10/22 11:41:28 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/02/14 11:46:56 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -77,7 +77,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 8.0.0
  */
@@ -480,7 +480,7 @@ public class CmsPublish {
      */
     protected ResourcesAndRelated getBlockingLockedResources(Set<CmsResource> exclude) {
 
-        CmsUser user = m_cms.getRequestContext().currentUser();
+        CmsUser user = m_cms.getRequestContext().getCurrentUser();
         CmsLockFilter blockingFilter = CmsLockFilter.FILTER_ALL;
         blockingFilter = blockingFilter.filterNotLockableByUser(user);
 
@@ -526,7 +526,7 @@ public class CmsPublish {
     protected String getOuAwareName(String name) {
 
         String ou = CmsOrganizationalUnit.getParentFqn(name);
-        if (ou.equals(m_cms.getRequestContext().currentUser().getOuFqn())) {
+        if (ou.equals(m_cms.getRequestContext().getCurrentUser().getOuFqn())) {
             return CmsOrganizationalUnit.getSimpleName(name);
         }
         return CmsOrganizationalUnit.SEPARATOR + name;
@@ -548,7 +548,7 @@ public class CmsPublish {
                 // get the users publish list
                 m_resourceList.getResources().addAll(OpenCms.getPublishManager().getUsersPubList(m_cms));
             } else {
-                CmsProject project = m_cms.getRequestContext().currentProject();
+                CmsProject project = m_cms.getRequestContext().getCurrentProject();
                 try {
                     project = m_cms.readProject(m_options.getProjectId());
                 } catch (Exception e) {
@@ -556,7 +556,7 @@ public class CmsPublish {
                     // so ignore and use current project
                 }
                 // get the project publish list
-                CmsProject originalProject = m_cms.getRequestContext().currentProject();
+                CmsProject originalProject = m_cms.getRequestContext().getCurrentProject();
                 try {
                     m_cms.getRequestContext().setCurrentProject(project);
                     m_resourceList.getResources().addAll(

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/security/TestOrganizationalUnits.java,v $
- * Date   : $Date: 2009/11/19 07:58:11 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/02/14 11:46:55 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,7 +68,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class TestOrganizationalUnits extends OpenCmsTestCase {
 
@@ -379,7 +379,7 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
                 org.opencms.db.Messages.ERR_ORGUNIT_DELETE_IN_CONTEXT_1);
         }
         try {
-            OpenCms.getOrgUnitManager().deleteOrganizationalUnit(cms, cms.getRequestContext().currentUser().getOuFqn());
+            OpenCms.getOrgUnitManager().deleteOrganizationalUnit(cms, cms.getRequestContext().getCurrentUser().getOuFqn());
             fail("it should not be possible to delete an organizational unit that is used by the current user");
         } catch (CmsDbConsistencyException e) {
             // ok, now check the error message
@@ -1249,7 +1249,7 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
         // ensure the roles are cached
         List roles = OpenCms.getRoleManager().getRolesOfUser(
             cms,
-            cms.getRequestContext().currentUser().getName(),
+            cms.getRequestContext().getCurrentUser().getName(),
             "",
             true,
             false,
@@ -1260,7 +1260,7 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
 
         List newRoles = OpenCms.getRoleManager().getRolesOfUser(
             cms,
-            cms.getRequestContext().currentUser().getName(),
+            cms.getRequestContext().getCurrentUser().getName(),
             "",
             true,
             false,
@@ -1535,15 +1535,15 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
         // login users in respective ous
         cms.loginUser("test/test1", "test1");
         assertEquals("test/", cms.getRequestContext().getOuFqn());
-        assertEquals("test/test1", cms.getRequestContext().currentUser().getName());
+        assertEquals("test/test1", cms.getRequestContext().getCurrentUser().getName());
         cms.loginUser("test/test2/test2", "test2");
         assertEquals("test/test2/", cms.getRequestContext().getOuFqn());
-        assertEquals("test/test2/test2", cms.getRequestContext().currentUser().getName());
+        assertEquals("test/test2/test2", cms.getRequestContext().getCurrentUser().getName());
 
         // login user in deeper ou
         cms.loginUser("test/test2/test1", "test1");
         assertEquals("test/", cms.getRequestContext().getOuFqn());
-        assertEquals("test/test1", cms.getRequestContext().currentUser().getName());
+        assertEquals("test/test1", cms.getRequestContext().getCurrentUser().getName());
 
         try {
             // try login user in higher ou

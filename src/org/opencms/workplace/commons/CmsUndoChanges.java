@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsUndoChanges.java,v $
- * Date   : $Date: 2009/06/04 14:29:15 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2011/02/14 11:46:54 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -66,7 +66,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -135,7 +135,7 @@ public class CmsUndoChanges extends CmsMultiDialog {
      */
     public static String resourceOriginalPath(CmsObject cms, String resourceName) {
 
-        CmsProject proj = cms.getRequestContext().currentProject();
+        CmsProject proj = cms.getRequestContext().getCurrentProject();
         try {
             CmsResource resource = cms.readResource(resourceName, CmsResourceFilter.ALL);
             String result = cms.getSitePath(resource);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsListResourceLinkRelationCollector.java,v $
- * Date   : $Date: 2009/06/04 14:29:14 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/02/14 11:46:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Raphael Schnuck
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.9.1 
  */
@@ -181,12 +181,12 @@ public class CmsListResourceLinkRelationCollector extends A_CmsListResourceColle
                     CmsResourceTypePlain.getStaticTypeId(),
                     false,
                     0,
-                    getWp().getJsp().getRequestContext().currentProject().getUuid(),
+                    getWp().getJsp().getRequestContext().getCurrentProject().getUuid(),
                     CmsResourceState.STATE_DELETED,
                     0,
-                    getWp().getJsp().getRequestContext().currentUser().getId(),
+                    getWp().getJsp().getRequestContext().getCurrentUser().getId(),
                     0,
-                    getWp().getJsp().getRequestContext().currentUser().getId(),
+                    getWp().getJsp().getRequestContext().getCurrentUser().getId(),
                     0,
                     0,
                     0,

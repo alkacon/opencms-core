@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/broadcast/CmsSendPopupGroupsDialog.java,v $
- * Date   : $Date: 2009/06/04 14:33:38 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/02/14 11:46:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.5.6 
  */
@@ -128,7 +128,7 @@ public class CmsSendPopupGroupsDialog extends CmsWidgetDialog {
             while (itUsers.hasNext()) {
                 CmsUser user = (CmsUser)itUsers.next();
                 OpenCms.getSessionManager().sendBroadcast(
-                    getCms().getRequestContext().currentUser(),
+                    getCms().getRequestContext().getCurrentUser(),
                     m_msgInfo.getMsg(),
                     user);
             }
@@ -257,7 +257,7 @@ public class CmsSendPopupGroupsDialog extends CmsWidgetDialog {
             // create a new message info object
             m_msgInfo = new CmsMessageInfo();
         }
-        m_msgInfo.setFrom(getCms().getRequestContext().currentUser().getFullName());
+        m_msgInfo.setFrom(getCms().getRequestContext().getCurrentUser().getFullName());
         m_msgInfo.setTo(getToNames());
     }
 

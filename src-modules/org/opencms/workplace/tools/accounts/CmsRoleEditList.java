@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsRoleEditList.java,v $
- * Date   : $Date: 2009/06/04 14:33:41 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/02/14 11:46:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.5.6 
  */
@@ -284,7 +284,7 @@ public class CmsRoleEditList extends A_CmsRolesList {
 
         return OpenCms.getRoleManager().getRolesOfUser(
             getCms(),
-            getCms().getRequestContext().currentUser().getName(),
+            getCms().getRequestContext().getCurrentUser().getName(),
             getParamOufqn(),
             false,
             false,

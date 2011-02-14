@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestAvailability.java,v $
- * Date   : $Date: 2009/09/07 12:41:44 $
- * Version: $Revision: 1.2.2.1 $
+ * Date   : $Date: 2011/02/14 11:46:54 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import junit.framework.TestSuite;
  * 
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.2.2.1 $
+ * @version $Revision: 1.3 $
  */
 public class TestAvailability extends OpenCmsTestCase {
 
@@ -272,6 +272,6 @@ public class TestAvailability extends OpenCmsTestCase {
         }
         assertEquals(released, resource.getDateReleased());
         assertEquals(expired, resource.getDateExpired());
-        assertEquals(cms.getRequestContext().currentProject().getUuid(), resource.getProjectLastModified());
+        assertEquals(cms.getRequestContext().getCurrentProject().getUuid(), resource.getProjectLastModified());
     }
 }

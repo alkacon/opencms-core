@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/CmsSubscriptionCollector.java,v $
- * Date   : $Date: 2010/08/11 06:47:55 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/02/14 11:46:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -80,7 +80,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0
  */
@@ -289,7 +289,7 @@ public class CmsSubscriptionCollector extends A_CmsResourceCollector {
             if (filter.getUser() != null) {
                 userName = filter.getUser().getName();
             } else {
-                userName = cms.getRequestContext().currentUser().getName();
+                userName = cms.getRequestContext().getCurrentUser().getName();
             }
             filter.setGroups(cms.getGroupsOfUser(userName, false));
         }
@@ -425,7 +425,7 @@ public class CmsSubscriptionCollector extends A_CmsResourceCollector {
         boolean setCurrentUser = Boolean.valueOf(params.get(PARAM_KEY_CURRENTUSER)).booleanValue();
         if ((filter.getUser() == null) && (forceSetUser || setCurrentUser)) {
             // set current user
-            filter.setUser(cms.getRequestContext().currentUser());
+            filter.setUser(cms.getRequestContext().getCurrentUser());
         }
 
         // determine the time stamps to set in the filter

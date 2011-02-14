@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsRole.java,v $
- * Date   : $Date: 2009/09/09 14:26:37 $
- * Version: $Revision: 1.21.2.2 $
+ * Date   : $Date: 2011/02/14 11:46:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import java.util.Set;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.21.2.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -358,7 +358,7 @@ public final class CmsRole {
 
         return new CmsRoleViolationException(Messages.get().container(
             Messages.ERR_USER_NOT_IN_ROLE_2,
-            requestContext.currentUser().getName(),
+            requestContext.getCurrentUser().getName(),
             getName(requestContext.getLocale())));
     }
 
@@ -378,7 +378,7 @@ public final class CmsRole {
 
         return new CmsRoleViolationException(Messages.get().container(
             Messages.ERR_USER_NOT_IN_ROLE_FOR_ORGUNIT_3,
-            requestContext.currentUser().getName(),
+            requestContext.getCurrentUser().getName(),
             getName(requestContext.getLocale()),
             orgUnitFqn));
     }
@@ -399,7 +399,7 @@ public final class CmsRole {
 
         return new CmsRoleViolationException(Messages.get().container(
             Messages.ERR_USER_NOT_IN_ROLE_FOR_RESOURCE_3,
-            requestContext.currentUser().getName(),
+            requestContext.getCurrentUser().getName(),
             getName(requestContext.getLocale()),
             requestContext.removeSiteRoot(resource.getRootPath())));
     }

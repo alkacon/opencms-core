@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/broadcast/A_CmsMessageDialog.java,v $
- * Date   : $Date: 2009/06/04 14:33:38 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2011/02/14 11:46:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -204,7 +204,7 @@ public abstract class A_CmsMessageDialog extends CmsWidgetDialog {
             // create a new message info object
             m_msgInfo = new CmsMessageInfo();
         }
-        m_msgInfo.setFrom(getCms().getRequestContext().currentUser().getFullName());
+        m_msgInfo.setFrom(getCms().getRequestContext().getCurrentUser().getFullName());
         m_msgInfo.setTo(getToNames());
     }
 

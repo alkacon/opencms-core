@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditorDisplayOptions.java,v $
- * Date   : $Date: 2009/11/26 11:36:19 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/02/14 11:46:56 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -76,7 +76,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -154,7 +154,7 @@ public class CmsEditorDisplayOptions {
     public Properties getDisplayOptions(CmsObject cms) {
 
         // get the configuration file name for the current user
-        String mappedConfigFile = (String)m_userMappings.get(cms.getRequestContext().currentUser().getName());
+        String mappedConfigFile = (String)m_userMappings.get(cms.getRequestContext().getCurrentUser().getName());
         Properties displayOptions;
         if (mappedConfigFile == null) {
             // no configuration file name stored for user, get the navigation items of the configuration folder
@@ -204,10 +204,10 @@ public class CmsEditorDisplayOptions {
                 LOG.debug(Messages.get().getBundle().key(
                     Messages.LOG_MAP_CONFIG_FILE_TO_USER_2,
                     mappedConfigFile,
-                    cms.getRequestContext().currentUser().getName()));
+                    cms.getRequestContext().getCurrentUser().getName()));
             }
             // store the file name of the configuration file for the current user
-            m_userMappings.put(cms.getRequestContext().currentUser().getName(), mappedConfigFile);
+            m_userMappings.put(cms.getRequestContext().getCurrentUser().getName(), mappedConfigFile);
         } else {
             // configuration file for current user is known, get options from loaded configurations
             displayOptions = (Properties)m_loadedConfigurations.get(mappedConfigFile);

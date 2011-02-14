@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/Attic/CmsXmlSubContainerFactory.java,v $
- * Date   : $Date: 2010/01/18 14:14:32 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/02/14 11:46:56 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 7.9.1
  */
@@ -403,7 +403,7 @@ public final class CmsXmlSubContainerFactory {
         }
         return m_cache.getCacheSubContainer(
             m_cache.getCacheKey(resource.getStructureId(), keepEncoding),
-            cms.getRequestContext().currentProject().isOnlineProject());
+            cms.getRequestContext().getCurrentProject().isOnlineProject());
     }
 
     /**
@@ -418,7 +418,7 @@ public final class CmsXmlSubContainerFactory {
         if (xmlSubContainer.getFile() instanceof I_CmsHistoryResource) {
             return;
         }
-        boolean online = cms.getRequestContext().currentProject().isOnlineProject();
+        boolean online = cms.getRequestContext().getCurrentProject().isOnlineProject();
         m_cache.setCacheSubContainer(
             m_cache.getCacheKey(xmlSubContainer.getFile().getStructureId(), keepEncoding),
             xmlSubContainer,

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsLogin.java,v $
- * Date   : $Date: 2010/11/19 10:51:08 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/02/14 11:46:55 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -243,7 +243,7 @@ public class CmsLogin extends CmsJspLoginBean {
         CmsObject cms = getCmsObject();
 
         m_message = null;
-        if (cms.getRequestContext().currentUser().isGuestUser()) {
+        if (cms.getRequestContext().getCurrentUser().isGuestUser()) {
             // user is not currently logged in
             m_action = ACTION_DISPLAY;
             m_username = CmsRequestUtil.getNotEmptyParameter(getRequest(), PARAM_USERNAME);
@@ -1032,7 +1032,7 @@ public class CmsLogin extends CmsJspLoginBean {
             html.append("\">");
         } else if (m_action == ACTION_LOGIN) {
             // append name of user that has been logged in
-            html.append(getRequestContext().currentUser().getFullName());
+            html.append(getRequestContext().getCurrentUser().getFullName());
         }
 
         html.append("</td>\n");

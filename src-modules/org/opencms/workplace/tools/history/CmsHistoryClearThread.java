@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/history/CmsHistoryClearThread.java,v $
- * Date   : $Date: 2009/06/04 14:33:44 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/02/14 11:46:56 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import org.opencms.report.I_CmsReport;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -59,7 +59,7 @@ public class CmsHistoryClearThread extends A_CmsReportThread {
 
         super(cms, Messages.get().getBundle().key(
             Messages.GUI_HISTORY_CLEAR_THREAD_NAME_1,
-            cms.getRequestContext().currentProject().getName()));
+            cms.getRequestContext().getCurrentProject().getName()));
         m_historyClear = historyClear;
         initHtmlReport(cms.getRequestContext().getLocale());
     }

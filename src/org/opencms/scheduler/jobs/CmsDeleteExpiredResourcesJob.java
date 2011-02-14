@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/jobs/CmsDeleteExpiredResourcesJob.java,v $
- * Date   : $Date: 2009/09/08 12:52:22 $
- * Version: $Revision: 1.2.2.1 $
+ * Date   : $Date: 2011/02/14 11:46:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import java.util.Map;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.2.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.5.0
  */
@@ -261,7 +261,7 @@ public class CmsDeleteExpiredResourcesJob implements I_CmsScheduledJob {
                         if (lock.isNullLock()) {
                             cms.lockResource(resourcePath);
                         } else {
-                            if (!lock.getUserId().equals(cms.getRequestContext().currentUser().getId())) {
+                            if (!lock.getUserId().equals(cms.getRequestContext().getCurrentUser().getId())) {
                                 report.println(
                                     Messages.get().container(Messages.RPT_DELETE_EXPIRED_LOCKED_0),
                                     I_CmsReport.FORMAT_WARNING);

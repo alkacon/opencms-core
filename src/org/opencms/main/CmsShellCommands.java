@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2010/03/12 09:36:55 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/02/14 11:46:54 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -80,7 +80,7 @@ import java.util.StringTokenizer;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -1110,7 +1110,7 @@ class CmsShellCommands implements I_CmsShellCommands {
         System.out.println(getMessages().key(
             Messages.GUI_SHELL_SETLOCALE_2,
             locale,
-            m_cms.getRequestContext().currentUser().getName()));
+            m_cms.getRequestContext().getCurrentUser().getName()));
 
         m_shell.setLocale(locale);
         System.out.println(getMessages().key(Messages.GUI_SHELL_SETLOCALE_POST_1, locale));
@@ -1148,7 +1148,7 @@ class CmsShellCommands implements I_CmsShellCommands {
      */
     public void unlockCurrentProject() throws Exception {
 
-        m_cms.unlockProject(m_cms.getRequestContext().currentProject().getUuid());
+        m_cms.unlockProject(m_cms.getRequestContext().getCurrentProject().getUuid());
     }
 
     /**
@@ -1187,7 +1187,7 @@ class CmsShellCommands implements I_CmsShellCommands {
      */
     public CmsUser whoami() {
 
-        return m_cms.getRequestContext().currentUser();
+        return m_cms.getRequestContext().getCurrentUser();
     }
 
     /**

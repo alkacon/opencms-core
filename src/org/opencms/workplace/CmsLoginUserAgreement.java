@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsLoginUserAgreement.java,v $
- * Date   : $Date: 2010/11/19 10:51:08 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/02/14 11:46:55 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0
  */
@@ -164,7 +164,7 @@ public class CmsLoginUserAgreement extends CmsDialog {
             jsonData.put(KEY_ACCEPTED_VERSION, getRequiredVersion());
             jsonData.put(KEY_ACCEPTED_COUNT, m_acceptedCount);
             // store accepted data in users additional information
-            CmsUser user = getCms().getRequestContext().currentUser();
+            CmsUser user = getCms().getRequestContext().getCurrentUser();
             user.setAdditionalInfo(CmsUserSettings.LOGIN_USERAGREEMENT_ACCEPTED, jsonData.toString());
             // write the changed user
             getCms().writeUser(user);
@@ -487,7 +487,7 @@ public class CmsLoginUserAgreement extends CmsDialog {
         fillParamValues(request);
 
         // read the current users agreement values       
-        CmsUser user = getCms().getRequestContext().currentUser();
+        CmsUser user = getCms().getRequestContext().getCurrentUser();
         String result = (String)user.getAdditionalInfo(CmsUserSettings.LOGIN_USERAGREEMENT_ACCEPTED);
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(result)) {
             // read JSON data structure that is stored in the user additional info

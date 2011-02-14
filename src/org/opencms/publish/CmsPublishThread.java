@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishThread.java,v $
- * Date   : $Date: 2010/11/30 09:33:56 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/02/14 11:46:56 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.5.5 
  */
@@ -100,7 +100,7 @@ import org.apache.commons.logging.Log;
         m_publishEngine = publishEngine;
 
         // if the project to publish is a temporary project
-        if (getCms().getRequestContext().currentProject().getType() == CmsProject.PROJECT_TYPE_TEMPORARY) {
+        if (getCms().getRequestContext().getCurrentProject().getType() == CmsProject.PROJECT_TYPE_TEMPORARY) {
             // we have to update the user info after publishing
             m_updateSessionInfo = true;
         } else {

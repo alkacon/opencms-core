@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPrincipalSelectionList.java,v $
- * Date   : $Date: 2009/06/04 14:29:14 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/02/14 11:46:54 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -75,7 +75,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.5.6 
  */
@@ -292,7 +292,7 @@ public class CmsPrincipalSelectionList extends A_CmsListDialog {
             } else {
                 principal = getCms().readGroup((String)item.get(LIST_COLUMN_NAME));
             }
-            if (principal.getOuFqn().equals(getCms().getRequestContext().currentUser().getOuFqn())) {
+            if (principal.getOuFqn().equals(getCms().getRequestContext().getCurrentUser().getOuFqn())) {
                 if (showingUsers) {
                     return PATH_BUTTONS + "user.png";
                 } else {
@@ -342,7 +342,7 @@ public class CmsPrincipalSelectionList extends A_CmsListDialog {
                 Iterator itPrincipals = getPrincipals(true).iterator();
                 while (itPrincipals.hasNext()) {
                     CmsPrincipal principal = (CmsPrincipal)itPrincipals.next();
-                    if (!principal.getOuFqn().equals(getCms().getRequestContext().currentUser().getOuFqn())) {
+                    if (!principal.getOuFqn().equals(getCms().getRequestContext().getCurrentUser().getOuFqn())) {
                         m_hasPrincipalsInOtherOus = Boolean.TRUE;
                         break;
                     }
@@ -427,7 +427,7 @@ public class CmsPrincipalSelectionList extends A_CmsListDialog {
      */
     protected List getPrincipals(boolean includeOtherOus) throws CmsException {
 
-        String ou = getCms().getRequestContext().currentUser().getOuFqn();
+        String ou = getCms().getRequestContext().getCurrentUser().getOuFqn();
         Set principals = new HashSet();
         if (isShowingUsers()) {
             // include special principals

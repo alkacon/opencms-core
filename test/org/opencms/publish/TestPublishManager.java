@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/publish/TestPublishManager.java,v $
- * Date   : $Date: 2009/11/19 07:59:00 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/02/14 11:46:55 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class TestPublishManager extends OpenCmsTestCase {
 
@@ -567,7 +567,7 @@ public class TestPublishManager extends OpenCmsTestCase {
 
         // create another cms user instance
         CmsContextInfo contextInfo = new CmsContextInfo("test1");
-        contextInfo.setProjectName(cms.getRequestContext().currentProject().getName());
+        contextInfo.setProjectName(cms.getRequestContext().getCurrentProject().getName());
         contextInfo.setSiteRoot(cms.getRequestContext().getSiteRoot());
         CmsObject ucms = OpenCms.initCmsObject(cms, contextInfo);
 

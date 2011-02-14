@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsLoginHelper.java,v $
- * Date   : $Date: 2009/06/04 14:29:21 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/02/14 11:46:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.0.3 
  */
@@ -110,7 +110,7 @@ public class CmsLoginHelper extends CmsWorkplace {
      */
     public boolean login(String userName, String password, String projectName, String siteRoot, String resourceName) {
 
-        if (getCms().getRequestContext().currentUser().isGuestUser()) {
+        if (getCms().getRequestContext().getCurrentUser().isGuestUser()) {
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(userName) || CmsStringUtil.isEmptyOrWhitespaceOnly(password)) {
                 return false;
             }
@@ -212,8 +212,8 @@ public class CmsLoginHelper extends CmsWorkplace {
             }
             // set the settings for the workplace
             wpSettings.setSite(getCms().getRequestContext().getSiteRoot());
-            wpSettings.setProject(getCms().getRequestContext().currentProject().getUuid());
-            wpSettings.setUser(getCms().getRequestContext().currentUser());
+            wpSettings.setProject(getCms().getRequestContext().getCurrentProject().getUuid());
+            wpSettings.setUser(getCms().getRequestContext().getCurrentUser());
             HttpSession session = getJsp().getRequest().getSession(true);
             storeSettings(session, wpSettings);
         }

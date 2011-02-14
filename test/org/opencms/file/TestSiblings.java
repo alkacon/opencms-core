@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestSiblings.java,v $
- * Date   : $Date: 2009/09/07 12:41:44 $
- * Version: $Revision: 1.26.2.1 $
+ * Date   : $Date: 2011/02/14 11:46:54 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -66,7 +66,7 @@ import junit.framework.TestSuite;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.26.2.1 $
+ * @version $Revision: 1.3 $
  */
 public class TestSiblings extends OpenCmsTestCase {
 
@@ -103,7 +103,7 @@ public class TestSiblings extends OpenCmsTestCase {
         // validate if all unmodified fields on the source resource are still equal
         tc.assertFilter(cms, source, OpenCmsTestResourceFilter.FILTER_EXISTING_SIBLING);
         // validate if the last-modified-in-project field is the current project
-        tc.assertProject(cms, source, cms.getRequestContext().currentProject());
+        tc.assertProject(cms, source, cms.getRequestContext().getCurrentProject());
         // validate if the sibling count field has been incremented
         tc.assertSiblingCountIncremented(cms, source, 1);
         // validate if the sibling does not have a red flag
@@ -146,7 +146,7 @@ public class TestSiblings extends OpenCmsTestCase {
         // validate if all unmodified fields of the source are still equal
         tc.assertFilter(cms, source, OpenCmsTestResourceFilter.FILTER_EXISTING_SIBLING);
         // validate if the last-modified-in-project field is the current project
-        tc.assertProject(cms, source, cms.getRequestContext().currentProject());
+        tc.assertProject(cms, source, cms.getRequestContext().getCurrentProject());
         // validate if the sibling count field has been incremented
         tc.assertSiblingCountIncremented(cms, source, 1);
         // validate if the sibling does not have a red flag
@@ -711,7 +711,7 @@ public class TestSiblings extends OpenCmsTestCase {
         echo("Tests OpenCms v7 publish issue with siblings");
         CmsObject cms = getCmsObject();
 
-        CmsProject offlineProject = cms.getRequestContext().currentProject();
+        CmsProject offlineProject = cms.getRequestContext().getCurrentProject();
         CmsProject onlineProject = cms.readProject(CmsProject.ONLINE_PROJECT_ID);
 
         // first we create a complete new folder as base for the test

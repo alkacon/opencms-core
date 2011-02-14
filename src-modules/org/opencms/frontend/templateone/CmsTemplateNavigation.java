@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateNavigation.java,v $
- * Date   : $Date: 2009/06/04 14:33:45 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2011/02/14 11:46:56 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -79,7 +79,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.36 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -468,7 +468,7 @@ public class CmsTemplateNavigation extends CmsTemplateBase {
      */
     public String buildNavigationHeadMenus(String styleClass) {
 
-        boolean cacheNavEnabled = !getRequestContext().currentProject().isOnlineProject();
+        boolean cacheNavEnabled = !getRequestContext().getCurrentProject().isOnlineProject();
         String cacheKey = null;
         if (cacheNavEnabled) {
             // create unique cache key with: site, head nav folder, area folder, menu depth, show submenus flag

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/ade/publish/TestADEPublish.java,v $
- * Date   : $Date: 2010/04/12 10:16:58 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/02/14 11:46:56 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import junit.framework.TestSuite;
  *
  * @author Michael Moossen
  *  
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class TestADEPublish extends OpenCmsTestCase {
 
@@ -144,7 +144,7 @@ public class TestADEPublish extends OpenCmsTestCase {
         assertEquals(1, groups.size());
 
         // change user
-        CmsProject prj = cms.getRequestContext().currentProject();
+        CmsProject prj = cms.getRequestContext().getCurrentProject();
         String site = cms.getRequestContext().getSiteRoot();
         cms.loginUser("test1", "test1");
         cms.getRequestContext().setCurrentProject(prj);
@@ -235,7 +235,7 @@ public class TestADEPublish extends OpenCmsTestCase {
         assertEquals(1, groups.size());
 
         // change user
-        CmsProject prj = cms.getRequestContext().currentProject();
+        CmsProject prj = cms.getRequestContext().getCurrentProject();
         String site = cms.getRequestContext().getSiteRoot();
         cms.loginUser("test1", "test1");
         cms.getRequestContext().setCurrentProject(prj);
@@ -268,7 +268,7 @@ public class TestADEPublish extends OpenCmsTestCase {
         CmsObject cms = getCmsObject();
 
         // change user
-        CmsProject prj = cms.getRequestContext().currentProject();
+        CmsProject prj = cms.getRequestContext().getCurrentProject();
         String site = cms.getRequestContext().getSiteRoot();
         cms.loginUser("test1", "test1");
         cms.getRequestContext().setCurrentProject(prj);

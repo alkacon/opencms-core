@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2010/03/01 10:21:47 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/02/14 11:46:55 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -84,7 +84,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  * 
@@ -476,7 +476,7 @@ public abstract class A_CmsImport implements I_CmsImport {
                             target.getTypeId(),
                             target.isFolder(),
                             0,
-                            m_cms.getRequestContext().currentProject().getUuid(), // TODO: pass flags from import 
+                            m_cms.getRequestContext().getCurrentProject().getUuid(), // TODO: pass flags from import 
                             CmsResource.STATE_NEW,
                             target.getDateCreated(),
                             target.getUserCreated(),

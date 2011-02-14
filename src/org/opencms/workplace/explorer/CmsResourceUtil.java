@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsResourceUtil.java,v $
- * Date   : $Date: 2010/11/05 09:23:16 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/02/14 11:46:55 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,7 +71,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -375,7 +375,7 @@ public final class CmsResourceUtil {
         CmsLock lock = getLock();
         String iconPath = null;
         if (!lock.isUnlocked() && (m_request != null) && isInsideProject()) {
-            if (getLock().isOwnedBy(m_request.currentUser())
+            if (getLock().isOwnedBy(m_request.getCurrentUser())
                 && (getLockedInProjectId().equals(getReferenceProject().getUuid()))) {
                 if (lock.isShared()) {
                     iconPath = "shared";
@@ -558,8 +558,8 @@ public final class CmsResourceUtil {
             // unlocked
             return 0;
         }
-        if (!getLockedByName().equals(getCurrentOuRelativeName(m_request.currentUser().getName()))
-            || !getLockedInProjectId().equals(m_request.currentProject().getUuid())) {
+        if (!getLockedByName().equals(getCurrentOuRelativeName(m_request.getCurrentUser().getName()))
+            || !getLockedInProjectId().equals(m_request.getCurrentProject().getUuid())) {
             // locked by other user and/or project
             return 1;
         }
@@ -624,7 +624,7 @@ public final class CmsResourceUtil {
         } else if (!m_cms.hasPermissions(m_resource, CmsPermissionSet.ACCESS_WRITE, false, CmsResourceFilter.DEFAULT)
             || !isEditable()) {
             reason = Messages.get().getBundle(locale).key(Messages.GUI_NO_EDIT_REASON_PERMISSION_0);
-        } else if (!getLock().isLockableBy(m_cms.getRequestContext().currentUser())) {
+        } else if (!getLock().isLockableBy(m_cms.getRequestContext().getCurrentUser())) {
             reason = Messages.get().getBundle(locale).key(Messages.GUI_NO_EDIT_REASON_LOCK_1, getLockedByName());
         }
         return reason;
@@ -786,7 +786,7 @@ public final class CmsResourceUtil {
 
         if (m_referenceProject == null) {
             if (m_request != null) {
-                m_referenceProject = m_request.currentProject();
+                m_referenceProject = m_request.getCurrentProject();
             }
         }
         return m_referenceProject;
@@ -1277,7 +1277,7 @@ public final class CmsResourceUtil {
             return CmsOrganizationalUnit.SEPARATOR + name;
         }
         String ou = CmsOrganizationalUnit.getParentFqn(name);
-        if (ou.equals(m_request.currentUser().getOuFqn())) {
+        if (ou.equals(m_request.getCurrentUser().getOuFqn())) {
             return CmsOrganizationalUnit.getSimpleName(name);
         }
         return CmsOrganizationalUnit.SEPARATOR + name;

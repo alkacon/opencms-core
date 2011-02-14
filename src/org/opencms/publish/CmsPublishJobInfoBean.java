@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishJobInfoBean.java,v $
- * Date   : $Date: 2009/12/21 10:33:41 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/02/14 11:46:56 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 6.5.5
  */
@@ -156,9 +156,9 @@ public final class CmsPublishJobInfoBean {
     throws CmsException {
 
         m_cms = OpenCms.initCmsObject(cms);
-        m_projectId = m_cms.getRequestContext().currentProject().getUuid();
-        m_projectName = m_cms.getRequestContext().currentProject().getName();
-        m_userId = m_cms.getRequestContext().currentUser().getId();
+        m_projectId = m_cms.getRequestContext().getCurrentProject().getUuid();
+        m_projectName = m_cms.getRequestContext().getCurrentProject().getName();
+        m_userId = m_cms.getRequestContext().getCurrentUser().getId();
         m_locale = m_cms.getRequestContext().getLocale();
 
         m_publishList = publishList;

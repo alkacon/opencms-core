@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/sourcesearch/CmsSourceSearchFilesDialog.java,v $
- * Date   : $Date: 2010/11/04 13:46:24 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/02/14 11:46:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Mario Jaeger
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.5.3
  */
@@ -431,7 +431,7 @@ public class CmsSourceSearchFilesDialog extends A_CmsListExplorerDialog {
         try {
             getCms().readProject(new CmsUUID(getParamProjectid()));
         } catch (Exception e) {
-            m_paramProjectid = getCms().getRequestContext().currentProject().getUuid().toString();
+            m_paramProjectid = getCms().getRequestContext().getCurrentProject().getUuid().toString();
         }
 
     }

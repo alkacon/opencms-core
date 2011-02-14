@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlEntityResolver.java,v $
- * Date   : $Date: 2010/12/22 14:33:35 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/02/14 11:46:57 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -67,7 +67,7 @@ import org.xml.sax.InputSource;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -346,7 +346,7 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
 
             // opencms:// VFS reference
             String cacheSystemId = systemId.substring(OPENCMS_SCHEME.length() - 1);
-            String cacheKey = getCacheKey(cacheSystemId, m_cms.getRequestContext().currentProject().isOnlineProject());
+            String cacheKey = getCacheKey(cacheSystemId, m_cms.getRequestContext().getCurrentProject().isOnlineProject());
             // look up temporary cache
             content = m_cacheTemporary.get(cacheKey);
             if (content != null) {
@@ -420,7 +420,7 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
     private String getCacheKeyForCurrentProject(String systemId) {
 
         // check the project
-        boolean project = (m_cms != null) ? m_cms.getRequestContext().currentProject().isOnlineProject() : false;
+        boolean project = (m_cms != null) ? m_cms.getRequestContext().getCurrentProject().isOnlineProject() : false;
 
         // remove opencms:// prefix
         if (systemId.startsWith(OPENCMS_SCHEME)) {

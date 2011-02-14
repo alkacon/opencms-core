@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/photoalbum/CmsPhotoAlbumBean.java,v $
- * Date   : $Date: 2010/03/01 10:21:47 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/02/14 11:46:57 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.1.3 
  */
@@ -367,7 +367,7 @@ public class CmsPhotoAlbumBean extends CmsJspActionElement {
      */
     protected void buildHtmlConfigurationErrors() throws IOException {
 
-        if (!getRequestContext().currentProject().isOnlineProject() && (getConfigErrors().size() > 0)) {
+        if (!getRequestContext().getCurrentProject().isOnlineProject() && (getConfigErrors().size() > 0)) {
             // configuration error(s) found, show them in offline projects
             getJspContext().getOut().print("<h1>");
             getJspContext().getOut().print(m_messages.key(Messages.GUI_CONFIG_ERRORS_HEADLINE_0));

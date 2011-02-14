@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestUndoChanges.java,v $
- * Date   : $Date: 2009/09/07 12:41:42 $
- * Version: $Revision: 1.27.2.1 $
+ * Date   : $Date: 2011/02/14 11:46:54 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import junit.framework.TestSuite;
  * Unit test for the "undoChanges" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich 
- * @version $Revision: 1.27.2.1 $
+ * @version $Revision: 1.3 $
  */
 public class TestUndoChanges extends OpenCmsTestCase {
 
@@ -146,7 +146,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
         // now evaluate the result
         tc.assertFilter(cms, resource1, OpenCmsTestResourceFilter.FILTER_UNDOCHANGES_ALL);
         // project must be current project
-        tc.assertProject(cms, resource1, cms.getRequestContext().currentProject());
+        tc.assertProject(cms, resource1, cms.getRequestContext().getCurrentProject());
     }
 
     /**
@@ -189,7 +189,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
         // now evaluate the result, the folder must be unchanged now
         tc.assertFilter(cms, resource1, OpenCmsTestResourceFilter.FILTER_UNDOCHANGES_ALL);
         // project must be current project
-        tc.assertProject(cms, resource1, cms.getRequestContext().currentProject());
+        tc.assertProject(cms, resource1, cms.getRequestContext().getCurrentProject());
 
         // all resources within the folder must keep their changes
         Iterator j = subresources.iterator();
@@ -198,13 +198,13 @@ public class TestUndoChanges extends OpenCmsTestCase {
             String resName = cms.getSitePath(res);
             tc.assertFilter(cms, resName, OpenCmsTestResourceFilter.FILTER_WRITEPROPERTY);
             // project must be current project
-            tc.assertProject(cms, resName, cms.getRequestContext().currentProject());
+            tc.assertProject(cms, resName, cms.getRequestContext().getCurrentProject());
             // state must be "changed"
             tc.assertState(cms, resName, tc.getPreCalculatedState(resource1));
             // date last modified must be after the test timestamp
             tc.assertDateLastModifiedAfter(cms, resName, timestamp);
             // the user last modified must be the current user
-            tc.assertUserLastModified(cms, resName, cms.getRequestContext().currentUser());
+            tc.assertUserLastModified(cms, resName, cms.getRequestContext().getCurrentUser());
             // the property must have the new value
             tc.assertPropertyChanged(cms, resName, property1);
         }
@@ -248,7 +248,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
         // now evaluate the result, the folder must be unchanged now
         tc.assertFilter(cms, resource1, OpenCmsTestResourceFilter.FILTER_UNDOCHANGES_ALL);
         // project must be current project
-        tc.assertProject(cms, resource1, cms.getRequestContext().currentProject());
+        tc.assertProject(cms, resource1, cms.getRequestContext().getCurrentProject());
 
         // all resources within the folder must  be unchanged now
         Iterator j = subresources.iterator();
@@ -259,7 +259,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
             // now evaluate the result
             tc.assertFilter(cms, resName, OpenCmsTestResourceFilter.FILTER_UNDOCHANGES_ALL);
             // project must be current project
-            tc.assertProject(cms, resName, cms.getRequestContext().currentProject());
+            tc.assertProject(cms, resName, cms.getRequestContext().getCurrentProject());
         }
     }
 
@@ -296,7 +296,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
         assertFilter(cms, destination, OpenCmsTestResourceFilter.FILTER_UNDOCHANGES_ALL);
 
         // publishing may reveal problems with the id's
-        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
+        cms.unlockProject(cms.getRequestContext().getCurrentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
     }
@@ -342,7 +342,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
         cms.createResource(
             folder + "/" + subfolder + "/" + subsubfolder + "/" + file,
             CmsResourceTypePlain.getStaticTypeId());
-        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
+        cms.unlockProject(cms.getRequestContext().getCurrentProject().getUuid());
         OpenCms.getPublishManager().publishResource(cms, folder);
         OpenCms.getPublishManager().waitWhileRunning();
 
@@ -363,7 +363,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
         cms.undoChanges("/" + subsubfolder, CmsResource.UNDO_MOVE_CONTENT);
 
         // check intermediate state
-        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
+        cms.unlockProject(cms.getRequestContext().getCurrentProject().getUuid());
         assertFilter(cms, "/" + folder + "/", OpenCmsTestResourceFilter.FILTER_EQUAL);
         assertFilter(cms, "/" + folder + "/" + file, OpenCmsTestResourceFilter.FILTER_EQUAL);
         assertFilter(cms, "/" + folder + "/" + subfolder + "/", OpenCmsTestResourceFilter.FILTER_TOUCH);
@@ -382,7 +382,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
         cms.undoChanges(folder + "/" + subfolder, CmsResource.UNDO_MOVE_CONTENT);
 
         // check final state, the same starting state
-        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
+        cms.unlockProject(cms.getRequestContext().getCurrentProject().getUuid());
         assertFilter(cms, "/" + folder + "/", OpenCmsTestResourceFilter.FILTER_EQUAL);
         assertFilter(cms, "/" + folder + "/" + file, OpenCmsTestResourceFilter.FILTER_EQUAL);
         assertFilter(cms, "/" + folder + "/" + subfolder + "/", OpenCmsTestResourceFilter.FILTER_MOVE_DESTINATION);
@@ -433,7 +433,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
         assertFilter(cms, destination, OpenCmsTestResourceFilter.FILTER_UNDOCHANGES_ALL);
 
         // publishing may reveal problems with the id's
-        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
+        cms.unlockProject(cms.getRequestContext().getCurrentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
     }
@@ -496,7 +496,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
         // now ensure source and destination are in the original state
         assertFilter(cms, source, OpenCmsTestResourceFilter.FILTER_UNDOCHANGES_ALL);
         // project must be current project
-        assertProject(cms, source, cms.getRequestContext().currentProject());
+        assertProject(cms, source, cms.getRequestContext().getCurrentProject());
 
         setMapping(source + newFile, destination + newFile);
         // test recursively
@@ -510,7 +510,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
                 assertFilter(cms, resName, OpenCmsTestResourceFilter.FILTER_UNDOCHANGES_ALL);
             }
             // project must be current project
-            assertProject(cms, resName, cms.getRequestContext().currentProject());
+            assertProject(cms, resName, cms.getRequestContext().getCurrentProject());
         }
         assertTrue(cms.existsResource(source, CmsResourceFilter.ALL));
         assertTrue(cms.existsResource(source + sourceFile));
@@ -519,7 +519,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
 
         cms.deleteResource(source + newFile, CmsResource.DELETE_REMOVE_SIBLINGS);
         // publishing may reveal problems with the id's
-        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
+        cms.unlockProject(cms.getRequestContext().getCurrentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
     }
@@ -558,7 +558,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
         // now ensure source and destionation are in the original state
         assertFilter(cms, destination, OpenCmsTestResourceFilter.FILTER_UNDOCHANGES_CONTENT);
         // project must be current project
-        assertProject(cms, destination, cms.getRequestContext().currentProject());
+        assertProject(cms, destination, cms.getRequestContext().getCurrentProject());
         // test recursively
         Iterator subresources = cms.readResources(destination, CmsResourceFilter.ALL).iterator();
         while (subresources.hasNext()) {
@@ -571,7 +571,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
                 assertFilter(cms, resName, OpenCmsTestResourceFilter.FILTER_UNDOCHANGES_CONTENT);
             }
             // project must be current project
-            assertProject(cms, resName, cms.getRequestContext().currentProject());
+            assertProject(cms, resName, cms.getRequestContext().getCurrentProject());
         }
         assertTrue(cms.existsResource(destination));
         assertTrue(cms.existsResource(destination + sourceFile));
@@ -585,7 +585,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
         // now ensure source and destionation are in the original state
         assertFilter(cms, source, OpenCmsTestResourceFilter.FILTER_UNDOCHANGES_ALL);
         // project must be current project
-        assertProject(cms, source, cms.getRequestContext().currentProject());
+        assertProject(cms, source, cms.getRequestContext().getCurrentProject());
         // test recursively
         subresources = cms.readResources(source, CmsResourceFilter.ALL).iterator();
         while (subresources.hasNext()) {
@@ -597,7 +597,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
                 assertFilter(cms, resName, OpenCmsTestResourceFilter.FILTER_UNDOCHANGES_ALL);
             }
             // project must be current project
-            assertProject(cms, resName, cms.getRequestContext().currentProject());
+            assertProject(cms, resName, cms.getRequestContext().getCurrentProject());
         }
         assertTrue(cms.existsResource(source));
         assertTrue(cms.existsResource(source + sourceFile));
@@ -606,7 +606,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
 
         cms.deleteResource(source + newFile, CmsResource.DELETE_REMOVE_SIBLINGS);
         // publishing may reveal problems with the id's
-        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
+        cms.unlockProject(cms.getRequestContext().getCurrentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
     }
@@ -640,7 +640,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
         // now ensure destination is in the original state
         assertFilter(cms, destination, OpenCmsTestResourceFilter.FILTER_UNDOCHANGES_CONTENT);
         // project must be current project
-        assertProject(cms, destination, cms.getRequestContext().currentProject());
+        assertProject(cms, destination, cms.getRequestContext().getCurrentProject());
         // file must still be moved
         assertFalse(cms.existsResource(source, CmsResourceFilter.ALL));
 
@@ -653,7 +653,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
         assertFalse(cms.existsResource(destination, CmsResourceFilter.ALL));
 
         // publishing may reveal problems with the id's
-        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
+        cms.unlockProject(cms.getRequestContext().getCurrentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
     }
@@ -685,7 +685,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
         assertFalse(cms.existsResource(destination, CmsResourceFilter.ALL));
 
         // publishing may reveal problems with the id's
-        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
+        cms.unlockProject(cms.getRequestContext().getCurrentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
     }
@@ -719,7 +719,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
         // now ensure source and destionation are in the original state
         assertFilter(cms, source, OpenCmsTestResourceFilter.FILTER_UNDOCHANGES_ALL);
         // project must be current project
-        assertProject(cms, source, cms.getRequestContext().currentProject());
+        assertProject(cms, source, cms.getRequestContext().getCurrentProject());
         // test recursively
         Iterator subresources = cms.readResources(source, CmsResourceFilter.ALL).iterator();
         while (subresources.hasNext()) {
@@ -728,12 +728,12 @@ public class TestUndoChanges extends OpenCmsTestCase {
             // destination + sourceFile changes get lost
             assertFilter(cms, resName, OpenCmsTestResourceFilter.FILTER_UNDOCHANGES_ALL);
             // project must be current project
-            assertProject(cms, resName, cms.getRequestContext().currentProject());
+            assertProject(cms, resName, cms.getRequestContext().getCurrentProject());
         }
         assertFalse(cms.existsResource(destination, CmsResourceFilter.ALL));
 
         // publishing may reveal problems with the id's
-        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
+        cms.unlockProject(cms.getRequestContext().getCurrentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
     }
@@ -767,7 +767,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
         // now ensure source and destionation are in the original state
         assertFilter(cms, source, OpenCmsTestResourceFilter.FILTER_UNDOCHANGES_ALL);
         // project must be current project
-        assertProject(cms, source, cms.getRequestContext().currentProject());
+        assertProject(cms, source, cms.getRequestContext().getCurrentProject());
         // test recursively
         Iterator subresources = cms.readResources(source, CmsResourceFilter.ALL).iterator();
         while (subresources.hasNext()) {
@@ -779,14 +779,14 @@ public class TestUndoChanges extends OpenCmsTestCase {
             } else {
                 assertFilter(cms, resName, OpenCmsTestResourceFilter.FILTER_UNDOCHANGES_ALL);
                 // project must be current project
-                assertProject(cms, resName, cms.getRequestContext().currentProject());
+                assertProject(cms, resName, cms.getRequestContext().getCurrentProject());
             }
         }
         assertFalse(cms.existsResource(destination));
         assertTrue(cms.existsResource(source + newFile));
 
         // publishing may reveal problems with the id's
-        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
+        cms.unlockProject(cms.getRequestContext().getCurrentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
     }
@@ -879,7 +879,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
         assertFalse(cms.existsResource(destination2, CmsResourceFilter.ALL));
 
         // publishing may reveal problems with the id's
-        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
+        cms.unlockProject(cms.getRequestContext().getCurrentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
     }
@@ -898,7 +898,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
         String file = "/a";
         cms.createResource(file, CmsResourceTypePlain.getStaticTypeId());
         // publish the project
-        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
+        cms.unlockProject(cms.getRequestContext().getCurrentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
@@ -914,7 +914,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
             "undoChanges description");
         cms.writePropertyObject(sibling, property1);
         // publish the project
-        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
+        cms.unlockProject(cms.getRequestContext().getCurrentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
@@ -942,10 +942,10 @@ public class TestUndoChanges extends OpenCmsTestCase {
         // now evaluate the result
         assertFilter(cms, file, OpenCmsTestResourceFilter.FILTER_UNDOCHANGES_ALL);
         // project must be current project
-        assertProject(cms, file, cms.getRequestContext().currentProject());
+        assertProject(cms, file, cms.getRequestContext().getCurrentProject());
 
         // publishing may reveal problems with the id's
-        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
+        cms.unlockProject(cms.getRequestContext().getCurrentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
     }
@@ -979,7 +979,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
 
         cms.undoChanges(destination, CmsResource.UNDO_MOVE_CONTENT_RECURSIVE);
         // publishing may reveal problems with the id's
-        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
+        cms.unlockProject(cms.getRequestContext().getCurrentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
     }

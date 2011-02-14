@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerTypeAccess.java,v $
- * Date   : $Date: 2010/07/21 07:57:27 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/02/14 11:46:55 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -219,7 +219,7 @@ public class CmsExplorerTypeAccess {
         }
         CmsAccessControlList acl = (CmsAccessControlList)m_accessControlList.clone();
 
-        CmsUser user = cms.getRequestContext().currentUser();
+        CmsUser user = cms.getRequestContext().getCurrentUser();
         List<CmsGroup> groups = null;
         try {
             groups = cms.getGroupsOfUser(user.getName(), false);
@@ -305,7 +305,7 @@ public class CmsExplorerTypeAccess {
     private String getPermissionsCacheKey(CmsObject cms, CmsResource resource) {
 
         try {
-            String userName = cms.getRequestContext().currentUser().getName();
+            String userName = cms.getRequestContext().getCurrentUser().getName();
             StringBuffer key = new StringBuffer(256);
             key.append(resource.getRootPath()).append("_");
             Iterator<?> itGroups = cms.getGroupsOfUser(userName, true).iterator();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPropertyAdvanced.java,v $
- * Date   : $Date: 2010/02/11 10:20:31 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/02/14 11:46:54 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -84,7 +84,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -894,7 +894,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
 
         if (m_isEditable == null) {
 
-            if (getCms().getRequestContext().currentProject().isOnlineProject()
+            if (getCms().getRequestContext().getCurrentProject().isOnlineProject()
                 || !getCms().isInsideCurrentProject(getParamResource())) {
                 // we are in the online project or resource does not belong to project, no editing allowed
                 m_isEditable = Boolean.FALSE;
@@ -939,9 +939,9 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
 
                 if (!lock.isNullLock()) {
                     // determine if resource is editable...
-                    if (lock.isDirectlyOwnedBy(getCms().getRequestContext().currentUser())) {
+                    if (lock.isDirectlyOwnedBy(getCms().getRequestContext().getCurrentUser())) {
                         // lock is exclusive and belongs to the current user
-                        if (lock.isInProject(getCms().getRequestContext().currentProject())
+                        if (lock.isInProject(getCms().getRequestContext().getCurrentProject())
                             || Boolean.valueOf(getParamUsetempfileproject()).booleanValue()) {
                             // resource is locked in the current project or the tempfileproject is used
                             m_isEditable = Boolean.TRUE;
@@ -954,7 +954,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
                         try {
                             List lockedResources = getCms().getLockedResources(
                                 resourceName,
-                                CmsLockFilter.FILTER_ALL.filterNotOwnedByUserId(getCms().getRequestContext().currentUser().getId()));
+                                CmsLockFilter.FILTER_ALL.filterNotOwnedByUserId(getCms().getRequestContext().getCurrentUser().getId()));
                             if (!lockedResources.isEmpty()) {
                                 m_isEditable = Boolean.FALSE;
                                 return m_isEditable.booleanValue();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsDisplayResource.java,v $
- * Date   : $Date: 2011/01/19 07:45:55 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/02/14 11:46:54 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,7 +71,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -176,7 +176,7 @@ public class CmsDisplayResource extends CmsDialog {
                 throw new CmsVfsResourceNotFoundException(Messages.get().container(
                     Messages.ERR_RESOURCE_DELETED_2,
                     resourceStr,
-                    getCms().getRequestContext().currentProject().getName()));
+                    getCms().getRequestContext().getCurrentProject().getName()));
             }
 
             // check for release / expiration time window 
@@ -197,7 +197,7 @@ public class CmsDisplayResource extends CmsDialog {
 
             String url = getJsp().link(resourceStr);
             // if in online project
-            if ((url.indexOf("://") < 0) && getCms().getRequestContext().currentProject().isOnlineProject()) {
+            if ((url.indexOf("://") < 0) && getCms().getRequestContext().getCurrentProject().isOnlineProject()) {
                 url = prependSiteRoot(url);
             }
             getJsp().getResponse().sendRedirect(url);
@@ -332,7 +332,7 @@ public class CmsDisplayResource extends CmsDialog {
             throw new CmsVfsResourceNotFoundException(Messages.get().container(
                 Messages.ERR_RESOURCE_DOES_NOT_EXIST_3,
                 resourceName,
-                getCms().getRequestContext().currentProject().getName(),
+                getCms().getRequestContext().getCurrentProject().getName(),
                 getCms().getRequestContext().getSiteRoot()), e);
         }
         return resource;

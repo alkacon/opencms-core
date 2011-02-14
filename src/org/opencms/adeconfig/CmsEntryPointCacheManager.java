@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/adeconfig/Attic/CmsEntryPointCacheManager.java,v $
- * Date   : $Date: 2011/02/02 07:37:52 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/02/14 11:46:55 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import java.util.List;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -197,6 +197,6 @@ public class CmsEntryPointCacheManager {
      */
     protected CmsEntryPointCache getCache(CmsObject cms) {
 
-        return getCache(cms.getRequestContext().currentProject().isOnlineProject());
+        return getCache(cms.getRequestContext().getCurrentProject().isOnlineProject());
     }
 }

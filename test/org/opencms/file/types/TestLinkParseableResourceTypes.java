@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/types/TestLinkParseableResourceTypes.java,v $
- * Date   : $Date: 2009/09/07 12:41:37 $
- * Version: $Revision: 1.9.2.1 $
+ * Date   : $Date: 2011/02/14 11:46:56 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.9.2.1 $
+ * @version $Revision: 1.3 $
  */
 public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
 
@@ -149,7 +149,7 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
         assertRelationOperation(cms, changed, target, sources - 1, 0);
 
         // check the online project
-        CmsProject project = cms.getRequestContext().currentProject();
+        CmsProject project = cms.getRequestContext().getCurrentProject();
         cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
 
         relations = cms.getRelationsForResource(targetName, CmsRelationFilter.TARGETS);
@@ -193,7 +193,7 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
         assertRelationOperation(cms, changed, target, sources + 1, 1);
 
         // check the online project
-        CmsProject project = cms.getRequestContext().currentProject();
+        CmsProject project = cms.getRequestContext().getCurrentProject();
         cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
 
         relations = cms.getRelationsForResource(targetName, CmsRelationFilter.TARGETS);
@@ -240,7 +240,7 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
         assertRelationOperation(cms, copy, target, sources + 1, 1);
 
         // check the online project
-        CmsProject project = cms.getRequestContext().currentProject();
+        CmsProject project = cms.getRequestContext().getCurrentProject();
         cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
 
         relations = cms.getRelationsForResource(targetName, CmsRelationFilter.TARGETS);
@@ -286,7 +286,7 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
         assertRelationOperation(cms, created, target, sources + 1, 1);
 
         // check the online project
-        CmsProject project = cms.getRequestContext().currentProject();
+        CmsProject project = cms.getRequestContext().getCurrentProject();
         cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
 
         relations = cms.getRelationsForResource(targetName, CmsRelationFilter.TARGETS);
@@ -333,7 +333,7 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
         assertRelationOperation(cms, sibling, target, sources + 1, 1);
 
         // check the online project
-        CmsProject project = cms.getRequestContext().currentProject();
+        CmsProject project = cms.getRequestContext().getCurrentProject();
         cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
 
         relations = cms.getRelationsForResource(targetName, CmsRelationFilter.TARGETS);
@@ -662,7 +662,7 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
         assertRelationOperation(cms, moved, target, sources, 1);
 
         // check the online project
-        CmsProject project = cms.getRequestContext().currentProject();
+        CmsProject project = cms.getRequestContext().getCurrentProject();
         cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
 
         relations = cms.getRelationsForResource(targetName, CmsRelationFilter.TARGETS);
@@ -709,7 +709,7 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
         assertRelationOperation(cms, replaced, target, sources - 1, 0);
 
         // check the online project
-        CmsProject project = cms.getRequestContext().currentProject();
+        CmsProject project = cms.getRequestContext().getCurrentProject();
         cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
 
         relations = cms.getRelationsForResource(targetName, CmsRelationFilter.TARGETS);
@@ -757,7 +757,7 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
         assertRelationOperation(cms, replaced, target, sources + 1, 1);
 
         // check the online project
-        CmsProject project = cms.getRequestContext().currentProject();
+        CmsProject project = cms.getRequestContext().getCurrentProject();
         cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
 
         relations = cms.getRelationsForResource(targetName, CmsRelationFilter.TARGETS);
@@ -864,7 +864,7 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
         assertRelationOperation(cms, source, target, sources, 1);
 
         // check the online project
-        CmsProject project = cms.getRequestContext().currentProject();
+        CmsProject project = cms.getRequestContext().getCurrentProject();
         cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
 
         List relations = cms.getRelationsForResource(targetName, CmsRelationFilter.TARGETS);
@@ -908,7 +908,7 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
         assertEquals(relations.size(), 2); // since the source file has a sibling!
 
         // check the online project
-        project = cms.getRequestContext().currentProject();
+        project = cms.getRequestContext().getCurrentProject();
         cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
 
         relations = cms.getRelationsForResource(targetName, CmsRelationFilter.TARGETS);
@@ -958,7 +958,7 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
         assertTrue(relations.isEmpty());
 
         // check the online project
-        project = cms.getRequestContext().currentProject();
+        project = cms.getRequestContext().getCurrentProject();
         cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
 
         relations = cms.getRelationsForResource(targetName, CmsRelationFilter.TARGETS);

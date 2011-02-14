@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2011/01/21 14:14:38 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2011/02/14 11:46:56 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -92,7 +92,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Moossen
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 6.0.0 
  */
@@ -516,8 +516,8 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
         CmsI18nInfo i18nInfo = OpenCms.getLocaleManager().getI18nInfo(
             req,
-            cms.getRequestContext().currentUser(),
-            cms.getRequestContext().currentProject(),
+            cms.getRequestContext().getCurrentUser(),
+            cms.getRequestContext().getCurrentProject(),
             vfsName);
 
         String remoteAddr = m_remoteAddr;
@@ -536,8 +536,8 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         }
 
         CmsContextInfo contextInfo = new CmsContextInfo(
-            cms.getRequestContext().currentUser(),
-            cms.getRequestContext().currentProject(),
+            cms.getRequestContext().getCurrentUser(),
+            cms.getRequestContext().getCurrentProject(),
             vfsName,
             siteRoot,
             i18nInfo.getLocale(),
@@ -1780,7 +1780,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      */
     public boolean isSecureLink(CmsObject cms, String vfsName) {
 
-        if (!cms.getRequestContext().currentProject().isOnlineProject()) {
+        if (!cms.getRequestContext().getCurrentProject().isOnlineProject()) {
             return false;
         }
         String cacheKey = OpenCms.getStaticExportManager().getCacheKey(cms.getRequestContext().getSiteRoot(), vfsName);

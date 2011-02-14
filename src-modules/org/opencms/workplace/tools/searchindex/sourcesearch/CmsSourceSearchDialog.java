@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/sourcesearch/CmsSourceSearchDialog.java,v $
- * Date   : $Date: 2010/11/04 13:46:24 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/02/14 11:46:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -66,7 +66,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Mario Jaeger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 7.5.3
  */
@@ -189,7 +189,7 @@ public class CmsSourceSearchDialog extends CmsWidgetDialog {
         addWidget(new CmsWidgetDialogParameter(
             m_settings,
             "project",
-            getCms().getRequestContext().currentProject().getName(),
+            getCms().getRequestContext().getCurrentProject().getName(),
             PAGES[0],
             new CmsSelectWidget(options),
             1,

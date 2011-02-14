@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2010/11/19 10:51:08 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/02/14 11:46:56 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * @author  Andreas Zahner 
  * @author  Michael Emmerich 
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 6.0.0
  */
@@ -370,7 +370,7 @@ public class CmsUserSettings {
      */
     public CmsUserSettings(CmsObject cms) {
 
-        this(cms.getRequestContext().currentUser());
+        this(cms.getRequestContext().getCurrentUser());
     }
 
     /**

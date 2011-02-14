@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsRoleManager.java,v $
- * Date   : $Date: 2009/09/11 15:29:13 $
- * Version: $Revision: 1.8.2.2 $
+ * Date   : $Date: 2011/02/14 11:46:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.8.2.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.5.6
  */
@@ -369,7 +369,7 @@ public class CmsRoleManager {
      */
     public boolean hasRole(CmsObject cms, CmsRole role) {
 
-        return m_securityManager.hasRole(cms.getRequestContext(), cms.getRequestContext().currentUser(), role);
+        return m_securityManager.hasRole(cms.getRequestContext(), cms.getRequestContext().getCurrentUser(), role);
     }
 
     /**
@@ -413,7 +413,7 @@ public class CmsRoleManager {
         }
         return m_securityManager.hasRoleForResource(
             cms.getRequestContext(),
-            cms.getRequestContext().currentUser(),
+            cms.getRequestContext().getCurrentUser(),
             role,
             resource);
     }

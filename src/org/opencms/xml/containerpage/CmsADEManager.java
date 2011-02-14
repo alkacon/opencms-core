@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADEManager.java,v $
- * Date   : $Date: 2011/02/10 16:32:44 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2011/02/14 11:46:56 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * 
  * @since 7.6
  */
@@ -321,7 +321,7 @@ public class CmsADEManager {
      */
     public List<CmsContainerElementBean> getFavoriteList(CmsObject cms) throws CmsException {
 
-        CmsUser user = cms.getRequestContext().currentUser();
+        CmsUser user = cms.getRequestContext().getCurrentUser();
         Object obj = user.getAdditionalInfo(ADDINFO_ADE_FAVORITE_LIST);
 
         List<CmsContainerElementBean> favList = new ArrayList<CmsContainerElementBean>();
@@ -413,7 +413,7 @@ public class CmsADEManager {
      */
     public List<CmsContainerElementBean> getRecentList(CmsObject cms) throws CmsException {
 
-        CmsUser user = cms.getRequestContext().currentUser();
+        CmsUser user = cms.getRequestContext().getCurrentUser();
         Object obj = user.getAdditionalInfo(ADDINFO_ADE_RECENT_LIST);
 
         List<CmsContainerElementBean> recentList = new ArrayList<CmsContainerElementBean>();
@@ -541,7 +541,7 @@ public class CmsADEManager {
         for (CmsContainerElementBean element : favoriteList) {
             data.put(elementToJson(element));
         }
-        CmsUser user = cms.getRequestContext().currentUser();
+        CmsUser user = cms.getRequestContext().getCurrentUser();
         user.setAdditionalInfo(ADDINFO_ADE_FAVORITE_LIST, data.toString());
         cms.writeUser(user);
     }
@@ -560,7 +560,7 @@ public class CmsADEManager {
         for (CmsContainerElementBean element : recentList) {
             data.put(elementToJson(element));
         }
-        CmsUser user = cms.getRequestContext().currentUser();
+        CmsUser user = cms.getRequestContext().getCurrentUser();
         user.setAdditionalInfo(ADDINFO_ADE_RECENT_LIST, data.toString());
         cms.writeUser(user);
     }

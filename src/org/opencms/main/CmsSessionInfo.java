@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSessionInfo.java,v $
- * Date   : $Date: 2009/09/11 15:29:16 $
- * Version: $Revision: 1.22.2.1 $
+ * Date   : $Date: 2011/02/14 11:46:54 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import org.apache.commons.collections.buffer.UnboundedFifoBuffer;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.22.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -108,7 +108,7 @@ public class CmsSessionInfo implements Comparable<CmsSessionInfo>, Serializable 
         m_timeCreated = System.currentTimeMillis();
         m_sessionId = sessionId;
         m_maxInactiveInterval = maxInactiveInterval;
-        m_userId = context.currentUser().getId();
+        m_userId = context.getCurrentUser().getId();
         update(context);
     }
 
@@ -312,7 +312,7 @@ public class CmsSessionInfo implements Comparable<CmsSessionInfo>, Serializable 
 
         m_timeUpdated = System.currentTimeMillis();
         m_siteRoot = context.getSiteRoot();
-        setProject(context.currentProject().getUuid());
+        setProject(context.getCurrentProject().getUuid());
         m_ouFqn = context.getOuFqn();
     }
 }

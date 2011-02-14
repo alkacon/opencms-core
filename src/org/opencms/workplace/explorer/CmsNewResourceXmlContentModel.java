@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceXmlContentModel.java,v $
- * Date   : $Date: 2009/06/04 14:29:45 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/02/14 11:46:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.5.4 
  */
@@ -250,9 +250,9 @@ public class CmsNewResourceXmlContentModel extends A_CmsSelectResourceList {
                 null,
                 CmsResourceState.STATE_UNCHANGED,
                 0,
-                getCms().getRequestContext().currentUser().getId(),
+                getCms().getRequestContext().getCurrentUser().getId(),
                 0,
-                getCms().getRequestContext().currentUser().getId(),
+                getCms().getRequestContext().getCurrentUser().getId(),
                 0,
                 Long.MAX_VALUE,
                 0,

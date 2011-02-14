@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagUserTracking.java,v $
- * Date   : $Date: 2010/07/23 08:29:34 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/02/14 11:46:55 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  *  
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0 
  */
@@ -168,11 +168,11 @@ public class CmsJspTagUserTracking extends TagSupport {
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(userName)) {
                 user = cms.readUser(userName);
             } else if (currentUser) {
-                user = cms.getRequestContext().currentUser();
+                user = cms.getRequestContext().getCurrentUser();
             }
             if ((group == null) && (user == null) && (actionIndex != 4)) {
                 // set current user for the action except for check subscriptions
-                user = cms.getRequestContext().currentUser();
+                user = cms.getRequestContext().getCurrentUser();
             }
             // determine the file to track
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(fileName)) {
@@ -207,7 +207,7 @@ public class CmsJspTagUserTracking extends TagSupport {
                         if (user != null) {
                             groups.addAll(cms.getGroupsOfUser(user.getName(), false));
                         } else {
-                            groups.addAll(cms.getGroupsOfUser(cms.getRequestContext().currentUser().getName(), false));
+                            groups.addAll(cms.getGroupsOfUser(cms.getRequestContext().getCurrentUser().getName(), false));
                         }
                     } else if (group != null) {
                         groups.add(group);
@@ -379,7 +379,7 @@ public class CmsJspTagUserTracking extends TagSupport {
 
             CmsObject cms = CmsFlexController.getCmsObject(req);
 
-            if (m_online && !cms.getRequestContext().currentProject().isOnlineProject()) {
+            if (m_online && !cms.getRequestContext().getCurrentProject().isOnlineProject()) {
                 // the online flag is set and we are in an offline project, do not track file
                 return SKIP_BODY;
             }

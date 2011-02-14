@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/Attic/CmsCoreService.java,v $
- * Date   : $Date: 2011/02/14 10:02:24 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2011/02/14 11:46:56 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -30,7 +30,8 @@
  */
 
 package org.opencms.gwt;
-import org.opencms.db.CmsResourceState;
+
+import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
@@ -108,7 +109,7 @@ import org.apache.commons.fileupload.util.Streams;
  * @author Michael Moossen
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.27 $ 
  * 
  * @since 8.0.0
  * 
@@ -797,10 +798,10 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         CmsLock lock = getCmsObject().getLock(resource);
         // prove is current lock from current but not in current project
         if ((lock != null)
-            && lock.isOwnedBy(getCmsObject().getRequestContext().currentUser())
+            && lock.isOwnedBy(getCmsObject().getRequestContext().getCurrentUser())
             && !lock.isOwnedInProjectBy(
-                getCmsObject().getRequestContext().currentUser(),
-                getCmsObject().getRequestContext().currentProject())) {
+                getCmsObject().getRequestContext().getCurrentUser(),
+                getCmsObject().getRequestContext().getCurrentProject())) {
             // file is locked by current user but not in current project
             // change the lock from this file
             getCmsObject().changeLock(resource);
@@ -1040,7 +1041,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             CmsObject cms = getCmsObject();
 
             String resource = resourceSitePath;
-            CmsUser user = getCmsObject().getRequestContext().currentUser();
+            CmsUser user = getCmsObject().getRequestContext().getCurrentUser();
             Locale locale = getCmsObject().getRequestContext().getLocale();
             Date date = new Date(pubDate);
 
@@ -1118,7 +1119,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             // create the context info
             CmsContextInfo contextInfo = new CmsContextInfo();
             contextInfo.setProjectName(projectName);
-            contextInfo.setUserName(cmsAdmin.getRequestContext().currentUser().getName());
+            contextInfo.setUserName(cmsAdmin.getRequestContext().getCurrentUser().getName());
             // create the job schedule parameter
             SortedMap<String, String> params = new TreeMap<String, String>();
             // the user to send mail to

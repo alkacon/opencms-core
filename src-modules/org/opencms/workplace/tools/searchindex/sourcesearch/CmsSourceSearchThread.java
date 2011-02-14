@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/sourcesearch/CmsSourceSearchThread.java,v $
- * Date   : $Date: 2010/11/04 13:46:24 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/02/14 11:46:55 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Mario Jaeger
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 7.5.3
  */
@@ -186,7 +186,7 @@ public class CmsSourceSearchThread extends A_CmsReportThread {
 
         // make an OpenCms object copy if replace is active
         CmsObject cmsObject = getCms();
-        if (replace && !m_settings.getProject().equals(cmsObject.getRequestContext().currentProject().getName())) {
+        if (replace && !m_settings.getProject().equals(cmsObject.getRequestContext().getCurrentProject().getName())) {
             try {
                 cmsObject = OpenCms.initCmsObject(getCms());
                 CmsProject cmsProject = getCms().readProject(m_settings.getProject());
@@ -227,22 +227,22 @@ public class CmsSourceSearchThread extends A_CmsReportThread {
         CmsLock lock = cmsObject.getLock(cmsObject.getSitePath(cmsResource));
         // check the lock
         if ((lock != null)
-            && lock.isOwnedBy(cmsObject.getRequestContext().currentUser())
+            && lock.isOwnedBy(cmsObject.getRequestContext().getCurrentUser())
             && lock.isOwnedInProjectBy(
-                cmsObject.getRequestContext().currentUser(),
-                cmsObject.getRequestContext().currentProject())) {
+                cmsObject.getRequestContext().getCurrentUser(),
+                cmsObject.getRequestContext().getCurrentProject())) {
             // prove is current lock from current user in current project
             return true;
-        } else if ((lock != null) && !lock.isUnlocked() && !lock.isOwnedBy(cmsObject.getRequestContext().currentUser())) {
+        } else if ((lock != null) && !lock.isUnlocked() && !lock.isOwnedBy(cmsObject.getRequestContext().getCurrentUser())) {
             // the resource is not locked by the current user, so can not lock it
             m_lockedFiles += 1;
             return false;
         } else if ((lock != null)
             && !lock.isUnlocked()
-            && lock.isOwnedBy(cmsObject.getRequestContext().currentUser())
+            && lock.isOwnedBy(cmsObject.getRequestContext().getCurrentUser())
             && !lock.isOwnedInProjectBy(
-                cmsObject.getRequestContext().currentUser(),
-                cmsObject.getRequestContext().currentProject())) {
+                cmsObject.getRequestContext().getCurrentUser(),
+                cmsObject.getRequestContext().getCurrentProject())) {
             // prove is current lock from current user but not in current project
             // file is locked by current user but not in current project
             // change the lock 
@@ -253,10 +253,10 @@ public class CmsSourceSearchThread extends A_CmsReportThread {
         }
         lock = cmsObject.getLock(cmsObject.getSitePath(cmsResource));
         if ((lock != null)
-            && lock.isOwnedBy(cmsObject.getRequestContext().currentUser())
+            && lock.isOwnedBy(cmsObject.getRequestContext().getCurrentUser())
             && !lock.isOwnedInProjectBy(
-                cmsObject.getRequestContext().currentUser(),
-                cmsObject.getRequestContext().currentProject())) {
+                cmsObject.getRequestContext().getCurrentUser(),
+                cmsObject.getRequestContext().getCurrentProject())) {
             // resource could not be locked
             m_lockedFiles += 1;
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/threads/CmsRelationsValidatorThread.java,v $
- * Date   : $Date: 2009/06/04 14:29:50 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/02/14 11:46:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import org.apache.commons.logging.Log;
 /**
  * A report thread for the relations validator.<p>
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -71,7 +71,7 @@ public class CmsRelationsValidatorThread extends A_CmsReportThread {
 
         super(cms, Messages.get().getBundle().key(
             Messages.GUI_HTML_LINK_VALIDATOR_THREAD_NAME_1,
-            new Object[] {cms.getRequestContext().currentProject().getName()}));
+            new Object[] {cms.getRequestContext().getCurrentProject().getName()}));
 
         m_publishList = null;
         m_savePublishList = false;
@@ -96,7 +96,7 @@ public class CmsRelationsValidatorThread extends A_CmsReportThread {
 
         super(cms, Messages.get().getBundle().key(
             Messages.GUI_HTML_LINK_VALIDATOR_THREAD_NAME_1,
-            new Object[] {cms.getRequestContext().currentProject().getName()}));
+            new Object[] {cms.getRequestContext().getCurrentProject().getName()}));
 
         m_publishList = publishList;
         if (m_publishList == null) {

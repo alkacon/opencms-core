@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspVfsAccessBean.java,v $
- * Date   : $Date: 2010/07/23 08:29:34 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/02/14 11:46:55 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import org.apache.commons.collections.map.LazyMap;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 7.0.2
  * 
@@ -362,7 +362,7 @@ public final class CmsJspVfsAccessBean {
      */
     public CmsProject getCurrentProject() {
 
-        return m_cms.getRequestContext().currentProject();
+        return m_cms.getRequestContext().getCurrentProject();
     }
 
     /**
@@ -376,7 +376,7 @@ public final class CmsJspVfsAccessBean {
      */
     public CmsUser getCurrentUser() {
 
-        return m_cms.getRequestContext().currentUser();
+        return m_cms.getRequestContext().getCurrentUser();
     }
 
     /**

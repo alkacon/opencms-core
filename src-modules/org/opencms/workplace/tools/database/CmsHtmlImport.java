@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsHtmlImport.java,v $
- * Date   : $Date: 2010/03/01 10:21:47 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/02/14 11:46:56 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -98,7 +98,7 @@ import org.apache.commons.logging.Log;
  * @author Peter Bonrad
  * @author Anja Roettgers
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -821,7 +821,7 @@ public class CmsHtmlImport {
         }
 
         // check if we are in an offline project
-        if (m_cmsObject.getRequestContext().currentProject().isOnlineProject()) {
+        if (m_cmsObject.getRequestContext().getCurrentProject().isOnlineProject()) {
             throw new CmsIllegalArgumentException(
                 Messages.get().container(Messages.GUI_HTMLIMPORT_CONSTRAINT_OFFLINE_0));
         }

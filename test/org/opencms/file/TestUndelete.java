@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestUndelete.java,v $
- * Date   : $Date: 2009/09/07 12:41:43 $
- * Version: $Revision: 1.6.2.1 $
+ * Date   : $Date: 2011/02/14 11:46:54 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen
  *  
- * @version $Revision: 1.6.2.1 $
+ * @version $Revision: 1.3 $
  */
 public class TestUndelete extends OpenCmsTestCase {
 
@@ -123,13 +123,13 @@ public class TestUndelete extends OpenCmsTestCase {
         // now evaluate the result
         tc.assertFilter(cms, file, OpenCmsTestResourceFilter.FILTER_TOUCH);
         // project must be current project
-        tc.assertProject(cms, file, cms.getRequestContext().currentProject());
+        tc.assertProject(cms, file, cms.getRequestContext().getCurrentProject());
         // state must be "changed"
         tc.assertState(cms, file, CmsResource.STATE_CHANGED);
         // date last modified must be the date set in the undelete operation
         tc.assertDateLastModifiedAfter(cms, file, timestamp);
         // the user last modified must be the current user
-        tc.assertUserLastModified(cms, file, cms.getRequestContext().currentUser());
+        tc.assertUserLastModified(cms, file, cms.getRequestContext().getCurrentUser());
     }
 
     /**
@@ -153,13 +153,13 @@ public class TestUndelete extends OpenCmsTestCase {
         // now evaluate the result
         tc.assertFilter(cms, folder, OpenCmsTestResourceFilter.FILTER_TOUCH);
         // project must be current project
-        tc.assertProject(cms, folder, cms.getRequestContext().currentProject());
+        tc.assertProject(cms, folder, cms.getRequestContext().getCurrentProject());
         // state must be "changed"
         tc.assertState(cms, folder, CmsResource.STATE_CHANGED);
         // date last modified must be the date set in the tough operation
         tc.assertDateLastModifiedAfter(cms, folder, timestamp);
         // the user last modified must be the current user
-        tc.assertUserLastModified(cms, folder, cms.getRequestContext().currentUser());
+        tc.assertUserLastModified(cms, folder, cms.getRequestContext().getCurrentUser());
 
         // evaluate all subresources
         List subresources = cms.readResources(folder, CmsResourceFilter.ALL);
@@ -194,13 +194,13 @@ public class TestUndelete extends OpenCmsTestCase {
         // now evaluate the result
         tc.assertFilter(cms, folder, OpenCmsTestResourceFilter.FILTER_TOUCH);
         // project must be current project
-        tc.assertProject(cms, folder, cms.getRequestContext().currentProject());
+        tc.assertProject(cms, folder, cms.getRequestContext().getCurrentProject());
         // state must be "changed"
         tc.assertState(cms, folder, CmsResource.STATE_CHANGED);
         // date last modified must be the date set in the undelete operation
         tc.assertDateLastModifiedAfter(cms, folder, timestamp);
         // the user last modified must be the current user
-        tc.assertUserLastModified(cms, folder, cms.getRequestContext().currentUser());
+        tc.assertUserLastModified(cms, folder, cms.getRequestContext().getCurrentUser());
 
         // evaluate all subresources
         List subresources = cms.readResources(folder, CmsResourceFilter.ALL);
@@ -213,13 +213,13 @@ public class TestUndelete extends OpenCmsTestCase {
             // now evaluate the result
             tc.assertFilter(cms, resName, OpenCmsTestResourceFilter.FILTER_TOUCH);
             // project must be current project
-            tc.assertProject(cms, resName, cms.getRequestContext().currentProject());
+            tc.assertProject(cms, resName, cms.getRequestContext().getCurrentProject());
             // state must be "changed"
             tc.assertState(cms, resName, CmsResource.STATE_CHANGED);
             // date last modified must be the date set in the undelete operation
             tc.assertDateLastModifiedAfter(cms, resName, timestamp);
             // the user last modified must be the current user
-            tc.assertUserLastModified(cms, resName, cms.getRequestContext().currentUser());
+            tc.assertUserLastModified(cms, resName, cms.getRequestContext().getCurrentUser());
         }
     }
 
@@ -267,13 +267,13 @@ public class TestUndelete extends OpenCmsTestCase {
         // now evaluate the result
         assertFilter(cms, resourceName, OpenCmsTestResourceFilter.FILTER_TOUCH);
         // project must be current project
-        assertProject(cms, resourceName, cms.getRequestContext().currentProject());
+        assertProject(cms, resourceName, cms.getRequestContext().getCurrentProject());
         // state must be "changed"
         assertState(cms, resourceName, CmsResource.STATE_CHANGED);
         // date last modified must be the date set in the undelete operation
         assertDateLastModifiedAfter(cms, resourceName, timestamp);
         // the user last modified must be the current user
-        assertUserLastModified(cms, resourceName, cms.getRequestContext().currentUser());
+        assertUserLastModified(cms, resourceName, cms.getRequestContext().getCurrentUser());
         // test the acl
         assertAcl(cms, resourceName, cms.readGroup("group2").getId(), new CmsPermissionSetCustom("+r-w"));
     }
@@ -392,12 +392,12 @@ public class TestUndelete extends OpenCmsTestCase {
         // now evaluate the result
         assertFilter(cms, siblingName, OpenCmsTestResourceFilter.FILTER_TOUCH);
         // project must be current project
-        assertProject(cms, siblingName, cms.getRequestContext().currentProject());
+        assertProject(cms, siblingName, cms.getRequestContext().getCurrentProject());
         // state must still be "deleted"
         assertState(cms, siblingName, CmsResource.STATE_DELETED);
         // date last modified must be the date set in the undelete operation
         assertDateLastModifiedAfter(cms, siblingName, timestamp);
         // the user last modified must be the current user
-        assertUserLastModified(cms, siblingName, cms.getRequestContext().currentUser());
+        assertUserLastModified(cms, siblingName, cms.getRequestContext().getCurrentUser());
     }
 }

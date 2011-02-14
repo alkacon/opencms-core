@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/adeconfig/Attic/CmsContainerPageConfigurationCache.java,v $
- * Date   : $Date: 2011/02/02 07:37:52 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/02/14 11:46:55 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import org.opencms.main.OpenCms;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -96,7 +96,7 @@ implements I_CmsConfigurationDataReader<CmsContainerPageConfigurationData> {
     private CmsObject initCmsObject(CmsObject cms) throws CmsException {
 
         CmsObject result = OpenCms.initCmsObject(m_adminCms);
-        result.getRequestContext().setCurrentProject(cms.getRequestContext().currentProject());
+        result.getRequestContext().setCurrentProject(cms.getRequestContext().getCurrentProject());
         result.getRequestContext().setSiteRoot(cms.getRequestContext().getSiteRoot());
         return result;
     }

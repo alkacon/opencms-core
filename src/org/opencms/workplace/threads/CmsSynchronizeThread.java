@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/threads/CmsSynchronizeThread.java,v $
- * Date   : $Date: 2009/06/04 14:29:50 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2011/02/14 11:46:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import org.opencms.synchronize.CmsSynchronizeSettings;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -64,7 +64,7 @@ public class CmsSynchronizeThread extends A_CmsReportThread {
 
         super(cms, Messages.get().getBundle().key(
             Messages.GUI_SYNCHRONIZE_THREAD_NAME_1,
-            cms.getRequestContext().currentProject().getName()));
+            cms.getRequestContext().getCurrentProject().getName()));
         initHtmlReport(cms.getRequestContext().getLocale());
         m_settings = new CmsUserSettings(cms).getSynchronizeSettings();
     }

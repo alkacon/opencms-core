@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsInternalRelationsValidationJob.java,v $
- * Date   : $Date: 2009/06/04 14:29:53 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/02/14 11:46:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import javax.mail.internet.InternetAddress;
  *            
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.5.0 
  * 
@@ -91,7 +91,7 @@ public class CmsInternalRelationsValidationJob implements I_CmsScheduledJob {
             report = new CmsStringBufferReport(cms.getRequestContext().getLocale());
             report.println(Messages.get().container(
                 Messages.GUI_RELATIONS_VALIDATION_PROJECT_1,
-                cms.getRequestContext().currentProject().getName()), I_CmsReport.FORMAT_HEADLINE);
+                cms.getRequestContext().getCurrentProject().getName()), I_CmsReport.FORMAT_HEADLINE);
             // TODO: replace by CmsObject#getRelationsForResource 
             OpenCms.getPublishManager().validateRelations(cms, null, report);
         } catch (Exception e) {
@@ -106,7 +106,7 @@ public class CmsInternalRelationsValidationJob implements I_CmsScheduledJob {
         String from = (String)parameters.get(PARAM_FROM);
         String addresses = (String)parameters.get(PARAM_EMAIL);
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(addresses)) {
-            addresses = cms.getRequestContext().currentUser().getEmail();
+            addresses = cms.getRequestContext().getCurrentUser().getEmail();
         }
         List to = new ArrayList();
         Iterator it = CmsStringUtil.splitAsList(addresses, ',').iterator();

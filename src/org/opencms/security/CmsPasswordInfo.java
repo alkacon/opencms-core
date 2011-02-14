@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsPasswordInfo.java,v $
- * Date   : $Date: 2009/06/04 14:29:03 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2011/02/14 11:46:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import org.opencms.util.CmsStringUtil;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -77,7 +77,7 @@ public class CmsPasswordInfo {
 
         m_cms = cms;
         if (m_cms != null) {
-            m_userName = m_cms.getRequestContext().currentUser().getName();
+            m_userName = m_cms.getRequestContext().getCurrentUser().getName();
         } else {
             m_userName = null;
         }

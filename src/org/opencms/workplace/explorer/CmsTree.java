@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsTree.java,v $
- * Date   : $Date: 2010/07/19 14:11:43 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/02/14 11:46:55 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -424,7 +424,7 @@ public class CmsTree extends CmsWorkplace {
             List<String> projectResources = new ArrayList<String>();
             if (isProjectAware()) {
                 try {
-                    projectResources = getCms().readProjectResources(getCms().getRequestContext().currentProject());
+                    projectResources = getCms().readProjectResources(getCms().getRequestContext().getCurrentProject());
                 } catch (CmsException e) {
                     // use an empty list (all resources are "outside")
                     if (LOG.isInfoEnabled()) {

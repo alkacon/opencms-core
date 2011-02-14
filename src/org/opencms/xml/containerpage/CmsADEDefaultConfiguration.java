@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/containerpage/CmsADEDefaultConfiguration.java,v $
- * Date   : $Date: 2011/02/03 15:14:22 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2011/02/14 11:46:56 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -67,7 +67,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 7.6 
  */
@@ -156,7 +156,7 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
      */
     public int getFavoriteListMaxSize(CmsObject cms) {
 
-        Integer maxElems = (Integer)cms.getRequestContext().currentUser().getAdditionalInfo(
+        Integer maxElems = (Integer)cms.getRequestContext().getCurrentUser().getAdditionalInfo(
             ADDINFO_ADE_FAVORITE_LIST_SIZE);
         if (maxElems == null) {
             maxElems = new Integer(DEFAULT_FAVORITE_LIST_SIZE);
@@ -233,7 +233,7 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
      */
     public int getRecentListMaxSize(CmsObject cms) {
 
-        Integer maxElems = (Integer)cms.getRequestContext().currentUser().getAdditionalInfo(
+        Integer maxElems = (Integer)cms.getRequestContext().getCurrentUser().getAdditionalInfo(
             ADDINFO_ADE_RECENT_LIST_SIZE);
         if (maxElems == null) {
             maxElems = new Integer(DEFAULT_RECENT_LIST_SIZE);
@@ -255,7 +255,7 @@ public class CmsADEDefaultConfiguration implements I_CmsADEConfiguration {
      */
     public int getSearchPageSize(CmsObject cms) {
 
-        Integer maxElems = (Integer)cms.getRequestContext().currentUser().getAdditionalInfo(
+        Integer maxElems = (Integer)cms.getRequestContext().getCurrentUser().getAdditionalInfo(
             ADDINFO_ADE_SEARCH_PAGE_SIZE);
         if (maxElems == null) {
             maxElems = new Integer(DEFAULT_SEARCH_PAGE_SIZE);

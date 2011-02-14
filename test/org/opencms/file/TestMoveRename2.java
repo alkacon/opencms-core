@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestMoveRename2.java,v $
- * Date   : $Date: 2010/02/02 09:18:57 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/02/14 11:46:54 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import junit.framework.TestSuite;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class TestMoveRename2 extends OpenCmsTestCase {
 
@@ -130,7 +130,7 @@ public class TestMoveRename2 extends OpenCmsTestCase {
         cms.getRequestContext().setSiteRoot("");
         String src = "/sites/default/";
         String dest = "/sites/newname/";
-        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
+        cms.unlockProject(cms.getRequestContext().getCurrentProject().getUuid());
         cms.lockResource(src);
         cms.moveResource(src, dest);
 
@@ -195,7 +195,7 @@ public class TestMoveRename2 extends OpenCmsTestCase {
 
         cms.createResource(folder + file, CmsResourceTypePlain.getStaticTypeId());
 
-        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
+        cms.unlockProject(cms.getRequestContext().getCurrentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
@@ -316,7 +316,7 @@ public class TestMoveRename2 extends OpenCmsTestCase {
 
         cms.lockResource("/");
         cms.setDateLastModified("/", System.currentTimeMillis(), true);
-        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
+        cms.unlockProject(cms.getRequestContext().getCurrentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
@@ -379,7 +379,7 @@ public class TestMoveRename2 extends OpenCmsTestCase {
         setMapping(sib2Name, sibName);
         assertFilter(cms, sib2Name, OpenCmsTestResourceFilter.FILTER_MOVE_DESTINATION);
         assertState(cms, sib2Name, CmsResourceState.STATE_CHANGED);
-        assertProject(cms, sib2Name, cms.getRequestContext().currentProject());
+        assertProject(cms, sib2Name, cms.getRequestContext().getCurrentProject());
     }
 
     /**
@@ -467,7 +467,7 @@ public class TestMoveRename2 extends OpenCmsTestCase {
         // destination resource
 
         // project must be current project
-        assertProject(cms, destination, cms.getRequestContext().currentProject());
+        assertProject(cms, destination, cms.getRequestContext().getCurrentProject());
         // state must be "changed"
         assertState(cms, destination, CmsResource.STATE_CHANGED);
         // assert lock state
@@ -513,7 +513,7 @@ public class TestMoveRename2 extends OpenCmsTestCase {
         cms.readResource(destination);
 
         // project must be current project
-        assertProject(cms, destination, cms.getRequestContext().currentProject());
+        assertProject(cms, destination, cms.getRequestContext().getCurrentProject());
         // state must be "changed"
         assertState(cms, destination, CmsResource.STATE_CHANGED);
         // assert lock state
@@ -521,7 +521,7 @@ public class TestMoveRename2 extends OpenCmsTestCase {
         // folders don't have siblings
         assertSiblingCount(cms, destination, 1);
 
-        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
+        cms.unlockProject(cms.getRequestContext().getCurrentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
     }
@@ -581,7 +581,7 @@ public class TestMoveRename2 extends OpenCmsTestCase {
         // check lock
         assertFalse(cms.getLockedResources(newFolder2, CmsLockFilter.FILTER_ALL).contains(newFolder2 + source));
 
-        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
+        cms.unlockProject(cms.getRequestContext().getCurrentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
     }

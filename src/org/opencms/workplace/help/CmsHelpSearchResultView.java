@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/help/CmsHelpSearchResultView.java,v $
- * Date   : $Date: 2009/06/04 14:29:43 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2011/02/14 11:46:56 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.0.0
  */
@@ -110,7 +110,7 @@ public class CmsHelpSearchResultView {
         this.m_formCache = new TreeMap();
         try {
             m_onlineProject = m_jsp.getCmsObject().readProject(CmsProject.ONLINE_PROJECT_ID);
-            m_offlineProject = m_jsp.getRequestContext().currentProject();
+            m_offlineProject = m_jsp.getRequestContext().getCurrentProject();
         } catch (CmsException e) {
             // failed to get online project, at least avoid NPE
             m_onlineProject = m_offlineProject;

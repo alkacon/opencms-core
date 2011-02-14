@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPropertyCustom.java,v $
- * Date   : $Date: 2009/09/07 12:41:57 $
- * Version: $Revision: 1.29.2.1 $
+ * Date   : $Date: 2011/02/14 11:46:54 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.29.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -609,7 +609,7 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
                 }
                 if (handlerParams.containsKey(PARAM_SHOWGROUP)) {
                     // check if user is one of the configured groups
-                    CmsUser currentUser = getCms().getRequestContext().currentUser();
+                    CmsUser currentUser = getCms().getRequestContext().getCurrentUser();
                     List confGroups = (List)handlerParams.get(PARAM_SHOWGROUP);
                     for (Iterator i = confGroups.iterator(); i.hasNext();) {
                         String groupName = (String)i.next();

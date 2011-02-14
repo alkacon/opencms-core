@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/security/TestRoles.java,v $
- * Date   : $Date: 2009/09/07 12:41:46 $
- * Version: $Revision: 1.8.2.1 $
+ * Date   : $Date: 2011/02/14 11:46:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -165,9 +165,9 @@ public class TestRoles extends OpenCmsTestCase {
         assertFalse(roleMan.getManageableUsers(cms, "", false).isEmpty());
         assertFalse(roleMan.getOrgUnitsForRole(cms, CmsRole.ADMINISTRATOR.forOrgUnit(""), false).isEmpty());
 
-        assertFalse(roleMan.getRolesOfUser(cms, cms.getRequestContext().currentUser().getName(), "", true, false, false).isEmpty());
+        assertFalse(roleMan.getRolesOfUser(cms, cms.getRequestContext().getCurrentUser().getName(), "", true, false, false).isEmpty());
         assertTrue(roleMan.getUsersOfRole(cms, CmsRole.ROOT_ADMIN, true, false).contains(
-            cms.getRequestContext().currentUser()));
+            cms.getRequestContext().getCurrentUser()));
         assertTrue(roleMan.getUsersOfRole(cms, CmsRole.ADMINISTRATOR.forOrgUnit(""), true, true).isEmpty());
         assertEquals(1, roleMan.getUsersOfRole(cms, CmsRole.ADMINISTRATOR.forOrgUnit(""), true, false).size());
 
@@ -183,9 +183,9 @@ public class TestRoles extends OpenCmsTestCase {
         assertEquals(1, roleMan.getRolesOfUser(cms, user.getName(), "", true, false, false).size());
         assertFalse(roleMan.getUsersOfRole(cms, CmsRole.ROOT_ADMIN, true, false).contains(user));
         assertTrue(roleMan.getUsersOfRole(cms, CmsRole.ROOT_ADMIN, true, false).contains(
-            cms.getRequestContext().currentUser()));
+            cms.getRequestContext().getCurrentUser()));
         assertTrue(roleMan.getUsersOfRole(cms, CmsRole.ADMINISTRATOR.forOrgUnit(""), true, false).contains(
-            cms.getRequestContext().currentUser()));
+            cms.getRequestContext().getCurrentUser()));
 
         // login as test user to check if it can create a user
         cms.loginUser(user.getName(), "test1");
@@ -222,11 +222,11 @@ public class TestRoles extends OpenCmsTestCase {
 
         assertFalse(roleMan.getRolesOfUser(cms, user.getName(), "", true, false, false).isEmpty());
         assertTrue(roleMan.getUsersOfRole(cms, CmsRole.ADMINISTRATOR.forOrgUnit(""), true, false).contains(
-            cms.getRequestContext().currentUser()));
+            cms.getRequestContext().getCurrentUser()));
         assertTrue(roleMan.getUsersOfRole(cms, CmsRole.ACCOUNT_MANAGER.forOrgUnit(""), true, true).isEmpty());
         assertTrue(roleMan.getUsersOfRole(cms, CmsRole.ROOT_ADMIN, true, false).contains(cms.readUser("Admin")));
         assertFalse(roleMan.getUsersOfRole(cms, CmsRole.ROOT_ADMIN, true, false).contains(
-            cms.getRequestContext().currentUser()));
+            cms.getRequestContext().getCurrentUser()));
     }
 
     /**
@@ -267,7 +267,7 @@ public class TestRoles extends OpenCmsTestCase {
         // check preconditions for admin
         List adminRoles = roleMan.getRolesOfUser(
             cms,
-            cms.getRequestContext().currentUser().getName(),
+            cms.getRequestContext().getCurrentUser().getName(),
             "",
             false,
             true,
@@ -276,12 +276,12 @@ public class TestRoles extends OpenCmsTestCase {
         assertTrue(adminRoles.contains(CmsRole.ROOT_ADMIN));
 
         // should do nothing
-        roleMan.addUserToRole(cms, CmsRole.DEVELOPER.forOrgUnit(""), cms.getRequestContext().currentUser().getName());
+        roleMan.addUserToRole(cms, CmsRole.DEVELOPER.forOrgUnit(""), cms.getRequestContext().getCurrentUser().getName());
 
         // check again
         adminRoles = roleMan.getRolesOfUser(
             cms,
-            cms.getRequestContext().currentUser().getName(),
+            cms.getRequestContext().getCurrentUser().getName(),
             "",
             false,
             true,

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequest.java,v $
- * Date   : $Date: 2010/03/30 14:14:44 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/02/14 11:46:56 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -66,7 +66,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -135,7 +135,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
         m_includeCalls = new Vector<String>();
         m_parameters = CmsCollectionsGenericWrapper.map(req.getParameterMap());
         m_attributes = CmsRequestUtil.getAtrributeMap(req);
-        m_isOnline = cms.getRequestContext().currentProject().isOnlineProject();
+        m_isOnline = cms.getRequestContext().getCurrentProject().isOnlineProject();
         String[] params = req.getParameterValues(PARAMETER_FLEX);
         boolean nocachepara = CmsHistoryResourceHandler.isHistoryRequest(req);
         boolean dorecompile = false;

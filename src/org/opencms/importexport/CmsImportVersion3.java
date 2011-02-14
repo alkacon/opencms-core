@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion3.java,v $
- * Date   : $Date: 2009/09/23 14:03:19 $
- * Version: $Revision: 1.81.2.1 $
+ * Date   : $Date: 2011/02/14 11:46:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -77,7 +77,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.81.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  * 
@@ -440,14 +440,14 @@ public class CmsImportVersion3 extends A_CmsImport {
             try {
                 newUserlastmodified = m_cms.readUser(userlastmodified).getId();
             } catch (CmsException e) {
-                newUserlastmodified = m_cms.getRequestContext().currentUser().getId();
+                newUserlastmodified = m_cms.getRequestContext().getCurrentUser().getId();
                 // datelastmodified = System.currentTimeMillis();
             }
 
             try {
                 newUsercreated = m_cms.readUser(usercreated).getId();
             } catch (CmsException e) {
-                newUsercreated = m_cms.getRequestContext().currentUser().getId();
+                newUsercreated = m_cms.getRequestContext().getCurrentUser().getId();
                 // datecreated = System.currentTimeMillis();
             }
 
@@ -495,7 +495,7 @@ public class CmsImportVersion3 extends A_CmsImport {
                 resType.getTypeId(),
                 resType.isFolder(),
                 new Integer(flags).intValue(),
-                m_cms.getRequestContext().currentProject().getUuid(),
+                m_cms.getRequestContext().getCurrentProject().getUuid(),
                 CmsResource.STATE_NEW,
                 datecreated,
                 newUsercreated,

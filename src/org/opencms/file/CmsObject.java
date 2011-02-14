@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2011/02/14 10:02:24 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2011/02/14 11:46:56 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -98,7 +98,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 6.0.0 
  */
@@ -573,7 +573,7 @@ public final class CmsObject {
         byte[] content,
         List<CmsProperty> properties) throws CmsException {
 
-        resource.setUserLastModified(getRequestContext().currentUser().getId());
+        resource.setUserLastModified(getRequestContext().getCurrentUser().getId());
         resource.setDateLastModified(System.currentTimeMillis());
         // ensure resource record is updated
         resource.setState(CmsResource.STATE_NEW);
@@ -1297,7 +1297,7 @@ public final class CmsObject {
      */
     public CmsPermissionSet getPermissions(String resourceName) throws CmsException {
 
-        return getPermissions(resourceName, m_context.currentUser().getName());
+        return getPermissions(resourceName, m_context.getCurrentUser().getName());
     }
 
     /**

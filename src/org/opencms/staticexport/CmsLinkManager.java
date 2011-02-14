@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2010/10/20 15:22:48 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/02/14 11:46:56 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -254,7 +254,7 @@ public class CmsLinkManager {
 
         String result = "";
         try {
-            CmsProject currentProject = cms.getRequestContext().currentProject();
+            CmsProject currentProject = cms.getRequestContext().getCurrentProject();
             try {
                 cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
                 result = substituteLinkForUnknownTarget(cms, resourceName);
@@ -655,7 +655,7 @@ public class CmsLinkManager {
             // URI is absolute and contains no schema
             // this indicates source and target link are in the same site
             String serverPrefix;
-            if (cms.getRequestContext().currentProject().isOnlineProject()) {
+            if (cms.getRequestContext().getCurrentProject().isOnlineProject()) {
                 // on online project, get the real site name from the site manager
                 CmsSite currentSite = OpenCms.getSiteManager().getSite(
                     resourceName,

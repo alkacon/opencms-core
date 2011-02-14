@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/jobs/CmsPublishJob.java,v $
- * Date   : $Date: 2009/09/08 12:52:22 $
- * Version: $Revision: 1.16.2.1 $
+ * Date   : $Date: 2011/02/14 11:46:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.16.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -89,7 +89,7 @@ public class CmsPublishJob implements I_CmsScheduledJob {
         String finishMessage;
         String unlock = parameters.get(PARAM_UNLOCK);
         String linkcheck = parameters.get(PARAM_LINKCHECK);
-        CmsProject project = cms.getRequestContext().currentProject();
+        CmsProject project = cms.getRequestContext().getCurrentProject();
 
         CmsLogReport report = new CmsLogReport(cms.getRequestContext().getLocale(), CmsPublishJob.class);
 

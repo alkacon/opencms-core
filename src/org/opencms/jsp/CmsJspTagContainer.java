@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContainer.java,v $
- * Date   : $Date: 2011/01/14 12:03:52 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2011/02/14 11:46:55 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.31 $ 
+ * @version $Revision: 1.32 $ 
  * 
  * @since 7.6 
  */
@@ -259,7 +259,7 @@ public class CmsJspTagContainer extends TagSupport {
 
         // get the container
         CmsContainerBean container = cntPage.getContainers().get(containerName);
-        boolean isOnline = cms.getRequestContext().currentProject().isOnlineProject();
+        boolean isOnline = cms.getRequestContext().getCurrentProject().isOnlineProject();
 
         boolean isUsedAsDetailView = false;
         CmsUUID detailContentId = CmsDetailPageResourceHandler.getDetailId(req);
@@ -641,7 +641,7 @@ public class CmsJspTagContainer extends TagSupport {
         String containerType = getType();
         int containerWidth = getContainerWidth();
         ServletRequest req = pageContext.getRequest();
-        boolean isOnline = cms.getRequestContext().currentProject().isOnlineProject();
+        boolean isOnline = cms.getRequestContext().getCurrentProject().isOnlineProject();
         CmsUUID detailId = CmsDetailPageResourceHandler.getDetailId(req);
 
         if (detailId != null) {
@@ -761,7 +761,7 @@ public class CmsJspTagContainer extends TagSupport {
         ServletResponse res = pageContext.getResponse();
         String containerType = getType();
         int containerWidth = getContainerWidth();
-        boolean isOnline = cms.getRequestContext().currentProject().isOnlineProject();
+        boolean isOnline = cms.getRequestContext().getCurrentProject().isOnlineProject();
 
         CmsResource resUri = cms.readResource(element.getElementId());
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsMacroResolver.java,v $
- * Date   : $Date: 2011/01/20 07:10:15 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2011/02/14 11:46:56 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -66,7 +66,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -522,7 +522,7 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
                     macro = macro.substring(CmsMacroResolver.KEY_REQUEST_PARAM.length());
                     String result = m_jspPageContext.getRequest().getParameter(macro);
                     if ((result == null) && macro.equals(KEY_PROJECT_ID)) {
-                        result = m_cms.getRequestContext().currentProject().getUuid().toString();
+                        result = m_cms.getRequestContext().getCurrentProject().getUuid().toString();
                     }
                     return result;
                 }
@@ -662,26 +662,26 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
 
             if (CmsMacroResolver.KEY_CURRENT_USER_NAME.equals(macro)) {
                 // the key is the current users login name
-                return m_cms.getRequestContext().currentUser().getName();
+                return m_cms.getRequestContext().getCurrentUser().getName();
             }
 
             if (CmsMacroResolver.KEY_CURRENT_USER_FIRSTNAME.equals(macro)) {
                 // the key is the current users first name
-                return m_cms.getRequestContext().currentUser().getFirstname();
+                return m_cms.getRequestContext().getCurrentUser().getFirstname();
             }
 
             if (CmsMacroResolver.KEY_CURRENT_USER_LASTNAME.equals(macro)) {
                 // the key is the current users last name
-                return m_cms.getRequestContext().currentUser().getLastname();
+                return m_cms.getRequestContext().getCurrentUser().getLastname();
             }
 
             if (CmsMacroResolver.KEY_CURRENT_USER_DISPLAYNAME.equals(macro)) {
                 // the key is the current users display name
                 try {
                     if (m_messages != null) {
-                        return m_cms.getRequestContext().currentUser().getDisplayName(m_cms, m_messages.getLocale());
+                        return m_cms.getRequestContext().getCurrentUser().getDisplayName(m_cms, m_messages.getLocale());
                     } else {
-                        return m_cms.getRequestContext().currentUser().getDisplayName(
+                        return m_cms.getRequestContext().getCurrentUser().getDisplayName(
                             m_cms,
                             m_cms.getRequestContext().getLocale());
                     }
@@ -713,37 +713,37 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
 
             if (CmsMacroResolver.KEY_CURRENT_USER_FULLNAME.equals(macro)) {
                 // the key is the current users full name
-                return m_cms.getRequestContext().currentUser().getFullName();
+                return m_cms.getRequestContext().getCurrentUser().getFullName();
             }
 
             if (CmsMacroResolver.KEY_CURRENT_USER_EMAIL.equals(macro)) {
                 // the key is the current users email address
-                return m_cms.getRequestContext().currentUser().getEmail();
+                return m_cms.getRequestContext().getCurrentUser().getEmail();
             }
 
             if (CmsMacroResolver.KEY_CURRENT_USER_STREET.equals(macro)) {
                 // the key is the current users address
-                return m_cms.getRequestContext().currentUser().getAddress();
+                return m_cms.getRequestContext().getCurrentUser().getAddress();
             }
 
             if (CmsMacroResolver.KEY_CURRENT_USER_ZIP.equals(macro)) {
                 // the key is the current users zip code
-                return m_cms.getRequestContext().currentUser().getZipcode();
+                return m_cms.getRequestContext().getCurrentUser().getZipcode();
             }
 
             if (CmsMacroResolver.KEY_CURRENT_USER_COUNTRY.equals(macro)) {
                 // the key is the current users country
-                return m_cms.getRequestContext().currentUser().getCountry();
+                return m_cms.getRequestContext().getCurrentUser().getCountry();
             }
 
             if (CmsMacroResolver.KEY_CURRENT_USER_CITY.equals(macro)) {
                 // the key is the current users city
-                return m_cms.getRequestContext().currentUser().getCity();
+                return m_cms.getRequestContext().getCurrentUser().getCity();
             }
 
             if (CmsMacroResolver.KEY_CURRENT_USER_LASTLOGIN.equals(macro) && (m_messages != null)) {
                 // the key is the current users last login timestamp
-                return m_messages.getDateTime(m_cms.getRequestContext().currentUser().getLastlogin());
+                return m_messages.getDateTime(m_cms.getRequestContext().getCurrentUser().getLastlogin());
             }
 
             if (CmsMacroResolver.KEY_REQUEST_URI.equals(macro)) {
@@ -773,7 +773,7 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
 
             if (CmsMacroResolver.KEY_CURRENT_USER_INSTITUTION.equals(macro)) {
                 // the key is the current users institution
-                return m_cms.getRequestContext().currentUser().getInstitution();
+                return m_cms.getRequestContext().getCurrentUser().getInstitution();
             }
 
         }

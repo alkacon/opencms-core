@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShell.java,v $
- * Date   : $Date: 2010/10/12 06:53:09 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/02/14 11:46:54 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -80,7 +80,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  * 
@@ -634,12 +634,12 @@ public class CmsShell {
 
         String prompt = m_prompt;
         try {
-            prompt = CmsStringUtil.substitute(prompt, "${user}", m_cms.getRequestContext().currentUser().getName());
+            prompt = CmsStringUtil.substitute(prompt, "${user}", m_cms.getRequestContext().getCurrentUser().getName());
             prompt = CmsStringUtil.substitute(prompt, "${siteroot}", m_cms.getRequestContext().getSiteRoot());
             prompt = CmsStringUtil.substitute(
                 prompt,
                 "${project}",
-                m_cms.getRequestContext().currentProject().getName());
+                m_cms.getRequestContext().getCurrentProject().getName());
             prompt = CmsStringUtil.substitute(prompt, "${uri}", m_cms.getRequestContext().getUri());
         } catch (Throwable t) {
             // ignore

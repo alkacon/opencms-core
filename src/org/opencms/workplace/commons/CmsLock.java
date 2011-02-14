@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsLock.java,v $
- * Date   : $Date: 2010/02/11 10:20:31 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/02/14 11:46:54 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -516,7 +516,7 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
 
         if (m_blockingFilter == null) {
             m_blockingFilter = CmsLockFilter.FILTER_ALL;
-            m_blockingFilter = m_blockingFilter.filterNotLockableByUser(getCms().getRequestContext().currentUser());
+            m_blockingFilter = m_blockingFilter.filterNotLockableByUser(getCms().getRequestContext().getCurrentUser());
         }
         return m_blockingFilter;
     }
@@ -680,7 +680,7 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
 
         if (m_nonBlockingFilter == null) {
             m_nonBlockingFilter = CmsLockFilter.FILTER_ALL;
-            m_nonBlockingFilter = m_nonBlockingFilter.filterLockableByUser(getCms().getRequestContext().currentUser());
+            m_nonBlockingFilter = m_nonBlockingFilter.filterLockableByUser(getCms().getRequestContext().getCurrentUser());
             m_nonBlockingFilter = m_nonBlockingFilter.filterSharedExclusive();
         }
         return m_nonBlockingFilter;
@@ -924,7 +924,7 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
                 if (lock.isNullLock()) {
                     break;
                 }
-                if (lock.isOwnedBy(getCms().getRequestContext().currentUser())) {
+                if (lock.isOwnedBy(getCms().getRequestContext().getCurrentUser())) {
                     getCms().unlockResource(resourceName);
                 }
         }

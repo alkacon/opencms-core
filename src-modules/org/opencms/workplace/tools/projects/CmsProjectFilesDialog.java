@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectFilesDialog.java,v $
- * Date   : $Date: 2009/06/04 14:33:48 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2011/02/14 11:46:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -280,8 +280,8 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
         try {
             getCms().readProject(new CmsUUID(getParamProjectid()));
         } catch (Exception e) {
-            if (!getCms().getRequestContext().currentProject().isOnlineProject()) {
-                m_paramProjectid = getCms().getRequestContext().currentProject().getUuid().toString();
+            if (!getCms().getRequestContext().getCurrentProject().isOnlineProject()) {
+                m_paramProjectid = getCms().getRequestContext().getCurrentProject().getUuid().toString();
             } else {
                 throw e;
             }

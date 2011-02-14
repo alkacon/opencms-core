@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagJQuery.java,v $
- * Date   : $Date: 2009/06/04 14:29:03 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/02/14 11:46:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import org.apache.commons.logging.Log;
  * This tag will include the JQuery javascript library depending on the current project. If the current
  * Project is offline the unpacked version is used, if online the packed version will be used.
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.0.5 
  */
@@ -131,7 +131,7 @@ public class CmsJspTagJQuery extends BodyTagSupport {
 
         // first handle js file
         String path = VFS_PATH_JQUERY;
-        if (cms.getRequestContext().currentProject().isOnlineProject()) {
+        if (cms.getRequestContext().getCurrentProject().isOnlineProject()) {
             // online
             path += VFS_PATH_PACKED;
         } else {

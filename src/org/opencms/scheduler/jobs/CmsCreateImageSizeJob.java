@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/jobs/CmsCreateImageSizeJob.java,v $
- * Date   : $Date: 2010/03/01 10:21:47 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/02/14 11:46:55 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -67,7 +67,7 @@ import java.util.Map;
  * @author Michael Emmerich
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.2 
  */
@@ -129,7 +129,7 @@ public class CmsCreateImageSizeJob implements I_CmsScheduledJob {
                 // check if the resource is locked by another user
                 // we cannot process resources that are locked by someone else
                 CmsLock lock = cms.getLock(res);
-                if (lock.isNullLock() || lock.isOwnedBy(cms.getRequestContext().currentUser())) {
+                if (lock.isNullLock() || lock.isOwnedBy(cms.getRequestContext().getCurrentUser())) {
 
                     // read the file content
                     CmsFile file = cms.readFile(res);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/module/TestModuleIssues.java,v $
- * Date   : $Date: 2009/09/07 12:41:46 $
- * Version: $Revision: 1.17.2.1 $
+ * Date   : $Date: 2011/02/14 11:46:56 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.17.2.1 $
+ * @version $Revision: 1.3 $
  */
 public class TestModuleIssues extends OpenCmsTestCase {
 
@@ -185,7 +185,7 @@ public class TestModuleIssues extends OpenCmsTestCase {
             "test",
             "test@test.com",
             System.currentTimeMillis(),
-            cms.getRequestContext().currentUser().getName(),
+            cms.getRequestContext().getCurrentUser().getName(),
             System.currentTimeMillis(),
             null,
             null,

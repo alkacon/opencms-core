@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2011/02/10 16:33:07 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2011/02/14 11:46:54 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -148,7 +148,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.27 $ 
  * 
  * @since 6.0.0 
  */
@@ -880,7 +880,7 @@ public final class OpenCmsCore {
                 CmsMessageContainer message = Messages.get().container(
                     Messages.ERR_INVALID_INIT_USER_2,
                     userName,
-                    ((adminCms != null) ? (adminCms.getRequestContext().currentUser().getName()) : ""));
+                    ((adminCms != null) ? (adminCms.getRequestContext().getCurrentUser().getName()) : ""));
                 if (LOG.isWarnEnabled()) {
                     LOG.warn(message.key());
                 }
@@ -1447,7 +1447,7 @@ public final class OpenCmsCore {
             }
 
             // check online project
-            if (cms.getRequestContext().currentProject().isOnlineProject()) {
+            if (cms.getRequestContext().getCurrentProject().isOnlineProject()) {
                 // check if resource is secure
                 boolean secure = Boolean.valueOf(
                     cms.readPropertyObject(cms.getSitePath(resource), CmsPropertyDefinition.PROPERTY_SECURE, true).getValue()).booleanValue();
@@ -1616,7 +1616,7 @@ public final class OpenCmsCore {
         try {
             cms = initCmsObject(req, res);
 
-            if (cms.getRequestContext().currentProject().isOnlineProject()) {
+            if (cms.getRequestContext().getCurrentProject().isOnlineProject()) {
                 String uri = cms.getRequestContext().getUri();
                 if (OpenCms.getStaticExportManager().isExportLink(cms, uri)) {
                     String url = OpenCms.getStaticExportManager().getRfsName(cms, uri);
@@ -1814,9 +1814,9 @@ public final class OpenCmsCore {
 
         return initCmsObject(
             request,
-            cms.getRequestContext().currentUser(),
+            cms.getRequestContext().getCurrentUser(),
             site.getSiteRoot(),
-            cms.getRequestContext().currentProject().getUuid(),
+            cms.getRequestContext().getCurrentProject().getUuid(),
             cms.getRequestContext().getOuFqn());
     }
 
@@ -2036,10 +2036,10 @@ public final class OpenCmsCore {
         res.setStatus(status);
 
         try {
-            if ((cms != null) && (cms.getRequestContext().currentUser() != null)) {
+            if ((cms != null) && (cms.getRequestContext().getCurrentUser() != null)) {
                 isGuest = isGuest
-                    && (cms.getRequestContext().currentUser().isGuestUser() || cms.userInGroup(
-                        cms.getRequestContext().currentUser().getName(),
+                    && (cms.getRequestContext().getCurrentUser().isGuestUser() || cms.userInGroup(
+                        cms.getRequestContext().getCurrentUser().getName(),
                         OpenCms.getDefaultUsers().getGroupGuests()));
             }
         } catch (CmsException e) {
@@ -2050,7 +2050,7 @@ public final class OpenCmsCore {
         if (canWrite) {
             res.setContentType("text/html");
             CmsRequestUtil.setNoCacheHeaders(res);
-            if (!isGuest && (cms != null) && !cms.getRequestContext().currentProject().isOnlineProject()) {
+            if (!isGuest && (cms != null) && !cms.getRequestContext().getCurrentProject().isOnlineProject()) {
                 try {
                     res.setStatus(HttpServletResponse.SC_OK);
                     res.getWriter().print(createErrorBox(t, req, cms));

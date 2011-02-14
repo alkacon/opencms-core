@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2009/09/23 14:03:20 $
- * Version: $Revision: 1.119.2.1 $
+ * Date   : $Date: 2011/02/14 11:46:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -82,7 +82,7 @@ import org.dom4j.Node;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.119.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  * 
@@ -704,7 +704,7 @@ public class CmsImportVersion2 extends A_CmsImport {
                 size = content.length;
             }
             // get the required UUIDs         
-            CmsUUID curUser = m_cms.getRequestContext().currentUser().getId();
+            CmsUUID curUser = m_cms.getRequestContext().getCurrentUser().getId();
             CmsUUID newUuidstructure = new CmsUUID();
             CmsUUID newUuidresource = new CmsUUID();
             if (uuid != null) {
@@ -738,7 +738,7 @@ public class CmsImportVersion2 extends A_CmsImport {
                 resourceTypeId,
                 isFolder,
                 0,
-                m_cms.getRequestContext().currentProject().getUuid(),
+                m_cms.getRequestContext().getCurrentProject().getUuid(),
                 CmsResource.STATE_NEW,
                 lastmodified,
                 curUser,

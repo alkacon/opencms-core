@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestCreateWriteResource.java,v $
- * Date   : $Date: 2010/01/20 09:16:55 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/02/14 11:46:54 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class TestCreateWriteResource extends OpenCmsTestCase {
 
@@ -195,7 +195,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
         // ensure created resource is a folder
         assertIsFolder(cms, resourcename);
         // project must be current project
-        assertProject(cms, resourcename, cms.getRequestContext().currentProject());
+        assertProject(cms, resourcename, cms.getRequestContext().getCurrentProject());
         // state must be "new"
         assertState(cms, resourcename, CmsResource.STATE_NEW);
         // date last modified 
@@ -203,10 +203,10 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
         // date created
         assertDateCreatedAfter(cms, resourcename, timestamp);
         // the user last modified must be the current user
-        assertUserLastModified(cms, resourcename, cms.getRequestContext().currentUser());
+        assertUserLastModified(cms, resourcename, cms.getRequestContext().getCurrentUser());
 
         // publish the project
-        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
+        cms.unlockProject(cms.getRequestContext().getCurrentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
@@ -248,13 +248,13 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
         // ensure created resource is a folder
         assertIsFolder(cms, resourcename);
         // project must be current project
-        assertProject(cms, resourcename, cms.getRequestContext().currentProject());
+        assertProject(cms, resourcename, cms.getRequestContext().getCurrentProject());
         // state must be "changed"
         assertState(cms, resourcename, CmsResource.STATE_CHANGED);
         // date last modified 
         assertDateLastModifiedAfter(cms, resourcename, timestamp);
         // the user last modified must be the current user
-        assertUserLastModified(cms, resourcename, cms.getRequestContext().currentUser());
+        assertUserLastModified(cms, resourcename, cms.getRequestContext().getCurrentUser());
         // date created
         assertDateCreated(cms, resourcename, original.getDateCreated());
         // the user created must be the original
@@ -267,7 +267,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
         }
 
         // publish the project
-        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
+        cms.unlockProject(cms.getRequestContext().getCurrentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
@@ -295,7 +295,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
         // ensure created resource type
         assertResourceType(cms, resourcename, CmsResourceTypePlain.getStaticTypeId());
         // project must be current project
-        assertProject(cms, resourcename, cms.getRequestContext().currentProject());
+        assertProject(cms, resourcename, cms.getRequestContext().getCurrentProject());
         // state must be "new"
         assertState(cms, resourcename, CmsResource.STATE_NEW);
         // date last modified 
@@ -303,12 +303,12 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
         // date created
         assertDateCreatedAfter(cms, resourcename, timestamp);
         // the user last modified must be the current user
-        assertUserLastModified(cms, resourcename, cms.getRequestContext().currentUser());
+        assertUserLastModified(cms, resourcename, cms.getRequestContext().getCurrentUser());
         // check the content
         assertContent(cms, resourcename, content);
 
         // publish the project
-        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
+        cms.unlockProject(cms.getRequestContext().getCurrentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
@@ -352,17 +352,17 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
         cms.createResource(resourcename, CmsResourceTypePlain.getStaticTypeId(), content, null);
 
         // project must be current project
-        assertProject(cms, resourcename, cms.getRequestContext().currentProject());
+        assertProject(cms, resourcename, cms.getRequestContext().getCurrentProject());
         // state must be "changed"
         assertState(cms, resourcename, CmsResource.STATE_CHANGED);
         // date last modified 
         assertDateLastModifiedAfter(cms, resourcename, timestamp);
         // the user last modified must be the current user
-        assertUserLastModified(cms, resourcename, cms.getRequestContext().currentUser());
+        assertUserLastModified(cms, resourcename, cms.getRequestContext().getCurrentUser());
         // date created
         assertDateCreatedAfter(cms, resourcename, timestamp);
         // the user created must be the current user
-        assertUserCreated(cms, resourcename, cms.getRequestContext().currentUser());
+        assertUserCreated(cms, resourcename, cms.getRequestContext().getCurrentUser());
         // check the content
         assertContent(cms, resourcename, content);
 
@@ -373,7 +373,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
         }
 
         // publish the project
-        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
+        cms.unlockProject(cms.getRequestContext().getCurrentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
@@ -389,7 +389,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
 
         CmsObject cms = getCmsObject();
         echo("Testing create resource for jsp files without permissions");
-        CmsProject offlineProject = cms.getRequestContext().currentProject();
+        CmsProject offlineProject = cms.getRequestContext().getCurrentProject();
 
         String path = "/testCreateResourceJsp.jsp";
         String contentStr = "this is a really bad jsp code";
@@ -464,7 +464,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
         // ensure created resource type
         assertResourceType(cms, resourcename, CmsResourceTypePlain.getStaticTypeId());
         // project must be current project
-        assertProject(cms, resourcename, cms.getRequestContext().currentProject());
+        assertProject(cms, resourcename, cms.getRequestContext().getCurrentProject());
         // state must be "new"
         assertState(cms, resourcename, CmsResource.STATE_NEW);
         // date last modified 
@@ -472,12 +472,12 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
         // date created
         assertDateCreatedAfter(cms, resourcename, timestamp);
         // the user last modified must be the current user
-        assertUserLastModified(cms, resourcename, cms.getRequestContext().currentUser());
+        assertUserLastModified(cms, resourcename, cms.getRequestContext().getCurrentUser());
         // check the content
         assertContent(cms, resourcename, content);
 
         // publish the project
-        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
+        cms.unlockProject(cms.getRequestContext().getCurrentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
@@ -506,12 +506,12 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
             CmsResourceTypeFolder.getStaticTypeId(),
             true,
             0,
-            cms.getRequestContext().currentProject().getUuid(),
+            cms.getRequestContext().getCurrentProject().getUuid(),
             CmsResource.STATE_NEW,
             timestamp,
-            cms.getRequestContext().currentUser().getId(),
+            cms.getRequestContext().getCurrentUser().getId(),
             timestamp,
-            cms.getRequestContext().currentUser().getId(),
+            cms.getRequestContext().getCurrentUser().getId(),
             CmsResource.DATE_RELEASED_DEFAULT,
             CmsResource.DATE_EXPIRED_DEFAULT,
             1,
@@ -524,7 +524,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
         // ensure created resource is a folder
         assertIsFolder(cms, resourcename);
         // project must be current project
-        assertProject(cms, resourcename, cms.getRequestContext().currentProject());
+        assertProject(cms, resourcename, cms.getRequestContext().getCurrentProject());
         // state must be "new"
         assertState(cms, resourcename, CmsResource.STATE_NEW);
         // date last modified 
@@ -532,10 +532,10 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
         // date created
         assertDateCreated(cms, resourcename, timestamp);
         // the user last modified must be the current user
-        assertUserLastModified(cms, resourcename, cms.getRequestContext().currentUser());
+        assertUserLastModified(cms, resourcename, cms.getRequestContext().getCurrentUser());
 
         // publish the project
-        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
+        cms.unlockProject(cms.getRequestContext().getCurrentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
@@ -567,12 +567,12 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
             CmsResourceTypeFolder.getStaticTypeId(),
             true,
             0,
-            cms.getRequestContext().currentProject().getUuid(),
+            cms.getRequestContext().getCurrentProject().getUuid(),
             CmsResource.STATE_NEW,
             timestamp,
-            cms.getRequestContext().currentUser().getId(),
+            cms.getRequestContext().getCurrentUser().getId(),
             timestamp,
-            cms.getRequestContext().currentUser().getId(),
+            cms.getRequestContext().getCurrentUser().getId(),
             CmsResource.DATE_RELEASED_DEFAULT,
             CmsResource.DATE_EXPIRED_DEFAULT,
             1,
@@ -585,18 +585,18 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
         // ensure created resource is a folder
         assertIsFolder(cms, resourcename);
         // project must be current project
-        assertProject(cms, resourcename, cms.getRequestContext().currentProject());
+        assertProject(cms, resourcename, cms.getRequestContext().getCurrentProject());
         // state must be "new"
         assertState(cms, resourcename, CmsResource.STATE_CHANGED);
         // date last modified 
         assertDateLastModified(cms, resourcename, timestamp);
         // the user last modified must be the current user
-        assertUserLastModified(cms, resourcename, cms.getRequestContext().currentUser());
+        assertUserLastModified(cms, resourcename, cms.getRequestContext().getCurrentUser());
         // now evaluate the filter
         assertFilter(cms, resourcename, OpenCmsTestResourceFilter.FILTER_CREATE_RESOURCE);
 
         // publish the project
-        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
+        cms.unlockProject(cms.getRequestContext().getCurrentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
@@ -627,12 +627,12 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
             CmsResourceTypePlain.getStaticTypeId(),
             false,
             0,
-            cms.getRequestContext().currentProject().getUuid(),
+            cms.getRequestContext().getCurrentProject().getUuid(),
             CmsResource.STATE_NEW,
             timestamp,
-            cms.getRequestContext().currentUser().getId(),
+            cms.getRequestContext().getCurrentUser().getId(),
             timestamp,
-            cms.getRequestContext().currentUser().getId(),
+            cms.getRequestContext().getCurrentUser().getId(),
             CmsResource.DATE_RELEASED_DEFAULT,
             CmsResource.DATE_EXPIRED_DEFAULT,
             1,
@@ -645,7 +645,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
         // ensure created resource type
         assertResourceType(cms, resourcename, CmsResourceTypePlain.getStaticTypeId());
         // project must be current project
-        assertProject(cms, resourcename, cms.getRequestContext().currentProject());
+        assertProject(cms, resourcename, cms.getRequestContext().getCurrentProject());
         // state must be "new"
         assertState(cms, resourcename, CmsResource.STATE_NEW);
         // date last modified 
@@ -653,12 +653,12 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
         // date created
         assertDateCreated(cms, resourcename, timestamp);
         // the user last modified must be the current user
-        assertUserLastModified(cms, resourcename, cms.getRequestContext().currentUser());
+        assertUserLastModified(cms, resourcename, cms.getRequestContext().getCurrentUser());
         // the content 
         assertContent(cms, resourcename, content);
 
         // publish the project
-        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
+        cms.unlockProject(cms.getRequestContext().getCurrentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
@@ -693,12 +693,12 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
             CmsResourceTypePlain.getStaticTypeId(),
             false,
             0,
-            cms.getRequestContext().currentProject().getUuid(),
+            cms.getRequestContext().getCurrentProject().getUuid(),
             CmsResource.STATE_NEW,
             timestamp,
-            cms.getRequestContext().currentUser().getId(),
+            cms.getRequestContext().getCurrentUser().getId(),
             timestamp,
-            cms.getRequestContext().currentUser().getId(),
+            cms.getRequestContext().getCurrentUser().getId(),
             CmsResource.DATE_RELEASED_DEFAULT,
             CmsResource.DATE_EXPIRED_DEFAULT,
             1,
@@ -711,18 +711,18 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
         // ensure created resource type
         assertResourceType(cms, resourcename, CmsResourceTypePlain.getStaticTypeId());
         // project must be current project
-        assertProject(cms, resourcename, cms.getRequestContext().currentProject());
+        assertProject(cms, resourcename, cms.getRequestContext().getCurrentProject());
         // state must be "new"
         assertState(cms, resourcename, CmsResource.STATE_CHANGED);
         // date last modified 
         assertDateLastModified(cms, resourcename, timestamp);
         // the user last modified must be the current user
-        assertUserLastModified(cms, resourcename, cms.getRequestContext().currentUser());
+        assertUserLastModified(cms, resourcename, cms.getRequestContext().getCurrentUser());
         // now evaluate the filter
         assertFilter(cms, resourcename, OpenCmsTestResourceFilter.FILTER_CREATE_RESOURCE);
 
         // publish the project
-        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
+        cms.unlockProject(cms.getRequestContext().getCurrentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
@@ -780,12 +780,12 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
             CmsResourceTypePlain.getStaticTypeId(),
             false,
             0,
-            cms.getRequestContext().currentProject().getUuid(),
+            cms.getRequestContext().getCurrentProject().getUuid(),
             CmsResource.STATE_NEW,
             timestamp,
-            cms.getRequestContext().currentUser().getId(),
+            cms.getRequestContext().getCurrentUser().getId(),
             timestamp,
-            cms.getRequestContext().currentUser().getId(),
+            cms.getRequestContext().getCurrentUser().getId(),
             CmsResource.DATE_RELEASED_DEFAULT,
             CmsResource.DATE_EXPIRED_DEFAULT,
             1,
@@ -799,7 +799,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
         System.err.println(OpenCms.getSiteManager().getCurrentSite(cms).getSiteRoot());
 
         // project must be current project
-        assertProject(cms, resourcename2, cms.getRequestContext().currentProject());
+        assertProject(cms, resourcename2, cms.getRequestContext().getCurrentProject());
         // resource type
         assertResourceType(cms, resourcename2, CmsResourceTypePlain.getStaticTypeId());
         assertResourceType(cms, siblingname, CmsResourceTypePlain.getStaticTypeId());
@@ -810,8 +810,8 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
         assertDateLastModified(cms, resourcename2, file.getDateLastModified());
         assertDateLastModified(cms, siblingname, file.getDateLastModified());
         // the user last modified
-        assertUserLastModified(cms, resourcename2, cms.getRequestContext().currentUser());
-        assertUserLastModified(cms, siblingname, cms.getRequestContext().currentUser());
+        assertUserLastModified(cms, resourcename2, cms.getRequestContext().getCurrentUser());
+        assertUserLastModified(cms, siblingname, cms.getRequestContext().getCurrentUser());
         // content must be identical to stored content of new resource
         assertContent(cms, resourcename2, content);
         assertContent(cms, siblingname, content);
@@ -835,12 +835,12 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
             CmsResourceTypePlain.getStaticTypeId(),
             false,
             0,
-            cms.getRequestContext().currentProject().getUuid(),
+            cms.getRequestContext().getCurrentProject().getUuid(),
             CmsResource.STATE_NEW,
             timestamp,
-            cms.getRequestContext().currentUser().getId(),
+            cms.getRequestContext().getCurrentUser().getId(),
             timestamp,
-            cms.getRequestContext().currentUser().getId(),
+            cms.getRequestContext().getCurrentUser().getId(),
             CmsResource.DATE_RELEASED_DEFAULT,
             CmsResource.DATE_EXPIRED_DEFAULT,
             1,
@@ -853,8 +853,8 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
         cms.importResource(resourcename1, resource, content, properties);
 
         // project must be current project
-        assertProject(cms, resourcename1, cms.getRequestContext().currentProject());
-        assertProject(cms, resourcename2, cms.getRequestContext().currentProject());
+        assertProject(cms, resourcename1, cms.getRequestContext().getCurrentProject());
+        assertProject(cms, resourcename2, cms.getRequestContext().getCurrentProject());
         // resource type
         assertResourceType(cms, resourcename1, CmsResourceTypePlain.getStaticTypeId());
         assertResourceType(cms, resourcename2, CmsResourceTypePlain.getStaticTypeId());
@@ -868,9 +868,9 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
         assertDateLastModified(cms, resourcename2, timestamp);
         assertDateLastModified(cms, siblingname, timestamp);
         // the user last modified
-        assertUserLastModified(cms, resourcename1, cms.getRequestContext().currentUser());
-        assertUserLastModified(cms, resourcename2, cms.getRequestContext().currentUser());
-        assertUserLastModified(cms, siblingname, cms.getRequestContext().currentUser());
+        assertUserLastModified(cms, resourcename1, cms.getRequestContext().getCurrentUser());
+        assertUserLastModified(cms, resourcename2, cms.getRequestContext().getCurrentUser());
+        assertUserLastModified(cms, siblingname, cms.getRequestContext().getCurrentUser());
         // content must be identical to stored content of new resource
         assertContent(cms, resourcename1, content);
         assertContent(cms, resourcename2, content);

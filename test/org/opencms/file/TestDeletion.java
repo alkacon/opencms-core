@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestDeletion.java,v $
- * Date   : $Date: 2009/09/07 12:41:43 $
- * Version: $Revision: 1.15.2.1 $
+ * Date   : $Date: 2011/02/14 11:46:54 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import junit.framework.TestSuite;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.15.2.1 $
+ * @version $Revision: 1.3 $
  */
 public class TestDeletion extends OpenCmsTestCase {
 
@@ -319,7 +319,7 @@ public class TestDeletion extends OpenCmsTestCase {
         assertLock(cms, folder + file, CmsLockType.EXCLUSIVE);
 
         // switch back
-        CmsUser user = cms.getRequestContext().currentUser();
+        CmsUser user = cms.getRequestContext().getCurrentUser();
         cms = getCmsObject();
 
         assertLock(cms, file, CmsLockType.SHARED_EXCLUSIVE, user);
@@ -362,7 +362,7 @@ public class TestDeletion extends OpenCmsTestCase {
         cms.lockResource(file);
 
         // switch back
-        CmsUser user = cms.getRequestContext().currentUser();
+        CmsUser user = cms.getRequestContext().getCurrentUser();
         cms = getCmsObject();
 
         int sibCount = cms.readResource(file).getSiblingCount();

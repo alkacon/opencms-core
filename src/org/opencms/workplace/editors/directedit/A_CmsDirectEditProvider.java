@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/directedit/A_CmsDirectEditProvider.java,v $
- * Date   : $Date: 2009/10/14 14:38:06 $
- * Version: $Revision: 1.6.2.2 $
+ * Date   : $Date: 2011/02/14 11:46:57 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.6.2.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.2.3 
  */
@@ -133,7 +133,7 @@ public abstract class A_CmsDirectEditProvider implements I_CmsDirectEditProvider
 
         try {
             // first check some simple preconditions for direct edit
-            if (m_cms.getRequestContext().currentProject().isOnlineProject()) {
+            if (m_cms.getRequestContext().getCurrentProject().isOnlineProject()) {
                 // don't show direct edit button in online project
                 return CmsDirectEditResourceInfo.INACTIVE;
             }
@@ -154,8 +154,8 @@ public abstract class A_CmsDirectEditProvider implements I_CmsDirectEditProvider
             // check the resource lock
             CmsLock lock = m_cms.getLock(resource);
             boolean locked = !(lock.isUnlocked() || lock.isOwnedInProjectBy(
-                m_cms.getRequestContext().currentUser(),
-                m_cms.getRequestContext().currentProject()));
+                m_cms.getRequestContext().getCurrentUser(),
+                m_cms.getRequestContext().getCurrentProject()));
             // check the users permissions on the resource
             if (m_cms.hasPermissions(
                 resource,

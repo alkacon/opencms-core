@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsChangeElementLocaleThread.java,v $
- * Date   : $Date: 2010/03/01 10:21:47 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/02/14 11:46:54 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import java.util.Locale;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.1 
  */
@@ -214,7 +214,7 @@ public class CmsChangeElementLocaleThread extends A_CmsReportThread {
                     getCms().lockResource(getCms().getSitePath(res));
                     isLocked = true;
                     canWrite = true;
-                } else if (lock.isOwnedBy(getCms().getRequestContext().currentUser())) {
+                } else if (lock.isOwnedBy(getCms().getRequestContext().getCurrentUser())) {
                     // file locked by current user
                     canWrite = true;
                 }

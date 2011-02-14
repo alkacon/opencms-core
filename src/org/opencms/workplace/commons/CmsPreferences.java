@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPreferences.java,v $
- * Date   : $Date: 2009/11/10 09:05:11 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/02/14 11:46:55 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -97,7 +97,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 6.0.0
  */
@@ -662,7 +662,7 @@ public class CmsPreferences extends CmsTabDialog {
             String ouFqn = "";
             CmsUserSettings settings = new CmsUserSettings(getCms());
             if (!settings.getListAllProjects()) {
-                ouFqn = getCms().getRequestContext().currentUser().getOuFqn();
+                ouFqn = getCms().getRequestContext().getCurrentUser().getOuFqn();
             }
             allProjects = OpenCms.getOrgUnitManager().getAllAccessibleProjects(
                 getCms(),

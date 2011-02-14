@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLock.java,v $
- * Date   : $Date: 2010/02/11 10:20:31 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/02/14 11:46:56 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import org.opencms.util.CmsUUID;
  * @author Andreas Zahner 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  * 
@@ -255,7 +255,7 @@ public class CmsLock implements Comparable<CmsLock> {
     public boolean isDirectlyOwnedInProjectBy(CmsObject cms) {
 
         return (isExclusive() || isDirectlyInherited())
-            && isOwnedInProjectBy(cms.getRequestContext().currentUser(), cms.getRequestContext().currentProject());
+            && isOwnedInProjectBy(cms.getRequestContext().getCurrentUser(), cms.getRequestContext().getCurrentProject());
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/upload/Attic/CmsUploadBean.java,v $
- * Date   : $Date: 2011/02/11 17:06:28 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/02/14 11:46:56 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -80,7 +80,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Ruediger Kurz 
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0.0 
  */
@@ -221,7 +221,7 @@ public class CmsUploadBean extends CmsJspBean {
 
         CmsResource res = getCmsObject().readResource(resource, CmsResourceFilter.ALL);
         CmsLock lock = getCmsObject().getLock(res);
-        boolean lockable = lock.isLockableBy(getCmsObject().getRequestContext().currentUser());
+        boolean lockable = lock.isLockableBy(getCmsObject().getRequestContext().getCurrentUser());
 
         if (OpenCms.getWorkplaceManager().autoLockResources()) {
             // autolock is enabled, check the lock state of the resource

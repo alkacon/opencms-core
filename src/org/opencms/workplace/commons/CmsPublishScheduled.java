@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishScheduled.java,v $
- * Date   : $Date: 2011/01/19 16:48:03 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/02/14 11:46:54 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -75,7 +75,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author Mario Jaeger
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 7.5.1
  */
@@ -247,7 +247,7 @@ public class CmsPublishScheduled extends CmsDialog {
         // get the request parameters for resource and publish scheduled date
         String resource = getParamResource();
         String publishScheduledDate = getParamPublishscheduleddate();
-        String userName = getCms().getRequestContext().currentUser().getName();
+        String userName = getCms().getRequestContext().getCurrentUser().getName();
 
         // get the java date format
         DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, getLocale());
@@ -300,8 +300,8 @@ public class CmsPublishScheduled extends CmsDialog {
         CmsLock lock = cms.getLock(resource);
         // prove is current lock from current but not in current project
         if ((lock != null)
-            && lock.isOwnedBy(cms.getRequestContext().currentUser())
-            && !lock.isOwnedInProjectBy(cms.getRequestContext().currentUser(), cms.getRequestContext().currentProject())) {
+            && lock.isOwnedBy(cms.getRequestContext().getCurrentUser())
+            && !lock.isOwnedInProjectBy(cms.getRequestContext().getCurrentUser(), cms.getRequestContext().getCurrentProject())) {
             // file is locked by current user but not in current project
             // change the lock from this file
             cms.changeLock(resource);
@@ -342,7 +342,7 @@ public class CmsPublishScheduled extends CmsDialog {
         // create the context info
         CmsContextInfo contextInfo = new CmsContextInfo();
         contextInfo.setProjectName(projectName);
-        contextInfo.setUserName(cmsAdmin.getRequestContext().currentUser().getName());
+        contextInfo.setUserName(cmsAdmin.getRequestContext().getCurrentUser().getName());
         // create the job schedule parameter
         SortedMap<String, String> params = new TreeMap<String, String>();
         // the user to send mail to

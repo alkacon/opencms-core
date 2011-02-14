@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2009/06/04 14:29:21 $
- * Version: $Revision: 1.94 $
+ * Date   : $Date: 2011/02/14 11:46:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.94 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -166,7 +166,7 @@ public class CmsFrameset extends CmsWorkplace {
     public String getPreferencesButton() {
 
         int buttonStyle = getSettings().getUserSettings().getWorkplaceButtonStyle();
-        if (!getCms().getRequestContext().currentUser().isManaged()) {
+        if (!getCms().getRequestContext().getCurrentUser().isManaged()) {
             return button(
                 "../commons/preferences.jsp",
                 "body",
@@ -193,7 +193,7 @@ public class CmsFrameset extends CmsWorkplace {
             String ouFqn = "";
             CmsUserSettings settings = new CmsUserSettings(getCms());
             if (!settings.getListAllProjects()) {
-                ouFqn = getCms().getRequestContext().currentUser().getOuFqn();
+                ouFqn = getCms().getRequestContext().getCurrentUser().getOuFqn();
             }
             allProjects = OpenCms.getOrgUnitManager().getAllAccessibleProjects(
                 getCms(),

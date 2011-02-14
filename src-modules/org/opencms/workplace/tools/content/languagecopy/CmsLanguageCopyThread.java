@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/languagecopy/CmsLanguageCopyThread.java,v $
- * Date   : $Date: 2010/10/05 07:38:41 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/02/14 11:46:56 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import org.apache.commons.logging.Log;
  * @author Achim Westermann
  * @author Mario Jaeger
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 7.5.1
  */
@@ -231,7 +231,7 @@ public class CmsLanguageCopyThread extends A_CmsReportThread {
                         if (lock.isNullLock()) {
                             cms.lockResource(this.m_copyresources[i]);
                         } else {
-                            if (!lock.isLockableBy(cms.getRequestContext().currentUser())) {
+                            if (!lock.isLockableBy(cms.getRequestContext().getCurrentUser())) {
                                 cms.changeLock(this.m_copyresources[i]);
                             }
                         }
@@ -317,7 +317,7 @@ public class CmsLanguageCopyThread extends A_CmsReportThread {
             if (parentLock.isInherited()) {
                 unlockInherited(parentLock.getResourceName());
             } else {
-                if (!parentLock.isLockableBy(cms.getRequestContext().currentUser())) {
+                if (!parentLock.isLockableBy(cms.getRequestContext().getCurrentUser())) {
                     cms.changeLock(cms.getRequestContext().removeSiteRoot(parentLock.getResourceName()));
                 }
                 cms.unlockResource(cms.getRequestContext().removeSiteRoot(parentLock.getResourceName()));

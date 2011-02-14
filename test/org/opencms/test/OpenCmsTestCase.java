@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2010/11/11 13:08:18 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/02/14 11:46:55 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -105,7 +105,7 @@ import org.dom4j.util.NodeComparator;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 6.0.0
  */
@@ -2236,7 +2236,7 @@ public class OpenCmsTestCase extends TestCase {
         // assert we have the right version number
         assertEquals(versionCount, res.getVersion());
 
-        if (cms.getRequestContext().currentProject().isOnlineProject()) {
+        if (cms.getRequestContext().getCurrentProject().isOnlineProject()) {
             // no additional test possible for the online project
             return;
         }
@@ -2290,7 +2290,7 @@ public class OpenCmsTestCase extends TestCase {
         // assert we have the right version number
         assertEquals(versionCount, res.getVersion());
 
-        if (cms.getRequestContext().currentProject().isOnlineProject()) {
+        if (cms.getRequestContext().getCurrentProject().isOnlineProject()) {
             // no additional test possible for the online project
             return;
         }
@@ -2377,11 +2377,11 @@ public class OpenCmsTestCase extends TestCase {
             CmsResource res = cms.readResource(resourceName, CmsResourceFilter.ALL);
             CmsLock lock = cms.getLock(res);
 
-            if (lock.isNullLock() || !lock.isOwnedBy(cms.getRequestContext().currentUser())) {
+            if (lock.isNullLock() || !lock.isOwnedBy(cms.getRequestContext().getCurrentUser())) {
                 fail("[Lock "
                     + resourceName
                     + " requires must be locked to user "
-                    + cms.getRequestContext().currentUser().getId()
+                    + cms.getRequestContext().getCurrentUser().getId()
                     + "]");
             }
         } catch (CmsException e) {
@@ -2400,7 +2400,7 @@ public class OpenCmsTestCase extends TestCase {
      */
     public void assertLock(CmsObject cms, String resourceName, CmsLockType lockType) {
 
-        assertLock(cms, resourceName, lockType, cms.getRequestContext().currentUser());
+        assertLock(cms, resourceName, lockType, cms.getRequestContext().getCurrentUser());
     }
 
     /**
@@ -2463,9 +2463,9 @@ public class OpenCmsTestCase extends TestCase {
             // the current resource has a red flag if it's state is changed/new/deleted
             hasRedFlag = !res.getState().isUnchanged();
             // and if it was modified in the current project
-            hasRedFlag &= (res.getProjectLastModified().equals(cms.getRequestContext().currentProject().getUuid()));
+            hasRedFlag &= (res.getProjectLastModified().equals(cms.getRequestContext().getCurrentProject().getUuid()));
             // and if it was modified by the current user
-            hasRedFlag &= (res.getUserLastModified().equals(cms.getRequestContext().currentUser().getId()));
+            hasRedFlag &= (res.getUserLastModified().equals(cms.getRequestContext().getCurrentUser().getId()));
 
             if (shouldHaveRedFlag && !hasRedFlag) {
                 // it should have a red flag, but it hasn't

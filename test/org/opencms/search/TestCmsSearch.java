@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/TestCmsSearch.java,v $
- * Date   : $Date: 2009/09/02 05:54:20 $
- * Version: $Revision: 1.26.2.1 $
+ * Date   : $Date: 2011/02/14 11:46:56 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import junit.framework.TestSuite;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.26.2.1 $
+ * @version $Revision: 1.3 $
  */
 public class TestCmsSearch extends OpenCmsTestCase {
 
@@ -486,7 +486,7 @@ public class TestCmsSearch extends OpenCmsTestCase {
 
         String folderName = "/basisdienstleistungen_-_zka/";
         cms.copyResource("/types/", folderName);
-        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
+        cms.unlockProject(cms.getRequestContext().getCurrentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 

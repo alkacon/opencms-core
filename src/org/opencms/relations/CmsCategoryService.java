@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsCategoryService.java,v $
- * Date   : $Date: 2010/03/15 15:24:56 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/02/14 11:46:55 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.9.2
  * 
@@ -273,7 +273,7 @@ public class CmsCategoryService {
         CmsLock lock = cms.getLock(folderPath);
         if (lock.isNullLock()) {
             cms.lockResource(folderPath);
-        } else if (lock.isLockableBy(cms.getRequestContext().currentUser())) {
+        } else if (lock.isLockableBy(cms.getRequestContext().getCurrentUser())) {
             cms.changeLock(folderPath);
         }
         cms.deleteResource(folderPath, CmsResource.DELETE_PRESERVE_SIBLINGS);
@@ -418,7 +418,7 @@ public class CmsCategoryService {
         CmsLock lock = cms.getLock(catPath);
         if (lock.isNullLock()) {
             cms.lockResource(catPath);
-        } else if (lock.isLockableBy(cms.getRequestContext().currentUser())) {
+        } else if (lock.isLockableBy(cms.getRequestContext().getCurrentUser())) {
             cms.changeLock(catPath);
         }
         cms.moveResource(catPath, cms.getRequestContext().removeSiteRoot(

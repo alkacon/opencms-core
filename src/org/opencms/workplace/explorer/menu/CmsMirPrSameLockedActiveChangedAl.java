@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/menu/CmsMirPrSameLockedActiveChangedAl.java,v $
- * Date   : $Date: 2009/06/04 14:29:07 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/02/14 11:46:54 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import org.opencms.workplace.explorer.CmsResourceUtil;
  * 
  * @author Andreas Zahner  
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.5.6
  */
@@ -90,8 +90,8 @@ public class CmsMirPrSameLockedActiveChangedAl extends A_CmsMenuItemRule {
             CmsLock lock = resourceUtil[0].getLock();
             boolean lockedForPublish = resourceUtil[0].getProjectState().isLockedForPublishing();
             return (!lockedForPublish && !lock.isShared() && lock.isOwnedInProjectBy(
-                cms.getRequestContext().currentUser(),
-                cms.getRequestContext().currentProject()))
+                cms.getRequestContext().getCurrentUser(),
+                cms.getRequestContext().getCurrentProject()))
                 || (!lockedForPublish && lock.isNullLock() && OpenCms.getWorkplaceManager().autoLockResources());
         }
         // resource is not locked by the user in current project or not locked with enabled autolock, rule does not match

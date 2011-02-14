@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/ade/sitemap/Attic/CmsVfsSitemapService.java,v $
- * Date   : $Date: 2011/02/14 10:02:24 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2011/02/14 11:46:55 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -107,7 +107,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Tobias Herrmann
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 8.0.0
  * 
@@ -395,7 +395,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             CmsDetailPageTable detailPages = null;
             List<CmsNewResourceInfo> resourceTypeInfos = null;
             boolean canEditDetailPages = false;
-            boolean isOnlineProject = CmsProject.isOnlineProject(cms.getRequestContext().currentProject().getUuid());
+            boolean isOnlineProject = CmsProject.isOnlineProject(cms.getRequestContext().getCurrentProject().getUuid());
             if (sitemapConfig == null) {
                 noEdit = "No sitemap configuration available.";
             } else {
@@ -698,12 +698,12 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                     CmsResourceTypeFolder.getStaticTypeId(),
                     true,
                     0,
-                    cms.getRequestContext().currentProject().getUuid(),
+                    cms.getRequestContext().getCurrentProject().getUuid(),
                     CmsResource.STATE_NEW,
                     System.currentTimeMillis(),
-                    cms.getRequestContext().currentUser().getId(),
+                    cms.getRequestContext().getCurrentUser().getId(),
                     System.currentTimeMillis(),
-                    cms.getRequestContext().currentUser().getId(),
+                    cms.getRequestContext().getCurrentUser().getId(),
                     CmsResource.DATE_RELEASED_DEFAULT,
                     CmsResource.DATE_EXPIRED_DEFAULT,
                     1,
@@ -793,7 +793,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     private void ensureLock(CmsResource resource) throws CmsException {
 
         CmsObject cms = getCmsObject();
-        CmsUser user = cms.getRequestContext().currentUser();
+        CmsUser user = cms.getRequestContext().getCurrentUser();
         CmsLock lock = cms.getLock(resource);
         if (!lock.isOwnedBy(user)) {
             cms.lockResourceTemporary(resource);
@@ -817,7 +817,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         CmsUUID ownerId = lock.getUserId();
         if (!lock.isUnlocked() && (ownerId != null)) {
             clientLock.setLockOwner(cms.readUser(ownerId).getDisplayName(cms, cms.getRequestContext().getLocale()));
-            clientLock.setOwnedByUser(cms.getRequestContext().currentUser().getId().equals(ownerId));
+            clientLock.setOwnedByUser(cms.getRequestContext().getCurrentUser().getId().equals(ownerId));
         }
         return clientLock;
     }
@@ -1476,7 +1476,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         if (entryFolder != null) {
             CmsLock folderLock = cms.getLock(entryFolder);
             clientEntry.setHasForeignFolderLock(!folderLock.isUnlocked()
-                && !folderLock.isOwnedBy(cms.getRequestContext().currentUser()));
+                && !folderLock.isOwnedBy(cms.getRequestContext().getCurrentUser()));
         }
 
         clientEntry.setVfsPath(path);

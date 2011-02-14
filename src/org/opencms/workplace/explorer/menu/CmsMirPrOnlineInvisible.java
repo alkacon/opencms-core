@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/menu/CmsMirPrOnlineInvisible.java,v $
- * Date   : $Date: 2009/06/04 14:29:06 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2011/02/14 11:46:54 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.workplace.explorer.CmsResourceUtil;
  * 
  * @author Andreas Zahner  
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.5.6
  */
@@ -58,7 +58,7 @@ public class CmsMirPrOnlineInvisible extends A_CmsMenuItemRule {
      */
     public boolean matches(CmsObject cms, CmsResourceUtil[] resourceUtil) {
 
-        return cms.getRequestContext().currentProject().isOnlineProject();
+        return cms.getRequestContext().getCurrentProject().isOnlineProject();
     }
 
 }

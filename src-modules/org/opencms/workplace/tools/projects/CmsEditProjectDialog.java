@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsEditProjectDialog.java,v $
- * Date   : $Date: 2009/10/12 08:12:01 $
- * Version: $Revision: 1.22.2.1 $
+ * Date   : $Date: 2011/02/14 11:46:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.22.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -141,7 +141,7 @@ public class CmsEditProjectDialog extends CmsWidgetDialog {
                 getCms().writeProject(m_project);
             }
             // write the edited project resources
-            CmsProject currentProject = getCms().getRequestContext().currentProject();
+            CmsProject currentProject = getCms().getRequestContext().getCurrentProject();
             // change the current project
             getCms().getRequestContext().setCurrentProject(m_project);
             // store the current site root

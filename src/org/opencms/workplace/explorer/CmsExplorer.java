@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorer.java,v $
- * Date   : $Date: 2010/07/21 07:57:27 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/02/14 11:46:55 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -76,7 +76,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -283,7 +283,7 @@ public class CmsExplorer extends CmsWorkplace {
                 referenceProject = getCms().readProject(getSettings().getExplorerProjectId());
             }
         } catch (CmsException ex) {
-            referenceProject = getCms().getRequestContext().currentProject();
+            referenceProject = getCms().getRequestContext().getCurrentProject();
         }
 
         CmsResourceUtil resUtil = new CmsResourceUtil(getCms());

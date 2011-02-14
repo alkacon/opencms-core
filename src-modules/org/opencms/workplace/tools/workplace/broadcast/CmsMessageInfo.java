@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/broadcast/CmsMessageInfo.java,v $
- * Date   : $Date: 2009/09/08 16:42:24 $
- * Version: $Revision: 1.16.2.1 $
+ * Date   : $Date: 2011/02/14 11:46:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import javax.mail.internet.InternetAddress;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.16.2.1 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.0.0
  */
@@ -141,7 +141,7 @@ public class CmsMessageInfo {
         // create a plain text email
         CmsSimpleMail theMail = new CmsSimpleMail();
         theMail.setCharset(cms.getRequestContext().getEncoding());
-        theMail.setFrom(cms.getRequestContext().currentUser().getEmail(), getFrom());
+        theMail.setFrom(cms.getRequestContext().getCurrentUser().getEmail(), getFrom());
         theMail.setTo(createInternetAddresses(getTo()));
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getCc())) {
             theMail.setCc(createInternetAddresses(getCc()));

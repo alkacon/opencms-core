@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2010/11/30 09:33:54 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2011/02/14 11:46:56 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -103,7 +103,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 6.0.0 
  */
@@ -3151,7 +3151,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                 // delete relations
                 m_driverManager.getVfsDriver(dbc).deleteRelations(
                     dbc,
-                    dbc.getRequestContext().currentProject().getUuid(),
+                    dbc.getRequestContext().getCurrentProject().getUuid(),
                     resource,
                     filter);
             } finally {
@@ -3177,7 +3177,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         // delete relations
         m_driverManager.getVfsDriver(dbc).deleteRelations(
             dbc,
-            dbc.getRequestContext().currentProject().getUuid(),
+            dbc.getRequestContext().getCurrentProject().getUuid(),
             resource,
             filter);
 

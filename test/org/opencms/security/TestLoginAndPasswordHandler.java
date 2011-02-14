@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/security/TestLoginAndPasswordHandler.java,v $
- * Date   : $Date: 2009/09/07 12:41:45 $
- * Version: $Revision: 1.11.2.1 $
+ * Date   : $Date: 2011/02/14 11:46:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import junit.framework.TestSuite;
  * Tests login and password related functions.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.11.2.1 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.0
  */
@@ -196,7 +196,7 @@ public class TestLoginAndPasswordHandler extends OpenCmsTestCase {
 
         // stupid test to just make sure everything is set up correctly
         cms.loginUser(adminUser, "admin");
-        assertTrue(OpenCms.getDefaultUsers().isUserAdmin(cms.getRequestContext().currentUser().getName()));
+        assertTrue(OpenCms.getDefaultUsers().isUserAdmin(cms.getRequestContext().getCurrentUser().getName()));
 
         CmsException error = null;
         try {
@@ -225,11 +225,11 @@ public class TestLoginAndPasswordHandler extends OpenCmsTestCase {
         String test1User = "test1";
         // now try a different user
         cms.loginUser(test1User, "test1");
-        assertEquals(test1User, cms.getRequestContext().currentUser().getName());
+        assertEquals(test1User, cms.getRequestContext().getCurrentUser().getName());
 
         // back to admin (to change the test1 user)
         cms.loginUser(adminUser, "admin");
-        assertEquals(adminUser, cms.getRequestContext().currentUser().getName());
+        assertEquals(adminUser, cms.getRequestContext().getCurrentUser().getName());
 
         // disable the test1 user
         CmsUser test1 = cms.readUser(test1User);
@@ -254,7 +254,7 @@ public class TestLoginAndPasswordHandler extends OpenCmsTestCase {
 
         // try again to login
         cms.loginUser(test1User, "test1");
-        assertEquals(test1User, cms.getRequestContext().currentUser().getName());
+        assertEquals(test1User, cms.getRequestContext().getCurrentUser().getName());
     }
 
     /**

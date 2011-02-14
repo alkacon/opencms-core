@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserTrackingResourceHandler.java,v $
- * Date   : $Date: 2011/01/10 10:22:45 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/02/14 11:46:56 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner  
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 8.0
  */
@@ -89,13 +89,13 @@ public class CmsUserTrackingResourceHandler implements I_CmsResourceInit {
                 // ignore, resource will not be marked at all
             }
             if (Boolean.valueOf(mark).booleanValue()
-                || (VALUE_ONLINE.equalsIgnoreCase(mark) && cms.getRequestContext().currentProject().isOnlineProject())) {
+                || (VALUE_ONLINE.equalsIgnoreCase(mark) && cms.getRequestContext().getCurrentProject().isOnlineProject())) {
                 // mark the resource as visited by the current user
                 try {
                     OpenCms.getSubscriptionManager().markResourceAsVisitedBy(
                         cms,
                         resource,
-                        cms.getRequestContext().currentUser());
+                        cms.getRequestContext().getCurrentUser());
                 } catch (CmsException e) {
                     // error marking resource
                     LOG.error(e);

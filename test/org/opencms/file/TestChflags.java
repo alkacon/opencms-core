@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestChflags.java,v $
- * Date   : $Date: 2009/09/07 12:41:44 $
- * Version: $Revision: 1.11.2.1 $
+ * Date   : $Date: 2011/02/14 11:46:54 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import junit.framework.TestSuite;
  * Unit test for the "chflags" method of the CmsObject.<p>
  * 
  * @author Thomas Weckert  
- * @version $Revision: 1.11.2.1 $
+ * @version $Revision: 1.3 $
  * @since 6.0 alpha 2
  */
 public class TestChflags extends OpenCmsTestCase {
@@ -136,9 +136,9 @@ public class TestChflags extends OpenCmsTestCase {
         tc.assertFilter(cms, resource1, OpenCmsTestResourceFilter.FILTER_CHFLAGS);
         tc.assertDateLastModifiedAfter(cms, resource1, timestamp);
         tc.assertState(cms, resource1, CmsResource.STATE_CHANGED);
-        tc.assertUserLastModified(cms, resource1, cms.getRequestContext().currentUser());
+        tc.assertUserLastModified(cms, resource1, cms.getRequestContext().getCurrentUser());
         tc.assertFlags(cms, resource1, CmsResource.FLAG_INTERNAL);
-        tc.assertProject(cms, resource1, cms.getRequestContext().currentProject());
+        tc.assertProject(cms, resource1, cms.getRequestContext().getCurrentProject());
     }
 
 }

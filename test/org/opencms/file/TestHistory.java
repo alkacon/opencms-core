@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestHistory.java,v $
- * Date   : $Date: 2009/09/07 12:41:44 $
- * Version: $Revision: 1.12.2.1 $
+ * Date   : $Date: 2011/02/14 11:46:54 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.12.2.1 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.9.1
  */
@@ -575,7 +575,7 @@ public class TestHistory extends OpenCmsTestCase {
         assertFalse(cms.existsResource("testFolder/test.txt", CmsResourceFilter.ALL));
 
         // be sure the files were deleted
-        CmsProject offline = cms.getRequestContext().currentProject();
+        CmsProject offline = cms.getRequestContext().getCurrentProject();
         cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
         assertFalse(cms.existsResource("testFolder", CmsResourceFilter.ALL));
         assertFalse(cms.existsResource("testFolder/test.txt", CmsResourceFilter.ALL));
@@ -714,7 +714,7 @@ public class TestHistory extends OpenCmsTestCase {
 
         String resName = "fileVersionTest.txt";
 
-        CmsProject offline = cms.getRequestContext().currentProject();
+        CmsProject offline = cms.getRequestContext().getCurrentProject();
         CmsProject online = cms.readProject(CmsProject.ONLINE_PROJECT_ID);
 
         // 1. create new resource

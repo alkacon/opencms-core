@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2010/11/30 09:33:54 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2011/02/14 11:46:56 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -99,7 +99,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 6.0.0 
  */
@@ -1318,7 +1318,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                         // read new location in offline project
                         offlineResource = readResource(
                             dbc,
-                            dbc.getRequestContext().currentProject().getUuid(),
+                            dbc.getRequestContext().getCurrentProject().getUuid(),
                             onlineResource.getStructureId(),
                             true);
                     } catch (CmsException e) {
@@ -3335,7 +3335,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         PreparedStatement stmt = null;
         Connection conn = null;
 
-        CmsUUID projectId = dbc.getRequestContext().currentProject().getUuid();
+        CmsUUID projectId = dbc.getRequestContext().getCurrentProject().getUuid();
 
         // first read all subresources with ACEs
         List resources = new ArrayList();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2011/01/10 15:21:41 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/02/14 11:46:55 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -106,7 +106,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -1104,7 +1104,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
      */
     public Locale getWorkplaceLocale(CmsObject cms) {
 
-        Locale wpLocale = new CmsUserSettings(cms.getRequestContext().currentUser()).getLocale();
+        Locale wpLocale = new CmsUserSettings(cms.getRequestContext().getCurrentUser()).getLocale();
         if (wpLocale == null) {
             // fall back
             wpLocale = getDefaultLocale();
@@ -1591,7 +1591,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
         CmsObject adminCms = OpenCms.initCmsObject(m_adminCms);
         adminCms.getRequestContext().setSiteRoot(cms.getRequestContext().getSiteRoot());
         adminCms.getRequestContext().setRequestTime(cms.getRequestContext().getRequestTime());
-        adminCms.getRequestContext().setCurrentProject(cms.getRequestContext().currentProject());
+        adminCms.getRequestContext().setCurrentProject(cms.getRequestContext().getCurrentProject());
         adminCms.getRequestContext().setEncoding(cms.getRequestContext().getEncoding());
         adminCms.getRequestContext().setUri(cms.getRequestContext().getUri());
         return adminCms;

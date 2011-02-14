@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/menu/CmsMirPrSameLockedInactiveMovedAl.java,v $
- * Date   : $Date: 2009/06/04 14:29:07 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/02/14 11:46:54 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import org.opencms.workplace.explorer.CmsResourceUtil;
  * 
  * @author Tobias Herrmann  
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.0.5
  */
@@ -86,8 +86,8 @@ public class CmsMirPrSameLockedInactiveMovedAl extends A_CmsMenuItemRule {
             CmsLock lock = resourceUtil[0].getLock();
             boolean lockedForPublish = resourceUtil[0].getProjectState().isLockedForPublishing();
             if ((!lockedForPublish && !lock.isShared() && lock.isOwnedInProjectBy(
-                cms.getRequestContext().currentUser(),
-                cms.getRequestContext().currentProject()))
+                cms.getRequestContext().getCurrentUser(),
+                cms.getRequestContext().getCurrentProject()))
                 || (!lockedForPublish && lock.isNullLock() && OpenCms.getWorkplaceManager().autoLockResources())) {
                 try {
                     CmsObject cmsOnline = OpenCms.initCmsObject(cms);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/adeconfig/Attic/CmsEntryPointCache.java,v $
- * Date   : $Date: 2011/02/02 07:37:52 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/02/14 11:46:55 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import java.util.Set;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 8.0.0
  */
@@ -287,7 +287,7 @@ public class CmsEntryPointCache {
     private CmsObject initCmsObject(CmsObject cms) throws CmsException {
 
         CmsObject resultCms = OpenCms.initCmsObject(m_cms);
-        resultCms.getRequestContext().setCurrentProject(cms.getRequestContext().currentProject());
+        resultCms.getRequestContext().setCurrentProject(cms.getRequestContext().getCurrentProject());
         return resultCms;
     }
 
@@ -336,7 +336,7 @@ public class CmsEntryPointCache {
      */
     private Map<String, EntryPointFolder> readAll(CmsObject paramCms) throws CmsException {
 
-        if (m_online != paramCms.getRequestContext().currentProject().isOnlineProject()) {
+        if (m_online != paramCms.getRequestContext().getCurrentProject().isOnlineProject()) {
             throw new IllegalArgumentException();
         }
 

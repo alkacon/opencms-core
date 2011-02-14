@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsDefaultLinkSubstitutionHandler.java,v $
- * Date   : $Date: 2010/10/20 15:22:48 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2011/02/14 11:46:56 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 7.0.2
  * 
@@ -147,7 +147,7 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
         }
 
         // in the online project, check static export and secure settings
-        if (cms.getRequestContext().currentProject().isOnlineProject()) {
+        if (cms.getRequestContext().getCurrentProject().isOnlineProject()) {
             // first check if this link needs static export
             CmsStaticExportManager exportManager = OpenCms.getStaticExportManager();
             String oriUri = cms.getRequestContext().getOriginalUri();
@@ -218,7 +218,7 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
                             String message = Messages.get().getBundle().key(
                                 Messages.LOG_RESOURCE_ACESS_ERROR_3,
                                 vfsName,
-                                cms.getRequestContext().currentUser().getName(),
+                                cms.getRequestContext().getCurrentUser().getName(),
                                 cms.getRequestContext().getSiteRoot());
                             if (LOG.isDebugEnabled()) {
                                 LOG.debug(message, e);

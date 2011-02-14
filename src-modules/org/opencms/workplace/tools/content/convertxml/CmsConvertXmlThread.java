@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/convertxml/CmsConvertXmlThread.java,v $
- * Date   : $Date: 2009/10/14 11:03:09 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2011/02/14 11:46:57 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Mario Jaeger
  * 
- * @version $Revision: 1.1.2.3 $
+ * @version $Revision: 1.3 $
  * 
  * @since 7.0.5
  */
@@ -168,18 +168,18 @@ public class CmsConvertXmlThread extends A_CmsReportThread {
         CmsLock lock = cms.getLock(getCms().getSitePath(cmsResource));
         // check the lock
         if ((lock != null)
-            && lock.isOwnedBy(getCms().getRequestContext().currentUser())
-            && lock.isOwnedInProjectBy(getCms().getRequestContext().currentUser(), cmsProject)) {
+            && lock.isOwnedBy(getCms().getRequestContext().getCurrentUser())
+            && lock.isOwnedInProjectBy(getCms().getRequestContext().getCurrentUser(), cmsProject)) {
             // prove is current lock from current user in current project
             return true;
-        } else if ((lock != null) && !lock.isUnlocked() && !lock.isOwnedBy(getCms().getRequestContext().currentUser())) {
+        } else if ((lock != null) && !lock.isUnlocked() && !lock.isOwnedBy(getCms().getRequestContext().getCurrentUser())) {
             // the resource is not locked by the current user, so can not lock it
             m_lockedFiles += 1;
             return false;
         } else if ((lock != null)
             && !lock.isUnlocked()
-            && lock.isOwnedBy(getCms().getRequestContext().currentUser())
-            && !lock.isOwnedInProjectBy(getCms().getRequestContext().currentUser(), cmsProject)) {
+            && lock.isOwnedBy(getCms().getRequestContext().getCurrentUser())
+            && !lock.isOwnedInProjectBy(getCms().getRequestContext().getCurrentUser(), cmsProject)) {
             // prove is current lock from current user but not in current project
             // file is locked by current user but not in current project
             // change the lock 
@@ -190,8 +190,8 @@ public class CmsConvertXmlThread extends A_CmsReportThread {
         }
         lock = cms.getLock(getCms().getSitePath(cmsResource));
         if ((lock != null)
-            && lock.isOwnedBy(getCms().getRequestContext().currentUser())
-            && !lock.isOwnedInProjectBy(getCms().getRequestContext().currentUser(), cmsProject)) {
+            && lock.isOwnedBy(getCms().getRequestContext().getCurrentUser())
+            && !lock.isOwnedInProjectBy(getCms().getRequestContext().getCurrentUser(), cmsProject)) {
             // resource could not be locked
             m_lockedFiles += 1;
 

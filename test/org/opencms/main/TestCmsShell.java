@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/main/TestCmsShell.java,v $
- * Date   : $Date: 2009/06/04 14:35:28 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2011/02/14 11:46:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import java.io.FileInputStream;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.0.0
  */
@@ -71,15 +71,15 @@ public class TestCmsShell extends OpenCmsTestCase {
         // setup OpenCms using the base test class
         cms = setupOpenCms("simpletest", "/sites/default/");
         // check the returned CmsObject
-        assertEquals(cms.getRequestContext().currentUser(), cms.readUser("Admin"));
-        assertEquals(cms.getRequestContext().currentProject(), cms.readProject("Offline"));
+        assertEquals(cms.getRequestContext().getCurrentUser(), cms.readUser("Admin"));
+        assertEquals(cms.getRequestContext().getCurrentProject(), cms.readProject("Offline"));
         assertEquals(cms.getRequestContext().getSiteRoot(), "/sites/default");
 
         // check the CmsObject initialization
         cms = getCmsObject();
         // check the returned CmsObject
-        assertEquals(cms.getRequestContext().currentUser(), cms.readUser("Admin"));
-        assertEquals(cms.getRequestContext().currentProject(), cms.readProject("Offline"));
+        assertEquals(cms.getRequestContext().getCurrentUser(), cms.readUser("Admin"));
+        assertEquals(cms.getRequestContext().getCurrentProject(), cms.readProject("Offline"));
         assertEquals(cms.getRequestContext().getSiteRoot(), "/sites/default");
 
         // remove OpenCms

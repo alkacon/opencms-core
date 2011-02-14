@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPublishIssues.java,v $
- * Date   : $Date: 2009/09/07 12:41:41 $
- * Version: $Revision: 1.27.2.1 $
+ * Date   : $Date: 2011/02/14 11:46:54 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.27.2.1 $
+ * @version $Revision: 1.3 $
  */
 /**
  * Comment for <code>TestPermissions</code>.<p>
@@ -262,7 +262,7 @@ public class TestPublishIssues extends OpenCmsTestCase {
         OpenCms.getPublishManager().publishResource(cms, folder);
         OpenCms.getPublishManager().waitWhileRunning();
 
-        CmsProject offline = cms.getRequestContext().currentProject();
+        CmsProject offline = cms.getRequestContext().getCurrentProject();
         // create a new project and switch to it
         CmsProject prj = cms.createProject(
             "testABC",
@@ -312,7 +312,7 @@ public class TestPublishIssues extends OpenCmsTestCase {
         OpenCms.getPublishManager().publishResource(cms, folder);
         OpenCms.getPublishManager().waitWhileRunning();
 
-        CmsProject offline = cms.getRequestContext().currentProject();
+        CmsProject offline = cms.getRequestContext().getCurrentProject();
         // create a new project and switch to it
         CmsProject prj = cms.createProject(
             "testABC",
@@ -360,7 +360,7 @@ public class TestPublishIssues extends OpenCmsTestCase {
         OpenCms.getPublishManager().publishResource(cms, folder);
         OpenCms.getPublishManager().waitWhileRunning();
 
-        CmsProject offline = cms.getRequestContext().currentProject();
+        CmsProject offline = cms.getRequestContext().getCurrentProject();
         // create a new project and switch to it
         CmsProject prj = cms.createProject(
             "testABC",
@@ -526,7 +526,7 @@ public class TestPublishIssues extends OpenCmsTestCase {
         cms.writeFile(cmsFile);
 
         // now publish the project
-        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
+        cms.unlockProject(cms.getRequestContext().getCurrentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
@@ -676,7 +676,7 @@ public class TestPublishIssues extends OpenCmsTestCase {
 
         // lock sibling 
         cms.lockResource("/folder1/subfolder12/subsubfolder121/image1.gif");
-        CmsUser user = cms.getRequestContext().currentUser();
+        CmsUser user = cms.getRequestContext().getCurrentUser();
 
         // login as user test2
         cms.addUserToGroup("test2", "Projectmanagers");
@@ -720,7 +720,7 @@ public class TestPublishIssues extends OpenCmsTestCase {
         cms.createResource(sibA, CmsResourceTypePlain.getStaticTypeId());
         cms.createSibling(sibA, sibB, null);
 
-        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
+        cms.unlockProject(cms.getRequestContext().getCurrentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
@@ -767,7 +767,7 @@ public class TestPublishIssues extends OpenCmsTestCase {
         cms.createResource(sib1, CmsResourceTypePlain.getStaticTypeId());
         cms.createSibling(sib1, sib2, null);
 
-        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
+        cms.unlockProject(cms.getRequestContext().getCurrentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
@@ -816,7 +816,7 @@ public class TestPublishIssues extends OpenCmsTestCase {
         cms.createResource(sibX, CmsResourceTypePlain.getStaticTypeId());
         cms.createSibling(sibX, sibY, null);
 
-        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
+        cms.unlockProject(cms.getRequestContext().getCurrentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 

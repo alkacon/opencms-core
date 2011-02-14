@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/A_CmsAjaxGallery.java,v $
- * Date   : $Date: 2010/01/26 11:21:52 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/02/14 11:46:57 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -85,7 +85,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 7.5.0 
  */
@@ -919,7 +919,7 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
             String locked = "";
             if (!lock.isNullLock()
                 && !lock.getType().isPublish()
-                && !lock.getUserId().equals(getCms().getRequestContext().currentUser().getId())) {
+                && !lock.getUserId().equals(getCms().getRequestContext().getCurrentUser().getId())) {
                 try {
                     locked = getCms().readUser(lock.getUserId()).getName();
                 } catch (CmsException e) {
@@ -936,8 +936,8 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
             boolean directPublishPermission = false;
             try {
                 // test if the resource is in the offline project and it can be locked by the user
-                if (!getCms().getRequestContext().currentProject().isOnlineProject()
-                    && lock.isLockableBy(getCms().getRequestContext().currentUser())) {
+                if (!getCms().getRequestContext().getCurrentProject().isOnlineProject()
+                    && lock.isLockableBy(getCms().getRequestContext().getCurrentUser())) {
                     editable = true;
                     // test if the user has the write permission
                     if (getCms().hasPermissions(res, CmsPermissionSet.ACCESS_WRITE, false, CmsResourceFilter.ALL)) {

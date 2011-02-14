@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestTouch.java,v $
- * Date   : $Date: 2009/09/07 12:41:41 $
- * Version: $Revision: 1.24.2.1 $
+ * Date   : $Date: 2011/02/14 11:46:54 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import junit.framework.TestSuite;
  * Unit test for the "touch" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich 
- * @version $Revision: 1.24.2.1 $
+ * @version $Revision: 1.3 $
  */
 public class TestTouch extends OpenCmsTestCase {
 
@@ -113,13 +113,13 @@ public class TestTouch extends OpenCmsTestCase {
         // now evaluate the result
         tc.assertFilter(cms, resource1, OpenCmsTestResourceFilter.FILTER_TOUCH);
         // project must be current project
-        tc.assertProject(cms, resource1, cms.getRequestContext().currentProject());
+        tc.assertProject(cms, resource1, cms.getRequestContext().getCurrentProject());
         // state must be "changed"
         tc.assertState(cms, resource1, tc.getPreCalculatedState(resource1));
         // date last modified must be the date set in the tough operation
         tc.assertDateLastModified(cms, resource1, timestamp);
         // the user last modified must be the current user
-        tc.assertUserLastModified(cms, resource1, cms.getRequestContext().currentUser());
+        tc.assertUserLastModified(cms, resource1, cms.getRequestContext().getCurrentUser());
     }
 
     /**
@@ -141,13 +141,13 @@ public class TestTouch extends OpenCmsTestCase {
         // now evaluate the result
         tc.assertFilter(cms, resource1, OpenCmsTestResourceFilter.FILTER_TOUCH);
         // project must be current project
-        tc.assertProject(cms, resource1, cms.getRequestContext().currentProject());
+        tc.assertProject(cms, resource1, cms.getRequestContext().getCurrentProject());
         // state must be "changed"
         tc.assertState(cms, resource1, tc.getPreCalculatedState(resource1));
         // date last modified must be the date set in the tough operation
         tc.assertDateLastModified(cms, resource1, timestamp);
         // the user last modified must be the current user
-        tc.assertUserLastModified(cms, resource1, cms.getRequestContext().currentUser());
+        tc.assertUserLastModified(cms, resource1, cms.getRequestContext().getCurrentUser());
 
         // evaluate all subresources
         List subresources = cms.readResources(resource1, CmsResourceFilter.ALL);
@@ -181,13 +181,13 @@ public class TestTouch extends OpenCmsTestCase {
         // now evaluate the result
         tc.assertFilter(cms, resource1, OpenCmsTestResourceFilter.FILTER_TOUCH);
         // project must be current project
-        tc.assertProject(cms, resource1, cms.getRequestContext().currentProject());
+        tc.assertProject(cms, resource1, cms.getRequestContext().getCurrentProject());
         // state must be "changed"
         tc.assertState(cms, resource1, tc.getPreCalculatedState(resource1));
         // date last modified must be the date set in the tough operation
         tc.assertDateLastModified(cms, resource1, timestamp);
         // the user last modified must be the current user
-        tc.assertUserLastModified(cms, resource1, cms.getRequestContext().currentUser());
+        tc.assertUserLastModified(cms, resource1, cms.getRequestContext().getCurrentUser());
 
         // evaluate all subresources
         List subresources = cms.readResources(resource1, CmsResourceFilter.ALL);
@@ -200,13 +200,13 @@ public class TestTouch extends OpenCmsTestCase {
             // now evaluate the result
             tc.assertFilter(cms, resName, OpenCmsTestResourceFilter.FILTER_TOUCH);
             // project must be current project
-            tc.assertProject(cms, resName, cms.getRequestContext().currentProject());
+            tc.assertProject(cms, resName, cms.getRequestContext().getCurrentProject());
             // state must be "changed"
             tc.assertState(cms, resName, tc.getPreCalculatedState(resName));
             // date last modified must be the date set in the tough operation
             tc.assertDateLastModified(cms, resName, timestamp);
             // the user last modified must be the current user
-            tc.assertUserLastModified(cms, resName, cms.getRequestContext().currentUser());
+            tc.assertUserLastModified(cms, resName, cms.getRequestContext().getCurrentUser());
         }
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/module/TestModuleOperations.java,v $
- * Date   : $Date: 2009/09/07 12:41:46 $
- * Version: $Revision: 1.28.2.1 $
+ * Date   : $Date: 2011/02/14 11:46:56 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.28.2.1 $
+ * @version $Revision: 1.3 $
  */
 public class TestModuleOperations extends OpenCmsTestCase {
 
@@ -186,7 +186,7 @@ public class TestModuleOperations extends OpenCmsTestCase {
 
         // make sure we are in the "Offline" project
         cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
-        assertEquals("Offline", cms.getRequestContext().currentProject().getName());
+        assertEquals("Offline", cms.getRequestContext().getCurrentProject().getName());
 
         // delete the module
         OpenCms.getModuleManager().deleteModule(

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsResourceComparison.java,v $
- * Date   : $Date: 2009/06/04 14:29:34 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2011/02/14 11:46:56 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -226,7 +226,7 @@ public class CmsResourceComparison {
         } else {
             if (Integer.parseInt(version1) < 0) {
                 // switch to the online project
-                CmsProject prj = cms.getRequestContext().currentProject();
+                CmsProject prj = cms.getRequestContext().getCurrentProject();
                 try {
                     cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
                     properties1 = cms.readPropertyObjects(resource1, false);
@@ -243,7 +243,7 @@ public class CmsResourceComparison {
         } else {
             if (Integer.parseInt(version2) < 0) {
                 // switch to the online project
-                CmsProject prj = cms.getRequestContext().currentProject();
+                CmsProject prj = cms.getRequestContext().getCurrentProject();
                 try {
                     cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
                     properties2 = cms.readPropertyObjects(resource2, false);

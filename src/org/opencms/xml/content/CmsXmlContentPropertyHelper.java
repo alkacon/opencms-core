@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentPropertyHelper.java,v $
- * Date   : $Date: 2011/02/14 10:02:24 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2011/02/14 11:46:56 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,7 +71,7 @@ import org.dom4j.Element;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 7.9.2
  */
@@ -199,7 +199,7 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
 
         CmsMacroResolver resolver = new CmsMacroResolver();
         resolver.setCmsObject(cms);
-        CmsUserSettings settings = new CmsUserSettings(cms.getRequestContext().currentUser());
+        CmsUserSettings settings = new CmsUserSettings(cms.getRequestContext().getCurrentUser());
         CmsMessages messages = contentHandler.getMessages(settings.getLocale());
         resolver.setMessages(messages);
         resolver.setKeepEmptyMacros(true);

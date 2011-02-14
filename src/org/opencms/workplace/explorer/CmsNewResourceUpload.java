@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceUpload.java,v $
- * Date   : $Date: 2010/03/01 10:21:47 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2011/02/14 11:46:55 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -86,7 +86,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -546,7 +546,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
                 }
                 if (res.getState().isChanged()) {
                     // resource is changed, restore content of resource from online project
-                    CmsProject currentProject = getCms().getRequestContext().currentProject();
+                    CmsProject currentProject = getCms().getRequestContext().getCurrentProject();
                     byte[] onlineContents = null;
                     try {
                         // switch to online project and get online file contents
@@ -630,7 +630,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
                 if (LOG.isErrorEnabled()) {
                     LOG.error(Messages.get().getBundle(getLocale()).key(
                         Messages.ERR_UPLOAD_STORE_CLIENT_FOLDER_1,
-                        new Object[] {getCms().getRequestContext().currentUser().getName()}), e);
+                        new Object[] {getCms().getRequestContext().getCurrentUser().getName()}), e);
                 }
             }
         }

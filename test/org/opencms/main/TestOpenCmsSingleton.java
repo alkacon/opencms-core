@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/main/TestOpenCmsSingleton.java,v $
- * Date   : $Date: 2010/01/20 09:16:55 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/02/14 11:46:55 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import junit.framework.TestSuite;
  * Unit test the static OpenCms singleton object.<p> 
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class TestOpenCmsSingleton extends OpenCmsTestCase {
 
@@ -159,13 +159,13 @@ public class TestOpenCmsSingleton extends OpenCmsTestCase {
 
         // test creation of "Guest" user CmsObject
         cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
-        if (!OpenCms.getDefaultUsers().isUserGuest(cms.getRequestContext().currentUser().getName())) {
+        if (!OpenCms.getDefaultUsers().isUserGuest(cms.getRequestContext().getCurrentUser().getName())) {
             fail("'Guest' user could not be properly initialized!");
         }
 
         // test creation of "Export" user CmsObject
         cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
-        if (!OpenCms.getDefaultUsers().isUserExport(cms.getRequestContext().currentUser().getName())) {
+        if (!OpenCms.getDefaultUsers().isUserExport(cms.getRequestContext().getCurrentUser().getName())) {
             fail("'Export' user could not be properly initialized!");
         }
 
@@ -212,7 +212,7 @@ public class TestOpenCmsSingleton extends OpenCmsTestCase {
             fail("'Admin' user creation with valid Admin context didn't work!");
             return;
         }
-        if (!OpenCms.getDefaultUsers().isUserAdmin(cms.getRequestContext().currentUser().getName())) {
+        if (!OpenCms.getDefaultUsers().isUserAdmin(cms.getRequestContext().getCurrentUser().getName())) {
             fail("'Admin' user could not be properly initialized with valid Admin context!");
         }
         if (cms == getCmsObject()) {

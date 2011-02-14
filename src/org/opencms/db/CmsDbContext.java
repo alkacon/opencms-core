@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbContext.java,v $
- * Date   : $Date: 2010/11/30 09:33:53 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2011/02/14 11:46:56 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import java.util.Map;
  * @author Alexander Kandzior 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 6.0.0
  */
@@ -109,7 +109,7 @@ public class CmsDbContext {
      */
     public CmsProject currentProject() {
 
-        return m_requestContext.currentProject();
+        return m_requestContext.getCurrentProject();
     }
 
     /**
@@ -119,7 +119,7 @@ public class CmsDbContext {
      */
     public CmsUser currentUser() {
 
-        return m_requestContext.currentUser();
+        return m_requestContext.getCurrentUser();
     }
 
     /**

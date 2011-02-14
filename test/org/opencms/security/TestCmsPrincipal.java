@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/security/TestCmsPrincipal.java,v $
- * Date   : $Date: 2009/09/07 12:41:45 $
- * Version: $Revision: 1.6.2.1 $
+ * Date   : $Date: 2011/02/14 11:46:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -184,7 +184,7 @@ public class TestCmsPrincipal extends OpenCmsTestCase {
         assertEquals(group.getOuFqn(), histUser.getOuFqn());
         assertEquals(group.getDescription(), histUser.getDescription());
         assertEquals("-", histUser.getEmail());
-        assertEquals(cms.getRequestContext().currentUser().getId(), histUser.getUserDeleted());
+        assertEquals(cms.getRequestContext().getCurrentUser().getId(), histUser.getUserDeleted());
         assertTrue(before <= histUser.getDateDeleted());
         assertTrue(histUser.getDateDeleted() <= after);
     }
@@ -213,7 +213,7 @@ public class TestCmsPrincipal extends OpenCmsTestCase {
         assertEquals(user.getOuFqn(), histUser.getOuFqn());
         assertEquals(user.getDescription(), histUser.getDescription());
         assertEquals(user.getEmail(), histUser.getEmail());
-        assertEquals(cms.getRequestContext().currentUser().getId(), histUser.getUserDeleted());
+        assertEquals(cms.getRequestContext().getCurrentUser().getId(), histUser.getUserDeleted());
         assertTrue(before <= histUser.getDateDeleted());
         assertTrue(histUser.getDateDeleted() <= after);
     }

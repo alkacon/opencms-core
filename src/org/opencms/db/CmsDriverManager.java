@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2011/01/13 08:56:53 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2011/02/14 11:46:56 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -5431,7 +5431,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         if (source.isFolder()) {
             m_monitor.flushCache(CmsMemoryMonitor.CacheType.HAS_ROLE, CmsMemoryMonitor.CacheType.ROLE_LIST);
         }
-        getVfsDriver(dbc).moveResource(dbc, dbc.getRequestContext().currentProject().getUuid(), source, destination);
+        getVfsDriver(dbc).moveResource(dbc, dbc.getRequestContext().getCurrentProject().getUuid(), source, destination);
 
         if (!internal) {
             CmsResourceState newState = CmsResource.STATE_CHANGED;
@@ -5783,7 +5783,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 }
             }
 
-            boolean temporaryProject = (cms.getRequestContext().currentProject().getType() == CmsProject.PROJECT_TYPE_TEMPORARY);
+            boolean temporaryProject = (cms.getRequestContext().getCurrentProject().getType() == CmsProject.PROJECT_TYPE_TEMPORARY);
             // the project was stored in the history tables for history
             // it will be deleted if the project_flag is PROJECT_TYPE_TEMPORARY
             if ((temporaryProject) && (!publishList.isDirectPublish())) {
@@ -5792,7 +5792,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 } catch (CmsException e) {
                     LOG.error(Messages.get().getBundle().key(
                         Messages.LOG_DELETE_TEMP_PROJECT_FAILED_1,
-                        cms.getRequestContext().currentProject().getName()));
+                        cms.getRequestContext().getCurrentProject().getName()));
                 }
                 // if project was temporary set context to online project
                 cms.getRequestContext().setCurrentProject(onlineProject);
@@ -5904,8 +5904,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 CmsLock lock = m_lockManager.getLock(dbc, resource, false);
                 if (lock.getSystemLock().isPublish()
                     && lock.getSystemLock().isOwnedInProjectBy(
-                        cms.getRequestContext().currentUser(),
-                        cms.getRequestContext().currentProject())) {
+                        cms.getRequestContext().getCurrentUser(),
+                        cms.getRequestContext().getCurrentProject())) {
                     unlockResource(dbc, resource, true, true);
                 }
             }

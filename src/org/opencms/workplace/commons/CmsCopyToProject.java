@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsCopyToProject.java,v $
- * Date   : $Date: 2009/06/04 14:29:16 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2011/02/14 11:46:54 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -127,8 +127,8 @@ public class CmsCopyToProject extends CmsDialog {
         StringBuffer result = new StringBuffer(32);
 
         try {
-            String[] localizedObject = new String[] {getCms().getRequestContext().currentProject().getName()};
-            List resources = getCms().readProjectResources(getCms().getRequestContext().currentProject());
+            String[] localizedObject = new String[] {getCms().getRequestContext().getCurrentProject().getName()};
+            List resources = getCms().readProjectResources(getCms().getRequestContext().getCurrentProject());
             Iterator i = resources.iterator();
             result.append(dialogBlockStart(key(Messages.GUI_COPYTOPROJECT_RESOURCES_0)));
             if (resources.size() > 0) {
@@ -175,7 +175,7 @@ public class CmsCopyToProject extends CmsDialog {
             }
         }
         // show confirmation question
-        String[] localizedObject = new String[] {resName, getCms().getRequestContext().currentProject().getName()};
+        String[] localizedObject = new String[] {resName, getCms().getRequestContext().getCurrentProject().getName()};
         result.append(key(Messages.GUI_COPYTOPROJECT_PROJECT_CONFIRMATION_2, localizedObject));
         return result.toString();
     }

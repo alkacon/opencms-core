@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishResourcesList.java,v $
- * Date   : $Date: 2009/06/04 14:29:16 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2011/02/14 11:46:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.5.5 
  */
@@ -312,7 +312,7 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
                                         siteName,
                                         relationName});
                                 }
-                                if (!cms.getLock(target).isLockableBy(cms.getRequestContext().currentUser())) {
+                                if (!cms.getLock(target).isLockableBy(cms.getRequestContext().getCurrentUser())) {
                                     // mark not lockable resources
                                     relationName = relationName + "*";
                                 } else if (m_publishRelated) {

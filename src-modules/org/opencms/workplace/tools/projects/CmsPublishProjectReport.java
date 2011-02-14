@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsPublishProjectReport.java,v $
- * Date   : $Date: 2009/06/04 14:33:49 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2011/02/14 11:46:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import javax.servlet.jsp.PageContext;
  * @author Michael Moossen 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -129,7 +129,7 @@ public class CmsPublishProjectReport extends CmsReport {
 
                 CmsPublishList list = null;
                 try {
-                    CmsProject currentProject = getCms().getRequestContext().currentProject();
+                    CmsProject currentProject = getCms().getRequestContext().getCurrentProject();
                     getCms().getRequestContext().setCurrentProject(
                         getCms().readProject(new CmsUUID(getParamProjectid())));
                     list = OpenCms.getPublishManager().getPublishList(getCms());

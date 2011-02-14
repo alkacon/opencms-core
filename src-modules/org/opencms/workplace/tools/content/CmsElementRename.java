@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsElementRename.java,v $
- * Date   : $Date: 2010/03/01 10:21:47 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/02/14 11:46:54 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -80,7 +80,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -962,7 +962,7 @@ public class CmsElementRename extends CmsReport {
         file.setContents(content);
         // check lock            
         CmsLock lock = getCms().getLock(file);
-        if (lock.isNullLock() || lock.isOwnedBy(getCms().getRequestContext().currentUser())) {
+        if (lock.isNullLock() || lock.isOwnedBy(getCms().getRequestContext().getCurrentUser())) {
             // lock the page
             checkLock(getCms().getSitePath(file));
             // write the file with the new content

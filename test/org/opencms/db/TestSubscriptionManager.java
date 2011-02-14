@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/db/TestSubscriptionManager.java,v $
- * Date   : $Date: 2010/07/23 08:43:54 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/02/14 11:46:57 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import junit.framework.TestSuite;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class TestSubscriptionManager extends OpenCmsTestCase {
 
@@ -108,7 +108,7 @@ public class TestSubscriptionManager extends OpenCmsTestCase {
     public void testReadSubscribedResources() throws Throwable {
 
         CmsObject cms = getCmsObject();
-        CmsUser user = cms.getRequestContext().currentUser();
+        CmsUser user = cms.getRequestContext().getCurrentUser();
         CmsGroup group = cms.readGroup("Users");
         echo("Testing reading subscribed resources");
 
@@ -194,7 +194,7 @@ public class TestSubscriptionManager extends OpenCmsTestCase {
     public void testSubscribeResources() throws Throwable {
 
         CmsObject cms = getCmsObject();
-        CmsUser user = cms.getRequestContext().currentUser();
+        CmsUser user = cms.getRequestContext().getCurrentUser();
         echo("Testing subscription of resources");
 
         CmsSubscriptionManager subMan = OpenCms.getSubscriptionManager();
@@ -217,7 +217,7 @@ public class TestSubscriptionManager extends OpenCmsTestCase {
     public void testVisitResources() throws Throwable {
 
         CmsObject cms = getCmsObject();
-        CmsUser user = cms.getRequestContext().currentUser();
+        CmsUser user = cms.getRequestContext().getCurrentUser();
         echo("Testing visitation of resources");
 
         CmsSubscriptionManager subMan = OpenCms.getSubscriptionManager();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsVisitedByFilter.java,v $
- * Date   : $Date: 2010/07/23 08:29:33 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2011/02/14 11:46:56 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import java.util.Date;
  * 
  * @author Andreas Zahner  
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 8.0
  */
@@ -83,7 +83,7 @@ public class CmsVisitedByFilter {
     public CmsVisitedByFilter(CmsObject cms) {
 
         this();
-        m_user = cms.getRequestContext().currentUser();
+        m_user = cms.getRequestContext().getCurrentUser();
     }
 
     /**

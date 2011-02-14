@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPermissions.java,v $
- * Date   : $Date: 2009/09/07 12:41:44 $
- * Version: $Revision: 1.29.2.1 $
+ * Date   : $Date: 2011/02/14 11:46:54 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.29.2.1 $
+ * @version $Revision: 1.3 $
  */
 public class TestPermissions extends OpenCmsTestCase {
 
@@ -382,7 +382,7 @@ public class TestPermissions extends OpenCmsTestCase {
 
         cms.loginUser("test1", "test1");
         // first check in "online" project
-        assertEquals(CmsProject.ONLINE_PROJECT_ID, cms.getRequestContext().currentProject().getUuid());
+        assertEquals(CmsProject.ONLINE_PROJECT_ID, cms.getRequestContext().getCurrentProject().getUuid());
         try {
             OpenCms.getPublishManager().getPublishList(cms, cms.readResource(resource), false);
             fail("Publish permissions available but should not be available for user test1 in online project");

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2009/09/16 13:31:37 $
- * Version: $Revision: 1.98.2.1 $
+ * Date   : $Date: 2011/02/14 11:46:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -92,7 +92,7 @@ import org.xml.sax.SAXException;
  * @author Michael Emmerich 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.98.2.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -259,7 +259,7 @@ public class CmsExport {
                 ? file.getDateCreated()
                 : file.getDateLastModified();
 
-                if (getCms().getRequestContext().currentProject().isOnlineProject()
+                if (getCms().getRequestContext().getCurrentProject().isOnlineProject()
                     || (m_parameters.isIncludeUnchangedResources())
                     || state.isNew()
                     || state.isChanged()) {
@@ -780,7 +780,7 @@ public class CmsExport {
                 ? folder.getDateCreated()
                 : folder.getDateLastModified();
 
-                if (getCms().getRequestContext().currentProject().isOnlineProject()
+                if (getCms().getRequestContext().getCurrentProject().isOnlineProject()
                     || (m_parameters.isIncludeUnchangedResources())
                     || state.isNew()
                     || state.isChanged()) {
@@ -1344,7 +1344,7 @@ public class CmsExport {
             // resource state is new or changed
             if ((res.getState() == CmsResource.STATE_CHANGED) || (res.getState() == CmsResource.STATE_NEW)) {
                 // the resource belongs not to the current project, so it must not be exported    
-                if (!res.getProjectLastModified().equals(getCms().getRequestContext().currentProject().getUuid())) {
+                if (!res.getProjectLastModified().equals(getCms().getRequestContext().getCurrentProject().getUuid())) {
                     retValue = false;
                 }
             } else {
@@ -1383,11 +1383,11 @@ public class CmsExport {
 
         // add the info element. it contains all infos for this export
         Element info = exportNode.addElement(CmsImportExportManager.N_INFO);
-        info.addElement(CmsImportExportManager.N_CREATOR).addText(getCms().getRequestContext().currentUser().getName());
+        info.addElement(CmsImportExportManager.N_CREATOR).addText(getCms().getRequestContext().getCurrentUser().getName());
         info.addElement(CmsImportExportManager.N_OC_VERSION).addText(OpenCms.getSystemInfo().getVersionNumber());
         info.addElement(CmsImportExportManager.N_DATE).addText(CmsDateUtil.getHeaderDate(System.currentTimeMillis()));
         info.addElement(CmsImportExportManager.N_INFO_PROJECT).addText(
-            getCms().getRequestContext().currentProject().getName());
+            getCms().getRequestContext().getCurrentProject().getName());
         info.addElement(CmsImportExportManager.N_VERSION).addText(CmsImportExportManager.EXPORT_VERSION);
 
         // write the XML

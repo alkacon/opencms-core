@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion7.java,v $
- * Date   : $Date: 2010/03/11 11:30:17 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/02/14 11:46:55 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -92,7 +92,7 @@ import org.dom4j.Document;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 7.0.4
  */
@@ -1580,7 +1580,7 @@ public class CmsImportVersion7 implements I_CmsImport {
             // set the resources
             if (m_projectResources != null) {
                 String site = getCms().getRequestContext().getSiteRoot();
-                CmsProject currentProject = getCms().getRequestContext().currentProject();
+                CmsProject currentProject = getCms().getRequestContext().getCurrentProject();
                 try {
                     getCms().getRequestContext().setSiteRoot("");
                     getCms().getRequestContext().setCurrentProject(project);
@@ -1778,7 +1778,7 @@ public class CmsImportVersion7 implements I_CmsImport {
                     m_type.getTypeId(),
                     m_type.isFolder(),
                     m_flags,
-                    getCms().getRequestContext().currentProject().getUuid(),
+                    getCms().getRequestContext().getCurrentProject().getUuid(),
                     CmsResource.STATE_NEW,
                     m_dateCreated,
                     m_userCreated,
@@ -2836,7 +2836,7 @@ public class CmsImportVersion7 implements I_CmsImport {
             try {
                 m_userCreated = getCms().readUser(userCreatedName).getId();
             } catch (CmsDbEntryNotFoundException e) {
-                m_userCreated = getCms().getRequestContext().currentUser().getId();
+                m_userCreated = getCms().getRequestContext().getCurrentUser().getId();
             }
         } catch (Throwable e) {
             setThrowable(e);
@@ -2916,7 +2916,7 @@ public class CmsImportVersion7 implements I_CmsImport {
             try {
                 m_userLastModified = getCms().readUser(userLastModifiedName).getId();
             } catch (CmsDbEntryNotFoundException e) {
-                m_userLastModified = getCms().getRequestContext().currentUser().getId();
+                m_userLastModified = getCms().getRequestContext().getCurrentUser().getId();
             }
         } catch (Throwable e) {
             setThrowable(e);

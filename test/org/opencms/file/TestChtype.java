@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestChtype.java,v $
- * Date   : $Date: 2010/01/20 09:16:55 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/02/14 11:46:54 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import junit.framework.TestSuite;
  * Unit test for the "chtype" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class TestChtype extends OpenCmsTestCase {
 
@@ -152,7 +152,7 @@ public class TestChtype extends OpenCmsTestCase {
 
         CmsObject cms = getCmsObject();
         echo("Testing chtype on a new file");
-        CmsProject offlineProject = cms.getRequestContext().currentProject();
+        CmsProject offlineProject = cms.getRequestContext().getCurrentProject();
 
         // this should work since we are admin
         cms.chtype("/chtype.txt", CmsResourceTypeJsp.getJSPTypeId());

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/menu/CmsMirEditControlcode.java,v $
- * Date   : $Date: 2009/06/04 14:29:06 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2011/02/14 11:46:54 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import org.opencms.workplace.explorer.CmsResourceUtil;
  * 
  * @author Andreas Zahner  
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.9.2
  */
@@ -58,7 +58,7 @@ public class CmsMirEditControlcode extends A_CmsMenuItemRule {
     public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, CmsResourceUtil[] resourceUtil) {
 
         try {
-            if (resourceUtil[0].isInsideProject() && !cms.getRequestContext().currentProject().isOnlineProject()) {
+            if (resourceUtil[0].isInsideProject() && !cms.getRequestContext().getCurrentProject().isOnlineProject()) {
                 // we are in the correct offline project and resource is not deleted
                 CmsLock lock = resourceUtil[0].getLock();
                 boolean lockedForPublish = resourceUtil[0].getProjectState().isLockedForPublishing();
@@ -85,8 +85,8 @@ public class CmsMirEditControlcode extends A_CmsMenuItemRule {
                 if (!lockedForPublish
                     && !lock.isShared()
                     && lock.isOwnedInProjectBy(
-                        cms.getRequestContext().currentUser(),
-                        cms.getRequestContext().currentProject())) {
+                        cms.getRequestContext().getCurrentUser(),
+                        cms.getRequestContext().getCurrentProject())) {
                     // resource is exclusively locked by the current user
                     if (OpenCms.getRoleManager().hasRole(cms, CmsRole.DEVELOPER)) {
                         if (!resourceUtil[0].getResource().getState().isDeleted()
