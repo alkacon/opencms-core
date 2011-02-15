@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsUploadDialog.java,v $
- * Date   : $Date: 2011/02/15 07:33:48 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2011/02/15 10:18:25 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -66,7 +66,6 @@ import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
-import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -83,7 +82,7 @@ import com.google.gwt.user.client.ui.Hidden;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 8.0.0
  */
@@ -298,6 +297,19 @@ public class CmsUploadDialog extends CmsPopupDialog {
     /** The target folder to upload the selected files. */
     protected String m_targetFolder;
 
+    /** The timer for updating the progress. */
+    protected Timer m_updateProgressTimer = new Timer() {
+
+        /**
+         * @see com.google.gwt.user.client.Timer#run()
+         */
+        @Override
+        public void run() {
+
+            updateProgress();
+        }
+    };
+
     /** Stores all files that were added. */
     private Map<String, CmsFileInfo> m_allFiles;
 
@@ -348,19 +360,6 @@ public class CmsUploadDialog extends CmsPopupDialog {
 
     /** The user information text widget. */
     private HTML m_selectionSummary;
-
-    /** The timer for updating the progress. */
-    private Timer m_updateProgressTimer = new Timer() {
-
-        /**
-         * @see com.google.gwt.user.client.Timer#run()
-         */
-        @Override
-        public void run() {
-
-            updateProgress();
-        }
-    };
 
     /**
      * Default constructor.<p>
@@ -747,6 +746,16 @@ public class CmsUploadDialog extends CmsPopupDialog {
             }
 
             /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onFailure(java.lang.Throwable)
+             */
+            @Override
+            public void onFailure(Throwable t) {
+
+                super.onFailure(t);
+                m_updateProgressTimer.cancel();
+            }
+
+            /**
              * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
              */
             @Override
@@ -990,7 +999,7 @@ public class CmsUploadDialog extends CmsPopupDialog {
         JsArray<CmsFileInfo> filesToUpload) /*-{
 		// is executed when there was an error during reading the file
 		function errorHandler(evt) {
-			alert("Error");
+			dialog.@org.opencms.gwt.client.ui.CmsUploadDialog::onBrowserError(Ljava/lang/String;)(evt.target.error.code);
 		}
 
 		// is executed when the current file is read completely
@@ -1022,7 +1031,7 @@ public class CmsUploadDialog extends CmsPopupDialog {
 						if (xhr.status == 200) {
 							dialog.@org.opencms.gwt.client.ui.CmsUploadDialog::parseResponse(Ljava/lang/String;)(xhr.responseText);
 						} else if (xhr.status != 200) {
-							alert("Error");
+							dialog.@org.opencms.gwt.client.ui.CmsUploadDialog::showErrorReport(Ljava/lang/String;Ljava/lang/String;)(xhr.statusText, null);
 						}
 					}
 				}
@@ -1051,11 +1060,19 @@ public class CmsUploadDialog extends CmsPopupDialog {
 
 			var curIndex = 0;
 			var file = filesToUpload[curIndex];
+
 			var reader = new FileReader();
 
-			// Handle loaded and errors
-			reader.onload = loaded;
-			reader.onerror = errorHandler;
+			// Firefox 3.6, WebKit
+			if (reader.addEventListener) {
+				reader.addEventListener('loaded', loaded, false);
+				reader.addEventListener('error', errorHandler, false);
+				// Chrome 7
+			} else {
+				reader.onloadend = loaded;
+				reader.onerror = errorHandler;
+			}
+
 			// Read file into memory
 			reader.readAsBinaryString(file);
 		}
@@ -1099,6 +1116,42 @@ public class CmsUploadDialog extends CmsPopupDialog {
     }
 
     /**
+     * Switches the error message depending on the given error code.<p>
+     * 
+     * The error codes are defined in the W3C file API.<p>
+     * 
+     * <a href="http://www.w3.org/TR/FileAPI/#dfn-fileerror">http://www.w3.org/TR/FileAPI/#dfn-fileerror</a>
+     * 
+     * @param errorCode the error code as String
+     */
+    private void onBrowserError(String errorCode) {
+
+        int code = new Integer(errorCode).intValue();
+        String errMsg = Messages.get().key(Messages.ERR_UPLOAD_BROWSER_0);
+
+        switch (code) {
+            case 1: // NOT_FOUND_ERR
+                errMsg = Messages.get().key(Messages.ERR_UPLOAD_BROWSER_NOT_FOUND_0);
+                break;
+            case 2: // SECURITY_ERR
+                errMsg = Messages.get().key(Messages.ERR_UPLOAD_BROWSER_SECURITY_0);
+                break;
+            case 3: // ABORT_ERR
+                errMsg = Messages.get().key(Messages.ERR_UPLOAD_BROWSER_ABORT_ERR_0);
+                break;
+            case 4: // NOT_READABLE_ERR
+                errMsg = Messages.get().key(Messages.ERR_UPLOAD_BROWSER_NOT_READABLE_0);
+                break;
+            case 5: // ENCODING_ERR
+                errMsg = Messages.get().key(Messages.ERR_UPLOAD_BROWSER_ENCODING_0);
+                break;
+            default:
+                break;
+        }
+        showErrorReport(errMsg, null);
+    }
+
+    /**
      * Adds a the file infos to the table.<p>
      * 
      * @param file the file to add
@@ -1137,15 +1190,15 @@ public class CmsUploadDialog extends CmsPopupDialog {
     private void setHeight() {
 
         if (m_state == DialogState.selection) {
-            DOM.setStyleAttribute(m_contentWrapper.getElement(), "minHeight", MIN_HEIGHT + "px");
-            DOM.setStyleAttribute(m_contentWrapper.getElement(), "maxHeight", MAX_HEIGHT + "px");
+            m_contentWrapper.getElement().getStyle().setProperty("minHeight", MIN_HEIGHT + "px");
+            m_contentWrapper.getElement().getStyle().setProperty("maxHeight", MAX_HEIGHT + "px");
         } else {
             int infoDiff = m_firstInfoHeight - m_dialogInfo.getOffsetHeight();
             int summaryDiff = m_firstSummaryHeight - m_selectionSummary.getOffsetHeight();
             int height = m_firstContentHeight + infoDiff + summaryDiff;
             m_contentWrapper.getElement().getStyle().setHeight(height, Unit.PX);
-            DOM.setStyleAttribute(m_contentWrapper.getElement(), "minHeight", "");
-            DOM.setStyleAttribute(m_contentWrapper.getElement(), "maxHeight", "");
+            m_contentWrapper.getElement().getStyle().clearProperty("minHeight");
+            m_contentWrapper.getElement().getStyle().clearProperty("maxHeight");
         }
     }
 
@@ -1158,7 +1211,11 @@ public class CmsUploadDialog extends CmsPopupDialog {
     private void showErrorReport(final String message, final String stacktrace) {
 
         hide();
-        new CmsErrorDialog(message, stacktrace.replaceAll("\n", "<br/>")).center();
+        String trace = stacktrace;
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(stacktrace)) {
+            trace = stacktrace.replaceAll("\n", "<br/>");
+        }
+        new CmsErrorDialog(message, trace);
     }
 
     /**

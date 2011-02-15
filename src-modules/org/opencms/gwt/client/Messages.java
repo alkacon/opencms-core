@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/Attic/Messages.java,v $
- * Date   : $Date: 2011/02/14 13:05:55 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2011/02/15 10:18:25 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.gwt.client.util.CmsMessages;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.27 $ 
  * 
  * @since 8.0.0
  */
@@ -52,6 +52,24 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_INVALID_UUID_1 = "ERR_INVALID_UUID_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_UPLOAD_BROWSER_0 = "ERR_UPLOAD_BROWSER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_UPLOAD_BROWSER_ABORT_ERR_0 = "ERR_UPLOAD_BROWSER_ABORT_ERR_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_UPLOAD_BROWSER_ENCODING_0 = "ERR_UPLOAD_BROWSER_ENCODING_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_UPLOAD_BROWSER_NOT_FOUND_0 = "ERR_UPLOAD_BROWSER_NOT_FOUND_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_UPLOAD_BROWSER_NOT_READABLE_0 = "ERR_UPLOAD_BROWSER_NOT_READABLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_UPLOAD_BROWSER_SECURITY_0 = "ERR_UPLOAD_BROWSER_SECURITY_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CANCEL_0 = "GUI_CANCEL_0";
@@ -231,9 +249,6 @@ public final class Messages {
     public static final String GUI_UNLOCKING_0 = "GUI_UNLOCKING_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_UPLOAD_BUTTON_TITLE_0 = "GUI_UPLOAD_BUTTON_TITLE_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_UPLOAD_BUTTON_ADD_FILES_0 = "GUI_UPLOAD_BUTTON_ADD_FILES_0";
 
     /** Message constant for key in the resource bundle. */
@@ -241,6 +256,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_UPLOAD_BUTTON_OK_DISABLE_UPLOADING_0 = "GUI_UPLOAD_BUTTON_OK_DISABLE_UPLOADING_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UPLOAD_BUTTON_TITLE_0 = "GUI_UPLOAD_BUTTON_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_UPLOAD_CLIENT_LOADING_0 = "GUI_UPLOAD_CLIENT_LOADING_0";
