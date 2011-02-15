@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/gwt/client/ui/Attic/CmsUploadDialog.java,v $
- * Date   : $Date: 2011/02/14 13:05:55 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2011/02/15 07:33:48 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -83,7 +83,7 @@ import com.google.gwt.user.client.ui.Hidden;
  * 
  * @author Ruediger Kurz
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 8.0.0
  */
@@ -355,6 +355,7 @@ public class CmsUploadDialog extends CmsPopupDialog {
         /**
          * @see com.google.gwt.user.client.Timer#run()
          */
+        @Override
         public void run() {
 
             updateProgress();
@@ -512,6 +513,7 @@ public class CmsUploadDialog extends CmsPopupDialog {
             /**
              * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
              */
+            @Override
             public void execute() {
 
                 CmsCoreProvider.getService().cancelUpload(this);
@@ -520,6 +522,7 @@ public class CmsUploadDialog extends CmsPopupDialog {
             /**
              * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
              */
+            @Override
             protected void onResponse(Void result) {
 
                 // noop
@@ -587,6 +590,7 @@ public class CmsUploadDialog extends CmsPopupDialog {
             /**
              * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
              */
+            @Override
             public void execute() {
 
                 CmsCoreProvider.getService().checkUploadFiles(
@@ -598,6 +602,7 @@ public class CmsUploadDialog extends CmsPopupDialog {
             /**
              * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
              */
+            @Override
             protected void onResponse(CmsUploadFileBean result) {
 
                 if (result.isActive()) {
@@ -735,6 +740,7 @@ public class CmsUploadDialog extends CmsPopupDialog {
             /**
              * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
              */
+            @Override
             public void execute() {
 
                 CmsCoreProvider.getService().getUploadProgressInfo(this);
@@ -743,6 +749,7 @@ public class CmsUploadDialog extends CmsPopupDialog {
             /**
              * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
              */
+            @Override
             protected void onResponse(CmsUploadProgessInfo result) {
 
                 updateProgressBar(result);
@@ -981,75 +988,77 @@ public class CmsUploadDialog extends CmsPopupDialog {
         String targetFolder,
         CmsUploadDialog dialog,
         JsArray<CmsFileInfo> filesToUpload) /*-{
-        // is executed when there was an error during reading the file
-        function errorHandler(evt) {
-        alert("Error");
-        }
+		// is executed when there was an error during reading the file
+		function errorHandler(evt) {
+			alert("Error");
+		}
 
-        // is executed when the current file is read completely
-        function loaded(evt) {
-        // get the current file name and obtain the read file data
-        var fileName = file.name;
-        var fileData = evt.target.result;
-        body += "Content-Disposition: form-data; name=\"fileId\"; filename=\"" + fileName + "\"\r\n";
-        body += "Content-Type: application/octet-stream\r\n\r\n";
-        body += fileData + "\r\n";
-        body += "--" + boundary + "\r\n";
-        // are there any more files?, continue reading the next file
-        if (filesToUpload.length > ++curIndex){
-        file = filesToUpload[curIndex];
-        this.readAsBinaryString(file);
-        }else{
-        // there are no more files left
-        // append the target folder to the request 
-        appendTargetFolder();
-        // create the request and post it
-        var xhr = new XMLHttpRequest();
-        xhr.open("POST", uri, true);
-        xhr.setRequestHeader("Content-Type", "multipart/form-data; boundary="+boundary); // simulate a file MIME POST request.
-        xhr.overrideMimeType('text/plain; charset=x-user-defined');
-        xhr.onreadystatechange = function() {
-        if (xhr.readyState == 4) {
-        if(xhr.status == 200) {
-        dialog.@org.opencms.gwt.client.ui.CmsUploadDialog::parseResponse(Ljava/lang/String;)(xhr.responseText);
-        } else if (xhr.status != 200) {
-        alert("Error");
-        }
-        }
-        }
-        xhr.sendAsBinary(body);
-        }
-        }
+		// is executed when the current file is read completely
+		function loaded(evt) {
+			// get the current file name and obtain the read file data
+			var fileName = file.name;
+			var fileData = evt.target.result;
+			body += "Content-Disposition: form-data; name=\"fileId\"; filename=\""
+					+ fileName + "\"\r\n";
+			body += "Content-Type: application/octet-stream\r\n\r\n";
+			body += fileData + "\r\n";
+			body += "--" + boundary + "\r\n";
+			// are there any more files?, continue reading the next file
+			if (filesToUpload.length > ++curIndex) {
+				file = filesToUpload[curIndex];
+				this.readAsBinaryString(file);
+			} else {
+				// there are no more files left
+				// append the target folder to the request 
+				appendTargetFolder();
+				// create the request and post it
+				var xhr = new XMLHttpRequest();
+				xhr.open("POST", uri, true);
+				xhr.setRequestHeader("Content-Type",
+						"multipart/form-data; boundary=" + boundary); // simulate a file MIME POST request.
+				xhr.overrideMimeType('text/plain; charset=x-user-defined');
+				xhr.onreadystatechange = function() {
+					if (xhr.readyState == 4) {
+						if (xhr.status == 200) {
+							dialog.@org.opencms.gwt.client.ui.CmsUploadDialog::parseResponse(Ljava/lang/String;)(xhr.responseText);
+						} else if (xhr.status != 200) {
+							alert("Error");
+						}
+					}
+				}
+				xhr.sendAsBinary(body);
+			}
+		}
 
-        // appends the target folder to the request body 
-        // should be called at end of creating the body because the boundary is closed here
-        function appendTargetFolder() {
-        body += "Content-Disposition: form-data; name=upload_target_folder\r\n";
-        body += "Content-Type: text/plain\r\n\r\n";
-        body += targetFolder + "\r\n";
-        body += "--" + boundary + "--";
-        }
+		// appends the target folder to the request body 
+		// should be called at end of creating the body because the boundary is closed here
+		function appendTargetFolder() {
+			body += "Content-Disposition: form-data; name=upload_target_folder\r\n";
+			body += "Content-Type: text/plain\r\n\r\n";
+			body += targetFolder + "\r\n";
+			body += "--" + boundary + "--";
+		}
 
-        // the uri to call
-        var uri = uploadUri;
-        // the boundary
-        var boundary = "26924190726270";
-        // the request body with the starting boundary
-        var body = "--" + boundary + "\r\n";
+		// the uri to call
+		var uri = uploadUri;
+		// the boundary
+		var boundary = "26924190726270";
+		// the request body with the starting boundary
+		var body = "--" + boundary + "\r\n";
 
-        // the main procedure
-        if (filesToUpload) {
+		// the main procedure
+		if (filesToUpload) {
 
-        var curIndex = 0;
-        var file = filesToUpload[curIndex];
-        var reader = new FileReader();
+			var curIndex = 0;
+			var file = filesToUpload[curIndex];
+			var reader = new FileReader();
 
-        // Handle loaded and errors
-        reader.onload = loaded;
-        reader.onerror = errorHandler;
-        // Read file into memory
-        reader.readAsBinaryString(file);
-        }
+			// Handle loaded and errors
+			reader.onload = loaded;
+			reader.onerror = errorHandler;
+			// Read file into memory
+			reader.readAsBinaryString(file);
+		}
     }-*/;
 
     /**
